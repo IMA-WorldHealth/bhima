@@ -107,7 +107,8 @@ describe('(/stock/) The Stock HTTP API', () => {
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () => agent.get('/stock/lots')
+  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial
+      quantity of QUININE-A in Depot Principal (100pcs)`, () => agent.get('/stock/lots')
     .query({
       lot_uuid : shared.lotQuinineUuid,
       depot_uuid : shared.depotPrincipalUuid,
@@ -120,7 +121,8 @@ describe('(/stock/) The Stock HTTP API', () => {
     .catch(helpers.handler));
 
   // list exit of QUININE-A from 'Depot Principal'
-  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (101pcs)`, () => agent.get('/stock/lots/movements')
+  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns
+    exit of QUININE-A from Depot Principal (101pcs)`, () => agent.get('/stock/lots/movements')
     .query({
       is_exit : 1,
       lot_uuid : shared.lotQuinineUuid,
