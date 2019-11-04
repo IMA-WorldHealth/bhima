@@ -1,6 +1,12 @@
+/* eslint global-require: "off" */
 const { expect } = require('chai');
 const _ = require('lodash');
-const xlsx = require('../../server/lib/renderers/xlsx');
+const rewire = require('@ima-worldhealth/rewire');
+
+const xlsx = rewire('../../server/lib/renderers/xlsx');
+
+// mock the translation as a no-op function
+xlsx.__set__('i18n', () => (() => {}));
 
 describe('xlsx.js', () => {
   it('Should return a xlsx buffer', (done) => {
@@ -8,7 +14,7 @@ describe('xlsx.js', () => {
       rows : [{ Firstname : 'Alice', Lastname : 'Bob' }],
     };
 
-    xlsx.render(data)
+    xlsx.render(data, null, { lang : 'en' })
       .then(reportStream => {
         expect(_.isBuffer(reportStream)).to.be.equal(true);
         done();
@@ -20,7 +26,7 @@ describe('xlsx.js', () => {
 
   it('Should work for an empty object', (done) => {
     const data = {};
-    xlsx.render(data)
+    xlsx.render(data, null, { lang : 'fr' })
       .then(reportStream => {
         expect(_.isBuffer(reportStream)).to.be.equal(true);
         done();
