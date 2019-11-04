@@ -99,8 +99,7 @@ async function document(req, res, next) {
     // Update By @lomamech
     // As the report of the boxes can only be viewed in the company currency,
     // we set the variable isEnterpriseCurrency to true
-    params.currency_id = req.session.enterprise.currency_id;
-    params.isEnterpriseCurrency = true;
+    params.currency_id = cashbox.currency_id;
 
     // get the opening balance for the acount
     const header = await AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
