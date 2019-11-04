@@ -49,16 +49,20 @@ function detail(req, res, next) {
 }
 
 // POST /WEEKEND_CONFIG
-async function create(req, res) {
-  const sql = `INSERT INTO weekend_config SET ?`;
-  const data = req.body;
-  const configuration = data.daysChecked;
-  delete data.daysChecked;
+async function create(req, res, next) {
+  try {
+    const sql = `INSERT INTO weekend_config SET ?`;
+    const data = req.body;
+    const configuration = data.daysChecked;
+    delete data.daysChecked;
 
-  const { insertId } = await db.exec(sql, [data]);
-  const dataConfigured = configuration.map(id => ([id, insertId]));
-  await db.exec('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataConfigured]);
-  res.status(201).json({ id : insertId });
+    const { insertId } = await db.exec(sql, [data]);
+    const dataConfigured = configuration.map(id => ([id, insertId]));
+    await db.exec('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataConfigured]);
+    res.status(201).json({ id : insertId });
+  } catch (error) {
+    next(error);
+  }
 }
 
 // PUT /WEEKEND_CONFIG /:ID
