@@ -18,14 +18,6 @@ describe('Weekend Configuration Management', () => {
     await page.update(newWeekendConfigLabel, updateWeekendConfigLabel);
   });
 
-  it('successfully set week days in weekend configuration', async () => {
-    await page.setWeekendConfig(updateWeekendConfigLabel);
-  });
-
-  it('successfully inset week days in weekend configuration', async () => {
-    await page.unsetWeekendConfig(updateWeekendConfigLabel);
-  });
-
   it('don\'t create an incorrect weekend', async () => {
     await page.errorOnCreateWeekendConfig();
   });

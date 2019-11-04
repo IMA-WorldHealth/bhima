@@ -11,17 +11,15 @@ const helpers = require('./helpers');
 describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  API endpoint', () => {
   const weekEndConfig = {
     label : 'Configuration Week end 2013',
+    daysChecked : [0, 5, 6],
   };
 
   const weekEndConfigUpdate = {
     label : 'Configuration Week end 2013 Updated',
+    daysChecked : [],
   };
 
   const NUM_CONFIG_WEEKEND = 3;
-
-  const configWeekEnd = { configuration : [0, 5, 6] };
-  const configWeekEndEmpty = { configuration : [] };
-
 
   // INTEGRATION TEST FOR WEEK_END_ CONFIGURATION
   it('POST /WEEKEND__CONFIG should create a new WeekEnd Configuration', () => {
@@ -34,7 +32,7 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
       .catch(helpers.handler);
   });
 
-  it('GET /WEEKEND__CONFIG returns a list of function ', () => {
+  it('GET /WEEKEND__CONFIG returns a list of Weekend Configured ', () => {
     return agent.get('/weekend_config')
       .then((res) => {
         helpers.api.listed(res, NUM_CONFIG_WEEKEND);
@@ -73,37 +71,6 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
     return agent.delete('/weekend_config/unknownWeekEnd')
       .then((res) => {
         helpers.api.errored(res, 404);
-      })
-      .catch(helpers.handler);
-  });
-
-  // INTEGRATION TEST FOR SETTING WEEKEND IN CONFIGURATION
-
-  it('POST /WEEKEND__CONFIG/:ID/DAYS should Set WeekEnds in Configuration', () => {
-    return agent.post(`/weekend_config/${weekEndConfig.id}/days`)
-      .send(configWeekEnd)
-      .then((res) => {
-        expect(res).to.have.status(201);
-        return agent.get(`/weekend_config/${weekEndConfig.id}/days`);
-      })
-      .then(res => {
-        helpers.api.listed(res, 3);
-        expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
-      })
-      .catch(helpers.handler);
-  });
-
-  it('POST /WEEKEND_CONFIG/:ID/DAYS Update Rubrucs Configuration', () => {
-    return agent.post(`/weekend_config/${weekEndConfig.id}/days`)
-      .send(configWeekEndEmpty)
-      .then((res) => {
-        expect(res).to.have.status(201);
-        return agent.get(`/weekend_config/${weekEndConfig.id}/days`);
-      })
-      .then(res => {
-        helpers.api.listed(res, 0);
-        expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
