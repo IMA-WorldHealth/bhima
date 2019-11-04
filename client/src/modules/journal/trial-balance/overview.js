@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceOverviewController', TrialBalanceOverviewController);
 
 TrialBalanceOverviewController.$inject = [
-  'SessionService', 'TrialBalanceService', 'NotifyService', 'uiGridConstants', 'GridExportService', '$state',
+  'SessionService', 'TrialBalanceService', 'NotifyService',
+  'uiGridConstants', 'GridExportService', '$state', 'AccountService',
 ];
 
 /**
@@ -11,7 +12,7 @@ TrialBalanceOverviewController.$inject = [
  * @description
  * This controller is responsible for displaying the Trial Balance data to the user.
  */
-function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport, $state) {
+function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport, $state, Account) {
   const vm = this;
   const currencyId = Session.enterprise.currency_id;
   vm.currencyId = currencyId;
@@ -36,6 +37,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     headerCellFilter : 'translate',
     cellClass        : 'text-right',
     cellFilter       : 'currency:'.concat(currencyId),
+    cellTemplate     : Account.redCreditCell('balance_before', currencyId),
   }, {
     field                : 'debit_equiv',
     type                 : 'number',
@@ -65,6 +67,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     headerCellFilter : 'translate',
     cellClass        : 'text-right',
     cellFilter       : 'currency:'.concat(currencyId),
+    cellTemplate     : Account.redCreditCell('balance_final', currencyId),
   }, {
     field            : 'actions',
     displayName      : '',
