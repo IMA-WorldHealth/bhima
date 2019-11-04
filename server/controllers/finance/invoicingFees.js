@@ -24,8 +24,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
  * service entity.
  */
 function lookupInvoicingFee(id) {
-  const sql =
-    `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
+  const sql = `SELECT bs.id, bs.account_id, bs.label, bs.description, bs.value,
       bs.created_at, bs.updated_at, a.number
     FROM invoicing_fee AS bs JOIN account AS a ON bs.account_id = a.id
     WHERE bs.id = ?;`;
@@ -57,15 +56,13 @@ exports.detail = function detail(req, res, next) {
  * levels of detail
  */
 exports.list = function list(req, res, next) {
-  let sql =
-    `SELECT bs.id, bs.label, bs.created_at
+  let sql = `SELECT bs.id, bs.label, bs.created_at
     FROM invoicing_fee AS bs
     ORDER BY bs.label;`;
 
   // provide as more information as necessary, if the client asks for it.
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT
+    sql = `SELECT
         bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id,
         bs.description, bs.value, a.number
       FROM invoicing_fee AS bs
@@ -103,8 +100,7 @@ exports.create = function create(req, res, next) {
     return;
   }
 
-  const sql =
-    `INSERT INTO invoicing_fee (account_id, label, description, value)
+  const sql = `INSERT INTO invoicing_fee (account_id, label, description, value)
     VALUES (?, ?, ?, ?);`;
 
   db.exec(sql, [data.account_id, data.label, data.description, data.value])
@@ -128,8 +124,7 @@ exports.update = function update(req, res, next) {
   // remove the :id if it exists inside the invoicingFee object
   delete data.id;
 
-  const sql =
-    'UPDATE invoicing_fee SET ? WHERE id = ?;';
+  const sql = 'UPDATE invoicing_fee SET ? WHERE id = ?;';
 
   // ensure that the invoicing fee matching :id exists
   lookupInvoicingFee(id)
@@ -149,8 +144,7 @@ exports.update = function update(req, res, next) {
  * @desc deletes a invoicing fee in the database
  */
 exports.delete = function del(req, res, next) {
-  const sql =
-    'DELETE FROM invoicing_fee WHERE id = ?;';
+  const sql = 'DELETE FROM invoicing_fee WHERE id = ?;';
 
   // first make sure that the invoicing fee exists
   lookupInvoicingFee(req.params.id)

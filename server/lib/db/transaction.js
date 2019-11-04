@@ -100,8 +100,8 @@ class Transaction {
     debug(`#execute(): Executing ${this.queries.length} queries.`);
     const deferred = q.defer();
 
-    const queries = this.queries;
-    const pool = this.db.pool;
+    const { queries } = this;
+    const { pool } = this.db;
 
     // get a connection from the database to execute the transaction
     pool.getConnection((error, connection) => {
@@ -154,7 +154,7 @@ class Transaction {
 
             // restart transactions a set number of times if the error is due to table deadlocks
             if (isDeadlock && this.restarts < MAX_TRANSACTION_DEADLOCK_RESTARTS) {
-              debug(`#execute(): Transaction deadlock!  Restart count: ${this.restarts} of ${MAX_TRANSACTION_DEADLOCK_RESTARTS}.`);
+              debug(`#execute(): Txn deadlock!  Restarts: ${this.restarts} of ${MAX_TRANSACTION_DEADLOCK_RESTARTS}.`);
               debug(`#execute(): Reattempt transaction after ${TRANSACTION_DEADLOCK_RESTART_DELAY}ms.`);
 
               // set up a promise to delay the transaction restart

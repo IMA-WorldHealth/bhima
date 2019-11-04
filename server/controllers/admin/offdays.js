@@ -36,7 +36,7 @@ function list(req, res, next) {
 * Returns the detail of a single Offday
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupOffday(id)
     .then((record) => {
