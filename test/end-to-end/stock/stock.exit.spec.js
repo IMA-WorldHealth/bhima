@@ -46,7 +46,7 @@ function StockExiTests() {
 
     await page.setDescription(DESCRIPTION.concat(' - Patient'));
 
-    await page.setLot(0, 'QUININE-A');
+    await page.setLot(0, 'QUININE-B');
 
     // submit
     await page.submit();
@@ -63,7 +63,7 @@ function StockExiTests() {
     await page.addRows(2);
 
     // first item
-    await page.setItem(0, 'Quinine', 'QUININE-B', 25);
+    await page.setItem(0, 'Quinine', 'QUININE-B', 14);
 
     // second item
     await page.setItem(1, 'Multivitamine', 'VITAMINE-B', 5);
@@ -83,7 +83,7 @@ function StockExiTests() {
     await page.addRows(1);
 
     // first item
-    await page.setItem(0, 'Quinine', 'QUININE-B', 75);
+    await page.setItem(0, 'Quinine', 'QUININE-C', 45);
 
     // submit
     await page.submit();
