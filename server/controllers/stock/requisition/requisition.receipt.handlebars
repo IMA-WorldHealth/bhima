@@ -19,14 +19,16 @@
           {{/if}}
           <br>
         </h3>
+        <small>{{> barcode value=barcode}}</small>
       </div>
     </div>
 
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
       <div class="col-xs-6">
-        <h4>{{translate 'STOCK.FROM'}}</h4>
+        <h4>{{translate 'FORM.LABELS.SUPPLIER'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_text}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span>: <strong>{{details.reference}}</strong> <br>
       </div>
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.TO'}}</h4>
@@ -57,7 +59,7 @@
       <tr>
         <th>{{translate 'STOCK.CODE'}}</th>
         <th>{{translate 'STOCK.INVENTORY'}}</th>
-        <th>{{translate 'STOCK.QUANTITY'}}</th>
+        <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -66,7 +68,7 @@
         <tr>
           <td>{{item.code}}</td>
           <td>{{item.text}}</td>
-          <td>{{item.quantity}}</td>
+          <td class="text-right">{{item.quantity}}</td>
         </tr>
         {{/each}}
       {{else}}
@@ -98,5 +100,5 @@
       </div>
     </div>
   </footer>
-
+  <script>JsBarcode('.barcode').init();</script>
 </div>

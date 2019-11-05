@@ -71,4 +71,8 @@ module.exports = {
     key   : 'INT',
     table : 'integration',
   },
+  REQUISITION : {
+    key   : 'SREQ',
+    table : 'stock_requisition',
+  },
 };

@@ -108,7 +108,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = req.query;
+  const options = db.convert(req.query, ['uuid']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -137,7 +137,7 @@ function list(req, res, next) {
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
   );
 
-  filters.equals('uuid', 'uuid', 'd');
+  filters.custom('uuid', 'd.uuid = ?');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
 

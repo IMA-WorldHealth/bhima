@@ -1,6 +1,7 @@
 {
     "FORM": {
         "BUTTONS": {
+            "AUTO_SUGGEST":"Suggestion Automatique",
             "ACTIONS": "Actions",
             "ADD": "Ajouter",
             "ADD_ACCOUNT_CONFIGURATION": "Ajouter une configuration des comptes",

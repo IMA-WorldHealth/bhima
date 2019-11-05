@@ -127,6 +127,10 @@ exports.create = async (req, res, next) => {
 
     transaction.addQuery('INSERT INTO stock_requisition SET ?;', binarize(requisition));
 
+    if (!requisitionItems.length) {
+      throw new Error('No Requisition Items Given');
+    }
+
     requisitionItems.forEach(item => {
       item.requisition_uuid = identifier;
       transaction.addQuery('INSERT INTO stock_requisition_item SET ?;', binarize(item));

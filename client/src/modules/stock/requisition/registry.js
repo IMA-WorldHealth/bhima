@@ -33,11 +33,18 @@ function StockRequisitionController(
       field : 'reference',
       displayName : 'FORM.LABELS.REFERENCE',
       headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/reference.cell.html',
     },
 
     {
       field : 'depot_text',
       displayName : 'STOCK.DEPOT',
+      headerCellFilter : 'translate',
+    },
+
+    {
+      field : 'description',
+      displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
     },
 

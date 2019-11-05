@@ -35,6 +35,12 @@ function ActionRequisitionModalController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/requisition/templates/quantity.cell.html',
     },
+
+    {
+      field : 'action',
+      width : 25,
+      cellTemplate : 'modules/stock/requisition/templates/remove.cell.html',
+    },
   ];
 
   vm.gridOptions = {
@@ -49,6 +55,7 @@ function ActionRequisitionModalController(
   // global methods
   vm.model = {};
   vm.addItem = addItem;
+  vm.removeItem = removeItem;
   vm.configureItem = configureItem;
 
   vm.onSelectDepot = onSelectDepot;
@@ -58,9 +65,24 @@ function ActionRequisitionModalController(
 
   vm.onSelectRequestor = onSelectRequestor;
   function onSelectRequestor(requestor) {
+    const DEPOT_REQUESTOR_TYPE = 2;
     vm.model.requestor_type_id = requestor.requestor_type_id;
     vm.model.requestor_uuid = requestor.uuid;
+    vm.enableAutoSuggest = (requestor.requestor_type_id === DEPOT_REQUESTOR_TYPE && requestor.uuid);
   }
+
+  vm.autoSuggestInventories = () => {
+    if (!vm.enableAutoSuggest) { return; }
+
+    Stock.inventories.read(null, { depot_uuid : vm.model.requestor_uuid })
+      .then(rows => {
+        store.clear();
+        rows
+          .filter(row => row.S_Q > 0)
+          .forEach(row => addSuggestedItem(row));
+      })
+      .catch(Notify.handleError);
+  };
 
   vm.cancel = Modal.close;
 
@@ -123,6 +145,27 @@ function ActionRequisitionModalController(
 
     // update the grid
     vm.gridOptions.data = store.data;
+  }
+
+  function addSuggestedItem(item) {
+    const row = { id : store.data.length };
+
+    item.label = item.text;
+    row._initialised = true;
+    row.inventory = item;
+    row.inventory_uuid = item.inventory_uuid;
+    row.quantity = item.S_Q;
+    store.post(row);
+
+    // update the grid
+    vm.gridOptions.data = store.data;
+  }
+
+  /**
+   * remove item
+   */
+  function removeItem(row) {
+    store.remove(row.id);
   }
 
   /**

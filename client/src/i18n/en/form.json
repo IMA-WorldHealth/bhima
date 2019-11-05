@@ -1,6 +1,7 @@
 {
     "FORM": {
         "BUTTONS": {
+            "AUTO_SUGGEST":"Auto Suggestion",
             "ACTIONS": "Actions",
             "ADD": "Add",
             "ADD_ACCOUNT_CONFIGURATION": "Add Account Configuration",

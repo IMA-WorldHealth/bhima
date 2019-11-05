@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const db = require('../../../lib/db');
+const barcode = require('../../../lib/barcode');
 const ReportManager = require('../../../lib/ReportManager');
+const identifiers = require('../../../config/identifiers');
 
 const api = require('./requisition');
 
@@ -25,6 +27,7 @@ async function stockRequisitionReceipt(req, res, next) {
   try {
     const report = new ReportManager(STOCK_REQUISITION_TEMPLATE, req.session, optionReport);
     const details = await api.getDetails(db.bid(uuid));
+    data.barcode = barcode.generate(identifiers.REQUISITION.key, details.uuid);
     data.enterprise = req.session.enterprise;
     data.details = details;
     const result = await report.render(data);
