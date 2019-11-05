@@ -13,7 +13,7 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'brea_report',
+  csvKey : 'configurable_analysis_report',
   filename : 'TREE.BREAK_EVEN_REPORT',
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
