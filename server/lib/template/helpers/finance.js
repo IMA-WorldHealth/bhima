@@ -1,6 +1,6 @@
 const accountingjs = require('accounting-js');
-const NumberToText = require('../../../lib/NumberToText');
 const Handlebars = require('handlebars');
+const NumberToText = require('../../../lib/NumberToText');
 
 const USD_FMT = { precision : 2 };
 
@@ -18,6 +18,18 @@ function currency(value = 0, currencyId) {
   // @TODO - super-hardcoded values for the moment.  Can we do better?
   const fmt = (Number(currencyId) === 1) ? FC_FMT : USD_FMT;
   return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
+}
+
+/**
+ * @function currencyWithoutSymbol
+ *
+ * @description
+ * This exists purely to allow the HTML renderer to turn off currency
+ * rendering.  It has the same API as the currency helper.
+ */
+// eslint-disable-next-line
+function currencyWithoutSymbol(value = 0, currencyId) {
+  return Number(value).toFixed(2);
 }
 
 /**
@@ -77,3 +89,4 @@ exports.indentAccount = indentAccount;
 exports.numberToText = numberToText;
 exports.percentage = percentage;
 exports.precision = precision;
+exports.currencyWithoutSymbol = currencyWithoutSymbol;

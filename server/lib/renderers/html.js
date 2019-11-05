@@ -16,6 +16,7 @@ const debug = require('debug')('renderers:html');
 const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
+const finance = require('../template/helpers/finance');
 
 const headers = {
   'Content-Type' : 'text/html',
@@ -39,13 +40,19 @@ function renderHTML(data, template, options = {}) {
 
   moment.locale(options.lang);
 
-
   debug(`initializing ${options.lang} translation locale`);
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the
   // factory code.
   const translate = translateHelperFactory(options.lang);
   hbs.helpers.translate = translate;
+
+  // NOTE(@jniles) - if the file is an XLS file that is being converted to
+  // excel, we don't do anything for the currency besides returning it.
+  if (options.skipCurrencyRendering) {
+    hbs.helpers.currency = finance.currencyWithoutSymbol;
+    hbs.helpers.debcred = finance.currencyWithoutSymbol;
+  }
 
   debug(`rendering HTML file`);
 

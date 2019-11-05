@@ -2,6 +2,7 @@
  * @description
  * This library is just a shim to ensure API uniformity with other renderers.
  * it renders an Excel report from html.
+ *
  * @module lib/renderers/xls
  * @requires juice
  */
@@ -17,6 +18,8 @@ exports.extension = '.xls';
 exports.headers = headers;
 
 async function render(data, template, options) {
+  options.skipCurrencyRendering = true;
+
   const htmlString = juice(await html.render(data, template, options));
 
   // NOTE(@jniles)
