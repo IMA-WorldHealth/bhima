@@ -35,8 +35,8 @@
         <tbody>
           {{#each transactions as |txn| }}
             <tr {{#unless txn.posted}}style="font-style: italic !important;"{{/unless}}>
-              <td>{{ txn.trans_id }}</td>
               <td>{{ date txn.trans_date }}</td>
+              <td>{{ txn.trans_id }}</td>
               <td>{{ txn.document_reference }}</td>
               <td style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;" title="{{ txn.description }}">
                 {{ txn.description }}
@@ -48,7 +48,7 @@
                 {{currency txn.credit txn.currency_id}}
               </td>
               <td class="text-right">
-                {{debcred this.exchangedBalance ../metadata.enterprise.currency_id}}
+                {{debcred txn.exchangedBalance ../metadata.enterprise.currency_id}}
               </td>
               <td class="text-right">
                 {{debcred txn.cumsum ../metadata.enterprise.currency_id}}
@@ -60,8 +60,19 @@
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="7">{{ date footer.date }}</th>
-            <th class="text-right">{{ debcred footer.exchangedCumSum metadata.enterprise.currency_id}}</th>
+            <th colspan="4">{{ date footer.date }}</th>
+            <th class="text-right">
+              {{#if footer.shouldDisplayDebitCredit }}
+                {{ currency footer.totals.debit cashbox.currency_id }}
+              {{/if}}
+            </th>
+            <th class="text-right">
+              {{#if footer.shouldDisplayDebitCredit }}
+                {{ currency footer.totals.credit cashbox.currency_id }}
+              {{/if}}
+            </th>
+            <th class="text-right">{{ debcred footer.exchangedBalance metadata.enterprise.currency_id }}</th>
+            <th class="text-right">{{ debcred footer.exchangedCumSum metadata.enterprise.currency_id }}</th>
           </tr>
         </tfoot>
       </table>
