@@ -156,7 +156,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
 
         helpers.api.listed(res, 1);
-        expect(res.body[0].quantity).to.be.equal(100 - 100);
+        expect(res.body[0].quantity).to.be.equal(0);
       })
       .catch(helpers.handler)
   );

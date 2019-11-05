@@ -182,24 +182,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
           return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
         }
 
-        const optimalPurchaseData = Purchases.formatOptimalPurchase(vm.inventories, rows);
+        const optimalPurchaseData = PurchaseOrder.formatOptimalPurchase(vm.inventories, rows);
 
-        // adding items.length line in the Order store, which will be reflected to the grid
-        if (optimalPurchaseData > 1) {
-          vm.order.addItem(optimalPurchaseData.length);
-        }
-
-        vm.order.store.data.forEach((item, index) => {
-          item.inventory_uuid = optimalPurchaseData[index].uuid;
-          item.code = optimalPurchaseData[index].code;
-          item.description = optimalPurchaseData[index].label;
-          item.quantity = optimalPurchaseData[index].quantity;
-          item.unit_price = optimalPurchaseData[index].unit_price;
-          item.unit = optimalPurchaseData[index].unit;
-          item._initialised = optimalPurchaseData[index]._initialised;
-          item._hasValidAccounts = optimalPurchaseData[index]._hasValidAccounts;
-          item._invalid = optimalPurchaseData[index]._invalid;
-          item._valid = optimalPurchaseData[index]._valid;
+        // clear the grid as suggested above
+        vm.order.clear();
+        optimalPurchaseData.forEach((item) => {
+          vm.order.store.post(item);
         });
 
         return 0;
