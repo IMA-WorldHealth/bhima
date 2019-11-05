@@ -190,3 +190,4 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- BHIMA DATA COLLECTOR
+-- 2019-11-05
