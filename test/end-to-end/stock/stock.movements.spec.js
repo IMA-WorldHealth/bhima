@@ -39,26 +39,26 @@ function StockMovementsRegistryTests() {
     // for Entry
     await modal.setEntryExit(0);
     await modal.submit();
-    await GU.expectRowCount(gridId, 33);
+    await GU.expectRowCount(gridId, 29);
   });
 
   it('filters by entry/exit', async () => {
     // for Exit
     await modal.setEntryExit(1);
     await modal.submit();
-    await GU.expectRowCount(gridId, 9 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 11 + depotGroupingRow);
   });
 
   it('find movements by depot', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 33);
+    await GU.expectRowCount(gridId, 29);
   });
 
   it('find movements by inventory', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
-    await GU.expectRowCount(gridId, 14 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 16 + (2 * depotGroupingRow));
   });
 
 
