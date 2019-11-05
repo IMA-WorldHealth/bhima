@@ -108,14 +108,14 @@ function report(req, res, next) {
       `;
 
       const sqlConfig = `
-        SELECT id, is_creditor, restrict_title_account, account_reference_id, label,
+        SELECT id, is_creditor, account_reference_id, label,
         analysis_tool_type_id
         FROM configuration_analysis_tools
         ORDER BY label ASC
       `;
 
       const sqlReferences = `
-        SELECT at.id, at.is_creditor, at.restrict_title_account, at.account_reference_id,
+        SELECT at.id, at.is_creditor, at.account_reference_id,
         a.number, a.label, ari.is_exception,
         at.analysis_tool_type_id
         FROM configuration_analysis_tools AS at
