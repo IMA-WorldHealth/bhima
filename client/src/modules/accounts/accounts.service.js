@@ -28,6 +28,7 @@ function AccountService(Api, bhConstants, HttpCache) {
 
   service.flatten = flatten;
   service.order = order;
+  service.redCreditCell = redCreditCell;
 
   /**
    * @method getOpeningBalance
@@ -190,6 +191,17 @@ function AccountService(Api, bhConstants, HttpCache) {
       .then(response => {
         return service.util.download(response, 'Import Accounts Template', 'csv');
       });
+  }
+
+  function redCreditCell(key, currencyId) {
+    return `
+      <div class="ui-grid-cell-contents text-right" ng-show="row.entity['${key}'] < 0">
+        <span class='text-danger'>({{row.entity['${key}']*(-1) | currency:${currencyId}}})</span>
+      </div>
+      <div class="ui-grid-cell-contents text-right" ng-show="row.entity['${key}'] >= 0">
+        {{row.entity['${key}'] | currency:${currencyId}}}
+      </div>
+    `;
   }
 
   return service;
