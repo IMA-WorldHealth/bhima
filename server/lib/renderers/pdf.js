@@ -19,6 +19,9 @@ const streamToPromise = require('stream-to-promise');
 const path = require('path');
 const process = require('process');
 const debug = require('debug')('renderer:pdf');
+const { inlineSource } = require('inline-source');
+
+// const fs = require('fs');
 
 const html = require('./html');
 
@@ -86,29 +89,29 @@ function getNodeModulesPath() {
  * @param {String} template   Path to a handlebars template
  * @returns {Promise}         Promise resolving in compiled PDF
  */
-function renderPDF(context, template, options = {}) {
+async function renderPDF(context, template, options = {}) {
   debug('received render request for PDF file. Passing to HTML renderer.');
 
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
   context.absolutePath = path.join(process.cwd(), 'client');
   context.nodeModulesPath = getNodeModulesPath();
 
-  return html.render(context, template, options)
-    .then((htmlStringResult) => {
-      // pick options relevant to rendering PDFs
-      const pdfOptions = _.pick(options, [
-        'pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft',
-        'marginRight', 'marginTop', 'marginBottom', 'footerRight',
-        'footerFontSize',
-      ]);
+  const htmlStringResult = await html.render(context, template, options);
+  const inlinedHtml = await inlineSource(htmlStringResult, { attribute : false, rootpath : '/', compress : false });
 
-      debug('passing rendered HTML to wkhtmltopdf.');
+  // pick options relevant to rendering PDFs
+  const pdfOptions = _.pick(options, [
+    'pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft',
+    'marginRight', 'marginTop', 'marginBottom', 'footerRight',
+    'footerFontSize',
+  ]);
 
-      // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
-      const pdfStream = wkhtmltopdf(htmlStringResult, pdfOptions);
+  debug('passing rendered HTML to wkhtmltopdf.');
 
-      // this promise will only be resolved once the stream 'end' event is fired - with this implementation this will
-      // not allow the client to receive chunks of data as they are available
-      return streamToPromise(pdfStream);
-    });
+  // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
+  const pdfStream = wkhtmltopdf(inlinedHtml, pdfOptions);
+
+  // this promise will only be resolved once the stream 'end' event is fired - with this implementation this will
+  // not allow the client to receive chunks of data as they are available
+  return streamToPromise(pdfStream);
 }

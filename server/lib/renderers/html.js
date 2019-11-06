@@ -9,6 +9,7 @@
  * @requires server/lib/template
  * @requires server/lib/util
  * @requires moment
+ * @requires inline-html
  * @requires debug
  */
 const moment = require('moment');
