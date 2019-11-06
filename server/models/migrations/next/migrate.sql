@@ -8,7 +8,6 @@ ALTER TABLE `stock_consumption` ADD CONSTRAINT `fk_period_id_sc` FOREIGN KEY (`p
 /*
  * DATABASE CHANGES FOR VERSION 1.6.0 TO 1.7.0 
  */
-<<<<<<< e8a0361e72546a523cfe2e024974adec9e89c4cf
 
 /*
 * Pricelist importation
@@ -41,9 +40,10 @@ BEGIN
   END IF;
 
 END $$
-=======
-<<<<<<< d148b1e96ac9e25ecbd9ae4ae2eb92d81db9ca9f
-=======
+
+/*
+ * DATABASE CHANGES FOR VERSION 1.4.0 TO 1.5.0 
+ */
 
 /*
  * @author: lomamech
@@ -163,17 +163,17 @@ CREATE TABLE `medical_sheet` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 INSERT INTO `unit` VALUES
-  (249, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
-  (250, 'Fill Form', 'TREE.FILL_FORM', '', 249, '/modules/fill_form', '/fill_form'),
-  (251, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 249, '/modules/display_metadata', '/display_metadata'),
-  (252, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 249, '/modules/data_kit', '/data_kit'),
-  (253, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 252, '/modules/data_collector_management', '/data_collector_management'),
-  (254, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 252, '/modules/choices_list_management', '/choices_list_management'),
-  (255, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 252, '/modules/survey_form', '/survey_form'),  
-  (256, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
+  (254, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (255, 'Fill Form', 'TREE.FILL_FORM', '', 254, '/modules/fill_form', '/fill_form'),
+  (256, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 254, '/modules/display_metadata', '/display_metadata'),
+  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 254, '/modules/data_kit', '/data_kit'),
+  (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
+  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
+  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
+  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
   
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-  (39, 'dataKit', 'TREE.DATA_KIT_REPORT');
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('dataKit', 'TREE.DATA_KIT_REPORT');
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
@@ -189,5 +189,3 @@ INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
   ('FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- BHIMA DATA COLLECTOR
->>>>>>> improvement(Bhima Data Collector)
->>>>>>> Rebase with branch master

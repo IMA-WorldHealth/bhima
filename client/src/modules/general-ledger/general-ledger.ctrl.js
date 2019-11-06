@@ -5,7 +5,7 @@ GeneralLedgerController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', '$state',
   'LanguageService', 'ModalService', 'FiscalService', 'bhConstants',
-  'AccountService',
+  'AccountService', 'FormatTreeDataService',
 ];
 
 /**
@@ -16,7 +16,7 @@ GeneralLedgerController.$inject = [
  */
 function GeneralLedgerController(
   GeneralLedger, Session, Notify, uiGridConstants, Columns,
-  GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts
+  GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts, FormatTreeData
 ) {
   const vm = this;
   const cacheKey = 'GeneralLedger';
@@ -196,7 +196,7 @@ function GeneralLedgerController(
 
   function loadData(accounts = []) {
     accounts.forEach(preProcessAccounts);
-    Accounts.order(accounts);
+    FormatTreeData.order(accounts);
 
     // cache each accounts $$treeLevel
     accounts.forEach(account => {

@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
 
 ChoicesListManagementController.$inject = [
   '$state', 'ChoicesListManagementService', 'NotifyService', 'uiGridConstants', 'ModalService',
+  'FormatTreeDataService',
 ];
 
 /**
@@ -10,7 +11,8 @@ ChoicesListManagementController.$inject = [
  * This module is responsible for handling the CRUD operation on CHOICES LIST MANAGEMENT
  */
 
-function ChoicesListManagementController($state, ChoicesListManagement, Notify, uiGridConstants, ModalService) {
+function ChoicesListManagementController($state, ChoicesListManagement, Notify, uiGridConstants, ModalService,
+  FormatTreeData) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -98,8 +100,8 @@ function ChoicesListManagementController($state, ChoicesListManagement, Notify, 
 
     ChoicesListManagement.read()
       .then((data) => {
-        const dataTree = ChoicesListManagement.formatStore(data);
-        vm.gridOptions.data = dataTree;
+        const treeData = FormatTreeData.formatStore(data);
+        vm.gridOptions.data = treeData;
       })
       .catch(handleError)
       .finally(toggleLoadingIndicator);

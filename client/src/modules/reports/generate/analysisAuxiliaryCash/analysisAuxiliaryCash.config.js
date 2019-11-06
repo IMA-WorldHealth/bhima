@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 AnalysisAuxiliaryCashController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'AccountService',
+  'FormatTreeDataService',
 ];
 
-function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts) {
+function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts, FormatTreeData) {
   const vm = this;
   const cache = new AppCache('analysisAuxiliaryCash');
   const reportUrl = 'reports/finance/analysis_auxiliary_cashbox';
@@ -16,7 +17,7 @@ function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache, r
   Accounts.read()
     .then(elements => {
       // bind the accounts to the controller
-      const accounts = Accounts.order(elements);
+      const accounts = FormatTreeData.order(elements);
       vm.accounts = accounts;
     });
 

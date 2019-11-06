@@ -2358,6 +2358,8 @@ CREATE TABLE `staffing_indice_parameters` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `data_collector_management`;
 CREATE TABLE `data_collector_management` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
