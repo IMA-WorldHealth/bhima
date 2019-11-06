@@ -202,6 +202,10 @@ function StockRequisitionController(
     return load(stockRequisitionFilters.formatHTTP(true));
   };
 
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+  };
+
   function search() {
     const filtersSnapshot = stockRequisitionFilters.formatHTTP();
 

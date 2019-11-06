@@ -206,6 +206,7 @@
     "REMOVE_SUCCESS" : "Suppression de la réquisition de stock réussie",
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment supprimer cette réquisition ?",
     "NEW_REQUISITION" : "Nouvelle réquisition",
+    "OTHER_REQUISITION" : "Autre réquisition",
     "RECEIVER" : "Bénéficiaire",
     "SERVICE_OR_DEPOT" : "Service ou Dépot ?",
     "SERVICE_REQUESTOR" : "Service bénéficiaire",

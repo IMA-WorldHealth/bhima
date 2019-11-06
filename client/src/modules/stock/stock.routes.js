@@ -86,6 +86,7 @@ angular.module('bhima.routes')
         params : {
           creating : { value : true },
           filters : [],
+          depot : null,
         },
         onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockRequisition')],
         onExit : ['$uibModalStack', closeModals],

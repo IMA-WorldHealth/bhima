@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : bhServiceOrDepotController,
     transclude  : true,
     bindings    : {
-      uuid      : '<',
+      uuid             : '<',
       onSelectCallback : '&',
       required         : '<?',
       label            : '@?',
@@ -28,23 +28,37 @@ function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
     Stock.stockRequestorType.read()
       .then(rows => {
         $ctrl.requestors = rows;
+        return Depots.read(null);
       })
-      .catch(Notify.handleError);
-
-    // load all depots
-    Depots.read(null)
       .then(rows => {
         $ctrl.depots = rows;
+        return Services.read(null);
       })
-      .catch(Notify.handleError);
-
-    // load all services
-    Services.read(null)
       .then(rows => {
         $ctrl.services = rows;
+        if ($ctrl.uuid) {
+          $ctrl.requestorType = getRequestorType($ctrl.uuid);
+        }
       })
       .catch(Notify.handleError);
   };
+
+  function getRequestorType(identifier) {
+    const SERVICE_REQUESTOR_TYPE = 1;
+    const DEPOT_REQUESTOR_TYPE = 2;
+    const foundInService = $ctrl.services.filter(elt => elt.uuid === identifier)[0];
+    const foundInDepot = $ctrl.depots.filter(elt => elt.uuid === identifier)[0];
+
+    if (foundInService) {
+      return $ctrl.requestors.filter(row => row.id === SERVICE_REQUESTOR_TYPE)[0];
+    }
+
+    if (foundInDepot) {
+      return $ctrl.requestors.filter(row => row.id === DEPOT_REQUESTOR_TYPE)[0];
+    }
+
+    return null;
+  }
 
   $ctrl.onChangeRequestor = () => {
     $ctrl.onSelectCallback({ requestor : {} });

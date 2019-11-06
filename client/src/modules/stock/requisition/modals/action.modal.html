@@ -14,6 +14,7 @@
   <div class="modal-body">
     <!-- service or depot -->
     <bh-service-or-depot
+      uuid="$ctrl.model.requestor_uuid"
       label="REQUISITION.RECEIVER"
       on-select-callback="$ctrl.onSelectRequestor(requestor)"
       required="true">
@@ -66,7 +67,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading" disabled="$ctrl.lockSubmission">
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

@@ -205,6 +205,7 @@
     "REMOVE_SUCCESS": "Successful requisition deletion",
     "CONFIRM_REMOVE_MSG": "Are you sure you want to delete this requisition ?",
     "NEW_REQUISITION": "New requisition",
+    "OTHER_REQUISITION": "Other requisition",
     "RECEIVER": "Beneficiary",
     "SERVICE_OR_DEPOT" : "Service or Depot ?",
     "SERVICE_REQUESTOR" : "Service Requestor",

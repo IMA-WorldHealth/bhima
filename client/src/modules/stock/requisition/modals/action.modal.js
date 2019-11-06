@@ -3,17 +3,15 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 ActionRequisitionModalController.$inject = [
-  'appcache', '$state', 'Store', 'InventoryService',
-  'DepotService', 'NotifyService', '$uibModalInstance',
-  'StockService', 'ReceiptModal',
+  '$state', 'Store', 'InventoryService', 'DepotService', 'NotifyService',
+  '$uibModalInstance', 'StockService', 'ReceiptModal',
 ];
 
 function ActionRequisitionModalController(
-  AppCache, $state, Store, Inventories, Depots, Notify, Modal, Stock, Receipts
+  $state, Store, Inventories, Depots, Notify, Modal, Stock, Receipts
 ) {
   const vm = this;
   const store = new Store({ data : [] });
-
   const columns = [
     {
       field : 'inventory_uuid',
@@ -52,39 +50,39 @@ function ActionRequisitionModalController(
     flatEntityAccess : true,
   };
 
-  // global methods
   vm.model = {};
   vm.addItem = addItem;
   vm.removeItem = removeItem;
   vm.configureItem = configureItem;
+  vm.cancel = Modal.close;
+  vm.autoSuggestInventories = autoSuggestInventories;
 
-  vm.onSelectDepot = onSelectDepot;
-  function onSelectDepot(depot) {
+  vm.onSelectDepot = depot => {
     vm.model.depot_uuid = depot.uuid;
-  }
+  };
 
-  vm.onSelectRequestor = onSelectRequestor;
-  function onSelectRequestor(requestor) {
+  vm.onSelectRequestor = requestor => {
     const DEPOT_REQUESTOR_TYPE = 2;
     vm.model.requestor_type_id = requestor.requestor_type_id;
     vm.model.requestor_uuid = requestor.uuid;
+    // enable auto suggestions only if a depot is selected
     vm.enableAutoSuggest = (requestor.requestor_type_id === DEPOT_REQUESTOR_TYPE && requestor.uuid);
-  }
+  };
 
-  vm.autoSuggestInventories = () => {
+  function autoSuggestInventories() {
     if (!vm.enableAutoSuggest) { return; }
 
     Stock.inventories.read(null, { depot_uuid : vm.model.requestor_uuid })
-      .then(rows => {
-        store.clear();
-        rows
-          .filter(row => row.S_Q > 0)
-          .forEach(row => addSuggestedItem(row));
-      })
+      .then(clearAndFillGrid)
       .catch(Notify.handleError);
-  };
+  }
 
-  vm.cancel = Modal.close;
+  function clearAndFillGrid(rows) {
+    store.clear();
+    rows
+      .filter(row => row.S_Q > 0)
+      .forEach(row => addItem(1, row));
+  }
 
   vm.submit = form => {
     if (form.$invalid) { return null; }
@@ -97,7 +95,6 @@ function ActionRequisitionModalController(
 
     return Stock.stockRequisition.create(vm.model)
       .then(res => {
-        vm.lockSubmission = true;
         Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
       })
@@ -112,65 +109,53 @@ function ActionRequisitionModalController(
   }
 
   function startup() {
-    loadInventories();
+    if ($state.params.depot && $state.params.depot.uuid) {
+      const DEPOT_REQUESTOR_TYPE = 2;
+      const { depot } = $state.params;
 
-    Depots.read(null)
+      vm.model.requestor_type_id = DEPOT_REQUESTOR_TYPE;
+      vm.model.requestor_uuid = depot.uuid;
+      // enable auto suggestions only if a depot is selected
+      vm.enableAutoSuggest = true;
+      autoSuggestInventories();
+    }
+
+    Inventories.read()
+      .then(rows => {
+        vm.selectableInventories = rows;
+        return Depots.read(null);
+      })
       .then(rows => {
         vm.depots = rows;
       })
       .catch(Notify.handleError);
   }
 
-  /**
-   * loadInventories
-   */
-  function loadInventories() {
-    Inventories.read()
-      .then(rows => {
-        vm.selectableInventories = rows;
-      })
-      .catch(Notify.handleError);
-  }
-
-  /**
-   * add requisition item
-   */
-  function addItem(n) {
+  function addItem(n, item) {
     let i = n;
 
     while (i--) {
       const row = { id : store.data.length };
+
+      if (item) {
+        item.label = item.text;
+        row._initialised = true;
+        row.inventory = item;
+        row.inventory_uuid = item.inventory_uuid;
+        row.quantity = item.S_Q;
+      }
+
       store.post(row);
     }
 
-    // update the grid
     vm.gridOptions.data = store.data;
   }
 
-  function addSuggestedItem(item) {
-    const row = { id : store.data.length };
 
-    item.label = item.text;
-    row._initialised = true;
-    row.inventory = item;
-    row.inventory_uuid = item.inventory_uuid;
-    row.quantity = item.S_Q;
-    store.post(row);
-
-    // update the grid
-    vm.gridOptions.data = store.data;
-  }
-
-  /**
-   * remove item
-   */
   function removeItem(row) {
     store.remove(row.id);
   }
 
-  /**
-   * configure requisition item
-   */
   function configureItem(item) {
     item._initialised = true;
     item.inventory_uuid = item.inventory.uuid;
