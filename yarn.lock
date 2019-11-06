@@ -5382,7 +5382,7 @@ is-ssh@^1.3.0:
   dependencies:
     protocols "^1.1.0"
 
-is-stream@^1.0.0, is-stream@^1.0.1, is-stream@^1.1.0:
+is-stream@^1.0.0, is-stream@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/is-stream/-/is-stream-1.1.0.tgz#12d4a3dd4e68e0b79ceb8dbc84173ae80d91ca44"
   integrity sha1-EtSj3U5o4Lec6428hBc66A2RykQ=
@@ -8815,11 +8815,6 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-slang@>=0.2:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/slang/-/slang-0.3.0.tgz#13af75b4f0c018c6a8193d704f65b23be4fbabdc"
-  integrity sha1-E691tPDAGMaoGT1wT2WyO+T7q9w=
-
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
@@ -10587,14 +10582,6 @@ with-callback@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/with-callback/-/with-callback-1.0.2.tgz#a09629b9a920028d721404fb435bdcff5c91bc21"
   integrity sha1-oJYpuakgAo1yFAT7Q1vc/1yRvCE=
-
-wkhtmltopdf@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/wkhtmltopdf/-/wkhtmltopdf-0.3.4.tgz#e2db542a7dc2248032bf136754b5cdd7cf2815f0"
-  integrity sha1-4ttUKn3CJIAyvxNnVLXN188oFfA=
-  dependencies:
-    is-stream "^1.0.1"
-    slang ">=0.2"
 
 word-wrap@^1.0.3:
   version "1.2.3"

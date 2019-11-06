@@ -2,9 +2,9 @@
  * @description
  * This service is responsible for producing PDFs on the server, it accepts
  * handlebar templates and uses the html renderer to produce valid HTML - then
- * streaming this through the wkhtmltopdf application to produce PDFs.
+ * streaming this through the puppeteer application to produce PDFs.
  *
- * @requires wkhtmltopdf
+ * @requires puppeteer
  * @requires lodash
  * @requires stream-to-promise
  * @requires path
@@ -13,15 +13,23 @@
  * @requires debug
  */
 
-const wkhtmltopdf = require('wkhtmltopdf');
 const _ = require('lodash');
-const streamToPromise = require('stream-to-promise');
 const path = require('path');
 const process = require('process');
 const debug = require('debug')('renderer:pdf');
 const { inlineSource } = require('inline-source');
+const pptr = require('puppeteer');
 
-// const fs = require('fs');
+const pptrOptions = {
+  headless : true,
+  args : [
+    '--bwsi',
+    '--disable-default-apps',
+    '--disable-dev-shm-usage',
+    '--disable-setuid-sandbox',
+    '--no-sandbox',
+  ],
+};
 
 const html = require('./html');
 
@@ -34,10 +42,12 @@ exports.headers = headers;
 exports.extension = '.pdf';
 
 // provide uniform default configurations for reports
-exports.defaultReportOptions = {
+const defaultReportOptions = {
   pageSize : 'A4',
   orientation : 'portrait',
 };
+
+exports.defaultReportOptions = defaultReportOptions;
 
 // standard specification for point of sale receipts
 exports.posReceiptOptions = {
@@ -82,7 +92,7 @@ function getNodeModulesPath() {
  *
  * @description
  * Takes in a context, template, and options before merging them and making an
- * HTML file out of the result.  The HTML file is passed to wkhtmltopdf for
+ * HTML file out of the result.  The HTML file is passed to puppeteer for
  * rendering as a PDF.
  *
  * @param {Object} context    Object of keys and values that will be made available to the handlebar template
@@ -92,26 +102,50 @@ function getNodeModulesPath() {
 async function renderPDF(context, template, options = {}) {
   debug('received render request for PDF file. Passing to HTML renderer.');
 
-  // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
+  _.defaults(options, defaultReportOptions);
+  const opts = handleOptions(options);
+
+  // pdf requires absolute path to be passed to templates to be picked up by puppeteer on windows
   context.absolutePath = path.join(process.cwd(), 'client');
   context.nodeModulesPath = getNodeModulesPath();
 
-  const htmlStringResult = await html.render(context, template, options);
+  const htmlStringResult = await html.render(context, template, opts);
   const inlinedHtml = await inlineSource(htmlStringResult, { attribute : false, rootpath : '/', compress : false });
 
   // pick options relevant to rendering PDFs
-  const pdfOptions = _.pick(options, [
-    'pageSize', 'orientation', 'pageWidth', 'pageHeight', 'marginLeft',
-    'marginRight', 'marginTop', 'marginBottom', 'footerRight',
-    'footerFontSize',
+  const pdfOptions = _.pick(opts, [
+    'path', 'format', 'landscape', 'width', 'height', 'margin',
+    'headerTemplate', 'footerTemplate', 'pageRanges',
+    'printBackground', 'displayHeaderFooter',
   ]);
 
-  debug('passing rendered HTML to wkhtmltopdf.');
+  debug('passing rendered HTML to chromium for PDF rendering.');
+  const browser = await pptr.launch(pptrOptions);
 
-  // pass the compiled html string to the wkhtmltopdf process, this is just a wrapper for the CLI utility
-  const pdfStream = wkhtmltopdf(inlinedHtml, pdfOptions);
+  debug('Chromium launched.  Creating a new page.');
+  const page = await browser.newPage();
 
-  // this promise will only be resolved once the stream 'end' event is fired - with this implementation this will
-  // not allow the client to receive chunks of data as they are available
-  return streamToPromise(pdfStream);
+  debug('Page created.  Rendering HTML content on page.');
+  await page.setContent(inlinedHtml);
+
+  debug('Rendering PDF with chromium');
+  const pdf = await page.pdf(pdfOptions);
+
+  debug('PDF created with chromium.  Shutting the browser down.');
+  await browser.close();
+
+  return pdf;
+}
+
+
+/**
+ * @function handleOptions
+ *
+ * @description
+ * Figures out what orientation to render the document based on the
+ * options sent from the client.
+ */
+function handleOptions(options) {
+  options.landscape = !!((options.orientation && options.orientation === 'landscape'));
+  return options;
 }

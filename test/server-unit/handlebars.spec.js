@@ -28,13 +28,13 @@ function HanldebarsRenderUnitTest() {
 
     // check for defined `developer` return the developer's message
     result = await hbs.render(template, data);
-    expect(result).to.equal(data.developer_message);
+    expect(result).to.equal(`<html>${data.developer_message}</html>`);
 
 
     // check for undefined `developer` return the tourist's message
     delete data.developer;
     result = await hbs.render(template, data);
-    expect(result).to.equal(data.message);
+    expect(result).to.equal(`<html>${data.message}</html>`);
   });
 
   it('#helpers.date() render a custom date format YYYY-MM-DD', async () => {
