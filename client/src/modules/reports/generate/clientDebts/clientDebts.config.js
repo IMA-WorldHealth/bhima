@@ -12,7 +12,9 @@ function ClientDebtsController($sce, Notify, SavedReports, AppCache, reportData,
   const reportUrl = 'reports/finance/clientDebts';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    shouldShowDebtsDetails : 0,
+  };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
