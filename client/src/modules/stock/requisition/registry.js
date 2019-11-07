@@ -23,17 +23,17 @@ function StockRequisitionController(
   // grid columns
   const columns = [
     {
-      field : 'requestor_uuid',
-      displayName : 'REQUISITION.RECEIVER',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/requisition/templates/requestor.cell.html',
-    },
-
-    {
       field : 'reference',
       displayName : 'FORM.LABELS.REFERENCE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/requisition/templates/reference.cell.html',
+    },
+
+    {
+      field : 'requestor_uuid',
+      displayName : 'REQUISITION.RECEIVER',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/requestor.cell.html',
     },
 
     {

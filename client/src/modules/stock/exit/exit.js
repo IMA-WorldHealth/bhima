@@ -203,6 +203,8 @@ function StockExitController(
   }
 
   function setupStock() {
+    vm.selectedLots = [];
+    vm.inventoryNotAvailable = [];
     vm.stockForm.setup();
     vm.stockForm.store.clear();
   }
@@ -216,9 +218,7 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
-
     checkValidity();
-
     refreshSelectedLotsList();
   }
 
@@ -233,9 +233,7 @@ function StockExitController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
-        item.lots = lots.filter(lot => {
-          return !vm.selectedLots.includes(lot.uuid);
-        });
+        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
       })
       .catch(Notify.handleError);
   }
@@ -384,8 +382,6 @@ function StockExitController(
   }
 
   function loadRequisitions(entity) {
-    vm.inventoryNotAvailable = [];
-
     if (entity.requisition && entity.requisition.items && entity.requisition.items.length) {
       setupStock();
 

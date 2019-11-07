@@ -6,7 +6,7 @@
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
-      <span>{{ row.entity.reference }}</span>
+      <div class="text-center">{{ row.entity.reference }}</div>
     </li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
