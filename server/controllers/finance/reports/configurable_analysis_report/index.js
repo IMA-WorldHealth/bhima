@@ -101,21 +101,21 @@ function report(req, res, next) {
       });
 
       const sqlType = `
-        SELECT id, label, balance_type, is_balance_sheet, rank,
+        SELECT id, label, is_balance_sheet, rank,
         NOT(is_balance_sheet) is_income_expense
         FROM analysis_tool_type
         ORDER BY rank ASC
       `;
 
       const sqlConfig = `
-        SELECT id, is_creditor, account_reference_id, label,
+        SELECT id, account_reference_id, label,
         analysis_tool_type_id
         FROM configuration_analysis_tools
         ORDER BY label ASC
       `;
 
       const sqlReferences = `
-        SELECT at.id, at.is_creditor, at.account_reference_id,
+        SELECT at.id, at.account_reference_id,
         a.number, a.label, ari.is_exception,
         at.analysis_tool_type_id
         FROM configuration_analysis_tools AS at
@@ -291,7 +291,7 @@ function report(req, res, next) {
     .spread((balance, openingBalance) => {
 
       data.config.forEach(config => {
-        config.displayLabel = config.is_creditor ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.BALANCE';
+        config.displayLabel = 'FORM.LABELS.BALANCE';
 
         config.balance = [];
         config.sumDebit = 0;
@@ -330,10 +330,8 @@ function report(req, res, next) {
           });
 
           if (checkIncluded && checkValidy) {
-            item.balance = config.is_creditor ? (item.balance * (-1)) : item.balance;
-
             if (item.openingBalance) {
-              item.openingBalanceDebCred = config.is_creditor ? item.openingBalance * (-1) : item.openingBalance;
+              item.openingBalanceDebCred = item.openingBalance;
               item.finalBalanceDebCred = item.openingBalanceDebCred + item.balance;
 
               config.sumOpenBalance += item.openingBalanceDebCred;

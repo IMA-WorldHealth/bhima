@@ -38,39 +38,6 @@
       name="analysis_tool_type_id"
       on-select-callback="ConfigurationAnalysisToolsModalCtrl.onSelectAnalysisToolType(type)">
     </bh-analysis-tool-type-select>
-
-    <!-- is_creditor -->
-    <div class="form-group" ng-class="{'has-error' : ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.is_cost.$invalid }">
-      <label translate>FORM.INFO.NORMAL_BALANCES</label>
-      <div class="radio">
-        <label class="radio-inline">
-          <input
-            type="radio"
-            name="is_creditor"
-            ng-value="1"
-            ng-model="ConfigurationAnalysisToolsModalCtrl.reference.is_creditor"
-            id="creditor"
-            required
-            >
-          <span translate>FORM.LABELS.CREDIT_BALANCE</span>
-        </label>
-
-        <label class="radio-inline">
-          <input
-            type="radio"
-            name="is_creditor"
-            ng-value="0"
-            ng-model="ConfigurationAnalysisToolsModalCtrl.reference.is_creditor"
-            id="debtor"
-            required
-            >
-          <span translate>FORM.LABELS.DEBIT_BALANCE</span>
-        </label>
-        <div class="help-block" ng-messages="ConfigurationAnalysisToolsForm.is_cost.$error" ng-show="ConfigurationAnalysisToolsForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="modal-footer">

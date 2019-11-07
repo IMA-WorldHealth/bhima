@@ -6,7 +6,6 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
 
   const newConfiguration = {
     label : 'Subvention d\'exploitation',
-    is_creditor : 0,
     account_reference_id : 12,
     analysis_tool_type_id : 3,
   };
@@ -14,7 +13,6 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
   const updateConfiguration = {
     id : 5,
     label : 'Subvention Updatede d\'exploitation',
-    is_creditor : 1,
     account_reference_id : 11,
     analysis_tool_type_id : 2,
   };
@@ -34,7 +32,7 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
       .then((res) => {
         helpers.api.listed(res, numConfiguration);
         expect(res.body[0]).to.have.all.keys(
-          'id', 'label', 'abbr', 'is_creditor', 'account_reference_id',
+          'id', 'label', 'abbr', 'account_reference_id',
           'analysis_tool_type_id', 'typeLabel'
         );
       })
@@ -47,7 +45,7 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
         expect(res.body).to.have.all.keys(
-          'id', 'label', 'is_creditor', 'account_reference_id', 'analysis_tool_type_id'
+          'id', 'label', 'account_reference_id', 'analysis_tool_type_id'
         );
       })
       .catch(helpers.handler);

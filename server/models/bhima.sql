@@ -376,7 +376,6 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
   ('CRON.YEARLY', '0 1 31 12 *');
-<<<<<<< e10620f46948950c82b68c2fb75575abbc6910f8
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
@@ -390,8 +389,6 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (8, 'FORM.LABELS.IMAGE', 'image', 0),
   (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
-=======
->>>>>>> refactor(Analysis Tools)
 
 <<<<<<< 396a031235462fee99369ad1f9fabac64d7da004
 -- application process status

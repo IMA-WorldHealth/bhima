@@ -39,12 +39,6 @@ function ConfigurationAnalysisToolsController($state, ConfigurationAnalysisTools
         headerCellFilter : 'translate',
       },
       {
-        field : 'labelCreditor',
-        displayName : 'FORM.LABELS.BALANCE',
-        enableFiltering : true,
-        headerCellFilter : 'translate',
-      },
-      {
         field : 'typeLabel',
         displayName : 'FORM.LABELS.TYPE',
         enableFiltering : true,
@@ -102,12 +96,6 @@ function ConfigurationAnalysisToolsController($state, ConfigurationAnalysisTools
     ConfigurationAnalysisTools.read()
       .then((configurationAnalysisTools) => {
         configurationAnalysisTools.forEach((item) => {
-          if (item.is_creditor) {
-            item.labelCreditor = $translate.instant('FORM.LABELS.CREDIT_BALANCE');
-          } else {
-            item.labelCreditor = $translate.instant('FORM.LABELS.DEBIT_BALANCE');
-          }
-
           if (item.typeLabel) {
             item.typeLabel = $translate.instant(item.typeLabel);
           }

@@ -24,7 +24,7 @@
                   <td width="61%" colspan="5" class="text-right text-uppercase text-bold"></td>
                   <td class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
                   <td class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
-                  <td class="text-center" width="13%"> {{translate balance_type }} </td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.BALANCE'}} </td>
                 </tr>
 
                 <tr style="font-size: 13.5px;">
@@ -36,14 +36,9 @@
         
                 {{#each report}}
                   {{#if ../../options.display_details_types}}
-                    <tr class="text-uppercase text-bold">
-                      <td width="2%" rowspan="2" width="2%"></td>
-                      <td width="59%" rowspan="2" colspan="4" class="text-uppercase text-bold"> {{translate label}} </td>
-                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
-                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
-                      <td class="text-center" width="13%"> {{translate displayLabel}} </td>  
-                    </tr>
                     <tr class="text-bold">
+                      <td width="2%" width="2%"></td>
+                      <td width="59%" colspan="4" class="text-uppercase text-bold"> {{translate label}} </td>
                       <td class="text-right"> {{debcred sumDebit ../../currencyId }} </td>
                       <td class="text-right"> {{debcred sumCredit ../../currencyId }} </td>
                       <td class="text-right"> {{debcred sumBalance ../../currencyId }} </td>
@@ -70,7 +65,7 @@
                   <td class="text-center" width="13%"> {{translate 'FORM.LABELS.OPENING_BALANCE'}} </td>
                   <td class="text-center" width="13%"><em>{{translate 'FORM.LABELS.DEBIT'}}</em></td>
                   <td class="text-center" width="13%"><em>{{translate 'FORM.LABELS.CREDIT'}}</em></td>
-                  <td class="text-center" width="13%"><em>{{translate balance_type }}</em></td>
+                  <td class="text-center" width="13%"><em>{{translate 'FORM.LABELS.BALANCE'}}</em></td>
                   <td class="text-center" width="13%"> {{translate 'FORM.LABELS.FINAL_BALANCE'}} </td>
                 </tr>
 
@@ -85,16 +80,9 @@
         
                 {{#each report}}
                   {{#if ../../options.display_details_types}}
-                    <tr class="text-uppercase text-bold">
-                      <td width="2%" rowspan="2" width="2%"></td>
-                      <td width="33%" rowspan="2" colspan="2" class="text-uppercase text-bold"> {{translate label}} </td>
-                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.OPENING_BALANCE'}} </td>
-                      <td style="background:#ededed" class="text-center" width="13%"><em>{{translate 'FORM.LABELS.DEBIT'}}</em></td>
-                      <td style="background:#ededed" class="text-center" width="13%"><em>{{translate 'FORM.LABELS.CREDIT'}}</em></td>
-                      <td style="background:#ededed" class="text-center" width="13%"><em>{{translate displayLabel}}</em></td>
-                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.FINAL_BALANCE'}} </td>
-                    </tr>
                     <tr class="text-bold">
+                      <td width="2%" width="2%"></td>
+                      <td width="33%" colspan="2" class="text-uppercase text-bold"> {{translate label}} </td>
                       <td class="text-right"> {{debcred sumOpenBalance ../../currencyId }} </td>
                       <td style="background:#fefefe" class="text-right"><em>{{debcred sumDebit ../../currencyId }}</em></td>
                       <td style="background:#fefefe" class="text-right"><em>{{debcred sumCredit ../../currencyId }}</em></td>

@@ -10,7 +10,7 @@ const NotFound = require('../../lib/errors/NotFound');
 // GET /configuration_analysis_tools
 function configurationAnalysisTools(id) {
   const sql = `
-    SELECT id, label, is_creditor, account_reference_id, analysis_tool_type_id
+    SELECT id, label, account_reference_id, analysis_tool_type_id
     FROM configuration_analysis_tools
     WHERE configuration_analysis_tools.id = ?`;
 
@@ -20,7 +20,7 @@ function configurationAnalysisTools(id) {
 // List
 function list(req, res, next) {
   const sql = `
-    SELECT at.id, at.label, at.is_creditor, at.account_reference_id,
+    SELECT at.id, at.label, at.account_reference_id,
     ar.abbr, at.analysis_tool_type_id, tp.label AS typeLabel
     FROM configuration_analysis_tools AS at
     JOIN account_reference AS ar ON ar.id = at.account_reference_id

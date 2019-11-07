@@ -25,7 +25,6 @@ class ConfigurationAnalysisToolsPage {
     await FU.input('ConfigurationAnalysisToolsModalCtrl.reference.label', configuration.label, this.modal);
     await components.accountReferenceSelect.set(configuration.account_reference_id, 'account_reference_id');
     await components.analysisToolTypeSelect.set(configuration.analysis_tool_type_id, 'analysis_tool_type_id');
-    await element(by.id('creditor')).click();
     await FU.modal.submit();
     await notification.hasSuccess();
   }
@@ -45,7 +44,6 @@ class ConfigurationAnalysisToolsPage {
     await FU.input('ConfigurationAnalysisToolsModalCtrl.reference.label', configuration.label, this.modal);
     await components.accountReferenceSelect.set(configuration.account_reference_id, 'account_reference_id');
     await components.analysisToolTypeSelect.set(configuration.analysis_tool_type_id, 'analysis_tool_type_id');
-    await element(by.id('debtor')).click();
     await FU.modal.submit();
     await notification.hasSuccess();
   }
