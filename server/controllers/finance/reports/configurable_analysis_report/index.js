@@ -291,7 +291,7 @@ function report(req, res, next) {
     .spread((balance, openingBalance) => {
 
       data.config.forEach(config => {
-        config.displayLabel = config.is_creditor ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
+        config.displayLabel = config.is_creditor ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.BALANCE';
 
         config.balance = [];
         config.sumDebit = 0;
@@ -338,6 +338,9 @@ function report(req, res, next) {
 
               config.sumOpenBalance += item.openingBalanceDebCred;
               config.sumFinalBalance += item.finalBalanceDebCred;
+            } else {
+              item.finalBalanceDebCred = item.balance;
+              config.sumFinalBalance += item.balance;
             }
 
             config.sumDebit += item.debit;

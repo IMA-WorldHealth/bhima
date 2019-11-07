@@ -1042,7 +1042,6 @@ exports.configure = function configure(app) {
   // API for Configuration Analysis Tools routes crud
   app.get('/configuration_analysis_tools', configurationAnalysisTools.list);
   app.get('/analysis_tools_type', configurationAnalysisTools.toolsType);
-  app.get('/analysis_tools_type', configurationAnalysisTools.list);
   app.get('/configuration_analysis_tools/:id', configurationAnalysisTools.detail);
   app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
   app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);

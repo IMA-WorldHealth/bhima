@@ -51,13 +51,6 @@ function ConfigurationAnalysisToolsController($state, ConfigurationAnalysisTools
         headerCellFilter : 'translate',
       },
       {
-        field : 'restrict_title_account',
-        displayName : 'FORM.LABELS.RESTRICT_TITLE_ACCOUNTS',
-        enableFiltering : true,
-        headerCellFilter : 'translate',
-        cellTemplate : '/modules/configuration_analysis_tools/templates/restrictTitleAccount.tmpl.html',
-      },
-      {
         field : 'action',
         displayName : '',
         enableFiltering : false,
