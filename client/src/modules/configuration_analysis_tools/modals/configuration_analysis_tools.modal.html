@@ -1,0 +1,109 @@
+<form name="ConfigurationAnalysisToolsForm" bh-submit="ConfigurationAnalysisToolsModalCtrl.submit(ConfigurationAnalysisToolsForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title">
+        <span translate>TREE.CONFIGURATION_ANALYSIS_TOOLS</span>
+        <label ng-if="ConfigurationAnalysisToolsModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!ConfigurationAnalysisToolsModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; height:350px;">
+    <!-- label -->
+    <div class="form-group" ng-class="{ 'has-error' : ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <div>
+        <input name="label" ng-model="ConfigurationAnalysisToolsModalCtrl.reference.label" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <div class="help-block" ng-messages="ConfigurationAnalysisToolsForm.label.$error" ng-show="ConfigurationAnalysisToolsForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- account_reference_id -->
+    <bh-account-reference-select
+      id="account_reference_id"
+      account-reference-id="ConfigurationAnalysisToolsModalCtrl.reference.account_reference_id"
+      reference-type="5"
+      label="FORM.SELECT.ACCOUNT_REFERENCE"
+      on-select-callback="ConfigurationAnalysisToolsModalCtrl.onSelectAccountReference(accountReference)"
+      required="true">
+    </bh-account-reference-select>
+    
+    <bh-analysis-tool-type-select
+      type-id="ConfigurationAnalysisToolsModalCtrl.reference.analysis_tool_type_id"
+      id="analysis_tool_type_id"
+      name="analysis_tool_type_id"
+      on-select-callback="ConfigurationAnalysisToolsModalCtrl.onSelectAnalysisToolType(type)">
+    </bh-analysis-tool-type-select>
+
+    <!-- is_creditor -->
+    <div class="form-group" ng-class="{'has-error' : ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.is_cost.$invalid }">
+      <label translate>FORM.INFO.NORMAL_BALANCES</label>
+      <div class="radio">
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_creditor"
+            ng-value="1"
+            ng-model="ConfigurationAnalysisToolsModalCtrl.reference.is_creditor"
+            id="creditor"
+            required
+            >
+          <span translate>FORM.LABELS.CREDIT_BALANCE</span>
+        </label>
+
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_creditor"
+            ng-value="0"
+            ng-model="ConfigurationAnalysisToolsModalCtrl.reference.is_creditor"
+            id="debitor"
+            required
+            >
+          <span translate>FORM.LABELS.DEBIT_BALANCE</span>
+        </label>
+        <div class="help-block" ng-messages="ConfigurationAnalysisToolsForm.is_cost.$error" ng-show="ConfigurationAnalysisToolsForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <!-- restrict_title_account -->
+    <div class="form-group">
+      <hr>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="restrict_title_account"
+            ng-true-value="1"
+            ng-false-value="0"
+            id="restrict_title_account"
+            ng-model="ConfigurationAnalysisToolsModalCtrl.reference.restrict_title_account">
+          <span translate>FORM.LABELS.RESTRICT_TITLE_ACCOUNTS</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <p id="break-even-reference-same" ng-if="ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.$pristine && !ConfigurationAnalysisToolsModalCtrl.isCreating" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.RECORD_SAME</span>
+    </p>
+
+    <p ng-if="ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.GENERIC</span>
+    </p>
+
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="ConfigurationAnalysisToolsModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ConfigurationAnalysisToolsForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

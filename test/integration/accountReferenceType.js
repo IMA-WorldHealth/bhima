@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/account_reference_type) Account Reference Type', () => {
-  const numAccountReferenceType = 4;
+  const numAccountReferenceType = 5;
 
   const newAccountReferenceType = {
     label : 'Test Account Reference Type',

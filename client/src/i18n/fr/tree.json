@@ -25,6 +25,8 @@
     "CASH_WINDOW":"Paiements",
     "CHOICES_LIST_MANAGEMENT" : "Gestion des listes de choix",
     "COMPLEX_JOURNAL_VOUCHER":"Ajout de transactions",
+    "CONFIGURABLE_ANALYSIS_REPORT" : "Rapport d'analyse configurable",
+    "CONFIGURATION_ANALYSIS_TOOLS" : "Configuration d'outils d'analyse",
     "COST_CENTER_MGMT":"Centres de coûts",
     "CREDIT_NOTE":"Note de Crédit",
     "CREDITOR_GROUP":"Gestion des Groupes Créditeurs",

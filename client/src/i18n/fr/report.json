@@ -57,6 +57,9 @@
     "CASH_INCOME" : "Recettes",
     "CHART_OF_ACCOUNTS" : "Plan Comptable",
     "CLOSING_BALANCE" : "Balance à la cloture",
+    "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "TITLE": "Rapport d'analyse configurable"
+    },
     "CONFIGURATION" : "Configuration rapport",
     "DELETE" : "Supprimer un rapport",
     "DOWNLOAD" : "Télécharger",
