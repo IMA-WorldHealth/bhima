@@ -182,7 +182,7 @@ function AccountEditController(
     if (accountForm.$invalid) {
       return;
     }
-    if (!accountForm.$dirty) {
+    if (accountForm.$pristine) {
       return;
     }
 

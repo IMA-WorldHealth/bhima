@@ -25,7 +25,7 @@ function UsersPasswordModalController($state, Users, Notify) {
   // submits the password form
   function submit(passwordForm) {
     if (passwordForm.$invalid) { return; }
-    if (!passwordForm.$dirty || !validPassword()) { return; }
+    if (passwordForm.$pristine || !validPassword()) { return; }
 
     // try to update the user's password
     return Users.updatePassword($state.params.id, { password : vm.user.password })

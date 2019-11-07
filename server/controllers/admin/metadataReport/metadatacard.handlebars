@@ -1,0 +1,79 @@
+{{> head title="TREE.DISPLAY_METADATA"}}
+<body>
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong> {{ survey.label }} </strong>
+      </h3>
+      {{#if patient.display_name }}
+        <hr>
+        <h4><strong>{{translate 'FORM.LABELS.NAME'}} : {{ patient.reference }} | {{ patient.display_name }}</strong></h4>
+        <h4><strong>{{translate 'FORM.LABELS.SEX'}} : {{ patient.sex }} </strong></h4>
+        <h4><strong>{{translate 'FORM.LABELS.DOB'}} : {{date patient.dob }} </strong></h4>      
+        <hr>
+      {{/if}}
+
+      <table class="table table-striped table-condensed table-report table-bordered">
+        {{#each surveyFormElements}}
+          {{#equal typeForm 'note'}}
+            <tr class="text-uppercase text-center" style="background-color:#efefef;">
+              <td colspan="2">
+                <h4>
+                  <strong>
+                    {{ label }}
+                  </strong>
+                </h4>
+              </td>
+            </tr>
+          {{/equal}}
+          {{#inequal typeForm 'note'}}
+            <tr class="text-uppercase">
+              <td colspan="2">
+                <strong>
+                  {{ label }}
+                </strong>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 10%"> </td>
+              <td style="width: 90%">
+                {{#equal typeForm 'date'}}
+                  <em> {{date value "DD/MM/YYYY"}} </em>
+                {{/equal}}
+                {{#inequal typeForm 'date'}}
+                  {{#equal typeForm 'image'}}
+                    {{#fileExist ../absolutePath value}}
+                      <span class="text-center">
+                        <em> <img src="{{../absolutePath}}{{value}}" width="100%"></em>
+                      </span>
+                    {{/fileExist}}                  
+                  {{/equal}}
+                  {{#inequal typeForm 'image'}}
+                    <em> {{value}} </em>  
+                  {{/inequal}}
+                {{/inequal}}
+              </td>
+            </tr>
+          {{/inequal}}
+        {{/each}}
+
+        <tr class="text-uppercase">
+          <td colspan="2">
+            <strong>
+              {{translate 'TABLE.COLUMNS.REGISTERED_BY'}}
+            </strong>
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 10%"></td>
+          <td style="width: 90%"><em> {{ survey.userName }} </em></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>

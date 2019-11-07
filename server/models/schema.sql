@@ -2360,4 +2360,117 @@ CREATE TABLE `staffing_indice_parameters` (
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `data_collector_management`;
+CREATE TABLE `data_collector_management` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `description` TEXT, 
+  `version_number` INT(11) UNSIGNED NOT NULL,
+  `color` VARCHAR(8) NULL, 
+  `is_related_patient` TINYINT(1) NOT NULL DEFAULT 0,
+  `include_patient_data` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `choices_list_management`;
+CREATE TABLE `choices_list_management` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `name` VARCHAR(100) NOT NULL, 
+  `label` VARCHAR(100) NOT NULL, 
+  `fixed` tinyint(1) DEFAULT 0, 
+  `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
+  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0, 
+  `is_group` tinyint(1) NOT NULL DEFAULT 0,
+  `is_title` tinyint(1) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_form`;
+CREATE TABLE `survey_form` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `filter_choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `other_choice` tinyint(1) DEFAULT 0,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `hint` TEXT,
+  `required` tinyint(1) DEFAULT 0,
+  `constraint` VARCHAR(100) NULL,
+  `default` VARCHAR(100) NULL,
+  `calculation` VARCHAR(100) NULL,
+  `rank` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `survey_form_1` (`data_collector_management_id`, `name`, `label`),
+  KEY `data_collector_management_id` (`data_collector_management_id`),
+  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_form_type`;
+CREATE TABLE `survey_form_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `is_list` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data`;
+CREATE TABLE `survey_data` (
+  `uuid` BINARY(16),
+  `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`uuid`),
+  KEY `data_collector_management_id` (`data_collector_management_id`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data_item`;
+CREATE TABLE `survey_data_item` (
+  `uuid` BINARY(16),
+  `survey_form_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `survey_form_label` VARCHAR(100),
+  `survey_data_uuid` BINARY(16) NOT NULL,
+  `value` text,
+  PRIMARY KEY (`uuid`),
+  KEY `survey_form_id` (`survey_form_id`),
+  KEY `survey_data_uuid` (`survey_data_uuid`),
+  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data_log`;
+CREATE TABLE `survey_data_log` (
+  `uuid` BINARY(16),
+  `log_uuid` BINARY(16),
+  `survey_form_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `survey_form_label` VARCHAR(100),
+  `survey_data_uuid` BINARY(16) NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `status` VARCHAR(20),
+  `value` text,
+  PRIMARY KEY (`uuid`),
+  KEY `survey_form_id` (`survey_form_id`),
+  KEY `survey_data_uuid` (`survey_data_uuid`),
+  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `medical_sheet`;
+CREATE TABLE `medical_sheet` (
+  `survey_data_uuid` BINARY(16),
+  `patient_uuid` BINARY(16),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`),
+  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
 SET foreign_key_checks = 1;

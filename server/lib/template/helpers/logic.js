@@ -1,4 +1,6 @@
+const fs = require('mz/fs');
 const util = require('../../util');
+
 // test equality
 function equal(a, b, options) {
   if (a === b) {
@@ -28,7 +30,28 @@ function ignoreNan(val, symbol) {
   return isNumber ? `${util.roundDecimal(val, 2)} ${symbol}` : '';
 }
 
+// test inequality
+function inequal(a, b, options) {
+  if (a !== b) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+}
+
+// test File Exit
+function fileExist(a, b, options) {
+  try {
+    fs.statSync(`${a}${b}`);
+    return options.fn(this);
+
+  } catch (err) {
+    return options.inverse(this);
+  }
+}
+
 exports.equal = equal;
 exports.gt = gt;
 exports.lt = lt;
 exports.ignoreNan = ignoreNan;
+exports.inequal = inequal;
+exports.fileExist = fileExist;

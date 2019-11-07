@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents" data-title-row="{{ row.entity.label }}">
+  <span ng-if="row.entity.is_title" style="text-transform: uppercase">
+    {{ row.entity.label}}
+  </span>
+  <span ng-if="!row.entity.is_title" style="font-weight:normal; text-align: right">
+    <i> {{ row.entity.name}} </i>
+  </span>
+</div>

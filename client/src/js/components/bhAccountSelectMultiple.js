@@ -15,13 +15,13 @@ angular.module('bhima.components')
   });
 
 AccountSelectController.$inject = [
-  'AccountService', 'bhConstants',
+  'AccountService', 'FormatTreeDataService', 'bhConstants',
 ];
 
 /**
  * Account selection component
  */
-function AccountSelectController(Accounts, bhConstants) {
+function AccountSelectController(Accounts, FormatTreeData, bhConstants) {
   const $ctrl = this;
 
   // fired at the beginning of the account select
@@ -67,7 +67,7 @@ function AccountSelectController(Accounts, bhConstants) {
     Accounts.read(null, params)
       .then(elements => {
         // bind the accounts to the controller
-        let accounts = Accounts.order(elements);
+        let accounts = FormatTreeData.order(elements);
 
         if ($ctrl.excludeTitleAccounts) {
           accounts = Accounts.filterTitleAccounts(accounts);

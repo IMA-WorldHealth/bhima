@@ -137,7 +137,15 @@ INSERT INTO unit VALUES
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
-  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'), 
+  (254, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (255, 'Fill Form', 'TREE.FILL_FORM', '', 254, '/modules/fill_form', '/fill_form'),
+  (256, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 254, '/modules/display_metadata', '/display_metadata'),
+  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 254, '/modules/data_kit', '/data_kit'),
+  (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
+  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
+  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
+  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -195,7 +203,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
   ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
-  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE');
+  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
+  ('dataKit', 'TREE.DATA_KIT_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -358,8 +367,22 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (3, 'fianance', 'DASHBOARD.FINANCE');
 
 -- cron
-INSERT INTO `cron` (`label`, `value`) VALUES 
+INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *');
+  ('CRON.YEARLY', '0 1 31 12 *'),
+  ('CRON.EACH_MINUTE', '* * * * *');
+
+-- Survey Form Type
+INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
+  (1, 'FORM.LABELS.NUMBER', 'number', 0),
+  (2, 'FORM.LABELS.TEXT', 'text', 0),
+  (3, 'FORM.LABELS.SELECT_ONE', 'select_one', 1),
+  (4, 'FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
+  (5, 'FORM.LABELS.NOTE', 'note', 0),
+  (6, 'FORM.LABELS.DATE', 'date', 0),
+  (7, 'FORM.LABELS.TIME', 'time', 0),
+  (8, 'FORM.LABELS.IMAGE', 'image', 0),
+  (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
+  (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);

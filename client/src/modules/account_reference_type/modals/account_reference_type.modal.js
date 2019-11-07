@@ -11,7 +11,7 @@ AccountReferenceTypeModalController.$inject = [
 
 function AccountReferenceTypeModalController($state, AccountReferenceType, Notify, AppCache) {
   const vm = this;
-  const cache = AppCache('AccountReferenceModal');
+  const cache = AppCache('AccountReferenceTypeModal');
 
   vm.types = {};
   vm.stateParams = {};
@@ -48,7 +48,7 @@ function AccountReferenceTypeModalController($state, AccountReferenceType, Notif
   function submit(accountReferenceTypeForm) {
     vm.hasNoChange = accountReferenceTypeForm.$submitted && accountReferenceTypeForm.$pristine && !vm.isCreating;
 
-    if (accountReferenceTypeForm.$invalid || !accountReferenceTypeForm.$dirty) { return null; }
+    if (accountReferenceTypeForm.$invalid || accountReferenceTypeForm.$pristine) { return null; }
 
     const promise = (vm.isCreating)
       ? AccountReferenceType.create(vm.types)
