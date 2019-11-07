@@ -3,7 +3,15 @@
     <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="65" height="65" alt="">
   </div>
 {{/if}}
-<div class="col-xs-6">
+
+<div
+   {{#if metadata.enterprise.logo}}
+     class="col-xs-6"
+   {{else}}
+    class="col-xs-7"
+  {{/if}}
+  >
+
   <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
   <strong>{{metadata.project.name}} ({{metadata.project.abbr}})</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{metadata.enterprise.location}} <br>

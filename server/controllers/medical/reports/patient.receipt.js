@@ -1,4 +1,3 @@
-
 /**
  * @module reports/patient.receipt
  *
@@ -27,8 +26,9 @@ const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebar
 
 // default options for the patient card
 const defaults = {
-  pageSize : 'A6',
+  format : 'A6',
   orientation : 'landscape',
+  landscape : true,
 };
 
 exports.build = build;
