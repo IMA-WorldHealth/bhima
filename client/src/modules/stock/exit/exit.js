@@ -255,7 +255,7 @@ function StockExitController(
     Stock.inventories.read(null, { depot_uuid : depot.uuid })
       .then(inventories => {
         vm.loading = false;
-        vm.selectableInventories = angular.copy(inventories);
+        vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
         // map of inventories by inventory uuid
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
@@ -270,7 +270,6 @@ function StockExitController(
     if (!row.lot || !row.lot.uuid) { return; }
 
     checkValidity();
-
     refreshSelectedLotsList();
   }
 

@@ -69,21 +69,6 @@ function ActionRequisitionModalController(
     vm.enableAutoSuggest = (requestor.requestor_type_id === DEPOT_REQUESTOR_TYPE && requestor.uuid);
   };
 
-  function autoSuggestInventories() {
-    if (!vm.enableAutoSuggest) { return; }
-
-    Stock.inventories.read(null, { depot_uuid : vm.model.requestor_uuid })
-      .then(clearAndFillGrid)
-      .catch(Notify.handleError);
-  }
-
-  function clearAndFillGrid(rows) {
-    store.clear();
-    rows
-      .filter(row => row.S_Q > 0)
-      .forEach(row => addItem(1, row));
-  }
-
   vm.submit = form => {
     if (form.$invalid) { return null; }
 
@@ -100,6 +85,21 @@ function ActionRequisitionModalController(
       })
       .catch(Notify.handleError);
   };
+
+  function autoSuggestInventories() {
+    if (!vm.enableAutoSuggest) { return; }
+
+    Stock.inventories.read(null, { depot_uuid : vm.model.requestor_uuid })
+      .then(clearAndFillGrid)
+      .catch(Notify.handleError);
+  }
+
+  function clearAndFillGrid(rows) {
+    store.clear();
+    rows
+      .filter(row => row.S_Q > 0)
+      .forEach(row => addItem(1, row));
+  }
 
   function getItem(row) {
     return {

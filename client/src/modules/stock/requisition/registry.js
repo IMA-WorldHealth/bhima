@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 StockRequisitionController.$inject = [
   'StockService', 'NotifyService', 'ModalService', 'ReceiptModal',
   'uiGridConstants', 'StockModalService', 'LanguageService',
-  'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
+  'GridStateService', 'GridColumnService', '$state',
 ];
 
 /**
@@ -14,7 +14,7 @@ StockRequisitionController.$inject = [
 function StockRequisitionController(
   Stock, Notify, Modal, Receipts,
   uiGridConstants, StockModal, Languages,
-  GridState, Columns, $state, $httpParamSerializer,
+  GridState, Columns, $state,
 ) {
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
@@ -102,25 +102,147 @@ function StockRequisitionController(
   const state = new GridState(vm.gridOptions, cacheKey);
 
   // expose to the view model
-  vm.getQueryString = Stock.getQueryString;
-  vm.clearGridState = clearGridState;
-  vm.search = search;
-  vm.openColumnConfigModal = openColumnConfigModal;
   vm.loading = false;
+  vm.getQueryString = Stock.getQueryString;
   vm.saveGridState = state.saveGridState;
-  vm.removeRequisition = removeRequisition;
-  vm.showReceipt = showReceipt;
 
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
-  }
-
-  // count data rows
+  /**
+   * @method countGridRows
+   *
+   * @description
+   * count the total number of rows in the requisition registry grid
+   */
   vm.countGridRows = () => {
     return vm.gridOptions.data.length;
   };
 
-  // initialize module
+  /**
+   * @method removeRequisition
+   *
+   * @description
+   * remove a stock requisition by its uuid by executing a deletion query in the database
+   *
+   * @param {string} uuid
+   */
+  vm.removeRequisition = uuid => {
+    Modal.confirm('REQUISITION.CONFIRM_REMOVE_MSG')
+      .then(ans => {
+        if (!ans) { return; }
+
+        Stock.stockRequisition.delete(uuid)
+          .then(() => {
+            load(stockRequisitionFilters.formatHTTP(true));
+            Notify.success('REQUISITION.REMOVE_SUCCESS');
+          })
+          .catch(errorHandler);
+      });
+  };
+
+  /**
+   * @method showReceipt
+   *
+   * @description
+   * display the requisition receipt
+   *
+   * @param {string} uuid
+   */
+  vm.showReceipt = uuid => {
+    return Receipts.stockRequisitionReceipt(uuid);
+  };
+
+  /**
+   * @method onRemoveFilter
+   *
+   * @description
+   * remove a filter with from the filter object, save the filters and reload
+   *
+   * @param {string} key
+   */
+  vm.onRemoveFilter = function onRemoveFilter(key) {
+    stockRequisitionFilters.remove(key);
+    stockRequisitionFilters.formatCache();
+    vm.latestViewFilters = stockRequisitionFilters.formatView();
+    return load(stockRequisitionFilters.formatHTTP(true));
+  };
+
+  /**
+   * @method onChangeDepot
+   *
+   * @description
+   * action to perform when a depot is changed
+   *
+   * @param {object} depot
+   */
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+  };
+
+  /**
+   * @method search
+   *
+   * @description
+   * display the search modal
+   */
+  vm.search = () => {
+    const filtersSnapshot = stockRequisitionFilters.formatHTTP();
+
+    StockModal.openSearchStockRequisition(filtersSnapshot)
+      .then((changes) => {
+        stockRequisitionFilters.replaceFilters(changes);
+        stockRequisitionFilters.formatCache();
+        vm.latestViewFilters = stockRequisitionFilters.formatView();
+        return load(stockRequisitionFilters.formatHTTP(true));
+      });
+  };
+
+  /**
+   * @method openColumnConfigModal
+   *
+   * @description
+   * display the column configuration modal
+   */
+  vm.openColumnConfigModal = () => {
+    gridColumns.openConfigurationModal();
+  };
+
+  /**
+   * @method clearGridState
+   *
+   * @description
+   * reset the grid state
+   */
+  vm.clearGridState = () => {
+    state.clearGridState();
+    $state.reload();
+  };
+
+  /**
+   * @method toggleInlineFilter
+   *
+   * @description
+   * enable/disable the grid columns filter
+   */
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
+
+  /**
+   * @method onRegisterApi
+   *
+   * @description
+   * ui-grid api exposer
+   */
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  /**
+   * @method startup
+   *
+   * @description
+   * action to perform when the page is loaded
+   */
   function startup() {
     if ($state.params.filters.length) {
       stockRequisitionFilters.replaceFiltersFromState($state.params.filters);
@@ -155,33 +277,12 @@ function StockRequisitionController(
   }
 
   /**
-   * @method removeRequisition
+   * @method load
    *
-   * @description
-   * remove the stock requisitionment to the entity
+   * @description load requisition into the registry grid
    *
-   * @param {string} uuid
+   * @param {object} filters
    */
-  function removeRequisition(uuid) {
-    Modal.confirm('REQUISITION.CONFIRM_REMOVE_MSG')
-      .then(ans => {
-        if (!ans) { return; }
-
-        Stock.stockRequisition.delete(uuid)
-          .then(() => {
-            load(stockRequisitionFilters.formatHTTP(true));
-            Notify.success('REQUISITION.REMOVE_SUCCESS');
-          })
-          .catch(errorHandler);
-      });
-  }
-
-  // show the receipt
-  function showReceipt(uuid) {
-    return Receipts.stockRequisitionReceipt(uuid);
-  }
-
-  // load stock requisitions in the grid
   function load(filters) {
     vm.hasError = false;
     toggleLoadingIndicator();
@@ -193,63 +294,6 @@ function StockRequisitionController(
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
   }
-
-  // remove a filter with from the filter object, save the filters and reload
-  vm.onRemoveFilter = function onRemoveFilter(key) {
-    stockRequisitionFilters.remove(key);
-    stockRequisitionFilters.formatCache();
-    vm.latestViewFilters = stockRequisitionFilters.formatView();
-    return load(stockRequisitionFilters.formatHTTP(true));
-  };
-
-  vm.onChangeDepot = depot => {
-    vm.depot = depot;
-  };
-
-  function search() {
-    const filtersSnapshot = stockRequisitionFilters.formatHTTP();
-
-    StockModal.openSearchStockRequisition(filtersSnapshot)
-      .then((changes) => {
-        stockRequisitionFilters.replaceFilters(changes);
-        stockRequisitionFilters.formatCache();
-        vm.latestViewFilters = stockRequisitionFilters.formatView();
-        return load(stockRequisitionFilters.formatHTTP(true));
-      });
-  }
-
-  // This function opens a modal through column service to let the user toggle
-  // the visibility of the requisitions registry's columns.
-  function openColumnConfigModal() {
-    // column configuration has direct access to the grid API to alter the current
-    // state of the columns - this will be saved if the user saves the grid configuration
-    gridColumns.openConfigurationModal();
-  }
-
-  // saves the grid's current configuration
-  function clearGridState() {
-    state.clearGridState();
-    $state.reload();
-  }
-
-  vm.downloadExcel = () => {
-    const filterOpts = stockRequisitionFilters.formatHTTP();
-    const defaultOpts = {
-      renderer : 'xlsx',
-      lang : Languages.key,
-      renameKeys : true,
-      displayNames : gridColumns.getDisplayNames(),
-    };
-    // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-    // return  serialized options
-    return $httpParamSerializer(options);
-  };
-
-  vm.toggleInlineFilter = () => {
-    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-  };
 
   startup();
 }
