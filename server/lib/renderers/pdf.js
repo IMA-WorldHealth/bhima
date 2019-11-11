@@ -38,9 +38,9 @@ exports.extension = '.pdf';
 
 // provide uniform default configurations for reports
 const defaultReportOptions = {
-  format : 'A4',
-  landscape : false,
   preferCSSPageSize : true,
+  headerTemplate : '<h1>THIS IS A TEST header</h1>',
+  footerTemplate : '<h1>THIS IS A TEST footer</h1>',
 };
 
 exports.defaultReportOptions = defaultReportOptions;
@@ -86,7 +86,7 @@ exports.reducedCardOptions = {
 async function renderPDF(context, template, options = {}) {
   debug('received render request for PDF file. Passing to HTML renderer.');
 
-  // _.defaults(options, defaultReportOptions);
+  _.defaults(options, defaultReportOptions);
 
   const inlinedHtml = await html.render(context, template, options);
 
@@ -96,6 +96,10 @@ async function renderPDF(context, template, options = {}) {
     'headerTemplate', 'footerTemplate', 'pageRanges',
     'printBackground', 'displayHeaderFooter',
   ]);
+
+  /*
+  console.log('pdfOptions', pdfOptions);
+  */
 
   debug('passing rendered HTML to chromium for PDF rendering.');
   const browser = await pptr.launch(pptrOptions);

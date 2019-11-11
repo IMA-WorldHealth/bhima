@@ -13,8 +13,7 @@
  *
  * @requires lodash
  * @requires path
- * @requires fs
- * @requires q
+ * @requires mz/fs
  * @requires lib/util
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
@@ -24,8 +23,7 @@
 
 const _ = require('lodash');
 const path = require('path');
-const fs = require('fs');
-const q = require('q');
+const fs = require('mz/fs');
 const translateHelper = require('./helpers/translate');
 const util = require('../lib/util');
 
@@ -59,6 +57,16 @@ const SAVE_DIR = path.resolve(path.join(__dirname, '../reports/'));
 const SAVE_SQL = `
   INSERT INTO saved_report SET ?;
 `;
+
+
+function getFileName(options, extension) {
+  const translate = translateHelper(options.lang);
+  const translatedName = translate(options.filename);
+  const fileDate = (new Date()).toLocaleDateString();
+  const formattedName = `${translatedName} ${fileDate}`;
+  const fileName = `${formattedName}${extension}`;
+  return fileName;
+}
 
 
 // Class Declaration
@@ -96,7 +104,7 @@ class ReportManager {
     if (!this.renderer) {
       throw new BadRequest(
         `The application does not support rendering ${options.renderer}.`,
-        'ERRORS.INVALID_RENDERER'
+        'ERRORS.INVALID_RENDERER',
       );
     }
 
@@ -126,7 +134,7 @@ class ReportManager {
    * @param {Object} data - the report data to be passed to the renderer's
    *    render() function.
    */
-  render(data) {
+  async render(data) {
     const { metadata, renderer } = this;
 
     // set the render timestamp
@@ -157,37 +165,34 @@ class ReportManager {
 
     data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : rowsToRename;
 
+    let fileName;
+    if (this.options.filename) {
+      fileName = getFileName(this.options, this.renderer.extension);
+    }
+
+    data.title = data.title || fileName;
+
     // render the report using the stored renderer
-    const promise = renderer.render(data, this.template, this.options);
+    const report = await renderer.render(data, this.template, this.options);
 
-    // send back the headers and report
-    return promise.then(reportStream => {
-      this.stream = reportStream;
+    const renderHeaders = renderer.headers;
 
-      const renderHeaders = renderer.headers;
-      const report = reportStream;
+    if (fileName) {
+      renderHeaders['Content-Disposition'] = `filename=${fileName}`;
+      renderHeaders.filename = fileName;
+    }
 
-      if (this.options.filename) {
-        const translate = translateHelper(this.options.lang);
-        const translatedName = translate(this.options.filename);
-        const fileDate = (new Date()).toLocaleDateString();
-        const formattedName = `${translatedName} ${fileDate}`;
-        renderHeaders['Content-Disposition'] = `filename=${formattedName}${renderer.extension}`;
-        renderHeaders.filename = `${formattedName}${renderer.extension}`;
-      }
+    /*
+    console.log('renderHeaders:', renderHeaders);
+    console.log('data.title:', data.title);
+    */
 
-      // FIXME this branching logic should be promised based
-      if (this.options.saveReport) {
-        // FIXME This is not correctly deferred
-        // FIXME PDF report is sent back to the client even though this is a save operation
-        // FIXME Errors are not propagated
-        return this.save()
-          .then(() => {
-            return { headers : renderHeaders, report };
-          });
-      }
-      return { headers : renderHeaders, report };
-    });
+    // if we are supposed to save the report, call the save method.
+    if (this.options.saveReport) {
+      await this.save(report);
+    }
+
+    return { headers : renderHeaders, report };
   }
 
   /**
@@ -196,13 +201,10 @@ class ReportManager {
    * @description
    * This method saves the report in the report directory to be looked up later.
    */
-  save() {
-    const dfd = q.defer();
-
-    if (!this.stream) {
-      return q.reject(`
-        ReportManger.render() must be called and complete before saving the
-        report.
+  async save(stream) {
+    if (!stream) {
+      throw new Error(`
+        ReportManger.render() must be called and completed before saving the report.
       `);
     }
 
@@ -223,16 +225,10 @@ class ReportManager {
       report_id : options.reportId,
     };
 
-    fs.writeFile(link, this.stream, (err) => {
-      if (err) { return dfd.reject(err); }
+    await fs.writeFile(link, stream);
+    await db.exec(SAVE_SQL, data);
 
-      return db.exec(SAVE_SQL, data)
-        .then(() => dfd.resolve({ uuid : reportId }))
-        .catch(dfd.reject)
-        .done();
-    });
-
-    return dfd.promise;
+    return { uuid : reportId };
   }
 }
 
