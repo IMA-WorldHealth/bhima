@@ -1,0 +1,129 @@
+#cloud-config
+
+packages:
+  - curl
+  - nginx
+  - ufw
+  - fail2ban
+  - build-essential
+  - redis-server
+  - redis-tools
+  - uuid
+  - jq
+  - unzip
+
+package-update: true
+package_upgrade: true
+
+write_files:
+  - path: /tmp/bhima-mysql-user.sql
+    content: |
+      CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';
+      GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
+      FLUSH PRIVILEGES;
+      
+  - path: /tmp/bhima-latest-release.sh
+    content: |
+      wget -O bhima-latest-release.zip $(curl -s https://api.github.com/repos/IMA-WorldHealth/bhima/releases/latest | jq -r '.zipball_url');
+      unzip bhima-latest-release.zip -d 'bhima';
+      FOLDER=$(ls bhima |sort -n|head -1);
+      cp -r ./bhima/$FOLDER/. ./bhima;
+      rm -r ./bhima/$FOLDER;
+      rm bhima-latest-release.zip;
+      
+  - path: /tmp/99_mysql.cnf
+    content: |
+      [client]
+      default-character-set=utf8mb4
+      [mysql]
+      default-character-set=utf8mb4
+      [mysqld]
+      collation-server=utf8mb4_unicode_ci
+      init-connect='SET NAMES utf8mb4'
+      character-set-server=utf8mb4
+      sql-mode="STRICT_ALL_TABLES"
+
+  - path: /tmp/nginx-bhima
+    content: |
+      server {
+
+       gzip on;
+       gzip_vary on;
+       gzip_proxied no-cache no-store private expired auth;
+       gzip_min_length 1000;
+
+       server_name demo.bhi.ma;
+
+       location / {
+         proxy_pass http://127.0.0.1:8080;
+         proxy_http_version 1.1;
+         proxy_set_header Upgrade $http_upgrade;
+         proxy_set_header Connection 'upgrade';
+         proxy_set_header Host $host;
+         proxy_cache_bypass $http_upgrade;
+        }
+      }
+
+runcmd:
+
+# configure SSH
+  - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
+
+# configure UFW
+  - ufw default deny incoming
+  - ufw default allow outgoing
+  - ufw allow ssh
+  - ufw allow http
+  - ufw allow https
+  - ufw enable
+
+# Install and configure MySQL
+  - export MYPASS="$(uuid)"
+  - echo "mysql-community-server mysql-community-server/root-pass password $MYPASS" |  debconf-set-selections
+  - echo "mysql-community-server mysql-community-server/re-root-pass password $MYPASS" | debconf-set-selections
+  - DEBIAN_FRONTEND=noninteractive apt-get install mysql-server mysql-client -y
+  - mysql -u root  mysql < /tmp/bhima-mysql-user.sql
+  - mv /tmp/99_mysql.cnf /etc/mysql/conf.d/
+  - service mysql restart
+
+# install nodejs
+  - curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+  - apt-get -qq update
+  - apt-get install -y nodejs
+
+# install wkhtmltopdf
+  - wget -qc https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+  - tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+  - mv wkhtmltox/bin/wkhtmltopdf /usr/bin
+  - rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
+
+# install yarn
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - apt-get -qq update && apt-get install yarn --no-install-recommends
+
+# clone and set up BHIMA repository
+  - cd /opt/
+  - bash /tmp/bhima-latest-release.sh
+  - cd bhima
+  - cp .env.development .env.production
+  - bash ./sh/build-init-database.sh
+
+  - yarn global add pm2@latest
+  - yarn --ignore-engines
+  - NODE_ENV=production yarn build
+  - cd bin
+  - NODE_ENV=production pm2 start server/app.js -i 1 --name "bhima"
+  - pm2 startup
+
+# update nginx configuration
+  - rm /etc/nginx/sites-enabled/default
+  - mv /tmp/nginx-bhima /etc/nginx/sites-enabled/bhima
+  - service nginx restart
+
+
+  - add-apt-repository -y universe
+  - add-apt-repository -y ppa:certbot/certbot
+  - apt-get -y update
+  - apt-get -y install python-certbot-nginx
+  - (crontab -l 2>/dev/null; echo "0 0 1 * * /usr/bin/certbot renew > /var/log/letsencrypt/letsencrypt.log") | crontab -
