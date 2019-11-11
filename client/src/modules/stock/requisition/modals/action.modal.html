@@ -48,12 +48,14 @@
     </div>
 
     <!-- depot -->
-    <bh-depot-select
-      depot-uuid="$ctrl.model.depot_uuid"
-      required="true"
-      on-select-callback="$ctrl.onSelectDepot(depot)">
-      <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
-    </bh-depot-select>
+    <div id="depot-supplier" class="form-group">
+      <bh-depot-select
+        depot-uuid="$ctrl.model.depot_uuid"
+        required="true"
+        on-select-callback="$ctrl.onSelectDepot(depot)">
+        <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+      </bh-depot-select>
+    </div>
 
     <!-- note -->
     <div class="form-group">

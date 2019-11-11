@@ -76,4 +76,5 @@ module.exports = {
   surveyFormTypeSelect : require('./bhSurveyFormTypeSelect'),
   surveyListSelect : require('./bhSurveyListSelect'),
   surveyFormSelect : require('./bhSurveyFormSelect'),
+  serviceOrDepotSelect : require('./bhServiceOrDepot'),
 };

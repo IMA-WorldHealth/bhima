@@ -104,7 +104,7 @@ function onEnterFactory(stateType, state) {
 
   return function onEnter($state, StockModal) {
     const mapAction = {
-      stockAssgin : StockModal.openActionStockAssign,
+      stockAssign : StockModal.openActionStockAssign,
       stockRequisition : StockModal.openActionStockRequisition,
     };
 
