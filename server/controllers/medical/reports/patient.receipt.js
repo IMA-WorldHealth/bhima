@@ -27,7 +27,6 @@ const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebar
 // default options for the patient card
 const defaults = {
   format : 'A6',
-  orientation : 'landscape',
   landscape : true,
 };
 

@@ -9,7 +9,6 @@
  * @todo
  *  1. Create a generic Report API for reading reports from the database and
  *    sending them back to the client.
- *  2. Complete the methods for saving reports
  *
  * @requires lodash
  * @requires path
@@ -170,6 +169,7 @@ class ReportManager {
       fileName = getFileName(this.options, this.renderer.extension);
     }
 
+    // set the report title to the filename if no title is given
     data.title = data.title || fileName;
 
     // render the report using the stored renderer
@@ -181,11 +181,6 @@ class ReportManager {
       renderHeaders['Content-Disposition'] = `filename=${fileName}`;
       renderHeaders.filename = fileName;
     }
-
-    /*
-    console.log('renderHeaders:', renderHeaders);
-    console.log('data.title:', data.title);
-    */
 
     // if we are supposed to save the report, call the save method.
     if (this.options.saveReport) {

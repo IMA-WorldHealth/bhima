@@ -39,6 +39,7 @@ exports.extension = '.pdf';
 // provide uniform default configurations for reports
 const defaultReportOptions = {
   preferCSSPageSize : true,
+  showHeaderFooter : true,
   headerTemplate : '<h1>THIS IS A TEST header</h1>',
   footerTemplate : '<h1>THIS IS A TEST footer</h1>',
 };
@@ -92,14 +93,10 @@ async function renderPDF(context, template, options = {}) {
 
   // pick options relevant to rendering PDFs
   const pdfOptions = _.pick(options, [
-    'path', 'format', 'landscape', 'width', 'height', 'margin',
-    'headerTemplate', 'footerTemplate', 'pageRanges',
-    'printBackground', 'displayHeaderFooter',
+    'path', 'format', 'width', 'height', 'margin',
+    'headerTemplate', 'footerTemplate', 'pageRanges', 'printBackground',
+    'showHeaderFooter', 'preferCSSPageSize',
   ]);
-
-  /*
-  console.log('pdfOptions', pdfOptions);
-  */
 
   debug('passing rendered HTML to chromium for PDF rendering.');
   const browser = await pptr.launch(pptrOptions);
