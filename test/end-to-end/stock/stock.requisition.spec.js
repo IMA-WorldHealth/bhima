@@ -1,13 +1,11 @@
-/* global element, by */
-const { expect } = require('chai');
 const helpers = require('../shared/helpers');
-// const SearchModal = require('../shared/search.page');
+const SearchModal = require('../shared/search.page');
 const Page = require('./stock.requisition.page');
 
 // const { notification } = require('../shared/components');
 
 function StockRequisitionTests() {
-  // let modal;
+  let modal;
   let page;
 
   // navigate to the page
@@ -15,12 +13,14 @@ function StockRequisitionTests() {
 
   beforeEach(() => {
     page = new Page();
-    // modal = new SearchModal('stock-requisition-search');
+    modal = new SearchModal('stock-requisition-search');
   });
 
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
   const SERVICE = 'Test Service';
+  const REFERENCES = ['SREQ.1', 'SREQ.2', 'SREQ.3'];
+  const NOT_REFERENCE = 'SREQ.ZERO';
 
   it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
     await page.changeDepot(DEPOT_PRINCIPAL);
@@ -59,89 +59,76 @@ function StockRequisitionTests() {
     await page.submit();
   });
 
-  // it('Search requisitionment by depot', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.submit();
-  //   await page.expectRowCount(1);
-  //   await page.expectCellValueMatch(0, 0, record.depot);
-  // });
+  it('Search requisition by depot requestor', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setRequestor(DEPOT_SECONDAIRE, 'depot');
+    await modal.submit();
+    await page.expectRowCount(1);
 
-  // it('Search requisitionment by a bad depot', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record2.depot);
-  //   await modal.submit();
-  //   await page.expectRowCount(0);
-  // });
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setRequestor(DEPOT_PRINCIPAL, 'depot');
+    await modal.submit();
+    await page.expectRowCount(1);
+  });
 
-  // it('Search requisitionment by inventory', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.submit();
-  //   await page.expectRowCount(1);
-  //   await page.expectCellValueMatch(0, 2, record.inventory);
-  // });
+  it('Search requisition by service requestor', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setRequestor(SERVICE, 'service');
+    await modal.submit();
+    await page.expectRowCount(1);
+  });
 
-  // it('Search requisitionment by a bad inventory', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record2.inventory);
-  //   await modal.submit();
-  //   await page.expectRowCount(0);
-  // });
+  it('Search requisition by depot supplier', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setDepot(DEPOT_SECONDAIRE);
+    await modal.submit();
+    await page.expectRowCount(2);
 
-  // it('Search requisitionment by lot', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.setLotLabel(record.lot);
-  //   await modal.submit();
-  //   await page.expectRowCount(1);
-  //   await page.expectCellValueMatch(0, 3, record.lot);
-  // });
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setDepot(DEPOT_PRINCIPAL);
+    await modal.submit();
+    await page.expectRowCount(1);
+  });
 
-  // it('Search requisitionment by a bad lot', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.setLotLabel(record2.lot);
-  //   await modal.submit();
-  //   await page.expectRowCount(0);
-  // });
+  it('Search requisition by reference', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[0]);
+    await modal.submit();
+    await page.expectRowCount(1);
 
-  // it('Search requisitionment by entity', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.setLotLabel(record.lot);
-  //   await modal.setEntity(record.entity);
-  //   await modal.submit();
-  //   await page.expectRowCount(1);
-  //   await page.expectCellValueMatch(0, 4, record.entity);
-  // });
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[1]);
+    await modal.submit();
+    await page.expectRowCount(1);
 
-  // it('Search requisitionment by a bad entity', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.setLotLabel(record.lot);
-  //   await modal.setEntity(record2.entity);
-  //   await modal.submit();
-  //   await page.expectRowCount(0);
-  // });
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[2]);
+    await modal.submit();
+    await page.expectRowCount(1);
 
-  // it('Remove stock requisitionment', async () => {
-  //   await SearchModal.open();
-  //   await modal.setDepot(record.depot);
-  //   await modal.setInventory(record.inventory);
-  //   await modal.setLotLabel(record.lot);
-  //   await modal.setEntity(record.entity);
-  //   await modal.submit();
-  //   await page.removeRequisitionment();
-  //   await notification.hasSuccess();
-  //   await page.expectRowCount(0);
-  // });
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(NOT_REFERENCE);
+    await modal.submit();
+    await page.expectRowCount(0);
+  });
+
+  it('Remove stock requisitionment', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[0]);
+    await modal.submit();
+    await page.removeRequisition(0);
+    await page.expectRowCount(0);
+  });
 }
 
-describe.only('Stock Requisition Module', StockRequisitionTests);
+describe('Stock Requisition Module', StockRequisitionTests);

@@ -82,8 +82,8 @@ function StockRequisitionPage() {
     return GU.expectCellValueMatch(gridId, row, col, value);
   };
 
-  page.removeRequisition = async () => {
-    const cell = await GU.getCell(gridId, 0, 7);
+  page.removeRequisition = async (row = 0) => {
+    const cell = await GU.getCell(gridId, row, 7);
     await cell.$('[data-method=action]').click();
     await $('[data-method=remove-record]').click();
     await FU.buttons.submit();
