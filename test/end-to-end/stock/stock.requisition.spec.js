@@ -8,13 +8,14 @@ function StockRequisitionTests() {
   let modal;
   let page;
 
-  // navigate to the page
-  before(() => helpers.navigate('#/stock/requisition'));
+  // actions before each tests
+  beforeEach(beforeEachActions);
 
-  beforeEach(() => {
+  function beforeEachActions() {
     page = new Page();
     modal = new SearchModal('stock-requisition-search');
-  });
+    helpers.navigate('#/stock/requisition');
+  }
 
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
