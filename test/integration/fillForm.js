@@ -1,4 +1,5 @@
 /* global expect, agent */
+const qs = require('qs');
 const helpers = require('./helpers');
 
 describe('(/fill_form) Fill Form', () => {
@@ -54,11 +55,10 @@ describe('(/fill_form) Fill Form', () => {
 
   const params = {
     changes : {
-      loggedChanges : [
-        {
-          key : 'data_collector_id',
-          value : 3,
-        }],
+      loggedChanges : [{
+        key : 'data_collector_id',
+        value : 3,
+      }],
       collectorId : 3,
       searchDateFrom : {
         dateSurvey : '2018-12-31',
@@ -127,7 +127,7 @@ describe('(/fill_form) Fill Form', () => {
 
   it('GET /display_metadata returns all data from survey', () => {
     return agent.get(`/display_metadata/`)
-      .query(params)
+      .query(qs.stringify(params))
       .then((res) => {
         expect(res.body).to.have.all.keys('columns', 'surveyData');
       })
