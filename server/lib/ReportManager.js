@@ -22,7 +22,7 @@
 
 const _ = require('lodash');
 const path = require('path');
-const fs = require('mz/fs');
+const fs = require('fs');
 const translateHelper = require('./helpers/translate');
 const util = require('../lib/util');
 
@@ -220,7 +220,7 @@ class ReportManager {
       report_id : options.reportId,
     };
 
-    await fs.writeFile(link, stream);
+    await fs.promises.writeFile(link, stream);
     await db.exec(SAVE_SQL, data);
 
     return { uuid : reportId };
