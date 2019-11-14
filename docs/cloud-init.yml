@@ -15,22 +15,30 @@ packages:
 package-update: true
 package_upgrade: true
 
+users:
+  - name: bhima
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+
 write_files:
   - path: /tmp/bhima-mysql-user.sql
     content: |
       CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';
       GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
       FLUSH PRIVILEGES;
-      
+
   - path: /tmp/bhima-latest-release.sh
     content: |
-      wget -O bhima-latest-release.zip $(curl -s https://api.github.com/repos/IMA-WorldHealth/bhima/releases/latest | jq -r '.zipball_url');
-      unzip bhima-latest-release.zip -d 'bhima';
+      wget --quiet -O bhima-latest-release.zip $(curl -s https://api.github.com/repos/IMA-WorldHealth/bhima/releases/latest | jq -r '.zipball_url');
+      mkdir bhima
+      unzip -qq bhima-latest-release.zip -d bhima
       FOLDER=$(ls bhima |sort -n|head -1);
-      cp -r ./bhima/$FOLDER/. ./bhima;
-      rm -r ./bhima/$FOLDER;
-      rm bhima-latest-release.zip;
-      
+      cp -r ./bhima/$FOLDER/. ./bhima
+      rm -r ./bhima/$FOLDER
+      rm bhima-latest-release.zip
+      cp bhima/.env.development bhima/.env.production
+
   - path: /tmp/99_mysql.cnf
     content: |
       [client]
@@ -43,6 +51,23 @@ write_files:
       character-set-server=utf8mb4
       sql-mode="STRICT_ALL_TABLES"
 
+  - path: /tmp/bhima.service
+    content: |
+      [Unit]
+      Description=The Basic Hospital Information Management Application (BHIMA)
+      Documentation=https://docs.bhi.ma
+      After=network.target
+
+      [Service]
+      Environment=NODE_ENV=production
+      Type=simple
+      User=bhima
+      ExecStart=/usr/bin/node /opt/bhima/bin/server/app.js
+      Restart=on-failure
+
+      [Install]
+      WantedBy=multi-user.target
+
   - path: /tmp/nginx-bhima
     content: |
       server {
@@ -51,6 +76,7 @@ write_files:
        gzip_vary on;
        gzip_proxied no-cache no-store private expired auth;
        gzip_min_length 1000;
+       gzip_types application/javascript application/rss+xml application/vnd.ms-fontobject application/x-font application/x-font-opentype application/x-font-otf application/x-font-truetype application/x-font-ttf application/x-javascript application/xhtml+xml application/xml font/opentype font/otf font/ttf image/svg+xml image/x-icon text/css text/javascript text/plain text/xml;
 
        server_name demo.bhi.ma;
 
@@ -106,21 +132,21 @@ runcmd:
   - cd /opt/
   - bash /tmp/bhima-latest-release.sh
   - cd bhima
-  - cp .env.development .env.production
   - bash ./sh/build-init-database.sh
-
-  - yarn global add pm2@latest
   - yarn --ignore-engines
   - NODE_ENV=production yarn build
-  - cd bin
-  - NODE_ENV=production pm2 start server/app.js -i 1 --name "bhima"
-  - pm2 startup
+  - chown -R bhima:bhima .
+
+# set up bhima to start on reboot
+  - cp /tmp/bhima.service /lib/systemd/system/
+  - systemctl daemon-reload
+  - systemctl start bhima
+  - systemctl enable bhima
 
 # update nginx configuration
   - rm /etc/nginx/sites-enabled/default
   - mv /tmp/nginx-bhima /etc/nginx/sites-enabled/bhima
   - service nginx restart
-
 
   - add-apt-repository -y universe
   - add-apt-repository -y ppa:certbot/certbot
