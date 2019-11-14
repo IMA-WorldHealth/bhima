@@ -90,6 +90,12 @@ process.on('uncaughtException', (e) => {
   process.exit(1);
 });
 
+// crash on unhandled promise rejections
+process.on('unhandledRejection', (e) => {
+  debug('process.onUnhandledRejection: %o', e);
+  process.exit(1);
+});
+
 process.on('warning', (warning) => {
   debug('process.onWarning: %o', warning);
 });

@@ -2,7 +2,7 @@
  * HTTP END POINT
  * API controller for the table cron_email_report
  */
-const debug = require('debug')('app');
+const debug = require('debug')('bhima:cron');
 const Cron = require('cron').CronJob;
 
 const db = require('../../../lib/db');
@@ -18,8 +18,8 @@ const CURRENT_JOBS = [];
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
   const sql = `
-    SELECT 
-      cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
+    SELECT
+      cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id,
       cer.params, cer.label, cer.last_send,
       cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
@@ -40,8 +40,8 @@ function find(options = {}) {
 
 function lookup(id) {
   const query = `
-    SELECT 
-      cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
+    SELECT
+      cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id,
       cer.params, cer.label, cer.last_send,
       cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
@@ -147,8 +147,7 @@ async function launchCronEmailReportJobs() {
 
     debug('Reports scanned successfully');
   } catch (error) {
-    // NEED TO BE HANDLED FOR AVOIDING THE CRASH OF THE APPLICATION
-    throw error;
+    debug(error);
   }
 }
 
@@ -201,7 +200,7 @@ async function sendEmailReportDocument(record) {
       debug(`(${record.label}) report sent by email to ${contacts.length} contacts`);
     }
   } catch (e) {
-    throw e;
+    debug(e);
   }
 }
 
@@ -215,7 +214,7 @@ function loadContacts(entityGroupUuid) {
     SELECT e.email FROM entity e
     JOIN entity_group_entity ege ON ege.entity_uuid = e.uuid
     JOIN entity_group eg ON eg.uuid = ege.entity_group_uuid
-    WHERE eg.uuid = ?; 
+    WHERE eg.uuid = ?;
   `;
   return db.exec(query, [entityGroupUuid])
     .then(contacts => contacts.map(c => c.email));
