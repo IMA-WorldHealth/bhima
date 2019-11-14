@@ -59,16 +59,6 @@ function StockRequisitionPage() {
     await FU.input('row.entity.quantity', quantity, quantityCell);
   };
 
-  // inventory select
-  page.setInventory = text => {
-    return FU.uiSelect('$ctrl.inventory_uuid', text);
-  };
-
-  // set quantity
-  page.setQuantity = quantity => {
-    return FU.input('$ctrl.model.quantity', quantity);
-  };
-
   // set description
   page.setDescription = description => {
     return FU.input('$ctrl.model.description', description);

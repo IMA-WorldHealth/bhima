@@ -10,7 +10,10 @@ module.exports = {
       depot : bhDepot,
     };
 
-    await element(by.css(`[data-requestor-option="${type}"]`)).click();
+    const locator = (id) ? by.id(id) : by.css(this.selector);
+    const target = element(locator);
+
+    await target.element(by.css(`[data-requestor-option="${type}"]`)).click();
     await map[type].set(requestor, id);
   },
 };

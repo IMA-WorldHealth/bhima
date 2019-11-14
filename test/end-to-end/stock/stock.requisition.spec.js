@@ -2,8 +2,6 @@ const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Page = require('./stock.requisition.page');
 
-// const { notification } = require('../shared/components');
-
 function StockRequisitionTests() {
   let modal;
   let page;
