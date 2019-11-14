@@ -28,9 +28,6 @@ function StockRequisitionTests() {
   it(`Create a new stock requisition based on current depot ${DEPOT_PRINCIPAL}`, async () => {
     await page.showCreateModal(true);
     await page.setDepot(DEPOT_SECONDAIRE);
-    await page.setRows(2);
-    await page.addItem(0, 'Quinine', 100);
-    await page.addItem(1, 'Multivitamine', 500);
     await page.setDescription(`Quick Requisition from current depot ${DEPOT_PRINCIPAL}`);
     await page.submit();
   });
