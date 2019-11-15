@@ -123,7 +123,7 @@ BEGIN
   CREATE TEMPORARY TABLE stage_stock_movement (
       SELECT
         projectId as project_id, currencyId as currency_id,
-        CONCAT(ig.name, ' - ', m.quantity, ' ', iu.text, ' of ', i.text) AS item_description,
+        CONCAT(ig.name, ' - ', m.quantity, ' ', iu.text, ' of ', i.text , ' (', l.label, ')') AS item_description,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
         ig.cogs_account, ig.stock_account, d.text AS depot_description,
         CONCAT(p.display_name, '(', em.text, ')') AS patient_description,
