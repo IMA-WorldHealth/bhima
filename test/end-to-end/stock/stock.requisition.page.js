@@ -77,6 +77,7 @@ function StockRequisitionPage() {
     await cell.$('[data-method=action]').click();
     await $('[data-method=remove-record]').click();
     await FU.buttons.submit();
+    await components.notification.hasSuccess();
   };
 
   /**

@@ -117,7 +117,7 @@ function StockRequisitionTests() {
     await page.expectRowCount(0);
   });
 
-  it('Remove stock requisitionment', async () => {
+  it('Remove stock requisition', async () => {
     await SearchModal.open();
     await modal.reset();
     await modal.setReference(REFERENCES[0]);
