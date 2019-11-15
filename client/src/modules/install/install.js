@@ -6,7 +6,7 @@ InstallApplicationController.$inject = ['InstallService', '$state', 'NotifyServi
 
 // controller definition
 function InstallApplicationController(InstallService, $state, Notify, Users) {
-  var vm = this;
+  const vm = this;
 
   vm.setup = { enterprise : {}, project : {}, user : {} };
 
