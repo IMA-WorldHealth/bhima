@@ -80,6 +80,12 @@ BEGIN
 	DECLARE v_quantity INT(11);
 	DECLARE v_document_uuid BINARY(16);
 	DECLARE v_is_exit TINYINT(1);
+  DECLARE v_item_description TEXT;
+  DECLARE v_voucher_description TEXT;
+  DECLARE v_depot_description TEXT;
+  DECLARE v_patient_description TEXT;
+  DECLARE v_service_description TEXT;
+  DECLARE v_invoice_description TEXT;
 
   -- transaction type
   DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
@@ -93,7 +99,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   DECLARE stage_stock_movement_cursor CURSOR FOR
-  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit
+  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit, temp.item_description
 	FROM stage_stock_movement as temp;
 
   -- variables for the cursor
@@ -117,23 +123,47 @@ BEGIN
   CREATE TEMPORARY TABLE stage_stock_movement (
       SELECT
         projectId as project_id, currencyId as currency_id,
+        CONCAT(ig.name, ' - ', m.quantity, ' ', iu.text, ' of ', i.text) AS item_description,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
-        ig.cogs_account, ig.stock_account
+        ig.cogs_account, ig.stock_account, d.text AS depot_description,
+        CONCAT(p.display_name, '(', em.text, ')') AS patient_description,
+        s.name AS service_description, dm.text AS invoice_description
       FROM stock_movement m
+      JOIN depot d ON d.uuid = m.depot_uuid
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
       JOIN inventory_group ig
         ON ig.uuid = i.group_uuid AND (ig.stock_account IS NOT NULL AND ig.cogs_account IS NOT NULL)
+      LEFT JOIN patient p ON p.uuid = m.entity_uuid
+      LEFT JOIN entity_map em ON em.uuid = p.uuid
+      LEFT JOIN service s ON s.uuid = m.entity_uuid 
+      LEFT JOIN document_map dm ON dm.uuid = m.invoice_uuid
       WHERE m.document_uuid = documentUuid AND m.is_exit = isExit
     );
 
   -- define voucher variables
-  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity)
-    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount
+  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity),
+    depot_description, patient_description, service_description, invoice_description
+    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount,
+      v_depot_description, v_patient_description, v_service_description, v_invoice_description
   FROM stage_stock_movement;
 
   IF (isExit = 1) THEN
     SET voucher_type_id = STOCK_EXIT_TYPE;
+    SET v_voucher_description = voucher_description;
+
+    IF (v_depot_description IS NOT NULL AND v_service_description IS NOT NULL) THEN 
+      SET voucher_description = CONCAT('Distribution to ', v_service_description, ' from ', v_depot_description, ' : ', v_voucher_description);
+    END IF;
+
+    IF (v_depot_description IS NOT NULL AND v_patient_description IS NOT NULL) THEN 
+      SET voucher_description = CONCAT('Distribution to ', v_patient_description, ' from ', v_depot_description, ' : ', v_voucher_description);
+    END IF;
+    
+    IF (v_depot_description IS NOT NULL AND v_patient_description IS NOT NULL AND v_invoice_description IS NOT NULL) THEN 
+      SET voucher_description = CONCAT('Distribution to ', v_patient_description, ' invoiced by (', v_invoice_description, ') from ', v_depot_description, ' : ', v_voucher_description);
+    END IF;
   ELSE
     SET voucher_type_id = STOCK_ENTRY_TYPE;
   END IF;
@@ -150,7 +180,7 @@ BEGIN
   -- loop in the cursor
   insert_voucher_item : LOOP
 
-    FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit;
+    FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit, v_item_description;
 
     IF v_finished = 1 THEN
       LEAVE insert_voucher_item;
@@ -165,12 +195,12 @@ BEGIN
     END IF;
 
     -- insert debit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid);
+    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
+      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid, v_item_description);
 
     -- insert credit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-      VALUES (HUID(UUID()), voucher_item_account_credit, 0, (v_unit_cost * v_quantity), voucher_uuid, v_document_uuid);
+    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
+      VALUES (HUID(UUID()), voucher_item_account_credit, 0, (v_unit_cost * v_quantity), voucher_uuid, v_document_uuid, v_item_description);
 
   END LOOP insert_voucher_item;
 

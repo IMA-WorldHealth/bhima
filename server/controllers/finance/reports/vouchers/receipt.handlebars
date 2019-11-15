@@ -61,7 +61,13 @@
       {{#each items}}
         <tr>
           <td>{{number}}</td>
-          <td>{{label}}</td>
+          <td>
+            {{#if description}}
+              {{description}}
+            {{else}}
+              {{label}}
+            {{/if}}
+          </td>
           <td class="text-right">{{currency debit ../details.currency_id}}</td>
           <td class="text-right">{{currency credit ../details.currency_id}}</td>
           <td>{{ entity_reference }}</td>

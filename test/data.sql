@@ -755,7 +755,7 @@ INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, descriptio
   (@fourth_voucher, CURRENT_TIMESTAMP, 1, 1, 75, 'Fourth Voucher to be Posted', 1, 9);
 
 -- voucher items sample data
-INSERT INTO `voucher_item` VALUES
+INSERT INTO `voucher_item` (`uuid`, `account_id`, `debit`, `credit`, `voucher_uuid`, `document_uuid`, `entity_uuid`) VALUES
   (HUID('90583c32-b1b2-11e8-9689-0b54421d0e49'), 187, 100, 0, @first_voucher, @first_invoice, HUID('2c6c48a2-b1b3-11e8-ae9b-1fa4024347ab')),
   (HUID('9317a11a-b1b2-11e8-93d6-b30828591803'), 182, 0, 100, @first_voucher, NULL, NULL),
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),

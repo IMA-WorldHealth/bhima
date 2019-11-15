@@ -1865,6 +1865,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `voucher_uuid`    BINARY(16) NOT NULL,
   `document_uuid`   binary(16) default null,
   `entity_uuid`     binary(16) default null,
+  `description`     TEXT NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
