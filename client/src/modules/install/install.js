@@ -21,7 +21,7 @@ function InstallApplicationController(InstallService, $state, Notify, Users) {
   function submit(form) {
     if (form.$invalid) { return 0; }
 
-    if (vm.validPassword() === false) {
+    if (vm.hasValidPassword() === false) {
       vm.badPasswords = true;
       return Notify.warn('USERS.PASSWORD_MISMATCH');
     }
@@ -38,8 +38,8 @@ function InstallApplicationController(InstallService, $state, Notify, Users) {
     vm.setup.enterprise.currency_id = currencyId;
   };
 
-  // make sure that the passwords exist and match.
-  vm.validPassword = () => {
+  // make sure that the passwords exist, conform to the password policy, and match each other
+  vm.hasValidPassword = () => {
     return Users.validatePassword(vm.setup.user.password, vm.setup.user.repassword);
   };
 }
