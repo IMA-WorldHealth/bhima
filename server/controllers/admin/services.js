@@ -16,6 +16,7 @@
 const db = require('../../lib/db');
 const { uuid } = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
+const FilterParser = require('../../lib/filter');
 
 /**
  * @method list
@@ -40,9 +41,17 @@ function list(req, res, next) {
       LEFT JOIN project AS p ON s.project_id = p.id`;
   }
 
-  sql += ' ORDER BY s.name;';
+  const params = db.convert(req.query, ['uuid']);
+  const filters = new FilterParser(params);
 
-  db.exec(sql)
+  filters.custom('uuid', 's.uuid = ?');
+  filters.equals('name', 'name', 's');
+  filters.setOrder('ORDER BY s.name');
+
+  const query = filters.applyQuery(sql);
+  const queryParameters = filters.parameters();
+
+  db.exec(query, queryParameters)
     .then((rows) => {
       res.status(200).json(rows);
     })

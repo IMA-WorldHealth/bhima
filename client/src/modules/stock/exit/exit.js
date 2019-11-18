@@ -7,6 +7,7 @@ StockExitController.$inject = [
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate',
   'moment', 'GridExportService', 'Store',
+  'PatientService', 'PatientInvoiceService', 'ServiceService',
 ];
 
 /**
@@ -18,7 +19,8 @@ StockExitController.$inject = [
 function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, Stock, StockModal, uiGridConstants, $translate,
-  moment, GridExportService, Store
+  moment, GridExportService, Store,
+  PatientService, PatientInvoiceService, ServiceService,
 ) {
   const vm = this;
 
@@ -427,6 +429,56 @@ function StockExitController(
     };
   }
 
+  function buildDescription(entityUuid, invoiceUuid) {
+    const glb = {};
+    return PatientService.read(entityUuid)
+      .then(patient => {
+        console.log('patient >>> ', patient);
+        if (patient) {
+          glb.patientDescription = patient.display_name.concat(` (${patient.reference})`);
+        }
+        return PatientInvoiceService.read(null, { uuid : invoiceUuid });
+      })
+      .then(([invoice]) => {
+        console.log('invoice >>> ', invoice);
+        if (invoice) {
+          glb.invoiceDescription = invoice.reference;
+        }
+        return ServiceService.read(null, { uuid : entityUuid });
+      })
+      .then(([service]) => {
+        console.log('service >>> ', service);
+        let description = '';
+        if (service) {
+          glb.serviceDescription = service.name;
+        }
+
+        if (vm.depot.text && glb.patientDescription) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED', {
+            patient : glb.patientDescription,
+            depot : vm.depot.text,
+          });
+        }
+
+        if (vm.depot.text && glb.patientDescription && glb.invoiceDescription) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED_WITH_INVOICE', {
+            patient : glb.patientDescription,
+            invoice : glb.invoiceDescription,
+            depot : vm.depot.text,
+          });
+        }
+
+        if (vm.depot.text && glb.serviceDescription) {
+          description = $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', {
+            service : glb.serviceDescription,
+            depot : vm.depot.text,
+          });
+        }
+
+        return description;
+      });
+  }
+
   // submit patient
   function submitPatient(form) {
     const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice
@@ -447,7 +499,11 @@ function StockExitController(
 
     movement.lots = lots;
 
-    return Stock.movements.create(movement)
+    return buildDescription(movement.entity_uuid, movement.invoice_uuid)
+      .then(description => {
+        movement.description = description.concat(` : ${vm.movement.description}`);
+        return Stock.movements.create(movement);
+      })
       .then(document => {
         ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
         reinit(form);
