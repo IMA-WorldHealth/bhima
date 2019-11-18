@@ -431,23 +431,20 @@ function StockExitController(
 
   function buildDescription(entityUuid, invoiceUuid) {
     const glb = {};
-    return PatientService.read(entityUuid)
-      .then(patient => {
-        console.log('patient >>> ', patient);
+    return PatientService.read(null, { uuid : entityUuid })
+      .then(([patient]) => {
         if (patient) {
           glb.patientDescription = patient.display_name.concat(` (${patient.reference})`);
         }
-        return PatientInvoiceService.read(null, { uuid : invoiceUuid });
+        return invoiceUuid ? PatientInvoiceService.read(null, { uuid : invoiceUuid }) : [];
       })
       .then(([invoice]) => {
-        console.log('invoice >>> ', invoice);
         if (invoice) {
           glb.invoiceDescription = invoice.reference;
         }
         return ServiceService.read(null, { uuid : entityUuid });
       })
       .then(([service]) => {
-        console.log('service >>> ', service);
         let description = '';
         if (service) {
           glb.serviceDescription = service.name;
@@ -475,7 +472,7 @@ function StockExitController(
           });
         }
 
-        return description;
+        return description ? description.concat(' : ') : '';
       });
   }
 
@@ -501,7 +498,7 @@ function StockExitController(
 
     return buildDescription(movement.entity_uuid, movement.invoice_uuid)
       .then(description => {
-        movement.description = description.concat(` : ${vm.movement.description}`);
+        movement.description = String(description).concat(vm.movement.description);
         return Stock.movements.create(movement);
       })
       .then(document => {
@@ -527,7 +524,11 @@ function StockExitController(
 
     movement.lots = lots;
 
-    return Stock.movements.create(movement)
+    return buildDescription(movement.entity_uuid)
+      .then(description => {
+        movement.description = String(description).concat(vm.movement.description);
+        return Stock.movements.create(movement);
+      })
       .then(document => {
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
         reinit(form);
