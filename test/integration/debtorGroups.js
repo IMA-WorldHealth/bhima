@@ -207,8 +207,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
       .then(res => {
         helpers.api.listed(res, totalLockedGroup);
         expect(res.body[0].locked).to.be.equal(1);
-        return agent.get('/debtor_groups/?locked=0')
-          .query({ locked : 1 });
+        return agent.get('/debtor_groups/').query({ locked : 0 });
       })
       .then(res => {
         helpers.api.listed(res, totalUnlockedGroup);
@@ -312,7 +311,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     });
 
     it('GET /debtor_groups/:uuid/invoices returns only balanced invoices for a debtor group', () => {
-      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices?balanced=1`)
+      return agent.get(`/debtor_groups/${debtorGroup.uuid}/invoices`).query({ balanced : 1 })
         .then(res => {
           helpers.api.listed(res, 0);
         })

@@ -171,7 +171,7 @@ function lookupData(params) {
           LEFT JOIN choices_list_management clm ON (clm.id = sdi.value AND (sf.type = 3 OR sf.type = 4))
           LEFT JOIN medical_sheet AS ms ON ms.survey_data_uuid = sd.uuid
           LEFT JOIN patient AS p ON p.uuid = ms.patient_uuid
-          WHERE sd.is_deleted <> 1 AND sd.data_collector_management_id = ${params.data_collector_management_id} 
+          WHERE sd.is_deleted <> 1 AND sd.data_collector_management_id = ${params.data_collector_management_id}
           ${filterPatient}
           GROUP BY sd.uuid, sf.id
         ) AS transpose
@@ -282,7 +282,6 @@ function remove(req, res, next) {
     })
     .catch(next)
     .done();
-
 }
 
 // get list of Display Metadata
