@@ -1,0 +1,112 @@
+<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.DATA_COLLECTION</li>
+      <li class="title" translate>TREE.DISPLAY_METADATA</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="height: 600px; overflow:scroll">
+    <div class="row">
+      <div class="col-sm-12">
+        <bh-survey-form-select
+          id="form"
+          form="$ctrl.searchQueries.data_collector_id"
+          name="dataCollectorId"
+          disabled="$ctrl.disabled"
+          on-select-callback="$ctrl.onSelectSurveyForm(surveyForm)"
+          required="true">
+        </bh-survey-form-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <bh-date-interval
+          label="FORM.LABELS.DATE"
+          date-from="$ctrl.searchDateFrom.dateSurvey"
+          date-to="$ctrl.searchDateTo.dateSurvey">
+        </bh-date-interval>
+      </div>
+    </div>
+
+    <hr>
+    <div ng-if="$ctrl.searchQueries.data_collector_id">
+      <div ng-repeat="formItem in $ctrl.formItems">
+        <div class="row">
+          <div ng-if="formItem.typeForm === 'text' || formItem.typeForm === 'text_area' || formItem.typeForm === 'time'" class="form-group">
+            <label class="control-label"> {{ formItem.label }} </label>
+            <div>
+              <span>
+                <input name="{{ formItem.name }}" ng-model="$ctrl.searchQueries[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div ng-if="formItem.typeForm === 'number' || formItem.typeForm === 'calculation'" class="form-group">
+            <label class="control-label"> {{ formItem.label }} </label>
+            <div>
+              <span>
+                <input name="{{ formItem.name }}" type="number" ng-model="$ctrl.searchQueries[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date -->
+        <div class="row">
+          <div ng-if="formItem.typeForm === 'date'">
+            <bh-date-interval
+              label="{{ formItem.label }}"
+              date-from="$ctrl.searchDateFrom[formItem.name]"
+              date-to="$ctrl.searchDateTo[formItem.name]">
+            </bh-date-interval>
+          </div>
+        </div>  
+
+        <!-- select_one -->
+        <div class="row">
+          <div ng-if="formItem.typeForm === 'select_one'">
+            <bh-choice-list-select
+              id="{{ formItem.name }}"
+              list="$ctrl.searchValues[formItem.name]"
+              name="{{ formItem.name }}"
+              list-label="{{ formItem.label }}"
+              list-hint="{{ formItem.hint }}"
+              group-label="formItem.choice_list_id"              
+              on-select-callback="$ctrl.onSelectList(list, formItem.name)">
+            </bh-choice-list-select>
+          </div>
+        </div>
+        <!-- select_multiple -->
+        <div class="row">
+          <div ng-if="formItem.typeForm === 'select_multiple'">
+            <bh-choice-list-multiple-select
+              id="{{ formItem.name }}"
+              lists="$ctrl.searchQueries[formItem.name]"
+              multiple-choice="multiple"
+              name="{{ formItem.name }}"
+              required="formItem.valueRequired"
+              list-label="{{ formItem.label }}"
+              list-hint="{{ formItem.hint }}"
+              group-label="formItem.choice_list_id"
+              on-change="$ctrl.onSelectMultiple(lists, formItem.name)">
+            </bh-choice-list-multiple-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

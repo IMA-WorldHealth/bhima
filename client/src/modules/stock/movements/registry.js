@@ -5,6 +5,7 @@ StockMovementsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants',
   'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
   'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
+  '$translate',
 ];
 
 /**
@@ -13,7 +14,8 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
-  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer
+  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
+  $translate
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
@@ -245,6 +247,9 @@ function StockMovementsController(
   }
 
   function handleMovementRow(row) {
+    // the column must be filtered on the translated text
+    row.io = $translate.instant(row.is_exit === 0 ? 'STOCK.INPUT' : 'STOCK.OUTPUT');
+
     // compute the fluxName from its ID
     row.fluxName = getFluxName(row.flux_id);
 

@@ -1107,3 +1107,82 @@ INSERT INTO bed VALUES
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
+
+-- data_collector_management
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1);
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
+
+-- choices_list_management
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (2, 'm', 'Masculin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (3, 'f', 'Féminin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (4, 'pays', 'Pays', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (5, 'province', 'Province', 0, 4, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (6, 'districte', 'Districte', 0, 5, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (7, 'ville', 'Ville', 0, 6, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (8, 'commune', 'Commune', 0, 7, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (9, 'quartier', 'Quartier', 0, 8, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (10, 'rdc', 'RD Congo', 0, 0, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (11, 'kin', 'Kinshasa', 0, 10, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (12, 'mont_amba', 'Mont Amba', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (13, 'lemba', 'Lemba', 0, 12, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (14, 'salongo', 'Salongo', 0, 13, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (15, 'avenue', 'Avenue', 0, 9, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (16, 'bypass', 'By Pass', 0, 14, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (17, 'kalala', 'Kalala', 0, 14, 0, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (18, 'funa', 'Funa', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (22, 'medicament', 'Médicament', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (23, 'ciprofloxacineCifin', 'ciprofloxacine (cifin ) 500 mg tab', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (24, 'artesunate60mgInjFl', 'Artesunate 60mg inj. fl', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (25, 'vitamineA50000iu', 'Vitamine A 50.000 iu', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (26, 'paracetamol500mg', 'Paracetamol500 mg', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (27, 'pentazocinetromadol30mg/ml', 'Pentazocine, Tromadol30mg/ml', 0, 22, 22, 0, 0);
+
+-- survey_form
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (1, 1, '3', 22, NULL, 0, 'label', 'Médicament', 'Sélectionner le médicament', 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (2, 1, '1', NULL, NULL, 0, 'poids', 'Poids', NULL, 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (3, 1, '2', NULL, NULL, 0, 'dosekilos', 'Dose par kilogramme', NULL, 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (4, 1, '1', NULL, NULL, 0, 'nombreFois', 'Nombre de fois', NULL, 1, NULL, NULL, NULL, 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (5, 1, '2', NULL, NULL, 0, 'voie', 'Voie', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (6, 1, '6', NULL, NULL, 0, 'date', 'Date', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (7, 1, '7', NULL, NULL, 0, 'temps', 'Temps', NULL, 1, NULL, NULL, NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (8, 3, '2', NULL, NULL, 0, 'label', 'Structure', NULL, 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (9, 3, '1', NULL, NULL, 0, 'longueur', 'Longueur', 'en mètre (m)', 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (10, 3, '1', NULL, NULL, 0, 'largeur', 'largeur', 'en mètre (m)', 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (11, 3, '9', NULL, NULL, 0, 'surface', 'Surface (m²)', NULL, 0, NULL, NULL, '.{longueur} * .{largeur}', 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (12, 3, '1', NULL, NULL, 0, 'nombre_agent', 'Nombre d''agent', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (13, 3, '1', NULL, NULL, 0, 'nombre_femme', 'Nombre des femmes', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (14, 3, '5', NULL, NULL, 0, 'note_1', 'Nombre des femmes inferieurs a 25', NULL, 1, '.{nombre_femme} < 25', '25', NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (15, 3, '10', NULL, NULL, 0, 'raison', 'Raison inferieure', NULL, 0, '.{nombre_femme} < 25', NULL, NULL, 8);
+
+-- survey_data
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x24804F5966E74A8D83E8FE57EE60EFC3, 1, '2019-08-28 08:04:03', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x2E6753DE87784432B1AE96F6220E7F85, 3, '2019-08-28 08:43:16', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x7E10BE6083BF4EC5810FD47E2013E7AD, 3, '2019-08-27 21:15:58', 1, 0);
+
+-- survey_data_item
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x56CBC3715A3C45699C3612AD0E00BF00, 6, 'date', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2019-08-16');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x01DDEAFBBC1540DEAE408B75BF8E117B, 3, 'dosekilos', 0x24804F5966E74A8D83E8FE57EE60EFC3, '20');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xF0D06189F43447A6A18AE710339C13FF, 8, 'label', 0x2E6753DE87784432B1AE96F6220E7F85, 'Access Project');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9FC0EA45085E40B8AEBF9FDEBE276373, 1, 'label', 0x24804F5966E74A8D83E8FE57EE60EFC3, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xCB7A4838D6F544029DC3C44973298C22, 10, 'largeur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '40');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x4A64E8AC16ED4D5DA521759A44F9C151, 10, 'largeur', 0x2E6753DE87784432B1AE96F6220E7F85, '50');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xB39690C2DD924A689D3A644D60D81AC5, 9, 'longueur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '75');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xDE878918262B4A41ABC11DADA19F01BE, 9, 'longueur', 0x2E6753DE87784432B1AE96F6220E7F85, '110');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x8A45E9C704474CCE9A53518D979DC435, 12, 'nombre_agent', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '112');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBE53A92025D942E39A1E69CA839C700B, 12, 'nombre_agent', 0x2E6753DE87784432B1AE96F6220E7F85, '1359');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3D145F3311CE4AF4A59B80A495F4DBCF, 13, 'nombre_femme', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0B906678C97F4C1281641B6B9447997E, 13, 'nombre_femme', 0x2E6753DE87784432B1AE96F6220E7F85, '860');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xD375C86040304E62AAE4C03C3B111CB3, 4, 'nombreFois', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBA712ED252CF45F9A693750FA04313DE, 14, 'note_1', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0E57EFF1142F4F5E8416FBDBE53E4319, 14, 'note_1', 0x2E6753DE87784432B1AE96F6220E7F85, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xE55FCC70352546F6A20B39FFFCFD9203, 2, 'poids', 0x24804F5966E74A8D83E8FE57EE60EFC3, '13');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x05DAAC76E4864FFEA21B4228236D96DD, 15, 'raison', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'Faible candidature');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x1B17203E39A848B3ABB1BA6655297BDA, 8, 'structure', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'IMA World Health');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xEC7A04D98171476BB6A18CCA79C8A67F, 11, 'surface', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '3000');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3EEB3F9A5F5C4B5AB1C82E67DDD12D0B, 11, 'surface', 0x2E6753DE87784432B1AE96F6220E7F85, '5500');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x083E7B7DCC3642BCB03599B23C02CB62, 7, 'temps', 0x24804F5966E74A8D83E8FE57EE60EFC3, '12:24');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9C388012F6CF408FBDD5B510649DBD58, 5, 'voie', 0x24804F5966E74A8D83E8FE57EE60EFC3, 'IV');

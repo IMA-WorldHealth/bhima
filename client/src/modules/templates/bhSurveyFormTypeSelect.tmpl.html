@@ -1,0 +1,30 @@
+<div ng-form="SurveyTypeSelectForm" bh-survey-form-type-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : SurveyTypeSelectForm.$submitted && SurveyTypeSelectForm.type_element.$invalid }">
+
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+    <ng-transclude></ng-transclude>
+
+    <ui-select
+      name="type_element"
+      ng-model= "$ctrl.typeElement"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.SELECT_TYPE_DATA' | translate }}">
+        <span> {{ $select.selected.plainText }}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="surveyType.id as surveyType in $ctrl.surveyTypes | filter: { 'plainText': $select.search }">
+        <span ng-bind-html="surveyType.plainText | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="SurveyTypeSelectForm.type_element.$error" ng-show="SurveyTypeSelectForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

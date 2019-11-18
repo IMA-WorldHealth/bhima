@@ -1,0 +1,110 @@
+<form name="DataCollectorManagementForm" bh-submit="DataCollectorManagementModalCtrl.submit(DataCollectorManagementForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+
+      <li class="title">
+        <span translate>TREE.FORMS_MANAGEMENT</span>
+        <label ng-if="DataCollectorManagementModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!DataCollectorManagementModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+    <!-- label -->
+    <div class="form-group" ng-class="{ 'has-error' : DataCollectorManagementForm.$submitted && DataCollectorManagementForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <div>
+        <input name="label" ng-model="DataCollectorManagementModalCtrl.dataCollector.label" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <div class="help-block" ng-messages="DataCollectorManagementForm.label.$error" ng-show="DataCollectorManagementForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <!-- description -->
+    <div class="form-group" ng-class="{ 'has-error' : DataCollectorManagementForm.$submitted && DataCollectorManagementForm.description.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DETAILS</label>
+      <textarea
+        ng-model="DataCollectorManagementModalCtrl.dataCollector.description"
+        name="description"
+        class="form-control"
+        rows="4">
+      </textarea>
+      <div class="help-block" ng-messages="DataCollectorManagementForm.description.$error" ng-show="DataCollectorManagementForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- version_number -->
+    <div class="form-group" ng-class="{ 'has-error' : DataCollectorManagementForm.$submitted && DataCollectorManagementForm.version_number.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.VERSION</label>
+      <input type="number" name="version_number" ng-model="DataCollectorManagementModalCtrl.dataCollector.version_number" autocomplete="off" ng-maxlength="90" class="form-control" required>
+      <div class="help-block" ng-messages="DataCollectorManagementForm.version_number.$error" ng-show="DataCollectorManagementForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+    <!-- color -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.COLOR</label>
+      <ui-select tagging name="color" ng-model="DataCollectorManagementModalCtrl.dataCollector.color">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
+          <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+          <span translate>{{$select.selected.name}}</span>
+        </ui-select-match>
+        <ui-select-choices repeat="val.value as val in DataCollectorManagementModalCtrl.colors | filter: {'name' :$select.search}">
+          <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
+        </ui-select>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="is_related_patient"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="DataCollectorManagementModalCtrl.dataCollector.is_related_patient">
+        <span>
+          <strong translate>
+            FORM.INFO.IS_RELATED_PATIENT
+          </strong>
+        </span>
+      </label>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="include_patient_data"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="DataCollectorManagementModalCtrl.dataCollector.include_patient_data">
+        <span>
+          <strong translate>
+            FORM.INFO.INCLUDE_PATIENT_DATA
+          </strong>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <p id="data-collector-management-same" ng-if="DataCollectorManagementModalCtrl.hasNoChange" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_CHANGE</span>
+    </p>
+
+    <p ng-if="DataCollectorManagementForm.$submitted && DataCollectorManagementForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.GENERIC</span>
+    </p>
+
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="DataCollectorManagementModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="DataCollectorManagementForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

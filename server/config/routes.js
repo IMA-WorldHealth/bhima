@@ -142,6 +142,15 @@ const lots = require('../controllers/stock/lots');
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
+
+// Data Kit
+const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
+const choicesListManagement = require('../controllers/admin/choicesListManagement');
+const surveyForm = require('../controllers/admin/surveyForm');
+const fillFormsData = require('../controllers/admin/fillFormsData');
+const displayMetadata = require('../controllers/admin/displayMetadata');
+const displayMetadataReport = require('../controllers/admin/metadataReport');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -977,4 +986,39 @@ exports.configure = function configure(app) {
   app.post('/cron_email_reports', cronEmailReport.create);
   app.post('/cron_email_reports/:id', cronEmailReport.send);
   app.delete('/cron_email_reports/:id', cronEmailReport.remove);
+
+  // API for Data Collector Management routes crud
+  app.get('/data_collector_management', dataCollectorManagement.list);
+  app.get('/data_collector_management/:id', dataCollectorManagement.detail);
+  app.post('/data_collector_management', dataCollectorManagement.create);
+  app.put('/data_collector_management/:id', dataCollectorManagement.update);
+  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);
+
+  // API for CHOISES LIST MANAGEMENT routes crud
+  app.get('/choices_list_management', choicesListManagement.list);
+  app.get('/choices_list_management/:id', choicesListManagement.detail);
+  app.post('/choices_list_management', choicesListManagement.create);
+  app.put('/choices_list_management/:id', choicesListManagement.update);
+  app.delete('/choices_list_management/:id', choicesListManagement.delete);
+
+  // API for SURVEY FORM routes crud
+  app.get('/survey_form', surveyForm.list);
+  app.get('/survey_form/listSurveyformtype', surveyForm.listSurveyformtype);
+  app.get('/survey_form/:id', surveyForm.detail);
+  app.post('/survey_form', surveyForm.create);
+  app.put('/survey_form/:id', surveyForm.update);
+  app.delete('/survey_form/:id', surveyForm.delete);
+
+  // API for Fill in the forms of the data
+  app.get('/fill_form/:uuid', fillFormsData.detail);
+  app.post('/fill_form', fillFormsData.create);
+  app.post('/fill_form/restoreImage', fillFormsData.restoreImage);
+  app.post('/fill_form/:uuid/:key/image', upload.middleware('pics', 'image'), fillFormsData.uploadImage);
+  app.put('/fill_form/:uuid', fillFormsData.update);
+
+  // API for DISPLAY METADATA routes crud
+  app.get('/display_metadata', displayMetadata.list);
+  app.get('/display_metadata/card', displayMetadataReport.metadataCard);
+  app.get('/data_kit/report', displayMetadataReport.reportMetadata);
+  app.delete('/display_metadata/:uuid', displayMetadata.delete);
 };

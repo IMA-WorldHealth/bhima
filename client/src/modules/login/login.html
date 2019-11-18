@@ -5,12 +5,30 @@
 
         <div
           ng-if="!LoginCtrl.installationExist && LoginCtrl.finishInstallationChecking && !LoginCtrl.installationCheckingError"
-          class="text-center" style="margin-top : calc(50vh - 190px); max-width: 400px; margin-right: auto; margin-left: auto;">
-          <p>
-            <span translate>INSTALL.NO_INSTALLATION</span><br>
+          style="margin-top : calc(50vh - 150px);">
+
+          <h1 translate class="text-center">INSTALL.TITLE</h1>
+
+          <p translate>INSTALL.NO_INSTALLATION</p>
+
+          <div uib-dropdown class="text-right">
+            <a uib-dropdown-toggle href="">
+              <span translate>FORM.SELECT.LANGUAGE</span>
+              <span class="caret"></span>
+            </a>
+            <ul role="menu" uib-dropdown-menu class="dropdown-menu-right">
+              <li role="menuitem" ng-repeat="(key, lang) in LoginCtrl.languages">
+                <a ng-click="LoginCtrl.languageService.set(key)" href>{{ lang.name }}</a>
+              </li>
+            </ul>
+          </div>
+
+          <br />
+          <div class="text-center">
             <a class="btn btn-primary" ui-sref="install" translate>FORM.BUTTONS.INSTALL</a>
-          </p>
+          </div>
         </div>
+
         <!--loading indicator-->
         <center>
           <span

@@ -1,0 +1,39 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.DATA_COLLECTION </li>
+      <li class="title" translate> TREE.FILL_FORM </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="FillFormCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : FillFormCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid"> 
+    <div id="fill-form-grid" 
+      ui-grid="FillFormCtrl.gridOptions" 
+      class="grid-full-height" 
+      ui-grid-auto-resize 
+      ui-grid-resize-columns> 
+      
+      <bh-grid-loading-indicator 
+        loading-state="FillFormCtrl.loading"
+        empty-state="FillFormCtrl.gridOptions.data.length === 0" 
+        error-state="FillFormCtrl.hasError"> 
+      </bh-grid-loading-indicator> 
+    </div> 
+  </div> 
+</div>

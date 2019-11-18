@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('ReferenceSearchModalController', ReferenceSearchModalController);
 
 ReferenceSearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'Store', 'util', 'PatientService', 'AccountService',
+  '$uibModalInstance', 'filters', 'Store', 'util', 'PatientService', 'AccountService', 'FormatTreeDataService',
 ];
 
 /**
@@ -13,7 +13,7 @@ ReferenceSearchModalController.$inject = [
  * search functionality on the Account Reference registry page.  Filters that are already
  * applied to the grid can be passed in via the filters inject.
  */
-function ReferenceSearchModalController(ModalInstance, filters, Store, util, Patients, Accounts) {
+function ReferenceSearchModalController(ModalInstance, filters, Store, util, Patients, Accounts, FormatTreeData) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -37,7 +37,7 @@ function ReferenceSearchModalController(ModalInstance, filters, Store, util, Pat
   Accounts.read()
     .then(elements => {
       // bind the accounts to the controller
-      const accounts = Accounts.order(elements);
+      const accounts = FormatTreeData.order(elements);
       vm.accounts = accounts;
     });
 

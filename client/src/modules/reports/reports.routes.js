@@ -41,6 +41,7 @@ angular.module('bhima.routes')
       'analysisAuxiliaryCash',
       'realizedProfit',
       'systemUsageStat',
+      'dataKit',
     ];
 
     $stateProvider

@@ -8,13 +8,14 @@ const moment = require('moment');
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
-
+const FillFormManagement = require('../fillForm/fillForm.page');
 // path to the fixtures directory
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 describe('Patient Record', () => {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
+  const fillForm = new FillFormManagement();
 
   const patient = {
     name : 'Test 2 Patient',
@@ -27,7 +28,25 @@ describe('Patient Record', () => {
   const age = (dob) => `${moment().diff(dob, 'years')}`;
   const url = root.concat(id);
 
+  const dataMedicalSheet = {
+    choice_list_id : 'Paracetamol500 mg',
+    poids : 68.9,
+    dosekilos : 1,
+    nombreFois : 3,
+    voie : 'Orale',
+    date : '1986-09-07',
+    temps : '03:16',
+    hours : '15',
+    minutes : '00',
+  };
+
   before(() => helpers.navigate(url));
+
+  it(`View and complete a patient's medical sheet`, async () => {
+    await element(by.id('form_1')).click();
+    await fillForm.fillPatientSheet(dataMedicalSheet);
+    helpers.navigate(url);
+  });
 
   it('downloads and correctly displays patient information', async () => {
     await FU.hasText(by.id('name'), patient.name);

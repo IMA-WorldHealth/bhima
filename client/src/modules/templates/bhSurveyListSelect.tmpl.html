@@ -1,0 +1,28 @@
+<div ng-form="SurveyListForm" bh-survey-list-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : SurveyListForm.$submitted && SurveyListForm.list.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.surveyLabel }}
+    </label>
+    <ng-transclude></ng-transclude>
+    <ui-select
+      name="survey"
+      ng-model= "$ctrl.survey"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CHOICE_FILTER' | translate }}">
+        <span> {{ $select.selected.label }}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="item.id as item in $ctrl.items | filter: { 'label': $select.search }">
+        <span ng-bind-html="item.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="SurveyListForm.list.$error" ng-show="SurveyListForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
