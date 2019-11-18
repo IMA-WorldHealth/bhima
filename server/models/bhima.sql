@@ -211,12 +211,9 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT'),
-<<<<<<< b219afc54c305411ce2cc9bdccd15adb20a07e98
   ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),
-  ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE');
-=======
+  ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE'),
   ('inventoryChange', 'REPORT.INVENTORY_CHANGE.TITLE');
->>>>>>> feat(inventory) change report
 
 -- Supported Languages
 INSERT INTO `language` VALUES

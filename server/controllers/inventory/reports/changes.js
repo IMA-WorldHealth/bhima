@@ -93,9 +93,7 @@ async function inventoryChanges(req, res, next) {
 
 function formatKeys(record) {
   const removables = ['group_uuid', 'type_id', 'unit_id'];
-  removables.forEach(r => {
-    delete record[r];
-  });
+  _.omit(record, removables);
   if (record.text) {
     record.label = _.clone(record.text);
     delete record.text;

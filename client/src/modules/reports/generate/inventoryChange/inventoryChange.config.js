@@ -11,8 +11,6 @@ function InventoryChangeController($sce, Notify, SavedReports, AppCache, reportD
   const cache = new AppCache('inventoryChange');
   const reportUrl = 'reports/inventory/changes/';
 
-  console.log(reportData);
-
   vm.previewGenerated = false;
   vm.reportDetails = {
     shouldShowRemainDetails : 1,
