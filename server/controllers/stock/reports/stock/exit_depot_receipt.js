@@ -1,9 +1,7 @@
 const {
-  _, ReportManager, getDepotMovement, pdf, identifiers,
+  _, ReportManager, getDepotMovement, pdf, identifiers, barcode,
   STOCK_EXIT_DEPOT_TEMPLATE, POS_STOCK_EXIT_DEPOT_TEMPLATE,
 } = require('../common');
-
-const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitDepotReceipt

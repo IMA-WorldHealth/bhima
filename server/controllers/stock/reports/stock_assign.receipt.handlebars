@@ -6,20 +6,21 @@
   <header>
     <!-- headings  -->
     <div class="row">
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
-      </div>
-      <div class="col-xs-6 text-right">
+      {{> enterpriseDetails }}
+
+      <div class="col-xs-5 text-right">
         <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'ASSIGN.STOCK_ASSIGN'}}</span><br>
-          <strong>{{details.entity_display_name}}</strong> <br>
-          <br>
+          <div class="text-uppercase">{{translate 'ASSIGN.STOCK_ASSIGN'}}</div>
+          <div><strong>{{details.entity_display_name}}</strong></div>
         </h3>
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.username}}
+        </div>
+
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <small>{{> barcode value=details.barcode}}</small>
+        {{/if}}
       </div>
     </div>
 
@@ -85,5 +86,7 @@
       </div>
     </div>
   </footer>
-
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>
