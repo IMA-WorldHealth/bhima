@@ -1,0 +1,49 @@
+{{> head title="REPORT.INVENTORY_CHANGE.TITLE"}}
+
+<body>
+  <div class="container">
+
+    <!-- header  -->
+     {{> header}}
+
+    <div class="row">
+      <h3 class="text-center"> 
+        <u>{{ translate 'REPORT.INVENTORY_CHANGE.TITLE' }} </u>
+      </h3>
+      <h3 class="text-center">
+        <small>{{date dateFrom }} - {{date dateTo}}</small>
+      </h3>
+    </div>
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+      {{#each ./inventories as | inventory |}}
+        <div class="row">
+            <h5><strong>{{inventory.inventory_name}}</strong></h5>
+            {{#each inventory.logs as  | log |}}
+            <div class="col-lg-12" style="border: 1px dashed #ddd; padding: 10px">
+
+              <span><b>{{ translate log.col}}</b></span>
+              <span> {{ translate 'FORM.LABELS.UPDATED'}}</span>
+              <span>{{translate 'FORM.LABELS.FROM'}}</span>
+              <span class="text-danger"><b>{{log.value.from}}</b></span>
+              <span> {{ translate 'FORM.LABELS.TO'}}</span>
+              <span class="text-primary"><b>{{log.value.to}}</b></span>
+              <br />
+              <div style="font-size:10px">
+                <span><i class="fa fa-certificate"></i></span>
+                <span>{{ timestamp log.date  }}</span>
+                <span>{{ translate 'FORM.LABELS.BY'}}</span>
+                <b><span>{{log.userName}}</span></b>
+              </div>
+            </div>
+            {{/each}}
+        </div>
+        <br/>
+      {{/each}}
+
+      </div>
+    </div>
+  </div>
+</body>

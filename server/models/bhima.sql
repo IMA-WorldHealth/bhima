@@ -149,7 +149,9 @@ INSERT INTO unit VALUES
   (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
   (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
   (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report'),
-  (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis');
+  (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis'),
+  (266, 'Inventory change Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory change Report', 144, '/modules/reports/inventoryChange', '/reports/inventoryChange');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -209,8 +211,12 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT'),
+<<<<<<< b219afc54c305411ce2cc9bdccd15adb20a07e98
   ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),
   ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE');
+=======
+  ('inventoryChange', 'REPORT.INVENTORY_CHANGE.TITLE');
+>>>>>>> feat(inventory) change report
 
 -- Supported Languages
 INSERT INTO `language` VALUES

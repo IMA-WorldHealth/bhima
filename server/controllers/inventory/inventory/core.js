@@ -4,7 +4,6 @@
 * This file contains utility functions for common operations and common error
 * handling.
 */
-
 const _ = require('lodash');
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
@@ -38,6 +37,7 @@ const errors = {
 };
 
 const inventoryColsMap = {
+
   code : 'FORM.LABELS.CODE',
   consumable : 'FORM.LABELS.CONSUMABLE',
   default_quantity : 'FORM.LABELS.DEFAULT_QUANTITY',
