@@ -8,11 +8,11 @@
 
 const debug = require('debug')('backups');
 const tmp = require('tempy');
-const util = require('./util');
 const lzma = require('lzma-native');
 const streamToPromise = require('stream-to-promise');
-const fs = require('mz/fs');
+const fs = require('fs');
 const moment = require('moment');
+const util = require('./util');
 
 /**
  * @method backup
@@ -116,7 +116,7 @@ function xz(file) {
   let beforeSizeInMegabytes;
   let afterSizeInMegabytes;
 
-  return fs.stat(file)
+  return fs.promises.stat(file)
     .then(stats => {
       beforeSizeInMegabytes = stats.size / 1000000.0;
       debug(`#xz() ${file} is ${beforeSizeInMegabytes}MB`);
@@ -130,8 +130,7 @@ function xz(file) {
       afterSizeInMegabytes = stats.size / 1000000.0;
       debug(`#xz() ${outfile} is ${afterSizeInMegabytes}MB`);
 
-      const ratio =
-        Number(beforeSizeInMegabytes / afterSizeInMegabytes).toFixed(2);
+      const ratio = Number(beforeSizeInMegabytes / afterSizeInMegabytes).toFixed(2);
 
       debug(`#xz() compression ratio: ${ratio}`);
 
@@ -149,8 +148,7 @@ function upload(file, options = {}) {
   debug(`#upload() Not Implemented Yet!`);
 
   if (!options.name) {
-    options.name =
-      `${process.env.DB_NAME}-${moment().format('YYYY-MM-DD')}.sql.xz`;
+    options.name = `${process.env.DB_NAME}-${moment().format('YYYY-MM-DD')}.sql.xz`;
   }
 }
 

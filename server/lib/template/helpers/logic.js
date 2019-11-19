@@ -1,4 +1,4 @@
-const fs = require('mz/fs');
+const fs = require('fs');
 const util = require('../../util');
 
 // test equality
