@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 ActionRequisitionModalController.$inject = [
-  '$state', 'Store', 'InventoryService', 'DepotService', 'NotifyService',
+  '$state', 'Store', 'InventoryService', 'NotifyService',
   '$uibModalInstance', 'StockService', 'ReceiptModal',
 ];
 
 function ActionRequisitionModalController(
-  $state, Store, Inventories, Depots, Notify, Modal, Stock, Receipts
+  $state, Store, Inventories, Notify, Modal, Stock, Receipts
 ) {
   const vm = this;
   const store = new Store({ data : [] });
@@ -89,9 +89,16 @@ function ActionRequisitionModalController(
   function autoSuggestInventories() {
     if (!vm.enableAutoSuggest) { return; }
 
+    toggleLoadingSuggest();
+
     Stock.inventories.read(null, { depot_uuid : vm.model.requestor_uuid })
       .then(clearAndFillGrid)
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(toggleLoadingSuggest);
+  }
+
+  function toggleLoadingSuggest() {
+    vm.loadingSuggest = !vm.loadingSuggest;
   }
 
   function clearAndFillGrid(rows) {
@@ -123,10 +130,6 @@ function ActionRequisitionModalController(
     Inventories.read()
       .then(rows => {
         vm.selectableInventories = rows;
-        return Depots.read(null);
-      })
-      .then(rows => {
-        vm.depots = rows;
       })
       .catch(Notify.handleError);
   }

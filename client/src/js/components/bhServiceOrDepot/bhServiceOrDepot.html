@@ -11,7 +11,7 @@
     <label
       ng-repeat="requestor in $ctrl.requestors"
       class="radio-inline"
-      title="{{requestor.title_key | translate}}">
+      translate-attr="{ title : requestor.title_key  }">
       <input
         name="requestor"
         type="radio"

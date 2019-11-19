@@ -481,6 +481,8 @@ function StockExitController(
 
   // submit service
   function submitService(form) {
+    let documentUuid;
+
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
@@ -497,12 +499,16 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
+        documentUuid = document.uuid;
+
         // update requisition status if needed
-        if (vm.requisition) {
-          const COMPLETED_STATUS = 2;
-          Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
-        }
-        ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
+        if (!vm.requisition) { return null; }
+        
+        const COMPLETED_STATUS = 2;
+        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+      })
+      .then(() => {
+        ReceiptModal.stockExitServiceReceipt(documentUuid, bhConstants.flux.TO_SERVICE);
         reinit(form);
       })
       .catch(Notify.handleError);
@@ -510,6 +516,8 @@ function StockExitController(
 
   // submit depot
   function submitDepot(form) {
+    let documentUuid;
+
     const movement = {
       from_depot : vm.depot.uuid,
       from_depot_is_warehouse : vm.depot.is_warehouse,
@@ -526,12 +534,16 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
+        documentUuid = document.uuid;
+
         // update requisition status if needed
-        if (vm.requisition) {
-          const COMPLETED_STATUS = 2;
-          Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
-        }
-        ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+        if (!vm.requisition) { return null; }
+
+        const COMPLETED_STATUS = 2;
+        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+      })
+      .then(() => {
+        ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);
         reinit(form);
       })
       .catch(Notify.handleError);

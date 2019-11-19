@@ -23,6 +23,6 @@ function bhHasRequisitionVoucherController() {
   };
 
   $ctrl.onChangeReference = () => {
-    $ctrl.onChange({ reference : $ctrl.reference });
+    $ctrl.onChange({ reference : $ctrl.requisitionReference });
   };
 }

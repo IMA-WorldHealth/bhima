@@ -24,30 +24,31 @@ function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'REQUISITION.SERVICE_OR_DEPOT';
 
-    // requestor type
-    Stock.stockRequestorType.read()
-      .then(rows => {
-        $ctrl.requestors = rows;
-        return Depots.read(null);
-      })
-      .then(rows => {
-        $ctrl.depots = rows;
-        return Services.read(null);
-      })
-      .then(rows => {
-        $ctrl.services = rows;
-        if ($ctrl.uuid) {
-          $ctrl.requestorType = getRequestorType($ctrl.uuid);
-        }
-      })
+    Promise.all([
+      Stock.stockRequestorType.read(),
+      Depots.read(),
+      Services.read(),
+    ])
+      .then(initCollections)
       .catch(Notify.handleError);
   };
+
+  function initCollections([requestors, depots, services]) {
+    Object.assign($ctrl, { requestors, depots, services });
+
+    $ctrl.serviceIds = $ctrl.services.map(service => service.uuid);
+    $ctrl.depotIds = $ctrl.depots.map(depot => depot.uuid);
+
+    if ($ctrl.uuid) {
+      $ctrl.requestorType = getRequestorType($ctrl.uuid);
+    }
+  }
 
   function getRequestorType(identifier) {
     const SERVICE_REQUESTOR_TYPE = 1;
     const DEPOT_REQUESTOR_TYPE = 2;
-    const foundInService = $ctrl.services.filter(elt => elt.uuid === identifier)[0];
-    const foundInDepot = $ctrl.depots.filter(elt => elt.uuid === identifier)[0];
+    const foundInService = $ctrl.serviceIds.includes(identifier);
+    const foundInDepot = $ctrl.depotIds.includes(identifier);
 
     if (foundInService) {
       return $ctrl.requestors.filter(row => row.id === SERVICE_REQUESTOR_TYPE)[0];

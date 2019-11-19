@@ -27,9 +27,9 @@
       <div style="margin-bottom: 5px;" class="space-between"> 
         <bh-add-item callback="$ctrl.addItem(numItem)" disable="true"></bh-add-item>
 
-        <button ng-disabled="!$ctrl.enableAutoSuggest" ng-click="$ctrl.autoSuggestInventories()" type="button" class="btn btn-success">
-          <i class="fa fa-cog"></i> 
-          <span translate>FORM.BUTTONS.AUTO_SUGGEST</span>
+        <button ng-disabled="!$ctrl.enableAutoSuggest || $ctrl.loadingSuggest" ng-click="$ctrl.autoSuggestInventories()" type="button" class="btn btn-success">
+          <span ng-hide="$ctrl.loadingSuggest"><i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.AUTO_SUGGEST</span></span>
+          <span ng-show="$ctrl.loadingSuggest"><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span></span>
         </button>
       </div>
       
