@@ -112,7 +112,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
   it(`DELETE /stock/requisition/:uuid delete stock requisition`, () => {
     return agent.delete(`/stock/requisition/${variables.requisitionFromServiceUuid}`)
       .then(res => {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(204);
         return agent.get('/stock/requisition');
       })
       .then(res => {
