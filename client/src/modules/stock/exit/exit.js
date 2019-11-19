@@ -503,7 +503,7 @@ function StockExitController(
 
         // update requisition status if needed
         if (!vm.requisition) { return null; }
-        
+
         const COMPLETED_STATUS = 2;
         return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
       })

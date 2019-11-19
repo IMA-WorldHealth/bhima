@@ -183,7 +183,7 @@ exports.deleteRequisition = async (req, res, next) => {
     transaction.addQuery('DELETE FROM stock_requisition WHERE uuid = ?;', [uuid]);
 
     await transaction.execute();
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

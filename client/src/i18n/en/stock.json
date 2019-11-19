@@ -215,6 +215,7 @@
     "VOUCHER_NOT_FOUND":"The requisition slip was not found",
     "ALREADY_USED":"The requisition slip has been already used",
     "NOT_FOR_SERVICE":"The requisition slip is not for services",
-    "NOT_FOR_DEPOT":"The requisition slip is not for depots"
+    "NOT_FOR_DEPOT":"The requisition slip is not for depots",
+    "NOT_FOR_THE_SAME_DEPOT":"Exit on a requisition slip can not be made on the same depot"
   }
 }
