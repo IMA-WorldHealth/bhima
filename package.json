@@ -142,7 +142,7 @@
     "merge-stream": "^2.0.0",
     "mocha": "^6.0.2",
     "mochawesome": "^4.0.0",
-    "nodemon": "^1.18.10",
+    "nodemon": "^2.0.0",
     "protractor": "^5.4.2",
     "qs": "^6.9.1",
     "release-it": "^12.3.5",
