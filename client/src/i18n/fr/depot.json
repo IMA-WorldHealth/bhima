@@ -28,7 +28,8 @@
       "NO_DEPOTS" : "Est-ce qu'il n'y a pas des dépôts?",
       "SELECT_A_DEPOT" : "Selectionner un Dépôt",
       "NO_DEFAULT_DEPOT" : "Vous devez selectionner un dépôt.",
-      "SELECTION_EXPLANATION" : "Il semble que vous n'avez pas un dépôt selectionner.  S'il vous plait, selectionnez votre dépôt dans la liste suivante.  Vous devez le faire une fois."
+      "SELECTION_EXPLANATION" : "Il semble que vous n'avez pas un dépôt selectionner.  S'il vous plait, selectionnez votre dépôt dans la liste suivante.  Vous devez le faire une fois.",
+      "SEARCH":"Recherche"
     }
   }
 }
