@@ -1,10 +1,9 @@
 {
   "INSTALL" : {
     "TITLE" : "Basic System Installation",
-    "DESCRIPTION" : "Please define the basic bhima system configuration. This configuration is required for the use of bhima.",
-    "ALREADY_INSTALLED" : "The Application is already installed",
-    "SUCCESS_INSTALL" : "Successful Application Configuration",
-    "NO_INSTALLATION" : "No installation found. Please install the application.",
-    "HERE" : "Here"
+    "DESCRIPTION" : "Welcome to BHIMA!  To get started, please enter your enterprise name and a user to serve as system administrator.",
+    "ALREADY_INSTALLED" : "The application is already installed",
+    "SUCCESS_INSTALL" : "Success!  You are now ready to use BHIMA",
+    "NO_INSTALLATION" : "It looks like you are running BHIMA for the first time.  Please click \"install\" below to begin setting up your BHIMA installation."
   }
 }

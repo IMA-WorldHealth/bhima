@@ -5,9 +5,9 @@ InstallService.$inject = ['$http', 'util'];
 
 // service definition
 function InstallService($http, util) {
-  var service = this;
+  const service = this;
 
-  var baseUrl = '/install';
+  const baseUrl = '/install';
 
   /**
    * @method checkStartInstall

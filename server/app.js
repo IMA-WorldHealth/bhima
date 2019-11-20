@@ -87,6 +87,18 @@ require('./config/express').errorHandling(app);
 // ensure the process terminates gracefully when an error occurs.
 process.on('uncaughtException', (e) => {
   debug('process.onUncaughException: %o', e);
+  /**
+   * TODO(@jniles) - crash the server on uncaught exceptions.  At the moment, we cannot
+   * do this because of a longstanding bug in wkhtmltopdf that prevents us from catching
+   * errors does to broken src="" links.  It occurs if the enterprise logo is destroyed.
+   * SEE: https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2051
+   */
+  // process.exit(1);
+});
+
+// crash on unhandled promise rejections
+process.on('unhandledRejection', (e) => {
+  debug('process.onUnhandledRejection: %o', e);
   process.exit(1);
 });
 

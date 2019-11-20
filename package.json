@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -46,7 +46,7 @@
     "@bower_components/angular-ui-router": "angular-ui/angular-ui-router-bower#1.0.0-rc.1",
     "@types/angular": "^1.6.53",
     "accounting-js": "^1.1.1",
-    "angular": "^1.7.8",
+    "angular": "^1.7.9",
     "angular-animate": "^1.7.8",
     "angular-dynamic-locale": "^0.1.37",
     "angular-growl-notifications": "^2.6.0",
@@ -113,7 +113,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-datetime": "^1.5.0",
-    "chai-http": "^1.0.0",
+    "chai-http": "^4.3.0",
     "commitizen": "^4.0.0",
     "cssnano": "^4.1.10",
     "cz-conventional-changelog": "^3.0.0",
@@ -144,6 +144,7 @@
     "mocha": "^6.0.2",
     "mochawesome": "^4.0.0",
     "protractor": "^5.4.2",
+    "qs": "^6.9.1",
     "release-it": "^12.3.5",
     "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
