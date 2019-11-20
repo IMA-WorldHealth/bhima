@@ -60,6 +60,7 @@ write_files:
 
       [Service]
       Environment=NODE_ENV=production
+      WorkingDirectory=/opt/bhima/bin/
       Type=simple
       User=bhima
       WorkingDirectory=/opt/bhima/bin

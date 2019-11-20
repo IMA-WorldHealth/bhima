@@ -46,7 +46,7 @@
     "@bower_components/angular-ui-router": "angular-ui/angular-ui-router-bower#1.0.0-rc.1",
     "@types/angular": "^1.6.53",
     "accounting-js": "^1.1.1",
-    "angular": "^1.7.8",
+    "angular": "^1.7.9",
     "angular-animate": "^1.7.8",
     "angular-dynamic-locale": "^0.1.37",
     "angular-growl-notifications": "^2.6.0",
