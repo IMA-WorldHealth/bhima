@@ -62,6 +62,7 @@ write_files:
       Environment=NODE_ENV=production
       Type=simple
       User=bhima
+      WorkingDirectory=/opt/bhima/bin
       ExecStart=/usr/bin/node /opt/bhima/bin/server/app.js
       Restart=on-failure
 
