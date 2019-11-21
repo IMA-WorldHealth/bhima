@@ -351,6 +351,9 @@ exports.configure = function configure(app) {
   app.post('/depots', depots.create);
   app.delete('/depots/:uuid', depots.remove);
 
+  // special route for searching depot by name
+  app.get('/depots/search/name', depots.searchByName);
+
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);

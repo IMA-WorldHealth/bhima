@@ -34,6 +34,7 @@ function DepotManagementController(
   vm.gridOptions = {
     appScopeProvider  : vm,
     enableColumnMenus : false,
+    showColumnFooter  : true,
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
@@ -44,6 +45,8 @@ function DepotManagementController(
         displayName : 'DEPOT.LABEL',
         headerCellFilter : 'translate',
         cellTemplate : '/modules/depots/templates/label.tmpl.html',
+        aggregationType : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
       },
       {
         field : 'location',

@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhDepotSelect', {
-    templateUrl : 'modules/templates/bhDepotSelect.tmpl.html',
+    templateUrl : 'js/components/bhDepotSelect/bhDepotSelect.tmpl.html',
     controller  : DepotSelectController,
     transclude  : true,
     bindings    : {
@@ -19,16 +19,26 @@ function DepotSelectController(Depots, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
-    // load all depots
-    Depots.read()
-      .then(depots => {
-        $ctrl.depots = depots;
-      })
-      .catch(Notify.handleError);
+    if ($ctrl.depotUuid) {
+      Depots.read($ctrl.depotUuid)
+        .then(depot => {
+          $ctrl.depotText = depot.text;
+        })
+        .catch(Notify.handleError);
+    }
+  };
+
+  $ctrl.searchByName = text => {
+    const options = {
+      text : (text || '').toLowerCase(),
+    };
+
+    return Depots.searchByName(options);
   };
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = depot => {
+    $ctrl.depotText = depot.text;
     $ctrl.onSelectCallback({ depot });
   };
 }

@@ -7,18 +7,21 @@
 
     <ng-transclude></ng-transclude>
 
-    <ui-select
+    <!-- search by Name  -->
+    <input
+      type="text"
+      class="form-control"
       name="depot_uuid"
-      ng-model="$ctrl.depotUuid"
-      on-select="$ctrl.onSelect($item, $model)"
+      ng-model="$ctrl.depotText"
+      ng-keypress="$ctrl.onKeyPress($event)"
+      uib-typeahead="depot for depot in $ctrl.searchByName($viewValue)"
+      typeahead-loading="$ctrl.loading"
+      typeahead-template-url="/modules/templates/depotList.tmpl.html"
+      typeahead-on-select="$ctrl.onSelect($item, $model)"
+      typeahead-min-length="0"
+      autocomplete="off"
+      translate-attr="{ 'placeholder': 'FORM.SELECT.DEPOT' }"
       ng-required="$ctrl.required">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.DEPOT' | translate }}">
-        <span>{{$select.selected.text}}</span>
-      </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="depot.uuid as depot in $ctrl.depots | filter: { 'text': $select.search }">
-        <span ng-bind-html="depot.text | highlight:$select.search"></span>
-      </ui-select-choices>
-    </ui-select>
 
     <div class="help-block" ng-messages="DepotForm.depot_uuid.$error" ng-show="DepotForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

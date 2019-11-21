@@ -7,10 +7,12 @@
 *
 * @todo(jniles) - review this module
 */
+const _ = require('lodash');
 
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
 
 /** expose depots routes */
@@ -19,6 +21,7 @@ exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
+exports.searchByName = searchByName;
 
 
 /**
@@ -147,6 +150,47 @@ function list(req, res, next) {
     .then(rows => {
       res.status(200).json(rows);
     })
+    .catch(next)
+    .done();
+}
+
+/*
+ * @method searchByName
+ *
+ * @description
+ * This method implements a depot search that will only return very limited information
+ */
+function searchByName(req, res, next) {
+  // filter parser not implemented - all other params should be ignored
+  const searchValue = req.query.text;
+  const searchLimit = req.query.limit;
+  const searchParameter = `%${searchValue}%`;
+
+  if (_.isUndefined(searchValue)) {
+    return next(new BadRequest('text attribute must be specified for a name search'));
+  }
+
+  // current default limit - this could be defined through req.query if there is a need for this
+  const limit = searchLimit || 10;
+
+  const sql = `
+    SELECT
+      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
+      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
+      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+    FROM depot d
+      LEFT JOIN village v ON v.uuid = d.location_uuid
+      LEFT JOIN sector s ON s.uuid = v.sector_uuid
+      LEFT JOIN province p ON p.uuid = s.province_uuid
+      LEFT JOIN country c ON c.uuid = p.country_uuid
+    WHERE LOWER(d.text) LIKE ?
+    LIMIT ${limit}
+  `;
+
+  return db.exec(sql, [searchParameter])
+    .then((results) => res.send(results))
     .catch(next)
     .done();
 }

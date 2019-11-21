@@ -388,6 +388,7 @@ function getStockConsumption(periodIds) {
  * @description
  * Algorithm to calculate the CMM (consommation moyenne mensuelle) or average stock consumption
  * over a period for each stock item that has been consumed.
+ * NOTA: A FISCAL YEAR MUST BE DEFINED FOR THE FEATURE WORK PROPERLY
  *
  * @param {number} periodId - the base period
  * @param {Date} periodDate - a date for finding the correspondant period
@@ -487,7 +488,7 @@ function getInventoryQuantityAndConsumption(params) {
 
   return getLots(sql, params, clause)
     .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
-    .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
+    .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;
 
