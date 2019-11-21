@@ -430,46 +430,43 @@ function StockExitController(
   }
 
   function buildDescription(entityUuid, invoiceUuid) {
-    const glb = {};
-    return PatientService.read(null, { uuid : entityUuid })
-      .then(([patient]) => {
-        if (patient) {
-          glb.patientDescription = patient.display_name.concat(` (${patient.reference})`);
-        }
-        return invoiceUuid ? PatientInvoiceService.read(null, { uuid : invoiceUuid }) : [];
-      })
-      .then(([invoice]) => {
-        if (invoice) {
-          glb.invoiceDescription = invoice.reference;
-        }
-        return ServiceService.read(null, { uuid : entityUuid });
-      })
-      .then(([service]) => {
-        let description = '';
-        if (service) {
-          glb.serviceDescription = service.name;
+    const dbPromises = [
+      PatientService.read(null, { uuid : entityUuid }),
+      ServiceService.read(null, { uuid : entityUuid }),
+      invoiceUuid ? PatientInvoiceService.read(null, { uuid : invoiceUuid }) : [],
+    ];
+
+    return Promise.all(dbPromises)
+      .then(([patients, services, invoices]) => {
+        const i18nKeys = { depot : vm.depot.text };
+
+        if (patients && patients.length) {
+          const patient = patients[0];
+          i18nKeys.patient = patient.display_name.concat(` (${patient.reference})`);
         }
 
-        if (vm.depot.text && glb.patientDescription) {
-          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED', {
-            patient : glb.patientDescription,
-            depot : vm.depot.text,
-          });
+        if (invoices && invoices.length) {
+          const invoice = invoices[0];
+          i18nKeys.invoice = invoice.reference;
         }
 
-        if (vm.depot.text && glb.patientDescription && glb.invoiceDescription) {
-          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED_WITH_INVOICE', {
-            patient : glb.patientDescription,
-            invoice : glb.invoiceDescription,
-            depot : vm.depot.text,
-          });
+        if (services && services.length) {
+          const service = services[0];
+          i18nKeys.service = service.name;
         }
 
-        if (vm.depot.text && glb.serviceDescription) {
-          description = $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', {
-            service : glb.serviceDescription,
-            depot : vm.depot.text,
-          });
+        let description;
+
+        if (vm.depot.text && i18nKeys.patient) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED', i18nKeys);
+        }
+
+        if (vm.depot.text && i18nKeys.patient && i18nKeys.invoice) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED_WITH_INVOICE', i18nKeys);
+        }
+
+        if (vm.depot.text && i18nKeys.service) {
+          description = $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', i18nKeys);
         }
 
         return description ? description.concat(' : ') : '';
