@@ -28,6 +28,12 @@ function DepotSelectController(Depots, Notify) {
     }
   };
 
+  $ctrl.$onChanges = changes => {
+    if (changes.depotUuid && changes.depotUuid.currentValue === undefined) {
+      $ctrl.depotText = undefined;
+    }
+  };
+
   $ctrl.searchByName = text => {
     const options = {
       text : (text || '').toLowerCase(),
