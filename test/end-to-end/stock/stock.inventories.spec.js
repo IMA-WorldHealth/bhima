@@ -38,7 +38,7 @@ function StockInventoriesRegistryTests() {
   it('find inventory by name', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 4);
     await filters.resetFilters();
   });
 
