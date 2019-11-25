@@ -45,7 +45,7 @@ describe('Patient Record', () => {
   it(`View and complete a patient's medical sheet`, async () => {
     await element(by.id('form_1')).click();
     await fillForm.fillPatientSheet(dataMedicalSheet);
-    helpers.navigate(url);
+    await helpers.navigate(url);
   });
 
   it('downloads and correctly displays patient information', async () => {
