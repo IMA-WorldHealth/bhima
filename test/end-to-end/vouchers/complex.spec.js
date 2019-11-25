@@ -1,6 +1,7 @@
-/* global by */
+/* global by browser */
 /* eslint no-await-in-loop:off */
 
+const EC = require('protractor').ExpectedConditions;
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const ComplexVoucherPage = require('./complex.page');
@@ -93,62 +94,7 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
-  });
-
-  it.skip('forbid submit when there is no transfer type for financial account', async () => {
-    const page = new ComplexVoucherPage();
-
-    /*
-     * the voucher we will use in this page
-     * NOTE: the Caisse Aux is a financial account which involve that we
-     * specify the transfer type
-     */
-    const voucher = {
-      date        : new Date(),
-      description : 'Complex voucher test e2e',
-      rows        : [
-        {
-          account : 'CASH PAYMENT CLIENT', debit : 17, credit : 0, entity : { type : 'D', name : 'Test 2 Patient' },
-        },
-        {
-          account : 'Caisse Aux', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
-        },
-      ],
-    };
-
-    // configure the date to today
-    await page.date(voucher.date);
-
-    // set the description
-    await page.description(voucher.description);
-
-    // set the currency to USD
-    await page.currency(2);
-
-    // loop through each row and assign the correct form values
-    let idx = 0;
-    // eslint-disable-next-line
-    for (const row of voucher.rows) {
-      const current = page.row(idx);
-      await current.account(row.account);
-      await current.debit(row.debit);
-      await current.credit(row.credit);
-      if (row.entity) {
-        await current.entity(row.entity.type, row.entity.name);
-      }
-      if (row.reference) {
-        await current.reference(row.reference.type, row.reference.index);
-      }
-
-      idx += 1;
-    }
-
-    // submit the page
-    await page.submit();
-
-    // expect a danger notification
-    await components.notification.hasDanger();
+    await FU.modal.close();
   });
 
   it('Convention import invoices and payment via the tool', async () => {
@@ -164,6 +110,8 @@ describe('Complex Vouchers', () => {
 
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    await browser.wait(EC.visibilityOf($('[uib-modal-window]')), 1500);
 
     await components.cashboxSelect.set(detail.cashbox);
 
@@ -186,7 +134,7 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
+    await FU.modal.close();
   });
 
   it('Support Patient Invoices by an Account via the tool', async () => {
@@ -202,6 +150,8 @@ describe('Complex Vouchers', () => {
 
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    await browser.wait(EC.visibilityOf($('[uib-modal-window]')), 1500);
 
     // select account
     await components.accountSelect.set(detail.accountNumber);
@@ -225,7 +175,7 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
+    await FU.modal.close();
   });
 
   it('Generic Income via the tool', async () => {
@@ -240,6 +190,8 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
+    await browser.wait(EC.visibilityOf($('[uib-modal-window]')), 1500);
+
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
@@ -262,7 +214,7 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
+    await FU.modal.close();
   });
 
   it('Generic Expense via the tool', async () => {
@@ -277,6 +229,8 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
+    await browser.wait(EC.visibilityOf($('[uib-modal-window]')), 1500);
+
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
@@ -299,40 +253,7 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
-  });
-
-  it.skip('Cash Transfer via the tool', async () => {
-    const detail = {
-      tool    : 'Transfert d\'argent',
-      cashbox : 'Caisse Aux',
-      account : '58511010', // 58511010 - Virement des fonds Caisse Auxiliaire - Caisse Principale USD
-      amount  : 200,
-    };
-
-    // click on the convention tool
-    await FU.dropdown('[toolbar-dropdown]', detail.tool);
-
-    // select the cashbox (the first ie $)
-    await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
-
-    // select the account
-    await components.accountSelect.set(detail.account);
-
-    // amount
-    await components.currencyInput.set(detail.amount);
-
-    // validate selection
-    await FU.modal.submit();
-
-    // submit voucher
-    await FU.buttons.submit();
-
-    // make sure a receipt was opened
-    await FU.exists(by.id('receipt-confirm-created'), true);
-
-    // close the modal
-    await $('[data-method="close"]').click();
+    await FU.modal.close();
   });
 
   it('Employees Salary Paiement via the tool', async () => {
@@ -348,6 +269,8 @@ describe('Complex Vouchers', () => {
 
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    await browser.wait(EC.visibilityOf($('[uib-modal-window]')), 1500);
 
     // Select Cashbox
     await components.cashboxSelect.set(detail.cashbox);
@@ -370,6 +293,6 @@ describe('Complex Vouchers', () => {
     await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    await $('[data-method="close"]').click();
+    await FU.modal.close();
   });
 });
