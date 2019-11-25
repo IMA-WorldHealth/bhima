@@ -13,7 +13,7 @@
 
 const q = require('q');
 const path = require('path');
-const fs = require('mz/fs');
+const fs = require('fs');
 const debug = require('debug')('mailer');
 
 const mailgun = require('mailgun-js')({
@@ -41,7 +41,7 @@ function processAttachments(attachments = []) {
         debug(`#processAttachments() loading ${attach.path}`);
 
         // asynchronously load the file and add it as as an attachment
-        return fs.readFile(attach.path)
+        return fs.promises.readFile(attach.path)
           .then(file => new mailgun.Attachment({ filename : attach.filename, data : file }));
       }
 
