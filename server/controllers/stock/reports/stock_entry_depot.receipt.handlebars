@@ -6,15 +6,9 @@
   <header>
     <!-- headings  -->
     <div class="row">
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
-      </div>
-      <div class="col-xs-6 text-right">
+      {{> enterpriseDetails }}
+
+      <div class="col-xs-5 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">
             {{translate 'STOCK.RECEIPT.ENTRY_DEPOT'}}

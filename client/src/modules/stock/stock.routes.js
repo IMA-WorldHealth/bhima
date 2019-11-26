@@ -69,7 +69,26 @@ angular.module('bhima.routes')
           creating : { value : true },
           filters : [],
         },
-        onEnter : ['$state', 'StockModalService', onEnterFactory('create')],
+        onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockAssign')],
+        onExit : ['$uibModalStack', closeModals],
+      })
+
+      .state('stockRequisition', {
+        url         : '/stock/requisition',
+        controller  : 'StockRequisitionController as StockCtrl',
+        templateUrl : 'modules/stock/requisition/registry.html',
+        params : {
+          filters : [],
+        },
+      })
+      .state('stockRequisition.create', {
+        url : '/create',
+        params : {
+          creating : { value : true },
+          filters : [],
+          depot : null,
+        },
+        onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockRequisition')],
         onExit : ['$uibModalStack', closeModals],
       });
   }]);
@@ -80,12 +99,17 @@ function closeModals($uibModalStack) {
 }
 
 // creates both the create and update states
-function onEnterFactory(stateType) {
+function onEnterFactory(stateType, state) {
   const isCreateState = stateType === 'create';
 
   return function onEnter($state, StockModal) {
-    const instance = StockModal.openActionStockAssign();
-    instance
+    const mapAction = {
+      stockAssign : StockModal.openActionStockAssign,
+      stockRequisition : StockModal.openActionStockRequisition,
+    };
+
+    const instance = mapAction[state];
+    instance()
       .then((_uuid) => {
         const params = { uuid : _uuid };
 
@@ -95,10 +119,10 @@ function onEnterFactory(stateType) {
           params.updated = true;
         }
 
-        $state.go('stockAssign', params, { reload : true });
+        $state.go(state, params, { reload : true });
       })
       .catch(() => {
-        $state.go('stockAssign', { uuid : $state.params.id }, { notify : false });
+        $state.go(state, { uuid : $state.params.id }, { notify : false });
       });
   };
 }

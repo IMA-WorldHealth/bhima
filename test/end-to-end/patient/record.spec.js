@@ -40,12 +40,11 @@ describe('Patient Record', () => {
     minutes : '00',
   };
 
-  before(() => helpers.navigate(url));
+  beforeEach(() => helpers.navigate(url));
 
   it(`View and complete a patient's medical sheet`, async () => {
     await element(by.id('form_1')).click();
     await fillForm.fillPatientSheet(dataMedicalSheet);
-    await helpers.navigate(url);
   });
 
   it('downloads and correctly displays patient information', async () => {

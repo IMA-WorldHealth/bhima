@@ -30,6 +30,12 @@ function StockService(Api, StockFilterer) {
   // API for stock assignment
   const stockAssign = new Api('/stock/assign/');
 
+  // API for stock requisition
+  const stockRequisition = new Api('/stock/requisition/');
+
+  // API for stock requisition
+  const stockRequestorType = new Api('/stock/requestor_type/');
+
   // Overide the stock assign api
   stockAssign.remove = uuid => {
     return stockAssign.$http.put(`/stock/assign/${uuid}/remove`)
@@ -48,6 +54,7 @@ function StockService(Api, StockFilterer) {
   // Filter service
   const StockLotFilters = new StockFilterer('stock-lot-filters');
   const StockAssignFilters = new StockFilterer('stock-assign-filters');
+  const StockRequisitionFilters = new StockFilterer('stock-requisition-filters');
   const StockMovementFilters = new StockFilterer('stock-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
   const StockDepotFilters = new StockFilterer('stock-depot-filters');
@@ -59,6 +66,7 @@ function StockService(Api, StockFilterer) {
     movement : StockMovementFilters,
     inventory : StockInventoryFilters,
     depot : StockDepotFilters,
+    requisition : StockRequisitionFilters,
   };
 
   // uniformSelectedEntity function implementation
@@ -126,6 +134,8 @@ function StockService(Api, StockFilterer) {
   return {
     stocks,
     stockAssign,
+    stockRequisition,
+    stockRequestorType,
     lots,
     movements,
     inventories,

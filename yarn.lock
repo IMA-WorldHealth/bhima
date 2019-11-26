@@ -6205,10 +6205,10 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-lzma-native@^4.0.3:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/lzma-native/-/lzma-native-4.0.5.tgz#37e6880eabfe6c07d89eb4ebce4528ecaeb44ba4"
-  integrity sha512-pmLMsHQlXQAikqGqapzUOtACPW/gEtt9xhkcrkJnsjWn+I1g7OIbrV2SugL8jinkBCD+QxqAze51VtRsECDcxQ==
+lzma-native@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/lzma-native/-/lzma-native-5.0.0.tgz#404030291d09f28073536d9df006c6badd0ff771"
+  integrity sha512-4Cfgl1Rochq+fjiGv3bYuXPA0TaOQn1zxkoaiT6WnQXdXfbbKGX7q9rrI+3noFDdp12KaV5Z2uT1b0aVKPYoQA==
   dependencies:
     nan "^2.14.0"
     node-pre-gyp "^0.11.0"

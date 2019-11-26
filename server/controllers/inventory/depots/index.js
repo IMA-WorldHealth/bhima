@@ -111,7 +111,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = req.query;
+  const options = db.convert(req.query, ['uuid']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -141,6 +141,7 @@ function list(req, res, next) {
   );
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
+  filters.equals('uuid', 'uuid', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
 

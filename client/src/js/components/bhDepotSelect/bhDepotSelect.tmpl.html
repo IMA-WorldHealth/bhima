@@ -3,7 +3,9 @@
     class="form-group"
     ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.depot_uuid.$invalid }">
 
-    <label class="control-label" translate>STOCK.DEPOT</label>
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
 
     <ng-transclude></ng-transclude>
 

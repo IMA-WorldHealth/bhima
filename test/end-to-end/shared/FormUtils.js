@@ -8,19 +8,19 @@ const { expect } = require('chai');
 // However, this decision can be reviewed
 const buttons = {
   create : () => $('[data-method="create"]').click(),
-  search : function search() { return $('[data-method="search"]').click(); },
-  submit : function submit() { return $('[data-method="submit"]').click(); },
-  cancel : function cancel() { return $('[data-method="cancel"]').click(); },
-  edit   : function edit() { return $('[data-method="edit"]').click(); },
-  clear  : function clear() { return $('[data-method="clear"]').click(); },
-  print  : function print() { return $('[data-method="print"]').click(); },
-  back   : function back() { return $('[data-method="back"]').click(); },
-  reset  : function reset() { return $('[data-method="reset"]').click(); },
-  delete : function delet() { return $('[data-method="delete"]').click(); },
-  configure : function configure() { return $('[data-method="configure"]').click(); },
-  add : function configure() { return $('[data-method="add"]').click(); },
-  save : function configure() { return $('[data-method="save"]').click(); },
-  grouping : function grouping() { return $('[data-method="grouping"]').click(); },
+  search : () => $('[data-method="search"]').click(),
+  submit : () => $('[data-method="submit"]').click(),
+  cancel : () => $('[data-method="cancel"]').click(),
+  edit   : () => $('[data-method="edit"]').click(),
+  clear  : () => $('[data-method="clear"]').click(),
+  print  : () => $('[data-method="print"]').click(),
+  back   : () => $('[data-method="back"]').click(),
+  reset  : () => $('[data-method="reset"]').click(),
+  delete : () => $('[data-method="delete"]').click(),
+  configure : () => $('[data-method="configure"]').click(),
+  add : () => $('[data-method="add"]').click(),
+  save : () => $('[data-method="save"]').click(),
+  grouping : () => $('[data-method="grouping"]').click(),
 };
 
 // This methods are for easily working with modals.  Works with the same custom
@@ -47,7 +47,7 @@ const validation = {
   error : async function error(model) {
     expect(
       await element(by.model(model)).getAttribute('class'),
-      `Expected ${model} to be invalid, but could not find the ng-invalid class.`
+      `Expected ${model} to be invalid, but could not find the ng-invalid class.`,
     ).to.contain('ng-invalid');
   },
 
@@ -55,7 +55,7 @@ const validation = {
   ok : async function success(model) {
     expect(
       await element(by.model(model)).getAttribute('class'),
-      `Expected ${model} to be valid, but could not find the ng-valid class.`
+      `Expected ${model} to be valid, but could not find the ng-valid class.`,
     ).to.contain('ng-valid');
   },
 };
@@ -105,7 +105,7 @@ module.exports = {
   exists : async function exists(locator, bool) {
     expect(
       await element(locator).isPresent(),
-      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`,
     ).to.equal(bool);
   },
 
@@ -113,7 +113,7 @@ module.exports = {
   visible : async function visible(locator, bool) {
     expect(
       await element(locator).isDisplayed(),
-      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}be visible.`
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}be visible.`,
     ).to.equal(bool);
   },
 
@@ -244,7 +244,7 @@ module.exports = {
     await $(selector).click();
 
     const option = anchor.element(by.cssContainingText('[uib-dropdown-menu] > li', label));
-    return option.click();
+    await option.click();
   },
 
   /**
@@ -260,7 +260,7 @@ module.exports = {
   hasText : async function hasText(locator, text) {
     expect(
       await element(locator).getText(),
-      `Expected locator ${locator.toString()} to contain "${text}".`
+      `Expected locator ${locator.toString()} to contain "${text}".`,
     ).to.equal(text);
   },
 
