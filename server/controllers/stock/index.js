@@ -17,6 +17,8 @@ const db = require('../../lib/db');
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
+const requisition = require('./requisition/requisition');
+const requestorType = require('./requisition/requestor_type');
 
 // expose to the API
 exports.createStock = createStock;
@@ -30,6 +32,8 @@ exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
 exports.importing = importing;
 exports.assign = assign;
+exports.requisition = requisition;
+exports.requestorType = requestorType;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;

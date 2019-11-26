@@ -2,7 +2,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const MergePatientPage = require('./registry.merge.page');
 
-describe('Merge Patients', () => {
+function MergePatientTest() {
   before(() => helpers.navigate('#/patients'));
 
   const Page = new MergePatientPage();
@@ -25,4 +25,6 @@ describe('Merge Patients', () => {
     await Page.merge();
     await components.notification.hasSuccess();
   });
-});
+}
+
+module.exports = MergePatientTest;
