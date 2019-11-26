@@ -75,11 +75,10 @@ function StockServiceTests() {
     const FILE_TYPE_CSV = 'csv';
     const filterer = new StockFilterer(FILTER_KEY_MOVEMENT);
 
-    // returns the string "?renderer=csv&limit=100&period=today"
+    // returns the string "?renderer=csv&limit=100"
     const query = filterer.getQueryString(FILE_TYPE_CSV);
 
     expect(query).to.include(`renderer=${FILE_TYPE_CSV}`);
-    expect(query).to.include('period=');
     expect(query).to.include('limit=');
   });
 }

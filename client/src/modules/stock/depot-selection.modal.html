@@ -20,14 +20,22 @@
         <span translate>DEPOT.NO_DEPOT_ASSIGNED_TO_USER</span>
       </p>
     </div>
-  <div ng-if="$ctrl.depots.length>0">
+  <div ng-if="$ctrl.depots.length>0" class="clearfix">
     <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
 
+    <div ng-if="$ctrl.depots.length > $ctrl.limit" class="form-group">
+      <p class="text-primary" translate>DEPOT.MODAL.MORE_DEPOT_WARNING</p>
+      <div class="input-group">
+        <input ng-model="$ctrl.search" type="text" class="form-control" translate-attr="{ 'placeholder': 'FORM.LABELS.SEARCH' }">
+        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
+      </div>
+    </div>
+
     <!-- list of depots -->
-    <ul class="list-group">
+    <ul style="margin-bottom: 2px;" class="list-group">
       <li
         class="list-group-item"
-        ng-repeat="depot in $ctrl.depots track by depot.uuid"
+        ng-repeat="depot in $ctrl.depots  | limitTo: $ctrl.displayLimit | filter: $ctrl.search track by depot.uuid"
         ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
         ng-click="$ctrl.selectDepot(depot.uuid)"
         style="cursor:pointer;">
@@ -41,6 +49,12 @@
         </span>
       </li>
     </ul>
+
+    <a href ng-click="$ctrl.showAllDepots()" ng-if="$ctrl.depots.length > $ctrl.limit && !$ctrl.showAll" 
+      class="text-right text-primary pull-right" 
+      translate-values="{ number : $ctrl.totalOtherDepots }"
+      translate>DEPOT.MODAL.AND_MORE_DEPOTS
+    </a>
   </div>
 </div>
 

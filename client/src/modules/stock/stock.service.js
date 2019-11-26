@@ -18,6 +18,7 @@ function StockModalService(Modal) {
   service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchMovements = openSearchMovements;
   service.openSearchInventories = openSearchInventories;
+  service.openSearchDepots = openSearchDepots;
   service.openFindPatient = openFindPatient;
   service.openFindService = openFindService;
   service.openFindDepot = openFindDepot;
@@ -125,6 +126,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/movements/modals/search.modal.html',
       controller   : 'SearchMovementsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search depots */
+  function openSearchDepots(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/depots/modals/search.modal.html',
+      controller   : 'SearchDepotModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

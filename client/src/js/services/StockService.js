@@ -57,6 +57,7 @@ function StockService(Api, StockFilterer) {
   const StockRequisitionFilters = new StockFilterer('stock-requisition-filters');
   const StockMovementFilters = new StockFilterer('stock-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
+  const StockDepotFilters = new StockFilterer('stock-depot-filters');
 
   // creating an object of filter to avoid method duplication
   const stockFilter = {
@@ -64,6 +65,7 @@ function StockService(Api, StockFilterer) {
     stockAssign : StockAssignFilters,
     movement : StockMovementFilters,
     inventory : StockInventoryFilters,
+    depot : StockDepotFilters,
     requisition : StockRequisitionFilters,
   };
 

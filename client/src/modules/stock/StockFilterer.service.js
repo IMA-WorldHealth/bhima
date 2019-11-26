@@ -24,6 +24,8 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'entity_uuid', label : 'ENTITY.LABEL' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'includeEmptyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
+    { key : 'text', label : 'STOCK.DEPOT' },
+    { key : 'is_warehouse', label : 'DEPOT.WAREHOUSE' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
@@ -130,13 +132,6 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     assignDefaultFilters() {
       // get the keys of filters already assigned - on initial load this will be empty
       const assignedKeys = Object.keys(this._filters.formatHTTP());
-
-      // assign default period filter
-      const periodDefined = assignedKeys.includes('period');
-
-      if (!periodDefined) {
-        this._filters.assignFilters(Periods.defaultFilters());
-      }
 
       // assign default limit filter
       if (assignedKeys.indexOf('limit') === -1) {

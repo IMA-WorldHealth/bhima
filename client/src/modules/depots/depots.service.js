@@ -11,7 +11,8 @@ DepotService.$inject = ['PrototypeApiService', '$uibModal'];
  * Encapsulates common requests to the /depots/ URL.
  */
 function DepotService(Api, Modal) {
-  const service = new Api('/depots/');
+  const baseUrl = '/depots/';
+  const service = new Api(baseUrl);
 
   /**
    * @method openSelectionModal
@@ -34,6 +35,13 @@ function DepotService(Api, Modal) {
       backdrop : 'static',
       keyboard : false,
     }).result;
+  };
+
+  service.searchByName = function searchByName(options = {}) {
+    const target = baseUrl.concat('search/name');
+
+    return service.$http.get(target, { params : options })
+      .then(service.util.unwrapHttpResponse);
   };
 
   service.clean = depot => {

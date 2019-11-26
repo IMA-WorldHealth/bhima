@@ -1,0 +1,68 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-movements-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>DEPOT.TITLE</li>
+      <li class="title" translate>DEPOT.MODAL.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="padding:0;">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+
+          <!-- text  -->
+          <div class="form-group">
+            <label class="control-label" translate>DEPOT.LABEL</label>
+            <bh-clear on-clear="$ctrl.clear('text')"></bh-clear>
+            <input type="text" class="form-control" name="text" ng-model="$ctrl.searchQueries.text">
+          </div>
+
+          <!-- is warehouse -->
+          <bh-yes-no-radios
+            label="DEPOT.WAREHOUSE"
+            value="$ctrl.searchQueries.is_warehouse"
+            on-change-callback="$ctrl.onChangeIsWarehouse(value)">
+            <bh-clear on-clear="$ctrl.clear('is_warehouse')"></bh-clear>
+          </bh-yes-no-radios>
+
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input
+              name="limit"
+              type="number"
+              bh-integer
+              bh-max-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+          
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>
