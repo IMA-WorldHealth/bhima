@@ -131,6 +131,7 @@
     "STOCK_LOTS" : "Stock Lots",
     "STOCK_VALUE" : "[Stock] Stock value Report",
     "STOCK_MOVEMENTS" : "Stock Movements",
+    "STOCK_REQUISITION":"Requisition",
     "SUBSIDY" : "Subsidy Management",
     "STAFFING_INDICES_MANAGEMENT" : "Staffing indices management",
     "SURVEY_FORM": "Survey Form",

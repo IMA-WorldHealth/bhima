@@ -1,6 +1,7 @@
 {
     "FORM": {
         "BUTTONS": {
+            "AUTO_SUGGEST":"Auto Suggestion",
             "ACTIONS": "Actions",
             "ADD": "Add",
             "ADD_ACCOUNT_CONFIGURATION": "Add Account Configuration",
@@ -241,6 +242,7 @@
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },
         "LABELS" : {
+            "ARTICLES":"Articles",
             "MERGE_PATIENTS":"Merge Patients",
             "MERGE_PATIENTS_DESC":"Only selected patient information will be considered, other patients' transactions will be assigned to the selected patient",
             "MERGE_PATIENTS_TO_ONE":"Merge patients into one patient",
@@ -782,7 +784,15 @@
             "PERMISSION_ASSIGNED_SUCCESS":"Permissions successfully assigned",
             "EDIT_ROLE":"Assign role(s)",
             "ROLES_FOR":"Role(s) for",
-            "ROLES" : "Roles"
+            "ROLES" : "Roles",
+            "STATUS_TYPE":{
+                "IN_PROGRESS":"In Progress",
+                "COMPLETED":"Completed",
+                "PARTIALLY":"Partially",
+                "DRAFT":"Draft",
+                "CANCELLED":"Cancelled",
+                "DONE":"Done"
+            }
         },
         "LEGENDS": {
             "CREATION": "Creation",

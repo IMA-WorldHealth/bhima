@@ -335,6 +335,18 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.stockRequisitionReceipt = stockRequisitionReceipt;
+
+  /**
+   * @method stockRequisitionReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockRequisitionReceipt(documentUuid, notifyCreated) {
+    const opts = { title : 'REQUISITION.TITLE', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockRequisitionReceipt(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
 
   /**
    * @method stockExitPatientReceipt

@@ -181,6 +181,14 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.stockRequisitionReceipt = stockRequisitionReceipt;
+
+  // stock requisition receipt
+  function stockRequisitionReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = '/receipts/stock/requisition/'.concat(uuid);
+    return fetch(route, options);
+  }
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {

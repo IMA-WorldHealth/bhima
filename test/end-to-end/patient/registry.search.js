@@ -42,8 +42,8 @@ function PatientRegistrySearch() {
       `Expected Patient Registry ui-grid's row count to be ${number}.`).to.equal(number);
   }
 
-  it('grid should have 4 visible rows', async () => {
-    const DEFAULT_PATIENTS_FOR_TODAY = 4;
+  it('grid should have 5 visible rows', async () => {
+    const DEFAULT_PATIENTS_FOR_TODAY = 5;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('today');
     await modal.submit();
@@ -71,8 +71,8 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates additive filters
-  it(`should find two "male" patients with name "${parameters.name1}"`, async () => {
-    const NUM_MATCHING = 2;
+  it(`should find three "male" patients with name "${parameters.name1}"`, async () => {
+    const NUM_MATCHING = 3;
     await FU.input('$ctrl.searchQueries.display_name', parameters.name1);
     await element(by.id('male')).click();
     await FU.modal.submit();
@@ -102,7 +102,7 @@ function PatientRegistrySearch() {
   });
 
   it(`should find patients with origin location "${parameters.originVillageName}" `, async () => {
-    const NUM_MATCHING = 5;
+    const NUM_MATCHING = 6;
     await FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
     await FU.modal.submit();
     await expectNumberOfGridRows(NUM_MATCHING);
@@ -133,7 +133,7 @@ function PatientRegistrySearch() {
   // clears filters to assert that the "error state" bug does not occur when the
   // cancel button is clicked
   it('clearing filters restores default number of rows to the grid', async () => {
-    const NUM_MATCHING = 3;
+    const NUM_MATCHING = 4;
     await element(by.id('male')).click();
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
