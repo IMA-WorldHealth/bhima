@@ -62,7 +62,7 @@ function stockEntryDonationReceipt(req, res, next) {
         date                  : line.date,
         document_uuid         : line.document_uuid,
         document_reference    : line.document_reference,
-        barcode : barcode.generate(key, line.document_uuid),
+        barcode               : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;

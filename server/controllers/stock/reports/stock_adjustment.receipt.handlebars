@@ -9,7 +9,7 @@
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
+        <h4 style="margin: 0px;">
           <div class="text-uppercase">
             {{#if details.is_exit}}
               {{translate 'STOCK_FLUX.TO_ADJUSTMENT'}}
@@ -17,8 +17,8 @@
               {{translate 'STOCK_FLUX.FROM_ADJUSTMENT'}}
             {{/if}}
           </div>
-          <div><strong>{{details.document_reference}} - {{details.depot_name}}</strong></div>
-        </h3>
+          <div><strong>{{details.depot_name}}</strong></div>
+        </h4>
         <div>
           {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
           {{translate "REPORT.BY"}} {{metadata.user.username}}

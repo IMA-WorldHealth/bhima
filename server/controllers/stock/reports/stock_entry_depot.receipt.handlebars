@@ -11,7 +11,7 @@
       <div class="col-xs-5 text-right">
         <h3 style="margin: 0px;">
           <div class="text-uppercase">{{translate 'STOCK.RECEIPT.ENTRY_DEPOT'}}</div>
-          <div><strong>{{ entry.details.document_reference}} - {{ entry.details.depot_name}}</strong></div>
+          <div><strong>{{entry.details.depot_name}}</strong></div>
         </h3>
         <div>
           {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
@@ -19,7 +19,7 @@
         </div>
 
         {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=details.barcode}}</small>
+          <small>{{> barcode value=entry.details.barcode}}</small>
         {{/if}}
       </div>
     </div>

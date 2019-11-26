@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ENTRY_PURCHASE_TEMPLATE,
+  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE,
 } = require('../common');
 
 /**
@@ -52,6 +52,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
+      const { key } = identifiers.STOCK_ENTRY.key;
 
       data.enterprise = req.session.enterprise;
 
@@ -69,6 +70,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
         p_method              : line.payment_method,
         supplier_display_name : line.supplier_display_name,
         project_display_name  : line.project_display_name,
+        barcode               : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;
