@@ -90,7 +90,7 @@ function lookupVoucher(vUuid) {
   const itemSql = `
     SELECT BUID(vi.uuid) AS uuid, vi.debit, vi.credit, vi.account_id, a.number, a.label,
       BUID(vi.document_uuid) as document_uuid, document_map.text AS document_reference,
-      BUID(entity_uuid) AS entity_uuid, entity_map.text AS entity_reference
+      BUID(entity_uuid) AS entity_uuid, entity_map.text AS entity_reference, vi.description
     FROM voucher_item vi
     JOIN account a ON a.id = vi.account_id
     LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid

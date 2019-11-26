@@ -7,6 +7,7 @@ StockExitController.$inject = [
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate',
   'moment', 'GridExportService', 'Store',
+  'PatientService', 'PatientInvoiceService', 'ServiceService',
 ];
 
 /**
@@ -18,7 +19,8 @@ StockExitController.$inject = [
 function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, Stock, StockModal, uiGridConstants, $translate,
-  moment, GridExportService, Store
+  moment, GridExportService, Store,
+  PatientService, PatientInvoiceService, ServiceService,
 ) {
   const vm = this;
 
@@ -451,6 +453,50 @@ function StockExitController(
     };
   }
 
+  function buildDescription(entityUuid, invoiceUuid) {
+    const dbPromises = [
+      PatientService.read(null, { uuid : entityUuid }),
+      ServiceService.read(null, { uuid : entityUuid }),
+      invoiceUuid ? PatientInvoiceService.read(null, { uuid : invoiceUuid }) : [],
+    ];
+
+    return Promise.all(dbPromises)
+      .then(([patients, services, invoices]) => {
+        const i18nKeys = { depot : vm.depot.text };
+
+        if (patients && patients.length) {
+          const patient = patients[0];
+          i18nKeys.patient = patient.display_name.concat(` (${patient.reference})`);
+        }
+
+        if (invoices && invoices.length) {
+          const invoice = invoices[0];
+          i18nKeys.invoice = invoice.reference;
+        }
+
+        if (services && services.length) {
+          const service = services[0];
+          i18nKeys.service = service.name;
+        }
+
+        let description;
+
+        if (vm.depot.text && i18nKeys.patient) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED', i18nKeys);
+        }
+
+        if (vm.depot.text && i18nKeys.patient && i18nKeys.invoice) {
+          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED_WITH_INVOICE', i18nKeys);
+        }
+
+        if (vm.depot.text && i18nKeys.service) {
+          description = $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', i18nKeys);
+        }
+
+        return description ? description.concat(' : ') : '';
+      });
+  }
+
   // submit patient
   function submitPatient(form) {
     const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice
@@ -471,7 +517,11 @@ function StockExitController(
 
     movement.lots = lots;
 
-    return Stock.movements.create(movement)
+    return buildDescription(movement.entity_uuid, movement.invoice_uuid)
+      .then(description => {
+        movement.description = String(description).concat(vm.movement.description);
+        return Stock.movements.create(movement);
+      })
       .then(document => {
         ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
         reinit(form);
@@ -497,7 +547,11 @@ function StockExitController(
 
     movement.lots = lots;
 
-    return Stock.movements.create(movement)
+    return buildDescription(movement.entity_uuid)
+      .then(description => {
+        movement.description = String(description).concat(vm.movement.description);
+        return Stock.movements.create(movement);
+      })
       .then(document => {
         documentUuid = document.uuid;
 

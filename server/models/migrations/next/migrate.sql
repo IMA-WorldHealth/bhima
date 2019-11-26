@@ -4,6 +4,12 @@
 
 /*
  * @author: mbayopanda
+ * @date: 2019-11-15
+ */
+ALTER TABLE voucher_item ADD COLUMN `description` TEXT NULL;
+
+/*
+ * @author: mbayopanda
  * @date: 2019-10-21
  */
 INSERT INTO `unit` VALUES 
