@@ -30,7 +30,7 @@
       "NO_DEFAULT_DEPOT" : "You need to choose a depot.",
       "SELECTION_EXPLANATION" : "It looks like you don't have a default depot set!  Please select your depot from the list below.  You will only need to do this once.",
       "SEARCH":"Search",
-      "MORE_DEPOT_WARNING": "You have a large number of depots, please look for the depot by typing his name in the search input zone",
+      "MORE_DEPOT_WARNING": "You have a large number of depots, please look for the depot by typing its name in the search input zone",
       "AND_MORE_DEPOTS":"And {{number}} others depots"
     }
   }

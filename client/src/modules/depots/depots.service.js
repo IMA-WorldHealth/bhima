@@ -37,12 +37,10 @@ function DepotService(Api, Modal) {
     }).result;
   };
 
-  service.searchByName = function searchByName(options) {
-    const opts = angular.copy(options || {});
-
+  service.searchByName = function searchByName(options = {}) {
     const target = baseUrl.concat('search/name');
 
-    return service.$http.get(target, { params : opts })
+    return service.$http.get(target, { params : options })
       .then(service.util.unwrapHttpResponse);
   };
 

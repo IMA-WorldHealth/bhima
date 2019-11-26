@@ -10,7 +10,7 @@ function SearchDepotModalController(data, Instance, Store, util, Stock) {
   const displayValues = {};
   const changes = new Store({ identifier : 'key' });
 
-  const searchQueryOptions = ['text'];
+  const searchQueryOptions = ['text', 'is_warehouse'];
 
   vm.filters = data;
 
@@ -30,6 +30,10 @@ function SearchDepotModalController(data, Instance, Store, util, Stock) {
   if (data.limit) {
     vm.defaultQueries.limit = data.limit;
   }
+
+  vm.onChangeIsWarehouse = value => {
+    vm.searchQueries.is_warehouse = value;
+  };
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(_value) {

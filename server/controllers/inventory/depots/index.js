@@ -140,6 +140,7 @@ function list(req, res, next) {
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
   );
   filters.fullText('text', 'text', 'd');
+  filters.equals('is_warehouse', 'is_warehouse', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
 
@@ -161,17 +162,16 @@ function list(req, res, next) {
  * This method implements a depot search that will only return very limited information
  */
 function searchByName(req, res, next) {
-  // filter parser not implemented - all other params should be ignored
-  const searchValue = req.query.text;
-  const searchLimit = req.query.limit;
-  const searchParameter = `%${searchValue}%`;
+  const options = {};
+  options.text = req.query.text;
+  options.limit = req.query.limit || 10;
+  options.enterprise_id = req.session.enterprise.id;
 
-  if (_.isUndefined(searchValue)) {
+  if (_.isUndefined(options.text)) {
     return next(new BadRequest('text attribute must be specified for a name search'));
   }
 
-  // current default limit - this could be defined through req.query if there is a need for this
-  const limit = searchLimit || 10;
+  const filters = new FilterParser(options, { tableAlias : 'd' });
 
   const sql = `
     SELECT
@@ -185,11 +185,16 @@ function searchByName(req, res, next) {
       LEFT JOIN sector s ON s.uuid = v.sector_uuid
       LEFT JOIN province p ON p.uuid = s.province_uuid
       LEFT JOIN country c ON c.uuid = p.country_uuid
-    WHERE LOWER(d.text) LIKE ?
-    LIMIT ${limit}
   `;
 
-  return db.exec(sql, [searchParameter])
+  filters.fullText('text', 'text', 'd');
+  filters.equals('enterprise_id', 'enterprise_id', 'd');
+  filters.setOrder('ORDER BY d.text');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters)
     .then((results) => res.send(results))
     .catch(next)
     .done();

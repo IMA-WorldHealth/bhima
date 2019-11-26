@@ -13,7 +13,6 @@
       class="form-control"
       name="depot_uuid"
       ng-model="$ctrl.depotText"
-      ng-keypress="$ctrl.onKeyPress($event)"
       uib-typeahead="depot for depot in $ctrl.searchByName($viewValue)"
       typeahead-loading="$ctrl.loading"
       typeahead-template-url="/modules/templates/depotList.tmpl.html"

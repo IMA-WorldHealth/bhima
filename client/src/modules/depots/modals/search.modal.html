@@ -19,9 +19,17 @@
           <!-- text  -->
           <div class="form-group">
             <label class="control-label" translate>DEPOT.LABEL</label>
-            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('text')"></bh-clear>
             <input type="text" class="form-control" name="text" ng-model="$ctrl.searchQueries.text">
           </div>
+
+          <!-- is warehouse -->
+          <bh-yes-no-radios
+            label="DEPOT.WAREHOUSE"
+            value="$ctrl.searchQueries.is_warehouse"
+            on-change-callback="$ctrl.onChangeIsWarehouse(value)">
+            <bh-clear on-clear="$ctrl.clear('is_warehouse')"></bh-clear>
+          </bh-yes-no-radios>
 
         </div>
       </uib-tab>
