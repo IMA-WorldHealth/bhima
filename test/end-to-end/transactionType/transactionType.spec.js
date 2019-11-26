@@ -46,7 +46,7 @@ describe('transaction types', () => {
     await components.notification.hasSuccess();
   });
 
-  it('dont creates a new transaction type for missing type', async () => {
+  it('don\'t create a new transaction type for missing type', async () => {
     await FU.buttons.create();
     await element(by.model('$ctrl.transactionType.type')).click();
     await FU.buttons.submit();
@@ -55,12 +55,11 @@ describe('transaction types', () => {
     await FU.validation.error('$ctrl.transactionType.type');
 
     await FU.modal.cancel();
-
     await components.notification.hasDanger();
   });
 
 
-  it('Dont creates a new transaction type for missing required values', async () => {
+  it('Don\'t create a new transaction type for missing required values', async () => {
     await FU.buttons.create();
     await FU.buttons.submit();
 
@@ -69,7 +68,6 @@ describe('transaction types', () => {
     await FU.validation.error('$ctrl.transactionType.type');
 
     await FU.modal.cancel();
-
     await components.notification.hasDanger();
   });
 });

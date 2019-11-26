@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 StockFindDepotModalController.$inject = [
   '$uibModalInstance', 'DepotService', 'NotifyService', 'data',
+  'StockService',
 ];
 
-function StockFindDepotModalController(Instance, Depot, Notify, Data) {
+function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
   const vm = this;
   const bundle = {};
 
@@ -39,8 +40,56 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
     })
     .catch(Notify.handleError);
 
+  vm.onChangeReference = reference => {
+    vm.reference = reference;
+  };
+
   // submit
-  function submit() {
+  function submit(form) {
+    if (vm.reference) {
+      return Stock.stockRequisition.read(null, { reference : vm.reference })
+        .then(requisitionDetails)
+        .then(depotDetails)
+        .then(assignDepotRequisition)
+        .catch(Notify.handleError);
+    }
+
+    if (form.$invalid && !vm.requisition.uuid) { return null; }
+    return Instance.close(vm.selected);
+  }
+
+  function requisitionDetails([requisition]) {
+    if (!requisition || !requisition.uuid) {
+      vm.requisitionMessage = 'REQUISITION.VOUCHER_NOT_FOUND';
+      throw new Error('Requisition Not Found');
+    }
+
+    if (requisition.status_key === 'done') {
+      vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
+      throw new Error('Requisition Already Used');
+    }
+
+    return Stock.stockRequisition.read(requisition.uuid);
+  }
+
+  function depotDetails(requisition) {
+    vm.requisition = requisition;
+    return Depot.read(null, { uuid : vm.requisition.requestor_uuid });
+  }
+
+  function assignDepotRequisition([depot]) {
+    if (!depot || !depot.uuid) {
+      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
+      throw new Error('The requisition is not for depots');
+    }
+
+    if (depot && depot.uuid === vm.selected.uuid) {
+      vm.requisitionMessage = 'REQUISITION.NOT_FOR_THE_SAME_DEPOT';
+      throw new Error('The requisition cannot be for the same depot');
+    }
+
+    vm.selected = depot;
+    vm.selected.requisition = vm.requisition;
     Instance.close(vm.selected);
   }
 

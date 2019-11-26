@@ -145,7 +145,8 @@ INSERT INTO unit VALUES
   (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
   (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
   (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
-  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
+  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit'),
+  (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -371,8 +372,7 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *'),
-  ('CRON.EACH_MINUTE', '* * * * *');
+  ('CRON.YEARLY', '0 1 31 12 *');
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
@@ -386,3 +386,17 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (8, 'FORM.LABELS.IMAGE', 'image', 0),
   (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
+
+-- application process status
+INSERT INTO `status` VALUES 
+  (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS'),
+  (2, 'done', 'FORM.LABELS.STATUS_TYPE.DONE'),
+  (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY'),
+  (4, 'draft', 'FORM.LABELS.STATUS_TYPE.DRAFT'),
+  (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED'),
+  (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED');
+
+-- type of requestors
+INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
+  ('service', 'FORM.LABELS.SERVICE'),
+  ('depot', 'FORM.LABELS.DEPOT');

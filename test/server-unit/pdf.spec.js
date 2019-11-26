@@ -2,7 +2,7 @@
 const { expect } = require('chai');
 const rewire = require('@ima-worldhealth/rewire');
 const path = require('path');
-const fs = require('mz/fs');
+const fs = require('fs').promises;
 
 /**
  * Mock an HTML renderer without the complexity of BHIMA's bundle one

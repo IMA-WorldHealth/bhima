@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : ServiceForm.$submitted && ServiceForm.service_id.$invalid }">
 
     <label class="control-label" translate>
-      FORM.LABELS.SERVICE
+      {{ $ctrl.label }}
     </label>
     
     <ng-transclude></ng-transclude>

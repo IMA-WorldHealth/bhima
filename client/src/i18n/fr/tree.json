@@ -132,6 +132,7 @@
     "STOCK_VALUE" : "[Stock] Valeur de stock",
     "STOCK_MOVEMENTS":"Movements de stock",
     "FORMS_CONFIGURATION": "Configuration des formulaires",
+    "STOCK_REQUISITION":"Réquisition",
     "TRANSACTION_TYPE":"Types de Transaction",
     "TAGS" : "Gestion des étiquettes",
     "SUBSIDY":"Gestion des subventions",
