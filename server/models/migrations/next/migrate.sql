@@ -1,6 +1,7 @@
 /*
  * DATABASE CHANGES FOR VERSION 1.7.0 TO 1.8.0 
  */
+ ALTER TABLE `depot` MODIFY COLUMN `text` VARCHAR(191);
 
 /*
  * @author: mbayopanda

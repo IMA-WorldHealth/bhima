@@ -63,6 +63,7 @@ write_files:
       WorkingDirectory=/opt/bhima/bin/
       Type=simple
       User=bhima
+      WorkingDirectory=/opt/bhima/bin
       ExecStart=/usr/bin/node /opt/bhima/bin/server/app.js
       Restart=on-failure
 
