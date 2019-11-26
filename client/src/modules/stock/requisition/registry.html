@@ -1,0 +1,87 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>REQUISITION.STOCK_REQUISITION</li>
+      <li class="title" ng-if="StockCtrl.depot.uuid">
+        <span>{{ StockCtrl.depot.text }}</span>
+      </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-dropdown-menu>
+          <bh-dropdown-menu-item>
+            <bh-change-depot on-select="StockCtrl.onChangeDepot(depot)"></bh-change-depot>
+          </bh-dropdown-menu-item>
+          <bh-dropdown-menu-item>
+            <a href data-method="configure" ng-click="StockCtrl.openColumnConfigModal()">
+              <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+            </a>
+          </bh-dropdown-menu-item>
+          <bh-dropdown-menu-item>
+            <a href data-method="save-state" ng-click="StockCtrl.saveGridState()">
+              <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+            </a>
+          </bh-dropdown-menu-item>
+          <bh-dropdown-menu-item>
+            <a href data-method="clear-state" ng-click="StockCtrl.clearGridState()">
+              <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+            </a>
+          </bh-dropdown-menu-item>
+        </bh-dropdown-menu>
+      </div>
+
+      <bh-search-button on-click="StockCtrl.search()"></bh-search-button>
+
+      <div class="toolbar-item">
+        <a ui-sref="stockRequisition.create"
+          data-method="create-other-record"
+          class="btn btn-success">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>REQUISITION.OTHER_REQUISITION</span>
+        </a>
+      </div>
+
+      <div class="toolbar-item">
+        <a ui-sref="stockRequisition.create({ depot : StockCtrl.depot })"
+          data-method="create-record"
+          class="btn btn-primary">
+          <span class="fa fa-bolt"></span> <span class="hidden-xs" translate>REQUISITION.NEW_REQUISITION</span>
+        </a>
+      </div>
+
+      <!-- inline filter -->
+      <bh-filter-toggle
+        on-toggle="StockCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="StockCtrl.latestViewFilters"
+    on-remove-filter="StockCtrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<!--the grid -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="stock-requisition-grid"
+      ui-grid="StockCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-resize-columns
+      ui-grid-move-columns
+      ui-grid-auto-resize
+      ui-grid-save-state
+      ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="StockCtrl.loading"
+        empty-state="StockCtrl.gridOptions.data.length === 0"
+        error-state="StockCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

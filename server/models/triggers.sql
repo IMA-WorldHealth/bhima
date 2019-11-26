@@ -100,4 +100,15 @@ FOR EACH ROW BEGIN
     SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference) ON DUPLICATE KEY UPDATE text=text;
 END$$
 
+-- Stock Requisition Triggers
+CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
+FOR EACH ROW
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(stock_requisition.reference) + 1, 1)) FROM stock_requisition);$$
+
+CREATE TRIGGER stock_requisition_document_map AFTER INSERT ON stock_requisition
+FOR EACH ROW BEGIN
+  INSERT INTO document_map
+    SELECT new.uuid, CONCAT_WS('.', 'SREQ', new.reference) ON DUPLICATE KEY UPDATE text=text;
+END$$
+
 DELIMITER ;

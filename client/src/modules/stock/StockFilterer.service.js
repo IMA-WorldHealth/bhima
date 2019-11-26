@@ -24,6 +24,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'entity_uuid', label : 'ENTITY.LABEL' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'includeEmptyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
+    { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
