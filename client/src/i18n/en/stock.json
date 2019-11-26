@@ -194,5 +194,28 @@
     "CONFIRM_REMOVE_MSG" : "Do you really want to remove this stock assignment ?",
     "NEW_ASSIGN" : "New Assignment",
     "RECEIVER" : "Receiver"
+  },
+  "REQUISITION": {
+    "TITLE": "Stock requisition",
+    "STOCK_REQUISITION": "Requisition",
+    "EDIT_REQUISITION": "Edit",
+    "REMOVE_REQUISITION": "Delete",
+    "CREATE_SUCCESS": "Successful requisition creation",
+    "UPDATE_SUCCESS": "Successful requisition update",
+    "REMOVE_SUCCESS": "Successful requisition deletion",
+    "CONFIRM_REMOVE_MSG": "Are you sure you want to delete this requisition ?",
+    "NEW_REQUISITION": "New requisition",
+    "OTHER_REQUISITION": "Other requisition",
+    "RECEIVER": "Beneficiary",
+    "SERVICE_OR_DEPOT" : "Service or Depot ?",
+    "SERVICE_REQUESTOR" : "Service Requestor",
+    "DEPOT_REQUESTOR" : "Depot Requestor",
+    "DOES_REQUISITION_EXIST": "Do you have a requisition slip ?",
+    "DOES_REQUISITION_EXIST_HELP":"Click on this option if you want to exit stock based on a requisition slip",
+    "VOUCHER_NOT_FOUND":"The requisition slip was not found",
+    "ALREADY_USED":"The requisition slip has been already used",
+    "NOT_FOR_SERVICE":"The requisition slip is not for services",
+    "NOT_FOR_DEPOT":"The requisition slip is not for depots",
+    "NOT_FOR_THE_SAME_DEPOT":"Exit on a requisition slip can not be made on the same depot"
   }
 }

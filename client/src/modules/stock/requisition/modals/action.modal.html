@@ -1,0 +1,76 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-requisition-create"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>REQUISITION.STOCK_REQUISITION</li>
+      <li class="title" translate>FORM.LABELS.CREATE</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <!-- service or depot -->
+    <bh-service-or-depot
+      uuid="$ctrl.model.requestor_uuid"
+      label="REQUISITION.RECEIVER"
+      on-select-callback="$ctrl.onSelectRequestor(requestor)"
+      required="true">
+    </bh-service-or-depot>
+
+    <!-- inventories -->
+    <div class="form-group">
+      <label translate>FORM.LABELS.ARTICLES</label>
+
+      <div style="margin-bottom: 5px;" class="space-between"> 
+        <bh-add-item callback="$ctrl.addItem(numItem)" disable="true"></bh-add-item>
+
+        <button ng-disabled="!$ctrl.enableAutoSuggest || $ctrl.loadingSuggest" ng-click="$ctrl.autoSuggestInventories()" type="button" class="btn btn-success">
+          <span ng-hide="$ctrl.loadingSuggest"><i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.AUTO_SUGGEST</span></span>
+          <span ng-show="$ctrl.loadingSuggest"><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span></span>
+        </button>
+      </div>
+      
+
+      <div
+        id="stock-requisition-grid-articles"
+        ui-grid="$ctrl.gridOptions"
+        ui-grid-resize-columns
+        ui-grid-auto-resize>
+        <bh-grid-loading-indicator
+          loading-state="$ctrl.loading"
+          empty-state="$ctrl.gridOptions.data.length === 0"
+          error-state="$ctrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+
+    <!-- depot -->
+    <div id="depot-supplier" class="form-group">
+      <bh-depot-select
+        depot-uuid="$ctrl.model.depot_uuid"
+        required="true"
+        on-select-callback="$ctrl.onSelectDepot(depot)">
+        <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+      </bh-depot-select>
+    </div>
+
+    <!-- note -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.NOTE</label>
+      <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+      <textarea ng-model="$ctrl.model.description" class="form-control" name="description" id="description"></textarea>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

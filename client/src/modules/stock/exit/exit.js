@@ -203,6 +203,8 @@ function StockExitController(
   }
 
   function setupStock() {
+    vm.selectedLots = [];
+    vm.inventoryNotAvailable = [];
     vm.stockForm.setup();
     vm.stockForm.store.clear();
   }
@@ -216,9 +218,7 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
-
     checkValidity();
-
     refreshSelectedLotsList();
   }
 
@@ -233,9 +233,7 @@ function StockExitController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
-        item.lots = lots.filter(lot => {
-          return !vm.selectedLots.includes(lot.uuid);
-        });
+        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
       })
       .catch(Notify.handleError);
   }
@@ -257,7 +255,7 @@ function StockExitController(
     Stock.inventories.read(null, { depot_uuid : depot.uuid })
       .then(inventories => {
         vm.loading = false;
-        vm.selectableInventories = angular.copy(inventories);
+        vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
         // map of inventories by inventory uuid
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
@@ -272,7 +270,6 @@ function StockExitController(
     if (!row.lot || !row.lot.uuid) { return; }
 
     checkValidity();
-
     refreshSelectedLotsList();
   }
 
@@ -379,6 +376,33 @@ function StockExitController(
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
     vm.selectedEntityUuid = uniformEntity.uuid;
+    vm.requisition = entity.requisition || {};
+    loadRequisitions(entity);
+  }
+
+  function loadRequisitions(entity) {
+    if (entity.requisition && entity.requisition.items && entity.requisition.items.length) {
+      setupStock();
+
+      entity.requisition.items.forEach((item) => {
+        const inventory = vm.mapSelectableInventories.get(item.inventory_uuid);
+
+        if (inventory) {
+          const row = vm.stockForm.addItems(1);
+
+          row.inventory = inventory;
+          row.inventory_uuid = item.inventory_uuid;
+          row.quantity = item.quantity;
+          row.lot = {};
+
+          configureItem(row);
+        } else {
+          vm.inventoryNotAvailable.push(item.text);
+        }
+      });
+
+      vm.checkValidity();
+    }
   }
 
   function resetSelectedEntity() {
@@ -457,6 +481,8 @@ function StockExitController(
 
   // submit service
   function submitService(form) {
+    let documentUuid;
+
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
@@ -473,7 +499,16 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
+        documentUuid = document.uuid;
+
+        // update requisition status if needed
+        if (!vm.requisition) { return null; }
+
+        const COMPLETED_STATUS = 2;
+        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+      })
+      .then(() => {
+        ReceiptModal.stockExitServiceReceipt(documentUuid, bhConstants.flux.TO_SERVICE);
         reinit(form);
       })
       .catch(Notify.handleError);
@@ -481,6 +516,8 @@ function StockExitController(
 
   // submit depot
   function submitDepot(form) {
+    let documentUuid;
+
     const movement = {
       from_depot : vm.depot.uuid,
       from_depot_is_warehouse : vm.depot.is_warehouse,
@@ -497,7 +534,16 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+        documentUuid = document.uuid;
+
+        // update requisition status if needed
+        if (!vm.requisition) { return null; }
+
+        const COMPLETED_STATUS = 2;
+        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+      })
+      .then(() => {
+        ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);
         reinit(form);
       })
       .catch(Notify.handleError);
