@@ -49,6 +49,7 @@ function stockAdjustmentReceipt(req, res, next) {
       data.enterprise = req.session.enterprise;
 
       data.details = {
+        title              : line.is_exit ? 'STOCK_FLUX.TO_ADJUSTMENT' : 'STOCK_FLUX.FROM_ADJUSTMENT',
         is_exit            : line.is_exit,
         depot_name         : line.depot_name,
         user_display_name  : line.user_display_name,

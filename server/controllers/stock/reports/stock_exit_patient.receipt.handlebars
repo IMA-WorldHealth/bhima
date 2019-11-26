@@ -5,25 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.EXIT_PATIENT" 
+      entity=details.full_display_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;" class="text-uppercase">{{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}</h3>
-        <h4 style="margin: 0px;"><strong>{{details.patient_reference}} - {{details.patient_display_name}}</strong></h4>
-        <div>
-          {{details.document_reference}} -
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=details.barcode}}</small>
-        {{/if}}
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{details.patient_reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{details.patient_display_name}} <br>

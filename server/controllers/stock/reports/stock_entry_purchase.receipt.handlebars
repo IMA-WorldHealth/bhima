@@ -5,27 +5,16 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.ENTRY_PURCHASE" 
+      entity=details.depot_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
+    
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <div class="text-uppercase">{{translate 'STOCK.RECEIPT.ENTRY_PURCHASE'}}</div>
-          <div><strong>{{ details.depot_name}}</strong></div>
-        </h3>
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=details.barcode}}</small>
-        {{/if}}
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}: {{translate 'STOCK.ENTRY_PURCHASE'}}</h4>
         <span class="text-capitalize">{{translate 'FORM.LABELS.SUPPLIER'}}</span>: <strong>{{details.supplier_display_name}}</strong> <br>

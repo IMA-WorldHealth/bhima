@@ -63,6 +63,7 @@ function stockExitPatientReceipt(req, res, next) {
         depot_name           : line.depot_name,
         patient_reference    : line.patient_reference,
         patient_display_name : line.patient_display_name,
+        full_display_name    : line.patient_reference.concat(' - ', line.patient_display_name),
         hospital_no          : line.hospital_no,
         user_display_name    : line.user_display_name,
         description          : line.description,

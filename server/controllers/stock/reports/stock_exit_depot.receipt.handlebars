@@ -5,28 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.EXIT_DEPOT" 
+      entity=exit.details.depot_name
+      reference=exit.details.document_reference
+      barcode=exit.details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <div class="text-uppercase">{{translate 'STOCK.RECEIPT.EXIT_DEPOT'}}</div>
-          <div><strong>{{exit.details.depot_name}}</strong></div>
-          <div><strong>{{exit.details.document_reference}}</strong></div>
-        </h3>
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=exit.details.barcode}}</small>
-        {{/if}}
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px;  margin-top: 20px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.depot_name}}</strong> <br>
