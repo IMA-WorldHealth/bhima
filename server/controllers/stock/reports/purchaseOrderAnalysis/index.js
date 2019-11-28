@@ -27,7 +27,7 @@ function report(req, res, next) {
   const params = req.query;
   const data = {};
 
-  params.shouldShowDetails = parseInt(params.shouldShowDetails, 10); 
+  params.shouldShowDetails = parseInt(params.shouldShowDetails, 10);
   if (params.shouldShowDetails) {
     data.displayDetails = params.shouldShowDetails;
   } else {
