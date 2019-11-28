@@ -1,10 +1,7 @@
 const {
-  _, ReportManager, Stock, NotFound, db, pdf, identifiers,
+  _, ReportManager, Stock, NotFound, db, barcode, pdf, identifiers,
   STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE,
 } = require('../common');
-
-
-const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitLossReceipt

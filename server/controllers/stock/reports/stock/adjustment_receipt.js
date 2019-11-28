@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, identifiers, barcode, STOCK_ADJUSTMENT_TEMPLATE,
 } = require('../common');
 
 
@@ -45,10 +45,11 @@ function stockAdjustmentReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-
+      const { key } = identifiers.STOCK_MOVEMENT.key;
       data.enterprise = req.session.enterprise;
 
       data.details = {
+        title              : line.is_exit ? 'STOCK_FLUX.TO_ADJUSTMENT' : 'STOCK_FLUX.FROM_ADJUSTMENT',
         is_exit            : line.is_exit,
         depot_name         : line.depot_name,
         user_display_name  : line.user_display_name,
@@ -56,6 +57,7 @@ function stockAdjustmentReceipt(req, res, next) {
         date               : line.date,
         document_uuid      : line.document_uuid,
         document_reference : line.document_reference,
+        barcode : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;

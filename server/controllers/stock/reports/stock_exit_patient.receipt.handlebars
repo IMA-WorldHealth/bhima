@@ -5,24 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.EXIT_PATIENT" 
+      entity=details.full_display_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}
-          </span> <br>
-          <strong>{{details.patient_reference}} - {{details.patient_display_name}}</strong> <br>
-          <div class="row">
-            <small>{{> barcode value=details.barcode}}</small>
-          </div>
-        </h3>
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{details.patient_reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{details.patient_display_name}} <br>
@@ -90,5 +81,7 @@
       </div>
     </div>
   </footer>
-<script>JsBarcode('.barcode').init();</script>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>

@@ -5,27 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title=details.title
+      entity=details.depot_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{#if details.is_exit}}
-              {{translate 'STOCK_FLUX.TO_ADJUSTMENT'}}
-            {{else}}
-              {{translate 'STOCK_FLUX.FROM_ADJUSTMENT'}}
-            {{/if}}
-          </span> <br>
-          <strong>{{details.depot_name}}</strong> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
-        </h3>
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         {{#if details.is_exit}}
           <h3><i class="fa fa-arrow-circle-o-down"></i> {{translate 'STOCK_FLUX.TO_ADJUSTMENT'}}</h3>
@@ -100,5 +88,7 @@
       </div>
     </div>
   </footer>
-
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>

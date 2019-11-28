@@ -5,24 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.ENTRY_INTEGRATION" 
+      entity=details.depot_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{translate 'STOCK.RECEIPT.ENTRY_INTEGRATION'}}
-          </span> <br>
-          <strong>{{ details.depot_name}}</strong> <br>
-          <strong>{{ details.document_reference}}</strong> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
-        </h3>
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}: {{translate 'STOCK.ENTRY_INTEGRATION'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.INTEGRATION'}}</span>: <strong>{{details.integration_reference}}</strong> <br>
@@ -99,5 +90,7 @@
       </div>
     </div>
   </footer>
-
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>

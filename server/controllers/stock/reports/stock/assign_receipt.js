@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, db, STOCK_ASSIGN_TEMPLATE,
+  _, ReportManager, db, identifiers, barcode, STOCK_ASSIGN_TEMPLATE,
 } = require('../common');
 
 
@@ -43,8 +43,10 @@ function stockAssignReceipt(req, res, next) {
 
   return db.one(sql, [db.bid(uuid)])
     .then((details) => {
+      const { key } = identifiers.STOCK_ASSIGN.key;
       data.enterprise = req.session.enterprise;
       data.details = details;
+      data.details.barcode = barcode.generate(key, details.uuid);
       return report.render(data);
     })
     .then((result) => {

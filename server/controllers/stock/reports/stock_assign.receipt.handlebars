@@ -5,20 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
+    {{> stockReceiptHeader 
+      title="ASSIGN.STOCK_ASSIGN" 
+      entity=details.entity_display_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'ASSIGN.STOCK_ASSIGN'}}</span><br>
-          <strong>{{details.entity_display_name}}</strong> <br>
-          <br>
-        </h3>
-      </div>
-    </div>
-
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
@@ -79,5 +74,7 @@
       </div>
     </div>
   </footer>
-
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>

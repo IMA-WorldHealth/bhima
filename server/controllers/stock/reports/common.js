@@ -40,6 +40,7 @@ const PeriodService = require('../../../lib/period');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
 const pdf = require('../../../lib/renderers/pdf');
+const barcode = require('../../../lib/barcode');
 
 /*
 * This function help to format filter display name
@@ -180,6 +181,7 @@ exports._ = _;
 exports.db = db;
 exports.util = util;
 exports.pdf = pdf;
+exports.barcode = barcode;
 
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;

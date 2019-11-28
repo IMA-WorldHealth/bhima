@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, getDepotMovement, STOCK_ENTRY_DEPOT_TEMPLATE,
+  _, ReportManager, getDepotMovement, barcode, identifiers, STOCK_ENTRY_DEPOT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -24,7 +24,11 @@ function stockEntryDepotReceipt(req, res, next) {
   }
 
   return getDepotMovement(documentUuid, req.session.enterprise, false)
-    .then(data => report.render(data))
+    .then(data => {
+      const { key } = identifiers.STOCK_ENTRY.key;
+      data.entry.details.barcode = barcode.generate(key, data.entry.details.document_uuid);
+      return report.render(data);
+    })
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
