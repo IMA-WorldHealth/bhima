@@ -69,7 +69,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns exits for Depot Principal (3 OUT)`,
     () => agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler)
   );
@@ -120,19 +120,19 @@ describe('(/stock/) The Stock HTTP API', () => {
     .catch(helpers.handler));
 
   // list exit of QUININE-A from 'Depot Principal'
-  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (20pcs)`, () => agent.get('/stock/lots/movements')
+  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (101pcs)`, () => agent.get('/stock/lots/movements')
     .query({
       is_exit : 1,
       lot_uuid : shared.lotQuinineUuid,
       depot_uuid : shared.depotPrincipalUuid,
     })
     .then((res) => {
-      helpers.api.listed(res, 1);
-      let totalExit = 0;
+      helpers.api.listed(res, 2);
+      let totalExit = 1;
       res.body.forEach(row => {
         totalExit += row.quantity;
       });
-      expect(totalExit).to.be.equal(20);
+      expect(totalExit).to.be.equal(101);
     })
     .catch(helpers.handler));
 
@@ -141,7 +141,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       user_id : 1, // super user
     })
     .then(res => {
-      helpers.api.listed(res, 25);
+      helpers.api.listed(res, 27);
     })
     .catch(helpers.handler));
 
@@ -152,8 +152,9 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns remaining quantity of QUININE-A in Depot Principal (80pcs)`,
     () => agent.get(`/stock/lots/depots?lot_uuid=${shared.lotQuinineUuid}&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
+
         helpers.api.listed(res, 1);
-        expect(res.body[0].quantity).to.be.equal(100 - 20);
+        expect(res.body[0].quantity).to.be.equal(100 - 100);
       })
       .catch(helpers.handler)
   );

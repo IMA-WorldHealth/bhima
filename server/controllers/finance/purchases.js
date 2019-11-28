@@ -218,11 +218,13 @@ function create(req, res, next) {
 
           purchaseInterval = (((row.purchase_interval * (row.num_purchase - 1)) + durationMonth) / row.num_purchase);
         }
-
-        transactionWrapper.addQuery(
-          'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
-          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
-        );
+        // Just to prevent cases where the order interval is less than a month
+        if (purchaseInterval >= 1) {
+          transactionWrapper.addQuery(
+            'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
+            [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
+          );
+        }
       });
 
       return transactionWrapper.execute();

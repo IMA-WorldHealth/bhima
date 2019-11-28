@@ -99,7 +99,7 @@ describe('Purchase Orders', () => {
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
     await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase Order');
-    await components.dateEditor.set(new Date('2016-03-05'));
+    await components.dateEditor.set(new Date('2019-03-05'));
 
     // set the 'on-purchase' delivery method parameter
     await $('#on-purchase').click();
