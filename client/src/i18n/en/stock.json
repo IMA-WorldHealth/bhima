@@ -108,6 +108,9 @@
     "LOSS_DISTRIBUTION" : "Stock Loss",
     "PURCHASE_ORDER"  : "Purchase Order",
     "QUANTITY"        : "Quantity",
+    "QUANTITY_SENT"       : "Sent Quantity",
+    "QUANTITY_RECEIVED"   : "Received Quantity",
+    "QUANTITY_DIFFERENCE" : "Difference",
     "TRANSFER_RECEIVED" : "Received",
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {

@@ -400,7 +400,7 @@
       "APPROVED_BY" : "Approved By",
       "RECEIVER" : "Receiver",
       "DEPOT_MANAGER" : "Depot Manager",
-      "SUPPLIER" : "Supplier"
+      "SUPPLIER" : "Supplier / Other"
     },
     "CLIENT_SUMMARY" : {
       "TITLE":"Clients Debts Report",
