@@ -391,7 +391,7 @@ function purchaseStatus(req, res, next) {
 
   const sqlPurchaseDelay = `
     SELECT
-      p.cost, ROUND(DATEDIFF(m.date, p.date), 2) AS delay
+    p.cost, DATEDIFF(m.date, p.date) AS delay
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
