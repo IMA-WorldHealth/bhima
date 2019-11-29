@@ -2,7 +2,7 @@
 <html>
   {{> head title="{{translate 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE' }}" }}
   <body>
-    <div style="margin-right: 10%; margin-left: 10%;">
+    <div style="margin-right: 7.5%; margin-left: 7.5%;">
       {{> header}}
 
       <!-- body -->
@@ -15,121 +15,138 @@
           </h4>
 
           {{#each this.type}}
-            <table style="width: 100%;" class="table table-striped table-condensed table-report table-bordered">
+            <table style="width: 100%; font-size: 12px;" class="table table-striped table-condensed table-report table-bordered">
               <tr>
-                <td colspan="6" class="text-uppercase text-bold"> {{translate label}} </td>
+                <td colspan="8" class="text-center text-uppercase text-bold" style="font-size: 13.5px; background:#ededed" > {{translate label}} </td>
               </tr>
-              <tr>
-                <td colspan="5" class="text-uppercase text-bold"> {{translate 'FORM.LABELS.TOTAL'}}</td>
-                <td colspan="6" class="text-uppercase text-bold"> {{debcred total ../currencyId}} </td>
-              </tr>              
-
-              {{#each report}}
-                <tr class="text-uppercase text-bold">
-                  <td width="2%" rowspan="2" width="2%"></td>
-                  <td width="56%" rowspan="2" width="98%" colspan="2" class="text-uppercase text-bold"> {{translate label}} </td>
-                  <td class="text-center" width="15%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
-                  <td class="text-center" width="15%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
-                  <td class="text-center" width="15%"> {{translate displayLabel}} </td>                  
+              {{#if is_income_expense }}
+                <tr class="text-center text-uppercase text-bold" style="font-size: 13.5px;">
+                  <td width="61%" colspan="5" class="text-right text-uppercase text-bold"></td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
+                  <td class="text-center" width="13%"> {{translate balance_type }} </td>
                 </tr>
-                <tr class="text-bold">
-                  <td class="text-right"> {{debcred sumDebit ../../currencyId }} </td>
-                  <td class="text-right"> {{debcred sumCredit ../../currencyId }} </td>
-                  <td class="text-right"> {{debcred sumBalance ../../currencyId }} </td>
-                </tr> 
-       
-                {{#each balance}}
-                  <tr>
-                    <td></td>
-                    <td width="2%"> </td>
-                    <td> {{ number }} - {{ label }} </td>
-                    <td class="text-right"> {{ debcred debit ../../../currencyId }} </td>
-                    <td class="text-right"> {{ debcred credit ../../../currencyId }} </td>
-                    <td class="text-right"> {{ debcred balance ../../../currencyId }} </td>
-                  </tr>
+
+                <tr style="font-size: 13.5px;">
+                  <td width="61%" colspan="5" class="text-right text-uppercase text-bold"></td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalDebit ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalCredit ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalBalance ../currencyId}} </td>
+                </tr>  
+        
+                {{#each report}}
+                  {{#if ../../options.display_details_types}}
+                    <tr class="text-uppercase text-bold">
+                      <td width="2%" rowspan="2" width="2%"></td>
+                      <td width="59%" rowspan="2" colspan="4" class="text-uppercase text-bold"> {{translate label}} </td>
+                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
+                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
+                      <td class="text-center" width="13%"> {{translate displayLabel}} </td>  
+                    </tr>
+                    <tr class="text-bold">
+                      <td class="text-right"> {{debcred sumDebit ../../currencyId }} </td>
+                      <td class="text-right"> {{debcred sumCredit ../../currencyId }} </td>
+                      <td class="text-right"> {{debcred sumBalance ../../currencyId }} </td>
+                    </tr>
+                  {{/if}}
+                  {{#if ../../options.display_account_details}}
+                    {{#each balance}}
+                      <tr>
+                        <td></td>
+                        <td width="2%"> </td>
+                        <td colspan="3"> {{ number }} - {{ label }} </td>
+                        <td class="text-right"> {{ debcred debit ../../../currencyId }} </td>
+                        <td class="text-right"> {{ debcred credit ../../../currencyId }} </td>
+                        <td class="text-right"> {{ debcred balance ../../../currencyId }} </td>
+                      </tr>
+                    {{/each}}
+                  {{/if}}
                 {{/each}}
-              {{/each}}
+              {{/if}}
+
+              {{#if is_balance_sheet }}
+                <tr class="text-center text-uppercase text-bold" style="font-size: 13.5px;">
+                  <td width="35%" colspan="3" class="text-right text-uppercase text-bold"></td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.OPENING_BALANCE'}} </td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
+                  <td class="text-center" width="13%"> {{translate balance_type }} </td>
+                  <td class="text-center" width="13%"> {{translate 'FORM.LABELS.FINAL_BALANCE'}} </td>
+                </tr>
+
+                <tr style="font-size: 13.5px;">
+                  <td width="35%" colspan="3" class="text-right text-uppercase text-bold"></td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalOpenBalance ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalDebit ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalCredit ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalBalance ../currencyId}} </td>
+                  <td width="13%" class="text-right text-uppercase text-bold"> {{debcred totalFinalBalance ../currencyId}} </td>
+                </tr>  
+        
+                {{#each report}}
+                  {{#if ../../options.display_details_types}}
+                    <tr class="text-uppercase text-bold">
+                      <td width="2%" rowspan="2" width="2%"></td>
+                      <td width="33%" rowspan="2" colspan="2" class="text-uppercase text-bold"> {{translate label}} </td>
+                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.OPENING_BALANCE'}} </td>
+                      <td style="background:#ededed" class="text-center" width="13%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
+                      <td style="background:#ededed" class="text-center" width="13%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
+                      <td style="background:#ededed" class="text-center" width="13%"> {{translate displayLabel}} </td>
+                      <td class="text-center" width="13%"> {{translate 'FORM.LABELS.FINAL_BALANCE'}} </td>
+                    </tr>
+                    <tr class="text-bold">
+                      <td class="text-right"> {{debcred sumOpenBalance ../../currencyId }} </td>
+                      <td style="background:#fefefe" class="text-right"> {{debcred sumDebit ../../currencyId }} </td>
+                      <td style="background:#fefefe" class="text-right"> {{debcred sumCredit ../../currencyId }} </td>
+                      <td style="background:#fefefe" class="text-right"> {{debcred sumBalance ../../currencyId }} </td>
+                      <td class="text-right"> {{debcred sumFinalBalance ../../currencyId }} </td>
+                    </tr>
+                  {{/if}}
+                  {{#if ../../options.display_account_details}}
+                    {{#each balance}}
+                      <tr>
+                        <td></td>
+                        <td width="2%"> </td>
+                        <td> {{ number }} - {{ label }} </td>
+                        <td class="text-right"> {{ debcred openingBalanceDebCred ../../../currencyId }} </td>
+                        <td class="text-right text-bold"> {{ debcred debit ../../../currencyId }} </td>
+                        <td class="text-right text-bold"> {{ debcred credit ../../../currencyId }} </td>
+                        <td class="text-right text-bold"> {{ debcred balance ../../../currencyId }} </td>
+                        <td class="text-right"> {{ debcred finalBalanceDebCred ../../../currencyId }} </td>
+                      </tr>
+                    {{/each}}
+                  {{/if}}
+                {{/each}}
+              {{/if}}
+
             </table>
             <br>
             <br>
           {{/each}}
 
-
-          {{!-- <h3 class="text-center text-bold text-uppercase">{{ report.cashboxLabel }}</h3>
-          <h4 class="text-center text-bold text-uppercase"> {{ report.periodLabel }} </h4> --}}
-
-          {{!-- <table style="width: 25%; float: right; margin-bottom: 1.5%">
-            <tr>
-              <td width="10%" style="background-color: #5cb85c; color:white; text-align:center"> ✔ </td>
-              <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.CORRECT'}}</strong></td>
-            </tr>
-            <tr>
-              <td width="10%" style="background-color: #777777; color:white; text-align:center"> X </td>
-              <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_PENDING'}}</strong></td>
-            </tr> 
-            <tr>
-              <td width="10%" style="background-color: #f0ad4e; color:white; text-align:center"> ▲ </td>
-              <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_GREATER'}}</strong></td>
-            </tr>
-            <tr>
-              <td width="10%" style="background-color: #d9534f; color:white; text-align:center"> ▼ </td>
-              <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_LOWWER'}}</strong></td>
-            </tr>            
-          </table>
-
           <table style="width: 100%;" class="table table-striped table-condensed table-report table-bordered">
-            <thead>
-              <th width="10%"> </th>
-              <th width="35%" class="text-uppercase" colspan="4"> {{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.AUXILIARY_TRANSFERT'}} </th>
-              <th width="35%" class="text-uppercase" colspan="4">{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.TRANSFER_PRINCIPAL'}}</th>
-              <th width="20%" class="text-uppercase" colspan="3">{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.TARGET'}}</th>
-            </thead>
-            <tbody>
             <tr>
-              <th>{{translate 'FORM.LABELS.DATE'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.DEBIT'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.CREDIT'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.BALANCE'}}</th>
-              <th width="2%"></th>
-
-              <th width="9%">{{translate 'FORM.LABELS.DEBIT'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.CREDIT'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.BALANCE'}}</th>
-              <th width="2%"></th>
-
-              <th width="21%">{{translate 'FORM.LABELS.LABEL'}}</th>
-              <th width="9%">{{translate 'FORM.LABELS.DEBIT'}}</th>
-              <th width="2%"></th>
+              <td colspan="8" class="text-center text-uppercase text-bold" style="font-size: 13.5px; background:#ededed" > {{translate 'FORM.LABELS.ANALYSIS_TOOLS.CASH'}} </td>
+            </tr>
+            <tr class="text-center text-uppercase text-bold" style="font-size: 13.5px;">
+              <td width="61%" colspan="5" class="text-right text-uppercase text-bold"></td>
+              <td class="text-center" colspan="2" width="26%"> {{translate 'FORM.LABELS.CASHBOX'}} </td>
+              <td class="text-center" width="13%"> {{translate 'FORM.LABELS.BALANCE'}} </td>
             </tr>
 
-            {{#each this.transactions}}
-                <tr>
-                  <td>{{date trans_date "DD/MM/YYYY"}}, {{translate transDateDays }} </td>
-                  
-                  <td class="text-right">{{debcred debit ../report.currencyId}}</td>
-                  <td class="text-right">{{debcred credit ../report.currencyId}}</td>
-                  <td class="text-right">{{debcred balance ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplay.color }}" class="text-center">
-                    {{ labelDisplay.icon }}
-                  </td>
-
-                  <td class="text-right">{{debcred debit_transfert ../report.currencyId}}</td>
-                  <td class="text-right">{{debcred credit_transfert ../report.currencyId}}</td>
-                  <td class="text-right">{{debcred balance_transfert ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplayTransfert.color }}" class="text-center">
-                    {{ labelDisplayTransfert.icon }}
-                  </td>
-                  
-                  <td><strong>{{ account_target }}</strong></td>
-                  <td class="text-right">{{debcred debit_primary ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplayPrimary.color }};" class="text-center">
-                    {{ labelDisplayPrimary.icon }} 
-                  </td>
-                </tr>
+            {{#each cashboxes}}
+              <tr>
+                <td width="61%" colspan="5"></td>
+                <td width="26%" colspan="2" class="text-right"> {{ account_label }} </td>
+                <td width="13%" class="text-right"> {{ debcred balance ../currencyId }} </td>
+              </tr>
             {{/each}}
-            </tbody>
-          </table> --}}
 
+            <tr style="font-size: 13.5px;">
+              <td width="87%" colspan="7" class="text-right text-uppercase text-bold"> {{translate 'FORM.LABELS.TOTAL'}} </td>
+              <td width="13%" class="text-right text-uppercase text-bold"> {{ debcred cashboxesAggregate.balance currencyId }} </td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>

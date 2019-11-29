@@ -33,6 +33,10 @@ function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCac
     vm.reportDetails.end_year = period.year;
   };
 
+  vm.onSelectCashboxes = (cashboxesIds) => {
+    vm.reportDetails.cashboxesIds = cashboxesIds;
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 

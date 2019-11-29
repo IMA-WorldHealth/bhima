@@ -411,4 +411,7 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
   ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
   ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);
+<<<<<<< 3e18082702d9fb2a35b9017d48abfd2191785a66
 >>>>>>> Rebase with branch master and resolve conflict
+=======
+>>>>>>> Resolve conflict with Branch Master

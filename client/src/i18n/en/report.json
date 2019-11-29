@@ -64,6 +64,8 @@
     },
     "CLOSING_BALANCE": "Closing Balance",
     "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "HIDE_ACCOUNT_DETAILS": "Hide account details",
+      "HIDE_DETAILS_TYPES": "Hide details of types",
       "TITLE": "Configurable analysis report"
     },
     "CONFIGURATION": "Report Configuration",

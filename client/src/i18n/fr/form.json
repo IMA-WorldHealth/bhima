@@ -277,11 +277,11 @@
             "ANALYSIS_TOOLS" : {
                 "CASH": "Espèces",
                 "COSTS": "Coûts",
+                "DEBTS": "Dettes (Fournisseurs, Personnels et comptes rattachés)",
                 "EXPENSES": "Dépenses",
                 "INCOMES": "Recettes",
-                "LIABILITY": "Dettes",
                 "PROFITS": "Profits",
-                "RECEIVABLES": "Créances",
+                "RECEIVABLES": "Créances (Clients et Comptes rattachés)",
                 "TITLE": "Outils d'analyse"
             },
             "ANNUAL_CUMUL"        : "Cumul Annuel",

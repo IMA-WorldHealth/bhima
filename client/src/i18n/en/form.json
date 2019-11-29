@@ -273,11 +273,11 @@
             "ANALYSIS_TOOLS" : {
                 "CASH": "Cash",
                 "COSTS": "Costs",
+                "DEBTS": "Debts (Suppliers, Personal and Related Accounts)",
                 "EXPENSES": "Expenses",
                 "INCOMES": "Incomes",
-                "LIABILITY": "Liability",
                 "PROFITS": "Profits",
-                "RECEIVABLES": "Receivables",
+                "RECEIVABLES": "Receivables (Customers and Related Accounts)",
                 "TITLE": "Analysis tools"
             },
             "ANNUAL_CUMUL" : "Annual Accumulation",
