@@ -41,7 +41,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setLimit(20);
     await modal.submit();
-    await GU.expectRowCount(gridId, 24);
+    await GU.expectRowCount(gridId, 22);
   });
 
   it('filters by entry/exit', async () => {
