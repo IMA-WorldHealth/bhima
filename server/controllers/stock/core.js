@@ -15,6 +15,7 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
+const util = require('../../lib/util');
 
 const flux = {
   FROM_PURCHASE    : 1,
@@ -323,7 +324,7 @@ function getLotsOrigins(depotUuid, params) {
 /**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterval = 1) {
+function stockManagementProcess(inventories) {
   const current = moment();
   let CM;
   let Q;
@@ -334,12 +335,12 @@ function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterva
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     CM_NOT_ZERO = !CM ? 1 : CM;
-    inventory.S_SEC = CM * (inventoryDelay || inventory.delay); // stock de securite
+    inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-    inventory.S_MAX = (CM * (purchaseInterval || inventory.purchase_interval)) + inventory.S_MIN; // stock maximum
+    inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
     inventory.S_MONTH = Math.floor(inventory.quantity / CM_NOT_ZERO); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
-    inventory.S_Q = inventory.S_Q > 0 ? inventory.S_Q : 0;
+    inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
     inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
     if (Q <= 0) {
@@ -356,8 +357,14 @@ function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterva
       inventory.status = '';
     }
 
+    // Round
+    inventory.S_SEC = util.roundDecimal(inventory.S_SEC, 2);
+    inventory.S_MIN = util.roundDecimal(inventory.S_MIN, 2);
+    inventory.S_MAX = util.roundDecimal(inventory.S_MAX, 2);
+
     delay = moment(new Date(inventory.expiration_date)).diff(current);
     inventory.delay_expiration = moment.duration(delay).humanize();
+
     return inventory;
   });
 }
@@ -470,7 +477,7 @@ function getInventoryQuantityAndConsumption(params) {
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-      l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+      l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,

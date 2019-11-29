@@ -3,11 +3,12 @@ angular.module('bhima.controllers')
 
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
-  'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
+  'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService', 'InventoryService',
 ];
 
 
-function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util, Receipts, bhConstants, Stock) {
+function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
+  Session, util, Receipts, bhConstants, Stock, Inventory) {
   const vm = this;
 
   // create a new purchase order form
@@ -82,6 +83,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     data : vm.order.store.data,
   };
 
+  Inventory.read(null, { detailed : 1, locked : 0 })
+    .then((inventories) => {
+      vm.inventories = inventories;
+    })
+    .catch(Notify.handleError);
+
   // this function will be called whenever items change in the grid.
   function handleUIGridChange() {
     vm.order.digest();
@@ -133,7 +140,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
     return Purchases.create(order)
       .then((res) => {
-
         // open the receipt modal
         Receipts.purchase(res.uuid, true);
 
@@ -164,26 +170,24 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
   function optimalPurchase() {
     vm.optimalPO = true;
+    const filters = {
+      includeEmptyLot : 0,
+      period : 'allTime',
+      require_po : 1,
+    };
 
-    Stock.inventories.read(null, { require_po : 1 })
+    Stock.inventories.read(null, filters)
       .then(rows => {
         if (!rows.length) {
           return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
         }
 
-        // adding items.length line in the Order store, which will be reflected to the grid
-        if (rows.length > 1) {
-          vm.order.addItem(rows.length);
-        }
+        const optimalPurchaseData = PurchaseOrder.formatOptimalPurchase(vm.inventories, rows);
 
-        vm.order.store.data.forEach((item, index) => {
-          item.code = rows[index].code;
-          item.inventory_uuid = rows[index].inventory_uuid;
-          item.description = rows[index].text;
-          item.quantity = rows[index].S_Q;
-          item.unit_price = 0;
-          item.unit = rows[index].unit_type;
-          item._initialised = true;
+        // clear the grid as suggested above
+        vm.order.clear();
+        optimalPurchaseData.forEach((item) => {
+          vm.order.store.post(item);
         });
 
         return 0;

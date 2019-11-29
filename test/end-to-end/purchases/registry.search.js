@@ -60,7 +60,7 @@ function PurchaseOrderSearch() {
   });
 
   it(`should find four Purchases Orders authored By "${parameters.author}" for all time`, async () => {
-    const NUM_MATCHING = 4;
+    const NUM_MATCHING = 5;
     await modal.setUser(parameters.author);
 
     await modal.switchToDefaultFilterTab();
@@ -71,7 +71,7 @@ function PurchaseOrderSearch() {
   });
 
   it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, async () => {
-    const NUM_MATCHING = 4;
+    const NUM_MATCHING = 5;
     await modal.setSupplier(parameters.supplier);
 
     await modal.switchToDefaultFilterTab();
