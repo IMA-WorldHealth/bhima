@@ -45,7 +45,7 @@ function stockAdjustmentReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-      const { key } = identifiers.STOCK_MOVEMENT.key;
+      const { key } = identifiers.STOCK_MOVEMENT;
       data.enterprise = req.session.enterprise;
 
       data.details = {

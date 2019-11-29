@@ -51,7 +51,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-      const { key } = identifiers.STOCK_ENTRY.key;
+      const { key } = identifiers.STOCK_ENTRY;
 
       data.enterprise = req.session.enterprise;
 

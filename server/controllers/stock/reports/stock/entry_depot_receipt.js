@@ -25,7 +25,7 @@ function stockEntryDepotReceipt(req, res, next) {
 
   return getDepotMovement(documentUuid, req.session.enterprise, false)
     .then(data => {
-      const { key } = identifiers.STOCK_ENTRY.key;
+      const { key } = identifiers.STOCK_ENTRY;
       data.entry.details.barcode = barcode.generate(key, data.entry.details.document_uuid);
       return report.render(data);
     })
