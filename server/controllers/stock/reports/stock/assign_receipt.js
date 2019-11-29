@@ -43,7 +43,7 @@ function stockAssignReceipt(req, res, next) {
 
   return db.one(sql, [db.bid(uuid)])
     .then((details) => {
-      const { key } = identifiers.STOCK_ASSIGN.key;
+      const { key } = identifiers.STOCK_ASSIGN;
       data.enterprise = req.session.enterprise;
       data.details = details;
       data.details.barcode = barcode.generate(key, details.uuid);

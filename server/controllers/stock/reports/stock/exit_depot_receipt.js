@@ -33,8 +33,8 @@ function stockExitDepotReceipt(req, res, next) {
 
   return getDepotMovement(documentUuid, req.session.enterprise, true)
     .then(data => {
-      const exitKey = identifiers.STOCK_EXIT.key;
-      data.exit.details.barcode = barcode.generate(exitKey, data.exit.details.document_uuid);
+      const { key } = identifiers.STOCK_EXIT;
+      data.exit.details.barcode = barcode.generate(key, data.exit.details.document_uuid);
       return report.render(data);
     })
     .then(result => res.set(result.headers).send(result.report))
