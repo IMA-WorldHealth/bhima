@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe.only('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
+describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
   const numConfiguration = 5;
 
   const newConfiguration = {
