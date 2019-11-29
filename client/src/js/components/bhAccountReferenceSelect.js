@@ -5,6 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       accountReferenceId : '<',
+      referenceType : '<?',
       onSelectCallback : '&',
       required         : '<?',
       label            : '@?',
@@ -23,20 +24,20 @@ function AccountReferenceSelectController(AccountReferences, Notify) {
 
   // fired at the beginning of the account Reference select
   $ctrl.$onInit = function $onInit() {
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.REFERENCE';
-
 
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
     }
+
     $ctrl.accountLoading = true;
-    AccountReferences.read()
+    AccountReferences.read(null, { reference_type_id : $ctrl.referenceType })
       .then(accountReferences => {
         $ctrl.accountReferences = accountReferences;
       })
-      .catch(Notify.handleError).finaly(() => {
+      .catch(Notify.handleError)
+      .finally(() => {
         $ctrl.accountLoading = false;
       });
   };

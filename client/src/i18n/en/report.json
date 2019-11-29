@@ -63,6 +63,11 @@
       "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
     },
     "CLOSING_BALANCE": "Closing Balance",
+    "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "HIDE_ACCOUNT_DETAILS": "Hide account details",
+      "HIDE_DETAILS_TYPES": "Hide details of types",
+      "TITLE": "Configurable analysis report"
+    },
     "CONFIGURATION": "Report Configuration",
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",

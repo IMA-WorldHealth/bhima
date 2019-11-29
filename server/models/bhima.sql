@@ -146,7 +146,10 @@ INSERT INTO unit VALUES
   (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
   (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
   (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit'),
-  (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition');
+  (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
+  (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
+  (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -205,7 +208,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
-  ('dataKit', 'TREE.DATA_KIT_REPORT');
+  ('dataKit', 'TREE.DATA_KIT_REPORT'),
+  ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -341,7 +345,8 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1),
-(4, 'FORM.LABELS.BREAK_EVEN', 1);
+(4, 'FORM.LABELS.BREAK_EVEN', 1),
+(5, 'FORM.LABELS.ANALYSIS_TOOLS.TITLE', 1);
 
 -- Default Discharge types
 INSERT INTO `discharge_type` (`id`, `label`) VALUES
@@ -400,3 +405,10 @@ INSERT INTO `status` VALUES
 INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
   ('service', 'FORM.LABELS.SERVICE'),
   ('depot', 'FORM.LABELS.DEPOT');
+
+-- analysis_tool_type
+INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES 
+  ('FORM.LABELS.ANALYSIS_TOOLS.COSTS', 0, 1),
+  ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
+  ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
+  ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);

@@ -1,0 +1,38 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.CONFIGURATION_ANALYSIS_TOOLS </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="configuration_analysis_tools.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span>
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <bh-filter-toggle on-toggle="ConfigurationAnalysisToolsCtrl.toggleFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="configuration-analysis-tools-grid"
+      ui-grid="ConfigurationAnalysisToolsCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+      
+      <bh-grid-loading-indicator
+        loading-state="ConfigurationAnalysisToolsCtrl.loading"
+        empty-state="ConfigurationAnalysisToolsCtrl.gridOptions.data.length === 0"
+        error-state="ConfigurationAnalysisToolsCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

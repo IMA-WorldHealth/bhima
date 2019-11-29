@@ -994,6 +994,7 @@ INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
 
+
 -- FEE CENTER
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
   (1, 'Administration', 1),
@@ -1116,6 +1117,7 @@ INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
 
+
 -- data_collector_management
 INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1);
 INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
@@ -1194,3 +1196,25 @@ INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `
 INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3EEB3F9A5F5C4B5AB1C82E67DDD12D0B, 11, 'surface', 0x2E6753DE87784432B1AE96F6220E7F85, '5500');
 INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x083E7B7DCC3642BCB03599B23C02CB62, 7, 'temps', 0x24804F5966E74A8D83E8FE57EE60EFC3, '12:24');
 INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9C388012F6CF408FBDD5B510649DBD58, 5, 'voie', 0x24804F5966E74A8D83E8FE57EE60EFC3, 'IV');
+
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `reference_type_id`, `is_amo_dep`) VALUES  
+  (11, 'charges', 'Charges', NULL, 5, 0),
+  (12, 'profits', 'Profits', NULL, 5, 0),
+  (13, 'deb', 'Débiteurs', NULL, 5, 0),
+  (14, 'cred', 'Créditeurs', NULL, 5, 0);
+
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (22, 11, 6, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (23, 11, 208, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (24, 12, 7, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (25, 12, 58, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (26, 13, 173, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (27, 13, 335, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (28, 14, 32, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (29, 14, 178, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (30, 14, 36, 0, 0, 0);
+
+INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id`, `analysis_tool_type_id`) VALUES
+  (1, 'Coûts', 11, 1),
+  (3, 'Creances', 13, 2),
+  (2, 'Profits', 12, 3),
+  (4, 'Dettes', 14, 4);

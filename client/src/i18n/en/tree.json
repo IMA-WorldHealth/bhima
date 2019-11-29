@@ -25,6 +25,8 @@
     "CASH_WINDOW" : "Cash Window",
     "CHOICES_LIST_MANAGEMENT" : "Choices List Management",
     "COMPLEX_JOURNAL_VOUCHER" : "Journal Vouchers",
+    "CONFIGURABLE_ANALYSIS_REPORT" : "Configurable analysis report",
+    "CONFIGURATION_ANALYSIS_TOOLS" : "Configuration Analysis Tools",
     "COST_CENTER_MGMT" : "Cost Center Management",
     "CREDIT_NOTE" : "Credit Note",
     "CREDITOR_GROUP" : "Creditor Group Management",

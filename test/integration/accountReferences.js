@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/accounts/references) Accounts References', () => {
-  const numAccountReference = 10;
+  const numAccountReference = 14;
 
   const newAccountReference = {
     abbr : 'TX',
@@ -59,7 +59,7 @@ describe('(/accounts/references) Accounts References', () => {
     return agent.get('/accounts/references')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
@@ -69,7 +69,7 @@ describe('(/accounts/references) Accounts References', () => {
     return agent.get('/accounts/references')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });

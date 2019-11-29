@@ -150,6 +150,7 @@ const surveyForm = require('../controllers/admin/surveyForm');
 const fillFormsData = require('../controllers/admin/fillFormsData');
 const displayMetadata = require('../controllers/admin/displayMetadata');
 const displayMetadataReport = require('../controllers/admin/metadataReport');
+const configurationAnalysisTools = require('../controllers/finance/configurationAnalysisTools');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -457,6 +458,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/systemUsageStat', systemUsage.document);
 
   app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
+  app.get('/reports/finance/configurable_analysis_report', financeReports.configurableAnalysisReport.report);
 
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
@@ -1036,4 +1038,12 @@ exports.configure = function configure(app) {
   app.get('/display_metadata/card', displayMetadataReport.metadataCard);
   app.get('/data_kit/report', displayMetadataReport.reportMetadata);
   app.delete('/display_metadata/:uuid', displayMetadata.delete);
+
+  // API for Configuration Analysis Tools routes crud
+  app.get('/configuration_analysis_tools', configurationAnalysisTools.list);
+  app.get('/analysis_tools_type', configurationAnalysisTools.toolsType);
+  app.get('/configuration_analysis_tools/:id', configurationAnalysisTools.detail);
+  app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
+  app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);
+  app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 };

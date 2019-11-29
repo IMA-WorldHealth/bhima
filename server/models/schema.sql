@@ -2518,5 +2518,28 @@ CREATE TABLE `medical_sheet` (
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `analysis_tool_type`;
+CREATE TABLE `analysis_tool_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `is_balance_sheet` tinyint(1) DEFAULT 0,
+  `rank` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `analysis_tool_type_1` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `configuration_analysis_tools`;
+CREATE TABLE `configuration_analysis_tools` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `analysis_tool_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `configuration_analysis_tools_1` (`label`),
+  KEY `account_reference_id` (`account_reference_id`),
+  KEY `analysis_tool_type_id` (`analysis_tool_type_id`),
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
+  FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
