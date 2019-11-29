@@ -2,7 +2,7 @@
 <html>
   {{> head title="{{translate 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE' }}" }}
   <body>
-    <div style="margin-right: 2%; margin-left: 2%;">
+    <div style="margin-right: 10%; margin-left: 10%;">
       {{> header}}
 
       <!-- body -->
@@ -19,26 +19,33 @@
               <tr>
                 <td colspan="6" class="text-uppercase text-bold"> {{translate label}} </td>
               </tr>
-              <tr class="text-uppercase text-bold">
-                <td width="2%"></td>
-                <td colspan="2" width="56%"> {{translate 'FORM.LABELS.ACCOUNT'}} </td>
-                <td width="15%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
-                <td width="15%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
-                <td width="15%"> {{translate 'FORM.LABELS.BALANCE'}} </td>
+              <tr>
+                <td colspan="5" class="text-uppercase text-bold"> {{translate 'FORM.LABELS.TOTAL'}}</td>
+                <td colspan="6" class="text-uppercase text-bold"> {{debcred total ../currencyId}} </td>
               </tr>              
+
               {{#each report}}
-                <tr>
-                  <td width="2%"></td>
-                  <td width="98%" colspan="5" class="text-uppercase text-bold"> {{translate label}} </td>
+                <tr class="text-uppercase text-bold">
+                  <td width="2%" rowspan="2" width="2%"></td>
+                  <td width="56%" rowspan="2" width="98%" colspan="2" class="text-uppercase text-bold"> {{translate label}} </td>
+                  <td class="text-center" width="15%"> {{translate 'FORM.LABELS.DEBIT'}} </td>
+                  <td class="text-center" width="15%"> {{translate 'FORM.LABELS.CREDIT'}} </td>
+                  <td class="text-center" width="15%"> {{translate displayLabel}} </td>                  
                 </tr>
+                <tr class="text-bold">
+                  <td class="text-right"> {{debcred sumDebit ../../currencyId }} </td>
+                  <td class="text-right"> {{debcred sumCredit ../../currencyId }} </td>
+                  <td class="text-right"> {{debcred sumBalance ../../currencyId }} </td>
+                </tr> 
+       
                 {{#each balance}}
                   <tr>
                     <td></td>
                     <td width="2%"> </td>
                     <td> {{ number }} - {{ label }} </td>
-                    <td> {{ debcred debit ../../../currencyId }} </td>
-                    <td> {{ debcred credit ../../../currencyId }} </td>
-                    <td> {{ debcred balance ../../../currencyId }} </td>
+                    <td class="text-right"> {{ debcred debit ../../../currencyId }} </td>
+                    <td class="text-right"> {{ debcred credit ../../../currencyId }} </td>
+                    <td class="text-right"> {{ debcred balance ../../../currencyId }} </td>
                   </tr>
                 {{/each}}
               {{/each}}

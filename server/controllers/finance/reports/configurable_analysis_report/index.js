@@ -26,176 +26,203 @@ function report(req, res, next) {
   const data = {};
   let reporting;
 
-  data.period = {
-    start_date : new Date(params.start_date),
-    end_date : new Date(params.end_date),
-    period_start_label : params.start_label,
-    period_end_label : params.end_label,
-    start_year : params.start_year,
-    end_year : params.end_year,
-  };
+  // data.period = {
+  //   start_date : new Date(params.start_date),
+  //   end_date : new Date(params.end_date),
+  //   period_start_label : params.start_label,
+  //   period_end_label : params.end_label,
+  //   start_year : params.start_year,
+  //   end_year : params.end_year,
+  // };
 
-  params.start_date = new Date(params.start_date);
-  data.currencyId = params.currency_id;
+  // params.start_date = new Date(params.start_date);
+  // data.currencyId = params.currency_id;
 
-  _.defaults(params, DEFAULT_PARAMS);
+  // _.defaults(params, DEFAULT_PARAMS);
 
-  try {
-    reporting = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
-  }
+  // try {
+  //   reporting = new ReportManager(TEMPLATE, req.session, params);
+  // } catch (e) {
+  //   next(e);
+  //   return;
+  // }
 
-  const sqlType = `
-    SELECT id, label FROM analysis_tool_type
-    ORDER BY id
-  `;
+  // const sqlType = `
+  //   SELECT id, label FROM analysis_tool_type
+  //   ORDER BY id ASC
+  // `;
 
-  const sqlConfig = `
-    SELECT id, is_creditor, restrict_title_account, account_reference_id, label,
-    analysis_tool_type_id
-    FROM configuration_analysis_tools
-  `;
+  // const sqlConfig = `
+  //   SELECT id, is_creditor, restrict_title_account, account_reference_id, label,
+  //   analysis_tool_type_id
+  //   FROM configuration_analysis_tools
+  //   ORDER BY label ASC
+  // `;
 
-  const sqlReferences = `
-    SELECT at.id, at.is_creditor, at.restrict_title_account, at.account_reference_id,
-    a.number, a.label, ari.is_exception,
-    at.analysis_tool_type_id
-    FROM configuration_analysis_tools AS at
-    JOIN account_reference AS ar ON ar.id = at.account_reference_id
-    JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
-    JOIN account AS a ON a.id = ari.account_id  
-  `;
+  // const sqlReferences = `
+  //   SELECT at.id, at.is_creditor, at.restrict_title_account, at.account_reference_id,
+  //   a.number, a.label, ari.is_exception,
+  //   at.analysis_tool_type_id
+  //   FROM configuration_analysis_tools AS at
+  //   JOIN account_reference AS ar ON ar.id = at.account_reference_id
+  //   JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+  //   JOIN account AS a ON a.id = ari.account_id
+  //   ORDER BY a.label ASC
+  // `;
 
-  const promises = [
-    db.exec(sqlType),
-    db.exec(sqlConfig),
-    db.exec(sqlReferences)];
+  // const promises = [
+  //   db.exec(sqlType),
+  //   db.exec(sqlConfig),
+  //   db.exec(sqlReferences)];
 
-  q.all(promises)
-    .spread((type, config, dataConfig) => {
-      data.type = type;
-      data.config = config;
-      data.dataConfig = dataConfig;
+  // q.all(promises)
+  //   .spread((type, config, dataConfig) => {
+  //     data.type = type;
+  //     data.config = config;
+  //     data.dataConfig = dataConfig;
 
-      const dbPromises = [];
-      const accountsNumber = dataConfig.map(row => row.number);
+  //     const dbPromises = [];
+  //     const accountsNumber = dataConfig.map(row => row.number);
 
-      accountsNumber.forEach(item => {
-        const sqlGetAccounts = `
-          SELECT a.id, a.number 
-          FROM account AS a
-          WHERE a.number LIKE '${item}%' AND a.type_id <> 6;
-        `;
-        dbPromises.push(db.exec(sqlGetAccounts));
-      });
+  //     accountsNumber.forEach(item => {
+  //       const sqlGetAccounts = `
+  //         SELECT a.id, a.number 
+  //         FROM account AS a
+  //         WHERE a.number LIKE '${item}%' AND a.type_id <> 6;
+  //       `;
+  //       dbPromises.push(db.exec(sqlGetAccounts));
+  //     });
 
-      return q.all(dbPromises);
-    })
-    .then(accountsFound => {
-      const accountReferences = [];
-      accountsFound.forEach(account => {
-        account.forEach(item => {
-          accountReferences.push(item.id);
-        });
-      });
+  //     return q.all(dbPromises);
+  //   })
+  //   .then(accountsFound => {
+  //     const accountReferences = [];
+  //     accountsFound.forEach(account => {
+  //       account.forEach(item => {
+  //         accountReferences.push(item.id);
+  //       });
+  //     });
 
-      const paramFilter = [
-        data.period.start_date,
-        data.period.end_date,
-        accountReferences,
-        data.period.start_date,
-        data.period.start_date,
-        data.period.start_date,
-        data.period.start_date,
-        data.period.end_date,
-        accountReferences,
-        data.period.start_date,
-        data.period.start_date,
-        data.period.start_date,
-      ];
+  //     const paramFilter = [
+  //       data.period.start_date,
+  //       data.period.end_date,
+  //       accountReferences,
+  //       data.period.start_date,
+  //       data.period.start_date,
+  //       data.period.start_date,
+  //       data.period.start_date,
+  //       data.period.end_date,
+  //       accountReferences,
+  //       data.period.start_date,
+  //       data.period.start_date,
+  //       data.period.start_date,
+  //     ];
 
-      const sqlBalanceAccounts = `
-        SELECT a.number, a.label,cl.account_id, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,
-        SUM(cl.debit - cl.credit) AS balance, cl.record_uuid, cl.trans_date
-        FROM
-        (
-          SELECT gl.account_id, gl.debit_equiv AS debit, gl.credit_equiv AS credit, gl.record_uuid, gl.trans_date
-          FROM general_ledger AS gl
-          WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?)
-          AND gl.account_id iN (?)
-          AND gl.transaction_type_id <> 10
-          AND gl.record_uuid NOT IN (
-              SELECT rev.uuid
-              FROM (
-                  SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                  AND DATE(v.date) >= DATE(?)
-                UNION
-                  SELECT c.uuid FROM cash c WHERE c.reversed = 1
-                  AND DATE(c.date) >= DATE(?)
-                UNION
-                  SELECT i.uuid FROM invoice i WHERE i.reversed = 1
-                  AND DATE(i.date) >= DATE(?)
-              ) AS rev
-            )
-          UNION
-          SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
-          FROM posting_journal AS ps
-          WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
-          AND ps.account_id iN (?)
-          AND ps.transaction_type_id <> 10
-          AND ps.record_uuid NOT IN (
-              SELECT rev.uuid
-              FROM (
-                  SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                  AND DATE(v.date) >= DATE(?)
-                UNION
-                  SELECT c.uuid FROM cash c WHERE c.reversed = 1
-                  AND DATE(c.date) >= DATE(?)
-                UNION
-                  SELECT i.uuid FROM invoice i WHERE i.reversed = 1
-                  AND DATE(i.date) >= DATE(?)
-              ) AS rev
-            )
-        ) AS cl
-        JOIN account AS a ON a.id = cl.account_id
-          GROUP BY cl.account_id
-          ORDER BY a.number ASC, a.label
-      `;
+  //     const sqlBalanceAccounts = `
+  //       SELECT a.number, a.label, cl.account_id, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,
+  //       SUM(cl.debit - cl.credit) AS balance, cl.record_uuid, cl.trans_date
+  //       FROM
+  //       (
+  //         SELECT gl.account_id, gl.debit_equiv AS debit, gl.credit_equiv AS credit, gl.record_uuid, gl.trans_date
+  //         FROM general_ledger AS gl
+  //         WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?)
+  //         AND gl.account_id iN (?)
+  //         AND gl.transaction_type_id <> 10
+  //         AND gl.record_uuid NOT IN (
+  //             SELECT rev.uuid
+  //             FROM (
+  //                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+  //                 AND DATE(v.date) >= DATE(?)
+  //               UNION
+  //                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
+  //                 AND DATE(c.date) >= DATE(?)
+  //               UNION
+  //                 SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+  //                 AND DATE(i.date) >= DATE(?)
+  //             ) AS rev
+  //           )
+  //         UNION
+  //         SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
+  //         FROM posting_journal AS ps
+  //         WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
+  //         AND ps.account_id iN (?)
+  //         AND ps.transaction_type_id <> 10
+  //         AND ps.record_uuid NOT IN (
+  //             SELECT rev.uuid
+  //             FROM (
+  //                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+  //                 AND DATE(v.date) >= DATE(?)
+  //               UNION
+  //                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
+  //                 AND DATE(c.date) >= DATE(?)
+  //               UNION
+  //                 SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+  //                 AND DATE(i.date) >= DATE(?)
+  //             ) AS rev
+  //           )
+  //       ) AS cl
+  //       JOIN account AS a ON a.id = cl.account_id
+  //         GROUP BY cl.account_id
+  //         ORDER BY a.number ASC, a.label
+  //     `;
 
-      return db.exec(sqlBalanceAccounts, paramFilter);
-    })
-    .then(rows => {
-      data.config.forEach(config => {
-        config.balance = [];
-        data.dataConfig.forEach(dataConfig => {
-          if (config.id === dataConfig.id) {
-            rows.forEach(item => {
-              const accountNumber = item.number.toString();
-              if (accountNumber.startsWith(dataConfig.number)) {
-                config.balance.push(item);
-              }
-            });
-          }
-        });
-      });
+  //     return db.exec(sqlBalanceAccounts, paramFilter);
+  //   })
+  //   .then(rows => {
+  //     data.config.forEach(config => {
+  //       config.displayLabel = config.is_creditor ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
 
-      data.type.forEach(type => {
-        type.report = [];
-        data.config.forEach(config => {
-          if (type.id === config.analysis_tool_type_id) {
-            type.report.push(config);
-          }
-        });
-      });
 
-      return reporting.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+  //       config.balance = [];
+  //       config.sumDebit = 0;
+  //       config.sumCredit = 0;
+  //       config.sumBalance = 0;
+
+  //       rows.forEach(item => {
+  //         const accountNumber = item.number.toString();
+  //         let checkIncluded = true;
+  //         let checkValidy = false;
+
+  //         data.dataConfig.forEach(dataConfig => {
+  //           const checkAccountStartsWith = accountNumber.startsWith(dataConfig.number);
+  //           if (config.id === dataConfig.id && dataConfig.is_exception && checkAccountStartsWith) {
+  //             checkIncluded = false;
+  //           }
+
+  //           if (config.id === dataConfig.id && !dataConfig.is_exception && checkAccountStartsWith) {
+  //             checkValidy = true;
+  //           }
+  //         });
+
+  //         if (checkIncluded && checkValidy) {
+  //           item.balance = config.is_creditor ? (item.balance * (-1)) : item.balance;
+
+  //           config.sumDebit += item.debit;
+  //           config.sumCredit += item.credit;
+  //           config.sumBalance += item.balance;
+
+  //           config.balance.push(item);
+  //         }
+  //       });
+  //     });
+
+  //     data.type.forEach(type => {
+  //       type.total = 0;
+  //       type.report = [];
+  //       data.config.forEach(config => {
+  //         if (type.id === config.analysis_tool_type_id) {
+  //           type.total += config.sumBalance;
+  //           type.report.push(config);
+  //         }
+  //       });
+  //     });
+
+  //     return reporting.render(data);
+  //   })
+  //   .then(result => {
+  //     res.set(result.headers).send(result.report);
+  //   })
+  //   .catch(next)
+  //   .done();
 
 }
