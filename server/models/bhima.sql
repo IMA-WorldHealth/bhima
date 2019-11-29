@@ -146,14 +146,9 @@ INSERT INTO unit VALUES
   (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
   (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
   (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit'),
-<<<<<<< 42c9e5bab31e59c75e3b789765d37bf42089ab54
   (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
   (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
   (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report');
-=======
-  (262, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
-  (263, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report');
->>>>>>> Resolve, Fix and Upgrade branch
 
 
 -- Reserved system account type
@@ -397,7 +392,6 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
-<<<<<<< 396a031235462fee99369ad1f9fabac64d7da004
 -- application process status
 INSERT INTO `status` VALUES 
   (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS'),
@@ -411,14 +405,10 @@ INSERT INTO `status` VALUES
 INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
   ('service', 'FORM.LABELS.SERVICE'),
   ('depot', 'FORM.LABELS.DEPOT');
-=======
+
 -- analysis_tool_type
 INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES 
   ('FORM.LABELS.ANALYSIS_TOOLS.COSTS', 0, 1),
   ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
   ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
   ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);
-<<<<<<< 3e18082702d9fb2a35b9017d48abfd2191785a66
->>>>>>> Rebase with branch master and resolve conflict
-=======
->>>>>>> Resolve conflict with Branch Master
