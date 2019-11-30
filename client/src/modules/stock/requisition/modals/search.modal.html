@@ -37,7 +37,7 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
-          
+
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"
@@ -45,7 +45,7 @@
             on-select-callback="$ctrl.onSelectDepot(depot)">
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
-          
+
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
@@ -60,6 +60,7 @@
             <input
               name="limit"
               type="number"
+              min="0"
               bh-integer
               bh-max-integer
               class="form-control"
