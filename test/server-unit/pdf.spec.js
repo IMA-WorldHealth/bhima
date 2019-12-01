@@ -1,10 +1,8 @@
 /* eslint global-require: "off" */
 const { expect } = require('chai');
 const rewire = require('@ima-worldhealth/rewire');
-const util = require('util');
 const path = require('path');
 const fs = require('fs').promises;
-const exec = util.promisify(require('child_process').exec);
 
 /**
  * Mock an HTML renderer without the complexity of BHIMA's bundle one
@@ -31,19 +29,9 @@ const data = {
   lang : 'fr',
 };
 
-const random = Math.ceil(Math.random() * (10 ** 9));
-
 const fixturesPath = path.resolve('test/fixtures');
-const artifactsPath = path.resolve('test/artifacts');
-const htmlFile = path.join(fixturesPath, '/pdf-sample.html');
-const temporaryFile = path.join(artifactsPath, `/pdf-${random}.pdf`);
 
 function PDFRenderUnitTest() {
-  it('wkhtmltopdf is installed and creates a PDF from an HTML file', async () => {
-    await exec(`wkhtmltopdf ${htmlFile} ${temporaryFile}`);
-    fs.unlink(temporaryFile);
-  });
-
   it('#pdf.render() renders a valid PDF file', async () => {
     const htmlString = await fs.readFile(template, 'utf8');
     const result = await pdf.render(data, htmlString, {});

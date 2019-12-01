@@ -1,9 +1,12 @@
 <head>
   <meta charset="utf-8" />
   {{#if metadata.enterprise.settings.enable_barcodes}}
-    <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+    <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.min.js"></script>
   {{/if}}
+
+  {{> point-of-sale-stylesheet }}
 </head>
+
 <body>
 <p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
 <h2 style="text-align : left; margin : 0px">{{details.reference}}</h2>
@@ -33,7 +36,7 @@
     {{#each rows as |item| }}
       <tr>
         <td>{{item.label}}</td>
-        <th style="text-align : right;">
+        <th class="text-right">
           {{#if item.credit}} {{currency item.credit ../details.currency_id}}{{/if}}
           {{#if item.debit}} ({{currency item.debit ../details.currency_id}}){{/if}}
         </th>
@@ -42,9 +45,9 @@
   </tbody>
 </table>
 
-{{> underline}}
+<hr />
 
-<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL"}}: {{currency details.amount details.currency_id}}</h2>
+<h2 class="text-right">{{translate "FORM.LABELS.TOTAL"}}: {{currency details.amount details.currency_id}}</h2>
 
 {{#if metadata.enterprise.settings.enable_barcodes}}
   <script>JsBarcode('.barcode').init();</script>
