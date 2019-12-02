@@ -26,24 +26,21 @@
       </div>
     </div>
 
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;"> 
+    <div class="row receipt-summary"> 
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date entry.details.date}} <br>
         <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{entry.details.user_display_name}} <br>
       </div>
       <div class="col-xs-6">
-        <span class="text-capitalize">{{translate 'STOCK.INVENTORY'}}</span>: <strong>{{rows.length}} {{translate 'STOCK.ITEMS'}}</strong> <br>
-        <span class="text-capitalize">{{translate 'STOCK.AMOUNT'}}</span>: <strong>{{currency (sum rows 'total') enterprise.currency_id}}</strong> <br>
+        <span class="text-capitalize">{{translate 'STOCK.INVENTORY'}}</span>: <strong>{{rows.length}} {{translate 'STOCK.ITEMS'}}</strong>
       </div>
     </div>
   </header>
 
-  {{#if exit.details.description}}
-  <blockquote>
-    <strong>{{translate 'FORM.LABELS.DESCRIPTION'}}</strong><br>
-    {{exit.details.description}}
-  </blockquote>
-  {{/if}}
+  <div class="receipt-summary" style="min-height: 8em;">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
+    {{entry.details.description}}
+  </div>
 
   <!-- list of data  -->
   <table class="table table-condensed table-bordered table-report">
@@ -53,9 +50,10 @@
         <th>{{translate 'STOCK.INVENTORY'}}</th>
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
-        <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.UNIT_COST'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        <th>{{translate 'STOCK.QUANTITY_SENT'}}</th>
+        <th>{{translate 'STOCK.QUANTITY_RECEIVED'}}</th>
+        <th>{{translate 'STOCK.QUANTITY_DIFFERENCE'}}</th>
+        <th style="width: 30%;">{{translate 'FORM.LABELS.NOTE'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -65,20 +63,15 @@
           <td>{{text}}</td>
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
+          <td class="text-right">{{quantity_sent}}</td>
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          <td class="text-right">{{quantity_difference}}</td>
+          <td style="width: 30%;">&nbsp;</td>
         </tr>
       {{else}}
         {{> emptyTable columns=9}}
       {{/each}}
     </tbody>
-    <tfoot>
-      <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
-      </tr>
-    </tfoot>
   </table>
 
   <br>

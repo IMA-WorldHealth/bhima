@@ -404,7 +404,7 @@
       "APPROVED_BY" : "Approuvé par",
       "RECEIVER" : "Recepteur",
       "DEPOT_MANAGER" : "Gestionnaire du dépot",
-      "SUPPLIER" : "Fournisseur"
+      "SUPPLIER" : "Fournisseur / Autre"
     },
     "CLIENT_SUMMARY" : {
       "TITLE":"Rapport des dettes des clients",
