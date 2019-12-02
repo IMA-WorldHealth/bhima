@@ -37,22 +37,22 @@
           <div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="hospitalized" 
-                  id="hospitalized_yes" 
-                  ng-value="1" 
+                <input
+                  type="radio"
+                  name="hospitalized"
+                  id="hospitalized_yes"
+                  ng-value="1"
                   ng-model="$ctrl.searchQueries.hospitalized">
                 <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
               </label>
             </div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="hospitalized" 
-                  id="hospitalized_no" 
-                  ng-value="0" 
+                <input
+                  type="radio"
+                  name="hospitalized"
+                  id="hospitalized_no"
+                  ng-value="0"
                   ng-model="$ctrl.searchQueries.hospitalized">
                 <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
               </label>
@@ -64,22 +64,22 @@
           <div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="is_new_case" 
-                  id="is_new_case_yes" 
-                  ng-value="1" 
+                <input
+                  type="radio"
+                  name="is_new_case"
+                  id="is_new_case_yes"
+                  ng-value="1"
                   ng-model="$ctrl.searchQueries.is_new_case">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
               </label>
             </div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="is_new_case" 
-                  id="is_new_case_no" 
-                  ng-value="0" 
+                <input
+                  type="radio"
+                  name="is_new_case"
+                  id="is_new_case_no"
+                  ng-value="0"
                   ng-model="$ctrl.searchQueries.is_new_case">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
               </label>
@@ -91,22 +91,22 @@
           <div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="inside_health_zone" 
-                  id="inside_health_zone_yes" 
-                  ng-value="1" 
+                <input
+                  type="radio"
+                  name="inside_health_zone"
+                  id="inside_health_zone_yes"
+                  ng-value="1"
                   ng-model="$ctrl.searchQueries.inside_health_zone">
                 <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
               </label>
             </div>
             <div class="radio-inline">
               <label style="font-weight: 100;">
-                <input 
-                  type="radio" 
-                  name="inside_health_zone" 
-                  id="inside_health_zone_no" 
-                  ng-value="0" 
+                <input
+                  type="radio"
+                  name="inside_health_zone"
+                  id="inside_health_zone_no"
+                  ng-value="0"
                   ng-model="$ctrl.searchQueries.inside_health_zone">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
               </label>
@@ -188,7 +188,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input name="limit" type="number" min="0" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
