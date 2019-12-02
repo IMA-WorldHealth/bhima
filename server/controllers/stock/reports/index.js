@@ -46,3 +46,4 @@ exports.stockValue = stockValue.document;
 exports.stockValueReporting = stockValue.reporting;
 exports.stockAssignReceipt = stockAssignReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
+exports.purchaseOrderAnalysis = require('./purchaseOrderAnalysis');

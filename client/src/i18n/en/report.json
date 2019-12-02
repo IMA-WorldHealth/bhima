@@ -122,6 +122,10 @@
       "DESCRIPTION": "This report shows the financial situation of a patient",
       "TITLE": "Patient Standing Report"
     },
+    "PURCHASE_ORDER_ANALYSIS": {
+      "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",
+      "TITLE": "Purchase order analysis"
+    },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
       "DESCRIPTION": "This report shows the current stock value for each inventory in a depot"

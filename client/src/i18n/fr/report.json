@@ -115,6 +115,10 @@
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
       "TITLE": "Situation financière d'un Patient"
     },
+    "PURCHASE_ORDER_ANALYSIS": {
+      "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
+      "TITLE": "Analyse de commande d'achat"
+    },
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
       "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."

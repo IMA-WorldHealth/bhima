@@ -317,7 +317,7 @@ function search(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['supplier_uuid']);
+  db.convert(options, ['supplier_uuid', 'uuid']);
   const filters = new FilterParser(options, { tableAlias : 'p' });
   let statusIds = [];
 
@@ -330,6 +330,7 @@ function find(options) {
   filters.dateFrom('custion_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
+  filters.equals('uuid');
 
   filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
   filters.equals('supplier_uuid', 'uuid', 's');

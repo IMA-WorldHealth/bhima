@@ -109,6 +109,7 @@
     "PROJECT":"Projets",
     "PURCHASING":"Achat",
     "PURCHASE_ORDER":"Achats",
+    "PURCHASE_ORDER_ANALYSIS": "[Stock] Analyse de commande d'achat",
     "PURCHASE":"Effectuer Achat",
     "PURCHASE_REGISTRY":"Registre des achats",
     "REPORTS":"Rapports",
