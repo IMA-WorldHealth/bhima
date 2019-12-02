@@ -43,6 +43,7 @@ angular.module('bhima.routes')
       'systemUsageStat',
       'dataKit',
       'configurable_analysis_report',
+      'purchaseOrderAnalysis',
     ];
 
     $stateProvider

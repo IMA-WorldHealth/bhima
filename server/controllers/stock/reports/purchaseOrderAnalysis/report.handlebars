@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  {{> head title="{{translate 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE' }}" }}
+  <body style="font: 6px;">
+    <div style="margin-right: 2%; margin-left: 2%;">
+      {{> header}}
+
+      <!-- body -->
+      <div class="row">
+        <div class="col-xs-12">
+          <!-- page title  -->
+          <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE'}}</h3>
+          <br>
+          <br>
+          <table style="width: 90%; margin-right: auto; margin-left: auto" class="table table-condensed table-report table-bordered">
+            <tr>
+              <td width="15%" class="text-uppercase">
+                {{translate 'FORM.LABELS.REFERENCE'}}
+              </td>
+              <td width="85%" colspan="2"><strong>{{ purchase.reference }} </td>
+            </tr>
+            <tr>
+              <td width="15%" class="text-uppercase">
+                 {{translate 'FORM.LABELS.SUPPLIER'}}
+              </td>
+              <td width="85%" colspan="2"> <strong>{{ purchase.supplier }}</strong> </td>
+            </tr>
+            <tr>
+              <td width="15%" class="text-uppercase">
+                {{translate 'FORM.LABELS.DATE'}}
+              </td>
+              <td width="85%" colspan="2"> <strong><em> {{date purchase.date "DD/MM/YYYY"}} </em></strong> </td>
+            </tr>
+            <tr>
+              <td width="13%" class="text-uppercase">
+                {{translate 'FORM.LABELS.STATUS'}}
+              </td>
+              <td style="color:white; text-align:center; background-color: {{ purchase.statusDisplay.color }}" width="2%"> {{ purchase.statusDisplay.icon }} </td>
+              <td width="80%"> <strong> {{translate purchase.status}} </strong> </td>
+            </tr>
+          </table>
+
+          {{#if this.hideDetails }}
+          <br>
+          <br>
+          <table style="width: 90%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
+            <thead>
+              <th width="6%" class="text-uppercase"> {{translate 'FORM.LABELS.CODE'}} </th>
+              <th width="20%" class="text-uppercase"> {{translate 'FORM.LABELS.INVENTORY'}} </th>
+              <th width="12%" class="text-uppercase"> {{translate 'FORM.LABELS.QUANTITY_ORDERED'}} </th>
+              <th width="12%" class="text-uppercase"> {{translate 'FORM.LABELS.QUANTITY_ENTRY'}} </th>
+              <th width="15%" class="text-uppercase"> {{translate 'FORM.LABELS.QUANTITY_DIFFERENCE'}} </th>
+              <th width="17%" class="text-uppercase" colspan="2"> {{translate 'FORM.LABELS.STATUS'}} </th>
+              <th width="18%" class="text-uppercase"> {{translate 'FORM.LABELS.LAST_ENTRY_DATE'}} </th>
+            </thead>
+            <tbody>
+              {{#each this.inventoriesOrdered}}
+                <tr>
+                  <td><strong> {{ code }} </strong></td>
+                  <td><strong> {{ inventory_text }} </strong> </td>
+                  <td class="text-right">{{ quantity_ordered }}</td>
+                  <td class="text-right">{{ quantity_inStock }}</td>
+                  <td class="text-right"><strong>{{ quantity_difference }}</strong></td>
+                  <td width="2%" style="color:white; text-align:center; background-color: {{ status.color }}">
+                    <strong> {{ status.icon }} </strong>
+                  </td>
+                  <td> <strong> {{translate status.text}} </strong> </td>
+                  <td>{{date last_entry_date "DD/MM/YYYY HH:mm"}} </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          {{/if}}
+
+          {{#if this.displayDetails }}
+          {{#each this.inventoriesOrdered}}
+            <br>
+            <br>
+            <table style="width: 90%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
+              
+                <tr>
+                  <td width="15%" class="text-uppercase"> {{translate 'FORM.LABELS.CODE'}}  </td>
+                  <td colspan="7" width="85%"><strong> {{ code }} </strong></td>
+                </tr>
+                <tr>
+                  <td width="15%" class="text-uppercase"> {{translate 'FORM.LABELS.INVENTORY'}}  </td>
+                  <td colspan="7" width="85%"><strong> {{ inventory_text }} </strong></td>
+                </tr>
+                <tr class="text-uppercase text-bold">
+                  <td></td>
+                  <td width="14%">{{translate 'STOCK.MOVEMENT'}}</td>
+                  <td width="14%">{{translate 'FORM.LABELS.DATE'}}</td>
+                  <td width="14%">{{translate 'FORM.LABELS.DEPOT'}}</td>
+                  <td width="14%">{{translate 'STOCK.LOT'}}</td>
+                  <td width="14%">{{translate 'STOCK.EXPIRATION_DATE'}}</td>
+                  <td width="15%" colspan="2">{{translate 'FORM.LABELS.QUANTITY_ENTRY'}}</td>
+                </tr>
+                {{#each detailled}}
+                  <tr class="text-uppercase text-bold">
+                    <td></td>
+                    <td> {{ stock_movement_reference }} </td>
+                    <td> {{ date entry_date "DD/MM/YYYY HH:mm"}} </td>
+                    <td> {{ depotText }} </td>
+                    <td> {{ lotLabel }} </td>
+                    <td> {{ date expiration_date "DD/MM/YYYY"}} </td>
+                    <td colspan="2"> {{ quantity }} </td>
+                  </tr>
+                {{/each}}
+                <tr>
+                  <td colspan="8"></td>
+                </tr>
+                <tr>
+                  <td class="text-uppercase text-right text-bold" colspan="6">
+                    {{translate 'FORM.LABELS.TOTAL'}}
+                  </td>
+                  <td class="text-bold" colspan="2"> {{ quantity_inStock }} </td>
+                </tr>
+                <tr>
+                  <td class="text-uppercase text-right text-bold" colspan="6">
+                    {{translate 'FORM.LABELS.QUANTITY_ORDERED'}}
+                  </td>
+                  <td class="text-bold" colspan="2"> {{ quantity_ordered }} </td>
+                </tr>
+                <tr>
+                  <td class="text-uppercase text-right text-bold" colspan="6">
+                    {{translate 'FORM.LABELS.QUANTITY_DIFFERENCE'}}
+                  </td>
+                  <td class="text-bold" colspan="2"> {{ quantity_difference }} </td>
+                </tr>
+                <tr>
+                  <td class="text-uppercase text-right text-bold" colspan="6">
+                    {{translate 'FORM.LABELS.STATUS'}}
+                  </td>
+                  <td width="0.5%" style="color:white; text-align:center; background-color: {{ status.color }}">
+                    <strong> {{ status.icon }} </strong>
+                  </td> 
+                  <td class="text-bold"> {{translate status.text}} </td>
+                </tr>                                                
+            </table>
+          {{/each}}  
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

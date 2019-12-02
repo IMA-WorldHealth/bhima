@@ -1,16 +1,16 @@
 angular.module('bhima.controllers')
-  .controller('analysisAuxiliaryCashController', AnalysisAuxiliaryCashController);
+  .controller('purchaseOrderAnalysisController', PurchaseOrderAnalysisController);
 
-AnalysisAuxiliaryCashController.$inject = [
+PurchaseOrderAnalysisController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
   'reportData', '$state', 'AccountService', 'FormatTreeDataService',
 ];
 
-function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache,
+function PurchaseOrderAnalysisController($sce, Notify, SavedReports, AppCache,
   reportData, $state, Accounts, FormatTreeData) {
   const vm = this;
-  const cache = new AppCache('analysisAuxiliaryCash');
-  const reportUrl = 'reports/finance/analysis_auxiliary_cashbox';
+  const cache = new AppCache('purchaseOrderAnalysis');
+  const reportUrl = '/reports/purchases/purchases_analysis';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -22,32 +22,13 @@ function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache,
       vm.accounts = accounts;
     });
 
-  vm.onSelectFiscalYear = (fiscalYear) => {
-    vm.reportDetails.fiscal_id = fiscalYear.id;
+  vm.clearPreview = function clearPreview() {
+    vm.previewGenerated = false;
+    vm.previewResult = null;
   };
 
   vm.onChangeShowDetails = value => {
     vm.reportDetails.shouldShowDetails = value;
-  };
-
-  vm.onSelectPeriod = (period) => {
-    vm.reportDetails.period_id = period.id;
-    vm.reportDetails.periodLabel = period.hrLabel;
-    vm.reportDetails.end_date = period.end_date;
-    vm.reportDetails.start_date = period.start_date;
-  };
-
-  vm.onSelectCashbox = (cashbox) => {
-    vm.reportDetails.cashboxId = cashbox.id;
-    vm.reportDetails.cashboxLabel = cashbox.hrlabel;
-    vm.reportDetails.account_id = cashbox.account_id;
-    vm.reportDetails.transfer_account_id = cashbox.transfer_account_id;
-    vm.reportDetails.currency_id = cashbox.currency_id;
-  };
-
-  vm.clearPreview = function clearPreview() {
-    vm.previewGenerated = false;
-    vm.previewResult = null;
   };
 
   vm.preview = function preview(form) {
@@ -65,6 +46,10 @@ function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache,
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
+  };
+
+  vm.onSelectPurchase = function onSelectPurchase(purchase) {
+    vm.reportDetails.purchase_uuid = purchase.uuid;
   };
 
   vm.requestSaveAs = function requestSaveAs() {

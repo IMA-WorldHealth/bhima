@@ -107,6 +107,7 @@
     "PRICE_LIST" : "Price List",
     "PROJECT" : "Projects",
     "PURCHASE_ORDER" : "Purchase Orders",
+    "PURCHASE_ORDER_ANALYSIS": "[Stock] Purchase order analysis",
     "PURCHASE" : "Purchase",
     "PURCHASE_REGISTRY" : "Purchase Registry",
     "PURCHASING" : "Purchasing",
