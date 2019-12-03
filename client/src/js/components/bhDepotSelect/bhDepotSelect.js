@@ -20,6 +20,8 @@ function DepotSelectController(Depots, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
+
     if ($ctrl.depotUuid) {
       Depots.read($ctrl.depotUuid)
         .then(depot => {
