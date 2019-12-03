@@ -28,10 +28,10 @@
   </header>
 
   {{#if details.description}}
-  <blockquote>
-    <strong>{{translate 'FORM.LABELS.DESCRIPTION'}}</strong><br>
+  <div class="row receipt-summary">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
     {{details.description}}
-  </blockquote>
+  </div>
   {{/if}}
 
   <!-- list of data  -->
