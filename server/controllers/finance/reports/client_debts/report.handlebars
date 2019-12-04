@@ -1,8 +1,6 @@
 {{> head title="REPORT.CLIENT_SUMMARY.TITLE"}}
 
-<body>
-
-<div class="container">
+<body class="container">
   {{> header}}
 
   <!-- body  -->
@@ -31,14 +29,14 @@
             <th>{{debcred employeesDebtsTotal.balance metadata.enterprise.currency_id}}</th>
           </tr>
         </tbody>
-        
+
         {{#if showDetails}}
         <tbody>
           {{#each employeesDebts as | emp |}}
             <tr>
               <td>{{ emp.reference }}</td>
               <td>{{ emp.display_name }}</td>
-              <td>{{debcred emp.balance metadata.enterprise.currency_id}}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
           <tr><td colspan="3">&nbsp;</td></tr>
@@ -51,14 +49,14 @@
             <th>{{debcred notEmployeesDebtsTotal.balance metadata.enterprise.currency_id}}</th>
           </tr>
         </tbody>
-        
+
         {{#if showDetails}}
         <tbody>
           {{#each notEmployeesDebts as | emp |}}
             <tr>
               <td>{{ emp.reference }}</td>
               <td>{{ emp.display_name }}</td>
-              <td>{{debcred emp.balance metadata.enterprise.currency_id}}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
           <tr><td colspan="3">&nbsp;</td></tr>
@@ -78,7 +76,7 @@
             <tr>
               <td>{{ emp.reference }}</td>
               <td>{{ emp.display_name }}</td>
-              <td>{{debcred emp.balance metadata.enterprise.currency_id}}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
           <tr><td colspan="3">&nbsp;</td></tr>
@@ -88,6 +86,4 @@
       </table>
     </div>
   </div>
-
-</div>
 </body>

@@ -12,11 +12,7 @@ module.exports.report = report;
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/client_debts/report.handlebars';
 
-const DEFAULT_OPTIONS = {
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
-};
+const SUPPORT_TRANSACTION_TYPE = 4;
 
 /**
  * @method report
@@ -26,53 +22,52 @@ const DEFAULT_OPTIONS = {
  */
 async function report(req, res, next) {
   try {
-    const qs = _.extend(req.query, DEFAULT_OPTIONS);
-    const { dateFrom, dateTo } = req.query;
+    const qs = _.clone(req.query);
+    const { dateFrom, dateTo } = qs;
     const groupUuid = req.query.group_uuid;
     const showDetails = parseInt(req.query.shouldShowDebtsDetails, 10);
     const metadata = _.clone(req.session);
 
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
-    const SUPPORT_TRANSACTION_TYPE = 4;
 
     const patientsDebtsQuery = `
       SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl 
-      JOIN debtor_group dg ON dg.account_id = gl.account_id
-      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
-      JOIN entity_map AS em ON em.uuid = p.uuid
-      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?) 
-    `;
-
-    const employeesDebtsQuery = `
-      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl 
-      JOIN debtor_group dg ON dg.account_id = gl.account_id
-      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
-      JOIN employee e ON e.patient_uuid = p.uuid
-      JOIN entity_map AS em ON em.uuid = p.uuid
-      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?) 
-    `;
-
-    const notEmployeesDebtsQuery = `
-      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl 
+      FROM general_ledger gl
       JOIN debtor_group dg ON dg.account_id = gl.account_id
       JOIN patient p ON p.debtor_uuid = gl.entity_uuid
       JOIN entity_map AS em ON em.uuid = p.uuid
       WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
-        AND p.uuid NOT IN (SELECT patient_uuid as uuid FROM employee) 
+    `;
+
+    const employeesDebtsQuery = `
+      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
+      FROM general_ledger gl
+      JOIN debtor_group dg ON dg.account_id = gl.account_id
+      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
+      JOIN employee e ON e.patient_uuid = p.uuid
+      JOIN entity_map AS em ON em.uuid = p.uuid
+      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
+    `;
+
+    const notEmployeesDebtsQuery = `
+      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
+      FROM general_ledger gl
+      JOIN debtor_group dg ON dg.account_id = gl.account_id
+      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
+      JOIN entity_map AS em ON em.uuid = p.uuid
+      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
+        AND p.uuid NOT IN (SELECT patient_uuid as uuid FROM employee)
     `;
 
     const clientSupportDebtsQuery = `
       SELECT em.text as reference, p.display_name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl 
+      FROM general_ledger gl
       JOIN employee e ON e.creditor_uuid = gl.entity_uuid
       JOIN patient p ON p.uuid = e.patient_uuid
       JOIN entity_map AS em ON em.uuid = e.creditor_uuid
-      WHERE p.debtor_uuid IN (SELECT uuid AS uuid FROM debtor WHERE group_uuid = ?) 
-        AND (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} 
+      WHERE p.debtor_uuid IN (SELECT uuid AS uuid FROM debtor WHERE group_uuid = ?)
+        AND (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
     `;
 
     const clientQuery = `

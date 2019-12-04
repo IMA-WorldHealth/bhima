@@ -95,7 +95,7 @@ async function queryContext(params = {}) {
 
      SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, (gl.debit_equiv - gl.credit_equiv)*
      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
-    
+
      SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, (gl.debit_equiv - gl.credit_equiv)*
      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
 
@@ -110,10 +110,10 @@ async function queryContext(params = {}) {
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, (gl.debit_equiv - gl.credit_equiv) *
     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
 
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, (gl.debit_equiv - gl.credit_equiv) * 
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, (gl.debit_equiv - gl.credit_equiv) *
     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
-    
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, (gl.debit_equiv - gl.credit_equiv) * 
+
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, (gl.debit_equiv - gl.credit_equiv) *
     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
   `;
 
