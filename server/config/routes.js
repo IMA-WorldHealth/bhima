@@ -318,6 +318,7 @@ exports.configure = function configure(app) {
   app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
 
   app.get('/inventory/log/:uuid', inventory.logs);
+  app.get('/inventory/download/log/:uuid', inventory.logDownLoad);
 
   /** Inventory Group API endpoints */
   app.post('/inventory/groups', inventory.createInventoryGroups);

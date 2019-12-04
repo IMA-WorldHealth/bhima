@@ -2,13 +2,13 @@ angular.module('bhima.controllers')
   .controller('InventoryLogModalController', InventoryLogModalController);
 
 InventoryLogModalController.$inject = [
-  'data', '$uibModalInstance', 'InventoryService',
+  'data', '$uibModalInstance', 'InventoryService', 'LanguageService',
 ];
 
-function InventoryLogModalController(data, Instance, Inventory) {
+function InventoryLogModalController(data, Instance, Inventory, LanguageService) {
   const vm = this;
   vm.close = Instance.close;
-
+  vm.lang = LanguageService.key;
   Inventory.read(data.uuid).then(inventory => {
     vm.inventory = inventory;
   });
