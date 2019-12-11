@@ -13,7 +13,7 @@ const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
 
-const CURRENT_JOBS = [];
+const CURRENT_JOBS = new Map();
 
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
@@ -70,21 +70,32 @@ function details(req, res, next) {
     .done();
 }
 
+/**
+ * @function removeJob
+ *
+ * @description
+ * The opposite of addJob().  It haults a job from running, and removes it from the
+ * list of current jobs.
+ */
+function removeJob(id) {
+  const jobToStop = CURRENT_JOBS.get(id);
+
+  if (jobToStop) {
+    jobToStop.job.stop();
+    debug(`The job for "${jobToStop.label}" is stopped`);
+    CURRENT_JOBS.delete(id);
+  }
+
+}
+
 function remove(req, res, next) {
   const query = `
     DELETE FROM cron_email_report WHERE id = ?;
   `;
-  db.exec(query, [req.params.id])
-    .then(() => {
-      const [jobToStop] = CURRENT_JOBS.filter(item => {
-        return item.id === parseInt(req.params.id, 10);
-      });
+  const ident = parseInt(req.params.id, 10);
 
-      if (jobToStop) {
-        jobToStop.job.stop();
-        debug(`The job for "${jobToStop.label}" is stopped`);
-      }
-    })
+  db.exec(query, [ident])
+    .then(() => removeJob(ident))
     .then(() => res.sendStatus(204))
     .catch(next)
     .done();
@@ -126,6 +137,9 @@ function send(req, res, next) {
 function addJob(frequency, cb, ...params) {
   const cj = new Cron(frequency, () => cb(...params));
   cj.start();
+
+  const nextRunDate = cj.nextDate().format('YYYY-MM-DD HH:mm:ss');
+  debug(`Added and started new job.  Next run at: ${nextRunDate}`);
   return cj;
 }
 
@@ -158,7 +172,7 @@ async function launchCronEmailReportJobs() {
  */
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
-  CURRENT_JOBS.push({ id : record.id, label : record.label, job });
+  CURRENT_JOBS.set(record.id, { id : record.id, label : record.label, job });
   return updateCronEmailReportNextSend(record.id, job);
 }
 

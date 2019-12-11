@@ -1,17 +1,29 @@
 const { expect } = require('chai');
+const chai = require('chai');
+
+// const sinon = require('sinon');
 const rewire = require('@ima-worldhealth/rewire');
 
 describe('cronEmailReport', () => {
   let addDynamicDatesOptions;
+  let CURRENT_JOBS;
+  let addJob;
+  let removeJob;
 
   const DAILY = 1;
   const WEEKLY = 2;
   const MONTHLY = 3;
   const YEARLY = 4;
 
+  // this crontab fires once a minute
+  const CRONTAB = '* * * * *';
+
   before(() => {
     const cronEmailReport = rewire('../../server/controllers/admin/cronEmailReport');
     addDynamicDatesOptions = cronEmailReport.__get__('addDynamicDatesOptions');
+    addJob = cronEmailReport.__get__('addJob');
+    removeJob = cronEmailReport.__get__('removeJob');
+    CURRENT_JOBS = cronEmailReport.__get__('CURRENT_JOBS');
   });
 
 
@@ -89,4 +101,27 @@ describe('cronEmailReport', () => {
     expect(dateTo.toDate().getDate()).to.equal(31);
   });
 
+  it('#addJob() starts a cron job', () => {
+    const cb = chai.spy(() => {});
+    const job = addJob(CRONTAB, cb, {});
+
+    expect(job).to.be.an('object');
+    expect(job).to.have.any.keys('running');
+    expect(job.running).to.equal(true);
+  });
+
+  it('#removeJob() removes a cron job by its identifier', () => {
+    // mock a cron job
+    const stop = chai.spy(() => {});
+    const id = 3;
+    const job = { id, job : { stop } };
+    CURRENT_JOBS.set(id, job);
+
+    expect(CURRENT_JOBS.size).to.equal(1);
+
+    removeJob(id);
+
+    expect(stop).to.have.been.called();
+    expect(CURRENT_JOBS.size).to.equal(0);
+  });
 });
