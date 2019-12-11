@@ -244,27 +244,35 @@ function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
 
   const period = new BhMoment(new Date());
 
-  if (hasDynamicDates) {
-    if (cronId === DAILY) {
-      options.dateFrom = period.day().dateFrom;
-      options.dateTo = period.day().dateTo;
-    }
-
-    if (cronId === WEEKLY) {
-      options.dateFrom = period.week().dateFrom;
-      options.dateTo = period.week().dateTo;
-    }
-
-    if (cronId === MONTHLY) {
-      options.dateFrom = period.month().dateFrom;
-      options.dateTo = period.month().dateTo;
-    }
-
-    if (cronId === YEARLY) {
-      options.dateFrom = period.year().dateFrom;
-      options.dateTo = period.year().dateTo;
-    }
+  if (!hasDynamicDates) {
+    return options;
   }
+
+  switch (cronId) {
+  case DAILY:
+    options.dateFrom = period.day().dateFrom;
+    options.dateTo = period.day().dateTo;
+    break;
+
+  case WEEKLY:
+    options.dateFrom = period.week().dateFrom;
+    options.dateTo = period.week().dateTo;
+    break;
+
+  case MONTHLY:
+    options.dateFrom = period.month().dateFrom;
+    options.dateTo = period.month().dateTo;
+    break;
+
+  case YEARLY:
+    options.dateFrom = period.year().dateFrom;
+    options.dateTo = period.year().dateTo;
+    break;
+
+  default:
+    break;
+  }
+
   return options;
 }
 
