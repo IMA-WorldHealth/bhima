@@ -96,7 +96,7 @@ CREATE TABLE invoicing_fee (
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(191) NOT NULL,
   `description`     TEXT NOT NULL,
-  `value`           DECIMAL(10,4) UNSIGNED NOT NULL,
+  `value`           DECIMAL(19,12) UNSIGNED NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -111,7 +111,7 @@ CREATE TABLE `budget` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `account_id` INT UNSIGNED NOT NULL,
   `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `budget` DECIMAL(10,4) UNSIGNED DEFAULT NULL,
+  `budget` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   KEY `account_id` (`account_id`),
   KEY `period_id` (`period_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
@@ -128,7 +128,7 @@ CREATE TABLE `cash` (
   `date`            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `debtor_uuid`     BINARY(16) NOT NULL,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `amount`          DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `cashbox_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
   `description`     TEXT,
@@ -155,7 +155,7 @@ DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
   `uuid`            BINARY(16) NOT NULL,
   `cash_uuid`       BINARY(16) NOT NULL,
-  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `amount`          DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
   `invoice_uuid`    BINARY(16) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
@@ -314,7 +314,7 @@ CREATE TABLE `creditor` (
 DROP TABLE IF EXISTS `creditor_group`;
 
 CREATE TABLE `creditor_group` (
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
   `name` varchar(80) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
@@ -330,7 +330,7 @@ CREATE TABLE `creditor_group` (
 
 DROP TABLE IF EXISTS `critere`;
 CREATE TABLE `critere` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(50) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
@@ -344,7 +344,7 @@ CREATE TABLE `currency` (
   `format_key` varchar(20) NOT NULL,
   `symbol` varchar(15) NOT NULL,
   `note` text,
-  `min_monentary_unit` decimal(10,2) NOT NULL,
+  `min_monentary_unit` DECIMAL(19,12) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `currency_1` (`name`),
   UNIQUE KEY `currency_2` (`symbol`)
@@ -417,7 +417,7 @@ CREATE TABLE `debtor_group_history` (
   `previous_debtor_group` BINARY(16) DEFAULT NULL,
   `next_debtor_group` BINARY(16) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
+  `user_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `previous_debtor_group` (`previous_debtor_group`),
@@ -450,8 +450,8 @@ DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(191) NOT NULL,
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
-  `is_warehouse` smallINT(5) UNSIGNED NOT NULL DEFAULT 0,
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `is_warehouse` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_donation` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_integration` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -473,7 +473,7 @@ CREATE TABLE discount (
   `description`         TEXT NOT NULL,
   `inventory_uuid`      BINARY(16) NOT NULL,
   `account_id`          INT(10) UNSIGNED NOT NULL,
-  `value`               DECIMAL(10,4) NOT NULL,
+  `value`               DECIMAL(19,12) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `discount_1` (`label`),
   UNIQUE KEY `discount_2` (`account_id`, `inventory_uuid`),
@@ -662,10 +662,10 @@ CREATE TABLE `general_ledger` (
   `record_uuid`       BINARY(16) NOT NULL,
   `description`       TEXT NOT NULL,
   `account_id`        INT(10) UNSIGNED NOT NULL,
-  `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `credit`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `debit_equiv`       DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
-  `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `debit`             DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit`            DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
+  `debit_equiv`       DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
+  `credit_equiv`      DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),
   `reference_uuid`    BINARY(16),
@@ -701,7 +701,7 @@ CREATE TABLE `grade` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) DEFAULT NULL,
   `text` VARCHAR(50) NOT NULL,
-  `basic_salary` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `basic_salary` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_1` (`code`),
   UNIQUE KEY `grade_2` (`text`)
@@ -730,7 +730,7 @@ CREATE TABLE `holiday_paiement` (
   `holiday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
   `label` varchar(100) NOT NULL,
-  `value` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `value` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -745,7 +745,7 @@ CREATE TABLE `offday_paiement` (
   `offday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
   `label` varchar(100) NOT NULL,
-  `value` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `value` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `offday_id` (`offday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -770,7 +770,7 @@ CREATE TABLE `inventory` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) NOT NULL,
   `text` varchar(100) NOT NULL,
-  `price` DECIMAL(18,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `price` DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.0,
   `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -784,9 +784,9 @@ CREATE TABLE `inventory` (
   `sellable` TINYINT(1)   NOT NULL DEFAULT 1,
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
-  `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
-  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Average consumption' ,
-  `purchase_INTerval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order INTerval' ,
+  `delay` DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
+  `avg_consumption` DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Average consumption' ,
+  `purchase_interval` DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order INTerval' ,
   `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering INTerval',
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
@@ -842,7 +842,7 @@ CREATE TABLE `inventory_type` (
 DROP TABLE IF EXISTS `inventory_unit`;
 
 CREATE TABLE `inventory_unit` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `abbr` varchar(10) NOT NULL,
   `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
@@ -883,12 +883,12 @@ CREATE TABLE `paiement` (
   `paiement_date` date DEFAULT NULL,
   `total_day` INT(10) UNSIGNED DEFAULT 0,
   `working_day` INT(10) UNSIGNED DEFAULT 0,
-  `basic_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `daily_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `base_taxable` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `gross_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `net_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `amount_paid` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
+  `basic_salary` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `daily_salary` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `base_taxable` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `gross_salary` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `net_salary` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `amount_paid` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
   `status_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `paiement_1` (`employee_uuid`, `payroll_configuration_id`),
@@ -920,7 +920,7 @@ CREATE TABLE `stage_payment_indice` (
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   `rubric_id` INT(10)  UNSIGNED NOT NULL,
-  `rubric_value`  DECIMAL(19,4) NOT NULL,
+  `rubric_value`  DECIMAL(19,12) NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `paiement_1` (`employee_uuid`, `rubric_id`, `payroll_configuration_id`),
   KEY `employee_uuid` (`employee_uuid`),
@@ -1195,8 +1195,8 @@ CREATE TABLE `period_total` (
   `fiscal_year_id` mediumINT(8) UNSIGNED NOT NULL,
   `period_id` mediumINT(8) UNSIGNED NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
-  `credit` decimal(19,4) UNSIGNED DEFAULT NULL,
-  `debit` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `credit` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
+  `debit` DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`,`fiscal_year_id`,`period_id`,`account_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
@@ -1214,8 +1214,8 @@ DROP TABLE IF EXISTS `permission`;
 
 CREATE TABLE `permission` (
   `id` mediumINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `unit_id` smallINT(5) UNSIGNED NOT NULL,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `unit_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permission_1` (`unit_id`,`user_id`),
   KEY `unit_id` (`unit_id`),
@@ -1309,10 +1309,10 @@ CREATE TABLE `posting_journal` (
   `record_uuid`       BINARY(16) NOT NULL,
   `description`       TEXT,
   `account_id`        INT(10) UNSIGNED NOT NULL,
-  `debit`             DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `credit`            DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `debit_equiv`       DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `credit_equiv`      DECIMAL(19,4) NOT NULL DEFAULT 0.00,
+  `debit`             DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `credit`            DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `debit_equiv`       DECIMAL(19,12) NOT NULL DEFAULT 0.00,
+  `credit_equiv`      DECIMAL(19,12) NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
   `entity_uuid`       BINARY(16),
   `reference_uuid`    BINARY(16),
@@ -1361,9 +1361,9 @@ CREATE TABLE `project` (
 DROP TABLE IF EXISTS `project_permission`;
 
 CREATE TABLE `project_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
-  `project_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
@@ -1391,7 +1391,7 @@ CREATE TABLE `purchase` (
   `uuid`            BINARY(16) NOT NULL,
   `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cost`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `cost`            DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.0,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   `supplier_uuid`   BINARY(16) DEFAULT NULL,
   `date`            DATETIME NOT NULL,
@@ -1420,8 +1420,8 @@ CREATE TABLE `purchase_item` (
   `purchase_uuid`   BINARY(16) NOT NULL,
   `inventory_uuid`  BINARY(16) NOT NULL,
   `quantity`        INT(11) NOT NULL DEFAULT 0,
-  `unit_price`      decimal(10,4) UNSIGNED NOT NULL,
-  `total`           decimal(10,4) UNSIGNED DEFAULT NULL,
+  `unit_price`      DECIMAL(19,12) UNSIGNED NOT NULL,
+  `total`           DECIMAL(19,12) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_item_1` (`purchase_uuid`, `inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),
@@ -1499,7 +1499,7 @@ CREATE TABLE `invoice` (
   `project_id`          SMALLINT(5) UNSIGNED NOT NULL,
   `reference`           INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `uuid`                BINARY(16) NOT NULL,
-  `cost`                DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0,
+  `cost`                DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0,
   `debtor_uuid`         BINARY(16) NOT NULL,
   `service_id`          SMALLINT(5) UNSIGNED DEFAULT NULL,
   `user_id`             SMALLINT(5) UNSIGNED NOT NULL,
@@ -1525,7 +1525,7 @@ CREATE TABLE `invoice` (
 DROP TABLE IF EXISTS invoice_invoicing_fee;
 CREATE TABLE invoice_invoicing_fee (
   `invoice_uuid`             BINARY(16) NOT NULL,
-  `value`                    DECIMAL(10,4) NOT NULL,
+  `value`                    DECIMAL(19,12) NOT NULL,
   `invoicing_fee_id`         SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`invoice_uuid`, `invoicing_fee_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
@@ -1541,10 +1541,10 @@ CREATE TABLE `invoice_item` (
   `uuid` BINARY(16) NOT NULL,
   `inventory_uuid` BINARY(16) NOT NULL,
   `quantity` INT(10) UNSIGNED NOT NULL,
-  `inventory_price` decimal(19,4) DEFAULT NULL,
-  `transaction_price` decimal(19,4) NOT NULL,
-  `debit` decimal(19,4) NOT NULL DEFAULT 0.0,
-  `credit` decimal(19,4) NOT NULL DEFAULT 0.0,
+  `inventory_price` DECIMAL(19,12) DEFAULT NULL,
+  `transaction_price` DECIMAL(19,12) NOT NULL,
+  `debit` DECIMAL(19,12) NOT NULL DEFAULT 0.0,
+  `credit` DECIMAL(19,12) NOT NULL DEFAULT 0.0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_item_1` (`invoice_uuid`, `inventory_uuid`),
   KEY `invoice_uuid` (`invoice_uuid`),
@@ -1557,7 +1557,7 @@ DROP TABLE IF EXISTS invoice_subsidy;
 
 CREATE TABLE `invoice_subsidy` (
   `invoice_uuid`        BINARY(16) NOT NULL,
-  `value`               DECIMAL(10,4) NOT NULL,
+  `value`               DECIMAL(19,12) NOT NULL,
   `subsidy_id`          SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`invoice_uuid`, `value`),
   UNIQUE KEY `invoice_subsidy_1` (`invoice_uuid`, `subsidy_id`),
@@ -1602,7 +1602,7 @@ CREATE TABLE `sector` (
 
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
-  `id` smallINT(5) UNSIGNED not null auto_increment,
+  `id` SMALLINT(5) UNSIGNED not null auto_increment,
   `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `project_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1666,7 +1666,7 @@ CREATE TABLE subsidy (
   `account_id`      INT UNSIGNED NOT NULL,
   `label`           VARCHAR(100) NOT NULL,
   `description`     TEXT,
-  `value`           DECIMAL(10,4) NOT NULL,
+  `value`           DECIMAL(19,12) NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -1741,11 +1741,11 @@ CREATE TABLE `transaction_type` (
 DROP TABLE IF EXISTS `unit`;
 
 CREATE TABLE `unit` (
-  `id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` varchar(30) NOT NULL,
   `key` varchar(70) NOT NULL,
   `description` text NOT NULL,
-  `parent` smallINT(6) DEFAULT 0,
+  `parent` SMALLINT(6) DEFAULT 0,
   `url` tinytext,
   `path` tinytext,
   PRIMARY KEY (`id`),
@@ -1836,7 +1836,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `amount`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
+  `amount`          DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.00,
   `description`     TEXT DEFAULT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1860,8 +1860,8 @@ DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
   `uuid`            BINARY(16) NOT NULL,
   `account_id`      INT UNSIGNED NOT NULL,
-  `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
-  `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
+  `debit`           DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.0000,
+  `credit`          DECIMAL(19,12) UNSIGNED NOT NULL DEFAULT 0.0000,
   `voucher_uuid`    BINARY(16) NOT NULL,
   `document_uuid`   binary(16) default null,
   `entity_uuid`     binary(16) default null,
@@ -2067,8 +2067,8 @@ CREATE TABLE `transaction_history` (
 DROP TABLE IF EXISTS `depot_permission`;
 
 CREATE TABLE `depot_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `depot_uuid`  BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
@@ -2081,8 +2081,8 @@ CREATE TABLE `depot_permission` (
 DROP TABLE IF EXISTS `cashbox_permission`;
 
 CREATE TABLE `cashbox_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
@@ -2139,7 +2139,7 @@ CREATE TABLE `config_employee_item` (
 CREATE TABLE `department`(
   `uuid` BINARY(16) PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   UNIQUE KEY  (`enterprise_id`, `name`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -2223,7 +2223,7 @@ CREATE TABLE `distribution_key` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `rate` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `rate` DECIMAL(19,12) NOT NULL DEFAULT 0.00,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
@@ -2349,7 +2349,7 @@ CREATE TABLE `inventory_log` (
   `inventory_uuid` BINARY(16) NOT NULL,
   `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `text` JSON,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `user_id` (`user_id`),
@@ -2364,8 +2364,8 @@ CREATE TABLE `staffing_indice` (
   `employee_uuid` BINARY(16) NOT NULL,
   `grade_uuid` BINARY(16) NOT NULL,
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
-  `grade_indice` DECIMAL(19,4) NOT NULL,
-  `function_indice` DECIMAL(19,4) NOT NULL,
+  `grade_indice` DECIMAL(19,12) NOT NULL,
+  `function_indice` DECIMAL(19,12) NOT NULL,
   `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL,
@@ -2378,7 +2378,7 @@ CREATE TABLE `staffing_indice` (
 DROP TABLE IF EXISTS `staffing_grade_indice`;
 CREATE TABLE `staffing_grade_indice` (
   `uuid` BINARY(16) NOT NULL,
-  `value`  DECIMAL(19,4) NOT NULL,
+  `value`  DECIMAL(19,12) NOT NULL,
   `grade_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_uuid_uniq`(`grade_uuid`),
@@ -2388,7 +2388,7 @@ CREATE TABLE `staffing_grade_indice` (
 DROP TABLE IF EXISTS `staffing_function_indice`;
 CREATE TABLE `staffing_function_indice` (
   `uuid` BINARY(16) NOT NULL,
-  `value`  DECIMAL(19,4) NOT NULL,
+  `value`  DECIMAL(19,12) NOT NULL,
   `fonction_id`   TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `fonction_id_uniq`(`fonction_id`),
@@ -2398,7 +2398,7 @@ CREATE TABLE `staffing_function_indice` (
 DROP TABLE IF EXISTS `staffing_indice_parameters`;
 CREATE TABLE `staffing_indice_parameters` (
   `uuid` BINARY(16) NOT NULL,
-  `pay_envelope`  DECIMAL(19,4) NOT NULL,
+  `pay_envelope`  DECIMAL(19,12) NOT NULL,
   `working_days`   TINYINT(3) UNSIGNED NOT NULL,
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
@@ -2408,28 +2408,28 @@ CREATE TABLE `staffing_indice_parameters` (
 
 DROP TABLE IF EXISTS `data_collector_management`;
 CREATE TABLE `data_collector_management` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `label` VARCHAR(100) NOT NULL, 
-  `description` TEXT, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `description` TEXT,
   `version_number` INT(11) UNSIGNED NOT NULL,
-  `color` VARCHAR(8) NULL, 
+  `color` VARCHAR(8) NULL,
   `is_related_patient` TINYINT(1) NOT NULL DEFAULT 0,
   `include_patient_data` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`), 
+  PRIMARY KEY (`id`),
   UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `choices_list_management`;
 CREATE TABLE `choices_list_management` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `name` VARCHAR(100) NOT NULL, 
-  `label` VARCHAR(100) NOT NULL, 
-  `fixed` tinyint(1) DEFAULT 0, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
   `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
-  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0, 
+  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0,
   `is_group` tinyint(1) NOT NULL DEFAULT 0,
-  `is_title` tinyint(1) NOT NULL DEFAULT 0, 
-  PRIMARY KEY (`id`), 
+  `is_title` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

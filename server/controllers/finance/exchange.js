@@ -77,30 +77,34 @@ function getExchangeRateList(enterpriseId, opts) {
 // POST /exchange
 exports.create = create;
 
-function create(req, res, next) {
-  const data = req.body.rate;
-  // pre-process dates for mysql insertion
-  if (data.date) {
-    data.date = new Date(data.date);
-  }
+async function create(req, res, next) {
+  try {
+    const data = req.body.rate;
+    // pre-process dates for mysql insertion
+    if (data.date) {
+      data.date = new Date(data.date);
+    }
 
-  const transaction = db.transaction();
-  const sql = `INSERT INTO exchange_rate (enterprise_id, currency_id, rate, date)
-    VALUES (?);`;
+    const transaction = db.transaction();
+    const sql = `INSERT INTO exchange_rate (enterprise_id, currency_id, rate, date)
+      VALUES (?);`;
 
+    transaction.addQuery('CALL UpdateGainOrLossOnExchangeAccounts(?, ?, ?, ?,?, ?)', [
+      data.enterprise_id,
+      req.session.project.id,
+      req.session.user.id,
+      data.currency_id,
+      data.date,
+      data.rate,
+    ]);
 
-  transaction.addQuery('CALL UpdateGainOrLossOnExchangeAccounts(?, ?, ?, ?,?, ?)', [
-    data.enterprise_id,
-    req.session.project.id,
-    req.session.user.id,
-    data.currency_id,
-    data.date,
-    data.rate,
-  ]);
-  transaction.addQuery(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]]);
-  transaction.execute().then(results => {
+    transaction.addQuery(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]]);
+
+    const results = await transaction.execute();
     res.status(201).json({ id : results[1].insertId });
-  }).catch(next);
+  } catch (e) {
+    next(e);
+  }
 }
 
 

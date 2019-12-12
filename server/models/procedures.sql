@@ -75,4 +75,10 @@ SOURCE server/models/procedures/payroll.sql
   analysis procedures
 */
 SOURCE server/models/procedures/analysis.sql
+
+/*
+  exchange rate procedures
+*/
+SOURCE server/models/procedures/exchange.sql
+
 DELIMITER ;
