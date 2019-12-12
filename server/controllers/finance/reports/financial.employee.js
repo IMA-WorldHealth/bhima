@@ -14,7 +14,6 @@ const Employee = require('../../payroll/employees');
 const Creditors = require('../../finance/creditors');
 const Debtors = require('../../finance/debtors');
 const db = require('../../../lib/db');
-const util = require('../../../lib/util');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';
 
@@ -32,8 +31,13 @@ const PDF_OPTIONS = {
  */
 async function build(req, res, next) {
   const options = req.query;
-
   let report;
+  options.extractEmployee = parseInt(options.extractEmployee, 10);
+
+  if (!options.extractEmployee) {
+    options.dateFrom = ``;
+    options.dateTo = ``;
+  }
 
   _.defaults(options, PDF_OPTIONS);
 
@@ -60,7 +64,7 @@ async function build(req, res, next) {
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
-      Creditors.getFinancialActivity(employee.creditor_uuid),
+      Creditors.getFinancialActivity(employee.creditor_uuid, options.dateFrom, options.dateTo),
       Debtors.getFinancialActivity(patient.debtor_uuid, true),
     ]);
 
@@ -72,8 +76,37 @@ async function build(req, res, next) {
       debtorAggregates : debtorOperations.aggregates,
     });
 
+    if (creditorOperations.openingBalance) {
+      _.extend(data, {
+        creditorOpeningBalance : creditorOperations.openingBalance[0],
+      });
+    }
+
+    // provides the latest element of the table,
+    // as the request is ordered by date, the last line item will
+    // also be the employee's balance for the search period
+    if (options.extractEmployee) {
+
+      const lastTxn = _.last(creditorOperations.transactions);
+      data.lastTransaction = lastTxn || { cumsum : 0 };
+      data.extratCreditorText = data.lastTransaction.cumsum >= 0
+        ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
+
+      data.dates = {
+        dateFrom : options.dateFrom,
+        dateTo : options.dateTo,
+      };
+    }
+
     // employee balance
-    data.employeeBalance = util.roundDecimal(data.debtorAggregates.balance - data.creditorAggregates.balance, 2);
+    data.includeMedicalCare = parseInt(options.includeMedicalCare, 10) === 1;
+    data.extractEmployee = options.extractEmployee === 1;
+    data.employeeStandingReport = !data.extractEmployee;
+
+    // For the Employee Standing report, it must be mentioned if the employee has a credit or debit balance
+    data.balanceCreditorText = data.creditorAggregates.balance >= 0
+      ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
+
     // let render
     const result = await report.render(data);
     return res.set(result.headers).send(result.report);

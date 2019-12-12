@@ -1,17 +1,17 @@
-/* global browser, element, by */
+/* global element, by */
 
 const FU = require('../FormUtils');
 
 module.exports = {
   selector : '[bh-services-multiple-select]',
-  set      : function set(servicesMultipleSelect, id) {
+  set      : async function set(servicesMultipleSelect, id) {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);
 
-    target.click();
+    await target.click();
 
-    servicesMultipleSelect.forEach(function (services){
-    	FU.uiSelect('$ctrl.selectedServices', services);
-    });
+    await Promise.all(
+      servicesMultipleSelect.map(services => FU.uiSelect('$ctrl.selectedServices', services))
+    );
   },
 };

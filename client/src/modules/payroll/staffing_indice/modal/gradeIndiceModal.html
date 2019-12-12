@@ -1,0 +1,56 @@
+<form name="gradeIndiceForm" bh-submit="$ctrl.submit(gradeIndiceForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.STAFFING_INDICES_MANAGEMENT</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          FORM.LABELS.ENROLLMENT_BONUS
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+
+      <bh-grade-select
+        label = "FORM.LABELS.LEVEL_OF_STUDY"
+        required = "true"
+        grade-uuid="$ctrl.indice.grade_uuid"
+        on-select-callback="$ctrl.onSelectGrade(grade)">
+      </bh-grade-select>
+
+      <bh-input-text
+        key="value"
+        label="FORM.LABELS.VALUE"
+        text-value="$ctrl.indice.value"
+        on-change="$ctrl.onInputTextChange(key, value)"
+        required="true">
+      </bh-input-text>
+    </div>
+    <div class="row">
+      <div id="staffing-indice-grid" style="height:30vh" ui-grid="$ctrl.gridOptions" ui-grid-auto-resize
+        ui-grid-resize-columns ui-grid-move-columns>
+  
+        <bh-grid-loading-indicator loading-state="$ctrl.loading"
+          empty-state="$ctrl.gridOptions.data.length === 0">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="close"
+      class="btn btn-default"
+      ng-click="$ctrl.close()"
+      translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="gradeIndiceForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

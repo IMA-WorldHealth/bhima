@@ -1,12 +1,7 @@
-/* global element, by */
-const chai = require('chai');
 const helpers = require('../shared/helpers');
-
-const { expect } = chai;
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 describe('Subsidies', () => {
   const path = '#!/subsidies';
@@ -18,60 +13,57 @@ describe('Subsidies', () => {
     value       : 12.5,
   };
 
-  const subsidyRank = 2;
-
-  it('creates a new subsidy', () => {
+  it('creates a new subsidy', async () => {
     // switch to the create form
-    FU.buttons.create();
-    FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
-    FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-    components.accountSelect.set('NGO');
-    FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
+    await FU.buttons.create();
+    await FU.input('SubsidyModalCtrl.subsidy.label', subsidy.label);
+    await FU.input('SubsidyModalCtrl.subsidy.value', subsidy.value);
+    await components.accountSelect.set('NGO');
+    await FU.input('SubsidyModalCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    await components.notification.hasSuccess();
   });
 
 
-  it('edits an subsidy', () => {
-    element(by.id(`subsidy-upd-${subsidyRank}`)).click();
-    FU.input('SubsidyCtrl.subsidy.label', 'Updated');
-    FU.input('SubsidyCtrl.subsidy.description', ' IMCK Tshikaji');
+  it('edits an subsidy', async () => {
+    const row = new GridRow('IMA SUBSIDY');
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.buttons.submit();
+    await FU.input('SubsidyModalCtrl.subsidy.label', 'Updated');
+    await FU.input('SubsidyModalCtrl.subsidy.description', ' IMCK Tshikaji');
+
+    await FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
-    FU.buttons.create();
-
-    // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
-    FU.buttons.submit();
+  it('blocks invalid form submission with relevant error classes', async () => {
+    await FU.buttons.create();
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('SubsidyCtrl.subsidy.label');
-    FU.validation.error('SubsidyCtrl.subsidy.value');
+    await FU.validation.error('SubsidyModalCtrl.subsidy.label');
+    await FU.validation.error('SubsidyModalCtrl.subsidy.value');
     // the following fields are not required
-    FU.validation.ok('SubsidyCtrl.subsidy.description');
+    await FU.validation.ok('SubsidyModalCtrl.subsidy.description');
+    await FU.buttons.cancel();
   });
 
-  it('deletes a subsidy', () => {
-    element(by.id(`subsidy-upd-${subsidyRank}`)).click();
-
-    // click the "delete" button
-    FU.buttons.delete();
+  it('deletes a subsidy', async () => {
+    const row = new GridRow('Updated');
+    await row.dropdown().click();
+    await row.remove().click();
 
     // click the alert asking for permission
-    components.modalAction.confirm();
+    await FU.buttons.submit();
 
     // make sure that the delete message appears
-    FU.exists(by.id('delete_success'), true);
+    await components.notification.hasSuccess();
   });
 });

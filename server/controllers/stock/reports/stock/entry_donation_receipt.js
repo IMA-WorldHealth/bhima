@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, NotFound, db, STOCK_ENTRY_DONATION_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, barcode, identifiers, STOCK_ENTRY_DONATION_TEMPLATE,
 } = require('../common');
 
 /**
@@ -51,6 +51,7 @@ function stockEntryDonationReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
+      const { key } = identifiers.STOCK_ENTRY;
 
       data.enterprise = req.session.enterprise;
 
@@ -61,6 +62,7 @@ function stockEntryDonationReceipt(req, res, next) {
         date                  : line.date,
         document_uuid         : line.document_uuid,
         document_reference    : line.document_reference,
+        barcode               : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;

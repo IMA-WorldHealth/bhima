@@ -3,7 +3,6 @@ const helpers = require('../shared/helpers');
 const BreakEvenReference = require('./breakEvenReference.page');
 
 describe('Break Even Reference', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/break_even_reference'));
 
   const page = new BreakEvenReference();
@@ -22,23 +21,23 @@ describe('Break Even Reference', () => {
     is_turnover : '1',
   };
 
-  it('successfully creates a new Break Even Reference', () => {
-    page.create(newBreakEvenReference);
+  it('successfully creates a new Break Even Reference', async () => {
+    await page.create(newBreakEvenReference);
   });
 
-  it('successfully edits a Break Even Reference', () => {
-    page.update(newBreakEvenReference.label, updateAccountReferenceType);
+  it('successfully edits a Break Even Reference', async () => {
+    await page.update(newBreakEvenReference.label, updateAccountReferenceType);
   });
 
-  it('errors when missing Break Even Reference create when incorrect Break Even Reference', () => {
-    page.errorOnCreateBreakEvenReference();
+  it('errors when missing Break Even Reference create when incorrect Break Even Reference', async () => {
+    await page.errorOnCreateBreakEvenReference();
   });
 
-  it('begins with 1 Break Even Reference', () => {
-    expect(page.count()).to.eventually.equal(1);
+  it('begins with 1 Break Even Reference', async () => {
+    expect(await page.count()).to.equal(1);
   });
 
-  it('successfully delete Break Even Reference', () => {
-    page.remove(updateAccountReferenceType.label);
+  it('successfully delete Break Even Reference', async () => {
+    await page.remove(updateAccountReferenceType.label);
   });
 });

@@ -5,8 +5,10 @@
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
 const types = require('./types');
+const groups = require('./groups');
 
 exports.types = types;
+exports.groups = groups;
 exports.list = list;
 exports.details = details;
 exports.update = update;

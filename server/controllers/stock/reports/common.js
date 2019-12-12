@@ -3,9 +3,13 @@ const BASE_PATH = './server/controllers/stock/reports';
 
 // receipts
 const STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.handlebars`;
+const POS_STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.pos.handlebars`;
 const STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.handlebars`;
+const POS_STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.pos.handlebars`;
 const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handlebars`;
+const POS_STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.pos.handlebars`;
 const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
+const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.handlebars`;
 const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
@@ -16,6 +20,7 @@ const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handleb
 
 // reports
 const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
+const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
 const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
@@ -34,6 +39,8 @@ const ReportManager = require('../../../lib/ReportManager');
 const PeriodService = require('../../../lib/period');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
+const pdf = require('../../../lib/renderers/pdf');
+const barcode = require('../../../lib/barcode');
 
 /*
 * This function help to format filter display name
@@ -81,60 +88,67 @@ function formatFilters(qs) {
  * @description return depot movement informations
  * @return {object} data
  */
-function getDepotMovement(documentUuid, enterprise, isExit) {
+async function getDepotMovement(documentUuid, enterprise, isExit) {
   const data = {};
   const isExitValue = isExit ? 1 : 0;
+  const isEntry = isExitValue === 0;
+
+  const lookupExitParameters = [1, Stock.flux.TO_OTHER_DEPOT, db.bid(documentUuid)];
+  const lookupEntryParameters = [0, Stock.flux.FROM_OTHER_DEPOT, db.bid(documentUuid)];
+  const parameters = isEntry ? lookupExitParameters.concat(lookupEntryParameters) : lookupExitParameters;
+
+  const joinToExitAttributes = isEntry ? `
+    , IFNULL(ex.quantity, 0) AS quantity_sent, IFNULL((ex.quantity - m.quantity), 0) AS quantity_difference
+    ` : '';
+
+  const joinToExit = isEntry ? `
+    LEFT JOIN (
+      SELECT m.document_uuid, m.lot_uuid, m.quantity
+      FROM stock_movement m
+      WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
+    )ex ON ex.document_uuid = m.document_uuid AND ex.lot_uuid = m.lot_uuid
+    ` : '';
+
   const sql = `
-        SELECT
-          i.code, i.text, BUID(m.document_uuid) AS document_uuid,
-          m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
-          u.display_name AS user_display_name,
-          dm.text AS document_reference,
-          l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
-        FROM
-          stock_movement m
-        JOIN
-          lot l ON l.uuid = m.lot_uuid
-        JOIN
-          inventory i ON i.uuid = l.inventory_uuid
-        JOIN
-          depot d ON d.uuid = m.depot_uuid
-        JOIN
-          user u ON u.id = m.user_id
-        LEFT JOIN
-          depot dd ON dd.uuid = entity_uuid
-        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-        WHERE
-          m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
+    SELECT
+      i.code, i.text, BUID(m.document_uuid) AS document_uuid,
+      m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
+      u.display_name AS user_display_name,
+      dm.text AS document_reference,
+      l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName 
+      ${joinToExitAttributes}
+    FROM stock_movement m
+    JOIN lot l ON l.uuid = m.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN depot d ON d.uuid = m.depot_uuid
+    JOIN user u ON u.id = m.user_id
+    LEFT JOIN depot dd ON dd.uuid = entity_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid 
+    ${joinToExit}
+    WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
-  return db.exec(sql, [
-    isExitValue,
-    isExit ? Stock.flux.TO_OTHER_DEPOT : Stock.flux.FROM_OTHER_DEPOT,
-    db.bid(documentUuid),
-  ])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found for exit');
-      }
-      const line = rows[0];
+  const rows = await db.exec(sql, parameters);
 
-      data.enterprise = enterprise;
-      const key = isExit ? 'exit' : 'entry';
-      data[key] = {};
+  if (!rows.length) { throw new NotFound('document not found'); }
 
-      data[key].details = {
-        depot_name         : line.depot_name,
-        otherDepotName     : line.otherDepotName || '',
-        user_display_name  : line.user_display_name,
-        description        : line.description,
-        date               : line.date,
-        document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
-      };
+  const line = rows[0];
 
-      data.rows = rows;
-      return data;
-    });
+  data.enterprise = enterprise;
+  const key = isExit ? 'exit' : 'entry';
+  data[key] = {};
+
+  data[key].details = {
+    depot_name         : line.depot_name,
+    otherDepotName     : line.otherDepotName || '',
+    user_display_name  : line.user_display_name,
+    description        : line.description,
+    date               : line.date,
+    document_uuid      : line.document_uuid,
+    document_reference : line.document_reference,
+  };
+
+  data.rows = rows;
+  return data;
 }
 
 // Extensible PDF layout options
@@ -173,6 +187,8 @@ exports._ = _;
 
 exports.db = db;
 exports.util = util;
+exports.pdf = pdf;
+exports.barcode = barcode;
 
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;
@@ -186,9 +202,13 @@ exports.getDepotMovement = getDepotMovement;
 exports.pdfOptions = pdfOptions;
 
 exports.STOCK_EXIT_PATIENT_TEMPLATE = STOCK_EXIT_PATIENT_TEMPLATE;
+exports.POS_STOCK_EXIT_PATIENT_TEMPLATE = POS_STOCK_EXIT_PATIENT_TEMPLATE;
 exports.STOCK_EXIT_SERVICE_TEMPLATE = STOCK_EXIT_SERVICE_TEMPLATE;
+exports.POS_STOCK_EXIT_SERVICE_TEMPLATE = POS_STOCK_EXIT_SERVICE_TEMPLATE;
 exports.STOCK_EXIT_DEPOT_TEMPLATE = STOCK_EXIT_DEPOT_TEMPLATE;
+exports.POS_STOCK_EXIT_DEPOT_TEMPLATE = POS_STOCK_EXIT_DEPOT_TEMPLATE;
 exports.STOCK_EXIT_LOSS_TEMPLATE = STOCK_EXIT_LOSS_TEMPLATE;
+exports.POS_STOCK_EXIT_LOSS_TEMPLATE = POS_STOCK_EXIT_LOSS_TEMPLATE;
 exports.STOCK_ASSIGN_TEMPLATE = STOCK_ASSIGN_TEMPLATE;
 
 exports.STOCK_ENTRY_DEPOT_TEMPLATE = STOCK_ENTRY_DEPOT_TEMPLATE;
@@ -198,6 +218,7 @@ exports.STOCK_ENTRY_DONATION_TEMPLATE = STOCK_ENTRY_DONATION_TEMPLATE;
 exports.STOCK_ADJUSTMENT_TEMPLATE = STOCK_ADJUSTMENT_TEMPLATE;
 
 exports.STOCK_EXIT_REPORT_TEMPLATE = STOCK_EXIT_REPORT_TEMPLATE;
+exports.STOCK_ENTRY_REPORT_TEMPLATE = STOCK_ENTRY_REPORT_TEMPLATE;
 exports.STOCK_LOTS_REPORT_TEMPLATE = STOCK_LOTS_REPORT_TEMPLATE;
 exports.STOCK_MOVEMENTS_REPORT_TEMPLATE = STOCK_MOVEMENTS_REPORT_TEMPLATE;
 exports.STOCK_INVENTORY_REPORT_TEMPLATE = STOCK_INVENTORY_REPORT_TEMPLATE;

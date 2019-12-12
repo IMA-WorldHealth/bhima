@@ -12,18 +12,18 @@
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="DepotCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : DepotCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-search-button on-click="DepotCtrl.search()"></bh-search-button>
+
+      <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
     </div>
   </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="DepotCtrl.latestViewFilters"
+    on-remove-filter="DepotCtrl.onRemoveFilter(filter)">
+  </bh-filters>
 </div>
 
 <!-- main content -->
@@ -31,7 +31,7 @@
   <div class="container-fluid">
     <div id="depot-grid"
       ui-grid="DepotCtrl.gridOptions"
-      class="grid-full-height"
+      class="grid-util-full-height"
       ui-grid-auto-resize
       ui-grid-resize-columns>
 

@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
@@ -18,44 +18,44 @@ class GradePage {
       .count();
   }
 
-  create(grade) {
-    FU.buttons.create();
+  async create(grade) {
+    await FU.buttons.create();
 
-    FU.input('GradeModalCtrl.grade.text', grade.text, this.modal);
-    FU.input('GradeModalCtrl.grade.code', grade.code, this.modal);
-    FU.input('GradeModalCtrl.grade.basic_salary', grade.basic_salary, this.modal);
+    await FU.input('GradeModalCtrl.grade.text', grade.text, this.modal);
+    await FU.input('GradeModalCtrl.grade.code', grade.code, this.modal);
+    await FU.input('GradeModalCtrl.grade.basic_salary', grade.basic_salary, this.modal);
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  errorOnCreateGrade() {
-    FU.buttons.create();
-    FU.modal.submit();
-    FU.validation.error('GradeModalCtrl.grade.text', this.modal);
-    FU.modal.cancel();
+  async errorOnCreateGrade() {
+    await FU.buttons.create();
+    await FU.modal.submit();
+    await FU.validation.error('GradeModalCtrl.grade.text', this.modal);
+    await FU.modal.cancel();
   }
 
-  update(code, newGrade) {
+  async update(code, newGrade) {
     const row = new GridRow(code);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.input('GradeModalCtrl.grade.text', newGrade.text, this.modal);
-    FU.input('GradeModalCtrl.grade.code', newGrade.code, this.modal);
-    FU.input('GradeModalCtrl.grade.basic_salary', newGrade.basic_salary, this.modal);
+    await FU.input('GradeModalCtrl.grade.text', newGrade.text, this.modal);
+    await FU.input('GradeModalCtrl.grade.code', newGrade.code, this.modal);
+    await FU.input('GradeModalCtrl.grade.basic_salary', newGrade.basic_salary, this.modal);
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  remove(code) {
+  async remove(code) {
     const row = new GridRow(code);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 }
 

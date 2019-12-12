@@ -12,6 +12,7 @@ const DEFAULT_OPTIONS = {
 };
 
 exports.document = build;
+exports.reporting = reporting;
 
 async function build(req, res, next) {
   const qs = _.extend(req.query, DEFAULT_OPTIONS);
@@ -44,6 +45,24 @@ async function build(req, res, next) {
   res.set(compiled.headers).send(compiled.report);
 }
 
+
+async function reporting(options, session) {
+  const qs = _.extend(options, DEFAULT_OPTIONS);
+  let results;
+  const metadata = _.clone(session);
+  const report = new ReportManager(TEMPLATE, metadata, qs);
+  try {
+    results = await getUnbalancedInvoices(qs);
+  } catch (err) {
+    if (err.code !== 'ER_CANT_AGGREGATE_3COLLATIONS' && err.code !== 'ER_PARSE_ERROR') {
+      throw err;
+    }
+    results = { dataset : [], totals : {}, services : [] };
+  }
+  const data = _.extend({}, qs, results);
+  return report.render(data);
+}
+
 // invoice payements balance
 async function getUnbalancedInvoices(options) {
   const params = [
@@ -51,7 +70,11 @@ async function getUnbalancedInvoices(options) {
     new Date(options.dateTo),
   ];
 
-  const wherePart = options.debtorGroupName ? `WHERE debtorGroupName = ${db.escape(options.debtorGroupName)}` : '';
+  const { debtorGroupName, serviceId } = options;
+  let wherePart = debtorGroupName ? `WHERE debtorGroupName = ${db.escape(debtorGroupName)}` : '';
+  if (serviceId) {
+    wherePart = (wherePart.length < 2) ? `WHERE serviceID=${serviceId}` : `${wherePart} AND serviceId=${serviceId}`;
+  }
 
   const rows = await db.transaction()
     .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
@@ -101,13 +124,12 @@ async function getUnbalancedInvoices(options) {
     if (!row.debtorGroupName) {
       row.isGroupTotalRow = true;
     }
-
     // add pretty debtor names
     const debtor = debtorNameMap[row.debtorUuid];
     if (debtor) {
       row.debtorReference = debtor.reference;
       row.debtorText = debtor.text;
-      row.debtorAge = util.calcualteAge(debtor.dob);
+      row.debtorAge = util.calculateAge(debtor.dob);
     }
   });
 

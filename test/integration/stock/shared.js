@@ -130,8 +130,8 @@ const movementDepot = {
   ],
 };
 
-const depotPrincipalUuid = 'f9caeb16-1684-43c5-a6c4-47dbac1df296';
-const depotPrincipalMvt = 23; // 10 initial plus 3 distributions + 10 imported
+const depotPrincipalUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
+const depotPrincipalMvt = 25; // 10 initial plus 3 distributions + 10 imported
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
 const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
@@ -163,6 +163,40 @@ const newEnterpriseAssign = {
   description : 'Enterprise stock assignment',
 };
 
+const requisitionFromService = {
+  requestor_uuid : 'aff85bdc-d7c6-4047-afe7-1724f8cd369e', // test service
+  requestor_type_id : 1,
+  depot_uuid : depotPrincipalUuid,
+  description : 'Requisition for the Test Service',
+  date : new Date(),
+  items : [
+    {
+      inventory_uuid : helpers.data.QUININE,
+      quantity  : 50,
+    }, {
+      inventory_uuid : helpers.data.MULTIVITAMINE,
+      quantity  : 10,
+    },
+  ],
+};
+
+const requisitionFromDepot = {
+  requestor_uuid : depotSecondaireUuid,
+  requestor_type_id : 2,
+  depot_uuid : depotPrincipalUuid,
+  description : 'Requisition for a depot',
+  date : new Date(),
+  items : [
+    {
+      inventory_uuid : helpers.data.QUININE,
+      quantity  : 5,
+    }, {
+      inventory_uuid : helpers.data.MULTIVITAMINE,
+      quantity  : 5,
+    },
+  ],
+};
+
 module.exports = {
   movementFirstLots,
   movementOutPatient,
@@ -177,4 +211,6 @@ module.exports = {
   personEntityUuid,
   enterpriseEntityUuid,
   lotVitamineA,
+  requisitionFromService,
+  requisitionFromDepot,
 };

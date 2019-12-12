@@ -4,7 +4,7 @@ angular.module('bhima.services')
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
   'AppCache', 'Store', 'AccountService', '$timeout', '$translate',
-  'ExchangeRateService',
+  'ExchangeRateService', 'FormatTreeDataService',
 ];
 
 /**
@@ -19,7 +19,7 @@ VoucherFormService.$inject = [
  */
 function VoucherFormService(
   Vouchers, Constants, Session, VoucherItem, AppCache, Store, Accounts,
-  $timeout, $translate, Exchange
+  $timeout, $translate, Exchange, FormatTreeData
 ) {
   // Error Flags
   // must have transaction_type for certain cases
@@ -65,7 +65,7 @@ function VoucherFormService(
 
     Accounts.read()
       .then((accounts) => {
-        this.accounts = Accounts.order(accounts);
+        this.accounts = FormatTreeData.order(accounts);
       });
 
     // this will contain the grid rows

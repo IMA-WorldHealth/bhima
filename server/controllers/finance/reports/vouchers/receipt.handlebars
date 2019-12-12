@@ -12,7 +12,7 @@
           </span><br>{{details.creditNoteVoucher.reference}}
         </div>
       {{/if}}
-  
+
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
@@ -20,18 +20,20 @@
           <div class="text-uppercase">{{translate details.text}}</div>
           <div><strong>{{details.reference}}</strong></div>
         </h3>
-        <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
-        <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.username}}
+        </div>
+
         {{#if metadata.enterprise.settings.enable_barcodes}}
-          <div>{{> barcode value=details.barcode}}</div>
+          <small>{{> barcode value=details.barcode}}</small>
         {{/if}}
       </div>
     </div>
   </header>
-  <br>
 
   <!-- client and user details  -->
-  <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+  <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px; margin-top:10px;">
     <div class="col-xs-6">
       <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{details.reference}}</strong> <br>
       <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency details.amount details.currency_id}}</strong> <br>
@@ -58,7 +60,13 @@
       {{#each items}}
         <tr>
           <td>{{number}}</td>
-          <td>{{label}}</td>
+          <td>
+            {{#if description}}
+              {{description}}
+            {{else}}
+              {{label}}
+            {{/if}}
+          </td>
           <td class="text-right">{{currency debit ../details.currency_id}}</td>
           <td class="text-right">{{currency credit ../details.currency_id}}</td>
           <td>{{ entity_reference }}</td>

@@ -1,24 +1,21 @@
 /* global element, by */
 
 const path = require('path');
-const chai = require('chai');
-
-const { expect } = chai;
+const { expect } = require('chai');
 
 const moment = require('moment');
 
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
-
-helpers.configure(chai);
-
+const FillFormManagement = require('../fillForm/fillForm.page');
 // path to the fixtures directory
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 describe('Patient Record', () => {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
+  const fillForm = new FillFormManagement();
 
   const patient = {
     name : 'Test 2 Patient',
@@ -31,132 +28,147 @@ describe('Patient Record', () => {
   const age = (dob) => `${moment().diff(dob, 'years')}`;
   const url = root.concat(id);
 
-  before(() => helpers.navigate(url));
+  const dataMedicalSheet = {
+    choice_list_id : 'Paracetamol500 mg',
+    poids : 68.9,
+    dosekilos : 1,
+    nombreFois : 3,
+    voie : 'Orale',
+    date : '1986-09-07',
+    temps : '03:16',
+    hours : '15',
+    minutes : '00',
+  };
 
-  it('downloads and correctly displays patient information', () => {
-    FU.hasText(by.id('name'), patient.name);
-    FU.hasText(by.id('patientID'), patient.id);
-    FU.hasText(by.id('hospitalNo'), patient.hospital_no);
-    FU.hasText(by.id('age'), age(patient.dob));
-    FU.hasText(by.id('gender'), patient.gender);
+  beforeEach(() => helpers.navigate(url));
+
+  it(`View and complete a patient's medical sheet`, async () => {
+    await element(by.id('form_1')).click();
+    await fillForm.fillPatientSheet(dataMedicalSheet);
+  });
+
+  it('downloads and correctly displays patient information', async () => {
+    await FU.hasText(by.id('name'), patient.name);
+    await FU.hasText(by.id('patientID'), patient.id);
+    await FU.hasText(by.id('hospitalNo'), patient.hospital_no);
+    await FU.hasText(by.id('age'), age(patient.dob));
+    await FU.hasText(by.id('gender'), patient.gender);
   });
 
   // sub unit tests - these can be moved to individual files if they become too large
-  it('displays the correct number of patient visits', () => {
-    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(1);
+  it('displays the correct number of patient visits', async () => {
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(1);
   });
 
-  it('admits a patient', () => {
+  it('admits a patient', async () => {
     const diagnosisLabel = 'Melioidose a';
-    element(by.id('submit-visit')).click();
+    await element(by.id('submit-visit')).click();
 
-    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
-    components.serviceSelect.set('Medecine Interne');
-    FU.modal.submit();
+    await components.diagnosisSelect.set(diagnosisLabel);
+    await components.serviceSelect.set('Medecine Interne');
+
+    await FU.modal.submit();
 
     // check to see a new visit has been added
-    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(2);
   });
 
-  it('dicharges a patient with a new diagnosis', () => {
+  it('dicharges a patient with a new diagnosis', async () => {
     const diagnosisLabel = 'Melioidose a';
-    element(by.id('submit-visit')).click();
+    await element(by.id('submit-visit')).click();
 
-    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
-    FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
+    await components.diagnosisSelect.set(diagnosisLabel);
+    await FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // this is part of the same visit so expect no difference in number of visits
-    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(2);
   });
 
   // Upload patient documents
-  it('upload a valid image as document', () => {
+  it('upload a valid image as document', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
+    await element(by.css('[data-document-action="add"]')).click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
- 
   // upload patient documents
-  it('upload a PDF document', () => {
+  it('upload a PDF document', async () => {
     const title = '[e2e] New Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await element(by.css('[data-document-action="add"]')).click();
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
   // test invalid file upload
-  it('cannot upload invalid document', () => {
+  it('cannot upload invalid document', async () => {
     const title = '[e2e] Invalid Document';
     const fileToUpload = 'file.virus';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
+    await element(by.css('[data-document-action="add"]')).click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.exists(by.css('[data-error-message]'), true);
-    FU.modal.close();
+    await FU.exists(by.css('[data-error-message]'), true);
+    await FU.modal.close();
   });
 
   // change document view
-  it('change document view', () => {
-    element(by.css('[data-document-action="thumbnail"]')).click();
-    FU.exists(by.css('[data-view="thumbnail"]'), true);
+  it('change document view', async () => {
+    await element(by.css('[data-document-action="thumbnail"]')).click();
+    await FU.exists(by.css('[data-view="thumbnail"]'), true);
 
-    element(by.css('[data-document-action="list"]')).click();
-    FU.exists(by.css('[data-view="list"]'), true);
+    await element(by.css('[data-document-action="list"]')).click();
+    await FU.exists(by.css('[data-view="list"]'), true);
   });
 
-
-
-  it(' thumbnail should not be shown if the upload is not an image', () => {
+  it(' thumbnail should not be shown if the upload is not an image', async () => {
     const title = '[e2e] New pdf As Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    $('[data-document-action="add"]').click();
+    await $('[data-document-action="add"]').click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
-    FU.exists(by.id('upload_thumbnail'), false);
-    FU.modal.close();
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
+    await FU.exists(by.id('upload_thumbnail'), false);
+    await FU.modal.close();
   });
 
-  it('Should check if upload_thumbnail is displayed if the upload is an image', () => {
+  it('Should check if upload_thumbnail is displayed if the upload is an image', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    $('[data-document-action="add"]').click();
+    await $('[data-document-action="add"]').click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
-    FU.exists(by.id('upload_thumbnail'), true);
-    FU.modal.close();
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
+    await FU.exists(by.id('upload_thumbnail'), true);
+    await FU.modal.close();
   });
 
-  it('informs the user that there is no patient for invalid request', () => {
-    helpers.navigate(root.concat('invalidid'));
-    components.notification.hasError();
-    FU.exists(by.id('nopatient'), true);
+  it('informs the user that there is no patient for invalid request', async () => {
+    await helpers.navigate(root.concat('invalidid'));
+    await components.notification.hasError();
+    await FU.exists(by.id('nopatient'), true);
   });
 });

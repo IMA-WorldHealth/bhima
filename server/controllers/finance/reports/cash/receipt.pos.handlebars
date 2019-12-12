@@ -1,16 +1,26 @@
 <head>
   <meta charset="utf-8" />
   {{#if metadata.enterprise.settings.enable_barcodes}}
-    <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+    <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.min.js"></script>
   {{/if}}
+
+  {{> point-of-sale-stylesheet }}
 </head>
+
 <body>
-<p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
-<h2 style="text-align : left; margin : 0px">{{payment.reference}}</h2>
-<p style="margin-top : 0px">{{date payment.date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
+<p>
+  <b style="text-transform : uppercase">{{enterprise.name}}</b>
+</p>
+
+<h2 style="text-align : left; margin : 0">{{payment.reference}}</h2>
+<p style="margin-top : 0px">
+{{date payment.date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}
+</p>
 
 {{#if metadata.enterprise.settings.enable_barcodes}}
-  <div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
+  <div class="text-center">
+    {{> barcode value=payment.barcode}}
+  </div>
 {{/if}}
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
@@ -19,17 +29,17 @@
 <br />
 
 {{#if payment.renderedDescription}}
-  <pre style="text-align:left; white-space: pre-wrap; padding-top: 5px; font-size:1.5em; padding-left:0; margin-left:0;font-weight:bold; margin-bottom:0; padding-bottom:0">
+  <pre style="text-align:left; white-space: pre-wrap; padding-top: 1px; font-size:1.25em; padding-left:0; margin-left:0;font-weight:bold; margin-bottom:0; padding-bottom:0">
 {{translate "CASH.MOTIVE"}}: {{payment.renderedDescription}}
   </pre>
 {{/if}}
 
-{{> underline}}
+<hr />
 {{#if hasRate}}
 <span>{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</span>
 <br>
 <span>{{{translate 'EXCHANGE.SET_AS'}}} 1:{{rate}} {{{translate 'EXCHANGE.ON'}}} {{currentDateFormatted}}</span>
-{{> underline}}
+<hr />
 {{/if}}
 
 {{#if payment.is_caution}}
@@ -50,16 +60,16 @@
   <tbody>
     <tr>
       <td>{{translate "PATIENT_INVOICE.STAT_PAID"}}</td>
-      <td style="text-align : right;">{{currency item.amount ../payment.currency_id}}</td>
+      <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
     </tr>
     <tr>
       <td>{{translate "TABLE.COLUMNS.REMAINING_BALANCE"}}</td>
-      <td style="text-align : right;">{{currency item.balance ../enterprise.currency_id}}</td>
+      <td class="text-right">{{currency item.balance ../enterprise.currency_id}}</td>
     </tr>
 
     {{#if ../hasRate}}
     <tr>
-      <td colspan="2" style="text-align : right">({{currency item.exchangedBalance ../payment.currency_id}})</td>
+      <td colspan="2" class="text-right">({{currency item.exchangedBalance ../payment.currency_id}})</td>
     </tr>
     {{/if}}
 
@@ -70,12 +80,12 @@
     {{/if}}
   </tbody>
 </table>
-{{> underline}}
+<hr />
 {{/each}}
 <!-- /if -->
 
-<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_PAID"}}: {{currency payment.amount payment.currency_id}}</h2>
-<h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}} : {{currency debtorTotalBalance enterprise.currency_id}}</h2>
+<h2 class="text-right">{{translate "FORM.LABELS.TOTAL_PAID"}}: {{currency payment.amount payment.currency_id}}</h2>
+<h2 class="text-right">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}} : {{currency debtorTotalBalance enterprise.currency_id}}</h2>
 
 {{#if metadata.enterprise.settings.enable_barcodes}}
   <script>JsBarcode('.barcode').init();</script>

@@ -10,9 +10,21 @@
  * @requires lib/errors/BadRequest
  */
 
-const Q = require('q');
 const db = require('../lib/db');
 const BadRequest = require('../lib/errors/BadRequest');
+
+/**
+ * @const DEFAULTS
+ *
+ * @description
+ * The default values for users, enterprises, and projects.
+ */
+const DEFAULTS = {
+  user : { id : 1, display_name : 'System Administrator' },
+  enterprise : { id : 1 },
+  project : { id : 1, locked : 0, enterprise_id : 1 },
+  settings : { enterprise_id : 1 },
+};
 
 /**
  * @method basicInstallExist
@@ -29,8 +41,8 @@ function basicInstallExist() {
 
   const dbPromise = [db.one(userExist), db.one(enterpriseExist), db.one(projectExist)];
 
-  return Q.all(dbPromise)
-    .spread((users, enterprises, projects) => {
+  return Promise.all(dbPromise)
+    .then(([users, enterprises, projects]) => {
       return !!(users.has_users || enterprises.has_enterprises || projects.has_projects);
     });
 }
@@ -38,91 +50,92 @@ function basicInstallExist() {
 /**
  * GET /install
  *
- * expose the checkBasicInstallExist method to the API
+ * @function checkBasicInstallExist
+ *
+ * @description
+ * Exposes the checkBasicInstallExist method to the API
  */
-exports.checkBasicInstallExist = (req, res, next) => {
-  basicInstallExist()
-    .then(isInstalled => res.status(200).json({ isInstalled }))
-    .catch(next)
-    .done();
+exports.checkBasicInstallExist = async (req, res, next) => {
+  try {
+    const isInstalled = await basicInstallExist();
+    res.status(200).json({ isInstalled });
+  } catch (e) {
+    next(e);
+  }
 };
+
+
+/**
+ * @function defaultEnterpriseLocation
+ *
+ * @description
+ * Grabs the first village in the database as the default enterprise location.
+ */
+function defaultEnterpriseLocation() {
+  return db.one(`SELECT uuid FROM village LIMIT 1;`);
+}
+
 
 /**
  * POST /install
  *
- * proceed to the application installation
+ * @function proceedInstall
+ *
+ * @description
+ * Proceed to the application installation
  */
-exports.proceedInstall = (req, res, next) => {
+exports.proceedInstall = async (req, res, next) => {
   const { enterprise, project, user } = req.body;
 
-  basicInstallExist()
-    .then(isInstalled => {
-      if (isInstalled) { throw new BadRequest('The application is already installed'); }
+  try {
+    const isInstalled = await basicInstallExist();
 
-      return defaultEnterpriseLocation();
-    })
-    .then((location) => createEnterpriseProjectUser(enterprise, project, user, location.uuid))
-    .then(() => res.redirect('/'))
-    .catch(next)
-    .done();
-
-  /**
-   * default location for enterprise
-   */
-  function defaultEnterpriseLocation() {
-    const sql = `SELECT uuid FROM village LIMIT 1;`;
-    return db.one(sql);
-  }
-
-  /**
-   * create enterprise, project and user
-   */
-  function createEnterpriseProjectUser(_enterprise, _project, _user, locationUuid) {
-    // set primary key and defaults
-    const USER_ID = 1;
-    const PROJECT_ID = 1;
-    const ENTERPRISE_ID = 1;
-
-    // user default
-    _user.id = USER_ID;
-    _user.display_name = 'System Administrator';
-
-    // enterprise default
-    _enterprise.id = ENTERPRISE_ID;
-    _enterprise.location_id = locationUuid;
-
-    // project default
-    _project.id = PROJECT_ID;
-    _project.enterprise_id = ENTERPRISE_ID;
-    _project.locked = 0;
-
-    if (_user.repassword) {
-      delete _user.repassword;
+    if (isInstalled) {
+      throw new BadRequest('The application is already installed');
     }
 
-    // default values for enterprise settigns
-    const enterpriseSetting = { enterprise_id : ENTERPRISE_ID };
-
-    // prepare transactions
-    const transaction = db.transaction();
-    const sqlEnterprise = 'INSERT INTO enterprise SET ? ';
-    const sqlEnterpriseSettings = 'INSERT INTO enterprise_setting SET ?';
-    const sqlProject = 'INSERT INTO project SET ? ';
-    const sqlUser = `
-      INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);`;
-
-    const sqlRole = `CALL superUserRole(${USER_ID})`;
-
-    const sqlProjectPermission = 'INSERT INTO project_permission SET ? ';
-
-    transaction
-      .addQuery(sqlEnterprise, _enterprise)
-      .addQuery(sqlEnterpriseSettings, enterpriseSetting)
-      .addQuery(sqlProject, _project)
-      .addQuery(sqlUser, [_user.username, _user.password, _user.display_name])
-      .addQuery(sqlProjectPermission, { user_id : USER_ID, project_id : PROJECT_ID })
-      .addQuery(sqlRole);
-
-    return transaction.execute();
+    const location = await defaultEnterpriseLocation();
+    await createEnterpriseProjectUser(enterprise, project, user, location.uuid);
+    res.redirect('/');
+  } catch (e) {
+    next(e);
   }
 };
+
+/**
+ * @function createEnterpriseProjectUser
+ *
+ * @description
+ * Creates the basic components of the installation: the enterprise, a default project,
+ * and the user with superuser permissions.
+ */
+function createEnterpriseProjectUser(enterprise, project, user, locationUuid) {
+
+  // assign default properties
+  Object.assign(user, DEFAULTS.user);
+  Object.assign(enterprise, DEFAULTS.enterprise, { location_id : locationUuid });
+  Object.assign(project, DEFAULTS.project);
+
+  if (user.repassword) {
+    delete user.repassword;
+  }
+
+  // prepare transactions
+  const sqlEnterprise = 'INSERT INTO enterprise SET ? ';
+  const sqlEnterpriseSettings = 'INSERT INTO enterprise_setting SET ?';
+  const sqlProject = 'INSERT INTO project SET ? ';
+  const sqlUser = 'INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);';
+
+  const sqlRole = `CALL superUserRole(${user.id})`;
+
+  const sqlProjectPermission = 'INSERT INTO project_permission SET ? ';
+
+  return db.transaction()
+    .addQuery(sqlEnterprise, enterprise)
+    .addQuery(sqlEnterpriseSettings, DEFAULTS.settings)
+    .addQuery(sqlProject, project)
+    .addQuery(sqlUser, [user.username, user.password, user.display_name])
+    .addQuery(sqlProjectPermission, { user_id : user.id, project_id : project.id })
+    .addQuery(sqlRole)
+    .execute();
+}

@@ -21,6 +21,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
+const util = require('../../lib/util');
 
 // create a new purchase order
 exports.create = create;
@@ -213,16 +214,20 @@ function create(req, res, next) {
         const numPurchase = row.num_purchase + 1;
         if (row.last_purchase) {
           const diff = moment(datePurchase).diff(moment(row.last_purchase));
+
           const duration = moment.duration(diff, 'milliseconds');
           const durationMonth = duration.asMonths();
 
           purchaseInterval = (((row.purchase_interval * (row.num_purchase - 1)) + durationMonth) / row.num_purchase);
         }
 
+        // Just to prevent cases where the order interval is less than 0
+
         transactionWrapper.addQuery(
           'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
           [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
         );
+
       });
 
       return transactionWrapper.execute();
@@ -312,7 +317,7 @@ function search(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['supplier_uuid']);
+  db.convert(options, ['supplier_uuid', 'uuid']);
   const filters = new FilterParser(options, { tableAlias : 'p' });
   let statusIds = [];
 
@@ -325,6 +330,7 @@ function find(options) {
   filters.dateFrom('custion_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
+  filters.equals('uuid');
 
   filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
   filters.equals('supplier_uuid', 'uuid', 's');
@@ -386,7 +392,7 @@ function purchaseStatus(req, res, next) {
 
   const sqlPurchaseDelay = `
     SELECT
-      p.cost, CEIL(DATEDIFF(m.date, p.date)) AS delay
+    p.cost, DATEDIFF(m.date, p.date) AS delay
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
@@ -411,7 +417,7 @@ function purchaseStatus(req, res, next) {
       const rq = resultQuantities;
       const rd = resultDelay;
 
-      glb.delay = Math.round((rd.delay / 30) * 10) / 10;
+      glb.delay = util.roundDecimal((rd.delay / 30), 2);
       glb.purchaseInventories = resultPurchaseInventories;
 
       let query;

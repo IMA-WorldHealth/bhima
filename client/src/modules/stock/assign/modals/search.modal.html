@@ -42,13 +42,13 @@
           </div>
 
           <!-- entity -->
-          <bh-entity-select 
+          <bh-entity-select
             entity-uuid="$ctrl.searchQueries.entity_uuid"
             on-select-callback="$ctrl.onSelectEntity(entity)"
             required="true">
             <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
           </bh-entity-select>
-          
+
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
@@ -63,6 +63,7 @@
             <input
               name="limit"
               type="number"
+              min="0"
               bh-integer
               bh-max-integer
               class="form-control"

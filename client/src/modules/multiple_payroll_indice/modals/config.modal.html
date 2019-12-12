@@ -1,0 +1,66 @@
+<form name="ConfigPaiementForm" bh-submit="ConfigPaiementModalCtrl.submit(ConfigPaiementForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.MULTI_PAYROLL</li>
+      <label class="badge badge-success">{{ ConfigPaiementModalCtrl.employee.display_name }}</label>
+      <label class="badge badge-primary"><span translate> {{ ConfigPaiementModalCtrl.label }} </span> : {{ ConfigPaiementModalCtrl.displayValue }}</label>
+    </ol>
+  </div>
+
+  <div ng-if="ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body" style="max-height: 70vh; overflow:auto;">
+    <!-- currency selection -->
+    <bh-currency-select
+      currency-id="ConfigPaiementModalCtrl.payroll.currency_id"
+      on-change="ConfigPaiementModalCtrl.setCurrency(currencyId)">
+    </bh-currency-select>
+
+    <div class="col-lg-12">
+      <div class="col-lg-6" style="margin-top: 16px">
+        <div 
+        ng-show ="(rubConfigured.indice_to_grap && rubConfigured.is_indice)"
+        ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        
+        <bh-input-text
+          ng-if="!rubConfigured.is_monetary_value"
+          key="{{rubConfigured.id}}"
+          label="{{rubConfigured.label}}"
+          text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
+          required = "true"
+          on-change="$ctrl.onInputTextChange(key, value)">
+        </bh-input-text>
+      </div>
+      </div>
+      <div class="col-lg-6">
+        <div
+        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        <bh-currency-input
+          data-payment-currency-input
+          ng-if="rubConfigured.is_monetary_value && rubConfigured.is_indice "
+          label="{{rubConfigured.label}}"
+          id="{{rubConfigured.abbr}}"
+          currency-id="ConfigPaiementModalCtrl.payroll.currency_id"
+          required = "false"
+          model="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
+          min = 0>
+        </bh-currency-input>
+      </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <div ng-if="!ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body badge badge-warning" style="max-height: 70vh; overflow:auto;">
+    <span translate> FORM.INFO.SETTING_PAYMENT_CURRENCY </span>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="multiple_payroll_indice">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ConfigPaiementForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

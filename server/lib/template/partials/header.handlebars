@@ -2,7 +2,9 @@
 <header class="row">
   {{> enterpriseDetails }}
   <div class="col-xs-5 text-right">
-    <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
-    <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.display_name}}</div>
+    <div>
+      {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+      {{translate "REPORT.BY"}} {{metadata.user.display_name}}
+    </div>
   </div>
 </header>

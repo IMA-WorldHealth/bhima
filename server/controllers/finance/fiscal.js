@@ -418,8 +418,9 @@ function setOpeningBalance(req, res, next) {
     .then((hasPrevious) => {
       if (hasPrevious) {
         const msg = `The fiscal year with id ${id} is not the first fiscal year`;
-        return next(new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR'));
+        throw new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR');
       }
+
       // set the opening balance if the fiscal year doesn't have previous fy
       return newOpeningBalance(fiscalYear, accounts);
     })
@@ -638,7 +639,8 @@ function closing(req, res, next) {
  */
 function getPeriodByFiscal(fiscalYearId) {
   const sql = `
-    SELECT period.number, period.id, period.start_date, period.end_date, period.locked
+    SELECT period.number, period.id, period.start_date,
+      period.end_date, period.translate_key, period.year, period.locked
     FROM period
     WHERE period.fiscal_year_id = ?
       AND period.start_date IS NOT NULL

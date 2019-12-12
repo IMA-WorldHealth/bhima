@@ -7,6 +7,7 @@ angular.module('bhima.components')
       projectId        : '<',
       onSelectCallback : '&',
       name             : '@?',
+      required         : '<?',
     },
   });
 

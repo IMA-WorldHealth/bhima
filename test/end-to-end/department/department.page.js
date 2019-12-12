@@ -1,51 +1,36 @@
 /* global by, element */
+/* eslint  */
 
 const FU = require('../shared/FormUtils');
-const GA = require('../shared/GridAction');
 const GridRow = require('../shared/GridRow');
 
-function RolesPage() {
-  const page = this;
-
-  // the grid id
-  const gridId = 'roles-grid';
-
-  page.gridId = gridId;
-  page.setLabel = setLabel;
-  page.editDepartment = editDepartment;
-  page.deleteDepartment = deleteDepartment;
-  page.openCreateModal = openCreateModal;
-
-  //  label field in the create/edit modal
-
-  const departmentName = element(by.model('ModalCtrl.department.name'));
-
-
-  page.submit = function submit() {
+class RolesPage {
+  submit() {
     return FU.modal.submit();
-  };
+  }
 
-  function setLabel(txt) {
+  setLabel(txt) {
+    const departmentName = element(by.model('ModalCtrl.department.name'));
     return departmentName.clear().sendKeys(txt);
   }
 
-  function openDropdownMenu(label) {
+  async openDropdownMenu(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
+    await row.dropdown().click();
     return row;
   }
 
-  function editDepartment(label) {
-    const row = openDropdownMenu(label);
-    row.edit().click();
+  async editDepartment(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.edit().click();
   }
 
-  function deleteDepartment(label) {
-    const row = openDropdownMenu(label);
-    row.remove().click();
+  async deleteDepartment(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.remove().click();
   }
 
-  function openCreateModal() {
+  openCreateModal() {
     return FU.buttons.create();
   }
 }

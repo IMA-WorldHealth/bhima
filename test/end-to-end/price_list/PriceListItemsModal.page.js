@@ -1,6 +1,8 @@
 /* global by, element */
-
+const path = require('path');
 const FU = require('../shared/FormUtils');
+
+const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 class PriceListItemsModalPage {
   constructor() {
@@ -13,22 +15,27 @@ class PriceListItemsModalPage {
   }
 
   setLabel(label) {
-    FU.input('ModalCtrl.data.label', label, this.modal);
+    return FU.input('ModalCtrl.data.label', label, this.modal);
   }
 
   setValue(value) {
-    FU.input('ModalCtrl.data.value', value, this.modal);
+    return FU.input('ModalCtrl.data.value', value, this.modal);
+  }
+
+  uploadFile(fileToUpload) {
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+    return element(by.id('import-input')).sendKeys(absolutePath);
   }
 
   // TODO(@jniles) - migrate this to bhYesNo
-  setIsPercentage(bool) {
+  async setIsPercentage(bool) {
     if (bool) {
-      this.modal.element(by.model('ModalCtrl.data.is_percentage')).click();
+      await this.modal.element(by.model('ModalCtrl.data.is_percentage')).click();
     }
   }
 
-  setInventory(item) {
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', item, this.modal);
+  async setInventory(item) {
+    await FU.uiSelect('ModalCtrl.data.inventory_uuid', item, this.modal);
   }
 
   remove(label) {

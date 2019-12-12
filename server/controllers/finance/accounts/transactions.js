@@ -72,7 +72,7 @@ function getGeneralLedgerSQL(options) {
   `;
 
   filters.setGroup('GROUP BY record_uuid');
-  filters.setOrder('ORDER BY created_at ASC, trans_date ASC');
+  filters.setOrder('ORDER BY trans_date ASC, created_at ASC');
 
   const query = filters.applyQuery(sql);
   const parameters = [...subquery.parameters, ...filters.parameters()];
@@ -200,6 +200,8 @@ async function getAccountTransactions(options, openingBalance = 0) {
   const hasLastCumSum = !_.isUndefined(lastTransaction && lastTransaction.cumsum);
   const lastCumSum = hasLastCumSum ? lastTransaction.cumsum : (totals.balance * totals.rate);
 
+  // tells the report if it is safe to render the debit/credit sum.  It is only safe
+  // if the currency_id is consistent throughout the entire span
   const lastCurrencyId = (lastTransaction && lastTransaction.currency_id) || totals.currency_id;
   const shouldDisplayDebitCredit = transactions.every(txn => txn.currency_id === lastCurrencyId);
 

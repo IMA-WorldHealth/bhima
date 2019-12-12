@@ -59,14 +59,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="InvoiceRegistryCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="InvoiceRegistryCtrl.search()"></bh-search-button>
 
       <bh-filter-toggle on-toggle="InvoiceRegistryCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
@@ -100,4 +93,3 @@
     </div>
   </div>
 </div>
-

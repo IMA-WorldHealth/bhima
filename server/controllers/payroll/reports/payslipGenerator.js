@@ -164,6 +164,7 @@ function build(req, res, next) {
         employee.rubricNonTaxable = [];
         employee.rubricDiscount = [];
         employee.holidaysPaid = [];
+        employee.offDaysPaid = [];
         employee.rubricsChargeEmployee = [];
         employee.rubricsChargeEnterprise = [];
         employee.daily_salary = employee.basic_salary / employee.total_day;

@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockAdjustmentController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'StockModalService', 'uiGridConstants', 'appcache',
+  'uiGridConstants',
 ];
 
 /**
@@ -15,20 +15,23 @@ StockAdjustmentController.$inject = [
  * This module exists to make sure that stock can be adjusted up and down as needed.
  */
 function StockAdjustmentController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, StockModal, uiGridConstants, AppCache
+  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Stock, uiGridConstants
 ) {
   const vm = this;
-
-  // TODO - merge all stock caches together so that the same depot is shared across all stock modules
-  const cache = new AppCache('StockCache');
 
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
+  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
+  };
+
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+    loadInventories(vm.depot);
   };
 
   // bind constants
@@ -42,7 +45,6 @@ function StockAdjustmentController(
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
-  vm.changeDepot = changeDepot;
   vm.handleAdjustmentOption = handleAdjustmentOption;
 
   // grid columns
@@ -102,7 +104,12 @@ function StockAdjustmentController(
       cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
     },
 
-    { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
+    {
+      field : 'actions',
+      displayName : '...',
+      width : 25,
+      cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
+    },
   ];
 
   // grid options
@@ -114,6 +121,7 @@ function StockAdjustmentController(
     data : vm.Stock.store.data,
     fastWatch : true,
     flatEntityAccess : true,
+    rowTemplate : 'modules/templates/grid/error.row.html',
   };
 
   // add items
@@ -124,7 +132,7 @@ function StockAdjustmentController(
 
   // remove item
   function removeItem(item) {
-    vm.Stock.removeItem(item.index);
+    vm.Stock.removeItem(item.id);
     checkValidity();
   }
 
@@ -148,11 +156,9 @@ function StockAdjustmentController(
       .catch(Notify.handleError);
   }
 
-  function setupStock(depot) {
+  function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
-    loadInventories(depot);
-    checkValidity();
   }
 
   function startup() {
@@ -160,23 +166,16 @@ function StockAdjustmentController(
       date : new Date(),
       entity : {},
     };
-
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      // load depot from the cached uuid
-      loadDepot(cache.depotUuid).then(setupStock);
-    } else {
-      // show the changeDepot modal
-      changeDepot().then(setupStock);
-    }
   }
 
   // ============================ Inventories ==========================
   function loadInventories(depot) {
-    const depotUuid = depot && depot.uuid ? depot.uuid : cache.depotUuid;
-    Stock.inventories.read(null, { depot_uuid : depotUuid })
+    setupStock();
+
+    Stock.inventories.read(null, { depot_uuid : depot.uuid })
       .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
+        checkValidity();
       })
       .catch(Notify.handleError);
   }
@@ -186,6 +185,7 @@ function StockAdjustmentController(
     const lotsExists = vm.Stock.store.data.every((item) => {
       return item.quantity > 0 && item.lot.uuid;
     });
+
     vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
   }
 
@@ -198,6 +198,10 @@ function StockAdjustmentController(
     checkValidity();
 
     if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
+
+    if (vm.Stock.hasDuplicatedLots()) {
+      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
+    }
 
     if (vm.adjustmentOption === 'increase') {
       isExit = 0;
@@ -231,27 +235,6 @@ function StockAdjustmentController(
       .then(document => {
         vm.Stock.store.clear();
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
-      })
-      .catch(Notify.handleError);
-  }
-
-  function changeDepot() {
-    // if requirement is true the modal cannot be canceled
-    const requirement = !cache.depotUuid;
-
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then((depot) => {
-        vm.depot = depot;
-        cache.depotUuid = depot.uuid;
-        return depot;
-      });
-  }
-
-  function loadDepot(uuid) {
-    return Depots.read(uuid, { only_user : true })
-      .then(depot => {
-        vm.depot = depot;
-        return depot;
       })
       .catch(Notify.handleError);
   }

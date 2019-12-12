@@ -10,35 +10,35 @@ describe('Aged Debtors Report', () => {
     report_name : 'Aged Debtors Report Saved by E2E',
     renderer : 'PDF',
     year : '2015',
-    month : 'mai ',
-    month2 : 'juin',
+    month : 'Mai 2015',
+    month2 : 'Juin 2015',
     currency_id : 2,
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
     Page = new ReportDebtorsPage(key);
   });
 
-  it('preview a new Aged Debtors Report', () => {
-    Page.showDebtorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes,
+  it('preview a new Aged Debtors Report', async () => {
+    await Page.showDebtorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes,
       dataset.currency_id);
   });
 
-  it('close the previewed report', () => {
-    Page.closeDebtorsReportPreview();
+  it('close the previewed report', async () => {
+    await Page.closeDebtorsReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveDebtorsReport(dataset.year, dataset.month2, false, dataset.report_name,
+  it('save a previewed report', async () => {
+    await Page.saveDebtorsReport(dataset.year, dataset.month2, false, dataset.report_name,
       dataset.renderer, dataset.currency_id);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedDebtorsReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await Page.checkSavedDebtorsReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printDebtorsReport(dataset.year, dataset.month, dataset.include_zeroes, dataset.currency_id);
+  it('print the previewed report', async () => {
+    await Page.printDebtorsReport(dataset.year, dataset.month, dataset.include_zeroes, dataset.currency_id);
   });
 });

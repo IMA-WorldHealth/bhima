@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 AccountReferenceModalController.$inject = [
   '$state', 'AccountService', 'AccountReferenceService',
-  'NotifyService', 'appcache',
+  'NotifyService', 'appcache', 'FormatTreeDataService',
 ];
 
-function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache) {
+function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache, FormatTreeData) {
   const vm = this;
   const cache = AppCache('AccountReferenceModal');
 
@@ -41,7 +41,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   // load accounts
   Accounts.read(null, { locked : 0, hidden : 0 })
     .then(elements => {
-      vm.accounts = Accounts.order(elements);
+      vm.accounts = FormatTreeData.order(elements);
     })
     .catch(Notify.handleError);
 
@@ -63,7 +63,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
     // Fixe me @lomamech : Give the possibility to validate the modification
     // of the 'Parent' or 'Account Reference Type Only' input area only
 
-    if (!accountReferenceForm.$dirty) { return null; }
+    if (accountReferenceForm.$pristine) { return null; }
 
     const promise = (vm.isCreating)
       ? AccountReferences.create(vm.accountReference)
@@ -83,6 +83,6 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   }
 
   function closeModal() {
-    $state.transitionTo('account_reference.list');
+    $state.go('account_reference.list');
   }
 }

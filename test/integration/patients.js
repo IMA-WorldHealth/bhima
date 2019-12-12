@@ -2,63 +2,88 @@
 
 const helpers = require('./helpers');
 
-describe('(/patients) Patients', () => {
-  // TODO Should this import UUID library and track mock patient throughout?
-  const mockPatientUuid = '85BF7A8516D94AE5B5C01FEC9748D2F9';
-  const mockDebtorUuid = 'EC4241E43558493B9D78DBAA47E3CEFD';
-  const missingPatientUuid = 'D74BC1673E14487EAF7822FD725E4AC1';
+const INITIAL_TEST_PATIENTS = 5;
 
-  const mockDebtor = {
-    uuid : mockDebtorUuid,
+// TODO Should this import UUID library and track mock patient throughout?
+const mockPatientUuid = '85BF7A8516D94AE5B5C01FEC9748D2F9';
+const mockDebtorUuid = 'EC4241E43558493B9D78DBAA47E3CEFD';
+const missingPatientUuid = 'D74BC1673E14487EAF7822FD725E4AC1';
+const mockPatientDoublonUuid = 'WWBF7A8516D94AE5B5C01FEC9748D2F9';
+const mockDebtorDoublonUuid = 'WW4241E43558493B9D78DBAA47E3CEFD';
+
+const mockDebtor = {
+  uuid : mockDebtorUuid,
+  debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
+};
+
+const mockPatient = {
+  display_name : 'Mock Patient First',
+  dob : new Date('1993-06-01'),
+  current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  origin_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  sex : 'M',
+  project_id : 1,
+  hospital_no : 120,
+  uuid : mockPatientUuid,
+};
+
+// missing last name, sex
+const missingParamsPatient = {
+  display_name : 'Mock Patient',
+  dob : new Date('1993-06-01'),
+  current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  origin_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  project_id : 1,
+  hospital_no : 121,
+  uuid : missingPatientUuid,
+};
+
+const mockRequest = {
+  finance : mockDebtor,
+  medical : mockPatient,
+};
+
+const mockMissingRequest = {
+  finance : {
     debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
-  };
+  },
+  medical : missingParamsPatient,
+};
 
-  const mockPatient = {
-    display_name : 'Mock Patient First',
-    dob : new Date('1993-06-01'),
-    current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
-    origin_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
-    sex : 'M',
-    project_id : 1,
-    hospital_no : 120,
-    uuid : mockPatientUuid,
-  };
+const badRequest = {
+  incorrectLayout : mockDebtor,
+  incorrectTest : mockPatient,
+};
 
-  // missing last name, sex
-  const missingParamsPatient = {
-    display_name : 'Mock Patient',
-    dob : new Date('1993-06-01'),
-    current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
-    origin_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
-    project_id : 1,
-    hospital_no : 121,
-    uuid : missingPatientUuid,
-  };
+const mockDebtorDoublon = {
+  uuid : mockDebtorDoublonUuid,
+  debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
+};
 
-  const mockRequest = {
-    finance : mockDebtor,
-    medical : mockPatient,
-  };
+const mockPatientDoublon = {
+  display_name : 'Mock Patient First Doublon',
+  dob : new Date('2017-08-24'),
+  current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  origin_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+  sex : 'M',
+  project_id : 1,
+  hospital_no : 220,
+  uuid : mockPatientDoublonUuid,
+};
 
-  const mockMissingRequest = {
-    finance : {
-      debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
-    },
-    medical : missingParamsPatient,
-  };
+const mockDoublonRequest = {
+  finance : mockDebtorDoublon,
+  medical : mockPatientDoublon,
+};
 
-  const badRequest = {
-    incorrectLayout : mockDebtor,
-    incorrectTest : mockPatient,
-  };
-
+describe('(/patients) Patients', () => {
   // HTTP API Test for /patients/  routes
   describe('Patient Search', () => {
 
     it('GET /patients with missing necessary parameters should succeed', () => {
       return agent.get('/patients/?')
         .then(res => {
-          helpers.api.listed(res, 5);
+          helpers.api.listed(res, INITIAL_TEST_PATIENTS + 1);
         })
         .catch(helpers.handler);
     });
@@ -165,7 +190,6 @@ describe('(/patients) Patients', () => {
   });
 
   it('GET /patients returns a list of patients', () => {
-    const INITIAL_TEST_PATIENTS = 4;
     return agent.get('/patients')
       .then((res) => {
         helpers.api.listed(res, INITIAL_TEST_PATIENTS);
@@ -238,6 +262,9 @@ describe('(/patients) Patients', () => {
       .catch(helpers.handler);
   });
 
+  // merge patients
+  describe('merge patients', MergePatients);
+
   // hospital number uniqueness tests
   describe('/hospital_number/:id/exists', HospitalNumber);
 
@@ -248,6 +275,44 @@ describe('(/patients) Patients', () => {
 
   describe('patient subsidies', subsidies);
 });
+
+// patients merge
+function MergePatients() {
+  // add a doublon
+  it('POST /patients will register a valid doublon patient', () => {
+    return agent.post('/patients')
+      .send(mockDoublonRequest)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  const params = {
+    selected : mockPatientUuid,
+    other : [mockPatientDoublonUuid],
+  };
+
+  it('POST /patients/merge will merge two patients into one', () => {
+    return agent.post('/patients/merge')
+      .send(params)
+      .then((res) => {
+        expect(res).to.have.status(204);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /patients returns a correct reduced list of patients', () => {
+    return agent.get('/patients')
+      .then((res) => {
+        // Initial test patient : 5, plus one added in this test suit
+        // we also add another new one with `mockDoublonRequest`
+        // the total is 7, after the merge we must remain with just 6
+        helpers.api.listed(res, 6);
+      })
+      .catch(helpers.handler);
+  });
+}
 
 // Tests for /patients/:uuid/groups
 function PatientGroups() {

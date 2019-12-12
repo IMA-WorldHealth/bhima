@@ -59,6 +59,13 @@ function LocationService($http, util, Modal) {
   service.update.sector = updateSector;
   service.update.village = updateVillage;
 
+  service.delete = {
+    country : removeCountry,
+    province : removeProvince,
+    sector : removeSector,
+    village : removeVillage,
+  };
+
 
   /** launch the "add location" modal */
   service.modal = modal;
@@ -171,6 +178,27 @@ function LocationService($http, util, Modal) {
    */
   function updateCountry(uuid, country) {
     return $http.put('/locations/countries/'.concat(uuid), country)
+      .then(util.unwrapHttpResponse);
+  }
+
+
+  function removeCountry(uuid) {
+    return $http.delete(`/locations/countries/${uuid}`)
+      .then(util.unwrapHttpResponse);
+  }
+
+
+  function removeProvince(uuid) {
+    return $http.delete(`/locations/provinces/${uuid}`)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function removeSector(uuid) {
+    return $http.delete(`/locations/sectors/${uuid}`)
+      .then(util.unwrapHttpResponse);
+  }
+  function removeVillage(uuid) {
+    return $http.delete(`/locations/villages/${uuid}`)
       .then(util.unwrapHttpResponse);
   }
 

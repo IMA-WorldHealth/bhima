@@ -316,5 +316,40 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     return Object.keys(this.cache).length > 0;
   };
 
+  /**
+   * @method formatOptimalPurchase
+   *
+   * This Service analyzes for all existing repositories, Inventories that have reached a point of order,
+   * then calculates the overall quantity ordered for each Inventory
+   *
+   * @param {*} inventories - This is the list of all inventories
+   * @param {*} stock - it is the data of the inventories having reached their point of order
+   */
+  PurchaseOrderForm.formatOptimalPurchase = function formatOptimalPurchase(inventories, stock) {
+    const rows = [];
+
+    inventories.forEach(inventory => {
+      const row = new PurchaseOrderItem(inventory);
+      row.quantity = 0;
+      row.unit_price = null;
+      row._invalid = true;
+      row._valid = false;
+
+      stock.forEach(item => {
+        if (item.inventory_uuid === row.inventory_uuid) {
+          row.quantity += item.S_Q;
+        }
+      });
+
+      rows.push(row);
+    });
+
+    const optimized = rows.filter(inventory => inventory.quantity > 0);
+    const optimizedSorted = optimized.sort((a, b) => Number(b.quantity) - Number(a.quantity));
+
+    return optimizedSorted;
+
+  };
+
   return PurchaseOrderForm;
 }

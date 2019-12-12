@@ -5,10 +5,8 @@
  * This library is just a shim to ensure API uniformity with other renderers.
  * it renders an Excel receipt(all recepits should follow this template's data structure).
  * Having the same data structure will help to have less xlsx rendereres
- * @module lib/renderers/xlsx
- *
- * @requires q
  */
+
 const xl = require('excel4node');
 
 const translate = require('../helpers/translate');
@@ -198,4 +196,3 @@ function render(data) {
 
   return wb.writeToBuffer();
 }
-

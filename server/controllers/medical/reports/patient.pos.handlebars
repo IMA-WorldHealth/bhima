@@ -1,8 +1,10 @@
 <head>
   <meta charset="utf-8" />
-{{#if metadata.enterprise.settings.enable_barcodes}}
-  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
-{{/if}}
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.min.js"></script>
+  {{/if}}
+
+  {{> point-of-sale-stylesheet }}
 </head>
 <body>
 
@@ -18,7 +20,7 @@
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
 ({{patient.reference}}) - {{patient.debtor_group_name}}
-{{> underline}}
+<hr />
 <p><u>{{translate "FORM.LABELS.DOB"}}</u>: {{date patient.dob }}</p>
 <p><u>{{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}</u>: {{ patient.hospital_no }}</p>
 <p><u>{{translate "FORM.LABELS.GENDER"}}</u>: {{ patient.sex }}</p>
@@ -31,7 +33,7 @@
   <p><u>{{translate "FORM.LABELS.HEALTH_AREA"}}</u>: {{patient.health_area}}</p>
 {{/if}}
 
-{{> underline}}
+<hr />
 
 <p><u>{{translate "FORM.LABELS.ORIGIN"}}</u>:</p>
 <address>
@@ -44,7 +46,7 @@
   <span>{{currentVillage.name}}, {{currentVillage.sector_name}}, {{currentVillage.province_name}}</span> <br />
   <span>{{currentVillage.country_name}}</span>
 </address>
-{{> underline}}
+<hr />
 
 {{#if metadata.enterprise.settings.enable_barcodes}}
 <script>JsBarcode('.barcode').init();</script>

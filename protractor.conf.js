@@ -1,9 +1,5 @@
 /* global browser, element, by */
 const q = require('q');
-const chai = require('chai');
-const helpers = require('./test/end-to-end/shared/helpers');
-
-helpers.configure(chai);
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -14,13 +10,11 @@ helpers.configure(chai);
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
-  // SELENIUM_PROMISE_MANAGER: false,
-
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 
   mochaOpts : {
-    // reporter        : 'mochawesome',
+    reporter        : 'mochawesome',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
       inline               : true,
@@ -32,25 +26,32 @@ const config = {
     timeout : 45000, // 45 second timeout
   },
 
+  localSeleniumStandaloneOpts : {
+    loopback : true,
+  },
+
   // default browsers to run
   multiCapabilities : [{
     // 'browserName': 'firefox',
   // }, {
     browserName : 'chrome',
+    chromeOptions : {
+      args : ['--window-size=1280,1024'],
+    },
   }],
 
   // this will log the user in to begin with
   onPrepare : () => {
-    return q.fcall(() => {
-      browser.get('http://localhost:8080/#!/login');
+    return q.fcall(async () => {
+      await browser.get('http://localhost:8080/#!/login');
 
-      element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
-      element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
-      element(by.css('[data-method="submit"]')).click();
+      await element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
+      await element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
+      await element(by.css('[data-method="submit"]')).click();
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
-    }).delay(5000);
+    }).delay(3000);
   },
 };
 
@@ -69,6 +70,9 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
+    chromeOptions : {
+      args : ['--headless', '--disable-gpu', '--window-size=1280,1024'],
+    },
   }];
 
   // make Travis take screenshots!

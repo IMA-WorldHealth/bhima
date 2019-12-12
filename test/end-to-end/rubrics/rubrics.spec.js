@@ -24,20 +24,23 @@ describe('Rubrics Management', () => {
     is_percent : 0,
   };
 
-  it('successfully creates a new rubric', () => {
-    page.create(rubric);
+  it('successfully creates a new rubric', async () => {
+    await page.create(rubric);
   });
 
-  it('successfully edits a rubric', () => {
-    page.update(rubric.label, updateRubric);
+  it('successfully edits a rubric', async () => {
+    await page.update(rubric.label, updateRubric);
   });
 
-  it('don\'t create when incorrect rubric', () => {
-    page.errorOnCreateRubric();
+  it('don\'t create when incorrect rubric', async () => {
+    await page.errorOnCreateRubric();
   });
 
-  it('successfully deletes a rubric', () => {
-    page.remove(updateRubric.label);
+  it('successfully deletes a rubric', async () => {
+    await page.remove(updateRubric.label);
   });
 
+  it('successfully import indexes rubrics', async () => {
+    await page.importIndexesRubric();
+  });
 });

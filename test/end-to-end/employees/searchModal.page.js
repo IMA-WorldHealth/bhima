@@ -1,4 +1,5 @@
 /* global element, by */
+/* eslint  */
 
 /**
  * This class represents a modal search page
@@ -10,15 +11,15 @@ const components = require('../shared/components');
 
 class SearchModalPage {
   setDisplayName(displayName) {
-    FU.input('ModalCtrl.searchQueries.display_name', displayName);
+    return FU.input('ModalCtrl.searchQueries.display_name', displayName);
   }
 
   setReference(reference) {
-    FU.input('ModalCtrl.searchQueries.reference', reference);
+    return FU.input('ModalCtrl.searchQueries.reference', reference);
   }
 
   submit() {
-    FU.modal.submit();
+    return FU.modal.submit();
   }
 
   selectSex(sex) {
@@ -30,15 +31,15 @@ class SearchModalPage {
   }
 
   selectService(service) {
-    components.serviceSelect.set(service);
+    return components.serviceSelect.set(service);
   }
 
   selectGrade(grade) {
-    components.gradeSelect.set(grade);
+    return components.gradeSelect.set(grade);
   }
 
   selectFonction(fonction) {
-    components.fonctionSelect.set(fonction);
+    return components.fonctionSelect.set(fonction);
   }
 }
 

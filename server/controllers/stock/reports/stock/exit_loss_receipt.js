@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, Stock, NotFound, db, STOCK_EXIT_LOSS_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, barcode, pdf, identifiers,
+  STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE,
 } = require('../common');
 
 /**
@@ -17,9 +18,16 @@ function stockExitLossReceipt(req, res, next) {
   const documentUuid = req.params.document_uuid;
   const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_LOSS' });
 
+  let template = STOCK_EXIT_LOSS_TEMPLATE;
+
+  if (Boolean(Number(optionReport.posReceipt))) {
+    template = POS_STOCK_EXIT_LOSS_TEMPLATE;
+    _.extend(optionReport, pdf.posReceiptOptions);
+  }
+
   // set up the report with report manager
   try {
-    report = new ReportManager(STOCK_EXIT_LOSS_TEMPLATE, req.session, optionReport);
+    report = new ReportManager(template, req.session, optionReport);
   } catch (e) {
     return next(e);
   }
@@ -45,7 +53,7 @@ function stockExitLossReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-
+      const { key } = identifiers.STOCK_EXIT;
       data.enterprise = req.session.enterprise;
 
       data.details = {
@@ -55,6 +63,7 @@ function stockExitLossReceipt(req, res, next) {
         date               : line.date,
         document_uuid      : line.document_uuid,
         document_reference : line.document_reference,
+        barcode : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;

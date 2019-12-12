@@ -1,0 +1,65 @@
+<form
+  name="ModalForm"
+  ng-submit="ModalCtrl.submit(ModalForm)"
+  data-modal="journal-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.STAFFING_INDICES_MANAGEMENT</li>
+      <li class="title" translate> FORM.INFO.SEARCH </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="padding : 0px;">
+    <uib-tabset>
+      <uib-tab index="0" data-custom-filter-tab heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}">
+        <!-- acting body class="tab-body" -->
+        <div class="tab-body">
+
+          <bh-employee-select
+            employee-uuid="ModalCtrl.searchQueries.employee_uuid"
+            on-select-callback="ModalCtrl.onSelectEmployee(employee)">
+          </bh-employee-select>
+          <!--
+          <bh-date-editor
+           date-value="ModalCtrl.searchQueries.created_at"
+           on-change="ModalCtrl.onDateChange(date)"
+           max-date="ModalCtrl.max_date"
+           limit-min-fiscal
+           disabled="Ctrl.isDisabled">
+          </bh-date-editor> -->
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" data-default-filter-tab heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
+        <div class="tab-body">
+
+          <bh-period-select
+          default-period="{{ModalCtrl.filters.period}}"
+          on-select-callback="ModalCtrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" min="0" bh-integer bh-max-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

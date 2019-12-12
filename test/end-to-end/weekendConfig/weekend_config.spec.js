@@ -10,27 +10,19 @@ describe('Weekend Configuration Management', () => {
   const newWeekendConfigLabel = 'Configuration Weekend 2013';
   const updateWeekendConfigLabel = 'Configuration Weekend 2013 Updated';
 
-  it('successfully creates a new weekend configuration', () => {
-    page.create(newWeekendConfigLabel);
+  it('successfully creates a new weekend configuration', async () => {
+    await page.create(newWeekendConfigLabel);
   });
 
-  it('successfully edits a weekend configuration', () => {
-    page.update(newWeekendConfigLabel, updateWeekendConfigLabel);
+  it('successfully edits a weekend configuration', async () => {
+    await page.update(newWeekendConfigLabel, updateWeekendConfigLabel);
   });
 
-  it('successfully set week days in weekend configuration', () => {
-    page.setWeekendConfig(updateWeekendConfigLabel);
+  it('don\'t create an incorrect weekend', async () => {
+    await page.errorOnCreateWeekendConfig();
   });
 
-  it('successfully inset week days in weekend configuration', () => {
-    page.unsetWeekendConfig(updateWeekendConfigLabel);
-  });
-
-  it('don\'t create an incorrect weekend', () => {
-    page.errorOnCreateWeekendConfig();
-  });
-
-  it('successfully deletes a weekend', () => {
-    page.remove(updateWeekendConfigLabel);
+  it('successfully deletes a weekend', async () => {
+    await page.remove(updateWeekendConfigLabel);
   });
 });

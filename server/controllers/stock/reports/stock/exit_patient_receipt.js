@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE,
+  _, ReportManager, NotFound, Stock, db, identifiers, pdf, barcode,
+  STOCK_EXIT_PATIENT_TEMPLATE, POS_STOCK_EXIT_PATIENT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -17,9 +18,16 @@ function stockExitPatientReceipt(req, res, next) {
   const documentUuid = req.params.document_uuid;
   const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
 
+  let template = STOCK_EXIT_PATIENT_TEMPLATE;
+
+  if (Boolean(Number(optionReport.posReceipt))) {
+    template = POS_STOCK_EXIT_PATIENT_TEMPLATE;
+    _.extend(optionReport, pdf.posReceiptOptions);
+  }
+
   // set up the report with report manager
   try {
-    report = new ReportManager(STOCK_EXIT_PATIENT_TEMPLATE, req.session, optionReport);
+    report = new ReportManager(template, req.session, optionReport);
   } catch (e) {
     return next(e);
   }
@@ -48,19 +56,21 @@ function stockExitPatientReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-
+      const { key } = identifiers.STOCK_EXIT;
       data.enterprise = req.session.enterprise;
 
       data.details = {
         depot_name           : line.depot_name,
         patient_reference    : line.patient_reference,
         patient_display_name : line.patient_display_name,
+        full_display_name    : line.patient_reference.concat(' - ', line.patient_display_name),
         hospital_no          : line.hospital_no,
         user_display_name    : line.user_display_name,
         description          : line.description,
         date                 : line.date,
         document_uuid        : line.document_uuid,
         document_reference   : line.document_reference,
+        barcode : barcode.generate(key, line.document_uuid),
       };
 
       data.rows = rows;

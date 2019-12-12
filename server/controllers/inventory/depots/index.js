@@ -7,10 +7,12 @@
 *
 * @todo(jniles) - review this module
 */
+const _ = require('lodash');
 
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
 
 /** expose depots routes */
@@ -19,16 +21,7 @@ exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
-
-/** expose depots distributions routes */
-exports.listDistributions = listDistributions;
-exports.detailDistributions = detailDistributions;
-
-/** expose depots inventories and lots routes */
-exports.listAvailableLots = listAvailableLots;
-exports.detailAvailableLots = detailAvailableLots;
-exports.listExpiredLots = listExpiredLots;
-exports.listStockExpirations = listStockExpirations;
+exports.searchByName = searchByName;
 
 
 /**
@@ -118,7 +111,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = req.query;
+  const options = db.convert(req.query, ['uuid']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -146,9 +139,10 @@ function list(req, res, next) {
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
   );
-
+  filters.fullText('text', 'text', 'd');
+  filters.equals('is_warehouse', 'is_warehouse', 'd');
+  filters.equals('uuid', 'uuid', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
-
   filters.setOrder('ORDER BY d.text');
 
   const query = filters.applyQuery(sql);
@@ -158,6 +152,51 @@ function list(req, res, next) {
     .then(rows => {
       res.status(200).json(rows);
     })
+    .catch(next)
+    .done();
+}
+
+/*
+ * @method searchByName
+ *
+ * @description
+ * This method implements a depot search that will only return very limited information
+ */
+function searchByName(req, res, next) {
+  const options = {};
+  options.text = req.query.text;
+  options.limit = req.query.limit || 10;
+  options.enterprise_id = req.session.enterprise.id;
+
+  if (_.isUndefined(options.text)) {
+    return next(new BadRequest('text attribute must be specified for a name search'));
+  }
+
+  const filters = new FilterParser(options, { tableAlias : 'd' });
+
+  const sql = `
+    SELECT
+      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
+      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
+      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+    FROM depot d
+      LEFT JOIN village v ON v.uuid = d.location_uuid
+      LEFT JOIN sector s ON s.uuid = v.sector_uuid
+      LEFT JOIN province p ON p.uuid = s.province_uuid
+      LEFT JOIN country c ON c.uuid = p.country_uuid
+  `;
+
+  filters.fullText('text', 'text', 'd');
+  filters.equals('enterprise_id', 'enterprise_id', 'd');
+  filters.setOrder('ORDER BY d.text');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters)
+    .then((results) => res.send(results))
     .catch(next)
     .done();
 }
@@ -191,324 +230,6 @@ function detail(req, res, next) {
     .then((row) => {
     // return the json
       res.status(200).json(row);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
-* GET /depots/:uuid/distributions
-* Fetches distributions (equiv. consumptions) for the given depot uuid.  Allows
-* the following query options:
-*   start - start date
-*   end   - end date
-*   type  - type of distribution {service|patient|loss|rummage}. Defaults to
-*           all distributions, regardless of type.
-*
-* NOTE - this query does not filter for uncanceled sales.  You will have to
-* handle those yourselves in your controllers.
-*
-* @function listDistributions
-*/
-function listDistributions(req, res, next) {
-  let sql;
-  const options = req.query;
-
-  // the sql executed depends on the type of consumption
-  // defaults to all consumptions
-  switch (options.type) {
-  // filter on distributions to patients
-  // TODO - this query is suboptimal.  Perhaps rewrite with multiple subqueries
-  case 'patients':
-  case 'patient':
-    sql = `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
-        p.uuid AS patientId, p.display_name, d.text, d.uuid AS depotId,
-        CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label,
-        sale.invoice, cp.sale_uuid AS saleId, c.canceled
-      FROM consumption_patient AS cp
-      JOIN consumption AS c ON c.uuid = cp.consumption_uuid
-      JOIN patient AS p ON p.uuid = cp.patient_uuid
-      JOIN project AS pr ON p.project_id = pr.id
-      JOIN depot AS d ON d.uuid = c.depot_uuid
-      JOIN stock AS s ON s.tracking_number = c.tracking_number
-      JOIN inventory AS i ON i.uuid = s.inventory_uuid
-      JOIN (
-        SELECT sale.uuid, CONCAT(project.abbr, sale.reference) AS invoice
-        FROM sale JOIN project ON
-          sale.project_id = project.id
-      ) AS sale ON sale.uuid = c.document_id
-      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY c.document_id
-      ORDER BY c.date DESC, p.display_name ASC;`;
-    break;
-
-    // get distributions to services
-  case 'services':
-  case 'service':
-    sql = `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
-      cs.service_id, service.name, c.date, d.text, d.uuid AS depotId,
-      i.text AS label, c.canceled
-      FROM consumption_service AS cs
-      JOIN consumption AS c ON c.uuid = cs.consumption_uuid
-      JOIN service ON service.id = cs.service_id
-      JOIN depot AS d ON d.uuid = c.depot_uuid
-      JOIN stock ON stock.tracking_number = c.tracking_number
-      JOIN inventory AS i ON i.uuid = stock.inventory_uuid
-      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY c.document_id
-      ORDER BY c.date DESC, service.name ASC;`;
-    break;
-
-    // TODO - this should find all consumption rummages for this depot
-  case 'rummage':
-    sql = `SELECT c.uuid, cr.document_uuid AS voucher,
-        COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
-        i.text AS label, c.canceled
-      FROM consumption_rummage AS cr
-      JOIN consumption AS c ON c.uuid = cr.consumption_uuid
-      JOIN depot AS d ON d.uuid = c.depot_uuid
-      JOIN stock ON stock.tracking_number = c.tracking_number
-      JOIN inventory AS i ON i.uuid = stock.inventory_uuid
-      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY c.document_id
-      ORDER BY c.date DESC;`;
-    break;
-
-    // TODO - this should find all consumption losses for this depot
-  case 'loss':
-  case 'losses':
-    sql = `SELECT c.uuid, c.document_id AS voucher,
-        COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
-        i.text AS label, c.canceled
-      FROM consumption_loss AS cl
-      JOIN consumption AS c ON c.uuid = cl.consumption_uuid
-      JOIN depot AS d ON d.uuid = c.depot_uuid
-      JOIN stock AS s ON s.tracking_number = c.tracking_number
-      JOIN inventory AS i ON i.uuid = s.inventory_uuid
-      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY c.document_id
-      ORDER BY c.date DESC;`;
-    break;
-
-    // TODO - this should find all consumptions for this depot
-  default:
-    sql = `SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price,
-        COUNT(c.document_id) AS total, c.date, d.text,
-        d.uuid AS depotId, i.text AS label, c.canceled
-      FROM consumption AS c
-      JOIN depot AS d ON d.uuid = c.depot_uuid
-      JOIN stock AS s ON s.tracking_number = c.tracking_number
-      JOIN inventory AS i ON i.uuid = s.inventory_uuid
-      WHERE d.uuid = ? AND c.date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY c.document_id
-      ORDER BY c.date DESC;`;
-    break;
-  }
-
-  db.exec(sql, [req.params.depotId, options.start, options.end])
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
-
-function detailDistributions(req, res, next) {
-  const uid = req.params.uuid;
-
-  const sql = `SELECT c.uuid, c.document_id, c.date, d.text AS depotName,
-      d.uuid AS depotId, c.quantity, i.text AS label, c.canceled
-    FROM consumption AS c
-    JOIN depot AS d ON d.uuid = c.depot_uuid
-    JOIN stock AS s ON s.tracking_number = c.tracking_number
-    JOIN inventory AS i ON i.uuid = s.inventory_uuid
-    WHERE d.uuid = ? AND c.uuid = ?
-    ORDER BY c.date DESC;`;
-
-  db.exec(sql, [req.params.depotId, uid])
-    .then((rows) => {
-      if (!rows) {
-        res.status(404).json({
-          code : 'ERR_NO_CONSUMPTION',
-          reason : `Could not find a consumption by uuid:${uid}`,
-        });
-
-        return;
-      }
-
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
-
-
-/**
-* GET /depots/:depotId/inventory
-* This function returns all the lots in a given depot for all inventory items
-* in the inventory.
-*
-* @function listAvailableLots
-*/
-function listAvailableLots(req, res, next) {
-  const depot = req.params.depotId;
-
-  const sql = `SELECT
-      unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code,
-      label, expiration_date
-     FROM
-     (
-       SELECT
-        purchase_item.unit_price, stock.tracking_number, stock.lot_number,
-        (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label,
-        stock.expiration_date
-       FROM
-        consumption JOIN stock ON consumption.tracking_number = stock.tracking_number
-        JOIN
-          inventory ON inventory.uuid = stock.inventory_uuid
-        JOIN
-          purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
-          purchase_item.inventory_uuid = stock.inventory_uuid
-        WHERE consumption.canceled = 0 AND depot_uuid = ?
-        UNION ALL
-       SELECT
-        purchase_item.unit_price, stock.tracking_number, stock.lot_number,
-        (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-        inventory.code, inventory.text AS label, stock.expiration_date
-       FROM movement
-       JOIN stock ON movement.tracking_number = stock.tracking_number
-       JOIN inventory ON inventory.uuid = stock.inventory_uuid
-       JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND
-        purchase_item.inventory_uuid = stock.inventory_uuid
-       WHERE movement.depot_entry= ? OR movement.depot_exit= ?)
-      AS t GROUP BY tracking_number;`;
-
-  return db.exec(sql, [depot, depot, depot, depot])
-    .then((rows) => {
-    // @TODO -- this should be in the WHERE/HAVING condition
-      const ans = rows.filter((item) => { return item.quantity > 0; });
-      res.status(200).json(ans);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
-* GET /depots/:depotId/inventory/:uuid
-* This function returns all the lots in a given depot for a given inventory
-* item, identified by an inventory code.
-*
-* TODO -- this should change to a UUID.
-*
-* @function detailAvailableLots
-*/
-function detailAvailableLots(req, res, next) {
-  const depot = req.params.depotId;
-  const uid = req.params.uuid;
-  const sql = `SELECT
-      tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date
-     FROM
-      (
-        SELECT
-          stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity,
-          inventory.code, stock.expiration_date
-        FROM
-          consumption
-        JOIN stock ON consumption.tracking_number = stock.tracking_number
-        JOIN inventory ON inventory.uuid = stock.inventory_uuid
-        WHERE consumption.canceled = 0 AND depot_uuid = ? AND inventory.uuid = ?
-        UNION ALL
-      SELECT
-        stock.tracking_number, stock.lot_number,
-        (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity,
-        inventory.code, stock.expiration_date
-      FROM
-        movement
-      JOIN stock ON movement.tracking_number = stock.tracking_number
-      JOIN inventory ON inventory.uuid = stock.inventory_uuid
-      WHERE (movement.depot_entry= ? OR movement.depot_exit= ?) AND inventory.uuid= ?)
-    AS t GROUP BY tracking_number;`;
-
-  return db.exec(sql, [depot, uid, depot, depot, depot, uid])
-    .then((rows) => {
-      // @TODO -- this should be in the WHERE/HAVING condition
-      const ans = rows.filter((item) => { return item.quantity > 0; });
-      res.status(200).json(ans);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
-* GET /depot/:uuid/expired
-* Finds expiring drugs for a particular depot identified by depotId
-*
-* @function listExpiredLots
-*/
-function listExpiredLots(req, res, next) {
-  const depot = req.params.depotId;
-  const sql = `SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (
-      SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
-        SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
-        stock.expiration_date, inventory.code
-      FROM inventory JOIN stock JOIN (
-        SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date
-        FROM movement
-        UNION
-        SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date
-        FROM consumption
-        WHERE consumption.canceled = 0
-      ) AS outflow ON
-        inventory.uuid = stock.inventory_uuid AND
-        stock.tracking_number = outflow.tracking_number
-      WHERE stock.expiration_date <= CURDATE() AND (outflow.depot_entry = ? OR outflow.depot_exit = ?)
-      GROUP BY stock.tracking_number
-    ) AS s
-    WHERE s.quantity > 0;`;
-
-  db.exec(sql, [depot, depot, depot])
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
-
-/**
-* GET /depots/:uuid/expirations?start={}&end={}
-* This function returns all lots that will expire in a given depot between the
-* provided dates.
-*
-* @function listStockExpirations
-*/
-function listStockExpirations(req, res, next) {
-  const depot = req.params.depotId;
-  const sql = `SELECT s.tracking_number, s.lot_number, s.quantity, s.text, s.code, s.expiration_date FROM (
-      SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
-        SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
-        stock.expiration_date, inventory.code, inventory.text
-      FROM inventory JOIN stock JOIN (
-        SELECT uuid, depot_entry, depot_exit, tracking_number, quantity, date
-        FROM movement
-        UNION
-        SELECT uuid, null AS depot_entry, depot_uuid AS depot_exit, tracking_number, quantity, date
-        FROM consumption
-        WHERE consumption.canceled = 0
-      ) AS outflow ON
-        inventory.uuid = stock.inventory_uuid AND
-        stock.tracking_number = outflow.tracking_number
-      WHERE (outflow.depot_entry = ? OR outflow.depot_exit = ?) AND
-        stock.expiration_date BETWEEN DATE(?) AND DATE(?)
-      GROUP BY stock.tracking_number
-    ) AS s
-    WHERE s.quantity > 0;`; // filter out quantity = 0 from expiration report
-
-  // TODO -- should the quantity = 0 filter be a HAVING clause?  Will that be
-  // more performant?
-
-  db.exec(sql, [depot, depot, depot, req.query.start, req.query.end])
-    .then((rows) => {
-      res.status(200).json(rows);
     })
     .catch(next)
     .done();

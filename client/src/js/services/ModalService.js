@@ -73,6 +73,7 @@ function ModalService(Modal) {
   service.openSelectFiscalYear = openSelectFiscalYear;
 
   service.openHostpitaliationIndicator = openHostpitaliationIndicator;
+  service.openinventoryLogModal = openinventoryLogModal;
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -339,4 +340,9 @@ function ModalService(Modal) {
     return openModal(request, templateUrl, controller, 'lg');
   }
 
+  function openinventoryLogModal(request) {
+    const templateUrl = 'modules/inventory/list/modals/log.modal.html';
+    const controller = 'InventoryLogModalController';
+    return openModal(request, templateUrl, controller, 'md');
+  }
 }

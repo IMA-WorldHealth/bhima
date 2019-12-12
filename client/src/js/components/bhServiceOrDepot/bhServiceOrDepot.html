@@ -1,0 +1,50 @@
+<div ng-form="ServiceOrDepotForm" bh-service-or-depot-select ng-model-options="{ updateOn: 'default' }">
+  <div class="form-group"
+    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && !$ctrl.requestorUuid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <br>
+
+    <label
+      ng-repeat="requestor in $ctrl.requestors"
+      class="radio-inline"
+      translate-attr="{ title : requestor.title_key  }">
+      <input
+        name="requestor"
+        type="radio"
+        ng-model="$ctrl.requestorType"
+        ng-value="requestor"
+        ng-change="$ctrl.onChangeRequestor()"
+        data-requestor-option="{{ requestor.type_key }}"
+        ng-required="$ctrl.required">
+      <span translate>{{ requestor.title_key }}</span>
+    </label>
+
+    <div class="help-block" ng-messages="ServiceOrDepotForm.requestor.$error" ng-show="ServiceOrDepotForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <!-- service  -->
+  <div ng-if="$ctrl.requestorType.type_key === 'service'">
+    <bh-service-select
+      label="REQUISITION.SERVICE_REQUESTOR"
+      on-select-callback="$ctrl.onSelectRequestor(service)"
+      required="true">
+    </bh-service-select>
+  </div>
+
+  <!-- depot  -->
+  <div ng-if="$ctrl.requestorType.type_key === 'depot'">
+    <bh-depot-select
+      depot-uuid="$ctrl.uuid"
+      label="REQUISITION.DEPOT_REQUESTOR"
+      on-select-callback="$ctrl.onSelectRequestor(depot)"
+      required="true">
+    </bh-depot-select>
+  </div>
+</div>
+  

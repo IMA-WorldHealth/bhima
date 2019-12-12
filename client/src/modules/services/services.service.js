@@ -1,43 +1,48 @@
 angular.module('bhima.services')
-.service('ServiceService', ServiceService);
+  .service('ServiceService', ServiceService);
 
-ServiceService.$inject = [ '$http', 'util' ];
+ServiceService.$inject = ['$http', 'util'];
 
-function ServiceService ($http, util) {
-  var service = this;
-  var baseUrl = '/services/';
+function ServiceService($http, util) {
+  const service = this;
+  const baseUrl = '/services/';
 
   service.create = create;
   service.read = read;
   service.update = update;
   service.delete = del;
+  service.count = count;
 
-  function create(service) {
-    return $http.post(baseUrl, service)
-    .then(util.unwrapHttpResponse);
+  function create(data) {
+    return $http.post(baseUrl, data)
+      .then(util.unwrapHttpResponse);
   }
 
   function read(id, params) {
-     var url = baseUrl.concat(id || '');
-     return $http.get(url, { params : params })
-     .then(util.unwrapHttpResponse);
+    const url = baseUrl.concat(id || '');
+    return $http.get(url, { params })
+      .then(util.unwrapHttpResponse);
   }
 
-  function update(id, service) {
-    delete service.abbr;
-    delete service.enterprise_name;
-    delete service.cc_id;
-    delete service.pc_id;
-    delete service.cost_center_name;
-    delete service.profit_center_name;
+  function count() {
+    const url = baseUrl.concat('count');
+    return $http.get(url)
+      .then(util.unwrapHttpResponse);
+  }
 
-    return $http.put(baseUrl + id, service)
-    .then(util.unwrapHttpResponse);
+  function update(id, data) {
+    delete data.abbr;
+    delete data.enterprise_name;
+    delete data.cost_center_name;
+    delete data.profit_center_name;
+
+    return $http.put(baseUrl + id, data)
+      .then(util.unwrapHttpResponse);
   }
 
   function del(id) {
     return $http.delete(baseUrl + id)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   return service;

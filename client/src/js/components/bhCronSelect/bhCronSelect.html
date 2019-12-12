@@ -1,0 +1,28 @@
+<div ng-form="CronForm" bh-cron-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : CronForm.$submitted && CronForm.cron_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="cron_id" 
+      ng-model="$ctrl.id"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.FREQUENCY' | translate }}">
+        <span>{{$select.selected.hrLabel}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="cron.id as cron in $ctrl.crons | filter: { 'hrLabel': $select.search }">
+        <span ng-bind-html="cron.hrLabel | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="CronForm.cron_id.$error" ng-show="CronForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

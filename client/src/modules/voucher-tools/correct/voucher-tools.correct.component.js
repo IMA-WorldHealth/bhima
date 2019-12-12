@@ -73,7 +73,9 @@ function bhVoucherToolsCorrect(VoucherTools, Transactions, $translate) {
   // side voucher tools API
   function sanitiseTransactionDetails(sharedTransactionDetails, transactionRows) {
     const formattedCorrection = {};
-    const voucherSharedAttributes = ['record_uuid', 'user_id', 'project_id', 'currency_id', 'trans_id'];
+    const voucherSharedAttributes = [
+      'record_uuid', 'user_id', 'project_id', 'currency_id', 'trans_id', 'transaction_type_id', 'trans_date',
+    ];
     const voucherRowAttributes = ['account_id', 'credit', 'debit', 'description', 'entity_uuid', 'reference_uuid'];
 
     // the current transaction that should be reversed

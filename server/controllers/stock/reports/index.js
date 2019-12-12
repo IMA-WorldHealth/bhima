@@ -8,6 +8,7 @@
  */
 
 const stockExitReport = require('./stock/exit_report');
+const stockEntryReport = require('./stock/entry_report');
 const stockLotsReport = require('./stock/lots_report');
 const stockMovementsReport = require('./stock/movements_report');
 const stockInventoriesReport = require('./stock/inventories_report');
@@ -23,9 +24,11 @@ const stockEntryDonationReceipt = require('./stock/entry_donation_receipt');
 const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
+const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 
 // expose to the api
 exports.stockExitReport = stockExitReport;
+exports.stockEntryReport = stockEntryReport;
 exports.stockLotsReport = stockLotsReport;
 exports.stockMovementsReport = stockMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;
@@ -39,5 +42,8 @@ exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
 exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
 exports.stockEntryDonationReceipt = stockEntryDonationReceipt;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
-exports.stockValue = stockValue;
+exports.stockValue = stockValue.document;
+exports.stockValueReporting = stockValue.reporting;
 exports.stockAssignReceipt = stockAssignReceipt;
+exports.stockRequisitionReceipt = stockRequisitionReceipt;
+exports.purchaseOrderAnalysis = require('./purchaseOrderAnalysis');

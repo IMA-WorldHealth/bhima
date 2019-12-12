@@ -1,0 +1,89 @@
+{{> head title="REPORT.CLIENT_SUMMARY.TITLE"}}
+
+<body class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'REPORT.CLIENT_SUMMARY.TITLE'}}</strong> <br>
+        {{client.name}} <br>
+        <small>{{date dateFrom}} - {{date dateTo}}</small>
+      </h3>
+
+      {{!-- content --}}
+      <table class="table table-striped table-condensed table-report table-bordered">
+        <thead>
+          <tr>
+            <th colspan="2">{{ client.name }}</th>
+            <th>{{debcred patientsDebtsTotal.balance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <th colspan="2">{{translate 'REPORT.CLIENT_SUMMARY.EMPLOYEES_DEBTS' }}</th>
+            <th>{{debcred employeesDebtsTotal.balance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tbody>
+
+        {{#if showDetails}}
+        <tbody>
+          {{#each employeesDebts as | emp |}}
+            <tr>
+              <td>{{ emp.reference }}</td>
+              <td>{{ emp.display_name }}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+          <tr><td colspan="3">&nbsp;</td></tr>
+        </tbody>
+        {{/if}}
+
+        <tbody>
+          <tr>
+            <th colspan="2">{{translate 'REPORT.CLIENT_SUMMARY.NOT_EMPLOYEES_DEBTS' }}</th>
+            <th>{{debcred notEmployeesDebtsTotal.balance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tbody>
+
+        {{#if showDetails}}
+        <tbody>
+          {{#each notEmployeesDebts as | emp |}}
+            <tr>
+              <td>{{ emp.reference }}</td>
+              <td>{{ emp.display_name }}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+          <tr><td colspan="3">&nbsp;</td></tr>
+        </tbody>
+        {{/if}}
+
+        <thead>
+          <tr>
+            <th colspan="2">{{translate 'REPORT.CLIENT_SUMMARY.EMPLOYEES_SUPPORT' }}</th>
+            <th>{{debcred clientSupportDebtsTotal.balance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </thead>
+
+        {{#if showDetails}}
+        <tbody>
+          {{#each clientSupportDebts as | emp |}}
+            <tr>
+              <td>{{ emp.reference }}</td>
+              <td>{{ emp.display_name }}</td>
+              <td>{{debcred emp.balance ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+          <tr><td colspan="3">&nbsp;</td></tr>
+        </tbody>
+        {{/if}}
+
+      </table>
+    </div>
+  </div>
+</body>

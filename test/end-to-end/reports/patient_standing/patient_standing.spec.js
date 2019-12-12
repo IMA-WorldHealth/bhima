@@ -2,7 +2,6 @@ const helpers = require('../../shared/helpers');
 const PatientStandingPage = require('./patient_standing.page');
 
 describe('Patient Standing Report', () => {
-  let Page;
   const key = 'patientStanding';
 
   const dataset = {
@@ -11,27 +10,25 @@ describe('Patient Standing Report', () => {
     renderer : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);    
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
   });
 
-  Page = new PatientStandingPage(key);
+  const page = new PatientStandingPage(key);
 
-  it('save a previewed report', () => {
-    Page.savePatientStandingReport(dataset);
+  it('save a previewed report', async () => {
+    await page.savePatientStandingReport(dataset);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedPatientStandingReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await page.checkSavedPatientStandingReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printPatientStandingReport(dataset);
+  it('print the previewed report', async () => {
+    await page.printPatientStandingReport(dataset);
   });
 
-  it('close the previewed report', () => {
-    Page.closePatientStandingReportPreview();
+  it('close the previewed report', async () => {
+    await page.closePatientStandingReportPreview();
   });
-
-
 });

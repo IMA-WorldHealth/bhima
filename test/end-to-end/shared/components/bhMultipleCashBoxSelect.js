@@ -4,15 +4,15 @@ const FU = require('../FormUtils');
 
 module.exports = {
   selector : '[bh-multiple-cashbox-select]',
-  set      : function set(cashboxes = [], id) {
+  set      : async function set(cashboxes = [], id) {
     const IS_MULTIPLE_SELECTION = true;
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);
 
-    target.click();
+    await target.click();
 
-    cashboxes.forEach(cashbox => {
-      FU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION);
-    });
+    return Promise.all(
+      cashboxes.map(cashbox => FU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION))
+    );
   },
 };

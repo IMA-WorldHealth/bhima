@@ -1,10 +1,6 @@
 /* global element, by */
 
-const chai = require('chai');
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -18,27 +14,27 @@ describe('Exchange Rate', () => {
   // navigate to the exchange module before running tests
   before(() => helpers.navigate(path));
 
-  it('set exchange rate for the current date', () => {
-    element(by.id('set-exchange')).click();
+  it('set exchange rate for the current date', async () => {
+    await element(by.id('set-exchange')).click();
 
-    FU.input('ModalCtrl.rate.rate', DAILY_RATE);
+    await FU.input('ModalCtrl.rate.rate', DAILY_RATE);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('set exchange rate for an old date', () => {
-    element(by.id('set-exchange')).click();
+  it('set exchange rate for an old date', async () => {
+    await element(by.id('set-exchange')).click();
 
-    components.dateEditor.set(OLD_DATE, null, '[name="rate"]');
-    FU.input('ModalCtrl.rate.rate', OLD_RATE);
+    await components.dateEditor.set(OLD_DATE, null, '[name="rate"]');
+    await FU.input('ModalCtrl.rate.rate', OLD_RATE);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
 });

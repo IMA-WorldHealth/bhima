@@ -37,6 +37,25 @@ const errors = {
   },
 };
 
+const inventoryColsMap = {
+  code : 'FORM.LABELS.CODE',
+  consumable : 'FORM.LABELS.CONSUMABLE',
+  default_quantity : 'FORM.LABELS.DEFAULT_QUANTITY',
+  group_uuid : 'FORM.LABELS.GROUP',
+  inventoryGroup : 'FORM.LABELS.GROUP',
+  label : 'FORM.LABELS.LABEL',
+  text : 'FORM.LABELS.LABEL',
+  note : 'FORM.INFO.NOTE',
+  price : 'FORM.LABELS.UNIT_PRICE',
+  sellable : 'INVENTORY.SELLABLE',
+  type_id : 'FORM.LABELS.TYPE',
+  inventoryType : 'FORM.LABELS.TYPE',
+  unit_id : 'FORM.LABELS.UNIT',
+  inventoryUnit : 'FORM.LABELS.UNIT',
+  unit_volume : 'FORM.LABELS.VOLUME',
+  unit_weight : 'FORM.LABELS.WEIGHT',
+};
+
 exports.getIds = getIds;
 exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
@@ -46,37 +65,69 @@ exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
 exports.remove = remove;
+exports.inventoryLog = inventoryLog;
+exports.inventoryColsMap = inventoryColsMap;
 /**
 * Create inventory metadata in the database
 *
 * @function createItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function createItemsMetadata(record, session) {
+async function createItemsMetadata(record, session) {
+  const recordCopy = _.clone(record);
   record.enterprise_id = session.enterprise.id;
   const recordUuid = record.uuid || uuid();
   record.uuid = db.bid(recordUuid);
   record.group_uuid = db.bid(record.group_uuid);
 
   const sql = 'INSERT INTO inventory SET ?;';
+  const inventoryLogSql = 'INSERT INTO inventory_log SET ?;';
+
+  const current = _.extend({}, { action : 'CREATION' }, recordCopy, await loadGroupAndType(record));
+  const transaction = db.transaction();
+
+  transaction.addQuery(sql, [record]);
+
+  transaction.addQuery(inventoryLogSql, {
+    uuid : db.uuid(),
+    inventory_uuid : db.bid(recordUuid),
+    text : JSON.stringify({ action : 'CREATION', current, last : {} }),
+    user_id : session.user.id,
+  });
+
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
-   */
-  return db.exec(sql, [record])
-    .then(() => recordUuid);
+  */
+  return transaction.execute().then(() => recordUuid);
 }
 
+async function loadGroupAndType(record) {
+  const data = {};
+  if (record.type_id) {
+    data.inventoryType = await db.one(`SELECT text from inventory_type where id =?`, record.type_id);
+  }
+
+  if (record.group_uuid) {
+    data.inventoryGroup = await db.one(`SELECT name from inventory_group where uuid =?`, record.group_uuid);
+  }
+
+  if (record.unit_id) {
+    data.inventoryUnit = await db.one(`SELECT text from inventory_unit where id =?`, record.unit_id);
+  }
+
+  return data;
+}
 /**
 * Update inventory metadata in the database
 *
 * @function updateItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function updateItemsMetadata(record, identifier) {
+async function updateItemsMetadata(record, identifier, session) {
   // remove the uuid if it exists
   delete record.uuid;
-
+  const recordCopy = _.clone(record);
   if (record.group_uuid) {
     record.group_uuid = db.bid(record.group_uuid);
   }
@@ -89,12 +140,30 @@ function updateItemsMetadata(record, identifier) {
     return getItemsMetadataById(identifier);
   }
 
+  const inventoryLogSql = 'INSERT INTO inventory_log SET ?';
+  const transaction = db.transaction();
+
+  // @lastInfo inventory informations before update
+  const lastInfo = await getItemsMetadataById(identifier);
+
+  const othersKyes = await loadGroupAndType(record);
+
+  const current = _.extend({}, recordCopy, othersKyes);
+
+  transaction.addQuery(sql, [record, db.bid(identifier)]);
+  transaction.addQuery(inventoryLogSql, {
+    uuid : db.uuid(),
+    inventory_uuid : db.bid(identifier),
+    text : JSON.stringify({ action : 'UPDATE', last : lastInfo, current }),
+    user_id : session.user.id,
+  });
+
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
-   */
-  return db.exec(sql, [record, db.bid(identifier)])
-    .then(() => getItemsMetadataById(identifier));
+  */
+
+  return transaction.execute().then(() => getItemsMetadataById(identifier));
 }
 
 /**
@@ -121,8 +190,10 @@ function getItemsMetadata(params) {
   db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
-  const sql = `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
+  const sql = `
+   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item,
+      inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
@@ -172,10 +243,13 @@ function remove(_uuid) {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadataById(uid) {
-  const sql = `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, i.consumable, i.locked, i.stock_min,
+  const sql = `
+    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires,
+      ig.unique_item, i.consumable, i.locked, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval, i.last_purchase, i.num_purchase
+      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval,
+      i.last_purchase, i.num_purchase
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
@@ -215,4 +289,15 @@ function errorHandler(error, req, res, next) {
   } else {
     next(error);
   }
+}
+
+function inventoryLog(inventoryUuid) {
+  const sql = `
+    SELECT ivl.text, ivl.log_timestamp, user.display_name as userName
+    FROM inventory_log ivl
+    JOIN user on user.id = ivl.user_id
+    WHERE ivl.inventory_uuid=?
+    ORDER BY ivl.log_timestamp ASC
+  `;
+  return db.exec(sql, db.bid(inventoryUuid));
 }

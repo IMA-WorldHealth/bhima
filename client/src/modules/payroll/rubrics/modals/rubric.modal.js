@@ -2,33 +2,59 @@ angular.module('bhima.controllers')
   .controller('RubricModalController', RubricModalController);
 
 RubricModalController.$inject = [
-  '$state', 'RubricService', 'ModalService', 'NotifyService', 'appcache',
+  '$state', 'RubricService', 'NotifyService',
+  'appcache', 'SessionService',
 ];
 
-function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) {
-  var vm = this;
-  vm.rubric = {};
+function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
+  const vm = this;
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
+  vm.rubric = {
+    is_monetary_value : 1,
+    is_indice : 0,
+    indice_to_grap : 0,
+  };
+  vm.indexesMap = Rubrics.indexesMap;
+
+  vm.enableIndexPayment = Session.enterprise.settings.enable_index_payment_system;
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
   }
   vm.isCreating = vm.stateParams.creating;
 
-  vm.selectDebtorAccount = function selectDebtorAccount(account) {
+  vm.selectDebtorAccount = (account) => {
     vm.rubric.debtor_account_id = account.id;
   };
 
-  vm.selectExpenseAccount = function selectExpenseAccount(account) {
+  vm.indiceToGrapSetting = (value) => {
+    vm.rubric.indice_to_grap = value;
+  };
+
+  vm.selectExpenseAccount = (account) => {
     vm.rubric.expense_account_id = account.id;
   };
 
-  vm.setMaxPercent = function setMaxPercent() {
-    vm.maxPercent = vm.rubric.is_percent ? true : false; 
-  }
+  vm.setMaxPercent = () => {
+    vm.maxPercent = vm.rubric.is_percent ? (!!vm.rubric.is_percent) : false;
+  };
+
+  vm.onInputTextChange = (key, value) => {
+    vm.rubric[key] = value;
+  };
+
+  vm.isMonetaryValueSetting = (value) => {
+    vm.rubric.is_monetary_value = value;
+  };
+
+  vm.isIndexSetting = (value) => {
+    vm.rubric.is_indice = value;
+  };
+
 
   // exposed methods
   vm.submit = submit;
@@ -36,9 +62,8 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
 
   if (!vm.isCreating) {
     Rubrics.read(vm.stateParams.id)
-      .then(function (rubric) {
+      .then((rubric) => {
         vm.rubric = rubric;
-
         vm.setting = true;
       })
       .catch(Notify.handleError);
@@ -46,28 +71,28 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
 
   // submit the data to the server from all two forms (update, create)
   function submit(rubricForm) {
-    var promise;
 
-    if(!vm.rubric.is_discount){
+    if (!vm.rubric.is_discount) {
       vm.rubric.is_discount = 0;
       vm.rubric.is_tax = 0;
       vm.rubric.is_ipr = 0;
     }
 
-    if(vm.rubric.is_discount){
+    if (vm.rubric.is_discount) {
       vm.rubric.is_discount = 1;
       vm.rubric.is_social_care = 0;
     }
 
-    if (rubricForm.$invalid || rubricForm.$pristine) { return 0; }
+    if (rubricForm.$invalid || rubricForm.$pristine) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return false;
+    }
 
-    promise = (vm.isCreating) ?
-      Rubrics.create(vm.rubric) :
-      Rubrics.update(vm.rubric.id, vm.rubric);
+    const promise = (vm.isCreating) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('rubrics', null, { reload : true });
       })

@@ -1,16 +1,12 @@
-/* global by */
-
-const chai = require('chai');
-
-const { expect } = chai;
+const { expect } = require('chai');
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
-helpers.configure(chai);
 
 describe('Provinces Management', () => {
-
   const path = '#!/locations/province';
 
   before(() => helpers.navigate(path));
@@ -20,44 +16,81 @@ describe('Provinces Management', () => {
     name : 'New Province',
   };
 
-  it('creates a new province', () => {
-    // switch to the create form
-    FU.buttons.create();
+  const province2 = {
+    country : 'République Démocratique du Congo',
+    name : 'another Province',
+  };
 
-    FU.select('ProvinceCtrl.province.country_uuid', province.country);
-    FU.input('ProvinceCtrl.province.name', province.name);
+  it('creates a new province', async () => {
+    // switch to the create form
+    await FU.buttons.create();
+
+    await FU.select('ModalCtrl.province.country_uuid', province.country);
+    await FU.input('ModalCtrl.province.name', province.name);
 
     // submit the page to the server
-    FU.buttons.submit();
-
-    // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    await FU.buttons.submit();
+    // make sure the success message appears
+    await components.notification.hasSuccess();
   });
 
-  it('edits a province', () => {
-    $(`[data-province-name="${province.name}"]`).click();
+  it('edits a province', async () => {
+    const menu = await openDropdownMenu(province.name);
+    await menu.edit().click();
 
-    FU.select('ProvinceCtrl.province.country_uuid', province.country);
-    FU.input('ProvinceCtrl.province.name', 'Province Update');
+    await FU.select('ModalCtrl.province.country_uuid', province.country);
+    await FU.input('ModalCtrl.province.name', 'Province Update');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
+  it('creates another province', async () => {
+
     // switch to the create form
     FU.buttons.create();
 
+    await FU.select('ModalCtrl.province.country_uuid', province2.country);
+    await FU.input('ModalCtrl.province.name', province2.name);
+    // submit the page to the server
+    await FU.buttons.submit();
+
+    // expect a nice validation message
+    await components.notification.hasSuccess();
+  });
+
+  it('should delete the test province', async () => {
+    // click the edit button
+    const menu = await openDropdownMenu(province2.name);
+    await menu.remove().click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
+
+  it('blocks invalid form submission with relevant error classes', async () => {
+    // switch to the create form
+    await FU.buttons.create();
+
     // verify form has not been successfully submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('ProvinceCtrl.province.country_uuid');
-    FU.validation.error('ProvinceCtrl.province.name');
+    await FU.validation.error('ModalCtrl.province.country_uuid');
+    await FU.validation.error('ModalCtrl.province.name');
+
+    await FU.buttons.cancel();
   });
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
+
 });

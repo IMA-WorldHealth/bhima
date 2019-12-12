@@ -12,7 +12,7 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body" style="height: 400px; overflow-y: scroll">
     <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="label" ng-model="RubricModalCtrl.rubric.label" autocomplete="off" class="form-control" required>
@@ -23,56 +23,90 @@
 
     <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.ABBREVIATION</label>
-      <input name="abbr" ng-model="RubricModalCtrl.rubric.abbr" ng-maxlength="6" autocomplete="off" class="form-control" required>
+      <input name="abbr" ng-model="RubricModalCtrl.rubric.abbr" ng-maxlength="20" autocomplete="off"
+        class="form-control" required>
       <div class="help-block" ng-messages="RubricForm.abbr.$error" ng-show="RubricForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
-    <bh-account-select
-      id="debtor_account_id"
-      account-id="RubricModalCtrl.rubric.debtor_account_id"
-      label="FORM.LABELS.DEBTOR_ACCOUNT"
-      name="debtor_account_id"
-      on-select-callback="RubricModalCtrl.selectDebtorAccount(account)"
-      exclude-title-accounts="true"
-      required="true">
-    </bh-account-select>
+    <div class="form-group" ng-show="RubricModalCtrl.enableIndexPayment">
+      <bh-yes-no-radios
+        label="PAYROLL_RUBRIC.IS_INDICE"
+        value="RubricModalCtrl.rubric.is_indice"
+        on-change-callback="RubricModalCtrl.isIndexSetting(value)">
+      </bh-yes-no-radios>
+    </div>
+    <div ng-show = "RubricModalCtrl.rubric.is_indice">
+      <bh-yes-no-radios
+        label="PAYROLL_RUBRIC.IS_MONETARY_VALUE"
+        value="RubricModalCtrl.rubric.is_monetary_value"
+        on-change-callback="RubricModalCtrl.isMonetaryValueSetting(value)">
+      </bh-yes-no-radios>
+  
+      <bh-yes-no-radios
+        label="PAYROLL_RUBRIC.INDICE_TO_GRAPE"
+        value="RubricModalCtrl.rubric.indice_to_grap"
+        on-change-callback="RubricModalCtrl.indiceToGrapSetting(value)">
+      </bh-yes-no-radios>
 
-    <bh-account-select
-      id="expense_account_id"
-      account-id="RubricModalCtrl.rubric.expense_account_id"
-      label="FORM.LABELS.THIRD_EXPENSE_ACCOUNT"
-      name="expense_account_id"
-      on-select-callback="RubricModalCtrl.selectExpenseAccount(account)"
-      exclude-title-accounts="true"
-      required="true">
-    </bh-account-select>
+      <div class="form-group" ng-show="(RubricModalCtrl.rubric.is_indice && !RubricModalCtrl.rubric.is_monetary_value)">
+        <label translate>PAYROLL_RUBRIC.INDICE_TYPE</label>
 
-    <div ng-if="RubricModalCtrl.rubric.is_percent" class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
+        <div class="form-group"
+          ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.indice_type.$invalid }">
+          <label class="control-label" translate>{{$ctrl.label}}</span></label>
+          <select class="form-control" name="indice_type" ng-model="RubricModalCtrl.rubric.indice_type"
+            ng-options="rubric.id as (rubric.label | translate) for rubric in RubricModalCtrl.indexesMap"
+            ng-required="(RubricModalCtrl.rubric.is_indice && !RubricModalCtrl.rubric.is_monetary_value)">
+            <option value="" disabled translate>PAYROLL_RUBRIC.SELECT_INDICE_TYPE</option>'
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <bh-input-text key="position" label="FORM.LABELS.POSITION" text-value="RubricModalCtrl.rubric.position"
+          on-change="$ctrl.onInputTextChange(key, value)">
+        </bh-input-text>
+      </div>
+    </div>
+    <div ng-show = "(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
+      <bh-account-select id="debtor_account_id" account-id="RubricModalCtrl.rubric.debtor_account_id"
+        label="FORM.LABELS.DEBTOR_ACCOUNT" name="debtor_account_id"
+        on-select-callback="RubricModalCtrl.selectDebtorAccount(account)" exclude-title-accounts="true"
+        required="(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
+      </bh-account-select>
+
+      <bh-account-select id="expense_account_id" account-id="RubricModalCtrl.rubric.expense_account_id"
+        label="FORM.LABELS.THIRD_EXPENSE_ACCOUNT" name="expense_account_id"
+        on-select-callback="RubricModalCtrl.selectExpenseAccount(account)" exclude-title-accounts="true"
+        required="(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
+      </bh-account-select>
+    </div>
+    <div ng-if="RubricModalCtrl.rubric.is_percent" class="form-group"
+      ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
       <label class="control-label" translate>FORM.LABELS.VALUE</label>
-      <input name="value" type="number" value="0" ng-max="100" ng-min="0" ng-model="RubricModalCtrl.rubric.value" autocomplete="off" class="form-control">
+      <input name="value" type="number" value="0" ng-max="100" ng-min="0" ng-model="RubricModalCtrl.rubric.value"
+        autocomplete="off" class="form-control">
       <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
-    <div ng-if="!RubricModalCtrl.rubric.is_percent" class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
+    <div ng-if="!RubricModalCtrl.rubric.is_percent" class="form-group"
+      ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
       <label class="control-label" translate>FORM.LABELS.VALUE</label>
-      <input name="value" type="number" value="0" ng-min="0" ng-model="RubricModalCtrl.rubric.value" autocomplete="off" class="form-control">
+      <input name="value" type="number" value="0" ng-min="0" ng-model="RubricModalCtrl.rubric.value" autocomplete="off"
+        class="form-control">
       <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
+  <div  ng-show= "(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
     <div class="form-group">
       <div class="checkbox">
         <label>
-          <input
-            type="checkbox"
-            name="is_defined_employee"
-            ng-true-value="1"
-            ng-false-value="0"
+        <input type="checkbox" name="is_defined_employee" ng-true-value="1" ng-false-value="0"
             ng-model="RubricModalCtrl.rubric.is_defined_employee">
           <span translate>FORM.LABELS.IS_DEFINED_EMPLOYEE</span>
         </label>
@@ -83,11 +117,7 @@
       <label translate>FORM.INFO.IS_PERCENT</label>
       <div class="checkbox">
         <label>
-          <input
-            type="checkbox"
-            name="is_percent"
-            ng-true-value="1"
-            ng-false-value="0"
+          <input type="checkbox" name="is_percent" ng-true-value="1" ng-false-value="0"
             ng-model="RubricModalCtrl.rubric.is_percent">
           <span translate>FORM.LABELS.IS_PERCENT</span>
         </label>
@@ -295,8 +325,9 @@
         </div>
       </div>
     </div>
+   
   </div>
-
+  </div>
   <div class="modal-footer">
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="RubricModalCtrl.closeModal()">
       <span translate>FORM.BUTTONS.CANCEL</span>

@@ -40,5 +40,14 @@
         </div>
       </div>
     </div>
+
+    <div class="col-md-6">
+      <bh-cron-email-report
+        report-key="operating"
+        report-form="ConfigForm"
+        report-details="ReportConfigCtrl.reportDetails"
+        on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
+      </bh-cron-email-report>
+    </div>
   </div>
 </div>

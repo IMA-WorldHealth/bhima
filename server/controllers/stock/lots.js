@@ -29,7 +29,7 @@ function details(req, res, next) {
       BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
       l.description, l.expiration_date,
       BUID(i.uuid) AS inventory_uuid, i.text
-    FROM lot l 
+    FROM lot l
     JOIN inventory i ON i.uuid = l.inventory_uuid
     WHERE l.uuid = ?;
   `;
@@ -64,8 +64,10 @@ function update(req, res, next) {
 }
 
 /**
- * GET /lots/:uuid/assignments
- * Returns all assignments of a lot to entities ordered by ascending dates
+ * GET /lots/:uuid/assignments/:depot_uuid
+ *
+ * @description
+ * Returns all assignments of a lot in a depot to entities ordered by ascending dates
  */
 function assignments(req, res, next) {
   const lotUuid = db.bid(req.params.uuid);

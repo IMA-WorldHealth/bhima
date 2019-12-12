@@ -1,25 +1,32 @@
 <div class="row">
+  <div class="col-md-12 clearfix" style="margin-bottom: 0.5em;">
+    <div class="pull-left">
+      <a href id="export" class="btn btn-default" ng-click="FiscalOBCtrl.export()">
+        <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT_AS_EXCEL</span>
+      </a>
+    </div>
+
+    <div class="pull-right">
+      <bh-filter-toggle on-toggle="FiscalOBCtrl.toggleAccountFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-md-12">
     <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" novalidate>
       <div class="panel panel-primary">
 
         <!-- heading  -->
-        <div class="panel-heading" style="display: flex; justify-content: space-between;">
-          <span>
-            <span translate>FISCAL.OPENING_BALANCE</span>
-            <strong>{{ FiscalOBCtrl.fiscal.label }}</strong>
-          </span>
-
-          <span class="text-action" ng-click="FiscalOBCtrl.toggleAccountFilter()">
-            <i class="fa fa-filter"></i>
-            <span translate>FORM.BUTTONS.SEARCH</span>
-          </span>
+        <div class="panel-heading">
+          <span translate>FISCAL.OPENING_BALANCE</span>
+          <strong>{{ FiscalOBCtrl.fiscal.label }}</strong>
         </div>
 
         <!-- body  -->
         <section>
-          <div id="account-balance-grid" style="height : 600px;" ui-grid="FiscalOBCtrl.gridOptions">
-          </div>
+          <div id="account-balance-grid" style="height : 650px;" ui-grid="FiscalOBCtrl.gridOptions" ui-grid-exporter></div>
         </section>
 
         <!-- footer  -->
@@ -37,13 +44,13 @@
           </span>
 
           <div class="pull-right">
-              <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
-                <span ng-hide="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
-                <span ng-show="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.IMPORT_PREVIOUS_CLOSING_BALANCE</span>
-              </button>
-
             <button type="button" data-method="back" class="btn btn-default" ui-sref="fiscal.list({ id : FiscalOBCtrl.fiscal.id })" translate>
               FORM.BUTTONS.BACK
+            </button>
+
+            <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
+              <span ng-hide="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
+              <span ng-show="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.IMPORT_PREVIOUS_CLOSING_BALANCE</span>
             </button>
           </div>
         </div>

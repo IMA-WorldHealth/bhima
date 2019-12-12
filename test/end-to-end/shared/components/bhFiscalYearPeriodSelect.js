@@ -1,13 +1,9 @@
-/* global element, by */
-const FU = require('../FormUtils');
+const bhFiscalYearSelect = require('./bhFiscalYearSelect');
+const bhPeriodSelection = require('./bhPeriodSelection');
 
-const selector = '[bh-fiscal-year-period-select]';
-
-function set(fiscalYearId, periodId, id) {
-  const locator = (id) ? by.id(id) : by.css(selector);
-  const target = element(locator);
-  FU.uiSelect('$ctrl.fiscalId', fiscalYearId, target);
-  FU.uiSelect('$ctrl.periodId', periodId, target);
+async function set(fiscalYear, period) {
+  await bhFiscalYearSelect.set(fiscalYear);
+  await bhPeriodSelection.set(period);
 }
 
 module.exports = { set };

@@ -23,7 +23,14 @@
     </li>
 
     <li>
-      <a data-method="edit-print" target="_blank" href="/prices/report/{{row.entity.uuid}}?{{grid.appScope.download()}}">
+      <a data-method="import-items" ng-click="grid.appScope.ImportList(row.entity)" href>
+        <i class="fa fa-upload"></i>
+        <span translate>FORM.BUTTONS.IMPORT</span> <span translate>FORM.LABELS.ITEMS</span>
+      </a>
+    </li>
+
+    <li>
+      <a data-method="edit-print" target="_blank" href="/prices/report/{{row.entity.uuid}}?{{grid.appScope.download('pdf')}}">
         <i class="fa fa-print"></i>
         <span translate>FORM.BUTTONS.PRINT</span>
       </a>

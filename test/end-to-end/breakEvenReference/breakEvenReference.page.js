@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
@@ -19,44 +19,44 @@ class BreakEvenReferencePage {
       .count();
   }
 
-  create(breakEvenReference) {
-    FU.buttons.create();
+  async create(breakEvenReference) {
+    await FU.buttons.create();
 
-    FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
-    components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
-    element(by.id('is_cost')).click();
-    element(by.id('is_variable')).click();
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
+    await components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
+    await element(by.id('is_cost')).click();
+    await element(by.id('is_variable')).click();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  errorOnCreateBreakEvenReference() {
-    FU.buttons.create();
-    FU.modal.submit();
-    FU.validation.error('BreakEvenReferenceModalCtrl.reference.label', this.modal);
-    FU.modal.cancel();
+  async errorOnCreateBreakEvenReference() {
+    await FU.buttons.create();
+    await FU.modal.submit();
+    await FU.validation.error('BreakEvenReferenceModalCtrl.reference.label', this.modal);
+    await FU.modal.cancel();
   }
 
-  update(code, breakEvenReference) {
+  async update(code, breakEvenReference) {
     const row = new GridRow(code);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
-    components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
-    element(by.id('is_revenue')).click();
-    element(by.id('is_turnover')).click();
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
+    await components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
+    await element(by.id('is_revenue')).click();
+    await element(by.id('is_turnover')).click();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  remove(code) {
+  async remove(code) {
     const row = new GridRow(code);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
 }

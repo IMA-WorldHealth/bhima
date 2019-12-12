@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 FiscalClosingBalanceController.$inject = [
   '$state', 'AccountService', 'FiscalService', 'NotifyService', 'SessionService',
-  'uiGridConstants', 'bhConstants', 'TreeService',
+  'uiGridConstants', 'bhConstants', 'TreeService', 'GridExportService',
 ];
 
 /**
@@ -14,7 +14,7 @@ FiscalClosingBalanceController.$inject = [
  */
 function FiscalClosingBalanceController(
   $state, Accounts, Fiscal, Notify, Session, uiGridConstants, bhConstants,
-  Tree
+  Tree, GridExport
 ) {
 
   const vm = this;
@@ -25,13 +25,14 @@ function FiscalClosingBalanceController(
   vm.showAccountFilter = false;
   vm.toggleAccountFilter = toggleAccountFilter;
   // grid options
-  vm.indentTitleSpace = 20;
+  vm.indentTitleSpace = 15;
   vm.gridApi = {};
 
   const columns = [{
     field : 'number',
-    displayName : '',
+    displayName : 'ACCOUNT.LABEL',
     cellClass : 'text-right',
+    headerCellFilter : 'translate',
     width : 100,
   }, {
     field : 'label',
@@ -74,6 +75,23 @@ function FiscalClosingBalanceController(
     columnDefs : columns,
     onRegisterApi,
   };
+
+  const exporter = new GridExport(vm.gridOptions, 'all', 'visible');
+
+  function exportRowsFormatter(rows) {
+    return rows
+      .filter(account => !account.isTitleAccount)
+      .map(account => {
+        const row = [account.number, account.label, account.debit, account.credit];
+        return row.map(value => ({ value }));
+      });
+  }
+
+  vm.export = () => {
+    const fname = `${vm.fiscal.label}`;
+    return exporter.exportToCsv(fname, exporter.defaultColumnFormatter, exportRowsFormatter);
+  };
+
 
   function customAggregationFn(columnDefs, column) {
     if (vm.AccountTree) {
@@ -161,7 +179,7 @@ function FiscalClosingBalanceController(
    * Load the balance until a given period.
    */
   function loadFinalBalance(showHiddenAccounts) {
-    vm.loading = false;
+    vm.loading = true;
     vm.hasError = false;
     Fiscal.getClosingBalance(fiscalYearId)
       .then(data => {
@@ -193,7 +211,7 @@ function FiscalClosingBalanceController(
         Notify.handleError(err);
       })
       .finally(() => {
-        vm.loading = true;
+        vm.loading = false;
       });
   }
 

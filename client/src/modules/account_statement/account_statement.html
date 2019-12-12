@@ -56,11 +56,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button data-method="search" class="btn btn-default" ng-click="AccountStateCtrl.openSearchModal()">
-          <i class="fa fa-search"></i> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="AccountStateCtrl.openSearchModal()"></bh-search-button>
 
       <div class="toolbar-item">
         <button data-method="comment" class="btn btn-default" ng-disabled="!AccountStateCtrl.gridApi.selection.getSelectedGridRows().length" ng-click="AccountStateCtrl.commentRows()">

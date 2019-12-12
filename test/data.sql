@@ -9,8 +9,8 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records) VALUES
-  (1, 0, 1, 1);
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report) VALUES
+  (1, 0, 1, 1, 1);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -18,307 +18,295 @@ INSERT INTO `project` VALUES
   (2, 'Test Project B', 'TPB', 1, 2, 0),
   (3, 'Test Project C', 'TPC', 1, 2, 0);
 
--- Cost center
-INSERT INTO `cost_center` VALUES
-  (1, 1, 'cost center 1', 'cost note', 1),
-  (1, 2, 'cost center 2', 'cost note 2', 0),
-  (1, 3, 'cost center 3', 'cost note 3', 1);
-
--- Profit center
-INSERT INTO `profit_center` VALUES
-  (1, 1, 'profit center 1', 'profit note'),
-  (1, 2, 'profit center 2', 'profit note 2'),
-  (1, 3, 'profit center 3', 'profit note 3');
-
 -- Services
-INSERT INTO `service` VALUES
-  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
-  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
-  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
+INSERT INTO `service`(id, uuid, enterprise_id, project_id, name) VALUES
+  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 1, 'Test Service'),
+  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 1, 'Administration'),
+  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 1, 'Medecine Interne');
 
 -- Accounts
-INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `cc_id`, `pc_id`, `created`, `reference_id`) VALUES
-  (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, NULL, NULL, '2016-10-22 14:37:09', NULL),
-  (2, 6, 1, 2, 'CLASSE 2: COMPTES D\'ACTIFS IMMOBILISES', 0, 0, NULL, NULL, '2016-10-22 14:39:01', NULL),
-  (3, 6, 1, 3, 'CLASSE 3: COMPTES DE STOCKS', 0, 0, NULL, NULL, '2016-10-22 14:39:36', NULL),
-  (4, 6, 1, 4, 'CLASSE 4: COMPTES DE TIERS', 0, 0, NULL, NULL, '2016-10-22 14:40:00', NULL),
-  (5, 6, 1, 5, 'CLASSE 5: COMPTES DE TRESORERIE', 0, 0, NULL, NULL, '2016-10-22 14:40:26', NULL),
-  (6, 6, 1, 6, 'CLASSE 6: COMPTES DES CHARGES DES ACTIVITES ORDINAIRES', 0, 0, NULL, NULL, '2016-10-22 14:40:45', NULL),
-  (7, 6, 1, 7, 'CLASSE 7: COMPTES DES PRODUITS DES ACTIVITES ORDINAIRES', 0, 0, NULL, NULL, '2016-10-22 14:41:12', NULL),
-  (8, 6, 1, 8, 'CLASSE 8: COMPTES DES AUTRES CHARGES ET DES AUTRES PRODUITS', 0, 0, NULL, NULL, '2016-10-22 14:41:34', NULL),
-  (9, 6, 1, 10, 'CAPITAL', 1, 0, NULL, NULL, '2016-10-22 16:27:40', NULL),
-  (10, 6, 1, 11, 'RESERVES', 1, 0, NULL, NULL, '2016-10-22 16:28:02', NULL),
-  (11, 6, 1, 12, 'REPORT A NOUVEAU', 1, 0, NULL, NULL, '2016-10-22 16:28:24', NULL),
-  (12, 6, 1, 13, 'RESULTAT NET DE L\'EXERCICE', 1, 0, NULL, NULL, '2016-10-22 16:28:45', NULL),
-  (13, 6, 1, 14, 'SUBVENTIONS D\'INVESTISSEMENT', 1, 0, NULL, NULL, '2016-10-22 16:29:16', NULL),
-  (14, 6, 1, 16, 'EMPRUNTS ET DETTES ASSIMILEES', 1, 0, NULL, NULL, '2016-10-22 16:29:41', NULL),
-  (15, 6, 1, 17, 'DETTES DE CREDIT-BAIL ET CONTRATS ASSIMILES', 1, 0, NULL, NULL, '2016-10-22 16:30:08', NULL),
-  (16, 6, 1, 18, 'DETTES LIEES A DES PARTICIPATIONS ET COMPTES DE LIAISON DES ETABLISSEMENTS ET SOCIETES EN PARTICIPATION', 1, 0, NULL, NULL, '2016-10-22 16:30:32', NULL),
-  (17, 6, 1, 19, 'PROVISIONS FINANCIERES POUR RISQUES ET CHARGES', 1, 0, NULL, NULL, '2016-10-22 16:30:49', NULL),
-  (18, 6, 1, 20, 'CHARGES IMMOBILISEES', 2, 0, NULL, NULL, '2016-10-22 16:31:19', NULL),
-  (19, 6, 1, 21, 'IMMOBILISATIONS INCORPORELLES', 2, 0, NULL, NULL, '2016-10-22 16:32:58', NULL),
-  (20, 6, 1, 22, 'TERRAINS', 2, 0, NULL, NULL, '2016-10-22 16:33:24', NULL),
-  (21, 6, 1, 23, 'BATIMENTS, INSTALLATIONS TECHNIQUES ET AGENCEMENTS', 2, 0, NULL, NULL, '2016-10-22 16:33:44', NULL),
-  (22, 6, 1, 24, 'MATERIELS', 2, 0, NULL, NULL, '2016-10-22 16:34:05', NULL),
-  (23, 6, 1, 27, 'AUTRES IMMOBILISATIONS FINANCIERES', 2, 0, NULL, NULL, '2016-10-22 16:34:41', NULL),
-  (24, 6, 1, 28, 'AMORTISSEMENTS', 2, 0, NULL, NULL, '2016-10-22 16:34:59', NULL),
-  (25, 6, 1, 29, 'PROVISIONS POUR DEPRECIATIONS', 2, 0, NULL, NULL, '2016-10-22 16:35:16', NULL),
-  (26, 6, 1, 31, 'MARCHANDISES', 3, 0, NULL, NULL, '2016-10-22 16:35:40', NULL),
-  (27, 6, 1, 32, 'MATIERES PREMIERES ET FOURNITURES LIEES', 3, 0, NULL, NULL, '2016-10-22 16:36:00', NULL),
-  (28, 6, 1, 33, 'AUTRES APPROVISIONNEMENTS', 3, 0, NULL, NULL, '2016-10-22 16:36:19', NULL),
-  (29, 6, 1, 36, 'PRODUITS FINIS', 3, 0, NULL, NULL, '2016-10-22 16:36:39', NULL),
-  (30, 6, 1, 38, 'STOCKS EN COURS DE ROUTE, EN CONSIGNATION OU EN DÉPÔT', 3, 0, NULL, NULL, '2016-10-22 16:37:19', NULL),
-  (31, 6, 1, 39, 'DÉPRÉCIATIONS DES STOCKS', 3, 0, NULL, NULL, '2016-10-22 16:37:39', NULL),
-  (32, 6, 1, 40, 'FOURNISSEURS ET COMPTE  RATTACHES', 4, 0, NULL, NULL, '2016-10-22 16:38:02', NULL),
-  (33, 6, 1, 41, 'CLIENTS ET COMPTE RATTACHES', 4, 0, NULL, NULL, '2016-10-22 16:38:22', NULL),
-  (34, 6, 1, 42, 'PERSONNEL', 4, 0, NULL, NULL, '2016-10-22 16:38:43', NULL),
-  (35, 6, 1, 43, 'ORGANISMES  SOCIAUX', 4, 0, NULL, NULL, '2016-10-22 16:38:59', NULL),
-  (36, 6, 1, 44, 'ETAT ET COLLECTIVITES PUBLIQUES', 4, 0, NULL, NULL, '2016-10-22 16:39:20', NULL),
-  (37, 6, 1, 47, 'DEBITEURS  ET CREDITEURS  DIVERS', 4, 0, NULL, NULL, '2016-10-22 16:39:45', NULL),
-  (38, 6, 1, 48, 'CREANCES ET DETTES  HORS ACTIVITE ORDINAIRE', 4, 0, NULL, NULL, '2016-10-22 16:39:59', NULL),
-  (39, 6, 1, 49, 'DEPRECIATION ET RISQUES PROVISIONNES (Tiers)', 4, 0, NULL, NULL, '2016-10-22 16:40:23', NULL),
-  (40, 6, 1, 51, 'VALEURS A ENCAISSER', 5, 0, NULL, NULL, '2016-10-22 16:40:48', NULL),
-  (41, 6, 1, 52, 'BANQUES', 5, 0, NULL, NULL, '2016-10-22 16:41:05', NULL),
-  (42, 6, 1, 53, 'ETABLISSEMENTS FINANCIERS ET ASSIMILES', 5, 0, NULL, NULL, '2016-10-22 16:41:19', NULL),
-  (43, 6, 1, 56, 'BANQUES, CREDIT DE TRESORERIE ET D\'ESCOMPTE', 5, 0, NULL, NULL, '2016-10-22 16:41:40', NULL),
-  (44, 6, 1, 57, 'CAISSE', 5, 0, NULL, NULL, '2016-10-22 16:42:13', NULL),
-  (45, 6, 1, 58, 'REGIES D\'AVANCES, ACCREDITIFS ET VIREMENTS INTERNE', 5, 0, NULL, NULL, '2016-10-22 16:42:34', NULL),
-  (46, 6, 1, 59, 'DEPRECIATIONS ET RISQUES PROVISIONNES', 5, 0, NULL, NULL, '2016-10-22 16:43:12', NULL),
-  (47, 6, 1, 60, 'ACHATS ET VARIATIONS DE STOCKS', 6, 0, NULL, NULL, '2016-10-22 16:43:34', NULL),
-  (48, 6, 1, 61, 'TRANSPORTS', 6, 0, NULL, NULL, '2016-10-22 16:43:57', NULL),
-  (49, 6, 1, 62, 'SERVICES EXTÉRIEURS A', 6, 0, NULL, NULL, '2016-10-22 16:44:10', NULL),
-  (50, 6, 1, 63, 'SERVICES EXTÉRIEURS B', 6, 0, NULL, NULL, '2016-10-22 16:44:30', NULL),
-  (51, 6, 1, 64, 'IMPÔTS ET TAXES', 6, 0, NULL, NULL, '2016-10-22 16:44:49', NULL),
-  (52, 6, 1, 65, 'AUTRES CHARGES', 6, 0, NULL, NULL, '2016-10-22 16:45:02', NULL),
-  (53, 6, 1, 66, 'CHARGES DE PERSONNEL', 6, 0, NULL, NULL, '2016-10-22 16:45:18', NULL),
-  (54, 6, 1, 67, 'FRAIS FINANCIERS ET CHARGES ASSIMILÉES', 6, 0, NULL, NULL, '2016-10-22 16:45:36', NULL),
-  (55, 6, 1, 68, 'DOTATIONS AUX AMORTISSEMENTS', 6, 0, NULL, NULL, '2016-10-22 16:45:52', NULL),
-  (56, 6, 1, 69, 'DOTATIONS AUX PROVISIONS', 6, 0, NULL, NULL, '2016-10-22 16:46:07', NULL),
-  (57, 6, 1, 70, 'VENTES', 7, 0, NULL, NULL, '2016-10-22 16:47:00', NULL),
-  (58, 6, 1, 71, '71 SUBVENTIONS D\'EXPLOITATION', 7, 0, NULL, NULL, '2016-10-22 16:47:15', NULL),
-  (59, 6, 1, 72, 'PRODUCTION IMMOBILISÉE', 7, 0, NULL, NULL, '2016-10-22 16:47:29', NULL),
-  (60, 6, 1, 73, 'VARIATIONS DES STOCKS DE BIENS ET DE SERVICES PRODUITS', 7, 0, NULL, NULL, '2016-10-22 16:47:48', NULL),
-  (61, 6, 1, 75, 'AUTRES PRODUITS', 7, 0, NULL, NULL, '2016-10-22 16:48:15', NULL),
-  (62, 6, 1, 77, 'REVENUS FINANCIERS ET PRODUITS ASSIMILÉS', 7, 0, NULL, NULL, '2016-10-22 16:48:31', NULL),
-  (63, 6, 1, 78, 'TRANSFERTS DE CHARGES', 7, 0, NULL, NULL, '2016-10-22 16:48:49', NULL),
-  (64, 6, 1, 79, 'REPRISES DE PROVISIONS', 7, 0, NULL, NULL, '2016-10-22 16:49:07', NULL),
-  (65, 6, 1, 81, 'VALEURS COMPTABLE DES CESSIONS D\'IMMOBILISATIONS', 8, 0, NULL, NULL, '2016-10-22 16:49:36', NULL),
-  (66, 6, 1, 82, 'PRODUITS DES CESSIONS D\'IMMOBILISATIONS', 8, 0, NULL, NULL, '2016-10-22 16:49:50', NULL),
-  (67, 6, 1, 83, 'CHARGES HORS ACTIVITES ORDINAIRES', 8, 0, NULL, NULL, '2016-10-22 16:50:03', NULL),
-  (68, 6, 1, 84, 'PRODUITS HORS ACTIVITES ORDINAIRES', 8, 0, NULL, NULL, '2016-10-22 16:50:22', NULL),
-  (69, 6, 1, 85, 'DOTATIONS HORS ACTIVITES ORDINAIRES', 8, 0, NULL, NULL, '2016-10-22 16:50:43', NULL),
-  (70, 6, 1, 86, 'REPRISES HORS ACTIVITES ORDINAIRES', 8, 0, NULL, NULL, '2016-10-22 16:50:57', NULL),
-  (71, 6, 1, 88, 'SUBVENTIONS D\'EQUILIBRE', 8, 0, NULL, NULL, '2016-10-22 16:51:15', NULL),
-  (72, 6, 1, 89, 'IMPOTS SUR LE RESULTAT', 8, 0, NULL, NULL, '2016-10-22 16:51:30', NULL),
-  (73, 6, 1, 101, 'Capital Social', 9, 0, NULL, NULL, '2016-10-22 16:56:20', NULL),
-  (74, 6, 1, 105, 'Primes liées aux capitaux propres', 9, 0, NULL, NULL, '2016-10-22 16:56:46', NULL),
-  (75, 6, 1, 106, 'Ecart de réévaluation', 9, 0, NULL, NULL, '2016-10-22 16:57:30', NULL),
-  (76, 6, 1, 109, 'Actionnaire, Capital souscrit, non appelé', 9, 0, NULL, NULL, '2016-10-22 16:58:03', NULL),
-  (77, 6, 1, 1013, 'Capital souscrit, appelé,  versé, non amorti', 73, 0, NULL, NULL, '2016-10-22 16:59:19', NULL),
-  (81, 3, 1, 10133000, 'Compte - Capital souscrit, appelé,  versé, non amorti', 77, 0, NULL, NULL, '2016-10-22 17:25:29', NULL),
-  (82, 6, 1, 1052, 'Primes d\'apport', 74, 0, NULL, NULL, '2016-10-22 20:55:08', NULL),
-  (83, 3, 1, 10521010, 'Compte Primes d\'apport', 82, 0, NULL, NULL, '2016-10-22 20:56:08', NULL),
-  (84, 6, 1, 1053, 'Primes de fusion', 74, 0, NULL, NULL, '2016-10-22 20:57:27', NULL),
-  (85, 3, 1, 10531010, 'Compte Primes de fusion', 84, 0, NULL, NULL, '2016-10-22 20:58:15', NULL),
-  (86, 6, 1, 1054, 'Primes de conversion', 74, 0, NULL, NULL, '2016-10-22 20:59:49', NULL),
-  (87, 3, 1, 10541010, 'Compte Primes de conversion', 86, 0, NULL, NULL, '2016-10-22 21:00:28', NULL),
-  (88, 6, 1, 1061, 'Ecart de réévaluation *', 75, 0, NULL, NULL, '2016-10-22 21:02:53', NULL),
-  (89, 3, 1, 10610000, 'Ecart de réévaluation légal', 88, 0, NULL, NULL, '2016-10-22 21:03:47', NULL),
-  (90, 6, 1, 1091, 'Actionnaire, Capital souscrit, non appelé *', 76, 0, NULL, NULL, '2016-10-22 21:06:36', NULL),
-  (91, 3, 1, 10911010, 'Compte Actionnaire, Capital souscrit, non appelé', 90, 0, NULL, NULL, '2016-10-22 21:07:10', NULL),
-  (92, 6, 1, 111, 'Reserve légale', 10, 0, NULL, NULL, '2016-10-22 23:39:20', NULL),
-  (93, 6, 1, 1111, 'Reserve légale *', 92, 0, NULL, NULL, '2016-10-22 23:40:17', NULL),
-  (94, 3, 1, 11110000, 'Compte Reserve légale', 93, 0, NULL, NULL, '2016-10-22 23:41:23', NULL),
-  (95, 6, 1, 112, 'Reserve statutaires ou contractuelles', 10, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (96, 6, 1, 118, 'Autres reserves', 10, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (97, 6, 1, 1121, 'Reserve statutaires ou contractuelles *', 95, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (98, 6, 1, 1181, 'Autres reserves *', 96, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (99, 6, 1, 1188, 'Reserves diverses', 96, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (100, 6, 1, 121, 'Report à nouveau créditeur', 11, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (101, 6, 1, 129, 'Report à nouveau debiteur', 11, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (102, 6, 1, 1211, 'Report à nouveau créditeur *', 100, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (103, 6, 1, 1291, 'Perte nette à reporter', 101, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (104, 6, 1, 1292, 'Perte-Amortissements réputés différés', 101, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (105, 6, 1, 130, 'Résultat en instance d\'affectation', 12, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (106, 6, 1, 131, 'Résusltat net : Bénéfice', 12, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (107, 6, 1, 139, 'Résultat net: perte', 12, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (108, 6, 1, 1301, 'Résultat en instance d\'affectation: Benefice', 105, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (109, 6, 1, 1309, 'Résultat en instance d\'affectation: Perte', 105, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (111, 6, 1, 1311, 'Résusltat net : Bénéfice *', 106, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (112, 6, 1, 1391, 'Résultat net: perte *', 107, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (113, 6, 1, 141, 'Subventions d\'équipement', 13, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (114, 6, 1, 1411, 'Etat', 113, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (115, 6, 1, 1417, 'Entreprises et organismes privés', 113, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (116, 6, 1, 1418, 'Autres', 113, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (117, 6, 1, 165, 'Depots et Cautionnement recus *', 14, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (118, 6, 1, 168, 'Autres emprunts et dettes', 14, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (119, 6, 1, 1651, 'Depots', 117, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (120, 6, 1, 1652, 'Cautionnement', 117, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (121, 6, 1, 1688, 'Autres emprunts et dettes *', 118, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (122, 6, 1, 172, 'Emprunts équivalents de crédit-bail immobilier', 15, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (123, 6, 1, 186, 'Comptes de liaison charges', 16, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (124, 6, 1, 187, 'Comptes de liaison produits', 16, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (125, 6, 1, 1861, 'Comptes de liaison charges *', 123, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (126, 6, 1, 1871, 'Comptes de liaison produits *', 124, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (127, 6, 1, 191, 'Provisions pour litiges', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (128, 6, 1, 194, 'Provisions pour pertes de change', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (129, 6, 1, 195, 'Provisions pour impôts', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (130, 6, 1, 196, 'Provisions pour pensions et obligations similaires', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (131, 6, 1, 197, 'Provisions pour charges à repartir sur plusieurs exercices', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (132, 6, 1, 198, 'Autres provisions financières pour risques et charges', 17, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (133, 6, 1, 1911, 'Provisions pour litiges *', 127, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (134, 6, 1, 1941, 'Provisions pour pertes de change *', 128, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (135, 6, 1, 1951, 'Provisions pour impôts *', 129, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (136, 6, 1, 1961, 'Provisions pour pensions et obligations similaires *', 130, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (137, 6, 1, 1971, 'Provisions pour charges à repartir sur plusieurs exercices *', 131, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (138, 6, 1, 1981, 'Autres provisions financières pour risques et charges *', 132, 0, NULL, NULL, '2016-10-22 21:37:09', NULL),
-  (150, 1, 1, 22321000, 'Batiment Hopital', 20, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (151, 1, 1, 23131000, 'Batiment Hopital *', 21, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (152, 1, 1, 24480040, 'Mobiliers Hopital', 21, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (156, 1, 1, 28310010, 'Amortissement Batiments', 24, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (160, 6, 1, 311, 'MARCHANDISES A', 26, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (161, 6, 1, 3111, 'Medicaments', 160, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (162, 1, 1, 31110010, 'Medicaments en comprimes *', 161, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (163, 1, 1, 31110011, 'Medicaments en Sirop *', 161, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (170, 6, 1, 4011, 'Fournisseurs', 32, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (171, 1, 1, 41111000, 'SNEL', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (172, 1, 1, 41111001, 'REGIDESO', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (173, 6, 1, 4111, 'Client (Groupe Debiteur)', 32, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (174, 1, 1, 41111010, 'CHURCH', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (175, 1, 1, 41111011, 'NGO', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (176, 1, 1, 41111012, 'CASH PAYMENT CLIENT', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (177, 1, 1, 41111013, 'GUEST HOUSE', 173, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (178, 6, 1, 422, 'REMUNERATION DUE', 34, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (179, 1, 1, 42210010, 'Salaires à payer', 178, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (180, 6, 1, 521, 'Banques locales', 41, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (181, 6, 1, 5211, 'Banques en Franc congolais', 180, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (182, 1, 1, 52111010, 'BCDC CDF', 181, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (183, 6, 1, 5212, 'Banques locales en Devises', 180, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (184, 1, 1, 52121010, 'BCDC USD', 183, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (185, 6, 1, 571, 'Caisse HOPITAL', 44, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (186, 6, 1, 5711, 'Caisse en franc congolais', 185, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (187, 1, 1, 57110010, 'Caisse Principale CDF', 186, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (188, 1, 1, 57110011, 'Caisse Auxiliaire CDF', 187, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (189, 6, 1, 5712, 'Caisse en devises', 185, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (190, 1, 1, 57120010, 'Caisse Principale USD', 189, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (191, 1, 1, 57120011, 'Caisse Auxiliaire USD', 189, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (192, 6, 1, 585, 'Virement des fonds', 45, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (193, 6, 1, 5851, 'Virement des fonds *', 192, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (194, 1, 1, 58511010, 'Virement des fonds Caisse Auxiliaire - Caisse Principale USD', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (195, 1, 1, 58511011, 'Virement des fonds Caisse Principale - Caisse Auxiliaire USD', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (196, 1, 1, 58511012, 'Virement des fonds Banque-Caisse Principale USD', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (197, 1, 1, 58511013, 'Virement des fonds Caisse Auxiliaire - Caisse Principale CDF', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (198, 1, 1, 58511014, 'Virement des fonds Caisse Principale - Caisse Auxiliaire CDF', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (199, 1, 1, 58511015, 'Virement des fonds Banque-Caisse Principale CDF', 193, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (200, 6, 1, 601, 'ACHATS DE MARCHANDISES', 47, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (201, 5, 1, 60111010, 'Achat Médicaments en comprimés', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (202, 5, 1, 60111011, 'Achat Médicaments en Sirop', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (203, 5, 1, 60111012, 'Achat Médicaments en crème', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (204, 5, 1, 60111013, 'Achat Médicaments en Poudre et Capsul', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (205, 5, 1, 60111014, 'Achat Injectables', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (206, 5, 1, 60111015, 'Achat Produit  de Perfusion', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (207, 5, 1, 60111016, 'Achat Produits Ophtamologiques', 200, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (208, 6, 1, 603, 'VARIATIONS DES STOCKS DE BIENS ACHETÉS', 47, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (209, 5, 1, 60310010, 'Médicaments en comprimés', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (210, 5, 1, 60310011, 'Médicaments en Sirop', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (211, 5, 1, 60310012, 'Achat Médicaments en crème', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (212, 5, 1, 60310013, 'Achat Médicaments en Poudre et Capsul', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (213, 5, 1, 60310014, 'Achat Injectables', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (214, 5, 1, 60310015, 'Achat Produit  de Perfusion', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (215, 5, 1, 60310016, 'Achat Produits Ophtamologiques', 208, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (216, 6, 1, 605, 'AUTRES ACHATS', 47, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (217, 5, 1, 60511010, 'Eau', 216, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (218, 5, 1, 60521010, 'Electricité', 216, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (219, 6, 1, 661, 'RÉMUNÉRATIONS DIRECTES VERSÉES AU PERSONNEL NATIONAL', 53, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (341, 6, 1, 6611, 'Appointements salaires et commissions', 219, 0, NULL, NULL, '2018-03-14 14:07:01', NULL),
-  (220, 5, 1, 66110011, 'Remunération Personnel', 219, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (221, 6, 1, 676, 'PERTES DE CHANGE', 54, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (222, 5, 1, 67611010, 'Différences de change', 221, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (240, 6, 1, 701, 'VENTES DE MARCHANDISES', 57, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (241, 6, 1, 7011, 'Vente des medicaments dans la Region Ohada', 240, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (242, 4, 1, 70111010, 'Vente Medicaments en comprimes', 241, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (243, 4, 1, 70111011, 'Vente Medicaments en Sirop', 241, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (244, 6, 1, 706, 'SERVICES VENDUS', 57, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (245, 6, 1, 7061, 'Services vendus dans la Region ohada', 244, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (246, 4, 1, 70611010, 'Consultations', 245, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (247, 4, 1, 70611011, 'Optique', 245, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (248, 4, 1, 70611012, 'Hospitalisation', 245, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (249, 4, 1, 70611017, 'Administration', 245, 0, NULL, 1, '2016-10-23 16:05:34', NULL),
-  (250, 4, 1, 70611036, 'URGENCES', 245, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (251, 6, 1, 754, 'PRODUITS DES CESSIONS D IMMOBILISATIONS', 61, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (252, 4, 1, 75411010, 'Produits des Cessions d Immobilisations *', 251, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (253, 6, 1, 758, 'PRODUITS DIVERS', 61, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (254, 6, 1, 7581, 'Jetons de presence et autres remunerations d\'administrateurs', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (255, 4, 1, 75811010, 'Jeton de presence', 254, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (256, 4, 1, 75811011, 'Autres remunerations d administrateurs', 254, 0, NULL, 1, '2016-10-23 16:05:34', NULL),
-  (257, 6, 1, 7582, 'Indemnites d\'assurances recues', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (258, 4, 1, 75821010, 'Indemnites d\'assurances recues', 257, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (259, 6, 1, 7588, 'Autres Produits divers', 253, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (260, 4, 1, 75881010, 'Autres revenus', 259, 0, NULL, 1, '2016-10-23 16:05:34', NULL),
-  (261, 6, 1, 771, 'INTERETS DE PRETS', 62, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (262, 4, 1, 77111010, 'Interets de Prets *', 261, 0, NULL, 1, '2016-10-23 16:05:34', NULL),
-  (264, 6, 1, 773, 'ESCOMPTES OBTENUS', 62, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (265, 4, 1, 77311010, 'Escomptes obtenus *', 264, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (266, 6, 1, 776, 'GAINS DE CHANGE', 62, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (267, 4, 1, 77611010, 'Gain de change *', 266, 0, NULL, 1, '2016-10-23 16:05:34', NULL),
-  (280, 5, 1, 81111010, 'Compte Immobilisations incorporelles', 65, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (281, 5, 1, 81211010, 'Compte Immobilisations corporelles', 65, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (282, 5, 1, 81611010, 'Compte Immobilisations financières', 65, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (283, 3, 1, 13110001, 'Résusltat de l\'exercise', 111, 0, NULL, NULL, '2017-06-09 12:29:04', NULL),
-  (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (303, 6, 1, 431, 'SECURITE SOCIAL', 35, 0, NULL, NULL, '2018-03-14 11:57:04', NULL),
-  (304, 6, 1, 4313, 'Caisse de retraite obligatoire', 303, 0, NULL, NULL, '2018-03-14 11:58:19', NULL),
-  (305, 2, 1, 43130010, 'Cotisation INSS Employés', 304, 0, NULL, NULL, '2018-03-14 12:01:32', NULL),
-  (306, 2, 1, 43130011, 'Cotisation INSS Employeur', 304, 0, NULL, NULL, '2018-03-14 12:08:57', NULL),
-  (307, 6, 1, 433, 'AUTRES ORGANISMES SOCIAUX', 35, 0, NULL, NULL, '2018-03-14 12:13:06', NULL),
-  (308, 6, 1, 4331, 'Mutuelle', 307, 0, NULL, NULL, '2018-03-14 12:13:45', NULL),
-  (311, 2, 1, 43311011, 'INPP', 308, 0, NULL, NULL, '2018-03-14 12:15:19', NULL),
-  (312, 6, 1, 441, 'ETAT ; IMPOTS SUR LE BENEFICES', 36, 0, NULL, NULL, '2018-03-14 12:59:42', NULL),
-  (313, 6, 1, 442, 'ETAT ; AUTRES IMPOTS ET TAXE', 36, 0, NULL, NULL, '2018-03-14 13:00:18', NULL),
-  (314, 6, 1, 443, 'ETAT ; TVA FACTUREE', 36, 0, NULL, NULL, '2018-03-14 13:00:40', NULL),
-  (315, 6, 1, 445, 'TVA RECUPERABLE', 36, 0, NULL, NULL, '2018-03-14 13:02:33', NULL),
-  (317, 6, 1, 447, 'ETAT ; IMPOTS RETENUES A LA SOURCE', 36, 0, NULL, NULL, '2018-03-14 13:03:51', NULL),
-  (318, 6, 1, 4472, 'IMPOTS SUR SALAIRES', 317, 0, NULL, NULL, '2018-03-14 13:04:37', NULL),
-  (319, 2, 1, 44720010, 'IPR', 317, 0, NULL, NULL, '2018-03-14 13:05:13', NULL),
-  (320, 2, 1, 43311010, 'ONEM', 308, 0, NULL, NULL, '2018-03-14 13:08:07', NULL),
-  (321, 6, 1, 423, 'PERSONNEL SAISIE ARRET', 34, 0, NULL, NULL, '2018-03-14 13:12:51', NULL),
-  (322, 6, 1, 424, 'PERSONNEL OEUVRES SOCIALES', 34, 0, NULL, NULL, '2018-03-14 13:14:08', NULL),
-  (323, 6, 1, 4241, 'ASSISTANCE MEDICALE', 322, 0, NULL, NULL, '2018-03-14 13:37:24', NULL),
-  (324, 6, 1, 4242, 'ALLOCATIONS FAMILIALES', 322, 0, NULL, NULL, '2018-03-14 13:38:02', NULL),
-  (325, 2, 1, 42421010, 'Allocations Familiales', 324, 0, NULL, NULL, '2018-03-14 13:38:40', NULL),
-  (326, 6, 1, 4248, 'AUTRES OEUVRES SOCIALES INTERNES', 322, 0, NULL, NULL, '2018-03-14 13:39:45', NULL),
-  (327, 2, 1, 42481010, 'Logement', 326, 0, NULL, NULL, '2018-03-14 13:40:17', NULL),
-  (328, 6, 1, 425, 'REPRESENTANT DU PERSONNEL', 34, 0, NULL, NULL, '2018-03-14 13:46:26', NULL),
-  (329, 6, 1, 428, 'PERSONNEL CHARGES A PAYER ET PRODUITS A RECEVOIR', 34, 0, NULL, NULL, '2018-03-14 13:47:56', NULL),
-  (330, 6, 1, 4281, 'DETTES PROVISIONNEES POUR CONGE A PAYER', 329, 0, NULL, NULL, '2018-03-14 13:48:46', NULL),
-  (331, 6, 1, 4286, 'AUTRES CHARGES A PAYER', 329, 0, NULL, NULL, '2018-03-14 13:49:46', NULL),
-  (332, 2, 1, 42860010, 'Primes', 331, 0, NULL, NULL, '2018-03-14 13:52:25', NULL),
-  (333, 2, 1, 42860011, 'Indemnité vie chère', 331, 0, NULL, NULL, '2018-03-14 13:53:43', NULL),
-  (334, 2, 1, 42860012, 'Frais scolarité', 331, 0, NULL, NULL, '2018-03-14 13:54:31', NULL),
-  (335, 6, 1, 421, 'PERSONNEL AVANCE ET ACOMPTES', 34, 0, NULL, NULL, '2018-03-14 13:56:28', NULL),
-  (337, 6, 1, 4211, 'PERSONNELS AVANCES', 335, 0, NULL, NULL, '2018-03-14 13:57:58', NULL),
-  (338, 2, 1, 42110010, 'Avances sur salaires', 337, 0, NULL, NULL, '2018-03-14 13:58:36', NULL),
-  (339, 6, 1, 4212, 'PERSONNEL ACOMPTE', 335, 0, NULL, NULL, '2018-03-14 14:00:38', NULL),
-  (340, 2, 1, 42120010, 'Acompte sur salaires', 339, 0, NULL, NULL, '2018-03-14 14:01:03', NULL),
-  (342, 6, 1, 6612, 'Primes et gratifications', 219, 0, NULL, NULL, '2018-03-14 14:08:34', NULL),
-  (343, 5, 1, 66121011, 'Primes', 342, 0, NULL, NULL, '2018-03-14 14:09:05', NULL),
-  (344, 6, 1, 6613, 'Conges payes', 219, 0, NULL, NULL, '2018-03-14 14:31:17', NULL),
-  (345, 5, 1, 66131010, 'Indemnité de congé', 344, 0, NULL, NULL, '2018-03-14 14:32:16', NULL),
-  (346, 6, 1, 6616, 'Supplement familial', 219, 0, NULL, NULL, '2018-03-14 14:34:14', NULL),
-  (347, 5, 1, 66161010, 'Allocations familiales légales', 346, 0, NULL, NULL, '2018-03-14 14:34:56', NULL),
-  (348, 6, 1, 663, 'INDEMNITES FORFAITAIRES VERSEES AU PERSONNEL', 53, 0, NULL, NULL, '2018-03-14 14:38:36', NULL),
-  (349, 6, 1, 6631, 'Indemnités de logement', 348, 0, NULL, NULL, '2018-03-14 14:39:34', NULL),
-  (350, 5, 1, 66311010, 'Indemnités de logement', 349, 0, NULL, NULL, '2018-03-14 14:40:27', NULL),
-  (351, 6, 1, 664, 'CHARGES SOCIALES', 53, 0, NULL, NULL, '2018-03-14 14:43:34', NULL),
-  (352, 6, 1, 6641, 'Charges sociales sur remuneration du personnel', 351, 0, NULL, NULL, '2018-03-14 14:44:22', NULL),
-  (353, 5, 1, 66411010, 'Cotisation INSS (QPP)', 352, 0, NULL, NULL, '2018-03-14 14:45:00', NULL),
-  (354, 5, 1, 66411011, 'Cotisations INPP', 352, 0, NULL, NULL, '2018-03-14 14:45:36', NULL),
-  (355, 5, 1, 66411012, 'Cotisation ONEM', 352, 0, NULL, NULL, '2018-03-14 14:45:55', NULL),
-  (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, NULL, NULL, '2018-03-14 14:58:55', NULL),
-  (358, 5, 1, 61411010, 'Transport personnel', 357, 0, NULL, NULL, '2018-03-14 14:59:59', NULL);
+INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `created`, `reference_id`) VALUES
+  (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, '2016-10-22 14:37:09', NULL),
+  (2, 6, 1, 2, 'CLASSE 2: COMPTES D\'ACTIFS IMMOBILISES', 0, 0, '2016-10-22 14:39:01', NULL),
+  (3, 6, 1, 3, 'CLASSE 3: COMPTES DE STOCKS', 0, 0, '2016-10-22 14:39:36', NULL),
+  (4, 6, 1, 4, 'CLASSE 4: COMPTES DE TIERS', 0, 0, '2016-10-22 14:40:00', NULL),
+  (5, 6, 1, 5, 'CLASSE 5: COMPTES DE TRESORERIE', 0, 0, '2016-10-22 14:40:26', NULL),
+  (6, 6, 1, 6, 'CLASSE 6: COMPTES DES CHARGES DES ACTIVITES ORDINAIRES', 0, 0, '2016-10-22 14:40:45', NULL),
+  (7, 6, 1, 7, 'CLASSE 7: COMPTES DES PRODUITS DES ACTIVITES ORDINAIRES', 0, 0, '2016-10-22 14:41:12', NULL),
+  (8, 6, 1, 8, 'CLASSE 8: COMPTES DES AUTRES CHARGES ET DES AUTRES PRODUITS', 0, 0, '2016-10-22 14:41:34', NULL),
+  (9, 6, 1, 10, 'CAPITAL', 1, 0, '2016-10-22 16:27:40', NULL),
+  (10, 6, 1, 11, 'RESERVES', 1, 0, '2016-10-22 16:28:02', NULL),
+  (11, 6, 1, 12, 'REPORT A NOUVEAU', 1, 0, '2016-10-22 16:28:24', NULL),
+  (12, 6, 1, 13, 'RESULTAT NET DE L\'EXERCICE', 1, 0, '2016-10-22 16:28:45', NULL),
+  (13, 6, 1, 14, 'SUBVENTIONS D\'INVESTISSEMENT', 1, 0, '2016-10-22 16:29:16', NULL),
+  (14, 6, 1, 16, 'EMPRUNTS ET DETTES ASSIMILEES', 1, 0, '2016-10-22 16:29:41', NULL),
+  (15, 6, 1, 17, 'DETTES DE CREDIT-BAIL ET CONTRATS ASSIMILES', 1, 0, '2016-10-22 16:30:08', NULL),
+  (16, 6, 1, 18, 'DETTES LIEES A DES PARTICIPATIONS ET COMPTES DE LIAISON DES ETABLISSEMENTS ET SOCIETES EN PARTICIPATION', 1, 0, '2016-10-22 16:30:32', NULL),
+  (17, 6, 1, 19, 'PROVISIONS FINANCIERES POUR RISQUES ET CHARGES', 1, 0, '2016-10-22 16:30:49', NULL),
+  (18, 6, 1, 20, 'CHARGES IMMOBILISEES', 2, 0, '2016-10-22 16:31:19', NULL),
+  (19, 6, 1, 21, 'IMMOBILISATIONS INCORPORELLES', 2, 0, '2016-10-22 16:32:58', NULL),
+  (20, 6, 1, 22, 'TERRAINS', 2, 0, '2016-10-22 16:33:24', NULL),
+  (21, 6, 1, 23, 'BATIMENTS, INSTALLATIONS TECHNIQUES ET AGENCEMENTS', 2, 0, '2016-10-22 16:33:44', NULL),
+  (22, 6, 1, 24, 'MATERIELS', 2, 0, '2016-10-22 16:34:05', NULL),
+  (23, 6, 1, 27, 'AUTRES IMMOBILISATIONS FINANCIERES', 2, 0, '2016-10-22 16:34:41', NULL),
+  (24, 6, 1, 28, 'AMORTISSEMENTS', 2, 0, '2016-10-22 16:34:59', NULL),
+  (25, 6, 1, 29, 'PROVISIONS POUR DEPRECIATIONS', 2, 0, '2016-10-22 16:35:16', NULL),
+  (26, 6, 1, 31, 'MARCHANDISES', 3, 0, '2016-10-22 16:35:40', NULL),
+  (27, 6, 1, 32, 'MATIERES PREMIERES ET FOURNITURES LIEES', 3, 0, '2016-10-22 16:36:00', NULL),
+  (28, 6, 1, 33, 'AUTRES APPROVISIONNEMENTS', 3, 0, '2016-10-22 16:36:19', NULL),
+  (29, 6, 1, 36, 'PRODUITS FINIS', 3, 0, '2016-10-22 16:36:39', NULL),
+  (30, 6, 1, 38, 'STOCKS EN COURS DE ROUTE, EN CONSIGNATION OU EN DÉPÔT', 3, 0, '2016-10-22 16:37:19', NULL),
+  (31, 6, 1, 39, 'DÉPRÉCIATIONS DES STOCKS', 3, 0, '2016-10-22 16:37:39', NULL),
+  (32, 6, 1, 40, 'FOURNISSEURS ET COMPTE  RATTACHES', 4, 0, '2016-10-22 16:38:02', NULL),
+  (33, 6, 1, 41, 'CLIENTS ET COMPTE RATTACHES', 4, 0, '2016-10-22 16:38:22', NULL),
+  (34, 6, 1, 42, 'PERSONNEL', 4, 0, '2016-10-22 16:38:43', NULL),
+  (35, 6, 1, 43, 'ORGANISMES  SOCIAUX', 4, 0, '2016-10-22 16:38:59', NULL),
+  (36, 6, 1, 44, 'ETAT ET COLLECTIVITES PUBLIQUES', 4, 0, '2016-10-22 16:39:20', NULL),
+  (37, 6, 1, 47, 'DEBITEURS  ET CREDITEURS  DIVERS', 4, 0, '2016-10-22 16:39:45', NULL),
+  (38, 6, 1, 48, 'CREANCES ET DETTES  HORS ACTIVITE ORDINAIRE', 4, 0, '2016-10-22 16:39:59', NULL),
+  (39, 6, 1, 49, 'DEPRECIATION ET RISQUES PROVISIONNES (Tiers)', 4, 0, '2016-10-22 16:40:23', NULL),
+  (40, 6, 1, 51, 'VALEURS A ENCAISSER', 5, 0, '2016-10-22 16:40:48', NULL),
+  (41, 6, 1, 52, 'BANQUES', 5, 0, '2016-10-22 16:41:05', NULL),
+  (42, 6, 1, 53, 'ETABLISSEMENTS FINANCIERS ET ASSIMILES', 5, 0, '2016-10-22 16:41:19', NULL),
+  (43, 6, 1, 56, 'BANQUES, CREDIT DE TRESORERIE ET D\'ESCOMPTE', 5, 0, '2016-10-22 16:41:40', NULL),
+  (44, 6, 1, 57, 'CAISSE', 5, 0, '2016-10-22 16:42:13', NULL),
+  (45, 6, 1, 58, 'REGIES D\'AVANCES, ACCREDITIFS ET VIREMENTS INTERNE', 5, 0, '2016-10-22 16:42:34', NULL),
+  (46, 6, 1, 59, 'DEPRECIATIONS ET RISQUES PROVISIONNES', 5, 0, '2016-10-22 16:43:12', NULL),
+  (47, 6, 1, 60, 'ACHATS ET VARIATIONS DE STOCKS', 6, 0, '2016-10-22 16:43:34', NULL),
+  (48, 6, 1, 61, 'TRANSPORTS', 6, 0, '2016-10-22 16:43:57', NULL),
+  (49, 6, 1, 62, 'SERVICES EXTÉRIEURS A', 6, 0, '2016-10-22 16:44:10', NULL),
+  (50, 6, 1, 63, 'SERVICES EXTÉRIEURS B', 6, 0, '2016-10-22 16:44:30', NULL),
+  (51, 6, 1, 64, 'IMPÔTS ET TAXES', 6, 0, '2016-10-22 16:44:49', NULL),
+  (52, 6, 1, 65, 'AUTRES CHARGES', 6, 0, '2016-10-22 16:45:02', NULL),
+  (53, 6, 1, 66, 'CHARGES DE PERSONNEL', 6, 0, '2016-10-22 16:45:18', NULL),
+  (54, 6, 1, 67, 'FRAIS FINANCIERS ET CHARGES ASSIMILÉES', 6, 0, '2016-10-22 16:45:36', NULL),
+  (55, 6, 1, 68, 'DOTATIONS AUX AMORTISSEMENTS', 6, 0, '2016-10-22 16:45:52', NULL),
+  (56, 6, 1, 69, 'DOTATIONS AUX PROVISIONS', 6, 0, '2016-10-22 16:46:07', NULL),
+  (57, 6, 1, 70, 'VENTES', 7, 0, '2016-10-22 16:47:00', NULL),
+  (58, 6, 1, 71, '71 SUBVENTIONS D\'EXPLOITATION', 7, 0, '2016-10-22 16:47:15', NULL),
+  (59, 6, 1, 72, 'PRODUCTION IMMOBILISÉE', 7, 0, '2016-10-22 16:47:29', NULL),
+  (60, 6, 1, 73, 'VARIATIONS DES STOCKS DE BIENS ET DE SERVICES PRODUITS', 7, 0, '2016-10-22 16:47:48', NULL),
+  (61, 6, 1, 75, 'AUTRES PRODUITS', 7, 0, '2016-10-22 16:48:15', NULL),
+  (62, 6, 1, 77, 'REVENUS FINANCIERS ET PRODUITS ASSIMILÉS', 7, 0, '2016-10-22 16:48:31', NULL),
+  (63, 6, 1, 78, 'TRANSFERTS DE CHARGES', 7, 0, '2016-10-22 16:48:49', NULL),
+  (64, 6, 1, 79, 'REPRISES DE PROVISIONS', 7, 0, '2016-10-22 16:49:07', NULL),
+  (65, 6, 1, 81, 'VALEURS COMPTABLE DES CESSIONS D\'IMMOBILISATIONS', 8, 0, '2016-10-22 16:49:36', NULL),
+  (66, 6, 1, 82, 'PRODUITS DES CESSIONS D\'IMMOBILISATIONS', 8, 0, '2016-10-22 16:49:50', NULL),
+  (67, 6, 1, 83, 'CHARGES HORS ACTIVITES ORDINAIRES', 8, 0, '2016-10-22 16:50:03', NULL),
+  (68, 6, 1, 84, 'PRODUITS HORS ACTIVITES ORDINAIRES', 8, 0, '2016-10-22 16:50:22', NULL),
+  (69, 6, 1, 85, 'DOTATIONS HORS ACTIVITES ORDINAIRES', 8, 0, '2016-10-22 16:50:43', NULL),
+  (70, 6, 1, 86, 'REPRISES HORS ACTIVITES ORDINAIRES', 8, 0, '2016-10-22 16:50:57', NULL),
+  (71, 6, 1, 88, 'SUBVENTIONS D\'EQUILIBRE', 8, 0, '2016-10-22 16:51:15', NULL),
+  (72, 6, 1, 89, 'IMPOTS SUR LE RESULTAT', 8, 0, '2016-10-22 16:51:30', NULL),
+  (73, 6, 1, 101, 'Capital Social', 9, 0, '2016-10-22 16:56:20', NULL),
+  (74, 6, 1, 105, 'Primes liées aux capitaux propres', 9, 0, '2016-10-22 16:56:46', NULL),
+  (75, 6, 1, 106, 'Ecart de réévaluation', 9, 0, '2016-10-22 16:57:30', NULL),
+  (76, 6, 1, 109, 'Actionnaire, Capital souscrit, non appelé', 9, 0, '2016-10-22 16:58:03', NULL),
+  (77, 6, 1, 1013, 'Capital souscrit, appelé,  versé, non amorti', 73, 0, '2016-10-22 16:59:19', NULL),
+  (81, 3, 1, 10133000, 'Compte - Capital souscrit, appelé,  versé, non amorti', 77, 0, '2016-10-22 17:25:29', NULL),
+  (82, 6, 1, 1052, 'Primes d\'apport', 74, 0, '2016-10-22 20:55:08', NULL),
+  (83, 3, 1, 10521010, 'Compte Primes d\'apport', 82, 0, '2016-10-22 20:56:08', NULL),
+  (84, 6, 1, 1053, 'Primes de fusion', 74, 0, '2016-10-22 20:57:27', NULL),
+  (85, 3, 1, 10531010, 'Compte Primes de fusion', 84, 0, '2016-10-22 20:58:15', NULL),
+  (86, 6, 1, 1054, 'Primes de conversion', 74, 0, '2016-10-22 20:59:49', NULL),
+  (87, 3, 1, 10541010, 'Compte Primes de conversion', 86, 0, '2016-10-22 21:00:28', NULL),
+  (88, 6, 1, 1061, 'Ecart de réévaluation *', 75, 0, '2016-10-22 21:02:53', NULL),
+  (89, 3, 1, 10610000, 'Ecart de réévaluation légal', 88, 0, '2016-10-22 21:03:47', NULL),
+  (90, 6, 1, 1091, 'Actionnaire, Capital souscrit, non appelé *', 76, 0, '2016-10-22 21:06:36', NULL),
+  (91, 3, 1, 10911010, 'Compte Actionnaire, Capital souscrit, non appelé', 90, 0, '2016-10-22 21:07:10', NULL),
+  (92, 6, 1, 111, 'Reserve légale', 10, 0, '2016-10-22 23:39:20', NULL),
+  (93, 6, 1, 1111, 'Reserve légale *', 92, 0, '2016-10-22 23:40:17', NULL),
+  (94, 3, 1, 11110000, 'Compte Reserve légale', 93, 0, '2016-10-22 23:41:23', NULL),
+  (95, 6, 1, 112, 'Reserve statutaires ou contractuelles', 10, 0, '2016-10-22 21:37:09', NULL),
+  (96, 6, 1, 118, 'Autres reserves', 10, 0, '2016-10-22 21:37:09', NULL),
+  (97, 6, 1, 1121, 'Reserve statutaires ou contractuelles *', 95, 0, '2016-10-22 21:37:09', NULL),
+  (98, 6, 1, 1181, 'Autres reserves *', 96, 0, '2016-10-22 21:37:09', NULL),
+  (99, 6, 1, 1188, 'Reserves diverses', 96, 0, '2016-10-22 21:37:09', NULL),
+  (100, 6, 1, 121, 'Report à nouveau créditeur', 11, 0, '2016-10-22 21:37:09', NULL),
+  (101, 6, 1, 129, 'Report à nouveau debiteur', 11, 0, '2016-10-22 21:37:09', NULL),
+  (102, 6, 1, 1211, 'Report à nouveau créditeur *', 100, 0, '2016-10-22 21:37:09', NULL),
+  (103, 6, 1, 1291, 'Perte nette à reporter', 101, 0, '2016-10-22 21:37:09', NULL),
+  (104, 6, 1, 1292, 'Perte-Amortissements réputés différés', 101, 0, '2016-10-22 21:37:09', NULL),
+  (105, 6, 1, 130, 'Résultat en instance d\'affectation', 12, 0, '2016-10-22 21:37:09', NULL),
+  (106, 6, 1, 131, 'Résusltat net : Bénéfice', 12, 0, '2016-10-22 21:37:09', NULL),
+  (107, 6, 1, 139, 'Résultat net: perte', 12, 0, '2016-10-22 21:37:09', NULL),
+  (108, 6, 1, 1301, 'Résultat en instance d\'affectation: Benefice', 105, 0, '2016-10-22 21:37:09', NULL),
+  (109, 6, 1, 1309, 'Résultat en instance d\'affectation: Perte', 105, 0, '2016-10-22 21:37:09', NULL),
+  (111, 6, 1, 1311, 'Résusltat net : Bénéfice *', 106, 0, '2016-10-22 21:37:09', NULL),
+  (112, 6, 1, 1391, 'Résultat net: perte *', 107, 0, '2016-10-22 21:37:09', NULL),
+  (113, 6, 1, 141, 'Subventions d\'équipement', 13, 0, '2016-10-22 21:37:09', NULL),
+  (114, 6, 1, 1411, 'Etat', 113, 0, '2016-10-22 21:37:09', NULL),
+  (115, 6, 1, 1417, 'Entreprises et organismes privés', 113, 0, '2016-10-22 21:37:09', NULL),
+  (116, 6, 1, 1418, 'Autres', 113, 0, '2016-10-22 21:37:09', NULL),
+  (117, 6, 1, 165, 'Depots et Cautionnement recus *', 14, 0, '2016-10-22 21:37:09', NULL),
+  (118, 6, 1, 168, 'Autres emprunts et dettes', 14, 0, '2016-10-22 21:37:09', NULL),
+  (119, 6, 1, 1651, 'Depots', 117, 0, '2016-10-22 21:37:09', NULL),
+  (120, 6, 1, 1652, 'Cautionnement', 117, 0, '2016-10-22 21:37:09', NULL),
+  (121, 6, 1, 1688, 'Autres emprunts et dettes *', 118, 0, '2016-10-22 21:37:09', NULL),
+  (122, 6, 1, 172, 'Emprunts équivalents de crédit-bail immobilier', 15, 0, '2016-10-22 21:37:09', NULL),
+  (123, 6, 1, 186, 'Comptes de liaison charges', 16, 0, '2016-10-22 21:37:09', NULL),
+  (124, 6, 1, 187, 'Comptes de liaison produits', 16, 0, '2016-10-22 21:37:09', NULL),
+  (125, 6, 1, 1861, 'Comptes de liaison charges *', 123, 0, '2016-10-22 21:37:09', NULL),
+  (126, 6, 1, 1871, 'Comptes de liaison produits *', 124, 0, '2016-10-22 21:37:09', NULL),
+  (127, 6, 1, 191, 'Provisions pour litiges', 17, 0, '2016-10-22 21:37:09', NULL),
+  (128, 6, 1, 194, 'Provisions pour pertes de change', 17, 0, '2016-10-22 21:37:09', NULL),
+  (129, 6, 1, 195, 'Provisions pour impôts', 17, 0, '2016-10-22 21:37:09', NULL),
+  (130, 6, 1, 196, 'Provisions pour pensions et obligations similaires', 17, 0, '2016-10-22 21:37:09', NULL),
+  (131, 6, 1, 197, 'Provisions pour charges à repartir sur plusieurs exercices', 17, 0, '2016-10-22 21:37:09', NULL),
+  (132, 6, 1, 198, 'Autres provisions financières pour risques et charges', 17, 0, '2016-10-22 21:37:09', NULL),
+  (133, 6, 1, 1911, 'Provisions pour litiges *', 127, 0, '2016-10-22 21:37:09', NULL),
+  (134, 6, 1, 1941, 'Provisions pour pertes de change *', 128, 0, '2016-10-22 21:37:09', NULL),
+  (135, 6, 1, 1951, 'Provisions pour impôts *', 129, 0, '2016-10-22 21:37:09', NULL),
+  (136, 6, 1, 1961, 'Provisions pour pensions et obligations similaires *', 130, 0, '2016-10-22 21:37:09', NULL),
+  (137, 6, 1, 1971, 'Provisions pour charges à repartir sur plusieurs exercices *', 131, 0, '2016-10-22 21:37:09', NULL),
+  (138, 6, 1, 1981, 'Autres provisions financières pour risques et charges *', 132, 0, '2016-10-22 21:37:09', NULL),
+  (150, 1, 1, 22321000, 'Batiment Hopital', 20, 0, '2016-10-23 16:05:34', NULL),
+  (151, 1, 1, 23131000, 'Batiment Hopital *', 21, 0, '2016-10-23 16:05:34', NULL),
+  (152, 1, 1, 24480040, 'Mobiliers Hopital', 21, 0, '2016-10-23 16:05:34', NULL),
+  (156, 1, 1, 28310010, 'Amortissement Batiments', 24, 0, '2016-10-23 16:05:34', NULL),
+  (160, 6, 1, 311, 'MARCHANDISES A', 26, 0, '2016-10-23 16:05:34', NULL),
+  (161, 6, 1, 3111, 'Medicaments', 160, 0, '2016-10-23 16:05:34', NULL),
+  (162, 1, 1, 31110010, 'Medicaments en comprimes *', 161, 0, '2016-10-23 16:05:34', NULL),
+  (163, 1, 1, 31110011, 'Medicaments en Sirop *', 161, 0, '2016-10-23 16:05:34', NULL),
+  (170, 6, 1, 4011, 'Fournisseurs', 32, 0, '2016-10-23 16:05:34', NULL),
+  (171, 1, 1, 41111000, 'SNEL', 173, 0, '2016-10-23 16:05:34', NULL),
+  (172, 1, 1, 41111001, 'REGIDESO', 173, 0, '2016-10-23 16:05:34', NULL),
+  (173, 6, 1, 4111, 'Client (Groupe Debiteur)', 32, 0, '2016-10-23 16:05:34', NULL),
+  (174, 1, 1, 41111010, 'CHURCH', 173, 0, '2016-10-23 16:05:34', NULL),
+  (175, 1, 1, 41111011, 'NGO', 173, 0, '2016-10-23 16:05:34', NULL),
+  (176, 1, 1, 41111012, 'CASH PAYMENT CLIENT', 173, 0, '2016-10-23 16:05:34', NULL),
+  (177, 1, 1, 41111013, 'GUEST HOUSE', 173, 0, '2016-10-23 16:05:34', NULL),
+  (178, 6, 1, 422, 'REMUNERATION DUE', 34, 0, '2016-10-23 16:05:34', NULL),
+  (179, 1, 1, 42210010, 'Salaires à payer', 178, 0, '2016-10-23 16:05:34', NULL),
+  (180, 6, 1, 521, 'Banques locales', 41, 0, '2016-10-23 16:05:34', NULL),
+  (181, 6, 1, 5211, 'Banques en Franc congolais', 180, 0, '2016-10-23 16:05:34', NULL),
+  (182, 1, 1, 52111010, 'BCDC CDF', 181, 0, '2016-10-23 16:05:34', NULL),
+  (183, 6, 1, 5212, 'Banques locales en Devises', 180, 0, '2016-10-23 16:05:34', NULL),
+  (184, 1, 1, 52121010, 'BCDC USD', 183, 0, '2016-10-23 16:05:34', NULL),
+  (185, 6, 1, 571, 'Caisse HOPITAL', 44, 0, '2016-10-23 16:05:34', NULL),
+  (186, 6, 1, 5711, 'Caisse en franc congolais', 185, 0, '2016-10-23 16:05:34', NULL),
+  (187, 1, 1, 57110010, 'Caisse Principale CDF', 186, 0, '2016-10-23 16:05:34', NULL),
+  (188, 1, 1, 57110011, 'Caisse Auxiliaire CDF', 187, 0, '2016-10-23 16:05:34', NULL),
+  (189, 6, 1, 5712, 'Caisse en devises', 185, 0, '2016-10-23 16:05:34', NULL),
+  (190, 1, 1, 57120010, 'Caisse Principale USD', 189, 0, '2016-10-23 16:05:34', NULL),
+  (191, 1, 1, 57120011, 'Caisse Auxiliaire USD', 189, 0, '2016-10-23 16:05:34', NULL),
+  (192, 6, 1, 585, 'Virement des fonds', 45, 0, '2016-10-23 16:05:34', NULL),
+  (193, 6, 1, 5851, 'Virement des fonds *', 192, 0, '2016-10-23 16:05:34', NULL),
+  (194, 1, 1, 58511010, 'Virement des fonds Caisse Auxiliaire - Caisse Principale USD', 193, 0, '2016-10-23 16:05:34', NULL),
+  (195, 1, 1, 58511011, 'Virement des fonds Caisse Principale - Caisse Auxiliaire USD', 193, 0, '2016-10-23 16:05:34', NULL),
+  (196, 1, 1, 58511012, 'Virement des fonds Banque-Caisse Principale USD', 193, 0, '2016-10-23 16:05:34', NULL),
+  (197, 1, 1, 58511013, 'Virement des fonds Caisse Auxiliaire - Caisse Principale CDF', 193, 0, '2016-10-23 16:05:34', NULL),
+  (198, 1, 1, 58511014, 'Virement des fonds Caisse Principale - Caisse Auxiliaire CDF', 193, 0, '2016-10-23 16:05:34', NULL),
+  (199, 1, 1, 58511015, 'Virement des fonds Banque-Caisse Principale CDF', 193, 0, '2016-10-23 16:05:34', NULL),
+  (200, 6, 1, 601, 'ACHATS DE MARCHANDISES', 47, 0, '2016-10-23 16:05:34', NULL),
+  (201, 5, 1, 60111010, 'Achat Médicaments en comprimés', 200, 0, '2016-10-23 16:05:34', NULL),
+  (202, 5, 1, 60111011, 'Achat Médicaments en Sirop', 200, 0, '2016-10-23 16:05:34', NULL),
+  (203, 5, 1, 60111012, 'Achat Médicaments en crème', 200, 0, '2016-10-23 16:05:34', NULL),
+  (204, 5, 1, 60111013, 'Achat Médicaments en Poudre et Capsul', 200, 0, '2016-10-23 16:05:34', NULL),
+  (205, 5, 1, 60111014, 'Achat Injectables', 200, 0, '2016-10-23 16:05:34', NULL),
+  (206, 5, 1, 60111015, 'Achat Produit  de Perfusion', 200, 0, '2016-10-23 16:05:34', NULL),
+  (207, 5, 1, 60111016, 'Achat Produits Ophtamologiques', 200, 0, '2016-10-23 16:05:34', NULL),
+  (208, 6, 1, 603, 'VARIATIONS DES STOCKS DE BIENS ACHETÉS', 47, 0, '2016-10-23 16:05:34', NULL),
+  (209, 5, 1, 60310010, 'Médicaments en comprimés', 208, 0, '2016-10-23 16:05:34', NULL),
+  (210, 5, 1, 60310011, 'Médicaments en Sirop', 208, 0, '2016-10-23 16:05:34', NULL),
+  (211, 5, 1, 60310012, 'Achat Médicaments en crème', 208, 0, '2016-10-23 16:05:34', NULL),
+  (212, 5, 1, 60310013, 'Achat Médicaments en Poudre et Capsul', 208, 0, '2016-10-23 16:05:34', NULL),
+  (213, 5, 1, 60310014, 'Achat Injectables', 208, 0, '2016-10-23 16:05:34', NULL),
+  (214, 5, 1, 60310015, 'Achat Produit  de Perfusion', 208, 0, '2016-10-23 16:05:34', NULL),
+  (215, 5, 1, 60310016, 'Achat Produits Ophtamologiques', 208, 0, '2016-10-23 16:05:34', NULL),
+  (216, 6, 1, 605, 'AUTRES ACHATS', 47, 0, '2016-10-23 16:05:34', NULL),
+  (217, 5, 1, 60511010, 'Eau', 216, 0, '2016-10-23 16:05:34', NULL),
+  (218, 5, 1, 60521010, 'Electricité', 216, 0, '2016-10-23 16:05:34', NULL),
+  (219, 6, 1, 661, 'RÉMUNÉRATIONS DIRECTES VERSÉES AU PERSONNEL NATIONAL', 53, 0, '2016-10-23 16:05:34', NULL),
+  (341, 6, 1, 6611, 'Appointements salaires et commissions', 219, 0, '2018-03-14 14:07:01', NULL),
+  (220, 5, 1, 66110011, 'Remunération Personnel', 219, 0, '2016-10-23 16:05:34', NULL),
+  (221, 6, 1, 676, 'PERTES DE CHANGE', 54, 0, '2016-10-23 16:05:34', NULL),
+  (222, 5, 1, 67611010, 'Différences de change', 221, 0, '2016-10-23 16:05:34', NULL),
+  (240, 6, 1, 701, 'VENTES DE MARCHANDISES', 57, 0, '2016-10-23 16:05:34', NULL),
+  (241, 6, 1, 7011, 'Vente des medicaments dans la Region Ohada', 240, 0, '2016-10-23 16:05:34', NULL),
+  (242, 4, 1, 70111010, 'Vente Medicaments en comprimes', 241, 0, '2016-10-23 16:05:34', NULL),
+  (243, 4, 1, 70111011, 'Vente Medicaments en Sirop', 241, 0, '2016-10-23 16:05:34', NULL),
+  (244, 6, 1, 706, 'SERVICES VENDUS', 57, 0, '2016-10-23 16:05:34', NULL),
+  (245, 6, 1, 7061, 'Services vendus dans la Region ohada', 244, 0, '2016-10-23 16:05:34', NULL),
+  (246, 4, 1, 70611010, 'Consultations', 245, 0, '2016-10-23 16:05:34', NULL),
+  (247, 4, 1, 70611011, 'Optique', 245, 0, '2016-10-23 16:05:34', NULL),
+  (248, 4, 1, 70611012, 'Hospitalisation', 245, 0, '2016-10-23 16:05:34', NULL),
+  (249, 4, 1, 70611017, 'Administration', 245, 0, '2016-10-23 16:05:34', NULL),
+  (250, 4, 1, 70611036, 'URGENCES', 245, 0, '2016-10-23 16:05:34', NULL),
+  (251, 6, 1, 754, 'PRODUITS DES CESSIONS D IMMOBILISATIONS', 61, 0, '2016-10-23 16:05:34', NULL),
+  (252, 4, 1, 75411010, 'Produits des Cessions d Immobilisations *', 251, 0, '2016-10-23 16:05:34', NULL),
+  (253, 6, 1, 758, 'PRODUITS DIVERS', 61, 0, '2016-10-23 16:05:34', NULL),
+  (254, 6, 1, 7581, 'Jetons de presence et autres remunerations d\'administrateurs', 253, 0, '2016-10-23 16:05:34', NULL),
+  (255, 4, 1, 75811010, 'Jeton de presence', 254, 0, '2016-10-23 16:05:34', NULL),
+  (256, 4, 1, 75811011, 'Autres remunerations d administrateurs', 254, 0, '2016-10-23 16:05:34', NULL),
+  (257, 6, 1, 7582, 'Indemnites d\'assurances recues', 253, 0, '2016-10-23 16:05:34', NULL),
+  (258, 4, 1, 75821010, 'Indemnites d\'assurances recues', 257, 0, '2016-10-23 16:05:34', NULL),
+  (259, 6, 1, 7588, 'Autres Produits divers', 253, 0, '2016-10-23 16:05:34', NULL),
+  (260, 4, 1, 75881010, 'Autres revenus', 259, 0,'2016-10-23 16:05:34', NULL),
+  (261, 6, 1, 771, 'INTERETS DE PRETS', 62, 0, '2016-10-23 16:05:34', NULL),
+  (262, 4, 1, 77111010, 'Interets de Prets *', 261, 0, '2016-10-23 16:05:34', NULL),
+  (264, 6, 1, 773, 'ESCOMPTES OBTENUS', 62, 0, '2016-10-23 16:05:34', NULL),
+  (265, 4, 1, 77311010, 'Escomptes obtenus *', 264, 0, '2016-10-23 16:05:34', NULL),
+  (266, 6, 1, 776, 'GAINS DE CHANGE', 62, 0, '2016-10-23 16:05:34', NULL),
+  (267, 4, 1, 77611010, 'Gain de change *', 266, 0,  '2016-10-23 16:05:34', NULL),
+  (280, 5, 1, 81111010, 'Compte Immobilisations incorporelles', 65, 0, '2016-10-23 16:05:34', NULL),
+  (281, 5, 1, 81211010, 'Compte Immobilisations corporelles', 65, 0, '2016-10-23 16:05:34', NULL),
+  (282, 5, 1, 81611010, 'Compte Immobilisations financières', 65, 0, '2016-10-23 16:05:34', NULL),
+  (283, 3, 1, 13110001, 'Résusltat de l\'exercise', 111, 0, '2017-06-09 12:29:04', NULL),
+  (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, '2016-10-23 16:05:34', NULL),
+  (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, '2016-10-23 16:05:34', NULL),
+  (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, '2017-11-06 15:07:21', NULL),
+  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, '2017-11-06 15:07:21', NULL),
+  (303, 6, 1, 431, 'SECURITE SOCIAL', 35, 0, '2018-03-14 11:57:04', NULL),
+  (304, 6, 1, 4313, 'Caisse de retraite obligatoire', 303, 0, '2018-03-14 11:58:19', NULL),
+  (305, 2, 1, 43130010, 'Cotisation INSS Employés', 304, 0, '2018-03-14 12:01:32', NULL),
+  (306, 2, 1, 43130011, 'Cotisation INSS Employeur', 304, 0, '2018-03-14 12:08:57', NULL),
+  (307, 6, 1, 433, 'AUTRES ORGANISMES SOCIAUX', 35, 0, '2018-03-14 12:13:06', NULL),
+  (308, 6, 1, 4331, 'Mutuelle', 307, 0, '2018-03-14 12:13:45', NULL),
+  (311, 2, 1, 43311011, 'INPP', 308, 0, '2018-03-14 12:15:19', NULL),
+  (312, 6, 1, 441, 'ETAT ; IMPOTS SUR LE BENEFICES', 36, 0, '2018-03-14 12:59:42', NULL),
+  (313, 6, 1, 442, 'ETAT ; AUTRES IMPOTS ET TAXE', 36, 0, '2018-03-14 13:00:18', NULL),
+  (314, 6, 1, 443, 'ETAT ; TVA FACTUREE', 36, 0, '2018-03-14 13:00:40', NULL),
+  (315, 6, 1, 445, 'TVA RECUPERABLE', 36, 0, '2018-03-14 13:02:33', NULL),
+  (317, 6, 1, 447, 'ETAT ; IMPOTS RETENUES A LA SOURCE', 36, 0, '2018-03-14 13:03:51', NULL),
+  (318, 6, 1, 4472, 'IMPOTS SUR SALAIRES', 317, 0, '2018-03-14 13:04:37', NULL),
+  (319, 2, 1, 44720010, 'IPR', 317, 0, '2018-03-14 13:05:13', NULL),
+  (320, 2, 1, 43311010, 'ONEM', 308, 0, '2018-03-14 13:08:07', NULL),
+  (321, 6, 1, 423, 'PERSONNEL SAISIE ARRET', 34, 0, '2018-03-14 13:12:51', NULL),
+  (322, 6, 1, 424, 'PERSONNEL OEUVRES SOCIALES', 34, 0, '2018-03-14 13:14:08', NULL),
+  (323, 6, 1, 4241, 'ASSISTANCE MEDICALE', 322, 0, '2018-03-14 13:37:24', NULL),
+  (324, 6, 1, 4242, 'ALLOCATIONS FAMILIALES', 322, 0, '2018-03-14 13:38:02', NULL),
+  (325, 2, 1, 42421010, 'Allocations Familiales', 324, 0, '2018-03-14 13:38:40', NULL),
+  (326, 6, 1, 4248, 'AUTRES OEUVRES SOCIALES INTERNES', 322, 0, '2018-03-14 13:39:45', NULL),
+  (327, 2, 1, 42481010, 'Logement', 326, 0, '2018-03-14 13:40:17', NULL),
+  (328, 6, 1, 425, 'REPRESENTANT DU PERSONNEL', 34, 0, '2018-03-14 13:46:26', NULL),
+  (329, 6, 1, 428, 'PERSONNEL CHARGES A PAYER ET PRODUITS A RECEVOIR', 34, 0, '2018-03-14 13:47:56', NULL),
+  (330, 6, 1, 4281, 'DETTES PROVISIONNEES POUR CONGE A PAYER', 329, 0, '2018-03-14 13:48:46', NULL),
+  (331, 6, 1, 4286, 'AUTRES CHARGES A PAYER', 329, 0, '2018-03-14 13:49:46', NULL),
+  (332, 2, 1, 42860010, 'Primes', 331, 0, '2018-03-14 13:52:25', NULL),
+  (333, 2, 1, 42860011, 'Indemnité vie chère', 331, 0, '2018-03-14 13:53:43', NULL),
+  (334, 2, 1, 42860012, 'Frais scolarité', 331, 0, '2018-03-14 13:54:31', NULL),
+  (335, 6, 1, 421, 'PERSONNEL AVANCE ET ACOMPTES', 34, 0, '2018-03-14 13:56:28', NULL),
+  (337, 6, 1, 4211, 'PERSONNELS AVANCES', 335, 0, '2018-03-14 13:57:58', NULL),
+  (338, 2, 1, 42110010, 'Avances sur salaires', 337, 0, '2018-03-14 13:58:36', NULL),
+  (339, 6, 1, 4212, 'PERSONNEL ACOMPTE', 335, 0, '2018-03-14 14:00:38', NULL),
+  (340, 2, 1, 42120010, 'Acompte sur salaires', 339, 0, '2018-03-14 14:01:03', NULL),
+  (342, 6, 1, 6612, 'Primes et gratifications', 219, 0, '2018-03-14 14:08:34', NULL),
+  (343, 5, 1, 66121011, 'Primes', 342, 0, '2018-03-14 14:09:05', NULL),
+  (344, 6, 1, 6613, 'Conges payes', 219, 0, '2018-03-14 14:31:17', NULL),
+  (345, 5, 1, 66131010, 'Indemnité de congé', 344, 0, '2018-03-14 14:32:16', NULL),
+  (346, 6, 1, 6616, 'Supplement familial', 219, 0, '2018-03-14 14:34:14', NULL),
+  (347, 5, 1, 66161010, 'Allocations familiales légales', 346, 0, '2018-03-14 14:34:56', NULL),
+  (348, 6, 1, 663, 'INDEMNITES FORFAITAIRES VERSEES AU PERSONNEL', 53, 0, '2018-03-14 14:38:36', NULL),
+  (349, 6, 1, 6631, 'Indemnités de logement', 348, 0, '2018-03-14 14:39:34', NULL),
+  (350, 5, 1, 66311010, 'Indemnités de logement', 349, 0, '2018-03-14 14:40:27', NULL),
+  (351, 6, 1, 664, 'CHARGES SOCIALES', 53, 0, '2018-03-14 14:43:34', NULL),
+  (352, 6, 1, 6641, 'Charges sociales sur remuneration du personnel', 351, 0, '2018-03-14 14:44:22', NULL),
+  (353, 5, 1, 66411010, 'Cotisation INSS (QPP)', 352, 0, '2018-03-14 14:45:00', NULL),
+  (354, 5, 1, 66411011, 'Cotisations INPP', 352, 0, '2018-03-14 14:45:36', NULL),
+  (355, 5, 1, 66411012, 'Cotisation ONEM', 352, 0, '2018-03-14 14:45:55', NULL),
+  (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, '2018-03-14 14:58:55', NULL),
+  (358, 5, 1, 61411010, 'Transport personnel', 357, 0, '2018-03-14 14:59:59', NULL);
 
 
 -- set one hidden account 52121010 - BCDC USD
@@ -616,13 +604,15 @@ INSERT INTO `patient_group` VALUES
 INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/1/Patient'),
-  (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]');
+  (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]'),
+  (HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Bad Patient Doublon');
 
 -- Patients
 INSERT INTO `patient` VALUES
   (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
   (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
-  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL);
+  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL),
+  (HUID('0f2ddc0e-686b-47c0-ad80-989671aa9f1f'), 1, 5, HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), 'Bad Patient Doublon', '2017-08-24 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1110', '', 1, '2015-11-14 07:04:49', NULL, NULL);
 
 -- Patient Visits
 INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_id`) VALUES
@@ -652,7 +642,14 @@ INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2,
 -- Grade
 INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 'G1', 'grade 1', 500.0000),
+  (HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0'), 'test', 'grade 3', 650.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 'A1', '1.1', 50.0000);
+
+INSERT INTO `staffing_grade_indice` (`uuid`, `value`, `grade_uuid`) VALUES
+ (HUID(UUID()), 125.0000, HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0')),
+(HUID(UUID()), 60.0000, HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0')),
+(HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 10.0000, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'));
+
 
 -- Offday
 INSERT INTO `offday` VALUES
@@ -758,7 +755,7 @@ INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, descriptio
   (@fourth_voucher, CURRENT_TIMESTAMP, 1, 1, 75, 'Fourth Voucher to be Posted', 1, 9);
 
 -- voucher items sample data
-INSERT INTO `voucher_item` VALUES
+INSERT INTO `voucher_item` (`uuid`, `account_id`, `debit`, `credit`, `voucher_uuid`, `document_uuid`, `entity_uuid`) VALUES
   (HUID('90583c32-b1b2-11e8-9689-0b54421d0e49'), 187, 100, 0, @first_voucher, @first_invoice, HUID('2c6c48a2-b1b3-11e8-ae9b-1fa4024347ab')),
   (HUID('9317a11a-b1b2-11e8-93d6-b30828591803'), 182, 0, 100, @first_voucher, NULL, NULL),
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
@@ -773,11 +770,6 @@ CALL PostVoucher(@first_voucher);
 CALL PostVoucher(@second_voucher);
 CALL PostVoucher(@third_voucher);
 CALL PostVoucher(@fourth_voucher);
-
--- zones des santes SNIS
-INSERT INTO `mod_snis_zs` VALUES
-  (1, 'Zone Sante A', 'Territoire A', 'Province A'),
-  (2, 'Zone Sante B', 'Territoire B', 'Province B');
 
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -839,6 +831,14 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
+-- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`) VALUES 
+  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, 7, NULL, '2019-10-28 13:02:07'),
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, 8, NULL, '2019-10-28 13:03:35');
+
+INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
+  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
+
 -- Rubric Payroll
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `value`) VALUES
   (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 0, 1, 306, 353, 0, 0, 5),
@@ -854,8 +854,26 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`,
+ `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, 
+ `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`, `indice_to_grap`)
+
+VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL, 1),
+(14, 'Jours_supplementaires', 'jr_Suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, 1, 'is_extra_day', NULL, 1),
+(15, 'BASE_INDEX', 'Indice-base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 'is_base_index', NULL, 0),
+(16, 'DAY_INDEX', 'Indice-jour', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, 1, 'is_day_index', NULL, 0),
+(17, 'REAGISTERED_INDEX', 'Indice-reag', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, 1, 'is_reagistered_index', NULL, 0),
+(18, 'Responsability_', 'Responsability_', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, 1, 'is_responsability', NULL, 0),
+(19, 'Autres_profit', 'autr-profit', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, 1, 'is_other_profits', NULL, 1),
+(20, 'Total_code', 'totCod', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, 1, 'is_total_code', NULL, 0),
+(21, 'total_Jrs', 'total_days', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, 1, 'is_total_days', NULL, 0),
+(22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL, 0),
+(23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, 1, 'is_gross_salary', NULL, 0),
+(24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
 -- Configuration of Rubrinc
-INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
+INSERT INTO `config_rubric` (`id`, `label`)
+ VALUES (1, 'Configuration des rubriques'), 
+ (2, 'Configuration des rubriques (indices)');
 
 -- Configuration of Rubric Items
 INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`) VALUES
@@ -870,7 +888,18 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
   (9, 1, 9),
   (10, 1, 10),
   (11, 1, 11),
-  (12, 1, 12);
+  (12, 1, 12),
+  (13, 2, 13),
+  (14, 2, 14),
+  (15, 2, 15),
+  (16, 2, 16),
+  (17, 2, 17),
+  (18, 2, 18),
+  (19, 2, 19),
+  (20, 2, 20),
+  (21, 2, 21),
+  (22, 2, 22),
+  (23, 2, 23);
 
 -- Configuration of weekend
 INSERT INTO `weekend_config` (`id`, `label`) VALUES
@@ -911,8 +940,12 @@ INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`)
   (2, 1, 0x75E69409562FA2A845A13D7938B02500);
 
 -- Payroll Configuration Period
-INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
-(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
+ `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
+(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1),
+(2, 'Juin 2019', '2019-06-01', '2019-06-30', 2, 1, 1, 1, 1);
+
+CALL UpdateStaffingIndices('2019-06-01', '2019-06-30');
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
@@ -961,6 +994,7 @@ INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
 
+
 -- FEE CENTER
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
   (1, 'Administration', 1),
@@ -979,19 +1013,19 @@ INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id
 INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (22, 4, 9, 1, 0, 0);
 
 -- GENERAL LEDGER FOR DISTRIBUTION FEE CENTER TEST
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE70109CCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 175, 256.6200, 0.0000, 256.6200, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7011804E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Tylenol sirop (cold multivit)', 243, 0.0000, 204.8000, 0.0000, 204.8000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7011C13E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Multivitamine sirop500 ml', 243, 0.0000, 190.0000, 0.0000, 190.0000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE701230AE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 220, 256.6200, 0.0000, 256.6200, 0.0000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7012ADCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 78.9600, 0.0000, 78.9600, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE702756EE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 39.4800, 0.0000, 39.4800, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE70109CCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 175, 256.6200, 0.0000, 256.6200, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE7011804E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Tylenol sirop (cold multivit)', 243, 0.0000, 204.8000, 0.0000, 204.8000, 2, NULL, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE7011C13E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Multivitamine sirop500 ml', 243, 0.0000, 190.0000, 0.0000, 190.0000, 2, NULL, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE701230AE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 220, 256.6200, 0.0000, 256.6200, 0.0000, 2, NULL, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE7012ADCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 78.9600, 0.0000, 78.9600, 2, NULL, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xE702756EE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 39.4800, 0.0000, 39.4800, 2, NULL, NULL, NULL, 11, 1, '2018-11-05 10:29:21', NULL);
 
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF768B326DDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', 175, 5.1300, 0.0000, 5.1300, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF769555FDDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'IV.TPA.3: Multivitamine tab', 242, 0.0000, 5.1300, 0.0000, 5.1300, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF76E0838DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 191, 100.0000, 0.0000, 0.1111, 0.0000, 1, NULL, NULL, NULL, 2, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF7711ED8DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 175, 0.0000, 10.0000, 0.0000, 0.0111, 1, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 2, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF7773CC1DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 187, 100.0000, 0.0000, 100.0000, 0.0000, 2, 0x2C6C48A2B1B311E8AE9B1FA4024347AB, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 1, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
-INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF77740B0DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 182, 0.0000, 100.0000, 0.0000, 100.0000, 2, NULL, NULL, NULL, 1, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF768B326DDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', 175, 5.1300, 0.0000, 5.1300, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF769555FDDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'IV.TPA.3: Multivitamine tab', 242, 0.0000, 5.1300, 0.0000, 5.1300, 2, NULL, NULL, NULL, 11, 1, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF76E0838DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 191, 100.0000, 0.0000, 0.1111, 0.0000, 1, NULL, NULL, NULL, 2, 1, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF7711ED8DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 175, 0.0000, 10.0000, 0.0000, 0.0111, 1, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 2, 1, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF7773CC1DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 187, 100.0000, 0.0000, 100.0000, 0.0000, 2, 0x2C6C48A2B1B311E8AE9B1FA4024347AB, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 1, 1, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `created_at`, `updated_at`) VALUES (0xF77740B0DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 182, 0.0000, 100.0000, 0.0000, 100.0000, 2, NULL, NULL, NULL, 1, 1, '2018-11-01 09:42:17', NULL);
 
 -- INVOICE FOR DISTRIBUTION FEE CENTER
 INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_id`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`)
@@ -1045,6 +1079,15 @@ INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_ty
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
 
+-- default entity groups
+INSERT INTO entity_group (uuid, label) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3898'), 'Developers');
+
+-- entity group entity
+INSERT INTO entity_group_entity (entity_uuid, entity_group_uuid) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3790'), HUID('00099B1D184A48DEB93D45FBD0AB3898')),
+  (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), HUID('00099B1D184A48DEB93D45FBD0AB3898'));
+
 -- default room type
 INSERT INTO room_type VALUES
   (1, 'Public Room'),
@@ -1073,3 +1116,105 @@ INSERT INTO bed VALUES
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
+
+
+-- data_collector_management
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1);
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
+
+-- choices_list_management
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (2, 'm', 'Masculin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (3, 'f', 'Féminin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (4, 'pays', 'Pays', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (5, 'province', 'Province', 0, 4, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (6, 'districte', 'Districte', 0, 5, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (7, 'ville', 'Ville', 0, 6, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (8, 'commune', 'Commune', 0, 7, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (9, 'quartier', 'Quartier', 0, 8, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (10, 'rdc', 'RD Congo', 0, 0, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (11, 'kin', 'Kinshasa', 0, 10, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (12, 'mont_amba', 'Mont Amba', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (13, 'lemba', 'Lemba', 0, 12, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (14, 'salongo', 'Salongo', 0, 13, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (15, 'avenue', 'Avenue', 0, 9, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (16, 'bypass', 'By Pass', 0, 14, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (17, 'kalala', 'Kalala', 0, 14, 0, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (18, 'funa', 'Funa', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (22, 'medicament', 'Médicament', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (23, 'ciprofloxacineCifin', 'ciprofloxacine (cifin ) 500 mg tab', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (24, 'artesunate60mgInjFl', 'Artesunate 60mg inj. fl', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (25, 'vitamineA50000iu', 'Vitamine A 50.000 iu', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (26, 'paracetamol500mg', 'Paracetamol500 mg', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (27, 'pentazocinetromadol30mg/ml', 'Pentazocine, Tromadol30mg/ml', 0, 22, 22, 0, 0);
+
+-- survey_form
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (1, 1, '3', 22, NULL, 0, 'label', 'Médicament', 'Sélectionner le médicament', 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (2, 1, '1', NULL, NULL, 0, 'poids', 'Poids', NULL, 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (3, 1, '2', NULL, NULL, 0, 'dosekilos', 'Dose par kilogramme', NULL, 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (4, 1, '1', NULL, NULL, 0, 'nombreFois', 'Nombre de fois', NULL, 1, NULL, NULL, NULL, 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (5, 1, '2', NULL, NULL, 0, 'voie', 'Voie', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (6, 1, '6', NULL, NULL, 0, 'date', 'Date', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (7, 1, '7', NULL, NULL, 0, 'temps', 'Temps', NULL, 1, NULL, NULL, NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (8, 3, '2', NULL, NULL, 0, 'label', 'Structure', NULL, 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (9, 3, '1', NULL, NULL, 0, 'longueur', 'Longueur', 'en mètre (m)', 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (10, 3, '1', NULL, NULL, 0, 'largeur', 'largeur', 'en mètre (m)', 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (11, 3, '9', NULL, NULL, 0, 'surface', 'Surface (m²)', NULL, 0, NULL, NULL, '.{longueur} * .{largeur}', 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (12, 3, '1', NULL, NULL, 0, 'nombre_agent', 'Nombre d''agent', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (13, 3, '1', NULL, NULL, 0, 'nombre_femme', 'Nombre des femmes', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (14, 3, '5', NULL, NULL, 0, 'note_1', 'Nombre des femmes inferieurs a 25', NULL, 1, '.{nombre_femme} < 25', '25', NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (15, 3, '10', NULL, NULL, 0, 'raison', 'Raison inferieure', NULL, 0, '.{nombre_femme} < 25', NULL, NULL, 8);
+
+-- survey_data
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x24804F5966E74A8D83E8FE57EE60EFC3, 1, '2019-08-28 08:04:03', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x2E6753DE87784432B1AE96F6220E7F85, 3, '2019-08-28 08:43:16', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x7E10BE6083BF4EC5810FD47E2013E7AD, 3, '2019-08-27 21:15:58', 1, 0);
+
+-- survey_data_item
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x56CBC3715A3C45699C3612AD0E00BF00, 6, 'date', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2019-08-16');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x01DDEAFBBC1540DEAE408B75BF8E117B, 3, 'dosekilos', 0x24804F5966E74A8D83E8FE57EE60EFC3, '20');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xF0D06189F43447A6A18AE710339C13FF, 8, 'label', 0x2E6753DE87784432B1AE96F6220E7F85, 'Access Project');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9FC0EA45085E40B8AEBF9FDEBE276373, 1, 'label', 0x24804F5966E74A8D83E8FE57EE60EFC3, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xCB7A4838D6F544029DC3C44973298C22, 10, 'largeur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '40');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x4A64E8AC16ED4D5DA521759A44F9C151, 10, 'largeur', 0x2E6753DE87784432B1AE96F6220E7F85, '50');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xB39690C2DD924A689D3A644D60D81AC5, 9, 'longueur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '75');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xDE878918262B4A41ABC11DADA19F01BE, 9, 'longueur', 0x2E6753DE87784432B1AE96F6220E7F85, '110');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x8A45E9C704474CCE9A53518D979DC435, 12, 'nombre_agent', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '112');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBE53A92025D942E39A1E69CA839C700B, 12, 'nombre_agent', 0x2E6753DE87784432B1AE96F6220E7F85, '1359');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3D145F3311CE4AF4A59B80A495F4DBCF, 13, 'nombre_femme', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0B906678C97F4C1281641B6B9447997E, 13, 'nombre_femme', 0x2E6753DE87784432B1AE96F6220E7F85, '860');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xD375C86040304E62AAE4C03C3B111CB3, 4, 'nombreFois', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBA712ED252CF45F9A693750FA04313DE, 14, 'note_1', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0E57EFF1142F4F5E8416FBDBE53E4319, 14, 'note_1', 0x2E6753DE87784432B1AE96F6220E7F85, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xE55FCC70352546F6A20B39FFFCFD9203, 2, 'poids', 0x24804F5966E74A8D83E8FE57EE60EFC3, '13');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x05DAAC76E4864FFEA21B4228236D96DD, 15, 'raison', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'Faible candidature');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x1B17203E39A848B3ABB1BA6655297BDA, 8, 'structure', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'IMA World Health');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xEC7A04D98171476BB6A18CCA79C8A67F, 11, 'surface', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '3000');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3EEB3F9A5F5C4B5AB1C82E67DDD12D0B, 11, 'surface', 0x2E6753DE87784432B1AE96F6220E7F85, '5500');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x083E7B7DCC3642BCB03599B23C02CB62, 7, 'temps', 0x24804F5966E74A8D83E8FE57EE60EFC3, '12:24');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9C388012F6CF408FBDD5B510649DBD58, 5, 'voie', 0x24804F5966E74A8D83E8FE57EE60EFC3, 'IV');
+
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `reference_type_id`, `is_amo_dep`) VALUES  
+  (11, 'charges', 'Charges', NULL, 5, 0),
+  (12, 'profits', 'Profits', NULL, 5, 0),
+  (13, 'deb', 'Débiteurs', NULL, 5, 0),
+  (14, 'cred', 'Créditeurs', NULL, 5, 0);
+
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (22, 11, 6, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (23, 11, 208, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (24, 12, 7, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (25, 12, 58, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (26, 13, 173, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (27, 13, 335, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (28, 14, 32, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (29, 14, 178, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (30, 14, 36, 0, 0, 0);
+
+INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id`, `analysis_tool_type_id`) VALUES
+  (1, 'Coûts', 11, 1),
+  (3, 'Creances', 13, 2),
+  (2, 'Profits', 12, 3),
+  (4, 'Dettes', 14, 4);

@@ -98,7 +98,6 @@ INSERT INTO unit VALUES
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
   (211, 'Income Expenses by Month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
-  (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
@@ -123,7 +122,34 @@ INSERT INTO unit VALUES
   (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
   (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
   (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances'),
-  (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
+  (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport'),
+  (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report'),
+  (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry'),
+  (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
+  (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
+  (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group'),
+  (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance'),
+  (245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary'),
+  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
+  (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
+  (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
+  (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
+  (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
+  (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
+  (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'), 
+  (254, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (255, 'Fill Form', 'TREE.FILL_FORM', '', 254, '/modules/fill_form', '/fill_form'),
+  (256, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 254, '/modules/display_metadata', '/display_metadata'),
+  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 254, '/modules/data_kit', '/data_kit'),
+  (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
+  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
+  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
+  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit'),
+  (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
+  (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
+  (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report'),
+  (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -142,37 +168,49 @@ INSERT INTO `account_type` VALUES
   (6, 'title', 'ACCOUNT.TYPES.TITLE', 4);
 
 -- core BHIMA reports
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-  (1, 'cashflow', 'TREE.CASHFLOW'),
-  (2, 'accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
-  (3, 'income_expense', 'REPORT.PROFIT_AND_LOSS'),
-  (4, 'balance_report', 'REPORT.BALANCE'),
-  (5, 'aged_debtors', 'TREE.AGED_DEBTORS'),
-  (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
-  (7, 'cashflowByService', 'TREE.CASHFLOW_BY_SERVICE'),
-  (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (10, 'aged_creditors','TREE.AGED_CREDITORS'),
-  (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
-  (12, 'cash_report', 'REPORT.CASH_REPORT.TITLE'),
-  (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
-  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
-  (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
-  (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
-  (17, 'annual-clients-report', 'REPORT.CLIENTS.TITLE'),
-  (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
-  (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
-  (20, 'ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
-  (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE'),
-  (22, 'account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE'),
-  (23, 'unpaid-invoice-payments', 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE'),
-  (24, 'income_expense_by_month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH'),
-  (25, 'stock_value', 'TREE.STOCK_VALUE'),
-  (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
-  (27, 'income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
-  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE'),
-  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
-  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
-  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cashflow', 'TREE.CASHFLOW'),
+  ('accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
+  ('income_expense', 'REPORT.PROFIT_AND_LOSS'),
+  ('balance_report', 'REPORT.BALANCE'),
+  ('aged_debtors', 'TREE.AGED_DEBTORS'),
+  ('account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
+  ('cashflowByService', 'TREE.CASHFLOW_BY_SERVICE'),
+  ('open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
+  ('aged_creditors','TREE.AGED_CREDITORS'),
+  ('balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
+  ('cash_report', 'REPORT.CASH_REPORT.TITLE'),
+  ('inventory_report', 'REPORT.STOCK.TITLE'),
+  ('inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
+  ('operating', 'TREE.OPERATING_ACCOUNT'),
+  ('stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
+  ('annual-clients-report', 'REPORT.CLIENTS.TITLE'),
+  ('employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
+  ('patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
+  ('ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
+  ('account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE'),
+  ('account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE'),
+  ('unpaid-invoice-payments', 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE'),
+  ('income_expense_by_month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH'),
+  ('stock_value', 'TREE.STOCK_VALUE'),
+  ('ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
+  ('income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
+  ('feeCenter', 'REPORT.FEE_CENTER.TITLE'),
+  ('breakEven', 'TREE.BREAK_EVEN_REPORT'),
+  ('breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
+  ('indicatorsReport', 'TREE.INDICATORS_REPORT'),
+  ('visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
+  ('stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
+  ('monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE'),
+  ('debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE'),
+  ('clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
+  ('clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
+  ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
+  ('realizedProfit', 'REPORT.REALIZED.TITLE'),
+  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
+  ('dataKit', 'TREE.DATA_KIT_REPORT'),
+  ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),
+  ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -191,6 +229,10 @@ INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pil
 INSERT INTO `fonction` VALUES
   (1,'Infirmier'),
   (2,'Medecin Directeur');
+
+INSERT INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
+(HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
+(HUID(uuid()), 125.0000, 2);
 
 -- transaction type
 INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
@@ -304,7 +346,8 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1),
-(4, 'FORM.LABELS.BREAK_EVEN', 1);
+(4, 'FORM.LABELS.BREAK_EVEN', 1),
+(5, 'FORM.LABELS.ANALYSIS_TOOLS.TITLE', 1);
 
 -- Default Discharge types
 INSERT INTO `discharge_type` (`id`, `label`) VALUES
@@ -329,3 +372,44 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
   (3, 'fianance', 'DASHBOARD.FINANCE');
+
+-- cron
+INSERT INTO `cron` (`label`, `value`) VALUES
+  ('CRON.DAILY', '0 1 * * *'),
+  ('CRON.WEEKLY', '0 1 * * 0'),
+  ('CRON.MONTHLY', '0 1 30 * *'),
+  ('CRON.YEARLY', '0 1 31 12 *');
+
+-- Survey Form Type
+INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
+  (1, 'FORM.LABELS.NUMBER', 'number', 0),
+  (2, 'FORM.LABELS.TEXT', 'text', 0),
+  (3, 'FORM.LABELS.SELECT_ONE', 'select_one', 1),
+  (4, 'FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
+  (5, 'FORM.LABELS.NOTE', 'note', 0),
+  (6, 'FORM.LABELS.DATE', 'date', 0),
+  (7, 'FORM.LABELS.TIME', 'time', 0),
+  (8, 'FORM.LABELS.IMAGE', 'image', 0),
+  (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
+  (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
+
+-- application process status
+INSERT INTO `status` VALUES 
+  (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS'),
+  (2, 'done', 'FORM.LABELS.STATUS_TYPE.DONE'),
+  (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY'),
+  (4, 'draft', 'FORM.LABELS.STATUS_TYPE.DRAFT'),
+  (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED'),
+  (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED');
+
+-- type of requestors
+INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
+  ('service', 'FORM.LABELS.SERVICE'),
+  ('depot', 'FORM.LABELS.DEPOT');
+
+-- analysis_tool_type
+INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES 
+  ('FORM.LABELS.ANALYSIS_TOOLS.COSTS', 0, 1),
+  ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
+  ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
+  ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);

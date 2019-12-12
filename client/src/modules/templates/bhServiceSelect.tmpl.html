@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : ServiceForm.$submitted && ServiceForm.service_id.$invalid }">
 
     <label class="control-label" translate>
-      FORM.LABELS.SERVICE
+      {{ $ctrl.label }}
     </label>
     
     <ng-transclude></ng-transclude>
@@ -13,7 +13,7 @@
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="service.id as service in $ctrl.services | filter: { 'name': $select.search }">
+      <ui-select-choices ui-select-focus-patch repeat="service.id as service in $ctrl.services | filter: { hidden: '0', 'name': $select.search }">
         <span ng-bind-html="service.name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>

@@ -1,0 +1,33 @@
+<div ng-form="RubricSelectForm" bh-rubric-config-select ng-model-options="{ updateOn: 'default' }">
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : RubricSelectForm.$submitted && rubricForm.config_id.$invalid }">
+  
+      <label class="control-label text-capitalize" translate>
+        {{ ::$ctrl.label }}
+      </label>
+  
+      <ng-transclude></ng-transclude>  
+      <ui-select
+        name="config_id"
+        ng-model="$ctrl.rubrics"
+        on-select="$ctrl.onSelect($item, $model)"
+        on-remove = "$ctrl.handleChange($model)"
+        multiple
+        ng-required="$ctrl.required">
+        <ui-select-match placeholder="{{ ::'FORM.LABELS.RUBRICS' | translate }}">
+          <span>{{$item.label}}</span>
+        </ui-select-match>
+        <ui-select-choices
+          ui-select-focus-patch
+          repeat="rubric.id as rubric in $ctrl.allRubrics | filter: { 'label': $select.search }">
+          <span ng-bind-html="rubric.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+  
+      <div class="help-block" ng-messages="rubricForm.config_id.$error" ng-show="RubricSelectForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+  

@@ -5,7 +5,6 @@ const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 const SharedStockPage = require('./stock.shared.page');
 
-
 function StockAdjustmentPage() {
   const page = this;
 
@@ -20,7 +19,7 @@ function StockAdjustmentPage() {
    * @param {number} radionIndex
    */
   page.setAdjustment = function setAdjustment(value) {
-    element(by.id(`btn-${value}`)).click();
+    return element(by.id(`btn-${value}`)).click();
   };
 
   /**
@@ -28,7 +27,7 @@ function StockAdjustmentPage() {
    * @param {string} descrition - the exit description
    */
   page.setDescription = function setDescription(description) {
-    FU.input('StockCtrl.movement.description', description);
+    return FU.input('StockCtrl.movement.description', description);
   };
 
   /**
@@ -36,54 +35,54 @@ function StockAdjustmentPage() {
    * @param {string} date - the exit date
    */
   page.setDate = function setDate(date) {
-    components.dateEditor.set(date);
+    return components.dateEditor.set(date);
   };
 
   /**
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    components.addItem.set(n);
+    return components.addItem.set(n);
   };
 
   /**
    * @method setItem
    */
-  page.setItem = function setInventory(rowNumber, code, lot, quantity) {
+  page.setItem = async function setInventory(rowNumber, code, lot, quantity) {
     // inventory code column
-    const itemCell = GU.getCell(gridId, rowNumber, 1);
+    const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
     // inventory lot column
-    const lotCell = GU.getCell(gridId, rowNumber, 3);
+    const lotCell = await GU.getCell(gridId, rowNumber, 3);
 
     // inventory quantity column
-    const quantityCell = GU.getCell(gridId, rowNumber, 4);
+    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
 
     // enter data into the typeahead input.
-    FU.input('row.entity.inventory', code, itemCell);
+    await FU.input('row.entity.inventory', code, itemCell);
 
     const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
     const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
-    option.click();
+    await option.click();
 
     // select the inventory lot
-    FU.uiSelectAppended('row.entity.lot', lot, lotCell);
+    await FU.uiSelectAppended('row.entity.lot', lot, lotCell);
 
     // set the quantity
-    FU.input('row.entity.quantity', quantity, quantityCell);
+    await FU.input('row.entity.quantity', quantity, quantityCell);
   };
 
   /**
    * @method submit
    */
-  page.submit = function submit() {
-    FU.buttons.submit();
+  page.submit = async function submit() {
+    await FU.buttons.submit();
 
     // the receipt modal is displayed
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    element(by.css('[data-action="close"]')).click();
+    await element(by.css('[data-action="close"]')).click();
   };
 }
 

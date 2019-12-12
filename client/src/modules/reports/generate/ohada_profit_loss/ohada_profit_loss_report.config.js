@@ -18,6 +18,10 @@ function OhadaProfitLossReportConfigController($sce, Notify, SavedReports, AppCa
     vm.reportDetails.fiscal_id = fiscalYear.id;
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;

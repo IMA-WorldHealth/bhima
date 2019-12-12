@@ -1,7 +1,7 @@
 <div ng-form="CashboxForm" bh-multiple-cashbox-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && CashboxForm.cashbox.$invalid }">
+    ng-class="{ 'has-error' : CashboxForm.$submitted && CashboxForm.cashbox.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>

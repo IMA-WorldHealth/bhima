@@ -127,7 +127,7 @@ function buildTransactionQuery(options, posted) {
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      p.comment, p.transaction_type_id, p.user_id, pro.abbr,
       pro.name AS project_name, tp.text AS transaction_type_text,
       a.number AS account_number, a.label AS account_label, p.trans_id_reference_number,
       u.display_name ${includeExchangeRate}
@@ -635,7 +635,7 @@ async function reverseTransaction(recordUuid, userId, reverseDescription) {
   // wrap call in transaction to reverse anything that needs to be reversed if
   // an error happens
   await db.transaction()
-    .addQuery('CALL ReverseTransaction(?, ?, ?, ?);', params)
+    .addQuery('CALL ReverseTransaction(?, ?, ?, ?, TRUE);', params)
     .execute();
 
   return { uuid : voucherUuid };

@@ -38,8 +38,8 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
   const configRubric = { configuration : [5, 2, 3, 1, 4] };
   const configRubricEmpty = { configuration : [] };
 
-  const NUM_RUBRICS = 12;
-  const NUM_CONFIG_RUBRICS = 1;
+  const NUM_RUBRICS = 24;
+  const NUM_CONFIG_RUBRICS = 2;
 
   it('GET /RUBRICS returns a list of Rubrics ', () => {
     return agent.get('/rubrics')
@@ -54,7 +54,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
       .send(rubric)
       .then((res) => {
         rubric.id = res.body.id;
-        helpers.api.created(res);
+        expect(res).to.have.status(201);
       })
       .catch(helpers.handler);
   });

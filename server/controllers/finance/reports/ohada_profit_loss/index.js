@@ -17,6 +17,11 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const AccountReference = require('../../accounts/references');
 const ReportManager = require('../../../../lib/ReportManager');
+
+// expose to the API
+exports.document = document;
+exports.reporting = reporting;
+
 // report template
 const TEMPLATE = './server/controllers/finance/reports/ohada_profit_loss/report.handlebars';
 
@@ -163,28 +168,27 @@ const mapTable = {};
 profitLossTable.forEach(item => {
   mapTable[item.ref] = item.sign;
 });
-// expose to the API
-exports.document = document;
 
 /**
- * @function document
- * @description process and render the balance report document
+ * @description this function helps to get html document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {*} options the report options
+ * @param {*} session the session
  */
-function document(req, res, next) {
-  const params = req.query;
+function reporting(options, session) {
+  const params = options;
   const context = {};
   let report;
 
   _.defaults(params, DEFAULT_PARAMS);
 
   try {
-    report = new ReportManager(TEMPLATE, req.session, params);
+    report = new ReportManager(TEMPLATE, session, params);
   } catch (e) {
-    next(e);
-    return;
+    throw e;
   }
 
-  getFiscalYearDetails(params.fiscal_id)
+  return getFiscalYearDetails(params.fiscal_id)
     .then(fiscalYear => {
       _.merge(context, { fiscalYear });
 
@@ -297,7 +301,15 @@ function document(req, res, next) {
       _.merge(context, { assetTable }, { totals });
 
       return report.render(context);
-    })
+    });
+}
+
+/**
+ * @function document
+ * @description process and render the balance report document
+ */
+function document(req, res, next) {
+  reporting(req.query, req.session)
     .then(result => {
       res.set(result.header).send(result.report);
     })

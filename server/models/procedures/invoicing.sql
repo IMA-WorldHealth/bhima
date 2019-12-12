@@ -800,7 +800,7 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
   -- this holds all the invoices that were made during the period
   -- two copies are needed for the UNION ALL query.
   DROP TABLE IF EXISTS tmp_invoices_1;
-  CREATE TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
+  CREATE TEMPORARY TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
     SELECT invoice.uuid, invoice.debtor_uuid, invoice.date
     FROM invoice
     WHERE
@@ -809,10 +809,10 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
     ORDER BY invoice.date;
 
   DROP TABLE IF EXISTS tmp_invoices_2;
-  CREATE TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
+  CREATE TEMPORARY TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
 
   -- This holds the invoices from the PJ/GL
-  DROP TABLE IF EXISTS tmp_records;
+  DROP TEMPORARY TABLE IF EXISTS tmp_records;
   CREATE TABLE tmp_records AS
     SELECT ledger.record_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
     FROM (
@@ -831,7 +831,7 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
 
   -- this holds the references/payments against the invoices
   DROP TABLE IF EXISTS tmp_references;
-  CREATE TABLE tmp_references AS
+  CREATE TEMPORARY TABLE tmp_references AS
     SELECT ledger.reference_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
     FROM (
       SELECT pj.reference_uuid, pj.debit_equiv, pj.credit_equiv
@@ -850,7 +850,7 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
   -- combine invoices and references to get the balance of each invoice.
   -- note that we filter out balanced invoices
   DROP TABLE IF EXISTS tmp_invoice_balances;
-  CREATE TABLE tmp_invoice_balances AS
+  CREATE TEMPORARY TABLE tmp_invoice_balances AS
     SELECT z.uuid, SUM(z.debit_equiv) AS debit_equiv,
       SUM(z.credit_equiv) AS credit_equiv,
       SUM(z.debit_equiv) - SUM(z.credit_equiv) AS balance
@@ -887,6 +887,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   -- this holds all the invoices that were made during the period
   -- two copies are needed for the UNION ALL query.
+  DROP TEMPORARY TABLE IF EXISTS tmp_invoices_1;
   CREATE TEMPORARY TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
     SELECT invoice.uuid, invoice.debtor_uuid, invoice.date
     FROM invoice
@@ -895,8 +896,10 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
       AND reversed = 0
     ORDER BY invoice.date;
 
+  DROP TEMPORARY TABLE IF EXISTS tmp_invoices_2;
   CREATE TEMPORARY TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
 
+  DROP TEMPORARY TABLE IF EXISTS tmp_records;
   -- This holds the invoices from the PJ/GL
   CREATE TEMPORARY TABLE tmp_records AS
     SELECT ledger.record_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
@@ -915,6 +918,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   ) AS ledger;
 
   -- this holds the references/payments against the invoices
+  DROP TEMPORARY TABLE IF EXISTS tmp_references;
   CREATE TEMPORARY TABLE tmp_references AS
     SELECT ledger.reference_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
     FROM (
@@ -933,6 +937,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   -- combine invoices and references to get the balance of each invoice.
   -- note that we filter out balanced invoices
+  DROP TEMPORARY TABLE IF EXISTS tmp_invoice_balances;
   CREATE TEMPORARY TABLE tmp_invoice_balances AS
     SELECT z.uuid, SUM(z.debit_equiv) AS debit_equiv,
       SUM(z.credit_equiv) AS credit_equiv,
@@ -948,13 +953,14 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   -- even though this column is called "balance", it is actually the amount remaining
   -- on the invoice.
 
+  DROP TEMPORARY TABLE IF EXISTS unbalanced_invoices;
   CREATE TEMPORARY TABLE `unbalanced_invoices` AS (
     SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName,
       BUID(debtor.uuid) as debtorUuid,
       balances.debit_equiv AS debit,
       balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
       dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
-      s.name as 'serviceName',
+      s.name as 'serviceName', s.id as 'serviceId',
       ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage
     FROM tmp_invoices_1 AS iv
         JOIN invoice ivc ON ivc.uuid = iv.uuid

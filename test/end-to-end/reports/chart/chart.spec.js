@@ -1,38 +1,30 @@
-/* global browser, element, by */
-
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const components = require('../../shared/components');
 const ReportPage = require('../page.js');
 
 describe.skip('Chart of Accounts Report Generation', () => {
-  let Page;
+  let page;
   const key = 'accounts_chart';
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
-    Page = new ReportPage(key);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
+    page = new ReportPage(key);
   });
 
-  it('should be empty on start ', () => {
-    Page.expectPageToBeEmpty();
+  it('should be empty on start ', async () => {
+    await page.expectPageToBeEmpty();
   });
 
-  it('generates a new Chart of Accounts PDF report', () => {
-    Page.create({
+  it('generates a new Chart of Accounts PDF report', async () => {
+    await page.create({
       'ReportConfigCtrl.label' : 'Generated Chart of Accounts',
     });
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('deletes the old Chart of Accounts PDF report', () => {
-    Page.delete(0);
-
-    components.notification.hasSuccess();
+  it('deletes the old Chart of Accounts PDF report', async () => {
+    await page.delete(0);
+    await components.notification.hasSuccess();
   });
-
 });

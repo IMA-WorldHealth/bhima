@@ -29,14 +29,14 @@
           <tbody>
             {{#each matrix as | row |}}
               <tr>
-                {{#each row as |value |}}
+                {{#each row as |value|}}
                   {{! this is the balance calculation }}
                   {{#if @last}}
-                    <th class="text-right">{{currency value ../../currencyId}}</th>
+                    <th class="text-right">{{currency value ../../cashbox.currency_id}}</th>
 
                   {{! this is the rest of the matrix }}
                   {{else}}
-                    <td {{#unless @first}}class="text-right"{{/unless}}>
+                    <td {{#gt @index 2}}class="text-right"{{/gt}}>
                       {{#if @first}}
                         {{value}}
                       {{else}}
@@ -45,7 +45,7 @@
                         {{/equal}}
                         {{#gt @index 2}}
                           {{#if value}}
-                            {{currency value ../../currencyId}}
+                            {{currency value ../../cashbox.currency_id}}
                           {{/if}}
                         {{/gt}}
                       {{/if}}
@@ -56,13 +56,21 @@
             {{else}}
               {{> emptyTable columns=3}}
             {{/each}}
+
+            {{! adds in a single line for gain/loss on exchange during the period if it exists }}
+            {{#if gainOrLossOnExchange}}
+              <tr class="text-capitalize text-center">
+                <th colspan="3">{{translate "REPORT.CASHFLOW_BY_SERVICE.GAIN_OR_LOSS_ON_EXCHANGE"}}</th>
+                <th class="text-right" colspan={{services.length}}>{{currency gainOrLossOnExchange cashbox.currency_id}}</th>
+              </tr>
+            {{/if}}
           </tbody>
 
           <tfoot>
             <tr class="text-capitalize text-center" style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
-              {{#each aggregates as | aggregate |}}
-                <th class="text-right">{{currency aggregate.totalCashIncome ../currencyId}}</th>
+              {{#each totals as |value| }}
+                <th class="text-right">{{currency value ../cashbox.currency_id}}</th>
               {{/each}}
             </tr>
           </tfoot>

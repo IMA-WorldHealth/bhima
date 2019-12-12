@@ -1,0 +1,102 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.MONTHLY_BALANCE.TITLE</h3>
+      <p class="text-info" translate>REPORT.MONTHLY_BALANCE.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
+
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-period-selection>            
+
+            <div class="form-group" ng-class="{'has-error' : ConfigForm.$submitted && ConfigForm.allAccount.$invalid }">
+              <div class="radio">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="allAccount"
+                    ng-value="1"
+                    ng-model="ReportConfigCtrl.reportDetails.allAccount"
+                    id="use_patient_visit"
+                    required>
+                  <strong translate>
+                    ACCOUNT.ALL_ACCOUNT
+                  </strong>
+                </label>
+              </div>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="allAccount"
+                    ng-value="0"
+                    ng-model="ReportConfigCtrl.reportDetails.allAccount"
+                    id="use_dashboard"
+                    required>
+                  <strong translate>
+                    FORM.SELECT.ACCOUNT
+                  </strong>
+                </label>
+                <div class="help-block" ng-messages="ConfigForm.allAccount.$error" ng-show="ConfigForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+            </div>
+
+            <div ng-if="ReportConfigCtrl.reportDetails.allAccount === 0">
+              <div class="form-group"
+                   ng-class="{'has-error' : ConfigForm.account_id.$invalid && ConfigForm.$submitted}">
+                <label class="control-label" translate>FORM.LABELS.ACCOUNT</label>
+
+                <ui-select
+                  name="account_id"
+                  ng-model="ReportConfigCtrl.account"
+                  required>
+                  <ui-select-match placeholder="{{ 'FORM.LABELS.ACCOUNT' | translate }}">
+                    <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
+                  </ui-select-match>
+                  <ui-select-choices ui-select-focus-patch repeat="account in ReportConfigCtrl.accounts | filter:{ 'hrlabel' : $select.search}">
+                    <span ng-bind-html="account.number | highlight:$select.search"></span>
+                    <small ng-bind-html="account.label | highlight:$select.search"></small>
+                  </ui-select-choices>
+                </ui-select>
+
+                <div class="help-block" ng-messages="ConfigForm.account_id.$error" ng-show="ConfigForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+            </div>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

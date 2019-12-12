@@ -25,15 +25,6 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', configurationWeekendModal],
         onExit : ['$uibModalStack', closeModal],
-      })
-
-      .state('configurationWeekend.config', {
-        url : '/:id/config',
-        params : {
-          weekEnd : { value : null },
-        },
-        onEnter : ['$uibModal', configurationWeekend],
-        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -41,13 +32,6 @@ function configurationWeekendModal($modal) {
   $modal.open({
     templateUrl : 'modules/payroll/weekend_configuration/modals/weekEnd.modal.html',
     controller : 'WeekendModalController as WeekendModalCtrl',
-  });
-}
-
-function configurationWeekend($modal) {
-  $modal.open({
-    templateUrl : 'modules/payroll/weekend_configuration/modals/config.modal.html',
-    controller : 'WeekendConfigModalController as WeekendConfigModalCtrl',
   });
 }
 

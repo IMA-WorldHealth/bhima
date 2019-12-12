@@ -1,0 +1,45 @@
+{{> head title="TREE.STAFFING_INDICES_MANAGEMENT"}}
+
+<div class="container">
+  {{> header }}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        {{translate 'TREE.STAFFING_INDICES_MANAGEMENT'}}
+      </h3>
+
+      <!-- filters  -->
+      {{> filterbar filters=filters }}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th>{{translate 'FORM.LABELS.EMPLOYEE_NAME'}}</th>
+            <th>{{translate 'FORM.LABELS.LEVEL_OF_STUDY'}}</th>
+            <th>{{translate 'FORM.LABELS.RESPONSABILITY'}}</th>
+            <th>{{translate 'FORM.LABELS.ENROLLMENT_BONUS'}}</th>
+            <th>{{translate 'FORM.LABELS.FUNCTION_BONUS'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each indices as |indice|}}
+            <tr>
+              <td>{{date indice.created_at}}</td>
+              <td>{{indice.display_name}}</td>
+              <td>{{indice.text}}</td>
+              <td>{{indice.fonction_txt}}</td>
+              <td>{{indice.function_indice}}</td>
+              <td>{{indice.grade_indice}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

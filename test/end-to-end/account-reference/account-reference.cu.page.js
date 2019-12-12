@@ -1,13 +1,17 @@
 /* global element, by */
 
 /**
- * This class is represents a accountReference creation page in terms of structure and
- * behaviour so it is a accountReference creation page object
+ * This class is represents an accountReference creation page in terms of structure and
+ * behaviour so it is an accountReference creation page object
  */
 const FU = require('../shared/FormUtils');
+const Filters = require('../shared/components/bhFilters');
+const components = require('../shared/components');
 
 class CreateUpdateAccountReferencePage {
   constructor() {
+    this.filters = new Filters();
+
     this.abbr = element(by.model('AccountReferenceModalCtrl.accountReference.abbr'));
     this.description = element(by.model('AccountReferenceModalCtrl.accountReference.description'));
     this.isAmoDep = element(by.model('AccountReferenceModalCtrl.accountReference.is_amo_dep'));
@@ -47,28 +51,56 @@ class CreateUpdateAccountReferencePage {
   }
 
   /* set accounts */
-  setAccountValues(values) {
-    this.accounts.click();
-    values.forEach(v => {
-      FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v);
-    });
-    this.modal.click();
+  async setAccountValues(values) {
+    await this.accounts.click();
+
+    await Promise.all(
+      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v))
+    );
+
+    await this.modal.click();
   }
 
   /* set accounts exceptions */
-  setAccountExceptionValues(values) {
-    this.accountsException.click();
-    values.forEach(v => {
-      FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v);
-    });
-    this.modal.click();
+  async setAccountExceptionValues(values) {
+    await this.accountsException.click();
+
+    await Promise.all(
+      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v))
+    );
+
+    await this.modal.click();
   }
 
   /* set the parent of the reference */
-  setParentValue(value) {
-    this.parent.click();
-    FU.uiSelect('AccountReferenceModalCtrl.accountReference.parent', value);
-    this.modal.click();
+  async setParentValue(value) {
+    await this.parent.click();
+    await FU.uiSelect('AccountReferenceModalCtrl.accountReference.parent', value);
+    await this.modal.click();
+  }
+
+  /* search an accountReference abbr value */
+  async searchAbbr(abbrValue) {
+    await FU.input('$ctrl.searchQueries.abbr', abbrValue);
+  }
+
+  /* search an accountReference description value */
+  async searchDescription(descriptionValue) {
+    await FU.input('$ctrl.searchQueries.description', descriptionValue);
+  }
+
+  /* search an accountReference by account number value */
+  async searchAccount(accountValue) {
+    await FU.uiSelect('$ctrl.select.account', accountValue);
+  }
+
+  /* search an accountReference by Reference Type */
+  async searchReferenceType(typeValue) {
+    await components.accountReferenceTypeSelect.set(typeValue, 'reference_type_id');
+  }
+
+  clearFilter() {
+    return this.filters.resetFilters();
   }
 
   /* submit */

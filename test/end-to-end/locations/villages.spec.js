@@ -1,8 +1,8 @@
-/* global by */
-
 const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
+const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 describe('Villages Management', () => {
   const path = '#!/locations/village';
@@ -14,56 +14,89 @@ describe('Villages Management', () => {
     sector : 'Lukunga',
     name : 'New Village',
   };
+  const village2 = village;
+  village2.name = 'test_village';
 
-  it('creates a new village', () => {
-
+  it('creates a new village', async () => {
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
-    FU.select('VillageCtrl.village.country_uuid', village.country);
-    FU.select('VillageCtrl.village.province_uuid', village.province);
-    FU.select('VillageCtrl.village.sector_uuid', village.sector);
-    FU.input('VillageCtrl.village.name', village.name);
+    await FU.select('ModalCtrl.village.country_uuid', village.country);
+    await FU.select('ModalCtrl.village.province_uuid', village.province);
+    await FU.select('ModalCtrl.village.sector_uuid', village.sector);
+    await FU.input('ModalCtrl.village.name', village.name);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    await components.notification.hasSuccess();
   });
 
-  it('edits a village', () => {
-
+  it('edits a village', async () => {
     // click the edit button
-    $(`[data-village-name="${village.name}"]`).click();
+    const menu = await openDropdownMenu(village.name);
+    await menu.edit().click();
 
     // update a country
-    FU.select('VillageCtrl.village.country_uuid', village.country);
-    FU.select('VillageCtrl.village.province_uuid', village.province);
-    FU.select('VillageCtrl.village.sector_uuid', village.sector);
-    FU.input('VillageCtrl.village.name', 'Village Update');
+    await FU.select('ModalCtrl.village.country_uuid', village.country);
+    await FU.select('ModalCtrl.village.province_uuid', village.province);
+    await FU.select('ModalCtrl.village.sector_uuid', village.sector);
+    await FU.input('ModalCtrl.village.name', 'Village Update');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    await components.notification.hasSuccess();
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', () => {
+  it('creates another village', async () => {
 
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
-    // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    await FU.select('ModalCtrl.village.country_uuid', village2.country);
+    await FU.select('ModalCtrl.village.province_uuid', village2.province);
+    await FU.select('ModalCtrl.village.sector_uuid', village2.sector);
+    await FU.input('ModalCtrl.village.name', village2.name);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
+
+    // expect a nice validation message
+    await components.notification.hasSuccess();
+  });
+
+  it('should delete the test village', async () => {
+    // click the edit button
+    const menu = await openDropdownMenu(village2.name);
+    await menu.remove().click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
+
+  it('correctly blocks invalid form submission with relevant error classes', async () => {
+
+    // switch to the create form
+    await FU.buttons.create();
+
+    // verify form has not been submitted
+    expect(await helpers.getCurrentPath()).to.equal(path);
+
+    // submit the page to the server
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('VillageCtrl.village.country_uuid');
-    FU.validation.error('VillageCtrl.village.province_uuid');
-    FU.validation.error('VillageCtrl.village.sector_uuid');
-    FU.validation.error('VillageCtrl.village.name');
+    await FU.validation.error('ModalCtrl.village.country_uuid');
+    await FU.validation.error('ModalCtrl.village.province_uuid');
+    await FU.validation.error('ModalCtrl.village.sector_uuid');
+    await FU.validation.error('ModalCtrl.village.name');
+    await FU.buttons.cancel();
   });
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
 });

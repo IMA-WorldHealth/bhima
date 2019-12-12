@@ -4,71 +4,55 @@
       <li class="static" translate>TREE.ADMIN</li>
       <li class="title" translate>TREE.LOCATION</li>
     </ol>
-  </div>
-</div>
+
+
 
 <!-- Menu to manage the various locations -->
-<div class="flex-util">
+<div class="toolbar">
+  <div class="toolbar-item">
   <button ui-sref="locationsVillage" id="village" class="btn btn-default btn-sm" style="margin: 0 2px;" href>
     <span class="glyphicon glyphicon-home"></span> <span translate>LOCATION.MANAGE_VILLAGE</span>
   </button>
-
+</div>
+<div class="toolbar-item">
   <button ui-sref="locationsSector" id="sector" class="btn btn-default btn-sm" style="margin: 0 2px;">
     <span class="glyphicon glyphicon-th"></span> <span translate>LOCATION.MANAGE_SECTOR</span>
   </button>
-
+</div>
+<div class="toolbar-item">
   <button ui-sref="locationsProvince" id="province"  class="btn btn-default btn-sm" style="margin: 0 2px;">
     <span class="glyphicon glyphicon-map-marker"></span> <span translate>LOCATION.MANAGE_PROVINCE</span>
   </button>
-
+</div>
+<div class="toolbar-item">
   <button ui-sref="locationsCountry" id="country" class="btn btn-default btn-sm" style="margin: 0 2px;">
     <span class="glyphicon glyphicon-globe"></span> <span translate>LOCATION.MANAGE_COUNTRY</span>
   </button>
+</div>
+  </div>
+  </div>
+</div>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-xs-6">
-        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading" translate>
-            LOCATION.REGISTERED
+      <div class="col-xs-12">
+       
+          <div
+            id="location-grid"
+            class="grid-full-height"
+            ui-grid="LocationCtrl.gridOptions"
+            ui-grid-auto-resize
+            ui-grid-resize-columns
+            ui-grid-move-columns>
+
+            <bh-grid-loading-indicator
+              loading-state="LocationCtrl.loading"
+              empty-state="LocationCtrl.gridOptions.data.length === 0">
+            </bh-grid-loading-indicator>
           </div>
-          <table class="table table-condensed">
-            <thead>
-              <tr>
-                <th translate>TABLE.COLUMNS.VILLAGE</th>
-                <th translate>TABLE.COLUMNS.SECTOR</th>
-                <th translate>TABLE.COLUMNS.PROVINCE</th>
-                <th translate>TABLE.COLUMNS.COUNTRY</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-if="LocationCtrl.session.loading" class="text-center">
-                <td colspan="4"><loading-indicator></loading-indicator></td>
-              </tr>
-
-              <tr ng-repeat="location in LocationCtrl.locations | orderBy:'village' | orderBy:'sector' | orderBy:'province'">
-                <td>{{ location.village }}</td>
-                <td>{{ location.sector }}</td>
-                <td>{{ location.province }}</td>
-                <td>{{ location.country }}</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
-
-      <div class="col-xs-6">
-        <div class="alert alert-info" id="default">
-          <h4 translate>LOCATION.MANAGER_CONFIGURATION</h4>
-          <p>
-            <span translate>LOCATION.DESCRIPTION</span>
-            <b translate>LOCATION.DESCRIPTION_2</b>,
-            <span translate>LOCATION.LOCATION</span>.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 </div>

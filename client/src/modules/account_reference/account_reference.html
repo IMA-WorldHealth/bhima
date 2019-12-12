@@ -16,6 +16,8 @@
         </button>
       </div>
 
+      <bh-search-button on-click="AccountReferenceCtrl.search()"></bh-search-button>
+
       <div class="toolbar-item">
         <button
           type="button"
@@ -26,9 +28,15 @@
           <i class="fa fa-filter"></i>
         </button>
       </div>
-
     </div>
   </div>
+</div>
+
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
+    filters="AccountReferenceCtrl.latestViewFilters"
+    on-remove-filter="AccountReferenceCtrl.onRemoveFilter(filter)">
+  </bh-filters>
 </div>
 
 <div class="flex-content">

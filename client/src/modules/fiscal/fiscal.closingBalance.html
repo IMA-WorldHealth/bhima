@@ -1,7 +1,15 @@
 <div class="row">
-  <div class="col-md-12 text-right" style="margin-bottom: 0.5em;">
-    <bh-filter-toggle on-toggle="FiscalCBCtrl.toggleAccountFilter()">
-    </bh-filter-toggle>
+  <div class="col-md-12 clearfix" style="margin-bottom: 0.5em;">
+    <div class="pull-left">
+      <a href id="export" class="btn btn-default" ng-click="FiscalCBCtrl.export()">
+        <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT_AS_EXCEL</span>
+      </a>
+    </div>
+
+    <div class="pull-right">
+      <bh-filter-toggle on-toggle="FiscalCBCtrl.toggleAccountFilter()">
+      </bh-filter-toggle>
+    </div>
   </div>
 </div>
 
@@ -17,20 +25,18 @@
           </span>
         </div>
 
-        <!-- body  -->
         <section>
           <div
             id="account-balance-grid"
-            style="height : 800px;"
-            ui-grid="FiscalCBCtrl.gridOptions">
+            style="height : 650px;"
+            ui-grid="FiscalCBCtrl.gridOptions"
+            ui-grid-exporter>
 
-            
             <bh-grid-loading-indicator
               loading-state="FiscalCBCtrl.loading"
               empty-state="FiscalCBCtrl.gridOptions.data.length === 0"
               error-state="FiscalCBCtrl.hasError">
             </bh-grid-loading-indicator>
-
           </div>
         </section>
       </div>

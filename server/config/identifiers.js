@@ -41,6 +41,10 @@ module.exports = {
   DOCUMENT : {
     key : 'DO',
   },
+  STOCK_ASSIGN : {
+    key : 'SA',
+    table : 'stock_assign',
+  },
   STOCK_ENTRY : {
     key : 'SN',
   },
@@ -70,5 +74,9 @@ module.exports = {
   INTEGRATION : {
     key   : 'INT',
     table : 'integration',
+  },
+  REQUISITION : {
+    key   : 'SREQ',
+    table : 'stock_requisition',
   },
 };

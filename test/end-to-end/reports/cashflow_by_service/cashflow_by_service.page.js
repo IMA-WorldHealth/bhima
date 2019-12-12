@@ -8,48 +8,48 @@ class CashflowByServiceReportPage {
   }
 
   // preview a CashflowByService report
-  showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox) {
+  async showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox) {
     if (dateRange) {
-      $(`[data-date-range="${dateRange}"]`).click();
+      await $(`[data-date-range="${dateRange}"]`).click();
     } else {
-      components.dateInterval.range(dateFrom, dateTo);
+      await components.dateInterval.range(dateFrom, dateTo);
     }
 
-    components.cashboxSelect.set(cashbox);
+    await components.cashboxSelect.set(cashbox);
 
-    this.page.preview();
+    await this.page.preview();
   }
 
   // save a CashflowByService report
-  saveCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox, reportName, reportFormat) {
-    this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
+  async saveCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox, reportName, reportFormat) {
+    await this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
-  printCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox) {
-    this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
-    this.page.printPreview();
+  async printCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox) {
+    await this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedCashflowByServiceReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedCashflowByServiceReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeCashflowByServiceReportPreview() {
-    this.page.closePreview();
+  async closeCashflowByServiceReportPreview() {
+    await this.page.closePreview();
   }
 }
 

@@ -1,0 +1,131 @@
+{{> head title="REPORT.REALIZED_PROFIT.TITLE"}}
+
+<body>
+
+<div class="container-fluid">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'REPORT.REALIZED_PROFIT.TITLE'}}</strong> <br>
+        <small>{{date dateFrom}} - {{date dateTo}}</small>
+      </h3>
+
+      <table class="table table-striped table-condensed table-report table-bordered">
+        <tr>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.INVOICED'}}</th>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.PAID'}}</th>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.REMAINING'}}</th>
+        </tr>
+        <tr>
+          <td>{{debcred totals.invoiced metadata.enterprise.currency_id}}</td>
+          <td>{{debcred totals.paid metadata.enterprise.currency_id}} ({{percentage totals.paidRatio}})</td>
+          <td>{{debcred totals.remaining metadata.enterprise.currency_id}} ({{percentage totals.remainingRatio}})</td>
+        </tr>
+      </table>
+
+      <br>
+
+      {{!-- invoiced cash --}}
+      {{#if showInvoicedDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.INVOICED'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              {{#each invoicedMatrix.headers as | service |}}
+                <th>{{ service }}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each invoicedMatrix.data as | row |}}
+              <tr>
+                {{#each row as | value |}}
+                  <td>
+                    {{#if @first}}
+                      {{value}}
+                    {{else}}
+                      {{debcred value ../../metadata.enterprise.currency_id}}
+                    {{/if}}
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{/if}}
+
+      <br>
+
+      {{!-- paid cash --}}
+      {{#if showPaidDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.PAID'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              {{#each paidMatrix.headers as | service |}}
+                <th>{{ service }}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each paidMatrix.data as | row |}}
+              <tr>
+                {{#each row as | value |}}
+                  <td>
+                    {{#if @first}}
+                      {{value}}
+                    {{else}}
+                      {{debcred value ../../metadata.enterprise.currency_id}}
+                    {{/if}}
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{/if}}
+
+      <br>
+
+      {{!-- remaing cash --}}
+      {{#if showRemainDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.REMAINING'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              {{#each remainingMatrix.headers as | service |}}
+                <th>{{ service }}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each remainingMatrix.data as | row |}}
+              <tr>
+                {{#each row as | value |}}
+                  <td>
+                    {{#if @first}}
+                      {{value}}
+                    {{else}}
+                      {{debcred value ../../metadata.enterprise.currency_id}}
+                    {{/if}}
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{/if}}
+      
+    </div>
+  </div>
+
+</div>
+</body>

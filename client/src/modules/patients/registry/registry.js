@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
-  'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
-  'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
+  '$state', 'PatientService', 'NotifyService', 'util',
+  'ReceiptModal', 'uiGridConstants', 'GridColumnService',
+  'GridSortingService', 'GridStateService', '$httpParamSerializer', 'LanguageService',
   'BarcodeService',
 ];
 
@@ -15,8 +15,8 @@ PatientRegistryController.$inject = [
  * This module is responsible for the management of Patient Registry.
  */
 function PatientRegistryController(
-  $state, Patients, Notify, AppCache, util, Receipts, uiGridConstants,
-  $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages,
+  $state, Patients, Notify, util, Receipts, uiGridConstants,
+  Columns, Sorting, GridState, $httpParamSerializer, Languages,
   Barcode
 ) {
   const vm = this;
@@ -31,6 +31,7 @@ function PatientRegistryController(
   vm.languageKey = Languages.key;
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.openBarcodeScanner = openBarcodeScanner;
+  vm.mergePatients = mergePatients;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -266,6 +267,29 @@ function PatientRegistryController(
         load(Patients.filters.formatHTTP(true));
         vm.latestViewFilters = Patients.filters.formatView();
       });
+  }
+
+  /**
+   * @function mergePatients
+   *
+   * @description
+   * launch the merge patients modal tool
+   */
+  function mergePatients() {
+    const selectedRows = vm.gridApi.selection.getSelectedRows();
+    if (selectedRows.length === 0) {
+      Notify.warn('FORM.WARNINGS.EMPTY_SELECTION');
+      return;
+    }
+
+    if (selectedRows.length !== 2) {
+      Notify.warn('FORM.WARNINGS.ONLY_TWO_PATIENTS');
+      return;
+    }
+
+    // todo send uuid
+    const patients = selectedRows.map(p => p);
+    $state.go('patientRegistry.merge', { patients });
   }
 
   // fire up the module

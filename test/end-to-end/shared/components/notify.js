@@ -1,51 +1,51 @@
 /* global element, by */
-'use strict';
-var chai    = require('chai');
-var expect  = chai.expect;
+
+
+const { expect } = require('chai');
 
 module.exports = {
 
-  hasSuccess : function hasSuccess() {
+  hasSuccess : async function hasSuccess() {
     expect(
-      element(by.css('[data-notification-type="notification-success"]')).isPresent(),
+      await element(by.css('[data-notification-type="notification-success"]')).isPresent(),
       'Expected a success notification, but could not find one.'
-    ).to.eventually.equal(true);
-    dismiss();
+    ).to.equal(true);
+    await dismiss();
   },
 
-  hasWarn : function hasWarn() {
+  hasWarn : async function hasWarn() {
     expect(
-      element(by.css('[data-notification-type="notification-warn"]')).isPresent(),
+      await element(by.css('[data-notification-type="notification-warn"]')).isPresent(),
       'Expected a warning notification, but could not find one.'
-    ).to.eventually.equal(true);
-    dismiss();
+    ).to.equal(true);
+    await dismiss();
   },
 
-  hasInfo : function hasInfo() {
+  hasInfo : async function hasInfo() {
     expect(
-      element(by.css('[data-notification-type="notification-info"]')).isPresent(),
+      await element(by.css('[data-notification-type="notification-info"]')).isPresent(),
       'Expected an informational notification, but could not find one.'
-    ).to.eventually.equal(true);
-    dismiss();
+    ).to.equal(true);
+    await dismiss();
   },
 
-  hasDanger : function hasDanger() {
+  hasDanger : async function hasDanger() {
     expect(
-      element(by.css('[data-notification-type="notification-danger"]')).isPresent(),
+      await element(by.css('[data-notification-type="notification-danger"]')).isPresent(),
       'Expected a danger notification, but could not find one.'
-    ).to.eventually.equal(true);
-    dismiss();
+    ).to.equal(true);
+    await dismiss();
   },
 
-  hasError : function hasError() {
+  hasError : async function hasError() {
     expect(
-      element(by.css('[data-notification-type="notification-error"]')).isPresent(),
+      await element(by.css('[data-notification-type="notification-error"]')).isPresent(),
       'Expected a danger notification, but could not find one.'
-    ).to.eventually.equal(true);
-    dismiss();
+    ).to.equal(true);
+    await dismiss();
   },
 
-  dismiss
+  dismiss,
 };
 
 function dismiss() {

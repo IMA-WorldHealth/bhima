@@ -33,6 +33,14 @@
             </li>
 
             <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a href data-method="merge-patient" ng-click="PatientRegistryCtrl.mergePatients()">
+                  <i class="fa fa-compress"></i> <span translate>FORM.LABELS.MERGE_PATIENTS</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a ng-href="/reports/medical/patients/?{{ PatientRegistryCtrl.download('pdf') }}" download="{{ 'PATIENT_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
@@ -59,14 +67,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="PatientRegistryCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="PatientRegistryCtrl.search()"></bh-search-button>
 
       <bh-filter-toggle on-toggle="PatientRegistryCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
@@ -91,6 +92,7 @@
       ui-grid-auto-resize
       ui-grid-resize-columns
       ui-grid-move-columns
+      ui-grid-selection
       ui-grid-save-state>
 
       <bh-grid-loading-indicator

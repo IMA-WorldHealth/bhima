@@ -58,7 +58,7 @@ const templates = {
  * @function document
  * @description process and render the cash report document
  */
-function document(req, res, next) {
+async function document(req, res, next) {
   const params = req.query;
   let report;
 
@@ -80,64 +80,58 @@ function document(req, res, next) {
   try {
     const TEMPLATE = templates[params.format] || templates.NORMAL;
     report = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
+
+    // set parameters so that they provide
+    params.enterprise_id = req.session.enterprise.id;
+    params.includeUnpostedValues = true;
+
+    const context = {};
+
+    // determine if we are showing the income and/or expense categories
+    context.hasIncome = ['ENTRY_AND_EXIT', 'ENTRY'].includes(params.type);
+    context.hasExpense = ['ENTRY_AND_EXIT', 'EXIT'].includes(params.type);
+    context.hasBoth = context.hasIncome && context.hasExpense;
+
+    const cashbox = await getCashboxByAccountId(params.account_id);
+    _.merge(context, { cashbox });
+
+    // determine the currency rendering
+    // Update By @lomamech
+    // As the report of the boxes can only be viewed in the company currency,
+    // we set the variable isEnterpriseCurrency to true
+    params.currency_id = cashbox.currency_id;
+
+    // get the opening balance for the acount
+    const header = await AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
+    _.merge(context, { header });
+
+    // get the account's transactions
+    const [txns, transactionTypes] = await Promise.all([
+      AccountTransactions.getAccountTransactions(params, header.balance),
+      db.exec(`SELECT id, text FROM transaction_type;`),
+    ]);
+
+    _.merge(context, txns, {
+      dateFrom : params.dateFrom,
+      dateTo : params.dateTo,
+    });
+
+    // map the transaction types to each transaction by their ID
+    const map = _.keyBy(transactionTypes, 'id');
+    context.transactions.forEach(txn => {
+      txn.transactionType = map[txn.transaction_type_id].text;
+    });
+
+    // if we have a split format, split along the lines of income and expense.
+    if (params.format === 'SPLIT') {
+      const income = txns.transactions.filter(txn => txn.debit > 0);
+      const expense = txns.transactions.filter(txn => txn.credit > 0);
+      _.merge(context, { income, expense });
+    }
+
+    const result = await report.render(context);
+    res.set(result.headers).send(result.report);
+  } catch (err) {
+    next(err);
   }
-
-  // set parameters so that they provide
-  params.enterprise_id = req.session.enterprise.id;
-  params.includeUnpostedValues = true;
-
-  const context = {};
-
-  // determine if we are showing the income and/or expense categories
-  context.hasIncome = ['ENTRY_AND_EXIT', 'ENTRY'].includes(params.type);
-  context.hasExpense = ['ENTRY_AND_EXIT', 'EXIT'].includes(params.type);
-  context.hasBoth = context.hasIncome && context.hasExpense;
-
-  getCashboxByAccountId(params.account_id)
-    .then(cashbox => {
-      _.merge(context, { cashbox });
-
-      // determine the currency rendering
-      params.currency_id = cashbox.currency_id;
-      params.isEnterpriseCurrency = params.currency_id === req.session.enterprise.currency_id;
-
-      // get the opening balance for the acount
-      return AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
-    })
-    .then(header => {
-      _.merge(context, { header });
-      // get the account's transactions
-      return Promise.all([
-        AccountTransactions.getAccountTransactions(params, header.balance),
-        db.exec(`SELECT id, text FROM transaction_type;`),
-      ]);
-    })
-    .then(([txns, transactionTypes]) => {
-      _.merge(context, txns, {
-        dateFrom : params.dateFrom,
-        dateTo : params.dateTo,
-      });
-
-      // map the transaction types to each transaction by their ID
-      const map = _.keyBy(transactionTypes, 'id');
-      context.transactions.forEach(txn => {
-        txn.transactionType = map[txn.transaction_type_id].text;
-      });
-
-      // if we have a split format, split along the lines of income and expense.
-      if (params.format === 'SPLIT') {
-        const income = txns.transactions.filter(txn => txn.debit > 0);
-        const expense = txns.transactions.filter(txn => txn.credit > 0);
-        _.merge(context, { income, expense });
-      }
-
-      return report.render(context);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next);
 }

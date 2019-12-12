@@ -33,17 +33,21 @@ angular.module('bhima.components')
   });
 
 // dependencies injection
-bhDateInterval.$inject = ['moment', 'bhConstants', 'FiscalService', 'SessionService'];
+bhDateInterval.$inject = [
+  'bhConstants', 'FiscalService',
+  'SessionService', 'PeriodService',
+];
 
 // controller definition
-function bhDateInterval(moment, bhConstants, Fiscal, Session) {
+function bhDateInterval(bhConstants, Fiscal, Session, PeriodService) {
   const $ctrl = this;
 
+  PeriodService.dateFormat = 'YYYY-MM-DD';
   // expose to the view
   $ctrl.search = search;
   $ctrl.clear = clear;
 
-  $ctrl.$onInit = function $onInit() {
+  $ctrl.$onInit = () => {
     // specify if clear button can be displayed
     if (!angular.isDefined($ctrl.canClear)) {
       $ctrl.canClear = true;
@@ -90,25 +94,25 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     $ctrl.onChangeDate();
   }
 
+  function setDateInterval(key) {
+    $ctrl.dateFrom = new Date(PeriodService.index[key].limit.start());
+    $ctrl.dateTo = new Date(PeriodService.index[key].limit.end());
+  }
+
   function day() {
-    $ctrl.dateFrom = new Date();
-    $ctrl.dateTo = new Date();
+    setDateInterval('today');
   }
 
   function week() {
-    // Fix me if is necessary the first day of week is Sunday or Monday
-    $ctrl.dateFrom = moment().startOf('week').toDate();
-    $ctrl.dateTo = new Date();
+    setDateInterval('week');
   }
 
   function month() {
-    $ctrl.dateFrom = moment().startOf('month').toDate();
-    $ctrl.dateTo = moment().endOf('month').toDate();
+    setDateInterval('month');
   }
 
   function year() {
-    $ctrl.dateFrom = moment().startOf('year').toDate();
-    $ctrl.dateTo = moment().endOf('year').toDate();
+    setDateInterval('year');
   }
 
   function custom() {
@@ -136,7 +140,6 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     } else {
       custom();
     }
-
     // set clean mode
     if ($ctrl.mode === 'clean') {
       clear();

@@ -1,13 +1,12 @@
 /* global browser, element, by */
-const chai = require('chai');
 const protractor = require('protractor');
+
+const EC = protractor.ExpectedConditions;
 
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
-
-helpers.configure(chai);
 
 describe('Edit Posting Journal', () => {
   const path = '#!/journal';
@@ -16,27 +15,30 @@ describe('Edit Posting Journal', () => {
   const editingGridId = 'transaction-edit-grid';
 
   // simulates a double click
-  const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
+  const doubleClick = async element => browser
+    .actions({ bridge : true })
+    .doubleClick(await element.getWebElement())
+    .perform();
 
   before(() => helpers.navigate(path));
 
-  it('edits a transaction change an account', () => {
-    GU.selectRow(gridId, 0);
-    FU.buttons.edit();
+  it('edits a transaction change an account', async () => {
+    await GU.selectRow(gridId, 0);
+    await FU.buttons.edit();
 
-    const accountNumberCell = GU.getCell(editingGridId, 0, 1);
-    doubleClick(accountNumberCell);
-    FU.typeahead('accountInputValue', '1100');
+    const accountNumberCell = await GU.getCell(editingGridId, 0, 1);
+    await doubleClick(accountNumberCell);
+    await FU.typeahead('accountInputValue', '1100');
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  function editInput(rowIndex, columnIndex, value) {
-    const cell = GU.getCell(editingGridId, rowIndex, columnIndex);
+  async function editInput(rowIndex, columnIndex, value) {
+    const cell = await GU.getCell(editingGridId, rowIndex, columnIndex);
 
     // open the editing pane
-    doubleClick(cell);
+    await doubleClick(cell);
 
     // get the element
     const input = element(by.css('input[type=number]'));
@@ -45,81 +47,89 @@ describe('Edit Posting Journal', () => {
     // the ui-grid to hide the input.
     // Solution: Ctrl-a and then type what you want.
     const ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
-    input.sendKeys(ctrlA, value, protractor.Key.ENTER);
+    await input.sendKeys(ctrlA, value, protractor.Key.ENTER);
   }
 
-  it('edits a transaction change value of debit and credit', () => {
-    GU.selectRow(gridId, 0);
-    FU.buttons.edit();
+  it('edits a transaction to change the value of debit and credit', async () => {
+    await GU.selectRow(gridId, 0);
+    await FU.buttons.edit();
+
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
 
     // change the first row (index 0), debit and credit inputs (index 2 and 3)
-    editInput(0, 2, 100);
-    editInput(0, 3, 0);
+    await editInput(0, 2, 99);
+    await editInput(0, 3, 0);
 
-    editInput(1, 2, 0);
-    editInput(1, 3, 100);
+    await editInput(1, 2, 0);
+    await editInput(1, 3, 99);
 
-    FU.buttons.submit();
+    await FU.modal.submit();
+    await FU.exists(by.id('validation-errored-alert'), false);
+    await components.notification.hasSuccess();
+  });
 
-    FU.exists(by.id('validation-errored-alert'), false);
-    components.notification.hasSuccess();
+  it('prevents an unbalanced transaction', async () => {
+    await GU.selectRow(gridId, 0);
+    await FU.buttons.edit();
+
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+
+    await editInput(0, 2, 100);
+    await editInput(0, 3, 0);
+
+    await editInput(1, 2, 0);
+    await editInput(1, 3, 50);
+
+    await FU.modal.submit();
+
+    await FU.exists(by.id('validation-errored-alert'), true);
+
+    await FU.modal.cancel();
   });
 
   // Test for validation
-  it('prevents a single line transaction', () => {
-    GU.selectRow(gridId, 0);
-    FU.buttons.edit();
+  it('prevents a single line transaction', async () => {
+    await FU.buttons.edit();
 
-    GU.selectRow(editingGridId, 0);
-    FU.buttons.delete();
-    FU.buttons.submit();
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
 
-    FU.exists(by.id('validation-errored-alert'), true);
+    await GU.selectRow(editingGridId, 0);
+    await FU.buttons.delete();
+    await FU.modal.submit();
 
-    FU.buttons.cancel();
+    await FU.exists(by.id('validation-errored-alert'), true);
+
+    await FU.modal.cancel();
   });
 
-  it('prevents an unbalanced transaction', () => {
-    FU.buttons.edit();
 
-    editInput(0, 2, 100);
-    editInput(0, 3, 0);
+  it('preventing transaction who have debit and credit null', async () => {
+    await FU.buttons.edit();
 
-    editInput(1, 2, 0);
-    editInput(1, 3, 50);
+    await editInput(0, 2, 0);
+    await editInput(0, 3, 0);
 
-    FU.buttons.submit();
+    await editInput(1, 2, 0);
+    await editInput(1, 3, 0);
 
-    FU.exists(by.id('validation-errored-alert'), true);
-
-    FU.buttons.cancel();
+    await FU.modal.submit();
+    await FU.exists(by.id('validation-errored-alert'), true);
+    await FU.modal.cancel();
   });
 
-  it('preventing transaction who have debit and credit null', () => {
-    FU.buttons.edit();
+  it('preventing transaction who was debited and credited in a same line', async () => {
+    await FU.buttons.edit();
 
-    editInput(0, 2, 0);
-    editInput(0, 3, 0);
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
 
-    editInput(1, 2, 0);
-    editInput(1, 3, 0);
+    await editInput(0, 2, 10);
+    await editInput(0, 3, 10);
 
-    FU.buttons.submit();
-    FU.exists(by.id('validation-errored-alert'), true);
-    FU.buttons.cancel();
-  });
+    await editInput(1, 2, 10);
+    await editInput(1, 3, 0);
 
-  it('preventing transaction who was debited and credited in a same line', () => {
-    FU.buttons.edit();
-
-    editInput(0, 2, 10);
-    editInput(0, 3, 10);
-
-    editInput(1, 2, 10);
-    editInput(1, 3, 0);
-
-    FU.buttons.submit();
-    FU.exists(by.id('validation-errored-alert'), true);
-    FU.buttons.cancel();
+    await FU.modal.submit();
+    await FU.exists(by.id('validation-errored-alert'), true);
+    await FU.modal.cancel();
   });
 });

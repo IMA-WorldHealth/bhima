@@ -1,8 +1,6 @@
 const { expect } = require('chai');
-const _ = require('lodash');
 
-const filter = require('../../server/lib/filter');
-
+const Filter = require('../../server/lib/filter');
 
 describe('filter.js', () => {
   const object1 = {
@@ -48,25 +46,26 @@ describe('filter.js', () => {
   let sql3;
 
   beforeEach(() => {
-    filters = new filter(object1, { tableAlias : 't' });
-    filters2 = new filter(object2, { tableAlias : 'a' });
+    filters = new Filter(object1, { tableAlias : 't' });
+    filters2 = new Filter(object2, { tableAlias : 'a' });
 
     sql = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t`;
     sql2 = `SELECT t.id, t.street, t.town, t.country, t.location FROM geographic AS t`;
     sql3 = `SELECT a.id, a.label, a.number, a.dateCentury FROM accounts AS a`;
   });
-  
+
   it('#fullText Format the sql query when filtered by full text', () => {
     // fullText matches the SQL "LIKE" filter.
     filters.fullText('name');
 
     const formatted = filters.applyQuery(sql).trim();
     const params = filters.parameters();
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE LOWER(t.name) LIKE ?`;
-    
+
     // Check that param param is working properly
     expect(params).to.deep.equal(['%Unit Test%']);
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -75,9 +74,10 @@ describe('filter.js', () => {
     // filters.period matches the sql if Date is between a period defined by dateFrom and dateTo
     filters.period('period', 'date_object');
 
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?) AND DATE(t.date_object) <= DATE(?)`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -86,9 +86,10 @@ describe('filter.js', () => {
     // fullText matches the SQL "DATE(...) >= DATE(?)" filter.
     filters.dateFrom('date_object');
 
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?)`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -97,6 +98,7 @@ describe('filter.js', () => {
     // fullText matches the SQL "DATE(...) <= DATE(?)" filter.
     filters.dateTo('date_object');
 
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) <= DATE(?)`;
     const formatted = filters.applyQuery(sql).trim();
 
@@ -109,8 +111,9 @@ describe('filter.js', () => {
     filters.dateFrom('dateFrom', 'date_object');
     filters.dateTo('dateTo', 'date_object');
 
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?) AND DATE(t.date_object) <= DATE(?)`;
-    
+
     const formatted = filters.applyQuery(sql).trim();
     expect(formatted).to.equal(expected);
   });
@@ -121,13 +124,13 @@ describe('filter.js', () => {
 
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE t.value = ?`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('#custom Format the sql query when filtered by custom', () => {
-    // custom matches the SQL  custom SQL with either single or multiple parameters. 
+    // custom matches the SQL  custom SQL with either single or multiple parameters.
     filters.custom('list', 't.id IN (?)', [object1.list]);
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE t.id IN (?)`;
     const formatted = filters.applyQuery(sql).trim();
@@ -143,6 +146,7 @@ describe('filter.js', () => {
   it('#customMultiParameters Format the sql query when filtered by customMultiParameters', () => {
     const params = ['Kinshasa', 'Kinshasa', 'Kinshasa'];
     const geographicSql = `(t.street LIKE ?) OR (t.town LIKE ?) OR (t.country LIKE ?)`;
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.street, t.town, t.country, t.location FROM geographic AS t WHERE (t.street LIKE ?) OR (t.town LIKE ?) OR (t.country LIKE ?)`;
 
     filters.custom('location', geographicSql, params);
@@ -155,6 +159,7 @@ describe('filter.js', () => {
     filters.setOrder('ORDER BY t.name');
     filters.setGroup('GROUP BY t.country_id');
 
+    // eslint-disable-next-line
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE 1 GROUP BY t.country_id ORDER BY t.name`;
 
     const formatted = filters.applyQuery(sql).trim();
@@ -166,27 +171,29 @@ describe('filter.js', () => {
     filters2.period('period', 'date_century');
 
     const formatted = filters2.applyQuery(sql3).trim();
+    // eslint-disable-next-line
     const expected = `SELECT a.id, a.label, a.number, a.dateCentury FROM accounts AS a WHERE LOWER(a.label) LIKE ?  AND DATE(a.date_century) >= DATE(?) AND DATE(a.date_century) <= DATE(?)   LIMIT 3`;
-   // assert that the SQL is formatted correctly.
+    // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('#Test a query with autoParseStatments with autoParseStatments is true.', () => {
-    //Verify parr is true, to format the query to filter against all columns in the table
-    const filters = new filter(object3, { tableAlias : 'j' , autoParseStatements : true});
-    const sql = `SELECT j.id, j.abbr, j.display_name FROM javascript AS j`;
+    // Verify parr is true, to format the query to filter against all columns in the table
+    filters = new Filter(object3, { tableAlias : 'j', autoParseStatements : true });
+    sql = `SELECT j.id, j.abbr, j.display_name FROM javascript AS j`;
     const formatted = filters.applyQuery(sql).trim();
 
+    // eslint-disable-next-line
     const expected = `SELECT j.id, j.abbr, j.display_name FROM javascript AS j WHERE j.id = ? AND j.abbr = ? AND j.display_name = ?`;
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('Format the SQL when Parsed Automatically Uuid.', () => {
     // Check on autoParseStatements is true, look in the query if a column is of type uuid for formatter
-    const filters = new filter(object4, { tableAlias : 'g' , autoParseStatements : true});
-    const sql = `SELECT g.grade_uuid, g.grade FROM grade AS g`;
+    filters = new Filter(object4, { tableAlias : 'g', autoParseStatements : true });
+    sql = `SELECT g.grade_uuid, g.grade FROM grade AS g`;
     const formatted = filters.applyQuery(sql).trim();
 
     const expected = `SELECT g.grade_uuid, g.grade FROM grade AS g WHERE g.grade_uuid = HUID(?) AND g.grade = ?`;

@@ -265,6 +265,19 @@
               help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
               on-change-callback="EnterpriseCtrl.enableAutoStockAccountingSetting(value)">
             </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_auto_email_report"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enableAutoEmailReportSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_INDEX_PAYMENT_SYSTEM"
+              value="EnterpriseCtrl.enterprise.settings.enable_index_payment_system"
+              on-change-callback="EnterpriseCtrl.enableIndexPaymentSetting(value)">
+            </bh-yes-no-radios>
           </div>
         </div>
 

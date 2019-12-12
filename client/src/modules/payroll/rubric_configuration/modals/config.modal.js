@@ -6,17 +6,14 @@ RubricConfigModalController.$inject = [
 ];
 
 function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics) {
-  var vm = this;
+  const vm = this;
   vm.config = {};
 
-  var cache = AppCache('RubricConfigModal');
-  var socialCaresLength = 0,
-    taxesLength = 0,
-    membershipFeeLength = 0,
-    otherLength = 0;
+  const cache = AppCache('RubricConfigModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -34,76 +31,52 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   vm.toggleTaxes = toggleTaxes;
   vm.toggleMembershipFee = toggleMembershipFee;
   vm.toggleOthers = toggleOthers;
+  vm.toggleIndexes = toggleIndexes;
 
   vm.submit = submit;
   vm.closeModal = closeModal;
 
   Configs.read(vm.stateParams.id)
-    .then(function (config) {
+    .then(config => {
       vm.config = config;
     })
     .catch(Notify.handleError);
 
   Rubrics.read()
-    .then(function (rubrics) {
+    .then(rubrics => {
       vm.rubrics = rubrics;
-      
+
       vm.socialCares = rubrics.filter(item => item.is_social_care);
-      socialCaresLength = vm.socialCares ? vm.socialCares.length : socialCaresLength;
 
       vm.taxes = rubrics.filter(item => item.is_tax);
-      taxesLength = vm.taxes ? vm.taxes.length : taxesLength; 
+
+      vm.indexes = rubrics.filter(item => item.is_indice);
 
       vm.membershipFee = rubrics.filter(item => item.is_membership_fee);
-      membershipFeeLength = vm.membershipFee ? vm.membershipFee.length : membershipFeeLength;
 
-      vm.others = rubrics.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
-      otherLength = vm.others ? vm.others.length : otherLength;
+      vm.others = rubrics.filter(item => {
+        return (!item.is_tax && !item.is_social_care && !item.is_membership_fee && !item.is_indice);
+      });
 
       return Configs.getRubrics(vm.stateParams.id);
     })
-    .then(function (rubConfig) {
+    .then(rubConfig => {
       vm.rubConfig = rubConfig;
+      const rubConfigMap = {};
+      rubConfig.forEach(object => {
+        rubConfigMap[object.rubric_payroll_id] = true;
+      });
 
-      if (socialCaresLength) {
-        rubConfig.forEach(function (object) {
-          vm.socialCares.forEach(function (unit) {
-            if (unit.id === object.rubric_payroll_id) {
-              unit.checked = true;
-            }
-          });
-        });
-      }
+      const rubricGroups = [vm.socialCares, vm.taxes, vm.indexes, vm.membershipFee, vm.others];
 
-      if (taxesLength) {
-        rubConfig.forEach(function (object) {
-          vm.taxes.forEach(function (unit) {
-            if (unit.id === object.rubric_payroll_id) {
-              unit.checked = true;
-            }
-          });
+      rubricGroups.forEach(group => {
+        group.forEach(unit => {
+          if (rubConfigMap[unit.id]) {
+            unit.checked = true;
+          }
         });
-      }
+      });
 
-      if (otherLength) {
-        rubConfig.forEach(function (object) {
-          vm.others.forEach(function (unit) {
-            if (unit.id === object.rubric_payroll_id) {
-              unit.checked = true;
-            }
-          });
-        });
-      }
-
-      if (membershipFeeLength) {
-        rubConfig.forEach(function (object) {
-          vm.membershipFee.forEach(function (unit) {
-            if (unit.id === object.rubric_payroll_id) {
-              unit.checked = true;
-            }
-          });
-        });
-      }
     })
     .catch(Notify.handleError);
 
@@ -114,24 +87,29 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
     vm.headOther = bool;
     vm.headMembershipFee = bool;
 
-    vm.rubrics.forEach(function (rubric) {
+    vm.rubrics.forEach(rubric => {
       rubric.checked = bool;
     });
   }
 
   function toggleSocialCares(status) {
     vm.headSocial = !status;
-
-    vm.socialCares.forEach(function (rubric) {
+    vm.socialCares.forEach(rubric => {
       vm.socialCheck = !status;
       rubric.checked = !status;
+    });
+  }
+
+  function toggleIndexes(status) {
+    vm.indexes.forEach(rubric => {
+      rubric.checked = status;
     });
   }
 
   function toggleTaxes(status) {
     vm.headTax = !status;
 
-    vm.taxes.forEach(function (rubric) {
+    vm.taxes.forEach(rubric => {
       vm.taxCheck = !status;
       rubric.checked = !status;
     });
@@ -140,7 +118,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   function toggleOthers(status) {
     vm.headOther = !status;
 
-    vm.others.forEach(function (rubric) {
+    vm.others.forEach(rubric => {
       vm.otherCheck = !status;
       rubric.checked = !status;
     });
@@ -149,7 +127,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   function toggleMembershipFee(status) {
     vm.headMembershipFee = !status;
 
-    vm.membershipFee.forEach(function (rubric) {
+    vm.membershipFee.forEach(rubric => {
       vm.membershipFeeCheck = !status;
       rubric.checked = !status;
     });
@@ -157,45 +135,17 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
 
   // submit the data to the server from all two forms (update, create)
   function submit() {
-    var socialChecked,
-      taxChecked,
-      otherChecked,
-      membershipChecked;
+    const rubricChecked = [];
+    const rubricGroups = [vm.socialCares, vm.taxes, vm.indexes, vm.membershipFee, vm.others];
 
-    var rubricChecked = [];
-
-    socialChecked = vm.socialCares.filter(function (rubric) {
-      return rubric.checked;
-    })
-      .map(function (rubric) {
-        return rubric.id;
+    rubricGroups.forEach(group => {
+      group.forEach(rubric => {
+        if (rubric.checked) rubricChecked.push(rubric.id);
       });
+    });
 
-    taxChecked = vm.taxes.filter(function (rubric) {
-      return rubric.checked;
-    })
-      .map(function (rubric) {
-        return rubric.id;
-      });
-
-    otherChecked = vm.others.filter(function (rubric) {
-      return rubric.checked;
-    })
-      .map(function (rubric) {
-        return rubric.id;
-      });
-
-    membershipChecked = vm.membershipFee.filter(function (rubric) {
-      return rubric.checked;
-    })
-      .map(function (rubric) {
-        return rubric.id;
-      });
-
-    rubricChecked = socialChecked.concat(taxChecked, otherChecked, membershipChecked);
-    
     return Configs.setRubrics(vm.stateParams.id, rubricChecked)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
         $state.go('configurationRubric', null, { reload : true });
       })

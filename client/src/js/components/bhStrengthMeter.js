@@ -23,6 +23,7 @@ StrengthMeterController.$inject = [
  * input.
  */
 function StrengthMeterController(PasswordMeterService, Session) {
-  this.showStrengthMeter = Session.enterprise && Session.enterprise.settings.enable_password_validation;
+  this.showStrengthMeter = (Session.enterprise && Session.enterprise.settings.enable_password_validation)
+   || !Session.enterprise;
   this.counter = () => PasswordMeterService.counter(this.password);
 }

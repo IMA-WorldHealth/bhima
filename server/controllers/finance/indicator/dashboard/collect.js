@@ -5,10 +5,15 @@ const FilterParser = require('../../../../lib/filter');
 module.exports.hospitalization = hospitalization;
 module.exports.finances = finances;
 module.exports.staff = staff;
+module.exports.getProjects = getProjects;
 
 function getDaysOfPeriods(options) {
   const query = `SELECT DATEDIFF(DATE(?), DATE(?)) + 1 AS nb_days;`;
   return db.one(query, [options.dateTo, options.dateFrom]);
+}
+
+function getProjects() {
+  return db.exec('SELECT id, abbr FROM project;');
 }
 
 async function hospitalization(options) {
@@ -52,6 +57,11 @@ async function hospitalization(options) {
 
     filters1 = defaultFilters(filters1);
     filters2 = defaultFilters(filters2);
+
+    if (options.project_id) {
+      filters1.equals('project_id', 'project_id', 's');
+      filters2.equals('project_id', 'project_id', 's');
+    }
 
     // group by periods
     if (options.groupByPeriod) {

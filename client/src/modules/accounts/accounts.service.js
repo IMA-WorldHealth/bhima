@@ -21,13 +21,10 @@ function AccountService(Api, bhConstants, HttpCache) {
   service.getBalance = getBalance;
   service.getAnnualBalance = getAnnualBalance;
   service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
-  service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
   service.filterAccountByType = filterAccountsByType;
   service.downloadAccountsTemplate = downloadAccountsTemplate;
-
-  service.flatten = flatten;
-  service.order = order;
+  service.redCreditCell = redCreditCell;
 
   /**
    * @method getOpeningBalance
@@ -104,81 +101,6 @@ function AccountService(Api, bhConstants, HttpCache) {
   }
 
   /**
-   * @method getChildren
-   *
-   * @description
-   * This method builds a tree data structure of accounts and children of a
-   * specified parentId.
-   *
-   * @returns {Array} - an array of children
-   */
-  function getChildren(accounts, parentId) {
-    // base case: There are no child accounts
-    if (accounts.length === 0) { return null; }
-
-    // returns all accounts where the parent is the
-    // parentId
-    const children = accounts.filter(handleParent);
-
-    // recursively call getChildren on all child accounts
-    // and attach them as childen of their parent account
-    children.forEach(handleChildren);
-
-    function handleParent(account) {
-      return account.parent === parentId;
-    }
-
-    function handleChildren(account) {
-      account.children = getChildren(accounts, account.id);
-    }
-
-    return children;
-  }
-
-  /**
-   * @method flatten
-   *
-   * @description
-   * Flattens a tree data structure (must have `children` property) in place.
-   *
-   * @returns {Array} - the flattened array
-   */
-  function flatten(_tree, _depth) {
-    const tree = _tree || [];
-    let depth = (!angular.isDefined(_depth) || Number.isNaN(_depth)) ? -1 : _depth;
-    depth += 1;
-
-    function handleTreeLevel(array, node) {
-      const items = [node].concat(node.children ? flatten(node.children, depth) : []);
-      node.$$treeLevel = depth;
-      return array.concat(items);
-    }
-
-    return tree.reduce(handleTreeLevel, []);
-  }
-
-  /**
-   * @method order
-   *
-   * @description
-   * Creates a proper account ordering by first creating an account tree and
-   * then flattening in place.
-   *
-   * @param {Array} accounts - a list of account objects
-   * @returns {Array} - the properly ordered list of account objects
-   */
-  function order(accounts) {
-    // NOTE: we assume the root node is 0
-    const ROOT_NODE = 0;
-
-    // build the account tree
-    const tree = getChildren(accounts, ROOT_NODE);
-
-    // return a flattened tree (in order)
-    return flatten(tree);
-  }
-
-  /**
    * @method downloadAccountsTemplate
    *
    * @description
@@ -190,6 +112,17 @@ function AccountService(Api, bhConstants, HttpCache) {
       .then(response => {
         return service.util.download(response, 'Import Accounts Template', 'csv');
       });
+  }
+
+  function redCreditCell(key, currencyId) {
+    return `
+      <div class="ui-grid-cell-contents text-right" ng-show="row.entity['${key}'] < 0">
+        <span class='text-danger'>({{row.entity['${key}']*(-1) | currency:${currencyId}}})</span>
+      </div>
+      <div class="ui-grid-cell-contents text-right" ng-show="row.entity['${key}'] >= 0">
+        {{row.entity['${key}'] | currency:${currencyId}}}
+      </div>
+    `;
   }
 
   return service;

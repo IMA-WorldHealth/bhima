@@ -1,47 +1,43 @@
+/* eslint  */
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
-function AccountStatementCorePage() {
-  const page = this;
-  const gridId = 'account-statement-grid';
+class AccountStatementCorePage {
+  constructor() {
+    const gridId = 'account-statement-grid';
+    this.gridId = gridId;
 
-  function openSearchModal() {
-    $('[data-method="search"]').click();
+    // custom wrappers for GU functionality
+    this.selectRow = (number) => GU.selectRow(gridId, number);
+    this.expectColumnCount = (number) => GU.expectColumnCount(gridId, number);
+    this.expectRowCount = (number) => GU.expectRowCount(gridId, number);
+    this.getCell = (row, col) => GU.getCell(gridId, row, col);
+    this.cellValueMatch = (row, col, value) => GU.expectCellValueMatch(gridId, row, col, value);
   }
 
-  function tabulate(tabIndex) {
+  openSearchModal() {
+    return $('[data-method="search"]').click();
+  }
+
+  tabulate(tabIndex) {
     const index = tabIndex || 0;
     return $(`[index="${index}"]`).click();
   }
 
-  function comment(message) {
-    $('[data-method="comment"]').click();
-    FU.input('$ctrl.comment', message);
-    FU.modal.submit();
+  async comment(message) {
+    await $('[data-method="comment"]').click();
+    await FU.input('$ctrl.comment', message);
+    await FU.modal.submit();
   }
 
-  function setAccount(value) {
+  setAccount(value) {
     return components.accountSelect.set(value);
   }
 
-  function formModalSubmit() {
-    FU.modal.submit();
+  formModalSubmit() {
+    return FU.modal.submit();
   }
-
-  // expose methods
-  page.comment = comment;
-  page.openSearchModal = openSearchModal;
-  page.tabulate = tabulate;
-  page.setAccount = setAccount;
-  page.formModalSubmit = formModalSubmit;
-
-  // custom wrappers for GU functionality
-  page.selectRow = (number) => GU.selectRow(gridId, number);
-  page.expectColumnCount = (number) => GU.expectColumnCount(gridId, number);
-  page.expectRowCount = (number) => GU.expectRowCount(gridId, number);
-  page.getCell = (row, col) => GU.getCell(gridId, row, col);
-  page.cellValueMatch = (row, col, value) => GU.expectCellValueMatch(gridId, row, col, value);
 }
 
 module.exports = AccountStatementCorePage;

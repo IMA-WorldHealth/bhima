@@ -1,0 +1,18 @@
+<div class="ui-grid-cell-contents text-center" 
+  data-row="{{row.entity.display_name}}"
+  uib-dropdown dropdown-append-to-body>
+
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+
+  <ul data-row-menu="{{row.entity.display_name}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li>
+      <a data-method="edit-record" ui-sref="multiple_payroll_indice.config({uuid : row.entity.employee_uuid})" href>
+        <i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
+      </a>
+    </li>
+  </ul>
+</div>

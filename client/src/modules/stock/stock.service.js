@@ -18,6 +18,7 @@ function StockModalService(Modal) {
   service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchMovements = openSearchMovements;
   service.openSearchInventories = openSearchInventories;
+  service.openSearchDepots = openSearchDepots;
   service.openFindPatient = openFindPatient;
   service.openFindService = openFindService;
   service.openFindDepot = openFindDepot;
@@ -25,6 +26,8 @@ function StockModalService(Modal) {
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
   service.openActionStockAssign = openActionStockAssign;
+  service.openActionStockRequisition = openActionStockRequisition;
+  service.openSearchStockRequisition = openSearchStockRequisition;
   service.openAssignmentHistoric = openAssignmentHistoric;
 
   /** create stock assign */
@@ -92,11 +95,50 @@ function StockModalService(Modal) {
     return instance.result;
   }
 
+  /** create stock assign */
+  function openActionStockRequisition(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/requisition/modals/action.modal.html',
+      controller   : 'ActionRequisitionModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search stock requisition */
+  function openSearchStockRequisition(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/requisition/modals/search.modal.html',
+      controller   : 'SearchStockRequisitionModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
   /** search stock movement */
   function openSearchMovements(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/movements/modals/search.modal.html',
       controller   : 'SearchMovementsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search depots */
+  function openSearchDepots(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/depots/modals/search.modal.html',
+      controller   : 'SearchDepotModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

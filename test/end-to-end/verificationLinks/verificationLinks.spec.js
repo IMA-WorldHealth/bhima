@@ -10,67 +10,73 @@ describe('Check Inter-Registry Links', () => {
 
   before(() => helpers.navigate(path));
 
-  it('Checks the link between Patient Groups -> Patient Registry', () => {
-    helpers.navigate('#!/patients/groups');
-    element.all(by.css('[class="fa fa-list"]')).get(2).click();
-    GU.expectRowCount('patient-registry', 2);
+  it('Checks the link between Patient Groups -> Patient Registry', async () => {
+    await helpers.navigate('#!/patients/groups');
+    const menu = await openDropdownMenu('Test Patient Group 2');
+    await menu.goToPatient().click();
+    await GU.expectRowCount('patient-registry', 2);
   });
 
   // skip until we can re-write the tests to find debtor groups based on name.
-  it.skip('Checks the link between Debtor Groups -> Patient Registry', () => {
-    helpers.navigate('#!/debtors/groups');
-    element.all(by.css('[class="fa fa-bars"]')).get(1).click();
-    GU.expectRowCount('patient-registry', 3);
+  it.skip('Checks the link between Debtor Groups -> Patient Registry', async () => {
+    await helpers.navigate('#!/debtors/groups');
+    await element.all(by.css('[class="fa fa-bars"]')).get(1).click();
+    await GU.expectRowCount('patient-registry', 3);
   });
 
   // skip this until we can filter on used Patient Registry. (@lomamech)
-  it.skip('Checks the link between Patient Registry -> Invoice Registry', () => {
-    helpers.navigate('#!/patients');
-    filters.resetFilters();
+  it.skip('Checks the link between Patient Registry -> Invoice Registry', async () => {
+    await helpers.navigate('#!/patients');
+    await filters.resetFilters();
 
-    element.all(by.css('[data-method="action"]')).get(3).click();
-    element.all(by.css('[data-method="invoice"]')).get(3).click();
-    GU.expectRowCount('invoice-registry', 3);
+    await element.all(by.css('[data-method="action"]')).get(3).click();
+    await element.all(by.css('[data-method="invoice"]')).get(3).click();
+    await GU.expectRowCount('invoice-registry', 3);
   });
 
-  it('Checks the link between Invoice Registry -> Cash Registry', () => {
-    helpers.navigate('#!/invoices');
+  it('Checks the link between Invoice Registry -> Cash Registry', async () => {
+    await helpers.navigate('#!/invoices');
 
     const row = new GridRow('IV.TPA.4');
-    row.dropdown().click();
-    row.goToPayment().click();
+    await row.dropdown().click();
+    await row.goToPayment().click();
 
-    GU.expectRowCount('payment-registry', 0);
+    await GU.expectRowCount('payment-registry', 0);
   });
 
   // skip this until we can filter on used inventory items.
-  it.skip('Checks the link between Inventory Registry -> Invoice Registry', () => {
-    helpers.navigate('#!/inventory/list');
-    filters.resetFilters();
-    element.all(by.css('[data-method="action"]')).get(3).click();
-    element.all(by.css('[data-method="invoice"]')).get(3).click();
-    GU.expectRowCount('invoice-registry', 2);
+  it.skip('Checks the link between Inventory Registry -> Invoice Registry', async () => {
+    await helpers.navigate('#!/inventory/list');
+    await filters.resetFilters();
+    await element.all(by.css('[data-method="action"]')).get(3).click();
+    await element.all(by.css('[data-method="invoice"]')).get(3).click();
+    await GU.expectRowCount('invoice-registry', 2);
   });
 
-  it('Checks the link between Invoice Registry -> Voucher Registry', () => {
-    helpers.navigate('#!/invoices');
-    filters.resetFilters();
+  it('Checks the link between Invoice Registry -> Voucher Registry', async () => {
+    await helpers.navigate('#!/invoices');
+    await filters.resetFilters();
     const row = new GridRow('IV.TPA.1');
-    row.dropdown().click();
-    row.goToVoucher().click();
+    await row.dropdown().click();
+    await row.goToVoucher().click();
 
-    GU.expectRowCount('voucher-grid', 1);
+    await GU.expectRowCount('voucher-grid', 1);
   });
 
-  it('Checks the link between Cash Registry -> Voucher Registry', () => {
-    helpers.navigate('#!/payments');
-    filters.resetFilters();
+  it('Checks the link between Cash Registry -> Voucher Registry', async () => {
+    await helpers.navigate('#!/payments');
+    await filters.resetFilters();
     const row = new GridRow('CP.TPA.3');
-    row.dropdown().click();
-    row.goToVoucher().click();
+    await row.dropdown().click();
+    await row.goToVoucher().click();
 
-    GU.expectRowCount('voucher-grid', 1);
-    filters.resetFilters();
+    await GU.expectRowCount('voucher-grid', 1);
+    await filters.resetFilters();
   });
 
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
 });

@@ -1,0 +1,42 @@
+{{> head title="REPORT.UNPAID_INVOICE_PAYMENTS_REPORT" }}
+
+<div class="container">
+  {{> header}}
+
+  <!-- body -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h3 class="text-center">
+        <strong>{{translate "REPORT.SYSTEM_USAGE_STAT.TITLE"}}</strong>
+      </h3>
+
+      <h5 style="margin:15px;" class="text-center">
+        <span>{{translate 'FORM.LABELS.DATE'}}</span> :  {{date statDate "DD/MM/YYYY"}}
+      </h5>
+
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th class="text-center">{{translate 'FORM.LABELS.HOUR'}}</th>
+             <th class="text-center text-capitalize">{{translate 'FORM.LABELS.PATIENT'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.INVOICES'}}</th>
+            <th class="text-center ">{{translate 'FORM.LABELS.CASH_PAYMENTS'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each pivot as |row|}}
+            <tr>
+              <td  class="text-right">{{ row.hour }}h</td>
+              <td  class="text-right">{{ row.patients }}</td>
+              <td  class="text-right">{{ row.invoices }}</td>
+              <td  class="text-right">{{ row.cashPayments }}</td>
+            </tr>
+            {{else}}
+                {{> emptyTable columns=4 }}
+            {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

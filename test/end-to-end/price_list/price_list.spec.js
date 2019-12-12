@@ -1,5 +1,3 @@
-/* global element, by */
-
 const helpers = require('../shared/helpers');
 
 const FU = require('../shared/FormUtils');
@@ -7,10 +5,12 @@ const components = require('../shared/components');
 const PriceListPage = require('./price_list.page');
 const PriceListItemsModal = require('./PriceListItemsModal.page');
 
+const PRICE_LIST_ITEM_CSV_FILE = 'import-inventory-item-template.csv';
+
 describe('Price Lists', () => {
   const path = '#!/prices';
   const page = new PriceListPage();
-
+  const modal = new PriceListItemsModal();
   before(() => helpers.navigate(path));
 
   const list = {
@@ -28,49 +28,54 @@ describe('Price Lists', () => {
   };
 
 
-  it('prices should create a price list', () => {
-    page.create();
+  it('prices should create a price list', async () => {
+    await page.create();
 
-    FU.input('$ctrl.priceList.label', list.label);
-    FU.input('$ctrl.priceList.description', list.description);
+    await FU.input('$ctrl.priceList.label', list.label);
+    await FU.input('$ctrl.priceList.description', list.description);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should update a price list', () => {
-    page.update(list.label);
+  it('prices should update a price list', async () => {
+    await page.update(list.label);
 
-    FU.input('$ctrl.priceList.label', updateListLabel);
+    await FU.input('$ctrl.priceList.label', updateListLabel);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should add a price list item', () => {
-    page.configure(updateListLabel);
+  it('prices should add a price list item', async () => {
+    await page.configure(updateListLabel);
+    await modal.setLabel(priceListItem.label);
+    await modal.setValue(priceListItem.value);
+    await modal.setIsPercentage(priceListItem.is_percentage);
+    await modal.setInventory(priceListItem.inventoryLabel);
 
-    const modal = new PriceListItemsModal();
+    await modal.submit();
+    await modal.close();
 
-    modal.setLabel(priceListItem.label);
-    modal.setValue(priceListItem.value);
-    modal.setIsPercentage(priceListItem.is_percentage);
-    modal.setInventory(priceListItem.inventoryLabel);
-
-    modal.submit();
-    modal.close();
-
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should delete a price list item', () => {
-    page.configure(updateListLabel);
 
-    const modal = new PriceListItemsModal();
-    modal.remove(priceListItem.label);
-    modal.submit();
-    modal.close();
+  it('prices should delete a price list item', async () => {
+    await page.configure(updateListLabel);
+    await modal.remove(priceListItem.label);
+    await modal.submit();
+    await modal.close();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
+
+  // import custom ohada accounts
+  it('import price list item from csv file into the system', async () => {
+    await page.importItems(updateListLabel);
+    await modal.uploadFile(PRICE_LIST_ITEM_CSV_FILE);
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
+  });
+
 });

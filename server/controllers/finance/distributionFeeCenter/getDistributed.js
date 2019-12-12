@@ -22,7 +22,7 @@ function getDistributed(req, res, next) {
     fc.date_distribution, fc.user_id, gl.project_id, gl.fiscal_year_id, gl.period_id, gl.trans_date,
     gl.description, gl.transaction_type_id, BUID(gl.record_uuid) AS record_uuid, gl.entity_uuid,
     BUID(gl.reference_uuid) AS reference_uuid, ac.number AS account_number, ac.label AS account_label,
-    aux.label AS fee_center_label, pri.label AS principal_label, dm1.text AS hrRecord, dm2.text AS hrReference, 
+    aux.label AS fee_center_label, pri.label AS principal_label, dm1.text AS hrRecord, dm2.text AS hrReference,
     u.display_name AS user_name
     FROM fee_center_distribution AS fc
     JOIN general_ledger AS gl ON gl.uuid = fc.row_uuid
@@ -46,7 +46,6 @@ function getDistributed(req, res, next) {
 
   db.exec(query, parameters)
     .then((rows) => {
-
       res.status(200).json(rows);
     })
     .catch(next);

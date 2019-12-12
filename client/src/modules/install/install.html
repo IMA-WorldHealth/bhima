@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <bh-currency-select      
+      <bh-currency-select
         on-change="InstallCtrl.setCurrency(currencyId)"
         currency-id="InstallCtrl.setup.enterprise.currency_id">
       </bh-currency-select>
@@ -77,31 +77,50 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.password.$invalid, 'has-warning': InstallCtrl.badPasswords }">
-        <label class="control-label" translate>USERS.SET_PASSWORD</label>
+
+
+      <div class="form-group has-feedback"
+        ng-class="{ 'has-error' : InstallForm.$submitted && !InstallCtrl.hasValidPassword() }"
+        >
+        <label class="control-label" translate>
+          FORM.LABELS.PASSWORD
+        </label>
+        <br/>
+
         <input
           name="password"
-          type="password"
-          class="form-control"
           ng-model="InstallCtrl.setup.user.password"
+          class="form-control"
           bh-password-meter
-          required />
+          type="password" required>
 
-        <bh-strength-meter password="InstallForm.password.$viewValue"></bh-strength-meter>
+          <bh-strength-meter password="InstallForm.password.$viewValue"></bh-strength-meter>
 
-        <div class="help-block" ng-messages="InstallForm.password.$error"
-          ng-show="InstallForm.$submitted && InstallForm.password.$error.password">
+
+        <div class="help-block" ng-messages="InstallForm.password.$error" ng-show="InstallForm.$submitted && InstallForm.password.$error.password">
           <div ng-messages-include="modules/users/templates/password.policy.html"></div>
         </div>
       </div>
-      <div class="form-group" ng-class="{ 'has-error' : InstallForm.$submitted && InstallForm.repassword.$invalid, 'has-warning': InstallCtrl.badPasswords }">
-        <label class="control-label" translate>USERS.SET_PASSWORD_AGAIN</label>
-        <input name="repassword" type="password" class="form-control" ng-model="InstallCtrl.setup.user.repassword" required>
 
-        <div class="help-block" ng-messages="InstallForm.repassword.$error && !InstallForm.password.$error.password" ng-show="InstallForm.$submitted">
+      <div class="form-group has-feedback"
+        ng-class="{ 'has-error' : InstallForm.$submitted && !InstallCtrl.hasValidPassword() }">
+        <label class="control-label">
+          <span translate>FORM.LABELS.PASSWORD</span> (<span translate>FORM.LABELS.RETYPE</span>)
+        </label>
+
+        <input name="repassword" ng-model="InstallCtrl.setup.user.repassword" class="form-control" type="password" required>
+        <span ng-show="InstallForm.repassword.$dirty && !InstallCtrl.hasValidPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback text-danger" aria-hidden="true"></span>
+        <span ng-show="InstallForm.repassword.$dirty && InstallCtrl.hasValidPassword()" class="glyphicon glyphicon-ok form-control-feedback text-success" aria-hidden="true"></span>
+
+        <p class="help-block" ng-if="InstallForm.$submitted && !InstallCtrl.hasValidPassword()" data-no-password-match translate>
+          FORM.VALIDATION.PASSWORD_MATCH
+        </p>
+
+        <div class="help-block" ng-messages="InstallForm.repassword.$error" ng-show="InstallForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
+
     </div>
   </div>
 

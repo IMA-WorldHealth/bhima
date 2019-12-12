@@ -6,12 +6,6 @@
  * behaviour so it is a Fee Center page object
  */
 
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
-/* loading grid actions */
 const GA = require('../shared/GridAction');
 const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
@@ -34,60 +28,49 @@ class FeeCenterPage {
       .count();
   }
 
-  setDistributionKey(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
-        components.percentageInput.set(50, 'principal_1');
-        components.percentageInput.set(25, 'principal_2');
-        components.percentageInput.set(25, 'principal_3');
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+  async setDistributionKey(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await components.percentageInput.set(50, 'principal_1');
+    await components.percentageInput.set(25, 'principal_2');
+    await components.percentageInput.set(25, 'principal_3');
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
-  // Reset Distribution Keys for an auxiliary fee center
-  resetDistributionKey(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
 
-        $('[data-method="reset"]').click();
-        components.notification.hasSuccess();
-      });
+  // Reset Distribution Keys for an auxiliary fee center
+  async resetDistributionKey(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await $('[data-method="reset"]').click();
+    await components.notification.hasSuccess();
   }
 
   // Prevent initialization of distribution keys greater than 100 percent
   // Prevent initialization of distribution keys less than 100 percent
-  preventGreaterLess100(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
+  async preventGreaterLess100(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await components.percentageInput.set(19, 'principal_1');
+    await components.percentageInput.set(45, 'principal_2');
+    await components.percentageInput.set(76, 'principal_3');
 
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
-        components.percentageInput.set(19, 'principal_1');
-        components.percentageInput.set(45, 'principal_2');
-        components.percentageInput.set(76, 'principal_3');
+    await FU.buttons.submit();
+    await FU.exists(by.id('validation-error'), true);
 
-        FU.buttons.submit();
-        FU.exists(by.id('validation-error'), true);
+    await components.percentageInput.set(1, 'principal_1');
+    await components.percentageInput.set(2, 'principal_2');
+    await components.percentageInput.set(3, 'principal_3');
 
-        components.percentageInput.set(1, 'principal_1');
-        components.percentageInput.set(2, 'principal_2');
-        components.percentageInput.set(3, 'principal_3');
+    await FU.buttons.submit();
+    await FU.exists(by.id('validation-error'), true);
 
-        FU.buttons.submit();
-        FU.exists(by.id('validation-error'), true);
+    await components.percentageInput.set(33.3, 'principal_1');
+    await components.percentageInput.set(33.3, 'principal_2');
+    await components.percentageInput.set(33.4, 'principal_3');
 
-        components.percentageInput.set(33.3, 'principal_1');
-        components.percentageInput.set(33.3, 'principal_2');
-        components.percentageInput.set(33.4, 'principal_3');
-
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 }
 

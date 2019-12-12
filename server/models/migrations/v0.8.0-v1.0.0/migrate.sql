@@ -796,6 +796,7 @@ BEGIN
   -- lock the fiscal year and associated periods
   UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
   UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
+END $$
 
 DELIMITER $$
 /*
@@ -955,7 +956,7 @@ CREATE TABLE `distribution_key` (
 -- combine the two client reports into a single report
 UPDATE report SET `report_key` = 'annual-clients-report', title_key = 'REPORT.CLIENTS.TITLE' WHERE id = 17;
 UPDATE unit SET name = 'Annual Clients Report', `key` = 'REPORT.CLIENTS.TITLE',
-  description = 'Annual Clients Report', parent = 144, url = '/modules/reports/clients', paht = '/reports/annual-clients-report'
+  description = 'Annual Clients Report', parent = 144, url = '/modules/reports/clients', `path` = '/reports/annual-clients-report'
 WHERE id = 199;
 
 UPDATE role_unit SET unit_id = 199 WHERE unit_id = 159;

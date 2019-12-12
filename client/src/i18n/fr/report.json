@@ -13,6 +13,19 @@
       "TITLE" : "Balance Âgée des Conventionnés",
       "DESCRIPTION" : "Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
+    "ANALYSIS_AUX_CASHBOXES": {
+      "TITLE": "Analyse des caisses auxiliaires",
+      "AUXILIARY_TRANSFERT": "Caisse auxiliaire vers compte de transfert",
+      "DESCRIPTION": "Ce rapport permet de faire la suivie mensuel des encaissements et décaissements des caisses auxilliaires",
+      "STATUS": {
+        "CORRECT": "Correcte",
+        "TRANSFERT_GREATER": "Le montant transferé est supérieur",
+        "TRANSFERT_LOWWER": "Le montant transferé est inférieure",
+        "TRANSFERT_PENDING": "Transfère en attente"
+      },
+      "TARGET": "Cible",
+      "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
+    },
     "BY_ASC": "Par ordre croissant",
     "BY_DESC": "Par ordre décroissant",
     "BALANCE": "Rapport de la Balance",
@@ -27,7 +40,8 @@
     "CASH_EXPENSE" : "Dépenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE" : "Journal de Ventilation",
-      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie.",
+      "GAIN_OR_LOSS_ON_EXCHANGE" : "Gain ou Perte sur Échange"
     },
     "CASHFLOW" : {
       "TITLE" : "Rapports de flux de trésorerie physique",
@@ -43,6 +57,11 @@
     "CASH_INCOME" : "Recettes",
     "CHART_OF_ACCOUNTS" : "Plan Comptable",
     "CLOSING_BALANCE" : "Balance à la cloture",
+    "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "HIDE_ACCOUNT_DETAILS": "Cacher les détailles des comptes",
+      "HIDE_DETAILS_TYPES": "Cacher les détailles des types",
+      "TITLE": "Rapport d'analyse configurable"
+    },
     "CONFIGURATION" : "Configuration rapport",
     "DELETE" : "Supprimer un rapport",
     "DOWNLOAD" : "Télécharger",
@@ -62,7 +81,14 @@
     "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
     "INCOME_REPORT" : "Rapport des Recettes",
-    "MONTHLY_BALANCE" : "Balance Mensuelle",
+    "MONTHLY_BALANCE": {
+      "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
+      "TITLE": "Analyse mensuel de la Balance"
+    },
+    "SYSTEM_USAGE_STAT" : {
+      "TITLE" : "Statistique d'utilisation du système",
+      "DESCRIPTION" : "Ce rapport produit, pour une période donnée, les statistiques suivantes: total des patients enregistrés par heure de la journée, total des factures établies par heure de la journée et total des paiements en espèces effectués par heure de la journée"
+    },
     "OPEN_DEBTORS": {
       "TITLE" : "Débiteurs endettés",
       "TREE" : "Dettes des Débiteurs",
@@ -73,6 +99,10 @@
       "SHOW_DETAILED_VIEW_HELP" : "L'activation de cette option comprendra la dernière date à laquelle le débiteur a payé et la dernière date où ils ont été facturés. Ceci est utile pour comprendre quand ils étaient à l'établissement. Cependant, cela rendra la requête plus lent.",
       "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
+    },
+    "DEBTOR_SUMMARY" : {
+      "TITLE": "Rapport sommaire des débiteurs",
+      "DESCRIPTION": "Ce rapport détaille le montant à payer dans chaque groupe d'inventaire pour une facture pendant une période, pour un groupe debor spécifique"
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
@@ -85,6 +115,10 @@
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
       "TITLE": "Situation financière d'un Patient"
     },
+    "PURCHASE_ORDER_ANALYSIS": {
+      "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
+      "TITLE": "Analyse de commande d'achat"
+    },
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
       "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
@@ -93,6 +127,7 @@
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",
+    "BY" : "par",
     "PRODUCED_DATE": "Date de génération",
     "PRODUCED_ON": "Produit le",
     "SINCE": "Depuis",
@@ -176,7 +211,13 @@
       "INCLUDE_SERVICE_EXIT" : "Inclure les distributions vers les services",
       "INCLUDE_DEPOT_EXIT" : "Inclure les distributions vers d'autres dépôts",
       "INCLUDE_LOSS_EXIT" : "Inclure les pertes de stocks",
-      "SHOW_DETAILS" : "Afficher les details"
+      "SHOW_DETAILS" : "Afficher les details",
+      "ENTRY_REPORT": "Rapports des entrées de stocks",
+      "ENTRY_REPORT_DESCRIPTION": "Ce rapport affiche les différentes entrées de stock qui ont eu lieu dans les dépots",
+      "INCLUDE_PURCHASE_ENTRY": "Inclure les entrées en provenance des achats",
+      "INCLUDE_INTEGRATION_ENTRY": "Inclure les entrées en provenance des intégrations",
+      "INCLUDE_DONATION_ENTRY": "Inclure les entrées en provenance des donations",
+      "INCLUDE_TRANSFER_ENTRY": "Inclure les entrées en provenance des transferts"
     },
     "UTIL":{
       "CANCEL_PREVIEW" : "Fermer l'Aperçu",
@@ -210,7 +251,21 @@
       "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance.",
       "INCLUDE_UNPOSTED_RECORDS" : "Inclure les valeurs non-postée",
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "",
-      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés",
+      "SHOW_DEBTS_DETAILS":"Afficher les details des dettes",
+      "SHOW_DEBTS_DETAILS_HELP":"Cette option permet d'avoir les noms de chaque membre du groupe avec leur dette",
+      "SHOW_EMPLOYEE_SUPPORT":"Afficher les prises en charge des employés",
+      "SHOW_EMPLOYEE_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par les employés",
+      "SHOW_OTHER_SUPPORT":"Afficher les prises en charge des organisations",
+      "SHOW_OTHER_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par des organisations qui ne sont pas des employés",
+      "SHOW_DETAILS":"Afficher les details",
+      "SHOW_DETAILS_HELP":"Cette option permet de voir les details",
+      "SHOW_REMAINING_DETAILS":"Afficher les details sur les restes (dettes)",
+      "SHOW_REMAINING_DETAILS_HELP":"Cette option permet de voir les details sur les restes (dettes)",
+      "SHOW_PAID_DETAILS":"Afficher les details sur les paiements",
+      "SHOW_PAID_DETAILS_HELP":"Cette option permet de voir les details sur les paiements",
+      "SHOW_INVOICED_DETAILS":"Afficher les details sur les factures",
+      "SHOW_INVOICED_DETAILS_HELP":"Cette option permet de voir les details sur les factures"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
@@ -353,7 +408,28 @@
       "APPROVED_BY" : "Approuvé par",
       "RECEIVER" : "Recepteur",
       "DEPOT_MANAGER" : "Gestionnaire du dépot",
-      "SUPPLIER" : "Fournisseur"
+      "SUPPLIER" : "Fournisseur / Autre"
+    },
+    "CLIENT_SUMMARY" : {
+      "TITLE":"Rapport des dettes des clients",
+      "DESCRIPTION":"Ce rapport montre les dettes des differents membres d'un groupe de debiteur",
+      "EMPLOYEES_DEBTS":"Dettes des employés",
+      "NOT_EMPLOYEES_DEBTS":"Dettes des non-employés",
+      "EMPLOYEES_SUPPORT":"Prise en charge des patients par les employés (A recouvrir)"
+    },
+    "CLIENT_SUPPORT" : {
+      "TITLE":"Rapport des prises en charge",
+      "DESCRIPTION":"Ce rapport affiche les informations sur les prises en charge des patients",
+      "EMPLOYEES_SUPPORT":"Prises en charge par les employés",
+      "OTHERS_SUPPORT":"Autres prises en charge",
+      "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Rapport des recouvrements sur les factures",
+      "DESCRIPTION":"Ce rapport montre les revenus tirés des factures avec les dettes restantes",
+      "REMAINING" : "Reste",
+      "INVOICED" : "Facturé",
+      "PAID" : "Payé"
     }
   }
 }

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 FiscalOpeningBalanceController.$inject = [
   '$state', 'FiscalService', 'NotifyService', 'uiGridConstants',
-  'SessionService', 'bhConstants', 'TreeService',
+  'SessionService', 'bhConstants', 'TreeService', 'GridExportService',
 ];
 
 /**
@@ -16,11 +16,9 @@ FiscalOpeningBalanceController.$inject = [
  *    year is automatically imported as the beginning balance of the next year.
  *  2) If there is no previous fiscal year, it means that this is the first year
  *    ever created.  A user can manually define the opening balances.
- *
- * TODO(@jniles) - use the tree to dynamically compute the title accounts'
- * balances.
  */
-function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants, Session, bhConstants, Tree) {
+function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
+  Session, bhConstants, Tree, GridExport) {
   const vm = this;
   const fiscalYearId = $state.params.id;
 
@@ -33,7 +31,7 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
   vm.onBalanceChange = onBalanceChange;
 
   // grid options
-  vm.indentTitleSpace = 20;
+  vm.indentTitleSpace = 15;
   vm.gridApi = {};
 
   function computeBoldClass(grid, row) {
@@ -52,7 +50,8 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
 
   const columns = [{
     field : 'number',
-    displayName : '',
+    displayName : 'ACCOUNT.LABEL',
+    headerCellFilter : 'translate',
     cellClass : computeBoldClass,
     width : 100,
   }, {
@@ -99,6 +98,22 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
     showColumnFooter  : true,
     columnDefs : columns,
     onRegisterApi,
+  };
+
+  const exporter = new GridExport(vm.gridOptions, 'all', 'visible');
+
+  function exportRowsFormatter(rows) {
+    return rows
+      .filter(account => !account.isTitleAccount)
+      .map(account => {
+        const row = [account.number, account.label, account.debit, account.credit];
+        return row.map(value => ({ value }));
+      });
+  }
+
+  vm.export = () => {
+    const fname = `${vm.fiscal.label}`;
+    return exporter.exportToCsv(fname, exporter.defaultColumnFormatter, exportRowsFormatter);
   };
 
   startup();
@@ -275,4 +290,5 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
 
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
+
 }

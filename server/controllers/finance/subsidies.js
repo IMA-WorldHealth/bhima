@@ -1,4 +1,3 @@
-
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 
@@ -24,14 +23,12 @@ function list(req, res, next) {
   let sql;
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at,
+    sql = `SELECT subsidy.id, subsidy.account_id, subsidy.label, subsidy.description, subsidy.value, subsidy.created_at,
       subsidy.updated_at, account.number
       FROM subsidy
       JOIN account ON account.id = subsidy.account_id`;
   } else {
-    sql =
-      'SELECT id, label, value FROM subsidy';
+    sql = 'SELECT id, label, value FROM subsidy';
   }
 
   db.exec(sql)

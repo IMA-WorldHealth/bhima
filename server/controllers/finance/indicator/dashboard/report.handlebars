@@ -70,32 +70,65 @@
     <div class="row">
       <div class="col-xs-12">
         <br/>
-      {{#if display.hospitalization}}
-        <h5><u>{{translate 'TREE.DASHBOARDS.HOSPITALIZATION'}}</u></h5>
-        <table class="table table-condensed table-bordered table-report">
-          <thead>
-            <th style="width: 350px !important">{{translate 'FORM.LABELS.INDICATOR'}}</th>
-            <th>{{translate 'FORM.LABELS.VALUE'}}</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{translate 'DASHBOARD.BEDS_OCCUPATION_RATE'}}</td>
-              <td>{{ ignoreNan indicators.hospitalization.bedOccupationRate.value '%'}}</td>
-            </tr>
-            <tr>
-              <td>{{translate 'DASHBOARD.HOSP_DAYS'}}</td>
-              <td>{{ ignoreNan indicators.hospitalization.averageHospitalizationDays.value ''}}</td>
-            </tr>
-            <tr>
-              <td>{{translate 'DASHBOARD.HOSP_BY_DAY'}}</td>
-              <td>{{ ignoreNan indicators.hospitalization.dailyHospitalization.value ''}}</td>
-            </tr>
-            <tr>
-              <td>{{translate 'DASHBOARD.DEATH_RATE'}}</td>
-              <td>{{ ignoreNan indicators.hospitalization.deathRate.value '%'}}</td>
-            </tr>
-          </tbody>
-        </table>
+        {{#if display.hospitalization}}
+          <h5>
+            <u>{{translate 'TREE.DASHBOARDS.HOSPITALIZATION'}}</u>
+            {{#if serviceName}}<b>: {{ serviceName }}</b>{{/if}}
+          </h5>
+
+          {{#each indicators.hospitalizationByProject as |value key|}}
+            <strong>{{key}}</strong>
+              <table class="table table-condensed table-bordered table-report">
+              <thead>
+                <th style="width: 350px !important">{{translate 'FORM.LABELS.INDICATOR'}}</th>
+                <th style="width: 200px !important">{{translate 'FORM.LABELS.VALUE'}}</th>
+                <th>{{translate 'DASHBOARD.NORM'}}</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{{translate 'DASHBOARD.INDICATORS_FILES.TOTAL_BED'}}</td>
+                  <td>{{ ignoreNan value.totalBeds.value ''}}</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.HOSP_DAYS'}}</td>
+                  <td>{{ ignoreNan value.totalDayRealized.value ''}}</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.INDICATORS_FILES.TOTAL_HOSPI_PATIENT'}}</td>
+                  <td>{{ ignoreNan value.totalHospitalizedPatient.value ''}}</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.INDICATORS_FILES.TOTAL_DEATH'}}</td>
+                  <td>{{ ignoreNan value.totalDeath.value ''}}</td>
+                  <td>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.BEDS_OCCUPATION_RATE'}}</td>
+                  <td>{{ ignoreNan value.bedOccupationRate.value '%'}}</td>
+                  <td>{{translate 'DASHBOARD.BEDS_OCCUPATION_RATE_NORM'}}</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.HOSP_DAYS'}}</td>
+                  <td>{{ ignoreNan value.averageHospitalizationDays.value ''}}</td>
+                  <td>{{translate 'DASHBOARD.HOSP_DAYS_NORM'}}</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.HOSP_BY_DAY'}}</td>
+                  <td>{{ ignoreNan value.dailyHospitalization.value ''}}</td>
+                  <td>{{translate 'DASHBOARD.HOSP_BY_DAY_NORM'}}</td>
+                </tr>
+                <tr>
+                  <td>{{translate 'DASHBOARD.DEATH_RATE'}}</td>
+                  <td>{{ ignoreNan value.deathRate.value '%'}}</td>
+                  <td>{{translate 'DASHBOARD.DEATH_RATE_NORM'}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+          {{/each}}
         {{/if}}
       </div>
     </div>
@@ -120,12 +153,12 @@
               <td>{{ ignoreNan indicators.staff.dailyVisit.value ''}}</td>
             </tr>
             <tr>
-              <td>{{translate 'DASHBOARD.STAFF_VISIT_BY_DAY'}}</td>
+              <td>{{translate 'DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF'}}</td>
               <td>{{ ignoreNan indicators.staff.chargeOverStaff.value ''}}</td>
             </tr>
             <tr>
-              <td>{{translate 'DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF'}}</td>
-              <td>{{ ignoreNan indicators.staff.chargeOverStaff.value ''}}</td>
+              <td>{{translate 'DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED'}}</td>
+              <td>{{ ignoreNan indicators.staff.chargeOverMedicalStaff.value ''}}</td>
             </tr>
             <tr>
               <td>{{translate 'DASHBOARD.STAFF_SURGERY_BY_DOCTOR'}}</td>

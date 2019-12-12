@@ -38,6 +38,8 @@ const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
 const entities = require('../controllers/admin/entities');
+const cron = require('../controllers/admin/cron');
+const cronEmailReport = require('../controllers/admin/cronEmailReport');
 
 // payroll routes
 const payrollConfig = require('../controllers/payroll/configuration');
@@ -47,7 +49,9 @@ const accountConfig = require('../controllers/payroll/accounts');
 const weekendConfig = require('../controllers/payroll/weekendConfig');
 const employeeConfig = require('../controllers/payroll/employeeConfig');
 const multiplePayroll = require('../controllers/payroll/multiplePayroll');
-
+const multiplePayrollIndice = require('../controllers/payroll/multiplePayrollIndice');
+const staffingIndices = require('../controllers/payroll/staffingIndices');
+const staffingIndicesReport = require('../controllers/payroll/staffingIndices/report');
 // medical routes
 const patients = require('../controllers/medical/patients');
 const patientGroups = require('../controllers/medical/patientGroups');
@@ -93,6 +97,7 @@ const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
 const voucherTools = require('../controllers/finance/voucherTools');
+const systemUsage = require('../controllers/finance/reports/sytemUsage');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
@@ -100,8 +105,6 @@ const transactions = require('../controllers/finance/transactions');
 
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
-
-const operating = require('../controllers/finance/reports/operating/index');
 
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
@@ -125,6 +128,11 @@ const accountReferenceType = require('../controllers/finance/accounts/accountRef
 const indicators = require('../controllers/finance/indicator');
 const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
+const debtorSummaryReport = require('../controllers/finance/reports/debtors/summaryReport');
+const clientDebts = require('../controllers/finance/reports/client_debts');
+const clientSupport = require('../controllers/finance/reports/client_support');
+const realizedProfit = require('../controllers/finance/reports/realized_profit');
+
 // periods
 const period = require('../controllers/finance/period');
 
@@ -134,6 +142,16 @@ const lots = require('../controllers/stock/lots');
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
+
+// Data Kit
+const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
+const choicesListManagement = require('../controllers/admin/choicesListManagement');
+const surveyForm = require('../controllers/admin/surveyForm');
+const fillFormsData = require('../controllers/admin/fillFormsData');
+const displayMetadata = require('../controllers/admin/displayMetadata');
+const displayMetadataReport = require('../controllers/admin/metadataReport');
+const configurationAnalysisTools = require('../controllers/finance/configurationAnalysisTools');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -179,6 +197,11 @@ exports.configure = function configure(app) {
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
 
+  app.delete('/locations/countries/:uuid', locations.delete.country);
+  app.delete('/locations/provinces/:uuid', locations.delete.province);
+  app.delete('/locations/sectors/:uuid', locations.delete.sector);
+  app.delete('/locations/villages/:uuid', locations.delete.village);
+
   app.post('/groups/:key/:id', groups.updateSubscriptions);
 
   // API for account type routes CRUD
@@ -221,6 +244,7 @@ exports.configure = function configure(app) {
   // API for service routes
   app.post('/services', services.create);
   app.get('/services', services.list);
+  app.get('/services/count', services.countServiceByProject);
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
@@ -293,6 +317,9 @@ exports.configure = function configure(app) {
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
   app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
 
+  app.get('/inventory/log/:uuid', inventory.logs);
+  app.get('/inventory/download/log/:uuid', inventory.logDownLoad);
+
   /** Inventory Group API endpoints */
   app.post('/inventory/groups', inventory.createInventoryGroups);
   app.get('/inventory/groups', inventory.listInventoryGroups);
@@ -326,19 +353,8 @@ exports.configure = function configure(app) {
   app.post('/depots', depots.create);
   app.delete('/depots/:uuid', depots.remove);
 
-  /* Depot distributions routes */
-  app.get('/depots/:depotId/distributions', depots.listDistributions);
-  app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
-
-  /**
-   * Depot inventories and lots routes
-   * get the lots of a particular inventory item in the depot
-   * @todo -- should this be renamed? /stock? /lots?
-   */
-  app.get('/depots/:depotId/inventory', depots.listAvailableLots);
-  app.get('/depots/:depotId/inventory/:uuid', depots.detailAvailableLots);
-  app.get('/depots/:depotId/expired', depots.listExpiredLots);
-  app.get('/depots/:depotId/expirations', depots.listStockExpirations);
+  // special route for searching depot by name
+  app.get('/depots/search/name', depots.searchByName);
 
   // general ledger controller
   // transitioning to a more traditional angular application architecture
@@ -371,6 +387,26 @@ exports.configure = function configure(app) {
   app.put('/payroll_config/:id', payrollConfig.update);
   app.delete('/payroll_config/:id', payrollConfig.delete);
 
+  app.post('/staffing_indices', staffingIndices.create);
+  app.get('/staffing_indices', staffingIndices.list);
+  app.get('/staffing_indices/:uuid', staffingIndices.detail);
+  app.get('/staffing_indices/export/report', staffingIndicesReport.document);
+  app.delete('/staffing_indices/:uuid', staffingIndices.remove);
+  app.put('/staffing_indices/:uuid', staffingIndices.update);
+
+  app.get('/staffing_function_indices/', staffingIndices.functionIndices.list);
+  app.get('/staffing_function_indices/:uuid', staffingIndices.functionIndices.detail);
+  app.post('/staffing_function_indices', staffingIndices.functionIndices.create);
+  app.put('/staffing_function_indices/:uuid', staffingIndices.functionIndices.update);
+  app.delete('/staffing_function_indices/:uuid', staffingIndices.functionIndices.delete);
+
+  app.get('/staffing_grade_indices/', staffingIndices.gradeIndices.list);
+  app.get('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.detail);
+  app.post('/staffing_grade_indices', staffingIndices.gradeIndices.create);
+  app.put('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.update);
+  app.delete('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.delete);
+
+
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
@@ -378,6 +414,7 @@ exports.configure = function configure(app) {
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
+  app.get('/reports/purchases/purchases_analysis', stockReports.purchaseOrderAnalysis.report);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
@@ -394,11 +431,11 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
   app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
-
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
+  app.get('/reports/finance/monthly_balance', financeReports.monthlyBalance.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
@@ -411,10 +448,22 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
   app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
-
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
+  app.get('/reports/finance/operating', financeReports.operating.document);
+  app.get('/reports/finance/debtorSummary', debtorSummaryReport.summaryReport);
+  app.get('/reports/finance/clientDebts', clientDebts.report);
+  app.get('/reports/finance/clientSupport', clientSupport.report);
+  app.get('/reports/finance/realizedProfit', realizedProfit.report);
+
+  app.get('/reports/finance/systemUsageStat', systemUsage.document);
+
+  app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
+  app.get('/reports/finance/configurable_analysis_report', financeReports.configurableAnalysisReport.report);
+
+  // visits reports
+  app.get('/reports/visits', medicalReports.visitsReports.document);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -439,6 +488,10 @@ exports.configure = function configure(app) {
 
   app.get('/patients/visits', patients.visits.list);
   app.get('/patients/visits/:uuid', patients.visits.detail);
+
+  // patients merge routes
+  app.get('/patients/merge/count_employees', patients.merge.countEmployees);
+  app.post('/patients/merge', patients.merge.mergePatients);
 
   // Patients API
   app.get('/patients', patients.read);
@@ -541,9 +594,12 @@ exports.configure = function configure(app) {
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
   app.get('/prices/download/list', priceListPreport.downloadRegistry);
+  app.get('/prices/download/template', priceList.downloadTemplate);
+  app.get('/prices/download/filled_template', priceList.downloadFilledTemplate);
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
   app.post('/prices/item', priceList.createItem);
+  app.post('/prices/item/import', upload.middleware('csv', 'file'), priceList.importItem);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
   app.delete('/prices/item/:uuid', priceList.deleteItem);
@@ -587,6 +643,12 @@ exports.configure = function configure(app) {
   app.post('/multiple_payroll/:id/multiConfiguration', multiplePayroll.setMultiConfiguration.config);
   app.post('/multiple_payroll/:id/commitment', multiplePayroll.makeCommitment.config);
 
+  app.get('/multiple_payroll_indice/', multiplePayrollIndice.read);
+  app.post('/multiple_payroll_indice/', multiplePayrollIndice.create);
+
+  app.get('/multiple_payroll_indice/parameters/:payroll_config_id', multiplePayrollIndice.parameters.detail);
+  app.post('/multiple_payroll_indice/parameters/', multiplePayrollIndice.parameters.create);
+  app.get('/multiple_payroll_indice/reports/', multiplePayrollIndice.reports.document);
   // discounts
   app.get('/discounts', discounts.list);
   app.get('/discounts/:id', discounts.detail);
@@ -628,6 +690,7 @@ exports.configure = function configure(app) {
   app.get('/rubrics', rubrics.list);
   app.get('/rubrics/:id', rubrics.detail);
   app.post('/rubrics', rubrics.create);
+  app.post('/rubrics/import_indexes', rubrics.importIndexes);
   app.put('/rubrics/:id', rubrics.update);
   app.delete('/rubrics/:id', rubrics.delete);
 
@@ -688,7 +751,6 @@ exports.configure = function configure(app) {
   app.post('/weekend_config', weekendConfig.create);
   app.put('/weekend_config/:id', weekendConfig.update);
   app.get('/weekend_config/:id/days', weekendConfig.listConfig);
-  app.post('/weekend_config/:id/days', weekendConfig.createConfig);
   app.delete('/weekend_config/:id', weekendConfig.delete);
 
   // Employee payroll Configuration api
@@ -728,6 +790,17 @@ exports.configure = function configure(app) {
   app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
   app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
 
+  // API routes for /stock/requisition end point
+  app.get('/stock/requisition', stock.requisition.list);
+  app.get('/stock/requisition/:uuid', stock.requisition.details);
+  app.post('/stock/requisition', stock.requisition.create);
+  app.put('/stock/requisition/:uuid', stock.requisition.update);
+  app.delete('/stock/requisition/:uuid', stock.requisition.deleteRequisition);
+
+  // API routes for /stock/requestor_type end point
+  app.get('/stock/requestor_type', stock.requestorType.list);
+  app.get('/stock/requestor_type/:id', stock.requestorType.details);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
@@ -750,6 +823,7 @@ exports.configure = function configure(app) {
 
   // stock reports API
   app.get('/reports/stock/exit', stockReports.stockExitReport);
+  app.get('/reports/stock/entry', stockReports.stockEntryReport);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
@@ -761,6 +835,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
   app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
   app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
+  app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
 
   app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
   app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
@@ -781,9 +856,6 @@ exports.configure = function configure(app) {
   app.post('/install', install.proceedInstall);
 
   app.get('/diagnoses', diagnoses.list);
-
-  app.get('/reports/finance/operating', operating.document);
-
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
 
@@ -814,6 +886,13 @@ exports.configure = function configure(app) {
   app.put('/entities/types/:id', entities.types.update);
   app.delete('/entities/types/:id', entities.types.remove);
   app.post('/entities/types', entities.types.create);
+
+  // entities groups API
+  app.get('/entities/groups', entities.groups.list);
+  app.get('/entities/groups/:uuid', entities.groups.details);
+  app.put('/entities/groups/:uuid', entities.groups.update);
+  app.delete('/entities/groups/:uuid', entities.groups.remove);
+  app.post('/entities/groups/', entities.groups.create);
 
   // entities API
   app.get('/entities', entities.list);
@@ -912,4 +991,61 @@ exports.configure = function configure(app) {
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
   app.get('/reports/indicatorsReport', indicatorRerpor.report);
+
+  // API cron
+  app.get('/crons', cron.list);
+  app.get('/crons/:id', cron.details);
+  app.post('/crons', cron.create);
+  app.put('/crons/:id', cron.update);
+  app.delete('/crons/:id', cron.remove);
+
+  // API cron_email_report
+  app.get('/cron_email_reports', cronEmailReport.list);
+  app.get('/cron_email_reports/:id', cronEmailReport.details);
+  app.post('/cron_email_reports', cronEmailReport.create);
+  app.post('/cron_email_reports/:id', cronEmailReport.send);
+  app.delete('/cron_email_reports/:id', cronEmailReport.remove);
+
+  // API for Data Collector Management routes crud
+  app.get('/data_collector_management', dataCollectorManagement.list);
+  app.get('/data_collector_management/:id', dataCollectorManagement.detail);
+  app.post('/data_collector_management', dataCollectorManagement.create);
+  app.put('/data_collector_management/:id', dataCollectorManagement.update);
+  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);
+
+  // API for CHOISES LIST MANAGEMENT routes crud
+  app.get('/choices_list_management', choicesListManagement.list);
+  app.get('/choices_list_management/:id', choicesListManagement.detail);
+  app.post('/choices_list_management', choicesListManagement.create);
+  app.put('/choices_list_management/:id', choicesListManagement.update);
+  app.delete('/choices_list_management/:id', choicesListManagement.delete);
+
+  // API for SURVEY FORM routes crud
+  app.get('/survey_form', surveyForm.list);
+  app.get('/survey_form/listSurveyformtype', surveyForm.listSurveyformtype);
+  app.get('/survey_form/:id', surveyForm.detail);
+  app.post('/survey_form', surveyForm.create);
+  app.put('/survey_form/:id', surveyForm.update);
+  app.delete('/survey_form/:id', surveyForm.delete);
+
+  // API for Fill in the forms of the data
+  app.get('/fill_form/:uuid', fillFormsData.detail);
+  app.post('/fill_form', fillFormsData.create);
+  app.post('/fill_form/restoreImage', fillFormsData.restoreImage);
+  app.post('/fill_form/:uuid/:key/image', upload.middleware('pics', 'image'), fillFormsData.uploadImage);
+  app.put('/fill_form/:uuid', fillFormsData.update);
+
+  // API for DISPLAY METADATA routes crud
+  app.get('/display_metadata', displayMetadata.list);
+  app.get('/display_metadata/card', displayMetadataReport.metadataCard);
+  app.get('/data_kit/report', displayMetadataReport.reportMetadata);
+  app.delete('/display_metadata/:uuid', displayMetadata.delete);
+
+  // API for Configuration Analysis Tools routes crud
+  app.get('/configuration_analysis_tools', configurationAnalysisTools.list);
+  app.get('/analysis_tools_type', configurationAnalysisTools.toolsType);
+  app.get('/configuration_analysis_tools/:id', configurationAnalysisTools.detail);
+  app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
+  app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);
+  app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 };

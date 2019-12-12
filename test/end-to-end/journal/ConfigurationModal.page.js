@@ -14,7 +14,7 @@ class JournalConfigurationModal {
   // toggle the column checkboxes to the following values
   // NOTE - these values come from the database column names, not the i18n text
   // name
-  setColumnCheckboxes(array) {
+  async setColumnCheckboxes(array) {
     const inputs = this.modal.$('.modal-body').all(by.css('input[type="checkbox"]'));
 
     // deselect inputs that are selected and shouldn't be
@@ -37,11 +37,11 @@ class JournalConfigurationModal {
 
   // reset the default column selection
   setDefaultColumnCheckboxes() {
-    this.buttons.reset();
+    return this.buttons.reset();
   }
 
   submit() {
-    this.buttons.submit();
+    return this.buttons.submit();
   }
 }
 module.exports = JournalConfigurationModal;

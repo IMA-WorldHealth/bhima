@@ -1,5 +1,5 @@
 /* eslint global-require: "off" */
-const rewire = require('rewire');
+const rewire = require('@ima-worldhealth/rewire');
 const { expect } = require('chai');
 
 

@@ -13,6 +13,7 @@
     "padded-blocks" : "off",
     "array-bracket-spacing" : "warn",
     "prefer-arrow-callback" : "warn",
+    "class-methods-use-this" : "off",
     "indent" : ["error", 2],
     "comma-dangle" : ["error", "always-multiline"],
     "key-spacing" : ["warn", {
@@ -34,9 +35,6 @@
     "no-plusplus" : "off",
     "max-len" : ["warn", 120],
     "func-names" : ["warn", "as-needed"],
-    "no-underscore-dangle" : ["error", {
-      "allowAfterThis" : true
-    }],
     "quotes" : ["error", "single", { "allowTemplateLiterals" : true }],
     "arrow-parens" : "off",
     "arrow-body-style" : "off",

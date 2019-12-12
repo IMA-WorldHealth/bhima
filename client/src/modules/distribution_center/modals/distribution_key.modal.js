@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 DistributionKeyModalController.$inject = [
   '$state', 'NotifyService', 'DistributionCenterService',
-  'SessionService', '$uibModalInstance', 'FeeCenterService', 'settings', '$translate',
+  'SessionService', '$uibModalInstance', 'FeeCenterService', 'settings', '$translate', 'util',
 ];
 
 function DistributionKeyModalController(
   $state, Notify, DistributionCenter, Session, ModalInstance,
-  FeeCenters, settings, $translate,
+  FeeCenters, settings, $translate, util,
 ) {
   const vm = this;
 
@@ -50,6 +50,9 @@ function DistributionKeyModalController(
     Object.keys(vm.settings.values).forEach((key) => {
       sumDistributed += vm.settings.values[key];
     });
+
+    // sumDistributed sum must always be 100 for 100%
+    sumDistributed = util.roundDecimal(sumDistributed, 0);
 
     vm.invalidBreakDown = sumDistributed !== 100;
     vm.diffPercentage = Math.abs(sumDistributed - 100);

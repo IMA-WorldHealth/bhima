@@ -60,17 +60,17 @@
               {{!-- entry --}}
               <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td>
               <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
-              <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
 
               {{!-- exit --}}
               <td class="text-right">{{#if exit.quantity}}{{exit.quantity}}{{/if}}</td>
               <td class="text-right">{{#if exit.unit_cost}}{{precision exit.unit_cost 4}}{{/if}}</td>
-              <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../metadata.enterprise.currency_id}}{{/if}}</td>
 
               {{!-- stock --}}
               <td class="text-right" style="background-color:#efefef;">{{stock.quantity}}</td>
               <td class="text-right" style="background-color:#efefef;">{{precision stock.unit_cost 4}}</td>
-              <td class="text-right" style="background-color:#efefef;border-right: 1px solid #000;">{{currency stock.value ../../metadata.enterprise.currency_id}}</td>
+              <td class="text-right" style="background-color:#efefef;border-right: 1px solid #000;">{{currency stock.value ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
         </tbody>
@@ -82,7 +82,7 @@
             <th class="text-right">{{ totals.exit}}</th> <th></th> <th></th>
             <th class="text-right">{{ result.stock.quantity}}</th>
             <th class="text-right">{{precision result.stock.unit_cost 4}}</th>
-            <th class="text-right">{{currency result.stock.value ../../metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency result.stock.value metadata.enterprise.currency_id}}</th>
           </tr>
         </tfoot>
       </table>

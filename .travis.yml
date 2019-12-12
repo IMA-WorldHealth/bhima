@@ -1,8 +1,10 @@
 sudo: required
-dist: trusty
+
+jdk:
+  - oraclejdk8
 
 before_install:
-  - jdk_switcher use oraclejdk8
+  - ./sh/setup-ci-env.sh
   - ./sh/travis.sh
 
 services:
@@ -11,18 +13,15 @@ services:
 
 language: node_js
 node_js:
-  - lts/dubnium
+  - lts/erbium
 
 before_script:
-  - sudo /etc/init.d/mysql restart
-  - export DISPLAY=:99.0
   - yarn build
-  - yarn webdriver-manager update --gecko false
+  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:
-  - mkdir test/artifacts
-  - yarn test
+  - yarn test:ends
 
 after_script: greenkeeper-lockfile-upload
 

@@ -42,9 +42,7 @@ function importStock(req, res, next) {
 
   // be sure that the depot exist
   db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid)
-    .then(() => {
-      return util.formatCsvToJson(filePath);
-    })
+    .then(() => util.formatCsvToJson(filePath))
     .then(data => {
       if (!hasValidDataFormat(data)) {
         throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');

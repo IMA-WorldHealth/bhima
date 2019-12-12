@@ -11,51 +11,49 @@ function WardManagementTests() {
   // navigate to the page
   before(() => helpers.navigate('#/ward/configuration'));
 
-  it('should add a new Ward', () => {
-    page.openCreateModal();
-    page.setName('Ward accouchement');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Ward', async () => {
+    await page.openCreateModal();
+    await page.setName('Ward accouchement');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward', () => {
-    page.openCreateModal();
-    page.setName('Ward 1');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Ward', async () => {
+    await page.openCreateModal();
+    await page.setName('Ward 1');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward linked to a service', () => {
-    page.openCreateModal();
-    page.setName('Ward linked to a service');
-    page.selectService('Medecine Interne');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Ward linked to a service', async () => {
+    await page.openCreateModal();
+    await page.setName('Ward linked to a service');
+    await page.selectService('Medecine Interne');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should add a new Ward', () => {
-    page.openCreateModal();
-    page.setName('Test');
-    page.setDescription('Ward description');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Ward', async () => {
+    await page.openCreateModal();
+    await page.setName('Test');
+    await page.setDescription('Ward description');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should edit Ward', () => {
-    page.editWard('Ward 1');
-    page.setName('Ward A');
-    page.setDescription('Ward updated');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should edit Ward', async () => {
+    await page.editWard('Ward 1');
+    await page.setName('Ward A');
+    await page.setDescription('Ward updated');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-
-  it('should delete the test Ward', () => {
-    page.deleteWard('Test');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should delete the test Ward', async () => {
+    await page.deleteWard('Test');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
-
 }
 
 describe('Ward Management Tests', WardManagementTests);

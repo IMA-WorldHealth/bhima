@@ -10,7 +10,6 @@
  * @requires filter
  */
 
-
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 
@@ -19,8 +18,6 @@ const PERIOD_13_NUM = 13;
 
 exports.list = list;
 exports.find = find;
-exports.getPeriodDiff = getPeriodDiff;
-exports.isInSameFiscalYear = isInSameFiscalYear;
 
 /**
  * @method list
@@ -72,33 +69,3 @@ function find(options) {
   const parameters = filters.parameters();
   return db.exec(query, parameters);
 }
-
-function isInSameFiscalYear(opt) {
-  if (opt.periods.length !== 2) {
-    return false;
-  }
-  const sql = `
-  SELECT
-    p.fiscal_year_id
-  FROM
-    period AS p
-  WHERE p.id IN (${opt.periods.join(',')})
-  GROUP BY
-    p.fiscal_year_id`;
-
-  return db.exec(sql)
-    .then((res) => {
-      return res.length === 1;
-    });
-}
-
-function getPeriodDiff(periodIdA, periodIdB) {
-  const sql =
-  `
-  SELECT
-  DATEDIFF(
-   (SELECT start_date FROM period where id = ?), (SELECT start_date FROM period WHERE id = ?)
-  ) as nb`;
-  return db.one(sql, [periodIdA, periodIdB]);
-}
-

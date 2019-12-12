@@ -1,0 +1,24 @@
+<div ng-form="PurchaseOrderSelectForm" bh-purchase-order-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : PurchaseOrderSelectForm.$$parent.$submitted && PurchaseOrderSelectForm.purchase_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    <ng-transclude></ng-transclude>
+    <ui-select name="purchase_uuid" 
+      ng-required ="$ctrl.required"
+      ng-model="$ctrl.purchaseUuid"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.LABELS.PURCHASE_ORDER' | translate }}"><span>{{$select.selected.reference}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="purchase.uuid as purchase in $ctrl.purchases | filter: { 'reference': $select.search }">
+        <span ng-bind-html="purchase.reference | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="PurchaseOrderSelectForm.purchase_uuid.$error" ng-show="PurchaseOrderSelectForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

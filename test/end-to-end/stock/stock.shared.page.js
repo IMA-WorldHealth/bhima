@@ -10,12 +10,12 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
  * @description
  * This function selects an option from the menu at the top of the stock modules.
  */
-function selectDropdownAction(action) {
+async function selectDropdownAction(action) {
   // open the dropdown menu
-  $('[data-action="open-tools"]').click();
+  await $('[data-action="open-tools"]').click();
 
   // get the action and click it
-  $(`[data-action="${action}"]`).click();
+  await $(`[data-action="${action}"]`).click();
 }
 
 /**
@@ -31,13 +31,13 @@ function ensureModalIsOpen() {
   const modal = $('[data-depot-selection-modal]');
 
   return modal.isPresent()
-    .then((isPresent) => {
+    .then(isPresent => {
 
       // if this is present, return
-      if (isPresent) { return; }
+      if (isPresent) { return 0; }
 
       // else, open the modal
-      selectDropdownAction('change-depot');
+      return selectDropdownAction('change-depot');
     });
 }
 
@@ -47,13 +47,13 @@ function ensureModalIsOpen() {
  * @description
  * Uses the helper methods to set the depot on all pages.
  */
-function setDepot(label) {
-  ensureModalIsOpen();
+async function setDepot(label) {
+  await ensureModalIsOpen();
 
   const depot = element(by.cssContainingText('li.list-group-item', label));
-  depot.click();
+  await depot.click();
 
-  FU.modal.submit();
+  await FU.modal.submit();
 }
 
 /**
@@ -63,9 +63,9 @@ function setDepot(label) {
  * Use this helper method to use an input type file for uploading
  * a file
  */
-function uploadFile(fileToUpload, elementId = 'import-input') {
+async function uploadFile(fileToUpload, elementId = 'import-input') {
   const absolutePath = path.resolve(fixtures, fileToUpload);
-  element(by.id(elementId)).sendKeys(absolutePath);
+  await element(by.id(elementId)).sendKeys(absolutePath);
 }
 
 // make this available to all modules

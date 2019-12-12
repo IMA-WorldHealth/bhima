@@ -82,7 +82,7 @@ function remove(req, res, next) {
   const sql = `DELETE FROM role WHERE uuid = ?`;
   db.exec(sql, binaryUuid)
     .then(rows => {
-      res.json(rows);
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();

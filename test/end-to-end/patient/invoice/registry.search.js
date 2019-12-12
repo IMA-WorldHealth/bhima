@@ -9,76 +9,76 @@ function InvoiceRegistrySearch() {
 
   const page = new InvoiceRegistryPage();
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('invoice-search');
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
   const DEFAULT_INVOICES_FOR_TODAY = 4;
-  it(`filters ${DEFAULT_INVOICES_FOR_TODAY} invoice for today`, () => {
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('today');
-    modal.submit();
+  it(`filters ${DEFAULT_INVOICES_FOR_TODAY} invoice for today`, async () => {
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('today');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
+    await page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
   });
 
   const DEFAULT_INVOICES_FOR_ALL_TIME = 7;
-  it(`filters ${DEFAULT_INVOICES_FOR_ALL_TIME} invoices for all time`, () => {
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    modal.submit();
+  it(`filters ${DEFAULT_INVOICES_FOR_ALL_TIME} invoices for all time`, async () => {
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_ALL_TIME);
+    await page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_ALL_TIME);
   });
 
-  it('filters by reference should return a single result', () => {
+  it('filters by reference should return a single result', async () => {
     const NUM_MATCHING = 1;
 
-    modal.setReference('IV.TPA.2');
-    modal.submit();
+    await modal.setReference('IV.TPA.2');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(NUM_MATCHING);
+    await page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filtering by a patient reference should get no results', () => {
+  it('filtering by a patient reference should get no results', async () => {
     const NUM_MATCHING = 0;
 
-    modal.setPatientReference('PA.TPA.0');
-    modal.submit();
+    await modal.setPatientReference('PA.TPA.0');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(NUM_MATCHING);
+    await page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('filters by service "Administration" to get three results', () => {
+  it('filters by service "Administration" to get three results', async () => {
     const NUM_MATCHING = 3;
 
-    components.serviceSelect.set('Administration');
-    modal.submit();
+    await components.serviceSelect.set('Administration');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(NUM_MATCHING);
+    await page.expectNumberOfGridRows(NUM_MATCHING);
   });
 
   const DEBTOR_GROUP_INVOICES = 0;
-  it(`filters by debtor group "NGO IMA World Health" to get ${DEBTOR_GROUP_INVOICES} results`, () => {
-    components.debtorGroupSelect.set('NGO IMA World Health');
-    modal.submit();
+  it(`filters by debtor group "NGO IMA World Health" to get ${DEBTOR_GROUP_INVOICES} results`, async () => {
+    await components.debtorGroupSelect.set('NGO IMA World Health');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);
+    await page.expectNumberOfGridRows(DEBTOR_GROUP_INVOICES);
   });
 
 
   const SUPER_USER_INVOICES = 7;
-  it(`filters by user "Super User" should return ${SUPER_USER_INVOICES} results`, () => {
-    modal.setUser('Super User');
-    modal.submit();
+  it(`filters by user "Super User" should return ${SUPER_USER_INVOICES} results`, async () => {
+    await modal.setUser('Super User');
+    await modal.submit();
 
-    page.expectNumberOfGridRows(SUPER_USER_INVOICES);
+    await page.expectNumberOfGridRows(SUPER_USER_INVOICES);
   });
 }
 

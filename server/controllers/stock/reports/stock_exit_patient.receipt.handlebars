@@ -5,30 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
-      </div>
-      <div class="col-xs-6 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}
-          </span> <br>
-          <strong>{{details.patient_reference}} - {{details.patient_display_name}}</strong> <br>
-          <span>{{details.document_reference}}</span> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
-        </h3>
-      </div>
-    </div>
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.EXIT_PATIENT" 
+      entity=details.full_display_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
 
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{details.patient_reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{details.patient_display_name}} <br>
@@ -43,6 +28,13 @@
     </div>
   </header>
 
+  {{#if details.description}}
+  <div class="row receipt-summary">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
+    {{details.description}}
+  </div>
+  {{/if}}
+
   <!-- list of data  -->
   <table class="table table-condensed table-bordered table-report">
     <thead>
@@ -52,8 +44,6 @@
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.UNIT_COST'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -64,17 +54,14 @@
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=9}}
+        {{> emptyTable columns=5}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        <td colspan="5">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
       </tr>
     </tfoot>
   </table>
@@ -94,5 +81,7 @@
       </div>
     </div>
   </footer>
-
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>

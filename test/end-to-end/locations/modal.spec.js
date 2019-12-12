@@ -1,5 +1,4 @@
-/* global element, by, browser */
-
+/* global element, by */
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const notification = require('../shared/components/notify');
@@ -7,7 +6,6 @@ const notification = require('../shared/components/notify');
 describe('Locations (create modal)', () => {
   before(() => helpers.navigate('#!/patients/register'));
 
-  /** location to be created */
   const newLocation = {
     country  : 'Test Country 2',
     province : 'Test Province 2',
@@ -16,10 +14,9 @@ describe('Locations (create modal)', () => {
   };
 
   const selector = '[data-location-modal]';
-  const link = '#origin-location-id [data-location-modal-open]';
 
   // switch to a certain view on the modal
-  function view(key) {
+  async function view(key) {
     const root = element(by.css(selector));
 
     // template in the target
@@ -27,94 +24,96 @@ describe('Locations (create modal)', () => {
 
     // grab the correct button and click it
     const btn = root.element(by.css(target));
-    btn.click();
+    await btn.click();
   }
 
   // open the modal
-  function open() {
-    element(by.css(link)).click();
+  async function open() {
+    const _root = element(by.id('origin-location-id'));
+    await _root.element(by.css('[data-location-modal-open]')).click();
   }
 
   // submit the modal
-  function submit() {
+  async function submit() {
     const root = element(by.css(selector));
     const submitBtn = root.element(by.css('[type=submit]'));
-    submitBtn.click();
+    await submitBtn.click();
   }
 
-  it('registers a new country', () => {
-    open();
+  it('registers a new country', async () => {
+    await open();
 
     // switch to the country view
-    view('country');
+    await view('country');
 
     // create a new country entity
-    FU.input('LocationModalCtrl.country', newLocation.country);
+    await FU.input('LocationModalCtrl.country', newLocation.country);
 
     // submit the country
-    submit();
+    await submit();
 
     // it should close the modal
-    FU.exists(by.css(selector), false);
+    await FU.exists(by.css(selector), false);
+
   });
 
-  it('registers a new province', () => {
-    open();
+  it('registers a new province', async () => {
+    await open();
 
-    FU.exists(by.css(selector), true);
+    await FU.exists(by.css(selector), true);
 
     // switch to the province view
-    view('province');
+    await view('province');
 
     // get the country select and select the previous country
-    FU.select('LocationModalCtrl.country', newLocation.country);
-    FU.input('LocationModalCtrl.province', newLocation.province);
+    await FU.select('LocationModalCtrl.country', newLocation.country);
+    await FU.input('LocationModalCtrl.province', newLocation.province);
 
     // submit the modal
-    submit();
+    await submit();
 
     // it should close the modal
-    FU.exists(by.css(selector), false);
+    await FU.exists(by.css(selector), false);
   });
 
-  it('register a new sector', () => {
-    open();
+  it('register a new sector', async () => {
+    await open();
 
-    FU.exists(by.css(selector), true);
+    await FU.exists(by.css(selector), true);
 
     // switch to the sector view
-    view('sector');
+    await view('sector');
 
-    FU.select('LocationModalCtrl.country', newLocation.country);
-    FU.select('LocationModalCtrl.province', newLocation.province);
-    FU.input('LocationModalCtrl.sector', newLocation.sector);
+    await FU.select('LocationModalCtrl.country', newLocation.country);
+    await FU.select('LocationModalCtrl.province', newLocation.province);
+    await FU.input('LocationModalCtrl.sector', newLocation.sector);
 
     // submit the modal
-    submit();
+    await submit();
 
     // it should close the modal
-    FU.exists(by.css(selector), false);
+    await FU.exists(by.css(selector), false);
   });
 
-  it('register a new village', () => {
-    open();
+  it('register a new village', async () => {
+    await open();
 
-    FU.exists(by.css(selector), true);
+    await FU.exists(by.css(selector), true);
 
     // switch to the village view
-    view('village');
+    await view('village');
 
-    FU.select('LocationModalCtrl.country', newLocation.country);
-    FU.select('LocationModalCtrl.province', newLocation.province);
-    FU.select('LocationModalCtrl.sector', newLocation.sector);
-    FU.input('LocationModalCtrl.village', newLocation.village);
+    await FU.select('LocationModalCtrl.country', newLocation.country);
+    await FU.select('LocationModalCtrl.province', newLocation.province);
+    await FU.select('LocationModalCtrl.sector', newLocation.sector);
+    await FU.input('LocationModalCtrl.village', newLocation.village);
 
     // submit the modal
-    submit();
+    await submit();
 
-    notification.hasSuccess();
+    await notification.hasSuccess();
 
     // it should close the modal
-    FU.exists(by.css(selector), false);
+    await FU.exists(by.css(selector), false);
   });
 });

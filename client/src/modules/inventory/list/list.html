@@ -68,18 +68,10 @@
         <a class="btn btn-default text-capitalize" ui-sref="inventory.create" data-method="create">
           <i class="fa fa-plus"></i> <span class="hidden-xs" translate>INVENTORY.ADD_METADATA</span>
         </a>
-
-        <button
-          ng-click="InventoryCtrl.research()"
-          type="button"
-          data-method="research"
-          class="btn btn-default"
-          id="research">
-          <i class="fa fa-search"></i> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
       </div>
-    </div>
 
+      <bh-search-button on-click="InventoryCtrl.research()"></bh-search-button>
+    </div>
   </div>
 </div>
 

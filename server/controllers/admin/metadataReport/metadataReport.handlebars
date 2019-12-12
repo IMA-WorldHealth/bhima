@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  {{> head title="TREE.DATA_KIT_REPORT"}}
+  <body>
+  <div class="container">
+    {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase"><strong>{{translate 'TREE.DATA_KIT_REPORT'}}</strong></h3>
+      <h4 class="text-center"><strong> {{ dataCollector.label }} </strong></h4>
+      {{#if patient.display_name }}
+        <hr>
+        <h4><strong>{{translate 'FORM.LABELS.NAME'}} : {{ patient.reference }} | {{ patient.display_name }}</strong></h4>
+        <h4><strong>{{translate 'FORM.LABELS.SEX'}} : {{ patient.sex }} </strong></h4>
+        <h4><strong>{{translate 'FORM.LABELS.DOB'}} : {{date patient.dob }} </strong></h4>      
+        <hr>
+      {{/if}}
+
+      <!-- invoices listed  -->
+      <table class="table table-striped table-condensed table-report table-bordered table-responsive table-hover">
+        <thead>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            {{#each rows.columns}}
+              <th> {{translate displayName}} </th>
+            {{/each}}
+          </tr>
+        </thead>
+
+        <tbody>
+          {{#each rows.surveyData}}
+            <tr>
+              {{#each rowValue}}
+              <td style="width: auto">
+                {{ value }}
+              </td>
+              {{/each}}    
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <br>
+      <br>
+      <br>
+      <table style="width:35%" class="table table-striped table-condensed table-report table-bordered table-responsive table-hover">
+        <tbody>
+          <tr>
+            <td><strong> {{ translate 'FORM.INFO.RESULT_FOUND'}} </strong></td>
+            <td><strong> {{ resultFound }} </strong></td>
+          </tr>
+          {{#each filterQuery}}
+            <tr>
+              <td>{{ translate key }}</td>
+              <td>{{ value }}</td>
+            </tr>
+          {{/each}}
+          {{#each filterClient}}
+            <tr>
+              <td>{{ _label }}</td>
+              <td>{{ displayValue }}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -48,12 +48,12 @@
           </bh-debtor-group-select>
 
           <!-- filter out cautions -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.searchQueries.is_caution">
-              <span translate>FORM.LABELS.CAUTION</span>
-            </label>
-          </div>
+          <bh-yes-no-radios
+            label="FORM.LABELS.CAUTION"
+            value="$ctrl.searchQueries.is_caution"
+            on-change-callback="$ctrl.onCautionChange(value)">
+            <bh-clear on-clear="$ctrl.clear('is_caution')"></bh-clear>
+          </bh-yes-no-radios>
 
           <!-- cashbox -->
           <bh-cashbox-select
@@ -114,7 +114,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input name="limit" type="number" min="0" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

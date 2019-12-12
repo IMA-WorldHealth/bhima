@@ -1,0 +1,12 @@
+<div class="ui-grid-cell-contents" data-title-row="{{ row.entity.label }}">
+  <span ng-if="row.entity.is_title" style="text-transform: uppercase">
+    {{ row.entity.label}}
+  </span>
+  <span ng-if="!row.entity.is_title" style="font-weight:normal; text-align: right">
+    <i> {{ row.entity.label}} </i>
+  </span>
+  <a ng-if="!row.entity.fixed && row.entity.is_title" data-action="add-child" ng-if="row.entity.is_title"
+    ui-sref="choices_list_management.create({ parentId : row.entity.id })">
+    <i class="fa fa-plus-square-o"></i>
+  </a>
+</div>

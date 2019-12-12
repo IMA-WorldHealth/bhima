@@ -16,32 +16,40 @@ const TEMPLATE = './server/controllers/finance/reports/operating/report.handleba
 
 exports.document = document;
 exports.formatData = formatData;
+exports.reporting = reporting;
 
 const EXPENSE_ACCOUNT_TYPE = 5;
 const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
-
-function document(req, res, next) {
-  const params = req.query;
+/**
+ * @description this function helps to get html document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {*} options the report options
+ * @param {*} session the session
+ */
+function reporting(opts, session) {
+  const params = opts;
   let docReport;
-  const options = _.extend(req.query, {
+  const options = _.extend(opts, {
     filename : 'TREE.OPERATING_ACCOUNT',
     csvKey : 'rows',
-    user : req.session.user,
+    user : session.user,
   });
 
   try {
-    docReport = new ReportManager(TEMPLATE, req.session, options);
+    docReport = new ReportManager(TEMPLATE, session, options);
   } catch (e) {
-    next(e);
-    return;
+    throw e;
   }
 
   let queries;
   let range;
-  const enterpriseId = req.session.enterprise.id;
-
+  let lastRateUsed;
+  let firstCurrency;
+  let secondCurrency;
+  const enterpriseId = session.enterprise.id;
+  const enterpriseCurrencyId = session.enterprise.currency_id;
   const getQueryIncome = fiscal.getAccountBalancesByTypeId;
 
   const periods = {
@@ -49,10 +57,19 @@ function document(req, res, next) {
     periodTo : params.periodTo,
   };
 
-  fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
+  return fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
     return Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
   }).then(exchangeRate => {
+    firstCurrency = enterpriseCurrencyId;
+    secondCurrency = params.currency_id;
+    lastRateUsed = exchangeRate.rate;
+
+    if (lastRateUsed && lastRateUsed < 1) {
+      lastRateUsed = (1 / lastRateUsed);
+      firstCurrency = params.currency_id;
+      secondCurrency = enterpriseCurrencyId;
+    }
 
     const rate = exchangeRate.rate || 1;
 
@@ -100,6 +117,9 @@ function document(req, res, next) {
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
         currencyId : params.currency_id,
+        firstCurrency,
+        secondCurrency,
+        rate : lastRateUsed,
       };
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
@@ -110,7 +130,11 @@ function document(req, res, next) {
       context.total = diff;
 
       return docReport.render(context);
-    })
+    });
+}
+
+function document(req, res, next) {
+  reporting(req.query, req.session)
     .then((result) => {
       res.set(result.headers).send(result.report);
     })

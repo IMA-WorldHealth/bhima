@@ -2,7 +2,6 @@ const helpers = require('../shared/helpers');
 const EntityPage = require('./entities.page');
 
 describe('Entity Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/entities'));
 
   const Page = new EntityPage();
@@ -25,8 +24,8 @@ describe('Entity Management', () => {
     address : 'Kinshasa',
   };
 
-  it('successfully creates a new entity', () => {
-    Page.createEntity(
+  it('successfully creates a new entity', async () => {
+    await Page.createEntity(
       entity.display_name,
       entity.type,
       entity.gender,
@@ -36,8 +35,8 @@ describe('Entity Management', () => {
     );
   });
 
-  it('successfully edits a entity', () => {
-    Page.editEntity(
+  it('successfully edits a entity', async () => {
+    await Page.editEntity(
       entity.display_name,
       updateEntity.display_name,
       updateEntity.type,
@@ -46,11 +45,11 @@ describe('Entity Management', () => {
     );
   });
 
-  it('don\'t create when incorrect entity name', () => {
-    Page.errorOnCreateEntity();
+  it('don\'t create when incorrect entity name', async () => {
+    await Page.errorOnCreateEntity();
   });
 
-  it('successfully delete a entity', () => {
-    Page.deleteEntity(updateEntity.display_name);
+  it('successfully delete a entity', async () => {
+    await Page.deleteEntity(updateEntity.display_name);
   });
 });

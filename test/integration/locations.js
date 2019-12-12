@@ -138,9 +138,19 @@ describe('(/locations) Locations Interface', () => {
     name : 'Test Country',
   };
 
+  const country2 = {
+    uuid : helpers.uuid(),
+    name : 'Another Country',
+  };
+
   const province = {
     uuid : helpers.uuid(),
     name : 'Test Province',
+    country_uuid : country.uuid,
+  };
+  const province2 = {
+    uuid : helpers.uuid(),
+    name : 'Another Province',
     country_uuid : country.uuid,
   };
 
@@ -150,15 +160,37 @@ describe('(/locations) Locations Interface', () => {
     province_uuid : province.uuid,
   };
 
+  const sector2 = {
+    uuid : helpers.uuid(),
+    name : 'Another Sector',
+    province_uuid : province.uuid,
+  };
+
   const village = {
     uuid : helpers.uuid(),
     name : 'Test Village',
     sector_uuid : sector.uuid,
   };
 
+  const village2 = {
+    uuid : helpers.uuid(),
+    name : 'Another Village',
+    sector_uuid : sector.uuid,
+  };
+
+
   it('POST /locations/countries should create a country', () => {
     return agent.post('/locations/countries')
       .send(country)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/countries should create another country', () => {
+    return agent.post('/locations/countries')
+      .send(country2)
       .then((res) => {
         helpers.api.created(res);
       })
@@ -174,6 +206,15 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
+  it('POST /locations/provinces should create another province', () => {
+    return agent.post('/locations/provinces')
+      .send(province2)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
   it('POST /locations/sectors should create a sector', () => {
     return agent.post('/locations/sectors')
       .send(sector)
@@ -183,9 +224,27 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
+  it('POST /locations/sectors should create another sector', () => {
+    return agent.post('/locations/sectors')
+      .send(sector2)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
   it('POST /locations/villages should create a village', () => {
     return agent.post('/locations/villages')
       .send(village)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/villages should create another village', () => {
+    return agent.post('/locations/villages')
+      .send(village2)
       .then((res) => {
         helpers.api.created(res);
       })
@@ -258,6 +317,38 @@ describe('(/locations) Locations Interface', () => {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
         expect(res.body.name).to.equal('Update New Country');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /locations/countries/:uuid should delete a Country', () => {
+    return agent.delete(`/locations/countries/${country2.uuid}`)
+      .then((res) => {
+        expect(res).to.have.status(204);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /locations/provinces/:uuid should delete a province', () => {
+    return agent.delete(`/locations/provinces/${province2.uuid}`)
+      .then((res) => {
+        expect(res).to.have.status(204);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /locations/sectors/:uuid should delete a sector', () => {
+    return agent.delete(`/locations/sectors/${sector2.uuid}`)
+      .then((res) => {
+        expect(res).to.have.status(204);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /locations/villages/:uuid should delete a Village', () => {
+    return agent.delete(`/locations/villages/${village2.uuid}`)
+      .then((res) => {
+        expect(res).to.have.status(204);
       })
       .catch(helpers.handler);
   });

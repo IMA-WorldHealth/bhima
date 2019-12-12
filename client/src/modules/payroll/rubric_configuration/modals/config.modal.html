@@ -31,6 +31,7 @@
           </label>
         </div>
       </li>
+
       <li ng-repeat="rubric in RubricConfigModalCtrl.socialCares" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">
@@ -48,6 +49,7 @@
           </label>
         </div>
       </li>
+
       <li ng-repeat="rubric in RubricConfigModalCtrl.membershipFee" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">
@@ -65,6 +67,7 @@
           </label>
         </div>
       </li>
+
       <li ng-repeat="rubric in RubricConfigModalCtrl.taxes" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">
@@ -77,11 +80,31 @@
       <li ng-if="RubricConfigModalCtrl.others.length" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.indexCheck" 
+              ng-change="RubricConfigModalCtrl.toggleIndexes(RubricConfigModalCtrl.indexCheck)">
+            <span translate> PAYROLL_RUBRIC.INDEXES</span>
+          </label>
+        </div>
+      </li>
+
+      <li ng-repeat="rubric in RubricConfigModalCtrl.indexes" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 14%">
+            <input type="checkbox" ng-model="rubric.checked">
+            <span>{{ rubric.label }}</span>
+          </label>
+        </div>
+      </li>
+  
+      <li ng-if="RubricConfigModalCtrl.others.length" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headOther" ng-change="RubricConfigModalCtrl.toggleOthers(RubricConfigModalCtrl.otherCheck)">
             <span translate> FORM.LABELS.OTHERS </span>
           </label>
         </div>
       </li>
+
       <li ng-repeat="unit in RubricConfigModalCtrl.others" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">

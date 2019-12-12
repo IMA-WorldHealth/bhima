@@ -20,17 +20,20 @@
             {{/with}}
           </span> <br>
           <strong>{{payment.reference}}</strong> <br>
-          <small>{{date payment.date}}</small> <br>
-          {{#if metadata.enterprise.settings.enable_barcodes}}
-            <small>{{> barcode value=details.barcode}}</small> <br>
-          {{/if}}
-          <br>
         </h3>
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.username}}
+        </div>
+
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <small>{{> barcode value=payment.barcode}}</small>
+        {{/if}}
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px; margin-top: 10px;">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{patient.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{patient.display_name}} <br>
@@ -74,11 +77,11 @@
             <tr>
               <td>{{ translate "CASH.CREDIT_PATIENT_ACCOUNT"}}</td>
               <td class="text-right"> {{currency amount currency_id}} </td>
-            
+
             </tr>
           {{/if}}
         {{/with}}
-      
+
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>

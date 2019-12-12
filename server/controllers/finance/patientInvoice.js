@@ -204,7 +204,7 @@ function create(req, res, next) {
   // so, we will use their caution balance to link to the invoice for payment.
   Debtors.balance(invoice.debtor_uuid)
     .then(([pBalance]) => {
-      const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
+      const hasCreditorBalance = hasPrepaymentSupport && pBalance && ((pBalance.credit - pBalance.debit) > 0.01);
       const preparedTransaction = createInvoice(invoice, hasCreditorBalance, prepaymentDescription);
       return preparedTransaction.execute();
     })

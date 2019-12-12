@@ -27,7 +27,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
     dateTo : '2018-01-31',
   };
 
-  const NUM_CONFIG_PAYROLL = 1;
+  const NUM_CONFIG_PAYROLL = 2;
 
   it('GET /PAYROLL_CONFIG returns a list of Payroll Configurations ', () => {
     return agent.get('/payroll_config')

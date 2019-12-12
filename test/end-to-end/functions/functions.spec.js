@@ -10,23 +10,22 @@ describe('Job Titles Management', () => {
   const newProfession = 'Comptable';
   const updateProfession = 'Chef Comptable';
 
-  it('successfully creates a new job title', () => {
-    page.create(newProfession);
-    notification.hasSuccess();
+  it('successfully creates a new job title', async () => {
+    await page.create(newProfession);
+    await notification.hasSuccess();
   });
 
-  it('successfully edits a job title', () => {
-    page.update(newProfession, updateProfession);
-    notification.hasSuccess();
+  it('successfully edits a job title', async () => {
+    await page.update(newProfession, updateProfession);
+    await notification.hasSuccess();
   });
 
-  it('errors when missing job tit create when incorrect job title', () => {
-    page.errorOnCreateFunction();
+  it('errors when missing job tit create when incorrect job title', async () => {
+    await page.errorOnCreateFunction();
   });
 
-  it('successfully delete a job title', () => {
-    page.remove(updateProfession);
-    notification.hasSuccess();
+  it('successfully delete a job title', async () => {
+    await page.remove(updateProfession);
+    await notification.hasSuccess();
   });
-
 });

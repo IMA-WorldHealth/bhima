@@ -1,0 +1,39 @@
+<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.MULTI_PAYROLL</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <bh-payroll-period-select
+          id="payroll_configuration_id"
+          payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id"
+          name="PayrollPeriodForm"
+          on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)"
+          required="true">
+        </bh-payroll-period-select>
+      </div>
+  
+      <div class="col-sm-12">
+        <bh-currency-select
+          currency-id="$ctrl.searchQueries.currency_id"
+          on-change="$ctrl.setCurrency(currencyId)">
+        </bh-currency-select>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
