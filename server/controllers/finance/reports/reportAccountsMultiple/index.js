@@ -61,7 +61,7 @@ async function document(req, res, next) {
     // get all the opening balances for the accounts concerned
     const balances = await Promise.all(
       accountIds
-        .map(accountId => AccountsExtra.getOpeningBalanceForDate(accountId, params.dateFrom, false))
+        .map(accountId => AccountsExtra.getOpeningBalanceForDate(accountId, params.dateFrom, false)),
     );
 
     // get the transactions for each account
@@ -69,8 +69,8 @@ async function document(req, res, next) {
       balances.map(
         ({ balance, accountId }) => {
           return getAccountTransactions(_.extend({ account_id : accountId }, params, bundle), +balance * rate);
-        }
-      )
+        },
+      ),
     );
 
     // get the account metadata

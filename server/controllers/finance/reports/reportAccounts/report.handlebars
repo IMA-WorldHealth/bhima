@@ -110,12 +110,12 @@
           <th class="text-right">{{footer.invertedRate}}</th>
           <th class="text-right">
             {{#if footer.shouldDisplayDebitCredit}}
-              {{currency footer.debit footer.transactionCurrencyId}}
+              {{currency footer.totals.debit footer.transactionCurrencyId}}
             {{/if}}
           </th>
           <th class="text-right">
             {{#if footer.shouldDisplayDebitCredit}}
-              {{currency footer.credit footer.transactionCurrencyId}}
+              {{currency footer.totals.credit footer.transactionCurrencyId}}
             {{/if}}
           </th>
           <th class="text-right">
