@@ -1,27 +1,28 @@
 angular.module('bhima.components')
   .component('bhAccountSelect', {
     templateUrl : 'modules/templates/bhAccountSelect.tmpl.html',
-    controller  : AccountSelectController,
+    controller  : zAccountSelectController,
     transclude  : true,
     bindings    : {
       accountId        : '<',
       onSelectCallback : '&',
       disable          : '<?',
       required         : '<?',
-      accountTypeId :  '<?',
+      accountTypeId    :  '<?',
+      name             : '@?',
       label            : '@?',
       excludeTitleAccounts : '@?',
     },
   });
 
-AccountSelectController.$inject = [
-  'AccountService', 'FormatTreeDataService', 'bhConstants', '$scope',
+zAccountSelectController.$inject = [
+  'AccountService', 'FormatTreeDataService', 'bhConstants', '$scope', '$timeout',
 ];
 
 /**
  * Account selection component
  */
-function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) {
+function zAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope, $timeout) {
   const $ctrl = this;
 
   // fired at the beginning of the account select
@@ -32,6 +33,12 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
 
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
+
+    // set default component name if none has been set
+    $ctrl.name = $ctrl.name || 'AccountSelectForm';
+
+    // wrap the alias call in a $timeout to ensure that the component link/ compile process has run
+    $timeout(aliasComponentForm);
 
     // used to disable title accounts in the select list
     $ctrl.disableTitleAccounts = angular.isDefined($ctrl.disableTitleAccounts)
@@ -75,6 +82,10 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
 
         $ctrl.accounts = accounts;
       });
+  }
+
+  function aliasComponentForm() {
+    $scope.AccountForm = $scope[$ctrl.name];
   }
 
   // fires the onSelectCallback bound to the component boundary

@@ -64,6 +64,7 @@ function UtilService(moment) {
         response[key] = angular.isDefined(value.$modelValue) ? value.$modelValue : value.$bhValue;
       }
     });
+
     return response;
   };
 
