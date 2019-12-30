@@ -51,9 +51,6 @@ describe('cronEmailReport', () => {
 
       expect(dateFrom.toDate().getDay()).to.equal(0);
       expect(dateTo.toDate().getDay()).to.equal(6);
-
-      expect(dateFrom.toDate().getMonth()).to.equal(today.getMonth());
-      expect(dateTo.toDate().getMonth()).to.equal(today.getMonth());
     });
 
 
