@@ -15,7 +15,7 @@ StockMovementsController.$inject = [
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
-  $translate
+  $translate,
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
@@ -117,6 +117,7 @@ function StockMovementsController(
     }, {
       field : 'flux_id',
       displayName : 'STOCK.FLUX',
+      aggregationHideLabel : true,
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
