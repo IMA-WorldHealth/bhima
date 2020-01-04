@@ -11,8 +11,7 @@ function lookupConsumableInvoicePatient(req, res, next) {
   const params = req.query;
   const record = {};
 
-  let invoiceDetailQuery =
-    `SELECT
+  let invoiceDetailQuery = `SELECT
       BUID(invoice.uuid) as uuid, dm.text AS reference,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name, BUID(patient.uuid) as patient_uuid,
@@ -30,9 +29,8 @@ function lookupConsumableInvoicePatient(req, res, next) {
     invoiceDetailQuery += ' AND patient.uuid = ?;';
   }
 
-  const invoiceItemsQuery =
-    `SELECT
-      BUID(invoice_item.uuid) as uuid, invoice_item.quantity, 
+  const invoiceItemsQuery = `SELECT
+      BUID(invoice_item.uuid) as uuid, invoice_item.quantity,
         invoice_item.inventory_price, invoice_item.transaction_price,
       BUID(inventory.uuid) as inventory_uuid, inventory.code, inventory.text,
         inventory.consumable, inventory_unit.text AS inventory_unit

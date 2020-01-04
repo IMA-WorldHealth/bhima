@@ -5,9 +5,9 @@ const helpers = require('./helpers');
 
 describe('(/fiscal) Fiscal Year', () => {
   const newFiscalYear = {
-    label : 'A New Fiscal Year 2020',
-    start_date : new Date('2020-01-01 01:00'),
-    end_date : new Date('2020-12-31 01:00'),
+    label : 'A New Fiscal Year 2021',
+    start_date : new Date('2021-01-01 01:00'),
+    end_date : new Date('2021-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test',
     closing_account : 111, // 1311 - Résusltat net : Bénéfice *
@@ -47,7 +47,7 @@ describe('(/fiscal) Fiscal Year', () => {
   it('GET /fiscal returns a list of fiscal_years', () => {
     return agent.get('/fiscal')
       .then(res => {
-        helpers.api.listed(res, 6);
+        helpers.api.listed(res, 7);
         const firstYearPeriods = res.body[0].periods;
         expect(firstYearPeriods).to.be.equal(undefined);
       })
@@ -58,7 +58,7 @@ describe('(/fiscal) Fiscal Year', () => {
   it('GET /fiscal returns a list of fiscal_years width their periods', () => {
     return agent.get('/fiscal?includePeriods=1')
       .then(res => {
-        helpers.api.listed(res, 6);
+        helpers.api.listed(res, 7);
         const firstYearPeriods = res.body[0].periods;
         expect(firstYearPeriods).to.not.be.empty;
       })
