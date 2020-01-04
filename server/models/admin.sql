@@ -139,4 +139,54 @@ BEGIN
     SET debtor.text = CONCAT('Patient/', patient.display_name);
 END $$
 
-DELIMITER ;
+/*
+CALL zMergeServices(fromId, toId);
+
+DESCRIPTION
+Merges two services by changing the service_id pointers to the new service and
+then removing the previous service.
+*/
+DROP PROCEDURE IF EXISTS zMergeServices$$
+CREATE PROCEDURE zMergeServices(
+  IN from_service_id INTEGER,
+  IN to_service_id INTEGER
+) BEGIN
+
+  UPDATE invoice SET service_id = to_service_id WHERE service_id = from_service_id;
+  UPDATE employee SET service_id = to_service_id WHERE service_id = from_service_id;
+  UPDATE patient_visit_service SET service_id = to_service_id WHERE service_id = from_service_id;
+  UPDATE ward SET service_id = to_service_id WHERE service_id = from_service_id;
+  UPDATE service_fee_center SET service_id = to_service_id WHERE service_id = from_service_id;
+  UPDATE indicator SET service_id = to_service_id WHERE service_id = from_service_id;
+  DELETE FROM service WHERE id = from_service_id;
+END $$
+
+/*
+CALL zMergeAccounts(fromId, toId);
+
+DESCRIPTION
+Merges two accounts by changing the account_id pointers to the new account and removing
+the old one.  NOTE - you must call zRecalculatePeriodTotals() when all done with these
+operations.  It isn't called here to allow operations to be batched for performance, then
+committed.
+*/
+DROP PROCEDURE IF EXISTS zMergeAccounts
+CREATE PROCEDURE zMergeAccounts(
+  IN from_account_number TEXT,
+  IN to_account_number TEXT
+) BEGIN
+  DECLARE from_account_id MEDIUMINT;
+  DECLARE to_account_id MEDIUMINT;
+
+  SET from_account_id = (SELECT id FROM account WHERE number = from_account_number);
+  SET to_account_id = (SELECT id FROM account WHERE number = to_account_number);
+
+  UPDATE general_ledger SET account_id = to_account_id WHERE account_id = from_account_id;
+  UPDATE posting_journal SET account_id = to_account_id WHERE account_id = from_account_id;
+  UPDATE voucher_item SET account_id = to_account_id WHERE account_id = from_account_id;
+  DELETE FROM period_total where account_id = from_account_id;
+  DELETE FROM account WHERE id = from_account_id;
+END $$
+
+
+
