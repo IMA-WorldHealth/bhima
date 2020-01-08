@@ -107,6 +107,15 @@ async function renderPDF(context, template, options = {}) {
   debug('Page created.  Rendering HTML content on page.');
   await page.setContent(inlinedHtml.trim());
 
+  // FIXME(@jniles) - for some reason, puppeteer seems to be inconsistent on the
+  // kind of page rendering sizes, but this seems to work for making pages landscaped.
+  // See: https://github.com/puppeteer/puppeteer/issues/3834#issuecomment-549007667
+  if (options.orientation === 'landscape') {
+    await page.addStyleTag(
+      { content : '@page { size: A4 landscape; }' },
+    );
+  }
+
   debug('Rendering PDF with chromium');
   const pdf = await page.pdf(pdfOptions);
 
