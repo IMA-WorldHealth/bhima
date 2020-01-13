@@ -94,6 +94,14 @@
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
+
+          <bh-yes-no-radios
+            label="STOCK.INCLUDE_EMPTY_LOT"
+            value="$ctrl.defaultQueries.includeEmptyLot"
+            help-text="STOCK.INCLUDE_EMPTY_LOT_HELP"
+            on-change-callback="$ctrl.onSelectIncludeEmptyLot(value)">
+          </bh-yes-no-radios>
+
           <bh-period-select
             default-period="{{$ctrl.filters.period}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">

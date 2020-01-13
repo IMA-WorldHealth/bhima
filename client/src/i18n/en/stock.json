@@ -54,6 +54,8 @@
     "FROM"            : "From",
     "GROUPING"        : "Grouping",
     "JOIN_INVOICE"    : "Join an invoice",
+    "INCLUDE_EMPTY_LOT" : "Include empty lots",
+    "INCLUDE_EMPTY_LOT_HELP" : "Shows inventories with quantity equal to zero",
     "INCREASE"        : "Increase",
     "INCREASE_HELP"   : "Adjust stock by increasing the quantity of lots of products in stock",
     "INVENTORY"       : "Inventory",
