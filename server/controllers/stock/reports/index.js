@@ -7,6 +7,10 @@
  * @module stock/reports/
  */
 
+const BadRequest = require('../../../lib/errors/BadRequest');
+const db = require('../../../lib/db');
+const Stock = require('../../stock/core');
+
 const stockExitReport = require('./stock/exit_report');
 const stockEntryReport = require('./stock/entry_report');
 const stockLotsReport = require('./stock/lots_report');
@@ -26,6 +30,95 @@ const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 
+/**
+ * @function determineReceiptType
+ *
+ * @description
+ * Figures out the type of stock receipt from the document uuid.  This allows
+ * a uniform API for rendering all stock receipts.
+ */
+async function determineReceiptType(uuid, isDepotTransferExit = -1) {
+
+  // this is only used when you are rendering receipt for transfering between depots
+  // to determine which receipt to render - the exit or the entry.
+  const directionality = isDepotTransferExit > -1
+    ? `AND is_exit = ${isDepotTransferExit}` : '';
+
+  const sql = `
+    SELECT document_uuid, flux_id FROM stock_movement
+    WHERE document_uuid = ? ${directionality}
+    LIMIT 1;
+  `;
+
+  const row = await db.one(sql, db.bid(uuid));
+  return row.flux_id;
+}
+
+async function renderStockReceipt(req, res, next) {
+  try {
+    const documentUuid = req.params.uuid;
+
+    let isDepotTransferExit = -1;
+    if (req.query.is_depot_transfer_exit) {
+      isDepotTransferExit = Number(req.query.is_depot_transfer_exit);
+    }
+
+    const receiptType = await determineReceiptType(documentUuid, isDepotTransferExit);
+
+    let renderer;
+
+    switch (receiptType) {
+    case Stock.flux.FROM_PURCHASE:
+      renderer = stockEntryPurchaseReceipt;
+      break;
+
+    case Stock.flux.FROM_OTHER_DEPOT:
+      renderer = stockEntryDepotReceipt;
+      break;
+
+    case Stock.flux.FROM_ADJUSTMENT:
+      renderer = stockAdjustmentReceipt;
+      break;
+
+    case Stock.flux.FROM_INTEGRATION:
+    case Stock.flux.TO_INTEGRATION:
+      renderer = stockEntryIntegrationReceipt;
+      break;
+
+    case Stock.flux.TO_PATIENT:
+      renderer = stockExitPatientReceipt;
+      break;
+
+    case Stock.flux.TO_OTHER_DEPOT:
+      renderer = stockExitDepotReceipt;
+      break;
+
+    case Stock.flux.TO_SERVICE:
+      renderer = stockExitServiceReceipt;
+      break;
+
+    case Stock.flux.TO_LOSS:
+      renderer = stockExitLossReceipt;
+      break;
+
+    case Stock.flux.FROM_DONATION:
+      renderer = stockEntryDonationReceipt;
+      break;
+
+    default:
+      throw new BadRequest('Could not determine stock receipt.');
+    }
+
+    // render the receipt and send it back to the client
+    const { headers, report } = await renderer(documentUuid, req.session, req.query);
+    res.set(headers).send(report);
+  } catch (e) {
+    next(e);
+  }
+}
+
+exports.renderStockReceipt = renderStockReceipt;
+
 // expose to the api
 exports.stockExitReport = stockExitReport;
 exports.stockEntryReport = stockEntryReport;
@@ -33,17 +126,10 @@ exports.stockLotsReport = stockLotsReport;
 exports.stockMovementsReport = stockMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;
 exports.stockInventoryReport = stockInventoryReport;
-exports.stockExitPatientReceipt = stockExitPatientReceipt;
-exports.stockExitDepotReceipt = stockExitDepotReceipt;
-exports.stockEntryDepotReceipt = stockEntryDepotReceipt;
-exports.stockExitServiceReceipt = stockExitServiceReceipt;
-exports.stockExitLossReceipt = stockExitLossReceipt;
-exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
-exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
-exports.stockEntryDonationReceipt = stockEntryDonationReceipt;
-exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockValue = stockValue.document;
 exports.stockValueReporting = stockValue.reporting;
 exports.stockAssignReceipt = stockAssignReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchaseOrderAnalysis');
+
+exports.stockAdjustmentReceipt = stockAdjustmentReceipt;

@@ -8,21 +8,13 @@ const {
  * @description
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
- *
- * GET /receipts/stock/entry_integration/:document_uuid
  */
-function stockEntryDonationReceipt(req, res, next) {
-  let report;
+function stockEntryDonationReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_DONATION' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_DONATION' });
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(STOCK_ENTRY_DONATION_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(STOCK_ENTRY_DONATION_TEMPLATE, session, optionReport);
 
   /**
    * TODO consider the donor also in a donation transaction
@@ -53,7 +45,7 @@ function stockEntryDonationReceipt(req, res, next) {
       const line = rows[0];
       const { key } = identifiers.STOCK_ENTRY;
 
-      data.enterprise = req.session.enterprise;
+      data.enterprise = session.enterprise;
 
       data.details = {
         depot_name            : line.depot_name,
@@ -73,12 +65,7 @@ function stockEntryDonationReceipt(req, res, next) {
       }, 0);
 
       return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockEntryDonationReceipt;

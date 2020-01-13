@@ -12,11 +12,9 @@ const {
  *
  * GET /receipts/stock/exit_patient/:document_uuid
  */
-function stockExitPatientReceipt(req, res, next) {
-  let report;
+function stockExitPatientReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
+  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
 
   let template = STOCK_EXIT_PATIENT_TEMPLATE;
 
@@ -26,11 +24,7 @@ function stockExitPatientReceipt(req, res, next) {
   }
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(template, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(template, session, optionReport);
 
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -57,7 +51,7 @@ function stockExitPatientReceipt(req, res, next) {
       }
       const line = rows[0];
       const { key } = identifiers.STOCK_EXIT;
-      data.enterprise = req.session.enterprise;
+      data.enterprise = session.enterprise;
 
       data.details = {
         depot_name           : line.depot_name,
@@ -75,12 +69,7 @@ function stockExitPatientReceipt(req, res, next) {
 
       data.rows = rows;
       return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockExitPatientReceipt;

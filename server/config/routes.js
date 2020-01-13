@@ -829,19 +829,12 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
   app.get('/reports/stock/value', stockReports.stockValue);
+
+
   // stock receipts API
-  app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
-  app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
-  app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
-  app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+  app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);
   app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
   app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
-
-  app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
-  app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
-  app.get('/receipts/stock/entry_integration/:document_uuid', stockReports.stockEntryIntegrationReceipt);
-  app.get('/receipts/stock/entry_donation/:document_uuid', stockReports.stockEntryDonationReceipt);
-
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
 
   // stock consumption API

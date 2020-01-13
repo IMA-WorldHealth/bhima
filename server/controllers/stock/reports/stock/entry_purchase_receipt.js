@@ -8,21 +8,13 @@ const {
  * @description
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
- *
- * GET /receipts/stock/entry_purchase/:document_uuid
  */
-function stockEntryPurchaseReceipt(req, res, next) {
-  let report;
+function stockEntryPurchaseReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(STOCK_ENTRY_PURCHASE_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(STOCK_ENTRY_PURCHASE_TEMPLATE, session, optionReport);
 
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -51,10 +43,11 @@ function stockEntryPurchaseReceipt(req, res, next) {
       if (!rows.length) {
         throw new NotFound('document not found');
       }
+
       const line = rows[0];
       const { key } = identifiers.STOCK_ENTRY;
 
-      data.enterprise = req.session.enterprise;
+      data.enterprise = session.enterprise;
 
       data.details = {
         depot_name            : line.depot_name,
@@ -75,12 +68,7 @@ function stockEntryPurchaseReceipt(req, res, next) {
 
       data.rows = rows;
       return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockEntryPurchaseReceipt;
