@@ -1,11 +1,11 @@
-<form 
+<form
   name="FindForm"
   bh-submit="$ctrl.submit(FindForm)"
   novalidate>
 
   <div class="modal-header">
-    <i class="fa fa-search"></i> 
-    <span translate>FORM.LABELS.SEARCH</span> 
+    <i class="fa fa-search"></i>
+    <span translate>FORM.LABELS.SEARCH</span>
     <span translate>STOCK.DEPOT</span>
   </div>
 
@@ -21,7 +21,7 @@
         </ui-select-choices>
       </ui-select>
     </div>
-    
+
     <bh-has-requisition-voucher
       message="$ctrl.requisitionMessage"
       reference="$ctrl.reference"

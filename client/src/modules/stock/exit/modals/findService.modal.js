@@ -16,16 +16,8 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
 
   Service.read()
     .then(services => {
-      vm.services = services;
-
-      // set defined the previous selected service
-      if (Data.entity_uuid) {
-        const currentService = services.filter(item => {
-          return item.uuid === Data.entity_uuid;
-        });
-
-        vm.selected = currentService.length > 0 ? currentService[0] : undefined;
-      }
+      vm.services = services.filter(s => !s.hidden);
+      [vm.selected] = services.filter(s => s.uuid === Data.entity_uuid);
     })
     .catch(Notify.handleError);
 
