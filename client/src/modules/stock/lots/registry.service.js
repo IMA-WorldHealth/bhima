@@ -49,10 +49,13 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
+      type : 'number',
     }, {
       field : 'unit_cost',
       displayName : 'STOCK.UNIT_COST',
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
       cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
@@ -75,21 +78,25 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'delay_expiration',
       displayName : 'STOCK.EXPIRATION',
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
     }, {
       field : 'avg_consumption',
       displayName : 'STOCK.CMM',
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
     }, {
       field : 'S_MONTH',
       displayName : 'STOCK.MSD',
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
     }, {
       field : 'lifetime',
       displayName : 'STOCK.LIFETIME',
       headerCellFilter : 'translate',
+      cellClass : 'text-right',
       cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
       type : 'number',
       sort : {
@@ -101,12 +108,14 @@ function LotsRegistryService(uiGridConstants, Session) {
       displayName : 'STOCK.LOT_LIFETIME',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
+      cellClass : 'text-right',
       type : 'number',
     }, {
       field : 'S_RISK',
       displayName : 'STOCK.RISK',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
+      cellClass : 'text-right',
       type : 'number',
       sort : {
         direction : uiGridConstants.DESC,
