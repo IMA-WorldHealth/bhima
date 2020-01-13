@@ -224,5 +224,9 @@
     "NOT_FOR_SERVICE":"Le bon de requisition ne concerne pas les services",
     "NOT_FOR_DEPOT":"Le bon de requisition ne concerne pas les depots",
     "NOT_FOR_THE_SAME_DEPOT":"La sortie sur bon de requisition ne peut être effectué sur un même dépôt"
+  },
+  "INVENTORY"   : {
+    "TITLE" : "Inventaire de stock",
+    "NEW"   : "Nouveau Inventaire"
   }
 }

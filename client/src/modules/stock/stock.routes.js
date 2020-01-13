@@ -63,6 +63,7 @@ angular.module('bhima.routes')
           filters : [],
         },
       })
+
       .state('stockAssign.create', {
         url : '/create',
         params : {
@@ -81,6 +82,7 @@ angular.module('bhima.routes')
           filters : [],
         },
       })
+
       .state('stockRequisition.create', {
         url : '/create',
         params : {
@@ -90,6 +92,15 @@ angular.module('bhima.routes')
         },
         onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockRequisition')],
         onExit : ['$uibModalStack', closeModals],
+      })
+
+      .state('stockInventoryAdjustment', {
+        url         : '/stock/inventory-adjustment',
+        controller  : 'StockInventoryAdjustmentController as StockCtrl',
+        templateUrl : 'modules/stock/inventory-adjustment/inventory-adjustment.html',
+        params : {
+          filters : [],
+        },
       });
   }]);
 

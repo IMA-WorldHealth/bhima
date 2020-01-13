@@ -1,27 +1,27 @@
 angular.module('bhima.controllers')
-  .controller('StockAdjustmentController', StockAdjustmentController);
+  .controller('StockInventoryAdjustmentController', StockInventoryAdjustmentController);
 
 // dependencies injections
-StockAdjustmentController.$inject = [
+StockInventoryAdjustmentController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'uiGridConstants',
 ];
 
 /**
- * @class StockAdjustmentController
+ * @class StockInventoryAdjustmentController
  *
  * @description
- * This module exists to make sure that stock can be adjusted up and down as needed.
+ * This module allows to set final quantities of stock for a depot as an inventory (stock adjustment)
  */
-function StockAdjustmentController(
+function StockInventoryAdjustmentController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
   Stock, uiGridConstants,
 ) {
   const vm = this;
 
   // global variables
-  vm.Stock = new StockForm('StockAdjustment');
+  vm.Stock = new StockForm('StockInventoryAdjustment');
   vm.movement = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
@@ -45,7 +45,6 @@ function StockAdjustmentController(
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
-  vm.handleAdjustmentOption = handleAdjustmentOption;
 
   // grid columns
   const columns = [
@@ -134,15 +133,6 @@ function StockAdjustmentController(
   function removeItem(item) {
     vm.Stock.removeItem(item.id);
     checkValidity();
-  }
-
-  function handleAdjustmentOption(value) {
-    vm.adjustmentOption = value;
-    if (vm.adjustmentOption === 'increase') {
-      vm.adjustmentType = 'FORM.LABELS.INCREASE';
-    } else if (vm.adjustmentOption === 'decrease') {
-      vm.adjustmentType = 'FORM.LABELS.DECREASE';
-    }
   }
 
   // configure item
