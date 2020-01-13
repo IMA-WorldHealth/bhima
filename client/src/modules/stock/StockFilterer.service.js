@@ -26,6 +26,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'includeEmptyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
     { key : 'text', label : 'STOCK.DEPOT' },
     { key : 'is_warehouse', label : 'DEPOT.WAREHOUSE' },
+    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
