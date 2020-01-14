@@ -137,6 +137,13 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
         this._filters.assignFilter('limit', 100);
       }
     }
+
+    assignFilter(key, value) {
+      const assignedKeys = Object.keys(this._filters.formatHTTP());
+      if (assignedKeys.indexOf(value) === -1) {
+        this._filters.assignFilter(key, value);
+      }
+    }
   }
 
   return StockFilterer;
