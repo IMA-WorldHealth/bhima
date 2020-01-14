@@ -100,6 +100,20 @@ FOR EACH ROW BEGIN
     SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference) ON DUPLICATE KEY UPDATE text=text;
 END$$
 
+-- Stock Movement Triggers
+CREATE TRIGGER stock_movement_reference BEFORE INSERT ON stock_movement
+FOR EACH ROW BEGIN
+  DECLARE reference INT(11);
+  DECLARE flux INT(11);
+
+  SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
+  SET flux = (SELECT flux_id FROM stock_movement WHERE document_uuid = NEW.document_uuid LIMIT 1);
+
+  INSERT INTO `document_map` (uuid, text) VALUES (NEW.document_uuid, CONCAT_WS('.', 'SM', flux, reference))
+  ON DUPLICATE KEY UPDATE uuid = uuid;
+
+END$$
+
 -- Stock Requisition Triggers
 CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
 FOR EACH ROW

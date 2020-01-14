@@ -79,9 +79,6 @@ function importStock(req, res, next) {
         transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
       }
 
-      // transaction - movement reference
-      transaction.addQuery('CALL ComputeMovementReference(?);', [documentUuid]);
-
       return transaction.execute();
     })
     .then(() => res.sendStatus(201))
