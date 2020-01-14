@@ -497,7 +497,7 @@ function getInventoryQuantityAndConsumption(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, i.text `;
+  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
     .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
