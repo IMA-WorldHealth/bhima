@@ -172,8 +172,10 @@ function StockInventoriesController(
     const assignedKeys = Object.keys(stockInventoryFilters.formatHTTP());
 
     // assign default includeEmptyLot filter
-    if (assignedKeys.indexOf('includeEmptyLot') === -1) {
+    if (assignedKeys.includes('includeEmptyLot')) {
       stockInventoryFilters.assignFilter('includeEmptyLot', 0);
+      stockInventoryFilters.formatCache();
+      vm.latestViewFilters = stockInventoryFilters.formatView();
     }
   }
 

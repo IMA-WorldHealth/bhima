@@ -133,14 +133,14 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
       const assignedKeys = Object.keys(this._filters.formatHTTP());
 
       // assign default limit filter
-      if (assignedKeys.indexOf('limit') === -1) {
+      if (assignedKeys.includes('limit')) {
         this._filters.assignFilter('limit', 100);
       }
     }
 
     assignFilter(key, value) {
       const assignedKeys = Object.keys(this._filters.formatHTTP());
-      if (assignedKeys.indexOf(value) === -1) {
+      if (assignedKeys.includes(value)) {
         this._filters.assignFilter(key, value);
       }
     }
