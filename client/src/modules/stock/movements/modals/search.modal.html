@@ -18,6 +18,7 @@
           <!-- movements  -->
           <div class="form-group">
             <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
+            <br/>
             <div class="radio">
               <label>
                 <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit">
@@ -43,6 +44,20 @@
               ng-change="$ctrl.onSelectReference($ctrl.searchQueries.reference)">
 
             <div class="help-block" ng-messages="ModalForm.reference.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- patient reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.patientReference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
+            <input
+              name="patientReference"
+              class="form-control"
+              ng-model="$ctrl.searchQueries.patientReference"">
+
+            <div class="help-block" ng-messages="ModalForm.patientReference.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>

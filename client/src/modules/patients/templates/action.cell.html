@@ -43,5 +43,10 @@
         <span class="fa fa-address-card-o"></span> <span translate>PATIENT_REGISTRY.VOUCHERS</span>
       </a>
     </li>
+    <li>
+      <a data-method="stock-movements" ui-sref="stockMovements({ filters : [{ key : 'patientReference', value : row.entity.reference, displayValue: row.entity.display_name }, { key : 'period', value : 'allTime' }]})" href>
+        <span class="fa fa-list-alt"></span> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
   </ul>
 </div>

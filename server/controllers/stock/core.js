@@ -93,6 +93,12 @@ function getLotFilters(parameters) {
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
 
+  // NOTE(@jniles):
+  // this filters the lots on the entity_uuid associated with the text reference.  It is
+  // an "IN" filter because the patient could have a patient_uuid or debtor_uuid specified.
+  filters.custom('patientReference',
+    'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
+
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
   filters.period('period', 'date');

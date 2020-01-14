@@ -60,8 +60,20 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         helpers.api.listed(res, shared.depotPrincipalMvt);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
+
+  // list all movement relatives to patient 'PA.TPA.2'
+  it(
+    `GET /stock/lots/movements?patientReference=PA.TPA.2 returns two movements for patient PA.TPA.2`,
+    () => agent.get('/stock/lots/movements')
+      .query({ patientReference : 'PA.TPA.2' })
+      .then((res) => {
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler),
+  );
+
 
   // list all stock exit relatives to 'Depot Principal'
   it(
@@ -71,7 +83,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         helpers.api.listed(res, 5);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // (report) render all stock exit
@@ -82,7 +94,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         expect(res.body.rows.length).to.equal(22);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // (report) render all stock exit relatives to 'Depot Principal'
@@ -93,7 +105,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         expect(res.body.rows.length).to.equal(20);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // list all stock entry relatives to 'Depot Principal'
@@ -103,7 +115,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         helpers.api.listed(res, 20);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
@@ -158,6 +170,6 @@ describe('(/stock/) The Stock HTTP API', () => {
         helpers.api.listed(res, 1);
         expect(res.body[0].quantity).to.be.equal(0);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 });
