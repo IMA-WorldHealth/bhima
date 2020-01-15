@@ -42,7 +42,7 @@ function StockExiTests() {
 
   it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
     // select the patient
-    await page.setPatient(PATIENT, INVOICE, true);
+    await page.setPatient(PATIENT, INVOICE);
 
     await page.setDate(new Date());
 

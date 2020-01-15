@@ -414,6 +414,7 @@ function StockExitController(
     vm.reference = null;
     vm.displayName = null;
     vm.inventoryNotAvailable = [];
+    delete vm.selectedEntityUuid;
   }
 
   function submit(form) {
