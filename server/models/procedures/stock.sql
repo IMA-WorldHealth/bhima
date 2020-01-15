@@ -28,24 +28,6 @@ BEGIN
   ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
 END $$
 
--- stock movement document reference
--- This procedure calculate the reference of a movement based on the document_uuid
--- Insert this reference calculated into the document_map table as the movement reference
-CREATE PROCEDURE ComputeMovementReference (
-  IN documentUuid BINARY(16)
-)
-BEGIN
-  DECLARE reference INT(11);
-  DECLARE flux INT(11);
-
-  SET reference = (SELECT COUNT(DISTINCT document_uuid) AS total FROM stock_movement LIMIT 1);
-  SET flux = (SELECT flux_id FROM stock_movement WHERE document_uuid = documentUuid LIMIT 1);
-
-  INSERT INTO `document_map` (uuid, text)
-  VALUES (documentUuid, CONCAT_WS('.', 'SM', flux, reference))
-  ON DUPLICATE KEY UPDATE uuid = uuid;
-END $$
-
 -- post stock movement into vouchers
 DROP PROCEDURE IF EXISTS PostStockMovement;
 CREATE PROCEDURE PostStockMovement (
@@ -74,12 +56,12 @@ BEGIN
   DECLARE voucher_item_document_uuid BINARY(16);
 
   -- variables
-	DECLARE v_stock_account INT(10);
-	DECLARE v_cogs_account INT(10);
-	DECLARE v_unit_cost DECIMAL(19, 4);
-	DECLARE v_quantity INT(11);
-	DECLARE v_document_uuid BINARY(16);
-	DECLARE v_is_exit TINYINT(1);
+  DECLARE v_stock_account INT(10);
+  DECLARE v_cogs_account INT(10);
+  DECLARE v_unit_cost DECIMAL(19, 4);
+  DECLARE v_quantity INT(11);
+  DECLARE v_document_uuid BINARY(16);
+  DECLARE v_is_exit TINYINT(1);
   DECLARE v_item_description TEXT;
 
   -- transaction type
@@ -94,8 +76,8 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   DECLARE stage_stock_movement_cursor CURSOR FOR
-  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit, temp.item_description
-	FROM stage_stock_movement as temp;
+    SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit, temp.item_description
+  FROM stage_stock_movement as temp;
 
   -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
@@ -133,7 +115,7 @@ BEGIN
 
   -- define voucher variables
   SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity)
-    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount 
+    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount
   FROM stage_stock_movement;
 
   IF (isExit = 1) THEN
@@ -186,66 +168,7 @@ BEGIN
 
   -- post voucher into journal
   CALL PostVoucher(voucher_uuid);
-
 END $$
-
-/*
-  ---------------------------------------------------
-  Add Missing Movement Reference
-  ---------------------------------------------------
-  Add the stock movement reference for movements which doesn't have
-  document uuid in document_map table
-*/
-DROP PROCEDURE IF EXISTS AddMissingMovementReference$$
-CREATE PROCEDURE AddMissingMovementReference()
-BEGIN
-  -- declaration
-  DECLARE v_document_uuid BINARY(16);
-  DECLARE v_reference INT(11);
-
-  -- cursor variable declaration
-  DECLARE v_finished INTEGER DEFAULT 0;
-
-  -- cursor declaration
-  DECLARE stage_missing_movement_document_cursor CURSOR FOR
-  	SELECT temp.document_uuid
-	FROM missing_movement_document as temp;
-
-  -- variables for the cursor
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
-
-  -- temporary table for movement which doesn't have movement reference identifier
-  DROP TABLE IF EXISTS missing_movement_document;
-
-  CREATE TEMPORARY TABLE missing_movement_document (
-    SELECT m.document_uuid FROM stock_movement m
-    LEFT JOIN document_map dm ON dm.uuid IS NULL
-    GROUP BY m.document_uuid
-  );
-
-  -- open the cursor
-  OPEN stage_missing_movement_document_cursor;
-
-  -- loop inside the cursor
-  missing_document : LOOP
-
-    /* fetch data into variables */
-    FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
-
-    IF v_finished = 1 THEN
-      LEAVE missing_document;
-    END IF;
-
-    CALL ComputeMovementReference(v_document_uuid);
-
-  END LOOP missing_document;
-
-  -- close the cursor
-  CLOSE stage_missing_movement_document_cursor;
-
-  DROP TEMPORARY TABLE missing_movement_document;
-END $$
-
 
 /*
   ---------------------------------------------------
@@ -353,7 +276,7 @@ END $$
 
 DROP PROCEDURE IF EXISTS `stockValue`$$
 CREATE PROCEDURE `stockValue`(
-  IN depotUuid BINARY(16), 
+  IN depotUuid BINARY(16),
   IN dateTo DATE,
   IN currencyId INT
   )
@@ -396,7 +319,7 @@ BEGIN
     stockValue DECIMAL(19, 4),
     iteration INT
   );
- 
+
   SET _enterpriseId = (SELECT enterprise_id FROM depot WHERE uuid= depotUuid);
   SET exchangeRate = IFNULL(GetExchangeRate(_enterpriseId,currencyId ,dateTo), 1);
 
@@ -409,22 +332,22 @@ BEGIN
       END IF;
 
       SELECT COUNT(inventory_uuid) INTO _newStock FROM stage_movement WHERE inventory_uuid = _inventoryUuid;
-     
+
       -- initialize stock qtt, value and unit cost for a new inventory
       IF _newStock = 0 THEN
         SET _iteration = 0;
-       
+
         SET stockQtt= 0;
         SET stockUnitCost = 0;
         SET stockValue = 0;
-       
+
         SET mvtValue = 0;
         SET newQuantity = 0;
         SET newValue = 0;
         SET newCost = 0;
       END IF;
-		
-	    SET mvtUnitCost = mvtUnitCost * (exchangeRate);
+
+      SET mvtUnitCost = mvtUnitCost * (exchangeRate);
 
       -- stock exit movement, the stock quantity decreases
       IF mvtIsExit = 1 THEN
@@ -436,12 +359,12 @@ BEGIN
         END IF;
       ELSE
         -- stock entry movement, the stock quantity increases
-	      SET newQuantity = mvtQtt + stockQtt;
+        SET newQuantity = mvtQtt + stockQtt;
 
         -- ignore negative stock value
         IF stockValue < 0 THEN
           SET newValue = mvtUnitCost * mvtQtt;
-        ELSE 
+        ELSE
           SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
         END IF;
 
@@ -449,7 +372,7 @@ BEGIN
         -- in this case use movement quantity only
         IF stockQtt < 0 THEN
           SET newCost = newValue / IF(mvtQtt = 0, 1, mvtQtt);
-        ELSE 
+        ELSE
           SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
         END IF;
 
@@ -476,7 +399,7 @@ BEGIN
     SELECT inventory_uuid, MAX(iteration) as max_iteration
     FROM stage_movement_copy
     GROUP BY inventory_uuid
-  )x ON x.inventory_uuid = sm.inventory_uuid AND x.max_iteration = sm.iteration 
+  )x ON x.inventory_uuid = sm.inventory_uuid AND x.max_iteration = sm.iteration
   ORDER BY i.text ASC;
 
   -- total in stock

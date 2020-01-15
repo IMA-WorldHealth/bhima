@@ -835,9 +835,9 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
 -- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
-INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`) VALUES
-  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, 7, NULL, '2019-10-28 13:02:07'),
-  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, 8, NULL, '2019-10-28 13:03:35');
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`) VALUES
+  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, NULL, '2019-10-28 13:02:07'),
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35');
 
 INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
   (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
@@ -984,18 +984,18 @@ INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_
   (9, 'c_test_3', 'Cost Test 3', NULL, 0);
 
 -- ACCOUNT REFERENCE ITEM
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (3, 2, 246, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (4, 2, 249, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (5, 2, 242, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (6, 3, 258, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (7, 4, 243, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (8, 5, 201, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (9, 6, 210, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (10, 7, 256, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (12, 8, 256, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (13, 1, 347, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (3, 2, 246, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (4, 2, 249, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (5, 2, 242, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (6, 3, 258, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (7, 4, 243, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (8, 5, 201, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (9, 6, 210, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (10, 7, 256, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (12, 8, 256, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (13, 1, 347, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
 
 
 -- FEE CENTER

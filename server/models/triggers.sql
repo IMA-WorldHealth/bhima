@@ -100,6 +100,20 @@ FOR EACH ROW BEGIN
     SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference) ON DUPLICATE KEY UPDATE text=text;
 END$$
 
+-- Stock Movement Triggers
+
+-- the stock_movement reference is incremented based on the document_uuid.
+CREATE TRIGGER stock_movement_reference BEFORE INSERT ON stock_movement
+FOR EACH ROW
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(sm.reference) + 1, 1)) FROM stock_movement sm WHERE sm.document_uuid <> NEW.document_uuid);$$
+
+-- compute the document map by simply concatenating the flux_id and the reference
+CREATE TRIGGER stock_movement_document_map AFTER INSERT ON stock_movement
+FOR EACH ROW BEGIN
+  INSERT INTO `document_map` (uuid, text) VALUES (NEW.document_uuid, CONCAT_WS('.', 'SM', NEW.flux_id, NEW.reference))
+  ON DUPLICATE KEY UPDATE uuid = NEW.document_uuid;
+END$$
+
 -- Stock Requisition Triggers
 CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
 FOR EACH ROW

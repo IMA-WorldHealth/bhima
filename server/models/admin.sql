@@ -62,6 +62,12 @@ BEGIN
   INSERT INTO document_map
     SELECT voucher.uuid, CONCAT_WS('.', 'VO', project.abbr, voucher.reference)
     FROM voucher JOIN project where project.id = voucher.project_id;
+
+  -- stock movements
+  INSERT INTO `document_map`
+    SELECT sm.document_uuid, CONCAT_WS('.', 'SM', sm.flux_id, sm.reference)
+    FROM stock_movement sm
+    ON DUPLICATE KEY UPDATE uuid = sm.document_uuid;
 END $$
 
 /*
@@ -188,5 +194,4 @@ CREATE PROCEDURE zMergeAccounts(
   DELETE FROM account WHERE id = from_account_id;
 END $$
 
-
-
+DELIMITER ;

@@ -11,18 +11,12 @@ const {
  *
  * GET /receipts/stock/entry_integration/:document_uuid
  */
-function stockEntryIntegrationReceipt(req, res, next) {
-  let report;
+function stockEntryIntegrationReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(STOCK_ENTRY_INTEGRATION_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(STOCK_ENTRY_INTEGRATION_TEMPLATE, session, optionReport);
 
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -53,7 +47,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
       const line = rows[0];
       const { key } = identifiers.STOCK_ENTRY;
 
-      data.enterprise = req.session.enterprise;
+      data.enterprise = session.enterprise;
 
       data.details = {
         depot_name            : line.depot_name,
@@ -70,12 +64,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
 
       data.rows = rows;
       return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockEntryIntegrationReceipt;
