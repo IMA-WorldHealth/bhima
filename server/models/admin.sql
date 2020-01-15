@@ -170,7 +170,7 @@ the old one.  NOTE - you must call zRecalculatePeriodTotals() when all done with
 operations.  It isn't called here to allow operations to be batched for performance, then
 committed.
 */
-DROP PROCEDURE IF EXISTS zMergeAccounts$$
+DROP PROCEDURE IF EXISTS zMergeAccounts $$
 CREATE PROCEDURE zMergeAccounts(
   IN from_account_number TEXT,
   IN to_account_number TEXT
