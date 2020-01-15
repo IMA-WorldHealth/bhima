@@ -71,11 +71,11 @@
           </bh-depot-select>
 
           <!-- service -->
-          <bh-service-select
-            service-id="$ctrl.searchQueries.service_id"
+          <bh-service-uuid-select
+            service-uuid="$ctrl.searchQueries.service_uuid"
             on-select-callback="$ctrl.onSelectService(service)">
-            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
-          </bh-service-select>
+            <bh-clear on-clear="$ctrl.clear('service_uuid')"></bh-clear>
+          </bh-service-uuid-select>
 
           <!-- inventory -->
           <bh-inventory-select
