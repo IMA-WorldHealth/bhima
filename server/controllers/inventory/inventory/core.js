@@ -246,7 +246,7 @@ function getItemsMetadataById(uid) {
   const sql = `
     SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires,
-      ig.unique_item, i.consumable, i.locked, i.stock_min,
+      ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval,
       i.last_purchase, i.num_purchase
