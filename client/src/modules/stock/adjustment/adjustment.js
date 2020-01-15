@@ -16,7 +16,7 @@ StockAdjustmentController.$inject = [
  */
 function StockAdjustmentController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants
+  Stock, uiGridConstants,
 ) {
   const vm = this;
 
@@ -143,6 +143,22 @@ function StockAdjustmentController(
     } else if (vm.adjustmentOption === 'decrease') {
       vm.adjustmentType = 'FORM.LABELS.DECREASE';
     }
+
+    vm.Stock.store.data.forEach(item => {
+      item.lots = getVisibleLots(item);
+    });
+  }
+
+  /**
+   * @function getVisibleLots
+   *
+   * @description
+   * Only shows lots with positive quantities if the adjustment option is to decrease
+   * the quantity in stock.
+   */
+  function getVisibleLots(item) {
+    return item.lotsFull
+      .filter(v => (vm.adjustmentOption === 'decrease' ? v.quantity > 0 : true));
   }
 
   // configure item
@@ -151,7 +167,8 @@ function StockAdjustmentController(
     // get lots
     Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
       .then((lots) => {
-        item.lots = lots;
+        item.lotsFull = lots;
+        item.lots = getVisibleLots(item);
       })
       .catch(Notify.handleError);
   }
