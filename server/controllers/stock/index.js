@@ -59,21 +59,18 @@ function createStock(req, res, next) {
     description : params.description,
   };
 
-  let createLotQuery;
-  let createMovementQuery;
-  let createLotObject;
-  let createMovementObject;
-  let date;
+  // prepare lot insertion query
+  const createLotQuery = 'INSERT INTO lot SET ?';
+
+  // prepare movement insertion query
+  const createMovementQuery = 'INSERT INTO stock_movement SET ?';
 
   params.lots.forEach((lot) => {
     // parse the expiration date
-    date = new Date(lot.expiration_date);
-
-    // prepare lot insertion query
-    createLotQuery = 'INSERT INTO lot SET ?';
+    const date = new Date(lot.expiration_date);
 
     // the lot object to insert
-    createLotObject = {
+    const createLotObject = {
       uuid : db.bid(uuid()),
       label : lot.label,
       initial_quantity : lot.quantity,
@@ -85,11 +82,8 @@ function createStock(req, res, next) {
       delay : 0,
     };
 
-    // prepare movement insertion query
-    createMovementQuery = 'INSERT INTO stock_movement SET ?';
-
     // the movement object to insert
-    createMovementObject = {
+    const createMovementObject = {
       uuid : db.bid(uuid()),
       lot_uuid : createLotObject.uuid,
       depot_uuid : db.bid(document.depot_uuid),
