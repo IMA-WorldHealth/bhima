@@ -30,7 +30,7 @@ function FilterService() {
         filterDefinition.key,
         filterDefinition.label,
         filterDefinition.valueFilter,
-        filterDefinition.comparitor
+        filterDefinition.comparitor,
       );
 
       filter.setDefault(true);
@@ -57,7 +57,7 @@ function FilterService() {
         filterDefinition.key,
         filterDefinition.label,
         filterDefinition.valueFilter,
-        filterDefinition.comparitor
+        filterDefinition.comparitor,
       );
 
       filter.setDefault(false);
