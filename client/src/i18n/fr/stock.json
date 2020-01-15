@@ -139,6 +139,7 @@
     "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
+    "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "Disponible",
       "LABEL"         : "État",

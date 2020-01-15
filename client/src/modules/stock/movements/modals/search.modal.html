@@ -70,6 +70,13 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <!-- service -->
+          <bh-service-select
+            service-id="$ctrl.searchQueries.service_id"
+            on-select-callback="$ctrl.onSelectService(service)">
+            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
+          </bh-service-select>
+
           <!-- inventory -->
           <bh-inventory-select
             inventory-uuid="$ctrl.searchQueries.inventory_uuid"

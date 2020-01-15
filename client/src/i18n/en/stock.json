@@ -139,6 +139,7 @@
     "ROWS"            : "Rows",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
+    "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "In Stock",
       "LABEL"         : "Status",

@@ -13,7 +13,7 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
 
   const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
-    'patientReference',
+    'patientReference', 'service_uuid',
   ];
 
   vm.filters = data;
@@ -61,6 +61,12 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
     displayValues.inventory_uuid = inventory.label;
+  };
+
+  // Custom filter service_id - assign the value to the params object
+  vm.onSelectService = service => {
+    vm.searchQueries.service_uuid = service.uuid;
+    displayValues.service_uuid = service.name;
   };
 
   // custom filter flux_id - assign the value to the searchQueries object
