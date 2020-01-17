@@ -55,6 +55,12 @@ function StockMovementsRegistryTests() {
     await GU.expectRowCount(gridId, 7);
   });
 
+  it('find movements by Service', async () => {
+    await modal.setServiceUuid('Administration');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 2);
+  });
+
   it('find movements by inventory', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();

@@ -27,6 +27,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'is_warehouse', label : 'DEPOT.WAREHOUSE' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
+    { key : 'service_uuid', label : 'STOCK.SERVICE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

@@ -75,6 +75,17 @@ describe('(/stock/) The Stock HTTP API', () => {
   );
 
 
+  // list all movement relatives to 'Service Administration'
+  it(
+    `GET /stock/lots/movements?service_uuid=...
+    returns movements for Service Uuid (1 OUT)`,
+    () => agent.get(`/stock/lots/movements?service_uuid=${shared.serviceAdministrationUuid}`)
+      .then((res) => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler),
+  );
+
   // list all stock exit relatives to 'Depot Principal'
   it(
     `GET /stock/lots/movements?is_exit=1&depot_uuid=...

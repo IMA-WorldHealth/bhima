@@ -12,6 +12,7 @@ const bhFluxSelect = require('../shared/components/bhFluxSelect');
 const bhEntitySelect = require('../shared/components/bhEntitySelect');
 const bhEntityTypeSelect = require('../shared/components/bhEntityTypeSelect');
 const bhServiceOrDepotSelect = require('../shared/components/bhServiceOrDepot');
+const bhServiceSelect = require('../shared/components/bhServiceSelect');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -130,6 +131,10 @@ class SearchModal {
 
   setDepot(depot) {
     return bhDepotSelect.set(depot);
+  }
+
+  setServiceUuid(service) {
+    return bhServiceSelect.set(service);
   }
 
   setInventory(inventory) {

@@ -138,6 +138,7 @@ const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
 const lotVitamineA = '064AB1D952464402AE8A958FCDB07B35';
 const personEntityUuid = '00099B1D184A48DEB93D45FBD0AB3790';
 const enterpriseEntityUuid = '037AC6C6B75A4E328E9DCDE5DA22BACE';
+const serviceAdministrationUuid = 'B1816006555845F993A0C222B5EFA6CB';
 
 const newPersonAssign = {
   depot_uuid : depotPrincipalUuid,
@@ -213,4 +214,5 @@ module.exports = {
   lotVitamineA,
   requisitionFromService,
   requisitionFromDepot,
+  serviceAdministrationUuid,
 };
