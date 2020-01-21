@@ -36,6 +36,7 @@ function StockInventoriesController(
     displayName      : 'STOCK.INVENTORY',
     headerCellFilter : 'translate',
     width            : '20%',
+    cellTemplate     : 'modules/stock/inventories/templates/inventory.cell.html',
   }, {
     field            : 'group_name',
     displayName      : 'STOCK.INVENTORY_GROUP',
