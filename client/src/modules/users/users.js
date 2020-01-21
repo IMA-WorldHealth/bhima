@@ -52,6 +52,13 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         cellClass : muteDisabledCells,
       },
       {
+        field : 'depots',
+        displayName : 'FORM.LABELS.DEPOT',
+        headerCellFilter : 'translate',
+        enableFiltering : true,
+        cellClass : muteDisabledCells,
+      },
+      {
         field : 'action',
         displayName : '',
         cellTemplate : '/modules/users/templates/grid/action.cell.html',
