@@ -3,7 +3,6 @@
     ui-sref="stockLots({ filters : [
       { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cacheable: false },
       { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cacheable: false },
-      { key : 'period', value : 'allTime', displayValue : 'PERIODS.ALL_TIME', cacheable: false },
       { key : 'limit', value : 1000, cacheable: false }
     ]})" href>
     <span>{{ row.entity.text }}</span>
