@@ -93,7 +93,7 @@ function StockEntryPage() {
    * ]
    */
   page.setLots = async function setLots(
-    inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost
+    inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost,
   ) {
     // lots column
     await this.openLotsModal(inventoryRowNumber);
@@ -145,7 +145,7 @@ function StockEntryPage() {
    * open lot modal
    */
   page.openLotsModal = async (inventoryRowNumber) => {
-    const launchLots = await GU.getCell(gridId, inventoryRowNumber, 3);
+    const launchLots = await GU.getCell(gridId, inventoryRowNumber, 4);
     await launchLots.$('[data-lots]').click();
   };
 
