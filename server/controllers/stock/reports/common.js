@@ -32,6 +32,7 @@ const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`
 const _ = require('lodash');
 
 // Application-specific imports
+const q = require('q');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const Stock = require('../core');
@@ -185,6 +186,7 @@ const stockFluxReceipt = {
 // Exports
 exports._ = _;
 
+exports.q = q;
 exports.db = db;
 exports.util = util;
 exports.pdf = pdf;

@@ -1,6 +1,6 @@
 const {
   _, ReportManager, Stock, NotFound, db, barcode, pdf, identifiers,
-  STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE,
+  STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE, q,
 } = require('../common');
 
 /**
@@ -41,8 +41,21 @@ function stockExitLossReceipt(documentUuid, session, options) {
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
+  const sqlGetVoucherReference = `
+    SELECT v.uuid, dm.text FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return q.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
+  ])
+    .then((results) => {
+      const rows = results[0];
+      const voucherReference = results[1][0].voucher_reference;
       if (!rows.length) {
         throw new NotFound('document not found');
       }
@@ -58,6 +71,7 @@ function stockExitLossReceipt(documentUuid, session, options) {
         document_uuid      : line.document_uuid,
         document_reference : line.document_reference,
         barcode : barcode.generate(key, line.document_uuid),
+        voucher_reference : voucherReference,
       };
 
       data.rows = rows;

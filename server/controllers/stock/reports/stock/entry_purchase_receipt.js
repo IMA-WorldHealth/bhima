@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE,
+  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE, q,
 } = require('../common');
 
 /**
@@ -38,8 +38,23 @@ function stockEntryPurchaseReceipt(documentUuid, session, options) {
     ORDER BY i.text, l.label
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
+  const sqlGetVoucherReference = `
+    SELECT v.uuid, dm.text AS voucher_reference
+    FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return q.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
+  ])
+    .then((results) => {
+      const rows = results[0];
+      const voucherReference = results[1][0].voucher_reference;
+
       if (!rows.length) {
         throw new NotFound('document not found');
       }
@@ -64,6 +79,7 @@ function stockEntryPurchaseReceipt(documentUuid, session, options) {
         supplier_display_name : line.supplier_display_name,
         project_display_name  : line.project_display_name,
         barcode               : barcode.generate(key, line.document_uuid),
+        voucher_reference     : voucherReference,
       };
 
       data.rows = rows;

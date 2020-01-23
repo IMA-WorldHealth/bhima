@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, NotFound, db, identifiers, barcode, STOCK_ADJUSTMENT_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, identifiers, barcode, STOCK_ADJUSTMENT_TEMPLATE, q,
 } = require('../common');
 
 
@@ -28,7 +28,23 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
-  const rows = await db.exec(sql, [db.bid(documentUuid)]);
+  const sqlGetVoucherReference = `
+    SELECT v.uuid, dm.text AS voucher_reference
+    FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  const results = await q.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
+  ]);
+
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
+
   if (!rows.length) {
     throw new NotFound('document not found');
   }
@@ -48,6 +64,7 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     document_uuid      : line.document_uuid,
     document_reference : line.document_reference,
     barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference : voucherReference,
   };
 
   data.rows = rows;

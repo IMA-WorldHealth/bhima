@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, NotFound, db, barcode, identifiers, STOCK_ENTRY_DONATION_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, barcode, identifiers, STOCK_ENTRY_DONATION_TEMPLATE, q,
 } = require('../common');
 
 /**
@@ -37,8 +37,22 @@ function stockEntryDonationReceipt(documentUuid, session, options) {
     ORDER BY i.text, l.label
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
+  const sqlGetVoucherReference = `
+    SELECT v.uuid, dm.text FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return q.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
+  ])
+    .then((results) => {
+      const rows = results[0];
+      const voucherReference = results[1][0].voucher_reference;
+
       if (!rows.length) {
         throw new NotFound('document not found');
       }
@@ -55,6 +69,7 @@ function stockEntryDonationReceipt(documentUuid, session, options) {
         document_uuid         : line.document_uuid,
         document_reference    : line.document_reference,
         barcode               : barcode.generate(key, line.document_uuid),
+        voucher_reference     : voucherReference,
       };
 
       data.rows = rows;

@@ -1,6 +1,6 @@
 const {
   _, ReportManager, NotFound, Stock, db, identifiers, pdf, barcode,
-  STOCK_EXIT_PATIENT_TEMPLATE, POS_STOCK_EXIT_PATIENT_TEMPLATE,
+  STOCK_EXIT_PATIENT_TEMPLATE, POS_STOCK_EXIT_PATIENT_TEMPLATE, q,
 } = require('../common');
 
 /**
@@ -44,8 +44,23 @@ function stockExitPatientReceipt(documentUuid, session, options) {
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
+  const sqlGetVoucherReference = `
+    SELECT v.uuid, dm.text AS voucher_reference
+    FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return q.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
+  ])
+    .then((results) => {
+      const rows = results[0];
+      const voucherReference = results[1][0].voucher_reference;
+
       if (!rows.length) {
         throw new NotFound('document not found');
       }
@@ -65,6 +80,7 @@ function stockExitPatientReceipt(documentUuid, session, options) {
         document_uuid        : line.document_uuid,
         document_reference   : line.document_reference,
         barcode : barcode.generate(key, line.document_uuid),
+        voucher_reference : voucherReference,
       };
 
       data.rows = rows;
