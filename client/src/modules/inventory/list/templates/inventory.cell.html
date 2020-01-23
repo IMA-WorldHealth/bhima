@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+  <a data-method="stock-inventories"
+    ui-sref="stockInventories({ filters : [
+      { key : 'inventory_uuid', value : row.entity.uuid, displayValue : row.entity.label, cacheable: false },
+      { key : 'limit', value : 1000, cacheable: false }
+    ]})" href>
+    <span>{{ row.entity.label }}</span>
+  </a>
+</div>
