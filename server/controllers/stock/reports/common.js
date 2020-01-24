@@ -159,6 +159,19 @@ const pdfOptions = {
   footerFontSize : '7',
 };
 
+async function getVoucherReferenceForStockMovement(documentUuid) {
+  const sql = `
+    SELECT v.uuid, dm.text AS voucher_reference
+    FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return db.exec(sql, [db.bid(documentUuid)]);
+}
+
 /**
  * Stock Receipt API
  * /receipts/stock/{{name}}/:document_uuid
@@ -200,6 +213,7 @@ exports.stockFluxReceipt = stockFluxReceipt;
 exports.formatFilters = formatFilters;
 exports.identifiers = identifiers;
 exports.getDepotMovement = getDepotMovement;
+exports.getVoucherReferenceForStockMovement = getVoucherReferenceForStockMovement;
 
 exports.pdfOptions = pdfOptions;
 

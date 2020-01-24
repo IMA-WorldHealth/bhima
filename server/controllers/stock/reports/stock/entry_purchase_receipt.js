@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE, q,
+  _, ReportManager, Stock, identifiers, NotFound, db, barcode, STOCK_ENTRY_PURCHASE_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 /**
@@ -9,7 +10,7 @@ const {
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
  */
-function stockEntryPurchaseReceipt(documentUuid, session, options) {
+async function stockEntryPurchaseReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
 
@@ -38,53 +39,43 @@ function stockEntryPurchaseReceipt(documentUuid, session, options) {
     ORDER BY i.text, l.label
   `;
 
-  const sqlGetVoucherReference = `
-    SELECT v.uuid, dm.text AS voucher_reference
-    FROM voucher AS v
-    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
-    JOIN document_map AS dm ON dm.uuid = v.uuid
-    WHERE vi.document_uuid = ?
-    LIMIT 1;
-  `;
-
-  return q.all([
+  const results = await Promise.all([
     db.exec(sql, [db.bid(documentUuid)]),
-    db.exec(sqlGetVoucherReference, [db.bid(documentUuid)]),
-  ])
-    .then((results) => {
-      const rows = results[0];
-      const voucherReference = results[1][0].voucher_reference;
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      const line = rows[0];
-      const { key } = identifiers.STOCK_ENTRY;
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
 
-      data.enterprise = session.enterprise;
+  const line = rows[0];
+  const { key } = identifiers.STOCK_ENTRY;
 
-      data.details = {
-        depot_name            : line.depot_name,
-        user_display_name     : line.user_display_name,
-        description           : line.description,
-        date                  : line.date,
-        document_uuid         : line.document_uuid,
-        document_reference    : line.document_reference,
-        purchase_reference    : line.purchase_reference,
-        p_note                : line.note,
-        p_cost                : line.cost,
-        p_date                : line.purchase_date,
-        p_method              : line.payment_method,
-        supplier_display_name : line.supplier_display_name,
-        project_display_name  : line.project_display_name,
-        barcode               : barcode.generate(key, line.document_uuid),
-        voucher_reference     : voucherReference,
-      };
+  data.enterprise = session.enterprise;
 
-      data.rows = rows;
-      return report.render(data);
-    });
+  data.details = {
+    depot_name            : line.depot_name,
+    user_display_name     : line.user_display_name,
+    description           : line.description,
+    date                  : line.date,
+    document_uuid         : line.document_uuid,
+    document_reference    : line.document_reference,
+    purchase_reference    : line.purchase_reference,
+    p_note                : line.note,
+    p_cost                : line.cost,
+    p_date                : line.purchase_date,
+    p_method              : line.payment_method,
+    supplier_display_name : line.supplier_display_name,
+    project_display_name  : line.project_display_name,
+    barcode               : barcode.generate(key, line.document_uuid),
+    voucher_reference     : voucherReference,
+  };
+
+  data.rows = rows;
+  return report.render(data);
 }
 
 module.exports = stockEntryPurchaseReceipt;
