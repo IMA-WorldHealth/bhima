@@ -8,21 +8,21 @@
     <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="40" height="40" alt="">
   </div>
 {{/if}}
-<h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}</h2> 
-{{> underline}}
+<h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}</h2>
+<hr />
 <p style="margin-top: 0px">
   <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{details.depot_name}}</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span> : <strong>{{details.document_reference}}</strong> <br>
   {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.user_display_name}}
 </p>
 
-{{> underline}}
+<hr />
 <div>
   <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span> : <strong>{{details.patient_reference}}</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span> : <span>{{details.patient_display_name}}</span> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span> : <strong>{{details.hospital_no}}</strong>
 </div>
-{{> underline}}
+<hr />
 
 <!-- list of data  -->
 <table style="width: 100%;" class="table table-condensed table-bordered table-report">
@@ -61,7 +61,7 @@
     <h4 class="text-center">{{translate 'REPORT.FOOTER.DEPOT_MANAGER'}}</h4>
     <hr>
   </div>
-  
+
   <div>
     <h4 class="text-center">{{translate 'REPORT.FOOTER.RECEIVER'}}</h4>
     <hr>
