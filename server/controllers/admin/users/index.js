@@ -77,17 +77,16 @@ async function lookupUser(id) {
  *
  * GET /users
  */
-function list(req, res, next) {
-  const sql = 'SELECT user.id, display_name, user.username, user.deactivated FROM user;';
-
-  db.exec(sql)
-    .then((users) => {
-      return setRoles(users);
-    }).then(users => {
-
-      res.status(200).json(users);
-    })
-    .catch(next);
+async function list(req, res, next) {
+  try {
+    const sql = 'SELECT user.id, display_name, user.username, user.deactivated FROM user;';
+    let users = await db.exec(sql);
+    users = await setDepots(users);
+    users = await setRoles(users);
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
 }
 
 async function setRoles(users) {
@@ -108,6 +107,29 @@ async function setRoles(users) {
     user.roles = roles
       .filter(role => role.user_id === user.id)
       .map(role => role.label)
+      .join(', ');
+  });
+  return users;
+}
+
+async function setDepots(users) {
+  const sql = `
+    SELECT d.text, dpp.user_id
+    FROM depot_permission dpp
+    JOIN depot d ON d.uuid = dpp.depot_uuid`;
+
+  const depotMap = {};
+  users.forEach(user => {
+    user.roles = '';
+    depotMap[user.id] = user;
+  });
+
+  const depots = await db.exec(sql);
+
+  users.forEach(user => {
+    user.depots = depots
+      .filter(depot => depot.user_id === user.id)
+      .map(depot => depot.text)
       .join(', ');
   });
 
@@ -209,7 +231,7 @@ function update(req, res, next) {
   if (data.password) {
     next(new BadRequest(
       `You cannot change the password field with this API.`,
-      `ERRORS.PROTECTED_FIELD`
+      `ERRORS.PROTECTED_FIELD`,
     ));
     return;
   }
@@ -228,12 +250,12 @@ function update(req, res, next) {
     transaction
       .addQuery(
         'DELETE FROM project_permission WHERE user_id = ?;',
-        [req.params.id]
+        [req.params.id],
       )
 
       .addQuery(
         'INSERT INTO project_permission (user_id, project_id) VALUES ?;',
-        [projectIds]
+        [projectIds],
       );
   }
 
