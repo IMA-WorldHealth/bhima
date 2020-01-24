@@ -34,9 +34,6 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     getVoucherReferenceForStockMovement(documentUuid),
   ]);
 
-  console.log('PLUSSSSSSssssss');
-  console.log(results);
-
   const rows = results[0];
   const voucherReference = results[1][0].voucher_reference;
 
