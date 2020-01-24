@@ -1,5 +1,6 @@
 const {
   _, ReportManager, Stock, NotFound, db, identifiers, barcode, STOCK_ADJUSTMENT_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 
@@ -28,7 +29,14 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
-  const rows = await db.exec(sql, [db.bid(documentUuid)]);
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
+
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
+
   if (!rows.length) {
     throw new NotFound('document not found');
   }
@@ -48,6 +56,7 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     document_uuid      : line.document_uuid,
     document_reference : line.document_reference,
     barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference : voucherReference,
   };
 
   data.rows = rows;
