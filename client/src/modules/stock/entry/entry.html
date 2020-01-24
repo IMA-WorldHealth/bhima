@@ -59,11 +59,11 @@
             <span translate>FORM.LABELS.DESCRIPTION</span>
           </label>
             <textarea class="form-control" name="description" ng-model="StockCtrl.movement.description" placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
-              ng-maxlength="StockCtrl.maxLength" required>
-              </textarea>
-              <div class="help-block" ng-messages="StockEntryForm.description.$error" ng-show="StockEntryForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-              </div>
+              ng-maxlength="StockCtrl.maxLength">
+            </textarea>
+            <div class="help-block" ng-messages="StockEntryForm.description.$error" ng-show="StockEntryForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
           </div>
         </div>
       </div>
