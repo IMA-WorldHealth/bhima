@@ -250,6 +250,17 @@ function StockInventoriesController(
     vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
+  vm.exportTo = (renderer) => {
+    const filterOpts = stockInventoryFilters.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
   vm.downloadExcel = () => {
     const filterOpts = stockInventoryFilters.formatHTTP();
     const defaultOpts = {
