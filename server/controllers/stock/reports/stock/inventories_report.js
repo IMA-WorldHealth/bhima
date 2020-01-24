@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_INVENTORIES_REPORT_TEMPLATE,
+  _, ReportManager, Stock, formatFilters, STOCK_INVENTORIES_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -20,9 +20,10 @@ async function stockInventoriesReport(req, res, next) {
   const data = {};
 
   // optionReports
-  const optionReport = _.extend(req.query, pdfOptions, {
+  const optionReport = _.extend({}, req.query, {
     filename : 'TREE.STOCK_INVENTORY',
   });
+
 
   try {
     if (req.query.identifiers && req.query.display) {
@@ -33,6 +34,8 @@ async function stockInventoriesReport(req, res, next) {
     } else {
       options = req.query;
     }
+
+    delete options.label;
 
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
     const rows = await Stock.getInventoryQuantityAndConsumption(options);
@@ -55,6 +58,7 @@ async function stockInventoriesReport(req, res, next) {
     });
 
     data.depots = depots;
+
     const result = await report.render(data);
     res.set(result.headers).send(result.report);
   } catch (e) {
