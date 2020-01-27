@@ -1,4 +1,3 @@
-const q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -15,7 +14,6 @@ const DEFAULT_PARAMS = {
   csvKey : 'fee_center_report',
   filename : 'TREE.FEE_CENTER_REPORT',
   orientation : 'portrait',
-  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -76,7 +74,7 @@ function report(req, res, next) {
   `;
 
   const getFeeCenterReference = `
-    SELECT fc.id, fc.label, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
+    SELECT fc.id, fc.label, fc.is_principal, rf.fee_center_id, rf.account_reference_id,
     rf.is_cost, rf.is_variable, rf.is_turnover, ar.abbr
     FROM fee_center AS fc
     JOIN reference_fee_center AS rf ON rf.fee_center_id = fc.id
@@ -85,7 +83,7 @@ function report(req, res, next) {
   `;
 
   const getFeeCenterDistribution = `
-    SELECT fcd.is_cost, BUID(fcd.row_uuid) AS row_uuid, fca.label AS auxiliary, fcp.label AS principal, 
+    SELECT fcd.is_cost, BUID(fcd.row_uuid) AS row_uuid, fca.label AS auxiliary, fcp.label AS principal,
     SUM(fcd.debit_equiv) AS debit, SUM(fcd.credit_equiv) AS credit, gl.trans_date, fcd.auxiliary_fee_center_id,
     fcd.principal_fee_center_id
     FROM fee_center_distribution AS fcd
@@ -104,8 +102,8 @@ function report(req, res, next) {
     getDistributionKey.allDistributionKey(),
   ];
 
-  q.all(dbPromises)
-    .spread((feeCenter, references, accountReferences, dataDistributions, distributionKey) => {
+  Promise.all(dbPromises)
+    .then(([feeCenter, references, accountReferences, dataDistributions, distributionKey]) => {
       const config = {
         feeCenter,
         references,
@@ -122,6 +120,5 @@ function report(req, res, next) {
     .then(result => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
