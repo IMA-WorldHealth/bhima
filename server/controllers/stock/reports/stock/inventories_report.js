@@ -20,8 +20,10 @@ async function stockInventoriesReport(req, res, next) {
   const data = {};
 
   // optionReports
-  const optionReport = _.extend({}, req.query, {
+  const metadata = req.session;
+  const optionReport = _.extend({ metadata }, req.query, {
     filename : 'TREE.STOCK_INVENTORY',
+    title : 'TREE.STOCK_INVENTORY',
   });
 
 
