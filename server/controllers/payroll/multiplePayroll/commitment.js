@@ -79,7 +79,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
 
   // Get Enterprise charge on remuneration
   chargesRemunerations = rubricsConfig.filter(
-    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0)
+    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
   chargesRemunerations.forEach(charge => {
@@ -94,7 +94,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     employees,
     exchangeRates,
     rubrics,
-    identificationCommitment
+    identificationCommitment,
   );
 
   const {

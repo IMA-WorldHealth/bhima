@@ -76,7 +76,7 @@ function list(req, res, next) {
     'user_id',
     `cash_box.id IN (
       SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
-    )`
+    )`,
   );
 
   filters.setOrder('ORDER BY label');

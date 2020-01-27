@@ -32,4 +32,3 @@ function list(req, res, next) {
     .catch(next)
     .done();
 }
-

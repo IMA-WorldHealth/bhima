@@ -43,8 +43,7 @@ function detail(req, res, next) {
  * GET /accounts/types
  */
 function list(req, res, next) {
-  const sql =
-    'SELECT `id`, `type`, `translation_key` FROM account_type;';
+  const sql = 'SELECT `id`, `type`, `translation_key` FROM account_type;';
 
   db.exec(sql)
     .then((rows) => {
@@ -142,8 +141,7 @@ function remove(req, res, next) {
  * @returns {Promise} - a promise resolving to the result of the database.
  */
 function lookupAccountType(id) {
-  const sql =
-    'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?;';
+  const sql = 'SELECT at.id, at.type FROM account_type AS at WHERE at.id = ?;';
 
   return db.one(sql, id);
 }

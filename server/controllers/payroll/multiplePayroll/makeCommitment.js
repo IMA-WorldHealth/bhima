@@ -89,7 +89,7 @@ function config(req, res, next) {
         projectId,
         userId,
         exchangeRates,
-        currencyId
+        currencyId,
       );
 
       const postingJournal = db.transaction();

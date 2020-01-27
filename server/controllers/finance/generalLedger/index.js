@@ -116,7 +116,7 @@ function getAccountTotalsMatrix(fiscalYearId) {
   // correct period.
   const columns = PERIODS.reduce(
     (q, number) => `${q}, SUM(IF(p.number = ${number}, pt.debit - pt.credit, 0)) AS balance${number}`,
-    ''
+    '',
   );
 
   const outerColumns = PERIODS
@@ -182,7 +182,7 @@ function getAccountTotalsMatrix(fiscalYearId) {
 function getAccountTotalsMatrixAggregates(fiscalYearId) {
   const columns = PERIODS.reduce(
     (q, number) => `${q}, SUM(IF(p.number = ${number}, pt.debit - pt.credit, 0)) AS balance${number}`,
-    ''
+    '',
   );
 
   const outerColumns = PERIODS

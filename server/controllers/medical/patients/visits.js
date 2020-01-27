@@ -51,12 +51,12 @@ const LAST_BED_LOCATION = `
     ph.uuid, ph.patient_visit_uuid, ph.created_at,
     b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
     w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
-  FROM patient_hospitalization ph 
+  FROM patient_hospitalization ph
     JOIN bed b ON b.id = ph.bed_id
     JOIN room r ON r.uuid = ph.room_uuid
     JOIN ward w ON w.uuid = r.ward_uuid
 ) AS z ON z.patient_visit_uuid = patient_visit.uuid AND z.uuid = (
-  SELECT ph2.uuid FROM patient_hospitalization ph2 
+  SELECT ph2.uuid FROM patient_hospitalization ph2
   WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
   ORDER BY ph2.created_at DESC LIMIT 1
 )
@@ -87,7 +87,7 @@ function find(options) {
   filters.custom(
     'diagnosis_id',
     '(patient_visit.start_diagnosis_id = ? OR patient_visit.end_diagnosis_id = ?)',
-    _.fill(Array(2), options.diagnosis_id)
+    _.fill(Array(2), options.diagnosis_id),
   );
 
   filters.fullText('start_notes', 'start_notes', 'patient_visit');
@@ -218,7 +218,7 @@ function admission(req, res, next) {
   if (REQUIRE_DIAGNOSES && !data.start_diagnosis_id) {
     next(new BadRequest(
       'An admission diagnosis is required to begin a patient visit.',
-      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS',
     ));
 
     return;
@@ -259,46 +259,42 @@ async function createHospitalization(data) {
   const { bed, service } = data;
   const visit = _.omit(data, ['bed', 'service']);
 
-  try {
-    let selectedBed;
+  let selectedBed;
 
-    /**
-     * if the bed is not defined for hospitalization get the available bed
-     * for the given room
-     */
-    if (bed.id) {
-      selectedBed = { id : bed.id };
-    } else {
-      selectedBed = await lookupNextAvailableBed(bed);
-    }
-
-    const paramInsertHospitalization = {
-      uuid : db.bid(uuid()),
-      patient_visit_uuid : visit.uuid,
-      patient_uuid : visit.patient_uuid,
-      room_uuid : db.bid(bed.room_uuid),
-      bed_id : selectedBed.id,
-    };
-
-    const transaction = db.transaction();
-
-    // insert the visit of the patient
-    visit.last_service_id = service.id;
-    transaction.addQuery('INSERT INTO patient_visit SET ?;', [visit]);
-
-    // insert a new patient visit service
-    transaction.addQuery(visitService.query, [visitService.parameters]);
-
-    // insert a new patient hospitalization
-    transaction.addQuery('INSERT INTO patient_hospitalization SET ?;', [paramInsertHospitalization]);
-
-    // update the bed for the hopitalized patient
-    transaction.addQuery('UPDATE bed SET is_occupied = 1 WHERE id = ?;', [paramInsertHospitalization.bed_id]);
-
-    return transaction.execute();
-  } catch (error) {
-    throw error;
+  /**
+   * if the bed is not defined for hospitalization get the available bed
+   * for the given room
+   */
+  if (bed.id) {
+    selectedBed = { id : bed.id };
+  } else {
+    selectedBed = await lookupNextAvailableBed(bed);
   }
+
+  const paramInsertHospitalization = {
+    uuid : db.bid(uuid()),
+    patient_visit_uuid : visit.uuid,
+    patient_uuid : visit.patient_uuid,
+    room_uuid : db.bid(bed.room_uuid),
+    bed_id : selectedBed.id,
+  };
+
+  const transaction = db.transaction();
+
+  // insert the visit of the patient
+  visit.last_service_id = service.id;
+  transaction.addQuery('INSERT INTO patient_visit SET ?;', [visit]);
+
+  // insert a new patient visit service
+  transaction.addQuery(visitService.query, [visitService.parameters]);
+
+  // insert a new patient hospitalization
+  transaction.addQuery('INSERT INTO patient_hospitalization SET ?;', [paramInsertHospitalization]);
+
+  // update the bed for the hopitalized patient
+  transaction.addQuery('UPDATE bed SET is_occupied = 1 WHERE id = ?;', [paramInsertHospitalization.bed_id]);
+
+  return transaction.execute();
 }
 
 function getVisitServiceQuery(data) {
@@ -320,7 +316,7 @@ function getVisitServiceQuery(data) {
 
 function lookupNextAvailableBed(bed) {
   const sql = `
-    SELECT b.id FROM bed b 
+    SELECT b.id FROM bed b
     JOIN room r ON r.uuid = b.room_uuid
     WHERE r.uuid = ? AND b.is_occupied = 0
     ORDER BY r.label, b.label
@@ -368,7 +364,7 @@ function transfer(req, res, next) {
 
   const lookupLastLocation = `
     SELECT ph.patient_uuid, ph.room_uuid, ph.bed_id
-    FROM patient_hospitalization ph 
+    FROM patient_hospitalization ph
     JOIN patient_visit pv ON pv.uuid = ph.patient_visit_uuid
     WHERE pv.uuid = ? AND pv.patient_uuid = ?
     ORDER BY ph.created_at DESC
@@ -435,7 +431,7 @@ function discharge(req, res, next) {
   if (!visitUuid) {
     next(new NotFound(
       'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
-      'PATIENT.VISITS.ERR_MISSING_UUID'
+      'PATIENT.VISITS.ERR_MISSING_UUID',
     ));
 
     return;
@@ -446,7 +442,7 @@ function discharge(req, res, next) {
   if (REQUIRE_DIAGNOSES && !data.end_diagnosis_id) {
     next(new BadRequest(
       'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
-      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS',
     ));
 
     return;
@@ -462,7 +458,7 @@ function discharge(req, res, next) {
     UPDATE bed b
     JOIN patient_hospitalization ph ON ph.bed_id = b.id
     JOIN patient_visit pv ON pv.uuid = ph.patient_visit_uuid
-    SET b.is_occupied = 0 
+    SET b.is_occupied = 0
     WHERE pv.uuid = ?;
   `;
   const transaction = db.transaction();

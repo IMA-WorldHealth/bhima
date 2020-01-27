@@ -137,7 +137,7 @@ function list(req, res, next) {
 
   filters.custom(
     'user_id',
-    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
+    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
   );
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
