@@ -24,9 +24,7 @@ function StockMovementsRegistryTests() {
   const gridId = 'stock-movements-grid';
   const depotGroupingRow = 1;
 
-  const REFERENCE_COLUMN = 2;
-  const FIRST_ROW = 2;
-  let rowReference;
+  const REFERENCE = 'SM.9.10';
 
   it('finds lot for all time', async () => {
     await modal.switchToDefaultFilterTab();
@@ -57,6 +55,12 @@ function StockMovementsRegistryTests() {
     await GU.expectRowCount(gridId, 7);
   });
 
+  it('find movements by Service', async () => {
+    await modal.setServiceUuid('Administration');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 2);
+  });
+
   it('find movements by inventory', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
@@ -67,7 +71,6 @@ function StockMovementsRegistryTests() {
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await FU.modal.submit();
-    rowReference = await GU.getCell(gridId, FIRST_ROW, REFERENCE_COLUMN).getText();
     await GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
@@ -109,10 +112,9 @@ function StockMovementsRegistryTests() {
   });
 
   it('find movements by reference', async () => {
-    const VITAMINE_A_LOT_REFERENCE = rowReference;
-    await modal.setReference(VITAMINE_A_LOT_REFERENCE);
+    await modal.setReference(REFERENCE);
     await modal.submit();
-    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 3);
   });
 }
 

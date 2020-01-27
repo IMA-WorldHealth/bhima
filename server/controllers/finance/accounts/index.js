@@ -52,6 +52,8 @@ function create(req, res, next) {
   const sql = 'INSERT INTO account SET ?';
 
   delete data.id;
+  delete data.type;
+
   data.enterprise_id = req.session.enterprise.id;
 
   db.exec(sql, [data])

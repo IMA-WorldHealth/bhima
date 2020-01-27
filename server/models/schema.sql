@@ -1983,11 +1983,11 @@ CREATE TABLE `stock_movement` (
   `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reference`       INT(11) UNSIGNED NOT NULL,
   `invoice_uuid`    BINARY(16) NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`reference`),
-  UNIQUE KEY `stock_movement_uuid` (`uuid`),
+  PRIMARY KEY (`uuid`),
+  INDEX `document_uuid` (`document_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
   KEY `lot_uuid` (`lot_uuid`),
   KEY `flux_id` (`flux_id`),
@@ -2408,28 +2408,28 @@ CREATE TABLE `staffing_indice_parameters` (
 
 DROP TABLE IF EXISTS `data_collector_management`;
 CREATE TABLE `data_collector_management` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `label` VARCHAR(100) NOT NULL, 
-  `description` TEXT, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `description` TEXT,
   `version_number` INT(11) UNSIGNED NOT NULL,
-  `color` VARCHAR(8) NULL, 
+  `color` VARCHAR(8) NULL,
   `is_related_patient` TINYINT(1) NOT NULL DEFAULT 0,
   `include_patient_data` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`), 
+  PRIMARY KEY (`id`),
   UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `choices_list_management`;
 CREATE TABLE `choices_list_management` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `name` VARCHAR(100) NOT NULL, 
-  `label` VARCHAR(100) NOT NULL, 
-  `fixed` tinyint(1) DEFAULT 0, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
   `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
-  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0, 
+  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0,
   `is_group` tinyint(1) NOT NULL DEFAULT 0,
-  `is_title` tinyint(1) NOT NULL DEFAULT 0, 
-  PRIMARY KEY (`id`), 
+  `is_title` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

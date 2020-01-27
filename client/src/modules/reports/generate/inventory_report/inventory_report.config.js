@@ -8,7 +8,7 @@ InventoryReportConfigController.$inject = [
 
 function InventoryReportConfigController(
   $sce, Notify, SavedReports, AppCache, reportData, $state,
-  Languages, moment
+  Languages, moment,
 ) {
   const vm = this;
   const cache = new AppCache('configure_stock_report');
@@ -17,11 +17,14 @@ function InventoryReportConfigController(
   vm.previewGenerated = false;
 
   vm.dateTo = new Date();
-  vm.delay = 1;
-  vm.purchaseInterval = 1;
+  vm.includeEmptyLot = 1;
 
   // chech cached configuration
   checkCachedConfiguration();
+
+  vm.onSelectIncludeEmptyLot = (value) => {
+    vm.includeEmptyLot = value;
+  };
 
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.depot = depot;
@@ -48,15 +51,13 @@ function InventoryReportConfigController(
     if (form.$invalid) { return 0; }
 
     if (!vm.chooseOneDepot) { vm.depot = {}; }
-
     if (!vm.chooseOneInventory) { vm.inventory = {}; }
 
     const params = {
       depot_uuid : vm.depot.uuid,
       inventory_uuid : vm.inventory.uuid,
-      inventory_delay : vm.delay,
-      purchase_interval : vm.purchaseInterval,
       dateTo : vm.dateTo,
+      includeEmptyLot : vm.includeEmptyLot,
     };
 
     // update cached configuration
@@ -65,10 +66,7 @@ function InventoryReportConfigController(
     // format date for the server
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
 
-    const options = {
-      params,
-      lang : Languages.key,
-    };
+    const options = { lang : Languages.key, ...params };
 
     vm.reportDetails = options;
 

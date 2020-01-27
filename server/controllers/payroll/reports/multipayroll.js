@@ -35,14 +35,6 @@ function build(req, res, next) {
   // delete options.payroll_configuration_id;
   delete options.currency_id;
 
-  _.extend(options, {
-    filename : 'TREE.MULTI_PAYROLL',
-    csvKey : 'multipayroll',
-    orientation : 'portrait',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
-  });
-
   let report;
 
   // set up the report with report manager
@@ -60,12 +52,10 @@ function build(req, res, next) {
   PayrollConfig.lookupPayrollConfig(options.payroll_configuration_id)
     .then(config => {
       data.payrollTitle = config.label;
-
       return Payroll.find(options);
     })
     .then(rows => {
       data.rows = rows;
-
       return report.render(data);
     })
     .then(result => {

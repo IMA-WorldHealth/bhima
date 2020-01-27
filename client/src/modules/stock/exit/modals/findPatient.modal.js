@@ -2,14 +2,17 @@ angular.module('bhima.controllers')
   .controller('StockFindPatientModalController', StockFindPatientModalController);
 
 StockFindPatientModalController.$inject = [
-  '$uibModalInstance', 'PatientService', 'NotifyService', 'data',
+  '$uibModalInstance', 'PatientService', 'NotifyService', 'data', 'AppCache',
 ];
 
-function StockFindPatientModalController(Instance, Patient, Notify, Data) {
+function StockFindPatientModalController(Instance, Patient, Notify, Data, AppCache) {
   const vm = this;
+  const cache = new AppCache('StockFindPatient');
+
+  cache.joinInvoice = cache.joinInvoice || 0;
 
   // join invoice as default behavior
-  vm.joinInvoice = 1;
+  vm.joinInvoice = cache.joinInvoice;
 
   // global
   vm.selected = {};
@@ -20,20 +23,19 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data) {
   vm.submit = submit;
   vm.cancel = cancel;
 
-  Patient.read()
-    .then(patients => {
-      vm.patients = patients;
-
-      // set defined the previous selected patient
-      if (Data.entity_uuid) {
-        const currentPatient = patients.filter(item => {
-          return item.uuid === Data.entity_uuid;
-        });
-
-        vm.selected = currentPatient.length > 0 ? currentPatient[0] : {};
-      }
-    })
-    .catch(Notify.handleError);
+  if (Data.entity_uuid) {
+    Patient.read(Data.entity_uuid)
+      .then(patient => {
+        setPatient(patient);
+      })
+      .catch(err => {
+        if (err.statusCode === 404) {
+          setPatient({});
+        } else {
+          Notify.handleError(err);
+        }
+      });
+  }
 
   // set patient
   function setPatient(patient) {
@@ -53,5 +55,4 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data) {
   function cancel() {
     Instance.close();
   }
-
 }

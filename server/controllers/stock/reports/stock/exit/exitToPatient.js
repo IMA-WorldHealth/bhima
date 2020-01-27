@@ -10,17 +10,17 @@ const EXIT_TO_PATIENT_ID = 9;
  */
 function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   const sql = `
-  SELECT 
+  SELECT
     i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name, p.display_name AS patient_display_name,
-    dm.text AS document_reference, d.text AS depot_name, 
+    dm.text AS document_reference, d.text AS depot_name,
     CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference,
     dm2.text AS invoice_reference
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
@@ -28,7 +28,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN invoice iv ON iv.uuid = m.invoice_uuid
     LEFT JOIN document_map dm2 ON dm2.uuid = iv.uuid
-  WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${EXIT_TO_PATIENT_ID} AND d.uuid = ? 
+  WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${EXIT_TO_PATIENT_ID} AND d.uuid = ?
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;
 

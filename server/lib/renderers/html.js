@@ -83,5 +83,7 @@ async function renderHTML(data, template, options = {}) {
   debug(`rendering HTML file`);
 
   const html = await hbs.render(template, data);
-  return inlineSource(html, { attribute : false, rootpath : '/', compress : false });
+  return inlineSource(html, {
+    attribute : false, rootpath : '/', compress : false, swallowErrors : true,
+  });
 }

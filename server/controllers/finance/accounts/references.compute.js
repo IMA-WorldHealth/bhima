@@ -1,7 +1,6 @@
 /**
  * Accounts References Computations
  */
-const Q = require('q');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
@@ -60,10 +59,11 @@ function computeAllAccountReference(periodId, referenceTypeId) {
           ar.is_amo_dep,
           ar.description,
           glb.fiscalYear.period_number,
-          glb.fiscalYear.id
+          glb.fiscalYear.id,
         );
       });
-      return Q.all(dbPromises);
+
+      return Promise.all(dbPromises);
     });
 }
 
@@ -97,7 +97,7 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
         ar.isAmoDep,
         ar.description,
         glb.fiscalYear.period_number,
-        glb.fiscalYear.id
+        glb.fiscalYear.id,
       );
     });
 }
@@ -120,7 +120,7 @@ function getValueForReference(abbr, isAmoDep = 0, referenceDescription, periodNu
       SELECT ? AS abbr, ? AS is_amo_dep, ? AS description,
         SUM(IFNULL(pt.debit, 0)) AS debit, SUM(IFNULL(pt.credit, 0)) AS credit,
         SUM(IFNULL(pt.debit - pt.credit, 0)) AS balance
-      FROM period_total pt 
+      FROM period_total pt
       JOIN period p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ? AND pt.locked = 0 AND p.number BETWEEN 0 AND ? AND pt.account_id IN (?)
     )z
@@ -157,25 +157,25 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
    */
   const queryAccounts = `
     SELECT includeTable.account_id, includeTable.account_number FROM (
-      SELECT DISTINCT 
+      SELECT DISTINCT
         account.id AS account_id, account.number AS account_number FROM account
         JOIN (
-          SELECT a.id, a.number FROM account a 
+          SELECT a.id, a.number FROM account a
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
           WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 0
-        ) AS t ON LEFT(account.number, CHAR_LENGTH(t.number)) = t.number 
-    ) AS includeTable 
+        ) AS t ON LEFT(account.number, CHAR_LENGTH(t.number)) = t.number
+    ) AS includeTable
     LEFT JOIN (
-      SELECT DISTINCT 
+      SELECT DISTINCT
         account.id AS account_id, account.number AS account_number FROM account
         JOIN (
-          SELECT a.id, a.number FROM account a 
+          SELECT a.id, a.number FROM account a
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
           WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 1
         ) AS z ON LEFT(account.number, CHAR_LENGTH(z.number)) = z.number
-    ) AS excludeTable ON excludeTable.account_id = includeTable.account_id 
+    ) AS excludeTable ON excludeTable.account_id = includeTable.account_id
     WHERE excludeTable.account_id IS NULL
     ORDER BY CONVERT(includeTable.account_number, char(10));
   `;

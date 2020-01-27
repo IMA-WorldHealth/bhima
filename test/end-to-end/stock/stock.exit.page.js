@@ -19,7 +19,7 @@ function StockExitPage() {
    * @method setPatient
    * @param {string} reference - the patient reference
    */
-  page.setPatient = async function setPatient(reference, invoice, patientAlreadyCached) {
+  page.setPatient = async function setPatient(reference, invoice, patientAlreadyCached = false) {
     await components.stockEntryExitType.set('patient');
 
     if (!patientAlreadyCached) {
@@ -27,9 +27,8 @@ function StockExitPage() {
     }
 
     if (invoice) {
-      await components.findInvoice.set(invoice);
-    } else {
       await clickJoinInvoice();
+      await components.findInvoice.set(invoice);
     }
 
     await FU.modal.submit();

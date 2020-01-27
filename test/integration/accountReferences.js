@@ -38,7 +38,7 @@ describe('(/accounts/references) Accounts References', () => {
 
         expect(res).to.be.a('object');
         expect(res.body).to.have.all.keys(
-          'id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'accountsException', 'reference_type_id'
+          'id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'accountsException', 'reference_type_id',
         );
       })
       .catch(helpers.handler);
@@ -101,7 +101,7 @@ describe('(/accounts/references) Accounts References', () => {
         helpers.api.listed(res, numAccountReference);
         expect(res.body[0]).to.have.all.keys(
           'id', 'abbr', 'account_reference_type_label', 'description',
-          'parent', 'reference_type_id', 'is_amo_dep', 'accounts', 'parent_abbr'
+          'parent', 'reference_type_id', 'is_amo_dep', 'accounts', 'parent_abbr',
         );
       })
       .catch(helpers.handler);

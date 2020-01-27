@@ -9,7 +9,7 @@ const ENTRY_FROM_INTEGRATION_ID = 13;
  */
 function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   const sql = `
-  SELECT 
+  SELECT
     i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name,
@@ -17,11 +17,11 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id 
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-  WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${ENTRY_FROM_INTEGRATION_ID} AND d.uuid = ? 
+  WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${ENTRY_FROM_INTEGRATION_ID} AND d.uuid = ?
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;
 

@@ -1,5 +1,6 @@
 /* global */
 
+// const EC = require('protractor').ExpectedConditions;
 const helpers = require('../shared/helpers');
 const ExitPage = require('./stock.exit.page');
 
@@ -24,6 +25,7 @@ function StockExiTests() {
   it(`Should distribute the stock to the patient ${PATIENT} `, async () => {
     // select the patient
     await page.setPatient(PATIENT);
+
     await page.setDate(new Date());
     await page.setDescription(DESCRIPTION.concat(' - Patient'));
     await page.addRows(2);
@@ -40,7 +42,7 @@ function StockExiTests() {
 
   it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
     // select the patient
-    await page.setPatient(PATIENT, INVOICE, true);
+    await page.setPatient(PATIENT, INVOICE);
 
     await page.setDate(new Date());
 

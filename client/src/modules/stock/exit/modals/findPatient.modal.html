@@ -4,17 +4,19 @@
   novalidate>
 
   <div class="modal-header">
-    <i class="fa fa-search"></i>
-    <span translate>FORM.LABELS.SEARCH</span>
-    <span translate>FORM.LABELS.PATIENT</span>
+    <ol class="headercrumb">
+    <li class="static"> <i class="fa fa-search"></i> </li>
+    <li class="title">
+      <span translate>FORM.LABELS.SEARCH</span>
+      <span translate>FORM.LABELS.PATIENT</span>
+    </li>
   </div>
 
   <div class="modal-body">
     <bh-find-patient
       patient-uuid="$ctrl.selected.uuid"
       suppress-reset="false"
-      on-search-complete="$ctrl.setPatient(patient)"
-      on-register-api="$ctrl.onPatientSearchApiCallback(api)">
+      on-search-complete="$ctrl.setPatient(patient)">
     </bh-find-patient>
 
     <div class="form-group">
@@ -49,5 +51,4 @@
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
-
 </form>

@@ -7,9 +7,9 @@ SearchInventoriesModalController.$inject = [
 ];
 
 function SearchInventoriesModalController(data, Notify, Instance, Store, Periods, util, Stock) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
-  var searchQueryOptions = [
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
+  const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'status', 'require_po',
   ];
 
@@ -22,7 +22,7 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = (period) => {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
     periodFilters.forEach((filterChange) => {
       changes.post(filterChange);
@@ -63,6 +63,13 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
     }
   };
 
+  // on select include empty lot
+  vm.onSelectIncludeEmptyLot = value => {
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'includeEmptyLot', value });
+    }
+  };
+
   // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
@@ -74,6 +81,10 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
 
   if (data.limit) {
     vm.defaultQueries.limit = data.limit;
+  }
+
+  if (data.includeEmptyLot) {
+    vm.defaultQueries.includeEmptyLot = data.includeEmptyLot;
   }
 
   vm.cancel = function cancel() { Instance.close(); };

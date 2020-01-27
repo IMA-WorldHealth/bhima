@@ -93,7 +93,7 @@ describe('Purchase Orders', () => {
     await page.reset();
   });
 
-  it('supports An optimal purchase orders', async () => {
+  it.skip('supports An optimal purchase orders', async () => {
     const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc

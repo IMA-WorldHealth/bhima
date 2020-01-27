@@ -13,7 +13,7 @@ describe('Fiscal Year', () => {
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
-    previous : 'Test Fiscal Year 2017',
+    previous : '2019',
   };
 
   it('blocks invalid form submission with relevant error classes', async () => {
@@ -39,7 +39,7 @@ describe('Fiscal Year', () => {
     await FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    await components.dateInterval.range('01/01/2020', '31/12/2020');
+    await components.dateInterval.range('01/01/2021', '31/12/2021');
     await FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     await FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     await FU.buttons.submit();
@@ -71,6 +71,8 @@ describe('Fiscal Year', () => {
   it('set the opening balance for the first fiscal year', async () => {
     await helpers.navigate(path);
 
+    await $('.pagination-last').click();
+
     // the last in the list is the oldest
     const updateButton = element.all(by.css('[data-fiscal-entry]'));
     await updateButton.all(by.css('[data-method="update"]')).last().click();
@@ -93,6 +95,9 @@ describe('Fiscal Year', () => {
 
   it('forbid not balanced submission', async () => {
     await helpers.navigate(path);
+
+    // jump to opening balance
+    // await $('.pagination-last').click();
 
     // the last in the list is the oldest
     const updateButton = element.all(by.css('[data-fiscal-entry]'));
@@ -117,6 +122,9 @@ describe('Fiscal Year', () => {
 
   it('closing a fiscal year in normal way', async () => {
     await helpers.navigate(path);
+
+    // jump to opening balance
+    // await $('.pagination-last').click();
 
     // the last in the list is the oldest
     const updateButton = element.all(by.css('[data-fiscal-entry]'));

@@ -73,6 +73,7 @@ function getLotFilters(parameters) {
     'group_uuid',
     'document_uuid',
     'entity_uuid',
+    'service_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -92,6 +93,13 @@ function getLotFilters(parameters) {
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
+  filters.equals('service_uuid', 'uuid', 'serv');
+
+  // NOTE(@jniles):
+  // this filters the lots on the entity_uuid associated with the text reference.  It is
+  // an "IN" filter because the patient could have a patient_uuid or debtor_uuid specified.
+  filters.custom('patientReference',
+    'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
@@ -136,13 +144,14 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-        dm.text AS documentReference
+        dm.text AS documentReference, ser.name AS service_name
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       JOIN inventory_unit iu ON iu.id = i.unit_id
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
   `;
 
@@ -265,6 +274,7 @@ function getLotsMovements(depotUuid, params) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN flux f ON f.id = m.flux_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
   return getLots(sql, params, finalClause);
@@ -491,7 +501,7 @@ function getInventoryQuantityAndConsumption(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, i.text `;
+  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
     .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))

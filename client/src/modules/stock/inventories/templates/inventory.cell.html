@@ -1,0 +1,10 @@
+<div class="ui-grid-cell-contents">
+  <a data-method="stock-lots"
+    ui-sref="stockLots({ filters : [
+      { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cacheable: false },
+      { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cacheable: false },
+      { key : 'limit', value : 1000, cacheable: false }
+    ]})" href>
+    <span>{{ row.entity.text }}</span>
+  </a>
+</div>

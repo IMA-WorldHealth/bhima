@@ -90,6 +90,10 @@ exports.email = function email(address, subject, message, options = {}) {
         text : message,
       };
 
+      if (options.bcc) {
+        Object.assign(mail, { bcc : options.bcc });
+      }
+
       return sendp(mail);
     });
 };

@@ -9,14 +9,10 @@ const {
  * @description
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
- *
- * GET /receipts/stock/exit_service/:document_uuid
  */
-function stockExitServiceReceipt(req, res, next) {
-  let report;
+function stockExitServiceReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_SERVICE' });
+  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_SERVICE' });
 
   let template = STOCK_EXIT_SERVICE_TEMPLATE;
 
@@ -26,11 +22,7 @@ function stockExitServiceReceipt(req, res, next) {
   }
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(template, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(template, session, optionReport);
 
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -55,7 +47,7 @@ function stockExitServiceReceipt(req, res, next) {
       }
       const line = rows[0];
       const { key } = identifiers.STOCK_EXIT;
-      data.enterprise = req.session.enterprise;
+      data.enterprise = session.enterprise;
 
       data.details = {
         depot_name           : line.depot_name,
@@ -71,12 +63,7 @@ function stockExitServiceReceipt(req, res, next) {
       data.rows = rows;
 
       return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockExitServiceReceipt;

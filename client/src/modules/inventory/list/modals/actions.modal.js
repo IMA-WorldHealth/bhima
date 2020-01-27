@@ -8,7 +8,7 @@ InventoryListActionsModalController.$inject = [
 
 function InventoryListActionsModalController(
   Account, Inventory, Notify, Instance,
-  $state, util, AppCache, SessionService, $rootScope
+  $state, util, AppCache, SessionService, $rootScope,
 ) {
   const vm = this;
   const cache = AppCache('InventoryList');

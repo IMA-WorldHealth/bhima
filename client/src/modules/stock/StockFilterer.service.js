@@ -23,10 +23,11 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
     { key : 'entity_uuid', label : 'ENTITY.LABEL' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-    { key : 'includeEmptyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
     { key : 'text', label : 'STOCK.DEPOT' },
     { key : 'is_warehouse', label : 'DEPOT.WAREHOUSE' },
+    { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
+    { key : 'service_uuid', label : 'STOCK.SERVICE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
@@ -136,6 +137,13 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
       // assign default limit filter
       if (assignedKeys.indexOf('limit') === -1) {
         this._filters.assignFilter('limit', 100);
+      }
+    }
+
+    assignFilter(key, value) {
+      const assignedKeys = Object.keys(this._filters.formatHTTP());
+      if (assignedKeys.indexOf(value) === -1) {
+        this._filters.assignFilter(key, value);
       }
     }
   }

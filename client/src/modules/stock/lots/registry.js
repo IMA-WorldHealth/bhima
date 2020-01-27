@@ -12,7 +12,7 @@ StockLotsController.$inject = [
  */
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages, Grouping,
-  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry
+  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -92,7 +92,7 @@ function StockLotsController(
   function startup() {
     if ($state.params.filters.length) {
       stockLotFilters.replaceFiltersFromState($state.params.filters);
-      stockLotFilters.cache.formatCache();
+      stockLotFilters.formatCache();
     }
 
     load(stockLotFilters.formatHTTP(true));

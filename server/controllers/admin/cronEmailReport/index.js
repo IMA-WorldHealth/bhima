@@ -4,6 +4,8 @@
  */
 const debug = require('debug')('bhima:cron');
 const Cron = require('cron').CronJob;
+const pRetry = require('p-retry');
+const delay = require('delay');
 
 const db = require('../../../lib/db');
 const BhMoment = require('../../../lib/bhMoment');
@@ -13,7 +15,11 @@ const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
 
-const CURRENT_JOBS = [];
+const CURRENT_JOBS = new Map();
+
+// TODO(@jniles) - move this into a session variable
+const DEVELOPER_ADDRESS = 'developers@imaworldhealth.org';
+const RETRY_COUNT = 5;
 
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
@@ -70,21 +76,32 @@ function details(req, res, next) {
     .done();
 }
 
+/**
+ * @function removeJob
+ *
+ * @description
+ * The opposite of addJob().  It haults a job from running, and removes it from the
+ * list of current jobs.
+ */
+function removeJob(id) {
+  const jobToStop = CURRENT_JOBS.get(id);
+
+  if (jobToStop) {
+    jobToStop.job.stop();
+    debug(`The job for "${jobToStop.label}" is stopped`);
+    CURRENT_JOBS.delete(id);
+  }
+
+}
+
 function remove(req, res, next) {
   const query = `
     DELETE FROM cron_email_report WHERE id = ?;
   `;
-  db.exec(query, [req.params.id])
-    .then(() => {
-      const [jobToStop] = CURRENT_JOBS.filter(item => {
-        return item.id === parseInt(req.params.id, 10);
-      });
+  const ident = parseInt(req.params.id, 10);
 
-      if (jobToStop) {
-        jobToStop.job.stop();
-        debug(`The job for "${jobToStop.label}" is stopped`);
-      }
-    })
+  db.exec(query, [ident])
+    .then(() => removeJob(ident))
     .then(() => res.sendStatus(204))
     .catch(next)
     .done();
@@ -126,6 +143,9 @@ function send(req, res, next) {
 function addJob(frequency, cb, ...params) {
   const cj = new Cron(frequency, () => cb(...params));
   cj.start();
+
+  const nextRunDate = cj.nextDate().format('YYYY-MM-DD HH:mm:ss');
+  debug(`Added and started new job.  Next run at: ${nextRunDate}`);
   return cj;
 }
 
@@ -136,6 +156,7 @@ function addJob(frequency, cb, ...params) {
  */
 async function launchCronEmailReportJobs() {
   try {
+    debug('beginning scan of saved automated email reports.');
     const session = await loadSession();
     if (!session.enterprise.settings.enable_auto_email_report) { return; }
 
@@ -158,9 +179,22 @@ async function launchCronEmailReportJobs() {
  */
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
-  CURRENT_JOBS.push({ id : record.id, label : record.label, job });
+  CURRENT_JOBS.set(record.id, { id : record.id, label : record.label, job });
   return updateCronEmailReportNextSend(record.id, job);
 }
+
+/* eslint-disable max-len */
+const content = `
+To whom it may concern,
+
+You are subscribed to automated reports from the BHIMA software installation at %ENTERPRISE%.  Please find attached the following reports:
+
+  - %FILENAME%
+
+Thank you,
+The BHIMA team
+`;
+/* eslint-enable max-len */
 
 /**
  * @function sendEmailReportDocument
@@ -169,36 +203,54 @@ function createEmailReportJob(record, cb, ...params) {
  */
 async function sendEmailReportDocument(record) {
   try {
+    const contacts = await loadContacts(record.entity_group_uuid);
+
+    if (contacts.length === 0) {
+      debug(`No contacts found for automated report ${record.label} (${record.report_id}).`);
+      debug(`Report will not send.  Exiting.`);
+      return;
+    }
+
     const reportOptions = JSON.parse(record.params);
     // dynamic dates in the report params if needed
     const options = addDynamicDatesOptions(record.cron_id, record.has_dynamic_dates, reportOptions);
     const fn = dbReports[record.report_key];
-    const contacts = await loadContacts(record.entity_group_uuid);
+
+
     const session = await loadSession();
     const document = await fn(options, session);
     const filename = replaceSlash(document.headers.filename);
 
-    if (contacts.length) {
-      const attachments = [
-        { filename, stream : document.report },
-      ];
-      const content = `
-        Hi,
+    const attachments = [
+      { filename, stream : document.report },
+    ];
 
-        We have attached to this email the ${filename} file
+    // template in the temporary variables
+    const body = content
+      .replace('%ENTERPRISE%', session.enterprise.name)
+      .replace('%FILENAME%', filename)
+      .trim();
 
-        Thank you,
-      `;
-      const mails = contacts.map(c => {
-        return mailer.email(c, record.label, content, {
-          attachments,
-        });
-      });
+    const addresses = contacts.map(addr => addr.trim());
 
-      await Promise.all(mails);
-      await updateCronEmailReportLastSend(record.id);
-      debug(`(${record.label}) report sent by email to ${contacts.length} contacts`);
+    // eslint-disable-next-line
+    function sendEmailToSubscribers() {
+      return mailer.email(DEVELOPER_ADDRESS, record.label, body, { attachments, bcc : addresses });
     }
+
+    await pRetry(sendEmailToSubscribers, {
+      retries : RETRY_COUNT,
+      onFailedAttempt : async (error) => {
+        // eslint-disable-next-line
+        debug(`(${record.label}) Sending report failed with ${error.name}. Attempt ${error.attemptNumber} of ${RETRY_COUNT}.`);
+
+        // delay by 10 seconds
+        await delay(10000);
+      },
+    });
+
+    await updateCronEmailReportLastSend(record.id);
+    debug(`(${record.label}) report sent by email to ${contacts.length} contacts`);
   } catch (e) {
     debug(e);
   }
@@ -244,27 +296,35 @@ function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
 
   const period = new BhMoment(new Date());
 
-  if (hasDynamicDates) {
-    if (cronId === DAILY) {
-      options.dateFrom = period.day().dateFrom;
-      options.dateTo = period.day().dateTo;
-    }
-
-    if (cronId === WEEKLY) {
-      options.dateFrom = period.week().dateFrom;
-      options.dateTo = period.week().dateTo;
-    }
-
-    if (cronId === MONTHLY) {
-      options.dateFrom = period.month().dateFrom;
-      options.dateTo = period.month().dateTo;
-    }
-
-    if (cronId === YEARLY) {
-      options.dateFrom = period.year().dateFrom;
-      options.dateTo = period.year().dateTo;
-    }
+  if (!hasDynamicDates) {
+    return options;
   }
+
+  switch (cronId) {
+  case DAILY:
+    options.dateFrom = period.day().dateFrom;
+    options.dateTo = period.day().dateTo;
+    break;
+
+  case WEEKLY:
+    options.dateFrom = period.week().dateFrom;
+    options.dateTo = period.week().dateTo;
+    break;
+
+  case MONTHLY:
+    options.dateFrom = period.month().dateFrom;
+    options.dateTo = period.month().dateTo;
+    break;
+
+  case YEARLY:
+    options.dateFrom = period.year().dateFrom;
+    options.dateTo = period.year().dateTo;
+    break;
+
+  default:
+    break;
+  }
+
   return options;
 }
 
