@@ -104,7 +104,11 @@ function render(data, filename, options) {
   const ws = wb.addWorksheet(worksheetName);
   const rows = find(data, options); // get all rows to set in the sheet
 
-  const { metadata, title, subtitle } = options;
+  let { title, subtitle } = options;
+  title = t(title || filename || '');
+  subtitle = t(subtitle || '');
+
+  const { metadata } = data;
 
   ws.cell(1, 1, 1, 4, true).string(metadata.enterprise.name);
   ws.cell(2, 1, 2, 4, true).string(`${metadata.project.name}(${metadata.project.abbr})`);
@@ -120,8 +124,8 @@ function render(data, filename, options) {
   ws.cell(2, 9).string(`${t('REPORT.BY')}`).style(right);
   ws.cell(2, 10).string(metadata.user.display_name).style(right);
 
-  ws.cell(6, 4, 6, 9, true).string(t(title || '')).style(titleStyle).style(center);
-  ws.cell(7, 4, 7, 9, true).string(t(subtitle || '')).style(center);
+  ws.cell(6, 3, 6, 9, true).string(title).style(titleStyle).style(center);
+  ws.cell(7, 3, 7, 9, true).string(subtitle).style(center);
 
   const firstObject = rows[0] || {};
 
@@ -155,7 +159,6 @@ function render(data, filename, options) {
     });
     line++;
   });
-
 
   return wb.writeToBuffer();
 }
