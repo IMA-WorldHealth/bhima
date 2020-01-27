@@ -45,8 +45,13 @@ function moveServerFiles() {
  * NOTE(@jniles) - there is an open issue (#3650) to move this to an environmental
  * variable.
  */
-function createReportsDirectory(cb) {
-  mkdirp(path.join(SERVER_FOLDER, 'reports/'), cb);
+async function createReportsDirectory(cb) {
+  try {
+    const res = await mkdirp(path.join(SERVER_FOLDER, 'reports/'));
+    cb(null, res);
+  } catch (e) {
+    cb(e);
+  }
 }
 
 // expose the gulp functions to the outside world
