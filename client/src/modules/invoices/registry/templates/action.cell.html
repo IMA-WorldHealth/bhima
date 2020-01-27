@@ -44,6 +44,12 @@
       </a>
     </li>
 
+    <li>
+      <a data-method="view-stock-movements" ui-sref="stockMovements({ filters : [{ key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference, cacheable:false}, { key : 'period', value : 'allTime', cacheable:false }]})" href>
+        <span class="fa fa-list-alt"></span> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
+
     <!-- reverse or remove records -->
     <li class="divider"></li>
 
