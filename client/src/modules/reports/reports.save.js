@@ -8,6 +8,7 @@ SaveReportController.$inject = [
 function SaveReportController(ModalInstance, Notify, SavedReports, options, Languages) {
   const vm = this;
   vm.documentOptions = {};
+
   vm.report = options.report;
 
   vm.dismiss = ModalInstance.dismiss;
