@@ -8,14 +8,22 @@ ReportsArchiveController.$inject = [
 function ReportsArchiveController($state, SavedReports, Notify, reportData) {
   const vm = this;
 
-  const typeTemplate = '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
-  const dateTemplate = `<div class="ui-grid-cell-contents">
-      {{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)
-    </div>`;
+  const typeTemplate = `
+  <div class="ui-grid-cell-contents">
+    <i class="fa" ng-class="row.entity.icon" ng-attr-title="{{row.entity.extension}}"></i>
+  </div>`.trim();
 
-  const printTemplate = `<div class="ui-grid-cell-contents">
+  const dateTemplate = `
+    <div class="ui-grid-cell-contents">
+      {{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)
+    </div>`.trim();
+
+  const printTemplate = `
+  <div class="ui-grid-cell-contents">
+    <span ng-if="row.entity.isPrintable">
       <bh-pdf-link pdf-url="/reports/archive/{{row.entity.uuid}}"></bh-pdf-link>
-    </div>`;
+    </span>
+  </div>`.trim();
 
   const reportId = reportData.id;
   vm.key = $state.params.key;
@@ -80,6 +88,12 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
     // Load archived reports
     SavedReports.listSavedReports(reportId)
       .then((results) => {
+        results.forEach(row => {
+          row.icon = SavedReports.parseFileUrlToIcon(row.link);
+          row.extension = SavedReports.parseFileUrlToExtension(row.link);
+          row.isPrintable = row.extension === 'pdf';
+        });
+
         vm.gridOptions.data = results;
       })
       .catch(() => {

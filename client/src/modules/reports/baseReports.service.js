@@ -98,4 +98,58 @@ function BaseReportService($http, Modal, util, Languages) {
 
     return instance.result;
   }
+
+  function parseFileUrlToExtension(url) {
+    const parts = url.split('.');
+    const extension = parts[parts.length - 1];
+    return extension;
+  }
+
+  /**
+   * @function parseFileUrlToIcon
+   *
+   * @description
+   * Takes in a URL string with an given extension (.pdf, .doc, etc) and
+   * returns the font awesome class name associated with that icon.
+   */
+  function parseFileUrlToIcon(url) {
+    const extension = parseFileUrlToExtension(url);
+
+    let icon;
+
+    switch (extension) {
+    case 'doc':
+    case 'docx':
+      icon = 'fa-file-word-o';
+      break;
+    case 'pdf':
+      icon = 'fa-file-pdf-o';
+      break;
+    case 'xlsx':
+    case 'xls':
+      icon = 'fa-file-excel-o';
+      break;
+    case 'zip':
+    case 'gz':
+      icon = 'fa-file-archive-o';
+      break;
+    case 'png':
+    case 'jpeg':
+    case 'jpg':
+    case 'svg':
+      icon = 'fa-file-image-o';
+      break;
+    case 'csv':
+      icon = 'fa-file-csv-o';
+      break;
+    default:
+      icon = 'fa-file-o';
+      break;
+    }
+
+    return icon;
+  }
+
+  service.parseFileUrlToIcon = parseFileUrlToIcon;
+  service.parseFileUrlToExtension = parseFileUrlToExtension;
 }
