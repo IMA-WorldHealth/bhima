@@ -100,6 +100,7 @@ function BaseReportService($http, Modal, util, Languages) {
   }
 
   function parseFileUrlToExtension(url) {
+    if (!url) { return ''; }
     const parts = url.split('.');
     const extension = parts[parts.length - 1];
     return extension;
