@@ -12,15 +12,13 @@
  * PUT    /prices/:uuid
  * DELETE /prices/:uuid
  */
-const path = require('path');
 const _ = require('lodash');
-const db = require('../../lib/db');
-const { uuid } = require('../../lib/util');
+const db = require('../../../lib/db');
 
-const BadRequest = require('../../lib/errors/BadRequest');
-const util = require('../../lib/util');
-const csv = require('../../lib/renderers/csv');
-const ReportManager = require('../../lib/ReportManager');
+const BadRequest = require('../../../lib/errors/BadRequest');
+const util = require('../../../lib/util');
+const csv = require('../../../lib/renderers/csv');
+const ReportManager = require('../../../lib/ReportManager');
 
 exports.lookup = lookup;
 /**
@@ -167,7 +165,7 @@ function formatPriceListItems(priceListUuid, items) {
     const inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
 
     return [
-      db.bid(item.uuid || uuid()),
+      db.bid(item.uuid || util.uuid()),
       inventoryId,
       priceListUuid,
       item.label,
@@ -196,7 +194,7 @@ exports.create = function create(req, res, next) {
     label, value, is_percentage) VALUES ?;`;
 
   // generate a UUID if not provided
-  const priceListUuid = data.uuid || uuid();
+  const priceListUuid = data.uuid || util.uuid();
   data.uuid = db.bid(priceListUuid);
   // if the client didn't send price list items, do not create them.
   if (data.items) {
@@ -238,19 +236,12 @@ exports.createItem = function createItem(req, res, next) {
 
 
 /**
- * @method downloadTemplate
+ * @function downloadFilledTemplate
  *
- * @description send to the client the template file for price list item import
-*/
-exports.downloadTemplate = (req, res, next) => {
-  try {
-    const file = path.join(__dirname, '../../resources/templates/import-inventory-item-template.csv');
-    res.download(file);
-  } catch (error) {
-    next(error);
-  }
-};
-
+ * @description
+ * Dumps the items that are for sale to a CSV file for the user to fill out and
+ * later import via the import route.
+ */
 exports.downloadFilledTemplate = async (req, res, next) => {
   try {
     const pdfOptions = {
@@ -259,26 +250,39 @@ exports.downloadFilledTemplate = async (req, res, next) => {
       suppressDefaultFiltering : true,
     };
 
+    // currency symbol is included in the import so the user knows
+    // the valuation of the currency
+    const { currencySymbol } = req.session.enterprise;
+
     const optionReport = _.extend(req.query, pdfOptions, {
-      filename : 'TREE.STOCK_VALUE',
+      filename : 'PRICE_LIST.NEW_PRICE_LIST',
     });
 
     const report = new ReportManager('', req.session, optionReport);
-    const sql = 'SELECT code, text FROM inventory';
+    const sql = 'SELECT uuid, code, text, price FROM inventory WHERE sellable = 1 ORDER BY text, code';
     const rows = await db.exec(sql);
     const data = rows.map(row => {
       row.price = '';
+      row.currency = currencySymbol;
       row.is_percentage = '';
       return row;
     });
+
     const result = await report.render({ rows : data }, null, { csvKey : 'rows' });
     res.set(csv.headers).send(result.report);
   } catch (ex) {
     next(ex);
   }
-
 };
 
+/**
+ * @function importItem
+ *
+ * @description
+ *
+ *
+ *
+ */
 exports.importItem = async (req, res, next) => {
   try {
     if (!req.files || req.files.length === 0) {
@@ -293,11 +297,11 @@ exports.importItem = async (req, res, next) => {
     if (!hasValidDataFormat(data)) {
       throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
     }
+
     const priceListUuid = db.bid(req.body.pricelist_uuid);
     const sql = 'CALL importPriceListItem(?,?,?,?);';
     const transaction = db.transaction();
     data.forEach(item => {
-
       transaction.addQuery(sql, [priceListUuid, item.code, item.price, item.is_percentage]);
     });
     await transaction.execute();

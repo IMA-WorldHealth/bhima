@@ -79,7 +79,7 @@ const debtors = require('../controllers/finance/debtors');
 const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
 const cash = require('../controllers/finance/cash');
-const priceList = require('../controllers/finance/priceList');
+const priceList = require('../controllers/finance/priceLists');
 const priceListPreport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
 const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid-invoice-payments');
@@ -595,7 +595,6 @@ exports.configure = function configure(app) {
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
   app.get('/prices/download/list', priceListPreport.downloadRegistry);
-  app.get('/prices/download/template', priceList.downloadTemplate);
   app.get('/prices/download/filled_template', priceList.downloadFilledTemplate);
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
