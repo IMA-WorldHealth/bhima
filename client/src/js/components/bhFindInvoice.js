@@ -55,10 +55,15 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
       .catch(Notify.handleError);
   }
 
+
   /**
    * @method selectInvoice
    *
    * @param {object} invoice The invoice object
+   *
+   * @description
+   * This function attaches the invoice to the controller, templates in the
+   * values, and calls the callback.
    */
   function selectInvoice(invoice) {
     vm.invoiceFound = true;

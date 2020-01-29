@@ -7,6 +7,7 @@
     "READ_ERROR" : "An error occurred during lookup.  Please use another method to find the record.",
     "NOT_FOUND" : "Cannot find a record with that code.  Please search for the document manually.",
     "LOST_FOCUS" : "The barcode input has lost focus.  Please click \"Read Barcode\" to ready the barcode component.",
+    "FOUND_RECORD" : "Found a record with reference <u>{{reference}}</u>.",
     "RESET_BUTTON" : "Read Barcode"
   }
 }

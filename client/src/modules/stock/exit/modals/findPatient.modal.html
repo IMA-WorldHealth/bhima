@@ -40,6 +40,18 @@
         </bh-find-invoice>
       </div>
     </div>
+
+    <div class="form-group">
+      <a href="" ng-click="$ctrl.openBarcodeScanner()">
+        <i class="fa fa-barcode"></i> <span translate>BARCODE.SCAN</span>
+      </a>
+
+      <p ng-if="$ctrl.i18nValues" class="text-success">
+        <span translate translate-values="$ctrl.i18nValues" translate-sanitize-strategy="'sce'">
+          BARCODE.FOUND_RECORD
+        </span>
+      </p>
+    </div>
   </div>
 
   <div class="modal-footer">
