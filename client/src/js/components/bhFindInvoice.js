@@ -4,8 +4,9 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhFindInvoice.tmpl.html',
     bindings : {
       patientUuid :       '<?', // patient uuid - to restrict search to this patient
+      invoiceUuid :       '<?', // if a uuid exists, pass it in here.
       onSearchComplete :  '&', // bind callback to call when data is available
-      disabled :          '<', // bind disable behavior
+      disabled :          '<?', // bind disable behavior
     },
   });
 
@@ -17,7 +18,7 @@ FindInvoiceComponent.$inject = [
  * The Find Invoice Component
  */
 function FindInvoiceComponent(PatientInvoice, Notify, $window) {
-  const vm = this;
+  const $ctrl = this;
 
   /* @const the enter key keycode */
   const ENTER_KEY = 13;
@@ -26,28 +27,73 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
     name : '',
   };
 
-  vm.$onInit = function onInit() {
-    vm.disabled = vm.disabled || false;
+  $ctrl.$onInit = function onInit() {
+    $ctrl.disabled = $ctrl.disabled || false;
+  };
+
+  $ctrl.$onChanges = function $onChanges(changes) {
+    if (changes && changes.invoiceUuid && changes.invoiceUuid.currentValue) {
+      lookupInvoiceByUuid(changes.invoiceUuid.currentValue);
+    }
   };
 
   /* Expose functions and variables to the template view */
-  vm.search = search;
-  vm.onKeyPress = onKeyPress;
-  vm.translate = translate;
+  $ctrl.search = search;
+  $ctrl.onKeyPress = onKeyPress;
+  $ctrl.translate = translate;
 
   /**
    * @method search
+   *
+   * @description
+   * Fired when the user uses the search form to look up an invoice via its
+   * reference.
    */
   function search(form) {
-    PatientInvoice.findConsumableInvoicePatient(vm.invoiceReference, vm.patientUuid)
+    const parameters = {
+      invoiceReference : $ctrl.invoiceReference,
+      patientUuid : $ctrl.patientUuid,
+    };
+
+    PatientInvoice.findConsumableInvoicePatient(parameters)
       .then(invoice => {
+
         if (!invoice.details) {
-          vm.invoiceFound = false;
+          $ctrl.invoiceFound = false;
           return;
         }
 
+
         // trigger form validation for the invoice search input
         form.$setSubmitted();
+
+        // select invoice and fetch articles and services in the invoice
+        selectInvoice(invoice);
+      })
+      .catch(Notify.handleError);
+  }
+
+  /**
+   * @method lookupInvoiceByUuid
+   *
+   * @description
+   * Fired when an invoiceUuid is passed in from outside of the component.
+   */
+  function lookupInvoiceByUuid(invoiceUuid) {
+    const parameters = { invoiceUuid };
+    if ($ctrl.patientUuid) {
+      parameters.patientUuid = $ctrl.patientUuid;
+    }
+
+    PatientInvoice.findConsumableInvoicePatient(parameters)
+      .then(invoice => {
+
+        if (!invoice.details) {
+          $ctrl.invoiceFound = false;
+          return;
+        }
+
+        $ctrl.invoiceReference = invoice.details.reference;
 
         // select invoice and fetch articles and services in the invoice
         selectInvoice(invoice);
@@ -66,18 +112,18 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
    * values, and calls the callback.
    */
   function selectInvoice(invoice) {
-    vm.invoiceFound = true;
+    $ctrl.invoiceFound = true;
 
     const elementId = 'search-button';
     const searchButton = $window.document.getElementById(elementId);
 
-    if (invoice && typeof (invoice) === 'object') {
-      vm.translate.name = invoice.details.debtor_name;
-      vm.invoiceDescription = invoice.details.description;
-      vm.invoiceItems = invoice.items.map(item => `${item.text}: ${item.quantity} ${item.inventory_unit}`);
+    if (invoice && angular.isObject(invoice)) {
+      $ctrl.translate.name = invoice.details.debtor_name;
+      $ctrl.invoiceDescription = invoice.details.description;
+      $ctrl.invoiceItems = invoice.items.map(item => `${item.text}: ${item.quantity} ${item.inventory_unit}`);
 
       // call the external function with patient
-      vm.onSearchComplete({ invoice });
+      $ctrl.onSearchComplete({ invoice });
 
       // set focus on the search button after a search
       searchButton.focus();
@@ -97,7 +143,7 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
 
     // submit the find-invoice form
     if (event.keyCode === ENTER_KEY) {
-      vm.search(form);
+      $ctrl.search(form);
       event.preventDefault();
     }
   }

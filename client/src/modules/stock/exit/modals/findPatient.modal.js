@@ -46,11 +46,12 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   }
 
   function setInvoice(invoice) {
-    vm.selected.invoice = invoice;
+    vm.invoice = invoice;
   }
 
   // submit
   function submit() {
+    vm.selected.invoice = vm.invoice;
     Instance.close(vm.selected);
   }
 
@@ -76,9 +77,11 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
       })
       .then(patient => {
         setPatient(patient);
-        setInvoice(invoice);
 
-        vm.i18nValues = { reference : invoice.reference };
+        // we need to wait for the bh-find-invoice component to call the setInvoice()
+        // since the invoice details have to be formatted in a particular way.
+        vm.joinInvoice = 1;
+        vm.scannedInvoice = invoice;
       })
       .catch(angular.noop);
   }

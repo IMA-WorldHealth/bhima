@@ -35,6 +35,7 @@
       <div ng-if="$ctrl.joinInvoice">
         <bh-find-invoice
           patient-uuid="$ctrl.selected.uuid"
+          invoice-uuid="$ctrl.scannedInvoice.uuid"
           on-search-complete="$ctrl.setInvoice(invoice)"
           disabled="!$ctrl.selected.uuid">
         </bh-find-invoice>
@@ -45,12 +46,6 @@
       <a href="" ng-click="$ctrl.openBarcodeScanner()">
         <i class="fa fa-barcode"></i> <span translate>BARCODE.SCAN</span>
       </a>
-
-      <p ng-if="$ctrl.i18nValues" class="text-success">
-        <span translate translate-values="$ctrl.i18nValues" translate-sanitize-strategy="'sce'">
-          BARCODE.FOUND_RECORD
-        </span>
-      </p>
     </div>
   </div>
 
@@ -59,7 +54,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="FindForm.$loading" disabled="$ctrl.joinInvoice && !$ctrl.selected.invoice.details.uuid">
+    <bh-loading-button loading-state="FindForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
