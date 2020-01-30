@@ -227,11 +227,10 @@ function getItemsMetadata(params) {
 }
 
 
-// This function helps to delete an invetory
-
+// This function helps to delete an inventory
 function remove(_uuid) {
-  const sql = `DELETE FROM inventory WHERE uuid = HUID(?)`;
-  return db.exec(sql, _uuid);
+  const sql = `DELETE FROM inventory WHERE uuid = ?`;
+  return db.exec(sql, db.bid(_uuid));
 }
 
 /**
