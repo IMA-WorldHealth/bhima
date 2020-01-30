@@ -106,7 +106,6 @@ const transactions = require('../controllers/finance/transactions');
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
-const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
 const ward = require('../controllers/medical/ward/ward');
@@ -865,13 +864,6 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.assignUnitsToRole);
   app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
-
-  // department
-  app.get('/departments', department.read);
-  app.get('/departments/:uuid', department.detail);
-  app.post('/departments', department.create);
-  app.delete('/departments/:uuid', department.delete);
-  app.put('/departments/:uuid', department.update);
 
   // entities types API
   app.get('/entities/types', entities.types.list);
