@@ -29,7 +29,6 @@ function MultiplePayrollController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
-  vm.download = MultiplePayroll.download;
   vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
@@ -186,6 +185,7 @@ function MultiplePayrollController(
   //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
+    vm.getSelectedEmployes = employees;
 
     if (employees.length) {
       // get All Employees Reference
@@ -315,6 +315,18 @@ function MultiplePayrollController(
     const conversionRate = filters.conversion_rate;
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
     Receipts.payroll(idPeriod, employee.reference, currency, conversionRate, true);
+  };
+
+  vm.download = function download(type) {
+    let employeesSelected;
+
+    if (vm.gridApi) {
+      employeesSelected = vm.gridApi.selection.getSelectedRows();
+    } else {
+      employeesSelected = [];
+    }
+
+    return MultiplePayroll.download(type, employeesSelected);
   };
 
   vm.saveGridState = state.saveGridState;

@@ -94,9 +94,16 @@ function MultiplePayrollService(
   }
 
   // downloads a type of report based on the
-  function download(type) {
+  function download(type, getSelectedEmployes) {
     const filterOpts = multiplePayrollFilters.formatHTTP();
-    const defaultOpts = { renderer : type, lang : Languages.key };
+    let employeesRef = [];
+
+    if (getSelectedEmployes.length) {
+      // get All Employees Reference
+      employeesRef = getSelectedEmployes.map(emp => emp.reference);
+    }
+
+    const defaultOpts = { renderer : type, lang : Languages.key, employees : employeesRef };
 
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);

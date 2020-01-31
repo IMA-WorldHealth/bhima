@@ -29,6 +29,8 @@ const DEFAULT_OPTS = {
 
 function build(req, res, next) {
   const options = _.clone(req.query);
+  options.idPeriod = options.idPeriod || options.payroll_configuration_id;
+
   const params = {
     payroll_configuration_id : options.idPeriod,
     reference : options.employees,
