@@ -208,15 +208,18 @@ function getInventoryItemsById(req, res, next) {
 
 
 /**
- * DELETE /inventory/:uuid
- * delete an inventory group
+ * DELETE /inventory/metadata/:uuid
+ *
+ * @description
+ * Delete an inventory item from the database
  */
-function deleteInventory(req, res, next) {
-
-  core.remove(req.params.uuid)
-    .then(res.sendStatus(204))
-    .catch(error => core.errorHandler(error, req, res, next))
-    .done();
+async function deleteInventory(req, res, next) {
+  try {
+    await core.remove(req.params.uuid);
+    res.sendStatus(204);
+  } catch (err) {
+    core.errorHandler(err, req, res, next);
+  }
 }
 
 // ======================= inventory group =============================
