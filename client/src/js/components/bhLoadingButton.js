@@ -2,15 +2,21 @@ angular.module('bhima.components')
   .component('bhLoadingButton', {
     transclude : true,
     template   :
-    '<button type="submit" class="btn" ng-class="$ctrl.buttonClass" ng-disabled="$ctrl.loadingState || $ctrl.disabled" data-method="submit">'
-      + '<span ng-show="$ctrl.loadingState"><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span></span>'
-      + '<span ng-hide="$ctrl.loadingState" ng-transclude><span translate>FORM.BUTTONS.SUBMIT</span></span>'
-    + '</button>',
+    `<button type="submit"
+        class="btn"
+        ng-class="$ctrl.buttonClass"
+        ng-disabled="$ctrl.loadingState || $ctrl.disabled"
+        data-method="submit">
+        <span ng-show="$ctrl.loadingState">
+          <span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span>
+        </span>
+       <span ng-hide="$ctrl.loadingState" ng-transclude><span translate>FORM.BUTTONS.SUBMIT</span></span>
+     </button>`.trim(),
     controller : LoadingButtonController,
     bindings   : {
       loadingState : '<',
-      buttonClass  : '@',
-      disabled     : '<',
+      buttonClass  : '@?',
+      disabled     : '<?',
     },
   });
 

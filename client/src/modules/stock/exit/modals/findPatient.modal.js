@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 StockFindPatientModalController.$inject = [
   '$uibModalInstance', 'PatientService', 'NotifyService', 'data', 'AppCache',
+  'BarcodeService',
 ];
 
-function StockFindPatientModalController(Instance, Patient, Notify, Data, AppCache) {
+function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCache, Barcodes) {
   const vm = this;
   const cache = new AppCache('StockFindPatient');
 
@@ -22,9 +23,10 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data, AppCac
   vm.setInvoice = setInvoice;
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   if (Data.entity_uuid) {
-    Patient.read(Data.entity_uuid)
+    Patients.read(Data.entity_uuid)
       .then(patient => {
         setPatient(patient);
       })
@@ -37,17 +39,19 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data, AppCac
       });
   }
 
+
   // set patient
   function setPatient(patient) {
     vm.selected = patient;
   }
 
   function setInvoice(invoice) {
-    vm.selected.invoice = invoice;
+    vm.invoice = invoice;
   }
 
   // submit
   function submit() {
+    vm.selected.invoice = vm.invoice;
     Instance.close(vm.selected);
   }
 
@@ -55,4 +59,31 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data, AppCac
   function cancel() {
     Instance.close();
   }
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the invoice from the
+   * modal.  Sets both the patient and the invoice based on the scan.
+   */
+  function openBarcodeScanner() {
+    let invoice;
+
+    Barcodes.modal()
+      .then(record => {
+        invoice = record;
+        return Patients.read(record.patient_uuid);
+      })
+      .then(patient => {
+        setPatient(patient);
+
+        // we need to wait for the bh-find-invoice component to call the setInvoice()
+        // since the invoice details have to be formatted in a particular way.
+        vm.joinInvoice = 1;
+        vm.scannedInvoice = invoice;
+      })
+      .catch(angular.noop);
+  }
+
 }
