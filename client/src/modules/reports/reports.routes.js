@@ -44,7 +44,7 @@ angular.module('bhima.routes')
       'dataKit',
       'configurable_analysis_report',
       'purchaseOrderAnalysis',
-      'inventoryChange',
+      'inventoryChanges',
     ];
 
     $stateProvider

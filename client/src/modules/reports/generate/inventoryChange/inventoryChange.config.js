@@ -1,38 +1,22 @@
 angular.module('bhima.controllers')
-  .controller('inventoryChangeController', InventoryChangeController);
+  .controller('inventoryChangesController', InventoryChangesController);
 
-InventoryChangeController.$inject = [
+InventoryChangesController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
 ];
 
-function InventoryChangeController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function InventoryChangesController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
-  const cache = new AppCache('inventoryChange');
+  const cache = new AppCache('InventoryChangesReport');
   const reportUrl = 'reports/inventory/changes/';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {
-    shouldShowRemainDetails : 1,
-    shouldShowInvoicedDetails : 1,
-    shouldShowPaidDetails : 1,
-  };
+  vm.reportDetails = {};
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
-  };
-
-  vm.onChangeShowRemainDetails = value => {
-    vm.reportDetails.shouldShowRemainDetails = value;
-  };
-
-  vm.onChangeShowPaidDetails = value => {
-    vm.reportDetails.shouldShowPaidDetails = value;
-  };
-
-  vm.onChangeShowInvoicedDetails = value => {
-    vm.reportDetails.shouldShowInvoicedDetails = value;
   };
 
   vm.preview = function preview(form) {

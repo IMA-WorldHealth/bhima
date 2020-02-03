@@ -1,10 +1,9 @@
 
 /**
- * @overview Price Report
+ * @overview Inventory Changes Report
  *
  * @description
- * This file describes the price list report - it produces the list of prices to
- * be used as a physical reference for invoicing.
+ * This report shows all the changes made to inventory items by different users.
  *
  * @requires lodash
  * @requires ReportManager
@@ -22,18 +21,10 @@ const TEMPLATE = './server/controllers/inventory/reports/changes.handlebars';
 
 async function inventoryChanges(req, res, next) {
   const params = _.clone(req.query);
-
-  const qs = _.extend(req.query, {
-    csvKey : 'groups',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
-  });
   const metadata = _.clone(req.session);
 
-  let report;
-
   try {
-    report = new ReportManager(TEMPLATE, metadata, qs);
+    const report = new ReportManager(TEMPLATE, metadata, params);
     const { dateFrom, dateTo } = params;
 
     const inventorySql = `
@@ -52,7 +43,7 @@ async function inventoryChanges(req, res, next) {
       JOIN inventory iv ON iv.uuid = ivl.inventory_uuid
       JOIN user u ON u.id = ivl.user_id
       WHERE ivl.log_timestamp BETWEEN DATE(?) AND DATE(?)
-      ORDER BY iv.text ASC , ivl.log_timestamp DESC 
+      ORDER BY iv.text ASC , ivl.log_timestamp DESC
     `;
     const inventories = await db.exec(inventorySql, [dateFrom, dateTo]);
     const inventoriesMap = {};
@@ -92,13 +83,8 @@ async function inventoryChanges(req, res, next) {
 }
 
 function formatKeys(record) {
-  const removables = ['group_uuid', 'type_id', 'unit_id'];
-  _.omit(record, removables);
-  if (record.text) {
-    record.label = _.clone(record.text);
-    delete record.text;
-  }
-  return record;
+  record.label = record.text;
+  return _.omit(record, ['group_uuid', 'type_id', 'unit_id', 'text']);
 }
 
 function getValue(last, current, key) {
