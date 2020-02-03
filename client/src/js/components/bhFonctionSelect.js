@@ -20,8 +20,8 @@ FonctionSelectController.$inject = [
  */
 function FonctionSelectController(functions, Notify) {
   const $ctrl = this;
-  $ctrl.label = $ctrl.label || 'FORM.LABELS.PROFESSION';
   $ctrl.$onInit = function onInit() {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.PROFESSION';
 
     functions.read()
       .then(fct => {

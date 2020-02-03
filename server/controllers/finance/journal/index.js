@@ -101,7 +101,7 @@ function naiveTransactionSearch(options, includeNonPosted) {
 
   return db.exec(
     `(${posted.sql}) UNION ALL (${nonPosted.sql}) ORDER BY trans_date DESC ${limitCondition}`,
-    combinedParameters
+    combinedParameters,
   );
 }
 
@@ -171,7 +171,7 @@ function buildTransactionQuery(options, posted) {
   const { amount } = options;
   filters.custom(
     'amount', '(credit = ? OR debit = ? OR credit_equiv = ? OR debit_equiv = ?)',
-    [amount, amount, amount, amount]
+    [amount, amount, amount, amount],
   );
 
   filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
@@ -297,7 +297,7 @@ function editTransaction(req, res, next) {
       if (posted) {
         throw new BadRequest(
           `Posted transactions cannot be edited.  Transaction ${transactionId} is already posted.`,
-          'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED'
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED',
         );
       }
 
@@ -308,7 +308,7 @@ function editTransaction(req, res, next) {
       if (allRowsRemoved || singleRow) {
         throw new BadRequest(
           `Transaction ${transactionId} has too few rows!  A valid transaction must contain at least two rows.`,
-          'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS'
+          'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS',
         );
       }
 
@@ -322,7 +322,7 @@ function editTransaction(req, res, next) {
       if (fiscalYear.locked) {
         throw new BadRequest(
           `${fiscalYear.label} is closed and locked.  You cannot make transactions against it.`,
-          'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR'
+          'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR',
         );
       }
 
@@ -486,7 +486,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
         if (!amount && isDebitEquivNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
-            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE',
           );
         }
 
@@ -508,7 +508,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
         if (!amount && isDebitNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
-            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE',
           );
         }
 
@@ -530,7 +530,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
         if (!amount && isCreditEquivNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
-            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE',
           );
         }
 
@@ -552,7 +552,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
         if (!amount && isCreditNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
-            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE',
           );
         }
 
@@ -573,7 +573,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
 
   promises = databaseRequests.map(
     (request, index) => db.exec(request, databaseValues[index])
-      .then(results => assignments[index](results))
+      .then(results => assignments[index](results)),
   );
 
   return q.all(promises)
@@ -628,7 +628,7 @@ async function reverseTransaction(recordUuid, userId, reverseDescription) {
     // transaction already cancelled
     throw new BadRequest(
       'The transaction has been already cancelled',
-      'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
+      'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING',
     );
   }
 

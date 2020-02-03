@@ -152,7 +152,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
                 && item.is_membership_fee !== 1 && item.is_discount !== 1));
           // Filtering all taxes and contributions that is calculated from the taxable base
           taxesContributions = rubricData.filter(
-            item => (item.is_tax || item.is_membership_fee || item.is_discount === 1)
+            item => (item.is_tax || item.is_membership_fee || item.is_discount === 1),
           );
         }
 
