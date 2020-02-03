@@ -65,7 +65,7 @@ async function inventoryChanges(req, res, next) {
 
       updatedKeys.forEach(col => {
         inventoriesMap[row.uuid].logs.push({
-          col : core.columnsMap[col],
+          col : core.inventoryColsMap[col],
           value : getValue(last, current, col),
           date : row.log_timestamp,
           userName : row.userName,

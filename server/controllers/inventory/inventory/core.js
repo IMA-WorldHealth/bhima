@@ -37,7 +37,6 @@ const errors = {
 };
 
 const inventoryColsMap = {
-
   code : 'FORM.LABELS.CODE',
   consumable : 'FORM.LABELS.CONSUMABLE',
   default_quantity : 'FORM.LABELS.DEFAULT_QUANTITY',
