@@ -6,6 +6,7 @@
  * single location for easy access.
  */
 
+const changes = require('./changes');
 const purchases = require('./purchases.receipt');
 const prices = require('./prices');
 
@@ -15,5 +16,6 @@ module.exports = {
   },
   reports : {
     prices,
+    changes,
   },
 };

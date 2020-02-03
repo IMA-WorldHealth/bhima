@@ -41,7 +41,6 @@ DROP TABLE IF EXISTS profit_center;
 DROP TABLE IF EXISTS cost_center;
 
 /*
-<<<<<<< 0a1dc9fb0870b8c9b3f828b0cfbd11d609051264:server/models/migrations/v1.2.0-v1.3.0/migrate.sql
  @author: mbayopanda
  @date: 2019-08-22
  @description: issue #3856
@@ -51,7 +50,7 @@ INSERT INTO `unit` VALUES
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
-<<<<<<< 45e137d7cc0179c9a57468a1590b29198529c5c7
+
   (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
   (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
 
@@ -63,10 +62,10 @@ INSERT INTO unit VALUES
 
 INSERT INTO report (id, report_key, title_key) VALUES
   (38, 'analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE');
-=======
   (37, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
   (38, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
-=======
+  
+/*
  * @author: lomamech
  * @date: 2019-08-28
  * @description: bhima_data_collector
@@ -210,5 +209,3 @@ INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
   ('FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- BHIMA DATA COLLECTOR
->>>>>>> improvement(Migrate file):server/models/migrations/next/migrate.sql
->>>>>>> rebase with master steep 5

@@ -104,6 +104,12 @@
       "TITLE": "Rapport sommaire des débiteurs",
       "DESCRIPTION": "Ce rapport détaille le montant à payer dans chaque groupe d'inventaire pour une facture pendant une période, pour un groupe debor spécifique"
     },
+
+    "INVENTORY_CHANGE" : {
+      "TITLE" : "Rapport de changement d'inventaire",
+      "DESCRIPTION": "Ce rapport montre les changements survenus sur les articles en stock au cours d'une période"
+    },
+
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
       "LAST_TRANSACTION": "Date de la dernière transaction",

@@ -414,6 +414,7 @@ exports.configure = function configure(app) {
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
   app.get('/reports/purchases/purchases_analysis', stockReports.purchaseOrderAnalysis.report);
+  app.get('/reports/inventory/changes', inventoryReports.reports.changes);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
