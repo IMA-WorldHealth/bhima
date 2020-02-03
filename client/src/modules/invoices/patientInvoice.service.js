@@ -17,7 +17,7 @@ PatientInvoiceService.$inject = [
  */
 function PatientInvoiceService(
   Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
-  Languages, bhConstants, Transactions, $translate
+  Languages, bhConstants, Transactions, $translate,
 ) {
   const service = new Api('/invoices/');
 
@@ -193,12 +193,13 @@ function PatientInvoiceService(
   };
 
   /**
-   * find an invoice with its consumable inventories for a given patient
+   * @function findConsumableInvoicePatient
+   *
+   * @description
+   * Find an invoice with its consumable inventories for a given patient
    */
-  function findConsumableInvoicePatient(invoiceReference, patientUuid) {
-    const params = { invoiceReference, patientUuid };
-    const url = '/invoices/consumable/';
-    return this.$http.get(url, { params })
+  function findConsumableInvoicePatient(params = {}) {
+    return this.$http.get('/invoices/consumable/', { params })
       .then(this.util.unwrapHttpResponse);
   }
 

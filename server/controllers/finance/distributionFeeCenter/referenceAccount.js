@@ -6,11 +6,10 @@
  * This function first looks for all accounts in an reference account associated with an auxiliary fee center,
  * but excludes those that are excluded in a refference account.
  */
-const q = require('q');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
-function auxilliary(params) {
+async function auxilliary(params) {
   params.is_principal = 0;
   params.type_id = [4, 5, 6];
   params.is_exception = 1;
@@ -54,69 +53,66 @@ function auxilliary(params) {
   const query2 = filters2.applyQuery(sql2);
   const parameters2 = filters2.parameters();
 
-  return q.all([db.exec(query1, parameters1), db.exec(query2, parameters2)])
-    .spread((accountsValids, accountsExceptions) => {
-      if (!accountsValids.length) {
-        return [];
-      }
+  const [accountsValids, accountsExceptions] = await Promise.all([
+    db.exec(query1, parameters1),
+    db.exec(query2, parameters2),
+  ]);
 
-      const tabAccountsValids = [];
-      const tabAccountsExceptions = [];
-      const transaction = db.transaction();
+  if (!accountsValids.length) {
+    return [];
+  }
 
-      // Get the child of all accounts title definied in Account Reference Items
-      accountsValids.forEach(item => {
-        tabAccountsValids.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
-      ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost, ${item.is_variable} AS is_variable,
-      ${item.is_turnover} AS is_turnover, ${item.account_reference_id} AS account_reference_id,
-      account.id AS account_id, account.number, ${item.is_exception} AS is_exception, account.type_id
-      FROM account
-      WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
-      });
-      const sqlGetAllAccountsValids = tabAccountsValids.join(' UNION ');
+  const tabAccountsValids = [];
+  const tabAccountsExceptions = [];
+  const queries = [];
 
-      transaction
-        .addQuery(sqlGetAllAccountsValids);
+  // Get the child of all accounts title definied in Account Reference Items
+  accountsValids.forEach(item => {
+    tabAccountsValids.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
+  ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost, ${item.is_variable} AS is_variable,
+  ${item.is_turnover} AS is_turnover, ${item.account_reference_id} AS account_reference_id,
+  account.id AS account_id, account.number, ${item.is_exception} AS is_exception, account.type_id
+  FROM account
+  WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
+  });
 
-      if (accountsExceptions.length) {
-      // Get the child of all accounts title definied in Account Reference Items
-        accountsExceptions.forEach(item => {
-          tabAccountsExceptions.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
-        ${item.is_principal} AS is_principal,
-        ${item.account_reference_id} AS account_reference_id, account.id AS account_id,
-        account.number, ${item.is_exception} AS is_exception, account.type_id
-        FROM account
-        WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
-        });
-        const sqlGetAllAccountsExceptions = tabAccountsExceptions.join(' UNION ');
+  const sqlGetAllAccountsValids = tabAccountsValids.join(' UNION ');
 
-        transaction
-          .addQuery(sqlGetAllAccountsExceptions);
-      }
+  queries.push(sqlGetAllAccountsValids);
 
-      return transaction.execute()
-        .then((results) => {
-          const valids = results[0];
-          const exceptions = results[1] || [];
-
-          const accountsReferences = valids.filter(item => {
-            let isValid = true;
-            if (exceptions) {
-              exceptions.forEach(exception => {
-                const checkAccountReference = (item.account_reference_id === exception.account_reference_id);
-                const checkAccountId = (item.account_id === exception.account_id);
-
-                if (checkAccountReference && checkAccountId) {
-                  isValid = false;
-                }
-              });
-            }
-            return (isValid === true);
-          });
-
-          return accountsReferences;
-        });
+  if (accountsExceptions.length) {
+  // Get the child of all accounts title definied in Account Reference Items
+    accountsExceptions.forEach(item => {
+      tabAccountsExceptions.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
+    ${item.is_principal} AS is_principal,
+    ${item.account_reference_id} AS account_reference_id, account.id AS account_id,
+    account.number, ${item.is_exception} AS is_exception, account.type_id
+    FROM account
+    WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
     });
+    const sqlGetAllAccountsExceptions = tabAccountsExceptions.join(' UNION ');
+
+    queries.push(sqlGetAllAccountsExceptions);
+  }
+
+  const [valids, exceptions] = await Promise.all(queries.map(q => db.exec(q)));
+
+  const accountsReferences = valids.filter(item => {
+    let isValid = true;
+    if (exceptions) {
+      exceptions.forEach(exception => {
+        const checkAccountReference = (item.account_reference_id === exception.account_reference_id);
+        const checkAccountId = (item.account_id === exception.account_id);
+
+        if (checkAccountReference && checkAccountId) {
+          isValid = false;
+        }
+      });
+    }
+    return (isValid === true);
+  });
+
+  return accountsReferences;
 }
 
 exports.auxilliary = auxilliary;

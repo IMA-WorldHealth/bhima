@@ -27,8 +27,7 @@ exports.update = update;
  * GET /cashboxes/:id/currencies
  */
 function list(req, res, next) {
-  const sql =
-    `SELECT id, currency_id, account_id, transfer_account_id
+  const sql = `SELECT id, currency_id, account_id, transfer_account_id
     FROM cash_box_account_currency WHERE cash_box_id = ?;`;
 
   db.exec(sql, [req.params.id])
@@ -48,8 +47,7 @@ function list(req, res, next) {
  * GET /cashboxes/:id/currencies/:currencyId
  */
 function detail(req, res, next) {
-  const sql =
-    `SELECT id, account_id, transfer_account_id
+  const sql = `SELECT id, account_id, transfer_account_id
     FROM cash_box_account_currency
     WHERE cash_box_id = ? AND currency_id = ?;`;
 
@@ -78,8 +76,7 @@ function create(req, res, next) {
   const data = req.body;
   data.cash_box_id = req.params.id;
 
-  const sql =
-    'INSERT INTO cash_box_account_currency SET ?;';
+  const sql = 'INSERT INTO cash_box_account_currency SET ?;';
 
   db.exec(sql, [data])
     .then((row) => {
@@ -101,15 +98,13 @@ function create(req, res, next) {
 function update(req, res, next) {
   const data = req.body;
 
-  let sql =
-    `UPDATE cash_box_account_currency SET ?
+  let sql = `UPDATE cash_box_account_currency SET ?
     WHERE cash_box_id = ? AND currency_id = ?;`;
 
   db.exec(sql, [data, req.params.id, req.params.currencyId])
     .then(() => {
     // send the changed object to the client
-      sql =
-      `SELECT id, account_id, transfer_account_id
+      sql = `SELECT id, account_id, transfer_account_id
       FROM cash_box_account_currency
       WHERE cash_box_id = ? AND currency_id = ?;`;
 

@@ -38,7 +38,7 @@ function list(req, res, next) {
 * Returns the detail of a single Employee Configuration
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupEmployeeConfig(id)
     .then((record) => {

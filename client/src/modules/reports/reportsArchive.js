@@ -6,16 +6,18 @@ ReportsArchiveController.$inject = [
 ];
 
 function ReportsArchiveController($state, SavedReports, Notify, reportData) {
-  var vm = this;
+  const vm = this;
 
-  var typeTemplate =
-    '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
-  var dateTemplate =
-    '<div class="ui-grid-cell-contents">{{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)</div>';
-  var printTemplate =
-    '<div class="ui-grid-cell-contents"><bh-pdf-link pdf-url="/reports/archive/{{row.entity.uuid}}"></bh-pdf-link></div>';
+  const typeTemplate = '<div class="ui-grid-cell-contents"><i class="fa fa-file-pdf-o"></i></div>';
+  const dateTemplate = `<div class="ui-grid-cell-contents">
+      {{ row.entity.timestamp | date }} (<span am-time-ago="row.entity.timestamp"></span>)
+    </div>`;
 
-  var reportId = reportData.id;
+  const printTemplate = `<div class="ui-grid-cell-contents">
+      <bh-pdf-link pdf-url="/reports/archive/{{row.entity.uuid}}"></bh-pdf-link>
+    </div>`;
+
+  const reportId = reportData.id;
   vm.key = $state.params.key;
 
   vm.deleteReport = deleteReport;
@@ -30,12 +32,24 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
   };
 
   vm.gridOptions.columnDefs = [
-    { field : 'typeicon', displayName : '', cellTemplate : typeTemplate, width : 25 },
+    {
+      field : 'typeicon', displayName : '', cellTemplate : typeTemplate, width : 25,
+    },
     { field : 'label', displayName : 'FORM.LABELS.LABEL', headerCellFilter : 'translate' },
-    { field : 'timestamp', displayName : 'FORM.LABELS.DATE_CREATED', headerCellFilter : 'translate', cellTemplate : dateTemplate, sort : { priority : 0, direction : 'desc' } },
+    {
+      field : 'timestamp',
+      displayName : 'FORM.LABELS.DATE_CREATED',
+      headerCellFilter : 'translate',
+      cellTemplate : dateTemplate,
+      sort : { priority : 0, direction : 'desc' },
+    },
     { field : 'display_name', displayName : 'FORM.LABELS.USER', headerCellFilter : 'translate' },
-    { field : 'print', displayName : '', cellTemplate : printTemplate, width : 90 },
-    { field : 'actions', displayName : '', cellTemplate : '/modules/templates/actionsDropdown.html', width : 80 },
+    {
+      field : 'print', displayName : '', cellTemplate : printTemplate, width : 90,
+    },
+    {
+      field : 'actions', displayName : '', cellTemplate : '/modules/templates/actionsDropdown.html', width : 80,
+    },
   ];
 
   // load reports
@@ -43,7 +57,7 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
 
   function deleteReport(uuid) {
     SavedReports.deleteReport(uuid)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.DELETE_SUCCESS');
         loadSavedReports();
       })
@@ -52,7 +66,7 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
 
   function emailReport(uid, name) {
     SavedReports.emailReportModal({ uuid : uid, reportName : name })
-      .then(function (result) {
+      .then((result) => {
         if (result.sent) {
           Notify.success('FORM.INFO.EMAIL_SUCCESS');
         }
@@ -65,13 +79,13 @@ function ReportsArchiveController($state, SavedReports, Notify, reportData) {
 
     // Load archived reports
     SavedReports.listSavedReports(reportId)
-      .then(function (results) {
+      .then((results) => {
         vm.gridOptions.data = results;
       })
-      .catch(function (error) {
+      .catch(() => {
         vm.hasError = true;
       })
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }

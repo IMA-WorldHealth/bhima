@@ -40,6 +40,7 @@ const renderers = {
   xls  : require('./renderers/xls'),
   doc  : require('./renderers/doc'),
   xlsxReceipt : require('./renderers/xlsxReceipt'),
+  xlsxReport : require('./renderers/xlsxReport'),
 };
 
 // default report configuration

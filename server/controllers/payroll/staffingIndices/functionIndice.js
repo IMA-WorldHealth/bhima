@@ -77,7 +77,7 @@ function remove(req, res, next) {
 function lookUp(options = {}) {
   const sql = `
     SELECT HEX(s.uuid) as uuid, s.value, s.fonction_id, f.fonction_txt
-    FROM staffing_function_indice AS s 
+    FROM staffing_function_indice AS s
     JOIN fonction f on f.id = s.fonction_id
   `;
 

@@ -17,7 +17,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, Uuid, $translate
+  StockForm, Stock, StockModal, uiGridConstants, Store, Uuid, $translate,
 ) {
   // variables
   let inventoryStore;
@@ -68,6 +68,13 @@ function StockEntryController(
         displayName : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/entry/templates/description.tmpl.html',
+      },
+
+      {
+        field : 'unit',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.UNIT',
+        headerCellFilter : 'translate',
       },
 
       {
@@ -370,6 +377,7 @@ function StockEntryController(
       item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
+      item.unit = inventory.unit;
 
       if (vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
@@ -594,6 +602,7 @@ function StockEntryController(
     line.quantity = 0;
     line.cost = line.quantity * line.unit_cost;
     line.expiration_date = new Date();
+    line.unit = inventory.unit;
     setInitialized(line);
   }
 

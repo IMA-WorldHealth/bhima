@@ -20,7 +20,6 @@ function config(req, res, next) {
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
   const enterpriseCurrencyId = req.session.enterprise.currency_id;
-  const transaction = db.transaction();
   const getPeriodData = `
     SELECT payroll_configuration.id, payroll_configuration.dateFrom, payroll_configuration.dateTo,
       payroll_configuration.config_ipr_id, taxe_ipr.currency_id
@@ -29,8 +28,8 @@ function config(req, res, next) {
     WHERE payroll_configuration.id = ?;
   `;
   const getRubricPayroll = `
-    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
-    payroll_configuration.label AS PayrollConfig, rubric_payroll.* 
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id,
+    payroll_configuration.label AS PayrollConfig, rubric_payroll.*
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
@@ -48,15 +47,13 @@ function config(req, res, next) {
       enterpriseId,
       currencyId,
       enterpriseCurrencyId,
-      payrollConfigurationId
+      payrollConfigurationId,
     );
   })
     .then((results) => {
       const postingJournal = db.transaction();
       results.forEach(transac => {
         transac.forEach(item => {
-
-
           postingJournal.addQuery(item.query, item.params);
         });
       });

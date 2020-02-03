@@ -271,7 +271,6 @@ BEGIN
   SET fluxId = 13;
   INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`)
   VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId);
-
 END $$
 
 DROP PROCEDURE IF EXISTS `stockValue`$$

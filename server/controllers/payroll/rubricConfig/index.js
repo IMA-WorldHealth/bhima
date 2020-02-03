@@ -35,7 +35,7 @@ function list(req, res, next) {
 * Returns the detail of a single RubricConfig
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupRubricConfig(id)
     .then((record) => {

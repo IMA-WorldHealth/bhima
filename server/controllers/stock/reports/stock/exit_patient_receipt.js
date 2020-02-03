@@ -1,6 +1,7 @@
 const {
   _, ReportManager, NotFound, Stock, db, identifiers, pdf, barcode,
   STOCK_EXIT_PATIENT_TEMPLATE, POS_STOCK_EXIT_PATIENT_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 /**
@@ -12,7 +13,7 @@ const {
  *
  * GET /receipts/stock/exit_patient/:document_uuid
  */
-function stockExitPatientReceipt(documentUuid, session, options) {
+async function stockExitPatientReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
 
@@ -44,32 +45,38 @@ function stockExitPatientReceipt(documentUuid, session, options) {
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
-      const { key } = identifiers.STOCK_EXIT;
-      data.enterprise = session.enterprise;
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.details = {
-        depot_name           : line.depot_name,
-        patient_reference    : line.patient_reference,
-        patient_display_name : line.patient_display_name,
-        full_display_name    : line.patient_reference.concat(' - ', line.patient_display_name),
-        hospital_no          : line.hospital_no,
-        user_display_name    : line.user_display_name,
-        description          : line.description,
-        date                 : line.date,
-        document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
-        barcode : barcode.generate(key, line.document_uuid),
-      };
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      data.rows = rows;
-      return report.render(data);
-    });
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
+  const line = rows[0];
+  const { key } = identifiers.STOCK_EXIT;
+  data.enterprise = session.enterprise;
+
+  data.details = {
+    depot_name           : line.depot_name,
+    patient_reference    : line.patient_reference,
+    patient_display_name : line.patient_display_name,
+    full_display_name    : line.patient_reference.concat(' - ', line.patient_display_name),
+    hospital_no          : line.hospital_no,
+    user_display_name    : line.user_display_name,
+    description          : line.description,
+    date                 : line.date,
+    document_uuid        : line.document_uuid,
+    document_reference   : line.document_reference,
+    barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference : voucherReference,
+  };
+
+  data.rows = rows;
+  return report.render(data);
 }
 
 module.exports = stockExitPatientReceipt;

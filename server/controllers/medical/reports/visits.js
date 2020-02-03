@@ -5,14 +5,11 @@
  * This file contains code to create a PDF report of all patient visits,
  * matching query conditions passed from the patient registry UI grid.
  *
- * @requires lodash
  * @requires lib/db
  * @requires lib/ReportManager
  * @requires Patients
  * @requires Locations
  */
-
-const _ = require('lodash');
 
 const db = require('../../../lib/db');
 const ReportManager = require('../../../lib/ReportManager');

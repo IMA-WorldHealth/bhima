@@ -32,6 +32,7 @@ const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`
 const _ = require('lodash');
 
 // Application-specific imports
+const q = require('q');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const Stock = require('../core');
@@ -158,6 +159,19 @@ const pdfOptions = {
   footerFontSize : '7',
 };
 
+async function getVoucherReferenceForStockMovement(documentUuid) {
+  const sql = `
+    SELECT v.uuid, dm.text AS voucher_reference
+    FROM voucher AS v
+    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+    JOIN document_map AS dm ON dm.uuid = v.uuid
+    WHERE vi.document_uuid = ?
+    LIMIT 1;
+  `;
+
+  return db.exec(sql, [db.bid(documentUuid)]);
+}
+
 /**
  * Stock Receipt API
  * /receipts/stock/{{name}}/:document_uuid
@@ -185,6 +199,7 @@ const stockFluxReceipt = {
 // Exports
 exports._ = _;
 
+exports.q = q;
 exports.db = db;
 exports.util = util;
 exports.pdf = pdf;
@@ -198,6 +213,7 @@ exports.stockFluxReceipt = stockFluxReceipt;
 exports.formatFilters = formatFilters;
 exports.identifiers = identifiers;
 exports.getDepotMovement = getDepotMovement;
+exports.getVoucherReferenceForStockMovement = getVoucherReferenceForStockMovement;
 
 exports.pdfOptions = pdfOptions;
 

@@ -59,7 +59,7 @@ function create(req, res, next) {
   if (!cashboxPermissionIds) {
     next(new BadRequest(
       'You must provide a list of cashbox ids to update the users permissions',
-      'ERRORS.BAD_DATA_FORMAT'
+      'ERRORS.BAD_DATA_FORMAT',
     ));
     return;
   }

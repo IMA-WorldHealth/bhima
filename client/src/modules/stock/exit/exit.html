@@ -79,8 +79,7 @@
               name="description"
               ng-model="StockCtrl.movement.description"
               placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
-              ng-maxlength="StockCtrl.maxLength"
-              required>
+              ng-maxlength="StockCtrl.maxLength">
             </textarea>
             <div class="help-block" ng-messages="StockExitForm.description.$error" ng-show="StockExitForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

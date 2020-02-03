@@ -1,5 +1,6 @@
 const {
   _, ReportManager, Stock, NotFound, db, barcode, identifiers, STOCK_ENTRY_INTEGRATION_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 /**
@@ -11,7 +12,7 @@ const {
  *
  * GET /receipts/stock/entry_integration/:document_uuid
  */
-function stockEntryIntegrationReceipt(documentUuid, session, options) {
+async function stockEntryIntegrationReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
 
@@ -39,32 +40,39 @@ function stockEntryIntegrationReceipt(documentUuid, session, options) {
     ORDER BY i.text, l.label
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
-      const { key } = identifiers.STOCK_ENTRY;
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.enterprise = session.enterprise;
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      data.details = {
-        depot_name            : line.depot_name,
-        user_display_name     : line.user_display_name,
-        description           : line.description,
-        date                  : line.date,
-        document_uuid         : line.document_uuid,
-        document_reference    : line.document_reference,
-        integration_reference : line.integration_reference,
-        integration_date      : line.integration_date,
-        project_display_name  : line.project_display_name,
-        barcode : barcode.generate(key, line.document_uuid),
-      };
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
+  const line = rows[0];
+  const { key } = identifiers.STOCK_ENTRY;
 
-      data.rows = rows;
-      return report.render(data);
-    });
+  data.enterprise = session.enterprise;
+
+  data.details = {
+    depot_name            : line.depot_name,
+    user_display_name     : line.user_display_name,
+    description           : line.description,
+    date                  : line.date,
+    document_uuid         : line.document_uuid,
+    document_reference    : line.document_reference,
+    integration_reference : line.integration_reference,
+    integration_date      : line.integration_date,
+    project_display_name  : line.project_display_name,
+    barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference     : voucherReference,
+  };
+
+  data.rows = rows;
+  return report.render(data);
+
 }
 
 module.exports = stockEntryIntegrationReceipt;

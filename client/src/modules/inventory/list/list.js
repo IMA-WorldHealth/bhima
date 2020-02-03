@@ -63,6 +63,7 @@ function InventoryListController(
     field : 'label',
     displayName : 'FORM.LABELS.LABEL',
     headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/inventory.cell.html',
   }, {
     field : 'price',
     displayName : 'FORM.LABELS.UNIT_PRICE',

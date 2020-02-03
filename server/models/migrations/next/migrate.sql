@@ -11,3 +11,10 @@ INSERT INTO unit (`name`, `key`, `description`, `parent`, `url`, `path`) VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE');
+
+-- by @jniles
+-- 2020-02-02
+DROP TABLE department;
+
+DELETE FROM role_unit WHERE unit_id = 215;
+DELETE FROM unit WHERE id = 215;

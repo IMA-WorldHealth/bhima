@@ -144,8 +144,7 @@ function remove(req, res, next) {
  * @returns {Promise} - a promise resolving to the result of the database.
  */
 function lookupAccountCategory(id) {
-  const sql =
-    'SELECT ac.id, ac.category FROM account_category AS ac WHERE ac.id = ?;';
+  const sql = 'SELECT ac.id, ac.category FROM account_category AS ac WHERE ac.id = ?;';
 
   return db.one(sql, id);
 }

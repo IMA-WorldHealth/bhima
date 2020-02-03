@@ -36,6 +36,7 @@ function StockInventoriesController(
     displayName      : 'STOCK.INVENTORY',
     headerCellFilter : 'translate',
     width            : '20%',
+    cellTemplate     : 'modules/stock/inventories/templates/inventory.cell.html',
   }, {
     field            : 'group_name',
     displayName      : 'STOCK.INVENTORY_GROUP',
@@ -249,10 +250,21 @@ function StockInventoriesController(
     vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
+  vm.exportTo = (renderer) => {
+    const filterOpts = stockInventoryFilters.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
   vm.downloadExcel = () => {
     const filterOpts = stockInventoryFilters.formatHTTP();
     const defaultOpts = {
-      renderer : 'xlsx',
+      renderer : 'xlsxReport',
       lang : Languages.key,
       renameKeys : true,
       displayNames : gridColumns.getDisplayNames(),

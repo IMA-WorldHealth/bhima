@@ -75,7 +75,7 @@ function update(req, res, next) {
   if (!req.body.assignments) {
     next(new BadRequest(
       `Request must specify an "assignments" object containing an array of patient group ids.`,
-      'ERROR.ERR_MISSING_INFO'
+      'ERROR.ERR_MISSING_INFO',
     ));
 
     return;

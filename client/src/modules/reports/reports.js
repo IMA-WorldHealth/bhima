@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
   .controller('ReportsController', ReportsController);
 
 ReportsController.$inject = [
-  '$state', 'reportData', '$scope', 'BaseReportService'
+  '$state', 'reportData', '$scope', 'BaseReportService',
 ];
 
 function ReportsController($state, reportData, $scope, SavedReports) {
-  var vm = this;
-  var archiveState = 'reportsBase.reportsArchive';
+  const vm = this;
+  const archiveState = 'reportsBase.reportsArchive';
 
   vm.report = reportData;
   vm.isArchive = isArchive;
@@ -18,8 +18,8 @@ function ReportsController($state, reportData, $scope, SavedReports) {
 
   function refreshReportData() {
     SavedReports.requestKey($state.params.key)
-      .then(function (results) {
-        vm.report = results[0];
+      .then((results) => {
+        [vm.report] = results;
       });
   }
 
@@ -28,7 +28,7 @@ function ReportsController($state, reportData, $scope, SavedReports) {
   // changes, the only effective way to communicate between states is to either:
   //  1) Have a service share the data (this would require changing a ton of files)
   //  2) Have an event trigger the refresh (much easier, implemented here)
-  $scope.$on('$stateChangeSuccess', function () {
+  $scope.$on('$stateChangeSuccess', () => {
     refreshReportData();
   });
 }

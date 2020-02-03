@@ -74,6 +74,7 @@ function getLotFilters(parameters) {
     'document_uuid',
     'entity_uuid',
     'service_uuid',
+    'invoice_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -94,6 +95,7 @@ function getLotFilters(parameters) {
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
   filters.equals('service_uuid', 'uuid', 'serv');
+  filters.equals('invoice_uuid', 'invoice_uuid', 'm');
 
   // NOTE(@jniles):
   // this filters the lots on the entity_uuid associated with the text reference.  It is
@@ -213,7 +215,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
     JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid  
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, l.label `;
