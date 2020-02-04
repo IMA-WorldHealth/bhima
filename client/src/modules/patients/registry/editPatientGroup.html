@@ -1,7 +1,7 @@
 <form
   name="ModalForm"
   ng-submit="$ctrl.submit(ModalForm)"
-  data-modal="patient-search"
+  data-modal="patient-edit-group"
   novalidate>
 
   <div class="modal-header search-modal-header">
@@ -10,33 +10,31 @@
     </ol>
   </div>
 
-  <div class="modal-body search-modal">
-    <div class="col-sm-12">
-      <div class="form-group has-feedback">
-        <label class="control-label" translate>
-          FORM.LABELS.GROUPS_PATIENT_TITLE
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="control-label" translate>
+        FORM.LABELS.GROUPS_PATIENT_TITLE
+      </label>
+      <div
+        class="checkbox"
+        ng-repeat="group in $ctrl.patientGroups | orderBy:'name'">
+      <label>
+      <input
+        data-group-option
+        type="checkbox"
+        id="{{group.uuid}}"
+        name="subscribedGroups"
+        ng-model="$ctrl.subscribedGroups[group.uuid]">
+          {{group.name}}
         </label>
-        <div
-          class="checkbox"
-          ng-repeat="group in $ctrl.patientGroups | orderBy:'name'">
-        <label>
-        <input
-          data-group-option
-          type="checkbox"
-          id="{{group.uuid}}"
-          name="subscribedGroups"
-          ng-model="$ctrl.subscribedGroups[group.uuid]">
-            {{group.name}}
-          </label>
-        </div>
       </div>
-      <div class="form-group">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.removeAssignedGroups">
-            <span translate>PATIENT_REG.REMOVE_PREVIOUS_ASSIGNMENT</span>
-          </label>
-      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.removeAssignedGroups">
+        <span translate>PATIENT_REG.REMOVE_PREVIOUS_ASSIGNMENT</span>
+      </label>
     </div>
   </div>
 

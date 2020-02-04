@@ -298,10 +298,9 @@ function PatientRegistryController(
       Notify.warn('FORM.WARNINGS.EMPTY_SELECTION');
       return;
     }
-    const data = [];
-    patients.forEach(p => {
-      data.push(p.uuid);
-    });
+
+    // get the patient uuids
+    const data = patients.map(patient => patient.uuid);
 
     Modal.editPatientGroup(data).then((result) => {
       if (result) {

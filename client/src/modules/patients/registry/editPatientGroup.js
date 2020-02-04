@@ -9,13 +9,13 @@ EditPatientGroupModalController.$inject = [
 /**
  * @class EditPatientGroupModalController
  */
-function EditPatientGroupModalController(data, Instance, Notify, PatientGroup, Patient) {
+function EditPatientGroupModalController(data, Instance, Notify, PatientGroups, Patients) {
   const vm = this;
   vm.cancel = () => Instance.close();
   vm.submit = submit;
   vm.subscribedGroups = {};
 
-  PatientGroup.read().then(sessionGroups => {
+  PatientGroups.read().then(sessionGroups => {
     vm.patientGroups = sessionGroups;
     sessionGroups.forEach((patientGroup) => {
       vm.subscribedGroups[patientGroup.uuid] = false;
@@ -25,11 +25,13 @@ function EditPatientGroupModalController(data, Instance, Notify, PatientGroup, P
   function getGroups() {
     const subscribedGroups = [];
     const keys = Object.keys(vm.subscribedGroups);
+
     keys.forEach(groupUuid => {
       if (vm.subscribedGroups[groupUuid]) {
         subscribedGroups.push(groupUuid);
       }
     });
+
     return subscribedGroups;
   }
 
@@ -45,10 +47,8 @@ function EditPatientGroupModalController(data, Instance, Notify, PatientGroup, P
           removeAssignedGroups : vm.removeAssignedGroups,
         };
 
-        Patient.bulkUpdateGroups(options)
-          .then(() => {
-            return Instance.close(true);
-          })
+        Patients.bulkUpdateGroups(options)
+          .then(() => Instance.close(true))
           .catch(Notify.handleError);
       }
     }

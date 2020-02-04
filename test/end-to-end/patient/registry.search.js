@@ -154,13 +154,13 @@ function PatientRegistrySearch() {
     await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('bulk group assignment without selecting patients', async () => {
+  it('bulk group assignment without selecting patients warns the user', async () => {
     await element(by.id('menu')).click();
     await $('[data-method="change-patient-group"]').click();
     await components.notification.hasWarn();
   });
 
-  it('Patient group bulk assignment', () => {
+  it('changes the patient group for multiple patients', () => {
     const gridId = 'patient-registry';
     GU.selectRow(gridId, 0);
     GU.selectRow(gridId, 1);
@@ -175,7 +175,6 @@ function PatientRegistrySearch() {
     FU.modal.submit();
     components.notification.hasSuccess();
   });
-
 }
 
 module.exports = PatientRegistrySearch;
