@@ -35,6 +35,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.voucher = voucher;
   service.creditNote = creditNote;
   service.payrollReport = payrollReport;
+  service.displayData = displayData;
 
   /**
    * Invokes a patient invoice receipt
@@ -296,6 +297,32 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     return instance.result;
   }
 
+  function displayData(dataUuid, patientData, notifyCreated) {
+    const options = {
+      title         : 'TREE.DISPLAY_METADATA',
+      renderer      : Receipts.renderer,
+      notifyCreated,
+    };
+
+    const request = {
+      dataUuid,
+      patient : patientData,
+    };
+
+    const displayDataRequest = Receipts.displayData(request, { renderer : options.renderer });
+    const reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise : displayDataRequest }; },
+        options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
+      },
+    };
+
+    const configuration = angular.extend(modalConfiguration, reportProvider);
+    const instance = Modal.open(configuration);
+    return instance.result;
+  }
+
   // ================================ stock =====================================
   // bind methods
   service.stockExitPatientReceipt = stockExitPatientReceipt;
@@ -308,6 +335,18 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.stockRequisitionReceipt = stockRequisitionReceipt;
+
+  /**
+   * @method stockRequisitionReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockRequisitionReceipt(documentUuid, notifyCreated) {
+    const opts = { title : 'REQUISITION.TITLE', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockRequisitionReceipt(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
 
   /**
    * @method stockExitPatientReceipt

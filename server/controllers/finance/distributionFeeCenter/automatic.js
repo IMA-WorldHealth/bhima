@@ -6,14 +6,14 @@
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
-function automatic(req, res, next) {
+async function automatic(req, res, next) {
   const { data } = req.body;
 
   const transUuids = data.map(item => db.bid(item.uuid));
 
   const sql = `
-    SELECT BUID(gl.uuid) AS row_uuid, gl.trans_id, gl.debit_equiv, gl.credit_equiv,
-    gl.account_id, gl.record_uuid, sfc.fee_center_id, iv.description, iv.service_id, s.name AS serviceName
+    SELECT BUID(gl.uuid) AS row_uuid, gl.trans_id, gl.debit_equiv, gl.credit_equiv, gl.account_id,
+      gl.record_uuid, sfc.fee_center_id, iv.description, iv.service_id, s.name AS serviceName
     FROM general_ledger AS gl
     JOIN invoice AS iv ON iv.uuid = gl.record_uuid
     JOIN service AS s ON s.id = iv.service_id
@@ -21,59 +21,58 @@ function automatic(req, res, next) {
     WHERE gl.uuid IN (?)
   `;
 
-  db.exec(sql, [transUuids])
-    .then((rows) => {
-      const dataToDistribute = [];
-      const userId = req.session.user.id;
+  try {
+    const rows = await db.exec(sql, [transUuids]);
 
-      rows.forEach((row) => {
-        data.forEach((item) => {
-          item.is_cost = item.is_cost || 0;
+    const dataToDistribute = [];
+    const userId = req.session.user.id;
 
-          if (row.row_uuid === item.uuid) {
-            dataToDistribute.push([
-              db.bid(row.row_uuid),
-              row.trans_id,
-              item.account_id,
-              item.is_cost,
-              item.is_variable,
-              item.is_turnover,
-              item.fee_center_id,
-              row.fee_center_id,
-              row.debit_equiv,
-              row.credit_equiv,
-              new Date(),
-              userId,
-            ]);
-          }
-        });
+    rows.forEach((row) => {
+      data.forEach((item) => {
+        item.is_cost = item.is_cost || 0;
+
+        if (row.row_uuid === item.uuid) {
+          dataToDistribute.push([
+            db.bid(row.row_uuid),
+            row.trans_id,
+            item.account_id,
+            item.is_cost,
+            item.is_variable,
+            item.is_turnover,
+            item.fee_center_id,
+            row.fee_center_id,
+            row.debit_equiv,
+            row.credit_equiv,
+            new Date(),
+            userId,
+          ]);
+        }
       });
+    });
 
 
-      if (!dataToDistribute.length) {
-        throw new NotFound(`Could not find any service linked to fee Centers`);
-      }
+    if (!dataToDistribute.length) {
+      throw new NotFound(`Could not find any service linked to fee centers`);
+    }
 
-      const sqlFeeCenterDistribution = `INSERT INTO fee_center_distribution (
-        row_uuid, 
-        trans_id,
-        account_id,
-        is_cost,
-        is_variable,
-        is_turnover,
-        auxiliary_fee_center_id,
-        principal_fee_center_id,
-        debit_equiv, 
-        credit_equiv,
-        date_distribution, user_id) VALUES ?`;
+    const sqlFeeCenterDistribution = `INSERT INTO fee_center_distribution (
+      row_uuid,
+      trans_id,
+      account_id,
+      is_cost,
+      is_variable,
+      is_turnover,
+      auxiliary_fee_center_id,
+      principal_fee_center_id,
+      debit_equiv,
+      credit_equiv,
+      date_distribution, user_id) VALUES ?`;
 
-      return db.exec(sqlFeeCenterDistribution, [dataToDistribute]);
-    })
-    .then((results) => {
-      res.status(201).json({ id : results.insertId });
-    })
-    .catch(next)
-    .done();
+    const results = await db.exec(sqlFeeCenterDistribution, [dataToDistribute]);
+    res.status(201).json({ id : results.insertId });
+  } catch (err) {
+    next(err);
+  }
 }
 
 exports.automatic = automatic;

@@ -1,10 +1,8 @@
 const {
-  _, ReportManager, Stock, NotFound, db, pdf, identifiers,
+  _, ReportManager, Stock, NotFound, db, barcode, pdf, identifiers,
   STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
-
-
-const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitLossReceipt
@@ -15,11 +13,9 @@ const barcode = require('../../../../lib/barcode');
  *
  * GET /receipts/stock/exit_loss/:document_uuid
  */
-function stockExitLossReceipt(req, res, next) {
-  let report;
+async function stockExitLossReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_LOSS' });
+  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_LOSS' });
 
   let template = STOCK_EXIT_LOSS_TEMPLATE;
 
@@ -29,11 +25,7 @@ function stockExitLossReceipt(req, res, next) {
   }
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(template, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(template, session, optionReport);
 
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
@@ -50,33 +42,35 @@ function stockExitLossReceipt(req, res, next) {
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
-      const exitKey = identifiers.STOCK_EXIT.key;
-      data.enterprise = req.session.enterprise;
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.details = {
-        depot_name         : line.depot_name,
-        user_display_name  : line.user_display_name,
-        description        : line.description,
-        date               : line.date,
-        document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
-        barcode : barcode.generate(exitKey, line.document_uuid),
-      };
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      data.rows = rows;
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
+  const line = rows[0];
+  const { key } = identifiers.STOCK_EXIT;
+  data.enterprise = session.enterprise;
+
+  data.details = {
+    depot_name         : line.depot_name,
+    user_display_name  : line.user_display_name,
+    description        : line.description,
+    date               : line.date,
+    document_uuid      : line.document_uuid,
+    document_reference : line.document_reference,
+    barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference : voucherReference,
+  };
+
+  data.rows = rows;
+  return report.render(data);
+
 }
 
 module.exports = stockExitLossReceipt;

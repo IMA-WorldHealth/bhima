@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, Stock, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, identifiers, barcode, STOCK_ADJUSTMENT_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 
@@ -7,24 +8,13 @@ const {
  * @method stockAdjustmentReceipt
  *
  * @description
- * This method builds the stock adjustment receipt
- * file to be sent to the client.
- *
- * GET /receipts/stock/adjustment/:document_uuid
+ * This method builds the stock adjustment receipt file to be sent to the client.
  */
-function stockAdjustmentReceipt(req, res, next) {
-  let report;
-  const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.ADJUSTMENT' });
+async function stockAdjustmentReceipt(documentUuid, session, options) {
+  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.ADJUSTMENT' });
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(STOCK_ADJUSTMENT_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
-
+  const report = new ReportManager(STOCK_ADJUSTMENT_TEMPLATE, session, optionReport);
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid, m.is_exit,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
@@ -39,33 +29,40 @@ function stockAdjustmentReceipt(req, res, next) {
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.enterprise = req.session.enterprise;
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      data.details = {
-        is_exit            : line.is_exit,
-        depot_name         : line.depot_name,
-        user_display_name  : line.user_display_name,
-        description        : line.description,
-        date               : line.date,
-        document_uuid      : line.document_uuid,
-        document_reference : line.document_reference,
-      };
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
 
-      data.rows = rows;
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+  const line = rows[0];
+  const { key } = identifiers.STOCK_MOVEMENT;
+  const data = {};
+  data.enterprise = session.enterprise;
+
+  data.details = {
+    title              : line.is_exit ? 'STOCK_FLUX.TO_ADJUSTMENT' : 'STOCK_FLUX.FROM_ADJUSTMENT',
+    is_exit            : line.is_exit,
+    depot_name         : line.depot_name,
+    user_display_name  : line.user_display_name,
+    description        : line.description,
+    date               : line.date,
+    document_uuid      : line.document_uuid,
+    document_reference : line.document_reference,
+    barcode : barcode.generate(key, line.document_uuid),
+    voucher_reference : voucherReference,
+  };
+
+  data.rows = rows;
+
+
+  return report.render(data);
 }
 
 module.exports = stockAdjustmentReceipt;

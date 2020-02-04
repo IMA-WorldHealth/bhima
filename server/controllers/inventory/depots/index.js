@@ -7,10 +7,12 @@
 *
 * @todo(jniles) - review this module
 */
+const _ = require('lodash');
 
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
 
 /** expose depots routes */
@@ -19,6 +21,7 @@ exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
+exports.searchByName = searchByName;
 
 
 /**
@@ -108,7 +111,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = req.query;
+  const options = db.convert(req.query, ['uuid']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -134,11 +137,12 @@ function list(req, res, next) {
 
   filters.custom(
     'user_id',
-    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
+    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
   );
-
+  filters.fullText('text', 'text', 'd');
+  filters.equals('is_warehouse', 'is_warehouse', 'd');
+  filters.equals('uuid', 'uuid', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
-
   filters.setOrder('ORDER BY d.text');
 
   const query = filters.applyQuery(sql);
@@ -148,6 +152,51 @@ function list(req, res, next) {
     .then(rows => {
       res.status(200).json(rows);
     })
+    .catch(next)
+    .done();
+}
+
+/*
+ * @method searchByName
+ *
+ * @description
+ * This method implements a depot search that will only return very limited information
+ */
+function searchByName(req, res, next) {
+  const options = {};
+  options.text = req.query.text;
+  options.limit = req.query.limit || 10;
+  options.enterprise_id = req.session.enterprise.id;
+
+  if (_.isUndefined(options.text)) {
+    return next(new BadRequest('text attribute must be specified for a name search'));
+  }
+
+  const filters = new FilterParser(options, { tableAlias : 'd' });
+
+  const sql = `
+    SELECT
+      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
+      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
+      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+    FROM depot d
+      LEFT JOIN village v ON v.uuid = d.location_uuid
+      LEFT JOIN sector s ON s.uuid = v.sector_uuid
+      LEFT JOIN province p ON p.uuid = s.province_uuid
+      LEFT JOIN country c ON c.uuid = p.country_uuid
+  `;
+
+  filters.fullText('text', 'text', 'd');
+  filters.equals('enterprise_id', 'enterprise_id', 'd');
+  filters.setOrder('ORDER BY d.text');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters)
+    .then((results) => res.send(results))
     .catch(next)
     .done();
 }

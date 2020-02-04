@@ -50,6 +50,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.setReceiptCurrency = setReceiptCurrency;
   service.setReceiptRenderer = setReceiptRenderer;
   service.payrollReport = payrollReport;
+  service.displayData = displayData;
 
   /**
    * @method fetch
@@ -157,6 +158,16 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     return fetch(route, options);
   }
 
+  // print metadata of survey
+  function displayData(request, options) {
+    options.uuid = request.dataUuid;
+    options.patient = request.patient;
+    // set the session language
+    options.lang = Language.key;
+    const route = '/display_metadata/card';
+    return fetch(route, options);
+  }
+
   // ========================== stock ==============================
 
   // bind methods
@@ -170,12 +181,26 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.stockRequisitionReceipt = stockRequisitionReceipt;
+
+  // stock requisition receipt
+  function stockRequisitionReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = '/receipts/stock/requisition/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  const STOCK_RECEIPT_ROUTE = '/receipts/stock/';
+  // helper function to template in route and POS option
+  function genericStockReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = STOCK_RECEIPT_ROUTE.concat(uuid);
+    return fetch(route, options);
+  }
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/exit_patient/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock assign receipt
@@ -187,58 +212,44 @@ function ReceiptService($http, util, Language, AppCache, Session) {
 
   // stock exit service receipt
   function stockExitServiceReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/exit_service/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock exit depot receipt
   function stockExitDepotReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/exit_depot/'.concat(uuid);
-    return fetch(route, options);
+    options.is_depot_transfer_exit = 1;
+    return genericStockReceipt(uuid, options);
   }
 
   // stock exit loss receipt
   function stockExitLossReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/exit_loss/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock entry depot receipt
   function stockEntryDepotReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/entry_depot/'.concat(uuid);
-    return fetch(route, options);
+    options.is_depot_transfer_exit = 0;
+    return genericStockReceipt(uuid, options);
   }
 
   // stock entry purchase receipt
   function stockEntryPurchaseReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/entry_purchase/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock entry integration receipt
   function stockEntryIntegrationReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/entry_integration/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock entry donation receipt
   function stockEntryDonationReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/entry_donation/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // stock adjustment receipt
   function stockAdjustmentReceipt(uuid, options) {
-    options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/adjustment/'.concat(uuid);
-    return fetch(route, options);
+    return genericStockReceipt(uuid, options);
   }
 
   // ========================== end stock ==========================

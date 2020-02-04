@@ -106,7 +106,6 @@ const transactions = require('../controllers/finance/transactions');
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
-const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
 const ward = require('../controllers/medical/ward/ward');
@@ -142,6 +141,16 @@ const lots = require('../controllers/stock/lots');
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
+
+// Data Kit
+const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
+const choicesListManagement = require('../controllers/admin/choicesListManagement');
+const surveyForm = require('../controllers/admin/surveyForm');
+const fillFormsData = require('../controllers/admin/fillFormsData');
+const displayMetadata = require('../controllers/admin/displayMetadata');
+const displayMetadataReport = require('../controllers/admin/metadataReport');
+const configurationAnalysisTools = require('../controllers/finance/configurationAnalysisTools');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -308,6 +317,7 @@ exports.configure = function configure(app) {
   app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
 
   app.get('/inventory/log/:uuid', inventory.logs);
+  app.get('/inventory/download/log/:uuid', inventory.logDownLoad);
 
   /** Inventory Group API endpoints */
   app.post('/inventory/groups', inventory.createInventoryGroups);
@@ -341,6 +351,9 @@ exports.configure = function configure(app) {
   app.put('/depots/:uuid', depots.update);
   app.post('/depots', depots.create);
   app.delete('/depots/:uuid', depots.remove);
+
+  // special route for searching depot by name
+  app.get('/depots/search/name', depots.searchByName);
 
   // general ledger controller
   // transitioning to a more traditional angular application architecture
@@ -400,6 +413,8 @@ exports.configure = function configure(app) {
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
+  app.get('/reports/purchases/purchases_analysis', stockReports.purchaseOrderAnalysis.report);
+  app.get('/reports/inventory/changes', inventoryReports.reports.changes);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
@@ -445,6 +460,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/systemUsageStat', systemUsage.document);
 
   app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
+  app.get('/reports/finance/configurable_analysis_report', financeReports.configurableAnalysisReport.report);
 
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
@@ -775,6 +791,17 @@ exports.configure = function configure(app) {
   app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
   app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
 
+  // API routes for /stock/requisition end point
+  app.get('/stock/requisition', stock.requisition.list);
+  app.get('/stock/requisition/:uuid', stock.requisition.details);
+  app.post('/stock/requisition', stock.requisition.create);
+  app.put('/stock/requisition/:uuid', stock.requisition.update);
+  app.delete('/stock/requisition/:uuid', stock.requisition.deleteRequisition);
+
+  // API routes for /stock/requestor_type end point
+  app.get('/stock/requestor_type', stock.requestorType.list);
+  app.get('/stock/requestor_type/:id', stock.requestorType.details);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
@@ -803,18 +830,12 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
   app.get('/reports/stock/value', stockReports.stockValue);
+
+
   // stock receipts API
-  app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
-  app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
-  app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
-  app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+  app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);
   app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
-
-  app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
-  app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
-  app.get('/receipts/stock/entry_integration/:document_uuid', stockReports.stockEntryIntegrationReceipt);
-  app.get('/receipts/stock/entry_donation/:document_uuid', stockReports.stockEntryDonationReceipt);
-
+  app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
 
   // stock consumption API
@@ -845,13 +866,6 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.assignUnitsToRole);
   app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
-
-  // department
-  app.get('/departments', department.read);
-  app.get('/departments/:uuid', department.detail);
-  app.post('/departments', department.create);
-  app.delete('/departments/:uuid', department.delete);
-  app.put('/departments/:uuid', department.update);
 
   // entities types API
   app.get('/entities/types', entities.types.list);
@@ -978,4 +992,47 @@ exports.configure = function configure(app) {
   app.post('/cron_email_reports', cronEmailReport.create);
   app.post('/cron_email_reports/:id', cronEmailReport.send);
   app.delete('/cron_email_reports/:id', cronEmailReport.remove);
+
+  // API for Data Collector Management routes crud
+  app.get('/data_collector_management', dataCollectorManagement.list);
+  app.get('/data_collector_management/:id', dataCollectorManagement.detail);
+  app.post('/data_collector_management', dataCollectorManagement.create);
+  app.put('/data_collector_management/:id', dataCollectorManagement.update);
+  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);
+
+  // API for CHOISES LIST MANAGEMENT routes crud
+  app.get('/choices_list_management', choicesListManagement.list);
+  app.get('/choices_list_management/:id', choicesListManagement.detail);
+  app.post('/choices_list_management', choicesListManagement.create);
+  app.put('/choices_list_management/:id', choicesListManagement.update);
+  app.delete('/choices_list_management/:id', choicesListManagement.delete);
+
+  // API for SURVEY FORM routes crud
+  app.get('/survey_form', surveyForm.list);
+  app.get('/survey_form/listSurveyformtype', surveyForm.listSurveyformtype);
+  app.get('/survey_form/:id', surveyForm.detail);
+  app.post('/survey_form', surveyForm.create);
+  app.put('/survey_form/:id', surveyForm.update);
+  app.delete('/survey_form/:id', surveyForm.delete);
+
+  // API for Fill in the forms of the data
+  app.get('/fill_form/:uuid', fillFormsData.detail);
+  app.post('/fill_form', fillFormsData.create);
+  app.post('/fill_form/restoreImage', fillFormsData.restoreImage);
+  app.post('/fill_form/:uuid/:key/image', upload.middleware('pics', 'image'), fillFormsData.uploadImage);
+  app.put('/fill_form/:uuid', fillFormsData.update);
+
+  // API for DISPLAY METADATA routes crud
+  app.get('/display_metadata', displayMetadata.list);
+  app.get('/display_metadata/card', displayMetadataReport.metadataCard);
+  app.get('/data_kit/report', displayMetadataReport.reportMetadata);
+  app.delete('/display_metadata/:uuid', displayMetadata.delete);
+
+  // API for Configuration Analysis Tools routes crud
+  app.get('/configuration_analysis_tools', configurationAnalysisTools.list);
+  app.get('/analysis_tools_type', configurationAnalysisTools.toolsType);
+  app.get('/configuration_analysis_tools/:id', configurationAnalysisTools.detail);
+  app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
+  app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);
+  app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 };

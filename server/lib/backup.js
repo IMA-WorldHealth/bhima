@@ -8,11 +8,11 @@
 
 const debug = require('debug')('backups');
 const tmp = require('tempy');
-const util = require('./util');
-const lzma = require('lzma-native');
+const zlib = require('zlib');
 const streamToPromise = require('stream-to-promise');
-const fs = require('mz/fs');
+const fs = require('fs');
 const moment = require('moment');
+const util = require('./util');
 
 /**
  * @method backup
@@ -28,7 +28,7 @@ function backup(filename) {
   debug(`#backup() beginning backup routine.`);
 
   return mysqldump(file)
-    .then(() => xz(file))
+    .then(() => gzip(file))
     .then(upload);
 }
 
@@ -97,46 +97,41 @@ function mysqldump(file, options = {}) {
 }
 
 /**
- * @function xz
+ * @function gzip
  *
  * @description
- * This function uses the lzma-native library for ultra-fast compression of the
+ * This function uses the native zlib library for ultra-fast compression of the
  * backup file.  Since streams are used, the memory requirements should stay
  * relatively low.
  */
-function xz(file) {
-  const outfile = `${file}.xz`;
+async function gzip(file) {
+  const outfile = `${file}.gz`;
 
-  debug(`#xz() compressing ${file} into ${outfile}.`);
+  debug(`#gzip() compressing ${file} into ${outfile}.`);
 
-  const compressor = lzma.createCompressor();
   const input = fs.createReadStream(file);
   const output = fs.createWriteStream(outfile);
 
-  let beforeSizeInMegabytes;
-  let afterSizeInMegabytes;
+  const stats = await fs.promises.stat(file);
+  const beforeSizeInMegabytes = stats.size / 1000000.0;
+  debug(`#gzip() ${file} is ${beforeSizeInMegabytes}MB`);
 
-  return fs.stat(file)
-    .then(stats => {
-      beforeSizeInMegabytes = stats.size / 1000000.0;
-      debug(`#xz() ${file} is ${beforeSizeInMegabytes}MB`);
+  // start the compresion
+  const streams = input
+    .pipe(zlib.createGunzip())
+    .pipe(output);
 
-      // start the compresion
-      const streams = input.pipe(compressor).pipe(output);
-      return streamToPromise(streams);
-    })
-    .then(() => util.statp(outfile))
-    .then(stats => {
-      afterSizeInMegabytes = stats.size / 1000000.0;
-      debug(`#xz() ${outfile} is ${afterSizeInMegabytes}MB`);
+  await streamToPromise(streams);
 
-      const ratio =
-        Number(beforeSizeInMegabytes / afterSizeInMegabytes).toFixed(2);
+  const statsAfter = await fs.promises.stat(outfile);
+  const afterSizeInMegabytes = statsAfter.size / 1000000.0;
+  debug(`#gzip() ${outfile} is ${afterSizeInMegabytes}MB`);
 
-      debug(`#xz() compression ratio: ${ratio}`);
+  const ratio = Number(beforeSizeInMegabytes / afterSizeInMegabytes).toFixed(2);
 
-      return outfile;
-    });
+  debug(`#gzip() compression ratio: ${ratio}`);
+
+  return outfile;
 }
 
 /**
@@ -149,12 +144,11 @@ function upload(file, options = {}) {
   debug(`#upload() Not Implemented Yet!`);
 
   if (!options.name) {
-    options.name =
-      `${process.env.DB_NAME}-${moment().format('YYYY-MM-DD')}.sql.xz`;
+    options.name = `${process.env.DB_NAME}-${moment().format('YYYY-MM-DD')}.sql.gzip`;
   }
 }
 
 exports.backup = backup;
 exports.mysqldump = mysqldump;
 exports.upload = upload;
-exports.xz = xz;
+exports.gzip = gzip;

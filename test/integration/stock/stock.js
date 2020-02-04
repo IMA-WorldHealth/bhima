@@ -60,7 +60,30 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         helpers.api.listed(res, shared.depotPrincipalMvt);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
+  );
+
+  // list all movement relatives to patient 'PA.TPA.2'
+  it(
+    `GET /stock/lots/movements?patientReference=PA.TPA.2 returns two movements for patient PA.TPA.2`,
+    () => agent.get('/stock/lots/movements')
+      .query({ patientReference : 'PA.TPA.2' })
+      .then((res) => {
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler),
+  );
+
+
+  // list all movement relatives to 'Service Administration'
+  it(
+    `GET /stock/lots/movements?service_uuid=...
+    returns movements for Service Uuid (1 OUT)`,
+    () => agent.get(`/stock/lots/movements?service_uuid=${shared.serviceAdministrationUuid}`)
+      .then((res) => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler),
   );
 
   // list all stock exit relatives to 'Depot Principal'
@@ -69,9 +92,9 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns exits for Depot Principal (3 OUT)`,
     () => agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 5);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // (report) render all stock exit
@@ -82,7 +105,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         expect(res.body.rows.length).to.equal(22);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // (report) render all stock exit relatives to 'Depot Principal'
@@ -93,7 +116,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         expect(res.body.rows.length).to.equal(20);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // list all stock entry relatives to 'Depot Principal'
@@ -103,11 +126,12 @@ describe('(/stock/) The Stock HTTP API', () => {
       .then((res) => {
         helpers.api.listed(res, 20);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () => agent.get('/stock/lots')
+  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial
+      quantity of QUININE-A in Depot Principal (100pcs)`, () => agent.get('/stock/lots')
     .query({
       lot_uuid : shared.lotQuinineUuid,
       depot_uuid : shared.depotPrincipalUuid,
@@ -120,19 +144,20 @@ describe('(/stock/) The Stock HTTP API', () => {
     .catch(helpers.handler));
 
   // list exit of QUININE-A from 'Depot Principal'
-  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (20pcs)`, () => agent.get('/stock/lots/movements')
+  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns
+    exit of QUININE-A from Depot Principal (101pcs)`, () => agent.get('/stock/lots/movements')
     .query({
       is_exit : 1,
       lot_uuid : shared.lotQuinineUuid,
       depot_uuid : shared.depotPrincipalUuid,
     })
     .then((res) => {
-      helpers.api.listed(res, 1);
-      let totalExit = 0;
+      helpers.api.listed(res, 2);
+      let totalExit = 1;
       res.body.forEach(row => {
         totalExit += row.quantity;
       });
-      expect(totalExit).to.be.equal(20);
+      expect(totalExit).to.be.equal(101);
     })
     .catch(helpers.handler));
 
@@ -141,7 +166,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       user_id : 1, // super user
     })
     .then(res => {
-      helpers.api.listed(res, 25);
+      helpers.api.listed(res, 27);
     })
     .catch(helpers.handler));
 
@@ -152,9 +177,10 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns remaining quantity of QUININE-A in Depot Principal (80pcs)`,
     () => agent.get(`/stock/lots/depots?lot_uuid=${shared.lotQuinineUuid}&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
+
         helpers.api.listed(res, 1);
-        expect(res.body[0].quantity).to.be.equal(100 - 20);
+        expect(res.body[0].quantity).to.be.equal(0);
       })
-      .catch(helpers.handler)
+      .catch(helpers.handler),
   );
 });

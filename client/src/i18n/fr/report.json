@@ -57,6 +57,11 @@
     "CASH_INCOME" : "Recettes",
     "CHART_OF_ACCOUNTS" : "Plan Comptable",
     "CLOSING_BALANCE" : "Balance à la cloture",
+    "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "HIDE_ACCOUNT_DETAILS": "Cacher les détailles des comptes",
+      "HIDE_DETAILS_TYPES": "Cacher les détailles des types",
+      "TITLE": "Rapport d'analyse configurable"
+    },
     "CONFIGURATION" : "Configuration rapport",
     "DELETE" : "Supprimer un rapport",
     "DOWNLOAD" : "Télécharger",
@@ -99,6 +104,12 @@
       "TITLE": "Rapport sommaire des débiteurs",
       "DESCRIPTION": "Ce rapport détaille le montant à payer dans chaque groupe d'inventaire pour une facture pendant une période, pour un groupe debor spécifique"
     },
+
+    "INVENTORY_CHANGE" : {
+      "TITLE" : "Rapport de changement d'inventaire",
+      "DESCRIPTION": "Ce rapport montre les changements survenus sur les articles en stock au cours d'une période"
+    },
+
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
       "LAST_TRANSACTION": "Date de la dernière transaction",
@@ -109,6 +120,10 @@
     "PATIENT_STANDING": {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
       "TITLE": "Situation financière d'un Patient"
+    },
+    "PURCHASE_ORDER_ANALYSIS": {
+      "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
+      "TITLE": "Analyse de commande d'achat"
     },
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
@@ -399,7 +414,7 @@
       "APPROVED_BY" : "Approuvé par",
       "RECEIVER" : "Recepteur",
       "DEPOT_MANAGER" : "Gestionnaire du dépot",
-      "SUPPLIER" : "Fournisseur"
+      "SUPPLIER" : "Fournisseur / Autre"
     },
     "CLIENT_SUMMARY" : {
       "TITLE":"Rapport des dettes des clients",

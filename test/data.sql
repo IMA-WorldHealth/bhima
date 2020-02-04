@@ -357,6 +357,9 @@ CALL CreateFiscalYear(1, @fiscalYear2017, @superUser, 'Fiscal Year 2018', 12, DA
 SET @fiscalYear2019 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2018, @superUser, 'Fiscal Year 2019', 12, DATE('2019-01-01'), DATE('2019-12-31'), 'Notes for 2019', @fiscalYear2019);
 
+SET @fiscalYear2020 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2019, @superUser, 'Fiscal Year 2020', 12, DATE('2020-01-01'), DATE('2020-12-31'), 'Notes for 2020', @fiscalYear2020);
+
 -- give test permission to all projects
 INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 
@@ -755,7 +758,7 @@ INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, descriptio
   (@fourth_voucher, CURRENT_TIMESTAMP, 1, 1, 75, 'Fourth Voucher to be Posted', 1, 9);
 
 -- voucher items sample data
-INSERT INTO `voucher_item` VALUES
+INSERT INTO `voucher_item` (`uuid`, `account_id`, `debit`, `credit`, `voucher_uuid`, `document_uuid`, `entity_uuid`) VALUES
   (HUID('90583c32-b1b2-11e8-9689-0b54421d0e49'), 187, 100, 0, @first_voucher, @first_invoice, HUID('2c6c48a2-b1b3-11e8-ae9b-1fa4024347ab')),
   (HUID('9317a11a-b1b2-11e8-93d6-b30828591803'), 182, 0, 100, @first_voucher, NULL, NULL),
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
@@ -831,6 +834,14 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
+-- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`) VALUES
+  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, NULL, '2019-10-28 13:02:07'),
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35');
+
+INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
+  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
+
 -- Rubric Payroll
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `value`) VALUES
   (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 0, 1, 306, 353, 0, 0, 5),
@@ -847,7 +858,7 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`,
- `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, 
+ `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`,
  `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`, `indice_to_grap`)
 
 VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL, 1),
@@ -864,7 +875,7 @@ VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0,
 (24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
- VALUES (1, 'Configuration des rubriques'), 
+ VALUES (1, 'Configuration des rubriques'),
  (2, 'Configuration des rubriques (indices)');
 
 -- Configuration of Rubric Items
@@ -973,18 +984,19 @@ INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_
   (9, 'c_test_3', 'Cost Test 3', NULL, 0);
 
 -- ACCOUNT REFERENCE ITEM
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (3, 2, 246, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (4, 2, 249, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (5, 2, 242, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (6, 3, 258, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (7, 4, 243, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (8, 5, 201, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (9, 6, 210, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (10, 7, 256, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (12, 8, 256, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (13, 1, 347, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
-  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (3, 2, 246, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (4, 2, 249, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (5, 2, 242, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (6, 3, 258, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (7, 4, 243, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (8, 5, 201, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (9, 6, 210, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (10, 7, 256, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (12, 8, 256, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (13, 1, 347, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
+
 
 -- FEE CENTER
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
@@ -1107,3 +1119,105 @@ INSERT INTO bed VALUES
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
+
+
+-- data_collector_management
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1);
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
+
+-- choices_list_management
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (2, 'm', 'Masculin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (3, 'f', 'Féminin', 0, 1, 1, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (4, 'pays', 'Pays', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (5, 'province', 'Province', 0, 4, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (6, 'districte', 'Districte', 0, 5, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (7, 'ville', 'Ville', 0, 6, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (8, 'commune', 'Commune', 0, 7, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (9, 'quartier', 'Quartier', 0, 8, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (10, 'rdc', 'RD Congo', 0, 0, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (11, 'kin', 'Kinshasa', 0, 10, 4, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (12, 'mont_amba', 'Mont Amba', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (13, 'lemba', 'Lemba', 0, 12, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (14, 'salongo', 'Salongo', 0, 13, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (15, 'avenue', 'Avenue', 0, 9, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (16, 'bypass', 'By Pass', 0, 14, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (17, 'kalala', 'Kalala', 0, 14, 0, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (18, 'funa', 'Funa', 0, 11, 6, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (22, 'medicament', 'Médicament', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (23, 'ciprofloxacineCifin', 'ciprofloxacine (cifin ) 500 mg tab', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (24, 'artesunate60mgInjFl', 'Artesunate 60mg inj. fl', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (25, 'vitamineA50000iu', 'Vitamine A 50.000 iu', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (26, 'paracetamol500mg', 'Paracetamol500 mg', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (27, 'pentazocinetromadol30mg/ml', 'Pentazocine, Tromadol30mg/ml', 0, 22, 22, 0, 0);
+
+-- survey_form
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (1, 1, '3', 22, NULL, 0, 'label', 'Médicament', 'Sélectionner le médicament', 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (2, 1, '1', NULL, NULL, 0, 'poids', 'Poids', NULL, 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (3, 1, '2', NULL, NULL, 0, 'dosekilos', 'Dose par kilogramme', NULL, 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (4, 1, '1', NULL, NULL, 0, 'nombreFois', 'Nombre de fois', NULL, 1, NULL, NULL, NULL, 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (5, 1, '2', NULL, NULL, 0, 'voie', 'Voie', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (6, 1, '6', NULL, NULL, 0, 'date', 'Date', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (7, 1, '7', NULL, NULL, 0, 'temps', 'Temps', NULL, 1, NULL, NULL, NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (8, 3, '2', NULL, NULL, 0, 'label', 'Structure', NULL, 1, NULL, NULL, NULL, 1);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (9, 3, '1', NULL, NULL, 0, 'longueur', 'Longueur', 'en mètre (m)', 1, NULL, NULL, NULL, 2);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (10, 3, '1', NULL, NULL, 0, 'largeur', 'largeur', 'en mètre (m)', 1, NULL, NULL, NULL, 3);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (11, 3, '9', NULL, NULL, 0, 'surface', 'Surface (m²)', NULL, 0, NULL, NULL, '.{longueur} * .{largeur}', 4);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (12, 3, '1', NULL, NULL, 0, 'nombre_agent', 'Nombre d''agent', NULL, 1, NULL, NULL, NULL, 5);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (13, 3, '1', NULL, NULL, 0, 'nombre_femme', 'Nombre des femmes', NULL, 1, NULL, NULL, NULL, 6);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (14, 3, '5', NULL, NULL, 0, 'note_1', 'Nombre des femmes inferieurs a 25', NULL, 1, '.{nombre_femme} < 25', '25', NULL, 7);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`, `rank`) VALUES (15, 3, '10', NULL, NULL, 0, 'raison', 'Raison inferieure', NULL, 0, '.{nombre_femme} < 25', NULL, NULL, 8);
+
+-- survey_data
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x24804F5966E74A8D83E8FE57EE60EFC3, 1, '2019-08-28 08:04:03', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x2E6753DE87784432B1AE96F6220E7F85, 3, '2019-08-28 08:43:16', 1, 0);
+INSERT INTO `survey_data` (`uuid`, `data_collector_management_id`, `date`, `user_id`, `is_deleted`) VALUES (0x7E10BE6083BF4EC5810FD47E2013E7AD, 3, '2019-08-27 21:15:58', 1, 0);
+
+-- survey_data_item
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x56CBC3715A3C45699C3612AD0E00BF00, 6, 'date', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2019-08-16');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x01DDEAFBBC1540DEAE408B75BF8E117B, 3, 'dosekilos', 0x24804F5966E74A8D83E8FE57EE60EFC3, '20');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xF0D06189F43447A6A18AE710339C13FF, 8, 'label', 0x2E6753DE87784432B1AE96F6220E7F85, 'Access Project');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9FC0EA45085E40B8AEBF9FDEBE276373, 1, 'label', 0x24804F5966E74A8D83E8FE57EE60EFC3, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xCB7A4838D6F544029DC3C44973298C22, 10, 'largeur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '40');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x4A64E8AC16ED4D5DA521759A44F9C151, 10, 'largeur', 0x2E6753DE87784432B1AE96F6220E7F85, '50');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xB39690C2DD924A689D3A644D60D81AC5, 9, 'longueur', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '75');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xDE878918262B4A41ABC11DADA19F01BE, 9, 'longueur', 0x2E6753DE87784432B1AE96F6220E7F85, '110');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x8A45E9C704474CCE9A53518D979DC435, 12, 'nombre_agent', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '112');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBE53A92025D942E39A1E69CA839C700B, 12, 'nombre_agent', 0x2E6753DE87784432B1AE96F6220E7F85, '1359');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3D145F3311CE4AF4A59B80A495F4DBCF, 13, 'nombre_femme', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '23');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0B906678C97F4C1281641B6B9447997E, 13, 'nombre_femme', 0x2E6753DE87784432B1AE96F6220E7F85, '860');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xD375C86040304E62AAE4C03C3B111CB3, 4, 'nombreFois', 0x24804F5966E74A8D83E8FE57EE60EFC3, '2');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xBA712ED252CF45F9A693750FA04313DE, 14, 'note_1', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x0E57EFF1142F4F5E8416FBDBE53E4319, 14, 'note_1', 0x2E6753DE87784432B1AE96F6220E7F85, '25');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xE55FCC70352546F6A20B39FFFCFD9203, 2, 'poids', 0x24804F5966E74A8D83E8FE57EE60EFC3, '13');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x05DAAC76E4864FFEA21B4228236D96DD, 15, 'raison', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'Faible candidature');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x1B17203E39A848B3ABB1BA6655297BDA, 8, 'structure', 0x7E10BE6083BF4EC5810FD47E2013E7AD, 'IMA World Health');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0xEC7A04D98171476BB6A18CCA79C8A67F, 11, 'surface', 0x7E10BE6083BF4EC5810FD47E2013E7AD, '3000');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x3EEB3F9A5F5C4B5AB1C82E67DDD12D0B, 11, 'surface', 0x2E6753DE87784432B1AE96F6220E7F85, '5500');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x083E7B7DCC3642BCB03599B23C02CB62, 7, 'temps', 0x24804F5966E74A8D83E8FE57EE60EFC3, '12:24');
+INSERT INTO `survey_data_item` (`uuid`, `survey_form_id`, `survey_form_label`, `survey_data_uuid`, `value`) VALUES (0x9C388012F6CF408FBDD5B510649DBD58, 5, 'voie', 0x24804F5966E74A8D83E8FE57EE60EFC3, 'IV');
+
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `reference_type_id`, `is_amo_dep`) VALUES
+  (11, 'charges', 'Charges', NULL, 5, 0),
+  (12, 'profits', 'Profits', NULL, 5, 0),
+  (13, 'deb', 'Débiteurs', NULL, 5, 0),
+  (14, 'cred', 'Créditeurs', NULL, 5, 0);
+
+INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (22, 11, 6, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (23, 11, 208, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (24, 12, 7, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (25, 12, 58, 1, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (26, 13, 173, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (27, 13, 335, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (28, 14, 32, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (29, 14, 178, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (30, 14, 36, 0, 0, 0);
+
+INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id`, `analysis_tool_type_id`) VALUES
+  (1, 'Coûts', 11, 1),
+  (3, 'Creances', 13, 2),
+  (2, 'Profits', 12, 3),
+  (4, 'Dettes', 14, 4);

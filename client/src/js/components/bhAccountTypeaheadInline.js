@@ -10,7 +10,7 @@ angular.module('bhima.components')
   });
 
 AccountTypeaheadInlineController.$inject = [
-  'AccountService', '$timeout', '$scope', 'Store',
+  'AccountService', '$timeout', '$scope', 'Store', 'FormatTreeDataService',
 ];
 
 /**
@@ -20,7 +20,7 @@ AccountTypeaheadInlineController.$inject = [
  * It is intended to be used in ui-grids to facilitate entering accounts easily
  * without having a heavy uiSelect component.
  */
-function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
+function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store, FormatTreeData) {
   const $ctrl = this;
   const store = new Store();
 
@@ -49,7 +49,7 @@ function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
     Accounts.read(null, params)
       .then(elements => {
         // bind the accounts to the controller
-        const accounts = Accounts.order(elements);
+        const accounts = FormatTreeData.order(elements);
         $ctrl.accounts = Accounts.filterTitleAccounts(accounts);
 
         store.setData($ctrl.accounts);

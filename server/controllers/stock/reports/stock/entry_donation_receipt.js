@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, Stock, NotFound, db, STOCK_ENTRY_DONATION_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, barcode, identifiers, STOCK_ENTRY_DONATION_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 /**
@@ -8,21 +9,13 @@ const {
  * @description
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
- *
- * GET /receipts/stock/entry_integration/:document_uuid
  */
-function stockEntryDonationReceipt(req, res, next) {
-  let report;
+async function stockEntryDonationReceipt(documentUuid, session, options) {
   const data = {};
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.ENTRY_DONATION' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_DONATION' });
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(STOCK_ENTRY_DONATION_TEMPLATE, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(STOCK_ENTRY_DONATION_TEMPLATE, session, optionReport);
 
   /**
    * TODO consider the donor also in a donation transaction
@@ -45,38 +38,42 @@ function stockEntryDonationReceipt(req, res, next) {
     ORDER BY i.text, l.label
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.enterprise = req.session.enterprise;
+  const rows = results[0];
+  const voucherReference = results[1][0].voucher_reference;
 
-      data.details = {
-        depot_name            : line.depot_name,
-        user_display_name     : line.user_display_name,
-        description           : line.description,
-        date                  : line.date,
-        document_uuid         : line.document_uuid,
-        document_reference    : line.document_reference,
-      };
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
+  const line = rows[0];
+  const { key } = identifiers.STOCK_ENTRY;
 
-      data.rows = rows;
+  data.enterprise = session.enterprise;
 
-      // sum elements of rows by their `total` property
-      data.total = data.rows.reduce((aggregate, row) => {
-        return row.total + aggregate;
-      }, 0);
+  data.details = {
+    depot_name            : line.depot_name,
+    user_display_name     : line.user_display_name,
+    description           : line.description,
+    date                  : line.date,
+    document_uuid         : line.document_uuid,
+    document_reference    : line.document_reference,
+    barcode               : barcode.generate(key, line.document_uuid),
+    voucher_reference     : voucherReference,
+  };
 
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+  data.rows = rows;
+
+  // sum elements of rows by their `total` property
+  data.total = data.rows.reduce((aggregate, row) => {
+    return row.total + aggregate;
+  }, 0);
+
+  return report.render(data);
+
 }
 
 module.exports = stockEntryDonationReceipt;

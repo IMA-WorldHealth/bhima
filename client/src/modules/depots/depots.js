@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
 
 DepotManagementController.$inject = [
   'DepotService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
+  'StockService', 'StockModalService',
 ];
 
 /**
@@ -11,14 +12,20 @@ DepotManagementController.$inject = [
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController(Depots, ModalService, Notify, uiGridConstants, $state) {
+function DepotManagementController(
+  Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal
+) {
   const vm = this;
+
+  const stockDepotFilters = Stock.filter.depot;
 
   // bind methods
   vm.deleteDepot = deleteDepot;
   vm.editDepot = editDepot;
   vm.createDepot = createDepot;
   vm.toggleFilter = toggleFilter;
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.search = search;
 
   // global variables
   vm.gridApi = {};
@@ -27,6 +34,7 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
   vm.gridOptions = {
     appScopeProvider  : vm,
     enableColumnMenus : false,
+    showColumnFooter  : true,
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
@@ -37,6 +45,8 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
         displayName : 'DEPOT.LABEL',
         headerCellFilter : 'translate',
         cellTemplate : '/modules/depots/templates/label.tmpl.html',
+        aggregationType : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
       },
       {
         field : 'location',
@@ -73,10 +83,36 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function loadDepots() {
+  // on remove one filter
+  function onRemoveFilter(key) {
+    stockDepotFilters.remove(key);
+    stockDepotFilters.formatCache();
+    vm.latestViewFilters = stockDepotFilters.formatView();
+    return load(stockDepotFilters.formatHTTP(true));
+  }
+
+  // search modal
+  function search() {
+    const filtersSnapshot = stockDepotFilters.formatHTTP();
+    Modal.openSearchDepots(filtersSnapshot)
+      .then(handleSearchModal);
+  }
+
+  function handleSearchModal(changes) {
+    // if there is no change , customer filters should not change
+    if (!changes) { return; }
+
+    stockDepotFilters.replaceFilters(changes);
+    stockDepotFilters.formatCache();
+    vm.latestViewFilters = stockDepotFilters.formatView();
+    load(stockDepotFilters.formatHTTP(true));
+  }
+
+  function load(filters = {}) {
+    angular.extend(filters, { full : 1 });
     vm.loading = true;
 
-    Depots.read(null, { full : 1 })
+    Depots.read(null, filters)
       .then(data => {
         // format location
         vm.gridOptions.data = data.map(item => {
@@ -101,7 +137,7 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
         Depots.delete(depot.uuid)
           .then(() => {
             Notify.success('DEPOT.DELETED');
-            loadDepots();
+            load();
           })
           .catch(Notify.handleError);
       });
@@ -117,5 +153,16 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
     $state.go('depots.create');
   }
 
-  loadDepots();
+  // initialize module
+  function startup() {
+    if ($state.params.filters && $state.params.filters.length) {
+      stockDepotFilters.replaceFiltersFromState($state.params.filters);
+      stockDepotFilters.formatCache();
+    }
+
+    load(stockDepotFilters.formatHTTP(true));
+    vm.latestViewFilters = stockDepotFilters.formatView();
+  }
+
+  startup();
 }

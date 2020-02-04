@@ -10,11 +10,10 @@ Before you begin the installation process, please make sure you have all the bhi
 
 1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 or newer\)
 2. [Redis](https://redis.io)
-3. curl
+3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
-5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) \(use the compiled binaries, even if it is distributed with your package manager. The binaries come with patched Qt\).
-6. [yarn](https://yarnpkg.com/)
-7. git
+5. [yarn](https://yarnpkg.com/)
+6. [git](https://git-scm.com/downloads)
 
 ### Detailed dependency installation instructions for Ubuntu \(verified / installed specifically using VirtualBox\)
 
@@ -38,19 +37,11 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \."$NVM_DIR\nvm.sh" # This loads nvm
 
-#Download NodeJS version 8
+#Download NodeJS latest long-term version
 nvm install lts/*
-
-#Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with bhima):
-sudo apt-get install xvfb
-wget -c https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin
-sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
 #Installs yarn without re-installing NodeJS
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 

@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('FunctionService', FunctionService);
 
-FunctionService.$inject = ['PrototypeApiService', '$uibModal'];
+FunctionService.$inject = ['PrototypeApiService'];
 
 /**
  * @class FunctionService
@@ -10,8 +10,8 @@ FunctionService.$inject = ['PrototypeApiService', '$uibModal'];
  * @description
  * Encapsulates common requests to the /functions/ URL.
  */
-function FunctionService(Api, Modal) {
-  var service = new Api('/functions/');
+function FunctionService(Api) {
+  const service = new Api('/functions/');
 
   return service;
 }

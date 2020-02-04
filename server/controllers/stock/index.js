@@ -17,6 +17,8 @@ const db = require('../../lib/db');
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
+const requisition = require('./requisition/requisition');
+const requestorType = require('./requisition/requestor_type');
 
 // expose to the API
 exports.createStock = createStock;
@@ -30,6 +32,8 @@ exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
 exports.importing = importing;
 exports.assign = assign;
+exports.requisition = requisition;
+exports.requestorType = requestorType;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
@@ -55,21 +59,18 @@ function createStock(req, res, next) {
     description : params.description,
   };
 
-  let createLotQuery;
-  let createMovementQuery;
-  let createLotObject;
-  let createMovementObject;
-  let date;
+  // prepare lot insertion query
+  const createLotQuery = 'INSERT INTO lot SET ?';
+
+  // prepare movement insertion query
+  const createMovementQuery = 'INSERT INTO stock_movement SET ?';
 
   params.lots.forEach((lot) => {
     // parse the expiration date
-    date = new Date(lot.expiration_date);
-
-    // prepare lot insertion query
-    createLotQuery = 'INSERT INTO lot SET ?';
+    const date = new Date(lot.expiration_date);
 
     // the lot object to insert
-    createLotObject = {
+    const createLotObject = {
       uuid : db.bid(uuid()),
       label : lot.label,
       initial_quantity : lot.quantity,
@@ -81,11 +82,8 @@ function createStock(req, res, next) {
       delay : 0,
     };
 
-    // prepare movement insertion query
-    createMovementQuery = 'INSERT INTO stock_movement SET ?';
-
     // the movement object to insert
-    createMovementObject = {
+    const createMovementObject = {
       uuid : db.bid(uuid()),
       lot_uuid : createLotObject.uuid,
       depot_uuid : db.bid(document.depot_uuid),
@@ -112,9 +110,6 @@ function createStock(req, res, next) {
   if (req.session.enterprise.settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
   }
-
-  // transaction - movement reference
-  transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
 
   // execute all operations as one transaction
   transaction.execute()
@@ -183,9 +178,6 @@ function createIntegration(req, res, next) {
   if (req.session.enterprise.settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
   }
-
-  // transaction - movement reference
-  transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
 
   // execute all operations as one transaction
   transaction.execute()
@@ -270,9 +262,6 @@ function normalMovement(document, params, metadata) {
       ];
       transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
     }
-
-    // transaction - movement reference
-    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
   const projectId = metadata.project.id;
@@ -331,9 +320,6 @@ function depotMovement(document, params) {
       ];
       transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
     }
-
-    // transaction - movement reference
-    transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
   });
 
   return transaction.execute();

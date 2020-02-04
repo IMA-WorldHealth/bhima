@@ -182,7 +182,7 @@ function AccountEditController(
     if (accountForm.$invalid) {
       return;
     }
-    if (!accountForm.$dirty) {
+    if (accountForm.$pristine) {
       return;
     }
 
@@ -211,6 +211,13 @@ function AccountEditController(
     }
 
     function handleAccountCreateState() {
+      // This option allows you to display the account type during account creation.
+      vm.types.forEach(element => {
+        if (element.id === parseInt(submit.type_id, 10)) {
+          submit.type = element.type;
+        }
+      });
+
       return Accounts.create(submit)
         .then(handleAccountCreateResult)
         .catch(handleModalError);

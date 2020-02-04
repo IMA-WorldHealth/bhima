@@ -9,7 +9,7 @@ const referenceAccount = require('./referenceAccount');
 const generalLedger = require('../generalLedger');
 
 function configuration(req, res, next) {
-  const query = req.query;
+  const { query } = req;
   let refAccounts;
 
   const params = {

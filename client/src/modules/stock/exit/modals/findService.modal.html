@@ -1,23 +1,24 @@
-<form 
+<form
   name="FindForm"
   bh-submit="$ctrl.submit(FindForm)"
   novalidate>
 
   <div class="modal-header">
-    <i class="fa fa-search"></i> 
-    <span translate>FORM.LABELS.SEARCH</span> 
+    <i class="fa fa-search"></i>
+    <span translate>FORM.LABELS.SEARCH</span>
     <span translate>FORM.LABELS.SERVICE</span>
   </div>
 
   <div class="modal-body">
-    <div 
+    <div
       class="form-group"
-      ng-class="{ 'has-error' : FindForm.$submitted && FindForm.service.$invalid }">
+      ng-class="{ 'has-error' : FindForm.$submitted && FindForm.service.$invalid && !$ctrl.reference }">
       <label class="control-label" translate>FORM.LABELS.SERVICE</label>
       <bh-clear on-clear="$ctrl.clear('selected')"></bh-clear>
-      <ui-select 
-        name="service" 
-        ng-model="$ctrl.selected" 
+
+      <ui-select
+        name="service"
+        ng-model="$ctrl.selected"
         on-select="$ctrl.onSelect($item)"
         ng-required="true">
         <ui-select-match>
@@ -28,10 +29,16 @@
         </ui-select-choices>
       </ui-select>
 
-      <div class="help-block" ng-messages="FindForm.service.$error" ng-show="FindForm.$submitted">
+      <div class="help-block" ng-messages="FindForm.service.$error && !$ctrl.reference" ng-show="FindForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <bh-has-requisition-voucher
+      message="$ctrl.requisitionMessage"
+      reference="$ctrl.reference"
+      on-change="$ctrl.onChangeReference(reference)">
+    </bh-has-requisition-voucher>
   </div>
 
   <div class="modal-footer">

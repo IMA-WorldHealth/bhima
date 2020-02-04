@@ -2,6 +2,7 @@
 
 const helpers = require('../helpers');
 const shared = require('./shared');
+const xlsx = require('../../../server/lib/renderers/xlsx.js');
 
 describe('(/inventory/metadata) The inventory metadata http API', () => {
   let inventoryList;
@@ -19,6 +20,8 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     sellable : 1,
   };
 
+  const inventoryUuid = 'c8a406a9-53d6-429f-84d8-fc497875a580';
+
   const metadataUpdate = {
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article updated',
@@ -31,6 +34,16 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     text : 'Albendazo', // should find "Albendazole"
   };
 
+  it('GET /inventory/download/log/?lang=fr donwload log as Ms excel', () => {
+    return agent.get(`/inventory/download/log/${inventoryUuid}?lang=fr`)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.headers['content-type']).to.be.equal(xlsx.headers['Content-Type']);
+      })
+      .catch(helpers.handler);
+  });
+
+
   it('POST /inventory/metadata create a new inventory metadata', () => {
     return agent.post('/inventory/metadata')
       .send(metadata)
@@ -40,6 +53,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
+
 
   it('PUT /inventory/metadata/:uuid update an existing inventory metadata', () => {
     return agent.put(`/inventory/metadata/${metadata.uuid}`)

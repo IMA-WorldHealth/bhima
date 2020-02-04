@@ -15,11 +15,12 @@ StockInventoriesController.$inject = [
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns,
-  $httpParamSerializer, Barcode
+  $httpParamSerializer, Barcode,
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
   const stockInventoryFilters = Stock.filter.inventory;
+
   vm.openBarcodeScanner = openBarcodeScanner;
 
   const columns = [{
@@ -35,6 +36,7 @@ function StockInventoriesController(
     displayName      : 'STOCK.INVENTORY',
     headerCellFilter : 'translate',
     width            : '20%',
+    cellTemplate     : 'modules/stock/inventories/templates/inventory.cell.html',
   }, {
     field            : 'group_name',
     displayName      : 'STOCK.INVENTORY_GROUP',
@@ -167,6 +169,17 @@ function StockInventoriesController(
     gridColumns.openConfigurationModal();
   }
 
+  function setDefaultFilters() {
+    const assignedKeys = Object.keys(stockInventoryFilters.formatHTTP());
+
+    // assign default includeEmptyLot filter
+    if (assignedKeys.indexOf('includeEmptyLot') === -1) {
+      stockInventoryFilters.assignFilter('includeEmptyLot', 0);
+      stockInventoryFilters.formatCache();
+      vm.latestViewFilters = stockInventoryFilters.formatView();
+    }
+  }
+
   function setStatusFlag(item) {
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_SOLD_OUT;
     item.isInStock = item.status === bhConstants.stockStatus.IS_IN_STOCK;
@@ -191,9 +204,6 @@ function StockInventoriesController(
   function load(filters) {
     vm.hasError = false;
     vm.loading = true;
-
-    // no negative or empty lot
-    filters.includeEmptyLot = 0;
 
     Stock.inventories.read(null, filters)
       .then((rows) => {
@@ -220,6 +230,7 @@ function StockInventoriesController(
 
     Modal.openSearchInventories(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return; }
         stockInventoryFilters.replaceFilters(changes);
         stockInventoryFilters.formatCache();
         vm.latestViewFilters = stockInventoryFilters.formatView();
@@ -228,6 +239,8 @@ function StockInventoriesController(
   }
 
   function startup() {
+    setDefaultFilters();
+
     if ($state.params.filters.length) {
       stockInventoryFilters.replaceFiltersFromState($state.params.filters);
       stockInventoryFilters.formatCache();
@@ -237,10 +250,21 @@ function StockInventoriesController(
     vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
+  vm.exportTo = (renderer) => {
+    const filterOpts = stockInventoryFilters.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
   vm.downloadExcel = () => {
     const filterOpts = stockInventoryFilters.formatHTTP();
     const defaultOpts = {
-      renderer : 'xlsx',
+      renderer : 'xlsxReport',
       lang : Languages.key,
       renameKeys : true,
       displayNames : gridColumns.getDisplayNames(),

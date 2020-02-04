@@ -1,3 +1,4 @@
+/* global $$ */
 const FU = require('../shared/FormUtils');
 
 const bhUserSelect = require('../shared/components/bhUserSelect');
@@ -10,6 +11,8 @@ const bhSupplierSelect = require('../shared/components/bhSupplierSelect');
 const bhFluxSelect = require('../shared/components/bhFluxSelect');
 const bhEntitySelect = require('../shared/components/bhEntitySelect');
 const bhEntityTypeSelect = require('../shared/components/bhEntityTypeSelect');
+const bhServiceOrDepotSelect = require('../shared/components/bhServiceOrDepot');
+const bhServiceSelect = require('../shared/components/bhServiceSelect');
 
 const CUSTOM_FILTER_TAB = '[data-custom-filter-tab]';
 const DEFAULT_FILTER_TAB = '[data-default-filter-tab]';
@@ -130,6 +133,10 @@ class SearchModal {
     return bhDepotSelect.set(depot);
   }
 
+  setServiceUuid(service) {
+    return bhServiceSelect.set(service);
+  }
+
   setInventory(inventory) {
     return bhInventorySelect.set(inventory);
   }
@@ -170,8 +177,27 @@ class SearchModal {
     return bhEntityTypeSelect.set(type);
   }
 
+  setRequestor(requestor, type) {
+    return bhServiceOrDepotSelect.set(requestor, type);
+  }
+
   submit() {
     return FU.buttons.submit();
+  }
+
+  /**
+   * reset
+   */
+  async reset() {
+    const clearButtons = await $$('[data-reset-input]');
+    // start clean from the bottom to the top
+    // because if the clean start from the top and arrive in the bottom, top elements
+    // are not visible
+    for (let i = clearButtons.length - 1; i >= 0; i--) {
+      const clearBtn = clearButtons[i];
+      // eslint-disable-next-line
+      await clearBtn.click();
+    }
   }
 }
 

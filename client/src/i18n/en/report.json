@@ -63,6 +63,11 @@
       "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
     },
     "CLOSING_BALANCE": "Closing Balance",
+    "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "HIDE_ACCOUNT_DETAILS": "Hide account details",
+      "HIDE_DETAILS_TYPES": "Hide details of types",
+      "TITLE": "Configurable analysis report"
+    },
     "CONFIGURATION": "Report Configuration",
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",
@@ -106,6 +111,10 @@
       "TITLE": "Debtors summary report",
       "DESCRIPTION": "This report details the amount to paid in every inventory group for an invoice during a period, for a specific debor group"
     },
+    "INVENTORY_CHANGE" : {
+      "TITLE" : "Inventory Changes Report",
+      "DESCRIPTION": "This reports shows changes occured on inventory items during a period."
+    },
     "OPENING_BALANCE": "Opening Balance",
     "ORDER": {
       "LAST_TRANSACTION": "Date of Last Transaction",
@@ -116,6 +125,10 @@
     "PATIENT_STANDING": {
       "DESCRIPTION": "This report shows the financial situation of a patient",
       "TITLE": "Patient Standing Report"
+    },
+    "PURCHASE_ORDER_ANALYSIS": {
+      "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",
+      "TITLE": "Purchase order analysis"
     },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
@@ -182,8 +195,8 @@
       "DESCRIPTION": "This report shows the balance of invoices which are not completely paid or overpaid during a period."
     },
     "STOCK": {
-      "TITLE": "Stock Report",
-      "DESCRIPTION": "This report shows the stock of products, their average consumption and their status.",
+      "TITLE": "Articles in Stock Report",
+      "DESCRIPTION": "This report shows the stock of products, their average monthly consumption and indicates if a reorder is needed.  The items are ordered by inventory group, then by their name.  By default, all products in every depot is displayed, but these can be filtered by specifying an individual product or depot.",
       "ALL_DEPOTS": "All Depots",
       "ONE_DEPOT": "One Specific Depot",
       "ALL_INVENTORIES": "All Inventories",
@@ -400,7 +413,7 @@
       "APPROVED_BY" : "Approved By",
       "RECEIVER" : "Receiver",
       "DEPOT_MANAGER" : "Depot Manager",
-      "SUPPLIER" : "Supplier"
+      "SUPPLIER" : "Supplier / Other"
     },
     "CLIENT_SUMMARY" : {
       "TITLE":"Clients Debts Report",

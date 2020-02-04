@@ -161,7 +161,7 @@ function config(req, res, next) {
 
             // Filtering all taxes and contributions that is calculated from the taxable base
             taxesContributions = rubrics.filter(
-              item => (item.is_tax || item.is_membership_fee || item.is_discount === 1)
+              item => (item.is_tax || item.is_membership_fee || item.is_discount === 1),
             );
           }
 

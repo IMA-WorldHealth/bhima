@@ -1,19 +1,21 @@
 {{> head title="PATIENT_REG.CARD" }}
 
 <body class="container">
-
   <style>
-    span {
-      font-size : 18px;
+    @page {
+      /* A6 landscape */
+      size: 148mm 105mm;
+      margin : 1mm;
     }
   </style>
+
   <div class="row">
 
-    <h4 style="margin-bottom : 0px;">
+    <h5 style="margin-bottom : 0px;">
       <strong>{{patient.enterprise_name}} - {{translate "PATIENT_REG.IDENTITY"}}</strong>
-    </h4>
+    </h5>
 
-    <hr>
+    <hr />
 
     <!-- left side is patient information -->
     <div class="col-xs-7">
@@ -67,10 +69,10 @@
       </address>
     </div>
   </div>
-  {{/unless}}
+  {{/unless }}
 
   {{#if metadata.enterprise.settings.enable_barcodes}}
-  <div class="row" style="margin-top: 1em;">
+  <div class="row" style="margin-top: 0.25em;">
     <div class="col-xs-12">
       {{> barcode value=patient.barcode }}
     </div>

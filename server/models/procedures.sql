@@ -48,7 +48,7 @@ SOURCE server/models/procedures/trial_balance.sql
 
 /*
   Stock procedures include: ComputeStockConsumptionByPeriod,
-  ComputeStockConsumptionByDate and ComputeMovementReference
+  ComputeStockConsumptionByDate
 */
 SOURCE server/models/procedures/stock.sql
 

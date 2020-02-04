@@ -1,9 +1,7 @@
 const {
-  _, ReportManager, getDepotMovement, pdf, identifiers,
+  _, ReportManager, getDepotMovement, pdf, identifiers, barcode,
   STOCK_EXIT_DEPOT_TEMPLATE, POS_STOCK_EXIT_DEPOT_TEMPLATE,
 } = require('../common');
-
-const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitDepotReceipt
@@ -14,11 +12,8 @@ const barcode = require('../../../../lib/barcode');
  *
  * GET /receipts/stock/exit_depot/:document_uuid
  */
-function stockExitDepotReceipt(req, res, next) {
-  let report;
-  const documentUuid = req.params.document_uuid;
-  const optionReport = _.extend(req.query, { filename : 'STOCK.RECEIPTS.EXIT_DEPOT' });
-
+function stockExitDepotReceipt(documentUuid, session, options) {
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.EXIT_DEPOT' });
   let template = STOCK_EXIT_DEPOT_TEMPLATE;
 
   if (Boolean(Number(optionReport.posReceipt))) {
@@ -27,21 +22,14 @@ function stockExitDepotReceipt(req, res, next) {
   }
 
   // set up the report with report manager
-  try {
-    report = new ReportManager(template, req.session, optionReport);
-  } catch (e) {
-    return next(e);
-  }
+  const report = new ReportManager(template, session, optionReport);
 
-  return getDepotMovement(documentUuid, req.session.enterprise, true)
+  return getDepotMovement(documentUuid, session.enterprise, true)
     .then(data => {
-      const exitKey = identifiers.STOCK_EXIT.key;
-      data.exit.details.barcode = barcode.generate(exitKey, data.exit.details.document_uuid);
+      const { key } = identifiers.STOCK_EXIT;
+      data.exit.details.barcode = barcode.generate(key, data.exit.details.document_uuid);
       return report.render(data);
-    })
-    .then(result => res.set(result.headers).send(result.report))
-    .catch(next)
-    .done();
+    });
 }
 
 module.exports = stockExitDepotReceipt;

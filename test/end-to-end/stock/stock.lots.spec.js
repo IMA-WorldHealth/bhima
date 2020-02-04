@@ -57,13 +57,13 @@ function StockLotsRegistryTests() {
   it('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 18 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 17 + depotGroupingRow);
   });
 
   it('find lots by inventory', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
-    await GU.expectRowCount(gridId, 8 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 7 + (2 * depotGroupingRow));
   });
 
 

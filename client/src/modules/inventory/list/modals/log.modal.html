@@ -38,6 +38,10 @@
   </div>
 </div>
 <div class="modal-footer">
+    <a target='_blank' class="btn btn-primary" data-method="exports" href="/inventory/download/log/{{$ctrl.inventory.uuid}}?lang={{$ctrl.lang}}">
+      <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+    </a>
+
   <button type="button" class="btn btn-default" data-method="close" ng-click="$ctrl.close()">
     <span translate>FORM.BUTTONS.CLOSE</span>
   </button>

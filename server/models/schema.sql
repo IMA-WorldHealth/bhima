@@ -449,7 +449,7 @@ CREATE TABLE debtor_group_subsidy (
 DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
-  `text` VARCHAR(50) NOT NULL,
+  `text` VARCHAR(191) NOT NULL,
   `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
   `is_warehouse` smallINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -1865,6 +1865,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `voucher_uuid`    BINARY(16) NOT NULL,
   `document_uuid`   binary(16) default null,
   `entity_uuid`     binary(16) default null,
+  `description`     TEXT NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
@@ -1923,6 +1924,51 @@ CREATE TABLE `stock_assign` (
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `status`;
+CREATE TABLE `status` (
+  `id`              SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `status_key`      VARCHAR(50) NOT NULL,
+  `title_key`       VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stock_requestor_type`;
+CREATE TABLE `stock_requestor_type` (
+  `id`              SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `type_key`        VARCHAR(50) NOT NULL,
+  `title_key`       VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stock_requisition`;
+CREATE TABLE `stock_requisition` (
+  `uuid`                BINARY(16) NOT NULL,
+  `requestor_uuid`      BINARY(16) NOT NULL,
+  `requestor_type_id`   INT(11) NOT NULL,
+  `depot_uuid`          BINARY(16) NOT NULL,
+  `description`         TEXT NULL,
+  `date`                DATETIME NOT NULL,
+  `user_id`             SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status_id`           TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
+  `updated_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`reference`),
+  UNIQUE KEY `stock_requisition_uuid` (`uuid`),
+  KEY `requestor_uuid` (`requestor_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stock_requisition_item`;
+CREATE TABLE `stock_requisition_item` (
+  `requisition_uuid`  BINARY(16) NOT NULL,
+  `inventory_uuid`    BINARY(16) NOT NULL,
+  `quantity`          INT(11) NOT NULL DEFAULT 0,
+  KEY `requisition_uuid` (`requisition_uuid`),
+  FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `stock_movement`;
 CREATE TABLE `stock_movement` (
   `uuid`            BINARY(16) NOT NULL,
@@ -1937,11 +1983,11 @@ CREATE TABLE `stock_movement` (
   `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reference`       INT(11) UNSIGNED NOT NULL,
   `invoice_uuid`    BINARY(16) NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`reference`),
-  UNIQUE KEY `stock_movement_uuid` (`uuid`),
+  PRIMARY KEY (`uuid`),
+  INDEX `document_uuid` (`document_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
   KEY `lot_uuid` (`lot_uuid`),
   KEY `flux_id` (`flux_id`),
@@ -2088,14 +2134,6 @@ CREATE TABLE `config_employee_item` (
   UNIQUE KEY  (`config_employee_id`, `employee_uuid`),
   FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-CREATE TABLE `department`(
-  `uuid` BINARY(16) PRIMARY KEY,
-  `name` VARCHAR(100) NOT NULL,
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
-  UNIQUE KEY  (`enterprise_id`, `name`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `fee_center`;
@@ -2307,7 +2345,6 @@ CREATE TABLE `inventory_log` (
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -2358,6 +2395,142 @@ CREATE TABLE `staffing_indice_parameters` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `data_collector_management`;
+CREATE TABLE `data_collector_management` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `description` TEXT,
+  `version_number` INT(11) UNSIGNED NOT NULL,
+  `color` VARCHAR(8) NULL,
+  `is_related_patient` TINYINT(1) NOT NULL DEFAULT 0,
+  `include_patient_data` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `choices_list_management`;
+CREATE TABLE `choices_list_management` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
+  `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
+  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0,
+  `is_group` tinyint(1) NOT NULL DEFAULT 0,
+  `is_title` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_form`;
+CREATE TABLE `survey_form` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `filter_choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `other_choice` tinyint(1) DEFAULT 0,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `hint` TEXT,
+  `required` tinyint(1) DEFAULT 0,
+  `constraint` VARCHAR(100) NULL,
+  `default` VARCHAR(100) NULL,
+  `calculation` VARCHAR(100) NULL,
+  `rank` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `survey_form_1` (`data_collector_management_id`, `name`, `label`),
+  KEY `data_collector_management_id` (`data_collector_management_id`),
+  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_form_type`;
+CREATE TABLE `survey_form_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `is_list` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data`;
+CREATE TABLE `survey_data` (
+  `uuid` BINARY(16),
+  `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`uuid`),
+  KEY `data_collector_management_id` (`data_collector_management_id`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data_item`;
+CREATE TABLE `survey_data_item` (
+  `uuid` BINARY(16),
+  `survey_form_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `survey_form_label` VARCHAR(100),
+  `survey_data_uuid` BINARY(16) NOT NULL,
+  `value` text,
+  PRIMARY KEY (`uuid`),
+  KEY `survey_form_id` (`survey_form_id`),
+  KEY `survey_data_uuid` (`survey_data_uuid`),
+  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_data_log`;
+CREATE TABLE `survey_data_log` (
+  `uuid` BINARY(16),
+  `log_uuid` BINARY(16),
+  `survey_form_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `survey_form_label` VARCHAR(100),
+  `survey_data_uuid` BINARY(16) NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `status` VARCHAR(20),
+  `value` text,
+  PRIMARY KEY (`uuid`),
+  KEY `survey_form_id` (`survey_form_id`),
+  KEY `survey_data_uuid` (`survey_data_uuid`),
+  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `medical_sheet`;
+CREATE TABLE `medical_sheet` (
+  `survey_data_uuid` BINARY(16),
+  `patient_uuid` BINARY(16),
+  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`),
+  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `analysis_tool_type`;
+CREATE TABLE `analysis_tool_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `is_balance_sheet` tinyint(1) DEFAULT 0,
+  `rank` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `analysis_tool_type_1` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `configuration_analysis_tools`;
+CREATE TABLE `configuration_analysis_tools` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `analysis_tool_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `configuration_analysis_tools_1` (`label`),
+  KEY `account_reference_id` (`account_reference_id`),
+  KEY `analysis_tool_type_id` (`analysis_tool_type_id`),
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
+  FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

@@ -5,31 +5,15 @@
 
   <header>
     <!-- headings  -->
-    <div class="row">
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
-      </div>
-      <div class="col-xs-6 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{translate 'STOCK.RECEIPT.EXIT_DEPOT'}}
-          </span> <br>
-          <strong>{{exit.details.depot_name}}</strong> <br>
-          <div class="row">
-            <small>{{> barcode value= exit.details.barcode}}</small>
-          </div>
-          <br>
-        </h3>
-      </div>
-    </div>
+    {{> stockReceiptHeader 
+      title="STOCK.RECEIPT.EXIT_DEPOT" 
+      entity=exit.details.depot_name
+      reference=exit.details.document_reference
+      barcode=exit.details.barcode
+    }}
 
-    <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px;  margin-top: 20px; margin-bottom: 15px;">
+    <!-- summary  -->
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.depot_name}}</strong> <br>
@@ -42,7 +26,7 @@
       </div>
     </div>
 
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date exit.details.date}} <br>
         <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{exit.details.user_display_name}} <br>
@@ -53,12 +37,10 @@
     </div>
   </header>
 
-  {{#if exit.details.description}}
-  <blockquote>
-    <strong>{{translate 'FORM.LABELS.DESCRIPTION'}}</strong><br>
+  <div class="receipt-summary" style="min-height: 8em;">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
     {{exit.details.description}}
-  </blockquote>
-  {{/if}}
+  </div>
 
   <!-- list of data  -->
   <table class="table table-condensed table-bordered table-report">
@@ -106,6 +88,7 @@
       </div>
     </div>
   </footer>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>
-
-<script>JsBarcode('.barcode').init();</script>

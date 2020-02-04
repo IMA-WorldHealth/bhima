@@ -1,0 +1,87 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-requisition-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>REQUISITION.TITLE</li>
+      <li class="title" translate>FORM.LABELS.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="padding: 0px">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+
+          <!-- service or depot -->
+          <bh-service-or-depot
+            label="REQUISITION.RECEIVER"
+            on-select-callback="$ctrl.onSelectRequestor(requestor)"
+            required="true">
+          </bh-service-or-depot>
+
+          <!-- reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+            <input
+              name="reference"
+              class="form-control"
+              ng-model="$ctrl.searchQueries.reference"
+              ng-change="$ctrl.onSelectReference($ctrl.searchQueries.reference)">
+
+            <div class="help-block" ng-messages="ModalForm.reference.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- depot -->
+          <bh-depot-select
+            depot-uuid="$ctrl.searchQueries.depot_uuid"
+            required="false"
+            on-select-callback="$ctrl.onSelectDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
+
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input
+              name="limit"
+              type="number"
+              min="0"
+              bh-integer
+              bh-max-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

@@ -1,0 +1,27 @@
+<style>
+  .receipt-summary {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+</style>
+
+<div class="row">
+  {{> enterpriseDetails }}
+
+  <div class="col-xs-5 text-right">
+    <h4 style="margin: 0px;"class="text-uppercase">{{translate this.title}}</h4>
+    <h4 style="margin: 0px;"><strong>{{this.entity}}</strong></h4>
+    <div>
+      {{#if this.reference}}{{this.reference}} -{{/if}}
+      {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+      {{translate "REPORT.BY"}} {{metadata.user.username}}
+    </div>
+
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+      <small>{{> barcode value=this.barcode}}</small>
+    {{/if}}
+  </div>
+</div>

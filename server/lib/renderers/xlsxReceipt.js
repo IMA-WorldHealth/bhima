@@ -5,10 +5,8 @@
  * This library is just a shim to ensure API uniformity with other renderers.
  * it renders an Excel receipt(all recepits should follow this template's data structure).
  * Having the same data structure will help to have less xlsx rendereres
- * @module lib/renderers/xlsx
- *
- * @requires q
  */
+
 const xl = require('excel4node');
 
 const translate = require('../helpers/translate');
@@ -24,12 +22,13 @@ exports.extension = '.xlsx';
 exports.headers = headers;
 
 /**
+ * @function render
+ * @descrption
  * JSON Render Method
- * @param {Object} data   all information needed in the receipt
+ * @param {Object} data - all information needed in the receipt
+ * @returns Promise
  */
-
 function render(data) {
-
 
   // Create a new instance of a Workbook class
   const wb = new xl.Workbook();
@@ -180,11 +179,12 @@ function render(data) {
   // subsidy
 
   if (data.subsidy.length) {
-    const subsidyLable = t('FORM.LABELS.SUBSIDIES').concat('(', data.subsidy.length, ')');
-    ws.cell(line, 3, line, 4, true).string(subsidyLable).style(normal);
+    const subsidyLabel = t('FORM.LABELS.SUBSIDIES').concat('(', data.subsidy.length, ')');
+    ws.cell(line, 3, line, 4, true).string(subsidyLabel).style(normal);
     ws.cell(line, 5, line, 7, true).number(math.sum(data.subsidy, 'value')).style(bold);
     ws.cell(line, 3, line, 7, true).style(styleAllBorders);
   }
+
   // Total
   line++;
   ws.cell(line, 3, line, 4, true).string(t('FORM.LABELS.TOTAL')).style(bold);

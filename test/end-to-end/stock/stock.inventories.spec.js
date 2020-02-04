@@ -28,17 +28,17 @@ function StockInventoriesRegistryTests() {
     await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
-  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
+  it('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
     await filters.resetFilters();
   });
 
   it('find inventory by name', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 4);
     await filters.resetFilters();
   });
 
@@ -57,19 +57,19 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventory by state (security reached)', async () => {
+  it('find 2 inventory by state (security reached)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 2);
 
     await filters.resetFilters();
   });
 
-  it('find 0 inventories  by state plus one line for grouping (minimum reached)', async () => {
-    await FU.radio('$ctrl.searchQueries.status', 3);
+  it('find 2 inventories  by state plus one line for grouping (minimum reached)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 2);
     await filters.resetFilters();
   });
 

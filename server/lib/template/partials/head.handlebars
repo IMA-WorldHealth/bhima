@@ -3,7 +3,6 @@
   <meta charset="utf-8"/>
   <title>{{translate title}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
-  <link href="{{absolutePath}}/css/font-awesome.css" rel="stylesheet">
   <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.min.js"></script>
   <style>
     thead {
@@ -17,9 +16,11 @@
     .text-right {
       text-align: right;
     }
+
     .text-center{
       text-align: center;
     }
+
     .row, .col-lg-12, .col-xs-12 {
        width :100%;
     }
@@ -30,7 +31,7 @@
 
     table, td, th{
       border : 1px solid #001;
-       border-collapse : collapse !important
+      border-collapse : collapse !important;
     };
 
     .table-header-rotated td{
@@ -100,5 +101,13 @@
       border-bottom : 1px solid #000 !important;
     }
 
+    body {
+      margin: 1em;
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 1mm;
+    }
   </style>
 </head>

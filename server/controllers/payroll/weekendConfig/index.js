@@ -38,7 +38,7 @@ function list(req, res, next) {
 * Returns the detail of a single Weekend
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupWeekendConfig(id)
     .then((record) => {
@@ -68,9 +68,6 @@ async function create(req, res, next) {
 // PUT /WEEKEND_CONFIG /:ID
 function update(req, res, next) {
   const transaction = db.transaction();
-
-  const sql = `UPDATE weekend_config SET ? WHERE id = ?;`;
-
   const data = req.body;
   const dataconfigured = data.daysChecked.map((id) => {
     return [id, req.params.id];
@@ -123,7 +120,7 @@ function del(req, res, next) {
 */
 function listConfig(req, res, next) {
   const sql = `
-    SELECT id, indice, weekend_config_id 
+    SELECT id, indice, weekend_config_id
       FROM config_week_days
     WHERE config_week_days.weekend_config_id = ?;
   `;

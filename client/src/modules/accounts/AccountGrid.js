@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('AccountGridService', AccountGridService);
 
 AccountGridService.$inject = [
-  'AccountStoreService', 'AccountService', 'Store', 'LanguageService',
-  '$httpParamSerializer',
+  'AccountStoreService', 'AccountService', 'LanguageService',
+  '$httpParamSerializer', 'FormatTreeDataService',
 ];
 
 /**
@@ -14,7 +14,8 @@ AccountGridService.$inject = [
  * Account Management module, it also provides helper methods for dynamically
  * adding and removing data.
  */
-function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParamSerializer) {
+function AccountGridService(AccountStore, Accounts, Languages, $httpParamSerializer,
+  FormatTreeData) {
   /**
    * @constructor
    *
@@ -65,7 +66,7 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
     this._store.data.sort(orderByNumber);
 
     // ensure data respects groups
-    this._store.data = Accounts.order(this._store.data);
+    this._store.data = FormatTreeData.order(this._store.data);
 
     this._store.recalculateIndex();
   };

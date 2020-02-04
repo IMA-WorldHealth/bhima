@@ -5,7 +5,9 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       serviceId        : '<?',
+      serviceUuid : '<?',
       onSelectCallback : '&',
+      label    : '@?',
       required : '<?',
     },
   });
@@ -16,19 +18,37 @@ ServiceSelectController.$inject = [
 
 /**
  * Service Select Controller
- *
  */
 function ServiceSelectController(Services, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.SERVICE';
 
     Services.read()
       .then((services) => {
         $ctrl.services = services;
+
+        if ($ctrl.serviceUuid) {
+          selectServiceByUuid($ctrl.serviceUuid);
+        }
       })
       .catch(Notify.handleError);
   };
+
+  $ctrl.$onChanges = (changes) => {
+    if (changes && changes.serviceUuid) {
+      selectServiceByUuid(changes.serviceUuid);
+    }
+  };
+
+  function selectServiceByUuid(uuid) {
+    $ctrl.services.forEach(service => {
+      if (service.uuid === uuid) {
+        $ctrl.serviceId = service.id;
+      }
+    });
+  }
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = $item => {

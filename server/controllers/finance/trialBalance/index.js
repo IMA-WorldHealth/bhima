@@ -26,7 +26,7 @@ function validateTransactions(transactions) {
   if (hasInvalidTransactions) {
     throw new BadRequest(
       'No transactions were submitted.  Please ensure that some are selected.',
-      'POSTING_JOURNAL.ERRORS.MISSING_TRANSACTIONS'
+      'POSTING_JOURNAL.ERRORS.MISSING_TRANSACTIONS',
     );
   }
 }

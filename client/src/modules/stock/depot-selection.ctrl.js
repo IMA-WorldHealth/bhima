@@ -10,6 +10,7 @@ SelectDepotModalController.$inject = [
  */
 function SelectDepotModalController(Instance, Depots, Notify, depot) {
   const vm = this;
+  const LIMIT = 10;
 
   // bind the depot passed into the controller
   vm.depot = depot;
@@ -17,6 +18,8 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
   vm.hasSelectedDepot = hasSelectedDepot;
   vm.isDepotRequired = Depots.isDepotRequired;
   vm.loading = false;
+  vm.limit = LIMIT;
+  vm.showAllDepots = showAllDepots;
 
   // this is a toggle for a one-time message shown to the user if they do not have a cached depot.
   vm.hasNoDefaultDepot = !angular.isDefined(depot);
@@ -31,9 +34,17 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
     Depots.read(null, { only_user : true })
       .then((depots) => {
         vm.depots = depots;
+        vm.displayLimit = LIMIT;
+        vm.totalOtherDepots = vm.depots.length - LIMIT;
       })
       .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
+  }
+
+  function showAllDepots() {
+    vm.displayLimit = vm.depots.length;
+    vm.totalOtherDepots = 0;
+    vm.showAll = true;
   }
 
   // fired when a user selects a depot from a list

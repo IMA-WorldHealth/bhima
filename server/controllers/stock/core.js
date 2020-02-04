@@ -15,6 +15,7 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
+const util = require('../../lib/util');
 
 const flux = {
   FROM_PURCHASE    : 1,
@@ -72,6 +73,8 @@ function getLotFilters(parameters) {
     'group_uuid',
     'document_uuid',
     'entity_uuid',
+    'service_uuid',
+    'invoice_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -91,6 +94,14 @@ function getLotFilters(parameters) {
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
+  filters.equals('service_uuid', 'uuid', 'serv');
+  filters.equals('invoice_uuid', 'invoice_uuid', 'm');
+
+  // NOTE(@jniles):
+  // this filters the lots on the entity_uuid associated with the text reference.  It is
+  // an "IN" filter because the patient could have a patient_uuid or debtor_uuid specified.
+  filters.custom('patientReference',
+    'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
@@ -135,13 +146,14 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-        dm.text AS documentReference
+        dm.text AS documentReference, ser.name AS service_name
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       JOIN inventory_unit iu ON iu.id = i.unit_id
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
   `;
 
@@ -264,6 +276,7 @@ function getLotsMovements(depotUuid, params) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN flux f ON f.id = m.flux_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
   return getLots(sql, params, finalClause);
@@ -323,7 +336,7 @@ function getLotsOrigins(depotUuid, params) {
 /**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterval = 1) {
+function stockManagementProcess(inventories) {
   const current = moment();
   let CM;
   let Q;
@@ -334,12 +347,12 @@ function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterva
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     CM_NOT_ZERO = !CM ? 1 : CM;
-    inventory.S_SEC = CM * (inventoryDelay || inventory.delay); // stock de securite
+    inventory.S_SEC = CM * inventory.delay; // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
-    inventory.S_MAX = (CM * (purchaseInterval || inventory.purchase_interval)) + inventory.S_MIN; // stock maximum
+    inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
     inventory.S_MONTH = Math.floor(inventory.quantity / CM_NOT_ZERO); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
-    inventory.S_Q = inventory.S_Q > 0 ? inventory.S_Q : 0;
+    inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
     inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
     if (Q <= 0) {
@@ -356,8 +369,14 @@ function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterva
       inventory.status = '';
     }
 
+    // Round
+    inventory.S_SEC = util.roundDecimal(inventory.S_SEC, 2);
+    inventory.S_MIN = util.roundDecimal(inventory.S_MIN, 2);
+    inventory.S_MAX = util.roundDecimal(inventory.S_MAX, 2);
+
     delay = moment(new Date(inventory.expiration_date)).diff(current);
     inventory.delay_expiration = moment.duration(delay).humanize();
+
     return inventory;
   });
 }
@@ -388,6 +407,7 @@ function getStockConsumption(periodIds) {
  * @description
  * Algorithm to calculate the CMM (consommation moyenne mensuelle) or average stock consumption
  * over a period for each stock item that has been consumed.
+ * NOTA: A FISCAL YEAR MUST BE DEFINED FOR THE FEATURE WORK PROPERLY
  *
  * @param {number} periodId - the base period
  * @param {Date} periodDate - a date for finding the correspondant period
@@ -469,7 +489,7 @@ function getInventoryQuantityAndConsumption(params) {
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-      l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+      l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
@@ -483,11 +503,11 @@ function getInventoryQuantityAndConsumption(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, i.text `;
+  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
     .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
-    .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
+    .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;
 

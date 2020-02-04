@@ -38,7 +38,7 @@ function compute(periodId) {
       const dbPromises = accountReferences.map(ar => {
         return references.getAccountsForReference(
           ar.abbr,
-          ar.is_amo_dep
+          ar.is_amo_dep,
         );
       });
       return Q.all(dbPromises);

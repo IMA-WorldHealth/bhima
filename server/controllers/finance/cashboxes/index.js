@@ -26,6 +26,7 @@ exports.currencies = currencies;
 exports.users = users;
 
 exports.privileges = privileges;
+exports.getCashboxesDetails = getCashboxesDetails;
 
 /**
  * @method list
@@ -75,7 +76,7 @@ function list(req, res, next) {
     'user_id',
     `cash_box.id IN (
       SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
-    )`
+    )`,
   );
 
   filters.setOrder('ORDER BY label');
@@ -268,4 +269,24 @@ function privileges(req, res, next) {
     .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
+}
+
+/**
+ * getCashboxesDetails
+ *
+ * this function returns details of cashboxe ids given
+ * @param {array} cashboxesIds
+ */
+function getCashboxesDetails(cashboxesIds) {
+  const query = `
+    SELECT
+      cac.currency_id, cac.account_id, c.id, c.label, cur.symbol,
+      a.number AS account_number, a.label AS account_label
+    FROM cash_box c
+    JOIN cash_box_account_currency cac ON cac.cash_box_id = c.id
+    JOIN currency cur ON cur.id = cac.currency_id
+    JOIN account a ON a.id = cac.account_id
+    WHERE c.id IN ? ORDER BY c.id;
+  `;
+  return db.exec(query, [[cashboxesIds]]);
 }

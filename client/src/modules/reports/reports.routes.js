@@ -41,7 +41,20 @@ angular.module('bhima.routes')
       'analysisAuxiliaryCash',
       'realizedProfit',
       'systemUsageStat',
+      'dataKit',
+      'configurable_analysis_report',
+      'purchaseOrderAnalysis',
+      'inventoryChanges',
     ];
+
+    function resolveReportData($stateParams, SavedReports) {
+      const reportKey = $stateParams.key;
+      return SavedReports.requestKey(reportKey)
+        .then((results) => {
+          return results[0];
+        });
+
+    }
 
     $stateProvider
       .state('reportsBase', {
@@ -49,11 +62,7 @@ angular.module('bhima.routes')
         controller : 'ReportsController as ReportCtrl',
         templateUrl : 'modules/reports/reports.html',
         resolve : {
-          reportData : ['$stateParams', 'BaseReportService', ($stateParams, SavedReports) => {
-            const reportKey = $stateParams.key;
-            return SavedReports.requestKey(reportKey)
-              .then((results) => { return results[0]; });
-          }],
+          reportData : ['$stateParams', 'BaseReportService', resolveReportData],
         },
         abstract : true,
       })
@@ -62,6 +71,9 @@ angular.module('bhima.routes')
         controller : 'ReportsArchiveController as ArchiveCtrl',
         templateUrl : 'modules/reports/archive.html',
         params : { key : { squash : true, value : null } },
+        resolve : {
+          reportData : ['$stateParams', 'BaseReportService', resolveReportData],
+        },
       });
 
     SUPPORTED_REPORTS.forEach((key) => {
@@ -70,6 +82,9 @@ angular.module('bhima.routes')
         controller : key.concat('Controller as ReportConfigCtrl'),
         templateUrl : '/modules/reports/generate/'.concat(key, '/', key, '.html'),
         params : { key },
+        resolve : {
+          reportData : ['$stateParams', 'BaseReportService', resolveReportData],
+        },
       });
     });
   }]);

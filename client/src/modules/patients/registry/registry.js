@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryController', PatientRegistryController);
 
 PatientRegistryController.$inject = [
-  '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
-  'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
-  'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
+  '$state', 'PatientService', 'NotifyService', 'util',
+  'ReceiptModal', 'uiGridConstants', 'GridColumnService',
+  'GridSortingService', 'GridStateService', '$httpParamSerializer', 'LanguageService',
   'BarcodeService', 'ModalService',
 ];
 
@@ -15,9 +15,9 @@ PatientRegistryController.$inject = [
  * This module is responsible for the management of Patient Registry.
  */
 function PatientRegistryController(
-  $state, Patients, Notify, AppCache, util, Receipts, uiGridConstants,
-  $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages,
-  Barcode, Modal
+  $state, Patients, Notify, util, Receipts, uiGridConstants,
+  Columns, Sorting, GridState, $httpParamSerializer, Languages,
+  Barcode, Modal,
 ) {
   const vm = this;
   const cacheKey = 'PatientRegistry';

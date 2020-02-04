@@ -93,6 +93,37 @@ describe('Purchase Orders', () => {
     await page.reset();
   });
 
+  it.skip('supports An optimal purchase orders', async () => {
+    const page = new PurchaseOrderPage();
+
+    // prepare the page with default supplier, description, etc
+    await components.supplierSelect.set('SNEL');
+    await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase Order');
+    await components.dateEditor.set(new Date('2019-03-05'));
+
+    // set the 'on-purchase' delivery method parameter
+    await $('#on-purchase').click();
+
+    // click on buttom Optimal Purchase
+    await page.optimalPurchase();
+
+    // the grid now has three rows
+    expect(await page.getRows().count()).to.equal(1);
+
+    // change the prices
+    await page.adjustItemPrice(0, 2.25);
+
+    // make sure the submit button is not disabled
+    expect(await page.btns.submit.isEnabled()).to.equal(true);
+
+    // submit the page
+    await page.submit();
+
+    /** @todo - this can validate totals and receipt content in the future */
+    await FU.exists(by.id('receipt-confirm-created'), true);
+    await page.reset();
+  });
+
   it('blocks submission if no supplier is available', async () => {
     const page = new PurchaseOrderPage();
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
@@ -125,26 +156,4 @@ describe('Purchase Orders', () => {
     await components.notification.hasDanger();
   });
 
-
-  it('Block selection if no products require a purchase order', async () => {
-    const page = new PurchaseOrderPage();
-    await page.btns.clear.click();
-
-    // prepare the page with default supplier, description, etc
-    await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase');
-    await components.dateEditor.set(new Date('2016-03-01'));
-
-    // set the 'on-purchase' delivery method parameter
-    await $('#on-purchase').click();
-
-    // click on buttom Optimal Purchase
-    await page.optimalPurchase();
-
-    // there should be a danger notification
-    await components.notification.hasWarn();
-
-    // FIX ME : At this point in the E2E testing process, there is no product that requires a purchase order
-    // because they E2E purchase order test precedes the outbound order
-  });
 });

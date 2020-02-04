@@ -11,12 +11,16 @@
 *
 * TODO: We should migrate the inventory to using the regular bhima guidelines.
 */
-
+const _ = require('lodash');
 const core = require('./inventory/core');
 const groups = require('./inventory/groups');
 const types = require('./inventory/types');
 const units = require('./inventory/units');
 const importing = require('./import');
+const util = require('../../lib/util');
+
+const xlsx = require('../../lib/renderers/xlsx');
+const ReportManager = require('../../lib/ReportManager');
 
 // exposed routes
 exports.createInventoryItems = createInventoryItems;
@@ -52,6 +56,9 @@ exports.deleteInventory = deleteInventory;
 exports.importing = importing;
 
 exports.logs = inventoryLog;
+exports.logDownLoad = logDownLoad;
+
+
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
@@ -88,6 +95,76 @@ function inventoryLog(req, res, next) {
   }).catch(next);
 }
 
+// get inventory log as excel
+// GET /inventory/download/log/:uuid?rendere=xlsx?lang=fr
+
+async function logDownLoad(req, res, next) {
+  try {
+    const { lang } = req.query;
+    const rows = await core.inventoryLog(req.params.uuid);
+    // inventory columns
+
+    const dictionary = util.loadDictionary(lang);
+
+    const inventory = await core.getItemsMetadata({ uuid : req.params.uuid });
+
+    const lines = [
+      { column1 : '', column2 : '', column3 : '' },
+    ];
+
+    lines.push({
+      column1 : _.get(dictionary, 'FORM.LABELS.INVENTORY'),
+      column2 : inventory[0].label || '',
+      column3 : '',
+    });
+
+    lines.push({ column1 : '', column2 : '', column3 : '' });
+    rows.forEach(r => {
+      const text = JSON.parse(r.text);
+      lines.push({
+        column1 : _.get(dictionary, 'FORM.LABELS.USER'),
+        column2 : _.get(dictionary, 'FORM.LABELS.DATE'),
+        column3 : '',
+      });
+
+      lines.push({ column1 : r.userName, column2 : r.log_timestamp, column3 : '' });
+
+      lines.push({
+        column1 : '',
+        column2 : _.get(dictionary, 'FORM.LABELS.FROM'),
+        column3 : _.get(dictionary, 'FORM.LABELS.TO'),
+      });
+
+      const currentchanges = Object.keys(text.current);
+      currentchanges.forEach(cc => {
+        const line2 = {
+          column1 : _.get(dictionary, core.inventoryColsMap[cc]),
+          column2 : text.last[cc],
+          column3 : text.current[cc],
+        };
+        lines.push(line2);
+      });
+
+      lines.push({ column1 : '', column2 : '', column3 : '' });
+    });
+
+
+    const options = {
+      csvKey : 'rows',
+      suppressDefaultFormatting : true,
+      suppressDefaultFiltering : true,
+      renderer : 'xlsx',
+      filename : 'FORM.LABELS.CHANGES',
+    };
+
+    const report = new ReportManager('', req.session, options);
+    const result = await report.render({ rows : lines }, null, { lang });
+    res.set(xlsx.headers).send(result.report);
+  } catch (error) {
+    next(error);
+  }
+
+}
 
 /**
   * GET /inventory/metadata/
@@ -131,15 +208,18 @@ function getInventoryItemsById(req, res, next) {
 
 
 /**
- * DELETE /inventory/:uuid
- * delete an inventory group
+ * DELETE /inventory/metadata/:uuid
+ *
+ * @description
+ * Delete an inventory item from the database
  */
-function deleteInventory(req, res, next) {
-
-  core.remove(req.params.uuid)
-    .then(res.sendStatus(204))
-    .catch(error => core.errorHandler(error, req, res, next))
-    .done();
+async function deleteInventory(req, res, next) {
+  try {
+    await core.remove(req.params.uuid);
+    res.sendStatus(204);
+  } catch (err) {
+    core.errorHandler(err, req, res, next);
+  }
 }
 
 // ======================= inventory group =============================

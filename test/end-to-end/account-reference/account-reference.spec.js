@@ -42,7 +42,7 @@ describe('AccountReference Management Page', () => {
     accountNull : '1013',
   };
 
-  const numReferences = 9;
+  const numReferences = 13;
 
   before(() => helpers.navigate(path));
 
@@ -116,7 +116,7 @@ describe('AccountReference Management Page', () => {
     await modal.searchAccount(mockSearch.account);
 
     await modal.submit();
-    expect(await page.count()).to.equal(2);
+    expect(await page.count()).to.equal(3);
     await modal.clearFilter();
   });
 
