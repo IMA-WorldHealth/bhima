@@ -51,8 +51,6 @@ function PatientRegistrySearch() {
 
     await expectNumberOfGridRows(DEFAULT_PATIENTS_FOR_TODAY);
   });
-
-
   // demonstrates that filtering works
   it(`should find one patient with name "${parameters.name}"`, async () => {
     const NUM_MATCHING = 1;
@@ -155,26 +153,29 @@ function PatientRegistrySearch() {
   });
 
   it('bulk group assignment without selecting patients warns the user', async () => {
+    await FU.modal.cancel();
     await element(by.id('menu')).click();
     await $('[data-method="change-patient-group"]').click();
     await components.notification.hasWarn();
   });
 
-  it('changes the patient group for multiple patients', () => {
+  it('changes the patient group for multiple patients', async () => {
+    await FU.modal.cancel();
     const gridId = 'patient-registry';
     GU.selectRow(gridId, 0);
     GU.selectRow(gridId, 1);
     element(by.id('menu')).click();
-    $('[data-method="change-patient-group"]').click();
+    await $('[data-method="change-patient-group"]').click();
 
     const group1 = '0B8FCC008640479D872A31D36361FCFD';
     const group2 = '112A9FB5847D4C6A9B20710FA8B4DA22';
 
-    element(by.id(group1)).click();
-    element(by.id(group2)).click();
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await element(by.id(group1)).click();
+    await element(by.id(group2)).click();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
+
 }
 
 module.exports = PatientRegistrySearch;
