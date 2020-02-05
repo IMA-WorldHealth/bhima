@@ -3,230 +3,253 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockInventoryAdjustmentController.$inject = [
-  'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants',
+  'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'StockFormService', 'StockModalService', 'uiGridConstants', 'Store',
 ];
 
 /**
  * @class StockInventoryAdjustmentController
  *
  * @description
- * This module allows to set final quantities of stock for a depot as an inventory (stock adjustment)
+ * This controller is responsible to handle stock inventory adjustment
  */
 function StockInventoryAdjustmentController(
-  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants,
+  Inventory, Notify, Session, util,
+  StockForm, StockModal, uiGridConstants, Store,
 ) {
+  // variables
+  let inventoryStore;
+
+  // constants
   const vm = this;
 
-  // global variables
-  vm.Stock = new StockForm('StockInventoryAdjustment');
-  vm.movement = {};
-  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
-
-  vm.onDateChange = date => {
-    vm.movement.date = date;
-  };
-
-  vm.onChangeDepot = depot => {
-    vm.depot = depot;
-    loadInventories(vm.depot);
-  };
-
-  // bind constants
-  vm.enterprise = Session.enterprise;
+  // view models variables and methods
+  vm.stockForm = new StockForm('StockInventoryAdjustment');
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
-
-  // bind methods
+  vm.entryOption = false;
+  vm.resetEntryExitTypes = false;
+  vm.enterprise = Session.enterprise;
+  vm.movement = {};
   vm.addItems = addItems;
   vm.removeItem = removeItem;
-  vm.configureItem = configureItem;
-  vm.checkValidity = checkValidity;
-  vm.submit = submit;
+  vm.setInitialized = setInitialized;
+  vm.buildStockLine = buildStockLine;
+  vm.setLots = setLots;
+  // vm.submit = submit;
+  vm.reset = reset;
+  vm.onDateChange = onDateChange;
 
-  // grid columns
-  const columns = [
-    {
-      field : 'status',
-      width : 25,
-      displayName : '',
-      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
-    },
-
-    {
-      field : 'code',
-      width : 120,
-      displayName : 'TABLE.COLUMNS.CODE',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
-    },
-
-    {
-      field : 'description',
-      displayName : 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
-    },
-
-    {
-      field : 'lot',
-      width : 150,
-      displayName : 'TABLE.COLUMNS.LOT',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
-    },
-
-    {
-      field : 'quantity',
-      width : 150,
-      displayName : 'TABLE.COLUMNS.QUANTITY',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/adjustment/templates/quantity.tmpl.html',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
-    },
-
-    {
-      field : 'available_lot',
-      width : 150,
-      displayName : 'TABLE.COLUMNS.AVAILABLE',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
-    },
-
-    {
-      field : 'expiration_date',
-      width : 150,
-      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
-    },
-
-    {
-      field : 'actions',
-      displayName : '...',
-      width : 25,
-      cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
-    },
-  ];
-
-  // grid options
   vm.gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
-    columnDefs : columns,
-    data : vm.Stock.store.data,
+    columnDefs : [
+      {
+        field : 'status',
+        width : 25,
+        displayName : '',
+        cellTemplate : 'modules/stock/entry/templates/status.tmpl.html',
+      },
+
+      {
+        field : 'code',
+        width : 120,
+        displayName : 'TABLE.COLUMNS.CODE',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/entry/templates/code.tmpl.html',
+      },
+
+      {
+        field : 'description',
+        displayName : 'TABLE.COLUMNS.DESCRIPTION',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/entry/templates/description.tmpl.html',
+      },
+
+      {
+        field : 'unit',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.UNIT',
+        headerCellFilter : 'translate',
+      },
+
+      {
+        field : 'lot',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.LOT',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html',
+      },
+
+      {
+        field : 'quantity',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.QUANTITY',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/entry/templates/quantity.tmpl.html',
+        aggregationType : uiGridConstants.aggregationTypes.sum,
+      },
+
+      {
+        field : 'actions',
+        width : 25,
+        cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html',
+      },
+    ],
+    data : vm.stockForm.store.data,
     fastWatch : true,
     flatEntityAccess : true,
-    rowTemplate : 'modules/templates/grid/error.row.html',
   };
 
-  // add items
-  function addItems(n) {
-    vm.Stock.addItems(n);
-    checkValidity();
+  // on change depot
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+    loadInventories();
+  };
+
+  /**
+   * @method onDateChange
+   * @param {date} date
+   * @description on change in bhDateEditor component update the date
+   */
+  function onDateChange(date) {
+    vm.movement.date = date;
   }
 
-  // remove item
-  function removeItem(item) {
-    vm.Stock.removeItem(item.id);
-    checkValidity();
+  /**
+   * @method reset
+   * @param {object} form
+   * @description reset the form after submission or on clear
+   */
+  function reset(form) {
+    vm.stockForm.store.clear();
+    form.$setPristine();
+    form.$setUntouched();
+    vm.movement = { date : new Date() };
   }
 
-  // configure item
-  function configureItem(item) {
+  /**
+   * @method setInitialized
+   * @param {object} item
+   * @description [grid] set initialized to true on the passed item
+   */
+  function setInitialized(item) {
     item._initialised = true;
-    // get lots
-    Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
-      .then((lots) => {
-        item.lots = lots;
-      })
-      .catch(Notify.handleError);
   }
 
+  /**
+   * @method addItems
+   * @param {number} n
+   * @description [grid] add n items (rows) in the grid and call a validation function on each rows
+   */
+  function addItems(n) {
+    vm.stockForm.addItems(n);
+    vm.hasValidInput = hasValidInput();
+  }
+
+  /**
+   * @method removeItem
+   * @param {number} index
+   * @description [grid] remove the row with the given index and call a validation function on each remaining rows
+   */
+  function removeItem(index) {
+    vm.stockForm.removeItem(index);
+    vm.hasValidInput = hasValidInput();
+  }
+
+  /**
+   * @method setupStock
+   * @description [grid] setup the grid and clear all previous values
+   */
   function setupStock() {
-    vm.Stock.setup();
-    vm.Stock.store.clear();
+    vm.stockForm.setup();
+    vm.stockForm.store.clear();
   }
 
+  /**
+   * @method startup
+   * @description
+   * The first function to be called, it init :
+   * - A list of inventories
+   * - An object dor a movement
+   * - A depot from the cache or give possiblity of choosing one if not set
+   */
   function startup() {
+    // init a movement object
     vm.movement = {
       date : new Date(),
       entity : {},
     };
+
+    // loading all purchasable inventories
+    loadInventories();
   }
 
-  // ============================ Inventories ==========================
-  function loadInventories(depot) {
+  /**
+   * @method loadInventories
+   * @description load inventories
+   */
+  function loadInventories() {
     setupStock();
 
-    Stock.inventories.read(null, { depot_uuid : depot.uuid })
+    Inventory.read()
       .then((inventories) => {
-        vm.selectableInventories = angular.copy(inventories);
-        checkValidity();
+        vm.inventories = inventories;
+        inventoryStore = new Store({ identifier : 'uuid', data : inventories });
       })
       .catch(Notify.handleError);
   }
 
-  // check validity
-  function checkValidity() {
-    const lotsExists = vm.Stock.store.data.every((item) => {
-      return item.quantity > 0 && item.lot.uuid;
-    });
 
-    vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
-  }
+  /**
+   * @method setLots
+   * @param {object} stockLine
+   * @description [grid] pop up a modal for defining lots for each row in the grid
+   */
+  function setLots(stockLine) {
+    const inventory = inventoryStore.get(stockLine.inventory_uuid);
+    stockLine.expires = inventory.expires;
+    stockLine.unique_item = inventory.unique_item;
 
-  // ================================= Submit ================================
-  function submit() {
-    let isExit;
-    let fluxId;
-
-    // check stock validity
-    checkValidity();
-
-    if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
-
-    if (vm.Stock.hasDuplicatedLots()) {
-      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
-    }
-
-    if (vm.adjustmentOption === 'increase') {
-      isExit = 0;
-      fluxId = bhConstants.flux.FROM_ADJUSTMENT;
-    } else if (vm.adjustmentOption === 'decrease') {
-      isExit = 1;
-      fluxId = bhConstants.flux.TO_ADJUSTMENT;
-    }
-
-    const movement = {
-      depot_uuid : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
-      date : vm.movement.date,
-      description : vm.movement.description,
-      is_exit : isExit,
-      flux_id : fluxId,
-      user_id : Session.user.id,
-    };
-
-    const lots = vm.Stock.store.data.map((row) => {
-      return {
-        uuid : row.lot.uuid,
-        quantity : row.quantity,
-        unit_cost : row.lot.unit_cost,
-      };
-    });
-
-    movement.lots = lots;
-
-    return Stock.movements.create(movement)
-      .then(document => {
-        vm.Stock.store.clear();
-        ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
+    StockModal.openDefineLots({
+      stockLine,
+      entry_type : vm.movement.entry_type,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        stockLine.lots = res.lots;
+        stockLine.quantity = res.quantity;
+        stockLine.unit_cost = res.unit_cost; // integration and donation price is defined in the lot modal
+        vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
+  }
+
+  /**
+   * @function hasValidInput
+   * @description [grid] check if all rows in the grid have lots defined
+   */
+  function hasValidInput() {
+    return vm.stockForm.store.data.every(line => line.lots.length > 0);
+  }
+
+
+  /**
+   * @method buildStockLine
+   * @param {object} line
+   * @description [grid] initialize each cell of defined rows with value
+   */
+  function buildStockLine(line) {
+    const inventory = inventoryStore.get(line.inventory_uuid);
+    line.code = inventory.code;
+    line.label = inventory.label;
+    line.unit_cost = inventory.price;
+    line.quantity = 0;
+    line.cost = line.quantity * line.unit_cost;
+    line.expiration_date = new Date();
+    line.unit = inventory.unit;
+    setInitialized(line);
   }
 
   startup();

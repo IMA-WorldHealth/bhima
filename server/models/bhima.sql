@@ -149,7 +149,8 @@ INSERT INTO unit VALUES
   (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
   (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
   (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report'),
-  (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis');
+  (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis'),
+  (266, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

@@ -59,15 +59,6 @@
       <!-- add and recovery -->
       <div class="row" style="padding-bottom : 5px;">
         <div class="col-xs-12">
-          <!-- info -->
-          <p
-            style="padding-top : 10px;"
-            class="text-info"
-            ng-show="!StockCtrl.stockInventoryOption">
-            <span class="fa fa-info-circle"></span>
-            <span translate>FORM.INFO.NO_DESTINATION</span>
-          </p>
-
           <!-- "Recover Items" button -->
           <div class="btn-group pull-right" role="group">
             <button
@@ -82,10 +73,7 @@
           </div>
 
           <!-- "Add number of grid rows" input-group -->
-          <bh-add-item
-            disable="StockCtrl.stockInventoryOption"
-            callback="StockCtrl.addItems(numItem)">
-          </bh-add-item>
+          <bh-add-item disable="true" callback="StockCtrl.addItems(numItem)"></bh-add-item>
         </div>
       </div>
 

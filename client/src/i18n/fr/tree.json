@@ -159,6 +159,7 @@
     "VISITS_REPORT": "[Visits] Admissions par services",
     "CLIENT_DEBTS_REPORT": "[Clients] Dettes",
     "CLIENT_SUPPORT_REPORT": "[Clients] Prises en charges",
-    "REALIZED_PROFIT_REPORT": "[Facturation] Recouvrement"
+    "REALIZED_PROFIT_REPORT": "[Facturation] Recouvrement",
+    "INVENTORY_ADJUSTMENT":"Inventaire et Ajustement"
   }
 }
