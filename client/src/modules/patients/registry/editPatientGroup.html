@@ -6,7 +6,8 @@
 
   <div class="modal-header search-modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>FORM.LABELS.CHANGE_PATIENT_GROUP</li>
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>FORM.LABELS.CHANGE_PATIENT_GROUP</li>
     </ol>
   </div>
 
@@ -24,7 +25,8 @@
         type="checkbox"
         id="{{group.uuid}}"
         name="subscribedGroups"
-        ng-model="$ctrl.subscribedGroups[group.uuid]">
+        ng-model="$ctrl.subscribedGroups[group.uuid]"
+        ng-change="$ctrl.onToggleCheckboxes()">
           {{group.name}}
         </label>
       </div>
@@ -32,7 +34,7 @@
 
     <div class="checkbox">
       <label>
-        <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.removeAssignedGroups">
+        <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.removeAssignedGroups" ng-change="$ctrl.onToggleRemoveAll()">
         <span translate>PATIENT_REG.REMOVE_PREVIOUS_ASSIGNMENT</span>
       </label>
     </div>
