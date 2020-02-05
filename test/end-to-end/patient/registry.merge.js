@@ -17,7 +17,7 @@ function MergePatientTest() {
   });
 
   it('successfully merge two selected patients into one', async () => {
-    const reference = 'PA.TPA.3';
+    const reference = 'PA.TPA.2';
 
     await Page.gridSelectRows(3, 4);
     await Page.openMergeTool();

@@ -174,6 +174,10 @@ function PatientRegistrySearch() {
     await element(by.id(group2)).click();
     await FU.modal.submit();
     await components.notification.hasSuccess();
+
+    // deselect groups
+    GU.selectRow(gridId, 0);
+    GU.selectRow(gridId, 1);
   });
 
 }
