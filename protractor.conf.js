@@ -10,17 +10,19 @@ const q = require('q');
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
+  // SELENIUM_PROMISE_MANAGER : false,
+
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 
   mochaOpts : {
     reporter        : 'mochawesome',
     reporterOptions : {
-      reportDir            : `${__dirname}/test/artifacts/`,
-      inline               : true,
-      reportName           : 'end-to-end-tests',
-      reportTitle          : 'Bhima End to End Tests',
-      showPassed           : false,
+      reportDir   : `${__dirname}/test/artifacts/`,
+      inline      : true,
+      reportName  : 'end-to-end-tests',
+      reportTitle : 'Bhima End to End Tests',
+      showPassed  : false,
     },
     bail : true,
     timeout : 45000, // 45 second timeout
@@ -32,8 +34,6 @@ const config = {
 
   // default browsers to run
   multiCapabilities : [{
-    // 'browserName': 'firefox',
-  // }, {
     browserName : 'chrome',
     chromeOptions : {
       args : ['--window-size=1280,1024'],

@@ -8,6 +8,7 @@ describe('Inventory Configuration', () => {
   // navigate to the page
   before(() => helpers.navigate(url));
 
+
   const group = {
     name : 'Medicaments en Sirop for Fun',
     code : '1700',
@@ -27,7 +28,7 @@ describe('Inventory Configuration', () => {
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2500',
-    sales_account : 'Caisse Principale USD',
+    sales_account : '57110010', // Caisse principale
   };
 
   // inventory type
@@ -41,6 +42,8 @@ describe('Inventory Configuration', () => {
   describe('Groups', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
+
+    // beforeEach(() => browser.refresh());
 
     it('creates a new inventory group', async () => {
       await $('[data-create-group]').click();

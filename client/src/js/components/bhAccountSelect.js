@@ -33,10 +33,6 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
 
-    // used to disable title accounts in the select list
-    $ctrl.disableTitleAccounts = angular.isDefined($ctrl.disableTitleAccounts)
-      ? $ctrl.disableTitleAccounts : true;
-
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
     }

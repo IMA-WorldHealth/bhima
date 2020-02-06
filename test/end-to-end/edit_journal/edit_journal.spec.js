@@ -14,20 +14,35 @@ describe('Edit Posting Journal', () => {
 
   const editingGridId = 'transaction-edit-grid';
 
-  // simulates a double click
-  const doubleClick = async element => browser
-    .actions({ bridge : true })
-    .doubleClick(await element.getWebElement())
-    .perform();
+
+  // FIXME(@jniles) - I don't know why this works. But it does.
+  const doubleClick = async element => {
+    const e = await element.getWebElement();
+    await browser.waitForAngularEnabled(false);
+    await browser.actions({ bridge : true })
+      .mouseMove(e)
+      .doubleClick(e)
+      .perform();
+
+    await browser.waitForAngularEnabled(true);
+  };
 
   before(() => helpers.navigate(path));
 
+  async function openEditingModal() {
+    await FU.buttons.edit();
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+  }
+
   it('edits a transaction change an account', async () => {
     await GU.selectRow(gridId, 0);
-    await FU.buttons.edit();
+
+    await openEditingModal();
 
     const accountNumberCell = await GU.getCell(editingGridId, 0, 1);
+
     await doubleClick(accountNumberCell);
+
     await FU.typeahead('accountInputValue', '1100');
 
     await FU.modal.submit();
@@ -52,9 +67,7 @@ describe('Edit Posting Journal', () => {
 
   it('edits a transaction to change the value of debit and credit', async () => {
     await GU.selectRow(gridId, 0);
-    await FU.buttons.edit();
-
-    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+    await openEditingModal();
 
     // change the first row (index 0), debit and credit inputs (index 2 and 3)
     await editInput(0, 2, 99);
@@ -70,9 +83,7 @@ describe('Edit Posting Journal', () => {
 
   it('prevents an unbalanced transaction', async () => {
     await GU.selectRow(gridId, 0);
-    await FU.buttons.edit();
-
-    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+    await openEditingModal();
 
     await editInput(0, 2, 100);
     await editInput(0, 3, 0);
@@ -89,9 +100,7 @@ describe('Edit Posting Journal', () => {
 
   // Test for validation
   it('prevents a single line transaction', async () => {
-    await FU.buttons.edit();
-
-    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+    await openEditingModal();
 
     await GU.selectRow(editingGridId, 0);
     await FU.buttons.delete();
@@ -104,7 +113,7 @@ describe('Edit Posting Journal', () => {
 
 
   it('preventing transaction who have debit and credit null', async () => {
-    await FU.buttons.edit();
+    await openEditingModal();
 
     await editInput(0, 2, 0);
     await editInput(0, 3, 0);
@@ -118,9 +127,7 @@ describe('Edit Posting Journal', () => {
   });
 
   it('preventing transaction who was debited and credited in a same line', async () => {
-    await FU.buttons.edit();
-
-    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+    await openEditingModal();
 
     await editInput(0, 2, 10);
     await editInput(0, 3, 10);

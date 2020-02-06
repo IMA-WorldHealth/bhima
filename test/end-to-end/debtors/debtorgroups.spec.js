@@ -1,6 +1,8 @@
-/* global element, by */
+/* global element, by, browser, protractor */
 const { expect } = require('chai');
 const helpers = require('../shared/helpers');
+
+const EC = protractor.ExpectedConditions;
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
@@ -76,7 +78,11 @@ describe('Debtor Groups Management', () => {
     await updateGroup.$('[data-method="update"]').click();
 
     await element(by.css('#invoicingFeeSubscription')).click();
-    await element.all(by.css('[data-group-option]')).get(1).click();
+
+    await browser.wait(EC.visibilityOf($('.modal-body'), 2000));
+
+    await $('[data-group-option="Test Invoicing Fee"]').click();
+
     await FU.modal.submit();
     await components.notification.hasSuccess();
   });

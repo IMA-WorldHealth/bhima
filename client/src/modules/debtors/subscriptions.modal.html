@@ -11,7 +11,7 @@
       <label class="control-label">{{ SubCtrl.entityKey | translate }}</label>
       <div class="checkbox" ng-repeat="entity in SubCtrl.entities | orderBy:'label'">
         <label>
-          <input data-group-option type="checkbox" ng-model="SubCtrl.subscriptions[entity.id]">
+          <input data-group-option="{{entity.label}}" type="checkbox" ng-model="SubCtrl.subscriptions[entity.id]">
           {{entity.label}}
         </label>
       </div>
