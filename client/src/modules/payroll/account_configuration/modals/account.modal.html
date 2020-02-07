@@ -22,10 +22,8 @@
     </div>
 
     <bh-account-select
-      id="account_id"
       account-id="AccountConfigModalCtrl.accountConfig.account_id"
-      name="account_id"
-      on-select-callback="AccountConfigModalCtrl.selectAccount(account)"
+      on-select-callback="AccountConfigModalCtrl.onSelectAccount(account)"
       exclude-title-accounts="true"
       required="true">
     </bh-account-select>

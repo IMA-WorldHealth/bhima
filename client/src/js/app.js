@@ -246,6 +246,7 @@ function uiModalConfig($uibModalProvider) {
   $uibModalProvider.options.size = 'md';
   $uibModalProvider.options.backdrop = 'static';
   $uibModalProvider.options.keyboard = false;
+  $uibModalProvider.options.animation = false;
 }
 
 // configure services, providers, factories

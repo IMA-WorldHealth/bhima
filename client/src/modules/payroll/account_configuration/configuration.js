@@ -7,16 +7,15 @@ ConfigurationAccountController.$inject = [
 ];
 
 /**
- * Account Management Controller
+ * Configuration Account Controller
  *
  * This controller is about the Account management module in the admin zone
  * It's responsible for creating, editing and updating a Account
  */
 function ConfigurationAccountController(
-  Configs, ModalService,
-  Notify, uiGridConstants, $state, Session
+  Configs, ModalService, Notify, uiGridConstants, $state, Session,
 ) {
-  var vm = this;
+  const vm = this;
 
   // bind methods
   vm.deleteConfig = deleteConfig;
@@ -27,19 +26,18 @@ function ConfigurationAccountController(
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
-    [
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'hrAccountText', displayName : 'FORM.LABELS.ACCOUNT', headerCellFilter : 'translate' },
-      {
-        field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/payroll/account_configuration/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  const gridColumn = [
+    { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
+    { field : 'hrAccountText', displayName : 'FORM.LABELS.ACCOUNT', headerCellFilter : 'translate' },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/payroll/account_configuration/templates/action.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -66,25 +64,27 @@ function ConfigurationAccountController(
     vm.loading = true;
 
     Configs.read()
-      .then(function (data) {
-        data.forEach(row => row.hrAccountText = `[${row.account_number}] ${row.account_label}`);
+      .then((data) => {
+        data.forEach(row => {
+          row.hrAccountText = `[${row.account_number}] ${row.account_label}`;
+        });
 
         vm.gridOptions.data = data;
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }
 
   // switch to delete warning mode
   function deleteConfig(title) {
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool) {
+    return ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then((bool) => {
         if (!bool) { return; }
 
         Configs.delete(title.id)
-          .then(function () {
+          .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadConfigs();
           })

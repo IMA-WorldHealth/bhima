@@ -9,7 +9,7 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
   const vm = this;
   vm.accountConfig = {};
 
-  const cache = AppCache('RubricModal');
+  const cache = AppCache('AccountConfigModal');
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
@@ -17,9 +17,9 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.creating;
 
-  vm.selectAccount = function selectAccount(account) {
+  vm.onSelectAccount = function onSelectAccount(account) {
     vm.accountConfig.account_id = account.id;
   };
 
@@ -27,7 +27,7 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Config.read(vm.stateParams.id)
       .then(accountConfig => {
         vm.accountConfig = accountConfig;
@@ -39,13 +39,13 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
   function submit(accountConfigForm) {
     if (accountConfigForm.$invalid || accountConfigForm.$pristine) { return 0; }
 
-    const promise = (vm.isCreating) ?
-      Config.create(vm.accountConfig) :
-      Config.update(vm.accountConfig.id, vm.accountConfig);
+    const promise = (vm.isCreateState)
+      ? Config.create(vm.accountConfig)
+      : Config.update(vm.accountConfig.id, vm.accountConfig);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('configurationAccount', null, { reload : true });
       })
