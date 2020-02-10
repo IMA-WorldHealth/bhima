@@ -26,7 +26,6 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
-
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
@@ -41,7 +40,7 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
       ? $ctrl.excludeTitleAccounts : true;
 
     // load accounts
-    loadHttpAccounts();
+    return loadHttpAccounts();
   };
 
   // loads accounts from the server
@@ -60,7 +59,7 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
     params.hidden = 0;
 
     // load accounts
-    Accounts.read(null, params)
+    return Accounts.read(null, params)
       .then(elements => {
         // bind the accounts to the controller
         let accounts = FormatTreeData.order(elements);

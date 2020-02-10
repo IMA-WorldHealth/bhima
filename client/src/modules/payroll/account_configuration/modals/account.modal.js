@@ -17,6 +17,7 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
   } else {
     vm.stateParams = cache.stateParams;
   }
+
   vm.isCreateState = vm.stateParams.creating;
 
   vm.onSelectAccount = function onSelectAccount(account) {

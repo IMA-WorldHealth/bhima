@@ -14,10 +14,6 @@ function CreateUpdateCountryController(data, $state, Location, Notify, Instance)
   vm.isCreate = !vm.country.uuid;
   vm.action = vm.isCreate ? 'FORM.LABELS.CREATE' : 'FORM.LABELS.UPDATE';
 
-  vm.onInputTextChange = (key, value) => {
-    vm.bed[key] = value;
-  };
-
   function submit(form) {
     if (form.$invalid) {
       return false;

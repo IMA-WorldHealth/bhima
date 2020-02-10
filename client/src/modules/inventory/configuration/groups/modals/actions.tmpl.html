@@ -38,8 +38,8 @@
     </div>
 
     <bh-account-select
+      data-sales-account
       name="sales_account"
-      id="sales_account"
       account-id="$ctrl.session.sales_account"
       exclude-title-accounts="true"
       on-select-callback="$ctrl.onSelectSalesAccount(account)">
@@ -48,8 +48,8 @@
     </bh-account-select>
 
     <bh-account-select
+      data-stock-account
       name="stock_account"
-      id="stock_account"
       account-id="$ctrl.session.stock_account"
       exclude-title-accounts="true"
       required="false"
@@ -59,8 +59,8 @@
     </bh-account-select>
 
     <bh-account-select
+      data-cogs-account
       name="cogs_account"
-      id="cogs_account"
       account-id="$ctrl.session.cogs_account"
       exclude-title-accounts="true"
       required="false"

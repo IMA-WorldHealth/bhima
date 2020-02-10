@@ -4,9 +4,7 @@
  * it renders an Excel report from html.
  *
  * @module lib/renderers/xls
- * @requires juice
  */
-const juice = require('juice');
 const html = require('./html');
 
 const headers = {
@@ -20,6 +18,7 @@ exports.headers = headers;
 async function render(data, template, options) {
   options.skipCurrencyRendering = true;
 
+  /*
   const htmlString = juice(await html.render(data, template, options));
 
   // NOTE(@jniles)
@@ -29,6 +28,8 @@ async function render(data, template, options) {
   const end = htmlString.substring(htmlString.search('</head>') + 7);
 
   const tmpl = `${start}${end}`;
+  */
+  const tmpl = await html.render(data, template, options);
 
   return Buffer.from(tmpl, 'utf-8');
 }

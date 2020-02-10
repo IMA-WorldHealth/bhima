@@ -8,7 +8,6 @@ describe('Inventory Configuration', () => {
   // navigate to the page
   before(() => helpers.navigate(url));
 
-
   const group = {
     name : 'Medicaments en Sirop for Fun',
     code : '1700',
@@ -43,16 +42,16 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    // beforeEach(() => browser.refresh());
+    // beforeEach(() => browser.refresh()); // eslint-disable-line
 
     it('creates a new inventory group', async () => {
       await $('[data-create-group]').click();
       await FU.input('$ctrl.session.name', group.name);
       await FU.input('$ctrl.session.code', group.code);
 
-      await components.accountSelect.set(group.sales_account, 'sales_account');
-      await components.accountSelect.set(group.stock_account, 'stock_account');
-      await components.accountSelect.set(group.cogs_account, 'cogs_account');
+      await components.accountSelect.set(group.sales_account, null, $('[data-sales-account]'));
+      await components.accountSelect.set(group.stock_account, null, $('[data-stock-account]'));
+      await components.accountSelect.set(group.cogs_account, null, $('[data-cogs-account]'));
 
       await FU.buttons.submit();
       await components.notification.hasSuccess();
@@ -63,7 +62,7 @@ describe('Inventory Configuration', () => {
       await FU.input('$ctrl.session.name', updateGroup.name);
       await FU.input('$ctrl.session.code', updateGroup.code);
 
-      await components.accountSelect.set(updateGroup.sales_account, 'sales_account');
+      await components.accountSelect.set(updateGroup.sales_account, null, $('[data-sales-account]'));
 
       await FU.buttons.submit();
       await components.notification.hasSuccess();
@@ -80,7 +79,7 @@ describe('Inventory Configuration', () => {
       await FU.input('$ctrl.session.name', groupWithOnlySalesAccount.name);
       await FU.input('$ctrl.session.code', groupWithOnlySalesAccount.code);
 
-      await components.accountSelect.set(groupWithOnlySalesAccount.sales_account, 'sales_account');
+      await components.accountSelect.set(groupWithOnlySalesAccount.sales_account, null, $('[data-sales-account]'));
 
       await FU.buttons.submit();
       await components.notification.hasSuccess();

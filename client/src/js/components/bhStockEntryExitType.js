@@ -39,6 +39,8 @@ function StockEntryExitTypeController(StockEntryExitTypes) {
   };
 
   $ctrl.getLabel = (type) => {
+    if (!type) { return ''; }
+
     const hasDisplayLabel = ($ctrl.reference || $ctrl.displayName)
       && type.label === $ctrl.selectedEntryExitType.label;
 
