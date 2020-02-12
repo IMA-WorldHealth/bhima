@@ -96,7 +96,7 @@
     "puppeteer": "^2.0.0",
     "q": "~1.5.1",
     "stream-to-promise": "^2.2.0",
-    "tempy": "^0.3.0",
+    "tempy": "^0.4.0",
     "typeface-open-sans": "^0.0.75",
     "ui-select": "0.17.1",
     "use-strict": "^1.0.1",
