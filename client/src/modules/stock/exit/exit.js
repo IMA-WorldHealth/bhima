@@ -378,7 +378,7 @@ function StockExitController(
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
     vm.selectedEntityUuid = uniformEntity.uuid;
-    vm.requisition = entity.requisition || {};
+    vm.requisition = (entity && entity.requisition) || {};
     loadRequisitions(entity);
   }
 
