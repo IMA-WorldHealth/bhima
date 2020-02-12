@@ -45,6 +45,7 @@ async function inventoryChanges(req, res, next) {
       WHERE ivl.log_timestamp BETWEEN DATE(?) AND DATE(?)
       ORDER BY iv.text ASC , ivl.log_timestamp DESC
     `;
+
     const inventories = await db.exec(inventorySql, [dateFrom, dateTo]);
     const inventoriesMap = {};
     inventories.forEach(iv => {
