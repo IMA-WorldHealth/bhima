@@ -70,8 +70,8 @@ class SurveyFormManagementPage {
    */
   async edit(label, updateSurveyForm) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
     await components.surveyFormTypeSelect.set(updateSurveyForm.type);
     await components.choiceListSelect.set(updateSurveyForm.choice_list_id);
     await FU.input('SurveyFormModalCtrl.surveyForm.name', updateSurveyForm.name);

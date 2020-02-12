@@ -10,18 +10,13 @@ const q = require('q');
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
+  // SELENIUM_PROMISE_MANAGER : false,
+
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 
   mochaOpts : {
-    reporter        : 'mochawesome',
-    reporterOptions : {
-      reportDir            : `${__dirname}/test/artifacts/`,
-      inline               : true,
-      reportName           : 'end-to-end-tests',
-      reportTitle          : 'Bhima End to End Tests',
-      showPassed           : false,
-    },
+    reporter : 'spec',
     bail : true,
     timeout : 45000, // 45 second timeout
   },
@@ -31,19 +26,25 @@ const config = {
   },
 
   // default browsers to run
-  multiCapabilities : [{
-    // 'browserName': 'firefox',
-  // }, {
+  capabilities : {
     browserName : 'chrome',
     chromeOptions : {
       args : ['--window-size=1280,1024'],
     },
+  },
+
+  plugins : [{
+    package : 'protractor-console-plugin',
+    failOnError : false,
   }],
 
   // this will log the user in to begin with
   onPrepare : () => {
     return q.fcall(async () => {
       await browser.get('http://localhost:8080/#!/login');
+
+      // Turns off ng-animate animations for all elements in the
+      await element(by.css('body')).allowAnimations(false);
 
       await element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
       await element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
@@ -75,19 +76,8 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     },
   }];
 
-  // make Travis take screenshots!
-  config.mochaOpts = {
-    reporter        : 'mochawesome',
-    reporterOptions : {
-      reportDir            : `${__dirname}/test/artifacts/`,
-      inline               : true,
-      reportName           : 'end-to-end-tests',
-      reportTitle          : 'Bhima End to End Tests',
-      showPassed           : false,
-    },
-    bail : true,
-    timeout : 45000,
-  };
+  delete config.capabilities;
+  delete config.plugins;
 }
 
 // expose to the outside world

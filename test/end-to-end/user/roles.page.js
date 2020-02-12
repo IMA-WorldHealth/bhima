@@ -45,9 +45,8 @@ class RolesPage {
     await checkbox.click();
   }
 
-  async assignRole(name) {
-    const row = new GridRow(name);
-    await row.dropdown().click();
+  async assignRole(label) {
+    const row = await this.openDropdownMenu(label);
     await row.menu.$('[data-method="assign_roles"]').click();
   }
 

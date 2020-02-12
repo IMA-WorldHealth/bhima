@@ -14,13 +14,15 @@
       ng-model="$ctrl.accountId"
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
+
       <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
         <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
       </ui-select-match>
+
       <ui-select-choices
         ui-select-focus-patch
         ui-disable-choice="account.type_id === $ctrl.TITLE_ACCOUNT_ID"
-        repeat="account.id as account in $ctrl.accounts | filter: { 'hrlabel' : $select.search }">
+        repeat="account.id as account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by $index">
         <strong ng-bind-html="account.number | highlight:$select.search"></strong>
         <span ng-bind-html="account.label | highlight:$select.search"></span>
       </ui-select-choices>

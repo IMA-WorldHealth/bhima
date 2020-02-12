@@ -1,12 +1,12 @@
 /* global element, by */
-
 const FU = require('../FormUtils');
 
+const selector = '[bh-account-select]';
+
 module.exports = {
-  selector : '[bh-account-select]',
-  set      : async function set(account, id) {
-    const locator = (id) ? by.id(id) : by.css(this.selector);
-    const target = element(locator);
+  set      : async function set(account, id, optional = null) {
+    const locator = (id) ? by.id(id) : by.css(selector);
+    const target = optional || element(locator);
 
     // hack to make sure previous 'blur' event fires if we are using
     // ngModelOptions updateOn 'blur' for every input

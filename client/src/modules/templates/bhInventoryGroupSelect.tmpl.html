@@ -6,9 +6,9 @@
     <label class="control-label" translate>
       FORM.LABELS.GROUP
     </label>
-    
+
     <ng-transclude></ng-transclude>
-    <ui-select name="group_uuid" 
+    <ui-select name="group_uuid"
       ng-model="$ctrl.groupUuid"
       on-select="$ctrl.onSelect($item, $model)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY_GROUP' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>

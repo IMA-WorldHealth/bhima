@@ -29,7 +29,7 @@ angular.module('bhima.routes')
   }]);
 
 function payrollModal($modal) {
-  $modal.open({
+  return $modal.open({
     keyboard : false,
     backdrop : 'static',
     templateUrl : 'modules/payroll/modals/payroll.modal.html',
@@ -38,5 +38,5 @@ function payrollModal($modal) {
 }
 
 function closeModal(ModalStack) {
-  ModalStack.dismissAll();
+  return ModalStack.dismissAll();
 }

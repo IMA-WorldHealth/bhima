@@ -49,8 +49,8 @@ class DataCollectorManagementPage {
    */
   async edit(label, updateDataCollector) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
     await FU.input('DataCollectorManagementModalCtrl.dataCollector.label', updateDataCollector.label);
     await FU.input('DataCollectorManagementModalCtrl.dataCollector.version_number', updateDataCollector.version_number);

@@ -37,7 +37,7 @@ function ServiceSelectController(Services, Notify) {
   };
 
   $ctrl.$onChanges = (changes) => {
-    if (changes && changes.serviceUuid) {
+    if (changes && changes.serviceUuid && $ctrl.services) {
       selectServiceByUuid(changes.serviceUuid);
     }
   };

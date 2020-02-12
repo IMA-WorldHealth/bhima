@@ -23,8 +23,8 @@ class displayMetadataManagementPage {
    */
   async updateMetadata(structure, surveyData) {
     const row = new GridRow(structure);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
     await browser.findElement(by.css('[name="label"]')).sendKeys(surveyData.label);
     await browser.findElement(by.css('[name="longueur"]')).sendKeys(surveyData.longueur);

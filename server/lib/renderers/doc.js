@@ -6,7 +6,6 @@
  * @requires juice
  */
 
-const juice = require('juice');
 const html = require('./html');
 
 const headers = {
@@ -17,9 +16,7 @@ exports.render = render;
 exports.extension = '.doc';
 exports.headers = headers;
 
-
 async function render(data, template, options) {
-  const htmlStream = await html.render(data, template, options);
-  const htmlString = juice(htmlStream);
+  const htmlString = await html.render(data, template, options);
   return Buffer.from(htmlString, 'utf8');
 }

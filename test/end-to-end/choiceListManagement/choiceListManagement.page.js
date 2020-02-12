@@ -48,8 +48,8 @@ class ChoiceListManagementPage {
    */
   async edit(label, updateDataCollector) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
     await components.choiceListSelect.set(updateDataCollector.parent, 'parent');
     await components.choiceListSelect.set(updateDataCollector.group_label, 'group_label');

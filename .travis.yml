@@ -1,7 +1,16 @@
-sudo: required
+os: linux
 
 jdk:
   - oraclejdk8
+
+# Use google chrome v74.  According to the angular team, v74 is
+# the last version that works correctly with protractor.
+# See: https://github.com/angular/protractor/commit/d77731c270f5118518d0a57cee4aee97ff29a023
+env:
+  global:
+    - DBUS_SESSION_BUS_ADDRESS=/dev/null
+    - CHROME_REVISION=706915
+    - CHROMEDRIVER_VERSION="79.0.3945.36"
 
 before_install:
   - ./sh/setup-ci-env.sh
@@ -9,7 +18,7 @@ before_install:
 
 services:
   - mysql
-  - redis-server
+  - redis
 
 language: node_js
 node_js:
@@ -17,7 +26,7 @@ node_js:
 
 before_script:
   - yarn build
-  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
+  - yarn webdriver-manager update --versions.chrome=$CHROMEDRIVER_VERSION --gecko false
   - greenkeeper-lockfile-update
 
 script:
@@ -37,6 +46,3 @@ branches:
   except:
     # do not build any branches that have *.tmp in their name
     - /.*\.tmp$/
-
-addons:
-  chrome: stable

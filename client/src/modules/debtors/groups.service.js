@@ -86,6 +86,7 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
     return Modal.open({
       templateUrl : '/modules/debtors/subscriptions.modal.html',
       controller : 'InvoicingFeeSubscriptions as SubCtrl',
+      animation : false,
       size : 'md',
       resolve : {
         Subscriptions : () => subscriptions,
@@ -98,6 +99,7 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
     return Modal.open({
       templateUrl : '/modules/debtors/subscriptions.modal.html',
       controller : 'SubsidySubscriptions as SubCtrl',
+      animation : false,
       size : 'md',
       resolve : {
         Subscriptions : () => subscriptions,

@@ -1,8 +1,8 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
-    <span ng-if="$ctrl.action==='add'" translate>INVENTORY.ADD_GROUP</span>
-    <span ng-if="$ctrl.action==='edit'" translate>INVENTORY.EDIT_GROUP</span>
+    <span ng-if="$ctrl.isCreateState" translate>INVENTORY.ADD_GROUP</span>
+    <span ng-if="$ctrl.isUpdateState" translate>INVENTORY.EDIT_GROUP</span>
   </div>
 
   <div class="modal-body">
@@ -38,8 +38,8 @@
     </div>
 
     <bh-account-select
+      data-sales-account
       name="sales_account"
-      id="sales_account"
       account-id="$ctrl.session.sales_account"
       exclude-title-accounts="true"
       on-select-callback="$ctrl.onSelectSalesAccount(account)">
@@ -48,8 +48,8 @@
     </bh-account-select>
 
     <bh-account-select
+      data-stock-account
       name="stock_account"
-      id="stock_account"
       account-id="$ctrl.session.stock_account"
       exclude-title-accounts="true"
       required="false"
@@ -59,8 +59,8 @@
     </bh-account-select>
 
     <bh-account-select
+      data-cogs-account
       name="cogs_account"
-      id="cogs_account"
       account-id="$ctrl.session.cogs_account"
       exclude-title-accounts="true"
       required="false"
@@ -69,23 +69,19 @@
       <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
     </bh-account-select>
 
-    <div class='form-group'>
-      <div class="checkbox">
-        <label>
-         <input type='checkbox' name="expires" ng-model = '$ctrl.session.expires' ng-true-value="1" ng-false-value="0"/>
-         <span translate>INVENTORY.EXPIRES</span>
-        </label>
-      </div>
-    </div>
-    <div class='form-group'>
-      <div class="checkbox">
-        <label>
-         <input type='checkbox' name='unique_item' ng-model = '$ctrl.session.unique_item' ng-true-value="1" ng-false-value="0"/>
-         <span translate>INVENTORY.UNIQUE_ITEM</span>
-        </label>
-      </div>
+    <div class="checkbox">
+      <label>
+       <input type="checkbox" name="expires" ng-model="$ctrl.session.expires" ng-true-value="1" ng-false-value="0"/>
+       <span translate>INVENTORY.EXPIRES</span>
+      </label>
     </div>
 
+    <div class="checkbox">
+      <label>
+       <input type="checkbox" name="unique_item" ng-model= "$ctrl.session.unique_item" ng-true-value="1" ng-false-value="0"/>
+       <span translate>INVENTORY.UNIQUE_ITEM</span>
+      </label>
+    </div>
   </div>
 
   <div class="modal-footer">
