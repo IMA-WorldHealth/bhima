@@ -35,6 +35,7 @@ function PatientService(
   service.create = create;
   service.groups = groups;
   service.updateGroups = updateGroups;
+  service.bulkUpdateGroups = bulkUpdateGroups;
 
   service.invoicingFees = invoicingFees;
   service.subsidies = subsidies;
@@ -158,6 +159,13 @@ function PatientService(
   function updateGroups(uuid, subscribedGroups) {
     const options = formatGroupOptions(subscribedGroups);
     const path = baseUrl.concat(uuid, '/groups');
+
+    return service.$http.post(path, options)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function bulkUpdateGroups(options) {
+    const path = baseUrl.concat('groups_update');
 
     return service.$http.post(path, options)
       .then(service.util.unwrapHttpResponse);

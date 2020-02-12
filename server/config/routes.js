@@ -495,11 +495,12 @@ exports.configure = function configure(app) {
 
   // Patients API
   app.get('/patients', patients.read);
-  app.post('/patients', patients.create);
   app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);
   app.get('/patients/:uuid/groups', patients.groups.list);
+  app.post('/patients', patients.create);
   app.post('/patients/:uuid/groups', patients.groups.update);
+  app.post('/patients/groups_update', patients.groups.bulkUpdate);
 
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
