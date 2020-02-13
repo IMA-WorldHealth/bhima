@@ -17,12 +17,11 @@ ComplexJournalVoucherController.$inject = [
  *
  * @constructor
  *
- * TODO - Implement caching mechanism for incomplete forms (via AppCache)
  * TODO/FIXME - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates
+  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates,
 ) {
   const vm = this;
 
@@ -136,7 +135,6 @@ function ComplexJournalVoucherController(
    * @param {object} result
    */
   function updateView(result) {
-
     $timeout(() => {
       // transaction type
       vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
