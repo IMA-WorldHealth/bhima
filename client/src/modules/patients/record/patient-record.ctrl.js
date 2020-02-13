@@ -43,28 +43,35 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
     }
   }
 
-  /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
-  Patients.read(patientUuid)
-    .then((result) => {
-      vm.patient = result;
-      vm.loading = false;
+  function startup() {
+    if (!patientUuid) { return; }
 
-      if (vm.patient.avatar) {
-        vm.uploadButtonText = 'PATIENT_RECORDS.UPDATE_PICTURE';
-      }
+    Patients.read(patientUuid)
+      .then((result) => {
+        vm.patient = result;
 
-      /** @todo move to service or mysql query */
-      vm.patient.name = vm.patient.display_name;
-      vm.patient.age = moment().diff(vm.patient.dob, 'years');
-      vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
-    })
-    .catch((error) => {
-      vm.loading = false;
-      Notify.handleError(error);
-    });
+        if (vm.patient.avatar) {
+          vm.uploadButtonText = 'PATIENT_RECORDS.UPDATE_PICTURE';
+        }
+
+        vm.patient.name = vm.patient.display_name;
+        vm.patient.age = moment().diff(vm.patient.dob, 'years');
+        vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
+
+        return Patients.groups(patientUuid);
+      })
+      .then(groups => {
+        vm.patient.groups = groups;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
+  startup();
 
   // webcam functionnalities
-
   vm.openWebcam = function openWebcam() {
     SnapshotService.openWebcamModal()
       .then((strDataURI) => {
@@ -72,7 +79,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
           SnapshotService.dataUriToFile(
             strDataURI,
             'image.png',
-            'image/png'
+            'image/png',
           )
             .then((file) => {
               vm.uploadFiles(file, false);
