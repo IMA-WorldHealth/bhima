@@ -21,6 +21,11 @@
         <span class="fa fa-id-card-o"></span> <span translate>PATIENT_REGISTRY.CARD</span>
       </a>
     </li>
+    <li>
+      <a data-method="fiche" ng-click="grid.appScope.patientFiche(row.entity.uuid)" href>
+        <span class="fa fa-hospital-o"></span> <span translate>PATIENT_REG.FICHE</span>
+      </a>
+    </li>
     <li class="divider"></li>
     <li>
       <a data-method="financialActivities" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}?lang={{grid.appScope.languageKey}}" target="_blank">
