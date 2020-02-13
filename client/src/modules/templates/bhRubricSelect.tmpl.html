@@ -2,12 +2,12 @@
     <div
       class="form-group"
       ng-class="{ 'has-error' : RubricSelectForm.$submitted && rubricForm.config_id.$invalid }">
-  
+
       <label class="control-label text-capitalize" translate>
         {{ ::$ctrl.label }}
       </label>
-  
-      <ng-transclude></ng-transclude>  
+
+      <ng-transclude></ng-transclude>
       <ui-select
         name="config_id"
         ng-model="$ctrl.rubrics"
@@ -24,10 +24,9 @@
           <span ng-bind-html="rubric.label | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
-  
+
       <div class="help-block" ng-messages="rubricForm.config_id.$error" ng-show="RubricSelectForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
   </div>
-  

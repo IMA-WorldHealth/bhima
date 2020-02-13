@@ -47,9 +47,17 @@ async function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
-      user.active, user.last_login AS lastLogin, user.deactivated
-    FROM user WHERE user.id = ?;
-  `;
+      user.active, user.last_login AS lastLogin, user.deactivated,
+      GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
+      GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots
+    FROM user
+      LEFT JOIN user_role ur ON user.id = ur.user_id
+      LEFT JOIN role ON role.uuid = ur.role_uuid
+      LEFT JOIN depot_permission dp ON dp.user_id = user.id
+      LEFT JOIN depot ON dp.depot_uuid = depot.uuid
+    WHERE user.id = ?
+    GROUP BY user.id;
+  `.trim();
 
   const user = await db.one(sql, [id]);
 
@@ -73,67 +81,30 @@ async function lookupUser(id) {
  *
  * @description
  * If the client queries to /users endpoint, the API will respond with an array
- * of zero or more JSON objects, with id, and username keys.
+ * of zero or more JSON objects, with id, username, display_name, activation state,
+ * roles and depots keys.
  *
  * GET /users
  */
 async function list(req, res, next) {
   try {
-    const sql = 'SELECT user.id, display_name, user.username, user.deactivated FROM user;';
-    let users = await db.exec(sql);
-    users = await setDepots(users);
-    users = await setRoles(users);
+    const sql = `
+      SELECT user.id, user.display_name, user.username, user.deactivated,
+        GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
+        GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots
+      FROM user
+        LEFT JOIN user_role ur ON user.id = ur.user_id
+        LEFT JOIN role ON role.uuid = ur.role_uuid
+        LEFT JOIN depot_permission dp ON dp.user_id = user.id
+        LEFT JOIN depot ON dp.depot_uuid = depot.uuid
+      GROUP BY user.id;
+    `.trim();
+
+    const users = await db.exec(sql);
     res.status(200).json(users);
   } catch (error) {
     next(error);
   }
-}
-
-async function setRoles(users) {
-  const sql = `
-    SELECT ur.user_id, r.label
-    FROM user_role ur
-    JOIN role r ON r.uuid = ur.role_uuid`;
-
-  const userMap = {};
-  users.forEach(user => {
-    user.roles = '';
-    userMap[user.id] = user;
-  });
-
-  const roles = await db.exec(sql);
-
-  users.forEach(user => {
-    user.roles = roles
-      .filter(role => role.user_id === user.id)
-      .map(role => role.label)
-      .join(', ');
-  });
-  return users;
-}
-
-async function setDepots(users) {
-  const sql = `
-    SELECT d.text, dpp.user_id
-    FROM depot_permission dpp
-    JOIN depot d ON d.uuid = dpp.depot_uuid`;
-
-  const depotMap = {};
-  users.forEach(user => {
-    user.roles = '';
-    depotMap[user.id] = user;
-  });
-
-  const depots = await db.exec(sql);
-
-  users.forEach(user => {
-    user.depots = depots
-      .filter(depot => depot.user_id === user.id)
-      .map(depot => depot.text)
-      .join(', ');
-  });
-
-  return users;
 }
 
 /**

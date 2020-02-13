@@ -18,7 +18,7 @@ function lookupRubricConfig(id) {
 // Lists the Payroll RubricConfigs
 function list(req, res, next) {
   const sql = `
-    SELECT c.id, c.label FROM config_rubric AS c   
+    SELECT c.id, c.label FROM config_rubric AS c
   ;`;
 
   db.exec(sql)
@@ -98,7 +98,7 @@ function del(req, res, next) {
 */
 function listConfig(req, res, next) {
   const sql = `
-    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id 
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id
       FROM config_rubric_item
     WHERE config_rubric_item.config_rubric_id = ?;
   `;
