@@ -49,12 +49,15 @@ async function lookupUser(id) {
     SELECT user.id, user.username, user.email, user.display_name,
       user.active, user.last_login AS lastLogin, user.deactivated,
       GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
-      GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots
+      GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
+      GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
     FROM user
       LEFT JOIN user_role ur ON user.id = ur.user_id
       LEFT JOIN role ON role.uuid = ur.role_uuid
       LEFT JOIN depot_permission dp ON dp.user_id = user.id
       LEFT JOIN depot ON dp.depot_uuid = depot.uuid
+      LEFT JOIN cashbox_permission ON user.id = cashbox_permission.user_id
+      LEFT JOIN cash_box cb ON cashbox_permission.cashbox_id = cb.id
     WHERE user.id = ?
     GROUP BY user.id;
   `.trim();
@@ -91,12 +94,15 @@ async function list(req, res, next) {
     const sql = `
       SELECT user.id, user.display_name, user.username, user.deactivated,
         GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
-        GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots
+        GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
+      GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes
       FROM user
         LEFT JOIN user_role ur ON user.id = ur.user_id
         LEFT JOIN role ON role.uuid = ur.role_uuid
         LEFT JOIN depot_permission dp ON dp.user_id = user.id
         LEFT JOIN depot ON dp.depot_uuid = depot.uuid
+        LEFT JOIN cashbox_permission ON user.id = cashbox_permission.user_id
+        LEFT JOIN cash_box cb ON cashbox_permission.cashbox_id = cb.id
       GROUP BY user.id;
     `.trim();
 

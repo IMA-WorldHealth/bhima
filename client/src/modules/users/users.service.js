@@ -31,6 +31,9 @@ function UserService(Api) {
     delete user.lastLogin;
     delete user.id;
     delete user.active;
+    delete user.roles;
+    delete user.cashboxes;
+    delete user.depots;
 
     return service.$http.put(`/users/${id}`, user)
       .then(service.util.unwrapHttpResponse);
