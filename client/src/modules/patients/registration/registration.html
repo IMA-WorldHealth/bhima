@@ -4,7 +4,7 @@
         <li class="static" translate>TREE.HOSPITAL</li>
         <li class="title" translate>PATIENT_REG.PAGE_TITLE</li>
       </ol>
-  
+
       <div class="toolbar">
         <div class="toolbar-item">
           <button type="button" data-method="lookup-patient" class="btn btn-default" ng-click="PatientRegCtrl.lookupReturningPatient()">
@@ -15,28 +15,28 @@
       </div>
     </div>
   </div>
-  
+
   <div class="flex-content">
     <div class="container-fluid" id="anchor">
-  
+
       <!-- master patient registration form wraps two child forms -->
       <form
         name="PatientRegistrationForm"
         bh-submit="PatientRegCtrl.submit(PatientRegistrationForm)"
         novalidate>
-  
+
         <div class="row">
-  
+
           <!-- Patient Details Form -->
           <div class="form-horizontal" ng-form="DetailForm">
             <div class="col-md-7">
               <div class="panel panel-primary">
                 <div class="panel-heading" translate>PATIENT_REG.PATIENT_DETAILS</div>
                   <div class="panel-body">
-  
+
                     <!-- Last Name -->
-                    <bh-input-text 
-                      label="FORM.LABELS.PATIENT_NAME" 
+                    <bh-input-text
+                      label="FORM.LABELS.PATIENT_NAME"
                       key='display_name'
                       required = "true"
                       left-label ="true"
@@ -44,12 +44,12 @@
                       on-change="PatientRegCtrl.onInputTextChange(key, value)"
                       text-value='PatientRegCtrl.medical.display_name'>
                     </bh-input-text>
-  
+
                     <!-- Hospital File Number -->
                     <div
                       class="form-group has-feedback"
                       ng-class="{'has-error' : DetailForm.hospitalNumber.$invalid && PatientRegistrationForm.$submitted || DetailForm.hospitalNumber.$error.unique}">
-  
+
                       <label class="col-md-3 control-label" translate> FORM.LABELS.HOSPITAL_FILE_NR</label>
                       <div class="col-md-9">
                         <input
@@ -60,22 +60,22 @@
                           ng-maxlength="PatientRegCtrl.length150"
                           autocomplete="off"
                           required>
-  
+
                         <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
                         <span ng-show="DetailForm.hospitalNumber.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-  
+
                         <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
                           <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
                         </div>
                       </div>
                     </div>
-  
+
                     <!-- Date of birth -->
                     <div class="form-group"
                       ng-class="{'has-error' : DetailForm.dob.$invalid && PatientRegistrationForm.$submitted}">
                       <label class="col-md-3 control-label" translate>
                         {{PatientRegCtrl.dateComponentLabel}}
-  
+
                       </label>
                       <div class="col-md-9">
                         <div class="input-group">
@@ -97,7 +97,7 @@
                             </button>
                           </span>
                         </div>
-  
+
                         <div class="help-block text-right">
                           <p>
                             <a ng-click="PatientRegCtrl.toggleFullDate()" href>
@@ -106,13 +106,13 @@
                             </a>
                           </p>
                         </div>
-  
+
                         <div class="help-block" ng-messages="DetailForm.dob.$error" data-date-error ng-if="PatientRegistrationForm.$submitted && DetailForm.dob.$invalid">
                           <div ng-messages-include="modules/templates/dates.messages.tmpl.html"></div>
                         </div>
                       </div>
                     </div>
-  
+
                     <!-- Gender -->
                     <div id="gender" class="form-group"
                       ng-class="{'has-error' : DetailForm.genderOptions.$invalid && PatientRegistrationForm.$submitted}">
@@ -122,21 +122,21 @@
                           <input type="radio" name="genderOptions" id="male" value="M" ng-model="PatientRegCtrl.medical.sex" required>
                           <span translate>FORM.LABELS.MALE</span>
                         </label>
-  
+
                         <label class="radio-inline">
                           <input type="radio" name="genderOptions" id="female" value="F" ng-model="PatientRegCtrl.medical.sex" required>
                           <span translate>FORM.LABELS.FEMALE</span>
                         </label>
-  
+
                         <div class="help-block" ng-messages="DetailForm.genderOptions.$error" ng-show="PatientRegistrationForm.$submitted">
                           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                         </div>
                       </div>
                     </div>
-  
+
                     <!-- separate location settings -->
                     <hr>
-  
+
                     <!-- Location -->
                     <div class="row">
                       <div class="col-md-5 col-md-offset-1">
@@ -146,10 +146,10 @@
                           location-uuid="PatientRegCtrl.medical.origin_location_id">
                         </bh-location-select>
                       </div>
-  
+
                       <!-- separate location searches given a certain screen size -->
                       <div class="visible-sm-block visible-xs-block"><hr></div>
-  
+
                       <div class="col-md-5 col-md-offset-1">
                         <h4 translate>FORM.LABELS.CURRENT_LOCATION</h4>
                         <bh-location-select
@@ -158,10 +158,10 @@
                         </bh-location-select>
                       </div>
                     </div>
-  
+
                     <!-- separate finance settings -->
                     <hr>
-  
+
                     <!-- Debtor Group -->
                     <div class="row">
                       <div class="col-md-5 col-md-offset-1">
@@ -173,7 +173,7 @@
                       </div>
                     </div>
                   </div>
-  
+
                 <div class="panel-footer text-right">
                   <bh-loading-button loading-state="PatientRegistrationForm.$loading">
                     <span translate>FORM.BUTTONS.REGISTER_PATIENT</span>
@@ -182,125 +182,125 @@
               </div>
             </div>
           </div>
-  
+
         <!-- Optional Information Form -->
         <div class="col-md-5">
           <div class="panel panel-default">
             <div class="panel-heading" translate> FORM.LABELS.OPTIONAL_INFO</div>
             <div class="panel-body">
               <div class="form-horizontal" ng-form="OptionalForm">
-                <bh-input-text 
-                  label="FORM.LABELS.TITLE" 
+                <bh-input-text
+                  label="FORM.LABELS.TITLE"
                   key='title'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.title'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.PHONE_NO" 
+
+                <bh-input-text
+                  label="FORM.LABELS.PHONE_NO"
                   key='phone'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.phone'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.EMAIL" 
+
+                <bh-input-text
+                  label="FORM.LABELS.EMAIL"
                   key='email'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.email'>
                 </bh-input-text>
-                
-                <bh-input-text 
-                  label="FORM.LABELS.ADDRESS1" 
+
+                <bh-input-text
+                  label="FORM.LABELS.ADDRESS1"
                   key='address_1'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.address_1'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.ADDRESS2" 
+
+                <bh-input-text
+                  label="FORM.LABELS.ADDRESS2"
                   key='address_2'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.address_2'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.FATHER_NAME" 
+
+                <bh-input-text
+                  label="FORM.LABELS.FATHER_NAME"
                   key='father_name'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.father_name'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.MOTHER_NAME" 
+
+                <bh-input-text
+                  label="FORM.LABELS.MOTHER_NAME"
                   key='mother_name'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.mother_name'>
                 </bh-input-text>
-                
-                <bh-input-text 
-                  label="FORM.LABELS.RELIGION" 
+
+                <bh-input-text
+                  label="FORM.LABELS.RELIGION"
                   key='religion'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.religion'>
                 </bh-input-text>
-                
+
                 <bh-input-text
-                  label="FORM.LABELS.MARITAL_STATUS" 
+                  label="FORM.LABELS.MARITAL_STATUS"
                   key='marital_status'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.marital_status'>
                 </bh-input-text>
-                
-                <bh-input-text 
-                  label="FORM.LABELS.PROFESSION" 
+
+                <bh-input-text
+                  label="FORM.LABELS.PROFESSION"
                   key='profession'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.profession'>
                 </bh-input-text>
-                
-                <bh-input-text 
-                  label="FORM.LABELS.EMPLOYER" 
+
+                <bh-input-text
+                  label="FORM.LABELS.EMPLOYER"
                   key='employer'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.employer'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.SPOUSE" 
+
+                <bh-input-text
+                  label="FORM.LABELS.SPOUSE"
                   key='spouse'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.spouse'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.SPOUSE_PROFESSION" 
+
+                <bh-input-text
+                  label="FORM.LABELS.SPOUSE_PROFESSION"
                   key='spouse_profession'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.spouse_profession'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.SPOUSE_EMPLOYER" 
+
+                <bh-input-text
+                  label="FORM.LABELS.SPOUSE_EMPLOYER"
                   key='spouse_employer'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.spouse_employer'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.HEALTH_ZONE" 
+
+                <bh-input-text
+                  label="FORM.LABELS.HEALTH_ZONE"
                   key='health_zone'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.health_zone'>
                 </bh-input-text>
-  
-                <bh-input-text 
-                  label="FORM.LABELS.HEALTH_AREA" 
+
+                <bh-input-text
+                  label="FORM.LABELS.HEALTH_AREA"
                   key='health_area'
                   on-change="PatientRegCtrl.onInputTextChange(key, value)"
                   text-value='PatientRegCtrl.medical.health_area'>
                 </bh-input-text>
-  
+
                 <div class="form-group" ng-class="{'has-error' : OptionalForm.notes.$invalid && PatientRegistrationForm.$submitted}">
                   <label class="control-label" translate>FORM.LABELS.NOTES</label>
                   <textarea
@@ -321,4 +321,3 @@
       </form>
     </div>
   </div>
-  

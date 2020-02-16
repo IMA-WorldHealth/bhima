@@ -1,0 +1,108 @@
+{{> head title="PATIENT_REG.PAGE_TITLE" }}
+
+<body>
+  <!-- header -->
+  <header style="margin: 0 1em; padding-top: 0; padding-bottom: 0;">
+    <div class="row" style="border-bottom: 1px solid black;">
+      <div class="col-xs-8">
+        <h4>{{patient.reference}} | {{patient.display_name}}</h4>
+      </div>
+
+      {{#if metadata.enterprise.settings.enable_barcodes}}
+        <div class="col-xs-4" style="margin-bottom: 2px;">
+          <small class="pull-right">{{> barcode value=patient.barcode}}</small>
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="row" style="font-size: 0.75em;">
+      <div class="col-xs-4">
+        <dl>
+          <dt>{{translate "FORM.LABELS.DOB"}}</dt>
+          <dd> {{date patient.dob }}</dd>
+
+          <dt>{{translate "FORM.LABELS.GENDER"}}</dt>
+          <dd>{{translate patient.sexFormatted}} ({{ patient.sex }})</dd>
+
+          <dt>{{translate "FORM.LABELS.DEBTOR_GROUP"}}<dt>
+          <dd>{{patient.debtor_group_name }}</dd>
+
+          {{#if patient.phone}}
+            <dt>{{translate "FORM.LABELS.PHONE_NO"}}<dt>
+            <dd>{{patient.phone}}</dd>
+          {{/if}}
+
+          {{#if patient.email}}
+            <dt>{{translate "FORM.LABELS.EMAIL"}}<dt>
+            <dd>{{patient.email}}</dd>
+          {{/if}}
+
+          {{#if patient.marital_status}}
+            <dt>{{translate "FORM.LABELS.MARITAL_STATUS"}}<dt>
+            <dd>{{patient.marital_status}}</dd>
+          {{/if}}
+        </dl>
+      </div>
+
+      <div class="col-xs-4">
+        <dl>
+          <dt>{{translate "FORM.LABELS.HOSPITAL_FILE_NR"}}</dt>
+          <dd>{{ patient.hospital_no }}</dd>
+
+          <dt>{{translate "TABLE.COLUMNS.REGISTERED_ON"}}</dt>
+          <dd>{{date patient.registration_date }}</dd>
+
+          {{#if patient.health_zone}}
+            <dt>{{translate "FORM.LABELS.HEALTH_ZONE"}}</dt>
+            <dd>{{patient.health_zone}}</dd>
+          {{/if}}
+
+          {{#if patient.health_area}}
+            <dt>{{translate "FORM.LABELS.HEALTH_AREA"}}</dt>
+            <dd>{{patient.health_area}}</dd>
+          {{/if}}
+
+        </dl>
+      </div>
+
+      <div class="col-xs-4">
+        <dl>
+          {{#if patient.employer}}
+            <dt>{{translate "FORM.LABELS.EMPLOYER"}}<dt>
+            <dd>{{patient.employer}}</dd>
+          {{/if}}
+
+          {{#if patient.address_1}}
+            <dt>{{translate "FORM.LABELS.ADDRESS1"}}<dt>
+            <dd>{{patient.address_1}}</dd>
+          {{/if}}
+
+          {{#if patient.address_2}}
+            <dt>{{translate "FORM.LABELS.ADDRESS2"}}<dt>
+            <dd>{{patient.address_2}}</dd>
+          {{/if}}
+
+          <dt>{{translate "FORM.LABELS.ORIGIN"}}</dt>
+          <dd>
+            <address style="margin-bottom:0; padding-bottom:0">
+              <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
+              <span>{{village.country_name}}</span>
+            </address>
+          </dd>
+
+          <dt>{{translate "FORM.LABELS.ADDRESS"}}</dt>
+          <dd>
+            <address>
+              <span>{{currentVillage.name}}, {{currentVillage.sector_name}}, {{currentVillage.province_name}}</span> <br />
+              <span>{{currentVillage.country_name}}</span>
+            </address>
+          </dd>
+        </dl>
+      </div>
+    </div>
+  </header>
+
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+  <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
+</body>

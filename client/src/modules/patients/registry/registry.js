@@ -24,6 +24,7 @@ function PatientRegistryController(
 
   vm.search = search;
   vm.patientCard = patientCard;
+  vm.patientFiche = patientFiche;
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Patients.download;
@@ -223,6 +224,10 @@ function PatientRegistryController(
   // patient card
   function patientCard(uuid) {
     Receipts.patient(uuid);
+  }
+
+  function patientFiche(uuid) {
+    Receipts.patient(uuid, false, { fiche : 1 });
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
