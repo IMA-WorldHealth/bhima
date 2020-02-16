@@ -3,11 +3,11 @@
  */
 
 -- inventory change report
---- by jeremielodi
---- 2019-11-18
+-- by jeremielodi
+-- 2019-11-18
 
-INSERT INTO unit (`name`, `key`, `description`, `parent`, `url`, `path`) VALUES
-  ('Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges');
+INSERT INTO unit (`id`, `name`, `key`, `description`, `parent`, `url`, `path`) VALUES
+  (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges');
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE');
@@ -20,4 +20,3 @@ DELETE FROM role_unit WHERE unit_id = 215;
 DELETE FROM unit WHERE id = 215;
 
 ALTER TABLE inventory_log DROP FOREIGN KEY `inventory_log_ibfk_1`;
-
