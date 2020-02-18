@@ -49,8 +49,7 @@ function report(req, res, next) {
   _.extend(query, {
     filename : 'INVOICE_REGISTRY.TITLE',
     csvKey : 'rows',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
+    orientation : 'landscape',
   });
 
   try {
@@ -175,15 +174,15 @@ function receipt(req, res, next) {
 
         if (invoiceResponse.exchange) {
           invoiceResponse.invoiceBalance.exchangedDebit = _.round(
-            invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange
+            invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange,
           );
 
           invoiceResponse.invoiceBalance.exchangedCredit = _.round(
-            invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange
+            invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange,
           );
 
           invoiceResponse.invoiceBalance.exchangedBalance = _.round(
-            invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange
+            invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange,
           );
         }
       }
