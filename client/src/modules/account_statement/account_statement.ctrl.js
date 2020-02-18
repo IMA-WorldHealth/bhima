@@ -19,7 +19,7 @@ AccountStatementController.$inject = [
 function AccountStatementController(
   GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
   bhConstants, uiGridConstants, AccountStatement, Modal, Languages,
-  GridExport, Transactions, GridState, $state, Accounts, $httpParamSerializer
+  GridExport, Transactions, GridState, $state, Accounts, $httpParamSerializer,
 ) {
   // global variables
   const vm = this;
@@ -270,20 +270,10 @@ function AccountStatementController(
     return angular.extend(filters, { renderer : type || 'pdf', lang : Languages.key });
   }
 
-  // export pdf
-  vm.exportPdf = function exportPdf() {
-    const url = '/reports/finance/account_statement';
-    const params = formatExportParameters('pdf');
-
-    if (!params) { return; }
-    Modal.openReports({ url, params });
-  };
-
-  // export excel
-  vm.exportExcel = function exportExcel() {
+  vm.download = function download(type) {
     const filterOpts = AccountStatement.filters.formatHTTP();
     const defaultOpts = {
-      renderer : 'xlsx',
+      renderer : type,
       lang : Languages.key,
     };
     // combine options
@@ -291,6 +281,7 @@ function AccountStatementController(
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
   // export csv
   vm.exportCsv = function exportCsv() {
     exportation.run();
