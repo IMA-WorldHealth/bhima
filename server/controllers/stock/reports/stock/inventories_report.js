@@ -14,24 +14,20 @@ const {
 async function stockInventoriesReport(req, res, next) {
   let options = {};
   let display = {};
-  let hasFilter = false;
   let filters;
 
   const data = {};
 
-  // optionReports
-  // const metadata = req.session;
   const optionReport = _.extend({}, req.query, {
     filename : 'TREE.STOCK_INVENTORY',
     title : 'TREE.STOCK_INVENTORY',
+    orientation : 'landscape',
   });
-
 
   try {
     if (req.query.identifiers && req.query.display) {
       options = JSON.parse(req.query.identifiers);
       display = JSON.parse(req.query.display);
-      hasFilter = Object.keys(display).length > 0;
       filters = formatFilters(display);
     } else {
       options = req.query;
@@ -43,7 +39,6 @@ async function stockInventoriesReport(req, res, next) {
     const rows = await Stock.getInventoryQuantityAndConsumption(options);
 
     data.rows = rows;
-    data.hasFilter = hasFilter;
     data.filters = filters;
     data.csv = rows;
     data.display = display;
