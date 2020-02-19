@@ -1,54 +1,51 @@
 {{> head title="POSTING_JOURNAL.TITLE"}}
 
-<div class="container">
+<body>
   {{> header }}
 
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
+  <!-- page title  -->
+  <h2 class="text-center text-uppercase">
+    {{translate 'POSTING_JOURNAL.TITLE'}}
+  </h2>
 
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'POSTING_JOURNAL.TITLE'}}
-      </h2>
+  <!-- filters  -->
+  {{> filterbar filters=filters }}
 
-      <br>
-
-      <!-- list of data  -->
-      <table class="table table-condensed table-report">
-        <thead>
-          <tr>
-            <th>{{translate 'TABLE.COLUMNS.TRANSACTION'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.RECORD'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
-            <th class="text-right">{{translate 'TABLE.COLUMNS.DEBIT'}}</th>
-            <th class="text-right">{{translate 'TABLE.COLUMNS.CREDIT'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.RECIPIENT'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each rows}}
-            <tr>
-              <td>{{trans_id}}</td>
-              <td>{{date date}}</td>
-              <td>{{hrRecord}}</td>
-              <td>{{description}}</td>
-              <td>{{account_number}}</td>
-              <td class="text-right">{{currency debit_equiv}}</td>
-              <td class="text-right">{{currency credit_equiv}}</td>
-              <td>{{hrEntity}}</td>
-              <td>{{hrReference}}</td>
-              <td>{{user}}</td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-  </div>
+  <!-- list of data  -->
+  <table class="table table-condensed table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'TABLE.COLUMNS.TRANSACTION'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.RECORD'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.DEBIT'}}</th>
+        <th class="text-right">{{translate 'TABLE.COLUMNS.CREDIT'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.RECIPIENT'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          <td>{{trans_id}}</td>
+          <td>{{date date}}</td>
+          <td>{{hrRecord}}</td>
+          <td>{{description}}</td>
+          <td>{{account_number}}</td>
+          <td class="text-right">{{currency debit_equiv}}</td>
+          <td class="text-right">{{currency credit_equiv}}</td>
+          <td>{{hrEntity}}</td>
+          <td>{{hrReference}}</td>
+          <td>{{user}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=10}}
+      {{/each}}
+    </tbody>
+  </table>
 
   <div class="row">
     <div class="col-xs-4">
@@ -63,4 +60,4 @@
       {{translate 'TABLE.COLUMNS.RESULT'}}: <strong>{{currency totals.balance}}</strong>
     </div>
   </div>
-</div>
+</body>
