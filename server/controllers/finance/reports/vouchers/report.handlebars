@@ -1,56 +1,50 @@
 {{> head title="VOUCHERS.GLOBAL.REPORT"}}
 
-<div class="container">
+<body>
   {{> header }}
 
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
+  <!-- page title  -->
+  <h2 class="text-center text-uppercase">
+    {{translate 'VOUCHERS.GLOBAL.REPORT'}}
+  </h2>
 
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'VOUCHERS.GLOBAL.REPORT'}}
-      </h2>
+  <!-- filters  -->
+  {{> filterbar filters=filters }}
 
-      <!-- filters  -->
-      {{> filterbar filters=filters }}
+  <!-- list of data  -->
+  <table class="table table-condensed table-bordered table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
+        <th>{{translate 'FORM.LABELS.DATE'}}</th>
+        <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
+        <th>{{translate 'FORM.LABELS.AMOUNT'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.CREATED_BY'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows as |voucher|}}
+        <tr>
+          <td>{{voucher.reference}}</td>
+          <td>{{date voucher.date}}</td>
+          <td title="{{voucher.description}}">{{voucher.description}}</td>
+          <td class="text-right">{{currency voucher.amount voucher.currency_id}}</td>
+          <td>{{voucher.display_name}}</td>
+        </tr>
+      {{else}}
+        {{>emptyTable cols=5}}
+      {{/each}}
+    </tbody>
+  </table>
 
-      <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-report">
-        <thead>
-          <tr>
-            <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-            <th>{{translate 'FORM.LABELS.DATE'}}</th>
-            <th>{{translate 'FORM.LABELS.DESCRIPTION'}}</th>
-            <th>{{translate 'FORM.LABELS.AMOUNT'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.CREATED_BY'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each rows as |voucher|}}
-            <tr>
-              <td>{{voucher.reference}}</td>
-              <td>{{date voucher.date}}</td>
-              <td title="{{voucher.description}}">{{voucher.description}}</td>
-              <td class="text-right">{{currency voucher.amount voucher.currency_id}}</td>
-              <td>{{voucher.display_name}}</td>
-            </tr>
-          {{/each}}
-
-
-        </tbody>
-      </table>
-
-      <table
-        style='width:400px; float:right; margin-top:10px'
-        class="table table-condensed table-bordered table-report">
-        {{#each totals as |total|}}
-            <tr>
-              <td> {{total.numVouchers}} {{translate 'FORM.LABELS.VOUCHERS'}} ({{total.currencySymbol}})</td>
-              <td class="text-right">{{total.totalAmount}} {{total.currencySymbol}}</td>
-            </tr>
-          {{/each}}
-      </table>
-    </div>
-  </div>
-</div>
+  <table
+    style='width:400px; float:right; margin-top:10px'
+    class="table table-condensed table-bordered table-report">
+    {{#each totals as |total|}}
+        <tr>
+          <td> {{total.numVouchers}} {{translate 'FORM.LABELS.VOUCHERS'}} ({{total.currencySymbol}})</td>
+          <td class="text-right">{{total.totalAmount}} {{total.currencySymbol}}</td>
+        </tr>
+      {{/each}}
+  </table>
+</body>
