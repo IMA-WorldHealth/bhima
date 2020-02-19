@@ -1,4 +1,3 @@
-
 /**
  * @overview Price Report
  *
@@ -19,42 +18,32 @@ module.exports = prices;
 
 const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 
-function prices(req, res, next) {
+async function prices(req, res, next) {
   const params = _.clone(req.query);
 
   const qs = _.extend(req.query, {
     csvKey : 'groups',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
+    orientation : 'landscape',
   });
+
   const metadata = _.clone(req.session);
 
-  let report;
-
   try {
-    report = new ReportManager(TEMPLATE, metadata, qs);
+    const report = new ReportManager(TEMPLATE, metadata, qs);
+
+
+    const items = await inventorycore.getItemsMetadata(params);
+    let groups = _.groupBy(items, i => i.groupName);
+
+    // make sure that they keys are sorted in alphabetical order
+    groups = _.mapValues(groups, lines => {
+      _.sortBy(lines, 'label');
+      return lines;
+    });
+
+    const result = await report.render({ groups });
+    res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
-    return;
   }
-
-
-  inventorycore.getItemsMetadata(params)
-    .then(items => {
-      // group by inventory group
-      let groups = _.groupBy(items, i => i.groupName);
-
-      // make sure that they keys are sorted in alphabetical order
-      groups = _.mapValues(groups, lines => {
-        _.sortBy(lines, 'label');
-        return lines;
-      });
-
-      return report.render({ groups });
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
