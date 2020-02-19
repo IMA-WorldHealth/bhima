@@ -25,36 +25,22 @@ exports.report = report;
  * Build a report for Purchase Registry report of metadata
  *
  */
-function report(req, res, next) {
-  let reportInstance;
-
+async function report(req, res, next) {
   const query = _.clone(req.query);
   const filters = shared.formatFilters(req.query);
 
   _.extend(query, {
     filename : 'TREE.PURCHASE_REGISTRY',
     csvKey : 'rows',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
+    orientation : 'landscape',
   });
 
   try {
-    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
+    const reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
+    const rows = await Purchases.find(query);
+    const result = await reportInstance.render({ filters, rows });
+    res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
-    return;
   }
-
-  const data = { filters };
-
-  Purchases.find(query)
-    .then(rows => {
-      data.rows = rows;
-      return reportInstance.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
