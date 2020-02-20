@@ -247,7 +247,7 @@ function lookupData(params) {
           enableFiltering : 'false',
           statusReport : 0,
           cellTemplate : '/modules/display_metadata/templates/action.cell.html',
-        }
+        },
       );
 
       const dataSurvey = {

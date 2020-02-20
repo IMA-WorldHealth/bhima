@@ -1,10 +1,13 @@
 const db = require('../../lib/db');
 
-exports.create = create;
-exports.read = read;
-exports.update = update;
-exports.detail = detail;
-exports.delete = remove;
+module.exports = {
+  create,
+  read,
+  update,
+  detail,
+  delete : remove,
+};
+
 // add a new tag
 function create(req, res, next) {
   const sql = `INSERT INTO tags SET ?`;
