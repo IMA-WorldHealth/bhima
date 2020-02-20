@@ -18,12 +18,6 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@bower_components/angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1", angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
-  version "1.0.0-rc.1"
-  resolved "https://codeload.github.com/angular-ui/angular-ui-router-bower/tar.gz/06f6ab4b7593a2895293450409a2f9a09cbc8d86"
-  dependencies:
-    ui-router-core "3.1.0"
-
 "@commitlint/execute-rule@^8.3.4":
   version "8.3.4"
   resolved "https://registry.yarnpkg.com/@commitlint/execute-rule/-/execute-rule-8.3.4.tgz#1b63f0713b197889d90b76f9eea1abc010d256b1"
@@ -458,6 +452,18 @@
     "@types/events" "*"
     "@types/node" "*"
 
+"@uirouter/angularjs@^1.0.25":
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/@uirouter/angularjs/-/angularjs-1.0.25.tgz#9969788eca03bc3f8b1d1b39946713a18e824e33"
+  integrity sha512-kf9bxBhqa1ZUw0aDlz4H17VqAD30MVJY6HM7J628vDeNN9yZt7SDYpwqSrR3y6NBadZUPjaKsDoKsyQQSWArNA==
+  dependencies:
+    "@uirouter/core" "6.0.4"
+
+"@uirouter/core@6.0.4":
+  version "6.0.4"
+  resolved "https://registry.yarnpkg.com/@uirouter/core/-/core-6.0.4.tgz#fcdc75ab10f1035176acf87a27d9d27a0101ecf9"
+  integrity sha512-TQ9XOzZY+jmWKkU4993MAEBIy7Bs3kijDzj+A6RHR8gq/3UoQm3Q/l1igfao5GZyBjid7eRVeipPK14ovCYQ3g==
+
 "@yarnpkg/lockfile@^1.0.2":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@yarnpkg/lockfile/-/lockfile-1.1.0.tgz#e77a97fbd345b76d83245edcd17d393b1b41fb31"
@@ -666,6 +672,12 @@ angular-ui-grid@^4.8.0:
   integrity sha512-Act6ftPzRMr8SKynMk/KiuIY7mvhkNnMEcDAD0rEBLdRVYk+9VTdzumGcMPj7KQae3rmMWegMi5R60Z+YxYPKA==
   dependencies:
     angular ">=1.4.0 1.7.x"
+
+angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
+  version "1.0.0-rc.1"
+  resolved "https://codeload.github.com/angular-ui/angular-ui-router-bower/tar.gz/06f6ab4b7593a2895293450409a2f9a09cbc8d86"
+  dependencies:
+    ui-router-core "3.1.0"
 
 "angular@>=1.2.22 <2", "angular@>=1.4.0 1.7.x", angular@^1.7.9:
   version "1.7.9"

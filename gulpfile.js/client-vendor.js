@@ -14,7 +14,7 @@ const {
 
 let VENDOR_FILES = [
   'node_modules/jquery/dist/jquery.min.js', // jquery
-  'node_modules/cropper/dist/cropper.js', // TODO(@jniles) - do we need this?
+  'node_modules/cropper/dist/cropper.min.js', // TODO(@jniles) - do we need this?
 
   // Angular
   'node_modules/angular/angular.min.js',
@@ -33,7 +33,7 @@ let VENDOR_FILES = [
   'node_modules/angular-translate/dist/angular-translate.min.js',
   'node_modules/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
   'node_modules/angular-translate-loader-url/angular-translate-loader-url.min.js',
-  'node_modules/angular-dynamic-locale/dist/tmhDynamicLocale.js',
+  'node_modules/angular-dynamic-locale/dist/tmhDynamicLocale.min.js',
 
   'node_modules/ng-file-upload/dist/ng-file-upload.min.js',
 
@@ -41,8 +41,8 @@ let VENDOR_FILES = [
   'node_modules/webcam/dist/webcam.min.js', // webcam directive
 
   // UI Router
-  'node_modules/@bower_components/angular-ui-router/release/angular-ui-router.min.js',
-  'node_modules/@bower_components/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
+  'node_modules/angular-ui-router/release/angular-ui-router.min.js',
+  'node_modules/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
 
   // MomentJS
   'node_modules/moment/min/moment.min.js',
