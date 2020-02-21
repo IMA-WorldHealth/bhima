@@ -11,7 +11,7 @@ const FilterParser = require('../../lib/filter');
 // GET /choices_list_management
 function lookupchoicesListManagement(id) {
   const sql = `
-    SELECT id, name, label, fixed, group_label, parent, is_title, is_group 
+    SELECT id, name, label, fixed, group_label, parent, is_title, is_group
     FROM choices_list_management
     WHERE choices_list_management.id = ?`;
 
@@ -100,7 +100,7 @@ function remove(req, res, next) {
     .then((row) => {
     // if nothing happened, let the client know via a 404 error
       if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a function with id ${req.params.id}`);
+        throw new NotFound(`Could not find a choices list with id ${req.params.id}`);
       }
 
       res.status(204).json();

@@ -64,14 +64,6 @@ function find(params) {
       FROM project WHERE project.locked = 1;`;
   }
 
-  if (params.incomplete_locked === '0') {
-    sql = 'SELECT project.id, project.name FROM project WHERE project.locked = 0;';
-  }
-
-  if (params.incomplete_locked === '1') {
-    sql = 'SELECT project.id, project.name FROM project WHERE project.locked = 1;';
-  }
-
   return db.exec(sql);
 }
 
@@ -124,25 +116,22 @@ exports.create = function create(req, res, next) {
  *
  * Updates a new project.
  */
-exports.update = function update(req, res, next) {
-  let sql;
+exports.update = async function update(req, res, next) {
+  try {
+    await db.exec('UPDATE project SET ? WHERE id = ?;', [req.body, req.params.id]);
 
-  sql = 'UPDATE project SET ? WHERE id = ?;';
-
-  db.exec(sql, [req.body, req.params.id])
-    .then(() => {
-      sql = `SELECT project.id, project.enterprise_id, project.abbr,
+    const sql = `
+      SELECT project.id, project.enterprise_id, project.abbr,
         project.zs_id, project.name, project.locked
       FROM project
-      WHERE project.id = ?;`;
+      WHERE project.id = ?;
+    `.trim();
 
-      return db.exec(sql, [req.params.id]);
-    })
-    .then((rows) => {
-      res.status(200).json(rows[0]);
-    })
-    .catch(next)
-    .done();
+    const project = await db.one(sql, [req.params.id]);
+    res.status(200).json(project);
+  } catch (e) {
+    next(e);
+  }
 };
 
 
@@ -156,7 +145,7 @@ exports.delete = function del(req, res, next) {
 
   db.exec(sql, [req.params.id])
     .then((row) => {
-    // if nothing happened, let the client know via a 404 error
+      // if nothing happened, let the client know via a 404 error
       if (row.affectedRows === 0) {
         throw new NotFound(`No project found by id ${req.params.id}.`);
       }

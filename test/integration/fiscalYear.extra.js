@@ -5,7 +5,7 @@ const helpers = require('./helpers');
 
 describe('(/fiscal) Fiscal Year extra operations', () => {
   const url = '/fiscal';
-  const date = new Date('2017-08-24');
+  const date = new Date('2017-08-24 12:00:00');
 
   const fiscalYear2015 = {
     id : 1,
@@ -35,7 +35,8 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
    * from the date 2017-08-24
    */
   it(`GET /fiscal/date?date=${flatDate(date)} returns the fiscal year from a given date`, () => {
-    return agent.get(url.concat(`/date?date=${date}`))
+    return agent.get(url.concat('/date'))
+      .query({ date })
       .then(res => {
         helpers.api.listed(res, 1);
         const [fy] = res.body;

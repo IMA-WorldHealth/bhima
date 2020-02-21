@@ -28,7 +28,7 @@ describe('util', () => {
     // you should be able to pass in a context to use as this
     const context = { y : 0 };
     fn = util.once(function cb() {
-      this.y = this.y + 3;
+      this.y += 3;
     }, context);
 
     fn();
@@ -84,7 +84,7 @@ describe('util', () => {
   });
 
   it('#formatDate() should take a date and transform it into a format passed in as a second argument.', () => {
-    const date = new Date('2018-01-31');
+    const date = new Date('2018-01-31 12:00:00');
     const expected = '31/01/2018';
     const format = 'DD/MM/YYYY';
 
@@ -224,7 +224,7 @@ describe('util', () => {
   });
 
   it(`
-  #grouptBy() should returns an object with properties the values of the given property, 
+  #grouptBy() should returns an object with properties the values of the given property,
   and value an array of objects having for the given property the value which correspond
   to the property
   `, () => {
