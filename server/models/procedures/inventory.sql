@@ -74,30 +74,4 @@ BEGIN
   END IF;
 END $$
 
-DROP PROCEDURE IF EXISTS importPriceListItem;
-CREATE PROCEDURE importPriceListItem (
-  IN _price_list_uuid BINARY(16),
-  IN _inventory_code VARCHAR(30),
-  IN _value DOUBLE,
-  IN _is_percentage tinyint(1)
-)
-BEGIN
-  DECLARE _inventory_uuid BINARY(16);
-  DECLARE isInventory tinyint(5);
-   DECLARE inventoryLabel VARCHAR(100);
-
-  SELECT uuid, text,  count(uuid)
-  INTO _inventory_uuid, inventoryLabel, isInventory
-  FROM inventory
-  WHERE code = _inventory_code;
-
-  IF isInventory = 1 THEN
-    DELETE FROM price_list_item
-      WHERE price_list_uuid = _price_list_uuid AND inventory_uuid = _inventory_uuid;
-    INSERT INTO price_list_item(uuid, inventory_uuid, price_list_uuid, label, value, is_percentage)
-    VALUES(HUID(uuid()), _inventory_uuid, _price_list_uuid, inventoryLabel, _value, _is_percentage);
-  END IF;
-
-END $$
-
 DELIMITER ;
