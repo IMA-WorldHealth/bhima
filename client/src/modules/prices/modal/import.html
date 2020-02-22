@@ -7,42 +7,41 @@
       </li>
     </ol>
   </div>
+
   <div class="modal-body" data-import-modal>
-    <div class="alert alert-info">
-      <p translate>PRICE_LIST.IMPORT.PRICE_LIST_ITEMS_DESCRIPTION</p>
-      <br/>
-      <a href="/prices/download/filled_template?renderer=csv" target="_blank" href>
-        <i class="fa fa-cloud-download"></i>
-        <span translate>PRICE_LIST.IMPORT.PRICE_LIST_ITEMS_WITH_INVENTORY</span>
-      </a>
-    </div>
+    <p translate>PRICE_LIST.IMPORT.DESCRIPTION</p>
 
-      <div class="form-group"
-        ng-class="{ 'has-error' : ModalCtrl.noSelectedFile }">
-        <label translate>ACCOUNT.IMPORT.LOAD_FROM_FILE</label>
-        <input
-          id="import-input"
-          accept=".csv"
-          class="form-control"
-          type="file"
-          name="file"
-          ng-model="ModalCtrl.file"
-          ngf-select="ModalCtrl.select(ModalCtrl.file)">
-        <div class="help-block" data-error-message ng-show="ModalCtrl.noSelectedFile">
-          <i class="fa fa-warning"></i> <span translate>INVENTORY.NO_FILE_SELECTED</span>
-        </div>
+    <a href="/prices/download/filled_template?renderer=csv" target="_blank" href>
+      <i class="fa fa-cloud-download"></i>
+      <span translate>PRICE_LIST.IMPORT.DOWNLOAD</span>
+    </a>
+
+    <br />
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ModalCtrl.noSelectedFile }">
+      <label translate>ACCOUNT.IMPORT.LOAD_FROM_FILE</label>
+      <input
+        id="import-input"
+        accept=".csv"
+        class="form-control"
+        type="file"
+        name="file"
+        ng-model="ModalCtrl.file"
+        ngf-select="ModalCtrl.select(ModalCtrl.file)">
+      <div class="help-block" data-error-message ng-show="ModalCtrl.noSelectedFile">
+        <i class="fa fa-warning"></i> <span translate>INVENTORY.NO_FILE_SELECTED</span>
       </div>
-
+    </div>
   </div>
+
   <div class="modal-footer">
     <button type="button" class="btn btn-default" data-method="cancel"
       ng-click="ModalCtrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button
-      disabled="!ModalCtrl.file"
-      loading-state="ActionForm.$loading">
+    <bh-loading-button disabled="!ModalCtrl.file" loading-state="ActionForm.$loading">
     </bh-loading-button>
   </div>
 </form>

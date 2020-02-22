@@ -599,7 +599,7 @@ exports.configure = function configure(app) {
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
   app.post('/prices/item', priceList.createItem);
-  app.post('/prices/item/import', upload.middleware('csv', 'file'), priceList.importItem);
+  app.post('/prices/item/import', upload.middleware('csv', 'file'), priceList.importItems);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
   app.delete('/prices/item/:uuid', priceList.deleteItem);

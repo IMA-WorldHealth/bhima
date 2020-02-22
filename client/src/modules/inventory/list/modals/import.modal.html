@@ -28,14 +28,14 @@
     <div class="form-group"
       ng-class="{ 'has-error' : $ctrl.noSelectedFile }">
       <label translate>INVENTORY.IMPORT_INVENTORIES_FROM_FILE</label>
-      <input 
+      <input
         accept=".csv"
-        class="form-control" 
-        type="file" 
-        name="file" 
+        class="form-control"
+        type="file"
+        name="file"
         ng-model="$ctrl.file"
         ngf-select="$ctrl.select($ctrl.file)">
-      
+
       <div class="help-block" data-error-message ng-show="$ctrl.noSelectedFile">
         <i class="fa fa-warning"></i> <span translate>INVENTORY.NO_FILE_SELECTED</span>
       </div>
@@ -53,7 +53,7 @@
     <button type="button" class="btn btn-default" data-method="cancel" ng-click="$ctrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
-  
+
     <bh-loading-button disabled="$ctrl.uploadState === 'uploading'" loading-state="ActionForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
