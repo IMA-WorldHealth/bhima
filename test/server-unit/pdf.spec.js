@@ -13,6 +13,8 @@ const mockHTMLRenderer = (data, template) => {
   return Promise.resolve(compiled(data));
 };
 
+const nodeModulesPath = path.resolve(__dirname, '../../', 'node_modules');
+
 const pdf = rewire('../../server/lib/renderers/pdf');
 pdf.__set__('html', { render : mockHTMLRenderer });
 
@@ -42,8 +44,14 @@ function PDFRenderUnitTest() {
 
   it('#pdf.render() templates in a barcode to the pdf file', async () => {
     const tmpl = await fs.readFile(path.join(fixturesPath, templateWithBarcode), 'utf8');
+
+    // since we removed the actual html templating, this is a poor man's templating
+    // in of the barcode rendererj
+    const templated = tmpl
+      .replace('{{nodeModulesPath}}', nodeModulesPath);
+
     const params = { main : 'This is a test', value : 'hi' };
-    const result = await pdf.render(params, tmpl, {});
+    const result = await pdf.render(params, templated, {});
     const hasValidVersion = hasValidPdfVersion(result.toString());
     const isBuffer = isBufferInstance(result);
     expect(isBuffer && hasValidVersion).to.be.equal(true);
