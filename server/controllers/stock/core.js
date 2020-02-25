@@ -418,6 +418,8 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     ? moment(periodDate).format(DATE_FORMAT)
     : moment().format(DATE_FORMAT);
 
+  const beginingDate = moment(baseDate).subtract(numberOfMonths, 'months').format(DATE_FORMAT);
+
   const queryPeriodRange = `
     SELECT id FROM period WHERE id BETWEEN ? AND ?;
   `;
@@ -438,9 +440,14 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     GROUP BY i.uuid, d.uuid;
   `;
 
+  const getBeginigPeriod = `
+    SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
+  `;
+
   const period = await db.one(queryPeriodId, [periodId || baseDate]);
-  const beginingPeriod = period.id - numberOfMonths;
-  const paramPeriodRange = beginingPeriod > 0 ? [beginingPeriod + 1, period.id] : [1, period.id];
+  const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
+
+  const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
 
   const rows = await db.exec(queryPeriodRange, paramPeriodRange);
   const ids = rows.map(row => row.id);
