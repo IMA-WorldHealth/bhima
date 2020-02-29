@@ -413,7 +413,7 @@ function getStockConsumption(periodIds) {
  * @param {Date} periodDate - a date for finding the correspondant period
  * @param {number} numberOfMonths - the number of months for calculating the average (optional)
  */
-async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths = BASE_NUMBER_OF_MONTHS) {
+async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths = BASE_NUMBER_OF_MONTHS - 1) {
   const baseDate = periodDate
     ? moment(periodDate).format(DATE_FORMAT)
     : moment().format(DATE_FORMAT);
@@ -421,7 +421,7 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
   const beginingDate = moment(baseDate).subtract(numberOfMonths, 'months').format(DATE_FORMAT);
 
   const queryPeriodRange = `
-    SELECT id FROM period WHERE id BETWEEN ? AND ?;
+    SELECT id FROM period WHERE (id BETWEEN ? AND ?) AND period.number NOT IN (0, 13);
   `;
 
   const queryPeriodId = periodId
@@ -429,7 +429,7 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
-    SELECT IF(i.avg_consumption = 1, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
+    SELECT IF(i.avg_consumption = 0, ROUND(SUM(s.quantity)/?), i.avg_consumption) AS quantity,
       BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
       d.text AS depot_text
     FROM stock_consumption s
@@ -446,13 +446,12 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
 
   const period = await db.one(queryPeriodId, [periodId || baseDate]);
   const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
-
   const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
 
   const rows = await db.exec(queryPeriodRange, paramPeriodRange);
   const ids = rows.map(row => row.id);
 
-  return db.exec(queryStockConsumption, [ids]);
+  return db.exec(queryStockConsumption, [ids.length || 1, ids]);
 }
 
 /**
