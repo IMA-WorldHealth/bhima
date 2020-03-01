@@ -594,6 +594,8 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
   (1, HUID('07dc0762-c9a6-4e67-a08f-ccfae34f7f7e'), '170448',   'Nystatin 100.000UI/ml suspension orale 30ml fl',         1.5000,   1, HUID('4f804446-16cc-47e4-a40f-8d915107d431'), 10, 0, 0, 0, 0,         0, 1, 1, 0, 1, 1.0000, 1.0000, '2016-10-23 08:35:08', NULL,1),
   (1, HUID('6fd1e156-e703-4c95-b64d-65859464fd99'), '170449',   'Nevirapine (NVP) Sirop 10mg/ml 240ml fl',                5.4534,   1, HUID('4f804446-16cc-47e4-a40f-8d915107d431'), 10, 0, 0, 0, 0,         0, 1, 1, 0, 1, 1.0000, 1.0000, '2016-10-23 08:35:08', NULL,1);
 
+UPDATE `inventory` SET avg_consumption = 0 WHERE avg_consumption = 1;
+
 INSERT INTO `debtor_group` VALUES
   (1, HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Church Employees', 174, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, NULL, NULL, 0, 10, 0, NULL, 1, 1, 1, '#ff0000', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   (1, HUID('66f03607-bfbc-4b23-aa92-9321ca0ff586'), 'NGO IMA World Health', 175, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, NULL, NULL, 0, 300, 1, NULL, 1, 1, 1, '#00ff00', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

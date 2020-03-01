@@ -57,27 +57,27 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 2 inventory by state (security reached)', async () => {
+  it('find 1 inventory by state (security reached)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 1);
 
     await filters.resetFilters();
   });
 
-  it('find 2 inventories  by state plus one line for grouping (minimum reached)', async () => {
-    await FU.radio('$ctrl.searchQueries.status', 2);
+  it('find 0 inventories  by state plus one line for grouping (minimum reached)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 3);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 0);
     await filters.resetFilters();
   });
 
-  it('find 3 inventories  by state plus two lines for grouping (over maximum)', async () => {
+  it('find 7 inventories  by state plus two lines for grouping (over maximum)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 7);
+    await GU.expectRowCount(gridId, 9);
     await filters.resetFilters();
   });
 
@@ -89,10 +89,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 3 inventories who Requires a purchase order', async () => {
+  it('find 0 inventories who Requires a purchase order', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 3);
+    await GU.expectRowCount(gridId, 0);
     await filters.resetFilters();
   });
 }
