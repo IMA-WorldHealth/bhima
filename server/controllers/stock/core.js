@@ -34,7 +34,7 @@ const flux = {
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const BASE_NUMBER_OF_MONTHS = 6;
+const BASE_NUMBER_OF_MONTHS = 12;
 
 // exports
 exports.flux = flux;
@@ -429,7 +429,7 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
-    SELECT IF(i.avg_consumption = 0, ROUND(SUM(s.quantity)/?), i.avg_consumption) AS quantity,
+    SELECT IF(i.avg_consumption = 0, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
       BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
       d.text AS depot_text
     FROM stock_consumption s
@@ -451,7 +451,7 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
   const rows = await db.exec(queryPeriodRange, paramPeriodRange);
   const ids = rows.map(row => row.id);
 
-  return db.exec(queryStockConsumption, [ids.length || 1, ids]);
+  return db.exec(queryStockConsumption, [ids]);
 }
 
 /**

@@ -46,12 +46,11 @@ async function stockInventoriesReport(req, res, next) {
     data.dateTo = options.dateTo;
 
     // group by depot
-    let depots = _.groupBy(rows, d => d.depot_text);
+    const groupedDepots = _.groupBy(rows, d => d.depot_text);
+    const depots = {};
 
-    // make sure that they keys are sorted in alphabetical order
-    depots = _.mapValues(depots, lines => {
-      _.sortBy(lines, 'depot_text');
-      return lines;
+    Object.keys(groupedDepots).sort(compare).forEach(d => {
+      depots[d] = _.sortBy(groupedDepots[d], line => String(line.text).toLocaleLowerCase());
     });
 
     data.depots = depots;
@@ -61,6 +60,10 @@ async function stockInventoriesReport(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+function compare(a, b) {
+  return a.localeCompare(b);
 }
 
 module.exports = stockInventoriesReport;

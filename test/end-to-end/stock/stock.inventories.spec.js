@@ -73,11 +73,11 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 7 inventories  by state plus two lines for grouping (over maximum)', async () => {
+  it('find 7 inventories by state plus lines for grouping (over maximum)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 9);
+    await GU.expectRowCount(gridId, 8);
     await filters.resetFilters();
   });
 
