@@ -12,20 +12,27 @@ const {
  * GET /reports/stock/lots
  */
 function stockLotsReport(req, res, next) {
-  const { display } = req.query;
+  let options = {};
+  let display = {};
+  let filters;
+
   const data = {};
-  let options = req.query;
   let hasFilter = false;
   let report;
 
   const optionReport = _.extend(req.query, pdfOptions, {
     filename : 'TREE.STOCK_LOTS',
   });
+
   // set up the report with report manager
   try {
     if (req.query.identifiers && req.query.display) {
-      options = req.query.identifiers;
+      options = JSON.parse(req.query.identifiers);
+      display = JSON.parse(req.query.display);
+      filters = formatFilters(display);
       hasFilter = Object.keys(display).length > 0;
+    } else {
+      options = req.query;
     }
 
     report = new ReportManager(STOCK_LOTS_REPORT_TEMPLATE, req.session, optionReport);
@@ -42,17 +49,17 @@ function stockLotsReport(req, res, next) {
     .then((rows) => {
       data.rows = rows;
       data.hasFilter = hasFilter;
+      data.filters = filters;
       data.csv = rows;
       data.display = display;
       data.filters = formatFilters(options);
 
       // group by depot
-      let depots = _.groupBy(rows, d => d.depot_text);
+      const groupedDepots = _.groupBy(rows, d => d.depot_text);
+      const depots = {};
 
-      // make sure that they keys are sorted in alphabetical order
-      depots = _.mapValues(depots, lines => {
-        _.sortBy(lines, 'depot_text');
-        return lines;
+      Object.keys(groupedDepots).sort(compare).forEach(d => {
+        depots[d] = _.sortBy(groupedDepots[d], line => String(line.text).toLocaleLowerCase());
       });
 
       data.depots = depots;
@@ -63,6 +70,10 @@ function stockLotsReport(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function compare(a, b) {
+  return a.localeCompare(b);
 }
 
 module.exports = stockLotsReport;

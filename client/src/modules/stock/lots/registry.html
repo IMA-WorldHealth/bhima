@@ -35,12 +35,12 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.getQueryString('lot', 'pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.exportTo('pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.getQueryString('lot', 'csv') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
+              <a ng-href="/reports/stock/lots/?{{ StockLotsCtrl.exportTo('pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
