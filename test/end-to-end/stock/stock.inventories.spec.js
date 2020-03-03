@@ -89,10 +89,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventories who Requires a purchase order', async () => {
+  it('find 3 inventories who Requires a purchase order', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 3);
     await filters.resetFilters();
   });
 }
