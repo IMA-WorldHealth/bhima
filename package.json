@@ -12,9 +12,9 @@
     "test:client-unit": "cross-env SUITE=\"client-unit\" ./sh/test.sh",
     "test:server-unit": "cross-env SUITE=\"server-unit\" ./sh/test.sh",
     "build": "./node_modules/.bin/gulp build",
-    "build:db": "./sh/build-database.sh",
-    "build:clean": "./sh/build-init-database.sh",
-    "migrate": "./sh/setup-migration-script.sh",
+    "build:db": "cross-env ./sh/build-database.sh",
+    "build:clean": "cross-env ./sh/build-init-database.sh",
+    "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "./node_modules/.bin/gulp watch",
     "snyk-protect": "snyk protect",
     "release": "release-it",
@@ -159,7 +159,6 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "snyk": true,
   "engines": {
     "yarn": ">= 1.0.0"
   }
