@@ -159,7 +159,6 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "snyk": false,
   "engines": {
     "yarn": ">= 1.0.0"
   }
