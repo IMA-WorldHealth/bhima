@@ -51,7 +51,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
   ]);
 
   const rows = results[0];
-  const voucherReference = results[1][0].voucher_reference;
+  const voucherReference = results[1][0] ? results[1][0].voucher_reference : null;
 
   if (!rows.length) {
     throw new NotFound('document not found');
