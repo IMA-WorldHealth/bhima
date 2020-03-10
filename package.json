@@ -144,7 +144,7 @@
     "protractor": "^5.4.2",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.9.1",
-    "release-it": "^12.3.5",
+    "release-it": "^13.0.2",
     "sinon": "^9.0.0",
     "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
