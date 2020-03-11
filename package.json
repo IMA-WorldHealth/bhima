@@ -61,7 +61,7 @@
     "angular-ui-grid": "^4.8.0",
     "angular-ui-router": "angular-ui/angular-ui-router-bower#1.0.0-rc.1",
     "body-parser": "^1.18.3",
-    "bootstrap": "^3.3.0",
+    "bootstrap": "^4.4.1",
     "connect-redis": "^4.0.3",
     "cron": "^1.7.1",
     "cropper": "^4.0.0",
