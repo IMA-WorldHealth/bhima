@@ -31,7 +31,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, p.display_name AS patient_display_name,
-      dm.text AS document_reference,
+      dm.text AS document_reference,  BUID(m.invoice_uuid) as invoice_uuid,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference, p.hospital_no,
       l.label, l.expiration_date, d.text AS depot_name
     FROM stock_movement m
@@ -73,7 +73,21 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
     document_reference   : line.document_reference,
     barcode : barcode.generate(key, line.document_uuid),
     voucher_reference : voucherReference,
+    hasInvoiceReference : false,
   };
+
+  // let get the invoice ref(document ref) is it exists
+
+  if (line.invoice_uuid) {
+    const invoiceDocumentSql = `
+      SELECT dm.text AS reference
+      FROM document_map dm
+      WHERE dm.uuid = ?
+    `;
+    const doc = await db.one(invoiceDocumentSql, db.bid(line.invoice_uuid));
+    data.details.invoice_reference = doc.reference;
+    data.details.hasInvoiceReference = true;
+  }
 
   data.rows = rows;
   return report.render(data);
