@@ -19,9 +19,7 @@
     "build:clean": "cross-env ./sh/build-init-database.sh",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "./node_modules/.bin/gulp watch",
-    "snyk-protect": "snyk protect",
-    "release": "release-it --disable-metrics",
-    "prepublish": "npm run snyk-protect"
+    "release": "release-it --disable-metrics"
   },
   "repository": {
     "type": "git",
@@ -149,19 +147,10 @@
     "qs": "^6.9.1",
     "release-it": "^13.1.1",
     "sinon": "^9.0.0",
-    "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
     "typescript": "^3.7.5"
   },
-  "homepage": "https://github.com/IMA-WorldHealth/bhima#readme",
-  "directories": {
-    "doc": "docs"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
+  "homepage": "https://docs.bhi.ma",
   "engines": {
     "yarn": ">= 1.0.0"
   }
