@@ -27,12 +27,9 @@ node_js:
 before_script:
   - yarn build
   - yarn webdriver-manager update --versions.chrome=$CHROMEDRIVER_VERSION --gecko false
-  - greenkeeper-lockfile-update
 
 script:
   - yarn test:ends
-
-after_script: greenkeeper-lockfile-upload
 
 git:
   depth: 3

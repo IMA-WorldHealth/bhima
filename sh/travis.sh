@@ -25,7 +25,3 @@ sudo ln -sf /usr/bin/chromium /usr/bin/chromium-browser
 sudo ln -sf /usr/bin/chromium /usr/bin/google-chrome
 
 sudo groupadd -r chrome && sudo useradd -r -g chrome -G audio,video chrome
-
-# install greenkeeper lockfile
-yarn global add greenkeeper-lockfile@1
-export GK_LOCK_YARN_OPTS="--ignore-engines"
