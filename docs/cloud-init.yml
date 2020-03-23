@@ -94,9 +94,6 @@ write_files:
 
 runcmd:
 
-# configure SSH
-  - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
-
 # configure UFW
   - ufw default deny incoming
   - ufw default allow outgoing
@@ -155,3 +152,6 @@ runcmd:
   - apt-get -y update
   - apt-get -y install python-certbot-nginx
   - (crontab -l 2>/dev/null; echo "0 0 1 * * /usr/bin/certbot renew > /var/log/letsencrypt/letsencrypt.log") | crontab -
+
+  - apt-get autoremove -y -qq
+  - apt-get autoclean -y -qq
