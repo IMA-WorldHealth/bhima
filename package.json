@@ -17,7 +17,7 @@
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "./node_modules/.bin/gulp watch",
     "snyk-protect": "snyk protect",
-    "release": "release-it",
+    "release": "release-it --disable-metrics",
     "prepublish": "npm run snyk-protect"
   },
   "repository": {
