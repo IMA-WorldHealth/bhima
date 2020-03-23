@@ -22,7 +22,7 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.searchByName = searchByName;
-
+exports.getDepotGroup = getDepotGroup;
 
 /**
 * POST /depots
@@ -67,7 +67,7 @@ function remove(req, res, next) {
     })
     .catch(next)
     .done();
-}
+} 
 
 /**
 * PUT /depots
@@ -233,4 +233,31 @@ function detail(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+// Get depots by their uuids
+function getDepotGroup(req, res, next) {
+  const { depotUuids } = req.query;
+  const uuidGroup = [].concat(depotUuids);
+
+
+  let uuids = '';
+  uuidGroup.forEach((depotUuid, index) => {
+    if (index === 0) {
+      uuids = `HUID('${depotUuid}')`;
+    } else {
+      uuids += `, HUID('${depotUuid}')`;
+    }
+  });
+
+  const sql = `
+    SELECT
+      BUID(d.uuid) as uuid, d.text
+    FROM depot d
+    WHERE d.uuid IN (${uuids});
+  `;
+
+  db.exec(sql).then(depots => {
+    res.status(200).json(depots);
+  }).catch(next);
 }

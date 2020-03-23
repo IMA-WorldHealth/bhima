@@ -44,6 +44,12 @@ function DepotService(Api, Modal) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.depotsByUuids = (depotUuids) => {
+    const target = baseUrl.concat('group/byUuids');
+    return service.$http.get(target, { params : { depotUuids } })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   service.clean = depot => {
     delete depot.country_name;
     delete depot.province_name;
