@@ -29,6 +29,7 @@ const DEFAULT_OPTS = {
 
 function build(req, res, next) {
   const options = _.clone(req.query);
+
   options.idPeriod = options.idPeriod || options.payroll_configuration_id;
 
   const params = {
@@ -42,8 +43,10 @@ function build(req, res, next) {
   if (!options.payslip && options.socialCharge) {
     template = templateSocialCharge;
     options.orientation = 'portrait';
+    options.filename = 'FORM.LABELS.REPORT_SOCIAL_CHARGES';
   } else if (!options.payslip && !options.socialCharge) {
     template = templatePayrollReport;
+    options.filename = 'FORM.LABELS.REPORT';
   } else {
     template = templatePayslip;
     delete options.footerRight;
@@ -56,6 +59,16 @@ function build(req, res, next) {
   data.user = req.session.user;
   data.lang = options.lang;
   data.conversionRate = options.conversionRate;
+
+  if (options.renderer === 'xls') {
+    data.optionsRenderer = options.renderer;
+    data.exchangeRate = parseFloat(options.conversion_rate);
+    data.currency = options.currency_id;
+    data.xlsReport = true;
+  } else {
+    data.otherRenderer = true;
+    data.currency = options.currency;
+  }
 
   // set up the report with report manager
   try {
@@ -80,7 +93,6 @@ function build(req, res, next) {
     })
     .then(exchangeRatesByCurrency => {
       data.exchangeRatesByCurrency = exchangeRatesByCurrency;
-      data.payrollPeriod.currency = options.currency;
 
       return configurationData.find(params);
     })
@@ -233,6 +245,16 @@ function build(req, res, next) {
           }
         });
       });
+
+      if (data.optionsRenderer === 'xls') {
+        data.payrollPeriod.exchangeRate = parseFloat(data.exchangeRate) || 1;
+        data.payrollPeriod.currency = parseInt(data.currency, 10);
+      }
+
+      if (!data.payrollPeriod.currency && data.optionsRenderer !== 'xls') {
+        data.payrollPeriod.currency = parseInt(data.currency, 10);
+      }
+
       // Total Of Enterprise Charge
       data.TotalChargeEnterprise = TotalChargeEnterprise;
       return report.render(data);

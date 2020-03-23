@@ -65,19 +65,25 @@
             <!-- pdf-->
             <li role="menuitem">
               <a data-method="view-payslip" ng-click="MultiplePayrollCtrl.viewPaySlipReport()" href>
-                <i class="fa fa-file-pdf-o"></i> <span translate>FORM.BUTTONS.REPORT</span>
+                <i class="fa fa-file-pdf-o"></i> <span translate>FORM.BUTTONS.REPORT_PDF</span>
               </a>
             </li>
             <!-- excel-->
             <li role="menuitem">
               <a href="/reports/payroll/payslip/?{{ MultiplePayrollCtrl.download('xls') }}" download="{{ 'FORM.BUTTONS.PAYROLL_BULLETINS' | translate }}">
-                <span class="fa fa-file-excel-o"></span> <span translate>FORM.BUTTONS.REPORT</span>
+                <span class="fa fa-file-excel-o"></span> <span translate>FORM.BUTTONS.REPORT_XLS</span>
               </a>
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a data-method="view-payslip" ng-click="MultiplePayrollCtrl.viewPaySlipReport(true)" href>
-                <i class="fa fa-file-text-o"></i> <span translate>FORM.BUTTONS.REPORT_SOCIAL_CHARGES</span>
+                <i class="fa fa-file-text-o"></i> <span translate>FORM.BUTTONS.REPORT_SOCIAL_CHARGES_PDF</span>
+              </a>
+            </li>
+            <!-- excel-->
+            <li role="menuitem">
+              <a href="/reports/payroll/payslip/?socialCharge=true&{{ MultiplePayrollCtrl.download('xls') }}" download="{{ 'FORM.BUTTONS.PAYROLL_BULLETINS' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>FORM.BUTTONS.REPORT_SOCIAL_CHARGES_XLS</span>
               </a>
             </li>
           </ul>
