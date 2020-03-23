@@ -3,6 +3,7 @@
   "version": "1.10.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
+  "npm" : { "publish" : false },
   "scripts": {
     "app": "cross-env NODE_ENV=production gulp build && cd bin && cross-env NODE_ENV=production node server/app.js",
     "dev": "cross-env NODE_ENV=development gulp build && cd bin && cross-env NODE_ENV=development node server/app.js",
