@@ -1,8 +1,11 @@
 {
   "name": "bhima",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
+  "npm": {
+    "publish": false
+  },
   "scripts": {
     "app": "cross-env NODE_ENV=production gulp build && cd bin && cross-env NODE_ENV=production node server/app.js",
     "dev": "cross-env NODE_ENV=development gulp build && cd bin && cross-env NODE_ENV=development node server/app.js",
@@ -16,9 +19,7 @@
     "build:clean": "cross-env ./sh/build-init-database.sh",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "./node_modules/.bin/gulp watch",
-    "snyk-protect": "snyk protect",
-    "release": "release-it",
-    "prepublish": "npm run snyk-protect"
+    "release": "release-it --disable-metrics"
   },
   "repository": {
     "type": "git",
@@ -146,19 +147,10 @@
     "qs": "^6.9.1",
     "release-it": "^13.1.1",
     "sinon": "^9.0.0",
-    "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
     "typescript": "^3.7.5"
   },
-  "homepage": "https://github.com/IMA-WorldHealth/bhima#readme",
-  "directories": {
-    "doc": "docs"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
+  "homepage": "https://docs.bhi.ma",
   "engines": {
     "yarn": ">= 1.0.0"
   }
