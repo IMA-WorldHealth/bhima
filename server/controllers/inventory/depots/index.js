@@ -67,7 +67,7 @@ function remove(req, res, next) {
     })
     .catch(next)
     .done();
-} 
+}
 
 /**
 * PUT /depots

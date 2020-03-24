@@ -55,7 +55,9 @@ describe('Depots Management', () => {
   it('set the depot manage by user', async () => {
     await helpers.navigate('#!/users');
     await userPage.updateDepot('Super User');
-    await page.selectUserDepot([DEPOT_SECONDAIRE]);
+    // await page.selectUserDepot([DEPOT_SECONDAIRE]);
+    // first test, this part will be in the component
+    await page.selectDepot('user_depots', DEPOT_SECONDAIRE);
     await page.submitUserDepot();
   });
 });

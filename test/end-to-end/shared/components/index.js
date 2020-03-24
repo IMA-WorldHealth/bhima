@@ -42,6 +42,7 @@ module.exports = {
   gradeSelect : require('./bhGradeSelect'),
   purchaseStatusSelect : require('./bhPurchaseStatusSelect'),
   multipleDepotSelect : require('./bhMultipleDepotSelect'),
+  bhMultipleDepotSearchSelect : require('./bhMultipleDepotSearchSelect'),
   fluxSelect : require('./bhFluxSelect'),
   multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
   employeeSelect : require('./bhEmployeeSelect'),
