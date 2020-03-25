@@ -217,6 +217,18 @@
             <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
           </div>
           <div class="panel-body">
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.month_average_consumption.$invalid }">
+                <label class="control-label" translate>
+                  FORM.LABELS.DEFINE_MONTH_AVERAGE_CONSUMPTION
+                </label>
+                <input type="number" class="form-control" autocomplete="off"
+                  name="month_average_consumption" required ng-model="EnterpriseCtrl.enterprise.settings.month_average_consumption"
+                  ng-change="EnterpriseCtrl.setMonthAverage(value)">
+                <div class="help-block" ng-messages="EnterpriseForm.month_average_consumption.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+
             <bh-yes-no-radios
               label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
               value="EnterpriseCtrl.enterprise.settings.enable_price_lock"

@@ -28,7 +28,7 @@ describe('(/enterprises) Enterprises API', () => {
     phone : '00904940950932016',
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     currency_id : 1,
-    settings : { enable_price_lock : 0 },
+    settings : { enable_price_lock : 0, month_average_consumption : 10 },
   };
 
   const invalidEnterprise = {
