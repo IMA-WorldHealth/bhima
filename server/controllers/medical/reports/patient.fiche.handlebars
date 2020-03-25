@@ -27,10 +27,8 @@
           <dt>{{translate "FORM.LABELS.DEBTOR_GROUP"}}<dt>
           <dd>{{patient.debtor_group_name }}</dd>
 
-          {{#if patient.phone}}
-            <dt>{{translate "FORM.LABELS.PHONE_NO"}}<dt>
-            <dd>{{patient.phone}}</dd>
-          {{/if}}
+          <dt>{{translate "FORM.LABELS.PHONE_NO"}}<dt>
+          <dd>{{#if patient.phone}}{{patient.phone}}{{else}}ND{{/if}}</dd>
 
           {{#if patient.email}}
             <dt>{{translate "FORM.LABELS.EMAIL"}}<dt>
