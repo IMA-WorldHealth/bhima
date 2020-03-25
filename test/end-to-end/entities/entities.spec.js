@@ -31,7 +31,7 @@ describe('Entity Management', () => {
       entity.gender,
       entity.phone,
       entity.email,
-      entity.address
+      entity.address,
     );
   });
 
@@ -41,7 +41,7 @@ describe('Entity Management', () => {
       updateEntity.display_name,
       updateEntity.type,
       null, null, null,
-      updateEntity.address
+      updateEntity.address,
     );
   });
 

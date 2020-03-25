@@ -12,7 +12,7 @@ EntityGroupController.$inject = [
  * This controller is responsible of handling entity group
  */
 function EntityGroupController(
-  EntityGroup, ModalService, Notify, uiGridConstants, $state
+  EntityGroup, ModalService, Notify, uiGridConstants, $state,
 ) {
   const vm = this;
 
