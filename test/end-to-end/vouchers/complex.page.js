@@ -1,5 +1,6 @@
 /* global  element, by */
 
+// eslint-disable-next-line max-classes-per-file
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -23,7 +24,8 @@ class Row {
 
   // account setter
   account(number) {
-    return FU.typeaheadAppended('row.entity.account_id', number, this._node);
+    // 'row.entity.account_id'
+    return FU.typeaheadAppended('$ctrl.account', number, this._node);
   }
 
   // sets the debit value

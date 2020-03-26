@@ -1,4 +1,4 @@
-<div ng-form="$ctrl.formName" bh-multiple-depot-seach-select>
+<div id="selectForm" ng-form="$ctrl.formName" bh-multiple-depot-search-select>
 
   <div class="form-group">
     <span ng-repeat = "depot in $ctrl.depotsSected">
@@ -14,10 +14,12 @@
     <label for="depots" translate>FORM.BUTTONS.ADD</label>
     <input name="depots" id="{{$ctrl.componentId}}" type="text" 
       translate-attr ="{ 'placeholder' : 'DEPOT.MODAL.TYPE_DEPOT_NAME'}"
-      uib-typeahead="depot as depot.text for depot in $ctrl.depots | limitTo:8"
+      uib-typeahead="depot as depot.text for depot in $ctrl.loadDepots($viewValue) | limitTo:8"
       typeahead-on-select="$ctrl.onSelect($item)"
+      typeahead-append-to-body="true"
       autocomplete="off"
       typeahead-min-length="3"
+      ng-required="$ctrl.required"
       ng-model="$ctrl.depotSelected"
       class="form-control"/>
   <div>

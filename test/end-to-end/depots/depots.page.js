@@ -134,8 +134,8 @@ class DepotPage {
     await components.notification.hasSuccess();
   }
 
-  async selectDepot(id, name) {
-    components.bhMultipleDepotSearchSelect.set(name, id);
+  async selectDepot(name, id) {
+    await components.bhMultipleDepotSearchSelect.set(name, id);
     await FU.buttons.submit();
   }
 }

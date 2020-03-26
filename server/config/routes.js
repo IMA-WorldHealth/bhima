@@ -348,7 +348,6 @@ exports.configure = function configure(app) {
   /* Depot routes */
   app.get('/depots', depots.list);
   app.get('/depots/:uuid', depots.detail);
-  app.get('/depots/group/byUuids', depots.getDepotGroup);
 
   app.put('/depots/:uuid', depots.update);
   app.post('/depots', depots.create);

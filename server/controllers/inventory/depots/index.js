@@ -22,7 +22,6 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.searchByName = searchByName;
-exports.getDepotGroup = getDepotGroup;
 
 /**
 * POST /depots
@@ -111,7 +110,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = db.convert(req.query, ['uuid']);
+  const options = db.convert(req.query, ['uuid', 'uuids']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -142,6 +141,7 @@ function list(req, res, next) {
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
   filters.equals('uuid', 'uuid', 'd');
+  hasUuids(options.uuids, filters);
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
 
@@ -156,6 +156,15 @@ function list(req, res, next) {
     .done();
 }
 
+function hasUuids(uuids, filters) {
+  if (!uuids) return;
+  const n = [].concat(uuids).length;
+  let qs = '';
+  for (let i = 0; i < n; i++) {
+    qs = (i === (n - 1)) ? `${qs}?` : qs = `${qs}?,`;
+  }
+  filters.custom('uuids', `d.uuid IN (${qs})`);
+}
 /*
  * @method searchByName
  *
@@ -233,31 +242,4 @@ function detail(req, res, next) {
     })
     .catch(next)
     .done();
-}
-
-// Get depots by their uuids
-function getDepotGroup(req, res, next) {
-  const { depotUuids } = req.query;
-  const uuidGroup = [].concat(depotUuids);
-
-
-  let uuids = '';
-  uuidGroup.forEach((depotUuid, index) => {
-    if (index === 0) {
-      uuids = `HUID('${depotUuid}')`;
-    } else {
-      uuids += `, HUID('${depotUuid}')`;
-    }
-  });
-
-  const sql = `
-    SELECT
-      BUID(d.uuid) as uuid, d.text
-    FROM depot d
-    WHERE d.uuid IN (${uuids});
-  `;
-
-  db.exec(sql).then(depots => {
-    res.status(200).json(depots);
-  }).catch(next);
 }

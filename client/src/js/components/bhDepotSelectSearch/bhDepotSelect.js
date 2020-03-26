@@ -4,7 +4,8 @@ angular.module('bhima.components')
     templateUrl : 'js/components/bhDepotSelectSearch/bhDepotSelectSearch.html',
     controller  : DepotSearchSelectController,
     bindings    : {
-      depotsUuids     : '<',
+      depotsUuids     : '<?',
+      required        : '<',
       label           : '@?',
       id              : '@?',
       onChange        : '&',
@@ -27,21 +28,12 @@ function DepotSearchSelectController(Depots, uuidService) {
   // label to display
     $ctrl.label = $ctrl.label || 'STOCK.DEPOT';
     // default for form name
-    $ctrl.formName = $ctrl.formName || 'DepotForm';
+    $ctrl.formName = $ctrl.formName || 'DepotSelectForm';
     //
     $ctrl.depotsSected = $ctrl.depotsSected || [];
     // init the model
     $ctrl.depotsUuids = $ctrl.depotsUuids || [];
-
     $ctrl.componentId = $ctrl.id || uuidService().replace('-', '');
-    $ctrl.depots = [];
-
-    // on search text change
-    setTimeout(() => {
-      angular.element(document.getElementById($ctrl.componentId)).keyup(() => {
-        loadDepots($ctrl.depotSelected);
-      });
-    }, 200);
   };
 
   $ctrl.$onChanges = () => {
@@ -49,19 +41,19 @@ function DepotSearchSelectController(Depots, uuidService) {
   };
 
   // get depots by text
-  function loadDepots(text) {
-    Depots.read(null, {
+  $ctrl.loadDepots = (text) => {
+    return Depots.read(null, {
       limit : 10,
       text,
     }).then(depots => {
       const selectedUuids = $ctrl.depotsSected.map(d => {
         return d.uuid;
       });
-      $ctrl.depots = depots.filter(d => {
+      return depots.filter(d => {
         return !selectedUuids.includes(d.uuid);
       });
     });
-  }
+  };
 
   // on select a depot from the typehead
   $ctrl.onSelect = (item) => {
@@ -79,7 +71,6 @@ function DepotSearchSelectController(Depots, uuidService) {
   };
 
   // remove a selected depot
-  // eslint-disable-next-line no-shadow
   $ctrl.remove = (uuid) => {
     $ctrl.depotsSected = $ctrl.depotsSected.filter(depot => {
       return depot.uuid !== uuid;
@@ -90,7 +81,7 @@ function DepotSearchSelectController(Depots, uuidService) {
 
   function loadSelected(depotsUuids) {
     if (!(depotsUuids.length > 0)) return;
-    Depots.depotsByUuids(depotsUuids).then(depots => {
+    Depots.read(null, { uuids : depotsUuids }).then(depots => {
       $ctrl.depotsSected = depots;
     });
   }

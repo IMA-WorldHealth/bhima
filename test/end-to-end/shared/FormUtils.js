@@ -157,7 +157,7 @@ module.exports = {
     const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
 
     // type into the <input> element the searchable value
-    await this.input('$ctrl.account', label, anchor || $('body'));
+    await this.input(model || '$ctrl.account', label, anchor || $('body'));
 
     // select the item of the dropdown menu matching the label
     const option = externalAnchor.element(by.cssContainingText('[role="option"]', label));
