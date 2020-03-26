@@ -29,16 +29,15 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 
-  const results = await Promise.all([
+  const [rows, [references]] = await Promise.all([
     db.exec(sql, [db.bid(documentUuid)]),
     getVoucherReferenceForStockMovement(documentUuid),
   ]);
 
-  const rows = results[0];
-  const voucherReference = results[1][0].voucher_reference;
+  const voucherReference = references && references.voucher_reference;
 
   if (!rows.length) {
-    throw new NotFound('document not found');
+    throw new NotFound(`Could not find document with uuid: ${documentUuid}`);
   }
 
   const line = rows[0];
@@ -60,7 +59,6 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
   };
 
   data.rows = rows;
-
 
   return report.render(data);
 }
