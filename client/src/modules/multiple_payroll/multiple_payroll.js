@@ -185,7 +185,7 @@ function MultiplePayrollController(
   //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    vm.getSelectedEmployes = employees;
+    vm.getSelectedEmployees = employees;
 
     if (employees.length) {
       // get All Employees Reference

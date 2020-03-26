@@ -94,13 +94,13 @@ function MultiplePayrollService(
   }
 
   // downloads a type of report based on the
-  function download(type, getSelectedEmployes) {
+  function download(type, getSelectedEmployees) {
     const filterOpts = multiplePayrollFilters.formatHTTP();
     let employeesRef = [];
 
-    if (getSelectedEmployes.length) {
+    if (getSelectedEmployees.length) {
       // get All Employees Reference
-      employeesRef = getSelectedEmployes.map(emp => emp.reference);
+      employeesRef = getSelectedEmployees.map(emp => emp.reference);
     }
 
     const defaultOpts = { renderer : type, lang : Languages.key, employees : employeesRef };
