@@ -8,8 +8,18 @@ EntityModalController.$inject = [
 function EntityModalController($state, Entities, Notify) {
   const vm = this;
 
-  vm.entity = $state.params.entity || {};
   vm.isCreating = !!($state.params.creating);
+  vm.entity = {};
+
+  function startup() {
+    if (!vm.isCreating) {
+      Entities.read($state.params.uuid)
+        .then(entity => {
+          vm.entity = entity;
+        })
+        .catch(Notify.handleError);
+    }
+  }
 
   // exposed methods
   vm.submit = submit;
@@ -55,4 +65,6 @@ function EntityModalController($state, Entities, Notify) {
   function cancel() {
     $state.go('entities');
   }
+
+  startup();
 }

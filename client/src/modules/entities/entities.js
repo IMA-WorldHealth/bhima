@@ -12,7 +12,7 @@ EntityController.$inject = [
  * This controller is responsible of handling entities
  */
 function EntityController(
-  Entity, ModalService, Notify, uiGridConstants, $state, $translate
+  Entities, ModalService, Notify, uiGridConstants, $state, $translate,
 ) {
   const vm = this;
 
@@ -83,7 +83,7 @@ function EntityController(
   function loadEntities() {
     vm.loading = true;
 
-    Entity.read()
+    Entities.read()
       .then(data => {
         // format location
         vm.gridOptions.data = data.map(entity => {
@@ -103,7 +103,7 @@ function EntityController(
       .then(bool => {
         if (!bool) { return; }
 
-        Entity.delete(entity.uuid)
+        Entities.delete(entity.uuid)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadEntities();
@@ -113,8 +113,8 @@ function EntityController(
   }
 
   // update an existing entity
-  function editEntity(entityObject) {
-    $state.go('entities.edit', { entity : entityObject });
+  function editEntity({ uuid }) {
+    $state.go('entities.edit', { uuid });
   }
 
   loadEntities();
