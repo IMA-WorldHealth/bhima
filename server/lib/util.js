@@ -20,7 +20,7 @@ const moment = require('moment');
 const debug = require('debug')('util');
 const csvtojson = require('csvtojson');
 const { exec } = require('child_process');
-const uuid = require('uuid/v4');
+const uuid = require('uuid').v4;
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
