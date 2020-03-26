@@ -76,7 +76,7 @@
     "express-handlebars": "^4.0.0",
     "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",
-    "helmet": "^3.21.1",
+    "helmet": "^3.22.0",
     "inline-source": "^7.1.0",
     "ioredis": "^4.14.1",
     "jquery": "^3.4.0",
