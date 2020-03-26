@@ -18,10 +18,8 @@
     },
     "ITEM_TEMPLATE": "Modèle de fichier des inventaires",
     "IMPORT": {
-      "PRICE_LIST_ITEMS_DESCRIPTION": "Vous êtes sur le point d'importer les prix des inventaires pour cette liste des prix à partir d'un fichier CSV",
-      "PRICE_LIST_ITEMS": "Cliquez ici pour télécharger le fichier modèle pour l'importation des prix",
-      "PRICE_LIST_ITEMS_WITH_INVENTORY": "Cliquez ici pour télécharger le fichier modèle pour l'importation des prix avec des inventaires"
-    
+      "DESCRIPTION": "Vous êtes sur le point d'importer les prix des inventaires pour cette liste des prix à partir d'un fichier CSV",
+      "DOWNLOAD": "Cliquez ici pour télécharger le fichier modèle pour l'importation des prix avec des inventaires"
     }
   }
 }

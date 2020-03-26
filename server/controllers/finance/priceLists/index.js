@@ -12,15 +12,12 @@
  * PUT    /prices/:uuid
  * DELETE /prices/:uuid
  */
-const path = require('path');
-const _ = require('lodash');
-const db = require('../../lib/db');
-const { uuid } = require('../../lib/util');
+const db = require('../../../lib/db');
 
-const BadRequest = require('../../lib/errors/BadRequest');
-const util = require('../../lib/util');
-const csv = require('../../lib/renderers/csv');
-const ReportManager = require('../../lib/ReportManager');
+const BadRequest = require('../../../lib/errors/BadRequest');
+const util = require('../../../lib/util');
+const csv = require('../../../lib/renderers/csv');
+const ReportManager = require('../../../lib/ReportManager');
 
 exports.lookup = lookup;
 /**
@@ -167,7 +164,7 @@ function formatPriceListItems(priceListUuid, items) {
     const inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
 
     return [
-      db.bid(item.uuid || uuid()),
+      db.bid(item.uuid || util.uuid()),
       inventoryId,
       priceListUuid,
       item.label,
@@ -196,7 +193,7 @@ exports.create = function create(req, res, next) {
     label, value, is_percentage) VALUES ?;`;
 
   // generate a UUID if not provided
-  const priceListUuid = data.uuid || uuid();
+  const priceListUuid = data.uuid || util.uuid();
   data.uuid = db.bid(priceListUuid);
   // if the client didn't send price list items, do not create them.
   if (data.items) {
@@ -238,68 +235,85 @@ exports.createItem = function createItem(req, res, next) {
 
 
 /**
- * @method downloadTemplate
+ * @function downloadFilledTemplate
  *
- * @description send to the client the template file for price list item import
-*/
-exports.downloadTemplate = (req, res, next) => {
-  try {
-    const file = path.join(__dirname, '../../resources/templates/import-inventory-item-template.csv');
-    res.download(file);
-  } catch (error) {
-    next(error);
-  }
-};
-
+ * @description
+ * Dumps the items that are for sale to a CSV file for the user to fill out and
+ * later import via the import route.
+ */
 exports.downloadFilledTemplate = async (req, res, next) => {
   try {
-    const pdfOptions = {
+    const reportOptions = {
       csvKey : 'rows',
       suppressDefaultFormatting : true,
       suppressDefaultFiltering : true,
     };
 
-    const optionReport = _.extend(req.query, pdfOptions, {
-      filename : 'TREE.STOCK_VALUE',
-    });
+    // currency symbol is included in the import so the user knows
+    // the valuation of the currency
+    const { currencySymbol } = req.session.enterprise;
 
-    const report = new ReportManager('', req.session, optionReport);
-    const sql = 'SELECT code, text FROM inventory';
+    const options = { ...req.query, ...reportOptions, filename : 'PRICE_LIST.NEW_PRICE_LIST' };
+
+    const report = new ReportManager('', req.session, options);
+    const sql = 'SELECT BUID(uuid) as uuid, code, text, price FROM inventory WHERE sellable = 1 ORDER BY text, code';
     const rows = await db.exec(sql);
     const data = rows.map(row => {
+      row.previous_price = row.price;
       row.price = '';
-      row.is_percentage = '';
+      row.currency = currencySymbol;
       return row;
     });
+
     const result = await report.render({ rows : data }, null, { csvKey : 'rows' });
     res.set(csv.headers).send(result.report);
-  } catch (ex) {
-    next(ex);
+  } catch (err) {
+    next(err);
   }
-
 };
 
-exports.importItem = async (req, res, next) => {
+/**
+ * @function importItems
+ *
+ * @description
+ * Imports the items to the database from the CSV file provided by the user.
+ * The CSV file must have uuids for each inventory item, the label of the item,
+ * and the accompanying price in a column labeled "price".
+ */
+exports.importItems = async (req, res, next) => {
   try {
     if (!req.files || req.files.length === 0) {
       const errorDescription = 'Expected at least one file upload but did not receive any files.';
       throw new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
     }
 
+    db.convert(req.body, ['pricelist_uuid']);
+
     const filePath = req.files[0].path;
 
-    let data = await util.formatCsvToJson(filePath);
-    data = removeEmptyLines(data);
+    const data = removeEmptyLines(await util.formatCsvToJson(filePath));
+
     if (!hasValidDataFormat(data)) {
       throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
     }
-    const priceListUuid = db.bid(req.body.pricelist_uuid);
-    const sql = 'CALL importPriceListItem(?,?,?,?);';
-    const transaction = db.transaction();
-    data.forEach(item => {
 
-      transaction.addQuery(sql, [priceListUuid, item.code, item.price, item.is_percentage]);
+    const priceListUuid = db.bid(req.body.pricelist_uuid);
+    const transaction = db.transaction();
+
+    transaction
+
+    // first, clear all old values from the price list
+      .addQuery('DELETE FROM price_list_item WHERE price_list_uuid = ?', priceListUuid);
+
+    const sql = `
+      INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid, label, value)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+
+    data.forEach(row => {
+      transaction.addQuery(sql, [db.uuid(), db.bid(row.uuid), priceListUuid, row.text, row.price]);
     });
+
     await transaction.execute();
     res.sendStatus(200);
   } catch (ex) {
@@ -309,20 +323,22 @@ exports.importItem = async (req, res, next) => {
 };
 
 function removeEmptyLines(data) {
-  return data.filter(row => (row.code && row.price));
+  return data.filter(row => (row.uuid && row.price));
 }
 
 function hasValidDataFormat(data) {
-  return data.every(row => (row.code && row.price > 0));
+  return data.every(row => (row.uuid && row.price > 0));
 }
 
-exports.deleteItem = function deleteItem(req, res, next) {
+exports.deleteItem = async function deleteItem(req, res, next) {
   const priceListDeleteItemSql = `DELETE FROM price_list_item  WHERE uuid = ?`;
-  const itemUuid = db.bid(req.params.uuid);
-  db.exec(priceListDeleteItemSql, itemUuid).then(() => {
+  try {
+    const itemUuid = db.bid(req.params.uuid);
+    await db.exec(priceListDeleteItemSql, itemUuid);
     res.sendStatus(200);
-  }).catch(next)
-    .done();
+  } catch (e) {
+    next(e);
+  }
 };
 
 

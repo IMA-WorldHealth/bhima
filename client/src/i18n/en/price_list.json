@@ -18,9 +18,8 @@
     },
     "ITEM_TEMPLATE": "Inventory items template",
     "IMPORT": {
-      "PRICE_LIST_ITEMS_DESCRIPTION": "You are about to import inventories's prices  for this price list from a csv file",
-      "PRICE_LIST_ITEMS": "Click here for downloading price list items template file",
-      "PRICE_LIST_ITEMS_WITH_INVENTORY": "Click here for downloading price list items template with inventory file"
+      "DESCRIPTION": "You can upload a new price list from a CSV file.  First, download the existing inventory and remove the items that are not relevant.  Then, modify the prices a new price and upload the finished result.",
+      "DOWNLOAD": "Click here to download the template file"
     }
   }
 }
