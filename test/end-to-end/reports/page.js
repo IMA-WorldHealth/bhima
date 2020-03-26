@@ -40,7 +40,7 @@ class ReportPage {
   // save for auto mailing
   async saveAutoMailing() {
     const anchor = $(this.cronEmailReportwAnchor);
-    await anchor.element(by.css('[data-method="save-cron-report"]')).click();
+    await anchor.element(by.css('[data-method="submit"]')).click();
   }
 
   // config report
