@@ -10,6 +10,8 @@ const fixtures = path.resolve(__dirname, '../fixtures');
  * This test suite implements full CRUD on the /enterprises HTTP API endpoint.
  */
 describe('(/enterprises) Enterprises API', () => {
+  const defaultEnterpriseId = 1;
+  const defaultValuemonthAverageConsumption = 6;
 
   const enterprise = {
     name : 'enterprises',
@@ -28,7 +30,11 @@ describe('(/enterprises) Enterprises API', () => {
     phone : '00904940950932016',
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     currency_id : 1,
-    settings : { enable_price_lock : 0 },
+    settings : { enable_price_lock : 0, enable_barcodes : 1 },
+  };
+
+  const updateDefaultEnterprise = {
+    settings : { month_average_consumption : 10 },
   };
 
   const invalidEnterprise = {
@@ -81,6 +87,32 @@ describe('(/enterprises) Enterprises API', () => {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
+        expect(res.body).to.have.all.keys(responseKeys);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /enterprises/:id returns Default Enterprise and check default value for month_average_consumption', () => {
+    return agent.get(`/enterprises/${defaultEnterpriseId}`)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.an('object');
+        expect(res.body.settings.month_average_consumption)
+          .to.equal(defaultValuemonthAverageConsumption);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /enterprises/:id should update Default enterprise', () => {
+    return agent.put(`/enterprises/${defaultEnterpriseId}`)
+      .send(updateDefaultEnterprise)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.an('object');
+        // Check if the update is successful
+        expect(res.body.settings.month_average_consumption)
+          .to.equal(updateDefaultEnterprise.settings.month_average_consumption);
+
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
