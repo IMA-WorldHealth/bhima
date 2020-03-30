@@ -94,6 +94,7 @@ exports.email = async function email(address, subject, message, options = {}) {
   };
 
   if (options.bcc) {
+    debug(`#email(): BCC-ed addresses: `, options.bcc.join(', '));
     Object.assign(mail, { bcc : options.bcc });
   }
 

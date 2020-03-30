@@ -7,6 +7,7 @@
  * @module reports/ohada_balance_sheet
  *
  * @requires lodash
+ * @requires q
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
  */
@@ -24,10 +25,8 @@ const TEMPLATE = './server/controllers/finance/reports/ohada_balance_sheet/repor
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'accounts',
-  filename : 'TREE.BALANCE',
+  filename : 'REPORT.OHADA.BALANCE_SHEET',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  fontSize : 8,
 };
 
 const balanceSheetAssetTable = balanceSheetElement.balanceSheetAssetTable();
@@ -40,6 +39,7 @@ exports.reporting = reporting;
 exports.aggregateReferences = aggregateReferences;
 
 /**
+ * @function reporting
  * @description this function helps to get html document of the report in server side
  * so that we can use it with others modules on the server side
  * @param {object} options the report options
@@ -48,15 +48,9 @@ exports.aggregateReferences = aggregateReferences;
 function reporting(options, session) {
   const params = options;
   const context = {};
-  let report;
 
   _.defaults(params, DEFAULT_PARAMS);
-
-  try {
-    report = new ReportManager(TEMPLATE, session, params);
-  } catch (e) {
-    throw e;
-  }
+  const report = new ReportManager(TEMPLATE, session, params);
 
   return balanceSheetElement.getFiscalYearDetails(params.fiscal_id)
     .then(fiscalYear => {
@@ -74,7 +68,8 @@ function reporting(options, session) {
         currentPeriodReferences,
         previousPeriodReferences,
         currentConditionalReferences,
-        previousConditionalReferences]);
+        previousConditionalReferences,
+      ]);
     })
     .spread((currentData, previousData, currentConditional, previousConditional) => {
       if (currentConditional.length) {
@@ -246,7 +241,7 @@ function reporting(options, session) {
       });
 
       /**
-       * liabilities have by default a creditor sold (negative value),
+       * liabilities have by default a creditor balance (negative value),
        * in order to present them correctly to users they must be converted into positive
        * values, so for doing that we will multiply them by -1
        */
