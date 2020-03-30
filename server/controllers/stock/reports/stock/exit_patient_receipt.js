@@ -22,6 +22,10 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
   if (Boolean(Number(optionReport.posReceipt))) {
     template = POS_STOCK_EXIT_PATIENT_TEMPLATE;
     _.extend(optionReport, pdf.posReceiptOptions);
+    // provide barcode string to be rendered by client/ receipts
+    const entityIdentifier = identifiers.STOCK_EXIT.key;
+    const barcodeString = barcode.generate(entityIdentifier, documentUuid);
+    data.barcode = barcodeString;
   }
 
   // set up the report with report manager
