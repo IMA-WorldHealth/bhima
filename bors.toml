@@ -6,3 +6,5 @@ status = [
 delete_merged_branches = true
 
 timeout_sec = 14400
+
+cut_body_after = "</details>"
