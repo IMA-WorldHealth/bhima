@@ -8,12 +8,12 @@ const pRetry = require('p-retry');
 const delay = require('delay');
 
 const db = require('../../../lib/db');
-const BhMoment = require('../../../lib/bhMoment');
 const FilterParser = require('../../../lib/filter');
 
 const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
+const { addDynamicDatesOptions } = require('./utils');
 
 const CURRENT_JOBS = new Map();
 
@@ -211,11 +211,13 @@ async function sendEmailReportDocument(record) {
       return;
     }
 
-    const reportOptions = JSON.parse(record.params);
+    let options = JSON.parse(record.params);
     // dynamic dates in the report params if needed
-    const options = addDynamicDatesOptions(record.cron_id, record.has_dynamic_dates, reportOptions);
-    const fn = dbReports[record.report_key];
+    if (record.has_dynamic_dates) {
+      options = addDynamicDatesOptions(record.cron_id, options);
+    }
 
+    const fn = dbReports[record.report_key];
 
     const session = await loadSession();
     const document = await fn(options, session);
@@ -285,47 +287,6 @@ function loadSession() {
 
   return db.one(query)
     .then(user => auth.loadSessionInformation(user));
-}
-
-function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
-  // cron ids
-  const DAILY = 1;
-  const WEEKLY = 2;
-  const MONTHLY = 3;
-  const YEARLY = 4;
-
-  const period = new BhMoment(new Date());
-
-  if (!hasDynamicDates) {
-    return options;
-  }
-
-  switch (cronId) {
-  case DAILY:
-    options.dateFrom = period.day().dateFrom;
-    options.dateTo = period.day().dateTo;
-    break;
-
-  case WEEKLY:
-    options.dateFrom = period.week().dateFrom;
-    options.dateTo = period.week().dateTo;
-    break;
-
-  case MONTHLY:
-    options.dateFrom = period.month().dateFrom;
-    options.dateTo = period.month().dateTo;
-    break;
-
-  case YEARLY:
-    options.dateFrom = period.year().dateFrom;
-    options.dateTo = period.year().dateTo;
-    break;
-
-  default:
-    break;
-  }
-
-  return options;
 }
 
 function updateCronEmailReportNextSend(id, job) {
