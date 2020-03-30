@@ -141,12 +141,12 @@ function send(req, res, next) {
  * @param {any} params params of the function
  */
 function addJob(frequency, cb, ...params) {
-  const cj = new Cron(frequency, () => cb(...params));
-  cj.start();
+  const job = new Cron(frequency, () => cb(...params));
+  job.start();
 
-  const nextRunDate = cj.nextDate().format('YYYY-MM-DD HH:mm:ss');
+  const nextRunDate = job.nextDate().format('YYYY-MM-DD HH:mm:ss');
   debug(`Added and started new job.  Next run at: ${nextRunDate}`);
-  return cj;
+  return job;
 }
 
 /**
@@ -175,7 +175,7 @@ async function launchCronEmailReportJobs() {
 /**
  * @function createEmailReportJob
  * @param {object} record A row of cron email report
- * @param {*} cb The function to run
+ * @param {function} cb The function to run
  */
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
@@ -242,7 +242,7 @@ async function sendEmailReportDocument(record) {
       retries : RETRY_COUNT,
       onFailedAttempt : async (error) => {
         // eslint-disable-next-line
-        debug(`(${record.label}) Sending report failed with ${error.name}. Attempt ${error.attemptNumber} of ${RETRY_COUNT}.`);
+        debug(`(${record.label}) Sending report failed with ${error.toString()}. Attempt ${error.attemptNumber} of ${RETRY_COUNT}.`);
 
         // delay by 10 seconds
         await delay(10000);

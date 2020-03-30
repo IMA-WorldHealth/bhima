@@ -62,7 +62,10 @@ function processAttachments(attachments = []) {
 function sendp(mail) {
   const deferred = q.defer();
   mailgun.messages().send(mail, (err, body) => {
-    if (err) { return deferred.reject(err); }
+    if (err) {
+      debug('#email(): sending failed with error: %j', err);
+      return deferred.reject(err);
+    }
     return deferred.resolve(body);
   });
 
@@ -78,22 +81,21 @@ function sendp(mail) {
  * into mailgun attachments with either their filename as the attachment name or
  * a default.
  */
-exports.email = function email(address, subject, message, options = {}) {
-  debug(`#email() sending email ${subject} to ${address} with options %j`, options);
-  return processAttachments(options.attachments)
-    .then(attachments => {
-      const mail = {
-        from : SERVER_ADDRESS,
-        to : address,
-        subject,
-        attachment : attachments,
-        text : message,
-      };
+exports.email = async function email(address, subject, message, options = {}) {
+  debug(`#email() sending email ${subject} to ${address}.`);
+  const attachments = await processAttachments(options.attachments);
 
-      if (options.bcc) {
-        Object.assign(mail, { bcc : options.bcc });
-      }
+  const mail = {
+    from : SERVER_ADDRESS,
+    to : address,
+    subject,
+    attachment : attachments,
+    text : message,
+  };
 
-      return sendp(mail);
-    });
+  if (options.bcc) {
+    Object.assign(mail, { bcc : options.bcc });
+  }
+
+  return sendp(mail);
 };

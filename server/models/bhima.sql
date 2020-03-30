@@ -376,11 +376,13 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (3, 'fianance', 'DASHBOARD.FINANCE');
 
 -- cron
+-- NOTE(@jniles): the cron syntax for month is 0-indexed, but the cron
+-- syntax for day is 1-indexed.
 INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *');
+  ('CRON.YEARLY', '0 1 31 11 *');
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
