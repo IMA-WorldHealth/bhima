@@ -17,8 +17,8 @@ const { addDynamicDatesOptions } = require('./utils');
 
 const CURRENT_JOBS = new Map();
 
-// TODO(@jniles) - move this into a session variable
 const DEVELOPER_ADDRESS = 'developers@imaworldhealth.org';
+const DEFAULT_LANGUAGE = 'fr';
 const RETRY_COUNT = 5;
 
 function find(options = {}) {
@@ -215,6 +215,11 @@ async function sendEmailReportDocument(record) {
     // dynamic dates in the report params if needed
     if (record.has_dynamic_dates) {
       options = addDynamicDatesOptions(record.cron_id, options);
+    }
+
+    // add in default language if the language isn't specified.
+    if (!options.lang) {
+      options.lang = DEFAULT_LANGUAGE;
     }
 
     const fn = dbReports[record.report_key];
