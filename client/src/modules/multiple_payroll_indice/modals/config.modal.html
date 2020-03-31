@@ -17,13 +17,13 @@
 
     <div class="col-lg-12">
       <div class="col-lg-6" style="margin-top: 16px">
-        <div 
+        <div
         ng-show ="(rubConfigured.indice_to_grap && rubConfigured.is_indice)"
         ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
-        
+
         <bh-input-text
           ng-if="!rubConfigured.is_monetary_value"
-          key="{{rubConfigured.id}}"
+          key="{{'ConfigPaiementForm_' + rubConfigured.label}}"
           label="{{rubConfigured.label}}"
           text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
           required = "true"
@@ -47,7 +47,7 @@
       </div>
       </div>
     </div>
-    
+
   </div>
 
   <div ng-if="!ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body badge badge-warning" style="max-height: 70vh; overflow:auto;">
