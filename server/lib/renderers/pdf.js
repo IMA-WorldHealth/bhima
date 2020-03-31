@@ -2,29 +2,17 @@
  * @description
  * This service is responsible for producing PDFs on the server, it accepts
  * handlebar templates and uses the html renderer to produce valid HTML - then
- * streaming this through the puppeteer application to produce PDFs.
+ * streaming this through @ima-worldhealht/coral to produce correctly rendered
+ * PDF files.
  *
  * @requires debug
  * @requires lodash
- * @requires puppeteer
+ * @requires @ima-worldhealth/coral
  */
 
 const debug = require('debug')('renderer:pdf');
-const pptr = require('puppeteer');
 const _ = require('lodash');
-
-const pptrOptions = {
-  headless : true,
-  args : [
-    '--bwsi',
-    '--disable-default-apps',
-    '--disable-dev-shm-usage',
-    '--disable-setuid-sandbox',
-    '--hide-scrollbars',
-    '--disable-web-security',
-    '--no-sandbox',
-  ],
-};
+const coral = require('@ima-worldhealth/coral');
 
 const html = require('./html');
 
@@ -40,8 +28,6 @@ exports.extension = '.pdf';
 const defaultReportOptions = {
   preferCSSPageSize : true,
   showHeaderFooter : true,
-  headerTemplate : '<h1>THIS IS A TEST header</h1>',
-  footerTemplate : '<h1>THIS IS A TEST footer</h1>',
 };
 
 exports.defaultReportOptions = defaultReportOptions;
@@ -77,8 +63,8 @@ exports.reducedCardOptions = {
  *
  * @description
  * Takes in a context, template, and options before merging them and making an
- * HTML file out of the result.  The HTML file is passed to puppeteer for
- * rendering as a PDF.
+ * HTML file out of the result.  The HTML file is passed to coral to render out
+ * as a PDF.
  *
  * @param {Object} context    Object of keys and values that will be made available to the handlebar template
  * @param {String} template   Path to a handlebars template
@@ -86,7 +72,6 @@ exports.reducedCardOptions = {
  */
 async function renderPDF(context, template, options = {}) {
   debug('received render request for PDF file. Passing to HTML renderer.');
-
   _.defaults(options, defaultReportOptions);
 
   const inlinedHtml = await html.render(context, template, options);
@@ -95,32 +80,13 @@ async function renderPDF(context, template, options = {}) {
   const pdfOptions = _.pick(options, [
     'path', 'format', 'width', 'height', 'margin',
     'headerTemplate', 'footerTemplate', 'pageRanges', 'printBackground',
-    'showHeaderFooter', 'preferCSSPageSize',
+    'showHeaderFooter', 'preferCSSPageSize', 'orientation',
   ]);
 
-  debug('passing rendered HTML to chromium for PDF rendering.');
-  const browser = await pptr.launch(pptrOptions);
+  debug('passing rendered HTML to coral for PDF rendering.');
+  const pdf = await coral(inlinedHtml.trim(), pdfOptions);
 
-  debug('Chromium launched.  Creating a new page.');
-  const page = await browser.newPage();
-
-  debug('Page created.  Rendering HTML content on page.');
-  await page.setContent(inlinedHtml.trim());
-
-  // FIXME(@jniles) - for some reason, puppeteer seems to be inconsistent on the
-  // kind of page rendering sizes, but this seems to work for making pages landscaped.
-  // See: https://github.com/puppeteer/puppeteer/issues/3834#issuecomment-549007667
-  if (options.orientation === 'landscape') {
-    await page.addStyleTag(
-      { content : '@page { size: A4 landscape; }' },
-    );
-  }
-
-  debug('Rendering PDF with chromium');
-  const pdf = await page.pdf(pdfOptions);
-
-  debug('PDF created with chromium.  Shutting the browser down.');
-  await browser.close();
+  debug('PDF created with coral.');
 
   return pdf;
 }
