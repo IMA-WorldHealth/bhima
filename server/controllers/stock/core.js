@@ -34,7 +34,6 @@ const flux = {
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const BASE_NUMBER_OF_MONTHS = 12;
 
 // exports
 exports.flux = flux;
@@ -226,7 +225,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters)
-    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, params.monthAverageConsumption))
     .then(stockManagementProcess)
     .then(processMultipleLots)
     .then((rows) => {
@@ -411,9 +410,11 @@ function getStockConsumption(periodIds) {
  *
  * @param {number} periodId - the base period
  * @param {Date} periodDate - a date for finding the correspondant period
- * @param {number} numberOfMonths - the number of months for calculating the average (optional)
+ * @param {number} monthAverageConsumption - the number of months for calculating the average (optional)
  */
-async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths = BASE_NUMBER_OF_MONTHS - 1) {
+async function getStockConsumptionAverage(periodId, periodDate, monthAverageConsumption) {
+  const numberOfMonths = monthAverageConsumption - 1;
+
   const baseDate = periodDate
     ? moment(periodDate).format(DATE_FORMAT)
     : moment().format(DATE_FORMAT);
@@ -512,7 +513,7 @@ function getInventoryQuantityAndConsumption(params) {
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
-    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, params.monthAverageConsumption))
     .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;
@@ -586,8 +587,8 @@ function processMultipleLots(inventories) {
  * This function reads the average stock consumption for each inventory item
  * in a depot.
  */
-async function processStockConsumptionAverage(inventories, dateTo) {
-  const consumptions = await getStockConsumptionAverage(null, dateTo);
+async function processStockConsumptionAverage(inventories, dateTo, monthAverageConsumption) {
+  const consumptions = await getStockConsumptionAverage(null, dateTo, monthAverageConsumption);
 
   for (let i = 0; i < consumptions.length; i++) {
     for (let j = 0; j < inventories.length; j++) {
