@@ -16,21 +16,15 @@ describe('cronEmailReport', () => {
     });
 
 
-    it('#addDynamicDatesOptions() skips if hasDynamicDates is false', () => {
-      const options = { id : 1, label : 'Some ole options' };
-      const processed = addDynamicDatesOptions(1, false, options);
-      expect(processed).to.deep.equal(options);
-    });
-
     it('#addDynamicDatesOptions() does nothing if cronId is unrecognized', () => {
       const options = { id : 1, label : 'Some ole options' };
-      const processed = addDynamicDatesOptions(123, true, options);
+      const processed = addDynamicDatesOptions(123, options);
       expect(processed).to.deep.equal(options);
     });
 
     it('#addDynamicDatesOptions() sets the DAILY schedule to the current day', () => {
       const options = { id : 1, label : 'A schedule' };
-      const processed = addDynamicDatesOptions(DAILY, true, options);
+      const processed = addDynamicDatesOptions(DAILY, options);
       expect(processed.dateFrom).to.be.a('object');
       expect(processed.dateTo).to.be.a('object');
 
@@ -43,7 +37,7 @@ describe('cronEmailReport', () => {
     it('#addDynamicDatesOptions() sets the WEEKLY schedule to the current week', () => {
       const options = { id : 1, label : 'A schedule' };
 
-      const { dateFrom, dateTo } = addDynamicDatesOptions(WEEKLY, true, options);
+      const { dateFrom, dateTo } = addDynamicDatesOptions(WEEKLY, options);
       expect(dateFrom).to.be.a('object');
       expect(dateTo).to.be.a('object');
 
@@ -57,7 +51,7 @@ describe('cronEmailReport', () => {
     it('#addDynamicDatesOptions() sets the MONTHLY schedule to the current month', () => {
       const options = { id : 1, label : 'A schedule' };
 
-      const { dateFrom, dateTo } = addDynamicDatesOptions(MONTHLY, true, options);
+      const { dateFrom, dateTo } = addDynamicDatesOptions(MONTHLY, options);
       expect(dateFrom).to.be.a('object');
       expect(dateTo).to.be.a('object');
 
@@ -72,7 +66,7 @@ describe('cronEmailReport', () => {
     it('#addDynamicDatesOptions() sets the YEARLY schedule to the current year', () => {
       const options = { id : 1, label : 'A schedule' };
 
-      const { dateFrom, dateTo } = addDynamicDatesOptions(YEARLY, true, options);
+      const { dateFrom, dateTo } = addDynamicDatesOptions(YEARLY, options);
       expect(dateFrom).to.be.a('object');
       expect(dateTo).to.be.a('object');
 

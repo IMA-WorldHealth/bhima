@@ -8,17 +8,17 @@ const pRetry = require('p-retry');
 const delay = require('delay');
 
 const db = require('../../../lib/db');
-const BhMoment = require('../../../lib/bhMoment');
 const FilterParser = require('../../../lib/filter');
 
 const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
+const { addDynamicDatesOptions } = require('./utils');
 
 const CURRENT_JOBS = new Map();
 
-// TODO(@jniles) - move this into a session variable
 const DEVELOPER_ADDRESS = 'developers@imaworldhealth.org';
+const DEFAULT_LANGUAGE = 'fr';
 const RETRY_COUNT = 5;
 
 function find(options = {}) {
@@ -141,12 +141,12 @@ function send(req, res, next) {
  * @param {any} params params of the function
  */
 function addJob(frequency, cb, ...params) {
-  const cj = new Cron(frequency, () => cb(...params));
-  cj.start();
+  const job = new Cron(frequency, () => cb(...params));
+  job.start();
 
-  const nextRunDate = cj.nextDate().format('YYYY-MM-DD HH:mm:ss');
+  const nextRunDate = job.nextDate().format('YYYY-MM-DD HH:mm:ss');
   debug(`Added and started new job.  Next run at: ${nextRunDate}`);
-  return cj;
+  return job;
 }
 
 /**
@@ -175,7 +175,7 @@ async function launchCronEmailReportJobs() {
 /**
  * @function createEmailReportJob
  * @param {object} record A row of cron email report
- * @param {*} cb The function to run
+ * @param {function} cb The function to run
  */
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
@@ -211,11 +211,18 @@ async function sendEmailReportDocument(record) {
       return;
     }
 
-    const reportOptions = JSON.parse(record.params);
+    let options = JSON.parse(record.params);
     // dynamic dates in the report params if needed
-    const options = addDynamicDatesOptions(record.cron_id, record.has_dynamic_dates, reportOptions);
-    const fn = dbReports[record.report_key];
+    if (record.has_dynamic_dates) {
+      options = addDynamicDatesOptions(record.cron_id, options);
+    }
 
+    // add in default language if the language isn't specified.
+    if (!options.lang) {
+      options.lang = DEFAULT_LANGUAGE;
+    }
+
+    const fn = dbReports[record.report_key];
 
     const session = await loadSession();
     const document = await fn(options, session);
@@ -242,7 +249,7 @@ async function sendEmailReportDocument(record) {
       retries : RETRY_COUNT,
       onFailedAttempt : async (error) => {
         // eslint-disable-next-line
-        debug(`(${record.label}) Sending report failed with ${error.name}. Attempt ${error.attemptNumber} of ${RETRY_COUNT}.`);
+        debug(`(${record.label}) Sending report failed with ${error.toString()}. Attempt ${error.attemptNumber} of ${RETRY_COUNT}.`);
 
         // delay by 10 seconds
         await delay(10000);
@@ -285,47 +292,6 @@ function loadSession() {
 
   return db.one(query)
     .then(user => auth.loadSessionInformation(user));
-}
-
-function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
-  // cron ids
-  const DAILY = 1;
-  const WEEKLY = 2;
-  const MONTHLY = 3;
-  const YEARLY = 4;
-
-  const period = new BhMoment(new Date());
-
-  if (!hasDynamicDates) {
-    return options;
-  }
-
-  switch (cronId) {
-  case DAILY:
-    options.dateFrom = period.day().dateFrom;
-    options.dateTo = period.day().dateTo;
-    break;
-
-  case WEEKLY:
-    options.dateFrom = period.week().dateFrom;
-    options.dateTo = period.week().dateTo;
-    break;
-
-  case MONTHLY:
-    options.dateFrom = period.month().dateFrom;
-    options.dateTo = period.month().dateTo;
-    break;
-
-  case YEARLY:
-    options.dateFrom = period.year().dateFrom;
-    options.dateTo = period.year().dateTo;
-    break;
-
-  default:
-    break;
-  }
-
-  return options;
 }
 
 function updateCronEmailReportNextSend(id, job) {

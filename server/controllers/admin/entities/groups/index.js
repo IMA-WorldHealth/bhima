@@ -1,5 +1,6 @@
 /**
  * HTTP END POINT
+ *
  * API for the entities/groups http end point
  */
 const _ = require('lodash');
@@ -15,9 +16,10 @@ exports.create = create;
 
 function list(req, res, next) {
   const query = `
-    SELECT BUID(eg.uuid) AS uuid, eg.label, GROUP_CONCAT(e.display_name, '') AS entities FROM entity_group_entity ege
-    JOIN entity_group eg ON eg.uuid = ege.entity_group_uuid
-    JOIN entity e ON e.uuid = ege.entity_uuid
+    SELECT BUID(eg.uuid) AS uuid, eg.label, GROUP_CONCAT(e.display_name, ', ') AS entities
+    FROM entity_group_entity ege
+      JOIN entity_group eg ON eg.uuid = ege.entity_group_uuid
+      JOIN entity e ON e.uuid = ege.entity_uuid
     GROUP BY eg.uuid;
   `;
   db.exec(query)
@@ -26,31 +28,34 @@ function list(req, res, next) {
     .done();
 }
 
-function details(req, res, next) {
-  const bundle = {};
-  const uuid = db.bid(req.params.uuid);
+async function lookupEntity(uuid) {
   const query = `
     SELECT BUID(uuid) AS uuid, label FROM entity_group
-    WHERE uuid = ?;
+    WHERE uuid = ? LIMIT 1;
   `;
-  db.one(query, [uuid])
-    .then(rows => {
-      _.extend(bundle, rows);
-      const queryEntities = `
-        SELECT 
-          BUID(ege.entity_uuid) AS uuid, e.display_name  
-        FROM entity_group_entity ege 
-        JOIN entity e ON e.uuid = ege.entity_uuid
-        WHERE ege.entity_group_uuid = ?;
-      `;
-      return db.exec(queryEntities, [uuid]);
-    })
-    .then(rows => {
-      bundle.entities = rows;
+
+  const group = await db.one(query, [uuid]);
+
+  const queryEntities = `
+    SELECT BUID(ege.entity_uuid) AS uuid, e.display_name
+    FROM entity_group_entity ege
+      JOIN entity e ON e.uuid = ege.entity_uuid
+    WHERE ege.entity_group_uuid = ?;
+  `;
+
+  group.entities = await db.exec(queryEntities, [uuid]);
+
+  return group;
+}
+
+function details(req, res, next) {
+  const uuid = db.bid(req.params.uuid);
+
+  lookupEntity(uuid)
+    .then(bundle => {
       res.status(200).json(bundle);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function update(req, res, next) {
@@ -64,11 +69,11 @@ function update(req, res, next) {
   const transaction = db.transaction();
   transaction.addQuery(
     'DELETE FROM entity_group_entity WHERE entity_group_uuid = ?;',
-    [entityGroupUuid]
+    [entityGroupUuid],
   );
   transaction.addQuery(
     'UPDATE entity_group SET ? WHERE uuid = ?;',
-    [req.body, entityGroupUuid]
+    [req.body, entityGroupUuid],
   );
   entities.forEach(entityUuid => {
     const value = {
@@ -77,7 +82,7 @@ function update(req, res, next) {
     };
     transaction.addQuery(
       'INSERT INTO entity_group_entity SET ?;',
-      [value]
+      [value],
     );
   });
 
@@ -95,10 +100,10 @@ function remove(req, res, next) {
     DELETE FROM entity_group_entity WHERE entity_group_uuid = ?;
   `;
 
-  const transaction = db.transaction();
-  transaction.addQuery(queryDropEntities, [db.bid(req.params.uuid)]);
-  transaction.addQuery(queryEntityGroup, [db.bid(req.params.uuid)]);
-  transaction.execute()
+  db.transaction()
+    .addQuery(queryDropEntities, [db.bid(req.params.uuid)])
+    .addQuery(queryEntityGroup, [db.bid(req.params.uuid)])
+    .execute()
     .then(() => res.sendStatus(204))
     .catch(next)
     .done();
@@ -106,7 +111,6 @@ function remove(req, res, next) {
 
 function create(req, res, next) {
   const { entities } = req.body;
-  delete req.body.entities;
 
   const params = {
     uuid : db.bid(util.uuid()),
