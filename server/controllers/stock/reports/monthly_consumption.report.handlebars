@@ -1,0 +1,61 @@
+{{> head title="REPORT.MONTHLY_CONSUMPTION.TITLE" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.MONTHLY_CONSUMPTION.TITLE'}}
+      </h2>
+
+      <h3 class="text-center">
+        {{ fiscalYear }} : {{ translate params.periodFromKey }} - {{ translate params.periodToKey }} 
+      </h3>
+
+      <h4 class="text-center">
+        {{ depot }}
+      </h4>
+
+      <table class="table-striped table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th class="text-center" style="width: 3%;"> {{translate 'FORM.LABELS.NR'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.INVENTORY'}} </th>
+            {{#each periods}}
+              <th class="text-center" style="width: 7.5%;">{{translate translate_key}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+
+        <tbody>
+        {{#if dataDisplay}}
+          {{#each inventories}}
+            <tr>
+              <td class="text-center"> {{ add @index 1}} </td>
+              <td> {{ inventory_text }} </td>
+              {{#each monthlyConsumption}}
+                <td class="text-right">
+                    {{#if quantity}} 
+                      <strong> {{quantity }} </strong>
+                    {{/if}}                  
+                </td>
+              {{/each}}
+            </tr>
+          {{/each}}
+        {{else}}
+          <tr>
+            <th class="text-center" colspan="{{ spanColumn }}"> <strong> {{translate 'STOCK.NO_DATA'}} </strong> </th>
+          </tr>
+        {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  </div>
+</body>

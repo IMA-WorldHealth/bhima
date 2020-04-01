@@ -829,7 +829,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
   app.get('/reports/stock/value', stockReports.stockValue);
-
+  app.get('/reports/stock/monthly_consumption', stockReports.monthlyConsumption.report);
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);

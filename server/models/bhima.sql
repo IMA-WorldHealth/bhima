@@ -149,8 +149,8 @@ INSERT INTO unit VALUES
   (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
   (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report'),
   (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis'),
-  (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges');
-
+  (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges'),
+  (267, 'Monthly consumption report', 'TREE.MONTHLY_CONSUMPTION', 'Monthly consumption report', 144, '/modules/reports/monthlyConsumptionReport', '/reports/monthlyConsumptionReport');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -212,7 +212,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('dataKit', 'TREE.DATA_KIT_REPORT'),
   ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),
   ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE'),
-  ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE');
+  ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE'),
+  ('monthlyConsumptionReport', 'REPORT.MONTHLY_CONSUMPTION.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

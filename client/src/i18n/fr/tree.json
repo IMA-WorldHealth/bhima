@@ -78,6 +78,7 @@
     "JOURNAL_VOUCHER":"Ajout Transactions",
     "LOCATION":"Localisations",
     "MONTHLY_BALANCE": "Analyse mensuel de la Balance",
+    "MONTHLY_CONSUMPTION" : "[Stock] Rapport de consommation mensuel",
     "MULTI_PAYROLL" : "Payroll Multiple",
     "MULTI_PAYROLL_INDICE" : "Payroll Multiple(indice)",
     "OFFDAYS_MANAGEMENT" : "Gestion des jours fériés",
