@@ -19,7 +19,7 @@ const DEFAULT_PARAMS = {
  * @method report
  *
  * @description
- * This method builds the stock movements report as either a JSON, PDF, or HTML
+ * This method builds the consumption report by month JSON, PDF, or HTML
  * file to be sent to the client.
  *
  * GET /reports/stock/monthly_consumption
