@@ -183,4 +183,31 @@ describe('(/stock/) The Stock HTTP API', () => {
       })
       .catch(helpers.handler),
   );
+
+  it(
+    `/stock/inventories/depots Get Inventories in Stock By Depot`,
+    () => agent.get(`/stock/inventories/depots?depot_uuid=${shared.depotPrincipalUuid}&limit=1000&includeEmptyLot=0`)
+      .then((res) => {
+        helpers.api.listed(res, 4);
+
+        // This is the test of automatically calculated key values
+        expect(res.body[0].quantity).to.be.equal(155);
+        expect(res.body[0].avg_consumption).to.be.equal(10);
+        expect(res.body[0].S_SEC).to.be.equal(10);
+        expect(res.body[0].S_MIN).to.be.equal(20);
+        expect(res.body[0].S_MAX).to.be.equal(30);
+        expect(res.body[0].S_MONTH).to.be.equal(15);
+        expect(res.body[0].S_RP).to.be.equal(265);
+
+        expect(res.body[3].quantity).to.be.equal(180300);
+        expect(res.body[3].avg_consumption).to.be.equal(49916.67);
+        expect(res.body[3].S_SEC).to.be.equal(0);
+        expect(res.body[3].S_MIN).to.be.equal(0);
+        expect(res.body[3].S_MAX).to.be.equal(0);
+        expect(res.body[3].S_MONTH).to.be.equal(3);
+        expect(res.body[3].S_RP).to.be.equal(929050.0499999999);
+      })
+      .catch(helpers.handler),
+  );
+
 });
