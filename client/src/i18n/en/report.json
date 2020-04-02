@@ -116,7 +116,7 @@
       "DESCRIPTION": "This reports shows changes occured on inventory items during a period."
     },
     "MONTHLY_CONSUMPTION" : {
-      "TITLE": "Monthly consumption report",
+      "TITLE": "Monthly consumption",
       "DESCRIPTION": "Monthly consumption report by deposit for a given period"
     },
     "OPENING_BALANCE": "Opening Balance",

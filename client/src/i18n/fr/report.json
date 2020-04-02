@@ -86,8 +86,8 @@
       "TITLE": "Analyse mensuel de la Balance"
     },
     "MONTHLY_CONSUMPTION" : {
-      "TITLE": "Rapport de consommation mensuel",
-      "DESCRIPTION": "Rapport de consommation mensuel par dépôt et pour une période données"
+      "TITLE": "Consommations mensuelles",
+      "DESCRIPTION": "Rapport de consommations mensuelles par dépôt et pour une période données"
     },
     "SYSTEM_USAGE_STAT" : {
       "TITLE" : "Statistique d'utilisation du système",
