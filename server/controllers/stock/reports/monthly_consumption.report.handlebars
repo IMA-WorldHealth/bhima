@@ -29,6 +29,7 @@
             {{#each periods}}
               <th class="text-center" style="width: 7.5%;">{{translate translate_key}}</th>
             {{/each}}
+            <th style="width: 7.5%;" class="text-center">{{translate 'FORM.LABELS.TOTAL'}} </th>
           </tr>
         </thead>
 
@@ -41,10 +42,11 @@
               {{#each monthlyConsumption}}
                 <td class="text-right">
                     {{#if quantity}} 
-                      <strong> {{quantity }} </strong>
+                      <strong> {{ quantity }} </strong>
                     {{/if}}                  
                 </td>
               {{/each}}
+              <td class="text-right"> <strong> {{ total }} </strong> </td>
             </tr>
           {{/each}}
         {{else}}

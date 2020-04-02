@@ -81,17 +81,19 @@ async function report(req, res, next) {
       data.inventories = inventories;
 
       data.dataDisplay = inventories.length ? 1 : 0;
-      data.spanColumn = data.periods.length + 2;
+      data.spanColumn = data.periods.length + 3;
 
       if (data.dataDisplay) {
         data.inventories.forEach(item => {
           item.monthlyConsumption = [];
+          item.total = 0;
           periods.forEach(period => {
             let quantityValue = 0;
             stockConsumption.forEach(stock => {
               if (item.inventory_uuid === stock.inventory_uuid) {
                 if (period.month_key === stock.month_key) {
                   quantityValue = stock.quantity;
+                  item.total += stock.quantity;
                 }
               }
             });
