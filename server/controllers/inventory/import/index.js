@@ -5,10 +5,11 @@
  * a template file to show how the inventory schema must be modeled for the user to fill out.
  */
 const path = require('path');
-
+const debug = require('debug')('bhima:inventory');
 const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const BadRequest = require('../../../lib/errors/BadRequest');
+
 
 exports.downloadTemplate = downloadTemplate;
 exports.importInventories = importInventories;
@@ -81,8 +82,14 @@ async function importInventories(req, res, next) {
  */
 function hasValidDataFormat(data = []) {
   return data.every(item => {
-    return item.inventory_code && item.inventory_group_name
+    const bool = item.inventory_code && item.inventory_group_name
       && item.inventory_text && item.inventory_type && item.inventory_unit
       && item.inventory_unit_price;
+
+    if (!bool) {
+      debug('#import(): invalid data format:', item);
+    }
+
+    return bool;
   });
 }

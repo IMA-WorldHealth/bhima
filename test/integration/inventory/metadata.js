@@ -20,7 +20,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     sellable : 1,
   };
 
-  const inventoryUuid = 'c8a406a9-53d6-429f-84d8-fc497875a580';
+  const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
 
   const metadataUpdate = {
     code : '1000012', // code must be unique
@@ -34,7 +34,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     text : 'Albendazo', // should find "Albendazole"
   };
 
-  it('GET /inventory/download/log/?lang=fr donwload log as Ms excel', () => {
+  it('GET /inventory/download/log/?lang=fr downloads the log in MS Excel format', () => {
     return agent.get(`/inventory/download/log/${inventoryUuid}?lang=fr`)
       .then(res => {
         expect(res).to.have.status(200);
@@ -78,7 +78,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
         inventoryList = res.body;
-        expect(res.body.length).to.be.equal(1);
+        expect(res.body.length).to.be.equal(3);
       })
       .catch(helpers.handler);
   });
@@ -97,7 +97,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     return agent.get('/inventory/metadata?sellable=1')
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(160);
+        expect(res.body.length).to.be.equal(2332);
       })
       .catch(helpers.handler);
   });
@@ -106,7 +106,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     return agent.get('/inventory/metadata?sellable=0')
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(4);
+        expect(res.body.length).to.be.equal(2);
       })
       .catch(helpers.handler);
   });
