@@ -36,4 +36,3 @@ function AppCache($localStorage, $sessionStorage) {
     return storage[name];
   };
 }
-

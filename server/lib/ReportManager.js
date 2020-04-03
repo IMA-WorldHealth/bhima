@@ -22,13 +22,14 @@
 
 const _ = require('lodash');
 const path = require('path');
+const tempy = require('tempy');
 const fs = require('fs');
+const db = require('./db');
+const util = require('./util');
 const translateHelper = require('./helpers/translate');
-const util = require('../lib/util');
-
 const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
-const db = require('./db');
+
 
 // renderers
 const renderers = {
@@ -52,7 +53,10 @@ const defaults = {
 };
 
 // Constants
-const SAVE_DIR = path.resolve(path.join(__dirname, '../reports/'));
+const SAVE_DIR = process.env.REPORT_DIR || tempy.directory();
+
+// create if not exist SAVE_DIR
+util.createDirectory(SAVE_DIR);
 
 const SAVE_SQL = `
   INSERT INTO saved_report SET ?;
