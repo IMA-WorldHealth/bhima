@@ -93,23 +93,101 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata?sellable=1 returns the list of sellable inventories', () => {
-    return agent.get('/inventory/metadata?sellable=1')
+  it('GET /inventory/metadata filters on the sellable column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ sellable : 1 })
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(2332);
+        helpers.api.listed(res, 2332);
+        return agent.get('/inventory/metadata')
+          .query({ sellable : 0 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata?sellable=0 returns the list of unsellable inventories', () => {
-    return agent.get('/inventory/metadata?sellable=0')
+  it('GET /inventory/metadata filters on the price column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ price : 1.10 })
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(2);
+        helpers.api.listed(res, 3);
+        return agent.get('/inventory/metadata')
+          .query({ price : 8.72 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
+
+  it('GET /inventory/metadata filters on the code column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ code : 'DARV_STAV4C6_0' })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+
+        expect(item.label).to.equal('Stavudine (d4T), 40mg, Caps, 60, Vrac');
+        expect(item.price).to.equal(4.9500);
+
+        return agent.get('/inventory/metadata')
+          .query({ code : 'DEXT_HALO1A-_0' });
+      })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+        expect(item.label).to.equal('Halothane, 250ml, flacon, Unité');
+        expect(item.price).to.equal(3.0700);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the consumable column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ consumable : 0 })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        return agent.get('/inventory/metadata')
+          .query({ consumable : 1 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2333);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the locked column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ locked : 0 })
+      .then(res => {
+        helpers.api.listed(res, 2332);
+        return agent.get('/inventory/metadata')
+          .query({ locked : 1 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the group_uuid column', () => {
+    const groupUuid = 'D81D12F0727C11EA8241000C2997DDC0';
+    const numGroupMembers = 49;
+
+    return agent.get('/inventory/metadata')
+      .query({ group_uuid : shared.inventoryGroup.uuid })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        return agent.get('/inventory/metadata')
+          .query({ group_uuid : groupUuid });
+      })
+      .then(res => {
+        helpers.api.listed(res, numGroupMembers);
+      })
+      .catch(helpers.handler);
+  });
+
 
   // count inventory in the group
   it('GET /inventory/groups/:uuid/count', () => {

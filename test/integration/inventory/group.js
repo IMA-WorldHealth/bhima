@@ -3,9 +3,18 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/inventory/group) The inventory group http API', () => {
-  // create inventory group
-  it('POST /inventory/group create a new inventory group', () => {
+describe('(/inventory/groups) The inventory groups HTTP API', () => {
+  const NUM_GROUPS = 32;
+
+  it(`GET /inventory/groups finds ${NUM_GROUPS} inventory groups`, () => {
+    return agent.get('/inventory/groups')
+      .then(res => {
+        helpers.api.listed(res, NUM_GROUPS);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /inventory/groups create a new inventory group', () => {
     return agent.post('/inventory/groups')
       .send(shared.inventoryGroup)
       .then(res => {
@@ -16,7 +25,7 @@ describe('(/inventory/group) The inventory group http API', () => {
   });
 
   // update inventory group
-  it('PUT /inventory/group/:uuid updates an existing inventory group', () => {
+  it('PUT /inventory/groups/:uuid updates an existing inventory group', () => {
     return agent.put(`/inventory/groups/${shared.inventoryGroup.uuid}`)
       .send(shared.updateGroup)
       .then(res => {
@@ -31,18 +40,17 @@ describe('(/inventory/group) The inventory group http API', () => {
       .catch(helpers.handler);
   });
 
-  // list of inventory groups
-  it('GET /inventory/group returns list of inventory groups', () => {
+
+  it(`GET /inventory/groups finds ${NUM_GROUPS + 1} inventory groups after creation`, () => {
     return agent.get('/inventory/groups')
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.a('object');
+        helpers.api.listed(res, NUM_GROUPS + 1);
       })
       .catch(helpers.handler);
   });
 
   // details of inventory groups
-  it('GET /inventory/group returns details of an inventory group', () => {
+  it('GET /inventory/groups returns details of an inventory group', () => {
     return agent.get(`/inventory/groups/${shared.inventoryGroup.uuid}`)
       .then(res => {
         const group = res.body;

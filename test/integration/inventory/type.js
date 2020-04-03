@@ -4,6 +4,16 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 describe('(/inventory/types) The inventory types http API', () => {
+  const NUM_TYPES = 3;
+
+  it(`GET /inventory/types finds ${NUM_TYPES} inventory types`, () => {
+    return agent.get('/inventory/types')
+      .then(res => {
+        helpers.api.listed(res, NUM_TYPES);
+      })
+      .catch(helpers.handler);
+  });
+
   // create inventory type
   it('POST /inventory/types create a new inventory types', () => {
     return agent.post('/inventory/types')
@@ -29,16 +39,6 @@ describe('(/inventory/types) The inventory types http API', () => {
       .catch(helpers.handler);
   });
 
-  // list of inventory type
-  it('GET /inventory/types returns list of inventory types', () => {
-    return agent.get('/inventory/types')
-      .then(res => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.a('object');
-      })
-      .catch(helpers.handler);
-  });
-
   // details of inventory types
   it('GET /inventory/types returns details of an inventory type', () => {
     return agent.get(`/inventory/types/${shared.inventoryType.id}`)
@@ -51,11 +51,24 @@ describe('(/inventory/types) The inventory types http API', () => {
       .catch(helpers.handler);
   });
 
+  it(`GET /inventory/types finds ${NUM_TYPES + 1} inventory types after creation`, () => {
+    return agent.get('/inventory/types')
+      .then(res => {
+        helpers.api.listed(res, NUM_TYPES + 1);
+      })
+      .catch(helpers.handler);
+
+  });
+
   // delete the inventory types
   it('DELETE /inventroy/types delete an existing inventory types', () => {
     return agent.delete(`/inventory/types/${shared.inventoryType.id}`)
       .then(res => {
         helpers.api.deleted(res);
+        return agent.get('/inventory/types');
+      })
+      .then(res => {
+        helpers.api.listed(res, NUM_TYPES);
       })
       .catch(helpers.handler);
   });

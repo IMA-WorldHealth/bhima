@@ -55,7 +55,7 @@ class CreateUpdateAccountReferencePage {
     await this.accounts.click();
 
     await Promise.all(
-      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v))
+      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)),
     );
 
     await this.modal.click();
@@ -66,7 +66,7 @@ class CreateUpdateAccountReferencePage {
     await this.accountsException.click();
 
     await Promise.all(
-      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v))
+      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v)),
     );
 
     await this.modal.click();
