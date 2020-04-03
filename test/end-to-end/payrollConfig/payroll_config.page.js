@@ -1,6 +1,3 @@
-/* global element, by */
-/* eslint  */
-
 /**
  * This class is represents a payroll configuration page in term of structure and
  * behaviour so it is a payroll configuration page object
@@ -15,7 +12,6 @@ const components = require('../shared/components');
 class PayrollConfigPage {
   constructor() {
     this.gridId = 'payroll-configuration-grid';
-    this.rubricGrid = element(by.id(this.gridId));
     this.actionLinkColumn = 3;
   }
 

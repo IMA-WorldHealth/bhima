@@ -1,17 +1,7 @@
 {{> head title="FORM.LABELS.PAYSLIP"}}
 
 <body>
-  <header class="row">
-    <div class="col-xs-6" style="font-size: 20px">
-      <h3 style="margin: 0px;"> {{enterprise.name}} </h3>
-      <address style="margin-bottom: 0px;">
-        {{enterprise.location}}
-      </address>
-      <div>{{enterprise.email}}</div>
-      <div>{{enterprise.phone}}</div>
-    </div>
-  </header>
-
+  {{> header }}
   <br>
   <br>
 
@@ -30,7 +20,12 @@
             <th></th>
             <th style="width: 15%;">{{translate 'TABLE.COLUMNS.NAME' }}</th>
             {{#each rubrics}}
-              <th>{{ abbr }}</th>
+              {{#if ../xlsReport}}
+                <th>{{ label }}</th>
+              {{/if}}
+              {{#if ../otherRenderer}}
+                <th>{{ abbr }}</th>
+              {{/if}}
             {{/each}}
             <th>{{translate 'TABLE.COLUMNS.BASIC_SALARY' }}</th>
             <th>{{translate 'TABLE.COLUMNS.NET_TAXABLE' }}</th>

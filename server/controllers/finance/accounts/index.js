@@ -286,7 +286,7 @@ function getOpeningBalanceForPeriod(req, res, next) {
   debug(
     '#getOpeningBalanceForPeriod() finding opening balance for account %s on  period %s',
     accountId,
-    req.query.period
+    req.query.period,
   );
 
   let promise = q();

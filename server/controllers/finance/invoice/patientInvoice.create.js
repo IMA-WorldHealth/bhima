@@ -156,7 +156,7 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   // create a filter to align invoice item columns to the SQL columns
   const filter = util.take(
     'uuid', 'inventory_uuid', 'quantity', 'transaction_price',
-    'inventory_price', 'debit', 'credit', 'invoice_uuid'
+    'inventory_price', 'debit', 'credit', 'invoice_uuid',
   );
 
   // prepare invoice items for insertion into database

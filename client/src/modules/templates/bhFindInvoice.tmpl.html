@@ -11,32 +11,33 @@
         ng-keypress="$ctrl.onKeyPress($event, FindInvoiceForm)"
         ng-disabled="$ctrl.disabled">
       <span class="input-group-btn">
-        <button 
-          id="search-button" 
-          class="btn btn-default" 
-          type="button" 
-          ng-click="$ctrl.search(FindInvoiceForm)" 
+        <button
+          id="search-button"
+          class="btn btn-default"
+          type="button"
+          ng-click="$ctrl.search(FindInvoiceForm)"
           ng-disabled="$ctrl.disabled"
           translate>
           FORM.BUTTONS.SEARCH
         </button>
       </span>
     </div>
-    <p 
-      ng-if="!$ctrl.invoiceFound && FindInvoiceForm.$submitted" 
-      class="help-block" 
-      translate="FORM.INFO.PATIENT_INVOICE_NOT_FOUND" 
+
+    <p
+      ng-if="$ctrl.invoiceFound === false"
+      class="help-block"
+      translate="FORM.INFO.PATIENT_INVOICE_NOT_FOUND"
       translate-values="{{ $ctrl.translate }}">
     </p>
-    <p 
-      ng-if="$ctrl.invoiceFound && FindInvoiceForm.$submitted" 
-      class="help-block" 
+    <p
+      ng-if="$ctrl.invoiceFound === true"
+      class="help-block"
       translate="FORM.INFO.PATIENT_INVOICE_FOUND">
     </p>
   </div>
 
-  <div ng-if="$ctrl.invoiceFound && FindInvoiceForm.$submitted" class="alert alert-success">
-    {{ $ctrl.invoiceDescription }}
+  <div ng-if="$ctrl.invoiceFound === true && $ctrl.invoiceItems" class="alert alert-success">
+    <b>{{$ctrl.invoice.details.reference}}</b> {{ $ctrl.invoiceDescription }}
     <ul>
       <li ng-repeat="item in $ctrl.invoiceItems track by $index">{{ item }}</li>
     </ul>

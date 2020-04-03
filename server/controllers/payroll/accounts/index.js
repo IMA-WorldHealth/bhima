@@ -11,7 +11,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 function lookupAccountConfig(id) {
   const sql = `
     SELECT c.id, c.label, c.account_id
-    FROM config_accounting AS c  
+    FROM config_accounting AS c
     WHERE c.id = ?`;
 
   return db.one(sql, [id]);
@@ -39,7 +39,7 @@ function list(req, res, next) {
 * Returns the detail of a single Account
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupAccountConfig(id)
     .then((record) => {

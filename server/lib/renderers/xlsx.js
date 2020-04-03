@@ -28,6 +28,9 @@ exports.render = render;
 exports.find = find;
 exports.extension = '.xlsx';
 exports.headers = headers;
+exports.find = find;
+exports.setValue = setValue;
+exports.IGNORED_COLUMNS = IGNORED_COLUMNS;
 
 /**
  * XLSX Render Method

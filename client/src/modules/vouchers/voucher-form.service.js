@@ -19,7 +19,7 @@ VoucherFormService.$inject = [
  */
 function VoucherFormService(
   Vouchers, Constants, Session, VoucherItem, AppCache, Store, Accounts,
-  $timeout, $translate, Exchange, FormatTreeData
+  $timeout, $translate, Exchange, FormatTreeData,
 ) {
   // Error Flags
   // must have transaction_type for certain cases

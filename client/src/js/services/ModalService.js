@@ -74,6 +74,7 @@ function ModalService(Modal) {
 
   service.openHostpitaliationIndicator = openHostpitaliationIndicator;
   service.openinventoryLogModal = openinventoryLogModal;
+  service.editPatientGroup = editPatientGroup;
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -344,5 +345,17 @@ function ModalService(Modal) {
     const templateUrl = 'modules/inventory/list/modals/log.modal.html';
     const controller = 'InventoryLogModalController';
     return openModal(request, templateUrl, controller, 'md');
+  }
+
+  function editPatientGroup(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/patients/registry/editPatientGroup.html',
+      controller   : 'EditPatientGroupModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
   }
 }

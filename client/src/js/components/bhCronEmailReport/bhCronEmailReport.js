@@ -39,14 +39,16 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseRepo
   $ctrl.$onInit = init;
 
   function init() {
+    $ctrl.isEmailFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
+
     loadReportDetails($ctrl.reportKey)
       .then(([report]) => {
         $ctrl.cron = {
           report_id : report.id,
           has_dynamic_dates : 0,
         };
-        $ctrl.isEmailFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
-        load(report.id);
+
+        return load(report.id);
       });
   }
 
@@ -76,7 +78,6 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseRepo
     $ctrl.sendingPending = true;
     CronEmailReports.send(id)
       .then(() => {
-        $ctrl.sendingPending = false;
         Notify.success('CRON.EMAIL_SENT_SUCCESSFULLY');
       })
       .catch(Notify.handleError)
@@ -94,11 +95,11 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseRepo
   function submit(cronForm) {
     if ($ctrl.reportForm.$invalid) {
       Notify.warn('CRON.PLEASE_FILL_REPORT_FORM');
-      return;
+      return false;
     }
 
     if (cronForm.$invalid) {
-      return;
+      return false;
     }
 
     const params = {
@@ -106,7 +107,7 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseRepo
       reportOptions : $ctrl.reportDetails,
     };
 
-    CronEmailReports.create(params)
+    return CronEmailReports.create(params)
       .then(() => reset(cronForm))
       .then(() => init())
       .catch(Notify.handleError);

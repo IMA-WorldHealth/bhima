@@ -85,7 +85,7 @@ async function correctTransaction(transactionDetails, correction, userId) {
     const reversalResult = await journal.reverseTransaction(
       db.bid(transactionUuid),
       userId,
-      transactionDetails.description
+      transactionDetails.description,
     );
 
     // reversal has been correctly executed; this returns the voucherUuid for this document

@@ -1,8 +1,7 @@
-{{> head title="TREE.BALANCE_SHEET"}}
+{{> head title="REPORT.OHADA.BALANCE_SHEET"}}
 
 <body>
 
-<div class="container">
   {{> header}}
 
   <!-- body  -->
@@ -18,9 +17,7 @@
       <table style="margin-bottom: 15px; font-size: 10px;" class="table table-striped table-condensed table-report table-bordered">
         <thead>
           <tr style="background-color:#ddd;">
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
+            <th colspan="3">&nbsp;</th>
             <th class="text-center" colspan="3">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.current_fiscal_year}}</th>
             {{#if fiscalYear.details.previous_fiscal_year}}
               <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.previous_fiscal_year}}</th>
@@ -38,7 +35,7 @@
             {{/if}}
           </tr>
         </thead>
-        
+
         <tbody>
           {{#each assetTable as | poste |}}
             <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
@@ -60,9 +57,7 @@
       <table style="margin-bottom: 15px; font-size: 10px;" class="table table-striped table-condensed table-report table-bordered">
         <thead>
           <tr style="background-color:#ddd;">
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
+            <th colspan="3">&nbsp;</th>
             <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.current_fiscal_year}}</th>
             {{#if fiscalYear.details.previous_fiscal_year}}
               <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.previous_fiscal_year}}</th>
@@ -78,7 +73,7 @@
             {{/if}}
           </tr>
         </thead>
-        
+
         <tbody>
           {{#each liabilityTable as | poste |}}
             <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
@@ -91,7 +86,6 @@
           {{/each}}
         </tbody>
       </table>
-
     </div>
   </div>
 
@@ -101,5 +95,4 @@
     <em>*{{translate 'REPORT.OHADA.ADP'}}: {{translate 'REPORT.OHADA.ADP_LONG'}}</em>
   </p>
 
-</div>
 </body>

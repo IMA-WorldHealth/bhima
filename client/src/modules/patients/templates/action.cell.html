@@ -21,6 +21,11 @@
         <span class="fa fa-id-card-o"></span> <span translate>PATIENT_REGISTRY.CARD</span>
       </a>
     </li>
+    <li>
+      <a data-method="fiche" ng-click="grid.appScope.patientFiche(row.entity.uuid)" href>
+        <span class="fa fa-hospital-o"></span> <span translate>PATIENT_REG.FICHE</span>
+      </a>
+    </li>
     <li class="divider"></li>
     <li>
       <a data-method="financialActivities" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}?lang={{grid.appScope.languageKey}}" target="_blank">
@@ -44,7 +49,7 @@
       </a>
     </li>
     <li>
-      <a data-method="stock-movements" ui-sref="stockMovements({ filters : [{ key : 'patientReference', value : row.entity.reference, displayValue: row.entity.display_name }, { key : 'period', value : 'allTime' }]})" href>
+      <a data-method="stock-movements" ui-sref="stockMovements({ filters : [{ key : 'patientReference', value : row.entity.reference, displayValue: row.entity.display_name, cacheable:false }, { key : 'period', value : 'allTime', cacheable:false }]})" href>
         <span class="fa fa-list-alt"></span> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
       </a>
     </li>

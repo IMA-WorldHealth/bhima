@@ -100,7 +100,6 @@ INSERT INTO unit VALUES
   (211, 'Income Expenses by Month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
-  (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
   (216, 'Income Expenses by Year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
   (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
   (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
@@ -137,20 +136,22 @@ INSERT INTO unit VALUES
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
-  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'), 
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'),
   (254, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
   (255, 'Fill Form', 'TREE.FILL_FORM', '', 254, '/modules/fill_form', '/fill_form'),
   (256, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 254, '/modules/display_metadata', '/display_metadata'),
   (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 254, '/modules/data_kit', '/data_kit'),
   (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
   (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
-  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
+  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),
   (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit'),
   (262, 'Stock Requisition','TREE.STOCK_REQUISITION','Stock Requisition', 160,'/modules/stock/stock_requisition','/stock/requisition'),
   (263, 'Configuration Analysis Tools','TREE.CONFIGURATION_ANALYSIS_TOOLS','Configuration Analysis Tools', 1,'/modules/configuration_analysis_tools','/configuration_analysis_tools'),
   (264, 'Configurable Analysis Report','TREE.CONFIGURABLE_ANALYSIS_REPORT','Configurable Analysis Report', 144,'/modules/reports/configurable_analysis_report','/reports/configurable_analysis_report'),
   (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis'),
-  (266, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
+  (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges'),
+  (267, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -211,7 +212,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT'),
   ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),
-  ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE');
+  ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE'),
+  ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -375,11 +377,13 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (3, 'fianance', 'DASHBOARD.FINANCE');
 
 -- cron
+-- NOTE(@jniles): the cron syntax for month is 0-indexed, but the cron
+-- syntax for day is 1-indexed.
 INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *');
+  ('CRON.YEARLY', '0 1 31 11 *');
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
@@ -395,7 +399,7 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- application process status
-INSERT INTO `status` VALUES 
+INSERT INTO `status` VALUES
   (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS'),
   (2, 'done', 'FORM.LABELS.STATUS_TYPE.DONE'),
   (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY'),
@@ -404,12 +408,12 @@ INSERT INTO `status` VALUES
   (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED');
 
 -- type of requestors
-INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
+INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES
   ('service', 'FORM.LABELS.SERVICE'),
   ('depot', 'FORM.LABELS.DEPOT');
 
 -- analysis_tool_type
-INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES 
+INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.COSTS', 0, 1),
   ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
   ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),

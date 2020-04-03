@@ -1,0 +1,51 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="patient-edit-group"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>FORM.LABELS.CHANGE_PATIENT_GROUP</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="control-label" translate>
+        FORM.LABELS.GROUPS_PATIENT_TITLE
+      </label>
+      <div
+        class="checkbox"
+        ng-repeat="group in $ctrl.patientGroups | orderBy:'name'">
+      <label>
+      <input
+        data-group-option
+        type="checkbox"
+        id="{{group.uuid}}"
+        name="subscribedGroups"
+        ng-model="$ctrl.subscribedGroups[group.uuid]"
+        ng-change="$ctrl.onToggleCheckboxes()">
+          {{group.name}}
+        </label>
+      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.removeAssignedGroups" ng-change="$ctrl.onToggleRemoveAll()">
+        <span translate>PATIENT_REG.REMOVE_PREVIOUS_ASSIGNMENT</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

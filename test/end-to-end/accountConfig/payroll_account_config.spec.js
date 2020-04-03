@@ -2,7 +2,6 @@ const helpers = require('../shared/helpers');
 const AccountConfigPage = require('./payroll_account_config.page');
 
 describe('Payroll Account Configuration Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/payroll/account_configuration'));
 
   const Page = new AccountConfigPage();
@@ -17,19 +16,19 @@ describe('Payroll Account Configuration Management', () => {
     account_id : '57110010',
   };
 
-  it('successfully creates a Configuration Account', async () => {
+  it('successfully creates a configuration account', async () => {
     await Page.createAccountConfig(accountConfig);
   });
 
-  it('successfully edits a Configuration Account', async () => {
+  it('successfully edits a configuration account', async () => {
     await Page.editAccountConfig(accountConfig.label, updateAccountConfig);
   });
 
-  it('don\'t create when incorrect Configuration Account', async () => {
+  it('does not create an incorrect configuration account', async () => {
     await Page.errorOnCreateAccountConfig();
   });
 
-  it('successfully delete a Configuration Account', async () => {
+  it('successfully deletes a configuration account', async () => {
     await Page.deleteAccountConfig(updateAccountConfig.label);
   });
 });

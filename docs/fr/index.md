@@ -4,17 +4,16 @@ Bienvenue! Ce manuel est destiné à l’application de base de gestion des info
 
 Ce manuel est divisé en chapitres:
 
-1. Commencer
-2. [Modules Finance](./finance/index.md)
-3. [Dossiers médicaux](./medical-records/index.md)
-4. [Gestion des stocks](./stock-management/index.md)
+1. [Commencer](./getting-started/)
+2. [Modules Finance](./finance/)
+3. [Dossiers médicaux](./medical-records/)
+4. [Gestion des stocks](./stock-management/)
 5. [Références des Comptes](./references-comptes)
 6. [Centre des frais](./centre-des-frais)
 7. [Ressources humaines](./payroll)
-8. [Seuil de rentabilité](./break-even) 
+8. [Seuil de rentabilité](./break-even)
 9. Rapports et statistiques
-
-10. [Référence développeur](./for-developers/index.md)
+10. [Référence développeur](./for-developers/)
 
 ## A propos
 

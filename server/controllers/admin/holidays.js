@@ -1,8 +1,10 @@
 /**
-* Holiday Controller
-*
-* This controller exposes an API to the client for reading and writing Holiday
-*/
+ * @overview
+ * Holiday Controller
+ *
+ * @description
+ * This controller exposes an API to the client for reading and writing Holiday
+ */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -18,11 +20,12 @@ function lookupHoliday(id) {
   return db.one(sql, [id]);
 }
 
-// Check Holidays
 /**
-*
-* This function prevents to define for an employee, two periods of holidays that fits nested
-*/
+ * @function checkHoliday
+ *
+ * @description
+ * This function prevents to define for an employee, two periods of holidays that fits nested
+ */
 function checkHoliday(param) {
   const sql = `
     SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom
@@ -81,29 +84,28 @@ function detail(req, res, next) {
 }
 
 // POST /Holiday
-function create(req, res, next) {
+async function create(req, res, next) {
   const sql = `INSERT INTO holiday SET ?`;
   const data = req.body;
   data.employee_uuid = db.bid(data.employee_uuid);
 
-  checkHoliday(data)
-    .then((record) => {
-      if (record.length) {
-        throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
-      }
+  try {
+    const record = await checkHoliday(data);
 
-      return db.exec(sql, [data]);
-    })
-    .then((row) => {
-      res.status(201).json({ id : row.insertId });
-    })
-    .catch(next)
-    .done();
+    if (record.length) {
+      throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+    }
+
+    const row = await db.exec(sql, [data]);
+    res.status(201).json({ id : row.insertId });
+  } catch (e) {
+    next(e);
+  }
 }
 
 
 // PUT /Holiday /:id
-function update(req, res, next) {
+async function update(req, res, next) {
   const sql = `UPDATE holiday SET ? WHERE id = ?;`;
   const data = req.body;
 
@@ -111,24 +113,21 @@ function update(req, res, next) {
     data.employee_uuid = db.bid(data.employee_uuid);
   }
 
-  checkHoliday(data)
-    .then((record) => {
+  try {
+    const record = await checkHoliday(data);
 
-      if (record.length > 1) {
-        throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
-      }
+    if (record.length > 1) {
+      throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+    }
 
-      return db.exec(sql, [data, req.params.id]);
-    })
-    .then(() => {
-      return lookupHoliday(req.params.id);
-    })
-    .then((record) => {
+    await db.exec(sql, [data, req.params.id]);
+    const holiday = await lookupHoliday(req.params.id);
+
     // all updates completed successfull, return full object to client
-      res.status(200).json(record);
-    })
-    .catch(next)
-    .done();
+    res.status(200).json(holiday);
+  } catch (e) {
+    next(e);
+  }
 }
 
 // DELETE /Holiday/:id

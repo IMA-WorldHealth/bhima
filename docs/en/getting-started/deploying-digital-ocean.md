@@ -1,6 +1,5 @@
-
 <style>
-    .guilabel {
+  .guilabel {
     border: 1px solid #7fbbe3 !important;
     background: #e7f2fa;
     font-size: 80%;
@@ -8,16 +7,17 @@
     border-radius: 4px;
     padding: 2.4px 6px;
     margin: auto 2px;
-    color:#001
-    }
+    color:#001;
+    white-space: nowrap;
+  }
 
-    .left40 {
-      margin-left:40px
-    }
+  .left40 {
+    margin-left:40px
+  }
 </style>
 
 
-# Installing BHIMA on DigitalOcean
+# Deploying BHIMA on DigitalOcean
 
 <i> Follow these steps below posted at https://docs.opendatakit.org/aggregate-digital-ocean</i>
 

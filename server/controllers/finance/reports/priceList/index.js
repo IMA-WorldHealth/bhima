@@ -14,7 +14,7 @@ const q = require('q');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
-const priceList = require('../../../../controllers/finance/priceList');
+const priceList = require('../../priceLists');
 
 const TEMPLATE = './server/controllers/finance/reports/priceList/report.handlebars';
 

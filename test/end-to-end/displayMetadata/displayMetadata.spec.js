@@ -29,8 +29,8 @@ describe('Metadata Management', () => {
     await Page.deleteDataSurvey(dataDelete);
   });
 
-  it(`successfully Searching for form data for posting and updatingSearches
-    = for form data for posting and updating`, async () => {
+  it('successfully Searching for form data for posting and updatingSearches'
+    .concat(' = for form data for posting and updating'), async () => {
     await Page.updateMetadata('IMA World Health', newSurveyData1);
   });
 

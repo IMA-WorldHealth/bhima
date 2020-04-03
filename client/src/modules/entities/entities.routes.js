@@ -18,9 +18,9 @@ angular.module('bhima.routes')
       })
 
       .state('entities.edit', {
-        url : '/edit',
+        url : '/:uuid/edit',
         params : {
-          entity : { value : {} },
+          uuid : { value : null },
           creating : { value : false },
         },
         onEnter : ['$uibModal', entityModal],

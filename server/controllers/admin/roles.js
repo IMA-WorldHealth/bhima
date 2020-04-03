@@ -235,7 +235,6 @@ function assignRolesToUser(req, res, next) {
     .done();
 }
 
-
 /**
  * @function units
  *

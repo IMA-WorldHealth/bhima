@@ -46,9 +46,9 @@ async function getData(options) {
       SUM(IF(hospitalized = 0, 1, 0)) AS total_ambulatory,
       SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
       SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
-    FROM service s 
+    FROM service s
       LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
-      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid 
+      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid
     WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?)
     GROUP BY s.id;
   `;
@@ -65,9 +65,9 @@ async function getData(options) {
       SUM(IF(hospitalized = 0, 1, 0)) AS total_ambulatory,
       SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
       SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
-    FROM service s 
+    FROM service s
       LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
-      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid 
+      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid
     WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?);
   `;
 
@@ -76,13 +76,9 @@ async function getData(options) {
     moment(options.dateTo).format('YYYY-MM-DD'),
   ];
 
-  try {
-    const [data, [total]] = await Promise.all([
-      db.exec(queryData, queryParams),
-      db.exec(queryTotal, queryParams),
-    ]);
-    return { data, total };
-  } catch (error) {
-    throw error;
-  }
+  const [data, [total]] = await Promise.all([
+    db.exec(queryData, queryParams),
+    db.exec(queryTotal, queryParams),
+  ]);
+  return { data, total };
 }

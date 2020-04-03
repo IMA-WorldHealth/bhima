@@ -18,7 +18,7 @@ angular.module('bhima.routes')
       })
 
       .state('entityGroup.edit', {
-        url : '/edit',
+        url : '/:uuid/edit',
         params : {
           uuid : { value : null },
           creating : { value : false },

@@ -10,6 +10,7 @@ const GU = require('../shared/GridUtils');
 
 describe('Complex Vouchers', () => {
   before(() => helpers.navigate('vouchers/complex'));
+  beforeEach(() => browser.refresh()); // eslint-disable-line
 
   it('creates a complex voucher', async function create() {
     const page = new ComplexVoucherPage();

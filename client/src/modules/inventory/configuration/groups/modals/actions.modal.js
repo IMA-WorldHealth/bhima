@@ -6,13 +6,13 @@ InventoryGroupsActionsModalController.$inject = [
 ];
 
 function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data) {
-  var vm = this;
-
-  // map for actions
-  var map = { add : addGroup, edit : editGroup };
+  const vm = this;
 
   // session
   vm.session = {};
+
+  vm.isCreateState = (Data.action === 'add');
+  vm.isUpdateState = (Data.action === 'edit');
 
   // expose to the view
   vm.submit = submit;
@@ -25,31 +25,24 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
   // startup
   startup();
 
-  /** submit data */
+  /* submit data */
   function submit(form) {
-    var record = cleanForSubmit(vm.session);
+    const record = cleanForSubmit(vm.session);
 
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
-    map[vm.action](record, vm.identifier)
-      .then(handleInstanceClose);
-  }
+    let promise;
+    if (vm.isCreateState) {
+      promise = InventoryGroups.create(record);
+    } else {
+      promise = InventoryGroups.update(Data.identifier, record);
+    }
 
-  function handleInstanceClose(res) {
-    Instance.close(res);
-  }
-
-  /* add inventory group */
-  function addGroup(record) {
-    return InventoryGroups.create(record)
+    return promise
+      .then(res => Instance.close(res))
       .catch(Notify.handleError);
   }
 
-  /* edit inventory group */
-  function editGroup(record, uuid) {
-    return InventoryGroups.update(uuid, record)
-      .catch(Notify.handleError);
-  }
 
   function onSelectCOGSAccount(account) {
     vm.session.cogs_account = account.id;
@@ -81,21 +74,17 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
     };
   }
 
-  /** startup */
+  /* startup */
   function startup() {
-
-    vm.action = Data.action;
-    vm.identifier = Data.identifier;
-
-    if (vm.identifier) {
-      InventoryGroups.read(vm.identifier)
-        .then((groups) => {
-          vm.session = groups;
+    if (Data.identifier) {
+      InventoryGroups.read(Data.identifier)
+        .then((group) => {
+          vm.session = group;
         })
         .catch(Notify.handleError);
     }
 
-    if (vm.action === 'add') {
+    if (vm.isCreateState) {
       // by default all inventory (for a group) expires and doesn't have a unique item
       vm.session.expires = 1;
       vm.session.unique_item = 0;

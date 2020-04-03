@@ -34,7 +34,6 @@ const flux = {
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
-const BASE_NUMBER_OF_MONTHS = 6;
 
 // exports
 exports.flux = flux;
@@ -74,6 +73,7 @@ function getLotFilters(parameters) {
     'document_uuid',
     'entity_uuid',
     'service_uuid',
+    'invoice_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -94,6 +94,7 @@ function getLotFilters(parameters) {
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
   filters.equals('service_uuid', 'uuid', 'serv');
+  filters.equals('invoice_uuid', 'invoice_uuid', 'm');
 
   // NOTE(@jniles):
   // this filters the lots on the entity_uuid associated with the text reference.  It is
@@ -224,7 +225,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters)
-    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, params.monthAverageConsumption))
     .then(stockManagementProcess)
     .then(processMultipleLots)
     .then((rows) => {
@@ -409,15 +410,19 @@ function getStockConsumption(periodIds) {
  *
  * @param {number} periodId - the base period
  * @param {Date} periodDate - a date for finding the correspondant period
- * @param {number} numberOfMonths - the number of months for calculating the average (optional)
+ * @param {number} monthAverageConsumption - the number of months for calculating the average (optional)
  */
-async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths = BASE_NUMBER_OF_MONTHS) {
+async function getStockConsumptionAverage(periodId, periodDate, monthAverageConsumption) {
+  const numberOfMonths = monthAverageConsumption - 1;
+
   const baseDate = periodDate
     ? moment(periodDate).format(DATE_FORMAT)
     : moment().format(DATE_FORMAT);
 
+  const beginingDate = moment(baseDate).subtract(numberOfMonths, 'months').format(DATE_FORMAT);
+
   const queryPeriodRange = `
-    SELECT id FROM period WHERE id BETWEEN ? AND ?;
+    SELECT id FROM period WHERE (id BETWEEN ? AND ?) AND period.number NOT IN (0, 13);
   `;
 
   const queryPeriodId = periodId
@@ -425,7 +430,7 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
-    SELECT IF(i.avg_consumption = 1, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
+    SELECT IF(i.avg_consumption = 0, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
       BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
       d.text AS depot_text
     FROM stock_consumption s
@@ -436,9 +441,13 @@ async function getStockConsumptionAverage(periodId, periodDate, numberOfMonths =
     GROUP BY i.uuid, d.uuid;
   `;
 
+  const getBeginigPeriod = `
+    SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
+  `;
+
   const period = await db.one(queryPeriodId, [periodId || baseDate]);
-  const beginingPeriod = period.id - numberOfMonths;
-  const paramPeriodRange = beginingPeriod > 0 ? [beginingPeriod + 1, period.id] : [1, period.id];
+  const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
+  const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
 
   const rows = await db.exec(queryPeriodRange, paramPeriodRange);
   const ids = rows.map(row => row.id);
@@ -504,7 +513,7 @@ function getInventoryQuantityAndConsumption(params) {
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
-    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, params.monthAverageConsumption))
     .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;
@@ -578,8 +587,8 @@ function processMultipleLots(inventories) {
  * This function reads the average stock consumption for each inventory item
  * in a depot.
  */
-async function processStockConsumptionAverage(inventories, dateTo) {
-  const consumptions = await getStockConsumptionAverage(null, dateTo);
+async function processStockConsumptionAverage(inventories, dateTo, monthAverageConsumption) {
+  const consumptions = await getStockConsumptionAverage(null, dateTo, monthAverageConsumption);
 
   for (let i = 0; i < consumptions.length; i++) {
     for (let j = 0; j < inventories.length; j++) {

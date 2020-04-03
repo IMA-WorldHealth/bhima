@@ -37,8 +37,8 @@
             <li role="separator" class="divider"></li>
 
             <li role="menuitem">
-              <a href data-method="export-pdf" id="export-pdf" ng-click="AccountStateCtrl.exportPdf()">
-                <i class="fa fa-file-pdf-o"></i> <span translate>DOWNLOADS.PDF</span>
+              <a data-method="export-pdf" ng-href="/reports/finance/account_statement?{{ AccountStateCtrl.download('pdf') }}" download="{{ 'ACCOUNT_STATEMENT.TITLE' | translate }}">
+                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
@@ -48,7 +48,7 @@
             </li>
 
             <li role="menuitem">
-              <a data-method="export-excel" target='_blank' ng-href="/reports/finance/account_statement?{{AccountStateCtrl.exportExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+              <a data-method="export-excel" target='_blank' ng-href="/reports/finance/account_statement?{{AccountStateCtrl.download('xlsx')}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>

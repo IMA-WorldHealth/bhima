@@ -13,7 +13,7 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
 
   const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
-    'patientReference', 'service_uuid',
+    'patientReference', 'service_uuid', 'invoice_uuid',
   ];
 
   vm.filters = data;

@@ -193,6 +193,17 @@ function StockLotsController(
     return $httpParamSerializer(options);
   };
 
+  vm.exportTo = (renderer) => {
+    const filterOpts = stockLotFilters.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
   vm.toggleInlineFilter = () => {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

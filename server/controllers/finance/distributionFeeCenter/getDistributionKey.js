@@ -7,7 +7,6 @@
 const db = require('../../../lib/db');
 
 function getDistributionKey(req, res, next) {
-
   const sql = `
     SELECT k.auxiliary_fee_center_id, fca.label AS auxiliary_label, k.principal_fee_center_id,
     fcp.label AS principal_label, k.rate, k.user_id, u.display_name AS user_name

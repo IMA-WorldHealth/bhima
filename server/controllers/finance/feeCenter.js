@@ -4,20 +4,18 @@
 * This controller exposes an API to the client for reading and writing Fee Center
 */
 
-const q = require('q');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
 // GET /fee_center
-function lookupFeeCenter(id) {
-
+async function lookupFeeCenter(id) {
   const sqlFeeCenter = `
     SELECT id, label, is_principal, project_id FROM fee_center WHERE id = ?`;
 
   const sqlReferenceFeeCenter = `
     SELECT id, fee_center_id, account_reference_id, is_cost, is_variable, is_turnover
-    FROM reference_fee_center 
+    FROM reference_fee_center
     WHERE fee_center_id = ?`;
 
   const sqlServicesFeeCenter = `
@@ -26,27 +24,26 @@ function lookupFeeCenter(id) {
     JOIN service ON service.id = service_fee_center.service_id
     WHERE fee_center_id = ?`;
 
-  return q.all([
+  const [feeCenter, references, services] = await Promise.all([
     db.exec(sqlFeeCenter, [id]),
     db.exec(sqlReferenceFeeCenter, [id]),
     db.exec(sqlServicesFeeCenter, [id]),
-  ])
-    .spread((feeCenter, references, services) => {
-      const data = {
-        feeCenter,
-        references,
-        services,
-      };
+  ]);
 
-      return data;
-    });
+  const data = {
+    feeCenter,
+    references,
+    services,
+  };
+
+  return data;
 }
 
 // Lists
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'f' });
   const sql = `
-    SELECT f.id, f.label, f.is_principal, f.project_id, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs, 
+    SELECT f.id, f.label, f.is_principal, f.project_id, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs,
     GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName
     FROM fee_center AS f
     LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
@@ -82,127 +79,126 @@ function detail(req, res, next) {
     .then((record) => {
       res.status(200).json(record);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
 // POST /fee_center
-function create(req, res, next) {
-  const sql = `INSERT INTO fee_center SET ?`;
-  const data = req.body;
+async function create(req, res, next) {
+  try {
+    const sql = `INSERT INTO fee_center SET ?`;
+    const data = req.body;
 
-  const feeCenterData = {
-    label : data.label,
-    is_principal : data.is_principal,
-    project_id : data.project_id,
-  };
+    const feeCenterData = {
+      label : data.label,
+      is_principal : data.is_principal,
+      project_id : data.project_id,
+    };
 
-  db.exec(sql, [feeCenterData])
-    .then((row) => {
-      const feeCenterId = row.insertId;
-      const transaction = db.transaction();
+    const row = await db.exec(sql, [feeCenterData]);
+    const feeCenterId = row.insertId;
 
-      if (data.reference_fee_center.length) {
-        const dataReferences = data.reference_fee_center.map(item => [
-          feeCenterId,
-          item.account_reference_id,
-          item.is_cost,
-          item.is_variable,
-          item.is_turnover,
-        ]);
+    const transaction = db.transaction();
 
-        const sqlReferences = `
-          INSERT INTO reference_fee_center
-          (fee_center_id, account_reference_id, is_cost, is_variable, is_turnover) VALUES ?`;
-        transaction
-          .addQuery(sqlReferences, [dataReferences]);
-      }
+    if (data.reference_fee_center.length) {
+      const dataReferences = data.reference_fee_center.map(item => [
+        feeCenterId,
+        item.account_reference_id,
+        item.is_cost,
+        item.is_variable,
+        item.is_turnover,
+      ]);
 
-      if (data.services) {
-        const dataServices = data.services.map(item => [
-          feeCenterId,
-          item,
-        ]);
+      const sqlReferences = `
+        INSERT INTO reference_fee_center
+        (fee_center_id, account_reference_id, is_cost, is_variable, is_turnover) VALUES ?`;
 
-        const sqlServices = `
-          INSERT INTO service_fee_center (fee_center_id, service_id) VALUES ?`;
-        transaction
-          .addQuery(sqlServices, [dataServices]);
-      }
+      transaction
+        .addQuery(sqlReferences, [dataReferences]);
+    }
 
-      return transaction.execute();
-    })
-    .then((rows) => {
-      res.status(201).json(rows);
-    })
-    .catch(next)
-    .done();
+    if (data.services) {
+      const dataServices = data.services.map(item => [
+        feeCenterId,
+        item,
+      ]);
+
+      const sqlServices = `
+        INSERT INTO service_fee_center (fee_center_id, service_id) VALUES ?`;
+
+      transaction
+        .addQuery(sqlServices, [dataServices]);
+    }
+
+    const rows = await transaction.execute();
+    res.status(201).json(rows);
+  } catch (err) {
+    next(err);
+  }
 }
 
 
 // PUT /fee_center /:id
-function update(req, res, next) {
+async function update(req, res, next) {
   const data = req.body;
   const transaction = db.transaction();
 
-  const feeCenterData = {
-    label : data.label,
-    is_principal : data.is_principal,
-    project_id : data.project_id,
-  };
+  try {
 
-  const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
-  const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
-  const delServices = `DELETE FROM service_fee_center WHERE fee_center_id = ?;`;
-  const feeCenterId = req.params.id;
+    const feeCenterData = {
+      label : data.label,
+      is_principal : data.is_principal,
+      project_id : data.project_id,
+    };
 
-  transaction
-    .addQuery(sql, [feeCenterData, feeCenterId])
-    .addQuery(delReferences, [feeCenterId])
-    .addQuery(delServices, [feeCenterId]);
+    const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
+    const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
+    const delServices = `DELETE FROM service_fee_center WHERE fee_center_id = ?;`;
+    const feeCenterId = req.params.id;
 
-  if (data.reference_fee_center.length) {
-    const dataReferences = data.reference_fee_center.map(item => [
-      feeCenterId,
-      item.account_reference_id,
-      item.is_cost,
-      item.is_variable,
-      item.is_turnover,
-    ]);
+    transaction
+      .addQuery(sql, [feeCenterData, feeCenterId])
+      .addQuery(delReferences, [feeCenterId])
+      .addQuery(delServices, [feeCenterId]);
 
-    const sqlReferences = `
+    if (data.reference_fee_center.length) {
+      const dataReferences = data.reference_fee_center.map(item => [
+        feeCenterId,
+        item.account_reference_id,
+        item.is_cost,
+        item.is_variable,
+        item.is_turnover,
+      ]);
+
+      const sqlReferences = `
       INSERT INTO reference_fee_center
       (fee_center_id, account_reference_id, is_cost, is_variable, is_turnover) VALUES ?`;
-    transaction
-      .addQuery(sqlReferences, [dataReferences]);
-  }
+      transaction
+        .addQuery(sqlReferences, [dataReferences]);
+    }
 
-  if (data.services.length) {
-    const dataServices = data.services.map(item => [
-      feeCenterId,
-      // If we do not modify the services related to a cost center during the update,
-      // these services remain of types objects reason for which one checks
-      // the type finally to apply the appropriate formatting for each case
-      item.id || item,
-    ]);
+    if (data.services.length) {
+      const dataServices = data.services.map(item => [
+        feeCenterId,
+        // If we do not modify the services related to a cost center during the update,
+        // these services remain of types objects reason for which one checks
+        // the type finally to apply the appropriate formatting for each case
+        item.id || item,
+      ]);
 
-    const sqlServices = `
+      const sqlServices = `
       INSERT INTO service_fee_center (fee_center_id, service_id) VALUES ?`;
-    transaction
-      .addQuery(sqlServices, [dataServices]);
-  }
+      transaction
+        .addQuery(sqlServices, [dataServices]);
+    }
 
-  return transaction.execute()
-    .then(() => {
-      return lookupFeeCenter(feeCenterId);
-    })
-    .then((record) => {
-      // all updates completed successfull, return full object to client
-      res.status(200).json(record);
-    })
-    .catch(next)
-    .done();
+    await transaction.execute();
+    const record = await lookupFeeCenter(feeCenterId);
+    // all updates completed successfull, return full object to client
+    res.status(200).json(record);
+  } catch (err) {
+    next(err);
+  }
 }
 
 // DELETE /fee_center/:id

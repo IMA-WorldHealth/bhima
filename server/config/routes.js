@@ -79,7 +79,7 @@ const debtors = require('../controllers/finance/debtors');
 const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
 const cash = require('../controllers/finance/cash');
-const priceList = require('../controllers/finance/priceList');
+const priceList = require('../controllers/finance/priceLists');
 const priceListPreport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
 const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid-invoice-payments');
@@ -106,7 +106,6 @@ const transactions = require('../controllers/finance/transactions');
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
-const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
 const ward = require('../controllers/medical/ward/ward');
@@ -415,6 +414,7 @@ exports.configure = function configure(app) {
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
   app.get('/reports/purchases/purchases_analysis', stockReports.purchaseOrderAnalysis.report);
+  app.get('/reports/inventory/changes', inventoryReports.reports.changes);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
   app.get('/reports/finance/invoices/:uuid', financeReports.invoices.receipt);
@@ -495,11 +495,12 @@ exports.configure = function configure(app) {
 
   // Patients API
   app.get('/patients', patients.read);
-  app.post('/patients', patients.create);
   app.get('/patients/:uuid', patients.detail);
   app.put('/patients/:uuid', patients.update);
   app.get('/patients/:uuid/groups', patients.groups.list);
+  app.post('/patients', patients.create);
   app.post('/patients/:uuid/groups', patients.groups.update);
+  app.post('/patients/groups_update', patients.groups.bulkUpdate);
 
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
@@ -594,12 +595,11 @@ exports.configure = function configure(app) {
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
   app.get('/prices/download/list', priceListPreport.downloadRegistry);
-  app.get('/prices/download/template', priceList.downloadTemplate);
   app.get('/prices/download/filled_template', priceList.downloadFilledTemplate);
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
   app.post('/prices/item', priceList.createItem);
-  app.post('/prices/item/import', upload.middleware('csv', 'file'), priceList.importItem);
+  app.post('/prices/item/import', upload.middleware('csv', 'file'), priceList.importItems);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
   app.delete('/prices/item/:uuid', priceList.deleteItem);
@@ -865,13 +865,6 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.assignUnitsToRole);
   app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
-
-  // department
-  app.get('/departments', department.read);
-  app.get('/departments/:uuid', department.detail);
-  app.post('/departments', department.create);
-  app.delete('/departments/:uuid', department.delete);
-  app.put('/departments/:uuid', department.update);
 
   // entities types API
   app.get('/entities/types', entities.types.list);

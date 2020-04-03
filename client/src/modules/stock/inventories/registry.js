@@ -264,7 +264,7 @@ function StockInventoriesController(
   vm.downloadExcel = () => {
     const filterOpts = stockInventoryFilters.formatHTTP();
     const defaultOpts = {
-      renderer : 'xlsx',
+      renderer : 'xlsxReport',
       lang : Languages.key,
       renameKeys : true,
       displayNames : gridColumns.getDisplayNames(),

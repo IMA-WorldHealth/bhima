@@ -13,6 +13,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
   const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'label', label : 'STOCK.LOT' },
     { key : 'is_exit', label : 'STOCK.OUTPUT' },

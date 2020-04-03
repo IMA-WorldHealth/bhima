@@ -1,13 +1,15 @@
 {
   "PATIENT_REG": {
-    "ENTITY" : "Patient",
-    "PAGE_TITLE": "Patient Registration",
-    "PATIENT_DETAILS": "Patient Details",
-    "SUCCESS": "Patient Registered Successfully",
     "CARD": "Patient Card",
+    "ENTITY" : "Patient",
+    "FICHE" : "Patient Fiche",
+    "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.  The first one was chosen automatically.",
     "IDENTITY": "Patient Identity",
     "LOOKUP_RETURNING_PATIENT" : "Lookup Returning Patient",
     "NO_PATIENTS_FOUND" : "No patients found matching that criteria.  Did you enter the values correctly?",
-    "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.  The first one was chosen automatically."
+    "PAGE_TITLE": "Patient Registration",
+    "PATIENT_DETAILS": "Patient Details",
+    "REMOVE_PREVIOUS_ASSIGNMENT" : "Remove all patient groups already assigned to these patients.",
+    "SUCCESS": "Patient Registered Successfully"
   }
 }

@@ -7,9 +7,6 @@
  * This file contains utilities that are useful in tests, but not specifically
  * tied to forms or modules.
  */
-
-// eslint-disable-next-line
-const addContext = require('mochawesome/addContext');
 const PATH_REGEXP = /^#!|^#|^!/g;
 
 // gets a random number within the range(0, n)

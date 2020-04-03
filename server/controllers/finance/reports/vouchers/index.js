@@ -4,7 +4,7 @@
  *
  * @description
  * This module contains all the code for rendering PDFs of vouchers - reports
- * and receipts.
+EP and receipts.
  */
 
 const _ = require('lodash');
@@ -97,49 +97,40 @@ function receipt(req, res, next) {
  *
  * @method report
  */
-function report(req, res, next) {
+async function report(req, res, next) {
   const options = _.clone(req.query);
   const filters = shared.formatFilters(options);
   _.extend(options, {
     csvKey : 'rows',
     filename : 'VOUCHERS.GLOBAL.REPORT',
     orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
-  let reportInstance;
-
   try {
-    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, options);
+    const reporter = new ReportManager(REPORT_TEMPLATE, req.session, options);
     delete options.orientation;
+
+    const data = { filters };
+
+    const [rows, totals] = await Promise.all([
+      Vouchers.find(options),
+      Vouchers.totalAmountByCurrency(options),
+    ]);
+
+    _.extend(data, { rows, totals });
+
+    const result = await reporter.render(data);
+    res.set(result.headers).send(result.report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  const data = { filters };
-
-  return Vouchers.find(options)
-    .then(rows => {
-      _.extend(data, { rows });
-      return Vouchers.totalAmountByCurrency(options);
-    })
-    .then((sumAmount) => {
-      _.extend(data, { totals : sumAmount });
-      return reportInstance.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 function creditNotedRef(uuid) {
   const sql = `
     SELECT dm.text as reference
     FROM voucher v
-    JOIN  document_map dm ON v.uuid = dm.uuid 
+    JOIN  document_map dm ON v.uuid = dm.uuid
     WHERE v.reference_uuid = ?
   `;
   return db.one(sql, db.bid(uuid));

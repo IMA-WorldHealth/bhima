@@ -11,7 +11,7 @@ PriceListController.$inject = [
 
 function PriceListController(
   PriceListService, $uibModal, Inventory, ModalService, util, Notify, AppCache,
-  Languages, $httpParamSerializer, Columns, GridState, uiGridConstants
+  Languages, $httpParamSerializer, Columns, GridState, uiGridConstants,
 ) {
   const vm = this;
   vm.view = 'default';
@@ -28,7 +28,7 @@ function PriceListController(
 
   const cacheKey = 'priceList';
 
-  function startUp() {
+  function startup() {
     refreshPriceList();
   }
 
@@ -97,28 +97,25 @@ function PriceListController(
 
   // open create price list modal
   function openCreateModal(priceList) {
-
     return $uibModal.open({
       keyboard : false,
       backdrop : 'static',
       templateUrl : 'modules/prices/modal/createUpdate.html',
       controller : 'PriceListModalController as $ctrl',
       resolve : {
-        data : function dataProvider() {
-          return priceList;
-        },
+        data : () => priceList,
       },
     }).result;
   }
 
   // create or edit a price list
   function create(priceList) {
-    openCreateModal(priceList).then(yes => {
-      if (yes) {
-        refreshPriceList();
-      }
-    })
-      .catch(Notify.handleError);
+    return openCreateModal(priceList)
+      .then(yes => {
+        if (yes) {
+          refreshPriceList();
+        }
+      });
   }
 
   // switch to delete warning mode
@@ -173,29 +170,39 @@ function PriceListController(
     });
   }
 
-  // Add pricelist Item in a  modal
+  // Add pricelist item in a modal
   function ImportList(pricelist) {
-    return $uibModal.open({
+    const promise = $uibModal.open({
       templateUrl : 'modules/prices/modal/import.html',
       controller : 'ImportPriceListModalController as ModalCtrl',
       keyboard : false,
       backdrop : 'static',
       size : 'md',
       resolve : {
-        data : function dataProvider() {
-          return pricelist || {};
-        },
+        data : () => pricelist || {},
       },
-    });
+    }).result;
+
+    return promise.then(() => refreshPriceList());
+
   }
 
   // refresh the displayed PriceList
   function refreshPriceList() {
-    return PriceListService.read(null, { detailed : 1 }).then(data => {
-      vm.loading = false;
-      vm.gridOptions.data = data;
-    });
+    vm.hasError = false;
+    vm.loading = true;
+    return PriceListService.read(null, { detailed : 1 })
+      .then(data => {
+        vm.gridOptions.data = data;
+      })
+      .catch((err) => {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
-  startUp();
+  startup();
 }

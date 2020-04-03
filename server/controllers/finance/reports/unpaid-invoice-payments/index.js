@@ -6,9 +6,8 @@ const util = require('../../../../lib/util');
 const TEMPLATE = './server/controllers/finance/reports/unpaid-invoice-payments/report.handlebars';
 
 const DEFAULT_OPTIONS = {
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
   filename : 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT',
+  orientation : 'landscape',
 };
 
 exports.document = build;

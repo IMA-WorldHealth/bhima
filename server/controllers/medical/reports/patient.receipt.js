@@ -13,16 +13,23 @@
  */
 
 const _ = require('lodash');
+const path = require('path');
 const Patients = require('../patients');
 const ReportManager = require('../../../lib/ReportManager');
 const Locations = require('../../admin/locations');
-const pdf = require('../../../lib/renderers/pdf');
+const barcode = require('../../../lib/barcode');
+const identifiers = require('../../../config/identifiers');
+
+const entityIdentifier = identifiers.PATIENT.key;
 
 // detailed patient identification - flag to determine if small or larger form
-const CARD_TEMPLATE = './server/controllers/medical/reports/patient.receipt.handlebars';
+const CARD_TEMPLATE = path.join(__dirname, 'patient.receipt.handlebars');
 
 // POS receipt, quick proof of registration
-const POS_TEMPLATE = './server/controllers/medical/reports/patient.pos.handlebars';
+const POS_TEMPLATE = path.join(__dirname, 'patient.pos.handlebars');
+
+// A4 Fiche Template
+const FICHE_TEMPLATE = path.join(__dirname, 'patient.fiche.handlebars');
 
 // default options for the patient card
 const defaults = {
@@ -32,53 +39,45 @@ const defaults = {
 
 exports.build = build;
 
-function build(req, res, next) {
+async function build(req, res, next) {
   const qs = req.query;
   const options = _.defaults(qs, defaults);
 
-  let report;
   let template = CARD_TEMPLATE;
 
   const requestedPOSReceipt = Boolean(Number(options.posReceipt));
   const requestedSimplifiedCard = Boolean(Number(options.simplified));
+  const requestedA4Fiche = Boolean(Number(options.fiche));
 
   // if the POS option is selected, render a thermal receipt.
   if (requestedPOSReceipt) {
-    _.assign(options, pdf.posReceiptOptions);
     template = POS_TEMPLATE;
-  } else if (requestedSimplifiedCard) {
-    // not a point of sale receipt - check to see if the client has requested a simplified card
-    _.assign(options, pdf.reducedCardOptions);
+  } else if (requestedA4Fiche) {
+    template = FICHE_TEMPLATE;
+    options.format = 'A4';
+    options.landscape = false;
   }
 
   try {
-    report = new ReportManager(template, req.params, options);
+    const report = new ReportManager(template, req.session, options);
+    const patient = await Patients.lookupPatient(req.params.uuid);
+
+    patient.barcode = barcode.generate(entityIdentifier, patient.uuid);
+
+    patient.enterprise_name = req.session.enterprise.name;
+    patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
+
+    const [village, currentVillage] = await Promise.all([
+      Locations.lookupVillage(patient.origin_location_id),
+      Locations.lookupVillage(patient.current_location_id),
+    ]);
+
+    const result = await report.render({
+      patient, village, currentVillage, simplified : requestedSimplifiedCard,
+    });
+
+    res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
-    return;
   }
-
-  const data = {};
-
-  Patients.lookupPatient(req.params.uuid)
-    .then(patient => {
-      patient.enterprise_name = req.session.enterprise.name;
-      patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
-
-      data.patient = patient;
-      return Promise.all([
-        Locations.lookupVillage(patient.origin_location_id),
-        Locations.lookupVillage(patient.current_location_id),
-      ]);
-    })
-    .then(([village, currentVillage]) => {
-      data.village = village;
-      data.currentVillage = currentVillage;
-      data.simplified = requestedSimplifiedCard;
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next);
 }

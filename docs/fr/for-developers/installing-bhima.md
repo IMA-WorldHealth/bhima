@@ -1,5 +1,7 @@
 # Installation de BHIMA
 
+NB: ce sont les instructions pour installer l'environnement de développement BHIMA. Si vous souhaitez déployer BHIMA en production, consultez nos [instructions de déploiement pour Digital Ocean](../getting-started/deploying-digital-ocean.md).
+
 Le logiciel BHIMA peut être complexe à installer. Nous ne prenons officiellement en charge que Linux. Le guide suivant suppose donc que vous configurez BHIMA dans un environnement Linux basé sur Debian.
 
 Ce guide vous permettra de vous familiariser avec bhima localement. Veuillez noter que bhima est en développement actif et a tendance à aller vite et à casser des choses. Si vous êtes intéressé par les progrès du développement, envoyez-nous une ligne à [developers@imaworldhealth.org](mailto: developers@imaworldhealth.org).

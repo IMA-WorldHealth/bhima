@@ -25,7 +25,7 @@ exports.list = list;
 
 // POST /patients/:uuid/groups
 exports.update = update;
-
+exports.bulkUpdate = bulkUpdate;
 /**
  * @method list
  *
@@ -75,7 +75,7 @@ function update(req, res, next) {
   if (!req.body.assignments) {
     next(new BadRequest(
       `Request must specify an "assignments" object containing an array of patient group ids.`,
-      'ERROR.ERR_MISSING_INFO'
+      'ERROR.ERR_MISSING_INFO',
     ));
 
     return;
@@ -113,4 +113,48 @@ function update(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+// assign multiple patient to a group
+function bulkUpdate(req, res, next) {
+
+  const { patientUuids, subscribedGroups, removeAssignedGroups } = req.body;
+
+  const uuids = [].concat(patientUuids);
+  const groups = [].concat(subscribedGroups);
+
+  // Clear assigned groups
+  const removeAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
+  //
+  const removeAlreadyAssignedGroupsQuery = `
+    DELETE FROM patient_assignment WHERE patient_uuid = ? AND patient_group_uuid = ?
+  `;
+  // Insert new relationships
+  const createAssignmentsQuery = `INSERT INTO patient_assignment SET ?`;
+
+  const transaction = db.transaction();
+
+  uuids.forEach(patientUuid => {
+    if (removeAssignedGroups) {
+      transaction.addQuery(removeAssignmentsQuery, db.bid(patientUuid));
+    }
+
+    // assign groups
+    groups.forEach(groupUuid => {
+      const assignment = {
+        uuid : db.uuid(),
+        patient_uuid : db.bid(patientUuid),
+        patient_group_uuid : db.bid(groupUuid),
+      };
+
+      transaction.addQuery(removeAlreadyAssignedGroupsQuery, [db.bid(patientUuid), db.bid(groupUuid)]);
+      transaction.addQuery(createAssignmentsQuery, assignment);
+    });
+  });
+
+  transaction.execute()
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(next);
 }

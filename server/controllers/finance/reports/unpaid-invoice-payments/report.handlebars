@@ -1,62 +1,58 @@
 {{> head title="REPORT.UNPAID_INVOICE_PAYMENTS_REPORT" }}
 
-<div class="container">
+<body>
   {{> header}}
 
   <!-- body -->
-  <div class="row">
-    <div class="col-xs-12">
-      <!-- page title  -->
-      <h3 class="text-center">
-        <strong>{{translate "REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE"}}</strong>
-      </h3>
+  <!-- page title  -->
+  <h3 class="text-center">
+    <strong>{{translate "REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE"}}</strong>
+  </h3>
 
-      <h5 style="margin:15px;" class="text-center">
-        {{date dateFrom "DD/MM/YYYY"}} - {{date dateTo "DD/MM/YYYY"}}
-      </h5>
+  <h5 style="margin:15px;" class="text-center">
+    {{date dateFrom "DD/MM/YYYY"}} - {{date dateTo "DD/MM/YYYY"}}
+  </h5>
 
-      <table class="table table-condensed table-report">
-        <thead>
-          <tr style="background-color:#ddd;">
-            <th class="text-center">{{translate 'FORM.LABELS.DEBTOR_GROUP'}}</th>
-            <th class="text-center text-capitalize">{{translate 'FORM.LABELS.PATIENT'}}</th>
-            {{#each services as |service|}}
-              <th class="text-center">{{service}}</th>
-            {{/each}}
-            <th class="text-center">{{translate 'FORM.LABELS.TOTAL'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each dataset as |row|}}
-            <tr
-              {{#if row.isTotalRow}}class="table-subtotal-row"{{/if}}
-              {{#if row.isGroupTotalRow}}style="font-style:italic"{{/if}}
-              >
-              <td>{{ row.debtorGroupName }}</td>
-              <td>
-                {{#if row.debtorReference }}
-                  <strong>{{ row.debtorReference }}</strong> - {{row.debtorText}}, {{translate 'FORM.LABELS.AGE'}} : {{row.debtorAge}}
-                {{/if}}
-              </td>
-              {{#each ../services as |service|}}
-                <td class="text-right">{{look row service}}</td>
-              {{/each}}
-              <td class="text-right">{{ row.Total }}</td>
-            </tr>
-          {{else}}
-            {{> emptyTable columns=3}}
+  <table class="table table-condensed table-report">
+    <thead>
+      <tr style="background-color:#ddd;">
+        <th class="text-center">{{translate 'FORM.LABELS.DEBTOR_GROUP'}}</th>
+        <th class="text-center text-capitalize">{{translate 'FORM.LABELS.PATIENT'}}</th>
+        {{#each services as |service|}}
+          <th class="text-center">{{service}}</th>
+        {{/each}}
+        <th class="text-center">{{translate 'FORM.LABELS.TOTAL'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each dataset as |row|}}
+        <tr
+          {{#if row.isTotalRow}}class="table-subtotal-row"{{/if}}
+          {{#if row.isGroupTotalRow}}style="font-style:italic"{{/if}}
+          >
+          <td>{{ row.debtorGroupName }}</td>
+          <td>
+            {{#if row.debtorReference }}
+              <strong>{{ row.debtorReference }}</strong> - {{row.debtorText}}, {{translate 'FORM.LABELS.AGE'}} : {{row.debtorAge}}
+            {{/if}}
+          </td>
+          {{#each ../services as |service|}}
+            <td class="text-right">{{look row service}}</td>
           {{/each}}
-          <tr>
-            {{#each totals as |value key|}}
-              {{#if @first}}
-                <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
-              {{else}}
-                <th class="text-right">{{ value }}</th>
-              {{/if}}
-            {{/each}}
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+          <td class="text-right">{{ row.Total }}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=3}}
+      {{/each}}
+      <tr>
+        {{#each totals as |value key|}}
+          {{#if @first}}
+            <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
+          {{else}}
+            <th class="text-right">{{ value }}</th>
+          {{/if}}
+        {{/each}}
+      </tr>
+    </tbody>
+  </table>
+</body>

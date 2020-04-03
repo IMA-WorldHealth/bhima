@@ -80,23 +80,6 @@ describe('(/projects) The projects API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/?incomplete_locked=0 returns a simple list of unlocked projects', () => {
-    return agent.get('/projects?incomplete_locked=0')
-      .then((res) => {
-        helpers.api.listed(res, numProjects);
-        expect(res.body[0]).to.have.keys('id', 'name');
-      })
-      .catch(helpers.handler);
-  });
-
-  it('GET /projects/?incomplete_locked=1 returns a simple list of locked projects', () => {
-    return agent.get('/projects?incomplete_locked=1')
-      .then((res) => {
-        helpers.api.listed(res, 0);
-      })
-      .catch(helpers.handler);
-  });
-
   it('POST /projects should create a new project', () => {
     return agent.post('/projects')
       .send(project)

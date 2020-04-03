@@ -7,7 +7,7 @@ EmailReportController.$inject = [
 ];
 
 function EmailReportController(ModalInstance, Notify, SavedReports, options, Session) {
-  var vm = this;
+  const vm = this;
 
   vm.reportName = options.reportName;
 
@@ -19,7 +19,7 @@ function EmailReportController(ModalInstance, Notify, SavedReports, options, Ses
     if (EmailForm.$invalid) { return 1; }
 
     return SavedReports.emailReport(options.uuid, vm.params.email)
-      .then(function () {
+      .then(() => {
         ModalInstance.close({ sent : true });
       })
       .catch(Notify.handleError);

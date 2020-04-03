@@ -575,6 +575,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
+  `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -785,7 +786,7 @@ CREATE TABLE `inventory` (
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
-  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Average consumption' ,
+  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Average consumption' ,
   `purchase_INTerval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order INTerval' ,
   `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering INTerval',
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
@@ -975,7 +976,6 @@ CREATE TABLE `price_list_item` (
   `is_percentage`       BOOLEAN NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `price_list_item_1` (`label`, `inventory_uuid`),
   UNIQUE KEY `price_list_item_2` (`price_list_uuid`, `inventory_uuid`),
   KEY `price_list_uuid` (`price_list_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
@@ -2136,14 +2136,6 @@ CREATE TABLE `config_employee_item` (
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-CREATE TABLE `department`(
-  `uuid` BINARY(16) PRIMARY KEY,
-  `name` VARCHAR(100) NOT NULL,
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
-  UNIQUE KEY  (`enterprise_id`, `name`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `fee_center`;
 CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -2353,7 +2345,6 @@ CREATE TABLE `inventory_log` (
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

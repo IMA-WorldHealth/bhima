@@ -69,6 +69,13 @@
 
                   <dt translate>TABLE.COLUMNS.GENDER</dt>
                   <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
+
+                  <dt translate>FORM.LABELS.GROUPS_PATIENT_TITLE</dt>
+                  <ul class="list-unstyled">
+                    <li ng-repeat="group in PatientRecordCtrl.patient.groups track by group.uuid">
+                      {{group.name}}
+                    </li>
+                  </ul>
                 </dl>
               </div>
 
