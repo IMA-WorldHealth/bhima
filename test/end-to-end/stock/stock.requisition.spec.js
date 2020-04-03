@@ -38,7 +38,7 @@ function StockRequisitionTests() {
     await page.setDepot(DEPOT_SECONDAIRE);
     await page.setRows(2);
     await page.addItem(0, 'Quinine', 20);
-    await page.addItem(1, 'Multivitamine', 20);
+    await page.addItem(1, 'Vitamines', 20);
     await page.setDescription(`Requisition for ${SERVICE}`);
     await page.submit();
   });
@@ -48,9 +48,9 @@ function StockRequisitionTests() {
     await page.setRequestor(DEPOT_SECONDAIRE, 'depot');
     await page.setDepot(DEPOT_PRINCIPAL);
     await page.setRows(3);
-    await page.addItem(0, 'Amoxycilline 250mg', 1000);
-    await page.addItem(1, 'Acide folique 5mg', 1000);
-    await page.addItem(2, 'Cotrimoxazol 960mg tab', 5000);
+    await page.addItem(0, 'Aminophylline, 25mg/ml, 10ml, Amp, Unité', 1000);
+    await page.addItem(1, 'Alcool acide, 1000ml, flacon, Unité', 1000);
+    await page.addItem(2, 'Nicotinamide, 50mg, Tab, 1000, Vrac', 5000);
     await page.setDescription(`Requisition for ${DEPOT_SECONDAIRE}`);
     await page.submit();
   });

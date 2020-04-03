@@ -105,7 +105,7 @@ module.exports = {
   exists : async function exists(locator, bool) {
     expect(
       await element(locator).isPresent(),
-      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`,
+      `Expected locator ${locator.toString()} to ${bool ? '' : 'not'} exist.`,
     ).to.equal(bool);
   },
 

@@ -27,7 +27,7 @@ describe('Patient Invoice', () => {
     await page.prepare();
 
     // add the following inventory item
-    await page.addInventoryItem(0, '100099');
+    await page.addInventoryItem(0, 'DORA_AMOX2S-_0');
 
     // make sure the submit button is not disabled
     expect(await page.btns.submit.isEnabled()).to.equal(true);

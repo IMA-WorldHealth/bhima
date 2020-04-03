@@ -40,7 +40,7 @@ function InventoryListController(
   $rootScope.$on('INVENTORY_UPDATED', onInventoryUpdated);
 
   function onInventoryUpdated() {
-    load(Inventory.filters.formatHTTP(true));
+    return load(Inventory.filters.formatHTTP());
   }
 
   // grid default options
@@ -192,15 +192,16 @@ function InventoryListController(
   // research and filter data in Inventory List
   function research() {
     const filtersSnapshot = Inventory.filters.formatHTTP();
-    Inventory.openSearchModal(filtersSnapshot)
+    return Inventory.openSearchModal(filtersSnapshot)
       .then(handleSearchResult);
   }
 
   function handleSearchResult(changes) {
+    if (!changes) { return 0; }
     Inventory.filters.replaceFilters(changes);
     Inventory.cacheFilters();
     vm.latestViewFilters = Inventory.filters.formatView();
-    return load(Inventory.filters.formatHTTP(true));
+    return load(Inventory.filters.formatHTTP());
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -260,9 +261,6 @@ function InventoryListController(
   */
   function openImportInventoriesModal() {
     Inventory.openImportInventoriesModal()
-      .then(() => {
-
-      })
       .catch(Notify.handleError);
   }
 

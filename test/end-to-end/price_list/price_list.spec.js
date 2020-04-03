@@ -22,9 +22,9 @@ describe('Price Lists', () => {
 
   const priceListItem = {
     value   : 50,
-    label : 'Test Item Label',
+    label : 'Upcharge Zinc Oxide',
     is_percentage : 1,
-    inventoryLabel : 'Pyrazinamide 500mg',
+    inventoryLabel : 'Oxyde de zinc, 10%, pommade, 50g, pot, Unité',
   };
 
 
