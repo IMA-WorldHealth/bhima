@@ -230,6 +230,7 @@
   },
   "INVENTORY"   : {
     "TITLE" : "Inventaire de stock",
-    "NEW"   : "Nouveau Inventaire"
+    "NEW"   : "Nouveau Inventaire",
+    "DESCRIPTION" : "Cet inventaire consiste à redefinir les quantités des articles en stock tout en supprimant tout ce qui a existé au paravant"
   }
 }

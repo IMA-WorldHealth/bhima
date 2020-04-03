@@ -5,6 +5,7 @@ angular.module('bhima.controllers')
 StockInventoryAdjustmentController.$inject = [
   'InventoryService', 'NotifyService', 'SessionService', 'util',
   'StockFormService', 'StockModalService', 'uiGridConstants', 'Store',
+  'bhConstants',
 ];
 
 /**
@@ -16,6 +17,7 @@ StockInventoryAdjustmentController.$inject = [
 function StockInventoryAdjustmentController(
   Inventory, Notify, Session, util,
   StockForm, StockModal, uiGridConstants, Store,
+  bhConstants,
 ) {
   // variables
   let inventoryStore;
@@ -36,7 +38,7 @@ function StockInventoryAdjustmentController(
   vm.setInitialized = setInitialized;
   vm.buildStockLine = buildStockLine;
   vm.setLots = setLots;
-  // vm.submit = submit;
+  vm.submit = submit;
   vm.reset = reset;
   vm.onDateChange = onDateChange;
 
@@ -220,7 +222,7 @@ function StockInventoryAdjustmentController(
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.quantity = res.quantity;
-        stockLine.unit_cost = res.unit_cost; // integration and donation price is defined in the lot modal
+        stockLine.unit_cost = res.unit_cost;
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
@@ -250,6 +252,38 @@ function StockInventoryAdjustmentController(
     line.expiration_date = new Date();
     line.unit = inventory.unit;
     setInitialized(line);
+  }
+
+  // submit data
+  function submit() {
+    vm.hasValidInput = hasValidInput();
+
+    if (vm.stockForm.hasDuplicatedLots()) {
+      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
+    }
+
+    const movement = {
+      depot_uuid : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      is_exit : 0,
+      flux_id : bhConstants.flux.INVENTORY_ADJUSTMENT,
+      user_id : Session.user.id,
+    };
+
+    const lots = vm.stockForm.store.data.map((row) => {
+      return {
+        label : row.lot.lot,
+        quantity : row.quantity,
+        unit_cost : row.unit_cost,
+      };
+    });
+
+    movement.lots = lots;
+
+    console.log(movement);
+    return movement;
   }
 
   startup();

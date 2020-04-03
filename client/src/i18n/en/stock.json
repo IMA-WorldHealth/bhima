@@ -229,6 +229,7 @@
   },
   "INVENTORY"   : {
     "TITLE" : "Stock Inventory",
-    "NEW"   : "New Inventory"
+    "NEW"   : "New Inventory",
+    "DESCRIPTION" : "This inventory consists of redefining the quantities of the items in stock while removing everything that existed before"
   }
 }

@@ -92,6 +92,7 @@ function constantConfig() {
       TO_LOSS          : 11,
       TO_ADJUSTMENT    : 12,
       FROM_INTEGRATION : 13,
+      INVENTORY_ADJUSTMENT : 14,
     },
     stockStatus : {
       IS_SOLD_OUT          : 'sold_out',

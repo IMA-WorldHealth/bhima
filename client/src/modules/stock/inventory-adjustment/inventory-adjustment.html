@@ -54,6 +54,12 @@
             </div>
           </div>
         </div>
+        <div class="col-xs-12 col-sm-6 col-md-8">
+          <div class="alert alert-info">
+            <h3 style="margin: 0px; margin-bottom: 10px;" translate>INVENTORY.TITLE</h3>
+            <p translate>INVENTORY.DESCRIPTION</p>
+          </div>
+        </div>
       </div>
 
       <!-- add and recovery -->
@@ -93,7 +99,7 @@
               FORM.BUTTONS.SUSPEND
             </button>
 
-            <bh-loading-button loading-state="StockForm.$loading" disabled="!StockCtrl.validForSubmit">
+            <bh-loading-button loading-state="StockForm.$loading" disabled="!StockCtrl.hasValidInput">
               <span translate>FORM.BUTTONS.SUBMIT</span>
             </bh-loading-button>
           </div>
