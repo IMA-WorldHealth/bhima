@@ -16,7 +16,7 @@
         <li  class="list-group-item" ng-repeat="action in RoleActionsCtrl.actions track by action.id">
           <label class="radio-inline">
             <input type="checkbox" ng-model="action.affected" ng-true-value="1" ng-false-value="0" />
-            <span id="{{::action.id}}" translate>{{::action.description}}</span>
+            <span id="RoleActionForm_{{::action.description}}" translate>{{::action.description}}</span>
           </label>
         </li>
       </ul>

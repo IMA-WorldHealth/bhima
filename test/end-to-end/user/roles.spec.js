@@ -4,7 +4,7 @@ const components = require('../shared/components');
 
 // the page object
 const page = new RolesPage();
-const canEditRoleAction = 1;
+const canEditRoleAction = 'RoleActionForm_FORM.LABELS.CAN_EDIT_ROLES';
 
 function RolesManagementTests() {
 
