@@ -77,6 +77,7 @@
     "JOURNAL_VOUCHER" : "Journal Voucher",
     "LOCATION" : "Location Management",
     "MONTHLY_BALANCE": "Monthly Balance",
+    "MONTHLY_CONSUMPTION" : "[Stock] Monthly consumption",
     "MULTI_PAYROLL" : "Multiple Payroll",
     "MULTI_PAYROLL_INDICE" : "Multiple Payroll(indice)",
     "OHADA_BILAN":"[OHADA] Bilan",

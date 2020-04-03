@@ -85,6 +85,10 @@
       "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
       "TITLE": "Analyse mensuel de la Balance"
     },
+    "MONTHLY_CONSUMPTION" : {
+      "TITLE": "Consommations mensuelles",
+      "DESCRIPTION": "Rapport de consommations mensuelles par dépôt et pour une période données"
+    },
     "SYSTEM_USAGE_STAT" : {
       "TITLE" : "Statistique d'utilisation du système",
       "DESCRIPTION" : "Ce rapport produit, pour une période donnée, les statistiques suivantes: total des patients enregistrés par heure de la journée, total des factures établies par heure de la journée et total des paiements en espèces effectués par heure de la journée"

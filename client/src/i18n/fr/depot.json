@@ -25,6 +25,7 @@
     "WAREHOUSE_INFO" : "Ce dépôt est en mesure d'approvisionner d'autres dépôts",
     "MODAL" : {
       "SELECTION" : "Sélection du dépôt",
+      "TYPE_DEPOT_NAME" : "Saisir le nom du depot",
       "NO_DEPOTS" : "Est-ce qu'il n'y a pas des dépôts?",
       "SELECT_A_DEPOT" : "Selectionner un Dépôt",
       "NO_DEFAULT_DEPOT" : "Vous devez selectionner un dépôt.",

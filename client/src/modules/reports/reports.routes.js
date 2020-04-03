@@ -45,6 +45,7 @@ angular.module('bhima.routes')
       'configurable_analysis_report',
       'purchaseOrderAnalysis',
       'inventoryChanges',
+      'monthlyConsumptionReport',
     ];
 
     function resolveReportData($stateParams, SavedReports) {

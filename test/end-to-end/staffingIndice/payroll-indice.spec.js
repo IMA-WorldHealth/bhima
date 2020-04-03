@@ -26,7 +26,7 @@ describe('Multipayroll (indice)', () => {
     currency    : 2,
   };
 
-  it(`should seach period`, async () => {
+  it(`should search period`, async () => {
     await searchModalPage.payrollPeriod(defaultValue.period);
     await searchModalPage.selectCurrency(defaultValue.currency);
     await searchModalPage.submit();

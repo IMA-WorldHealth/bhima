@@ -25,6 +25,7 @@
     "WAREHOUSE_INFO" : "This depot can distribute to other depots",
     "MODAL" : {
       "SELECTION" : "Depot Selection",
+      "TYPE_DEPOT_NAME" : "Type the depot's name",
       "NO_DEPOTS" : "Don't see any depots?",
       "SELECT_A_DEPOT" : "Select a depot",
       "NO_DEFAULT_DEPOT" : "You need to choose a depot.",

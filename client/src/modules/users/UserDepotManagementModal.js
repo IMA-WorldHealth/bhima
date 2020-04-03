@@ -25,7 +25,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache) {
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  vm.onDepotChange = function onDepotChange(depots) {
+  vm.onDepotChange = (depots) => {
     vm.user.depots = depots;
   };
 
