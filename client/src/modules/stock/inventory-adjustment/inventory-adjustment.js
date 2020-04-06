@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockInventoryAdjustmentController.$inject = [
   'InventoryService', 'NotifyService', 'SessionService', 'util',
   'StockFormService', 'StockModalService', 'uiGridConstants', 'Store',
-  'bhConstants',
+  'bhConstants', 'StockService', 'ReceiptModal',
 ];
 
 /**
@@ -17,7 +17,7 @@ StockInventoryAdjustmentController.$inject = [
 function StockInventoryAdjustmentController(
   Inventory, Notify, Session, util,
   StockForm, StockModal, uiGridConstants, Store,
-  bhConstants,
+  bhConstants, Stock, ReceiptModal,
 ) {
   // variables
   let inventoryStore;
@@ -255,7 +255,7 @@ function StockInventoryAdjustmentController(
   }
 
   // submit data
-  function submit() {
+  function submit(form) {
     vm.hasValidInput = hasValidInput();
 
     if (vm.stockForm.hasDuplicatedLots()) {
@@ -263,27 +263,25 @@ function StockInventoryAdjustmentController(
     }
 
     const movement = {
-      depot_uuid : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
-      date : vm.movement.date,
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : null,
+      date        : vm.movement.date,
       description : vm.movement.description,
-      is_exit : 0,
-      flux_id : bhConstants.flux.INVENTORY_ADJUSTMENT,
-      user_id : Session.user.id,
+      flux_id     : bhConstants.flux.INVENTORY_ADJUSTMENT,
+      user_id     : vm.stockForm.details.user_id,
     };
 
-    const lots = vm.stockForm.store.data.map((row) => {
-      return {
-        label : row.lot.lot,
-        quantity : row.quantity,
-        unit_cost : row.unit_cost,
-      };
-    });
+    const entry = {
+      lots : Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
+      movement,
+    };
 
-    movement.lots = lots;
-
-    console.log(movement);
-    return movement;
+    return Stock.inventoryAdjustment.create(entry)
+      .then(document => {
+        vm.reset(form);
+        ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.INVENTORY_ADJUSTMENT);
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

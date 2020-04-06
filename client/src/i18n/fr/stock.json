@@ -172,7 +172,8 @@
     "TO_PATIENT"       : "Vers un patient",
     "TO_SERVICE"       : "Vers un service",
     "TO_LOSS"          : "Vers une perte",
-    "TO_ADJUSTMENT"    : "Ajustement (Negatif)"
+    "TO_ADJUSTMENT"    : "Ajustement (Negatif)",
+    "INVENTORY_ADJUSTMENT"    : "Inventaire"
   },
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
