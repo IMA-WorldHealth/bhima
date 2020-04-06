@@ -197,7 +197,6 @@ describe('(/stock/) The Stock HTTP API', () => {
         expect(res.body[0].S_MIN).to.be.equal(20);
         expect(res.body[0].S_MAX).to.be.equal(30);
         expect(res.body[0].S_MONTH).to.be.equal(15);
-        expect(res.body[0].S_RP).to.be.equal(265);
 
         expect(res.body[3].quantity).to.be.equal(180300);
         expect(res.body[3].avg_consumption).to.be.equal(49916.67);
@@ -205,7 +204,7 @@ describe('(/stock/) The Stock HTTP API', () => {
         expect(res.body[3].S_MIN).to.be.equal(0);
         expect(res.body[3].S_MAX).to.be.equal(0);
         expect(res.body[3].S_MONTH).to.be.equal(3);
-        expect(res.body[3].S_RP).to.be.equal(929050.0499999999);
+
       })
       .catch(helpers.handler),
   );
