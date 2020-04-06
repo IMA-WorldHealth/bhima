@@ -5406,10 +5406,10 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.2.0:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.6.1.tgz#0ac0a94c129c424730c9a58ee3b014632539a70a"
-  integrity sha512-aNMcZQFkNJltEzc/WclcKb0JStgKiFAaxS/mombLWf73jAZYUxiMKPFpfn8zyD2ukYrxOno2C884Y/WbCRQR8A==
+json-2-csv@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.6.2.tgz#e5f8325de366302d72f417550997fe0d5bca93b2"
+  integrity sha512-aJGagjPIZj9iqAO8UVcNggVuRpxbMvG3WspGntcGm1Kxb3TFCwWC4U36qoybVkkm7n4ivDaVjwBd4PPlQJkP3Q==
   dependencies:
     deeks "2.2.4"
     doc-path "2.0.2"
@@ -6467,10 +6467,15 @@ node-fetch@^2.3.0:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
 
-  version "1.1.52"
-  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.52.tgz#bcffee3e0a758e92e44ecfaecd0a47554b0bcba9"
-  integrity sha512-snSiT1UypkgGt2wxPqS6ImEUICbNCMb31yaxWrOLXjhlt2z2/IBpaOxzONExqSm4y5oLnAqjjRWu+wsDzK5yNQ==
-  dependencies:
+node-releases@^1.1.52:
+  version "1.1.53"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.53.tgz#2d821bfa499ed7c5dffc5e2f28c88e78a08ee3f4"
+  integrity sha512-wp8zyQVwef2hpZ/dJH7SfSrIPD6YoJz6BDQDpGEkcA0s3LpAQoxBIYmfIq6QAhC1DhwsyCgTaTTcONwX8qzCuQ==
+
+normalize-package-data@^2.3.0, normalize-package-data@^2.3.2, normalize-package-data@^2.3.4, normalize-package-data@^2.3.5:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
+  integrity sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==
   dependencies:
     hosted-git-info "^2.1.4"
     resolve "^1.10.0"

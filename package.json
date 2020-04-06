@@ -82,7 +82,7 @@
     "ioredis": "^4.16.1",
     "jquery": "^3.4.0",
     "jsbarcode": "^3.11.0",
-    "json-2-csv": "^3.2.0",
+    "json-2-csv": "^3.6.2",
     "lodash": "^4.17.11",
     "mailgun-js": "^0.22.0",
     "mkdirp": "^1.0.0",
