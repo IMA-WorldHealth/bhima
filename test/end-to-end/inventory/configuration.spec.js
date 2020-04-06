@@ -49,9 +49,9 @@ describe('Inventory Configuration', () => {
       await FU.input('$ctrl.session.name', group.name);
       await FU.input('$ctrl.session.code', group.code);
 
-      await components.accountSelect.set(group.sales_account, null, $('[data-sales-account]'));
-      await components.accountSelect.set(group.stock_account, null, $('[data-stock-account]'));
-      await components.accountSelect.set(group.cogs_account, null, $('[data-cogs-account]'));
+      await components.accountSelect.set(group.sales_account, null, $('[data-sales-account]'), 'accountName');
+      await components.accountSelect.set(group.stock_account, null, $('[data-stock-account]'), 'accountName');
+      await components.accountSelect.set(group.cogs_account, null, $('[data-cogs-account]'), 'accountName');
 
       await FU.buttons.submit();
       await components.notification.hasSuccess();
