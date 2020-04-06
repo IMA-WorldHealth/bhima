@@ -19,15 +19,15 @@
 
 # Deploying BHIMA on DigitalOcean
 
-<i> Follow these steps below posted at https://docs.opendatakit.org/aggregate-digital-ocean</i>
+_**NOTE**: these steps have been adapted from ODK Aggregate's instructions found [here](https://docs.opendatakit.org/aggregate-digital-ocean)._
 
 ## Warning
 <p>
-To use this setup, you must able to link a domain name to the machine's IP address. If you don’t own a domain, services such as <a href='https://freedns.afraid.org/'>FreeDNS</a> offer free sub-domains under a range of domains.
+To use this setup, you must able to link a domain name to the machine's IP address. If you don’t own a domain, services such as [FreeDNS](https://freedns.afraid.org/) offer free sub-domains under a range of domains.
 </p>
 
 ### Tip
-If you have not already created a DigitalOcean account, use our referral link to do so: https://m.do.co/c/39937689124c.
+If you have not already created a DigitalOcean account, use our referral link to do so: https://m.do.co/c/39937689124c
 
 DigitalOcean will give you $100 of credit to spend during the first 60 days so that you can try things out. Once you have spent $25 with them, we’ll get $25 to put towards our hosting costs.
 
@@ -47,8 +47,7 @@ DigitalOcean will give you $100 of credit to spend during the first 60 days so t
 
 6. Select a datacenter region physically close to where you are.
 
-7. Under <span class='guilabel'>Select additional</span> options, check the <span class='guilabel'>User data</span> checkbox. Copy and paste the contents of this <a href='.../../cloud-init.yml'> Cloud-Config script</a>.
-
+7. Under <span class='guilabel'>Select additional</span> options, check the <span class='guilabel'>User data</span> checkbox. Copy and paste the contents of [this cloud-init script](../../cloud-init.yml).
 
 <img src='../../images/install/user-data.png' class="left40">
 
@@ -91,7 +90,7 @@ If you do not have the root password, click the name of your droplet, select Acc
 </li>
 </ul>
 
-3. Once you are logged in, run ``` sudo certbot run --nginx --non-interactive --agree-tos -m YOUR_EMAIL --redirect -d YOUR_DOMAIN```.
+3. Once you are logged in, run ``` sudo certbot run --nginx --non-interactive --agree-tos -m $YOUR_EMAIL --redirect -d $YOUR_DOMAIN```.
 
 <ul class="left40">
 <li>
@@ -105,4 +104,4 @@ Lets Encrypt uses the email you provide to send notifications about expiration o
 # Launch BHIMA to the browser
 1. Go to https://your.domain and check that Bhima is running.
 
-2. You can now start setting your interprise informations up by clicking the button <span class='guilabel'>install</span>
+2. You can now start setting your enterprise informations up by clicking the button <span class='guilabel'>install</span>
