@@ -4308,10 +4308,10 @@ gulp-postcss@^8.0.0:
     postcss-load-config "^2.0.0"
     vinyl-sourcemaps-apply "^0.2.1"
 
-gulp-rev-rewrite@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/gulp-rev-rewrite/-/gulp-rev-rewrite-3.0.2.tgz#1b20d8f7ed03061db57eaca76afcd9c80aa36979"
-  integrity sha512-fU4Dea8u/kdF96riBrXc36byYGu7063zdxzQ/KW7P9KdxtmYBZa55Du7H2HL6spwwnR1LA416ETvhyOHi3UFvA==
+gulp-rev-rewrite@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/gulp-rev-rewrite/-/gulp-rev-rewrite-3.0.3.tgz#ce6144a1e9e29b2bb6b962628789c3d1780be8e6"
+  integrity sha512-Fcv1zKYhBgvKhPOY5ZB3lSDLY/UrFp7X98SzJOR/LY7xoolOHvilDbzh7YmzD9+t24FR/hQgPocVh4tQiX/YiA==
   dependencies:
     lodash.escaperegexp "^4.1.2"
     plugin-error "^1.0.1"
@@ -5407,10 +5407,10 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.2.0:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.6.1.tgz#0ac0a94c129c424730c9a58ee3b014632539a70a"
-  integrity sha512-aNMcZQFkNJltEzc/WclcKb0JStgKiFAaxS/mombLWf73jAZYUxiMKPFpfn8zyD2ukYrxOno2C884Y/WbCRQR8A==
+json-2-csv@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.6.2.tgz#e5f8325de366302d72f417550997fe0d5bca93b2"
+  integrity sha512-aJGagjPIZj9iqAO8UVcNggVuRpxbMvG3WspGntcGm1Kxb3TFCwWC4U36qoybVkkm7n4ivDaVjwBd4PPlQJkP3Q==
   dependencies:
     deeks "2.2.4"
     doc-path "2.0.2"
@@ -6250,10 +6250,10 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.4, mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.5"
 
-mkdirp@^1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.3.tgz#4cf2e30ad45959dddea53ad97d518b6c8205e1ea"
-  integrity sha512-6uCP4Qc0sWsgMLy1EOqqS/3rjDHOEnsStVr/4vtAIK2Y5i2kA7lFFejYrpIyiN9w0pYf4ckeCYT9f1r1P9KX5g==
+mkdirp@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
+  integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
 mocha@^7.0.1:
   version "7.1.1"
