@@ -20,7 +20,13 @@
     </bh-depot-select>
 
     <!-- Inventaire -->
-    <div
+    <bh-inventory-select
+      inventory-uuid="$ctrl.inventory_uuid"
+      on-select-callback="$ctrl.onSelectInventory(inventory)"
+      required="false">
+    </bh-inventory-select>
+
+    <!-- <div
       class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
       <label class="control-label" translate>STOCK.INVENTORY</label>
@@ -40,7 +46,7 @@
       <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
-    </div>
+    </div> -->
 
     <!-- lot number  -->
     <div
