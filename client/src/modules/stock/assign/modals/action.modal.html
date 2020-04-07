@@ -26,29 +26,6 @@
       required="false">
     </bh-inventory-select>
 
-    <!-- <div
-      class="form-group"
-      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
-      <label class="control-label" translate>STOCK.INVENTORY</label>
-      <ui-select 
-        name="inventory_uuid" 
-        ng-model="$ctrl.inventory_uuid"
-        on-select="$ctrl.onSelectInventory($item)"
-        ng-disabled="!$ctrl.availableInventories.length">
-        <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
-          <span>{{$select.selected.text}}</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'text': $select.search }">
-          <span ng-bind-html="i.text | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>    
-
-      <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div> -->
-
-    <!-- lot number  -->
     <div
       class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.lot_uuid.$invalid }">

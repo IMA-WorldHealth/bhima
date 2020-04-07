@@ -36,8 +36,6 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
 
   vm.onSelectInventory = onSelectInventory;
   function onSelectInventory(inventory) {
-    console.log('IT DONEEEEEEEEEEee');
-
     vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.uuid);
   }
 
@@ -99,8 +97,6 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
    * @param {array} data
    */
   function computeAvailableInventories(data) {
-    console.log(data);
-
     vm.globalAvailableLots = data;
     vm.groupedInventories = Util.groupBy(data, 'inventory_uuid');
     const uniqueInventoriesUuids = Util.uniquelize(data.map(item => item.inventory_uuid));

@@ -128,4 +128,4 @@ function StockAssignTests() {
   });
 }
 
-describe('Stock Assign Module', StockAssignTests);
+describe.only('Stock Assign Module', StockAssignTests);

@@ -26,7 +26,7 @@ function StockAssignPage() {
 
   // inventory select
   page.setInventory = text => {
-    return FU.uiSelect('$ctrl.inventory_uuid', text);
+    return components.inventorySelect.set(text);
   };
 
   // lot select
