@@ -21,6 +21,7 @@ const debug = require('debug')('util');
 const csvtojson = require('csvtojson');
 const { exec } = require('child_process');
 const uuid = require('uuid').v4;
+const fs = require('fs');
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
@@ -36,6 +37,7 @@ exports.loadDictionary = loadDictionary;
 exports.stringToNumber = stringToNumber;
 exports.convertStringToNumber = convertStringToNumber;
 exports.formatCsvToJson = formatCsvToJson;
+exports.createDirectory = createDirectory;
 
 /**
  * @function take
@@ -234,6 +236,12 @@ function calculateAge(dob) {
   return moment().diff(dob, 'years');
 }
 
+
+function createDirectory(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath);
+  }
+}
 
 /**
  * @function uuid

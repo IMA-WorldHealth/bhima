@@ -61,6 +61,8 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
   // SauceLabs credentials
   config.sauceUser = process.env.SAUCE_USERNAME;
   config.sauceKey = process.env.SAUCE_ACCESS_KEY;
+  // report directory on the server(ubuntu)
+  process.env.REPORT_DIR = '/opt/reports/';
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
