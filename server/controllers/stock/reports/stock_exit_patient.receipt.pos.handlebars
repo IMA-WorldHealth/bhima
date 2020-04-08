@@ -1,6 +1,4 @@
-<head>
-  <meta charset="utf-8" />
-</head>
+{{> barcode-header title="STOCK.RECEIPT.EXIT_PATIENT" }}
 <body>
 <p style="text-transform: uppercase; text-align:center; margin : 0px;"><b>{{enterprise.name}}</b></p>
 {{#if metadata.enterprise.logo}}
@@ -16,6 +14,9 @@
   {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.user_display_name}}
 </p>
 
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <small>{{> barcode value=barcode}}</small><br>
+{{/if}}
 <hr />
 <div>
   <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span> : <strong>{{details.patient_reference}}</strong> <br>
@@ -68,4 +69,7 @@
   </div>
 </footer>
 
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <script>JsBarcode('.barcode').init();</script>
+{{/if}}
 </body>

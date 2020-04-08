@@ -23,7 +23,6 @@ exports.update = update;
 exports.remove = remove;
 exports.searchByName = searchByName;
 
-
 /**
 * POST /depots
 * Create a new depot in the database
@@ -111,7 +110,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = db.convert(req.query, ['uuid']);
+  const options = db.convert(req.query, ['uuid', 'uuids']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -142,6 +141,7 @@ function list(req, res, next) {
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
   filters.equals('uuid', 'uuid', 'd');
+  hasUuids(options.uuids, filters);
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
 
@@ -156,6 +156,15 @@ function list(req, res, next) {
     .done();
 }
 
+function hasUuids(uuids, filters) {
+  if (!uuids) return;
+  const n = [].concat(uuids).length;
+  let qs = '';
+  for (let i = 0; i < n; i++) {
+    qs = (i === (n - 1)) ? `${qs}?` : qs = `${qs}?,`;
+  }
+  filters.custom('uuids', `d.uuid IN (${qs})`);
+}
 /*
  * @method searchByName
  *

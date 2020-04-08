@@ -1,0 +1,26 @@
+<div id="selectForm" ng-form="$ctrl.formName" bh-multiple-depot-search-select>
+
+  <div class="form-group">
+    <span ng-repeat = "depot in $ctrl.depotsSected">
+      <span style="padding: 2px; border: 1px solid #aaa; margin: 1px;">
+        <span class="text-primary">{{depot.text}}</span>
+        <i class="fa fa-close text-danger link" ng-click="$ctrl.remove(depot.uuid)" id="{{depot.uuid}}"></i>
+      </span>
+      
+    </span>
+  </div>
+
+  <div class="form-group">
+    <label for="depots" translate>FORM.BUTTONS.ADD</label>
+    <input name="depots" id="{{$ctrl.componentId}}" type="text" 
+      translate-attr ="{ 'placeholder' : 'DEPOT.MODAL.TYPE_DEPOT_NAME'}"
+      uib-typeahead="depot as depot.text for depot in $ctrl.loadDepots($viewValue) | limitTo:8"
+      typeahead-on-select="$ctrl.onSelect($item)"
+      typeahead-append-to-body="true"
+      autocomplete="off"
+      typeahead-min-length="3"
+      ng-required="$ctrl.required"
+      ng-model="$ctrl.depotSelected"
+      class="form-control"/>
+  <div>
+</div>

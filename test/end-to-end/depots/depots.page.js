@@ -7,7 +7,6 @@
  */
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
-
 const GridRow = require('../shared/GridRow');
 
 class DepotPage {
@@ -132,8 +131,12 @@ class DepotPage {
    * Submit button User Depot
    */
   async submitUserDepot() {
-    await FU.buttons.submit();
     await components.notification.hasSuccess();
+  }
+
+  async selectDepot(name, id) {
+    await components.bhMultipleDepotSearchSelect.set(name, id);
+    await FU.buttons.submit();
   }
 }
 

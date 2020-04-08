@@ -348,6 +348,7 @@ exports.configure = function configure(app) {
   /* Depot routes */
   app.get('/depots', depots.list);
   app.get('/depots/:uuid', depots.detail);
+
   app.put('/depots/:uuid', depots.update);
   app.post('/depots', depots.create);
   app.delete('/depots/:uuid', depots.remove);
@@ -830,7 +831,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
   app.get('/reports/stock/value', stockReports.stockValue);
-
+  app.get('/reports/stock/monthly_consumption', stockReports.monthlyConsumption.report);
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);

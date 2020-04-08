@@ -36,7 +36,6 @@ function stockMovementsReport(req, res, next) {
     return next(e);
   }
 
-
   return Stock.getLotsMovements(null, options)
     .then((rows) => {
       data.rows = rows.map(row => {

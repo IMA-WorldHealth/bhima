@@ -19,11 +19,12 @@
     </div>
 
     <span translate> FORM.INFO.USER_DEPOT </span>
-    <bh-multiple-depot-select
+    <bh-depot-search-select
       label="STOCK.DEPOT"
+      id="user_depots"
       depots-uuids = "UsersDepotModalCtrl.depots"
       on-change="UsersDepotModalCtrl.onDepotChange(depots)">
-    </bh-multiple-depot-select>
+    </bh-depot-search-select>
 
   </div>
 

@@ -135,3 +135,4 @@ exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchaseOrderAnalysis');
 
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
+exports.monthlyConsumption = require('./stock/monthly_consumption');

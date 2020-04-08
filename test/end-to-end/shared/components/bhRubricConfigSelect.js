@@ -12,6 +12,6 @@ module.exports = {
     // ngModelOptions updateOn 'blur' for every input
     await target.click();
 
-    await FU.uiSelect('$ctrl.configRubricId', rubric, target);
+    await FU.uiSelect('$ctrl.configRubricId', rubric, target, false, 'exact');
   },
 };
