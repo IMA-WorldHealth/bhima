@@ -14,6 +14,7 @@ const {
  */
 async function stockEntryIntegrationReceipt(documentUuid, session, options) {
   const data = {};
+  const fluxes = [Stock.flux.FROM_INTEGRATION, Stock.flux.INVENTORY_ADJUSTMENT];
   const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_INTEGRATION' });
 
   // set up the report with report manager
@@ -36,7 +37,7 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
     JOIN integration integ ON integ.uuid = l.origin_uuid
     JOIN project proj ON proj.id = integ.project_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-    WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_INTEGRATION} AND m.document_uuid = ?
+    WHERE m.is_exit = 0 AND m.flux_id IN (${fluxes}) AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
 
