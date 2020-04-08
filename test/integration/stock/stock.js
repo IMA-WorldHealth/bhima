@@ -191,22 +191,20 @@ describe('(/stock/) The Stock HTTP API', () => {
         helpers.api.listed(res, 4);
 
         // This is the test of automatically calculated key values
-        expect(res.body[0].quantity).to.be.equal(155);
-        expect(res.body[0].avg_consumption).to.be.equal(10);
-        expect(res.body[0].S_SEC).to.be.equal(10);
-        expect(res.body[0].S_MIN).to.be.equal(20);
-        expect(res.body[0].S_MAX).to.be.equal(30);
-        expect(res.body[0].S_MONTH).to.be.equal(15);
+        expect(res.body[1].quantity).to.be.equal(155);
+        expect(res.body[1].avg_consumption).to.be.equal(10);
+        expect(res.body[1].S_SEC).to.be.equal(10);
+        expect(res.body[1].S_MIN).to.be.equal(20);
+        expect(res.body[1].S_MAX).to.be.equal(20);
+        expect(res.body[1].S_MONTH).to.be.equal(15);
 
-        expect(res.body[3].quantity).to.be.equal(180300);
-        expect(res.body[3].avg_consumption).to.be.equal(49916.67);
-        expect(res.body[3].S_SEC).to.be.equal(0);
-        expect(res.body[3].S_MIN).to.be.equal(0);
-        expect(res.body[3].S_MAX).to.be.equal(0);
-        expect(res.body[3].S_MONTH).to.be.equal(3);
-
+        expect(res.body[2].quantity).to.be.equal(180300);
+        expect(res.body[2].avg_consumption).to.be.equal(49916.67);
+        expect(res.body[2].S_SEC).to.be.equal(49916.67);
+        expect(res.body[2].S_MIN).to.be.equal(99833.34);
+        expect(res.body[2].S_MAX).to.be.equal(99833.34);
+        expect(res.body[2].S_MONTH).to.be.equal(3);
       })
       .catch(helpers.handler),
   );
-
 });
