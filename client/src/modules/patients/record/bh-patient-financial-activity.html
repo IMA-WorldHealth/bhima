@@ -79,6 +79,33 @@
             (<span am-time-ago="$ctrl.data.aggregates.until"></span> <i class="fa fa-clock-o"></i>)
           </dd>
         </dl>
+
+        <hr/>
+        <h5 class="text-success" style="margin-top:0;">
+          <i class="fa fa-medkit" aria-hidden="true"></i> <span translate>PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT</span>
+        </h5>
+
+        <div class="col-sm-6 col-xs-12">
+          <table class="table table-responsive table-condensed">
+            <thead>
+              <tr>
+                <td translate>FORM.LABELS.NR</td>
+                <td translate>FORM.LABELS.REFERENCE</td>
+                <td translate>FORM.LABELS.DATE</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="dataMovement in $ctrl.dataMovement">
+                <td>{{ $index + 1 }}</td>
+                <td><strong> {{ dataMovement.reference_text }} </strong></th>
+                <td> {{ dataMovement.date | date }} </td>
+              </tr>
+              <tr ng-if="$ctrl.noStockMovement">
+                <td colspan="3" translate>TABLE.COLUMNS.EMPTY</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- patient's records -->

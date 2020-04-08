@@ -59,6 +59,16 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
       .finally(() => {
         $ctrl.loading = false;
       });
+
+    Patients.getStockMovements($ctrl.patientUuid)
+      .then(data => {
+        $ctrl.dataMovement = data;
+        $ctrl.noStockMovement = data.length === 0;
+      })
+      .finally(() => {
+        $ctrl.loading = false;
+      });
+
   };
 
 

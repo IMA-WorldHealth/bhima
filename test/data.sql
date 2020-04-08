@@ -1223,3 +1223,6 @@ INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id
   (3, 'Creances', 13, 2),
   (2, 'Profits', 12, 3),
   (4, 'Dettes', 14, 4);
+
+-- To test the display of stock movements linked to a patient
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`) VALUES (0xCDBC3B5BC15E40C7AE7B67F8BDCCF47F, 0x39741655AF0E49AABC917F33F0CA2609, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution vers le patient Test 2 Patient (PA.TPA.2) à partir du dépôt Depot Principal : Distribution vers un patient', 9, '2020-04-08 18:41:17', 5, 1.2000, 1, 1, 5, NULL, '2020-04-08 18:41:38');

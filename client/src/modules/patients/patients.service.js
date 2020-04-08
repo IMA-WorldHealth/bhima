@@ -45,6 +45,7 @@ function PatientService(
   service.countEmployees = countEmployees;
 
   service.getFinancialActivity = getFinancialActivity;
+  service.getStockMovements = getStockMovements;
 
   // document exposition definition
   service.Documents = Documents;
@@ -341,6 +342,19 @@ function PatientService(
    */
   function getFinancialActivity(uuid) {
     const path = 'patients/:uuid/finance/activity';
+    return service.$http.get(path.replace(':uuid', uuid))
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method getStockMovements()
+   *
+   * @description
+   * This function makes it possible to list the stock movements linked to the Patient
+   *
+   */
+  function getStockMovements(uuid) {
+    const path = 'patients/:uuid/stock/movements';
     return service.$http.get(path.replace(':uuid', uuid))
       .then(service.util.unwrapHttpResponse);
   }
