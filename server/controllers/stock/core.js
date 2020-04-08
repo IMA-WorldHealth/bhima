@@ -458,7 +458,7 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
 /**
  * Inventory Quantity and Consumptions
  */
-function getInventoryQuantityAndConsumption(params) {
+function getInventoryQuantityAndConsumption(params, monthAverageConsumption) {
   let _status;
   let delay;
   let purchaseInterval;
@@ -513,7 +513,7 @@ function getInventoryQuantityAndConsumption(params) {
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
-    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, params.monthAverageConsumption))
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo, monthAverageConsumption))
     .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;

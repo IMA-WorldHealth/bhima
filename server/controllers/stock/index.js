@@ -361,6 +361,7 @@ function listLotsMovements(req, res, next) {
  */
 function listLotsDepot(req, res, next) {
   const params = req.query;
+  params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
 
   if (params.defaultPeriod) {
     params.defaultPeriodEntry = params.defaultPeriod;
@@ -382,9 +383,9 @@ function listLotsDepot(req, res, next) {
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
-  params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
+  const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
 
-  core.getInventoryQuantityAndConsumption(params)
+  core.getInventoryQuantityAndConsumption(params, monthAverageConsumption)
     .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();

@@ -91,7 +91,7 @@ class CreateUpdateAccountReferencePage {
 
   /* search an accountReference by account number value */
   async searchAccount(accountValue) {
-    await FU.uiSelect('$ctrl.select.account', accountValue);
+    await FU.uiSelect('$ctrl.select.account', accountValue, $('body'), false, 'fullWord');
   }
 
   /* search an accountReference by Reference Type */

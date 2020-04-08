@@ -173,9 +173,13 @@ module.exports = {
    * @param {String} model - the ng-model target to select
    * @param {String} label - the text of the option element to choose
    * @param {Element} anchor - a protractor element to search within
+   * @param {boolean} isMultipleSelection
+   * @param {String} searchType contains|exact|fullWord|accountName
    * @returns {Element} - a protractor option element
    */
-  uiSelect : async function uiSelect(model, label, anchor, isMultipleSelection) {
+  uiSelect : async function uiSelect(
+    model, label, anchor, isMultipleSelection, searchType = 'contains',
+  ) {
     anchor = anchor || $('body');
 
     // get the HTML <div> element that will trigger the select input
@@ -193,7 +197,31 @@ module.exports = {
     }
 
     // select the item of the dropdown menu matching the label
-    const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
+    let searchString = label;
+    let labelForRegex = label.replace('(', '\\(');
+    labelForRegex = labelForRegex.replace(')', '\\)');
+
+    switch (searchType) {
+    case 'exact':
+      searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
+      break;
+    case 'fullWord':
+      searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
+      break;
+    case 'accountName':
+      searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
+      break;
+    default:
+    case 'contains':
+      searchString = label;
+      break;
+    }
+
+    const option = select.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', searchString,
+      ),
+    );
     await option.click();
   },
 

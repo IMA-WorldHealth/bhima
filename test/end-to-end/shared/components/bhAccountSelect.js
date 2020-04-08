@@ -4,7 +4,7 @@ const FU = require('../FormUtils');
 const selector = '[bh-account-select]';
 
 module.exports = {
-  set      : async function set(account, id, optional = null) {
+  set      : async function set(account, id, optional = null, searchType = null) {
     const locator = (id) ? by.id(id) : by.css(selector);
     const target = optional || element(locator);
 
@@ -12,6 +12,6 @@ module.exports = {
     // ngModelOptions updateOn 'blur' for every input
     await target.click();
 
-    return FU.uiSelect('$ctrl.accountId', account, target);
+    return FU.uiSelect('$ctrl.accountId', account, target, false, searchType);
   },
 };
