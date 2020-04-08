@@ -24,7 +24,7 @@ function StockMovementsRegistryTests() {
   const gridId = 'stock-movements-grid';
   const depotGroupingRow = 1;
 
-  const REFERENCE = 'SM.9.10';
+  const REFERENCE = 'SM.9.5';
 
   it('finds lot for all time', async () => {
     await modal.switchToDefaultFilterTab();
@@ -114,7 +114,7 @@ function StockMovementsRegistryTests() {
   it('find movements by reference', async () => {
     await modal.setReference(REFERENCE);
     await modal.submit();
-    await GU.expectRowCount(gridId, 3);
+    await GU.expectRowCount(gridId, 1);
   });
 }
 
