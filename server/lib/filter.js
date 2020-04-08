@@ -144,7 +144,7 @@ class FilterParser {
       let preparedStatement = '';
 
       if (isArray) { // search in a list of values, example : where id in (1,2,3)
-        preparedStatement = `${tableString}${columnAlias} in (${valueString})`;
+        preparedStatement = `${tableString}${columnAlias} IN (${valueString})`;
       } else { // search equals one value , example : where id = 2
         preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
       }

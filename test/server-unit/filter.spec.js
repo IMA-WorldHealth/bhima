@@ -129,6 +129,16 @@ describe('filter.js', () => {
     expect(formatted).to.equal(expected);
   });
 
+  it('#equals() formats an array of values', () => {
+    filters.equals('list', 'id', 't', true);
+
+    const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE t.id IN (?)`;
+    const formatted = filters.applyQuery(sql).trim();
+
+    // assert that the SQL is formatted correctly.
+    expect(formatted).to.equal(expected);
+  });
+
   it('#custom Format the sql query when filtered by custom', () => {
     // custom matches the SQL  custom SQL with either single or multiple parameters.
     filters.custom('list', 't.id IN (?)', [object1.list]);
@@ -155,7 +165,7 @@ describe('filter.js', () => {
     expect(formatted).to.equal(expected);
   });
 
-  it('Format the sql query when Set ORDER BY AND GROUP BY', () => {
+  it('Format the sql query when set ORDER BY and GROUP BY', () => {
     filters.setOrder('ORDER BY t.name');
     filters.setGroup('GROUP BY t.country_id');
 
