@@ -64,7 +64,7 @@ function StockMovementsRegistryTests() {
   it('find movements by inventory', async () => {
     await modal.setInventory('Quinine sulphate 500mg');
     await modal.submit();
-    await GU.expectRowCount(gridId, 17 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 16 + (2 * depotGroupingRow));
   });
 
 
