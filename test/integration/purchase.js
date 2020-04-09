@@ -96,5 +96,21 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
+
+  it('GET /purchases?inventory_uuid=X returns purchases by inventory_uuid', () => {
+    return agent.get('/purchases')
+      .query({ inventory_uuid : helpers.data.QUININE })
+      .then((res) => {
+        helpers.api.listed(res, 2);
+
+        return agent.get('/purchases')
+          .query({ inventory_uuid : helpers.data.PREDNISONE });
+      })
+      .then((res) => {
+        helpers.api.listed(res, 3);
+      })
+      .catch(helpers.handler);
+  });
+
   describe('/purchases/search', SearchTests);
 });
