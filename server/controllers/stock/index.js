@@ -232,7 +232,7 @@ async function createInventoryAdjustment(req, res, next) {
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
         is_exit : 1,
-        flux_id : movement.flux_id,
+        flux_id : core.flux.INVENTORY_RESET,
         description : movement.description,
         user_id : req.session.user.id,
       };
@@ -250,7 +250,7 @@ async function createInventoryAdjustment(req, res, next) {
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
         is_exit : 0,
-        flux_id : movement.flux_id,
+        flux_id : core.flux.INVENTORY_RESET,
         description : movement.description,
         user_id : req.session.user.id,
       };

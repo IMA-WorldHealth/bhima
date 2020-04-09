@@ -37,6 +37,7 @@ function StockMovementsController(
     12 : { receipt : ReceiptModal.stockAdjustmentReceipt },
     13 : { receipt : ReceiptModal.stockEntryIntegrationReceipt },
     14 : { receipt : ReceiptModal.stockEntryIntegrationReceipt },
+    15 : { receipt : ReceiptModal.stockEntryIntegrationReceipt },
   };
 
   // grouping box

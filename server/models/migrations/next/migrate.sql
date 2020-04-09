@@ -1,14 +1,3 @@
-
-/*
- * @author: mbayopanda
- * @date: 2020-01-29
- */
-INSERT INTO `unit` VALUES
-  (267, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
-
-INSERT INTO `flux` VALUES 
-  (14, 'STOCK_FLUX.INVENTORY_ADJUSTMENT');
-
 /*
 Migrate to next
  */
@@ -25,3 +14,14 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('monthlyConsumptionReport', 'REPORT.MONTHLY_CONSUMPTION.TITLE');
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-01-29
+ */
+INSERT INTO `unit` VALUES
+  (268, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
+
+INSERT INTO `flux` VALUES 
+  (14, 'STOCK_FLUX.INVENTORY_ADJUSTMENT'),
+  (15, 'STOCK_FLUX.INVENTORY_RESET');
