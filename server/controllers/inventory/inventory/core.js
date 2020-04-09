@@ -186,15 +186,15 @@ function getIds() {
 function getItemsMetadata(params) {
   db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
 
-  const usePreviousPrice = !!params.use_previous_price;
+  const usePreviousPrice = params.use_previous_price && parseInt(params.use_previous_price, 10);
   delete params.usePreviousPrice;
 
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
-  const previousPriceQuery = `(
-    SELECT IFNULL(pi.unit_price, inventory.price) FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
-    WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1
-  ) AS price`;
+  const previousPriceQuery = `IFNULL(
+    (SELECT pi.unit_price FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
+    WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1)
+  , inventory.price) AS price`;
 
   const sql = `
    SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, iu.abbr AS unit,
