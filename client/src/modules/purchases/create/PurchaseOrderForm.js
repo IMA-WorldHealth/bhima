@@ -38,7 +38,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.inventory = new Pool({ identifier : 'uuid', data : [] });
 
     // set up the inventory
-    Inventory.read(null, { locked : 0 })
+    Inventory.read(null, { locked : 0, use_previous_price : 1 })
       .then((data) => {
         this.inventory.initialize('uuid', data);
       });

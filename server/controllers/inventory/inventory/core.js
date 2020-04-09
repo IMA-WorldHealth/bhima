@@ -185,17 +185,27 @@ function getIds() {
 */
 function getItemsMetadata(params) {
   db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
+
+  const usePreviousPrice = !!params.use_previous_price;
+  delete params.usePreviousPrice;
+
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
+  const previousPriceQuery = `(
+    SELECT IFNULL(pi.unit_price, inventory.price) FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
+    WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1
+  ) AS price`;
+
   const sql = `
-   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
+   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item,
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
-      ig.cogs_account, inventory.default_quantity
+      ig.cogs_account, inventory.default_quantity,
+      ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
