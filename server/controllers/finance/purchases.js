@@ -17,11 +17,14 @@ const moment = require('moment');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
+const barcode = require('../../lib/barcode');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
+
+const entityIdentifier = identifiers.PURCHASE_ORDER.key;
 
 // create a new purchase order
 exports.create = create;
@@ -98,7 +101,7 @@ function lookupPurchaseOrder(uid) {
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
+      CONCAT_WS('.', '${entityIdentifier}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
       p.status_id, ps.text AS status
@@ -128,6 +131,7 @@ function lookupPurchaseOrder(uid) {
     .then((rows) => {
       // bind the purchase items to the "items" property and return
       record.items = rows;
+      record.barcode = barcode.generate(entityIdentifier, record.uuid);
       return record;
     });
 }
@@ -225,7 +229,7 @@ function create(req, res, next) {
 
         transactionWrapper.addQuery(
           'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
-          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
+          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)],
         );
 
       });
@@ -337,7 +341,7 @@ function find(options) {
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid,
-        CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
+        CONCAT_WS('.', '${entityIdentifier}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
         p.status_id, ps.text AS status
@@ -454,7 +458,7 @@ function purchaseStatus(req, res, next) {
 
         transaction.addQuery(
           'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
-          [delay, numDelivery, row.inventory_uuid]
+          [delay, numDelivery, row.inventory_uuid],
         );
       });
 
@@ -480,7 +484,7 @@ function purchaseBalance(req, res, next) {
   const sql = `
     SELECT
       s.display_name AS supplier_name, u.display_name AS user_name, BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date,
+      CONCAT_WS('.', '${entityIdentifier}', proj.abbr, p.reference) AS reference, p.date,
       BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price,
       IFNULL(distributed.quantity, 0) AS distributed_quantity,
       (pi.quantity - IFNULL(distributed.quantity, 0)) AS balance
