@@ -8,7 +8,7 @@ InventoryService.$inject = [
 
 function InventoryService(
   Api, Groups, Units, Types, $uibModal, Filters,
-  AppCache, Languages, $httpParamSerializer, util, $http
+  AppCache, Languages, $httpParamSerializer, util, $http,
 ) {
   const service = new Api('/inventory/metadata/');
 

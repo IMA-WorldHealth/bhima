@@ -16,7 +16,7 @@ PurchaseOrderService.$inject = [
  */
 function PurchaseOrderService(
   $http, util, $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
-  Languages, bhConstants
+  Languages, bhConstants,
 ) {
   const baseUrl = '/purchases/';
   const service = new Api(baseUrl);
@@ -42,6 +42,7 @@ function PurchaseOrderService(
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'supplier_uuid', label : 'FORM.LABELS.SUPPLIER' },
+    { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'status_id', label : 'PURCHASES.ORDER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
   ]);

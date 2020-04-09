@@ -34,6 +34,13 @@
             <bh-clear on-clear="$ctrl.clear('supplier_uuid')"></bh-clear>
           </bh-supplier-select>
 
+          <bh-inventory-select
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
+
           <!-- user -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"

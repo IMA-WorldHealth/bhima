@@ -14,7 +14,7 @@ PurchaseListController.$inject = [
  */
 function PurchaseListController(
   $state, PurchaseOrder, Notify, uiGridConstants,
-  Columns, GridState, Session, Modal, ReceiptModal
+  Columns, GridState, Session, Modal, ReceiptModal,
 ) {
   const vm = this;
   const cacheKey = 'PurchaseRegistry';
