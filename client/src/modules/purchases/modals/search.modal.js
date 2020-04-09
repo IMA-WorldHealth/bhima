@@ -69,7 +69,6 @@ function SearchPurchaseOrderModalController(
   vm.onSelectInventory = function onSelectInventory(inventory) {
     displayValues.inventory_uuid = inventory.code;
     vm.searchQueries.inventory_uuid = inventory.uuid;
-    console.log('inventory:', inventory);
   };
 
   // custom filter supplier_uuid - assign the value to the params object

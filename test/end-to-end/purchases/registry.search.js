@@ -15,6 +15,7 @@ function PurchaseOrderSearch() {
     reference : 'PO.TPA.2',
     name1 : 'Patient',
     author : 'Super User',
+    inventory : 'Quinine',
     status : ['Confirmé'],
     supplier : 'SNEL',
   };
@@ -73,6 +74,17 @@ function PurchaseOrderSearch() {
   it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, async () => {
     const NUM_MATCHING = 4;
     await modal.setSupplier(parameters.supplier);
+
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
+
+    await expectNumberOfGridRows(NUM_MATCHING);
+  });
+
+  it(`should list all purchase orders with "${parameters.inventory}" for all time`, async () => {
+    const NUM_MATCHING = 2;
+    await modal.setInventory(parameters.inventory);
 
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
