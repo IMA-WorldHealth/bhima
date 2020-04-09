@@ -60,7 +60,6 @@ exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
 exports.createItemsMetadata = createItemsMetadata;
 exports.updateItemsMetadata = updateItemsMetadata;
-exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
 exports.remove = remove;
@@ -168,13 +167,12 @@ async function updateItemsMetadata(record, identifier, session) {
 /**
 * Find all inventory UUIDs in the database.
 *
-* @function getItemIds
+* @function getIds
 * @return {Promise} Returns a database query promise
 */
 function getIds() {
   // TODO - should we be filtering on enterprise id in these queries?
   const sql = 'SELECT i.uuid FROM inventory AS i;';
-
   return db.exec(sql);
 }
 
@@ -255,20 +253,6 @@ function getItemsMetadataById(uid) {
     WHERE i.uuid = ?;`;
 
   return db.one(sql, [db.bid(uid), uid, 'inventory']);
-}
-
-
-/**
-* Coerces values in to truth-y and false-y values.  Returns true if
-* the result is equivalent.
-*
-* @function hasBoth
-* @param m any value
-* @param n any value
-* @return {Boolean} Returns true if m and n are both truthy or both falsey
-*/
-function hasBoth(m, n) {
-  return !m === !n;
 }
 
 /**
