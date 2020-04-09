@@ -38,6 +38,8 @@ const missingParamsPatient = {
   uuid : missingPatientUuid,
 };
 
+const patientTest2 = '274C51AEEFCC423898C6F402BFB39866';
+
 const mockRequest = {
   finance : mockDebtor,
   medical : mockPatient,
@@ -260,6 +262,16 @@ describe('(/patients) Patients', () => {
         expect(res.body.dob).to.equal(date.toISOString());
       })
       .catch(helpers.handler);
+  });
+
+  it('GET patients/:uuid/stock/movements Returns the stock movement related to the Patient', () => {
+    return agent.get(`/patients/${patientTest2}/stock/movements`)
+      .then((res) => {
+        const expectedKeys = ['document_uuid', 'depot_uuid', 'date', 'reference_text'];
+        expect(res.body[0]).to.contain.keys(expectedKeys);
+        expect(res.body[0].reference_text).to.equal('SM.9.5');
+      });
+
   });
 
   // merge patients

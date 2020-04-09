@@ -525,6 +525,7 @@ exports.configure = function configure(app) {
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
   app.get('/patients/:uuid/finance/balance', patients.getDebtorBalance);
+  app.get('/patients/:uuid/stock/movements', patients.getStockMovements);
 
   // Barcode API
   app.get('/barcode/:key', report.barcodeLookup);

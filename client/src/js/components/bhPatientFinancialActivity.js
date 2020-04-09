@@ -33,15 +33,22 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
 
     $ctrl.loading = true;
 
-    Patients.getFinancialActivity($ctrl.patientUuid)
-      .then(data => {
-        $ctrl.data = data;
+    Promise.all([
+      Patients.getFinancialActivity($ctrl.patientUuid),
+      Patients.getStockMovements($ctrl.patientUuid),
+    ])
+      .then(([financialData, stockData]) => {
+        $ctrl.data = financialData;
+        const dataMovement = [];
+
+        // limit this to the most recent stock movements items
+        const limitRecent = 5;
 
         // indicate that the patient does not have a financial history
-        $ctrl.noFinancialHistory = data.transactions.length === 0;
+        $ctrl.noFinancialHistory = financialData.transactions.length === 0;
 
-        $ctrl.status = calculateFinancialStatus(data.transactions, data.aggregates);
-        $ctrl.groups = groupFinancialRecords(data.transactions);
+        $ctrl.status = calculateFinancialStatus(financialData.transactions, financialData.aggregates);
+        $ctrl.groups = groupFinancialRecords(financialData.transactions);
 
         $ctrl.hasWarnings = (
           $ctrl.status.hasExcessiveDebt
@@ -51,16 +58,24 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
 
         // used in i18n texts
         $ctrl.i18nValues = {
-          date : new Date(data.aggregates.until),
-          balance : Math.abs(data.aggregates.balance),
+          date : new Date(financialData.aggregates.until),
+          balance : Math.abs(financialData.aggregates.balance),
           currency_id : Session.enterprise.currency_id,
         };
+
+        stockData.forEach((item, index) => {
+          if (index < limitRecent) {
+            dataMovement.push(item);
+          }
+        });
+
+        $ctrl.dataMovement = dataMovement;
+        $ctrl.noStockMovement = stockData.length === 0;
       })
       .finally(() => {
         $ctrl.loading = false;
       });
   };
-
 
   /**
    * @function calculateFinancialStatus

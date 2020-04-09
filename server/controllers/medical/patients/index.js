@@ -80,6 +80,7 @@ exports.lookupByDebtorUuid = lookupByDebtorUuid;
 
 exports.getFinancialStatus = getFinancialStatus;
 exports.getDebtorBalance = getDebtorBalance;
+exports.getStockMovements = getStockMovements;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
@@ -677,4 +678,29 @@ function getDebtorBalance(req, res, next) {
       res.status(200).send(balance);
     })
     .catch(next);
+}
+
+/**
+ * @function getStockMovements
+ *
+ * @description
+ * returns the stock Movements to the patient.
+ */
+function getStockMovements(req, res, next) {
+  const sql = `
+    SELECT DISTINCT(sm.document_uuid) AS document_uuid, sm.depot_uuid, sm.date, map.text AS reference_text
+    FROM stock_movement AS sm
+    JOIN depot AS d ON d.uuid = sm.depot_uuid
+    JOIN patient AS p ON p.uuid = sm.entity_uuid
+    JOIN document_map AS map ON map.uuid = sm.document_uuid
+    WHERE sm.entity_uuid = ?
+    ORDER BY sm.date desc
+  `;
+
+  db.exec(sql, [db.bid(req.params.uuid)])
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
 }
