@@ -114,7 +114,7 @@ function StockMovementsRegistryTests() {
   it('find movements by reference', async () => {
     await modal.setReference(REFERENCE);
     await modal.submit();
-    await GU.expectRowCount(gridId, 1);
+    await GU.expectRowCount(gridId, 2);
   });
 }
 
