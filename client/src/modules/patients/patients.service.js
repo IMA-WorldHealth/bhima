@@ -341,8 +341,8 @@ function PatientService(
    * and if they are in good standing with the institution or not.
    */
   function getFinancialActivity(uuid) {
-    const path = 'patients/:uuid/finance/activity';
-    return service.$http.get(path.replace(':uuid', uuid))
+    const path = `patients/${uuid}/finance/activity`;
+    return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -354,8 +354,8 @@ function PatientService(
    *
    */
   function getStockMovements(uuid) {
-    const path = 'patients/:uuid/stock/movements';
-    return service.$http.get(path.replace(':uuid', uuid))
+    const path = `patients/${uuid}/stock/movements`;
+    return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
 

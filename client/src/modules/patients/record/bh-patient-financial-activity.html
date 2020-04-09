@@ -18,7 +18,7 @@
       </span>
     </bh-panel-overlay>
 
-    <bh-panel-overlay ng-if="$ctrl.noFinancialHistory">
+    <bh-panel-overlay ng-if="$ctrl.noFinancialHistory && $ctrl.noStockMovement">
       <span translate>PATIENT_RECORDS.FINANCES.NO_ACTIVITY</span>
     </bh-panel-overlay>
 
@@ -81,8 +81,11 @@
         </dl>
 
         <hr/>
-        <h5 class="text-success" style="margin-top:0;">
-          <i class="fa fa-medkit" aria-hidden="true"></i> <span translate>PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT</span>
+        <h5 style="margin-top:0;">
+          <i class="fa fa-medkit" aria-hidden="true"></i>
+          <strong>
+            <span translate>PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT</span>
+          </strong>
         </h5>
 
         <div class="col-sm-6 col-xs-12">
@@ -98,7 +101,7 @@
               <tr ng-repeat="dataMovement in $ctrl.dataMovement">
                 <td>{{ $index + 1 }}</td>
                 <td><strong> {{ dataMovement.reference_text }} </strong></th>
-                <td> {{ dataMovement.date | date }} </td>
+                <td> {{ dataMovement.date | date : "dd/MM/yyyy HH:mm:ss" }} </td>
               </tr>
               <tr ng-if="$ctrl.noStockMovement">
                 <td colspan="3" translate>TABLE.COLUMNS.EMPTY</td>
@@ -109,7 +112,7 @@
       </div>
 
       <!-- patient's records -->
-      <div class="col-sm-6 col-xs-12">
+      <div ng-if="!$ctrl.noFinancialHistory" class="col-sm-6 col-xs-12">
         <table class="table table-responsive table-condensed">
           <thead>
             <tr>
