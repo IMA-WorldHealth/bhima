@@ -11,29 +11,19 @@ angular.module('bhima.components')
     },
   });
 
-ModalNotifyController.$inject = ['$timeout', '$translate'];
+ModalNotifyController.$inject = ['$timeout'];
 
-function ModalNotifyController($timeout, $translate) {
+function ModalNotifyController($timeout) {
   const $ctrl = this;
   const TTL = $ctrl.ttl || 3000;
   const ERR_TTL = 50000;
 
   const options = {
-    success : {
-      format  : 'notification-success',
-    },
-    danger : {
-      format  : 'notification-danger',
-    },
-    info : {
-      format  : 'notification-info',
-    },
-    warn : {
-      format  : 'notification-warn',
-    },
-    error : {
-      format  : 'notification-error',
-    },
+    success : 'notification-success',
+    danger  : 'notification-danger',
+    info    : 'notification-info',
+    warn    : 'notification-warn',
+    error   : 'notification-error',
   };
 
   function handleError(error) {
@@ -43,9 +33,9 @@ function ModalNotifyController($timeout, $translate) {
   }
 
   function setNotification(key, ttl) {
-    const errorFormat = options.error.format;
-    const otherFormat = options[$ctrl.status || 'info'].format;
-    $ctrl.message = $translate.instant(key);
+    const errorFormat = options.error;
+    const otherFormat = options[$ctrl.status || 'info'];
+    $ctrl.message = key;
     $ctrl.style = $ctrl.error ? errorFormat : otherFormat;
     $ctrl.visible = true;
 
