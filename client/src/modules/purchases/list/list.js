@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
-  'ReceiptModal',
+  'ReceiptModal', 'bhConstants',
 ];
 
 /**
@@ -14,7 +14,7 @@ PurchaseListController.$inject = [
  */
 function PurchaseListController(
   $state, PurchaseOrder, Notify, uiGridConstants,
-  Columns, GridState, Session, Modal, ReceiptModal
+  Columns, GridState, Session, Modal, ReceiptModal, bhConstants,
 ) {
   const vm = this;
   const cacheKey = 'PurchaseRegistry';
@@ -24,8 +24,18 @@ function PurchaseListController(
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = PurchaseOrder.download;
+  vm.status = bhConstants.purchaseStatus;
 
   vm.editStatus = editStatus;
+
+  vm.allowEditStatus = statusId => {
+    const forbidden = [
+      vm.status.RECEIVED,
+      vm.status.PARTIALLY_RECEIVED,
+      vm.status.EXCESSIVE_RECEIVED_QUANTITY,
+    ];
+    return !forbidden.includes(statusId);
+  };
 
   // track if module is making a HTTP request for purchase order
   vm.loading = false;
