@@ -29,7 +29,7 @@ const config = {
   capabilities : {
     browserName : 'chrome',
     chromeOptions : {
-      args : ['--window-size=1280,1024'],
+      args : ['--headless', '--disable-gpu', '--window-size=1280,1024'],
     },
   },
 

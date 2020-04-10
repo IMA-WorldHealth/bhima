@@ -3,14 +3,16 @@ angular.module('bhima.services')
 
 InventoryService.$inject = [
   'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal',
-  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'util', '$http',
+  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'HttpCacheService',
 ];
 
 function InventoryService(
   Api, Groups, Units, Types, $uibModal, Filters,
-  AppCache, Languages, $httpParamSerializer, util, $http
+  AppCache, Languages, $httpParamSerializer, HttpCache,
 ) {
   const service = new Api('/inventory/metadata/');
+
+  service.read = read;
 
   // the import inventory api
   const INVENTORY_IMPORT_URL = '/inventory/import/';
@@ -41,10 +43,29 @@ function InventoryService(
   };
 
   function downloadInventoriesTemplate() {
-    $http.get(INVENTORY_IMPORT_URL.concat('template_file'))
+    service.$http.get(INVENTORY_IMPORT_URL.concat('template_file'))
       .then(response => {
-        return util.download(response, 'Template Inventory', 'csv');
+        return service.util.download(response, 'Template Inventory', 'csv');
       });
+  }
+
+  const callback = (uuid, options) => Api.read.call(service, uuid, options);
+  const fetcher = HttpCache(callback, 2000);
+
+  /**
+   * The read() method loads data from the api endpoint. If a uuid is provided,
+   * the $http promise is resolved with a single JSON object, otherwise an array
+   * of objects should be expected.
+   *
+   * @param {String} uuid - the uuid of the account to fetch (optional).
+   * @param {Object} options - options to be passed as query strings (optional).
+   * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
+   *   to the server.
+   * @return {Promise} promise - resolves to either a JSON (if uuid provided) or
+   *   an array of JSONs.
+   */
+  function read(uuid, options, cacheBust = false) {
+    return fetcher(uuid, options, cacheBust);
   }
 
   /**
@@ -167,7 +188,7 @@ function InventoryService(
 
   // delete an inventory
   function remove(uuid) {
-    return $http.delete('/inventory/metadata/'.concat(uuid));
+    return service.$http.delete('/inventory/metadata/'.concat(uuid));
   }
   service.columnsMap = (key) => {
     const cols = {

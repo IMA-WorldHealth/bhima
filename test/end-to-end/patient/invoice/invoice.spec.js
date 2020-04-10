@@ -27,7 +27,7 @@ describe('Patient Invoice', () => {
     await page.prepare();
 
     // add the following inventory item
-    await page.addInventoryItem(0, '100099');
+    await page.addInventoryItem(0, 'DORA_AMOX2S-_0');
 
     // make sure the submit button is not disabled
     expect(await page.btns.submit.isEnabled()).to.equal(true);
@@ -52,9 +52,9 @@ describe('Patient Invoice', () => {
     expect(await page.getRows().count()).to.equal(3);
 
     // add two inventory items to each row (0-indexing)
-    await page.addInventoryItem(0, '100099');
-    await page.addInventoryItem(1, '110016');
-    await page.addInventoryItem(2, '170448');
+    await page.addInventoryItem(0, 'DINJ_QUIN2A-_0'); // Quinine bichlorhydrate base, 250mg/ml, 1ml amp
+    await page.addInventoryItem(1, 'DORA_AMOX2S-_0'); // Amoxycilline, 250mg/5ml, 100ml, flacon, Unité
+    await page.addInventoryItem(2, 'DDIS_CHL7G1-_0'); // Chlorhexidine digluconate 7,1%, 10gr, gel, tube, Unité
 
     // change the required quantities
     await page.adjustItemQuantity(0, 17);
@@ -116,8 +116,9 @@ describe('Patient Invoice', () => {
     await page.addRows(1);
 
     // add two inventory items to each row (0-indexing)
-    await page.addInventoryItem(0, '100099'); // Propantheline bromide15mg
-    await page.addInventoryItem(1, '110016'); // Tylenol sirop (cold multivit)
+    await page.addInventoryItem(0, 'DDGT_HIVE1T-_0'); // Test, VIH 1+2, ELISA, Flacon 192 tests, Unité
+    // Artemether+Luméfantrine, 20mg+120mg base, 6 Tab, blister, coformulation
+    await page.addInventoryItem(1, 'DORA_ARLC8TB_0');
 
     // change the required quantities
     await page.adjustItemQuantity(0, 1);

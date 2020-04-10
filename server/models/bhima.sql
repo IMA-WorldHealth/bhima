@@ -44,7 +44,6 @@ INSERT INTO unit VALUES
   (139, 'Inventory Registry', 'TREE.INVENTORY_REGISTRY', 'Inventory Registry module', 138, '/modules/inventory/list', '/inventory'),
   (140, 'Inventory Configurations', 'TREE.INVENTORY_CONFIGURATION', 'Inventory configuration module', 138, '/modules/inventory/configuration', '/inventory/configuration'),
   (141, 'Vouchers Records', 'TREE.VOUCHER_REGISTRY', 'Vouchers registry module', 5, '/modules/vouchers/index', '/vouchers'),
-  -- (142, 'Purchase Orders', 'TREE.PURCHASING', 'This module is responsible for creating purchase orders', 138, '/modules/purchases/create', '/purchases/create'),
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/modules/transaction-type', '/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/modules/finance/reports', '/finance/REPORT_FOLDER'),
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/modules/reports/cashflow', '/reports/cashflow'),
@@ -226,7 +225,25 @@ INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monen
   (2,'United States Dollars','usd','$',NULL,0.01);
 
 INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
-INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pill', 'Pillule'),(4,'Box', 'Box'),(5,'Lot', 'Lot'),(6,'amp', 'ampoule'),(7,'bags', 'bags'),(8,'btl', 'bouteille'),(9,'cap', 'capsule'),(10,'flc', 'flacon'),(11,'jar', 'jar'),(12,'ltr', 'littre'),(13,'pce', 'piece'),(14,'sch', 'sachet'),(15,'tab', 'tablette'),(16,'tub', 'tube'),(17,'vial', 'vial');
+INSERT INTO `inventory_unit` VALUES
+  (1,'Act', 'Act'),
+  (2,'Pal', 'Pallet'),
+  (3,'Pill', 'Pillule'),
+  (4,'Box', 'Box'),
+  (5,'Lot', 'Lot'),
+  (6,'amp', 'ampoule'),
+  (7,'bags', 'bags'),
+  (8,'btl', 'bouteille'),
+  (9,'cap', 'capsule'),
+  (10,'flc', 'flacon'),
+  (11,'jar', 'jar'),
+  (12,'ltr', 'littre'),
+  (13,'pce', 'piece'),
+  (14,'sch', 'sachet'),
+  (15,'tab', 'tablette'),
+  (16,'tub', 'tube'),
+  (17,'vial', 'vial'),
+  (18, 'unité', 'unité');
 
 -- fonctions
 INSERT INTO `fonction` VALUES

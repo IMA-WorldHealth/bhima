@@ -6,6 +6,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 const Filters = require('../shared/components/bhFilters');
+const SearchModal = require('../shared/search.page');
 
 describe('Inventory List', () => {
   // navigate to the page
@@ -19,7 +20,7 @@ describe('Inventory List', () => {
     code  : uniqueIdentifier,
     text  : '[E2E] Inventory Article',
     price : 7.57,
-    group : 'Injectable',
+    group : 'Produits Injectables',
     type  : 'Article',
     unit  : 'Act',
     unit_weight : 1,
@@ -27,11 +28,10 @@ describe('Inventory List', () => {
   };
 
   const metadataUpdate = {
-    code : uniqueIdentifier.concat('_updated'),
-    text : '[E2E] Inventory Article Updated',
+    text : 'Stavudine 40mg + Lamuvidune 150mg, ces, 60, vrac',
     price : 7.77,
-    group : 'Injectable',
-    type  : 'Service',
+    group : 'Produits Injectables',
+    type  : 'Article',
     unit  : 'Pill',
     unit_weight : 7,
     unit_volume : 7,
@@ -39,11 +39,19 @@ describe('Inventory List', () => {
 
   const metadataSearch = {
     label : 'Quinine',
-    group : 'Injectable',
+    group : 'Eau',
     type  : 'Article',
   };
 
   it('successfully creates a new inventory item (metadata)', async () => {
+
+    // filter inventory size  to 5 so it takes less time to load
+    await SearchModal.open();
+    let modal = new SearchModal('inventory-search');
+    await modal.switchToDefaultFilterTab();
+    await FU.input('ModalCtrl.defaultQueries.limit', 5, SearchModal.element);
+    await modal.submit();
+
     await FU.buttons.create();
     await FU.input('$ctrl.item.label', metadata.text);
     await FU.input('$ctrl.item.code', metadata.code);
@@ -54,18 +62,36 @@ describe('Inventory List', () => {
     await FU.select('$ctrl.item.unit_id', metadata.unit);
     await FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
     await FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
+
     await FU.modal.submit();
+
     await components.notification.hasSuccess();
+
+    await SearchModal.open();
+    modal = new SearchModal('inventory-search');
+    await modal.switchToDefaultFilterTab();
+    await FU.input('ModalCtrl.defaultQueries.limit', 1000, SearchModal.element);
+    await modal.submit();
   });
 
-  const CODE_TO_UPDATE = '100001';
+  const CODE_TO_UPDATE = 'DARV_LSTA4T6_0';
+
   it('successfully updates an existing inventory item (metadata)', async () => {
+
+    // since we have thousands of inventory items, first we need to filter to find it.
+    await FU.buttons.search();
+    await FU.input('ModalCtrl.searchQueries.code', CODE_TO_UPDATE);
+    await FU.modal.submit();
+
+    await GU.expectRowCount('inventoryListGrid', 1);
+
+    // now we can actually update it.
+
     const row = $(`[data-row-item="${CODE_TO_UPDATE}"]`);
     await row.$('[data-method="action"]').click();
     await element(by.css(`[data-edit-metadata="${CODE_TO_UPDATE}"]`)).click();
 
     await FU.input('$ctrl.item.label', metadataUpdate.text);
-    await FU.input('$ctrl.item.code', metadataUpdate.code);
     await element(by.model('$ctrl.item.consumable')).click();
     await FU.input('$ctrl.item.price', metadataUpdate.price);
     await FU.select('$ctrl.item.group_uuid', metadataUpdate.group);
@@ -75,35 +101,40 @@ describe('Inventory List', () => {
     await FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
 
     await FU.modal.submit();
+
     await components.notification.hasSuccess();
+
+    // finally, clear the filters
+    await filters.resetFilters();
   });
 
   // demonstrates that filtering works
-  it(`should find one Inventory with Label "${metadataSearch.label}"`, async () => {
+  it(`should find 21 inventory items with the label "${metadataSearch.label}"`, async () => {
     await FU.buttons.search();
 
     await FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
     await FU.modal.submit();
 
-    await GU.expectRowCount('inventoryListGrid', 2);
+    await GU.expectRowCount('inventoryListGrid', 21);
     await filters.resetFilters();
   });
 
 
   // demonstrates that filtering works
-  it(`should find three Inventory with Group "${metadataSearch.group}" and Type "${metadataSearch.type}"`, async () => {
+  // eslint-disable-next-line
+  it(`should find 17 inventory items with group "${metadataSearch.group}" and type "${metadataSearch.type}"`, async () => {
     await FU.buttons.search();
 
     await components.inventoryGroupSelect.set(metadataSearch.group);
     await components.inventoryTypeSelect.set(metadataSearch.type);
     await FU.modal.submit();
 
-    await GU.expectRowCount('inventoryListGrid', 1);
+    await GU.expectRowCount('inventoryListGrid', 17);
     await filters.resetFilters();
   });
 
 
-  it('dont creates a new inventory item (metadata) for invalid data', async () => {
+  it('doesn\'t create a new inventory item (metadata) for invalid data', async () => {
     await FU.buttons.create();
     await FU.input('$ctrl.item.label', metadata.text);
     await FU.input('$ctrl.item.unit_weight', metadata.unit_weight);

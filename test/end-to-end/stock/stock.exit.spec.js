@@ -34,7 +34,7 @@ function StockExiTests() {
     await page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // second item
-    await page.setItem(1, 'Multivitamine', 'VITAMINE-A', 10);
+    await page.setItem(1, 'Vitamines', 'VITAMINE-A', 10);
 
     // submit
     await page.submit();
@@ -68,7 +68,7 @@ function StockExiTests() {
     await page.setItem(0, 'Quinine', 'QUININE-B', 14);
 
     // second item
-    await page.setItem(1, 'Multivitamine', 'VITAMINE-B', 5);
+    await page.setItem(1, 'Vitamines', 'VITAMINE-B', 5);
 
     // submit
     await page.submit();
@@ -102,7 +102,7 @@ function StockExiTests() {
     await page.addRows(1);
 
     // first item
-    await page.setItem(0, 'Multivitamine', 'VITAMINE-B', 5);
+    await page.setItem(0, 'Vitamines', 'VITAMINE-B', 5);
 
     // submit
     await page.submit();

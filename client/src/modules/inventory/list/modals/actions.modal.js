@@ -63,19 +63,19 @@ function InventoryListActionsModalController(
     function handleAction(res) {
       const message = vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
 
-      $rootScope.$broadcast('INVENTORY_UPDATED');
-
-      Notify.success(message);
-
       // if we are supposed to create another item, just refresh the state
       if (vm.createAnotherItem) {
         vm.item = {};
         form.$setPristine();
+        $rootScope.$broadcast('INVENTORY_UPDATED');
+        Notify.success(message);
         return;
       }
 
       // pass back the uuid
       Instance.close(res.uuid);
+
+      Notify.success(message);
     }
   }
 

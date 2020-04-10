@@ -20,7 +20,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     sellable : 1,
   };
 
-  const inventoryUuid = 'c8a406a9-53d6-429f-84d8-fc497875a580';
+  const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
 
   const metadataUpdate = {
     code : '1000012', // code must be unique
@@ -34,7 +34,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     text : 'Albendazo', // should find "Albendazole"
   };
 
-  it('GET /inventory/download/log/?lang=fr donwload log as Ms excel', () => {
+  it('GET /inventory/download/log/?lang=fr downloads the log in MS Excel format', () => {
     return agent.get(`/inventory/download/log/${inventoryUuid}?lang=fr`)
       .then(res => {
         expect(res).to.have.status(200);
@@ -78,7 +78,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
         inventoryList = res.body;
-        expect(res.body.length).to.be.equal(1);
+        expect(res.body.length).to.be.equal(3);
       })
       .catch(helpers.handler);
   });
@@ -93,23 +93,101 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata?sellable=1 returns the list of sellable inventories', () => {
-    return agent.get('/inventory/metadata?sellable=1')
+  it('GET /inventory/metadata filters on the sellable column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ sellable : 1 })
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(160);
+        helpers.api.listed(res, 2332);
+        return agent.get('/inventory/metadata')
+          .query({ sellable : 0 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata?sellable=0 returns the list of unsellable inventories', () => {
-    return agent.get('/inventory/metadata?sellable=0')
+  it('GET /inventory/metadata filters on the price column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ price : 1.10 })
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(4);
+        helpers.api.listed(res, 3);
+        return agent.get('/inventory/metadata')
+          .query({ price : 8.72 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
+
+  it('GET /inventory/metadata filters on the code column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ code : 'DARV_STAV4C6_0' })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+
+        expect(item.label).to.equal('Stavudine (d4T), 40mg, Caps, 60, Vrac');
+        expect(item.price).to.equal(4.9500);
+
+        return agent.get('/inventory/metadata')
+          .query({ code : 'DEXT_HALO1A-_0' });
+      })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+        expect(item.label).to.equal('Halothane, 250ml, flacon, Unité');
+        expect(item.price).to.equal(3.0700);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the consumable column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ consumable : 0 })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        return agent.get('/inventory/metadata')
+          .query({ consumable : 1 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2333);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the locked column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ locked : 0 })
+      .then(res => {
+        helpers.api.listed(res, 2332);
+        return agent.get('/inventory/metadata')
+          .query({ locked : 1 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the group_uuid column', () => {
+    const groupUuid = 'D81D12F0727C11EA8241000C2997DDC0';
+    const numGroupMembers = 49;
+
+    return agent.get('/inventory/metadata')
+      .query({ group_uuid : shared.inventoryGroup.uuid })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        return agent.get('/inventory/metadata')
+          .query({ group_uuid : groupUuid });
+      })
+      .then(res => {
+        helpers.api.listed(res, numGroupMembers);
+      })
+      .catch(helpers.handler);
+  });
+
 
   // count inventory in the group
   it('GET /inventory/groups/:uuid/count', () => {
@@ -123,25 +201,25 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-  const quinineUuid = '43F3DECBFCE9426E940ABC2150E62186';
-  const atenololUuid = '1300BC8619514668A29B9B0F9B40891A';
-  const quinineInventoryPrice = 0.15;
+  const quinineUuid = helpers.data.QUININE;
+  const tenofovirUuid = 'A8DEDE6C7B1611EAA7A2D39BE13ABBF6';
+  const quinineInventoryPrice = 6.63;
   const quininePreviousPrice = 200;
   it('GET /inventory/metadata?use_previous_price=1 uses previous purchase price', () => {
     let oldQuinine;
-    let oldAtenolol;
+    let oldTenofovir;
     return agent.get('/inventory/metadata')
       .query({ use_previous_price : 0 })
       .then(res => {
         oldQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
-        oldAtenolol = res.body.filter(i => i.uuid === atenololUuid).pop();
+        oldTenofovir = res.body.filter(i => i.uuid === tenofovirUuid).pop();
 
         return agent.get('/inventory/metadata')
           .query({ use_previous_price : 1 });
       })
       .then(res => {
         const newQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
-        const newAtenolol = res.body.filter(i => i.uuid === atenololUuid).pop();
+        const newTenofovir = res.body.filter(i => i.uuid === tenofovirUuid).pop();
 
         expect(oldQuinine.uuid).to.equal(newQuinine.uuid);
         expect(oldQuinine.code).to.equal(newQuinine.code);
@@ -150,7 +228,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
         expect(newQuinine.price).to.equal(quininePreviousPrice);
 
         // price should be unchanged for items not bought
-        expect(oldAtenolol.price).to.equal(newAtenolol.price);
+        expect(oldTenofovir.price).to.equal(newTenofovir.price);
       })
       .catch(helpers.handler);
   });

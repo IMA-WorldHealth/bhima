@@ -3,9 +3,19 @@
 const helpers = require('../helpers');
 const shared = require('./shared');
 
-describe('(/inventory/units) The inventory units http API', () => {
+describe('(/inventory/units) The inventory units HTTP API', () => {
+
+  const NUM_UNITS = 18;
+  it(`GET /inventory/units finds ${NUM_UNITS} inventory units`, () => {
+    return agent.get('/inventory/units')
+      .then(res => {
+        helpers.api.listed(res, NUM_UNITS);
+      })
+      .catch(helpers.handler);
+  });
+
   // create inventory type
-  it('POST /inventory/units create a new inventory units', () => {
+  it('POST /inventory/units creates a new inventory unit', () => {
     return agent.post('/inventory/units')
       .send(shared.inventoryUnit)
       .then(res => {
@@ -17,7 +27,7 @@ describe('(/inventory/units) The inventory units http API', () => {
   });
 
   // update inventory units
-  it('PUT /inventory/units/:id updates an existing inventory units', () => {
+  it('PUT /inventory/units/:id updates an existing inventory unit', () => {
     return agent.put(`/inventory/units/${shared.inventoryUnit.id}`)
       .send(shared.updateUnit)
       .then(res => {
@@ -29,12 +39,10 @@ describe('(/inventory/units) The inventory units http API', () => {
       .catch(helpers.handler);
   });
 
-  // list of inventory units
-  it('GET /inventory/units returns list of inventory units', () => {
+  it(`GET /inventory/units finds ${NUM_UNITS + 1} inventory units after creation`, () => {
     return agent.get('/inventory/units')
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.a('object');
+        helpers.api.listed(res, NUM_UNITS + 1);
       })
       .catch(helpers.handler);
   });
