@@ -38,7 +38,7 @@
         "INVENTORY_UNIT_INFO" : "inventory_unit : the unit of inventory such as Piece, Tablet, Box, Bottle or Other",
         "INVENTORY_PRICE_INFO" : "inventory_price : the sale price of the inventory in the enterprise currency",
         "COLUMNS_INFO" : "Note about some columns",
-        "SELLABLE" : "Sellable"
-
+        "SELLABLE" : "Sellable",
+        "VIEW_ARTICLES_IN_STOCK" : "View Items in Stock"
     }
 }

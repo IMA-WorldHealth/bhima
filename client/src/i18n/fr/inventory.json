@@ -38,6 +38,7 @@
         "INVENTORY_UNIT_INFO" : "inventory_unit : l'unité d'inventaire telle que : Piece, Tablet, Box, Bottle ou Autre",
         "INVENTORY_PRICE_INFO" : "inventory_price : le prix de vente de l'inventaire dans la monnaie de l'entreprise",
         "COLUMNS_INFO" : "Note sur certaines colonnes",
-        "SELLABLE" : "A vendre"
+        "SELLABLE" : "A vendre",
+        "VIEW_ARTICLES_IN_STOCK" : "Voir les articles en stock"
     }
 }
