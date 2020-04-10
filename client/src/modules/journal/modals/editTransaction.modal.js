@@ -5,7 +5,6 @@ JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
   'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout',
-  'NotifyService',
 ];
 
 /**
@@ -20,7 +19,6 @@ JournalEditTransactionController.$inject = [
 function JournalEditTransactionController(
   Journal, Store, Transactions, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
   uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout,
-  Notify,
 ) {
   const vm = this;
   let gridApi = {};
@@ -345,10 +343,15 @@ function JournalEditTransactionController(
 
             Modal.close(deleteTransactionResult);
           })
-          .catch(Notify.handleError);
+          .catch(handleError);
       })
       .catch(angular.noop);
   };
+
+  // expose the error to the bh-modal-notify component
+  function handleError(err) {
+    vm.errorValue = err;
+  }
 
   function getGridRowsUuid() {
     return vm.rows.data.map(row => row.uuid);
