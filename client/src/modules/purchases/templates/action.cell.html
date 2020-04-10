@@ -19,6 +19,7 @@
       <a
         href
         class="text-action"
+        ng-if="grid.appScope.allowEditStatus(row.entity.status_id)"
         ng-click="grid.appScope.editStatus(row.entity)"
         data-edit-metadata="{{ row.entity.uuid }}"
         data-method="edit">
