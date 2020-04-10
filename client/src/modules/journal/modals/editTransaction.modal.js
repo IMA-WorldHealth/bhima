@@ -5,6 +5,7 @@ JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
   'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout',
+  'NotifyService',
 ];
 
 /**
@@ -18,7 +19,8 @@ JournalEditTransactionController.$inject = [
  */
 function JournalEditTransactionController(
   Journal, Store, Transactions, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout,
+  Notify,
 ) {
   const vm = this;
   let gridApi = {};
@@ -342,7 +344,8 @@ function JournalEditTransactionController(
             };
 
             Modal.close(deleteTransactionResult);
-          });
+          })
+          .catch(Notify.handleError);
       })
       .catch(angular.noop);
   };
