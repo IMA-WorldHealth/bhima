@@ -56,15 +56,10 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : InventoryCtrl.filterEnabled }"
-          ng-click="InventoryCtrl.toggleFilter()"
-          data-method="filter">
-          <i class="fa fa-filter"></i>
-        </button>
+      <bh-filter-toggle on-toggle="InventoryCtrl.toggleFilter()">
+      </bh-filter-toggle>
 
+      <div class="toolbar-item">
         <a class="btn btn-default text-capitalize" ui-sref="inventory.create" data-method="create">
           <i class="fa fa-plus"></i> <span class="hidden-xs" translate>INVENTORY.ADD_METADATA</span>
         </a>

@@ -158,5 +158,13 @@ function constantConfig() {
       { translation_key : 'FORM.LABELS.FEMALE', value : 'F' },
       { translation_key : 'FORM.LABELS.OTHER', value : 'O' },
     ],
+    purchaseStatus : {
+      WAITING_CONFIRMATION : 1,
+      CONFIRMED : 2,
+      RECEIVED : 3,
+      PARTIALLY_RECEIVED : 4,
+      CANCELLED : 5,
+      EXCESSIVE_RECEIVED_QUANTITY : 6,
+    },
   };
 }

@@ -36,9 +36,9 @@ function StockInventoriesRegistryTests() {
   });
 
   it('find inventory by name', async () => {
-    await modal.setInventory('Quinine sulphate 500mg');
+    await modal.setInventory('Quinine');
     await modal.submit();
-    await GU.expectRowCount(gridId, 4);
+    await GU.expectRowCount(gridId, 2);
     await filters.resetFilters();
   });
 
@@ -81,7 +81,7 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 7 inventories For All time ', async () => {
+  it('find 9 inventories for all time ', async () => {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
@@ -89,7 +89,7 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 3 inventories who Requires a purchase order', async () => {
+  it('find 3 inventories who requires a purchase order', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
     await GU.expectRowCount(gridId, 3);

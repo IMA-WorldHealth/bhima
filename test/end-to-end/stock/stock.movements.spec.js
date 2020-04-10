@@ -37,14 +37,16 @@ function StockMovementsRegistryTests() {
     // for Entry
     await modal.setEntryExit(0);
     await modal.switchToDefaultFilterTab();
-    await modal.setLimit(20);
+    await modal.setLimit(10);
     await modal.submit();
-    await GU.expectRowCount(gridId, 22);
+    await GU.expectRowCount(gridId, 12);
   });
 
   it('filters by entry/exit', async () => {
     // for Exit
     await modal.setEntryExit(1);
+    await modal.switchToDefaultFilterTab();
+    await modal.setLimit(100);
     await modal.submit();
     await GU.expectRowCount(gridId, 12 + depotGroupingRow);
   });
@@ -62,11 +64,10 @@ function StockMovementsRegistryTests() {
   });
 
   it('find movements by inventory', async () => {
-    await modal.setInventory('Quinine sulphate 500mg');
+    await modal.setInventory('Quinine');
     await modal.submit();
-    await GU.expectRowCount(gridId, 16 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
   });
-
 
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');

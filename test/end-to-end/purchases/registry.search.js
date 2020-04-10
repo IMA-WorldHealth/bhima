@@ -15,7 +15,7 @@ function PurchaseOrderSearch() {
     reference : 'PO.TPA.2',
     name1 : 'Patient',
     author : 'Super User',
-    inventory : 'Quinine',
+    inventory : 'Quinine Bichlorhydrate, sirop, 100mg base',
     status : ['Confirmé'],
     supplier : 'SNEL',
   };

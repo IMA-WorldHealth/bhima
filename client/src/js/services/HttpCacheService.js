@@ -62,7 +62,9 @@ function HttpCacheService($interval) {
       cache.set(key, promise);
 
       // remove the result from the cache after a duration.  Repeated only once
-      $interval(() => cache.delete(key), duration, 1);
+      $interval(() => {
+        cache.delete(key);
+      }, duration, 1);
 
       return promise;
     }

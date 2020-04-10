@@ -43,7 +43,7 @@
   </div>
 
   <!-- project -->
-  <bh-hidden-field show-text='FORM.LABELS.PROJECT' hide-text ='FORM.BUTTONS.CLOSE'>
+  <bh-hidden-field show-text="FORM.LABELS.PROJECT" hide-text="FORM.BUTTONS.CLOSE">
   <div class="panel panel-default">
     <div class="panel-heading">
       <i class="fa fa-cubes"></i>
@@ -91,11 +91,9 @@
           name="password"
           ng-model="InstallCtrl.setup.user.password"
           class="form-control"
-          bh-password-meter
           type="password" required>
 
-          <bh-strength-meter password="InstallForm.password.$viewValue"></bh-strength-meter>
-
+        <bh-strength-meter password="InstallForm.password.$viewValue"></bh-strength-meter>
 
         <div class="help-block" ng-messages="InstallForm.password.$error" ng-show="InstallForm.$submitted && InstallForm.password.$error.password">
           <div ng-messages-include="modules/users/templates/password.policy.html"></div>

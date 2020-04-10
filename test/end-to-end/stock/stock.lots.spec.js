@@ -31,7 +31,7 @@ function StockLotsRegistryTests() {
   const LOT_FOR_TODAY = 14;
   const LOT_FOR_LAST_YEAR = 21;
 
-  const invetoryGroup = 'Injectable';
+  const inventoryGroup = 'Injectable';
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, async () => {
     await modal.switchToDefaultFilterTab();
@@ -61,9 +61,9 @@ function StockLotsRegistryTests() {
   });
 
   it('find lots by inventory', async () => {
-    await modal.setInventory('Quinine sulphate 500mg');
+    await modal.setInventory('Quinine');
     await modal.submit();
-    await GU.expectRowCount(gridId, 7 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
   });
 
 
@@ -86,9 +86,9 @@ function StockLotsRegistryTests() {
   });
 
   it('find inventories by group', async () => {
-    await components.inventoryGroupSelect.set(invetoryGroup);
+    await components.inventoryGroupSelect.set(inventoryGroup);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 10);
     await filters.resetFilters();
   });
 }

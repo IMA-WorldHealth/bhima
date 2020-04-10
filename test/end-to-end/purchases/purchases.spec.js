@@ -29,7 +29,7 @@ describe('Purchase Orders', () => {
     await $('#other').click();
 
     // add the following inventory item
-    await page.addInventoryItem(0, 'Quinine');
+    await page.addInventoryItem(0, 'Quinine Bichlorhydrate, sirop, 100mg');
 
     // change the required quantities
     await page.adjustItemQuantity(0, 1);
@@ -65,9 +65,9 @@ describe('Purchase Orders', () => {
     expect(await page.getRows().count()).to.equal(3);
 
     // add two inventory items to each row (0-indexing)
-    await page.addInventoryItem(0, 'Quinine');
-    await page.addInventoryItem(1, '110016');
-    await page.addInventoryItem(2, 'Multivitamine');
+    await page.addInventoryItem(0, 'DDIS_FORM1T-_1');
+    await page.addInventoryItem(1, 'DDIS_SOAP1P-_0');
+    await page.addInventoryItem(2, 'EANT_SCAL16-_0');
 
     // change the required quantities
     await page.adjustItemQuantity(0, 7);
