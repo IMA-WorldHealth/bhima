@@ -222,10 +222,9 @@ function create(req, res, next) {
         }
 
         // Just to prevent cases where the order interval is less than 0
-
         transactionWrapper.addQuery(
           'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
-          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
+          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)],
         );
 
       });
@@ -454,7 +453,7 @@ function purchaseStatus(req, res, next) {
 
         transaction.addQuery(
           'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
-          [delay, numDelivery, row.inventory_uuid]
+          [delay, numDelivery, row.inventory_uuid],
         );
       });
 

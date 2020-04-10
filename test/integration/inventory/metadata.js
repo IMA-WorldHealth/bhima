@@ -122,4 +122,36 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
+
+  const quinineUuid = '43F3DECBFCE9426E940ABC2150E62186';
+  const atenololUuid = '1300BC8619514668A29B9B0F9B40891A';
+  const quinineInventoryPrice = 0.15;
+  const quininePreviousPrice = 200;
+  it('GET /inventory/metadata?use_previous_price=1 uses previous purchase price', () => {
+    let oldQuinine;
+    let oldAtenolol;
+    return agent.get('/inventory/metadata')
+      .query({ use_previous_price : 0 })
+      .then(res => {
+        oldQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
+        oldAtenolol = res.body.filter(i => i.uuid === atenololUuid).pop();
+
+        return agent.get('/inventory/metadata')
+          .query({ use_previous_price : 1 });
+      })
+      .then(res => {
+        const newQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
+        const newAtenolol = res.body.filter(i => i.uuid === atenololUuid).pop();
+
+        expect(oldQuinine.uuid).to.equal(newQuinine.uuid);
+        expect(oldQuinine.code).to.equal(newQuinine.code);
+        expect(oldQuinine.price).to.not.equal(newQuinine.price);
+        expect(oldQuinine.price).to.equal(quinineInventoryPrice);
+        expect(newQuinine.price).to.equal(quininePreviousPrice);
+
+        // price should be unchanged for items not bought
+        expect(oldAtenolol.price).to.equal(newAtenolol.price);
+      })
+      .catch(helpers.handler);
+  });
 });
