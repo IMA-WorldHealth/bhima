@@ -200,4 +200,36 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
+
+  const quinineUuid = helpers.data.QUININE;
+  const tenofovirUuid = 'A8DEDE6C7B1611EAA7A2D39BE13ABBF6';
+  const quinineInventoryPrice = 6.63;
+  const quininePreviousPrice = 200;
+  it('GET /inventory/metadata?use_previous_price=1 uses previous purchase price', () => {
+    let oldQuinine;
+    let oldTenofovir;
+    return agent.get('/inventory/metadata')
+      .query({ use_previous_price : 0 })
+      .then(res => {
+        oldQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
+        oldTenofovir = res.body.filter(i => i.uuid === tenofovirUuid).pop();
+
+        return agent.get('/inventory/metadata')
+          .query({ use_previous_price : 1 });
+      })
+      .then(res => {
+        const newQuinine = res.body.filter(i => i.uuid === quinineUuid).pop();
+        const newTenofovir = res.body.filter(i => i.uuid === tenofovirUuid).pop();
+
+        expect(oldQuinine.uuid).to.equal(newQuinine.uuid);
+        expect(oldQuinine.code).to.equal(newQuinine.code);
+        expect(oldQuinine.price).to.not.equal(newQuinine.price);
+        expect(oldQuinine.price).to.equal(quinineInventoryPrice);
+        expect(newQuinine.price).to.equal(quininePreviousPrice);
+
+        // price should be unchanged for items not bought
+        expect(oldTenofovir.price).to.equal(newTenofovir.price);
+      })
+      .catch(helpers.handler);
+  });
 });

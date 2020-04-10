@@ -60,7 +60,6 @@ exports.getItemsMetadata = getItemsMetadata;
 exports.getItemsMetadataById = getItemsMetadataById;
 exports.createItemsMetadata = createItemsMetadata;
 exports.updateItemsMetadata = updateItemsMetadata;
-exports.hasBoth = hasBoth;
 exports.errors = errors;
 exports.errorHandler = errorHandler;
 exports.remove = remove;
@@ -168,13 +167,12 @@ async function updateItemsMetadata(record, identifier, session) {
 /**
 * Find all inventory UUIDs in the database.
 *
-* @function getItemIds
+* @function getIds
 * @return {Promise} Returns a database query promise
 */
 function getIds() {
   // TODO - should we be filtering on enterprise id in these queries?
   const sql = 'SELECT i.uuid FROM inventory AS i;';
-
   return db.exec(sql);
 }
 
@@ -187,17 +185,27 @@ function getIds() {
 */
 function getItemsMetadata(params) {
   db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
+
+  const usePreviousPrice = params.use_previous_price && parseInt(params.use_previous_price, 10);
+  delete params.usePreviousPrice;
+
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
+  const previousPriceQuery = `IFNULL(
+    (SELECT pi.unit_price FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
+    WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1)
+  , inventory.price) AS price`;
+
   const sql = `
-   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
+   SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item,
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
-      ig.cogs_account, inventory.default_quantity
+      ig.cogs_account, inventory.default_quantity,
+      ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
@@ -255,20 +263,6 @@ function getItemsMetadataById(uid) {
     WHERE i.uuid = ?;`;
 
   return db.one(sql, [db.bid(uid), uid, 'inventory']);
-}
-
-
-/**
-* Coerces values in to truth-y and false-y values.  Returns true if
-* the result is equivalent.
-*
-* @function hasBoth
-* @param m any value
-* @param n any value
-* @return {Boolean} Returns true if m and n are both truthy or both falsey
-*/
-function hasBoth(m, n) {
-  return !m === !n;
 }
 
 /**

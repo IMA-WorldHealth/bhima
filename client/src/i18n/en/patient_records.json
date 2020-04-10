@@ -70,6 +70,7 @@
       "INSIDE_HEALTH_ZONE":"Within Health Zone",
       "OUTSIDE_HEALTH_ZONE":"Outside Health Zone"
     },
+    "STOCK_MOVEMENTS_TO_PATIENT" : "Stock movements distributed to the patient",
     "TRANSFER":{
       "TITLE":"Transfer",
       "NEW_DESTINATION_DESCRIPTION":"Please select the new destination (ward, room and bed) of the patient",

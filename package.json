@@ -133,7 +133,7 @@
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
-    "karma": "^4.0.0",
+    "karma": "^5.0.1",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
@@ -146,7 +146,7 @@
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.9.3",
     "release-it": "^13.5.2",
-    "sinon": "^9.0.0",
+    "sinon": "^9.0.2",
     "standard-version": "^7.0.0",
     "typescript": "^3.7.5"
   },

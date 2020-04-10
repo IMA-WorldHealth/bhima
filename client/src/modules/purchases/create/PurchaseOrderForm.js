@@ -38,7 +38,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.inventory = new Pool({ identifier : 'uuid', data : [] });
 
     // set up the inventory
-    Inventory.read(null, { locked : 0 })
+    Inventory.read(null, { locked : 0, use_previous_price : 1 })
       .then((data) => {
         this.inventory.initialize('uuid', data);
       });
@@ -233,12 +233,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   PurchaseOrderForm.prototype.configureItem = function configureItem(item) {
     // remove the item from the pool
     const inventoryItem = this.inventory.use(item.inventory_uuid);
-
-    /**
-    * FIX ME or NEED Discussion, The Purchase Order must Used Purchase Price and not
-    * Used Inventory Selling price
-    */
-    inventoryItem.price = 0;
 
     // configure the PurchaseOrderFormItem with the inventory values
     item.configure(inventoryItem);
