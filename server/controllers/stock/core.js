@@ -163,6 +163,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
+
   return db.exec(query, queryParameters);
 }
 

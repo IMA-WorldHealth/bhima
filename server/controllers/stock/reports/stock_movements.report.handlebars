@@ -18,21 +18,7 @@
       </h4>
 
       <!-- filters  -->
-      {{#if hasFilter}}
-        <p class="pills">
-          {{#each filters}}
-            <span class="label label-primary text-capitalize">
-              <i class="fa fa-filter"></i> {{translate this.displayName}}
-
-              {{#if this.comparitor}} {{this.comparitor}}
-              {{else}}: {{/if}}
-
-              {{#if this.isDate}} {{date this.value}}
-              {{else}} {{translate this.value}} {{/if}}
-            </span>
-          {{/each}}
-        </p>
-      {{/if}}
+      {{> filterbar filters=filters }}
 
       <!-- list of data  -->
       <table class="table table-condensed table-bordered table-report">
