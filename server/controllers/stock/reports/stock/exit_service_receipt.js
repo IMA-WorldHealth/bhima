@@ -29,7 +29,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
   const report = new ReportManager(template, session, optionReport);
 
   const sql = `
-    SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
+    SELECT i.code, i.text, iu.text AS unit, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, s.name AS service_display_name,
       dm.text AS document_reference,
@@ -37,6 +37,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id

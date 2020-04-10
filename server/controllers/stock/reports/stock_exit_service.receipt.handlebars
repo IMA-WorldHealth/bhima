@@ -42,6 +42,7 @@
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
+        <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -52,14 +53,15 @@
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
+          <td>{{unit}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=5}}
+        {{> emptyTable columns=6}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="5">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
       </tr>
     </tfoot>
   </table>

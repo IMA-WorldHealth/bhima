@@ -9,7 +9,7 @@
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 const db = require('../../../lib/db');
-const Stock = require('../../stock/core');
+const Stock = require('../core');
 
 const stockExitReport = require('./stock/exit_report');
 const stockEntryReport = require('./stock/entry_report');

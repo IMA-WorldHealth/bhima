@@ -1,4 +1,5 @@
 {{> barcode-header title="STOCK.RECEIPT.EXIT_PATIENT" }}
+{{> point-of-sale-stylesheet }}
 <body>
 <p style="text-transform: uppercase; text-align:center; margin : 0px;"><b>{{enterprise.name}}</b></p>
 {{#if metadata.enterprise.logo}}
@@ -39,7 +40,7 @@
     {{#each rows}}
       <tr>
         <td>({{code}}) {{text}}, {{label}}</td>
-        <td class="text-right">{{quantity}}</td>
+        <td class="text-right">{{quantity}} ({{unit}})</td>
         <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
         <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
       </tr>

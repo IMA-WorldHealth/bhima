@@ -32,7 +32,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
   const report = new ReportManager(template, session, optionReport);
 
   const sql = `
-    SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
+    SELECT i.code, i.text, iu.text AS unit, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, p.display_name AS patient_display_name,
       dm.text AS document_reference,  BUID(m.invoice_uuid) as invoice_uuid,
@@ -41,6 +41,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
