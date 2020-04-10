@@ -30,6 +30,8 @@
     "GLOBAL": {
       "CASHFLOW_OPTION": "Option de flux de trésorerie",
       "CONVENTION_INVOICES": "Convention - Paiement factures",
+      "WRITE_OFF_PATIENT_INVOICES": "Annuler les factures des patients",
+      "WRITE_OFF_PATIENT_INVOICES_DESC":"Annulation de la perte d'une facture irrécupérable",
       "CONVENTION_PAYMENT_DESCRIPTION": "Paiement des Conventions: paiement de {{numInvoices}} facture(s) par {{debtorGroupName}}.",
       "TRANSFER_DESCRIPTION": "Transfert: De {{ fromAccount }} à {{ toAccount }} pour {{ amount }} {{ symbol }}",
       "SUPPORT_FORM": "Prise en Charge des patients",
