@@ -25,17 +25,17 @@
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
       <label class="control-label" translate>STOCK.INVENTORY</label>
       <ui-select 
-        name="inventory_uuid" 
+        name="inventory_uuid"
         ng-model="$ctrl.inventory_uuid"
         on-select="$ctrl.onSelectInventory($item)"
         ng-disabled="!$ctrl.availableInventories.length">
         <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
-          <span>{{$select.selected.text}}</span>
+          <span>{{$select.selected.hrLabel}}</span>
         </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'text': $select.search }">
-          <span ng-bind-html="i.text | highlight:$select.search"></span>
+        <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'hrLabel': $select.search }">
+          <span ng-bind-html="i.hrLabel | highlight:$select.search"></span>
         </ui-select-choices>
-      </ui-select>    
+      </ui-select>
 
       <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -76,10 +76,13 @@
 
 
     <!-- quantity -->
-    <div class="form-group">
+    <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.quantity.$invalid }">
       <label class="control-label" translate>FORM.LABELS.QUANTITY</label>
       <bh-clear on-clear="$ctrl.clear('quantity')"></bh-clear>
-      <input type="number" min="1" class="form-control" name="quantity" ng-model="$ctrl.model.quantity">
+      <input type="number" max="{{$ctrl.maxQuantityLot}}" min="1" class="form-control" name="quantity" ng-model="$ctrl.model.quantity">
+      <div ng-if="$ctrl.maxQuantityLot" class="help-block">
+        <span translate> FORM.LABELS.GLOBAL_QUANTITY </span>: {{$ctrl.maxQuantityLot}}
+      </div>
       <div class="help-block" ng-messages="ModalForm.quantity.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
