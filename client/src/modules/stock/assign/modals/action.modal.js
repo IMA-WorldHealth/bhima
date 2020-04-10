@@ -30,18 +30,31 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
 
   vm.onSelectDepot = onSelectDepot;
   function onSelectDepot(depot) {
+    vm.inventory_uuid = null;
+    vm.model.lot_uuid = null;
+    vm.model.quantity = 1;
+
     vm.model.depot_uuid = depot.uuid;
+
     loadAvailableInventories(depot.uuid);
   }
 
   vm.onSelectInventory = onSelectInventory;
   function onSelectInventory(inventory) {
-    vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.uuid);
+    vm.model.lot_uuid = null;
+    vm.model.quantity = 1;
+
+    vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
   }
 
   vm.onSelectEntity = onSelectEntity;
   function onSelectEntity(entity) {
     vm.model.entity_uuid = entity.uuid;
+  }
+
+  vm.onSelectLot = onSelectLot;
+  function onSelectLot(lot) {
+    vm.maxQuantityLot = lot.quantity;
   }
 
   vm.cancel = Modal.close;
@@ -101,6 +114,10 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     vm.groupedInventories = Util.groupBy(data, 'inventory_uuid');
     const uniqueInventoriesUuids = Util.uniquelize(data.map(item => item.inventory_uuid));
     vm.availableInventories = uniqueInventoriesUuids.map(inventoryUuid => vm.groupedInventories[inventoryUuid][0]);
+
+    vm.availableInventories.forEach(item => {
+      item.hrLabel = `[${item.code}] ${item.text}`;
+    });
   }
 
   startup();

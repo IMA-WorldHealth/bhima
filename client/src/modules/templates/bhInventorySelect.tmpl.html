@@ -12,6 +12,7 @@
       name="inventory_uuid"
       ng-model="$ctrl.inventoryUuid"
       on-select="$ctrl.onSelect($item, $model)"
+      ng-disabled="$ctrl.ngDisabled"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
         <span>{{$select.selected.hrLabel}}</span>
