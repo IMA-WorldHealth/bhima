@@ -39,8 +39,6 @@ function ModalNotifyController($timeout, $translate) {
   function handleError(error) {
     if (error.data && error.data.code) {
       setNotification(error.data.code, ERR_TTL);
-    } else {
-      console.error(error);
     }
   }
 
