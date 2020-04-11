@@ -16,7 +16,7 @@ SearchPurchaseOrderModalController.$inject = [
  */
 function SearchPurchaseOrderModalController(
   ModalInstance, params, Store, util, Periods, Notify, PurchaseOrder,
-  $translate
+  $translate,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
@@ -30,6 +30,7 @@ function SearchPurchaseOrderModalController(
   //       these are known when the filter service is defined
   const searchQueryOptions = [
     'reference', 'user_id', 'supplier_uuid', 'defaultPeriod', 'status_id',
+    'inventory_uuid',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -63,6 +64,11 @@ function SearchPurchaseOrderModalController(
   vm.onSelectUser = function onSelectUser(user) {
     displayValues.user_id = user.display_name;
     vm.searchQueries.user_id = user.id;
+  };
+
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    displayValues.inventory_uuid = inventory.code;
+    vm.searchQueries.inventory_uuid = inventory.uuid;
   };
 
   // custom filter supplier_uuid - assign the value to the params object

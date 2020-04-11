@@ -319,8 +319,9 @@ function search(req, res, next) {
  * filter the purchase orders.
  */
 function find(options) {
-  // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['supplier_uuid', 'uuid']);
+
+  // ensure expected options are parsed appropriately as binary
+  db.convert(options, ['supplier_uuid', 'uuid', 'inventory_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'p' });
   let statusIds = [];
 
@@ -334,6 +335,9 @@ function find(options) {
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
   filters.equals('uuid');
+
+  filters.custom('inventory_uuid',
+    'p.uuid IN (SELECT pi.purchase_uuid FROM purchase_item pi WHERE pi.inventory_uuid = ?)');
 
   filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
   filters.equals('supplier_uuid', 'uuid', 's');

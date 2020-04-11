@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : InventorySelectController,
     transclude  : true,
     bindings    : {
-      inventoryUuid    : '<',
+      inventoryUuid    : '<?',
       onSelectCallback : '&',
       required         : '<?',
       onlyConsumable   : '<?',
