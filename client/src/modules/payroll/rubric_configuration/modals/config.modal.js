@@ -25,6 +25,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   vm.taxCheck = false;
   vm.otherCheck = false;
   vm.membershipFeeCheck = false;
+  vm.loading = true;
 
   vm.toggleAllRubrics = toggleAllRubrics;
   vm.toggleSocialCares = toggleSocialCares;
@@ -57,6 +58,8 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
       vm.others = rubrics.filter(item => {
         return (!item.is_tax && !item.is_social_care && !item.is_membership_fee && !item.is_indice);
       });
+
+      vm.loading = false;
 
       return Configs.getRubrics(vm.stateParams.id);
     })
