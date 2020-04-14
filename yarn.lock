@@ -63,10 +63,10 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.3.tgz#f060bf6eaafae4d56a7dac618980838b0696e2ab"
   integrity sha512-FmuxfCuolpLl0AnQ2NHSzoUKWEJDFl63qXjzdoWBVyFCXzMGm1spBzk7LeHNoVCiWCF7mRVms9e6jEV9+MoPbg==
 
-"@ima-worldhealth/coral@^1.2.0":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-1.4.1.tgz#c240ba608c68bd2b4f0f5e442c40bdc5c6994df3"
-  integrity sha512-5vcarKa8/pxERvq9z/SKLdJW2eqM2Z3+08X497tY7/3KE8BJoEbkTpkjoCngh7kdgZTnvZAWxWOnTePXai5OmA==
+"@ima-worldhealth/coral@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-1.4.2.tgz#1ce0e194f7c6f5d7748fb3942a188ab6490bbf65"
+  integrity sha512-M2IXNXaT3auQR49+xHhSnRZX7+XFqfXIR7RZ+bh4+FvosOYw3R9i5LvdUQJAv8EzwJY8vhIO6YnQlauFOmrrOw==
   dependencies:
     inline-source "7.2.0"
     puppeteer "2.1.1"
