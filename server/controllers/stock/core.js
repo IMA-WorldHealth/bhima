@@ -74,6 +74,7 @@ function getLotFilters(parameters) {
     'entity_uuid',
     'service_uuid',
     'invoice_uuid',
+    'purchase_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -95,6 +96,7 @@ function getLotFilters(parameters) {
   filters.equals('reference', 'text', 'dm');
   filters.equals('service_uuid', 'uuid', 'serv');
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
+  filters.equals('purchase_uuid', 'origin_uuid', 'l');
 
   // NOTE(@jniles):
   // this filters the lots on the entity_uuid associated with the text reference.  It is

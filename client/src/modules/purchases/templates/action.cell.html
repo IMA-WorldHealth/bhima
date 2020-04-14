@@ -1,25 +1,38 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body>
   <a href uib-dropdown-toggle>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a
         href
         data-method="document"
-        ng-click="grid.appScope.getDocument(row.entity.uuid)"
-        data-edit-metadata="{{ row.entity.uuid }}">
-        <i class="fa fa-file-pdf-o"></i> <span translate>FORM.LABELS.DOCUMENT</span>          
+        ng-click="grid.appScope.getDocument(row.entity.uuid)">
+        <i class="fa fa-file-pdf-o"></i> <span translate>FORM.LABELS.DOCUMENT</span>
       </a>
     </li>
 
-    <li>
+    <li class="divider"></li>
+
+    <li ng-if="row.entity.hasStockMovement">
+      <a href
+        data-method="view-stock-movements"
+        ui-sref="stockMovements({ filters : [
+          { key : 'purchase_uuid', value : row.entity.uuid, displayValue : row.entity.reference, cacheable: false },
+          { key : 'flux_id', value : grid.appScope.FLUX_FROM_PURCHASE },
+          { key : 'limit', value : 1000, cacheable: false }
+        ]})" href>
+        <i class="fa fa-arrows-h"></i> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
+
+    <li ng-if="!row.entity.hasStockMovement">
       <a
         href
         class="text-action"
-        ng-if="grid.appScope.allowEditStatus(row.entity.status_id)"
         ng-click="grid.appScope.editStatus(row.entity)"
         data-edit-metadata="{{ row.entity.uuid }}"
         data-method="edit">

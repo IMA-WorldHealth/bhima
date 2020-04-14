@@ -12,6 +12,7 @@ StockFiltererService.$inject = [
 function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
   const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'purchase_uuid', label : 'PURCHASES.ORDER' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
