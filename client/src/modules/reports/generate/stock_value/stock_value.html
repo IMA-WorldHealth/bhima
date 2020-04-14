@@ -46,6 +46,14 @@
            on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
           </bh-currency-select>
 
+          <hr>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.excludeZeroValue">
+              <span translate>REPORT.STOCK_VALUE.EXCLUDE_INVENTORIES_ZERO_VALUE</span>
+            </label>
+          </div>
+
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>

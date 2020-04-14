@@ -131,7 +131,9 @@
     },
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
-      "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
+      "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt.",
+      "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
+
     },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",

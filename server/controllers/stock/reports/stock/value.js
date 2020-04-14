@@ -37,7 +37,10 @@ async function reporting(_options, session) {
     db.bid(options.depot_uuid), options.dateTo, options.currency_id,
   ]);
 
-  data.stockValues = stockValues[0] || [];
+  const stockValueElements = options.exclude_zero_value
+    ? stockValues[0].filter(item => item.stockValue > 0) : stockValues[0];
+
+  data.stockValues = stockValueElements || [];
   const stokTolal = stockValues[1][0] || {};
   data.stocktotal = stokTolal.total;
   data.emptyResult = data.stockValues.length === 0;
