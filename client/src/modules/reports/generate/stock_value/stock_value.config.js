@@ -53,6 +53,7 @@ function StockValueConfigController($sce, Notify, SavedReports,
       depot_uuid : vm.depot.uuid,
       dateTo : vm.dateTo,
       currency_id : vm.currency_id,
+      exclude_zero_value : vm.reportDetails.excludeZeroValue,
     };
     cache.reportDetails = angular.copy(params);
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
