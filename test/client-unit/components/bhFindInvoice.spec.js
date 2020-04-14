@@ -40,7 +40,7 @@ function bhFindInvoiceTests() {
     'bhima.components',
     'bhima.constants',
     'templates',
-    'ui.router'
+    'ui.router',
   ));
 
   let $scope;

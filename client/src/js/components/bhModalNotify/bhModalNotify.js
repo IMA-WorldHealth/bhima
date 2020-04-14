@@ -15,8 +15,9 @@ ModalNotifyController.$inject = ['$timeout'];
 
 function ModalNotifyController($timeout) {
   const $ctrl = this;
-  const TTL = $ctrl.ttl || 3000;
+  const DEFAULT_TTL = 3000;
   const ERR_TTL = 50000;
+  let timer;
 
   const options = {
     success : 'notification-success',
@@ -39,18 +40,19 @@ function ModalNotifyController($timeout) {
     $ctrl.style = $ctrl.error ? errorFormat : otherFormat;
     $ctrl.visible = true;
 
-    $timeout(() => {
+    timer = $timeout(() => {
       $ctrl.visible = false;
     }, ttl);
   }
 
   $ctrl.close = () => {
+    $timeout.cancel(timer);
     $ctrl.visible = false;
   };
 
   $ctrl.$onChanges = (changes) => {
     if (changes.value && changes.value.currentValue) {
-      setNotification(changes.value.currentValue, TTL);
+      setNotification(changes.value.currentValue, $ctrl.ttl || DEFAULT_TTL);
     }
 
     if (changes.error && changes.error.currentValue) {
