@@ -9,7 +9,7 @@
   </div>
 
   <div class="modal-body">
-    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
+    <ul ng-if="!RubricConfigModalCtrl.loading" class="list-group" style="max-height: 70vh; overflow:auto;">
       <li ng-if="!RubricConfigModalCtrl.rubrics.length" class="list-group-item">
         <span translate>TABLE.COLUMNS.EMPTY</span>
       </li>
@@ -114,6 +114,13 @@
         </div>
       </li>
     </ul>
+
+    <div ng-if="RubricConfigModalCtrl.loading">
+      <span>
+        <span class="fa fa-circle-o-notch fa-spin"></span>
+        <span translate>FORM.INFO.LOADING</span>
+      </span>
+    </div>
   </div>
 
   <div class="modal-footer">
