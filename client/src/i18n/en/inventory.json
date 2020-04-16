@@ -39,6 +39,9 @@
         "INVENTORY_PRICE_INFO" : "inventory_price : the sale price of the inventory in the enterprise currency",
         "COLUMNS_INFO" : "Note about some columns",
         "SELLABLE" : "Sellable",
-        "VIEW_ARTICLES_IN_STOCK" : "View Items in Stock"
+        "VIEW_ARTICLES_IN_STOCK" : "View Items in Stock",
+        "PREVIOUS_VALUE" : "Previous Value",
+        "UPDATED_VALUE" : "Updated Value",
+        "CHANGES" : "Changes"
     }
 }

@@ -50,7 +50,7 @@ async function inventoryChanges(req, res, next) {
 
     const inventorySql = `
       SELECT BUID(iv.uuid) AS uuid, iv.code, iv.text AS label, iv.created_at,
-      iv.updated_at, ivt.text AS type, ivu.text AS unit, ivg.name AS groupName
+      iv.updated_at, ivt.text AS type, ivu.text AS unit, ivg.name AS group_name
       FROM inventory iv
         JOIN inventory_type ivt ON iv.type_id = ivt.id
         JOIN inventory_group ivg ON iv.group_uuid = ivg.uuid
@@ -59,7 +59,7 @@ async function inventoryChanges(req, res, next) {
         SELECT inventory_log.inventory_uuid FROM inventory_log
         WHERE inventory_log.log_timestamp BETWEEN DATE(?) AND DATE(?)
       )
-      ORDER BY iv.text;
+      ORDER BY ivg.name, iv.text;
     `;
 
     const logsSql = `
@@ -87,7 +87,17 @@ async function inventoryChanges(req, res, next) {
       inventory.logs = changeMap[inventory.uuid];
     });
 
-    const renderResult = await report.render({ inventories, dateFrom, dateTo });
+    // calculate the number of changes by user.
+    const userChanges = _.chain(changelog)
+      .groupBy('userName')
+      .mapValues('length')
+      .map((value, key) => ({ user : key, numberOfChanges : value }))
+      .sortBy(row => -1 * row.numberOfChanges) // sort DESC
+      .value();
+
+    const renderResult = await report.render({
+      inventories, dateFrom, dateTo, userChanges,
+    });
     res.set(renderResult.headers).send(renderResult.report);
   } catch (e) {
     next(e);
