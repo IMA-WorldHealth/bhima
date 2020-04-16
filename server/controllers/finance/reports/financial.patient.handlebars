@@ -60,5 +60,32 @@
         </tr>
       </tfoot>
     </table>
+    {{#if includeStockDistributed }}
+      <br>
+      <br>
+      <table style="width: 60%;" class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th class="text-uppercase text-bold" colspan="3">{{translate "PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT" }}</th>
+          </tr>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            <th style="width: 2%;"> {{translate "FORM.LABELS.NR" }} </th>
+            <th> {{translate "FORM.LABELS.REFERENCE" }} </th>
+            <th> {{translate "FORM.LABELS.DATE" }} </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each stockMovement}}
+            <tr>
+              <td>{{ add @index 1 }}</td>
+              <td><strong> {{ reference_text }} </strong></th>
+              <td> {{date date "DD/MM/YYYY HH:mm"}} </td>
+            </tr>
+          {{else}}
+            {{>emptyTable columns=3}}
+          {{/each}}
+        </tbody>
+      </table>
+    {{/if}}
   </section>
 </body>

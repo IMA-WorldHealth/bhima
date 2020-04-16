@@ -48,6 +48,7 @@ exports.documents = documents;
 exports.visits = visits;
 exports.pictures = pictures;
 exports.merge = merge;
+exports.stockMovementByPatient = stockMovementByPatient;
 
 // create a new patient
 exports.create = create;
@@ -687,6 +688,15 @@ function getDebtorBalance(req, res, next) {
  * returns the stock Movements to the patient.
  */
 function getStockMovements(req, res, next) {
+  const uid = req.params.uuid;
+  stockMovementByPatient(uid)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(next);
+}
+
+function stockMovementByPatient(patientUuid) {
   const sql = `
     SELECT DISTINCT(sm.document_uuid) AS document_uuid, sm.depot_uuid, sm.date, map.text AS reference_text
     FROM stock_movement AS sm
@@ -697,10 +707,5 @@ function getStockMovements(req, res, next) {
     ORDER BY sm.date desc
   `;
 
-  db.exec(sql, [db.bid(req.params.uuid)])
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch(next)
-    .done();
+  return db.exec(sql, [db.bid(patientUuid)]);
 }

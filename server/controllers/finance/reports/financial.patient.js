@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /**
  * @overview server/controllers/finance/reports/financial.patient.js
  *
@@ -7,11 +8,12 @@
  * @requires Patients
  * @requires ReportManager
  */
+const q = require('q');
 const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../../medical/patients');
-const Debtors = require('../../finance/debtors');
+const Debtors = require('../debtors');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
 
@@ -41,13 +43,29 @@ function build(req, res, next) {
   }
 
   const data = {};
+  data.includeStockDistributed = parseInt(options.include_stock_distributed, 10);
 
   return Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       _.extend(data, { patient });
-      return Debtors.getFinancialActivity(patient.debtor_uuid, true);
+      const dbPromises = [
+        Debtors.getFinancialActivity(patient.debtor_uuid, true),
+      ];
+
+      if (data.includeStockDistributed) {
+        dbPromises.push(Patients.stockMovementByPatient(req.params.uuid));
+      }
+
+      return q.all(dbPromises);
     })
-    .then(({ transactions, aggregates }) => {
+    .then(results => {
+      const { transactions } = results[0];
+      const { aggregates } = results[0];
+
+      if (data.includeStockDistributed) {
+        data.stockMovement = results[1];
+      }
+
       aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
 
       _.extend(data, { transactions, aggregates });

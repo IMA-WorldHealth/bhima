@@ -123,6 +123,7 @@
     "OVER_NINETY_DAYS": "Plus de 90 Jours",
     "PATIENT_STANDING": {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
+      "INCLUDE_STOCK_MOVEMENTS": "Inclure les mouvements de stock distribués au patient",
       "TITLE": "Situation financière d'un Patient"
     },
     "PURCHASE_ORDER_ANALYSIS": {
