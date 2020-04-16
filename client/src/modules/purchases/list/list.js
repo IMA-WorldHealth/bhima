@@ -22,18 +22,22 @@ function PurchaseListController(
   vm.search = search;
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.gridApi = {};
+  vm.toggleInlineFilter = toggleInlineFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = PurchaseOrder.download;
   vm.status = bhConstants.purchaseStatus;
 
   vm.editStatus = editStatus;
 
-  vm.allowEditStatus = statusId => {
+  vm.FLUX_FROM_PURCHASE = bhConstants.flux.FROM_PURCHASE;
+
+  const allowEditStatus = statusId => {
     const forbidden = [
       vm.status.RECEIVED,
       vm.status.PARTIALLY_RECEIVED,
       vm.status.EXCESSIVE_RECEIVED_QUANTITY,
     ];
+
     return !forbidden.includes(statusId);
   };
 
@@ -88,7 +92,6 @@ function PurchaseListController(
     cellTemplate : 'modules/purchases/templates/action.cell.html',
   }];
 
-  /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider : vm,
     showColumnFooter : true,
@@ -96,7 +99,9 @@ function PurchaseListController(
     enableColumnMenus : false,
     flatEntityAccess : true,
     fastWatch : true,
+    onRegisterApi : (api) => { vm.gridApi = api; },
     columnDefs,
+
   };
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -108,15 +113,18 @@ function PurchaseListController(
     $state.reload();
   };
 
+  function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   // error handler
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
   }
 
-  vm.getDocument = (uuid) => {
-    ReceiptModal.purchase(uuid);
-  };
+  vm.getDocument = (uuid) => ReceiptModal.purchase(uuid);
 
   // edit status
   function editStatus(purchase) {
@@ -135,6 +143,11 @@ function PurchaseListController(
 
     PurchaseOrder.read(null, filters)
       .then((purchases) => {
+
+        purchases.forEach(purchase => {
+          purchase.hasStockMovement = !allowEditStatus(purchase.status_id);
+        });
+
         vm.uiGridOptions.data = purchases;
       })
       .catch(handler)

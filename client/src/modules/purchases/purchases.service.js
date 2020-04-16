@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PurchaseOrderService', PurchaseOrderService);
 
 PurchaseOrderService.$inject = [
-  '$http', 'util', '$uibModal', 'FilterService', 'appcache', 'PeriodService',
+  '$uibModal', 'FilterService', 'appcache', 'PeriodService',
   'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
   'bhConstants',
 ];
@@ -15,7 +15,7 @@ PurchaseOrderService.$inject = [
  * Connects client controllers with the purchase order backend.
  */
 function PurchaseOrderService(
-  $http, util, $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
+  $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
   Languages, bhConstants,
 ) {
   const baseUrl = '/purchases/';
@@ -136,13 +136,9 @@ function PurchaseOrderService(
   function openSearchModal(params) {
     return $uibModal.open({
       templateUrl : 'modules/purchases/modals/search.tmpl.html',
-      size : 'md',
-      keyboard : false,
-      animation : false,
-      backdrop : 'static',
       controller : 'SearchPurchaseOrderModalController as $ctrl',
       resolve : {
-        params : function paramsProvider() { return params; },
+        params : () => params,
       },
     }).result;
   }
