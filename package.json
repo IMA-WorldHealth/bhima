@@ -142,7 +142,7 @@
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "merge-stream": "^2.0.0",
     "mocha": "^7.0.1",
-    "protractor": "^5.4.2",
+    "protractor": "^5.4.4",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.9.3",
     "release-it": "^13.5.2",
