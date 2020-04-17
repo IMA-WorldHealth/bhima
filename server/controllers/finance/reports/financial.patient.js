@@ -8,7 +8,6 @@
  * @requires Patients
  * @requires ReportManager
  */
-const q = require('q');
 const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 
