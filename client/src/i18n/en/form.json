@@ -521,6 +521,7 @@
             "LOGIN": "Login",
             "LONGITUDE": "Longitude",
             "LOSS_ACCOUNT": "Loss Account",
+            "LOT": "Lot",
             "MALE": "Male",
             "MARITAL_STATUS": "Marital Status",
             "MAX_CREDIT_INFO": "The maximum credit value this debtor group can collect before being warned. A value of 0 means no maximum limit.",

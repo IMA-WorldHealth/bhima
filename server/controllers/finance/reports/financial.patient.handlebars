@@ -63,26 +63,59 @@
     {{#if includeStockDistributed }}
       <br>
       <br>
-      <table style="width: 60%;" class="table table-condensed table-bordered table-report">
+      <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
-            <th class="text-uppercase text-bold" colspan="3">{{translate "PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT" }}</th>
-          </tr>
-          <tr class="text-capitalize text-center" style="background-color: #ddd;">
-            <th style="width: 2%;"> {{translate "FORM.LABELS.NR" }} </th>
-            <th> {{translate "FORM.LABELS.REFERENCE" }} </th>
-            <th> {{translate "FORM.LABELS.DATE" }} </th>
+            <th class="text-uppercase text-center text-bold" style="background-color: #ddd;" colspan="8">
+              {{translate "PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT" }}
+            </th>
           </tr>
         </thead>
         <tbody>
           {{#each stockMovement}}
             <tr>
-              <td>{{ add @index 1 }}</td>
-              <td><strong> {{ reference_text }} </strong></th>
-              <td> {{date date "DD/MM/YYYY HH:mm"}} </td>
+              <td class="text-uppercase" style="background-color: #eee;" colspan="8">
+                <strong>
+                  ({{ add @index 1 }}): {{translate "FORM.LABELS.REFERENCE" }} : {{ reference_text }}  | {{timestamp date}}
+                </strong>
+              </td>
             </tr>
+            <tr class="text-capitalize text-bold" style="background-color: #efefef;">
+              <td style="width: 2%;"></td>
+              <td style="width: 2%;"> {{translate "FORM.LABELS.NR" }} </td>
+              <td> {{translate "FORM.LABELS.INVENTORY" }} </td>
+              <td> {{translate "FORM.LABELS.UNIT" }} </td>
+              <td> {{translate "FORM.LABELS.LOT" }} </td>
+              <td> {{translate "FORM.LABELS.QUANTITY" }} </td>
+              <td> {{translate "FORM.LABELS.UNIT_PRICE" }} </td>
+              <td> {{translate "FORM.LABELS.TOTAL" }} </td>
+            </tr>
+              {{#each consumed}}
+                <tr>
+                  <td></td>
+                  <td>{{ add @index 1 }}</td>
+                  <td><strong> {{ inventory_text }} </strong></th>
+                  <td> {{ inventoryUnit }} </td>
+                  <td>
+                    <strong>
+                      {{ lotLabel }}
+                    </strong>
+                  </td>
+                  <td> {{ quantity }} </td>
+                  <td> {{ unit_cost }} </td>
+                  <td class="text-right"> {{ debcred  total ../../metadata.enterprise.currency_id }} </td>
+                </tr>
+              {{/each}}
+              <tr class="text-right text-bold">
+                <td></td>
+                <td  colspan="6"> {{translate "FORM.LABELS.TOTAL" }} </td>
+                <td> {{ debcred  totalMovement ../metadata.enterprise.currency_id }} </td>
+              </tr>
+              <tr>
+                <td colspan="8"></td>
+              <tr>
           {{else}}
-            {{>emptyTable columns=3}}
+            {{>emptyTable columns=8}}
           {{/each}}
         </tbody>
       </table>

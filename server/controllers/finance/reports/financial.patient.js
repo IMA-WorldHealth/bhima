@@ -54,16 +54,27 @@ function build(req, res, next) {
 
       if (data.includeStockDistributed) {
         dbPromises.push(Patients.stockMovementByPatient(req.params.uuid));
+        dbPromises.push(Patients.stockConsumedPerPatient(req.params.uuid));
       }
 
-      return q.all(dbPromises);
+      return Promise.all(dbPromises);
     })
-    .then(results => {
-      const { transactions } = results[0];
-      const { aggregates } = results[0];
+    .then(([financial, stockMovement, stockConsumed]) => {
+      const { transactions, aggregates } = financial;
 
       if (data.includeStockDistributed) {
-        data.stockMovement = results[1];
+        data.stockMovement = stockMovement;
+        data.stockMovement.forEach(item => {
+          item.consumed = [];
+          item.totalMovement = 0;
+          stockConsumed.forEach(inv => {
+            if (item.reference_text === inv.reference_text) {
+              inv.total = inv.quantity * inv.unit_cost;
+              item.totalMovement += inv.total;
+              item.consumed.push(inv);
+            }
+          });
+        });
       }
 
       aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
