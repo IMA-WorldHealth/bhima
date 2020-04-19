@@ -66,6 +66,7 @@ function StockMovementsController(
       field : 'documentReference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/reference.cell.html',
     }, {
       field : 'text',
       displayName : 'STOCK.INVENTORY',
