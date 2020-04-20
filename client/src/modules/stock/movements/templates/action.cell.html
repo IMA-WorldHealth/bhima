@@ -15,7 +15,7 @@
     </li>
 
     <li ng-if="row.entity.flux_id === 9">
-      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'display_name', value : row.entity.patient_name }]})">
+      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'uuid', value : row.entity.entity_uuid }]})">
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
       </a>
     </li>
