@@ -270,7 +270,7 @@ function getLotsMovements(depotUuid, params) {
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay,
       iu.text AS unit_type,
-      dm.text AS documentReference
+      dm.text AS documentReference, pa.display_name AS patient_name
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -279,6 +279,7 @@ function getLotsMovements(depotUuid, params) {
     JOIN flux f ON f.id = m.flux_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
+    LEFT JOIN patient AS pa ON pa.uuid = m.entity_uuid
   `;
 
   return getLots(sql, params, finalClause);
