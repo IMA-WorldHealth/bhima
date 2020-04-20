@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /**
  * @overview server/controllers/finance/reports/financial.patient.js
  *
@@ -11,7 +12,7 @@ const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../../medical/patients');
-const Debtors = require('../../finance/debtors');
+const Debtors = require('../debtors');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
 
@@ -41,13 +42,43 @@ function build(req, res, next) {
   }
 
   const data = {};
+  data.includeStockDistributed = parseInt(options.include_stock_distributed, 10);
 
   return Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       _.extend(data, { patient });
-      return Debtors.getFinancialActivity(patient.debtor_uuid, true);
+      const dbPromises = [
+        Debtors.getFinancialActivity(patient.debtor_uuid, true),
+      ];
+
+      if (data.includeStockDistributed) {
+        dbPromises.push(Patients.stockMovementByPatient(req.params.uuid));
+        dbPromises.push(Patients.stockConsumedPerPatient(req.params.uuid));
+      }
+
+      return Promise.all(dbPromises);
     })
-    .then(({ transactions, aggregates }) => {
+    .then(([financial, stockMovement, stockConsumed]) => {
+      const { transactions, aggregates } = financial;
+      data.totalAllMovement = 0;
+
+      if (data.includeStockDistributed) {
+        data.stockMovement = stockMovement;
+        data.stockMovement.forEach(item => {
+          item.consumed = [];
+          item.totalMovement = 0;
+          stockConsumed.forEach(inv => {
+            if (item.reference_text === inv.reference_text) {
+              inv.total = inv.quantity * inv.unit_cost;
+              item.totalMovement += inv.total;
+              item.consumed.push(inv);
+            }
+          });
+
+          data.totalAllMovement += item.totalMovement;
+        });
+      }
+
       aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
 
       _.extend(data, { transactions, aggregates });

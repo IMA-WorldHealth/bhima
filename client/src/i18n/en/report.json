@@ -128,7 +128,9 @@
     "OVER_NINETY_DAYS": "Over 90 Days",
     "PATIENT_STANDING": {
       "DESCRIPTION": "This report shows the financial situation of a patient",
-      "TITLE": "Patient Standing Report"
+      "INCLUDE_STOCK_MOVEMENTS": "Include stock movements distributed to the patient",
+      "TITLE": "Patient Standing Report",
+      "TOTAL_ALL_STOCK_MOV": "Total all Stock movements"
     },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",

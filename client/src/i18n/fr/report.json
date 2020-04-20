@@ -123,7 +123,9 @@
     "OVER_NINETY_DAYS": "Plus de 90 Jours",
     "PATIENT_STANDING": {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
-      "TITLE": "Situation financière d'un Patient"
+      "INCLUDE_STOCK_MOVEMENTS": "Inclure les mouvements de stock distribués au patient",
+      "TITLE": "Situation financière d'un Patient",
+      "TOTAL_ALL_STOCK_MOV": "Total de tous les mouvements de stocks"
     },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",

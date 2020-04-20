@@ -48,6 +48,8 @@ exports.documents = documents;
 exports.visits = visits;
 exports.pictures = pictures;
 exports.merge = merge;
+exports.stockMovementByPatient = stockMovementByPatient;
+exports.stockConsumedPerPatient = stockConsumedPerPatient;
 
 // create a new patient
 exports.create = create;
@@ -687,6 +689,15 @@ function getDebtorBalance(req, res, next) {
  * returns the stock Movements to the patient.
  */
 function getStockMovements(req, res, next) {
+  const uid = req.params.uuid;
+  stockMovementByPatient(uid)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch(next);
+}
+
+function stockMovementByPatient(patientUuid) {
   const sql = `
     SELECT DISTINCT(sm.document_uuid) AS document_uuid, sm.depot_uuid, sm.date, map.text AS reference_text
     FROM stock_movement AS sm
@@ -697,10 +708,24 @@ function getStockMovements(req, res, next) {
     ORDER BY sm.date desc
   `;
 
-  db.exec(sql, [db.bid(req.params.uuid)])
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch(next)
-    .done();
+  return db.exec(sql, [db.bid(patientUuid)]);
+}
+
+function stockConsumedPerPatient(patientUuid) {
+  const sql = `
+    SELECT sm.document_uuid, sm.depot_uuid, sm.date, map.text AS reference_text,
+    iv.text AS inventory_text, sm.quantity, sm.unit_cost,
+    l.label AS lotLabel, un.text AS inventoryUnit
+    FROM stock_movement AS sm
+    JOIN lot AS l ON l.uuid = sm.lot_uuid
+    JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+    JOIN inventory_unit AS un ON un.id = iv.unit_id
+    JOIN depot AS d ON d.uuid = sm.depot_uuid
+    JOIN patient AS p ON p.uuid = sm.entity_uuid
+    JOIN document_map AS map ON map.uuid = sm.document_uuid
+    WHERE sm.entity_uuid = ?
+    ORDER BY sm.date, sm.reference desc, iv.text asc;
+  `;
+
+  return db.exec(sql, [db.bid(patientUuid)]);
 }

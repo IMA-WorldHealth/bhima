@@ -29,6 +29,13 @@
             on-search-complete="ReportConfigCtrl.setPatient(patient)">
           </bh-find-patient>
 
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.include_stock_distributed" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.PATIENT_STANDING.INCLUDE_STOCK_MOVEMENTS</span>
+            </label>
+          </div>
+
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>
