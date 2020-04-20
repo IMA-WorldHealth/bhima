@@ -60,6 +60,7 @@ function build(req, res, next) {
     })
     .then(([financial, stockMovement, stockConsumed]) => {
       const { transactions, aggregates } = financial;
+      data.totalAllMovement = 0;
 
       if (data.includeStockDistributed) {
         data.stockMovement = stockMovement;
@@ -73,6 +74,8 @@ function build(req, res, next) {
               item.consumed.push(inv);
             }
           });
+
+          data.totalAllMovement += item.totalMovement;
         });
       }
 
