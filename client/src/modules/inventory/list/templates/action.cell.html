@@ -6,6 +6,7 @@
   </a>
 
   <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.code}}</li>
     <li>
       <a href
         data-method="edit"
@@ -14,6 +15,7 @@
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
+
     <li>
       <a href
         ng-click="grid.appScope.inventoryLogModal(row.entity.uuid)"
@@ -21,6 +23,29 @@
         <span class="fa fa-clock-o"></span> <span translate>FORM.LABELS.CHANGES</span>
       </a>
     </li>
+
+    <li ng-if="row.entity.consumable === 1">
+      <a href
+        data-method="stock-inventory"
+        ui-sref="stockInventories({ filters : [
+          { key : 'inventory_uuid', value : row.entity.uuid, displayValue : row.entity.label, cacheable: false },
+          { key : 'limit', value : 1000, cacheable: false }
+        ]})" href>
+        <i class="fa fa-th-list"></i> <span translate>INVENTORY.VIEW_ARTICLES_IN_STOCK</span>
+      </a>
+    </li>
+
+    <li ng-if="row.entity.consumable === 1">
+      <a href
+        data-method="stock-movements"
+        ui-sref="stockMovements({ filters : [
+          { key : 'inventory_uuid', value : row.entity.uuid, displayValue : row.entity.label, cacheable: false },
+          { key : 'limit', value : 1000, cacheable: false }
+        ]})" href>
+        <i class="fa fa-arrows-h"></i> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
+
     <li class="divider"></li>
     <li>
       <a data-method="invoice" ui-sref="invoiceRegistry({ filters : [{ key : 'inventory_uuid', value : row.entity.uuid, displayValue: row.entity.label }]})" href>
