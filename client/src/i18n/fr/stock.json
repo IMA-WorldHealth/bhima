@@ -174,7 +174,9 @@
     "TO_PATIENT"       : "Vers un patient",
     "TO_SERVICE"       : "Vers un service",
     "TO_LOSS"          : "Vers une perte",
-    "TO_ADJUSTMENT"    : "Ajustement (Negatif)"
+    "TO_ADJUSTMENT"    : "Ajustement (Negatif)",
+    "INVENTORY_RESET"  : "Remise à zéro des inventaires",
+    "INVENTORY_ADJUSTMENT" : "Inventaire des stocks"
   },
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
@@ -229,5 +231,8 @@
     "NOT_FOR_SERVICE":"Le bon de requisition ne concerne pas les services",
     "NOT_FOR_DEPOT":"Le bon de requisition ne concerne pas les depots",
     "NOT_FOR_THE_SAME_DEPOT":"La sortie sur bon de requisition ne peut être effectué sur un même dépôt"
+  },
+  "INVENTORY_ADJUSTMENT":{
+    "TITLE":"Ajustement des inventaires des stocks"
   }
 }

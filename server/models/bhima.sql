@@ -150,8 +150,9 @@ INSERT INTO unit VALUES
   (265, 'Purchase order analysis', 'TREE.PURCHASE_ORDER_ANALYSIS', 'Purchase order analysis', 144, '/modules/reports/purchaseOrderAnalysis', '/reports/purchaseOrderAnalysis'),
   (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges'),
   (267, 'Monthly consumption report', 'TREE.MONTHLY_CONSUMPTION', 'Monthly consumption report', 144, '/modules/reports/monthlyConsumptionReport', '/reports/monthlyConsumptionReport'),
-  (268, '[Stock] Consumption graph','TREE.STOCK_CONSUMPTION_GRAPH_REPORT','Stock Consumption graph report', 144,'/modules/reports/generated/stock_consumption_graph_report','/reports/stock_consumption_graph_report');
-  
+  (268, '[Stock] Consumption graph','TREE.STOCK_CONSUMPTION_GRAPH_REPORT','Stock Consumption graph report', 144,'/modules/reports/generated/stock_consumption_graph_report','/reports/stock_consumption_graph_report'),
+  (269, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -300,7 +301,9 @@ INSERT INTO `flux` VALUES
   (10, 'STOCK_FLUX.TO_SERVICE'),
   (11, 'STOCK_FLUX.TO_LOSS'),
   (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
-  (13, 'STOCK_FLUX.FROM_INTEGRATION');
+  (13, 'STOCK_FLUX.FROM_INTEGRATION'),
+  (14, 'STOCK_FLUX.INVENTORY_RESET'),
+  (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT');
 
 -- Roles Actions
 

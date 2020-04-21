@@ -822,6 +822,7 @@ exports.configure = function configure(app) {
 
   // stock integration
   app.post('/stock/integration', stock.createIntegration);
+  app.post('/stock/inventory_adjustment', stock.createInventoryAdjustment);
 
   // stock reports API
   app.get('/reports/stock/exit', stockReports.stockExitReport);
