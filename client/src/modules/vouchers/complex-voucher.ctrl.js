@@ -73,6 +73,10 @@ function ComplexJournalVoucherController(
     gridManager(Toolkit.openConventionPaymentModal);
   };
 
+  vm.openPatientFledModal = function openPatientFledModal() {
+    gridManager(Toolkit.openPatientFledModal);
+  };
+
   vm.openGenericIncomeModal = function openGenericIncomeModal() {
     gridManager(Toolkit.openGenericIncomeModal);
   };

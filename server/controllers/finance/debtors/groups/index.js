@@ -346,7 +346,7 @@ function remove(req, res, next) {
       if (!rows.affectedRows) {
         throw new BadRequest(
           `Cannot delete the debtor group with id ${req.params.uuid}`,
-          'DEBTOR_GROUP.FAILURE_DELETE'
+          'DEBTOR_GROUP.FAILURE_DELETE',
         );
       }
 

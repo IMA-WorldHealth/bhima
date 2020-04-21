@@ -1,0 +1,63 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>VOUCHERS.GLOBAL.WRITE_OFF_PATIENT_INVOICES</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.IMPORT_TRANSACTION</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" novalidate>
+  <div class="modal-body">
+    
+    <bh-account-select
+      name="account_id"
+      account-type-id="'5,6'"
+      account-id="ToolCtrl.account.id"
+      on-select-callback="ToolCtrl.onSelectAccount(account)">
+    </bh-account-select>
+
+    <!--select the Patient -->
+    <bh-find-patient
+      suppress-reset="true"
+      on-search-complete="ToolCtrl.onSelectPatient(patient)">
+    </bh-find-patient>
+
+    <!-- select invoices  -->
+    <div ng-show="ToolCtrl.patient">
+      <div
+        id="invoiceGrid"
+        style="height: 40vh; margin-bottom: 20px;"
+        ui-grid="ToolCtrl.gridOptions"
+        ui-grid-filtering
+        ui-grid-auto-resize
+        ui-grid-resize-columns
+        ui-grid-selection>
+
+        <bh-grid-loading-indicator
+          loading-state="ToolCtrl.loading"
+          empty-state="ToolCtrl.gridOptions.data.length === 0"
+          error-state="ToolCtrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+
+    <div ng-show="ToolCtrl.convention" class="text-right">
+      <span translate>FORM.LABELS.TOTAL_BILLED</span>: <strong class="text-danger">{{ ToolCtrl.totalInvoices || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong><br>
+      <span translate>FORM.LABELS.TOTAL_SELECTED_INVOICES</span>: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.enterprise.currency_id }}</strong>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="ToolForm.$invalid || !ToolCtrl.hasSelectedRows">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

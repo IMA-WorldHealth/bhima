@@ -16,6 +16,11 @@ function VoucherToolkitService(Modal) {
       controller  : 'ConventionPaymentKitController',
       templateUrl : 'modules/vouchers/toolkit/convention_payment/convention_payment.modal.html',
     },
+    // this tool help to write off patient debt as an expense
+    patient_fled : {
+      controller  : 'PatientFledKitController',
+      templateUrl : 'modules/vouchers/toolkit/patient_fled/patient_fled.modal.html',
+    },
     generic_income : {
       controller  : 'GenericIncomeKitController',
       templateUrl : 'modules/vouchers/toolkit/generic_income/generic_income.html',
@@ -36,6 +41,14 @@ function VoucherToolkitService(Modal) {
       controller  : 'PaymentEmployeeKitController',
       templateUrl : 'modules/vouchers/toolkit/payment_employee/payment_employee.modal.html',
     },
+  };
+
+  service.openConventionPaymentModal = function openConventionPaymentModal() {
+    return open(service.tools.convention_payment);
+  };
+
+  service.openPatientFledModal = function openPatientFledModal() {
+    return open(service.tools.patient_fled);
   };
 
   service.openConventionPaymentModal = function openConventionPaymentModal() {

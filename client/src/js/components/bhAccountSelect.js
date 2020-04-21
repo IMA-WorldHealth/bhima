@@ -26,6 +26,7 @@ function AccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) 
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
+
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
