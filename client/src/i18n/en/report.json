@@ -141,6 +141,10 @@
       "DESCRIPTION": "This report shows the current stock value for each inventory in a depot",
       "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclude inventories with zero stock value"
     },
+    "STOCK_CONSUMPTION_GRAPH_REPORT" : {
+      "TITLE" : "Stock Consumption's graph report",
+      "DESCRIPTION" : "This report graphically shows the consumption of stock during a period for a depot or inventory"
+    },
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",

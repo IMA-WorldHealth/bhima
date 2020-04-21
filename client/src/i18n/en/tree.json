@@ -135,6 +135,7 @@
     "STOCK_VALUE" : "[Stock] Stock value Report",
     "STOCK_MOVEMENTS" : "Stock Movements",
     "STOCK_REQUISITION":"Requisition",
+    "STOCK_CONSUMPTION_GRAPH_REPORT": "Stock Consumption's graph report",
     "SUBSIDY" : "Subsidy Management",
     "STAFFING_INDICES_MANAGEMENT" : "Staffing indices management",
     "SURVEY_FORM": "Survey Form",
