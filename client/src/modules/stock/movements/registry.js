@@ -152,11 +152,15 @@ function StockMovementsController(
   vm.openReceiptModal = openReceiptModal;
   vm.toggleGroup = toggleGroup;
   vm.selectGroup = selectGroup;
-  vm.getQueryString = Stock.getQueryString;
+  vm.getQueryString = getQueryString;
   vm.clearGridState = clearGridState;
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);
+
+  function getQueryString(options) {
+    return stockMovementFilters.getQueryString(options);
+  }
 
   // grid api
   function onRegisterApiFn(gridApi) {
