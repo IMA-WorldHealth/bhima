@@ -86,8 +86,8 @@ function formatAndCombine(data) {
     .groupBy('text')
     .map(formatExit)
     .value();
-
-  return { data : aggregate, isEmpty : _.size(aggregate) === 0 };
+  const cost = _.sumBy(aggregate, 'inventory_stock_exit_cost');
+  return { data : aggregate, isEmpty : _.size(aggregate) === 0, cost };
 }
 
 /**
@@ -99,6 +99,7 @@ function formatExit(value, key) {
     inventory_unit : value && value[0] ? value[0].unit_text : '',
     inventory_stock_exit_data : value,
     inventory_stock_exit_quantity : _.sumBy(value, 'quantity'),
+    inventory_stock_exit_cost : _.sumBy(value, 'cost'),
   };
 }
 

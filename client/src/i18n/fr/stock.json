@@ -152,7 +152,9 @@
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",
     "UNIT_COST"       : "Coût unitaire",
-    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date"
+    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date",
+    "STOCK_COST_DESCRIPTION" : "Les valeurs monetaires sont basées sur le coût d'achat de stock et non sur le prix de vente",
+    "STOCK_UNIT_COST_ROUNDED" : "Le cout unitaire est arrondi avec deux decimales"
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",

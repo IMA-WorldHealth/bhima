@@ -152,7 +152,9 @@
     "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost",
-    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date"
+    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date",
+    "STOCK_COST_DESCRIPTION" : "Monetary values are based on the cost of purchasing inventory, not the selling price",
+    "STOCK_UNIT_COST_ROUNDED" : "The unit cost is rounded with two decimals"
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",

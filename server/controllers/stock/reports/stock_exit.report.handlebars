@@ -26,14 +26,19 @@
 
       <!-- stock exit to patient -->
       {{#if includePatientExit}}
-        <h3>{{translate 'STOCK.RECEIPT.EXIT_PATIENTS'}}</h3>
-
         <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_PATIENTS'}}</h3></th>
+              <th colspan="2" class="text-right">{{currency exitToPatient.cost metadata.enterprise.currency_id}}</th>
+            </tr>
+          </thead>
           {{#each exitToPatient.data as | data |}}
             <thead>
               <tr>
                 <th colspan="4">{{ data.inventory_name }}</th>
                 <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_exit_cost ../metadata.enterprise.currency_id}}</th>
               </tr>
             </thead>
 
@@ -50,6 +55,8 @@
                     </td>
                     <td style="border:none;">{{date date }}</td>
                     <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../metadata.enterprise.currency_id}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -59,7 +66,7 @@
 
           <!-- no data -->
           {{#if exitToPatient.isEmpty}}
-            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
@@ -68,14 +75,19 @@
 
       <!-- stock exit to service -->
       {{#if includeServiceExit}}
-        <h3>{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}}</h3>
-
         <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}}</h3></th>
+              <th colspan="2" class="text-right">{{currency exitToService.cost metadata.enterprise.currency_id}}</th>
+            </tr>
+          </thead>
           {{#each exitToService.data as | data |}}
             <thead>
               <tr>
                 <th colspan="4">{{ data.inventory_name }}</th>
                 <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_exit_cost ../metadata.enterprise.currency_id}}</th>
               </tr>
             </thead>
 
@@ -88,6 +100,8 @@
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
                     <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../metadata.enterprise.currency_id}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -97,7 +111,7 @@
 
           <!-- no data -->
           {{#if exitToService.isEmpty}}
-            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
@@ -106,14 +120,19 @@
 
       <!-- stock exit to other depot -->
       {{#if includeDepotExit}}
-        <h3>{{translate 'STOCK.RECEIPT.EXIT_DEPOTS'}}</h3>
-
         <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5"><h3 style="margin: 0px">{{translate 'STOCK.RECEIPT.EXIT_DEPOTS'}}</h3></th>
+              <th colspan="2" class="text-right">{{currency exitToDepot.cost metadata.enterprise.currency_id}}</th>
+            </tr>
+          </thead>
           {{#each exitToDepot.data as | data |}}
             <thead>
               <tr>
                 <th colspan="4">{{ data.inventory_name }}</th>
                 <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_exit_cost ../metadata.enterprise.currency_id}}</th>
               </tr>
             </thead>
 
@@ -126,6 +145,8 @@
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
                     <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../metadata.enterprise.currency_id}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -135,7 +156,7 @@
 
           <!-- no data -->
           {{#if exitToDepot.isEmpty}}
-            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
@@ -144,14 +165,19 @@
 
       <!-- stock exit as loss -->
       {{#if includeLossExit}}
-        <h3>{{translate 'STOCK.RECEIPT.EXIT_LOSS'}}</h3>
-
         <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_LOSS'}}</h3></th>
+              <th colspan="2" class="text-right">{{currency exitToLoss.cost metadata.enterprise.currency_id}}</th>
+            </tr>
+          </thead>
           {{#each exitToLoss.data as | data |}}
             <thead>
               <tr>
                 <th colspan="4">{{ data.inventory_name }}</th>
                 <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_exit_cost ../metadata.enterprise.currency_id}}</th>
               </tr>
             </thead>
 
@@ -164,6 +190,8 @@
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
                     <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../metadata.enterprise.currency_id}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -173,10 +201,15 @@
 
           <!-- no data -->
           {{#if exitToLoss.isEmpty}}
-            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
+
+      <br>
+
+      <p>*<em>{{translate 'STOCK.STOCK_COST_DESCRIPTION'}}</em></p>
+      <p>*<em>{{translate 'STOCK.STOCK_UNIT_COST_ROUNDED'}}</em></p>
     </div>
   </div>
 
