@@ -20,7 +20,6 @@ const q = require('q');
 const _ = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-const identifiers = require('../../../config/identifiers');
 
 const CAUTION_LINK_TYPE_ID = 19;
 
@@ -205,8 +204,8 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
   // @TODO this query is used in many places and is crucial for finding balances
   //       it currently uses 5 sub queries - this should be improved
   const sql = `
-    SELECT BUID(i.uuid) AS uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference)
-      AS reference, credit, debit, balance, BUID(entity_uuid) AS entity_uuid, invoice.date
+    SELECT BUID(i.uuid) AS uuid, dm.text AS reference, credit, debit, balance,
+      BUID(entity_uuid) AS entity_uuid, invoice.date
     FROM (
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
       FROM (
@@ -237,6 +236,7 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
     ) AS i
       JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id
+      LEFT JOIN document_map dm ON i.uuid = dm.uuid
     ORDER BY invoice.date ASC, invoice.reference;
   `;
 
