@@ -56,23 +56,9 @@
         </div>
       </div>
 
-      <!-- add and recovery -->
+      <!-- "Add number of grid rows" input-group -->
       <div class="row" style="padding-bottom : 5px;">
         <div class="col-xs-12">
-          <!-- "Recover Items" button -->
-          <div class="btn-group pull-right" role="group">
-            <button
-              type="button"
-              class="btn btn-default"
-              ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
-              ng-click="StockCtrl.readCache()"
-              ng-disabled="!StockCtrl.hasCacheAvailable">
-              <span class="fa fa-recycle"></span>
-              <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
-            </button>
-          </div>
-
-          <!-- "Add number of grid rows" input-group -->
           <bh-add-item
             disable="true"
             callback="StockCtrl.addItems(numItem)">

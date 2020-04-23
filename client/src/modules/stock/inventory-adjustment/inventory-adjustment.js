@@ -45,6 +45,8 @@ function StockInventoryAdjustmentController(
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
+  vm.selectedLots = [];
+  vm.onLotSelect = onLotSelect;
 
   // grid columns
   const columns = [
@@ -123,6 +125,21 @@ function StockInventoryAdjustmentController(
     rowTemplate : 'modules/templates/grid/error.row.html',
   };
 
+  // on lot select
+  function onLotSelect(row) {
+    if (!row.lot || !row.lot.uuid) { return; }
+
+    checkValidity();
+    refreshSelectedLotsList();
+  }
+
+  // update the list of selected lots
+  function refreshSelectedLotsList() {
+    vm.selectedLots = vm.Stock.store.data
+      .filter(item => item.lot && item.lot.uuid)
+      .map(item => item.lot.uuid);
+  }
+
   // add items
   function addItems(n) {
     vm.Stock.addItems(n);
@@ -141,12 +158,13 @@ function StockInventoryAdjustmentController(
     // get lots
     Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
       .then((lots) => {
-        item.lots = lots;
+        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
       })
       .catch(Notify.handleError);
   }
 
   function setupStock() {
+    vm.selectedLots = [];
     vm.Stock.setup();
     vm.Stock.store.clear();
   }
@@ -173,7 +191,7 @@ function StockInventoryAdjustmentController(
   // check validity
   function checkValidity() {
     const lotsExists = vm.Stock.store.data.every((item) => {
-      return item.quantity >= 0 && item.lot.uuid;
+      return item.quantity >= 0 && item.lot && item.lot.uuid;
     });
 
     vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
@@ -192,7 +210,6 @@ function StockInventoryAdjustmentController(
 
     const movement = {
       depot_uuid : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 0,
@@ -211,6 +228,7 @@ function StockInventoryAdjustmentController(
     return Stock.inventoryAdjustment.create(movement)
       .then(document => {
         vm.Stock.store.clear();
+        vm.selectedLots = [];
         ReceiptModal.stockAdjustmentReceipt(document.uuid, bhConstants.flux.INVENTORY_ADJUSTMENT);
       })
       .catch(Notify.handleError);

@@ -22,6 +22,8 @@ function FluxService(Api, $translate) {
     11 : 'STOCK_FLUX.TO_LOSS',
     12 : 'STOCK_FLUX.TO_ADJUSTMENT',
     13 : 'STOCK_FLUX.FROM_INTEGRATION',
+    14 : 'STOCK_FLUX.INVENTORY_RESET',
+    15 : 'STOCK_FLUX.INVENTORY_ADJUSTMENT',
   };
 
 

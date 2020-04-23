@@ -282,10 +282,19 @@ async function createInventoryAdjustment(req, res, next) {
     // reset all previous lots
     await trx.execute();
 
-    // pass inventory adjustment as new integration
+    // pass inventory adjustment as new movement
+    const document = {
+      uuid : uuid(),
+      date : new Date(movement.date),
+      user : req.session.user.id,
+    };
     const positiveLots = lots.filter(lot => lot.quantity > 0);
-    const adjustmentDocumentUuid = await insertNewStock(req.session, { movement, lots : positiveLots });
-    res.status(201).json({ uuid : adjustmentDocumentUuid });
+    movement.is_exit = 0;
+    movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
+    movement.lots = positiveLots;
+
+    await normalMovement(document, movement, req.session);
+    res.status(201).json(document);
   } catch (err) {
     next(err);
   }

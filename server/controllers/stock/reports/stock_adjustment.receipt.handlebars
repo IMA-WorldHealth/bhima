@@ -1,4 +1,4 @@
-{{> head title="STOCK.RECEIPT.ADJUSTMENT" }}
+{{> head title=details.title }}
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
@@ -15,11 +15,18 @@
     <!-- summary  -->
     <div class="row receipt-summary">
       <div class="col-xs-6">
-        {{#if details.is_exit}}
+        {{#equal details.flux_id 12}}
           <h3><i class="fa fa-arrow-circle-o-down"></i> {{translate 'STOCK_FLUX.TO_ADJUSTMENT'}}</h3>
-        {{else}}
+        {{/equal}}
+        {{#equal details.flux_id 3}}
           <h3><i class="fa fa-arrow-circle-o-up"></i> {{translate 'STOCK_FLUX.FROM_ADJUSTMENT'}}</h3>
-        {{/if}}
+        {{/equal}}
+        {{#equal details.flux_id 14}}
+          <h3><i class="fa fa-ban"></i> {{translate 'STOCK_FLUX.INVENTORY_RESET'}}</h3>
+        {{/equal}}
+        {{#equal details.flux_id 15}}
+          <h3><i class="fa fa-adjust"></i> {{translate 'STOCK_FLUX.INVENTORY_ADJUSTMENT'}}</h3>
+        {{/equal}}
       </div>
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>

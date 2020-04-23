@@ -176,7 +176,7 @@
     "TO_LOSS"          : "Vers une perte",
     "TO_ADJUSTMENT"    : "Ajustement (Negatif)",
     "INVENTORY_RESET"  : "Remise à zéro des inventaires",
-    "INVENTORY_ADJUSTMENT" : "Inventaire des stocks"
+    "INVENTORY_ADJUSTMENT" : "Nouveau stock après inventaire"
   },
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
