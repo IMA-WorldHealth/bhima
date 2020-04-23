@@ -585,11 +585,12 @@ angular-ui-grid@^4.8.0:
   dependencies:
     angular ">=1.4.0 1.7.x"
 
-angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
-  version "1.0.0-rc.1"
-  resolved "https://codeload.github.com/angular-ui/angular-ui-router-bower/tar.gz/06f6ab4b7593a2895293450409a2f9a09cbc8d86"
+angular-ui-router@^1.0.25:
+  version "1.0.25"
+  resolved "https://registry.yarnpkg.com/angular-ui-router/-/angular-ui-router-1.0.25.tgz#eef614dcf0fcca3a9a29b6e0591d90f93453846d"
+  integrity sha512-NCjwfGWQiqBx22OyAm6hsAWvlo431uUlY2ccg9kXkvb3zCLQGSJ6pGo1AGLtRAKdZvrEHiIExhawyrVPkYp0VA==
   dependencies:
-    ui-router-core "3.1.0"
+    "@uirouter/core" "6.0.4"
 
 "angular@>=1.2.22 <2", "angular@>=1.4.0 1.7.x", angular@^1.7.9:
   version "1.7.9"
@@ -9397,11 +9398,6 @@ uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
   integrity sha1-bgkk1r2mta/jSeOabWMoUKD4grc=
-
-ui-router-core@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ui-router-core/-/ui-router-core-3.1.0.tgz#c297e8198631ab2e36892a95d0f9a92c18efbc17"
-  integrity sha1-wpfoGYYxqy42iSqV0PmpLBjvvBc=
 
 ui-select@0.17.1:
   version "0.17.1"
