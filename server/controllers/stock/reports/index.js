@@ -13,6 +13,7 @@ const Stock = require('../core');
 
 const stockExitReport = require('./stock/exit_report');
 const stockEntryReport = require('./stock/entry_report');
+const consumptionGraph = require('./stock/consumption_graph');
 const stockLotsReport = require('./stock/lots_report');
 const stockMovementsReport = require('./stock/movements_report');
 const stockInventoriesReport = require('./stock/inventories_report');
@@ -123,6 +124,7 @@ exports.renderStockReceipt = renderStockReceipt;
 // expose to the api
 exports.stockExitReport = stockExitReport;
 exports.stockEntryReport = stockEntryReport;
+exports.consumptionGraph = consumptionGraph;
 exports.stockLotsReport = stockLotsReport;
 exports.stockMovementsReport = stockMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;

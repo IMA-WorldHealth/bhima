@@ -46,6 +46,7 @@ angular.module('bhima.routes')
       'purchaseOrderAnalysis',
       'inventoryChanges',
       'monthlyConsumptionReport',
+      'stock_consumption_graph_report',
     ];
 
     function resolveReportData($stateParams, SavedReports) {

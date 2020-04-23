@@ -826,6 +826,7 @@ exports.configure = function configure(app) {
   // stock reports API
   app.get('/reports/stock/exit', stockReports.stockExitReport);
   app.get('/reports/stock/entry', stockReports.stockEntryReport);
+  app.get('/reports/stock/consumption_graph', stockReports.consumptionGraph);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);

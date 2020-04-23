@@ -136,6 +136,7 @@
     "STOCK_MOVEMENTS":"Movements de stock",
     "FORMS_CONFIGURATION": "Configuration des formulaires",
     "STOCK_REQUISITION":"Réquisition",
+    "STOCK_CONSUMPTION_GRAPH_REPORT": "Rapport graphique de la consommation de stock",
     "TRANSACTION_TYPE":"Types de Transaction",
     "TAGS" : "Gestion des étiquettes",
     "SUBSIDY":"Gestion des subventions",

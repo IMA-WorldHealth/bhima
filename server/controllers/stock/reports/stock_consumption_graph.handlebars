@@ -1,0 +1,100 @@
+{{> head title="TREE.STOCK_CONSUMPTION_GRAPH_REPORT" }}
+
+<script src="{{nodeModulesPath}}/chart.js/dist/Chart.min.js"></script>
+<script src="{{nodeModulesPath}}/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
+
+<body>
+
+  <div class="container">
+    {{> header}}
+
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+    <!-- page title  -->
+        <h2 class="text-center">
+          {{translate 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'}}
+        </h2>
+
+        {{#if depot.text}}
+          <h4 class="text-center">{{depot.text}}</h4>
+        {{/if}}
+        <h4 class="text-center">
+          {{date dateFrom}} - {{date dateTo}}
+        </h4>
+      </div>
+      <canvas id="myChart" width="600" height="200"></canvas>
+           
+    </div>
+  </div>
+
+
+
+  <script>
+    window.addEventListener('load', function () {
+      const series = {{{ data }}};
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var chart = new Chart(ctx, {
+        // The type of chart we want to create
+          type: 'bar',
+          // The data for our dataset
+          data: {
+            labels: {{{labels}}},
+            datasets: [{
+              label: {{{title}}},
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              data: series
+            }]
+          },
+
+          // Configuration options go here
+          options: {
+            animation: {
+              duration: 0,            
+            },
+            hover: {
+              animationDuration: 0 // duration of animations when hovering an item
+             },
+            responsiveAnimationDuration: 0,
+            scales: {
+              yAxes: [{
+                scaleLabel: {
+                  display: true,
+                  labelString: {{{ yAxesLabelString }}}
+                },
+                ticks: {
+                  beginAtZero: true
+                }
+              }],
+            xAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: {{{ xAxesLabelString }}}
+             }
+            }]
+          },
+          plugins: {
+            datalabels: {
+              align: 'end',
+                anchor: 'end',
+                  color: function(context) {
+                    return 'rgb(0, 0, 0)';
+                  },
+              font: function(context) {
+                var w = context.chart.width;
+                return {
+                  size: w < 512 ? 12 : 14
+                };
+              },
+              formatter: function(value, context) {
+                return series[context.dataIndex];
+              }
+            }
+          },
+        }
+      });
+    });
+  </script>
+</body>

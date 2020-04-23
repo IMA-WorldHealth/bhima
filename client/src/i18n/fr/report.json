@@ -137,6 +137,11 @@
       "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
 
     },
+    
+    "STOCK_CONSUMPTION_GRAPH_REPORT" : {
+      "TITLE" : "Rapport graphique de la consommation de stock",
+      "DESCRIPTION" : "Ce rapport montre graphiquement la consommation de stock durant une période pour un depot ou un inventaire"
+    },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",

@@ -48,7 +48,7 @@ exports.getStockConsumption = getStockConsumption;
 exports.getStockConsumptionAverage = getStockConsumptionAverage;
 exports.getInventoryQuantityAndConsumption = getInventoryQuantityAndConsumption;
 exports.getInventoryMovements = getInventoryMovements;
-
+exports.getDailyStockConsumption = getDailyStockConsumption;
 /**
  * @function getLotFilters
  *
@@ -403,6 +403,50 @@ function getStockConsumption(periodIds) {
   return db.exec(sql, [periodIds]);
 }
 
+
+/**
+ * @function getDailyStockConsumption
+ *
+ * @description returns the daily (periodic) stock consumption (CM)
+ *
+ * @param {array} periodIds
+ */
+async function getDailyStockConsumption(params) {
+
+  params.consumption = true;
+
+  if (params.period_id) {
+    const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
+    params.dateFrom = period.start_date;
+    params.dateTo = period.end_date;
+  }
+
+  db.convert(params, ['depot_uuid', 'inventory_uuid']);
+
+  const filters = new FilterParser(params, { tableAlias : 'm' });
+
+  const sql = `
+    SELECT SUM(m.quantity) as quantity, DATE(m.date) as date, 
+        i.uuid AS inventoty_uuid, i.text AS inventory_name,
+        d.text AS depot_name, d.uuid AS depot_uuid
+    FROM stock_movement m
+    JOIN lot l ON l.uuid = m.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN depot d ON d.uuid = m.depot_uuid
+  `;
+
+  filters.dateFrom('dateFrom', 'date');
+  filters.dateTo('dateTo', 'date');
+  filters.equals('depot_uuid', 'uuid', 'd');
+  filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.custom('consumption', '(m.flux_id IN (9, 10) OR (m.flux_id = 8 AND d.is_warehouse = 1))');
+  filters.setGroup(' GROUP BY DATE(m.date), i.uuid');
+
+  const rqtSQl = filters.applyQuery(sql);
+  const rqtParams = filters.parameters();
+
+  return db.exec(rqtSQl, rqtParams);
+}
 /**
  * @function getStockConsumptionAverage
  *
