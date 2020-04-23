@@ -14,6 +14,13 @@
       </a>
     </li>
 
+    <li>
+      <a data-method="view-patient" href
+        ui-sref="stockInventories({ filters : [{ key : 'period', value : 'allTime', includeEmptyLot: 0 }, { key : 'depot_uuid', value : row.entity.depot_uuid }, { key : 'inventory_uuid', value : row.entity.inventory_uuid }]})">
+        <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ITEM_STOCK</span>
+      </a>
+    </li>
+
     <li ng-if="row.entity.flux_id === 9">
       <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'uuid', value : row.entity.entity_uuid }]})">
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
