@@ -39,6 +39,9 @@
         "INVENTORY_PRICE_INFO" : "inventory_price : le prix de vente de l'inventaire dans la monnaie de l'entreprise",
         "COLUMNS_INFO" : "Note sur certaines colonnes",
         "SELLABLE" : "A vendre",
-        "VIEW_ARTICLES_IN_STOCK" : "Voir les articles en stock"
+        "VIEW_ARTICLES_IN_STOCK" : "Voir les articles en stock",
+        "PREVIOUS_VALUE" : "Valeur Précédente",
+        "UPDATED_VALUE" : "Nouvelle Valeur",
+        "CHANGES" : "Changements"
     }
 }

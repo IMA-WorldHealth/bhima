@@ -808,7 +808,6 @@ CREATE TABLE `inventory` (
 
 
 DROP TABLE IF EXISTS `inventory_group`;
-
 CREATE TABLE `inventory_group` (
   `uuid` BINARY(16) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -829,8 +828,6 @@ CREATE TABLE `inventory_group` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-
-
 DROP TABLE IF EXISTS `inventory_type`;
 CREATE TABLE `inventory_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -839,9 +836,7 @@ CREATE TABLE `inventory_type` (
   UNIQUE KEY `inventory_type_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
 DROP TABLE IF EXISTS `inventory_unit`;
-
 CREATE TABLE `inventory_unit` (
   `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `abbr` varchar(10) NOT NULL,
