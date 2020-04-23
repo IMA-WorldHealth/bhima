@@ -15,8 +15,11 @@
     </li>
 
     <li>
-      <a data-method="view-patient" href
-        ui-sref="stockInventories({ filters : [{ key : 'period', value : 'allTime', includeEmptyLot: 0 }, { key : 'depot_uuid', value : row.entity.depot_uuid }, { key : 'inventory_uuid', value : row.entity.inventory_uuid }]})">
+      <a data-method="view-stock-lot" href
+        ui-sref="stockInventories({ filters : [
+          { key : 'period', value : 'allTime', includeEmptyLot: 0 },
+          { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue: row.entity.depot_text },
+          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue: row.entity.text }]})">
         <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ITEM_STOCK</span>
       </a>
     </li>
