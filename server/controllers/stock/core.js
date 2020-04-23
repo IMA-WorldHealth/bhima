@@ -417,6 +417,7 @@ function getStockConsumption(periodIds) {
  */
 async function getStockConsumptionAverage(periodId, periodDate, monthAverageConsumption) {
   const numberOfMonths = monthAverageConsumption - 1;
+  let ids = [];
 
   const baseDate = periodDate
     ? moment(periodDate).format(DATE_FORMAT)
@@ -444,18 +445,27 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     GROUP BY i.uuid, d.uuid;
   `;
 
+  const checkPeriod = `
+    SELECT id FROM period;
+  `;
+
   const getBeginigPeriod = `
     SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
   `;
 
-  const period = await db.one(queryPeriodId, [periodId || baseDate]);
-  const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
-  const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
+  const periods = await db.exec(checkPeriod);
+  // Just to avoid that db.one requests can query empty tables, and generate errors
+  if (periods.length) {
+    const period = await db.one(queryPeriodId, [periodId || baseDate]);
+    const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
+    const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
+    const rows = await db.exec(queryPeriodRange, paramPeriodRange);
+    ids = rows.map(row => row.id);
+  }
 
-  const rows = await db.exec(queryPeriodRange, paramPeriodRange);
-  const ids = rows.map(row => row.id);
+  const execStockConsumption = periods.length ? db.exec(queryStockConsumption, [ids]) : [];
 
-  return db.exec(queryStockConsumption, [ids]);
+  return execStockConsumption;
 }
 
 /**
