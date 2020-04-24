@@ -232,6 +232,7 @@
     "NOT_FOR_THE_SAME_DEPOT":"Exit on a requisition slip can not be made on the same depot"
   },
   "INVENTORY_ADJUSTMENT":{
-    "TITLE":"Stock Inventory Adjustment"
+    "TITLE":"Stock Inventory Adjustment",
+    "DESC":"This inventory adjustment module allows you to define article stocks; after this operation all the lots which are not defined here for the selected articles will be emptied"
   }
 }

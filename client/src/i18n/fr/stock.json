@@ -233,6 +233,7 @@
     "NOT_FOR_THE_SAME_DEPOT":"La sortie sur bon de requisition ne peut être effectué sur un même dépôt"
   },
   "INVENTORY_ADJUSTMENT":{
-    "TITLE":"Ajustement des inventaires des stocks"
+    "TITLE":"Ajustement des inventaires des stocks",
+    "DESC":"Ce module d'ajustement de stock permet de definir le stock des articles; après cet inventaire tous les lots qui ne sont pas défini ici pour les articles choisis vont être vidés"
   }
 }
