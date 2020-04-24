@@ -102,6 +102,13 @@ function StockInventoriesController(
     enableSorting    : false,
     cellClass        : 'text-right',
     cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html',
+  },
+  {
+    field            : 'action',
+    displayName      : '',
+    enableFiltering  : false,
+    enableSorting    : false,
+    cellTemplate     : 'modules/stock/inventories/templates/inventory.action.html',
   }];
 
   // grouping box

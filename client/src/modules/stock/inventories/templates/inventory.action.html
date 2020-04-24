@@ -1,0 +1,18 @@
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul  class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a data-method="stock-movement" ui-sref="stockMovements({
+        filters : [
+          { key : 'period', value : 'allTime' }, 
+          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text }
+        ]})" href>
+        <span class="fa fa-file-text-o"></span> <span translate>TREE.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
+  </ul>
+</div>
