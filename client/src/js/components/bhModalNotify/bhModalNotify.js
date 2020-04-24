@@ -2,7 +2,6 @@ angular.module('bhima.components')
   .component('bhModalNotify', {
     templateUrl : 'js/components/bhModalNotify/bhModalNotify.html',
     controller  : ModalNotifyController,
-    transclude  : true,
     bindings    : {
       value : '<?',
       type : '@?',
@@ -35,7 +34,7 @@ function ModalNotifyController($timeout) {
 
   function setNotification(key, ttl) {
     const errorFormat = options.error;
-    const otherFormat = options[$ctrl.status || 'info'];
+    const otherFormat = options[$ctrl.type || 'info'];
     $ctrl.message = key;
     $ctrl.style = $ctrl.error ? errorFormat : otherFormat;
     $ctrl.visible = true;
