@@ -18,6 +18,7 @@ module.exports = (config) => {
       'test/client-unit/mocks/*.js',
       `bin/client/js/bhima/bhima.min.js`,
       'bin/client/modules/**/*.html',
+      'bin/client/js/components/**/*.html',
       { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
       'test/client-unit/**/*.spec.js',
     ],

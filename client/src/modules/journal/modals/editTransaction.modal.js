@@ -18,7 +18,7 @@ JournalEditTransactionController.$inject = [
  */
 function JournalEditTransactionController(
   Journal, Store, Transactions, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout,
 ) {
   const vm = this;
   let gridApi = {};
@@ -342,10 +342,16 @@ function JournalEditTransactionController(
             };
 
             Modal.close(deleteTransactionResult);
-          });
+          })
+          .catch(handleError);
       })
       .catch(angular.noop);
   };
+
+  // expose the error to the bh-modal-notify component
+  function handleError(err) {
+    vm.errorValue = err;
+  }
 
   function getGridRowsUuid() {
     return vm.rows.data.map(row => row.uuid);
