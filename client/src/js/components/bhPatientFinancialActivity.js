@@ -8,7 +8,7 @@ angular.module('bhima.components')
   });
 
 PatientFinancialActivityCtrl.$inject = [
-  'PatientService', 'moment', 'SessionService', 'bhConstants',
+  'PatientService', 'moment', 'SessionService', 'bhConstants', '$q',
 ];
 
 /**
@@ -18,7 +18,7 @@ PatientFinancialActivityCtrl.$inject = [
  * This component is responsible for giving an overview of the patient's
  * financial situation.
  */
-function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
+function PatientFinancialActivityCtrl(Patients, moment, Session, Constants, $q) {
   const $ctrl = this;
 
   // TODO(@jniles) - add the ability for users to change this
@@ -33,7 +33,7 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
 
     $ctrl.loading = true;
 
-    Promise.all([
+    $q.all([
       Patients.getFinancialActivity($ctrl.patientUuid),
       Patients.getStockMovements($ctrl.patientUuid),
     ])
@@ -71,8 +71,7 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
 
         $ctrl.dataMovement = dataMovement;
         $ctrl.noStockMovement = stockData.length === 0;
-      })
-      .finally(() => {
+      }).finally(() => {
         $ctrl.loading = false;
       });
   };
