@@ -28,6 +28,7 @@ exports.extension = '.pdf';
 const defaultReportOptions = {
   preferCSSPageSize : true,
   showHeaderFooter : true,
+  skipRendering : true,
 };
 
 exports.defaultReportOptions = defaultReportOptions;
