@@ -158,6 +158,14 @@ function FilterService() {
     if (clientTimestamp) {
       httpFilters.client_timestamp = (new Date()).toJSON();
     }
+
+    // make displayValue for client.
+    const displayValues = Object.entries(this.getDisplayValueMap())
+      .map(([key, value]) => `${key}:${value}`)
+      .join(',');
+
+    Object.assign(httpFilters, { displayValues });
+
     return httpFilters;
   };
 
