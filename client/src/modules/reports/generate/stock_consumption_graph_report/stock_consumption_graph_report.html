@@ -22,41 +22,57 @@
 
         <div class="panel-body">
 
-        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-          
-          <!-- select depot -->
-          <bh-depot-select
-            depot-uuid="ReportConfigCtrl.depot.uuid"
-            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
-            <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
-          </bh-depot-select>
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-period-selection>
 
-          <!-- select inventory -->
-          <bh-inventory-select
-            inventory-uuid="ReportConfigCtrl.inventory.uuid"
-            on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
-            only-consumable="true">
-            <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
-          </bh-inventory-select>
+            <!-- select depot -->
+            <bh-depot-select
+              depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
+              on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
+              <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
+            </bh-depot-select>
 
-          
-          <bh-fiscal-year-select
-            fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
-            on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
-          </bh-fiscal-year-select>
+            <!-- select inventory -->
+            <bh-inventory-select
+              inventory-uuid="ReportConfigCtrl.reportDetails.inventory_uuid"
+              on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
+              only-consumable="true">
+              <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
+            </bh-inventory-select>
+            
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
 
-          <bh-period-selection
-            fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
-            period-id="ReportConfigCtrl.reportDetails.period_id"
-            on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
-          </bh-period-selection>            
-
-          <!-- preview -->
-          <bh-loading-button loading-state="ConfigForm.$loading">
-            <span translate>REPORT.UTIL.PREVIEW</span>
-          </bh-loading-button>
-        </form>
+            <div class="row">
+              <div class="col-sm-12">
+                <label translate>FORM.LABELS.TYPE</label>
+              </div>
+    
+              <div class="col-sm-12">
+                <label class="radio-inline">
+                  <input type="radio" name="quantity" value="quantity" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
+                  <span translate>STOCK.TYPE_QUANTITY</span>
+                </label>
+              </div>
+              <div class="col-sm-12">
+                <label class="radio-inline">
+                  <input type="radio" name="value" value="value" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
+                  <span translate>STOCK.TYPE_VALUE</span>
+                </label>
+              </div>
+            </div>
+            <!-- preview -->
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
         </div>
       </div>
     </div>

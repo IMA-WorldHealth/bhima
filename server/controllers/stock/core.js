@@ -428,9 +428,13 @@ async function getDailyStockConsumption(params) {
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
-    SELECT SUM(m.quantity) as quantity, DATE(m.date) as date, 
-        i.uuid AS inventoty_uuid, i.text AS inventory_name,
-        d.text AS depot_name, d.uuid AS depot_uuid
+    SELECT SUM(m.quantity) as quantity,
+      SUM(m.quantity*m.unit_cost) as value,
+      DATE(m.date) as date,
+      HEX(i.uuid) AS inventory_uuid,
+      i.text AS inventory_name,
+      d.text AS depot_name,
+      HEX(d.uuid) AS depot_uuid
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -441,8 +445,10 @@ async function getDailyStockConsumption(params) {
   filters.dateTo('dateTo', 'date');
   filters.equals('depot_uuid', 'uuid', 'd');
   filters.equals('inventory_uuid', 'uuid', 'i');
-  filters.custom('consumption', '(m.flux_id IN (9, 10) OR (m.flux_id = 8 AND d.is_warehouse = 1))');
+  filters.custom('consumption', `((m.flux_id IN (9,10) OR (m.flux_id=8 AND d.is_warehouse=1))) AND i.consumable=1`);
+
   filters.setGroup(' GROUP BY DATE(m.date), i.uuid');
+  filters.setOrder(' ORDER BY m.date');
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();
