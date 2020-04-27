@@ -19,7 +19,10 @@
       ng-required="$ctrl.required"
       on-select="$ctrl.onSelect($item)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.EMPLOYEE' | translate }}"><span>{{$select.selected.display_name}}</span></ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="employee.uuid as employee in $ctrl.employees | filter: { 'display_name': $select.search }">
+      <ui-select-choices 
+        ui-select-focus-patch 
+        repeat="employee.uuid as employee in $ctrl.employees | filter: { 'display_name': $select.search, 'reference' :  $select.search}">
+        <strong ng-bind-html="employee.reference | highlight:$select.search"></strong> - 
         <span ng-bind-html="employee.display_name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
