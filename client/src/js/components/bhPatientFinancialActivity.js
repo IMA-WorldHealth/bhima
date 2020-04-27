@@ -8,7 +8,8 @@ angular.module('bhima.components')
   });
 
 PatientFinancialActivityCtrl.$inject = [
-  'PatientService', 'moment', 'SessionService', 'bhConstants', '$q',
+  'PatientService', 'moment', 'SessionService',
+  'bhConstants', '$q',
 ];
 
 /**

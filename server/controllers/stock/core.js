@@ -36,19 +36,21 @@ const flux = {
 const DATE_FORMAT = 'YYYY-MM-DD';
 
 // exports
-exports.flux = flux;
-exports.getLots = getLots;
-exports.getLotsDepot = getLotsDepot;
-exports.getLotsMovements = getLotsMovements;
-exports.getLotsOrigins = getLotsOrigins;
-exports.stockManagementProcess = stockManagementProcess;
+module.exports = {
+  flux,
+  getLots,
+  getLotsDepot,
+  getLotsMovements,
+  getLotsOrigins,
+  stockManagementProcess,
+  // stock consumption
+  getStockConsumption,
+  getStockConsumptionAverage,
+  getInventoryQuantityAndConsumption,
+  getInventoryMovements,
+  getDailyStockConsumption,
+};
 
-// stock consumption
-exports.getStockConsumption = getStockConsumption;
-exports.getStockConsumptionAverage = getStockConsumptionAverage;
-exports.getInventoryQuantityAndConsumption = getInventoryQuantityAndConsumption;
-exports.getInventoryMovements = getInventoryMovements;
-exports.getDailyStockConsumption = getDailyStockConsumption;
 /**
  * @function getLotFilters
  *
