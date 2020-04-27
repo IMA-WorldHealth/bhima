@@ -1980,6 +1980,7 @@ CREATE TABLE `stock_movement` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(11) UNSIGNED NOT NULL,
   `invoice_uuid`    BINARY(16) NULL,
+  `period_id`       MEDIUMINT(8) UNSIGNED DEFAULT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   INDEX `document_uuid` (`document_uuid`),
@@ -1987,10 +1988,12 @@ CREATE TABLE `stock_movement` (
   KEY `lot_uuid` (`lot_uuid`),
   KEY `flux_id` (`flux_id`),
   KEY `user_id` (`user_id`),
+  KEY `period_id` (`period_id`),
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donor

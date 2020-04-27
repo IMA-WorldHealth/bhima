@@ -10,6 +10,7 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
 const BadRequest = require('../../lib/errors/BadRequest');
+const Fiscal = require('../finance/fiscal');
 
 exports.downloadTemplate = downloadTemplate;
 exports.importStock = importStock;
@@ -39,9 +40,15 @@ function importStock(req, res, next) {
   const filePath = req.files[0].path;
   const depotUuid = db.bid(req.body.depot_uuid);
   const documentUuid = db.bid(util.uuid());
+  let periodId = null
 
-  // be sure that the depot exist
-  db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid)
+  Fiscal.lookupFiscalYearByDate(new Date())
+    .then(result => {
+      periodId = result.id || null;
+
+      // be sure that the depot exist
+      return db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid);
+    })
     .then(() => util.formatCsvToJson(filePath))
     .then(data => {
       if (!hasValidDataFormat(data)) {
@@ -49,7 +56,7 @@ function importStock(req, res, next) {
       }
 
       const transaction = db.transaction();
-      const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+      const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
       data.forEach(item => {
         queryParams = [
@@ -68,6 +75,7 @@ function importStock(req, res, next) {
           item.stock_lot_label,
           item.stock_lot_quantity,
           moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
+          periodId,
         ];
         transaction.addQuery(query, queryParams);
       });
