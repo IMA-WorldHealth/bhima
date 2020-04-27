@@ -40,7 +40,7 @@ function importStock(req, res, next) {
   const filePath = req.files[0].path;
   const depotUuid = db.bid(req.body.depot_uuid);
   const documentUuid = db.bid(util.uuid());
-  let periodId = null
+  let periodId = null;
 
   Fiscal.lookupFiscalYearByDate(new Date())
     .then(result => {
