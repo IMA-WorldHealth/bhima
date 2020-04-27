@@ -1398,10 +1398,10 @@ chai-as-promised@^7.1.1:
   dependencies:
     check-error "^1.0.2"
 
-chai-datetime@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/chai-datetime/-/chai-datetime-1.5.0.tgz#3742f18b024c75b76a2b7eee291662324467596c"
-  integrity sha1-N0LxiwJMdbdqK37uKRZiMkRnWWw=
+chai-datetime@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/chai-datetime/-/chai-datetime-1.6.0.tgz#5f3dacf1cef9a86a454159fafa66b9d15c0d4691"
+  integrity sha512-/KGUjV0c/dyiBsY+WSMrYRNoOejzHFWTBx2GJ5XoAKtLfVP6qGVEkgmPlNpZpiyZZ/x0evkZ0CZ4O63G5J/psw==
   dependencies:
     chai ">1.9.0"
 
