@@ -266,17 +266,22 @@ async function createInventoryAdjustment(req, res, next) {
       trx.addQuery('INSERT INTO stock_movement SET ?', reverseMovementObject);
     });
 
+    const negativeAdjustmentParams = [
+      db.bid(negativeAdjustmentUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+    ];
+
     const positiveAdjustmentParams = [
       db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
     ];
 
-    const negativeAdjustmentParams = [
-      db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
-    ];
-
     if (req.session.enterprise.settings.enable_auto_stock_accounting) {
-      trx.addQuery('CALL PostStockMovement(?)', [positiveAdjustmentParams]);
-      trx.addQuery('CALL PostStockMovement(?)', [negativeAdjustmentParams]);
+      if (positiveQuantities.length > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [negativeAdjustmentParams]);
+      }
+
+      if (negativeQuantities.length > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [positiveAdjustmentParams]);
+      }
     }
 
     // reset all previous lots
