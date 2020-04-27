@@ -194,9 +194,10 @@ async function report(req, res, next) {
       data.amounts = await db.exec(costSql, [uuids]);
     }
 
-    const project = await (query.project_id
-      ? Projects.findDetails(query.project_id)
-      : Promise.resolve({}));
+    let project = {};
+    if (query.project_id) {
+      project = await Projects.findDetails(query.project_id);
+    }
 
     data.project = project;
     const result = await reportInstance.render(data);

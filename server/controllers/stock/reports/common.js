@@ -158,8 +158,6 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
 // Extensible PDF layout options
 const pdfOptions = {
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
 };
 
 async function getVoucherReferenceForStockMovement(documentUuid) {

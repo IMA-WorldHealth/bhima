@@ -14,12 +14,15 @@ const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 const inventorycore = require('../inventory/core');
 
+const shared = require('../../finance/reports/shared');
+
 module.exports = prices;
 
 const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 
 async function prices(req, res, next) {
   const params = _.clone(req.query);
+  const filters = shared.formatFilters(params);
 
   const qs = _.extend(req.query, {
     csvKey : 'groups',
@@ -41,7 +44,7 @@ async function prices(req, res, next) {
       return lines;
     });
 
-    const result = await report.render({ groups });
+    const result = await report.render({ groups, filters });
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
