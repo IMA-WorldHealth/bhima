@@ -12,7 +12,9 @@ function StockConsGraphReportConfigCtrl($sce, Notify, SavedReports, AppCache, re
   const reportUrl = 'reports/stock/consumption_graph';
 
   // default values
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    reportType : 'quantity',
+  };
   vm.previewGenerated = false;
 
   // check cached configuration

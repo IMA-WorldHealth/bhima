@@ -149,7 +149,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-        dm.text AS documentReference, ser.name AS service_name, m.period_id
+        dm.text AS documentReference, ser.name AS service_name
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       JOIN inventory_unit iu ON iu.id = i.unit_id
@@ -272,7 +272,7 @@ function getLotsMovements(depotUuid, params) {
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay,
       iu.text AS unit_type,
-      dm.text AS documentReference, m.period_id
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -304,7 +304,7 @@ function getLotsOrigins(depotUuid, params) {
     SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
         l.entry_date, i.code, i.text, origin.display_name, origin.reference,
-        BUID(m.document_uuid) AS document_uuid, m.flux_id, m.period_id,
+        BUID(m.document_uuid) AS document_uuid, m.flux_id,
         iu.text AS unit_type,
         dm.text AS documentReference
     FROM lot l
@@ -417,20 +417,26 @@ async function getDailyStockConsumption(params) {
 
   params.consumption = true;
 
-  if (params.period_id) {
-    const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
-    params.dateFrom = period.start_date;
-    params.dateTo = period.end_date;
-  }
+  const consumptionValue = `
+    ((
+      (m.flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE}))
+      OR 
+      (m.flux_id=${flux.TO_OTHER_DEPOT} AND d.is_warehouse=1)
+    ) AND i.consumable=1)
+  `;
 
   db.convert(params, ['depot_uuid', 'inventory_uuid']);
 
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
-    SELECT SUM(m.quantity) as quantity, DATE(m.date) as date, 
-        i.uuid AS inventoty_uuid, i.text AS inventory_name,
-        d.text AS depot_name, d.uuid AS depot_uuid, m.period_id
+    SELECT SUM(m.quantity) as quantity,
+      SUM(m.quantity * m.unit_cost) as value,
+      DATE(m.date) as date,
+      BUID(i.uuid) AS inventory_uuid,
+      i.text AS inventory_name,
+      d.text AS depot_name,
+      BUID(d.uuid) AS depot_uuid
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -440,9 +446,12 @@ async function getDailyStockConsumption(params) {
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
   filters.equals('depot_uuid', 'uuid', 'd');
+  filters.equals('period_id');
   filters.equals('inventory_uuid', 'uuid', 'i');
-  filters.custom('consumption', '(m.flux_id IN (9, 10) OR (m.flux_id = 8 AND d.is_warehouse = 1))');
-  filters.setGroup(' GROUP BY DATE(m.date), i.uuid');
+  filters.custom('consumption', consumptionValue);
+
+  filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  filters.setOrder('ORDER BY m.date ');
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();
@@ -559,7 +568,7 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption) {
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-      dm.text AS documentReference, m.period_id
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -676,7 +685,7 @@ function getInventoryMovements(params) {
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
-      dm.text AS documentReference, m.period_id
+      dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
