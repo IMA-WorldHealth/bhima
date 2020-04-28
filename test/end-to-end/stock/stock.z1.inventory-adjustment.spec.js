@@ -37,7 +37,7 @@ function StockInventoryAdjustmentTests() {
   });
 }
 
-describe.only('Stock Inventory Adjustment', () => {
+describe('Stock Inventory Adjustment', () => {
   describe('Inventory Adjustment Test', StockInventoryAdjustmentTests);
   describe('Inventory Registry After Adjustment', StockInventoriesRegistryTests);
   describe('Lots Registry After Adjustment', StockLotsRegistryTests);
