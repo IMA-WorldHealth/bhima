@@ -27,9 +27,9 @@ function barChar(params) {
     return a.localeCompare(b);
   });
 
-  const inventories = Object.keys(_.groupBy(data, item.uuid));
+  const items = Object.keys(_.groupBy(data, item.uuid));
   chart.labels.forEach(day => {
-    inventories.forEach(invt => {
+    items.forEach(invt => {
       let dataset = {};
       if (serieMap[invt]) {
         dataset = serieMap[invt];
