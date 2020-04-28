@@ -191,7 +191,8 @@ CREATE PROCEDURE ImportStock (
   IN inventoryCmm DECIMAL(10, 4),
   IN stockLotLabel VARCHAR(191),
   IN stockLotQuantity INT(11),
-  IN stockLotExpiration DATE
+  IN stockLotExpiration DATE,
+  IN periodId MEDIUMINT(8)
 )
 BEGIN
   DECLARE existInventory TINYINT(1);
@@ -269,8 +270,8 @@ BEGIN
   /* create the stock movement */
   /* 13 is the id of integration flux */
   SET fluxId = 13;
-  INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`)
-  VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId);
+  INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `period_id`)
+  VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId, periodId);
 END $$
 
 DROP PROCEDURE IF EXISTS `stockValue`$$

@@ -2990,18 +2990,18 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
   (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, '2017-04-30',   @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25');
 
 -- stock lots movements
-INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`) VALUES
-  (HUID('5b7dd0d6-9273-4955-a703-126fbd504b61'), HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
-  (HUID('6529ba0c-aef4-4527-b572-5ae77273de62'), HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 200, 0.8000, 0, 1),
-  (HUID('a4ff7358-f1f8-4301-86e4-e9e6fe99bd31'), HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 20, 0.5000, 0, 1),
-  (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 1),
-  (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
-  (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
+INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES
+  (HUID('5b7dd0d6-9273-4955-a703-126fbd504b61'), HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 201702, 1),
+  (HUID('6529ba0c-aef4-4527-b572-5ae77273de62'), HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 200, 0.8000, 0, 201702, 1),
+  (HUID('a4ff7358-f1f8-4301-86e4-e9e6fe99bd31'), HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 20, 0.5000, 0, 201702, 1),
+  (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 201702, 1),
+  (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 201702, 1),
+  (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 201702, 1);
 
 -- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
-INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`) VALUES
-  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, NULL, '2019-10-28 13:02:07'),
-  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35');
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES
+  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, NULL, '2019-10-28 13:02:07', 201910),
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35', 201910);
 
 INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
   (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
@@ -3394,4 +3394,4 @@ INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id
   (4, 'Dettes', 14, 4);
 
 -- To test the display of stock movements linked to a patient
-INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`) VALUES (0xCDBC3B5BC15E40C7AE7B67F8BDCCF47F, 0x39741655AF0E49AABC917F33F0CA2609, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution vers le patient Test 2 Patient (PA.TPA.2) à partir du dépôt Depot Principal : Distribution vers un patient', 9, '2020-04-08 18:41:17', 5, 1.2000, 1, 1, 5, NULL, '2020-04-08 18:41:38');
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`, `period_id`) VALUES (0xCDBC3B5BC15E40C7AE7B67F8BDCCF47F, 0x39741655AF0E49AABC917F33F0CA2609, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution vers le patient Test 2 Patient (PA.TPA.2) à partir du dépôt Depot Principal : Distribution vers un patient', 9, '2020-04-08 18:41:17', 5, 1.2000, 1, 1, 5, NULL, '2020-04-08 18:41:38', 202004);
