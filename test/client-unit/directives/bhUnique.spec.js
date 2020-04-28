@@ -1,11 +1,10 @@
 /* global inject, expect */
 describe('(directive) bhUnique', () => {
-
-
-  let $scope; let
-    form;
+  let $scope;
+  let form;
 
   let MockUniqueValidatorService;
+  let $flushPendingTasks;
 
   // these represent values that the external $http request would return as
   // already registered in the database
@@ -29,7 +28,7 @@ describe('(directive) bhUnique', () => {
     $provide.service('UniqueValidatorService', MockUniqueValidatorService);
   }));
 
-  beforeEach(inject(($compile, $rootScope) => {
+  beforeEach(inject(($compile, $rootScope, _$flushPendingTasks_) => {
     $scope = $rootScope;
 
     const element = angular.element(`
@@ -44,6 +43,7 @@ describe('(directive) bhUnique', () => {
 
     $compile(element)($scope);
     form = $scope.form;
+    $flushPendingTasks = _$flushPendingTasks_;
   }));
 
   it('rejects a value that already exists', () => {
@@ -53,6 +53,7 @@ describe('(directive) bhUnique', () => {
 
     form.uniqueValue.$setViewValue(existingValue);
     $scope.$digest();
+    $flushPendingTasks();
 
     expect($scope.models.uniqueValue).to.equal(undefined);
     expect(form.uniqueValue.$valid).to.equal(false);
@@ -63,6 +64,7 @@ describe('(directive) bhUnique', () => {
 
     form.uniqueValue.$setViewValue(uniqueValue);
     $scope.$digest();
+    $flushPendingTasks();
 
     expect($scope.models.uniqueValue).to.equal(uniqueValue);
     expect(form.uniqueValue.$valid).to.equal(true);

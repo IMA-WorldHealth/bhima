@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('UniqueValidatorService', UniqueValidatorService);
+  .service('UniqueValidatorService', UniqueValidatorService);
 
-UniqueValidatorService.$inject = ['$http', 'util'];
+UniqueValidatorService.$inject = ['$http', 'util', 'HttpCacheService'];
 
 /**
  * Unique Validator Service
@@ -22,11 +22,14 @@ UniqueValidatorService.$inject = ['$http', 'util'];
  *
  * @module services/UniqueValidorService
  */
-function UniqueValidatorService($http, util) {
-  var service = this;
+function UniqueValidatorService($http, util, HttpCache) {
+  const service = this;
 
   // expose service API
   service.check = check;
+
+  // cache subsequent requests for 15 seconds
+  const fetcher = HttpCache(callback);
 
   /**
    * This method will make a request to a provided server end point to validate
@@ -45,14 +48,18 @@ function UniqueValidatorService($http, util) {
    * @param {String} url     Target server API URL
    * @param {String} value   Value to check against server API endpoint
    */
-  function check(url, value) {
-    var existsApiPhrase = '/exists';
+  function callback(url, value) {
+    const existsApiPhrase = '/exists';
 
     // sanitise the URL - append a '/' to the end if it does not exist
-    var baseUrl = url.endsWith('/') ? url : url.concat('/');
-    var target = baseUrl.concat(value, existsApiPhrase);
+    const baseUrl = url.endsWith('/') ? url : url.concat('/');
+    const target = baseUrl.concat(value, existsApiPhrase);
 
     return $http.get(target)
       .then(util.unwrapHttpResponse);
+  }
+
+  function check(url, value, cacheBust = false) {
+    return fetcher(url, value, cacheBust);
   }
 }
