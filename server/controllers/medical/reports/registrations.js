@@ -1,4 +1,3 @@
-
 /**
  * @overview reports/registrations
  *
@@ -33,15 +32,13 @@ const TEMPLATE = './server/controllers/medical/reports/registrations.handlebars'
  *
  * GET /reports/patient/registrations
  */
-function build(req, res, next) {
+async function build(req, res, next) {
   const options = _.clone(req.query);
 
   _.extend(options, {
     filename : 'PATIENT_REG.PAGE_TITLE',
     csvKey : 'patients',
     orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   let report;
@@ -50,17 +47,13 @@ function build(req, res, next) {
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
     delete options.orientation;
-  } catch (e) {
-    next(e);
-    return;
-  }
 
-  const filters = shared.formatFilters(options);
+    const filters = shared.formatFilters(options);
 
-  // enforce detailed columns
-  options.detailed = 1;
+    // enforce detailed columns
+    options.detailed = 1;
 
-  const sql = `
+    const sql = `
     SELECT COUNT(patient.uuid) AS numPatients, MIN(patient.created_at) AS minDate, MAX(patient.created_at) AS maxDate,
       COUNT(DISTINCT(DATE(patient.created_at))) AS numDays,
       SUM(sex = 'F') AS numFemales, ROUND(SUM(sex = 'F') / COUNT(patient.uuid) * 100) AS percentFemales,
@@ -71,37 +64,27 @@ function build(req, res, next) {
     WHERE patient.uuid IN (?);
   `;
 
-  const data = { filters };
+    const patients = await Patients.find(options);
 
-  Patients.find(options)
-    .then(patients => {
-      // calculate ages with moment
-      patients.forEach(patient => {
-        patient.age = moment().diff(patient.dob, 'years');
-      });
+    // calculate ages with moment
+    patients.forEach(patient => {
+      patient.age = moment().diff(patient.dob, 'years');
+    });
 
 
-      data.patients = patients;
-
-
-      // if no patients matched the previous query, set the promise value to false
-      // and skip rendering aggregates in the handlbars view
-      if (patients.length === 0) { return false; }
-
+    let aggregates = {};
+    if (patients.length !== 0) {
       // gather the uuids for the aggregate queries
       const uuids = patients.map(p => db.bid(p.uuid));
+      aggregates = await db.one(sql, [uuids]);
+    }
 
-      return db.one(sql, [uuids]);
-    })
-    .then(aggregates => {
-      data.aggregates = aggregates;
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    const result = await report.render({ patients, filters, aggregates });
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+
+  }
 }
 
 module.exports = build;

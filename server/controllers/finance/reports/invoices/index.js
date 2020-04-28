@@ -40,9 +40,7 @@ exports.creditNote = creditNote;
  * @param {array} data invoice patient report of metadata
  * @return {object} promise
  */
-function report(req, res, next) {
-  let reportInstance;
-
+async function report(req, res, next) {
   const query = _.clone(req.query);
   const filters = shared.formatFilters(query);
 
@@ -53,16 +51,12 @@ function report(req, res, next) {
   });
 
   try {
-    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
-  } catch (e) {
-    next(e);
-    return;
-  }
+    const reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
 
-  // This is an easy way to make sure that all the data is captured from any
-  // given search without having to parse the parameters.  Just map the UUIDs
-  // and then we will use only the values previously used.
-  const sql = `
+    // This is an easy way to make sure that all the data is captured from any
+    // given search without having to parse the parameters.  Just map the UUIDs
+    // and then we will use only the values previously used.
+    const sql = `
     SELECT MIN(invoice.date) AS minDate, MAX(invoice.date) AS maxDate,
       SUM(invoice.cost) AS amount, COUNT(DISTINCT(user_id)) AS numUsers,
       COUNT(invoice.uuid) AS numInvoices,
@@ -73,32 +67,34 @@ function report(req, res, next) {
     WHERE invoice.uuid IN (?);
   `;
 
-  const data = { filters };
+    const rows = await Invoices.find(query);
+    const uuids = rows.map(row => db.bid(row.uuid));
 
-  Invoices.find(query)
-    .then(rows => {
-      data.rows = rows;
-      const uuids = rows.map(row => db.bid(row.uuid));
+    // if no uuids, return false as the aggregates
+    let aggregates = {};
+    if (uuids.length > 0) {
+      aggregates = await db.one(sql, [uuids]);
+    }
 
-      // if no uuids, return false as the aggregates
-      if (!uuids.length) { return false; }
+    const hasMultipleProjects = aggregates.numProjects > 1;
 
-      return db.one(sql, [uuids]);
-    })
-    .then(aggregates => {
-      data.aggregates = aggregates;
-      data.hasMultipleProjects = aggregates.numProjects > 1;
-      return query.project_id ? Projects.findDetails(query.project_id) : {};
-    })
-    .then(project => {
-      data.project = project;
-      return reportInstance.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    let project = {};
+    if (query.project_id) {
+      project = await Projects.findDetails(query.project_id);
+    }
+
+    const result = await reportInstance.render({
+      project,
+      aggregates,
+      hasMultipleProjects,
+      rows,
+      filters,
+    });
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+
+  }
 }
 
 /** receipt */

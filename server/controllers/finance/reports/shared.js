@@ -181,6 +181,9 @@ const filters = [{
 // into human-readable text to be placed in the report, showing the properties
 // filtered on.
 function formatFilters(qs) {
+
+  const displayValueMap = parseDisplayValues(qs.displayValues);
+
   return filters.filter(filter => {
     const value = qs[filter.field];
 
@@ -189,12 +192,26 @@ function formatFilters(qs) {
         const service = new PeriodService(new Date());
         filter.value = service.periods[value].translateKey;
       } else {
-        filter.value = value;
+
+        // if there is a display value for this field, show it.  Otherwise, default
+        // to the old value
+        filter.value = displayValueMap[filter.field] || value;
       }
+
       return true;
     }
     return false;
   });
+}
+
+
+function parseDisplayValues(displayValues = '') {
+  return displayValues.split(',')
+    .reduce((map, keypair) => {
+      const [key, value] = keypair.split(':');
+      map[key] = value;
+      return map;
+    }, {});
 }
 
 exports.formatFilters = formatFilters;

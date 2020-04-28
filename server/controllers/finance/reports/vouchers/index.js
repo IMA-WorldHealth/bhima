@@ -31,7 +31,7 @@ exports.report = report;
  *
  * @method receipt
  */
-function receipt(req, res, next) {
+async function receipt(req, res, next) {
   const metadata = {
     enterprise : req.session.enterprise,
     project    : req.session.project,
@@ -40,7 +40,6 @@ function receipt(req, res, next) {
 
   const options = req.query;
 
-  let receiptReport;
   const data = {};
   const record = {};
 
@@ -52,43 +51,35 @@ function receipt(req, res, next) {
   }
 
   try {
-    receiptReport = new ReportManager(template, req.session, options);
+    const receiptReport = new ReportManager(template, req.session, options);
+
+    const voucher = await Vouchers.lookupVoucher(req.params.uuid);
+
+    voucher.isCreditNoted = voucher.reversed === 1;
+    voucher.barcode = barcode.generate(entityIdentifier, voucher.uuid);
+
+    // voucher details
+    record.details = voucher;
+
+    // voucher transaction rows
+    record.items = voucher.items;
+
+    data.numberOfLines = voucher.items.length;
+    data.showNumberOfLines = (data.numberOfLines >= 6);
+
+    // populate data for the view
+    _.extend(data, record, metadata);
+
+    // if voucher is reversed, get the reversing document identifier
+    if (voucher.reversed === 1) {
+      record.details.creditNoteVoucher = await findCreditNotedReference(db.bid(voucher.uuid));
+    }
+
+    const result = await receiptReport.render(data);
+    res.set(result.headers).send(result.report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  return Vouchers.lookupVoucher(req.params.uuid)
-    .then((voucher) => {
-      voucher.isCreditNoted = voucher.reversed === 1;
-      voucher.barcode = barcode.generate(entityIdentifier, voucher.uuid);
-
-      // voucher details
-      record.details = voucher;
-
-      // voucher transaction rows
-      record.items = voucher.items;
-
-      data.numberOfLines = voucher.items.length;
-      data.showNumberOfLines = (data.numberOfLines >= 6);
-
-      // populate data for the view
-      _.extend(data, record, metadata);
-
-      if (voucher.reversed === 1) {
-        return creditNotedRef(db.bid(voucher.uuid));
-      }
-      return null;
-    }).then(creditNoted => {
-      if (creditNoted) {
-        record.details.creditNoteVoucher = creditNoted;
-      }
-      return receiptReport.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 
@@ -110,28 +101,25 @@ async function report(req, res, next) {
     const reporter = new ReportManager(REPORT_TEMPLATE, req.session, options);
     delete options.orientation;
 
-    const data = { filters };
-
     const [rows, totals] = await Promise.all([
       Vouchers.find(options),
       Vouchers.totalAmountByCurrency(options),
     ]);
 
-    _.extend(data, { rows, totals });
-
-    const result = await reporter.render(data);
+    const result = await reporter.render({ filters, rows, totals });
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
   }
 }
 
-function creditNotedRef(uuid) {
+function findCreditNotedReference(uuid) {
   const sql = `
     SELECT dm.text as reference
     FROM voucher v
     JOIN  document_map dm ON v.uuid = dm.uuid
     WHERE v.reference_uuid = ?
   `;
+
   return db.one(sql, db.bid(uuid));
 }
