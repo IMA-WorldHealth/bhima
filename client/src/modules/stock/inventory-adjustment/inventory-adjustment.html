@@ -62,18 +62,23 @@
 
       <!-- "Add number of grid rows" input-group -->
       <div class="row" style="padding-bottom : 5px;">
-        <div class="col-xs-12">
+        <div class="col-xs-6">
           <bh-add-item
-            disable="true"
+            disable="false"
             callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
+        </div>
+        <div class="col-xs-6" style="text-align: right;">
+          <bh-filter-toggle on-toggle="StockCtrl.toggleInlineFilter()">
+            <span translate>FORM.LABELS.FILTER</span>
+          </bh-filter-toggle>
         </div>
       </div>
 
       <!-- grid -->
       <div id="stock-adjustment-grid"
         ui-grid="StockCtrl.gridOptions"
-        style="height: 300px; width: 100%;"
+        style="height: 600px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns>
       </div>

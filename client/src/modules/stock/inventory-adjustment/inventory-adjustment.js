@@ -55,6 +55,7 @@ function StockInventoryAdjustmentController(
       width : 25,
       displayName : '',
       cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
+      enableFiltering : false,
     },
 
     {
@@ -70,31 +71,33 @@ function StockInventoryAdjustmentController(
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
+      enableSorting : true,
     },
 
     {
-      field : 'lot',
+      field : 'label',
       width : 150,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
-    },
-
-    {
-      field : 'quantity',
-      width : 150,
-      displayName : 'TABLE.COLUMNS.QUANTITY',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
+      cellTemplate : 'modules/stock/inventory-adjustment/templates/lot.tmpl.html',
+      enableSorting : true,
     },
 
     {
       field : 'available_lot',
       width : 150,
-      displayName : 'TABLE.COLUMNS.AVAILABLE',
+      displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
+    },
+
+    {
+      field : 'quantity',
+      width : 180,
+      displayName : 'INVENTORY_ADJUSTMENT.NEW_QUANTITY',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
     },
 
     {
@@ -104,25 +107,30 @@ function StockInventoryAdjustmentController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
     },
-
-    {
-      field : 'actions',
-      displayName : '...',
-      width : 25,
-      cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
-    },
   ];
 
   // grid options
   vm.gridOptions = {
     appScopeProvider : vm,
-    enableSorting : false,
+    enableSorting : true,
     enableColumnMenus : false,
     columnDefs : columns,
     data : vm.Stock.store.data,
     fastWatch : true,
     flatEntityAccess : true,
     rowTemplate : 'modules/templates/grid/error.row.html',
+    onRegisterApi : onRegisterApiFn,
+  };
+
+  // register api
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  // inline filter
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
   // on lot select
@@ -183,6 +191,30 @@ function StockInventoryAdjustmentController(
     Stock.inventories.read(null, { depot_uuid : depot.uuid })
       .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
+        return Stock.lots.read(null, {
+          depot_uuid : depot.uuid,
+          includeEmptyLot : 0,
+          dateTo : vm.movement.date,
+        });
+      })
+      .then(lots => {
+        addItems(lots.length);
+        vm.Stock.store.data.forEach((item, index) => {
+          const lot = lots[index];
+          item.inventory = {
+            inventory_uuid : lot.inventory_uuid,
+            text : lot.text,
+            code : lot.code,
+          };
+          item.lot = lot;
+          item.quantity = lot.quantity;
+          // added for sorting on these columns
+          item.code = lot.code;
+          item.description = lot.text;
+          item.label = lot.label;
+          // set item lots details
+          configureItem(item);
+        });
         checkValidity();
       })
       .catch(Notify.handleError);
@@ -219,11 +251,14 @@ function StockInventoryAdjustmentController(
 
     const lots = vm.Stock.store.data.map((row) => {
       const out = row.lot;
+      out.oldQuantity = angular.copy(out.quantity);
       out.quantity = row.quantity;
       return out;
     });
 
-    movement.lots = lots;
+    movement.lots = lots.filter(lot => {
+      return lot.quantity !== lot.oldQuantity;
+    });
 
     return Stock.inventoryAdjustment.create(movement)
       .then(document => {

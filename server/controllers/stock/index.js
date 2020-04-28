@@ -205,21 +205,23 @@ function createIntegration(req, res, next) {
 async function createInventoryAdjustment(req, res, next) {
   try {
     const movement = req.body;
-    const { lots } = movement;
+
+    const lots = movement.lots
+      .filter(l => l.quantity !== l.oldQuantity);
 
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
     }
 
     // selected lots identifiers
-    const inventoryUuids = lots.map(l => l.inventory_uuid);
+    const inventoryLotUuids = lots.map(l => l.uuid);
 
     // get list of lots with their quantities
     const allLots = await core.getLotsDepot(null, { depot_uuid : movement.depot_uuid });
 
-    // reverse all selected inventory to have finally what the user give
+    // reverse all selected lots
     const availableLots = allLots.filter(lot => {
-      return inventoryUuids.includes(lot.inventory_uuid);
+      return inventoryLotUuids.includes(lot.uuid);
     });
 
     // pass reverse operations
@@ -293,7 +295,12 @@ async function createInventoryAdjustment(req, res, next) {
       date : new Date(movement.date),
       user : req.session.user.id,
     };
-    const positiveLots = lots.filter(lot => lot.quantity > 0);
+    const positiveLots = lots
+      .filter(lot => lot.quantity > 0 && (lot.quantity !== lot.oldQuantity))
+      .map(lot => {
+        delete lot.oldQuantity;
+        return lot;
+      });
     movement.is_exit = 0;
     movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
     movement.lots = positiveLots;

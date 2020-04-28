@@ -233,6 +233,8 @@
   },
   "INVENTORY_ADJUSTMENT":{
     "TITLE":"Stock Inventory Adjustment",
-    "DESC":"This inventory adjustment module allows you to define article stocks; after this operation all the lots which are not defined here for the selected articles will be emptied"
+    "DESC":"This inventory adjustment module allows you to define article stocks; after this operation all the lots which are not defined here for the selected articles will be emptied",
+    "NEW_QUANTITY":"New Quantity",
+    "OLD_QUANTITY":"Old Quantity"
   }
 }

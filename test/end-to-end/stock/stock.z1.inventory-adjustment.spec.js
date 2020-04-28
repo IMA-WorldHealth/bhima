@@ -24,13 +24,16 @@ function StockInventoryAdjustmentTests() {
 
     await page.setDescription(DESCRIPTION);
 
-    await page.addRows(2);
-
-    // set the QUININE-A to 17
-    await page.setItem(0, 'Quinine', 'QUININE-A', 17);
+    // set all other to zero
+    await page.setQuantity(1, 5, 0);
+    await page.setQuantity(3, 5, 0);
+    await page.setQuantity(4, 5, 0);
 
     // set the VITAMINE-A to 23
-    await page.setItem(1, 'Vitamine', 'VITAMINE-A', 23);
+    await page.setQuantity(0, 5, 23);
+
+    // set the QUININE-C to 17
+    await page.setQuantity(2, 5, 17);
 
     // submit
     await page.submit();

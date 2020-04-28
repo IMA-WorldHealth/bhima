@@ -73,6 +73,14 @@ function StockAdjustmentPage() {
   };
 
   /**
+   * @method setQuantity
+   */
+  page.setQuantity = async (row, col, quantity) => {
+    const quantityCell = await GU.getCell(gridId, row, col);
+    await FU.input('row.entity.quantity', quantity, quantityCell);
+  };
+
+  /**
    * @method submit
    */
   page.submit = async function submit() {
