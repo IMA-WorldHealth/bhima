@@ -10,7 +10,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
 
 
 --@lomamech 2020-04-25
-ALTER TABLE `stock_movement` ADD COLUMN `period_id` MEDIUMINT(8) UNSIGNED DEFAULT NULL;
+ALTER TABLE `stock_movement` ADD COLUMN `period_id` MEDIUMINT(8) UNSIGNED DEFAULT NOT NULL;
 ALTER TABLE `stock_movement` ADD FOREIGN KEY (`period_id`) REFERENCES `period` (`id`);
 
 UPDATE stock_movement AS sm

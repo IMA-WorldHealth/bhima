@@ -44,7 +44,7 @@ function importStock(req, res, next) {
 
   Fiscal.lookupFiscalYearByDate(new Date())
     .then(result => {
-      periodId = result.id || null;
+      periodId = result.id;
 
       // be sure that the depot exist
       return db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid);

@@ -1980,7 +1980,7 @@ CREATE TABLE `stock_movement` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(11) UNSIGNED NOT NULL,
   `invoice_uuid`    BINARY(16) NULL,
-  `period_id`       MEDIUMINT(8) UNSIGNED DEFAULT NULL,
+  `period_id`       MEDIUMINT(8) UNSIGNED DEFAULT NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   INDEX `document_uuid` (`document_uuid`),

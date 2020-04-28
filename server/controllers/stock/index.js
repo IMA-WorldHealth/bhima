@@ -54,7 +54,7 @@ function createStock(req, res, next) {
 
   Fiscal.lookupFiscalYearByDate(params.date)
     .then(result => {
-      const periodId = result.id || null;
+      const periodId = result.id;
 
       const transaction = db.transaction();
       const document = {
@@ -142,7 +142,7 @@ function createIntegration(req, res, next) {
 
   Fiscal.lookupFiscalYearByDate(params.movement.date)
     .then(result => {
-      const periodId = result.id || null;
+      const periodId = result.id;
 
       const integration = {
         uuid : db.bid(identifier),
@@ -218,7 +218,7 @@ function createMovement(req, res, next) {
 
   Fiscal.lookupFiscalYearByDate(params.date)
     .then(result => {
-      params.period_id = result.id || null;
+      params.period_id = result.id;
 
       const metadata = {
         project : req.session.project,
