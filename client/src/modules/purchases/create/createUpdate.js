@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
-  'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService', 'InventoryService',
+  'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
 ];
 
 
 function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
-  Session, util, Receipts, bhConstants, Stock, Inventory) {
+  Session, util, Receipts, bhConstants, Stock) {
   const vm = this;
 
   // create a new purchase order form
@@ -18,7 +18,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
-  vm.loagingState = false;
+  vm.loadingState = false;
   vm.setSupplier = setSupplier;
   vm.optimalPurchase = optimalPurchase;
   vm.optimalPO = false;
@@ -82,12 +82,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     onRegisterApi,
     data : vm.order.store.data,
   };
-
-  Inventory.read(null, { detailed : 1, locked : 0 })
-    .then((inventories) => {
-      vm.inventories = inventories;
-    })
-    .catch(Notify.handleError);
 
   // this function will be called whenever items change in the grid.
   function handleUIGridChange() {
@@ -153,7 +147,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   }
 
   // clears the module, resetting it
-  // TODO : Choose a better name for a starting method
   function clear(form) {
     // remove the data
     delete vm.supplier;
@@ -176,13 +169,15 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
       require_po : 1,
     };
 
+    vm.optimalPurchaseLoading = true;
+
     Stock.inventories.read(null, filters)
       .then(rows => {
         if (!rows.length) {
           return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
         }
 
-        const optimalPurchaseData = PurchaseOrder.formatOptimalPurchase(vm.inventories, rows);
+        const optimalPurchaseData = vm.order.formatOptimalPurchase(rows);
 
         // clear the grid as suggested above
         vm.order.clear();
@@ -190,11 +185,14 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
           vm.order.store.post(item);
         });
 
+
+        vm.order.digest();
+
         return 0;
       })
       .catch(Notify.handleError)
       .finally(() => {
-        vm.loadingState = false;
+        vm.optimalPurchaseLoading = false;
       });
   }
 

@@ -113,9 +113,14 @@
                 type="button"
                 ng-click="PurchaseCtrl.optimalPurchase()"
                 id="optimal_purchase"
-                ng-disabled="!PurchaseCtrl.supplier">
-                <i class="fa fa-shopping-cart"></i>
-                <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span>
+                ng-disabled="!PurchaseCtrl.supplier || PurchaseCtrl.optimalPurchaseLoading">
+                <span ng-hide="PurchaseCtrl.optimalPurchaseLoading">
+                  <i class="fa fa-shopping-cart"></i>
+                  <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span>
+                </span>
+                <span ng-show="PurchaseCtrl.optimalPurchaseLoading">
+                  <span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span>
+                </span>
               </button>
             </div>
 
