@@ -28,6 +28,7 @@
           <!-- cash human readable reference  -->
           <div class="form-group">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
             <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
           </div>
 
