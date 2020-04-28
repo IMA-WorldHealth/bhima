@@ -134,7 +134,7 @@
     },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",
-      "TITLE": "Purchase order analysis"
+      "TITLE": "Purchase Order Analysis"
     },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
