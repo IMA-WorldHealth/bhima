@@ -25,15 +25,16 @@ function StockInventoryAdjustmentTests() {
     await page.setDescription(DESCRIPTION);
 
     // set all other to zero
-    await page.setQuantity(1, 5, 0);
-    await page.setQuantity(3, 5, 0);
-    await page.setQuantity(4, 5, 0);
+    for (let i = 0; i < 17; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      await page.setQuantity(i, 5, 0);
+    }
 
     // set the VITAMINE-A to 23
-    await page.setQuantity(0, 5, 23);
+    await page.setQuantity(3, 5, 23);
 
     // set the QUININE-C to 17
-    await page.setQuantity(2, 5, 17);
+    await page.setQuantity(9, 5, 17);
 
     // submit
     await page.submit();
