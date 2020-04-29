@@ -89,6 +89,7 @@ function StockInventoryAdjustmentController(
       displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
+      enableFiltering : false,
     },
 
     {
@@ -98,6 +99,7 @@ function StockInventoryAdjustmentController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
+      enableFiltering : false,
     },
 
     {
@@ -106,6 +108,7 @@ function StockInventoryAdjustmentController(
       displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
+      enableFiltering : false,
     },
   ];
 
@@ -186,17 +189,14 @@ function StockInventoryAdjustmentController(
 
   // ============================ Inventories ==========================
   function loadInventories(depot) {
+    vm.loading = true;
     setupStock();
 
-    Stock.inventories.read(null, { depot_uuid : depot.uuid })
-      .then((inventories) => {
-        vm.selectableInventories = angular.copy(inventories);
-        return Stock.lots.read(null, {
-          depot_uuid : depot.uuid,
-          includeEmptyLot : 0,
-          dateTo : vm.movement.date,
-        });
-      })
+    Stock.lots.read(null, {
+      depot_uuid : depot.uuid,
+      includeEmptyLot : 0,
+      dateTo : vm.movement.date,
+    })
       .then(lots => {
         addItems(lots.length);
         vm.Stock.store.data.forEach((item, index) => {
@@ -217,24 +217,25 @@ function StockInventoryAdjustmentController(
         });
         checkValidity();
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // check validity
   function checkValidity() {
-    const lotsExists = vm.Stock.store.data.every((item) => {
-      return item.quantity >= 0 && item.lot && item.lot.uuid;
-    });
+    const lotsExists = vm.Stock.hasValidLots();
 
     vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
   }
 
   // ================================= Submit ================================
-  function submit() {
+  function submit(form) {
     // check stock validity
     checkValidity();
 
-    if (!vm.validForSubmit) { return 0; }
+    if (!vm.validForSubmit || form.$invalid) { return 0; }
 
     if (vm.Stock.hasDuplicatedLots()) {
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
@@ -251,7 +252,7 @@ function StockInventoryAdjustmentController(
 
     const lots = vm.Stock.store.data.map((row) => {
       const out = row.lot;
-      out.oldQuantity = angular.copy(out.quantity);
+      out.oldQuantity = out.quantity;
       out.quantity = row.quantity;
       return out;
     });
@@ -259,6 +260,11 @@ function StockInventoryAdjustmentController(
     movement.lots = lots.filter(lot => {
       return lot.quantity !== lot.oldQuantity;
     });
+
+    if (!movement.lots.length) {
+      Notify.warn('INVENTORY_ADJUSTMENT.NO_CHANGE');
+      return 0;
+    }
 
     return Stock.inventoryAdjustment.create(movement)
       .then(document => {

@@ -61,14 +61,8 @@
       </div>
 
       <!-- "Add number of grid rows" input-group -->
-      <div class="row" style="padding-bottom : 5px;">
-        <div class="col-xs-6">
-          <bh-add-item
-            disable="false"
-            callback="StockCtrl.addItems(numItem)">
-          </bh-add-item>
-        </div>
-        <div class="col-xs-6" style="text-align: right;">
+      <div class="row" style="margin-bottom: 5px;">
+        <div class="col-xs-12" style="text-align: right;">
           <bh-filter-toggle on-toggle="StockCtrl.toggleInlineFilter()">
             <span translate>FORM.LABELS.FILTER</span>
           </bh-filter-toggle>
@@ -81,6 +75,11 @@
         style="height: 600px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns>
+        <bh-grid-loading-indicator
+          loading-state="StockCtrl.loading"
+          empty-state="StockCtrl.gridOptions.data.length === 0"
+          error-state="StockCtrl.hasError">
+        </bh-grid-loading-indicator>
       </div>
 
       <!-- footer -->
