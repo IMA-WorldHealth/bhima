@@ -53,9 +53,6 @@ angular.module('bhima.routes')
         url         : '/stock/inventory-adjustment',
         controller  : 'StockInventoryAdjustmentController as StockCtrl',
         templateUrl : 'modules/stock/inventory-adjustment/inventory-adjustment.html',
-        params : {
-          filters : [],
-        },
       })
 
       .state('stockImport', {

@@ -23,7 +23,6 @@ function StockInventoryAdjustmentController(
   // global variables
   vm.Stock = new StockForm('StockInventoryAdjustment');
   vm.movement = {};
-  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
@@ -40,13 +39,10 @@ function StockInventoryAdjustmentController(
   vm.maxDate = new Date();
 
   // bind methods
-  vm.addItems = addItems;
-  vm.removeItem = removeItem;
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
   vm.selectedLots = [];
-  vm.onLotSelect = onLotSelect;
 
   // grid columns
   const columns = [
@@ -136,30 +132,9 @@ function StockInventoryAdjustmentController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-  // on lot select
-  function onLotSelect(row) {
-    if (!row.lot || !row.lot.uuid) { return; }
-
-    checkValidity();
-    refreshSelectedLotsList();
-  }
-
-  // update the list of selected lots
-  function refreshSelectedLotsList() {
-    vm.selectedLots = vm.Stock.store.data
-      .filter(item => item.lot && item.lot.uuid)
-      .map(item => item.lot.uuid);
-  }
-
   // add items
   function addItems(n) {
     vm.Stock.addItems(n);
-    checkValidity();
-  }
-
-  // remove item
-  function removeItem(item) {
-    vm.Stock.removeItem(item.id);
     checkValidity();
   }
 
