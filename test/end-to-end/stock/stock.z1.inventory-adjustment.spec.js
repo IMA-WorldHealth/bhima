@@ -25,10 +25,11 @@ function StockInventoryAdjustmentTests() {
     await page.setDescription(DESCRIPTION);
 
     // set all other to zero
+    const promiseDb = [];
     for (let i = 0; i < 17; i++) {
-      // eslint-disable-next-line no-await-in-loop
-      await page.setQuantity(i, 5, 0);
+      promiseDb.push(page.setQuantity(i, 5, 0));
     }
+    await Promise.all(promiseDb);
 
     // set the VITAMINE-A to 23
     await page.setQuantity(3, 5, 23);

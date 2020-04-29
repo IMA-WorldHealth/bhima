@@ -27,6 +27,7 @@ function StockLotsRegistryTests() {
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
+    await modal.setDepot('Depot Principal');
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
