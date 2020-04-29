@@ -222,7 +222,7 @@ async function createInventoryAdjustment(req, res, next) {
     const lots = movement.lots
       .filter(l => l.quantity !== l.oldQuantity);
 
-    const period = await Fiscal.lookupFiscalYearByDate(movement.date);
+    const period = await Fiscal.lookupFiscalYearByDate(new Date(movement.date));
     const periodId = period.id;
 
     if (!movement.depot_uuid) {
@@ -322,6 +322,7 @@ async function createInventoryAdjustment(req, res, next) {
     movement.is_exit = 0;
     movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
     movement.lots = positiveLots;
+    movement.period_id = periodId;
 
     await normalMovement(document, movement, req.session);
     res.status(201).json(document);
