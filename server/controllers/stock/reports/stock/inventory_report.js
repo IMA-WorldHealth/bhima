@@ -2,6 +2,8 @@ const {
   _, db, ReportManager, Stock, pdfOptions, STOCK_INVENTORY_REPORT_TEMPLATE,
 } = require('../common');
 
+const shared = require('../../../finance/reports/shared');
+
 /**
  * @method stockInventoryReport
  *
@@ -11,47 +13,37 @@ const {
  *
  * GET /reports/stock/inventory
  */
-function stockInventoryReport(req, res, next) {
-  const data = {};
-  let options;
-  let report;
-
+async function stockInventoryReport(req, res, next) {
   const optionReport = _.extend(req.query, pdfOptions, {
     filename : 'TREE.STOCK_INVENTORY_REPORT',
   });
 
+  const filters = shared.formatFilters(req.query);
+
   // set up the report with report manager
   try {
-    options = req.query.params ? JSON.parse(req.query.params) : {};
-    report = new ReportManager(STOCK_INVENTORY_REPORT_TEMPLATE, req.session, optionReport);
+    const options = req.query.params ? JSON.parse(req.query.params) : {};
+    const report = new ReportManager(STOCK_INVENTORY_REPORT_TEMPLATE, req.session, optionReport);
+
+    const [inventory, depot, rows] = await Promise.all([
+      await db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),
+      await db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]),
+      await Stock.getInventoryMovements(options),
+    ]);
+
+    const data = { filters, inventory, depot };
+
+    data.rows = rows.movements;
+    data.totals = rows.totals;
+    data.result = rows.result;
+    data.csv = rows.movements;
+    data.dateTo = options.dateTo;
+
+    const result = await report.render(data);
+    res.set(result.headers).send(result.report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  return db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)])
-    .then((inventory) => {
-      data.inventory = inventory;
-
-      return db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]);
-    })
-    .then((depot) => {
-      data.depot = depot;
-      return Stock.getInventoryMovements(options);
-    })
-    .then((rows) => {
-      data.rows = rows.movements;
-      data.totals = rows.totals;
-      data.result = rows.result;
-      data.csv = rows.movements;
-      data.dateTo = options.dateTo;
-
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 module.exports = stockInventoryReport;

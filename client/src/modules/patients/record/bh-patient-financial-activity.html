@@ -84,7 +84,17 @@
         <h5 style="margin-top:0;">
           <i class="fa fa-medkit" aria-hidden="true"></i>
           <strong>
+            <a href ui-sref="stockMovements({
+              filters : [
+                { key : 'entity_uuid', value : $ctrl.patientUuid, displayValue: $ctrl.data.patient.display_name },
+                { key : 'period', value : 'allTime' }
+              ]
+            })">
             <span translate>PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT</span>
+            <span ng-if="!$ctrl.noStockMovement">
+              ({{$ctrl.dataMovement.length}})
+            </span>
+            </a>
           </strong>
         </h5>
 

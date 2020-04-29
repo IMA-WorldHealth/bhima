@@ -120,7 +120,6 @@ function StockMovementsController(
     }, {
       field : 'flux_id',
       displayName : 'STOCK.FLUX',
-      aggregationHideLabel : true,
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
