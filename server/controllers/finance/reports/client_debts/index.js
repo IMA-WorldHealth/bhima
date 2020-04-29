@@ -23,95 +23,97 @@ const SUPPORT_TRANSACTION_TYPE = 4;
 async function report(req, res, next) {
   try {
     const qs = _.clone(req.query);
-    const { dateFrom, dateTo } = qs;
-    const groupUuid = req.query.group_uuid;
+    const groupUuid = db.bid(req.query.group_uuid);
     const showDetails = parseInt(req.query.shouldShowDebtsDetails, 10);
     const metadata = _.clone(req.session);
 
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
-
-    const patientsDebtsQuery = `
-      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl
-      JOIN debtor_group dg ON dg.account_id = gl.account_id
-      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
-      JOIN entity_map AS em ON em.uuid = p.uuid
-      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
+    const entitiesSQL = `
+      SELECT BUID(debtor.uuid) as uuid, em.text AS reference,
+        (SELECT patient.display_name FROM patient WHERE patient.debtor_uuid = debtor.uuid) AS display_name,
+        (SELECT e.creditor_uuid FROM employee e
+          JOIN patient p ON e.patient_uuid = p.uuid
+          WHERE p.debtor_uuid = debtor.uuid
+        ) AS is_employee
+        FROM debtor JOIN entity_map em
+        ON debtor.uuid = em.uuid
+      WHERE debtor.group_uuid = ?
+      ORDER BY display_name, em.text;
     `;
-
-    const employeesDebtsQuery = `
-      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl
-      JOIN debtor_group dg ON dg.account_id = gl.account_id
-      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
-      JOIN employee e ON e.patient_uuid = p.uuid
-      JOIN entity_map AS em ON em.uuid = p.uuid
-      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
-    `;
-
-    const notEmployeesDebtsQuery = `
-      SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl
-      JOIN debtor_group dg ON dg.account_id = gl.account_id
-      JOIN patient p ON p.debtor_uuid = gl.entity_uuid
-      JOIN entity_map AS em ON em.uuid = p.uuid
-      WHERE dg.account_id = ? AND (gl.trans_date BETWEEN ? AND ?)
-        AND p.uuid NOT IN (SELECT patient_uuid as uuid FROM employee)
-    `;
-
-    const clientSupportDebtsQuery = `
-      SELECT em.text as reference, p.display_name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
-      FROM general_ledger gl
-      JOIN employee e ON e.creditor_uuid = gl.entity_uuid
-      JOIN patient p ON p.uuid = e.patient_uuid
-      JOIN entity_map AS em ON em.uuid = e.creditor_uuid
-      WHERE p.debtor_uuid IN (SELECT uuid AS uuid FROM debtor WHERE group_uuid = ?)
-        AND (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
-    `;
-
     const clientQuery = `
-      SELECT uuid, name, account_id FROM debtor_group WHERE uuid = ?;
+      SELECT BUID(uuid) AS uuid, name, account_id, account.number, account.label
+      FROM debtor_group JOIN account ON debtor_group.account_id = account.id WHERE uuid = ?;
     `;
 
-    const client = await db.one(clientQuery, [db.bid(groupUuid)]);
+    const sql = `
+      SELECT BUID(entity_uuid) AS uuid, IFNULL(SUM(ledger.debit_equiv), 0) AS debit,
+        IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+        IFNULL(SUM(ledger.debit_equiv) - SUM(ledger.credit_equiv), 0) AS balance
+      FROM (
+        SELECT entity_uuid, debit_equiv, credit_equiv FROM posting_journal
+        WHERE entity_uuid IN (SELECT uuid FROM debtor WHERE group_uuid = ?)
+       UNION ALL
+        SELECT entity_uuid, debit_equiv, credit_equiv FROM general_ledger
+        WHERE entity_uuid IN (SELECT uuid FROM debtor WHERE group_uuid = ?)
+      ) AS ledger
+      GROUP BY ledger.entity_uuid
+      HAVING balance <> 0;
+    `;
 
-    const groupByEntity = ' GROUP BY gl.entity_uuid ORDER BY p.display_name; ';
-    const parameters = [client.account_id, dateFrom, dateTo];
-    const parameters2 = [client.uuid, dateFrom, dateTo];
-
-    const [
-      patientsDebtsTotal,
-      patientsDebts,
-      employeesDebtsTotal,
-      employeesDebts,
-      notEmployeesDebtsTotal,
-      notEmployeesDebts,
-      clientSupportDebtsTotal,
-      clientSupportDebts,
-    ] = await Promise.all([
-      db.one(patientsDebtsQuery, parameters),
-      db.exec(patientsDebtsQuery.concat(groupByEntity), parameters),
-      db.one(employeesDebtsQuery, parameters),
-      db.exec(employeesDebtsQuery.concat(groupByEntity), parameters),
-      db.one(notEmployeesDebtsQuery, parameters),
-      db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters),
-      db.one(clientSupportDebtsQuery, parameters2),
-      db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2),
+    const [client, entities, balances] = await Promise.all([
+      await db.one(clientQuery, [groupUuid]),
+      await db.exec(entitiesSQL, [groupUuid]),
+      await db.exec(sql, [groupUuid, groupUuid]),
     ]);
 
+    const employees = [];
+    const patients = [];
+    let patientDebts = 0;
+    let employeeDebts = 0;
+
+    // weave the entities together so that the balances are assigned properly
+    entities.forEach(entity => {
+      balances.forEach(record => {
+        if (entity.uuid === record.uuid) {
+          Object.assign(entity, record);
+        }
+      });
+
+      // If there is no corresponding balance, exclude the debtor - they have
+      // a balanced account.  If we ever want to show _all_ debtors, even those
+      // with zero balances, this is the line to skip.
+      if (!entity.balance) { return; }
+
+
+      // classify debtors as patients or employees
+      if (entity.is_employee !== null) {
+        employees.push(entity);
+        employeeDebts += entity.balance;
+      } else {
+        patients.push(entity);
+        patientDebts += entity.balance;
+      }
+    });
+
+    // only look up prise en charge if there are employees in this debtor group.
+    let supported = [];
+    let supportedDebts = 0;
+    if (employees.length > 0) {
+      supported = await getDebtsSupportedByEmployees(groupUuid);
+      supportedDebts = supported.reduce((total, row) => total + row.balance, 0);
+    }
+
+    const grandTotal = patientDebts + employeeDebts + supportedDebts;
     const result = await rpt.render({
-      patientsDebtsTotal,
-      patientsDebts,
-      employeesDebtsTotal,
-      employeesDebts,
-      notEmployeesDebtsTotal,
-      notEmployeesDebts,
-      clientSupportDebtsTotal,
-      clientSupportDebts,
       client,
-      dateFrom,
-      dateTo,
+      employees,
+      employeeDebts,
+      patients,
+      patientDebts,
+      supported,
+      supportedDebts,
+      grandTotal,
       showDetails,
     });
 
@@ -119,4 +121,49 @@ async function report(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+/**
+ * @function getDebtsSupportedByEmployees
+ *
+ * @description
+ * This function looks up the debts supported by the employees in the general ledger and the posting journal.
+ * When a patient's debt is taken on by an employee, a transaction is passed crediting the patients debtor account
+ * and debiting an account of the accountant's choosing.  The employee's creditor_uuid is put in the entity_uuid
+ * column of the debiting writing.   Therefore, this query looks up all debts taken on by employees and groups them
+ * by employee.
+ */
+function getDebtsSupportedByEmployees(groupUuid) {
+  const sql = `
+    SELECT BUID(entity_uuid) AS uuid, em.text AS reference, p.display_name,
+      IFNULL(SUM(ledger.debit), 0) AS debit, IFNULL(SUM(ledger.credit), 0) AS credit,
+      IFNULL(SUM(ledger.debit) - SUM(ledger.credit), 0) AS balance
+    FROM (
+      SELECT entity_uuid, SUM(debit_equiv) debit, SUM(credit_equiv) credit FROM posting_journal
+      WHERE entity_uuid IN (
+        SELECT creditor_uuid FROM employee
+          JOIN patient ON employee.patient_uuid = patient.uuid
+          JOIN debtor ON patient.debtor_uuid = debtor.uuid
+        WHERE debtor.group_uuid = ?
+      ) AND transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
+      GROUP BY entity_uuid
+     UNION ALL
+      SELECT entity_uuid, SUM(debit_equiv) debit, SUM(credit_equiv) credit FROM general_ledger
+      WHERE entity_uuid IN (
+        SELECT creditor_uuid FROM employee
+          JOIN patient ON employee.patient_uuid = patient.uuid
+          JOIN debtor ON patient.debtor_uuid = debtor.uuid
+        WHERE debtor.group_uuid = ?
+      ) AND transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
+      GROUP BY entity_uuid
+    ) AS ledger
+    JOIN entity_map em ON ledger.entity_uuid = em.uuid
+    JOIN employee e ON ledger.entity_uuid = e.creditor_uuid
+    JOIN patient p ON e.patient_uuid = p.uuid
+    GROUP BY ledger.entity_uuid
+    HAVING balance <> 0
+    ORDER BY p.display_name;
+  `;
+
+  return db.exec(sql, [groupUuid, groupUuid]);
 }
