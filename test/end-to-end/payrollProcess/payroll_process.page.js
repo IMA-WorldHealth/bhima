@@ -1,6 +1,3 @@
-/* global element, by */
-/* eslint  */
-
 /**
  * This class is represents a Payroll Process Page in term of structure and
  * behaviour so it is a Payroll Process Page object
@@ -17,7 +14,6 @@ const components = require('../shared/components');
 class PayrollProcessPage {
   constructor() {
     this.gridId = 'multipayroll-grid';
-    this.multipayrollGrid = element(by.id(this.gridId));
     this.actionLinkColumn = 5;
   }
 

@@ -9,6 +9,7 @@
   "REGISTER" : "Register Employee",
   "REGISTRATION_FORM" : "Registration Form",
   "TITLE":"Employee Management",
-  "NO_GRADE":"No grade assigned"
+  "NO_GRADE":"No grade assigned",
+  "VIEW_EMPLOYEE" : "View Employee"
  }
 }

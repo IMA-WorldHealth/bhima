@@ -17,7 +17,7 @@ InvoiceRegistryController.$inject = [
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
   ModalService, Sorting, Columns, GridState, $state, Modals, Receipts, util,
-  Barcode
+  Barcode,
 ) {
   const vm = this;
 
