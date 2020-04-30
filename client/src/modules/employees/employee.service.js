@@ -1,7 +1,9 @@
 angular.module('bhima.services')
   .service('EmployeeService', EmployeeService);
 
-EmployeeService.$inject = ['FilterService', '$uibModal', 'PrototypeApiService', 'appcache', 'LanguageService', '$httpParamSerializer'];
+EmployeeService.$inject = [
+  'FilterService', '$uibModal', 'PrototypeApiService', 'appcache', 'LanguageService', '$httpParamSerializer',
+];
 
 /**
  * @class EmployeeService
@@ -96,14 +98,8 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
   function openSearchModal(params) {
     return $uibModal.open({
       templateUrl : 'modules/employees/registry/search.modal.html',
-      size : 'md',
-      keyboard : false,
-      animation : false,
-      backdrop : 'static',
       controller : 'EmployeeRegistryModalController as ModalCtrl',
-      resolve : {
-        filters : function paramsProvider() { return params; },
-      },
+      resolve : { filters : () => params },
     }).result;
   }
 
@@ -118,7 +114,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
     return $httpParamSerializer(options);
   }
 
-   // transform patient to employee
+  // transform patient to employee
   function patientToEmployee(data) {
     return service.$http.post(`/employees/patient_employee`, data)
       .then(service.util.unwrapHttpResponse);

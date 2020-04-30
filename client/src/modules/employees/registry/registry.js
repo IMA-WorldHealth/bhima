@@ -4,17 +4,18 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   '$state', 'EmployeeService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', 'GridColumnService', 'bhConstants',
-  'GridStateService',
+  'GridStateService', 'GridSortingService',
 ];
 
 /**
  * Employee Registry Controller
  *
+ * @description
  * This module is responsible for the management of Employe Registry.
  */
 function EmployeeRegistryController(
   $state, Employees, Notify, AppCache, util, Receipts, uiGridConstants, Columns,
-  bhConstants, GridState
+  bhConstants, GridState, Sorting,
 ) {
   const vm = this;
 
@@ -33,18 +34,17 @@ function EmployeeRegistryController(
 
   const columnDefs = [
     {
-      field                : 'code',
-      displayName          : 'TABLE.COLUMNS.REGISTRATION_NUMBER',
-      aggregationType      : uiGridConstants.aggregationTypes.count,
-      aggregationHideLabel : true,
-      headerCellFilter     : 'translate',
-      footerCellClass      : 'text-center',
-    },
-    {
       field                : 'reference',
       displayName          : 'TABLE.COLUMNS.REFERENCE',
       aggregationType      : uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
+      headerCellFilter     : 'translate',
+      footerCellClass      : 'text-center',
+      sortingAlgorithm : Sorting.algorithms.sortByReference,
+    },
+    {
+      field                : 'code',
+      displayName          : 'TABLE.COLUMNS.REGISTRATION_NUMBER',
       headerCellFilter     : 'translate',
       footerCellClass      : 'text-center',
     },
@@ -53,13 +53,6 @@ function EmployeeRegistryController(
       displayName      : 'TABLE.COLUMNS.NAME',
       headerCellFilter : 'translate',
       sort : { direction : uiGridConstants.ASC, priority : 1 },
-    },
-    {
-      field            : 'locked',
-      displayName      : 'FORM.LABELS.LOCKED',
-      headerCellFilter : 'translate',
-      width            : 30,
-      cellTemplate     : '/modules/employees/templates/locked.cell.html',
     },
     {
       field            : 'is_medical',
@@ -155,6 +148,13 @@ function EmployeeRegistryController(
       visible          : false,
     },
     {
+      field            : 'locked',
+      displayName      : 'FORM.LABELS.LOCKED',
+      headerCellFilter : 'translate',
+      width            : 30,
+      cellTemplate     : '/modules/employees/templates/locked.cell.html',
+    },
+    {
       name            : 'actions',
       displayName     : '',
       cellTemplate    : '/modules/employees/templates/action.cell.html',
@@ -162,7 +162,6 @@ function EmployeeRegistryController(
     },
   ];
 
-  /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider  : vm,
     showColumnFooter  : true,
@@ -171,10 +170,7 @@ function EmployeeRegistryController(
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs,
-  };
-
-  vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
+    onRegisterApi : (api) => { vm.gridApi = api; },
   };
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -195,10 +191,6 @@ function EmployeeRegistryController(
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
-  }
-
-  function isEmpty(object) {
-    return Object.keys(object).length === 0;
   }
 
   // this function loads employees from the database with search parameters
@@ -235,7 +227,7 @@ function EmployeeRegistryController(
 
         Employees.cacheFilters();
         vm.latestViewFilters = Employees.filters.formatView();
-        return load(Employees.filters.formatHTTP(true));
+        load(Employees.filters.formatHTTP(true));
       });
   }
 
