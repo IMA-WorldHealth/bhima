@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants', 'SessionService',
+  'ModalService', 'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -17,8 +17,8 @@ MultiplePayrollController.$inject = [
  * reordering, and many more features.
  */
 function MultiplePayrollController(
-  MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants, Session,
+  MultiplePayroll, Notify, Sorting, Columns, GridState, $state,
+  Modals, Receipts, uiGridConstants, Session,
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -31,19 +31,22 @@ function MultiplePayrollController(
   vm.clearGridState = clearGridState;
   vm.toggleInlineFilter = toggleInlineFilter;
 
-  // date format function
-  vm.format = util.formatDate;
-
   vm.loading = false;
   vm.activePosting = true;
   vm.activeConfig = true;
 
   const columnDefs = [{
+    field : 'reference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
+    footerCellClass : 'text-center',
+    sortingAlgorithm : Sorting.algorithms.sortByReference,
+  }, {
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
-    aggregationType  : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
   }, {
     field : 'code',
     displayName : 'FORM.LABELS.CODE',
@@ -52,11 +55,13 @@ function MultiplePayrollController(
     field : 'net_salary',
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
+    cellClass : 'text-right',
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
+    cellClass : 'text-right',
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'status_id',
@@ -82,9 +87,7 @@ function MultiplePayrollController(
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs,
-    onRegisterApi : function onRegisterApi(api) {
-      vm.gridApi = api;
-    },
+    onRegisterApi : (api) => { vm.gridApi = api; },
   };
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
@@ -105,7 +108,7 @@ function MultiplePayrollController(
           MultiplePayroll.filters.replaceFilters(changes);
           MultiplePayroll.cacheFilters();
           vm.latestViewFilters = MultiplePayroll.filters.formatView();
-          return load(MultiplePayroll.filters.formatHTTP(true));
+          load(MultiplePayroll.filters.formatHTTP(true));
         }
       });
   }
@@ -301,7 +304,6 @@ function MultiplePayrollController(
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-
         Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge, conversionRate);
       }
     } else {

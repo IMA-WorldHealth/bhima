@@ -8,7 +8,6 @@
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 
-
 function find(options) {
 
   // ensure epected options are parsed appropriately as binary
@@ -33,7 +32,7 @@ function find(options) {
       payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
       payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance
     FROM(
-      SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche,
+      SELECT BUID(employee.uuid) AS employee_uuid, em.text AS reference, employee.code, employee.date_embauche,
         employee.nb_enfant,employee.individual_salary, creditor_group.account_id,
         BUID(employee.creditor_uuid) AS creditor_uuid,
         UPPER(patient.display_name) AS display_name, patient.sex, BUID(paiement.uuid) AS uuid,
@@ -42,6 +41,7 @@ function find(options) {
         paiement.net_salary, paiement.working_day, paiement.total_day, paiement.daily_salary, paiement.amount_paid,
         paiement.status_id, paiement_status.text AS status
         FROM employee
+        JOIN entity_map em ON employee.creditor_uuid = em.uuid
         JOIN creditor ON creditor.uuid = employee.creditor_uuid
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
         JOIN patient ON patient.uuid = employee.patient_uuid
@@ -53,7 +53,7 @@ function find(options) {
         JOIN paiement_status ON paiement_status.id = paiement.status_id
         WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}'
       UNION
-        SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche,
+        SELECT BUID(employee.uuid) AS employee_uuid, em.text as reference, employee.code, employee.date_embauche,
         employee.nb_enfant, employee.individual_salary, creditor_group.account_id,
         BUID(employee.creditor_uuid) AS creditor_uuid, UPPER(patient.display_name) AS display_name,
         patient.sex, NULL AS 'paiement_uuid', '${options.payroll_configuration_id}' AS payroll_configuration_id,
@@ -62,6 +62,7 @@ function find(options) {
         0 AS total_day, 0 AS daily_salary, 0 AS amount_paid, 1 AS status_id,
         'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
         FROM employee
+        JOIN entity_map em ON employee.creditor_uuid = em.uuid
         JOIN creditor ON creditor.uuid = employee.creditor_uuid
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
         JOIN patient ON patient.uuid = employee.patient_uuid

@@ -10,8 +10,8 @@
  * @requires db
  */
 
-const find = require('./find');
-const getConfig = require('./getConfig');
+const { find } = require('./find');
+const { getConfigurationData } = require('./getConfig');
 const manageConfig = require('./manageConfig');
 
 const setMultiConfiguration = require('./setMultiConfiguration');
@@ -23,7 +23,7 @@ const makeCommitment = require('./makeCommitment');
  * @description search Payroll payments
  */
 function search(req, res, next) {
-  find.find(req.query)
+  find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -35,7 +35,7 @@ function configuration(req, res, next) {
   const params = req.query;
   const payrollConfigurationId = req.params.id;
 
-  getConfig.getConfigurationData(payrollConfigurationId, params)
+  getConfigurationData(payrollConfigurationId, params)
     .then((rows) => {
       const dataManaged = manageConfig.manageConfigurationData(rows, params);
       res.status(200).json(dataManaged);
