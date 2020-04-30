@@ -27,7 +27,7 @@ describe('Staffing indice Management Tests', () => {
 
   const gridId = 'staffing-indice-grid';
   const actionLinkCol = 6;
-  it('creates a new Staffing indice', async () => {
+  it('creates a new staffing indice', async () => {
     await FU.buttons.create();
     await components.employeeSelect.set(indice.employee);
     await components.gradeSelect.set(indice.grade);
@@ -39,7 +39,7 @@ describe('Staffing indice Management Tests', () => {
     await components.notification.hasSuccess();
   });
 
-  it('should edit a Staffing indice', async () => {
+  it('should edit a staffing indice', async () => {
     await GA.clickOnMethod(2, actionLinkCol, 'edit-record', gridId);
     await components.inpuText.set('function_indice', 200);
     // submit the page to the server
@@ -59,7 +59,7 @@ describe('Staffing indice Management Tests', () => {
     await components.notification.hasSuccess();
   });
 
-  it('should delete the Staffing indice', async () => {
+  it('should delete the staffing indice', async () => {
     // click the edit button
     await GA.clickOnMethod(3, actionLinkCol, 'delete-record', gridId);
     await FU.buttons.submit();

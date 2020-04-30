@@ -7,20 +7,14 @@
  */
 
 const FU = require('../shared/FormUtils');
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 class RegistrationPage {
-  constructor() {
-    this.gridId = 'employee-registry';
-    this.multipayrollGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 8;
-  }
-
-  async editEmployeeName(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+  async editEmployee(reference) {
+    const row = new GridRow(reference);
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
   createEmployee() {
