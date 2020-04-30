@@ -101,3 +101,10 @@ Every transaction in the system has a transaction type.  Transaction types facil
 * **Custom**
 
 A transaction can only have a single transaction type.  You can add your own transaction types through the Transaction Type module.
+
+
+## Showing Full Transactions
+
+Because BHIMA is a double-entry accounting system, sometimes you need to find the opposite side of a transaction whilst only knowing one side.  For example, you may want to know accounts have interacted with the cash account, or find the other side of a transaction by the debit or credit value.  BHIMA facilitates these lookups in the usual way via the search modal.
+
+In the search modal, put any identifying information of the transaction (or group of transactions) sought, then enable the "show full transactions" option in the default filters.  This will ensure the entire transaction is returned, no matter which rows are matched by the search criteria.  This may result in the `limit` property not applying, since it is being explicitly overridden to show the entirety of the transaction.
