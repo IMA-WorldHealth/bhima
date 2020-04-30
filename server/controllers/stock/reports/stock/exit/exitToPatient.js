@@ -12,7 +12,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   const sql = `
   SELECT
     i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
-    (m.quantity * m.unit_cost) AS cost, m.unit_cost,
+    SUM(m.quantity * m.unit_cost) AS cost, m.unit_cost,
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name, p.display_name AS patient_display_name,
     dm.text AS document_reference, d.text AS depot_name,
