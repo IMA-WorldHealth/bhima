@@ -3,7 +3,7 @@ const {
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
-
+const chartjs = require('../../../../lib/chart');
 /**
    * @method stockEntryReport
    *
@@ -25,48 +25,48 @@ async function stockConsumptionGrathReport(req, res, next) {
     // set up the report with report manager
     const report = new ReportManager(STOCK_CONSUMPTION_GRAPTH_TEMPLATE, req.session, optionReport);
 
-    const inventorySql = 'SELECT text FROM inventory WHERE uuid=?';
     const depotSql = 'SELECT text FROM depot WHERE uuid=?';
-
     const options = req.query;
-
-    const chart = {
-      labels : [],
-      data : [],
-    };
-
-    let inventory = {};
     let depot = {};
 
-    if (options.inventory_uuid) {
-      inventory = await db.one(inventorySql, db.bid(options.inventory_uuid));
-    }
     if (options.depot_uuid) {
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
+    let dateFrom = '';
+    let dateTo = '';
 
+    if (params.period_id) {
+      const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
+      dateFrom = period.start_date;
+      dateTo = period.end_date;
+    }
     const result = await stockCore.getDailyStockConsumption(options);
-
     util.dateFormatter(result, 'DD');
-    result.forEach(row => {
-      chart.data.push(row.quantity);
-      chart.labels.push(row.date);
-    });
+
+    const reportType = options.reportType || 'quantity';
 
     const reportResult = await report.render({
-      labels : JSON.stringify(chart.labels),
-      yAxesLabelString : JSON.stringify(i18n(options.lang)('FORM.LABELS.QUANTITY')),
-      xAxesLabelString : JSON.stringify(i18n(options.lang)('FORM.LABELS.DAYS')),
-      title :  JSON.stringify(inventory.text || ''),
-      data : JSON.stringify(chart.data),
-      dateFrom : options.dateFrom,
-      dateTo : options.dateTo,
+      dateFrom,
+      dateTo,
       depot,
+      chartjs : chartjs.barChart({
+        label : 'date',
+        data : result,
+        item : {
+          uuid : 'inventory_uuid',
+          name : 'inventory_name',
+          value : options.reportType || 'quantity',
+        },
+        yAxesLabelString : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
+        xAxesLabelString : i18n(options.lang)('FORM.LABELS.DAYS'),
+        canvasId : 'stockConsumptionChart',
+      }),
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
     next(error);
   }
 }
+
 
 module.exports = stockConsumptionGrathReport;

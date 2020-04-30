@@ -100,12 +100,12 @@ function lookupPurchaseOrder(uid) {
   let record;
 
   let sql = `
-    SELECT BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${entityIdentifier}', pr.abbr, p.reference) AS reference,
+    SELECT BUID(p.uuid) AS uuid, dm.text as reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
       p.status_id, ps.text AS status
     FROM purchase AS p
+    JOIN document_map dm ON p.uuid = dm.uuid
     JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
@@ -120,9 +120,11 @@ function lookupPurchaseOrder(uid) {
 
       sql = `
         SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total,
-          BUID(pi.inventory_uuid) AS inventory_uuid, i.text
+          BUID(pi.inventory_uuid) AS inventory_uuid, i.text, i.code,
+          iu.text as unit
         FROM purchase_item AS pi
-        JOIN inventory AS i ON i.uuid = pi.inventory_uuid
+          JOIN inventory AS i ON i.uuid = pi.inventory_uuid
+          JOIN inventory_unit AS iu ON iu.id = i.unit_id
         WHERE pi.purchase_uuid = ?;
       `;
 
@@ -343,20 +345,19 @@ function find(options) {
   filters.equals('supplier_uuid', 'uuid', 's');
 
   const sql = `
-    SELECT BUID(p.uuid) AS uuid,
-        CONCAT_WS('.', '${entityIdentifier}', pr.abbr, p.reference) AS reference,
+    SELECT BUID(p.uuid) AS uuid, dm.text as reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
         p.status_id, ps.text AS status
       FROM purchase AS p
+      JOIN document_map dm ON p.uuid = dm.uuid
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
       JOIN user AS u ON u.id = p.user_id
       JOIN purchase_status AS ps ON ps.id = p.status_id
   `;
 
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) = ?`;
-  filters.custom('reference', referenceStatement);
+  filters.equals('reference', 'text', 'dm');
   filters.setOrder('ORDER BY p.date DESC');
 
   const query = filters.applyQuery(sql);
@@ -487,11 +488,11 @@ function purchaseBalance(req, res, next) {
   const sql = `
     SELECT
       s.display_name AS supplier_name, u.display_name AS user_name, BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${entityIdentifier}', proj.abbr, p.reference) AS reference, p.date,
-      BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price,
-      IFNULL(distributed.quantity, 0) AS distributed_quantity,
+      dm.text AS reference, p.date, BUID(pi.inventory_uuid) AS inventory_uuid,
+      pi.quantity, pi.unit_price, IFNULL(distributed.quantity, 0) AS distributed_quantity,
       (pi.quantity - IFNULL(distributed.quantity, 0)) AS balance
     FROM purchase p
+    JOIN document_map dm ON dm.uuid = p.uuid
     JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN supplier s ON s.uuid = p.supplier_uuid
@@ -504,7 +505,9 @@ function purchaseBalance(req, res, next) {
         JOIN inventory i ON i.uuid = l.inventory_uuid
       WHERE m.flux_id = ? AND m.is_exit = 0 AND l.origin_uuid = ?
       GROUP BY l.origin_uuid, l.inventory_uuid
-    ) AS distributed ON distributed.inventory_uuid = pi.inventory_uuid AND distributed.origin_uuid = p.uuid
+    ) AS distributed
+      ON distributed.inventory_uuid = pi.inventory_uuid
+      AND distributed.origin_uuid = p.uuid
     WHERE p.uuid = ? HAVING balance > 0 AND balance <= pi.quantity
   `;
 
