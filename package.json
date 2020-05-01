@@ -116,7 +116,7 @@
     "chai-http": "^4.3.0",
     "chai-spies": "^1.0.0",
     "chai-spies-next": "^0.9.3",
-    "commitizen": "^4.0.4",
+    "commitizen": "^4.0.5",
     "cssnano": "^4.1.10",
     "cz-conventional-changelog": "^3.0.0",
     "del": "^5.0.0",
