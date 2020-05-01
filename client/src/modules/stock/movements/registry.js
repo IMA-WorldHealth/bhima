@@ -5,7 +5,7 @@ StockMovementsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants',
   'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
   'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
-  '$translate',
+  '$translate', 'bhConstants',
 ];
 
 /**
@@ -15,7 +15,7 @@ StockMovementsController.$inject = [
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
-  $translate,
+  $translate, bhConstants,
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
@@ -23,6 +23,9 @@ function StockMovementsController(
 
   // grid columns
   const columns = getGridColumns();
+
+  // add in FLUX identifiers
+  vm.flux = bhConstants.flux;
 
   // bind flux id with receipt
   const mapFlux = {
