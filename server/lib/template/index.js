@@ -41,7 +41,7 @@ const hbs = exphbs.create({
 
     debcred       : finance.debcred,
     precision     : finance.precision,
-	lessZero      : finance.lessZero,
+    lessZero      : finance.lessZero,
     look          : objects.look,
     equal         : logic.equal,
     gt            : logic.gt,

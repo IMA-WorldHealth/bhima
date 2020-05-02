@@ -59,6 +59,7 @@
     "CLOSING_BALANCE" : "Balance à la cloture",
     "COMPARE_INVOICED_RECEIVED": {
       "DESCRIPTION": "Ce rapport permet de joindre les articles facturés à un patient sur les articlés consomés ou distribués au Patient",
+      "NO_INVOICE_ATTRIBUTION": "Aucune attribution de facture",
       "TITLE": "Comparaison des articles facturés sur les reçus"
     },
     "CONFIGURABLE_ANALYSIS_REPORT" : {
