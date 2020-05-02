@@ -18,7 +18,7 @@ const DEFAULT_PARAMS = {
  * @function report
  *
  * @description
- * This report makes it possible to attach the items billed to a patient on 
+ * This report makes it possible to attach the items billed to a patient on
  * the articulated items consumed or distributed to the Patient.
  */
 function report(req, res, next) {
