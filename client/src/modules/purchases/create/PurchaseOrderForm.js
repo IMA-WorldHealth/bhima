@@ -41,6 +41,10 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     Inventory.read(null, { locked : 0, use_previous_price : 1 })
       .then((data) => {
         this.inventory.initialize('uuid', data);
+
+        // FIXME(@jniles) - this is a hack. We should actually put a list() method on the
+        // PoolService to get all data out of it.
+        this.inventory._data = angular.copy(data);
       });
 
     // setup the rows of the grid as a store
@@ -313,19 +317,21 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   /**
    * @method formatOptimalPurchase
    *
-   * This Service analyzes for all existing repositories, Inventories that have reached a point of order,
-   * then calculates the overall quantity ordered for each Inventory
+   * This functions analyzses all inventory items and selects those that have reached a point of re-order,
+   * then calculates the overall quantity ordered for each inventory.
    *
-   * @param {*} inventories - This is the list of all inventories
-   * @param {*} stock - it is the data of the inventories having reached their point of order
+   * @param {Array} stock - the data of the inventories having reached their point of order
    */
-  PurchaseOrderForm.formatOptimalPurchase = function formatOptimalPurchase(inventories, stock) {
+  PurchaseOrderForm.prototype.formatOptimalPurchase = function formatOptimalPurchase(stock) {
     const rows = [];
+
+    // grab inventory from Pool
+    const inventories = this.inventory._data;
 
     inventories.forEach(inventory => {
       const row = new PurchaseOrderItem(inventory);
       row.quantity = 0;
-      row.unit_price = null;
+      // row.unit_price = null;
       row._invalid = true;
       row._valid = false;
 
@@ -338,11 +344,10 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
       rows.push(row);
     });
 
-    const optimized = rows.filter(inventory => inventory.quantity > 0);
-    const optimizedSorted = optimized.sort((a, b) => Number(b.quantity) - Number(a.quantity));
-
-    return optimizedSorted;
-
+    // sort by the inventory description
+    return rows
+      .filter(inventory => inventory.quantity > 0)
+      .sort((a, b) => a.description.localeCompare(b.description));
   };
 
   return PurchaseOrderForm;
