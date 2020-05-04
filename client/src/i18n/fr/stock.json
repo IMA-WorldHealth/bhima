@@ -26,6 +26,8 @@
     "ENTRY_DONATION"  : "Donation",
     "ENTRY_INTEGRATION" : "Intégration",
     "ENTRY_TRANSFER"  : "Transfert",
+    "TYPE_VALUE" : "Valeur de stock",
+    "TYPE_QUANTITY" : "Quantité de stock",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",

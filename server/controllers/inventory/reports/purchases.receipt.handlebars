@@ -1,17 +1,20 @@
 {{> head title="PURCHASES.RECEIPT.TITLE"}}
 
-<body class="container">
+<div class="container" style="font-size: 0.9em;">
   <header>
     <div class="row">
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
+        <h3 class="text-uppercase" style="margin: 0px;">
+          {{translate "PURCHASES.RECEIPT.TITLE" }} <br />
+          <strong>{{purchase.reference}}</strong> <br>
+        </h3>
+
         <div>
           {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
           {{translate "REPORT.BY"}} {{metadata.user.display_name}}
         </div>
-
-        <br/>
 
         {{#if metadata.enterprise.settings.enable_barcodes}}
           <small>{{> barcode value=purchase.barcode}}</small>
@@ -22,10 +25,6 @@
   </header>
 
   <!-- page title  -->
-  <h2 class="text-center text-uppercase">
-    {{translate "PURCHASES.RECEIPT.TITLE" }} N&deg;
-    {{purchase.reference}}
-  </h2>
 
   <!-- order details -->
   <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
@@ -34,13 +33,15 @@
       <span class="text-capitalize">{{translate "FORM.LABELS.DATE"}}</span>: {{date purchase.date}} <br>
       <span class="text-capitalize">{{translate "FORM.LABELS.REFERENCE"}}</span>: {{purchase.reference}} <br>
       <span class="text-capitalize">{{translate "FORM.LABELS.NOTES"}}</span>: <strong>{{purchase.note}}</strong> <br>
-      <span class="text-capitalize">{{translate "FORM.LABELS.AUTHOR"}}</span>: <strong>{{purchase.author}}</strong>
+      <span class="text-capitalize">{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</span>: <strong>{{purchase.author}}</strong>
     </div>
   </div>
 
   <table class="table table-condensed table-report">
     <thead>
+      <th>{{translate "FORM.LABELS.CODE" }}</th>
       <th>{{translate "FORM.LABELS.INVENTORY_ITEM" }}</th>
+      <th>{{translate "FORM.LABELS.TYPE" }}</th>
       <th>{{translate "FORM.LABELS.QUANTITY" }}</th>
       <th>{{translate "FORM.LABELS.UNIT_PRICE" }}</th>
       <th>{{translate "FORM.LABELS.TOTAL" }}</th>
@@ -48,7 +49,9 @@
     <tbody>
       {{#each purchase.items}}
         <tr>
+          <td>{{this.code}}</td>
           <td>{{this.text}}</td>
+          <td>{{this.unit}}</td>
           <td class="text-right">{{this.quantity}}</td>
           <td class="text-right">{{currency this.unit_price ../metadata.enterprise.currency_id}}</td>
           <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
@@ -57,10 +60,10 @@
     </tbody>
     <tfoot>
       <tr>
-        <td class="text-left" colspan="3">{{translate "FORM.LABELS.TOTAL"}}</td>
+        <td class="text-left" colspan="5">{{translate "FORM.LABELS.TOTAL"}} ({{purchase.items.length}} {{ translate "TABLE.AGGREGATES.RECORDS" }})</td>
         <td class="text-right" >{{currency purchase.cost metadata.enterprise.currency_id}}</td>
       </tr>
     </tfoot>
   </table>
   <script>JsBarcode('.barcode').init();</script>
-</body>
+</div>

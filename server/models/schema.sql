@@ -764,8 +764,6 @@ CREATE TABLE `icd10` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory`;
-
-
 CREATE TABLE `inventory` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
