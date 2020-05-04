@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 
 // import plugins
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 const { expect } = require('chai');
 
 /**
@@ -216,4 +216,4 @@ exports.data = {
   PREDNISONE : 'C3FD5A026A7549FCB2F376EE4C3FBFB7',
 };
 
-exports.uuid = () => uuid().toUpperCase().replace(/-/g, '');
+exports.uuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
