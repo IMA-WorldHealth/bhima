@@ -86,6 +86,49 @@
             </div>
           </div>
         </div>
+
+        <div class="col-xs-12 col-md-6 panel-default">
+
+          <table
+            ng-show = "StockCtrl.soldOutInventories.length > 0"
+            class="table table-condensed table-bordered">
+            <thead>
+              <tr>
+                <th>
+                  <span class="text-danger" 
+                    translate-values="{ total : StockCtrl.soldOutInventories.length }"
+                    translate="{{ 'STOCK.SOLD_OUT_WARNING' }}">
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat = "inventory in StockCtrl.soldOutInventories | limitTo : 5">
+                <td>{{inventory.text}} ({{inventory.stock_out_date}})</td>
+              </tr>
+
+              <tr>
+                <td>
+
+                  <span class="text-danger" 
+                    ng-show="(StockCtrl.soldOutInventories.length - 5) > 0"
+                    translate-values="{ left : (StockCtrl.soldOutInventories.length - 5)}"
+                    translate="{{ 'STOCK.AND_MORE' }}">
+                  </span>
+
+                <a ui-sref= "stockInventories({ filters : [
+                  { key : 'period', value : 'allTime'},
+                  { key : 'includeEmptyLot', value : 1  },
+                  { key : 'depot_uuid', value : StockCtrl.depot.uuid, displayValue: StockCtrl.depot.text, cacheable:false },
+                  { key : 'status', value : 'sold_out', displayValue: 'STOCK.STATUS.SOLD_OUT', cacheable:false }
+                  ]})"translate>FORM.LABELS.SEE_ALL</a>
+                </td>
+              </tr>
+            </tbody>
+           
+          </table>
+         
+        </div>
       </div>
 
       <!-- not available messages -->

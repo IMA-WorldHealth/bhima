@@ -813,6 +813,7 @@ exports.configure = function configure(app) {
   // stock management API
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
+
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
   app.get('/stock/lots/origins', stock.listLotsOrigins);
