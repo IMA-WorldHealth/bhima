@@ -34,7 +34,6 @@ function StockInventoryAdjustmentController(
   };
 
   // bind constants
-  vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
 
@@ -42,7 +41,6 @@ function StockInventoryAdjustmentController(
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
-  vm.selectedLots = [];
 
   // grid columns
   const columns = [
@@ -144,13 +142,12 @@ function StockInventoryAdjustmentController(
     // get lots
     Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
       .then((lots) => {
-        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
+        item.lots = lots;
       })
       .catch(Notify.handleError);
   }
 
   function setupStock() {
-    vm.selectedLots = [];
     vm.Stock.setup();
     vm.Stock.store.clear();
   }
@@ -244,7 +241,6 @@ function StockInventoryAdjustmentController(
     return Stock.inventoryAdjustment.create(movement)
       .then(document => {
         vm.Stock.store.clear();
-        vm.selectedLots = [];
         ReceiptModal.stockAdjustmentReceipt(document.uuid, bhConstants.flux.INVENTORY_ADJUSTMENT);
       })
       .catch(Notify.handleError);

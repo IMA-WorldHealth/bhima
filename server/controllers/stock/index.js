@@ -219,15 +219,15 @@ async function createInventoryAdjustment(req, res, next) {
   try {
     const movement = req.body;
 
+    if (!movement.depot_uuid) {
+      throw new Error('No defined depot');
+    }
+
     const lots = movement.lots
       .filter(l => l.quantity !== l.oldQuantity);
 
     const period = await Fiscal.lookupFiscalYearByDate(new Date(movement.date));
     const periodId = period.id;
-
-    if (!movement.depot_uuid) {
-      throw new Error('No defined depot');
-    }
 
     // selected lots identifiers
     const inventoryLotUuids = lots.map(l => l.uuid);
@@ -314,7 +314,7 @@ async function createInventoryAdjustment(req, res, next) {
       user : req.session.user.id,
     };
     const positiveLots = lots
-      .filter(lot => lot.quantity > 0 && (lot.quantity !== lot.oldQuantity))
+      .filter(lot => lot.quantity > 0)
       .map(lot => {
         delete lot.oldQuantity;
         return lot;
