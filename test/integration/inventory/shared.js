@@ -2,9 +2,9 @@
  * This file contains shared information between all inventory
  * elements (metadata, groups, types, unit, ...)
  */
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 
-const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
+const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
 
 const inventoryGroup = {
   uuid : genuuid(),

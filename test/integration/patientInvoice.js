@@ -1,10 +1,10 @@
 /* eslint no-unused-expressions:"off" */
 /* global expect, agent */
 
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 const helpers = require('./helpers');
 
-const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
+const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
 
 /**
  * @todo passing the date as an object causes the invoice request object to

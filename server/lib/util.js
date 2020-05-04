@@ -256,7 +256,7 @@ function getRandomColor() {
  * @function uuid
  *
  * @description
- * A replacement for the uuid/v4 function that renders UUIDs in the same format
+ * A replacement for the uuid function that renders UUIDs in the same format
  * as the BUID() MySQL function.
  *
  * @returns {String} - a version 4 UUID

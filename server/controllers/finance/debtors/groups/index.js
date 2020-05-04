@@ -8,7 +8,6 @@
 * @module finance/debtors/groups
 *
 * @requires q
-* @requires uuid/v4
 * @requires lib/db
 * @requires lib/util
 * @requires lib/errors/NotFound
@@ -364,7 +363,7 @@ function history(req, res, next) {
   const sql = `
     SELECT dg_prev.name AS group_prev, dg_next.name AS group_next, dgh.created_at,
       u.display_name AS 'user'
-    FROM debtor_group_history dgh 
+    FROM debtor_group_history dgh
     JOIN debtor_group dg_prev ON dg_prev.uuid = dgh.previous_debtor_group
     JOIN debtor_group dg_next ON dg_next.uuid = dgh.next_debtor_group
     JOIN user u ON u.id = dgh.user_id
