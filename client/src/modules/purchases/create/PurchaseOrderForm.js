@@ -344,11 +344,10 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
       rows.push(row);
     });
 
-    const optimized = rows.filter(inventory => inventory.quantity > 0);
-    const optimizedSorted = optimized.sort((a, b) => Number(b.quantity) - Number(a.quantity));
-
-    return optimizedSorted;
-
+    // sort by the inventory description
+    return rows
+      .filter(inventory => inventory.quantity > 0)
+      .sort((a, b) => a.description.localeCompare(b.description));
   };
 
   return PurchaseOrderForm;
