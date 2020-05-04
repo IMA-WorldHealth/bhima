@@ -28,6 +28,8 @@
     "ENTRY_TRANSFER"  : "Transfer",
     "TYPE_VALUE" : "Stock value",
     "TYPE_QUANTITY" : "Stock quantity",
+    "SOLD_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
+    "AND_MORE" : "... and {{left}} more",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
       "MISSING_LOT_NAME" : "Missing Lot Identifier",

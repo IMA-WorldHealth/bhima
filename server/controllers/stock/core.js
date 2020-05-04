@@ -338,16 +338,34 @@ function getLotsOrigins(depotUuid, params) {
 }
 
 /**
+ * @function lastStockMovementDate
+ * get the last movement for an inventory
+ */
+function lastStockMovementDate(params) {
+  const { inventoryUuid, depotUuid } = params;
+  const sql = `
+    SELECT m.date
+    FROM stock_movement m
+    JOIN lot l ON l.uuid = m.lot_uuid
+    WHERE m.depot_uuid = ? AND l.inventory_uuid = ?
+    ORDER BY m.created_at DESC
+    LIMIT 1
+  `;
+  return db.one(sql, [db.bid(depotUuid), db.bid(inventoryUuid)]);
+}
+
+/**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories) {
+async function stockManagementProcess(inventories) {
   const current = moment();
   let CM;
   let Q;
   let CM_NOT_ZERO;
   let delay;
 
-  return inventories.map((inventory) => {
+  for (let i = 0; i < inventories.length; i++) {
+    const inventory = inventories[i];
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     CM_NOT_ZERO = !CM ? 1 : CM;
@@ -361,6 +379,12 @@ function stockManagementProcess(inventories) {
 
     if (Q <= 0) {
       inventory.status = 'sold_out';
+      // eslint-disable-next-line no-await-in-loop
+      const mvt = await lastStockMovementDate({
+        inventoryUuid : inventory.inventory_uuid,
+        depotUuid : inventory.depot_uuid,
+      });
+      inventory.stock_out_date = mvt.date;
     } else if (Q > 0 && Q <= inventory.S_SEC) {
       inventory.status = 'security_reached';
     } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {
@@ -380,9 +404,8 @@ function stockManagementProcess(inventories) {
 
     delay = moment(new Date(inventory.expiration_date)).diff(current);
     inventory.delay_expiration = moment.duration(delay).humanize();
-
-    return inventory;
-  });
+  }
+  return inventories;
 }
 
 /**

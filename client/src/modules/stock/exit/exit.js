@@ -28,6 +28,7 @@ function StockExitController(
   vm.movement = {};
   vm.gridApi = {};
   vm.selectedLots = [];
+  vm.soldOutInventories = [];
   vm.reset = reset;
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
@@ -41,6 +42,7 @@ function StockExitController(
   vm.onChangeDepot = depot => {
     vm.depot = depot;
     loadInventories(vm.depot);
+    stockOut();
   };
 
   // bind methods
@@ -249,6 +251,7 @@ function StockExitController(
       date : new Date(),
       entity : {},
     };
+    stockOut();
   }
 
   function loadInventories(depot) {
@@ -626,6 +629,23 @@ function StockExitController(
         reinit(form);
       })
       .catch(Notify.handleError);
+  }
+
+  /**
+   * @function stockOut
+   * get sold out inventories for a depot
+   */
+  function stockOut() {
+    if (!vm.depot) return;
+    Stock.inventories.read(null, {
+      status : 'sold_out',
+      depot_uuid : vm.depot.uuid,
+    }).then(inventories => {
+      vm.soldOutInventories = inventories;
+      inventories.forEach(inventory => {
+        inventory.stock_out_date = moment(inventory.stock_out_date).fromNow();
+      });
+    }).catch(Notify.handleError);
   }
 
   startup();
