@@ -270,9 +270,8 @@ function getLotsMovements(depotUuid, params) {
       BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
-      f.label AS flux_label, i.delay,
-      iu.text AS unit_type,
-      dm.text AS documentReference
+      f.label AS flux_label, i.delay, BUID(m.invoice_uuid) AS invoice_uuid, idm.text AS invoice_reference,
+      iu.text AS unit_type, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -280,6 +279,7 @@ function getLotsMovements(depotUuid, params) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN flux f ON f.id = m.flux_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map idm ON idm.uuid = m.invoice_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
@@ -443,7 +443,7 @@ async function getDailyStockConsumption(params) {
   const consumptionValue = `
     ((
       (m.flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE}))
-      OR 
+      OR
       (m.flux_id=${flux.TO_OTHER_DEPOT} AND d.is_warehouse=1)
     ) AND i.consumable=1)
   `;
