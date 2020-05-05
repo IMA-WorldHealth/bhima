@@ -266,17 +266,6 @@ function StockRequisitionController(
   }
 
   /**
-   * @function toggleLoadingIndicator
-   *
-   * @description
-   * Toggles the grid's loading indicator to eliminate the flash when rendering
-   * requisitions movements and allow a better UX for slow loads.
-   */
-  function toggleLoadingIndicator() {
-    vm.loading = !vm.loading;
-  }
-
-  /**
    * @method load
    *
    * @description load requisition into the registry grid
@@ -285,14 +274,16 @@ function StockRequisitionController(
    */
   function load(filters) {
     vm.hasError = false;
-    toggleLoadingIndicator();
+    vm.loading = true;
 
     Stock.stockRequisition.read(null, filters)
       .then((requisitions) => {
         vm.gridOptions.data = requisitions;
       })
       .catch(errorHandler)
-      .finally(toggleLoadingIndicator);
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   startup();

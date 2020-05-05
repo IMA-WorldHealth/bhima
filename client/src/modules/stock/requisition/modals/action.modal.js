@@ -8,7 +8,7 @@ ActionRequisitionModalController.$inject = [
 ];
 
 function ActionRequisitionModalController(
-  $state, Store, Inventories, Notify, Modal, Stock, Receipts
+  $state, Store, Inventories, Notify, Modal, Stock, Receipts,
 ) {
   const vm = this;
   const store = new Store({ data : [] });
