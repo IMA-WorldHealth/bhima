@@ -12,24 +12,40 @@ env:
     - CHROME_REVISION=706915
     - CHROMEDRIVER_VERSION="79.0.3945.36"
 
+matrix:
+  include:
+    - env: TEST_TYPE=e2e
+      services:
+        - mysql
+        - redis
+    - env:
+        TEST_TYPE=installation
+      services:
+        - mysql
+        - redis
+    - env:
+        TEST_TYPE=installation
+      addons:
+        mariadb: '10.5'
+      services:
+        - redis
+
 before_install:
   - ./sh/setup-ci-env.sh
-  - ./sh/travis.sh
-
-services:
-  - mysql
-  - redis
+  - sudo ./sh/travis.sh
 
 language: node_js
 node_js:
   - lts/erbium
 
 before_script:
-  - yarn build
-  - yarn webdriver-manager update --versions.chrome=$CHROMEDRIVER_VERSION --gecko false
+  - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn build; fi"
+  - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn webdriver-manager update --versions.chrome=$CHROMEDRIVER_VERSION --gecko false; fi"
 
 script:
-  - yarn test:ends
+  - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn test:ends; fi"
+  - sh -c "if [ '$TEST_TYPE' = 'installation' ]; then ./sh/install-tests.sh; fi"
+
 
 git:
   depth: 3
