@@ -8,8 +8,8 @@
  *
  * @requires q
  * @requires lodash
- * @requires uuid/v4
  * @requires lib/db
+ * @requires lib/util
  * @requires lib/filter
  * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest

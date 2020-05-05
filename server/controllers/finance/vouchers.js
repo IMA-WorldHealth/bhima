@@ -7,7 +7,6 @@
  * against the `voucher` table.
  *
  * @requires lodash
- * @requires uuid/v4
  * @requires lib/util
  * @requires lib/db
  * @requires lib/ReportManager

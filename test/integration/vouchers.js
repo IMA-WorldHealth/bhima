@@ -1,10 +1,10 @@
 /* global expect, agent */
 /* eslint-disable no-unused-expressions */
 
-const uuid = require('uuid/v4');
+const uuid = require('uuid');
 const helpers = require('./helpers');
 
-const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
+const genuuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
 
 /*
  * The /vouchers API endpoint
