@@ -22,35 +22,35 @@ if [ "$1" == "debug" ]; then
 fi
 
 # build the test database
-mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $DB_NAME ;"
-mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" || { echo 'failed to drop DB' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || { echo 'failed to create DB' ; exit 1; }
 
 echo "[build] database schema"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/schema.sql || { echo 'failed to build DB scheme' ; exit 1; }
 
 echo "[build] triggers"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/triggers.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/triggers.sql || { echo 'failed to import triggers into DB' ; exit 1; }
 
 echo "[build] functions"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/functions.sql || { echo 'failed to import functions into DB' ; exit 1; }
 
 echo "[build] procedures"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/procedures.sql || { echo 'failed to import procedures into DB 1/2' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/admin.sql || { echo 'failed to import procedures into DB 2/2' ; exit 1; }
 
 echo "[build] default data"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/icd10.sql || { echo 'failed to import default data into DB 1/2' ; exit 1; }
 
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/bhima.sql || { echo 'failed to import default data into DB 2/2' ; exit 1; }
 
 echo "[build] test data"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data.sql || { echo 'failed to import test data into DB' ; exit 1; }
 
 echo "[build] recomputing mappings"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeEntityMap();"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecomputeDocumentMap();"
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecomputeEntityMap();" || { echo 'failed to recompute mappings 1/2' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecomputeDocumentMap();" || { echo 'failed to recompute mappings 2/2' ; exit 1; }
 
 echo "[build] recalculating period totals"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call zRecalculatePeriodTotals();"
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecalculatePeriodTotals();" || { echo 'failed to recalculate period totals' ; exit 1; }
 
 echo "[/build]"
