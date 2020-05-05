@@ -229,24 +229,17 @@ async function createInventoryAdjustment(req, res, next) {
     const period = await Fiscal.lookupFiscalYearByDate(new Date(movement.date));
     const periodId = period.id;
 
-    // selected lots identifiers
-    const inventoryLotUuids = lots.map(l => l.uuid);
-
-    // get list of lots with their quantities
-    const allLots = await core.getLotsDepot(null, { depot_uuid : movement.depot_uuid });
-
-    // reverse all selected lots
-    const availableLots = allLots.filter(lot => {
-      return inventoryLotUuids.includes(lot.uuid);
-    });
-
     // pass reverse operations
     const trx = db.transaction();
 
     const positiveAdjustmentUuid = uuid();
     const negativeAdjustmentUuid = uuid();
-    const positiveQuantities = availableLots.filter(lot => lot.quantity > 0);
-    const negativeQuantities = availableLots.filter(lot => lot.quantity < 0);
+    // get all lots with positive quantities
+    const positiveQuantities = lots.filter(lot => lot.oldQuantity > 0);
+    // get all lots with negative quantities
+    // negative quantities occurs during some extra stock exit when quantity in stock
+    // is already under or equal to zero
+    const negativeQuantities = lots.filter(lot => lot.oldQuantity < 0);
 
     positiveQuantities.forEach(lot => {
       const reverseMovementObject = {
@@ -254,7 +247,7 @@ async function createInventoryAdjustment(req, res, next) {
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
         document_uuid : db.bid(negativeAdjustmentUuid),
-        quantity : lot.quantity,
+        quantity : lot.oldQuantity,
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
@@ -273,7 +266,7 @@ async function createInventoryAdjustment(req, res, next) {
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
         document_uuid : db.bid(positiveAdjustmentUuid),
-        quantity : lot.quantity,
+        quantity : lot.oldQuantity,
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
