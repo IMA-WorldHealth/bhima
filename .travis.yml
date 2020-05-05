@@ -12,13 +12,19 @@ env:
     - CHROME_REVISION=706915
     - CHROMEDRIVER_VERSION="79.0.3945.36"
 
+matrix:
+  include:
+    - addons:
+        mariadb: '10.5'
+      services:
+        - redis
+    - services:
+        - mysql
+        - redis
+
 before_install:
   - ./sh/setup-ci-env.sh
-  - ./sh/travis.sh
-
-services:
-  - mysql
-  - redis
+  - sudo ./sh/travis.sh
 
 language: node_js
 node_js:
