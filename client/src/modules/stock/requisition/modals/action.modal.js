@@ -76,8 +76,6 @@ function ActionRequisitionModalController(
 
     if (!items.length) { return null; }
 
-    vm.loading = true;
-
     angular.extend(vm.model, { items });
 
     return Stock.stockRequisition.create(vm.model)
@@ -85,10 +83,7 @@ function ActionRequisitionModalController(
         Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        vm.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   function autoSuggestInventories() {

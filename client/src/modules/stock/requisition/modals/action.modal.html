@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="$ctrl.submit(ModalForm)"
+  bh-submit="$ctrl.submit(ModalForm)"
   data-modal="stock-requisition-create"
   novalidate>
 
@@ -68,7 +68,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="$ctrl.loading" disabled="$ctrl.loading">
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
