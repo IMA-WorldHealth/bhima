@@ -1,4 +1,76 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.13.5
+version: v1.14.1
 ignore: {}
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - eslint > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - commitizen > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - gulp-iife > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - gulp-template > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - karma > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - release-it > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - csvtojson > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - eslint > inquirer > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - release-it > inquirer > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - eslint > table > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - '@ima-worldhealth/rewire > eslint > lodash':
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > @commitlint/load > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - commitizen > inquirer > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > commitizen > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - mocha > yargs-unparser > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - release-it > deprecated-obj > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-changelog-conventionalcommits > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - mailgun-js > async > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - winston > async > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - '@ima-worldhealth/rewire > eslint > inquirer > lodash':
+        patched: '2020-05-05T05:48:23.201Z'
+    - '@ima-worldhealth/rewire > eslint > table > lodash':
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > @commitlint/load > @commitlint/resolve-extends > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - commitizen > cz-conventional-changelog > @commitlint/load > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > commitizen > inquirer > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - karma > log4js > streamroller > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-changelog > conventional-changelog-conventionalcommits > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-recommended-bump > conventional-commits-parser > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-changelog > conventional-changelog-core > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - commitizen > cz-conventional-changelog > @commitlint/load > @commitlint/resolve-extends > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > commitizen > cz-conventional-changelog > @commitlint/load > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - karma > log4js > streamroller > async > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-changelog > conventional-changelog-core > conventional-changelog-writer > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - standard-version > conventional-changelog > conventional-changelog-core > conventional-commits-parser > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
+    - cz-conventional-changelog > commitizen > cz-conventional-changelog > @commitlint/load > @commitlint/resolve-extends > lodash:
+        patched: '2020-05-05T05:48:23.201Z'
