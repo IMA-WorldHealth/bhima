@@ -79,6 +79,8 @@ async function renderStockReceipt(req, res, next) {
 
     case Stock.flux.FROM_ADJUSTMENT:
     case Stock.flux.TO_ADJUSTMENT:
+    case Stock.flux.INVENTORY_ADJUSTMENT:
+    case Stock.flux.INVENTORY_RESET:
       renderer = stockAdjustmentReceipt;
       break;
 

@@ -186,5 +186,17 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
     return false;
   };
 
+  /**
+   * @method hasValidLots
+   *
+   * @description
+   * Check if lots are defined and valid
+   */
+  StockForm.prototype.hasValidLots = function hasValidLots() {
+    return this.store.data.every((item) => {
+      return item.quantity >= 0 && item.lot && item.lot.uuid;
+    });
+  };
+
   return StockForm;
 }

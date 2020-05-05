@@ -18,6 +18,9 @@ function StockService(Api, StockFilterer) {
   // API for stock inventory in depots
   const inventories = new Api('/stock/inventories/depots');
 
+  // API for stock inventory adjustment
+  const inventoryAdjustment = new Api('/stock/inventory_adjustment');
+
   // API for stock integration
   const integration = new Api('/stock/integration');
 
@@ -136,6 +139,7 @@ function StockService(Api, StockFilterer) {
     stockAssign,
     stockRequisition,
     stockRequestorType,
+    inventoryAdjustment,
     lots,
     movements,
     inventories,

@@ -178,7 +178,9 @@
     "TO_PATIENT"       : "To Patient",
     "TO_SERVICE"       : "To Service",
     "TO_LOSS"          : "To Loss",
-    "TO_ADJUSTMENT"    : "Adjustment (Negative)"
+    "TO_ADJUSTMENT"    : "Adjustment (Negative)",
+    "INVENTORY_RESET"  : "Inventory Reset",
+    "INVENTORY_ADJUSTMENT" : "New Stock After Inventory"
   },
   "LOTS" : {
     "REGISTRY" : "Lots Registry",
@@ -232,5 +234,12 @@
     "NOT_FOR_SERVICE":"The requisition slip is not for services",
     "NOT_FOR_DEPOT":"The requisition slip is not for depots",
     "NOT_FOR_THE_SAME_DEPOT":"Exit on a requisition slip can not be made on the same depot"
+  },
+  "INVENTORY_ADJUSTMENT":{
+    "TITLE":"Stock Inventory Adjustment",
+    "DESC":"This inventory adjustment module allows you to define article stocks; after this operation all the lots which are not defined here for the selected articles will be emptied",
+    "NEW_QUANTITY":"New Quantity",
+    "OLD_QUANTITY":"Old Quantity",
+    "NO_CHANGE":"You have made no stock adjustments"
   }
 }

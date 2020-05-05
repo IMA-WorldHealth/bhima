@@ -9,16 +9,16 @@
   "scripts": {
     "app": "cross-env NODE_ENV=production gulp build && cd bin && cross-env NODE_ENV=production node server/app.js",
     "dev": "cross-env NODE_ENV=development gulp build && cd bin && cross-env NODE_ENV=development node server/app.js",
-    "test": "./sh/test.sh",
+    "test": "cross-env ./sh/test.sh",
     "test:integration": "cross-env SUITE=\"integration\" ./sh/test.sh",
     "test:ends": "cross-env SUITE=\"end-to-end\" ./sh/test.sh",
     "test:client-unit": "cross-env SUITE=\"client-unit\" ./sh/test.sh",
     "test:server-unit": "cross-env SUITE=\"server-unit\" ./sh/test.sh",
-    "build": "./node_modules/.bin/gulp build",
+    "build": "cross-env ./node_modules/.bin/gulp build",
     "build:db": "cross-env ./sh/build-database.sh",
     "build:clean": "cross-env ./sh/build-init-database.sh",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
-    "watch": "./node_modules/.bin/gulp watch",
+    "watch": "cross-env ./node_modules/.bin/gulp watch",
     "release": "release-it --disable-metrics"
   },
   "repository": {

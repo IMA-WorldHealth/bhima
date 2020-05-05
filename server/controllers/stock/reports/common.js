@@ -195,6 +195,8 @@ const stockFluxReceipt = {
   11 : { key : 'TO_LOSS', path : 'exit_loss' },
   12 : { key : 'TO_ADJUSTMENT', path : 'adjustment' },
   13 : { key : 'FROM_INTEGRATION', path : 'entry_integration' },
+  14 : { key : 'INVENTORY_RESET', path : 'adjustment' },
+  15 : { key : 'INVENTORY_ADJUSTMENT', path : 'adjustment' },
 };
 
 // Exports

@@ -35,6 +35,7 @@ exports.importing = importing;
 exports.assign = assign;
 exports.requisition = requisition;
 exports.requestorType = requestorType;
+exports.createInventoryAdjustment = createInventoryAdjustment;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
@@ -129,78 +130,198 @@ function createStock(req, res, next) {
     .done();
 }
 
+/**
+ * @method insertNewStock
+ * @param {object} session The session object
+ * @param {object} params Request body params (req.body)
+ * @param {string} originTable the name of the lot origin table
+ */
+async function insertNewStock(session, params, originTable = 'integration') {
+  const transaction = db.transaction();
+  const identifier = uuid();
+  const documentUuid = uuid();
+
+  const period = await Fiscal.lookupFiscalYearByDate(params.movement.date);
+  const periodId = period.id;
+
+  const integration = {
+    uuid : db.bid(identifier),
+    project_id : session.project.id,
+    description : params.movement.description || originTable,
+    date : new Date(params.movement.date),
+  };
+  const sql = `INSERT INTO ${originTable} SET ?`;
+
+  transaction.addQuery(sql, [integration]);
+
+  params.lots.forEach((lot) => {
+    const lotUuid = uuid();
+
+    // adding a lot insertion query into the transaction
+    transaction.addQuery(`INSERT INTO lot SET ?`, {
+      uuid : db.bid(lotUuid),
+      label : lot.label,
+      initial_quantity : lot.quantity,
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      expiration_date : new Date(lot.expiration_date),
+      inventory_uuid : db.bid(lot.inventory_uuid),
+      origin_uuid : db.bid(identifier),
+      delay : 0,
+    });
+
+    // adding a movement insertion query into the transaction
+    transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
+      uuid : db.bid(uuid()),
+      lot_uuid : db.bid(lotUuid),
+      depot_uuid : db.bid(params.movement.depot_uuid),
+      document_uuid : db.bid(documentUuid),
+      flux_id : params.movement.flux_id,
+      date : new Date(params.movement.date),
+      quantity : lot.quantity,
+      unit_cost : lot.unit_cost,
+      is_exit : 0,
+      user_id : params.movement.user_id,
+      description : params.movement.description,
+      period_id : periodId,
+    });
+  });
+
+  const postingParams = [
+    db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
+  ];
+
+  if (session.enterprise.settings.enable_auto_stock_accounting) {
+    transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+  }
+
+  await transaction.execute();
+  return documentUuid;
+}
 
 /**
  * POST /stock/integration
  * create a new integration entry
  */
 function createIntegration(req, res, next) {
-  const transaction = db.transaction();
-  const params = req.body;
-  const identifier = uuid();
-  const documentUuid = uuid();
-
-  Fiscal.lookupFiscalYearByDate(params.movement.date)
-    .then(result => {
-      const periodId = result.id;
-
-      const integration = {
-        uuid : db.bid(identifier),
-        project_id : req.session.project.id,
-        description : params.movement.description || 'INTEGRATION',
-        date : new Date(params.movement.date),
-      };
-      const sql = `INSERT INTO integration SET ?`;
-
-      transaction.addQuery(sql, [integration]);
-
-      params.lots.forEach((lot) => {
-        const lotUuid = uuid();
-
-        // adding a lot insertion query into the transaction
-        transaction.addQuery(`INSERT INTO lot SET ?`, {
-          uuid : db.bid(lotUuid),
-          label : lot.label,
-          initial_quantity : lot.quantity,
-          quantity : lot.quantity,
-          unit_cost : lot.unit_cost,
-          expiration_date : new Date(lot.expiration_date),
-          inventory_uuid : db.bid(lot.inventory_uuid),
-          origin_uuid : db.bid(identifier),
-          delay : 0,
-        });
-
-        // adding a movement insertion query into the transaction
-        transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
-          uuid : db.bid(uuid()),
-          lot_uuid : db.bid(lotUuid),
-          depot_uuid : db.bid(params.movement.depot_uuid),
-          document_uuid : db.bid(documentUuid),
-          flux_id : params.movement.flux_id,
-          date : new Date(params.movement.date),
-          quantity : lot.quantity,
-          unit_cost : lot.unit_cost,
-          is_exit : 0,
-          user_id : params.movement.user_id,
-          description : params.movement.description,
-          period_id : periodId,
-        });
-      });
-
-      const postingParams = [db.bid(documentUuid), 0, req.session.project.id, req.session.enterprise.currency_id];
-
-      if (req.session.enterprise.settings.enable_auto_stock_accounting) {
-        transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
-      }
-
-      // execute all operations as one transaction
-      return transaction.execute();
-    })
-    .then(() => {
+  insertNewStock(req.session, req.body, 'integration')
+    .then(documentUuid => {
       res.status(201).json({ uuid : documentUuid });
     })
-    .catch(next)
-    .done();
+    .catch(next);
+}
+
+/**
+ * POST /stock/inventory_adjustment
+ * stock inventory adjustement
+ */
+async function createInventoryAdjustment(req, res, next) {
+  try {
+    const movement = req.body;
+
+    if (!movement.depot_uuid) {
+      throw new Error('No defined depot');
+    }
+
+    const lots = movement.lots
+      .filter(l => l.quantity !== l.oldQuantity);
+
+    const period = await Fiscal.lookupFiscalYearByDate(new Date(movement.date));
+    const periodId = period.id;
+
+    // pass reverse operations
+    const trx = db.transaction();
+
+    const positiveAdjustmentUuid = uuid();
+    const negativeAdjustmentUuid = uuid();
+    // get all lots with positive quantities
+    const positiveQuantities = lots.filter(lot => lot.oldQuantity > 0);
+    // get all lots with negative quantities
+    // negative quantities occurs during some extra stock exit when quantity in stock
+    // is already under or equal to zero
+    const negativeQuantities = lots.filter(lot => lot.oldQuantity < 0);
+
+    positiveQuantities.forEach(lot => {
+      const reverseMovementObject = {
+        uuid : db.bid(uuid()),
+        lot_uuid : db.bid(lot.uuid),
+        depot_uuid : db.bid(movement.depot_uuid),
+        document_uuid : db.bid(negativeAdjustmentUuid),
+        quantity : lot.oldQuantity,
+        unit_cost : lot.unit_cost,
+        date : new Date(movement.date),
+        entity_uuid : movement.entity_uuid,
+        is_exit : 1,
+        flux_id : core.flux.INVENTORY_RESET,
+        description : movement.description,
+        user_id : req.session.user.id,
+        period_id : periodId,
+      };
+      trx.addQuery('INSERT INTO stock_movement SET ?', reverseMovementObject);
+    });
+
+    negativeQuantities.forEach(lot => {
+      const reverseMovementObject = {
+        uuid : db.bid(uuid()),
+        lot_uuid : db.bid(lot.uuid),
+        depot_uuid : db.bid(movement.depot_uuid),
+        document_uuid : db.bid(positiveAdjustmentUuid),
+        quantity : lot.oldQuantity,
+        unit_cost : lot.unit_cost,
+        date : new Date(movement.date),
+        entity_uuid : movement.entity_uuid,
+        is_exit : 0,
+        flux_id : core.flux.INVENTORY_RESET,
+        description : movement.description,
+        user_id : req.session.user.id,
+        period_id : periodId,
+      };
+      trx.addQuery('INSERT INTO stock_movement SET ?', reverseMovementObject);
+    });
+
+    const negativeAdjustmentParams = [
+      db.bid(negativeAdjustmentUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+    ];
+
+    const positiveAdjustmentParams = [
+      db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
+    ];
+
+    if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+      if (positiveQuantities.length > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [negativeAdjustmentParams]);
+      }
+
+      if (negativeQuantities.length > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [positiveAdjustmentParams]);
+      }
+    }
+
+    // reset all previous lots
+    await trx.execute();
+
+    // pass inventory adjustment as new movement
+    const document = {
+      uuid : uuid(),
+      date : new Date(movement.date),
+      user : req.session.user.id,
+    };
+    const positiveLots = lots
+      .filter(lot => lot.quantity > 0)
+      .map(lot => {
+        delete lot.oldQuantity;
+        return lot;
+      });
+    movement.is_exit = 0;
+    movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
+    movement.lots = positiveLots;
+    movement.period_id = periodId;
+
+    await normalMovement(document, movement, req.session);
+    res.status(201).json(document);
+  } catch (err) {
+    next(err);
+  }
 }
 
 /**

@@ -31,6 +31,8 @@ const flux = {
   TO_LOSS          : 11,
   TO_ADJUSTMENT    : 12,
   FROM_INTEGRATION : 13,
+  INVENTORY_RESET  : 14,
+  INVENTORY_ADJUSTMENT : 15,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
