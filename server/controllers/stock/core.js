@@ -338,26 +338,12 @@ function getLotsOrigins(depotUuid, params) {
 }
 
 /**
- * @function lastStockMovementDate
- * get the last movement for an inventory
- */
-function lastStockMovementDate(params) {
-  const { inventoryUuid, depotUuid } = params;
-  const sql = `
-    SELECT m.date
-    FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    WHERE m.depot_uuid = ? AND l.inventory_uuid = ?
-    ORDER BY m.created_at DESC
-    LIMIT 1
-  `;
-  return db.one(sql, [db.bid(depotUuid), db.bid(inventoryUuid)]);
-}
-
-/**
+ * @function stockManagementProcess
+ *
+ * @description
  * Stock Management Processing
  */
-async function stockManagementProcess(inventories) {
+function stockManagementProcess(inventories) {
   const current = moment();
   let CM;
   let Q;
@@ -379,12 +365,7 @@ async function stockManagementProcess(inventories) {
 
     if (Q <= 0) {
       inventory.status = 'sold_out';
-      // eslint-disable-next-line no-await-in-loop
-      const mvt = await lastStockMovementDate({
-        inventoryUuid : inventory.inventory_uuid,
-        depotUuid : inventory.depot_uuid,
-      });
-      inventory.stock_out_date = mvt.date;
+      inventory.stock_out_date = inventory.last_movement_date;
     } else if (Q > 0 && Q <= inventory.S_SEC) {
       inventory.status = 'security_reached';
     } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {
@@ -397,7 +378,7 @@ async function stockManagementProcess(inventories) {
       inventory.status = '';
     }
 
-    // Round
+    // round
     inventory.S_SEC = util.roundDecimal(inventory.S_SEC, 2);
     inventory.S_MIN = util.roundDecimal(inventory.S_MIN, 2);
     inventory.S_MAX = util.roundDecimal(inventory.S_MAX, 2);
@@ -405,6 +386,7 @@ async function stockManagementProcess(inventories) {
     delay = moment(new Date(inventory.expiration_date)).diff(current);
     inventory.delay_expiration = moment.duration(delay).humanize();
   }
+
   return inventories;
 }
 
@@ -487,6 +469,7 @@ async function getDailyStockConsumption(params) {
  * @description
  * Algorithm to calculate the CMM (consommation moyenne mensuelle) or average stock consumption
  * over a period for each stock item that has been consumed.
+ *
  * NOTE: A FISCAL YEAR MUST BE DEFINED FOR THE FEATURE WORK PROPERLY
  *
  * @param {number} periodId - the base period
@@ -501,7 +484,9 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     ? moment(periodDate).format(DATE_FORMAT)
     : moment().format(DATE_FORMAT);
 
-  const beginingDate = moment(baseDate).subtract(numberOfMonths, 'months').format(DATE_FORMAT);
+  const beginningDate = moment(baseDate)
+    .subtract(numberOfMonths, 'months')
+    .format(DATE_FORMAT);
 
   const queryPeriodRange = `
     SELECT id FROM period WHERE (id BETWEEN ? AND ?) AND period.number NOT IN (0, 13);
@@ -527,7 +512,7 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     SELECT id FROM period;
   `;
 
-  const getBeginigPeriod = `
+  const getBeginningPeriod = `
     SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
   `;
 
@@ -535,8 +520,8 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
   // Just to avoid that db.one requests can query empty tables, and generate errors
   if (periods.length) {
     const period = await db.one(queryPeriodId, [periodId || baseDate]);
-    const beginingPeriod = await db.one(getBeginigPeriod, [beginingDate]);
-    const paramPeriodRange = beginingPeriod.id ? [beginingPeriod.id, period.id] : [1, period.id];
+    const beginningPeriod = await db.one(getBeginningPeriod, [beginningDate]);
+    const paramPeriodRange = beginningPeriod.id ? [beginningPeriod.id, period.id] : [1, period.id];
     const rows = await db.exec(queryPeriodRange, paramPeriodRange);
     ids = rows.map(row => row.id);
   }
@@ -588,7 +573,7 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption) {
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.avg_consumption, i.purchase_interval, i.delay,
+      i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
       dm.text AS documentReference
@@ -625,7 +610,7 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption) {
  * process multiple stock lots
  *
  * @description
- * the goals of this function is to give the risk of peremption for each lots for
+ * the goals of this function is to give the risk of expiration for each lots for
  * a given inventory
  */
 function processMultipleLots(inventories) {
