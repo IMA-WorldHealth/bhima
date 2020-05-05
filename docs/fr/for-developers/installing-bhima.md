@@ -10,7 +10,7 @@ Ce guide vous permettra de vous familiariser avec bhima localement. Veuillez not
 
 Avant de commencer le processus d'installation, assurez-vous que toutes les dépendances bhima sont installées localement. Nous ne testons que sous Linux. Il est donc préférable d’utiliser une version de Linux que vous connaissez bien. Assurez-vous d'avoir la version récente de:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 ou plus récent \)
+1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 ou 5.7\)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(nous vous recommandons d’utiliser le [gestionnaire de version de node](https://github.com/creationix/nvm) sous Linux. Notez que nous ne testons que sur des versions stables. et bord \).
