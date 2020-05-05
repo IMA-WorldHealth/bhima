@@ -9,6 +9,7 @@
 const GA = require('../shared/GridAction');
 const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
+const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 const gridId = 'distribution-center-grid';
@@ -74,8 +75,10 @@ class DistributionPage {
 
     await FU.buttons.submit();
 
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, dataset.label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'distribution', this.gridId);
+    // get the grid row
+    const row = new GridRow(dataset.trans_id);
+    await row.dropdown().click();
+    await row.method('distribution').click();
 
     await components.currencyInput.set(1000, 'principal_1');
     await components.currencyInput.set(145, 'principal_2');
@@ -110,6 +113,7 @@ class DistributionPage {
 
     const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, dataset.uuid);
     await GA.clickOnMethod(rowIndex, this.actionLinkUpdateColumn, 'edit', this.gridId);
+
     await components.currencyInput.set(1000, 'principal_1');
     await components.currencyInput.set(100, 'principal_2');
     await components.currencyInput.set(500, 'principal_3');

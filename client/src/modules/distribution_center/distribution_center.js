@@ -21,7 +21,6 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
   vm.toggleFilter = toggleFilter;
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
   vm.setting = setting;
   vm.loading = false;
   vm.distribution = distribution;
@@ -48,6 +47,7 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
         displayName : 'TABLE.COLUMNS.FEE_CENTER',
         headerCellFilter : 'translate',
         aggregationType  : uiGridConstants.aggregationTypes.count,
+        aggregationHideLabel : true,
       }, {
         field : 'trans_id',
         displayName : 'TABLE.COLUMNS.TRANSACTION',
@@ -116,8 +116,7 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -160,7 +159,6 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
 
   // distribution
   function distribution(data) {
-    const filtersSnapshot = DistributionCenters.filters.formatHTTP();
     DistributionCenters.openDistributionModal(data)
       .then((changes) => {
         if (changes) {
