@@ -32,7 +32,6 @@
           <span ng-show="$ctrl.loadingSuggest"><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span></span>
         </button>
       </div>
-      
 
       <div
         id="stock-requisition-grid-articles"
@@ -40,7 +39,7 @@
         ui-grid-resize-columns
         ui-grid-auto-resize>
         <bh-grid-loading-indicator
-          loading-state="$ctrl.loading"
+          loading-state="$ctrl.loadingSuggest"
           empty-state="$ctrl.gridOptions.data.length === 0"
           error-state="$ctrl.hasError">
         </bh-grid-loading-indicator>
@@ -69,7 +68,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalForm.$loading">
+    <bh-loading-button loading-state="$ctrl.loading" disabled="$ctrl.loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

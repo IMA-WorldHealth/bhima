@@ -8,7 +8,7 @@ ActionRequisitionModalController.$inject = [
 ];
 
 function ActionRequisitionModalController(
-  $state, Store, Inventories, Notify, Modal, Stock, Receipts
+  $state, Store, Inventories, Notify, Modal, Stock, Receipts,
 ) {
   const vm = this;
   const store = new Store({ data : [] });
@@ -76,6 +76,8 @@ function ActionRequisitionModalController(
 
     if (!items.length) { return null; }
 
+    vm.loading = true;
+
     angular.extend(vm.model, { items });
 
     return Stock.stockRequisition.create(vm.model)
@@ -83,7 +85,10 @@ function ActionRequisitionModalController(
         Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   };
 
   function autoSuggestInventories() {
