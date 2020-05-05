@@ -5,16 +5,16 @@
  * This module is responsible for handling all function utility for stock
  *
  * @requires moment
+ * @requires lodash
  * @requires lib/db
  * @requires lib/filter
- * @requires config/identifiers
+ * @requires lib/util
  */
 
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
-const identifiers = require('../../config/identifiers');
 const util = require('../../lib/util');
 
 const flux = {
@@ -303,7 +303,7 @@ function getLotsOrigins(depotUuid, params) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-        l.entry_date, i.code, i.text, origin.display_name, origin.reference,
+        l.entry_date, i.code, i.text, origin.display_name, om.text AS reference,
         BUID(m.document_uuid) AS document_uuid, m.flux_id,
         iu.text AS unit_type,
         dm.text AS documentReference
@@ -311,27 +311,17 @@ function getLotsOrigins(depotUuid, params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN (
-      SELECT
-        p.uuid, CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference,
-        'STOCK.PURCHASE_ORDER' AS display_name
-      FROM
-        purchase p JOIN project proj ON proj.id = p.project_id
+      SELECT p.uuid, 'STOCK.PURCHASE_ORDER' AS display_name FROM purchase
       UNION
-      SELECT
-        d.uuid, CONCAT_WS('.', '${identifiers.DONATION.key}', proj.abbr, d.reference) AS reference,
-        'STOCK.DONATION' AS display_name
-        FROM
-          donation d JOIN project proj ON proj.id = d.project_id
+      SELECT d.uuid, 'STOCK.DONATION' AS display_name FROM donation d
       UNION
-      SELECT
-        i.uuid, CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, i.reference) AS reference,
-        'STOCK.INTEGRATION' AS display_name
-        FROM
-          integration i JOIN project proj ON proj.id = i.project_id
+      SELECT i.uuid, 'STOCK.INTEGRATION' AS display_name FROM integration i
     ) AS origin ON origin.uuid = l.origin_uuid
-    JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.is_exit = 0
-      AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
+    JOIN stock_movement m ON m.lot_uuid = l.uuid
+      AND m.is_exit = 0
+        AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN odcument_map om ON om.uuid = l.origin_uuid
   `;
 
   return getLots(sql, params);
