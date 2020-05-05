@@ -343,7 +343,12 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockRequisitionReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'REQUISITION.TITLE', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      title : 'REQUISITION.TITLE',
+      createdKey : 'REQUISITION.CREATE_SUCCESS',
+      notifyCreated,
+      renderer : Receipts.renderer,
+    };
     const promise = Receipts.stockRequisitionReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
