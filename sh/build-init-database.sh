@@ -16,24 +16,24 @@ set +a
 TIMEOUT=${BUILD_TIMEOUT:-8}
 
 # build the initial database
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" &> /dev/null
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;" &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" &> /dev/null || { echo 'failed to drop DB' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;" &> /dev/null || { echo 'failed to create DB' ; exit 1; }
 
 echo "[ build ] database schema"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/schema.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/schema.sql &> /dev/null || { echo 'failed to build DB scheme' ; exit 1; }
 
 echo "[ build ] triggers"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/triggers.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/triggers.sql &> /dev/null || { echo 'failed to import triggers into DB' ; exit 1; }
 
 echo "[ build ] functions"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/functions.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/functions.sql &> /dev/null || { echo 'failed to import functions into DB' ; exit 1; }
 
 echo "[ build ] procedures"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/procedures.sql &> /dev/null
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/admin.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/procedures.sql &> /dev/null || { echo 'failed to import procedures into DB 1/2' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/admin.sql &> /dev/null || { echo 'failed to import procedures into DB 2/2' ; exit 1; }
 
 echo "[ build ] default data"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/icd10.sql &> /dev/null
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/bhima.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/icd10.sql &> /dev/null || { echo 'failed to import default data into DB 1/2' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/bhima.sql &> /dev/null || { echo 'failed to import default data into DB 2/2' ; exit 1; }
 
 echo "[ /build ]"
