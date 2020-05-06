@@ -161,8 +161,10 @@ Our tests are broken into unit tests, end to end tests, and integration tests. T
 2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type
    `yarn test:server-unit.`
 3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
-4. **End to End Tests** - The entire stack is tested with \(often flaky\) end to end tests using [protractor](https://github.com/IMA-WorldHealth/bhima/blob/master/docs/protractortest.org). Protractor depends on
-   `webdriver-manager` which must be installed separately. See their documentation for more information. The end to end tests can be run with `yarn test:ends`.
+4. **End to End Tests** - The entire stack is tested with \(often flaky\) end to end tests using [protractor](https://www.protractortest.org/).
+   Protractor depends on `webdriver-manager` which is installed automatically as one of its dependencies.
+   See their [documentation](https://github.com/angular/webdriver-manager) for more information.
+   To run the tests, first get the newest version of selenium, chrome and the chromedriver with `yarn webdriver-manager update` and then run the tests with `yarn test:ends`.
 
 You can run all tests by simply typing `yarn test`.
 
