@@ -122,6 +122,13 @@ sql-mode = STRICT_ALL_TABLES
 sudo service mysql restart
 ```
 
+To start a MySQL server using docker you can use:
+`docker run --name mysql5.7 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MyPassword -d mysql:5.7 --sql-mode='STRICT_ALL_TABLES'`
+this will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.
+Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
+
+If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql5.7` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
+
 The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `yarn build:db`.
 
 1. `server/models/schema.sql`
