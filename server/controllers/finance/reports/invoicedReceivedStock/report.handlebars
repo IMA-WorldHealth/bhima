@@ -73,7 +73,6 @@
                 {{/if}}
               </td>
               <td class="text-right">
-          {{/each}}
                 {{#if total_item_invoiced }}
                   <strong>{{ debcred total_item_invoiced ../../metadata.enterprise.currency_id }}</strong>
                 {{/if}}
@@ -92,6 +91,7 @@
               <td class="text-right"> <strong> {{ lessZero quantity_difference }} </strong></td>
               <td class="text-right"> <strong> {{ debcred cost_difference ../../metadata.enterprise.currency_id }} </strong></td>
             </tr>
+          {{/each}}
           <tr>
             <td></td>
             <td class="text-right text-uppercase" colspan="2"><strong> {{translate 'TABLE.COLUMNS.TOTAL_INVOICE'}} </strong></td>

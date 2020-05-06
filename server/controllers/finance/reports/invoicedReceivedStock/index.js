@@ -10,7 +10,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'invoiced_received_stock',
-  filename : 'REPORT.PATIENT_STANDING.DESCRIPTION',
+  filename : 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE',
   orientation : 'landscape',
 };
 
@@ -50,9 +50,7 @@ function report(req, res, next) {
   SELECT aggr.reference, BUID(aggr.inventory_uuid) AS inventory_uuid, aggr.inventory_text,
   SUM(aggr.quantity) AS quantity_invoiced, aggr.price_invoiced,
   BUID(aggr.invoice_uuid) AS invoice_uuid, aggr.invoice_date,
-  SUM(aggr.quantity_distributed) AS quantity_distributed, aggr.cost_distributed,
-  (aggr.quantity - aggr.quantity_distributed) AS quantity_difference,
-  (aggr.price_invoiced - aggr.cost_distributed) AS cost_difference
+  SUM(aggr.quantity_distributed) AS quantity_distributed, SUM(aggr.cost_distributed) AS cost_distributed
   FROM (
     SELECT map.text AS reference, inv.uuid AS inventory_uuid, inv.text AS inventory_text, item.quantity,
     item.inventory_price AS price_invoiced,iv.uuid AS invoice_uuid, iv.date AS invoice_date, 0 AS quantity_distributed,
@@ -139,6 +137,9 @@ function report(req, res, next) {
             inventory.quantity_distributed = inventory.quantity_distributed || '';
             inventory.total_item_invoiced = inventory.quantity_invoiced * inventory.price_invoiced;
             inventory.total_item_distributed = inventory.quantity_distributed * inventory.cost_distributed;
+
+            inventory.quantity_difference = inventory.quantity_invoiced - inventory.quantity_distributed;
+            inventory.cost_difference = inventory.total_item_invoiced - inventory.total_item_distributed;
 
             totalInvoice += inventory.total_item_invoiced;
             totalDistribution += inventory.total_item_distributed;
