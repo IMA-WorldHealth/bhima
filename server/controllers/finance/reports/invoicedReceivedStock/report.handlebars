@@ -21,126 +21,154 @@
            -
           <strong class="text-capitalize">{{date period.dateTo }}</strong>
         </h4>
-
-        <table style="page-break-after: always; width: 100%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
-          <thead>
-            <tr style="background-color:#efefef; font-size:84%;"> 
-              <th style="width: 28%;" class="text-uppercase text-center text-bold">
-                {{translate 'TABLE.COLUMNS.ITEM'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.QUANTITY_INVOICED'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.PRICE_INVOICED'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.QUANTITY_DISTRIBUTED'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.COST_DISTRIBUTED'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.QUANTITY_DIFFERENCE'}}
-              </th>
-              <th style="width: 12%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.COST_DIFFERENCE'}}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each invoices}}
-            <tr>
-              <td class="text-uppercase text-bold" style="background-color:#cfcfcf;"  colspan="7">
-                {{ text }} | {{ timestamp date }}
-              </td>
-            </tr>
-
-            {{#each inventories}}
-              <tr>
-                <td> {{ inventory_text }} </td>
-                <td class="text-right"> {{ quantity_invoiced }} </td>
-                <td class="text-right"> {{ debcred price_invoiced ../../metadata.enterprise.currency_id }} </td>
-                <td class="text-right"> {{ quantity_distributed }} </td>
-                <td class="text-right"> {{ debcred cost_distributed ../../metadata.enterprise.currency_id }} </td>
-                <td class="text-right"> <strong> {{ lessZero quantity_difference }} </strong></td>
-                <td class="text-right"> <strong> {{ debcred cost_difference ../../metadata.enterprise.currency_id }} </strong></td>
-              </tr>
-            {{/each}}
-            {{#if emptyInvoice }}
-              <tr>
-                <td colspan="7"> {{translate 'FORM.INFO.THIS_INVOICE_NO_STOCK'}} </td>
-              </tr>
-            {{/if}}
-            <tr>
-              <td colspan="7"></td>
-            </tr>
-            <tr>
-              <td colspan="7"></td>
-            </tr>
-            {{else}}
-              {{>emptyTable columns=7}}      
-            {{/each}}
-          </tbody>
-        </table>
-        <br>
-        <br>
-        <br>
-        <table style="page-break-after: always; width: 100%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
-          <thead>
-            <tr style="background-color:#cfcfcf;">
-              <th class="text-uppercase text-bold" colspan="5"> {{translate 'REPORT.COMPARE_INVOICED_RECEIVED.NO_INVOICE_ATTRIBUTION'}}</th>
-            </tr>
-            <tr style="background-color:#efefef; font-size:84%;"> 
-              <th style="width: 28%;" class="text-uppercase text-center text-bold">
-                {{translate 'TABLE.COLUMNS.ITEM'}}
-              </th>
-              <th style="width: 18%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.DATE'}}
-              </th>
-              <th style="width: 18%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.QUANTITY'}}
-              </th>
-              <th style="width: 18%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.VALUE'}}
-              </th>
-              <th style="width: 18%;" class="text-uppercase text-center">
-                {{translate 'TABLE.COLUMNS.TOTAL'}}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each noInvoiceAttributionAggregat}}
-            <tr>
-              <td class="text-uppercase text-bold" style="background-color:#cfcfcf;"  colspan="5">
-                {{ document }}
-              </td>
-            </tr>
-            {{#each inventories}}
-              <tr>
-                <td> {{ inventory_text }} </td>
-                <td> {{ timestamp date }} </td>
-                <td class="text-right"> {{ quantity }} </td>
-                <td class="text-right"> {{ debcred unit_cost ../../metadata.enterprise.currency_id }} </td>
-                <td class="text-right"> <strong>{{ debcred total_cost ../../metadata.enterprise.currency_id }}</strong> </td>              
-              </tr>
-            {{/each}}
-            <tr style="background-color:#efefef;">
-              <td colspan="4" class="text-right"><strong>{{translate 'TABLE.COLUMNS.TOTAL'}}</strong></td>
-              <td class="text-right"><strong> {{ debcred total_movement ../../metadata.enterprise.currency_id }}  </strong></td>
-            </tr>  
-            <tr>
-              <td colspan="5"></td>
-            </tr>
-            <tr>
-              <td colspan="5"></td>
-            </tr>            
-          </tbody>
-          {{else}}
-              {{>emptyTable columns=5}}               
-          {{/each}}
-        </table>
       </div>
+
+      <table style="page-break-after: always; width: 100%; margin-right: auto; margin-left: auto; font-size:80%;" class="table table-striped table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color:#efefef;">
+            <th style="width: 28%;" class="text-uppercase text-center text-bold">
+              {{translate 'TABLE.COLUMNS.ITEM'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.QUANTITY_INVOICED'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.PRICE_INVOICED'}}
+            </th>
+            <th style="width: 8%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.TOTAL'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.QUANTITY_DISTRIBUTED'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.COST_DISTRIBUTED'}}
+            </th>
+            <th style="width: 8%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.TOTAL'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.QUANTITY_DIFFERENCE'}}
+            </th>
+            <th style="width: 12%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.COST_DIFFERENCE'}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each invoices}}
+          <tr>
+            <td class="text-uppercase text-bold" style="background-color:#cfcfcf;"  colspan="9">
+              {{ text }} | {{ timestamp date }}
+            </td>
+          </tr>
+
+          {{#each inventories}}
+            <tr>
+              <td> {{ inventory_text }} </td>
+              <td class="text-right"> {{ quantity_invoiced }} </td>
+              <td class="text-right">
+                {{#if price_invoiced }}
+                  {{ debcred price_invoiced ../../metadata.enterprise.currency_id }}
+                {{/if}}
+              </td>
+              <td class="text-right">
+          {{/each}}
+                {{#if total_item_invoiced }}
+                  <strong>{{ debcred total_item_invoiced ../../metadata.enterprise.currency_id }}</strong>
+                {{/if}}
+              </td>
+              <td class="text-right"> {{ quantity_distributed }} </td>
+              <td class="text-right">
+                {{#if cost_distributed }}
+                  {{ debcred cost_distributed ../../metadata.enterprise.currency_id }}
+                {{/if}}
+              </td>
+              <td class="text-right">
+                {{#if total_item_distributed }}
+                  <strong>{{ debcred total_item_distributed ../../metadata.enterprise.currency_id }}</strong>
+                {{/if}}
+              </td>
+              <td class="text-right"> <strong> {{ lessZero quantity_difference }} </strong></td>
+              <td class="text-right"> <strong> {{ debcred cost_difference ../../metadata.enterprise.currency_id }} </strong></td>
+            </tr>
+          <tr>
+            <td></td>
+            <td class="text-right text-uppercase" colspan="2"><strong> {{translate 'TABLE.COLUMNS.TOTAL_INVOICE'}} </strong></td>
+            <td class="text-right text-uppercase"> <strong>{{ debcred total_invoice ../metadata.enterprise.currency_id }}</strong> </td>
+            <td class="text-right text-uppercase" colspan="2"><strong> {{translate 'TABLE.COLUMNS.TOTAL_DISTRIBUTION_COST'}} </strong></td>
+            <td class="text-right text-uppercase"> <strong>{{ debcred total_distribution ../metadata.enterprise.currency_id }}</strong> </td>
+            <td class="text-right text-uppercase"><strong> {{translate 'TABLE.COLUMNS.DIFFERENCE'}} </strong></td>
+            <td class="text-right text-uppercase"> <strong>{{ debcred difference ../metadata.enterprise.currency_id }}</strong> </td>
+          </tr>
+          <tr>
+            <td colspan="9"></td>
+          </tr>
+          <tr>
+            <td colspan="9"></td>
+          </tr>
+          {{else}}
+            {{>emptyTable columns=9}}
+          {{/each}}
+        </tbody>
+      </table>
+      <br>
+      <br>
+      <br>
+      {{#if checkNoInvoiceAttribution }}
+      <table style="page-break-after: always; width: 100%; margin-right: auto; margin-left: auto; font-size:80%;" class="table table-striped table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color:#cfcfcf;">
+            <th class="text-uppercase text-bold" colspan="5"> {{translate 'REPORT.COMPARE_INVOICED_RECEIVED.NO_INVOICE_ATTRIBUTION'}}</th>
+          </tr>
+          <tr style="background-color:#efefef; font-size:84%;">
+            <th style="width: 28%;" class="text-uppercase text-center text-bold">
+              {{translate 'TABLE.COLUMNS.ITEM'}}
+            </th>
+            <th style="width: 18%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.DATE'}}
+            </th>
+            <th style="width: 18%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.QUANTITY'}}
+            </th>
+            <th style="width: 18%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.VALUE'}}
+            </th>
+            <th style="width: 18%;" class="text-uppercase text-center">
+              {{translate 'TABLE.COLUMNS.TOTAL'}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each noInvoiceAttributionAggregat}}
+          <tr>
+            <td class="text-uppercase text-bold" style="background-color:#cfcfcf;"  colspan="5">
+              {{ document }}
+            </td>
+          </tr>
+          {{#each inventories}}
+            <tr>
+              <td> {{ inventory_text }} </td>
+              <td> {{ timestamp date }} </td>
+              <td class="text-right"> {{ quantity }} </td>
+              <td class="text-right"> {{ debcred unit_cost ../../metadata.enterprise.currency_id }} </td>
+              <td class="text-right"> <strong>{{ debcred total_cost ../../metadata.enterprise.currency_id }}</strong> </td>
+            </tr>
+          {{/each}}
+          <tr style="background-color:#efefef;">
+            <td colspan="4" class="text-right"><strong>{{translate 'TABLE.COLUMNS.TOTAL'}}</strong></td>
+            <td class="text-right"><strong> {{ debcred total_movement ../../metadata.enterprise.currency_id }}  </strong></td>
+          </tr>
+          <tr>
+            <td colspan="5"></td>
+          </tr>
+          <tr>
+            <td colspan="5"></td>
+          </tr>
+        </tbody>
+        {{/each}}
+      </table>
+      {{/if}}
     </div>
   </div>
 

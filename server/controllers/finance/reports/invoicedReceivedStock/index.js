@@ -42,36 +42,44 @@ function report(req, res, next) {
     JOIN debtor AS d ON d.uuid = iv.debtor_uuid
     JOIN patient AS p ON p.debtor_uuid = d.uuid
     JOIN document_map AS map ON map.uuid = iv.uuid
-    WHERE p.uuid = ? AND (DATE(iv.date) >= DATE(?) AND DATE(iv.date) <= DATE(?)) 
+    WHERE p.uuid = ? AND (DATE(iv.date) >= DATE(?) AND DATE(iv.date) <= DATE(?))
+    ORDER BY iv.date DESC
   `;
 
-  const sqlInventoriesInvoiced = `
-    SELECT BUID(p.uuid) AS patientUuid, p.display_name, iv.reference, map.text AS invoiceReference,
-    iv.date, inv.text AS inventory_text, inv.uuid AS inventory_uuid, 
-    inv.code AS inventory_code, itm.quantity AS quantity_invoiced, itm.inventory_price AS price_invoiced
-    FROM patient AS p
-    JOIN debtor AS d ON d.uuid = p.debtor_uuid
-    JOIN invoice AS iv ON iv.debtor_uuid = d.uuid
-    JOIN invoice_item AS itm ON itm.invoice_uuid = iv.uuid
-    JOIN inventory AS inv ON inv.uuid = itm.inventory_uuid
+  const sqlInvoicedDistributed = `
+  SELECT aggr.reference, BUID(aggr.inventory_uuid) AS inventory_uuid, aggr.inventory_text,
+  SUM(aggr.quantity) AS quantity_invoiced, aggr.price_invoiced,
+  BUID(aggr.invoice_uuid) AS invoice_uuid, aggr.invoice_date,
+  SUM(aggr.quantity_distributed) AS quantity_distributed, aggr.cost_distributed,
+  (aggr.quantity - aggr.quantity_distributed) AS quantity_difference,
+  (aggr.price_invoiced - aggr.cost_distributed) AS cost_difference
+  FROM (
+    SELECT map.text AS reference, inv.uuid AS inventory_uuid, inv.text AS inventory_text, item.quantity,
+    item.inventory_price AS price_invoiced,iv.uuid AS invoice_uuid, iv.date AS invoice_date, 0 AS quantity_distributed,
+    0 AS cost_distributed
+    FROM invoice_item AS item
+    JOIN inventory AS inv ON inv.uuid = item.inventory_uuid
+    JOIN invoice AS iv ON iv.uuid = item.invoice_uuid
     JOIN document_map AS map ON map.uuid = iv.uuid
-    WHERE p.uuid = ? AND (DATE(iv.date) >= DATE(?) AND DATE(iv.date) <= DATE(?)) 
+    JOIN patient AS p ON p.debtor_uuid = iv.debtor_uuid
+    WHERE p.uuid = ? AND (DATE(iv.date) >= DATE(?) AND DATE(iv.date) <= DATE(?))
     AND inv.consumable = 1
-    ORDER BY inv.text ASC, iv.date DESC;  
-  `;
-
-  const sqlItemInvoicedDistibuted = `
-    SELECT BUID(p.uuid) AS patientUuid, mov.lot_uuid, SUM(mov.quantity) AS quantity,
-    mov.unit_cost, inv.uuid AS inventory_uuid, inv.uuid AS inventory_uuid,
-    inv.code AS inventory_code, inv.text AS inventory_text, map.text AS invoiceReference, iv.date
-    FROM patient AS p
-    JOIN stock_movement AS mov ON mov.entity_uuid = p.uuid
-    JOIN lot AS l ON l.uuid = mov.lot_uuid
+    UNION
+    SELECT map.text AS reference, inv.uuid AS inventory_uuid, inv.text AS inventory_text,
+    0 AS quantity, 0 AS price_invoiced, sm.invoice_uuid, sm.date,
+    SUM(sm.quantity) AS quantity_distributed, sm.unit_cost AS cost_distributed
+    FROM stock_movement AS sm
+    JOIN patient AS p ON p.uuid = sm.entity_uuid
+    JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-    JOIN invoice AS iv ON iv.uuid = mov.invoice_uuid
+    JOIN invoice AS iv ON iv.uuid = sm.invoice_uuid
     JOIN document_map AS map ON map.uuid = iv.uuid
-    WHERE p.uuid = ? AND (DATE(iv.date) >= DATE(?) AND DATE(iv.date) <= DATE(?)) AND mov.is_exit = 1
-    GROUP BY inv.uuid, iv.uuid;
+    WHERE sm.invoice_uuid IS NOT NULL AND
+    p.uuid = ? AND (DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?))
+    AND sm.is_exit = 1
+    GROUP BY inv.uuid, iv.uuid ) AS aggr
+    GROUP BY aggr.inventory_uuid, aggr.invoice_uuid
+    ORDER BY aggr.inventory_text ASC
   `;
 
   const sqlNoInvoiceAttributionAggregat = `
@@ -108,82 +116,47 @@ function report(req, res, next) {
   const dbPromises = [
     Patients.lookupPatient(patientUuid),
     db.exec(sqlInvoice, [db.bid(patientUuid), params.dateFrom, params.dateTo]),
-    db.exec(sqlInventoriesInvoiced, [db.bid(patientUuid), params.dateFrom, params.dateTo]),
-    db.exec(sqlItemInvoicedDistibuted, [db.bid(patientUuid), params.dateFrom, params.dateTo]),
+    db.exec(sqlInvoicedDistributed, [db.bid(patientUuid), params.dateFrom, params.dateTo,
+      db.bid(patientUuid), params.dateFrom, params.dateTo]),
     db.exec(sqlNoInvoiceAttributionAggregat, [db.bid(patientUuid), params.dateFrom, params.dateTo]),
     db.exec(sqlNoInvoiceAttribution, [db.bid(patientUuid), params.dateFrom, params.dateTo]),
   ];
 
   Promise.all(dbPromises)
-    .then(([patient, invoices, inventoriesInvoiced, inventoriesInvoicedDistibuted,
-      noInvoiceAttributionAggregat, NoInvoiceAttribution]) => {
+    .then(([patient, invoices, inventoriesInvoicedDistibuted,
+      noInvoiceAttributionAggregat, noInvoiceAttribution]) => {
 
       _.extend(data, { patient });
 
       invoices.forEach(invoice => {
         invoice.inventories = [];
-        inventoriesInvoiced.forEach(inventory => {
-          if (invoice.text === inventory.invoiceReference) {
-            inventory.quantity_distributed = 0;
-            inventory.cost_distributed = 0;
-            inventory.quantity_difference = 0;
+        let totalInvoice = 0;
+        let totalDistribution = 0;
+
+        inventoriesInvoicedDistibuted.forEach(inventory => {
+          if (invoice.text === inventory.reference) {
+            inventory.quantity_invoiced = inventory.quantity_invoiced || '';
+            inventory.quantity_distributed = inventory.quantity_distributed || '';
+            inventory.total_item_invoiced = inventory.quantity_invoiced * inventory.price_invoiced;
+            inventory.total_item_distributed = inventory.quantity_distributed * inventory.cost_distributed;
+
+            totalInvoice += inventory.total_item_invoiced;
+            totalDistribution += inventory.total_item_distributed;
+
             invoice.inventories.push(inventory);
           }
+          invoice.total_invoice = totalInvoice;
+          invoice.total_distribution = totalDistribution;
+          invoice.difference = totalInvoice - totalDistribution;
         });
 
         invoice.emptyInvoice = (invoice.inventories.length === 0);
       });
 
-      invoices.forEach(invoice => {
-        invoice.inventories.forEach(invoiced => {
-          inventoriesInvoicedDistibuted.forEach(distributed => {
-            if ((invoiced.invoiceReference === distributed.invoiceReference)
-            && (invoiced.inventory_text === distributed.inventory_text)) {
-              invoiced.quantity_distributed = distributed.quantity;
-              invoiced.cost_distributed = distributed.unit_cost;
-              invoiced.quantity_difference = invoiced.quantity_invoiced - distributed.quantity;
-              invoiced.cost_difference = invoiced.price_invoiced - distributed.unit_cost;
-            }
-          });
-        });
-      });
-
-      // Search for items not billed but distributed to the Patient
-      inventoriesInvoicedDistibuted.forEach(distributed => {
-        let countInvoicing = 0;
-        invoices.forEach(invoice => {
-          invoice.inventories.forEach(invoiced => {
-            if ((invoiced.invoiceReference === distributed.invoiceReference)
-            && (invoiced.inventory_text === distributed.inventory_text)) {
-              countInvoicing++;
-            }
-          });
-          distributed.isInvoiced = (countInvoicing > 0);
-        });
-      });
-
-      // Integrations of items not invoiced but distributed to the Patient
-      inventoriesInvoicedDistibuted.forEach(distributed => {
-        invoices.forEach(invoice => {
-          if ((invoice.text === distributed.invoiceReference)
-          && (!distributed.isInvoiced)) {
-            distributed.quantity_invoiced = 0;
-            distributed.price_invoiced = 0;
-
-            distributed.quantity_distributed = distributed.quantity;
-            distributed.cost_distributed = distributed.unit_cost;
-            distributed.quantity_difference = 0 - distributed.quantity;
-            distributed.cost_difference = 0 - distributed.unit_cost;
-
-            invoice.inventories.push(distributed);
-          }
-        });
-      });
-
       noInvoiceAttributionAggregat.forEach(movement => {
         movement.inventories = [];
         movement.total_movement = 0;
-        NoInvoiceAttribution.forEach(inventory => {
+        noInvoiceAttribution.forEach(inventory => {
           if (movement.document === inventory.document) {
             movement.inventories.push(inventory);
             movement.total_movement += inventory.total_cost;
@@ -191,8 +164,12 @@ function report(req, res, next) {
         });
       });
 
-      data.invoices = invoices;
+      data.invoices = invoices.filter(item => {
+        return !item.emptyInvoice;
+      });
+
       data.noInvoiceAttributionAggregat = noInvoiceAttributionAggregat;
+      data.checkNoInvoiceAttribution = (noInvoiceAttribution.length > 0);
 
       return reporting.render(data);
     })
