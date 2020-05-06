@@ -15,19 +15,19 @@
 
           <table style="width: 25%; float: right; margin-bottom: 1.5%">
             <tr>
-              <td width="10%" style="background-color: #5cb85c; color:white; text-align:center"> ✔ </td>
+              <td width="10%" style="background-color: #5cb85c !important; color:white; text-align:center"> ✔ </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.CORRECT'}}</strong></td>
             </tr>
             <tr>
-              <td width="10%" style="background-color: #777777; color:white; text-align:center"> X </td>
+              <td width="10%" style="background-color: #777777  !important; color:white; text-align:center"> X </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_PENDING'}}</strong></td>
             </tr> 
             <tr>
-              <td width="10%" style="background-color: #f0ad4e; color:white; text-align:center"> ▲ </td>
+              <td width="10%" style="background-color: #f0ad4e  !important; color:white; text-align:center"> ▲ </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_GREATER'}}</strong></td>
             </tr>
             <tr>
-              <td width="10%" style="background-color: #d9534f; color:white; text-align:center"> ▼ </td>
+              <td width="10%" style="background-color: #d9534f !important; color:white; text-align:center"> ▼ </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_LOWWER'}}</strong></td>
             </tr>            
           </table>
@@ -64,20 +64,20 @@
                   <td class="text-right">{{debcred debit ../report.currencyId}}</td>
                   <td class="text-right">{{debcred credit ../report.currencyId}}</td>
                   <td class="text-right">{{debcred balance ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplay.color }}" class="text-center">
+                  <td style="color:white; background-color: {{ labelDisplay.color }}  !important;" class="text-center">
                     {{ labelDisplay.icon }}
                   </td>
 
                   <td class="text-right">{{debcred debit_transfert ../report.currencyId}}</td>
                   <td class="text-right">{{debcred credit_transfert ../report.currencyId}}</td>
                   <td class="text-right">{{debcred balance_transfert ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplayTransfert.color }}" class="text-center">
+                  <td style="color:white; background-color: {{ labelDisplayTransfert.color }} !important;" class="text-center">
                     {{ labelDisplayTransfert.icon }}
                   </td>
                   
                   <td><strong>{{ account_target }}</strong></td>
                   <td class="text-right">{{debcred debit_primary ../report.currencyId}}</td>
-                  <td style="color:white; background-color: {{ labelDisplayPrimary.color }};" class="text-center">
+                  <td style="color:white; background-color: {{ labelDisplayPrimary.color }} !important;" class="text-center">
                     {{ labelDisplayPrimary.icon }} 
                   </td>
                 </tr>
