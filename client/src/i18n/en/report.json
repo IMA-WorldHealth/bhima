@@ -63,6 +63,10 @@
       "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
     },
     "CLOSING_BALANCE": "Closing Balance",
+    "COMPARE_INVOICED_RECEIVED": {
+      "DESCRIPTION": "This report makes it possible to attach the items billed to a patient on the articulated items consumed or distributed to the Patient",
+      "TITLE": "Compare invoiced items to received stock"
+    },
     "CONFIGURABLE_ANALYSIS_REPORT" : {
       "HIDE_ACCOUNT_DETAILS": "Hide account details",
       "HIDE_DETAILS_TYPES": "Hide details of types",

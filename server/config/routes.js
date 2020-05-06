@@ -457,6 +457,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/clientDebts', clientDebts.report);
   app.get('/reports/finance/clientSupport', clientSupport.report);
   app.get('/reports/finance/realizedProfit', realizedProfit.report);
+  app.get('/reports/finance/invoicedReceivedStock/:uuid', financeReports.invoicedReceivedStock.report);
 
   app.get('/reports/finance/systemUsageStat', systemUsage.document);
 

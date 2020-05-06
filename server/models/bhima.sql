@@ -151,8 +151,9 @@ INSERT INTO unit VALUES
   (266, 'Inventory Changes Report', 'REPORT.INVENTORY_CHANGE.TITLE', 'Inventory Changes Report', 144, '/modules/reports/inventoryChanges', '/reports/inventoryChanges'),
   (267, 'Monthly consumption report', 'TREE.MONTHLY_CONSUMPTION', 'Monthly consumption report', 144, '/modules/reports/monthlyConsumptionReport', '/reports/monthlyConsumptionReport'),
   (268, '[Stock] Consumption graph','TREE.STOCK_CONSUMPTION_GRAPH_REPORT','Stock Consumption graph report', 144,'/modules/reports/generated/stock_consumption_graph_report','/reports/stock_consumption_graph_report'),
-  (269, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment');
-
+  (269, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/modules/stock/inventory-adjustment/inventory-adjustment.html', '/stock/inventory-adjustment'),
+  (270, 'compare invoiced to received','TREE.COMPARE_INVOICED_RECEIVED','Compare invoiced items to received stock', 144,'/modules/reports/invoicedReceivedStock','/reports/invoicedReceivedStock');
+  
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -215,7 +216,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('purchaseOrderAnalysis', 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE'),
   ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE'),
   ('monthlyConsumptionReport', 'REPORT.MONTHLY_CONSUMPTION.TITLE'),
-  ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE');
+  ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
+  ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
