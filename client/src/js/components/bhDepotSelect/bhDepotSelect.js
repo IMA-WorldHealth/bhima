@@ -8,6 +8,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
+      exception        : '<?', // uuid string or an array of uuids
     },
   });
 
@@ -40,6 +41,7 @@ function DepotSelectController(Depots, Notify) {
   $ctrl.searchByName = text => {
     const options = {
       text : (text || '').toLowerCase(),
+      exception : $ctrl.exception,
     };
 
     return Depots.searchByName(options);

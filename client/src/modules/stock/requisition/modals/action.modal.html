@@ -51,6 +51,7 @@
       <bh-depot-select
         depot-uuid="$ctrl.model.depot_uuid"
         required="true"
+        exception="$ctrl.model.requestor_uuid"
         on-select-callback="$ctrl.onSelectDepot(depot)">
         <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
       </bh-depot-select>
