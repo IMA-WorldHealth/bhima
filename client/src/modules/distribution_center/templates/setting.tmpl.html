@@ -1,14 +1,17 @@
-<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="row.groupHeader">
-  <a href>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body
+  ng-if="row.groupHeader"
+  ng-init="item = row.treeNode.children[0].row.entity"
+  data-row="{{ row.treeNode.children[0].row.entity.auxiliary_label }}">
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.label}}</li>
+  <ul data-row-menu="{{item.auxiliary_label}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{item.auxiliary_label}}</li>
     <li>
       <a data-method="setting" ng-click="grid.appScope.settings(row.treeNode.children)" href>
-        <span class="fa fa-cogs"></span> <span translate> FORM.LABELS.SETTINGS </span>
+        <i class="fa fa-cogs"></i> <span translate>FORM.LABELS.SETTINGS</span>
       </a>
     </li>
   </ul>

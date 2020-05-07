@@ -21,7 +21,7 @@ class JournalPage {
 
     return Promise.all(rows
       .map(async (row, index) => {
-        const attr = await row.$(`[data-row]`).getAttribute('data-row');
+        const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
         if (attr === transId) {
           await GU.selectRow(this.gridId, index);
         }
@@ -35,7 +35,7 @@ class JournalPage {
 
     return Promise.all(rows
       .map(async (row, index) => {
-        const attr = await row.$(`[data-row]`).getAttribute('data-row');
+        const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
         if (transIds.includes(attr)) {
           await GU.selectRow(this.gridId, index);
         }
