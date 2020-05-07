@@ -36,7 +36,7 @@ function MultiplePayrollController(
   vm.activeConfig = true;
 
   const columnDefs = [{
-    field : 'reference',
+    field : 'hrreference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.count,
