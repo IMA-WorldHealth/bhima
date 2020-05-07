@@ -149,7 +149,7 @@
     "qs": "^6.9.4",
     "release-it": "^13.5.8",
     "sinon": "^9.0.2",
-    "standard-version": "^7.0.0",
+    "standard-version": "^8.0.0",
     "typescript": "^3.7.5"
   },
   "homepage": "https://docs.bhi.ma",
