@@ -110,18 +110,10 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = db.convert(req.query, ['uuid', 'uuids']);
+  const options = db.convert(req.query, ['uuid', 'uuids', 'exception']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
-  }
-
-  if (options.exception && Array.isArray(options.exception)) {
-    options.exception = options.exception.map(depotUuid => {
-      return db.bid(depotUuid);
-    }).join(',');
-  } else if (options.exception && typeof options.exception === 'string') {
-    options.exception = db.bid(options.exception);
   }
 
   options.enterprise_id = req.session.enterprise.id;
@@ -194,13 +186,7 @@ function searchByName(req, res, next) {
     return next(new BadRequest('text attribute must be specified for a name search'));
   }
 
-  if (options.exception && Array.isArray(options.exception)) {
-    options.exception = options.exception.map(depotUuid => {
-      return db.bid(depotUuid);
-    }).join(',');
-  } else if (options.exception && typeof options.exception === 'string') {
-    options.exception = db.bid(options.exception);
-  }
+  db.convert(options, ['exception']);
 
   const filters = new FilterParser(options, { tableAlias : 'd' });
 
