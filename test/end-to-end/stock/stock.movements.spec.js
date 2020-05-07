@@ -39,7 +39,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setLimit(10);
     await modal.submit();
-    await GU.expectRowCount(gridId, 12);
+    await GU.expectRowCount(gridId, 11); // count the grouping row
   });
 
   it('filters by entry/exit', async () => {

@@ -256,7 +256,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
  *
  * @param {object} params - A request query object
  */
-function getLotsMovements(depotUuid, params) {
+async function getLotsMovements(depotUuid, params) {
   let finalClause;
 
   if (depotUuid) {
@@ -289,8 +289,10 @@ function getLotsMovements(depotUuid, params) {
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
-  const orderBy = 'ORDER BY m.date';
-  return getLots(sql, params, finalClause, orderBy);
+  const orderBy = 'ORDER BY m.date, dm.text';
+  const lots = await getLots(sql, params, finalClause, orderBy);
+
+  return lots;
 }
 
 /**
