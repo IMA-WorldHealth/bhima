@@ -143,8 +143,7 @@ function getLotFilters(parameters) {
  * @param {object} parameters - A request query object
  * @param {string} finalClauseParameter - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
-function getLots(sqlQuery, parameters, finalClauseParameter) {
-  const finalClause = finalClauseParameter;
+function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
   const sql = sqlQuery || `
       SELECT
         BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
@@ -165,7 +164,12 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const filters = getLotFilters(parameters);
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
-  filters.setGroup(finalClause || '');
+  filters.setGroup(finalClause);
+
+  // add order by if it exists
+  if (orderBy) {
+    filters.setOrder(orderBy);
+  }
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
@@ -285,7 +289,8 @@ function getLotsMovements(depotUuid, params) {
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
-  return getLots(sql, params, finalClause);
+  const orderBy = 'ORDER BY m.date';
+  return getLots(sql, params, finalClause, orderBy);
 }
 
 /**
