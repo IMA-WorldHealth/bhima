@@ -9,7 +9,7 @@ StockFindPurchaseModalController.$inject = [
 
 function StockFindPurchaseModalController(
   Instance, Purchase, Notify,
-  uiGridConstants, Filtering, Receipts, bhConstants
+  uiGridConstants, Filtering, Receipts, bhConstants,
 ) {
   const vm = this;
 
@@ -89,20 +89,27 @@ function StockFindPurchaseModalController(
   }
 
   /* ======================= End Grid ======================================== */
-
-  Purchase.search({ detailed : 1, status_id : [2, 4] })
-    .then(purchases => {
-      vm.gridOptions.data = purchases;
-    })
-    .catch(Notify.errorHandler);
+  function load() {
+    vm.loading = true;
+    Purchase.search({ detailed : 1, status_id : [2, 4] })
+      .then(purchases => {
+        vm.gridOptions.data = purchases;
+      })
+      .catch(() => {
+        vm.hasError = true;
+      })
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
 
   // submit
   function submit() {
-    if (!vm.selectedRow) { return null; }
+    if (!vm.selectedRow || (vm.selectedRow && !vm.selectedRow.uuid)) { return null; }
 
     return Purchase.stockBalance(vm.selectedRow.uuid)
       .then(handlePurchaseInformation)
-      .catch(Notify.errorHandler);
+      .catch(Notify.handleError);
   }
 
   // display the supplier name
@@ -117,4 +124,6 @@ function StockFindPurchaseModalController(
   function cancel() {
     Instance.close();
   }
+
+  load();
 }
