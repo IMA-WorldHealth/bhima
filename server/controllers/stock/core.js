@@ -500,6 +500,29 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     GROUP BY i.uuid, d.uuid;
   `;
 
+  const queryConsumptionByDays = `
+  SELECT w.depot_name, w.text, w.days, w.consommation, w.quantity, (w.quantity/w.days) cmm
+  FROM 
+  (
+    SELECT z.depot_name, z.text, SUM(IF(z.date, 1, 0)) days, SUM(z.consommation) consommation, SUM(z.quantity) quantity
+    FROM (
+      SELECT 
+        d.text depot_name, i.text, count(*) consommation, SUM(sm.quantity) quantity,  sm.date,
+        i.uuid inventory_uuid, d.uuid depot_uuid
+      FROM stock_movement sm 
+      JOIN lot l ON l.uuid = sm.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN depot d ON d.uuid = sm.depot_uuid
+      WHERE 
+        (DATE(sm.date) BETWEEN ? AND ?) AND flux_id IN (9, 10)
+      GROUP BY d.uuid, i.uuid, sm.date
+      HAVING consommation <> 0
+      ORDER BY d.text, i.text
+    )z
+    GROUP BY z.depot_uuid, z.inventory_uuid
+  )w WHERE w.days <> 0
+  `;
+
   const checkPeriod = `
     SELECT id FROM period;
   `;
