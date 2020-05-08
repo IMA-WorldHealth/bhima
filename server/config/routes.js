@@ -784,6 +784,8 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  app.get('/stock/status', stock.listStatus);
+
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);
   app.get('/stock/assign/:uuid', stock.assign.detail);

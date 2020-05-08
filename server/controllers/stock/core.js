@@ -45,6 +45,7 @@ module.exports = {
   getLotsMovements,
   getLotsOrigins,
   stockManagementProcess,
+  listStatus,
   // stock consumption
   getStockConsumption,
   getStockConsumptionAverage,
@@ -767,4 +768,12 @@ function getInventoryMovements(params) {
 
       return { movements, totals, result };
     });
+}
+
+
+function listStatus(req, res, next) {
+  const sql = `SELECT id, status_key, title_key FROM status`;
+  db.exec(sql).then(status => {
+    res.status(200).json(status);
+  }).catch(next);
 }

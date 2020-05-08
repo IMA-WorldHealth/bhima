@@ -37,6 +37,7 @@ exports.requisition = requisition;
 exports.requestorType = requestorType;
 exports.createInventoryAdjustment = createInventoryAdjustment;
 
+exports.listStatus = core.listStatus;
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
 exports.getStockConsumptionAverage = getStockConsumptionAverage;

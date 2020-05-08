@@ -1,0 +1,11 @@
+
+<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters">
+  <select class="ui-grid-filter-select" ng-model="colFilter.term"
+    ng-options="option.value as (option.label | translate) for option in grid.appScope.status"></select>
+  <span style="display:inline-block;" class="pull-right">
+    <a data-reset-input href ng-click="grid.appScope.onClearStatusFilter(colFilter)" tabindex="-1">
+      <i class="fa fa-eraser"></i>
+    </a>
+  </span>
+</div>
+      

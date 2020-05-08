@@ -2,9 +2,10 @@ angular.module('bhima.controllers')
   .controller('StockRequisitionController', StockRequisitionController);
 
 StockRequisitionController.$inject = [
-  'StockService', 'NotifyService', 'ModalService', 'ReceiptModal',
-  'uiGridConstants', 'StockModalService', 'LanguageService',
-  'GridStateService', 'GridColumnService', '$state',
+  '$state', 'StockService', 'NotifyService',
+  'ModalService', 'ReceiptModal',
+  'uiGridConstants', 'StockModalService',
+  'GridStateService', 'GridColumnService',
 ];
 
 /**
@@ -12,13 +13,15 @@ StockRequisitionController.$inject = [
  * This controller is responsible of requisition registry
  */
 function StockRequisitionController(
-  Stock, Notify, Modal, Receipts,
-  uiGridConstants, StockModal, Languages,
-  GridState, Columns, $state,
+  $state, Stock, Notify, Modal, Receipts,
+  uiGridConstants, StockModal,
+  GridState, Columns,
 ) {
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
   const stockRequisitionFilters = Stock.filter.requisition;
+  vm.status = [];
+
 
   // grid columns
   const columns = [
@@ -66,6 +69,7 @@ function StockRequisitionController(
       displayName : 'FORM.LABELS.STATUS',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/requisition/templates/status.cell.html',
+      filterHeaderTemplate : 'modules/stock/requisition/templates/status.filter.html',
     },
 
     {
@@ -83,6 +87,10 @@ function StockRequisitionController(
       <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
   `;
+
+  vm.onClearStatusFilter = (col) => {
+    delete col.term;
+  };
 
   // options for the UI grid
   vm.gridOptions = {
@@ -244,6 +252,16 @@ function StockRequisitionController(
    * action to perform when the page is loaded
    */
   function startup() {
+    Stock.status.read().then(rows => {
+      vm.status = rows.map(s => {
+        return {
+          value : s.status_key,
+          label : s.title_key,
+        };
+      });
+
+    });
+
     if ($state.params.filters.length) {
       stockRequisitionFilters.replaceFiltersFromState($state.params.filters);
       stockRequisitionFilters.formatCache();
@@ -287,4 +305,5 @@ function StockRequisitionController(
   }
 
   startup();
+
 }
