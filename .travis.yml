@@ -18,6 +18,11 @@ matrix:
       services:
         - mysql
         - redis
+    - env: TEST_TYPE=e2e
+      services:
+        - redis
+      addons:
+        mariadb: '10.5'
     - env:
         TEST_TYPE=installation
       services:
