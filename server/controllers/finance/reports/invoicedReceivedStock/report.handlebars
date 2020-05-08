@@ -2,7 +2,7 @@
 <html>
   {{> head title="REPORT.COMPARE_INVOICED_RECEIVED.TITLE"}}
   <body>
-  <div class="container">
+  <div class="container-fluid">
     {{> header}}
 
     <!-- body -->
@@ -101,12 +101,6 @@
             <td class="text-right text-uppercase"><strong> {{translate 'TABLE.COLUMNS.DIFFERENCE'}} </strong></td>
             <td class="text-right text-uppercase"> <strong>{{ debcred difference ../metadata.enterprise.currency_id }}</strong> </td>
           </tr>
-          <tr>
-            <td colspan="9"></td>
-          </tr>
-          <tr>
-            <td colspan="9"></td>
-          </tr>
           {{else}}
             {{>emptyTable columns=9}}
           {{/each}}
@@ -158,12 +152,6 @@
           <tr style="background-color:#efefef;">
             <td colspan="4" class="text-right"><strong>{{translate 'TABLE.COLUMNS.TOTAL'}}</strong></td>
             <td class="text-right"><strong> {{ debcred total_movement ../../metadata.enterprise.currency_id }}  </strong></td>
-          </tr>
-          <tr>
-            <td colspan="5"></td>
-          </tr>
-          <tr>
-            <td colspan="5"></td>
           </tr>
         </tbody>
         {{/each}}
