@@ -230,6 +230,7 @@
             "SHOWING": "Aperçue",
             "SUPPORT_COST": " est prise en charge par",
             "THE_NECESSARY_CONFIG_MISSING": "Les configurations nécessaires manquent",
+            "THIS_INVOICE_NO_STOCK": "Cette facture ne concerne aucun article en stock",
             "TRANSACTIONS": "Transactions",
             "TRANSACTION_REVER_SUCCESS": "Cette transaction a été Annulée avec succès",
             "UNAUTHORIZED": "Non autorisée",

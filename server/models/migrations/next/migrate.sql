@@ -9,3 +9,13 @@ INSERT INTO flux VALUES
   (14, 'STOCK_FLUX.INVENTORY_RESET'),
   (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT');
   
+
+/*
+ * @author: @lomamech
+ * @date: 2020-04-29
+ */
+INSERT INTO unit VALUES
+  (270, 'compare invoiced to received','TREE.COMPARE_INVOICED_RECEIVED','Compare invoiced items to received stock', 144,'/modules/reports/invoicedReceivedStock','/reports/invoicedReceivedStock');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE');
