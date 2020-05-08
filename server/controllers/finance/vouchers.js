@@ -20,12 +20,9 @@ const util = require('../../lib/util');
 const db = require('../../lib/db');
 
 const BadRequest = require('../../lib/errors/BadRequest');
-const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
 
 const shared = require('./shared');
-
-const entityIdentifier = identifiers.VOUCHER.key;
 
 /** Get list of vouchers */
 exports.list = list;
@@ -78,8 +75,9 @@ function lookupVoucher(vUuid) {
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.created_at, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed, v.posted
+      dm.text AS reference, reversed, v.posted
     FROM voucher v
+    JOIN document_map dm ON dm.uuid = v.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
@@ -121,7 +119,6 @@ function find(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   let typeIds = [];
 
   if (options.type_ids) {
@@ -132,10 +129,10 @@ function find(options) {
     SELECT
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      v.edited, BUID(v.reference_uuid) AS reference_uuid, p.name AS project_name,
-      v.reversed
+      dm.text AS reference, v.edited, BUID(v.reference_uuid) AS reference_uuid,
+      p.name AS project_name, v.reversed
     FROM voucher v
+    JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
@@ -152,7 +149,7 @@ function find(options) {
   filters.equals('edited');
   filters.equals('currency_id');
 
-  filters.custom('reference', referenceStatement);
+  filters.equals('reference', 'text', 'dm');
 
   filters.fullText('description');
 
@@ -168,7 +165,7 @@ function find(options) {
   filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
 
   // @TODO Support ordering query (reference support for limit)?
-  filters.setOrder('ORDER BY v.date DESC');
+  filters.setOrder('ORDER BY v.date DESC, dm.text DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -180,7 +177,7 @@ function totalAmountByCurrency(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
+
   let typeIds = [];
 
   if (options.type_ids) {
@@ -190,7 +187,8 @@ function totalAmountByCurrency(options) {
   const sql = `
   SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount, COUNT(c.symbol) AS numVouchers
   FROM voucher v
-  JOIN currency c ON v.currency_id = c.id
+    JOIN document_map dm ON v.uuid = dm.uuid
+    JOIN currency c ON v.currency_id = c.id
   `;
 
   delete options.detailed;
@@ -201,7 +199,7 @@ function totalAmountByCurrency(options) {
   filters.equals('user_id');
   filters.equals('edited');
 
-  filters.custom('reference', referenceStatement);
+  filters.equals('reference', 'text', 'dm');
 
   filters.fullText('description');
 
@@ -301,7 +299,7 @@ function createVoucher(voucherDetails, userId, projectId) {
   // map items into an array of arrays
   items = _.map(
     items,
-    util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid')
+    util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid'),
   );
 
   // initialise the transaction handler
@@ -312,7 +310,7 @@ function createVoucher(voucherDetails, userId, projectId) {
     .addQuery('INSERT INTO voucher SET ?', [voucherDetails])
     .addQuery(
       'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
-      [items]
+      [items],
     )
     .addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
 
