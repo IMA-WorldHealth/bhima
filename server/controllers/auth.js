@@ -60,13 +60,13 @@ async function login(username, password, projectId) {
     JOIN project_permission JOIN project ON user.id = project_permission.user_id
       AND project.id = project_permission.project_id
     WHERE
-      user.username = ? AND user.password = PASSWORD(?)
+      user.username = ? AND user.password = MYSQL5_PASSWORD(?)
       AND project_permission.project_id = ?;
   `;
 
   const sqlUser = `
     SELECT user.id, user.deactivated FROM user
-    WHERE user.username = ? AND user.password = PASSWORD(?);
+    WHERE user.username = ? AND user.password = MYSQL5_PASSWORD(?);
   `;
 
   // a role should be assigned to the user
@@ -75,7 +75,7 @@ async function login(username, password, projectId) {
     SELECT  user.id
     FROM  user_role
       JOIN user ON user.id =  user_role.user_id
-    WHERE user.username = ? AND user.password = PASSWORD(?)
+    WHERE user.username = ? AND user.password = MYSQL5_PASSWORD(?)
   `;
 
   const [connect, user, permission] = await q.all([

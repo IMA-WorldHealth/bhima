@@ -3,6 +3,11 @@
 # bash script mode
 set -eo pipefail
 
+# get DB settings
+set -a
+source .env.development
+set +a
+
 function startfold {
   if [ -n "$TRAVIS_BUILD_NUMBER" ]; then
     echo $1

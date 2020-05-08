@@ -10,7 +10,7 @@ This guide will get you up and running with bhima locally. Please note that bhim
 
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally. We only test on Linux, so your best bet is to use a Linux flavor you are familiar with. Please make sure you have recent version of:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.7\)
+1. [MySQL](http://dev.mysql.com/downloads/) \(5.7 or 8.0\)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
@@ -109,21 +109,21 @@ NODE_ENV="development" yarn build
 
 ### Creating a database
 
-_NOTE: BHIMA runs in _`sql_mode='STRICT_ALL_TABLES'`_. While it is not necessary to have this set to build the database, the tests will not pass unless the correct SQL\_MODE is set._
+_NOTE: BHIMA runs in _`sql_mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'`_. While it is not necessary to have this set to build the database, the tests will not pass unless the correct SQL\_MODE is set._
 
 ```bash
 #To configure MySQL with this setting, run the following commands:
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 
 #Under the section [mysqld], add in the following text:
-sql-mode = STRICT_ALL_TABLES
+sql-mode = "STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"
 
 # save and quit, then restart mysql with the following command:
 sudo service mysql restart
 ```
 
 To start a MySQL server using docker you can use:
-`docker run --name mysql5.7 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MyPassword -d mysql:5.7 --sql-mode='STRICT_ALL_TABLES'`
+`docker run --name mysql5.7 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MyPassword -d mysql:5.7 --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'`
 this will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.
 Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
 

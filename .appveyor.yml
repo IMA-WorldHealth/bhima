@@ -1,4 +1,5 @@
 image:
+  - Ubuntu2004
   - Ubuntu1604
   - Ubuntu1804
 
@@ -14,6 +15,7 @@ environment:
     - nodejs_version: "12"
 
 install:
+  - mysql --version
   - sh: nvm install $nodejs_version
   - bash ./sh/setup-ci-env.sh
   - bash ./sh/appveyor.sh

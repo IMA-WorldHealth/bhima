@@ -124,7 +124,7 @@ function createEnterpriseProjectUser(enterprise, project, user, locationUuid) {
   const sqlEnterprise = 'INSERT INTO enterprise SET ? ';
   const sqlEnterpriseSettings = 'INSERT INTO enterprise_setting SET ?';
   const sqlProject = 'INSERT INTO project SET ? ';
-  const sqlUser = 'INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);';
+  const sqlUser = 'INSERT INTO user (username, password, display_name) VALUES (?, MYSQL5_PASSWORD(?)  , ?);';
 
   const sqlRole = `CALL superUserRole(${user.id})`;
 
