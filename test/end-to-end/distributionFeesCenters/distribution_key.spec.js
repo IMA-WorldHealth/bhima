@@ -6,16 +6,16 @@ describe('Distribution keys Management', () => {
   before(() => helpers.navigate('#!/distribution_center/distribution_key'));
 
   const Page = new DistributionKeysPage();
-  const labelAuxiliary1 = 'Auxiliary 2 (1)';
-  const labelAuxiliary2 = 'Auxiliary 2 (3)';
-  const resetAuxiliary2 = 'Auxiliary 3 (1)';
+  const labelAuxiliary1 = 'Auxiliary 2';
+  const labelAuxiliary2 = 'Auxiliary 2';
+  const resetAuxiliary2 = 'Auxiliary 3';
   const distributionKeyElements = 10;
 
-  it('Set Distribution key for an Auxiliary Fee Center', async () => {
+  it('set distribution key for an Auxiliary Fee Center', async () => {
     await Page.setDistributionKey(labelAuxiliary1);
   });
 
-  it('Prevent initialization of distribution keys greater than 100 percent', async () => {
+  it('prevent initialization of distribution keys greater than 100 percent', async () => {
     await Page.preventGreaterLess100(labelAuxiliary2);
   });
 
@@ -27,7 +27,7 @@ describe('Distribution keys Management', () => {
     expect(await Page.getDistributionKeyCount()).to.equal(distributionKeyElements);
   });
 
-  it('Reset Distributions key for an Auxiliary Fee Center', async () => {
+  it('reset distributions key for an Auxiliary Fee Center', async () => {
     await Page.resetDistributionKey(resetAuxiliary2);
   });
 });

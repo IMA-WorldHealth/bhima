@@ -15,6 +15,8 @@ function StockService(Api, StockFilterer) {
   // API for stock lots movements
   const movements = new Api('/stock/lots/movements');
 
+  const status = new Api('/stock/status');
+
   // API for stock inventory in depots
   const inventories = new Api('/stock/inventories/depots');
 
@@ -150,5 +152,6 @@ function StockService(Api, StockFilterer) {
     processLotsFromStore,
     statusLabelMap,
     downloadTemplate,
+    status,
   };
 }

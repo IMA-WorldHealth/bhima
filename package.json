@@ -135,7 +135,7 @@
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
-    "karma": "^5.0.4",
+    "karma": "^5.0.5",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
@@ -149,7 +149,7 @@
     "qs": "^6.9.4",
     "release-it": "^13.5.8",
     "sinon": "^9.0.2",
-    "standard-version": "^7.0.0",
+    "standard-version": "^8.0.0",
     "typescript": "^3.7.5"
   },
   "homepage": "https://docs.bhi.ma",

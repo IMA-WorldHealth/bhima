@@ -110,7 +110,7 @@ function update(req, res, next) {
 * @function list
 */
 function list(req, res, next) {
-  const options = db.convert(req.query, ['uuid', 'uuids']);
+  const options = db.convert(req.query, ['uuid', 'uuids', 'exception']);
 
   if (options.only_user) {
     options.user_id = req.session.user.id;
@@ -137,6 +137,10 @@ function list(req, res, next) {
   filters.custom(
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
+  );
+  filters.custom(
+    'exception',
+    'd.uuid NOT IN (?)',
   );
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
@@ -174,12 +178,15 @@ function hasUuids(uuids, filters) {
 function searchByName(req, res, next) {
   const options = {};
   options.text = req.query.text;
+  options.exception = req.query.exception;
   options.limit = req.query.limit || 10;
   options.enterprise_id = req.session.enterprise.id;
 
   if (_.isUndefined(options.text)) {
     return next(new BadRequest('text attribute must be specified for a name search'));
   }
+
+  db.convert(options, ['exception']);
 
   const filters = new FilterParser(options, { tableAlias : 'd' });
 
@@ -197,6 +204,10 @@ function searchByName(req, res, next) {
       LEFT JOIN country c ON c.uuid = p.country_uuid
   `;
 
+  filters.custom(
+    'exception',
+    'd.uuid NOT IN (?)',
+  );
   filters.fullText('text', 'text', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');

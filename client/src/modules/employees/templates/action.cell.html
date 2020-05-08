@@ -1,13 +1,13 @@
-<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
-  <a href>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.reference }}">
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
-      <a data-method="edit" ui-sref="employeeEdit({uuid : row.entity.uuid})" href>
+      <a data-method="edit-record" ui-sref="employeeEdit({uuid : row.entity.uuid})" href>
         <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
       </a>
     </li>

@@ -83,6 +83,19 @@ function precision(value = 0, decimal = 2) {
   return new Handlebars.SafeString(value.toFixed(decimal));
 }
 
+function lessZero(value = 0) {
+  let cellClass = '';
+
+  if (value < 0) {
+    cellClass = 'text-danger';
+  }
+
+  return new Handlebars.SafeString(`
+    <span class="text-right ${cellClass}">${value}</span>
+  `);
+}
+
+
 exports.debcred = debcred;
 exports.currency = currency;
 exports.indentAccount = indentAccount;
@@ -90,3 +103,4 @@ exports.numberToText = numberToText;
 exports.percentage = percentage;
 exports.precision = precision;
 exports.currencyWithoutSymbol = currencyWithoutSymbol;
+exports.lessZero = lessZero;

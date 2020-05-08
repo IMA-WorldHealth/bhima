@@ -19,17 +19,18 @@ describe('Distribution Auxiliary Fee Center', () => {
     periodTo_id : 201812,
     profitCenter : 0,
     label : 'Auxiliary 1',
+    trans_id : 'TPA37',
   };
 
-  it('Set Distribution By Percentage', async () => {
+  it('set distribution by percentage', async () => {
     await page.setDistributionPercentage(dataset);
   });
 
-  it('Set Automatic Distribution of Invoice', async () => {
+  it('set automatic distribution of invoice', async () => {
     await page.setDistributionAutomatic(dataset);
   });
 
-  it('Set Manual Distribution by Value', async () => {
+  it('set manual distribution by value', async () => {
     await page.setDistributionManual(datasetManual);
   });
 });

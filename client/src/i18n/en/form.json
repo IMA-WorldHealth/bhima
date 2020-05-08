@@ -230,6 +230,7 @@
             "SHOWING": "Showing",
             "SUPPORT_COST": " is paid by:",
             "THE_NECESSARY_CONFIG_MISSING": "The necessary configurations are missing",
+            "THIS_INVOICE_NO_STOCK": "This invoice does not concern any item in stock",
             "TRANSACTIONS": "Transactions",
             "TRANSACTION_REVER_SUCCESS": "This transaction was reversed with success",
             "UNAUTHORIZED": "Unauthorized",

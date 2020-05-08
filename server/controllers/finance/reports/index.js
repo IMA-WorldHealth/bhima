@@ -43,3 +43,4 @@ exports.stockValue = require('../../stock/reports/stock/value');
 
 exports.analysisAuxiliaryCashbox = require('./analysis_auxiliary_cashbox');
 exports.configurableAnalysisReport = require('./configurable_analysis_report');
+exports.invoicedReceivedStock = require('./invoicedReceivedStock');

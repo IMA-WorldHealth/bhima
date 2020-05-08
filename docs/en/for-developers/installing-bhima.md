@@ -10,7 +10,7 @@ This guide will get you up and running with bhima locally. Please note that bhim
 
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally. We only test on Linux, so your best bet is to use a Linux flavor you are familiar with. Please make sure you have recent version of:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 or 5.7\)
+1. [MySQL](http://dev.mysql.com/downloads/) \(5.7\)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
@@ -121,6 +121,13 @@ sql-mode = STRICT_ALL_TABLES
 # save and quit, then restart mysql with the following command:
 sudo service mysql restart
 ```
+
+To start a MySQL server using docker you can use:
+`docker run --name mysql5.7 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MyPassword -d mysql:5.7 --sql-mode='STRICT_ALL_TABLES'`
+this will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.
+Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
+
+If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql5.7` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
 
 The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `yarn build:db`.
 

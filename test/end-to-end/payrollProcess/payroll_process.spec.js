@@ -20,7 +20,7 @@ describe('Payroll Process Management', () => {
     currency    : 2,
   };
 
-  const employeeName = 'TEST 2 PATIENT';
+  const employeeRef = 'EM.TE.1'; // TEST 2 PATIENT
 
   const gridId = 'multipayroll-grid';
 
@@ -31,7 +31,7 @@ describe('Payroll Process Management', () => {
     await Page.getEmployeeCount(employeeCount, `The number of Defined employee should be ${employeeCount}`);
   });
 
-  it(`Should configure multiple employees for Payment`, async () => {
+  it(`should configure multiple employees for payment`, async () => {
     await GU.selectRow(gridId, 0);
 
     await element(by.css('[data-action="open-menu"]')).click();
@@ -41,10 +41,10 @@ describe('Payroll Process Management', () => {
   });
 
   it(`Configure and edit Rubrics Payroll values`, async () => {
-    await Page.editPayrollRubric(employeeName);
+    await Page.editPayrollRubric(employeeRef);
   });
 
-  it(`Should set multiple employees On Waiting List of Payroll`, async () => {
+  it(`should set multiple employees on waiting list of payroll`, async () => {
     await element(by.css('[data-method="search"]')).click();
 
     await components.payrollStatusSelect.set(['configuré']);

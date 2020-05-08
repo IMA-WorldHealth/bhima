@@ -457,6 +457,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/clientDebts', clientDebts.report);
   app.get('/reports/finance/clientSupport', clientSupport.report);
   app.get('/reports/finance/realizedProfit', realizedProfit.report);
+  app.get('/reports/finance/invoicedReceivedStock/:uuid', financeReports.invoicedReceivedStock.report);
 
   app.get('/reports/finance/systemUsageStat', systemUsage.document);
 
@@ -783,6 +784,8 @@ exports.configure = function configure(app) {
 
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
+
+  app.get('/stock/status', stock.listStatus);
 
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);

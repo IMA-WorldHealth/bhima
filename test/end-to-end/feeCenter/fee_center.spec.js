@@ -80,7 +80,7 @@ describe('Fee Center Management', () => {
     await Page.errorEditFeeCenter(ErrorfeeCenterUpdate.label, ErrorfeeCenterUpdate);
   });
 
-  it('don\'t create when incorrect Fee Center', async () => {
+  it('does not create a Fee Center with incorrect information', async () => {
     await Page.errorOnCreateFeeCenter();
   });
 });

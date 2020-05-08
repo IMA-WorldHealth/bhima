@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
 
 EmployeeRegistryModalController.$inject = [
-  '$uibModalInstance', 'bhConstants', 'moment', 'ServiceService', 'Store',
-  'util', 'filters', 'EmployeeService',
+  '$uibModalInstance', 'bhConstants', 'Store', 'util', 'filters', 'EmployeeService',
 ];
 
 /**
@@ -13,22 +12,22 @@ EmployeeRegistryModalController.$inject = [
  * This controller is responsible for setting up the filters for the employee
  * search functionality on the employee registry page.
  */
-function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Services, Store, util, filters, Employees) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
+function EmployeeRegistryModalController(ModalInstance, bhConstants, Store, util, filters, Employees) {
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
+  const displayValues = {};
 
   vm.filters = filters;
   vm.searchQueries = {};
   vm.defaultQueries = {};
   vm.formatHiringDates = formatHiringDates;
 
-  var lastDisplayValues = Employees.filters.getDisplayValueMap();
+  const lastDisplayValues = Employees.filters.getDisplayValueMap();
 
   // these properties will be used to filter employee data form the client
-  var searchQueryOptions = [
+  const searchQueryOptions = [
     'display_name', 'sex', 'code', 'dateBirthFrom', 'dateBirthTo', 'dateEmbaucheFrom',
     'dateEmbaucheTo', 'grade_uuid', 'fonction_id', 'service_id', 'is_medical', 'reference',
   ];
@@ -88,27 +87,27 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
 
   // returns the parameters to the parent controller
   function submit(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key : key, value : value, displayValue : displayValue });
+        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key, value, displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
     return ModalInstance.close(loggedChanges);
   }
 
 
-   // default filter limit - directly write to changes list
+  // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+      changes.post({ key : 'limit', value });
     }
   };
 }

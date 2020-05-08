@@ -1,4 +1,3 @@
-/* eslint-disable lines-between-class-members */
 /* global element, by */
 
 /**
@@ -6,16 +5,14 @@
  * behaviour so it is a Fee Center page object
  */
 
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
+const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 class FeeCenterPage {
   constructor() {
     this.gridId = 'distribution-key-center-grid';
     this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 4;
   }
 
   /**
@@ -28,9 +25,15 @@ class FeeCenterPage {
       .count();
   }
 
+  async openDropdownSettingsMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    await row.method('setting').click();
+  }
+
   async setDistributionKey(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await this.openDropdownSettingsMenu(label);
+
     await components.percentageInput.set(50, 'principal_1');
     await components.percentageInput.set(25, 'principal_2');
     await components.percentageInput.set(25, 'principal_3');
@@ -40,8 +43,7 @@ class FeeCenterPage {
 
   // Reset Distribution Keys for an auxiliary fee center
   async resetDistributionKey(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await this.openDropdownSettingsMenu(label);
     await $('[data-method="reset"]').click();
     await components.notification.hasSuccess();
   }
@@ -49,8 +51,7 @@ class FeeCenterPage {
   // Prevent initialization of distribution keys greater than 100 percent
   // Prevent initialization of distribution keys less than 100 percent
   async preventGreaterLess100(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+    await this.openDropdownSettingsMenu(label);
     await components.percentageInput.set(19, 'principal_1');
     await components.percentageInput.set(45, 'principal_2');
     await components.percentageInput.set(76, 'principal_3');

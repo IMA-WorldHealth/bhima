@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DistributionKeyController.$inject = [
   'DistributionCenterService', 'NotifyService', 'uiGridConstants',
-  '$state', 'GridGroupingService', 'uiGridGroupingConstants',
+  'GridGroupingService', 'uiGridGroupingConstants',
 ];
 
 /**
@@ -13,7 +13,7 @@ DistributionKeyController.$inject = [
  * It's responsible for editing and updating a Distribution Center
  */
 function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
-  $state, Grouping, uiGridGroupingConstants) {
+  Grouping, uiGridGroupingConstants) {
   const vm = this;
 
   // bind methods
@@ -22,7 +22,6 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
 
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
   vm.loading = false;
 
   // options for the UI grid
@@ -77,14 +76,12 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // settings distribution keys
   function settings(distributions) {
-
     const dataSettings = distributions[0].row.entity;
     const settingsValues = [];
 

@@ -24,6 +24,7 @@
     "CASH_PAYMENT_REGISTRY":"Registre des paiements",
     "CASH_WINDOW":"Paiements",
     "CHOICES_LIST_MANAGEMENT" : "Gestion des listes de choix",
+    "COMPARE_INVOICED_RECEIVED": "[Stock] Comparaison des articles facturés sur les reçus",
     "COMPLEX_JOURNAL_VOUCHER":"Ajout de transactions",
     "CONFIGURABLE_ANALYSIS_REPORT" : "Rapport d'analyse configurable",
     "CONFIGURATION_ANALYSIS_TOOLS" : "Configuration d'outils d'analyse",

@@ -11,3 +11,14 @@ INSERT INTO flux VALUES
 
 ALTER TABLE enterprise_setting ADD COLUMN `enable_daily_consumption` SMALLINT(5) NOT NULL DEFAULT 0;
   
+  
+
+/*
+ * @author: @lomamech
+ * @date: 2020-04-29
+ */
+INSERT INTO unit VALUES
+  (270, 'compare invoiced to received','TREE.COMPARE_INVOICED_RECEIVED','Compare invoiced items to received stock', 144,'/modules/reports/invoicedReceivedStock','/reports/invoicedReceivedStock');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE');

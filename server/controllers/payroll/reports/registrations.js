@@ -60,14 +60,14 @@ function build(req, res, next) {
   // enforce detailed columns
   options.detailed = 1;
 
-  const sql = `SELECT
-    COUNT(employee.id) AS numEmployees, SUM(sex = 'F') AS numFemales,
-    ROUND(SUM(sex = 'F') / COUNT(employee.id) * 100) AS percentFemales,
-    SUM(sex = 'M') AS numMales, ROUND(SUM(sex = 'M') / COUNT(employee.id) * 100) AS percentMales
-  FROM
-    employee
-  WHERE
-    employee.id IN (?);`;
+  const sql = `
+    SELECT COUNT(em.reference) AS numEmployees, SUM(p.sex = 'F') AS numFemales,
+    ROUND(SUM(p.sex = 'F') / COUNT(em.reference) * 100) AS percentFemales,
+    SUM(p.sex = 'M') AS numMales, ROUND(SUM(p.sex = 'M') / COUNT(em.reference) * 100) AS percentMales
+    FROM employee AS em
+    JOIN patient AS p ON p.uuid = em.patient_uuid
+    WHERE em.uuid IN (?);
+  `;
 
   const data = { filters };
 
@@ -85,9 +85,9 @@ function build(req, res, next) {
       if (!employees) { return false; }
 
       // gather the ids for the aggregate queries
-      const ids = employees.map(p => p.id);
+      const empsUuid = employees.map(p => db.bid(p.uuid));
 
-      return db.one(sql, [ids]);
+      return db.one(sql, [empsUuid]);
     })
     .then(aggregates => {
       data.aggregates = aggregates;
