@@ -11,8 +11,9 @@
  *    sending them back to the client.
  *
  * @requires lodash
+ * @requires debug
  * @requires path
- * @requires mz/fs
+ * @requires tempy
  * @requires lib/util
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
@@ -21,6 +22,7 @@
  */
 
 const _ = require('lodash');
+const debug = require('debug')('ReportManager');
 const path = require('path');
 const tempy = require('tempy');
 const fs = require('fs');
@@ -203,6 +205,7 @@ class ReportManager {
    */
   async save(stream) {
     if (!stream) {
+      debug('Stream error:', JSON.stringify(stream));
       throw new Error(`
         ReportManger.render() must be called and completed before saving the report.
       `);
