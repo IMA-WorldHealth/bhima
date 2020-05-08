@@ -9,6 +9,7 @@
         "REGISTER" : "Nouveau employé",
         "REGISTRATION_FORM" : "Formulaire d'enregistrement",
         "TITLE" : "Gestion des employés",
-        "NO_GRADE":"Aucun grade enregistré"
+        "NO_GRADE":"Aucun grade enregistré",
+        "VIEW_EMPLOYEE" : "Voir Employé"
     }
 }

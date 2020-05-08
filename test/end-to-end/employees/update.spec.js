@@ -5,14 +5,13 @@ const RegistrationPage = require('./registration.page.js');
 describe('Update Employees', () => {
   const path = '#!/employees';
   const registrationPage = new RegistrationPage();
-  const employeeName1 = 'Test 2 Patient';
-  const employeeName2 = 'Employee Test 1';
-
+  const employeeReference1 = 'EM.TE.1'; // Test 2 Patient
+  const employeeReference2 = 'EM.TE.2'; // Employee Test 1
 
   before(() => helpers.navigate(path));
 
   it(`should update data for employee`, async () => {
-    await registrationPage.editEmployeeName(employeeName1);
+    await registrationPage.editEmployee(employeeReference1);
 
     await registrationPage.setService('Administration');
     await registrationPage.setFonction('Infirmier');
@@ -30,7 +29,7 @@ describe('Update Employees', () => {
   });
 
   it(`blocks validation when the value is already taken when the field must be Unique`, async () => {
-    await registrationPage.editEmployeeName(employeeName2);
+    await registrationPage.editEmployee(employeeReference2);
     await registrationPage.setHospitalNumber(110);
 
     await registrationPage.createEmployee();

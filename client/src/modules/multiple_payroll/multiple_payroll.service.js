@@ -17,7 +17,7 @@ MultiplePayrollService.$inject = [
  */
 function MultiplePayrollService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, Transactions
+  $httpParamSerializer, AppCache, Transactions,
 ) {
   const service = new Api('/multiple_payroll/');
   const multiplePayrollFilters = new Filters();
@@ -119,13 +119,9 @@ function MultiplePayrollService(
   function openSearchModal(filters) {
     return Modal.open({
       templateUrl : 'modules/multiple_payroll/modals/search.modal.html',
-      size : 'md',
-      animation : false,
-      keyboard : false,
-      backdrop : 'static',
       controller : 'MultiPayrollSearchModalController as $ctrl',
       resolve : {
-        filters : function filtersProvider() { return filters; },
+        filters : () => filters,
       },
     }).result;
   }
