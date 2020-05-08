@@ -576,6 +576,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
+  `enable_daily_consumption` SMALLINT(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

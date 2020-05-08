@@ -27,7 +27,9 @@
       "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured.",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Enable sending automatic reports by email",
       "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "Enabling this option allows users to configure schedules to automatically send reports to a list of email addresses.",
-      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system"
+      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system",
+      "ENABLE_DAILY_CONSUMPTION_LABEL" : "Enable CMM calculation based on days of consumption",
+      "ENABLE_DAILY_CONSUMPTION_HELP_TEXT" : "The CMM is calculated taking into account the quantities consumed over the number of days on which there was consumption"
     }
   }
 }

@@ -16,6 +16,7 @@ async function stockInventoriesReport(req, res, next) {
   let display = {};
   let filters;
   const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
+  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
   const data = {};
 
@@ -37,7 +38,9 @@ async function stockInventoriesReport(req, res, next) {
     delete options.label;
 
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
-    const rows = await Stock.getInventoryQuantityAndConsumption(options, monthAverageConsumption);
+    const rows = await Stock.getInventoryQuantityAndConsumption(
+      options, monthAverageConsumption, enableDailyConsumption,
+    );
 
     data.rows = rows;
     data.filters = filters;
