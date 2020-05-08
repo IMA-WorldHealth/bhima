@@ -5,11 +5,25 @@
   </a>
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
+
+    <li class="dropdown-header">{{row.entity.text}}</li>
+
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.editDepot(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
+    <li>
+      <a href
+        data-method="stock-inventory"
+        ui-sref="stockInventories({ filters : [
+          { key : 'depot_uuid', value : row.entity.uuid, displayValue : row.entity.text, cacheable: false },
+          { key : 'limit', value : 1000, cacheable: false }
+        ]})" href>
+        <i class="fa fa-th-list"></i> <span translate>INVENTORY.VIEW_ARTICLES_IN_STOCK</span>
+      </a>
+    </li>
+
     <li class="divider"></li>
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
