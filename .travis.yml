@@ -14,21 +14,36 @@ env:
 
 matrix:
   include:
-    - env: TEST_TYPE=e2e
+    - node_js: lts/erbium
+      env: TEST_TYPE=e2e
       services:
         - mysql
         - redis
-    - env: TEST_TYPE=e2e
+    - node_js: node
+      env: TEST_TYPE=e2e
+      services:
+        - mysql
+        - redis
+    - node_js: lts/erbium
+      env: TEST_TYPE=e2e
       services:
         - redis
       addons:
         mariadb: '10.5'
-    - env:
+    - node_js: lts/erbium
+      env:
         TEST_TYPE=installation
       services:
         - mysql
         - redis
-    - env:
+    - node_js: node
+      env:
+        TEST_TYPE=installation
+      services:
+        - mysql
+        - redis
+    - node_js: lts/erbium
+      env:
         TEST_TYPE=installation
       addons:
         mariadb: '10.5'
@@ -40,8 +55,6 @@ before_install:
   - sudo ./sh/travis.sh
 
 language: node_js
-node_js:
-  - lts/erbium
 
 before_script:
   - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn build; fi"
