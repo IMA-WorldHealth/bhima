@@ -48,7 +48,7 @@ describe('(/invoices) Patient Invoices', () => {
   });
 
   it('GET /invoices/:uuid returns 404 for an invalid patient invoice', () => {
-    return agent.get('/invoices/unknown')
+    return agent.get('/invoices/123456789')
       .then(res => {
         helpers.api.errored(res, 404);
       })

@@ -146,7 +146,7 @@ describe('(/enterprises) Enterprises API', () => {
   });
 
   it('GET /enterprises/:id returns a 404 error for unknown enterprises', () => {
-    return agent.get('/enterprises/unknown')
+    return agent.get('/enterprises/123456789')
       .then(res => {
         helpers.api.errored(res, 404);
       })

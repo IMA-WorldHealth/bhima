@@ -40,7 +40,7 @@ describe('(/creditors/groups) Creditor Groups', () => {
   });
 
   it('GET /creditors/groups/:uuid should not be found for unknown uuid', () => {
-    return agent.get('/creditors/groups/unknown')
+    return agent.get('/creditors/groups/123456789')
       .then(res => {
         helpers.api.errored(res, 404);
       })

@@ -28,7 +28,7 @@ describe('(/currencies) currencies API routes', () => {
   });
 
   it('GET /currencies/:id should return an error for unknown id', () => {
-    return agent.get('/currencies/unknown')
+    return agent.get('/currencies/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

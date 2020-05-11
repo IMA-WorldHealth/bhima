@@ -38,7 +38,7 @@ describe('(/offdays) The /offdays  API endpoint', () => {
   });
 
   it('GET /OFFDAYS/:ID should not be found for unknown id', () => {
-    return agent.get('/offdays/unknownOffday')
+    return agent.get('/offdays/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -64,7 +64,7 @@ describe('(/offdays) The /offdays  API endpoint', () => {
   });
 
   it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday does not exist', () => {
-    return agent.delete('/offdays/unknownOffday')
+    return agent.delete('/offdays/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
