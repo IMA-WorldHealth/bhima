@@ -144,18 +144,17 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
   });
 
   // why does this route exit?! Why should this not fail???
-  //
-  // it('PUT /cashboxes/:id/currencies/undefined should successfully return nothing', () => {
-  //   return agent.put(`/cashboxes/${BOX.id}/currencies/undefined`)
-  //     .send({ transfer_account_id : 197 })
-  //     .then(res => {
-  //       expect(res).to.have.status(400);
-  //       expect(res).to.be.json;
-  //       console.log(res.body);
-  //       //expect(res.body).to.be.empty;
-  //     })
-  //     .catch(helpers.handler);
-  // });
+  // see https://github.com/IMA-WorldHealth/bhima/commit/3b943808be5d59579db95edfd2e0bb4482fac07c
+  it('PUT /cashboxes/:id/currencies/<undefined currency> should successfully return nothing', () => {
+    return agent.put(`/cashboxes/${BOX.id}/currencies/123456789`)
+      .send({ transfer_account_id : 197 })
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.empty;
+      })
+      .catch(helpers.handler);
+  });
 
   it('GET /cashboxes/:id/users should return users subscribed to a cashbox', () => {
     // details on the test cashbox as found in the dataset built before integration tests
