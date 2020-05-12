@@ -529,8 +529,9 @@ function listLotsDepot(req, res, next) {
 function listInventoryDepot(req, res, next) {
   const params = req.query;
   const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
+  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
-  core.getInventoryQuantityAndConsumption(params, monthAverageConsumption)
+  core.getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption)
     .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();

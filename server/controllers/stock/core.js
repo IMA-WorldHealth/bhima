@@ -510,14 +510,14 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     GROUP BY i.uuid, d.uuid;
   `;
 
-  // the value (w.quantity/w.days) is the CMM
+  // the value ((w.quantity/w.days) * 30.5) is the CMM
   // is mentionned here as quantity to fit into the expected values
   // for returned values
   const queryConsumptionByDays = `
   SELECT
     w.consumption AS counted_consumption,
     w.quantity AS consumed_quantity,
-    ROUND(w.quantity/w.days) AS quantity,
+    ROUND((w.quantity / w.days) * 30.5) AS quantity,
     w.depot_text, w.code, w.text, w.days,
     BUID(w.depot_uuid) depot_uuid, BUID(w.inventory_uuid) uuid
   FROM 
