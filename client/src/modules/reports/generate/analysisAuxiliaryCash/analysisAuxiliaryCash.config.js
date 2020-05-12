@@ -3,24 +3,17 @@ angular.module('bhima.controllers')
 
 AnalysisAuxiliaryCashController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'reportData', '$state', 'AccountService', 'FormatTreeDataService',
+  'reportData', '$state',
 ];
 
 function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache,
-  reportData, $state, Accounts, FormatTreeData) {
+  reportData, $state) {
   const vm = this;
   const cache = new AppCache('analysisAuxiliaryCash');
   const reportUrl = 'reports/finance/analysis_auxiliary_cashbox';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-
-  Accounts.read()
-    .then(elements => {
-      // bind the accounts to the controller
-      const accounts = FormatTreeData.order(elements);
-      vm.accounts = accounts;
-    });
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
