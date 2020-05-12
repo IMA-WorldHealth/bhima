@@ -23,7 +23,7 @@
 
     <!-- view linked records -->
     <li>
-      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'display_name', value : row.entity.patientName }]})">
+      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'debtor_uuid', value: row.entity.debtor_uuid, displayValue : row.entity.patientName, cacheable:false }]})">
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
       </a>
     </li>
