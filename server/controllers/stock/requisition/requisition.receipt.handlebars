@@ -4,101 +4,99 @@
 <div class="container" style="font-size: 0.9em;">
 
   <header>
-    <!-- headings  -->
+      <!-- headings  -->
     <div class="row">
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
+
+        <h3 class="text-uppercase" style="margin: 0px;">
           <span class="text-uppercase">{{translate 'REQUISITION.STOCK_REQUISITION'}}</span><br>
-          {{#if details.service_requestor}}
-            <strong>{{details.service_requestor}}</strong>
-          {{/if}}
-          {{#if details.depot_requestor}} 
-            <strong>{{details.depot_requestor}}</strong>
-          {{/if}}
-          <br>
+          <strong>{{details.reference}}</strong> <br>
         </h3>
-        <small>{{> barcode value=barcode}}</small>
+
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.display_name}}
+
+        </div>
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <small>{{> barcode value=barcode}}</small> <br>
+        {{/if}}
+        <br>
       </div>
     </div>
 
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
       <div class="col-xs-6">
-        <h4>{{translate 'FORM.LABELS.SUPPLIER'}}</h4>
+        <h5><u>{{translate 'FORM.LABELS.SUPPLIER'}}</u></h5>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_text}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span>: <strong>{{details.reference}}</strong> <br>
+        <span class="text-capitalize">{{translate "FORM.LABELS.NOTES"}}</span>: <strong>{{details.description}}</strong> <br>
       </div>
+
       <div class="col-xs-6">
-        <h4>{{translate 'STOCK.TO'}}</h4>
-          {{#if details.service_requestor}}
-            <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>: 
-            <span>{{details.service_requestor}}</span><br>
-          {{/if}}
-          {{#if details.depot_requestor}}
-            <span class="text-capitalize">{{translate 'FORM.LABELS.DEPOT'}}</span>: 
-            <span>{{details.depot_requestor}}</span><br>
-          {{/if}}
+        <h5><u>{{translate 'STOCK.TO'}}</u></h5>
+
+        {{#if details.service_requestor}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>: <span>{{details.service_requestor}}</span><br>
+        {{/if}}
+
+        {{#if details.depot_requestor}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.DEPOT'}}</span>: <span>{{details.depot_requestor}}</span><br>
+        {{/if}}
+
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: <strong>{{date details.date}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AUTHOR'}}</span>: <strong>{{details.user_display_name}}</strong> <br>
       </div>
     </div>
   </header>
 
-  {{#if details.description}}
-  <blockquote>
-    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
-    {{details.description}}
-  </blockquote>
-  {{/if}}
-
   <!-- list of data  -->
   <table class="table table-condensed table-bordered table-report">
     <thead>
       <tr>
-        <th>{{translate 'STOCK.CODE'}}</th>
-        <th>{{translate 'STOCK.INVENTORY'}}</th>
-        <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
+        <th>{{translate "STOCK.CODE"}}</th>
+        <th>{{translate "STOCK.INVENTORY"}}</th>
+        <th class="text-right">{{translate "STOCK.QUANTITY"}}</th>
+        <th>{{translate "FORM.LABELS.TYPE" }}</th>
       </tr>
     </thead>
     <tbody>
-      {{#if details.items}}
-        {{#each details.items as | item |}}
+      {{#each details.items as | item |}}
         <tr>
           <td>{{item.code}}</td>
           <td>{{item.text}}</td>
           <td class="text-right">{{item.quantity}}</td>
+          <td>{{item.inventoryType}}</td>
         </tr>
-        {{/each}}
       {{else}}
-        {{> emptyTable columns=3}}
-      {{/if}}
+        {{> emptyTable columns=4}}
+      {{/each}}
     </tbody>
   </table>
 
   <br>
 
-  <footer>
-    <div class="row">
-      <div class="col-xs-6">
-        <h4>{{translate 'STOCK.RESPONSIBLE'}}</h4>
-        <hr>
-      </div>
-
-      <div class="col-xs-6 text-center">
-        <h4>{{translate 'REQUISITION.RECEIVER'}}</h4>
-        <hr>
-        (
-          {{#if details.service_requestor}}
-            <strong>{{details.service_requestor}}</strong>
-          {{/if}}
-          {{#if details.depot_requestor}}
-            <strong>{{details.depot_requestor}}</strong>
-          {{/if}}
-        )
-      </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <h4>{{translate 'STOCK.RESPONSIBLE'}}</h4>
+      <hr>
     </div>
-  </footer>
+
+    <div class="col-xs-6 text-center">
+      <h4>{{translate 'REQUISITION.RECEIVER'}}</h4>
+      <hr>
+      (
+        {{#if details.service_requestor}}
+          <strong>{{details.service_requestor}}</strong>
+        {{/if}}
+        {{#if details.depot_requestor}}
+          <strong>{{details.depot_requestor}}</strong>
+        {{/if}}
+      )
+    </div>
+  </div>
   <script>JsBarcode('.barcode').init();</script>
 </div>

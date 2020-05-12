@@ -7,7 +7,7 @@
   <h3 class="text-center text-uppercase">
     <span style="text-decoration-line: underline">
       <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
-    </span>  
+    </span>
   </h3>
   <h4> {{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
   <h4>{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
@@ -29,7 +29,7 @@
   <section>
     {{#if includeMedicalCare }}
       <h4>{{translate 'CREDITOR_GROUP.CREDITOR.TRANSACTIONS'}}</h4>
-    {{/if}}  
+    {{/if}}
     <table class="table table-condensed table-bordered table-report">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;" >
@@ -69,13 +69,13 @@
             </td>
             <td class="text-right">
               {{currency this.credit ../metadata.enterprise.currency_id}}
-            </td>           
+            </td>
             <td class="text-right">
               {{debcred this.cumsum ../metadata.enterprise.currency_id}}
             </td>
           </tr>
         {{else}}
-          {{>emptyTable columns=5}}
+          {{>emptyTable columns=7}}
         {{/each}}
       </tbody>
       <tfoot style="background-color: #ddd;">
@@ -91,7 +91,7 @@
           <th class="text-right">
             <span>{{currency creditorAggregates.balance metadata.enterprise.currency_id}}</span>
           </th>
-        </tr> 
+        </tr>
         {{/if}}
         {{#if extractEmployee}}
         <tr>
@@ -99,7 +99,7 @@
           <th class="text-right">
             <span><em>{{translate  extratCreditorText }}</em> : {{debcred lastTransaction.cumsum metadata.enterprise.currency_id}} </span>
           </th>
-        </tr> 
+        </tr>
         {{/if}}
       </tfoot>
     </table>
@@ -130,13 +130,13 @@
             </td>
             <td class="text-right">
               {{currency this.credit ../metadata.enterprise.currency_id}}
-            </td>           
+            </td>
             <td class="text-right">
               {{debcred this.cumsum ../metadata.enterprise.currency_id}}
             </td>
           </tr>
         {{else}}
-          {{>emptyTable columns=5}}
+          {{>emptyTable columns=7}}
         {{/each}}
       </tbody>
       <tfoot style="background-color: #ddd;">
@@ -151,7 +151,7 @@
           <th class="text-right">
             <span>{{currency debtorAggregates.balance metadata.enterprise.currency_id}}</span>
           </th>
-        </tr>      
+        </tr>
       </tfoot>
     </table>
     {{/if}}

@@ -7,10 +7,10 @@ const util = require('../../../lib/util');
 const FilterParser = require('../../../lib/filter');
 
 const SELECT_QUERY = `
-  SELECT 
+  SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
     sr.requestor_type_id, sr.description, sr.date, sr.user_id,
-    u.display_name AS user_display_name, d.text AS depot_text, 
+    u.display_name AS user_display_name, d.text AS depot_text,
     s.name service_requestor, dd.text depot_requestor,
     dm.text reference, stat.title_key, stat.status_key
   FROM stock_requisition sr
@@ -31,9 +31,10 @@ async function getDetails(identifier) {
   const uuid = identifier;
   const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
   const sqlRequisitionItems = `
-    SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, sri.quantity
+    SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, it.text as inventoryType, sri.quantity
     FROM stock_requisition_item sri
     JOIN inventory i ON i.uuid = sri.inventory_uuid
+    JOIN inventory_type it ON i.type_id = it.id
     WHERE sri.requisition_uuid = ?
   `;
   const requisition = await db.one(sqlRequisition, [uuid]);

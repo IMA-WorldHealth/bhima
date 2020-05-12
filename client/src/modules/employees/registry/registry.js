@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 EmployeeRegistryController.$inject = [
   '$state', 'EmployeeService', 'NotifyService', 'AppCache',
   'util', 'ReceiptModal', 'uiGridConstants', 'GridColumnService', 'bhConstants',
-  'GridStateService', 'GridSortingService',
+  'GridStateService', 'GridSortingService', 'LanguageService',
 ];
 
 /**
@@ -15,7 +15,7 @@ EmployeeRegistryController.$inject = [
  */
 function EmployeeRegistryController(
   $state, Employees, Notify, AppCache, util, Receipts, uiGridConstants, Columns,
-  bhConstants, GridState, Sorting,
+  bhConstants, GridState, Sorting, Languages,
 ) {
   const vm = this;
 
@@ -28,6 +28,7 @@ function EmployeeRegistryController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Employees.download;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.languageKey = Languages.key;
 
   // track if module is making a HTTP request for employeess
   vm.loading = false;

@@ -2521,10 +2521,10 @@ dedent@0.7.0:
   resolved "https://registry.yarnpkg.com/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
   integrity sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=
 
-deeks@2.2.4:
-  version "2.2.4"
-  resolved "https://registry.yarnpkg.com/deeks/-/deeks-2.2.4.tgz#c2aaf84cecd0905ac378baeb0e5988a6a02f1f8c"
-  integrity sha512-T8HtfilZeYvVRmTx9J6Nk4e0ayb/RqHx/XBOJpUybQyedRRtVw0I21pezA+OjXoCnL5YkkjCAM2TFvSJt0NwWw==
+deeks@2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/deeks/-/deeks-2.2.5.tgz#3d19371479a1d45a6da49734b580475f7c721d9e"
+  integrity sha512-a4N/8uC+OGAmr0pmqaF6ZikBIO3c4cLqLARoOkI0qFH/FXL2rcbvh/fUZmKhdEH0fDbwU5WblV+mn4o8sc9y/A==
 
 deep-eql@^3.0.1:
   version "3.0.1"
@@ -2754,10 +2754,10 @@ dns-prefetch-control@0.2.0:
   resolved "https://registry.yarnpkg.com/dns-prefetch-control/-/dns-prefetch-control-0.2.0.tgz#73988161841f3dcc81f47686d539a2c702c88624"
   integrity sha512-hvSnros73+qyZXhHFjx2CMLwoj3Fe7eR9EJsFsqmcI1bB2OBWL/+0YzaEaKssCHnj/6crawNnUyw74Gm2EKe+Q==
 
-doc-path@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-2.0.2.tgz#c021f9cc2a2942159d9441f20e4918b688cbf663"
-  integrity sha512-7KAEFeGh+xlqATVLXywN6g2U6RF7CW1la80BdtRF3BaiP1rz3r1UCewUeOnwpJ9A44LX66u32dYaU9zIqC1/TQ==
+doc-path@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-2.0.3.tgz#f816c494b99e304dd8e9a98cd00f6cab472931bd"
+  integrity sha512-Wex5OlidOT7esfbuLxtUiDHnG2er5UaKzMbUW2Ns9nRrsx+DmEXdHwXb0+jp+FTKmjE9i6bgrwRakT+YcobjEg==
 
 doctrine@1.5.0:
   version "1.5.0"
@@ -5425,13 +5425,13 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.6.2:
-  version "3.6.2"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.6.2.tgz#e5f8325de366302d72f417550997fe0d5bca93b2"
-  integrity sha512-aJGagjPIZj9iqAO8UVcNggVuRpxbMvG3WspGntcGm1Kxb3TFCwWC4U36qoybVkkm7n4ivDaVjwBd4PPlQJkP3Q==
+json-2-csv@^3.7.0:
+  version "3.7.0"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.7.0.tgz#51f08f60ff59704387df097706466d4f133f3339"
+  integrity sha512-3MZoyknul6W66uhJ0jZx3MQ9Q4ars7NNy8db/XhvcFNsqrRrKMoTeTYCnm7CH1YuZ9SmB8iNcU8s1KXACSgnxg==
   dependencies:
-    deeks "2.2.4"
-    doc-path "2.0.2"
+    deeks "2.2.5"
+    doc-path "2.0.3"
 
 json-buffer@3.0.0:
   version "3.0.0"
