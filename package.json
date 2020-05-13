@@ -63,7 +63,7 @@
     "angular-ui-grid": "^4.8.0",
     "angular-ui-router": "angular-ui/angular-ui-router-bower#1.0.0-rc.1",
     "body-parser": "^1.18.3",
-    "bootstrap": "^3.3.0",
+    "bootstrap": "^4.1.2",
     "chart.js": "^2.9.3",
     "chartjs-plugin-datalabels": "^0.7.0",
     "connect-redis": "^4.0.3",
