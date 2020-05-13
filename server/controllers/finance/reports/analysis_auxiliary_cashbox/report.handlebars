@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-  {{> head title="{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE' }}" }}
+  {{> head title="REPORT.ANALYSIS_AUX_CASHBOXES.TITLE" }}
   <body>
     <div style="margin-right: 2%; margin-left: 2%;">
       {{> header}}
@@ -21,7 +21,7 @@
             <tr>
               <td width="10%" style="background-color: #777777; color:white; text-align:center"> X </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_PENDING'}}</strong></td>
-            </tr> 
+            </tr>
             <tr>
               <td width="10%" style="background-color: #f0ad4e; color:white; text-align:center"> ▲ </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_GREATER'}}</strong></td>
@@ -29,7 +29,7 @@
             <tr>
               <td width="10%" style="background-color: #d9534f; color:white; text-align:center"> ▼ </td>
               <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_LOWWER'}}</strong></td>
-            </tr>            
+            </tr>
           </table>
 
           <table style="width: 100%;" class="table table-striped table-condensed table-report table-bordered">
@@ -60,7 +60,7 @@
             {{#each this.transactions}}
                 <tr>
                   <td>{{date trans_date "DD/MM/YYYY"}}, {{translate transDateDays }} </td>
-                  
+
                   <td class="text-right">{{debcred debit ../report.currencyId}}</td>
                   <td class="text-right">{{debcred credit ../report.currencyId}}</td>
                   <td class="text-right">{{debcred balance ../report.currencyId}}</td>
@@ -74,11 +74,11 @@
                   <td style="color:white; background-color: {{ labelDisplayTransfert.color }}" class="text-center">
                     {{ labelDisplayTransfert.icon }}
                   </td>
-                  
+
                   <td><strong>{{ account_target }}</strong></td>
                   <td class="text-right">{{debcred debit_primary ../report.currencyId}}</td>
                   <td style="color:white; background-color: {{ labelDisplayPrimary.color }};" class="text-center">
-                    {{ labelDisplayPrimary.icon }} 
+                    {{ labelDisplayPrimary.icon }}
                   </td>
                 </tr>
             {{/each}}

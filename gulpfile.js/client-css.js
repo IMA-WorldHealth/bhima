@@ -33,7 +33,13 @@ if (isDevelopment) {
   CSS_PATHS = CSS_PATHS.map(file => file.replace('.min.css', '.css'));
 }
 
-const LESS_CONFIG = { paths : [path.resolve(__dirname, '../node_modules/bootstrap/less/')] };
+const LESS_CONFIG = {
+  paths : [
+    path.resolve(__dirname, '../node_modules/bootstrap/less/'),
+    path.resolve(__dirname, '../client/src/less/'),
+  ],
+};
+
 const LESS_PATH = 'client/src/less/bhima-bootstrap.less';
 
 /**
