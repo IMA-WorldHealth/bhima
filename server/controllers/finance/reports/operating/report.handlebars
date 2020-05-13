@@ -1,6 +1,6 @@
 {{> head title="{{translate 'TREE.OPERATING_ACCOUNT' }}" }}
 
-<div class="container">
+<body class="container-fluid">
   {{> header}}
 
   <!-- body -->
@@ -16,8 +16,8 @@
       </h5>
       <h5 class="text-center">
         {{#if this.rate}}
-          {{translate 'EXCHANGE.EXCHANGE_RATES'}} : 
-          {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}} 
+          {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
+          {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
           <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
         {{/if}}
       </h5>
@@ -43,8 +43,8 @@
                 <tbody>
                   {{#each this.expense}}
                   <tr>
-                    <td class="text-right">{{number}}</td>
-                    <td {{#if title}}class="text-bold text-center"{{/if}}>
+                    <td class="{{#if isParent}}text-bold{{/if}} text-right">{{number}}</td>
+                    <td {{#if isParent}}class="text-bold"{{/if}} style="padding-left: calc({{depth}} * 10px);">
                       {{label}}
                     </td>
                     <td class="text-right">{{debcred amount ../currencyId}}</td>
@@ -65,8 +65,8 @@
                 <tbody>
                   {{#each this.revenue}}
                   <tr>
-                    <td class="text-right">{{number}}</td>
-                    <td {{#if title}}class="text-bold text-center"{{/if}}>
+                    <td class="{{#if isParent}}text-bold{{/if}} text-right">{{number}}</td>
+                    <td {{#if isParent}}class="text-bold"{{/if}} style="padding-left: calc({{depth}} * 10px);">
                       {{label}}
                     </td>
                     <td class="text-right">{{debcred amount ../currencyId}}</td>
@@ -115,4 +115,4 @@
       </table>
     </div>
   </div>
-</div>
+</body>
