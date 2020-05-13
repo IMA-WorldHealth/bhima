@@ -158,7 +158,7 @@ Running the application is super easy! Just type `yarn dev` in the application r
 
 If you changed the `$PORT` variable in the `.env` file, your application will be listening on that port. By default it is `8080`.
 
-Navigate to [https://localhost:8080](https://localhost:8080) in the browser to verify the installation. You should be greeted with a login page.
+Navigate to [http://localhost:8080](http://localhost:8080) in the browser to verify the installation. You should be greeted with a login page.
 
 ### Testing the Application
 
