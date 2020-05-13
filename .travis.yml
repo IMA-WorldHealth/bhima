@@ -15,42 +15,74 @@ env:
 matrix:
   include:
     - node_js: lts/erbium
-      env: TEST_TYPE=e2e
+      env:
+        - TEST_TYPE=e2e
+        - DB=MYSQL
+        - DB_VERSION=5.7
       services:
         - mysql
         - redis
     - node_js: node
-      env: TEST_TYPE=e2e
+      env:
+        - TEST_TYPE=e2e
+        - DB=MYSQL
+        - DB_VERSION=5.7
+      services:
+        - mysql
+        - redis
+    - node_js: node
+      env:
+        - TEST_TYPE=e2e
+        - DB=MYSQL
+        - DB_VERSION=8.0
       services:
         - mysql
         - redis
     - node_js: lts/erbium
-      env: TEST_TYPE=e2e
+      env:
+        - TEST_TYPE=e2e
+        - DB=MARIADB
+        - DB_VERSION=10.5
       services:
         - redis
       addons:
         mariadb: '10.5'
     - node_js: lts/erbium
       env:
-        TEST_TYPE=installation
+        - TEST_TYPE=installation
+        - DB=MYSQL
+        - DB_VERSION=5.7
       services:
         - mysql
         - redis
     - node_js: node
       env:
-        TEST_TYPE=installation
+        - TEST_TYPE=installation
+        - DB=MYSQL
+        - DB_VERSION=5.7
+      services:
+        - mysql
+        - redis
+    - node_js: node
+      env:
+        - TEST_TYPE=installation
+        - DB=MYSQL
+        - DB_VERSION=8.0
       services:
         - mysql
         - redis
     - node_js: lts/erbium
       env:
-        TEST_TYPE=installation
-      addons:
-        mariadb: '10.5'
+        - TEST_TYPE=installation
+        - DB=MARIADB
+        - DB_VERSION=10.5
       services:
         - redis
+      addons:
+        mariadb: '10.5'
 
 before_install:
+  - sh -c "if [ '$DB' = 'MYSQL' ] && [ '$DB_VERSION' = '8.0' ]; then sudo ./sh/travis-install-mysql8.sh; fi"
   - ./sh/setup-ci-env.sh
   - sudo ./sh/travis.sh
 

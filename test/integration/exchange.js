@@ -71,7 +71,7 @@ describe('(/exchange) The /exchange API endpoint', () => {
   });
 
   it('PUT /exchange should update an unknown exchange rate', () => {
-    return agent.put('/exchange/unknownexchangerate')
+    return agent.put('/exchange/123456789')
       .send({ rate : 1000000 })
       .then((res) => {
 
@@ -83,7 +83,7 @@ describe('(/exchange) The /exchange API endpoint', () => {
 
 
   it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', () => {
-    return agent.delete('/exchange/unknownexchangerate')
+    return agent.delete('/exchange/123456789')
       .then((res) => {
 
         // make sure the API conforms to app standards

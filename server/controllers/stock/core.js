@@ -290,7 +290,7 @@ async function getLotsMovements(depotUuid, params) {
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
-  const orderBy = 'ORDER BY m.date, dm.text';
+  const orderBy = 'ORDER BY m.date, dm.text, l.label';
   const lots = await getLots(sql, params, finalClause, orderBy);
 
   return lots;

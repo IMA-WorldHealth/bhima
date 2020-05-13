@@ -71,7 +71,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
   });
 
   it('GET /FEE_CENTER/:ID should not be found for unknown id', () => {
-    return agent.get('/fee_center/unknownRubric')
+    return agent.get('/fee_center/123456789')
       .then((res) => {
         const response = res.body;
 

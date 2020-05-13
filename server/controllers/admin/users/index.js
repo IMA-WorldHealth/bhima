@@ -165,7 +165,7 @@ function create(req, res, next) {
 
   let sql = `
     INSERT INTO user (username, password, email, display_name) VALUES
-    (?, PASSWORD(?), ?, ?);
+    (?, MYSQL5_PASSWORD(?), ?, ?);
   `;
 
   db.exec(sql, [data.username, data.password, data.email, data.display_name])
@@ -263,7 +263,7 @@ function update(req, res, next) {
 function password(req, res, next) {
   // TODO -- strict check to see if the user is either signed in or has
   // sudo permissions.
-  const sql = `UPDATE user SET password = PASSWORD(?) WHERE id = ?;`;
+  const sql = `UPDATE user SET password = MYSQL5_PASSWORD(?) WHERE id = ?;`;
 
   db.exec(sql, [req.body.password, req.params.id])
     .then(() => lookupUser(req.params.id))

@@ -37,7 +37,7 @@ describe('(/projects) The projects API endpoint', () => {
   });
 
   it('GET /projects/:id should not be found for unknown id', () => {
-    return agent.get('/projects/unknown')
+    return agent.get('/projects/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -108,7 +108,7 @@ describe('(/projects) The projects API endpoint', () => {
   });
 
   it('DELETE /projects/:id will send back a 404 if the prjects does not exist', () => {
-    return agent.delete('/projects/unknown')
+    return agent.delete('/projects/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

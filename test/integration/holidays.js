@@ -39,7 +39,7 @@ describe('(/holidays) The /holidays  API endpoint', () => {
   });
 
   it('GET /HOLIDAYS/:ID should not be found for unknown id', () => {
-    return agent.get('/holidays/unknownHoliday')
+    return agent.get('/holidays/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -65,7 +65,7 @@ describe('(/holidays) The /holidays  API endpoint', () => {
   });
 
   it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holiday does not exist', () => {
-    return agent.delete('/holidays/unknownHoliday')
+    return agent.delete('/holidays/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

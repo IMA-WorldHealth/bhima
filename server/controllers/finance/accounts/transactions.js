@@ -169,12 +169,12 @@ async function getAccountTransactions(options, openingBalance = 0) {
   // the running balance can only be in the enterprise currency.  It doesn't
   // make sense to have the running balance in any other currency.
   const sql = `
-    SELECT groups.trans_id, groups.debit, groups.credit, groups.debit_equiv,
-      groups.credit_equiv, groups.trans_date, groups.document_reference,
-      groups.exchangedCredit, groups.exchangedDebit, groups.exchangedBalance,
-      groups.rate, ROUND(groups.invertedRate, 2) AS invertedRate, groups.cumsum,
-      groups.description, groups.currency_id, groups.posted, created_at, transaction_type_id
-    FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
+    SELECT bhima_groups.trans_id, bhima_groups.debit, bhima_groups.credit, bhima_groups.debit_equiv,
+      bhima_groups.credit_equiv, bhima_groups.trans_date, bhima_groups.document_reference,
+      bhima_groups.exchangedCredit, bhima_groups.exchangedDebit, bhima_groups.exchangedBalance,
+      bhima_groups.rate, ROUND(bhima_groups.invertedRate, 2) AS invertedRate, bhima_groups.cumsum,
+      bhima_groups.description, bhima_groups.currency_id, bhima_groups.posted, created_at, transaction_type_id
+    FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS bhima_groups
   `;
 
   const { totalsQuery, totalsParameters } = getTotalsSQL(options);

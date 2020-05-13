@@ -68,7 +68,7 @@ describe('(/suppliers) The supplier API endpoint', () => {
   });
 
   it('GET /suppliers/:id should return a 404 error for unknown id', () => {
-    return agent.get('/suppliers/unknown')
+    return agent.get('/suppliers/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

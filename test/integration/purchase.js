@@ -83,7 +83,7 @@ describe('(/purchases) Purchases', () => {
   });
 
   it('GET /purchases/:uuid returns 404 for an invalid purchase order', () => {
-    return agent.get('/purchases/unknown')
+    return agent.get('/purchases/123456789')
       .then(res => helpers.api.errored(res, 404))
       .catch(helpers.handler);
   });
