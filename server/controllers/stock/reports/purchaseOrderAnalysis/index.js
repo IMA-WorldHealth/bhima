@@ -10,7 +10,7 @@ exports.report = report;
 const DEFAULT_PARAMS = {
   csvKey : 'inventoriesOrdered',
   filename : 'REPORTS.PURCHASE_ORDER_ANALYSIS.TITLE',
-  orientation : 'landscape',
+  orientation : 'portrait',
 };
 
 /**
