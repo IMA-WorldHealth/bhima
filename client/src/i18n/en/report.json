@@ -218,7 +218,7 @@
       "ONE_DEPOT": "One Specific Depot",
       "ALL_INVENTORIES": "All Inventories",
       "ONE_INVENTORY": "One Specific Inventory",
-      "INVENTORY_REPORT": "Inventory Report",
+      "INVENTORY_REPORT": "Stock Sheet",
       "INVENTORY_REPORT_DESCRIPTION": "This report shows all movements of a product and its stock status and value.",
       "QUANTITY": "Quantity",
       "UNIT_COST": "Unit Cost",
