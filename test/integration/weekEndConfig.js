@@ -42,7 +42,7 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
 
 
   it('GET /WEEKEND__CONFIG/:ID should not be found for unknown id', () => {
-    return agent.get('/weekend_config/unknownWeekEnd')
+    return agent.get('/weekend_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -68,7 +68,7 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
   });
 
   it('DELETE /WEEKEND__CONFIG/:ID will send back a 404 if the WeekEnd Configuration does not exist', () => {
-    return agent.delete('/weekend_config/unknownWeekEnd')
+    return agent.delete('/weekend_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

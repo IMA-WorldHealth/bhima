@@ -76,7 +76,7 @@ describe('(/payroll/account_configuration) The /payroll/employee_configuration  
   });
 
   it('DELETE /EMPLOYEE_CONFIG/:ID will send back a 404 if the Employee Configuration does not exist', () => {
-    return agent.delete('/employee_config/unknownRubric')
+    return agent.delete('/employee_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

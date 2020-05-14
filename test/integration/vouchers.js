@@ -233,7 +233,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   });
 
   it('GET /vouchers/:uuid returns a NOT FOUND (404) when unknown {uuid}', () => {
-    return agent.get('/vouchers/unknown')
+    return agent.get('/vouchers/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

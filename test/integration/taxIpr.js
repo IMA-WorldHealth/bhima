@@ -53,7 +53,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('GET /IPRTAX/:ID should not be found for unknown id', () => {
-    return agent.get('/iprTax/unknownOffday')
+    return agent.get('/iprTax/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -97,7 +97,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('GET /IPRTAXCONFIG/:ID should not be found for unknown id', () => {
-    return agent.get('/iprTaxConfig/unknownOffday')
+    return agent.get('/iprTaxConfig/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -123,7 +123,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax does not exist', () => {
-    return agent.delete('/iprTaxConfig/unknownOffday')
+    return agent.delete('/iprTaxConfig/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -139,7 +139,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax does not exist', () => {
-    return agent.delete('/iprTax/unknownOffday')
+    return agent.delete('/iprTax/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

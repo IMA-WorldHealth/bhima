@@ -37,7 +37,7 @@ describe('(/functions) The /functions  API endpoint', () => {
   });
 
   it('GET /functions/:id should not be found for unknown id', () => {
-    return agent.get('/functions/unknownFunction')
+    return agent.get('/functions/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -65,7 +65,7 @@ describe('(/functions) The /functions  API endpoint', () => {
   });
 
   it('DELETE /functions/:id will send back a 404 if the Function does not exist', () => {
-    return agent.delete('/functions/unknownFunction')
+    return agent.delete('/functions/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

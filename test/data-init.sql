@@ -6,7 +6,7 @@ INSERT INTO `project` VALUE (1,'IMA Kinshasa','KIN',1,1,0);
 
 -- create a superuser
 INSERT INTO user (id, username, password, display_name, email, deactivated) VALUE
-  (1, 'superuser', PASSWORD('superuser'), 'Adminstrator', 'developper@imaworldhealth.org', 0);
+  (1, 'superuser', MYSQL5_PASSWORD('superuser'), 'Adminstrator', 'developper@imaworldhealth.org', 0);
 
 -- superuser permission
 INSERT INTO permission (unit_id, user_id)

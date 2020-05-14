@@ -10,7 +10,7 @@ Ce guide vous permettra de vous familiariser avec bhima localement. Veuillez not
 
 Avant de commencer le processus d'installation, assurez-vous que toutes les dépendances bhima sont installées localement. Nous ne testons que sous Linux. Il est donc préférable d’utiliser une version de Linux que vous connaissez bien. Assurez-vous d'avoir la version récente de:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.7\)
+1. [MySQL](http://dev.mysql.com/downloads/) \(5.7 ou 8.0\)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(nous vous recommandons d’utiliser le [gestionnaire de version de node](https://github.com/creationix/nvm) sous Linux. Notez que nous ne testons que sur des versions stables. et bord \).
@@ -110,14 +110,14 @@ NODE_ENV="development" yarn build
 
 ### Création d'une base de données
 
-_NOTE: BHIMA s'exécute dans _`sql_mode = 'STRICT_ALL_TABLES'`_. Bien qu'il ne soit pas nécessaire que cette option soit définie pour générer la base de données, les tests ne seront pas validés à moins que le code SQL correct \_MODE soit défini._
+_NOTE: BHIMA s'exécute dans _`sql_mode = 'STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'`_. Bien qu'il ne soit pas nécessaire que cette option soit définie pour générer la base de données, les tests ne seront pas validés à moins que le code SQL correct \_MODE soit défini._
 
 ```bash
 #Pour configurer MySQL avec ce paramètre, exécutez les commandes suivantes:
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 
 #Under dans la section [mysqld], ajoutez le texte suivant:
-sql-mode = STRICT_ALL_TABLES
+sql-mode = "STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"
 
 # save and quit, puis redémarrez mysql avec la commande suivante:
 sudo service mysql redémarrer

@@ -75,7 +75,7 @@ describe('(/services) The Service API', () => {
   });
 
   it('DELETE /services/:id should return a 404 for unknown service', () => {
-    return agent.delete('/services/unknown')
+    return agent.delete('/services/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

@@ -40,7 +40,7 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
   });
 
   it('GET /ACCOUNT_CONFIG/:ID should not be found for unknown id', () => {
-    return agent.get('/account_config/unknownAccount')
+    return agent.get('/account_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -66,7 +66,7 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
   });
 
   it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
-    return agent.delete('/account_config/unknownRubric')
+    return agent.delete('/account_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
