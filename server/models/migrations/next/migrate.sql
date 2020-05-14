@@ -9,6 +9,9 @@ INSERT INTO flux VALUES
   (14, 'STOCK_FLUX.INVENTORY_RESET'),
   (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT');
 
+ALTER TABLE enterprise_setting ADD COLUMN `enable_daily_consumption` SMALLINT(5) NOT NULL DEFAULT 0;
+  
+  
 
 /*
  * @author: @lomamech

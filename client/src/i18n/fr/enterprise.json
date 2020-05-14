@@ -27,7 +27,9 @@
       "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "L'activation de cette option va écrire automatiquement et en temps réel dans le journal toutes les transactions liées aux mouvements de stock. Les comptes des inventaires et groupes d'inventaire doivent être bien configurés au préalable",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Activer l'envoie des rapports automatiques par email",
       "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "L'activation de cette option permet aux utilisateurs de configurer des planifications pour envoyer automatiquement des rapports à une liste d'adresses électroniques.",
-      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice"
+      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice",
+      "ENABLE_DAILY_CONSUMPTION_LABEL" : "Activer le calcul du CMM sur base des jours de consommation",
+      "ENABLE_DAILY_CONSUMPTION_HELP_TEXT" : "La CMM est calculée en tenant compte des quantités consommées sur le nombre de jours où il y a eu des consommation"
     }
   }
 }

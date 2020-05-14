@@ -223,6 +223,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enableAutoStockAccountingSetting = proxy('enable_auto_stock_accounting');
   vm.enableAutoEmailReportSetting = proxy('enable_auto_email_report');
   vm.enableIndexPaymentSetting = proxy('enable_index_payment_system');
+  vm.enableDailyConsumptionSetting = proxy('enable_daily_consumption');
   vm.setMonthAverage = function setMonthAverage() {
     $touched = true;
   };

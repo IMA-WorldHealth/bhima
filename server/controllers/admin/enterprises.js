@@ -27,7 +27,7 @@ exports.list = function list(req, res, next) {
         enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt,
         enable_barcodes, enable_auto_stock_accounting,
         enable_auto_email_report, enable_index_payment_system,
-        month_average_consumption
+        month_average_consumption, enable_daily_consumption
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -53,6 +53,7 @@ exports.list = function list(req, res, next) {
             'enable_auto_email_report',
             'enable_index_payment_system',
             'month_average_consumption',
+            'enable_daily_consumption',
           ];
 
           row.settings = _.pick(row, settings);

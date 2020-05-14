@@ -45,6 +45,9 @@ function stockLotsReport(req, res, next) {
     delete options.defaultPeriod;
   }
 
+  options.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
+  options.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       data.rows = rows;
