@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('SearchMovementsModalController', SearchMovementsModalController);
 
 SearchMovementsModalController.$inject = [
-  'data', 'NotifyService', '$uibModalInstance', 'FluxService', '$translate',
+  'data', 'NotifyService', '$uibModalInstance',
   'PeriodService', 'Store', 'util', 'StockService',
 ];
 
-function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
+function SearchMovementsModalController(data, Notify, Instance, Periods, Store, util, Stock) {
   const vm = this;
   const displayValues = {};
   const changes = new Store({ identifier : 'key' });
@@ -24,20 +24,6 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   // keep track of the initial search queries to make sure we properly restore
   // default display values
   const initialSearchQueries = angular.copy(vm.searchQueries);
-
-  // load flux
-  Flux.read()
-    .then(handleFluxes)
-    .catch(Notify.handleError);
-
-  function handleFluxes(rows) {
-    vm.fluxes = rows.map(handleFlux);
-  }
-
-  function handleFlux(row) {
-    row.label = $translate.instant(row.label);
-    return row;
-  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -70,19 +56,17 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   };
 
   // custom filter flux_id - assign the value to the searchQueries object
-  vm.onFluxChange = function onFluxChange(_flux) {
-    let typeText = '/';
-    vm.searchQueries.flux_id = _flux;
+  vm.onFluxChange = function onFluxChange(fluxes) {
+    const searchValue = fluxes.map(f => f.id);
 
-    _flux.forEach(fluxIds => {
-      vm.fluxes.forEach(flux => {
-        if (fluxIds === flux.id) {
-          typeText += String(flux.label).concat(' / ');
-        }
-      });
-    });
+    // concats with a comma, replaces last comma
+    const displayValue = fluxes
+      .reduce((aggstr, flux) => aggstr.concat(flux.plainText, ', '), '')
+      .replace(/, $/i, '')
+      .trim();
 
-    displayValues.flux_id = typeText;
+    vm.searchQueries.flux_id = searchValue;
+    displayValues.flux_id = displayValue;
   };
 
   // custom filter user

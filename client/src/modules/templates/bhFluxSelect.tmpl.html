@@ -17,7 +17,8 @@
       <ui-select-match placeholder="{{ 'STOCK.FLUX' | translate }}">
         <span>{{ $item.plainText }}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="flux.id as flux in $ctrl.fluxes | filter: { plainText: $select.search }">
+
+      <ui-select-choices ui-select-focus-patch repeat="flux as flux in $ctrl.fluxes | filter: { plainText: $select.search }">
         <span ng-bind-html="flux.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>

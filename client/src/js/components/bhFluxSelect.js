@@ -15,7 +15,7 @@ FluxSelectController.$inject = [
 ];
 
 /**
- * Flux Selection Component
+ * @function FluxSelectController
  *
  * @description
  * Provides a ui-select of the flux options from the database.
@@ -27,13 +27,18 @@ function FluxSelectController(Flux, Notify) {
     // label to display
     $ctrl.label = $ctrl.label || 'STOCK.FLUX';
 
-    // init the model
-    $ctrl.selectedFlux = $ctrl.fluxIds || [];
+    // initialize the model
+    $ctrl.selectedFlux = [];
 
     // load all Flux
     Flux.read()
       .then(flux => {
         $ctrl.fluxes = Flux.addI18nLabelToItems(flux);
+
+        if ($ctrl.fluxIds) {
+          $ctrl.selectedFlux = $ctrl.fluxes.filter(f => $ctrl.fluxIds.includes(f.id));
+        }
+
 
         // sort the array in alphabetical order
         $ctrl.fluxes.sort((a, b) => a.plainText.localeCompare(b.plainText));
