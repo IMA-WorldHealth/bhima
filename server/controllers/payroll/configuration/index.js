@@ -83,19 +83,10 @@ function update(req, res, next) {
 
 // DELETE /PAYROLL_CONFIG /:ID
 function del(req, res, next) {
-  const sql = `DELETE FROM payroll_configuration WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a Payroll configuration with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'payroll_configuration', 'id', req.params.id, res, next,
+    `Could not find a Payroll configuration with id ${req.params.id}`,
+  );
 }
 
 function paiementStatus(req, res, next) {

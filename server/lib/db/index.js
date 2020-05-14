@@ -236,6 +236,27 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
+
+  delete(table, idKey, idValue, res, next, notFoundErrorMessage) {
+    const sql = `DELETE FROM ${table} WHERE ${idKey} = ?;`;
+    return this.exec(sql, [idValue])
+      .then((row) => {
+        // if nothing happened, let the client know via a 404 error
+        if (row.affectedRows === 0) {
+          throw new NotFound(notFoundErrorMessage);
+        }
+        res.sendStatus(204);
+      })
+      .catch((e) => {
+        if (e.code === 'ER_TRUNCATED_WRONG_VALUE') {
+          throw new NotFound(notFoundErrorMessage);
+        } else {
+          throw e;
+        }
+      })
+      .catch(next)
+      .done();
+  }
 }
 
 module.exports = new DatabaseConnector();

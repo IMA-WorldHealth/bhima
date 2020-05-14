@@ -39,8 +39,16 @@ describe('(/grades) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /grades/:uuid should not be found for unknown uuid', () => {
+  it('GET /grades/:uuid will send back a 404 if the graded id does not exist', () => {
     return agent.get('/grades/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /grades/:uuid will send back a 404 if the graded id is a string', () => {
+    return agent.get('/grades/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -68,6 +76,14 @@ describe('(/grades) API endpoint', () => {
   });
 
   it('DELETE /grades/:uuid will send back a 404 if the grade does not exist', () => {
+    return agent.delete('/grades/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /grades/:uuid will send back a 404 if the grade id is a string', () => {
     return agent.delete('/grades/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);

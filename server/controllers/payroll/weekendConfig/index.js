@@ -100,19 +100,9 @@ function update(req, res, next) {
 
 // DELETE /WEEKEND_CONFIG /:ID
 function del(req, res, next) {
-  const sql = `DELETE FROM weekend_config WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a Weekend configuration with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'weekend_config', 'id', req.params.id, res, next, `Could not find a Weekend configuration with id ${req.params.id}`,
+  );
 }
 
 /**

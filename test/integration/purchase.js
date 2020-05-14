@@ -82,12 +82,17 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /purchases/:uuid returns 404 for an invalid purchase order', () => {
+  it('GET /purchases/:uuid will send back a 404 if the purchases id does not exist', () => {
     return agent.get('/purchases/123456789')
       .then(res => helpers.api.errored(res, 404))
       .catch(helpers.handler);
   });
 
+  it('GET /purchases/:uuid will send back a 404 if the purchases id is a string', () => {
+    return agent.get('/purchases/str')
+      .then(res => helpers.api.errored(res, 404))
+      .catch(helpers.handler);
+  });
 
   it('PUT /purchases/:uuid unable to update an unknown purchase order', () => {
     return agent.put('/purchases/invalid')

@@ -37,7 +37,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /PAYROLL_CONFIG should create a new Account Configuration', () => {
+  it('POST /PAYROLL_CONFIG should create a new Payroll Configuration', () => {
     return agent.post('/payroll_config')
       .send(payrollConfig)
       .then((res) => {
@@ -55,7 +55,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /PAYROLL_CONFIG  should update an existing Account Configuration', () => {
+  it('PUT /PAYROLL_CONFIG  should update an existing Payroll Configuration', () => {
     return agent.put('/payroll_config/'.concat(payrollConfig.id))
       .send(PayrollConfigUpdate)
       .then((res) => {
@@ -65,7 +65,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /PAYROLL_CONFIG/:ID returns a single Account Configuration', () => {
+  it('GET /PAYROLL_CONFIG/:ID returns a single Payroll Configuration', () => {
     return agent.get('/payroll_config/'.concat(payrollConfig.id))
       .then((res) => {
         expect(res).to.have.status(200);
@@ -73,7 +73,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
+  it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Payroll Configuration does not exist', () => {
     return agent.delete('/payroll_config/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -81,7 +81,15 @@ describe('(/payroll) The /payroll  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /PAYROLL_CONFIG/:ID should delete an Account Configuration ', () => {
+  it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Payroll Configuration is a string', () => {
+    return agent.delete('/payroll_config/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /PAYROLL_CONFIG/:ID should delete an Payroll Configuration ', () => {
     return agent.delete('/payroll_config/'.concat(payrollConfig.id))
       .then((res) => {
         helpers.api.deleted(res);

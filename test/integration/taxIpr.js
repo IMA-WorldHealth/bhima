@@ -52,8 +52,16 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAX/:ID should not be found for unknown id', () => {
+  it('GET /IPRTAX/:ID will send back a 404 if the Ipr tax id does not exist', () => {
     return agent.get('/iprTax/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /IPRTAX/:ID will send back a 404 if the Ipr tax id is a string', () => {
+    return agent.get('/iprTax/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -96,7 +104,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAXCONFIG/:ID should not be found for unknown id', () => {
+  it('GET /IPRTAXCONFIG/:ID will send back a 404 if the Ipr tax Configuration id does not exist', () => {
     return agent.get('/iprTaxConfig/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -104,7 +112,15 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /IPRTAXCONFIG  should update an existing scale of Ipr tax Confuguration', () => {
+  it('GET /IPRTAXCONFIG/:ID will send back a 404 if the Ipr tax Configuration id is a string', () => {
+    return agent.get('/iprTaxConfig/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /IPRTAXCONFIG  should update an existing scale of Ipr tax Configuration', () => {
     return agent.put('/iprTaxConfig/'.concat(iprTaxConfig.id))
       .send({ rate : 15 })
       .then((res) => {
@@ -122,8 +138,16 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax does not exist', () => {
+  it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax Configuration id does not exist', () => {
     return agent.delete('/iprTaxConfig/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax Configuration id is a string', () => {
+    return agent.delete('/iprTaxConfig/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -138,8 +162,16 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax does not exist', () => {
+  it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax id does not exist', () => {
     return agent.delete('/iprTax/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax id is a string', () => {
+    return agent.delete('/iprTax/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

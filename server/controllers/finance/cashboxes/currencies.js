@@ -120,6 +120,13 @@ function update(req, res, next) {
 
       res.status(200).json(rows[0]);
     })
+    .catch((e) => {
+      if (e.code === 'ER_TRUNCATED_WRONG_VALUE') {
+        res.status(200).json({});
+      } else {
+        throw e;
+      }
+    })
     .catch(next)
     .done();
 }

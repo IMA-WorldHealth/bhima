@@ -47,8 +47,16 @@ describe('(/invoices) Patient Invoices', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /invoices/:uuid returns 404 for an invalid patient invoice', () => {
+  it('GET /invoices/:uuid will send back a 404 if the patient invoices id does not exist', () => {
     return agent.get('/invoices/123456789')
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /invoices/:uuid will send back a 404 if the patient invoices id is a string', () => {
+    return agent.get('/invoices/str')
       .then(res => {
         helpers.api.errored(res, 404);
       })

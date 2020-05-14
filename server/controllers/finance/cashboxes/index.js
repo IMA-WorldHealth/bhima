@@ -193,18 +193,9 @@ function update(req, res, next) {
  * This method removes the cashbox from the system.
  */
 function remove(req, res, next) {
-  const sql = 'DELETE FROM cash_box WHERE id = ?';
-
-  db.exec(sql, [req.params.id])
-    .then((rows) => {
-      if (!rows.affectedRows) {
-        throw new NotFound(`Could not find a cash box with id ${req.params.id}.`);
-      }
-
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'cash_box', 'id', req.params.id, res, next, `Could not find a cash box with id ${req.params.id}`,
+  );
 }
 
 /**

@@ -37,8 +37,16 @@ describe('(/offdays) The /offdays  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /OFFDAYS/:ID should not be found for unknown id', () => {
+  it('GET /OFFDAYS/:ID will send back a 404 if the offdays id does not exist', () => {
     return agent.get('/offdays/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /OFFDAYS/:ID will send back a 404 if the offdays id is a string', () => {
+    return agent.get('/offdays/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -63,8 +71,16 @@ describe('(/offdays) The /offdays  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday does not exist', () => {
+  it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday id does not exist', () => {
     return agent.delete('/offdays/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday id is a string', () => {
+    return agent.delete('/offdays/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

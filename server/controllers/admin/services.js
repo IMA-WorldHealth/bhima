@@ -141,18 +141,7 @@ function update(req, res, next) {
  * Remove a service in the database.
  */
 function remove(req, res, next) {
-  const sql = 'DELETE FROM service WHERE id = ?;';
-
-  db.exec(sql, [req.params.id])
-    .then((result) => {
-      if (!result.affectedRows) {
-        throw new NotFound(`Could not find a service with id ${req.params.id}.`);
-      }
-
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
+  db.delete('service', 'id', req.params.id, res, next, `Could not find a service with id ${req.params.id}`);
 }
 
 /**

@@ -74,8 +74,16 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /services/:id should return a 404 for unknown service', () => {
+  it('DELETE /services/:id will send back a 404 if the services id does not exist', () => {
     return agent.delete('/services/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /services/:id will send back a 404 if the services id is a string', () => {
+    return agent.delete('/services/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

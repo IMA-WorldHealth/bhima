@@ -232,8 +232,16 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /vouchers/:uuid returns a NOT FOUND (404) when unknown {uuid}', () => {
+  it('GET /vouchers/:uuid will send back a 404 if the vouchers uuid does not exist', () => {
     return agent.get('/vouchers/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /vouchers/:uuid will send back a 404 if the vouchers uuid is a string', () => {
+    return agent.get('/vouchers/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

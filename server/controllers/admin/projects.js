@@ -141,17 +141,5 @@ exports.update = async function update(req, res, next) {
  * Deletes a project.
  */
 exports.delete = function del(req, res, next) {
-  const sql = `DELETE FROM project WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-      // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`No project found by id ${req.params.id}.`);
-      }
-
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
+  db.delete('project', 'id', req.params.id, res, next, `No project found by id ${req.params.id}.`);
 };

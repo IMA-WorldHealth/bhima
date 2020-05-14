@@ -153,6 +153,14 @@ describe('(/enterprises) Enterprises API', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /enterprises/:id returns a 404 error it the enterprises id is a string', () => {
+    return agent.get('/enterprises/str')
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
   it('POST /enterprises/:id/logo should upload a new enterprise logo', () => {
     return agent
       .post(`/enterprises/${enterprise.id}/logo`)

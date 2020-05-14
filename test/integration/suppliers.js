@@ -67,7 +67,7 @@ describe('(/suppliers) The supplier API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /suppliers/:id should return a 404 error for unknown id', () => {
+  it('GET /suppliers/:id will send back a 404 if the suppliers id does not exist', () => {
     return agent.get('/suppliers/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -75,6 +75,13 @@ describe('(/suppliers) The supplier API endpoint', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /suppliers/:id will send back a 404 if the suppliers id is a string', () => {
+    return agent.get('/suppliers/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
 
   it('GET /suppliers/?locked=0 returns a complete list of unlocked supplier', () => {
     return agent.get('/suppliers?locked=0')

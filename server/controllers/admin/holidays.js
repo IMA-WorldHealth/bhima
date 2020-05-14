@@ -132,19 +132,9 @@ async function update(req, res, next) {
 
 // DELETE /Holiday/:id
 function del(req, res, next) {
-  const sql = `DELETE FROM holiday WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a Holiday with id ${req.params.id}`);
-      }
-
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'holiday', 'id', req.params.id, res, next, `Could not find a Holiday with id ${req.params.id}`,
+  );
 }
 
 // get list of Holiday

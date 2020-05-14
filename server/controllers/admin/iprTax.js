@@ -83,19 +83,7 @@ function update(req, res, next) {
 
 // DELETE /IprTax/:id
 function del(req, res, next) {
-  const sql = `DELETE FROM taxe_ipr WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a IprTax with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete('taxe_ipr', 'id', req.params.id, res, next, `Could not find a IprTax with id ${req.params.id}`);
 }
 
 
@@ -187,19 +175,10 @@ function updateConfig(req, res, next) {
 
 // DELETE /IprTaxConfig/:id
 function deleteConfig(req, res, next) {
-  const sql = `DELETE FROM taxe_ipr_configuration WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a IprTax Configuration with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'taxe_ipr_configuration', 'id', req.params.id, res, next,
+    `Could not find a IprTax Configuration with id ${req.params.id}`,
+  );
 }
 
 // get list of IprTax

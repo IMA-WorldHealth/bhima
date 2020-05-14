@@ -47,6 +47,14 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
       .catch(helpers.handler);
   });
 
+  it('GET /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration is a string', () => {
+    return agent.get('/account_config/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /ACCOUNT_CONFIG  should update an existing Account Configuration', () => {
     return agent.put('/account_config/'.concat(accountConfig.id))
       .send(accountConfigUpdate)
@@ -67,6 +75,14 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
 
   it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
     return agent.delete('/account_config/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration is a string', () => {
+    return agent.delete('/account_config/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

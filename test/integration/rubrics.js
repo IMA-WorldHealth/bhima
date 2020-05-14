@@ -59,8 +59,16 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRICS/:ID should not be found for unknown id', () => {
+  it('GET /RUBRICS/:ID send back a 404 if the rubrics id does not exist', () => {
     return agent.get('/rubrics/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /RUBRICS/:ID send back a 404 if the rubrics id is a string', () => {
+    return agent.get('/rubrics/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -85,8 +93,16 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRICS/:ID will send back a 404 if the Rubric does not exist', () => {
+  it('DELETE /RUBRICS/:ID will send back a 404 if the Rubric id does not exist', () => {
     return agent.delete('/rubrics/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /RUBRICS/:ID will send back a 404 if the Rubric id is a string', () => {
+    return agent.delete('/rubrics/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -121,8 +137,16 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRIC_CONFIG/:ID should not be found for unknown id', () => {
+  it('GET /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration id does not exist', () => {
     return agent.get('/rubric_config/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration id is a string', () => {
+    return agent.get('/rubric_config/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -147,8 +171,16 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration does not exist', () => {
+  it('DELETE /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration id does not exist', () => {
     return agent.delete('/rubric_config/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration id is a string', () => {
+    return agent.delete('/rubric_config/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

@@ -70,7 +70,7 @@ describe('(/exchange) The /exchange API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /exchange should update an unknown exchange rate', () => {
+  it('PUT /exchange will send back a 404 if the exchange rate does not exist', () => {
     return agent.put('/exchange/123456789')
       .send({ rate : 1000000 })
       .then((res) => {
@@ -81,12 +81,30 @@ describe('(/exchange) The /exchange API endpoint', () => {
       .catch(helpers.handler);
   });
 
+  it('PUT /exchange will send back a 404 if the exchange rate is a string', () => {
+    return agent.put('/exchange/str')
+      .send({ rate : 1000000 })
+      .then((res) => {
 
-  it('DELETE /exchange/:id will send back a 404 if the exchage rate does not exist', () => {
+        // make sure the API conforms to app standards
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /exchange/:id will send back a 404 if the exchange rate does not exist', () => {
     return agent.delete('/exchange/123456789')
       .then((res) => {
 
         // make sure the API conforms to app standards
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /exchange/:id will send back a 404 if the exchange rate id is a string', () => {
+    return agent.delete('/exchange/str')
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
