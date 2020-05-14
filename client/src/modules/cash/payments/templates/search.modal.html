@@ -58,9 +58,10 @@
 
           <!-- cashbox -->
           <bh-cashbox-select
-            cashbox-id = "$ctrl.searchQueries.cashbox_id"
-            name = "cashbox_id"
-            on-select-callback = "$ctrl.onSelectCashbox(cashbox)">
+            cashbox-id="$ctrl.searchQueries.cashbox_id"
+            name="cashbox_id"
+            restrict-to-user="false"
+            on-select-callback="$ctrl.onSelectCashbox(cashbox)">
             <bh-clear on-clear="$ctrl.clear('cashbox_id')"></bh-clear>
           </bh-cashbox-select>
 

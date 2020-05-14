@@ -20,7 +20,7 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
   const searchQueryOptions = [
     'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient',
-    'currency_id', 'reversed', 'debtor_group_uuid', 'description',
+    'currency_id', 'reversed', 'debtor_group_uuid', 'description', 'project_id',
   ];
 
   vm.searchQueries = {};
