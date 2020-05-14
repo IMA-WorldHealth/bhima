@@ -535,7 +535,7 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
       JOIN inventory i ON i.uuid = l.inventory_uuid
       WHERE 
         (DATE(sm.date) BETWEEN ? AND ?) AND flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE})
-      GROUP BY sm.depot_uuid, i.uuid, sm.date
+      GROUP BY sm.depot_uuid, i.uuid, DATE(sm.date)
       HAVING quantity > 0
       ORDER BY i.text
     )z
