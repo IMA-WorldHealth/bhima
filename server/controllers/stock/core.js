@@ -518,27 +518,26 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     w.consumption AS counted_consumption,
     w.quantity AS consumed_quantity,
     ROUND((w.quantity / w.days) * 30.5) AS quantity,
-    w.depot_text, w.code, w.text, w.days,
+    w.code, w.text, w.days,
     BUID(w.depot_uuid) depot_uuid, BUID(w.inventory_uuid) uuid
   FROM 
   (
     SELECT
-      z.depot_text, z.text, SUM(IF(z.date, 1, 0)) days, SUM(z.consumption) consumption, SUM(z.quantity) quantity,
+      z.text, SUM(IF(z.date, 1, 0)) days, SUM(z.consumption) consumption, SUM(z.quantity) quantity,
       z.depot_uuid, z.inventory_uuid, z.code
     FROM (
       SELECT 
         count(*) consumption, SUM(sm.quantity) quantity,  sm.date,
         i.uuid inventory_uuid, i.text, i.code,
-        d.uuid depot_uuid, d.text AS depot_text
+        sm.depot_uuid
       FROM stock_movement sm 
       JOIN lot l ON l.uuid = sm.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
-      JOIN depot d ON d.uuid = sm.depot_uuid
       WHERE 
         (DATE(sm.date) BETWEEN ? AND ?) AND flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE})
-      GROUP BY d.uuid, i.uuid, sm.date
-      HAVING consumption <> 0
-      ORDER BY d.text, i.text
+      GROUP BY sm.depot_uuid, i.uuid, sm.date
+      HAVING quantity > 0
+      ORDER BY i.text
     )z
     GROUP BY z.depot_uuid, z.inventory_uuid
   )w WHERE w.days <> 0
