@@ -1,36 +1,35 @@
-const q = require('q');
 const _ = require('lodash');
 const moment = require('moment');
 
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const Exchange = require('../../../finance/exchange');
+const Exchange = require('../../exchange');
 
 const TEMPLATE = './server/controllers/finance/reports/analysis_auxiliary_cashbox/report.handlebars';
+
 // expose to the API
 exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'brea_report',
-  filename : 'TREE.BREAK_EVEN_REPORT',
+  csvKey : 'transactions',
+  filename : 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
+
+const REVERSAL_TYPE_ID = 10;
 
 /**
  * @function report
  *
  * @description
- * This function renders the balance of accounts references as report.  The account_reference report provides a view
- * of the balance of account_references for a given period of fiscal year.
+ * Renders the axiliary cashbox report.
  */
-function report(req, res, next) {
+async function report(req, res, next) {
   const params = req.query;
 
   const data = {};
   data.enterprise = req.session.enterprise;
-  let reporting;
 
   const daysWeek = [
     'FORM.LABELS.WEEK_D.SUNDAY',
@@ -111,44 +110,39 @@ function report(req, res, next) {
   _.defaults(params, DEFAULT_PARAMS);
 
   try {
-    reporting = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
-  }
+    const reporting = new ReportManager(TEMPLATE, req.session, params);
 
-  Exchange.getExchangeRate(data.enterprise.id, params.currency_id, new Date(params.end_date))
-    .then(exchange => {
-      data.exchageRate = exchange.rate || 1;
+    const exchange = await Exchange.getExchangeRate(data.enterprise.id, params.currency_id, new Date(params.end_date));
+    data.exchangeRate = exchange.rate || 1;
 
-      const sqlCashBox = `
+    const sqlCashBox = `
         SELECT DATE(cl.trans_date) AS trans_date, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,
-        SUM(cl.debit - cl.credit) AS balance  
+        SUM(cl.debit - cl.credit) AS balance
         FROM(
           SELECT gl.debit, gl.credit, gl.trans_date, gl.account_id, gl.period_id
           FROM general_ledger AS gl
-          WHERE gl.account_id = ? AND gl.period_id = ? 
-          AND gl.transaction_type_id <> 10
+          WHERE gl.account_id = ? AND gl.period_id = ?
+          AND gl.transaction_type_id <> ${REVERSAL_TYPE_ID}
           AND gl.record_uuid NOT IN (
             SELECT rev.uuid
             FROM (
                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) 
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)
               UNION
                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
                 AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?)
             ) AS rev
           )
-          UNION
+          UNION ALL
           SELECT pj.debit, pj.credit, pj.trans_date, pj.account_id, pj.period_id
           FROM posting_journal AS pj
-          WHERE pj.account_id = ? AND pj.period_id = ? 
-          AND pj.transaction_type_id <> 10
+          WHERE pj.account_id = ? AND pj.period_id = ?
+          AND pj.transaction_type_id <> ${REVERSAL_TYPE_ID}
           AND pj.record_uuid NOT IN (
             SELECT rev.uuid
             FROM (
                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) 
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)
               UNION
                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
                 AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?)
@@ -159,34 +153,34 @@ function report(req, res, next) {
         ORDER BY DATE(cl.trans_date) ASC;
       `;
 
-      const sqlTransfertAccount = `
+    const sqlTransfertAccount = `
         SELECT DATE(cl.trans_date) AS trans_date, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,
-        SUM(cl.debit - cl.credit) AS balance  
+        SUM(cl.debit - cl.credit) AS balance
         FROM(
           SELECT gl.debit, gl.credit, gl.trans_date, gl.account_id, gl.period_id
           FROM general_ledger AS gl
-          WHERE gl.account_id = ? AND gl.period_id = ? 
-          AND gl.transaction_type_id <> 10
+          WHERE gl.account_id = ? AND gl.period_id = ?
+          AND gl.transaction_type_id <> ${REVERSAL_TYPE_ID}
           AND gl.record_uuid NOT IN (
             SELECT rev.uuid
             FROM (
                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) 
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)
               UNION
                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
                 AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?)
             ) AS rev
           )
-          UNION
+          UNION ALL
           SELECT pj.debit, pj.credit, pj.trans_date, pj.account_id, pj.period_id
           FROM posting_journal AS pj
-          WHERE pj.account_id = ? AND pj.period_id = ? 
-          AND pj.transaction_type_id <> 10
+          WHERE pj.account_id = ? AND pj.period_id = ?
+          AND pj.transaction_type_id <> ${REVERSAL_TYPE_ID}
           AND pj.record_uuid NOT IN (
             SELECT rev.uuid
             FROM (
                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) 
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?)
               UNION
                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
                 AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?)
@@ -197,7 +191,7 @@ function report(req, res, next) {
         ORDER BY DATE(cl.trans_date) ASC;
       `;
 
-      const sqlPrimaryCashbox = `
+    const sqlPrimaryCashbox = `
         SELECT SUM(ledger.debit) AS debit, SUM(ledger.credit) AS credit,
         SUM(ledger.debit - ledger.credit) AS balance, ledger.account_id,
         ledger.trans_date, a.number, a.label
@@ -205,95 +199,101 @@ function report(req, res, next) {
           SELECT gll.debit, gll.credit, gll.account_id, gll.trans_date
           FROM general_ledger AS gll
           WHERE gll.trans_id IN (
-            SELECT gl.trans_id 
+            SELECT DISTINCT gl.trans_id
             FROM general_ledger AS gl
             WHERE gl.account_id = ? AND gl.period_id = ?
           ) AND (gll.account_id <> ? AND gll.account_id <> ?)
-          UNION
+          UNION ALL
           SELECT pjl.debit, pjl.credit, pjl.account_id, pjl.trans_date
           FROM posting_journal AS pjl
           WHERE pjl.trans_id IN (
-            SELECT pj.trans_id 
+            SELECT DISTINCT pj.trans_id
             FROM posting_journal AS pj
             WHERE pj.account_id = ? AND pj.period_id = ?
           ) AND (pjl.account_id <> ? AND pjl.account_id <> ?)
-          ) AS ledger 
+          ) AS ledger
           JOIN account AS a ON a.id = ledger.account_id
           GROUP BY ledger.trans_date;
       `;
 
-      const dbPromises = [
-        db.exec(sqlCashBox, cashboxParams),
-        db.exec(sqlTransfertAccount, transfertParams),
-        db.exec(sqlPrimaryCashbox, primaryParams),
-      ];
 
-      return q.all(dbPromises);
-    })
-    .spread((transactions, transferts, primaryTransferts) => {
-      transactions.forEach(item => {
-        const numDays = moment(item.trans_date).day();
-        const limiteValidationSup = data.exchageRate ? (data.exchageRate * 0.1) : 0.1;
-        const limiteValidationInf = data.exchageRate ? (data.exchageRate * -0.1) : -0.1;
+    const [transactions, transfers, primaryTransfers] = await Promise.all([
+      db.exec(sqlCashBox, cashboxParams),
+      db.exec(sqlTransfertAccount, transfertParams),
+      db.exec(sqlPrimaryCashbox, primaryParams),
+    ]);
 
-        item.transDateDays = daysWeek[numDays];
+    transactions.forEach(item => {
+      const numDays = moment(item.trans_date).day();
+      const limiteValidationSup = data.exchangeRate ? (data.exchangeRate * 0.1) : 0.1;
+      const limiteValidationInf = data.exchangeRate ? (data.exchangeRate * -0.1) : -0.1;
 
-        if (item.balance > limiteValidationInf && item.balance < limiteValidationSup) {
-          item.labelDisplay = labelDisplay.correct;
-        } else if ((item.balance > limiteValidationSup) && (item.credit !== 0)) {
-          item.labelDisplay = labelDisplay.lower;
-        } else if ((item.balance < limiteValidationSup) && (item.credit !== 0)) {
-          item.labelDisplay = labelDisplay.greater;
-        } else if (item.debit > 0 && item.credit === 0) {
-          item.labelDisplay = labelDisplay.pending;
+      item.transDateDays = daysWeek[numDays];
+
+      if (item.balance > limiteValidationInf && item.balance < limiteValidationSup) {
+        item.labelDisplay = labelDisplay.correct;
+      } else if ((item.balance > limiteValidationSup) && (item.credit !== 0)) {
+        item.labelDisplay = labelDisplay.lower;
+      } else if ((item.balance < limiteValidationSup) && (item.credit !== 0)) {
+        item.labelDisplay = labelDisplay.greater;
+      } else if (item.debit > 0 && item.credit === 0) {
+        item.labelDisplay = labelDisplay.pending;
+      }
+
+      transfers.forEach(transf => {
+        if (isSameDate(item.trans_date, transf.trans_date)) {
+          item.debit_transfert = transf.debit;
+          item.credit_transfert = transf.credit;
+          item.balance_transfert = transf.balance;
+
+          if (transf.balance > limiteValidationInf && transf.balance < limiteValidationSup) {
+            item.labelDisplayTransfert = labelDisplay.correct;
+          } else if ((transf.balance > limiteValidationSup) && (transf.credit !== 0)) {
+            item.labelDisplayTransfert = labelDisplay.lower;
+          } else if ((transf.balance < limiteValidationSup) && (transf.credit !== 0)) {
+            item.labelDisplayTransfert = labelDisplay.greater;
+          } else if (transf.debit === transf.balance) {
+            item.labelDisplayTransfert = labelDisplay.pending;
+          }
         }
-
-        transferts.forEach(transf => {
-          if (moment(item.trans_date).format('YYYY-MM-DD') === moment(transf.trans_date).format('YYYY-MM-DD')) {
-            item.debit_transfert = transf.debit;
-            item.credit_transfert = transf.credit;
-            item.balance_transfert = transf.balance;
-
-            if (transf.balance > limiteValidationInf && transf.balance < limiteValidationSup) {
-              item.labelDisplayTransfert = labelDisplay.correct;
-            } else if ((transf.balance > limiteValidationSup) && (transf.credit !== 0)) {
-              item.labelDisplayTransfert = labelDisplay.lower;
-            } else if ((transf.balance < limiteValidationSup) && (transf.credit !== 0)) {
-              item.labelDisplayTransfert = labelDisplay.greater;
-            } else if (transf.debit === transf.balance) {
-              item.labelDisplayTransfert = labelDisplay.pending;
-            }
-          }
-        });
-
-        primaryTransferts.forEach(primary => {
-          if (moment(item.trans_date).format('YYYY-MM-DD') === moment(primary.trans_date).format('YYYY-MM-DD')) {
-            item.account_target = ` ${primary.number}: ${primary.label} `;
-            item.debit_primary = primary.debit;
-            // Get the difference enter in target account And Out on transfert account
-            item.balance_primary = (primary.debit - item.debit_transfert);
-
-            if (item.balance_primary > (limiteValidationInf) && item.balance_primary < (limiteValidationSup)) {
-              item.labelDisplayPrimary = labelDisplay.correct;
-            } else if ((primary.debit > item.debit_transfert)) {
-              item.labelDisplayPrimary = labelDisplay.greater;
-            } else if ((primary.debit < item.debit_transfert)) {
-              item.labelDisplayPrimary = labelDisplay.lower;
-            } else if (primary.debit === 0 && item.debit_transfert > 0) {
-              item.labelDisplayPrimary = labelDisplay.pending;
-            }
-          }
-        });
       });
 
-      _.merge(data, { transactions });
+      primaryTransfers.forEach(primary => {
+        if (isSameDate(item.trans_date, primary.trans_date)) {
+          item.account_target = ` ${primary.number}: ${primary.label} `;
+          item.debit_primary = primary.debit;
+          // Get the difference enter in target account And Out on transfert account
+          item.balance_primary = (primary.debit - item.debit_transfert);
 
-      return reporting.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+          if (item.balance_primary > (limiteValidationInf) && item.balance_primary < (limiteValidationSup)) {
+            item.labelDisplayPrimary = labelDisplay.correct;
+          } else if ((primary.debit > item.debit_transfert)) {
+            item.labelDisplayPrimary = labelDisplay.greater;
+          } else if ((primary.debit < item.debit_transfert)) {
+            item.labelDisplayPrimary = labelDisplay.lower;
+          } else if (primary.debit === 0 && item.debit_transfert > 0) {
+            item.labelDisplayPrimary = labelDisplay.pending;
+          }
+        }
+      });
+    });
 
+    _.merge(data, { transactions });
+
+    const result = await reporting.render(data);
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
+ * @function isSameDate
+ *
+ * @description
+ * Moves date logic into a nicer function
+ *
+ */
+function isSameDate(a, b) {
+  return (moment(a).format('YYYY-MM-DD') === moment(b).format('YYYY-MM-DD'));
 }
