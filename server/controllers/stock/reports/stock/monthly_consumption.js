@@ -11,8 +11,7 @@ exports.report = report;
 const DEFAULT_PARAMS = {
   csvKey : 'monthlyConsumption',
   filename : 'TREE.MONTHLY_CONSUMPTION',
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
+  orientation : 'portrait',
 };
 
 /**
@@ -47,8 +46,8 @@ async function report(req, res, next) {
     JOIN inventory AS iv ON iv.uuid = sc.inventory_uuid
     JOIN period AS p ON p.id = sc.period_id
     JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
-    JOIN depot AS d ON d.uuid = sc.depot_uuid  
-    WHERE sc.period_id >= ? AND sc.period_id <= ? AND d.uuid = ? ORDER BY iv.text ASC;  
+    JOIN depot AS d ON d.uuid = sc.depot_uuid
+    WHERE sc.period_id >= ? AND sc.period_id <= ? AND d.uuid = ? ORDER BY iv.text ASC;
   `;
 
   const sqlAggregat = `
@@ -80,10 +79,9 @@ async function report(req, res, next) {
       data.depot = params.depot_text;
       data.inventories = inventories;
 
-      data.dataDisplay = inventories.length ? 1 : 0;
       data.spanColumn = data.periods.length + 3;
 
-      if (data.dataDisplay) {
+      if (inventories.length > 0) {
         data.inventories.forEach(item => {
           item.monthlyConsumption = [];
           item.total = 0;

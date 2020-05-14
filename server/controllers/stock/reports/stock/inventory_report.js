@@ -18,12 +18,14 @@ async function stockInventoryReport(req, res, next) {
     filename : 'TREE.STOCK_INVENTORY_REPORT',
   });
 
-  const filters = shared.formatFilters(req.query);
-
   // set up the report with report manager
   try {
     const options = req.query.params ? JSON.parse(req.query.params) : {};
     const report = new ReportManager(STOCK_INVENTORY_REPORT_TEMPLATE, req.session, optionReport);
+
+    delete req.query.label;
+
+    const filters = shared.formatFilters(req.query);
 
     const [inventory, depot, rows] = await Promise.all([
       await db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),

@@ -1,27 +1,21 @@
 {{> head title="REPORT.MONTHLY_CONSUMPTION.TITLE" }}
 
-<body>
-
-  <div class="container">
+<body class="container-fluid">
   {{> header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
       <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'REPORT.MONTHLY_CONSUMPTION.TITLE'}}
-      </h2>
-
-      <h3 class="text-center">
-        {{ fiscalYear }} : {{ translate params.periodFromKey }} - {{ translate params.periodToKey }} 
-      </h3>
+      <h4 class="text-center text-uppercase">{{translate 'REPORT.MONTHLY_CONSUMPTION.TITLE'}}</h4>
 
       <h4 class="text-center">
-        {{ depot }}
+        {{ fiscalYear }} : {{ translate params.periodFromKey }} - {{ translate params.periodToKey }}
+        <br />
+        {{depot}}
       </h4>
 
-      <table class="table-striped table-condensed table-report table-bordered">
+      <table class="table table-striped table-condensed table-report table-bordered">
         <thead>
           <tr style="background-color:#ddd;">
             <th class="text-center" style="width: 3%;"> {{translate 'FORM.LABELS.NR'}}</th>
@@ -34,30 +28,24 @@
         </thead>
 
         <tbody>
-        {{#if dataDisplay}}
-          {{#each inventories}}
-            <tr>
-              <td class="text-center"> {{ add @index 1}} </td>
-              <td> {{ inventory_text }} </td>
-              {{#each monthlyConsumption}}
-                <td class="text-right">
-                    {{#if quantity}} 
-                      <strong> {{ quantity }} </strong>
-                    {{/if}}                  
-                </td>
-              {{/each}}
-              <td class="text-right"> <strong> {{ total }} </strong> </td>
-            </tr>
-          {{/each}}
+        {{#each inventories}}
+          <tr>
+            <td class="text-center">{{ add @index 1}}</td>
+            <td>{{ inventory_text }}</td>
+            {{#each monthlyConsumption}}
+              <td class="text-right">
+                {{#if quantity}}{{ quantity }}{{/if}}
+              </td>
+            {{/each}}
+            <td class="text-right"> <strong> {{ total }} </strong> </td>
+          </tr>
         {{else}}
           <tr>
-            <th class="text-center" colspan="{{ spanColumn }}"> <strong> {{translate 'STOCK.NO_DATA'}} </strong> </th>
+            <th class="text-center" colspan="{{ spanColumn }}"> {{translate 'STOCK.NO_DATA'}} </th>
           </tr>
-        {{/if}}
+        {{/each}}
         </tbody>
       </table>
     </div>
-  </div>
-
   </div>
 </body>

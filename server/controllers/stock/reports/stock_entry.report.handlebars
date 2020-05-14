@@ -1,8 +1,6 @@
 {{> head title="REPORT.STOCK.ENTRY_REPORT" }}
 
-<body>
-
-  <div class="container">
+<body class="container-fluid">
   {{> header}}
 
   <!-- body  -->
@@ -10,17 +8,13 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h2 class="text-center">
+      <h3 class="text-center">
         {{translate 'REPORT.STOCK.ENTRY_REPORT'}}
-      </h2>
+      </h3>
 
-      <h1 class="text-center">
-        {{ depotName }}
-      </h1>
+      <h2 class="text-center"> {{ depotName }} </h2>
 
-      <h4 class="text-center">
-        {{date dateFrom}} - {{date dateTo}}
-      </h4>
+      <h5 class="text-center"> {{date dateFrom}} - {{date dateTo}} </h5>
 
       <br/>
 
@@ -210,7 +204,5 @@
         </table>
       {{/if}}
     </div>
-  </div>
-
   </div>
 </body>
