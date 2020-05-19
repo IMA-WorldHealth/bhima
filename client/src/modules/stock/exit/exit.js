@@ -37,6 +37,8 @@ function StockExitController(
     if (vm.movement.date < new Date()) {
       vm.dateMessageWarning = true;
     }
+    loadInventories(vm.depot, date);
+    stockOut(date);
   };
 
   vm.onChangeDepot = depot => {
@@ -254,10 +256,10 @@ function StockExitController(
     stockOut();
   }
 
-  function loadInventories(depot) {
+  function loadInventories(depot, dateTo = new Date()) {
     setupStock();
 
-    Stock.inventories.read(null, { depot_uuid : depot.uuid })
+    Stock.inventories.read(null, { depot_uuid : depot.uuid, dateTo })
       .then(inventories => {
         vm.loading = false;
         vm.selectableInventories = inventories.filter(item => item.quantity > 0);
@@ -635,16 +637,17 @@ function StockExitController(
    * @function stockOut
    * get sold out inventories for a depot
    */
-  function stockOut() {
+  function stockOut(dateTo = new Date()) {
     if (!vm.depot) return;
     Stock.inventories.read(null, {
       status : 'sold_out',
       depot_uuid : vm.depot.uuid,
+      dateTo,
     }).then(inventories => {
-      vm.soldOutInventories = inventories;
       inventories.forEach(inventory => {
         inventory.stock_out_date = moment(inventory.stock_out_date).fromNow();
       });
+      vm.soldOutInventories = inventories;
     }).catch(Notify.handleError);
   }
 
