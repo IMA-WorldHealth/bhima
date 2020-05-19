@@ -64,6 +64,13 @@ function DepotManagementController(
         enableFiltering : false,
       },
       {
+        field : 'users',
+        displayName : 'FORM.LABELS.USER',
+        headerCellFilter : 'translate',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+      {
         field : 'action',
         width : 80,
         displayName : '',
