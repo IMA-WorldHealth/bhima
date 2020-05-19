@@ -106,6 +106,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     const creation = (vm.hasEnterprise === false);
     const changes = util.filterFormElements(form, true);
 
+    if (changes.month_average_consumption) {
+      delete changes.month_average_consumption;
+    }
+
     changes.settings = angular.copy(vm.enterprise.settings);
 
     const promise = (creation)
