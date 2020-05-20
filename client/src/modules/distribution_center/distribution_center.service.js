@@ -80,9 +80,9 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
       animation : false,
       keyboard : false,
       backdrop : 'static',
-      controller : 'SettingDistributionModalController as SettingDistributionModalCtrl',
+      controller : 'SettingDistributionModalController as ModalCtrl',
       resolve : {
-        filters : function filtersProvider() { return filters; },
+        filters : () => filters,
       },
     }).result;
   }

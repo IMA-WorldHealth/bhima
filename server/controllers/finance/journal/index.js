@@ -145,7 +145,6 @@ function buildTransactionQuery(options, posted) {
   filters.period('period', 'trans_date');
   filters.dateFrom('custom_period_start', 'trans_date');
   filters.dateTo('custom_period_end', 'trans_date');
-
   filters.fullText('description');
   filters.fullText('comment');
 

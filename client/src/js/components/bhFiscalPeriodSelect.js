@@ -1,6 +1,9 @@
 angular.module('bhima.components')
   .component('bhFiscalPeriodSelect', {
     bindings : {
+      fiscalId : '<',
+      periodFromId : '<',
+      periodToId : '<',
       onSelectPeriodFromCallback : '&',
       onSelectPeriodToCallback : '&',
       onSelectFiscalCallback : '&',
@@ -19,6 +22,15 @@ function FiscalPeriodSelect(Fiscal, moment) {
       .then(fiscals => {
         $ctrl.fiscals = fiscals;
       });
+  };
+
+  $ctrl.$onChanges = (changes) => {
+
+    if (changes.fiscalId && $ctrl.fiscalId) {
+      $ctrl.selectedFiscal = $ctrl.fiscalId;
+      loadPeriodsForFiscalYear($ctrl.fiscalId);
+    }
+
   };
 
   $ctrl.loadPeriod = fiscalId => {
@@ -47,6 +59,16 @@ function FiscalPeriodSelect(Fiscal, moment) {
             return p;
           });
 
+        $ctrl.periods.forEach(period => {
+          if (period.id === $ctrl.periodFromId) {
+            $ctrl.selectedPeriodFrom = period;
+            $ctrl.onSelectPeriodFrom(period);
+          }
+          if (period.id === $ctrl.periodToId) {
+            $ctrl.selectedPeriodTo = period;
+            $ctrl.onSelectPeriodTo(period);
+          }
+        });
         // sure the period are ordered in an ASC fashion
         $ctrl.periods.sort(sortDates);
       });

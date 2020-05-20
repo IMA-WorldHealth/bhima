@@ -15,7 +15,9 @@ function SettingDistributionModalController($state, DistributionCenter, filters,
   vm.distribution = {};
 
   const settingOptions = [
-    'fiscal', 'periodFrom', 'periodTo', 'typeFeeCenter', 'distributed', 'trans_id', 'hrRecord', 'fee_center_id',
+    'fiscal', 'periodFrom', 'periodTo',
+    'typeFeeCenter', 'account_id',
+    'distributed', 'trans_id', 'hrRecord', 'fee_center_id',
   ];
 
   const lastValues = {};
@@ -35,17 +37,18 @@ function SettingDistributionModalController($state, DistributionCenter, filters,
   // assign already defined custom filters to searchQueries object
   vm.distribution = util.maskObjectFromKeys(filters, settingOptions);
 
+
   vm.onSelectFiscal = function onSelectFiscal(fiscal) {
     vm.distribution.fiscal = fiscal;
   };
 
   vm.onSelectPeriodFrom = function onSelectPeriodFrom(period) {
-    vm.distribution.periodFrom = period.start_date;
+    vm.distribution.periodFrom = period.id;
     displayValues.periodFrom = period.hrLabel;
   };
 
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
-    vm.distribution.periodTo = period.end_date;
+    vm.distribution.periodTo = period.id;
     displayValues.periodTo = period.hrLabel;
   };
 
