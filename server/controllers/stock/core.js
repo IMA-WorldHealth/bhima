@@ -812,17 +812,19 @@ function getInventoryMovements(params) {
       // totals of quantities
       const totals = movements.reduce((total, line) => {
         total.entry += line.entry.quantity;
+        total.entryValue += line.entry.value;
         total.exit += line.exit.quantity;
+        total.exitValue += line.exit.value;
         return total;
-      }, { entry : 0, exit : 0 });
+      }, {
+        entry : 0, entryValue : 0, exit : 0, exitValue : 0,
+      });
 
       // stock value
       const result = movements.length ? movements[movements.length - 1] : {};
-
       return { movements, totals, result };
     });
 }
-
 
 function listStatus(req, res, next) {
   const sql = `SELECT id, status_key, title_key FROM status`;

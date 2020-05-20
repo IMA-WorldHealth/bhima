@@ -1,10 +1,10 @@
-{{> head title="TREE.STOCK_INVENTORY" }}
+{{> head title="REPORT.STOCK.INVENTORY_REPORT" }}
 
 <body class="container-fluid">
 
   {{> header}}
 
-  <!-- body  -->
+  <!-- body -->
   <div class="row">
     <div class="col-xs-12">
 
@@ -14,8 +14,8 @@
       </h2>
 
       <h3 class="text-center">
-        {{#if depot.text}}{{depot.text}}{{/if}}<br>
         {{#if inventory.code}}<strong>{{inventory.code}} - {{inventory.text}}</strong>{{/if}}
+        {{#if depot.text}}{{depot.text}}{{/if}}<br>
       </h3>
 
       <h4 class="text-center">
@@ -23,9 +23,6 @@
       </h4>
 
       <br>
-
-      <!-- filters  -->
-      {{> filterbar filters=filters }}
 
       <!-- list of data  -->
       <table class="table table-condensed table-report">
@@ -60,8 +57,7 @@
               <td style="border-left: 1px solid #000;">{{reference}}</td>
               <td style="border-right: 1px solid #000;">{{date date}}</td>
               {{!-- entry --}}
-              <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td>
-              <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
+              <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td> <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
               <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
 
               {{!-- exit --}}
@@ -78,11 +74,12 @@
         </tbody>
         <tfoot style="border-top: 1px solid #000;">
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th></th>
-            <th></th>
-            <th class="text-right">{{ totals.entry}}</th> <th></th> <th></th>
-            <th class="text-right">{{ totals.exit}}</th> <th></th> <th></th>
-            <th class="text-right">{{ result.stock.quantity}}</th>
+            <th colspan="2"></th>
+            <th class="text-right">{{totals.entry}}</th> <th></th>
+            <th class="text-right">{{currency totals.entryValue metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{totals.exit}}</th> <th></th>
+            <th class="text-right">{{currency totals.exitValue metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{result.stock.quantity}}</th>
             <th class="text-right">{{precision result.stock.unit_cost 4}}</th>
             <th class="text-right">{{currency result.stock.value metadata.enterprise.currency_id}}</th>
           </tr>

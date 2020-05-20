@@ -835,7 +835,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
-  app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
+  app.get('/reports/stock/sheet', stockReports.stockSheetReport);
   app.get('/reports/stock/value', stockReports.stockValue);
   app.get('/reports/stock/monthly_consumption', stockReports.monthlyConsumption.report);
 

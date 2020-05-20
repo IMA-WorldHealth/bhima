@@ -19,7 +19,7 @@ angular.module('bhima.routes')
       'income_expense',
       'income_expense_by_month',
       'income_expense_by_year',
-      'inventory_file',
+      'stock_sheet',
       'inventory_report',
       'ohada_balance_sheet_report',
       'ohada_profit_loss',
