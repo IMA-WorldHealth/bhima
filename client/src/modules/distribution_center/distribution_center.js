@@ -38,16 +38,15 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
     enableColumnMenus : false,
     fastWatch         : true,
     flatEntityAccess  : true,
-    showColumnFooter  : true,
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
+    showGridFooter : true,
+    gridFooterTemplate : 'modules/distribution_center/templates/footer.template.html',
     columnDefs : [
       {
         field : 'fee_center_label',
         displayName : 'TABLE.COLUMNS.FEE_CENTER',
         headerCellFilter : 'translate',
-        aggregationType  : uiGridConstants.aggregationTypes.count,
-        aggregationHideLabel : true,
       }, {
         field : 'trans_id',
         displayName : 'TABLE.COLUMNS.TRANSACTION',
