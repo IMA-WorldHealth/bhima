@@ -11,6 +11,7 @@ env:
     - DBUS_SESSION_BUS_ADDRESS=/dev/null
     - CHROME_REVISION=706915
     - CHROMEDRIVER_VERSION="79.0.3945.36"
+    - CORAL_REUSE_BROWSER=1
 
 matrix:
   include:

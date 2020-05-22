@@ -1,4 +1,4 @@
-<form name="SettingDistributionForm" bh-submit="SettingDistributionModalCtrl.submit(SettingDistributionForm)" novalidate>
+<form name="SettingDistributionForm" bh-submit="ModalCtrl.submit(SettingDistributionForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="title">
@@ -10,26 +10,29 @@
 
   <div class="modal-body">
     <bh-fiscal-period-select
-      on-select-fiscal-callback="SettingDistributionModalCtrl.onSelectFiscal(fiscal)"
-      on-select-period-from-callback="SettingDistributionModalCtrl.onSelectPeriodFrom(period)"
-      on-select-period-to-callback="SettingDistributionModalCtrl.onSelectPeriodTo(period)">
+      fiscal-id = "ModalCtrl.distribution.fiscal"
+      period-from-id = "ModalCtrl.distribution.periodFrom"
+      period-to-id = "ModalCtrl.distribution.periodTo"
+      on-select-fiscal-callback="ModalCtrl.onSelectFiscal(fiscal)"
+      on-select-period-from-callback="ModalCtrl.onSelectPeriodFrom(period)"
+      on-select-period-to-callback="ModalCtrl.onSelectPeriodTo(period)">
     </bh-fiscal-period-select>
 
     <bh-fee-center-select
-      feeCenter-id="SettingDistributionModalCtrl.distribution.fee_center_id"
+      fee-center-id="ModalCtrl.distribution.fee_center_id"
       filter="true"
       principal="false"
-      on-select-callback="SettingDistributionModalCtrl.onSelectFeeCenter(feeCenter)"
+      on-select-callback="ModalCtrl.onSelectFeeCenter(feeCenter)"
       required="false">
-      <bh-clear on-clear="SettingDistributionModalCtrl.clear('fee_center_id')"></bh-clear>
+      <bh-clear on-clear="ModalCtrl.clear('fee_center_id')"></bh-clear>
     </bh-fee-center-select>
 
     <div class="form-group" ng-class="{ 'has-error' : SettingDistributionForm.$submitted && SettingDistributionForm.trans_id.$invalid }">
       <label class="control-label" translate>
         FORM.LABELS.TRANSACTION
       </label>
-      <bh-clear on-clear="SettingDistributionModalCtrl.clear('trans_id')"></bh-clear>
-      <input type="text" class="form-control" name="trans_id" ng-model="SettingDistributionModalCtrl.distribution.trans_id">
+      <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
+      <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.distribution.trans_id">
       <div class="help-block" ng-messages="SettingDistributionForm.trans_id.$error" ng-show="SettingDistributionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -39,20 +42,20 @@
       <label class="control-label" translate>
         FORM.LABELS.RECORD
       </label>
-      <bh-clear on-clear="SettingDistributionModalCtrl.clear('hrRecord')"></bh-clear>
-      <input type="text" class="form-control" name="hrRecord" ng-model="SettingDistributionModalCtrl.distribution.hrRecord">
+      <bh-clear on-clear="ModalCtrl.clear('hrRecord')"></bh-clear>
+      <input type="text" class="form-control" name="hrRecord" ng-model="ModalCtrl.distribution.hrRecord">
       <div class="help-block" ng-messages="SettingDistributionForm.hrRecord.$error" ng-show="SettingDistributionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
     <bh-account-select
-      account-id="SettingDistributionModalCtrl.distribution.account_id"
+      account-id="ModalCtrl.distribution.account_id"
       name="account_id"
-      on-select-callback="SettingDistributionModalCtrl.onSelectAccount(account)"
+      on-select-callback="ModalCtrl.onSelectAccount(account)"
       exclude-title-accounts="true"
       required="0">
-      <bh-clear on-clear="SettingDistributionModalCtrl.clear('account_id')"></bh-clear>
+      <bh-clear on-clear="ModalCtrl.clear('account_id')"></bh-clear>
     </bh-account-select>
 
     <div class="form-group" ng-class="{'has-error' : SettingDistributionForm.$submitted && SettingDistributionForm.typeFeeCenter.$invalid }">
@@ -63,7 +66,7 @@
             type="radio"
             name="typeFeeCenter"
             ng-value="0"
-            ng-model="SettingDistributionModalCtrl.distribution.typeFeeCenter"
+            ng-model="ModalCtrl.distribution.typeFeeCenter"
             id="is_profit"
             required
             >
@@ -75,7 +78,7 @@
             type="radio"
             name="typeFeeCenter"
             ng-value="1"
-            ng-model="SettingDistributionModalCtrl.distribution.typeFeeCenter"
+            ng-model="ModalCtrl.distribution.typeFeeCenter"
             id="is_cost"
             required
             >
@@ -91,7 +94,7 @@
   </div>
 
   <div class="modal-footer">
-    <button data-method="cancel" type="button" class="btn btn-default" ng-click="SettingDistributionModalCtrl.cancel()">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 

@@ -1,41 +1,44 @@
 angular.module('bhima.controllers')
-  .controller('inventory_fileController', InventoryFileConfigController);
+  .controller('stock_sheetController', StockSheetConfigController);
 
-InventoryFileConfigController.$inject = [
+StockSheetConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
   'LanguageService', 'moment',
 ];
 
-function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, moment) {
+function StockSheetConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, moment) {
   const vm = this;
-  const cache = new AppCache('configure_inventory_file_report');
-  const reportUrl = 'reports/stock/inventory';
+  const cache = new AppCache('configure_stock_sheet_report');
+  const reportUrl = 'reports/stock/sheet';
 
   vm.previewGenerated = false;
-  vm.orderByCreatedAt = 0;
-  vm.dateTo = new Date();
 
-  vm.onDateChange = (date) => {
-    vm.dateTo = date;
-  };
-
-  vm.setOrderByCreatedAt = value => {
-    vm.orderByCreatedAt = value;
+  vm.reportDetails = {
+    dateTo : new Date(),
+    orderByCreatedAt : 0,
   };
 
   // check cached configuration
   checkCachedConfiguration();
 
+  vm.onDateChange = (date) => {
+    vm.reportDetails.dateTo = date;
+  };
+
+  vm.setOrderByCreatedAt = value => {
+    vm.reportDetails.orderByCreatedAt = value;
+  };
+
   vm.onSelectDepot = function onSelectDepot(depot) {
-    vm.depot = depot;
+    vm.reportDetails.depot_uuid = depot.uuid;
   };
 
   vm.onSelectInventory = function onSelectInventory(inventory) {
-    vm.inventory = inventory;
+    vm.reportDetails.inventory_uuid = inventory.uuid;
   };
 
   vm.clear = function clear(key) {
-    delete vm[key];
+    delete vm.reportDetails[key];
   };
 
   vm.clearPreview = function clearPreview() {
@@ -46,27 +49,16 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
-    const params = {
-      depot_uuid : vm.depot.uuid,
-      inventory_uuid : vm.inventory.uuid,
-      dateTo : vm.dateTo,
-      orderByCreatedAt : vm.orderByCreatedAt,
-    };
+    const options = angular.copy(vm.reportDetails);
 
     // update cached configuration
-    cache.reportDetails = angular.copy(params);
+    cache.reportDetails = angular.copy(options);
 
     // format date for the server
-    params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
+    options.dateTo = moment(options.dateTo).format('YYYY-MM-DD');
+    options.lang = Languages.key;
 
-    const options = {
-      params,
-      lang : Languages.key,
-    };
-
-    vm.reportDetails = options;
-
-    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    return SavedReports.requestPreview(reportUrl, reportData.id, options)
       .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
@@ -89,6 +81,8 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   function checkCachedConfiguration() {
-    vm.reportDetails = angular.copy(cache.reportDetails || {});
+    if (cache.reportDetails) {
+      vm.reportDetails = angular.copy(cache.reportDetails);
+    }
   }
 }

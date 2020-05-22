@@ -50,7 +50,7 @@
     "jeremielodi"
   ],
   "dependencies": {
-    "@ima-worldhealth/coral": "^1.4.3",
+    "@ima-worldhealth/coral": "^1.5.0",
     "@types/angular": "^1.7.0",
     "@uirouter/angularjs": "^1.0.25",
     "accounting-js": "^1.1.1",
@@ -139,7 +139,7 @@
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
-    "karma": "^5.0.8",
+    "karma": "^5.0.9",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
@@ -151,10 +151,10 @@
     "protractor": "^5.4.4",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.9.4",
-    "release-it": "^13.6.0",
+    "release-it": "^13.6.1",
     "sinon": "^9.0.2",
     "standard-version": "^8.0.0",
-    "typescript": "^3.9.2"
+    "typescript": "^3.9.3"
   },
   "homepage": "https://docs.bhi.ma",
   "engines": {

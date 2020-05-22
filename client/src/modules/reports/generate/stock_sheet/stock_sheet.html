@@ -26,33 +26,33 @@
 
           <!-- select depot -->
           <bh-depot-select
-            depot-uuid="ReportConfigCtrl.depot.uuid"
+            depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
             required="true">
-            <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
+            <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
           <!-- select inventory -->
           <bh-inventory-select
-            inventory-uuid="ReportConfigCtrl.inventory.uuid"
+            inventory-uuid="ReportConfigCtrl.reportDetails.inventory_uuid"
             on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
             required="true"
             only-consumable="true">
-            <bh-clear on-clear="ReportConfigCtrl.clear('inventory')"></bh-clear>
+            <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
           <!-- choose date until  -->
           <bh-date-editor
             label="FORM.LABELS.UNTIL_DATE"
-            limit-min-fiscal
-            date-value="ReportConfigCtrl.dateTo"
-            on-change="ReportConfigCtrl.onDateChange(date)">
+            date-value="ReportConfigCtrl.reportDetails.dateTo"
+            on-change="ReportConfigCtrl.onDateChange(date)"
+            limit-min-fiscal>
           </bh-date-editor>
 
           <!-- sort by real movement date -->
           <bh-yes-no-radios
             label="SETTINGS.ORDER_BY_CREATED_AT"
-            value="ReportConfigCtrl.orderByCreatedAt"
+            value="ReportConfigCtrl.reportDetails.orderByCreatedAt"
             help-text="SETTINGS.ORDER_BY_CREATED_AT_HELP_TEXT"
             on-change-callback="ReportConfigCtrl.setOrderByCreatedAt(value)">
           </bh-yes-no-radios>
