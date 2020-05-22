@@ -4148,12 +4148,12 @@ gulp-match@^1.1.0:
   dependencies:
     minimatch "^3.0.3"
 
-gulp-merge-json@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.1.0.tgz#58ba64373dc3ef6e141e7ba4cab8c9ad56a0fe48"
-  integrity sha512-l+7A5YR9nRC4clyX/8rCupWx4oLY0yA//lvPXqdfTlRFECYcADG0ZdGxTiV/vh4UwkXmLInLX+BS9fQpguKLSQ==
+gulp-merge-json@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/gulp-merge-json/-/gulp-merge-json-2.1.1.tgz#cfb1d066467577545b8c1c289a278e6ef4b4e0de"
+  integrity sha512-VhvAlcf+dcCb94j/2yDPWxJ3X7x4P/Xwcrv1dhjYuRgvADwFJmaQwl4zbuq+GDZvzMacbVncWtEdsETpUSkhYw==
   dependencies:
-    json5 "^2.1.1"
+    json5 "^2.1.3"
     lodash.mergewith "^4.6.1"
     plugin-error "^1.0.1"
     through "^2.3.8"
@@ -5304,10 +5304,10 @@ json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
   integrity sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=
 
-json5@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.2.tgz#43ef1f0af9835dd624751a6b7fa48874fb2d608e"
-  integrity sha512-MoUOQ4WdiN3yxhm7NEVJSJrieAo5hNSLQ5sj05OTRHPL9HOBy8u4Bu88jsC1jvqAdN+E1bJmsUcZH+1HQxliqQ==
+json5@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-2.1.3.tgz#c9b0f7fa9233bfe5807fe66fcf3a5617ed597d43"
+  integrity sha512-KXPvOm8K9IJKFM0bmdn8QXh7udDh1g/giieX0NLCaMnb4hEiVFqnop2ImTXCc5e0/oHz3LTqmHGtExn5hfMkOA==
   dependencies:
     minimist "^1.2.5"
 
