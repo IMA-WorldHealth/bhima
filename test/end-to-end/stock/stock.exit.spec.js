@@ -48,7 +48,7 @@ function StockExiTests() {
 
     await page.setDescription(DESCRIPTION.concat(' - Patient'));
 
-    await page.setLot(0, 'QUININE-B');
+    await page.setLot(0, 'QUININE-C');
 
     // submit
     await page.submit();
