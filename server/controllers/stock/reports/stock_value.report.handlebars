@@ -39,7 +39,7 @@
             <tr>
               <td style="width:50%">{{inventory_name}}</td>
               <td class="text-right">{{stockQtt}}</td>
-              <td class="text-right">{{stockUnitCost}}</td>
+              <td class="text-right">{{currency stockUnitCost ../currency_id}}</td>
               <td class="text-right">{{currency stockValue ../currency_id}}</td>
             </tr>
           {{/each}}
@@ -52,10 +52,7 @@
               <th class="text-right">{{ currency stocktotal ./currency_id }}</th>
             </tr>
           {{/if}}
-
-
         </tbody>
-
       </table>
     </div>
   </div>
