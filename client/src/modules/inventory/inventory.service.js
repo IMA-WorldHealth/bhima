@@ -129,6 +129,10 @@ function InventoryService(
     label : 'FORM.LABELS.LOCKED',
   },
   {
+    key : 'uuid',
+    label : 'FORM.LABELS.LABEL',
+  },
+  {
     key : 'text',
     label : 'FORM.LABELS.LABEL',
   },
