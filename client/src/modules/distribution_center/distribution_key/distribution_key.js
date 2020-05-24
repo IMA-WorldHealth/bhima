@@ -33,6 +33,9 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
     showColumnFooter  : true,
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
+    showGridFooter : true,
+    gridFooterTemplate : 'modules/distribution_center/templates/footer.template.html',
+
     columnDefs : [{
       field : 'auxiliary_label',
       displayName : 'TABLE.COLUMNS.AUXILIARY_CENTER',

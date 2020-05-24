@@ -2,7 +2,7 @@
 
 Welcome! This manual is for the Basic Hospital Information Management Application \(BHIMA\).  BHIMA is a suite of interrelated tools to help rural hospital administrators in four areas: financial management, stock and inventory management, medical records, and reporting.  It has been a research project of IMA World Health since 2013, and the current code base has been in development since late 2015.
 
-Please choose your language
+Please choose your language:
 
 1. [English](./en/index.md)
 2. [Français](./fr/index.md)
