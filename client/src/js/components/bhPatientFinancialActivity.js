@@ -41,6 +41,7 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants, $q) 
       .then(([financialData, stockData]) => {
         $ctrl.data = financialData;
         const dataMovement = [];
+        $ctrl.dataMovementTotalValue = 0;
 
         // limit this to the most recent stock movements items
         const limitRecent = 5;
@@ -68,6 +69,7 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants, $q) 
           if (index < limitRecent) {
             dataMovement.push(item);
           }
+          $ctrl.dataMovementTotalValue += item.value;
         });
 
         $ctrl.dataMovement = dataMovement;

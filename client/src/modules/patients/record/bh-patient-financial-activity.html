@@ -99,22 +99,33 @@
         </h5>
 
         <div class="col-sm-6 col-xs-12">
-          <table class="table table-responsive table-condensed">
+          <table class="table table-responsive table-bordered table-condensed">
             <thead>
               <tr>
                 <td translate>FORM.LABELS.NR</td>
                 <td translate>FORM.LABELS.REFERENCE</td>
+                <td translate>FORM.LABELS.INVENTORY</td>                
                 <td translate>FORM.LABELS.DATE</td>
+                <td translate>FORM.LABELS.VALUE</td>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="dataMovement in $ctrl.dataMovement">
                 <td>{{ $index + 1 }}</td>
                 <td><strong> {{ dataMovement.reference_text }} </strong></th>
+                <td>{{dataMovement.inventory_name}}</td>
                 <td> {{ dataMovement.date | date : "dd/MM/yyyy HH:mm:ss" }} </td>
+                <td><strong> {{ dataMovement.value | currency:$ctrl.enterpriseCurrencyId }} </strong></th>
+                
+              </tr>
+              <tr  ng-if="!$ctrl.noStockMovement">
+                <td colspan="5" class="text-right">
+                  <span translate>FORM.LABELS.TOTAL</span> : 
+                  <span>{{$ctrl.dataMovementTotalValue | currency:$ctrl.enterpriseCurrencyId}}</span>
+                </td>
               </tr>
               <tr ng-if="$ctrl.noStockMovement">
-                <td colspan="3" translate>TABLE.COLUMNS.EMPTY</td>
+                <td colspan="5" translate>TABLE.COLUMNS.EMPTY</td>
               </tr>
             </tbody>
           </table>
