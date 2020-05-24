@@ -1,5 +1,13 @@
 #cloud-config
 
+# NOTE:
+# This script uses several custom variables configured at the top of the run_cmd block:
+#   BH_DOMAIN - domain name where the server will be deployed. Used in nginx and letsencrypt config
+#   NODE_VERSION - node version to install.  This should be an integer (e.g. 12, 13, 14)
+#   BH_DATABASE_NAME - the name of the BHIMA database.  Often tied to the domain name.
+#   BH_DATABASE_PASSWORD - the password of the database. Defaults to $(uuid).
+#
+
 packages:
   - curl
   - nginx
@@ -24,9 +32,27 @@ users:
 write_files:
   - path: /tmp/bhima-mysql-user.sql
     content: |
-      CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';
+      CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2020';
       GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
       FLUSH PRIVILEGES;
+
+  - path: /tmp/.my.cnf
+    content: |
+      [client]
+      user=root
+      password=PASSWORD
+
+      default-character-set=utf8mb4
+
+      [mysql]
+      default-character-set=utf8mb4
+
+
+      [mysqld]
+      collation-server = utf8mb4_unicode_ci
+      init-connect='SET NAMES utf8mb4'
+      character-set-server = utf8mb4
+
 
   - path: /tmp/bhima-latest-release.sh
     content: |
@@ -94,6 +120,12 @@ write_files:
 
 runcmd:
 
+# configure "global" variables
+  - export BH_DOMAIN="demo.bhi.ma"
+  - export NODE_VERSION="12"
+  - export BH_DATABASE_NAME="bhima"
+  - export BH_DATABASE_PASSWORD="$(uuid)"
+
 # configure UFW
   - ufw default deny incoming
   - ufw default allow outgoing
@@ -103,24 +135,19 @@ runcmd:
   - ufw enable
 
 # Install and configure MySQL
-  - export MYPASS="$(uuid)"
-  - echo "mysql-community-server mysql-community-server/root-pass password $MYPASS" |  debconf-set-selections
-  - echo "mysql-community-server mysql-community-server/re-root-pass password $MYPASS" | debconf-set-selections
+  - echo "mysql-community-server mysql-community-server/root-pass password $BH_DATABASE_PASSWORD" |  debconf-set-selections
+  - echo "mysql-community-server mysql-community-server/re-root-pass password $BH_DATABASE_PASSWORD" | debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive apt-get install mysql-server mysql-client -y
   - mysql -u root  mysql < /tmp/bhima-mysql-user.sql
   - mv /tmp/99_mysql.cnf /etc/mysql/conf.d/
   - service mysql restart
+  - sed -i "s/PASSWORD/$BH_DATABASE_PASSWORD/g" /tmp/.my.cnf
+  - mv /tmp/.my.cnf /root/
 
 # install nodejs
-  - curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+  - curl -sL "https://deb.nodesource.com/setup_$NODE_VERSION.x" | sudo -E bash -
   - apt-get -qq update
   - apt-get install -y nodejs
-
-# install wkhtmltopdf
-  - wget -qc https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-  - tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-  - mv wkhtmltox/bin/wkhtmltopdf /usr/bin
-  - rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
 # install yarn
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -132,7 +159,7 @@ runcmd:
   - bash /tmp/bhima-latest-release.sh
   - cd bhima
   - bash ./sh/build-init-database.sh
-  - yarn --ignore-engines
+  - yarn --ignore-engines --frozen-lockfile
   - NODE_ENV=production yarn build
   - chown -R bhima:bhima .
 
@@ -147,6 +174,7 @@ runcmd:
   - mv /tmp/nginx-bhima /etc/nginx/sites-enabled/bhima
   - service nginx restart
 
+# add monthly letsencrypt renewal script
   - add-apt-repository -y universe
   - add-apt-repository -y ppa:certbot/certbot
   - apt-get -y update
