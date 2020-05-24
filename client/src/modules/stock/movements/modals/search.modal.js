@@ -80,6 +80,8 @@ function SearchMovementsModalController(data, Notify, Instance, Periods, Store, 
 
   if (data.limit) {
     vm.defaultQueries.limit = data.limit;
+  } else {
+    vm.defaultQueries.limit = 100;
   }
 
   // default filter limit - directly write to changes list

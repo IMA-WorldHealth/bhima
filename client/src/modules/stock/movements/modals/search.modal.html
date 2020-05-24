@@ -19,19 +19,23 @@
           <div class="form-group">
             <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
             <br/>
-            <div class="radio">
-              <label>
-                <input type="radio" name="is_exit" value="0" ng-model="$ctrl.searchQueries.is_exit">
+            <!-- Gender -->
+            <div id="movement_orientation" class="form-group">
+            <label class="control-label" translate>STOCK.DIRECTION</label>
+            <div class="col-md-12">
+              <label class="radio-inline">
+                <input type="radio" name="movement_direction" id="entry" value="0" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.INPUT</span>
               </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="is_exit" value="1" ng-model="$ctrl.searchQueries.is_exit">
+
+              <label class="radio-inline">
+                <input type="radio" name="movement_direction" id="exit" value="1" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.OUTPUT</span>
               </label>
             </div>
           </div>
+          </div>
+          <br/>
 
           <!-- reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">

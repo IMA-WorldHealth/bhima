@@ -107,6 +107,7 @@
     "ORIGIN"          : "Origine",
     "ORIGINS"         : "Origines des lots",
     "ORIGIN_DOCUMENT" : "Document de l'origine",
+    "DIRECTION": "Direction du  movement",
     "PATIENT_DISTRIBUTION" : "Distribution au Patient",
     "PURCHASE_DESCRIPTION" : "Stock en provenance d'un achat chez {{supplier}} ({{purchase_order}})",
     "SERVICE_DISTRIBUTION" : "Distribution au Service",
