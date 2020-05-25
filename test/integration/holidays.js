@@ -38,8 +38,16 @@ describe('(/holidays) The /holidays  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /HOLIDAYS/:ID should not be found for unknown id', () => {
+  it('GET /HOLIDAYS/:ID will send back a 404 if the holidays id does not exist', () => {
     return agent.get('/holidays/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /HOLIDAYS/:ID will send back a 404 if the holidays id is a string', () => {
+    return agent.get('/holidays/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -64,8 +72,16 @@ describe('(/holidays) The /holidays  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holiday does not exist', () => {
+  it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holidays id does not exist', () => {
     return agent.delete('/holidays/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holidays id is a string', () => {
+    return agent.delete('/holidays/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

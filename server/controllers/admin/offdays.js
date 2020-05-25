@@ -78,19 +78,9 @@ function update(req, res, next) {
 
 // DELETE /Offday/:id
 function del(req, res, next) {
-  const sql = `DELETE FROM offday WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a Offday with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'offday', 'id', req.params.id, res, next, `Could not find a Offday with id ${req.params.id}`,
+  );
 }
 
 // get list of Offday

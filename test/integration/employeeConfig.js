@@ -83,6 +83,14 @@ describe('(/payroll/account_configuration) The /payroll/employee_configuration  
       .catch(helpers.handler);
   });
 
+  it('DELETE /EMPLOYEE_CONFIG/:ID will send back a 404 if the Employee Configuration id is a string', () => {
+    return agent.delete('/employee_config/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
   it('DELETE /EMPLOYEE_CONFIG/:ID should delete an Employee Configuration ', () => {
     return agent.delete('/employee_config/'.concat(employeeConfig.id))
       .then((res) => {

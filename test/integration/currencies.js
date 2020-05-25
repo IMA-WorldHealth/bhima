@@ -34,4 +34,12 @@ describe('(/currencies) currencies API routes', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('GET /currencies/:id should return an error for an invalid id', () => {
+    return agent.get('/currencies/str')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
 });

@@ -47,6 +47,14 @@ describe('(/creditors/groups) Creditor Groups', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /creditors/groups/:uuid should not be found for invalid uuid', () => {
+    return agent.get('/creditors/groups/str')
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /creditors/groups  should update an existing creditor group', () => {
     return agent.put(`/creditors/groups/${creditorGroup.uuid}`)
       .send({ name : 'Creditor Group Update' })

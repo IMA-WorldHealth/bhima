@@ -81,19 +81,10 @@ function update(req, res, next) {
 
 // DELETE /ACCOUNT_CONFIG /:ID
 function del(req, res, next) {
-  const sql = `DELETE FROM config_accounting WHERE id = ?;`;
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a Account Configuration with id ${req.params.id}`);
-      }
-
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'config_accounting', 'id', req.params.id, res, next,
+    `Could not find a Account Configuration with id ${req.params.id}`,
+  );
 }
 
 // get list of Account

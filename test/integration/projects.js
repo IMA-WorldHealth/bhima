@@ -36,8 +36,16 @@ describe('(/projects) The projects API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /projects/:id should not be found for unknown id', () => {
+  it('GET /projects/:id will send back a 404 if the projects id does not exist', () => {
     return agent.get('/projects/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /projects/:id will send back a 404 if the projects id is a string', () => {
+    return agent.get('/projects/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -107,8 +115,16 @@ describe('(/projects) The projects API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /projects/:id will send back a 404 if the prjects does not exist', () => {
+  it('DELETE /projects/:id will send back a 404 if the projects id does not exist', () => {
     return agent.delete('/projects/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /projects/:id will send back a 404 if the projects id is a string', () => {
+    return agent.delete('/projects/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

@@ -70,24 +70,64 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FEE_CENTER/:ID should not be found for unknown id', () => {
+  it('GET /FEE_CENTER/:ID result should be empty for an unknown id', () => {
     return agent.get('/fee_center/123456789')
       .then((res) => {
         const response = res.body;
-
+        expect(res).to.have.status(200);
         expect(response.feeCenter.length).to.equal(0);
         expect(response.references.length).to.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /FEE_CENTER  should update the Label for an existing Fee Center ', () => {
+  it('GET /FEE_CENTER/:ID result should be empty if the fee center id is a string', () => {
+    return agent.get('/fee_center/str')
+      .then((res) => {
+        const response = res.body;
+        expect(res).to.have.status(200);
+        expect(response.feeCenter.length).to.equal(0);
+        expect(response.references.length).to.equal(0);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /FEE_CENTER/:ID result should be empty when the id is a string', () => {
+    return agent.get('/fee_center/str')
+      .then((res) => {
+        const response = res.body;
+        expect(res).to.have.status(200);
+        expect(response.feeCenter.length).to.equal(0);
+        expect(response.references.length).to.equal(0);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /FEE_CENTER/:ID should update the Label for an existing Fee Center ', () => {
     return agent.put('/fee_center/'.concat(feeCenterId))
       .send(feeCenterUpt1)
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
         expect(response.feeCenter[0].label).to.equal('Update Test');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /FEE_CENTER/:ID should return 400 for an non-existing Fee Center ', () => {
+    return agent.put('/fee_center/4321')
+      .send(feeCenterUpt2)
+      .then((res) => {
+        helpers.api.errored(res, 400);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /FEE_CENTER should return 400 if the Fee Center id is a string ', () => {
+    return agent.put('/fee_center/str')
+      .send(feeCenterUpt2)
+      .then((res) => {
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
@@ -100,7 +140,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
         expect(res).to.have.status(200);
         expect(response.feeCenter[0].is_principal).to.equal(feeCenterUpt2.is_principal);
         expect(response.references[0].account_reference_id).to.equal(
-          feeCenterUpt2.reference_fee_center[0].account_reference_id
+          feeCenterUpt2.reference_fee_center[0].account_reference_id,
         );
         expect(response.references[0].is_cost).to.equal(feeCenterUpt2.reference_fee_center[0].is_cost);
       })

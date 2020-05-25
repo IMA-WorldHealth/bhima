@@ -36,8 +36,16 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /functions/:id should not be found for unknown id', () => {
+  it('GET /functions/:id will send back a 404 for an unknown id', () => {
     return agent.get('/functions/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /functions/:id will send back a 404 if the functions id is a string', () => {
+    return agent.get('/functions/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -66,6 +74,14 @@ describe('(/functions) The /functions  API endpoint', () => {
 
   it('DELETE /functions/:id will send back a 404 if the Function does not exist', () => {
     return agent.delete('/functions/123456789')
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /functions/:id will send back a 404 if the Function id is a string', () => {
+    return agent.delete('/functions/str')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

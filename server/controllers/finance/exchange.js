@@ -98,7 +98,7 @@ exports.create = function create(req, res, next) {
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
   let sql = 'UPDATE exchange_rate SET ? WHERE id = ?;';
-
+  const notFoundErrorMessage = `Could not find an exchange rate with id ${req.params.id}`;
   // should we even be changed the date?
   if (req.body.date) {
     req.body.date = new Date(req.body.date);
@@ -117,9 +117,16 @@ exports.update = function update(req, res, next) {
     })
     .then((rows) => {
       if (rows.length === 0) {
-        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
+        throw new NotFound(notFoundErrorMessage);
       }
       res.status(200).json(rows[0]);
+    })
+    .catch((e) => {
+      if (e.code === 'ER_TRUNCATED_WRONG_VALUE') {
+        throw new NotFound(notFoundErrorMessage);
+      } else {
+        throw e;
+      }
     })
     .catch(next)
     .done();
@@ -127,18 +134,9 @@ exports.update = function update(req, res, next) {
 
 // DELETE /exchange/:id
 exports.delete = function del(req, res, next) {
-  const sql = 'DELETE FROM exchange_rate WHERE id = ?;';
-
-  db.exec(sql, [req.params.id])
-    .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-      if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
-      }
-      res.status(204).json();
-    })
-    .catch(next)
-    .done();
+  db.delete(
+    'exchange_rate', 'id', req.params.id, res, next, `Could not find an exchange rate with id ${req.params.id}`,
+  );
 };
 
 // This query returns the current exchange rate of all currencies

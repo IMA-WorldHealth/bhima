@@ -145,8 +145,20 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
 
   // why does this route exit?! Why should this not fail???
   // see https://github.com/IMA-WorldHealth/bhima/commit/3b943808be5d59579db95edfd2e0bb4482fac07c
+  // server/controllers/finance/cashboxes/currencies.js lines 132-136
   it('PUT /cashboxes/:id/currencies/<undefined currency> should successfully return nothing', () => {
     return agent.put(`/cashboxes/${BOX.id}/currencies/123456789`)
+      .send({ transfer_account_id : 197 })
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /cashboxes/:id/currencies/<invalid value> should successfully return nothing', () => {
+    return agent.put(`/cashboxes/${BOX.id}/currencies/str`)
       .send({ transfer_account_id : 197 })
       .then(res => {
         expect(res).to.have.status(200);
@@ -185,6 +197,14 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
 
   it('DELETE /cashboxes/:id should return a 404 for an unknown cashbox id', () => {
     return agent.delete('/cashboxes/123456789')
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /cashboxes/:id should return a 404 it the cashbox id is a string', () => {
+    return agent.delete('/cashboxes/str')
       .then(res => {
         helpers.api.errored(res, 404);
       })
