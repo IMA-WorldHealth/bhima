@@ -4,13 +4,11 @@ const q = require('q');
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
 // is Travis loading the configuration, we parse the
-// process.env.TRAVIS_BUILD_NUMBER and reconfigure for travis
+// process.env.TRAVIS and reconfigure for travis
 // as appropriate.
 
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
-
-  // SELENIUM_PROMISE_MANAGER : false,
 
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
@@ -54,28 +52,32 @@ const config = {
   },
 };
 
-// configuration for running on SauceLabs via Travis
-if (process.env.CI) {
-  // SauceLabs credentials
+// configuration for running on BrowserStack via Travis
+if (process.env.TRAVIS) {
+  delete config.plugins;
+  delete config.capabilities;
+
+  config.browserstackUser = process.env.BROWSERSTACK_USERNAME;
+  config.browserstackKey = process.env.BROWSERSTACK_ACCESS_KEY;
+
   // report directory on the server(ubuntu)
   process.env.REPORT_DIR = '/opt/reports/';
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
-    // 'browserName': 'firefox',
-    //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    //  'build': process.env.TRAVIS_BUILD_NUMBER,
-  // }, {
-    browserName         : 'chrome',
-    'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
-    build               : process.env.TRAVIS_BUILD_NUMBER,
-    chromeOptions : {
-      args : ['--headless', '--disable-gpu', '--window-size=1920,1080'],
-    },
+    build : process.env.TRAVIS_BUILD_NUMBER,
+    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+    resolution : '1920x1080',
+    'browserstack.debug' : 'true',
+    os : 'Windows',
+    os_version : '10',
+    browserName : 'Chrome',
+    browser_version : '81.0',
+    'browserstack.local' : true,
+    'browserstack.timezone' : '\'Africa/Kinshasa\'',
+    'browserstack.selenium_version' : '3.5.2',
   }];
 
-  delete config.capabilities;
-  delete config.plugins;
 }
 
 // expose to the outside world

@@ -3,10 +3,20 @@ os: linux
 jdk:
   - oraclejdk8
 
+
+# Use google chrome v74.  According to the angular team, v74 is
+# the last version that works correctly with protractor.
+# See: https://github.com/angular/protractor/commit/d77731c270f5118518d0a57cee4aee97ff29a023
 env:
   global:
     - CHROME_REVISION=706915
     - CHROMEDRIVER_VERSION="79.0.3945.36"
+
+addons:
+  browserstack:
+    username: "jonathanniles1"
+    access_key:
+      secure: "zld83Eux/ERAmVBS3SkFUDwUew1kMC0Y38gFrtSfNo9MJz9Nr3N/Ar/Q3lnZt2Lig7Z6Zr3PweufMHz0+VMPgvjNj658ksDJcCTXpbadEUl2dUBL7+b7Lf5NQO01NABoa2Bm1QThILQB/RO8zjO/wsFQ3jWgWq7SxdT0LedaY5SlCjRXtgGxdyrbPoFNxvSnuTLAAi+ascxP3jLrex3CwzwZoEV2RNs25DnbPaL6ymgpNvRGzFiwIcDuVEatZmjFlGacezh30NW46b6WL0EB2vFeqnrUcwx2kXvXBItIUWpz4lYUZoN/BXKrsd0NWMmbih/4lhiYXiWOdzYyMjmmFKLix9qlJCxkn8wb37brHe8e4ayjWtVTjnHK1EhTolaph3cjHBrJyH16nwmISghFqrv+TQRId9HIlrMafUDRUNz+hdDcx8fnMYXJK7/IgsoVHdIC3OJEOhsXq+mZUtaDPDD9Zr6WHQnn8s7H0DP8/YLJk7t14Mxf2ptt5J1xBpdTtsAk8zIRLFws0H6LDjK8AjObdKZrB8t8GUXM8brs9Td/cmAwZjDPva6Gtn+wgdy9cpmSVlevvMej0frzhTAiP/OyzFS2mPA7kd0Do4LUYxaac3XlrXD9Crwm83ClcbcX1iCso7/tkk9i3PtIbMAjEjPG9M+mVMYtPeP8MiryGDo="
 
 matrix:
   fast_finish: true
@@ -20,6 +30,7 @@ matrix:
       services:
         - mysql
         - redis
+
     - node_js: node
       name: "[E2E] MySQL 5.7 on Node Current"
       env:
