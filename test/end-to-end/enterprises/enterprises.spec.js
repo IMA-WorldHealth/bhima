@@ -118,7 +118,7 @@ describe('Enterprises', () => {
   /**
    * Upload new logo for the enterprise
    */
-  it('upload a new enterprise logo', async () => {
+  it.skip('upload a new enterprise logo', async () => {
     const fileToUpload = 'logo.ico';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
