@@ -15,16 +15,6 @@ class IprTaxConfigPage {
   }
 
   /**
-   * send back the number of iprTaxesConfig in the grid
-   */
-  getIprTaxConfigCount() {
-    return this.iprTaxGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
-  }
-
-  /**
    * simulate the create Ipr Scale button click to show the dialog of creation
    */
   async createIprTaxConfig(iprTaxConfig) {
