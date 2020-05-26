@@ -2,14 +2,15 @@ angular.module('bhima.controllers')
   .controller('InventoryGroupsActionsModalController', InventoryGroupsActionsModalController);
 
 InventoryGroupsActionsModalController.$inject = [
-  'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data',
+  'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data', 'SessionService',
 ];
 
-function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data) {
+function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data, Session) {
   const vm = this;
 
   // session
   vm.session = {};
+  vm.enableAutoStockAccounting = Session.enterprise.settings.enable_auto_stock_accounting;
 
   vm.isCreateState = (Data.action === 'add');
   vm.isUpdateState = (Data.action === 'edit');
