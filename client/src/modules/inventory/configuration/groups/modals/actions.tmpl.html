@@ -42,6 +42,7 @@
       name="sales_account"
       account-id="$ctrl.session.sales_account"
       exclude-title-accounts="true"
+      required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectSalesAccount(account)">
       (<span translate>FORM.LABELS.SALE</span>)
       <bh-clear on-clear="$ctrl.session.sales_account = null;"></bh-clear>
@@ -52,7 +53,7 @@
       name="stock_account"
       account-id="$ctrl.session.stock_account"
       exclude-title-accounts="true"
-      required="false"
+      required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectStockAccount(account)">
       (<span translate>FORM.LABELS.STOCK</span>)
       <bh-clear on-clear="$ctrl.session.stock_account = null;"></bh-clear>
@@ -63,7 +64,7 @@
       name="cogs_account"
       account-id="$ctrl.session.cogs_account"
       exclude-title-accounts="true"
-      required="false"
+      required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectCOGSAccount(account)">
       (<span translate>FORM.LABELS.CHARGE</span>)
       <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
