@@ -14,5 +14,15 @@
         <span class="fa fa-file-text-o"></span> <span translate>TREE.STOCK_MOVEMENTS</span>
       </a>
     </li>
+  
+    <li>
+      <a data-method="inventories" href
+        ui-sref="inventory.list({
+          filters : [
+          { key : 'uuid', value : row.entity.inventory_uuid, displayValue: row.entity.text,  cacheable: false }
+        ]})">
+        <i class="fa fa-cart-plus"></i> <span translate>TREE.INVENTORY_LIST</span>
+      </a>
+    </li>
   </ul>
 </div>
