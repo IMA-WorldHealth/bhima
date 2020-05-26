@@ -114,10 +114,14 @@ class RegistrationPage {
   }
 
   // Set RubricPayroll defined value By Employee
-  setRubricPayroll(rubrics) {
+  async setRubricPayroll(rubrics) {
     const keys = Object.keys(rubrics);
-    const promises = keys.map(key => element(by.id(key)).sendKeys(rubrics[key]));
-    return Promise.all(promises);
+
+    // eslint-disable-next-line
+    for (const key of keys) {
+      // eslint-disable-next-line
+      await element(by.id(key)).sendKeys(rubrics[key]);
+    }
   }
 
   // set origin location

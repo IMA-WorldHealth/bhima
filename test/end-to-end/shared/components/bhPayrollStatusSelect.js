@@ -11,8 +11,7 @@ module.exports = {
 
     await target.click();
 
-    return Promise.all(
-      payrollStatus.map(state => FU.uiSelect('$ctrl.selectedPayrollStatus', state, null, IS_MULTIPLE_SELECTION))
-    );
+    await FU.series(payrollStatus,
+      state => FU.uiSelect('$ctrl.selectedPayrollStatus', state, null, IS_MULTIPLE_SELECTION));
   },
 };

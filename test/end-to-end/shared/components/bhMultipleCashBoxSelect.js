@@ -11,8 +11,6 @@ module.exports = {
 
     await target.click();
 
-    return Promise.all(
-      cashboxes.map(cashbox => FU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION))
-    );
+    await FU.series(cashboxes, cashbox => FU.uiSelect('$ctrl.cashboxIds', cashbox, null, IS_MULTIPLE_SELECTION));
   },
 };

@@ -10,8 +10,6 @@ module.exports = {
 
     await target.click();
 
-    await Promise.all(
-      servicesMultipleSelect.map(services => FU.uiSelect('$ctrl.selectedServices', services))
-    );
+    await FU.series(servicesMultipleSelect, service => FU.uiSelect('$ctrl.selectedServices', service));
   },
 };

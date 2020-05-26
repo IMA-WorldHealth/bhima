@@ -307,4 +307,12 @@ module.exports = {
 
   // bindings for modal overlay forms
   modal,
+
+  // chains an array of promises and runs them in series.
+  series : async (array, callback) => {
+    return array.reduce(
+      (promise, element) => promise.then(() => callback(element)),
+      Promise.resolve(),
+    );
+  },
 };

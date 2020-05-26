@@ -10,6 +10,6 @@ module.exports = {
 
     await target.click();
 
-    await Promise.all(purchaseStatus.map(ps => FU.uiSelect('$ctrl.selectedPurchaseStatus', ps)));
+    await FU.series(purchaseStatus, ps => FU.uiSelect('$ctrl.selectedPurchaseStatus', ps));
   },
 };
