@@ -5,6 +5,7 @@
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.min.js"></script>
   <style>
+    
     thead {
       display : table-header-group;
     }
@@ -103,9 +104,8 @@
 
     body {
       margin: 1em;
-      -webkit-print-color-adjust: exact;
+      -webkit-print-color-adjust: {{{printColorAjustment}}};
     }
-
     @page {
       size: A4 portrait;
       margin: 1mm;

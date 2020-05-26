@@ -66,6 +66,9 @@ async function renderHTML(data, template, options = {}) {
   data.absolutePath = path.join(process.cwd(), 'client');
   data.nodeModulesPath = getNodeModulesPath();
 
+  const colorDisabled = (parseInt(options.disableColor || 0, 10));
+  data.printColorAjustment = colorDisabled ? 'unset' : 'exact';
+
   debug(`initializing ${options.lang} translation locale`);
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the
