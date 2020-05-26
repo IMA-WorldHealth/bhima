@@ -18,11 +18,11 @@ function StockExiTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/exit'));
 
-  it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+  it(`should select the ${DEPOT_PRINCIPAL}`, async () => {
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it(`Should distribute the stock to the patient ${PATIENT} `, async () => {
+  it(`should distribute the stock to the patient ${PATIENT} `, async () => {
     // select the patient
     await page.setPatient(PATIENT);
 
@@ -40,11 +40,11 @@ function StockExiTests() {
     await page.submit();
   });
 
-  it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
+  it(`should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
+    await page.setDate(new Date());
+
     // select the patient
     await page.setPatient(PATIENT, INVOICE);
-
-    await page.setDate(new Date());
 
     await page.setDescription(DESCRIPTION.concat(' - Patient'));
 

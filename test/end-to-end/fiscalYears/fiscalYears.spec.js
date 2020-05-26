@@ -69,9 +69,9 @@ describe('Fiscal Year', () => {
   });
 
   it('set the opening balance for the first fiscal year', async () => {
-    await helpers.navigate(path);
+    // await helpers.navigate(path);
 
-    await $('.pagination-last').click();
+    await $('.pagination-last > a').click();
 
     // the last in the list is the oldest
     const updateButton = element.all(by.css('[data-fiscal-entry]'));

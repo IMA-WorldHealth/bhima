@@ -13,295 +13,295 @@
 
 <div class="flex-content">
   <div class="container-fluid">
-    <div class="row">
+    <form
+      name="EnterpriseForm"
+      bh-submit="EnterpriseCtrl.submit(EnterpriseForm)"
+      ng-model-options="{ updateOn: 'blur' }"
+      novalidate>
 
-      <!-- enterprise form  -->
-      <div class="col-md-6">
-        <form
-          name="EnterpriseForm"
-          bh-submit="EnterpriseCtrl.submit(EnterpriseForm)"
-          ng-model-options="{ updateOn: 'blur' }"
-          novalidate>
+      <div class="row">
+        <!-- enterprise form  -->
+        <div class="col-md-6">
+            <!-- enterprise main info  -->
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <b>
+                  <i class="fa fa-building"></i> <span translate>TREE.ENTERPRISE</span> :
+                  <span class="text-uppercase" ng-if="EnterpriseCtrl.enterprise.name">
+                    {{ EnterpriseCtrl.enterprise.name }}
+                  </span>
+                </b>
+              </div>
 
-          <!-- enterprise main info  -->
-          <div class="panel panel-primary">
-            <div class="panel-heading">
-              <b>
-                <i class="fa fa-building"></i> <span translate>TREE.ENTERPRISE</span> :
-                <span class="text-uppercase" ng-if="EnterpriseCtrl.enterprise.name">
-                  {{ EnterpriseCtrl.enterprise.name }}
-                </span>
-              </b>
-            </div>
+              <div class="panel-body">
 
-            <div class="panel-body">
-
-              <!-- logo aligned in the center -->
-              <div class="form-group">
-                <div class="enterprise-logo-editing">
-                  <div class="logo" ng-if="!EnterpriseCtrl.enterprise.logo">
-                    <span ng-if="!EnterpriseCtrl.hasThumbnail">
-                      <i class="fa fa-3x fa-file-image-o"></i>
-                    </span>
-                    <span ng-if="EnterpriseCtrl.hasThumbnail">
-                      <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
-                    </span>
+                <!-- logo aligned in the center -->
+                <div class="form-group">
+                  <div class="enterprise-logo-editing">
+                    <div class="logo" ng-if="!EnterpriseCtrl.enterprise.logo">
+                      <span ng-if="!EnterpriseCtrl.hasThumbnail">
+                        <i class="fa fa-3x fa-file-image-o"></i>
+                      </span>
+                      <span ng-if="EnterpriseCtrl.hasThumbnail">
+                        <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
+                      </span>
+                    </div>
+                    <div class="logo" ng-if="EnterpriseCtrl.enterprise.logo">
+                      <span ng-if="!EnterpriseCtrl.hasThumbnail">
+                        <img ng-src="{{ EnterpriseCtrl.enterprise.logo }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
+                      </span>
+                      <span ng-if="EnterpriseCtrl.hasThumbnail">
+                        <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
+                      </span>
+                    </div>
                   </div>
-                  <div class="logo" ng-if="EnterpriseCtrl.enterprise.logo">
-                    <span ng-if="!EnterpriseCtrl.hasThumbnail">
-                      <img ng-src="{{ EnterpriseCtrl.enterprise.logo }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
-                    </span>
-                    <span ng-if="EnterpriseCtrl.hasThumbnail">
-                      <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
-                    </span>
+
+                  <div class="text-center">
+                    <label data-method="upload-logo" class="btn btn-default">
+                      <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ng-model="EnterpriseCtrl.file"
+                        ngf-max-size="2MB"
+                        ngf-select="EnterpriseCtrl.setThumbnail($file)"
+                        style="display: none;">
+                    </label>
                   </div>
                 </div>
 
-                <div class="text-center">
-                  <label data-method="upload-logo" class="btn btn-default">
-                    <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ng-model="EnterpriseCtrl.file"
-                      ngf-max-size="2MB"
-                      ngf-select="EnterpriseCtrl.setThumbnail($file)"
-                      style="display: none;">
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.name.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.NAME
                   </label>
+                  <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" autocomplete="off" ng-maxlength="EnterpriseCtrl.maxLength" required>
+                  <div class="help-block" ng-messages="EnterpriseForm.name.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.abbr.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.ABBREVIATION
+                  </label>
+                  <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required>
+                  <div class="help-block" ng-messages="EnterpriseForm.abbr.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <!-- gain account  -->
+                <bh-account-select
+                  id="gain-account-id"
+                  account-id="EnterpriseCtrl.enterprise.gain_account_id"
+                  label="FORM.LABELS.GAIN_ACCOUNT"
+                  name="gain_account_id"
+                  on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
+                  exclude-title-accounts="true"
+                  required="false">
+                </bh-account-select>
+
+                <bh-account-select
+                  id="loss-account-id"
+                  account-id="EnterpriseCtrl.enterprise.loss_account_id"
+                  label="FORM.LABELS.LOSS_ACCOUNT"
+                  name="loss_account_id"
+                  exclude-title-accounts="true"
+                  on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
+                  required="false">
+                </bh-account-select>
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.name.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.NAME
-                </label>
-                <input type="text" class="form-control" name="name" ng-model="EnterpriseCtrl.enterprise.name" autocomplete="off" ng-maxlength="EnterpriseCtrl.maxLength" required>
-                <div class="help-block" ng-messages="EnterpriseForm.name.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
+              <div class="panel-footer text-right" id="submission">
+                <bh-loading-button loading-state="EnterpriseForm.$loading">
+                  <span translate>FORM.BUTTONS.UPDATE</span>
+                </bh-loading-button>
               </div>
-
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.abbr.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.ABBREVIATION
-                </label>
-                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required>
-                <div class="help-block" ng-messages="EnterpriseForm.abbr.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <!-- gain account  -->
-              <bh-account-select
-                id="gain-account-id"
-                account-id="EnterpriseCtrl.enterprise.gain_account_id"
-                label="FORM.LABELS.GAIN_ACCOUNT"
-                name="gain_account_id"
-                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
-                exclude-title-accounts="true"
-                required="false">
-              </bh-account-select>
-
-              <bh-account-select
-                id="loss-account-id"
-                account-id="EnterpriseCtrl.enterprise.loss_account_id"
-                label="FORM.LABELS.LOSS_ACCOUNT"
-                name="loss_account_id"
-                exclude-title-accounts="true"
-                on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
-                required="false">
-              </bh-account-select>
             </div>
 
-            <div class="panel-footer text-right" id="submission">
-              <bh-loading-button loading-state="EnterpriseForm.$loading">
-                <span translate>FORM.BUTTONS.UPDATE</span>
-              </bh-loading-button>
-            </div>
-          </div>
+            <!-- enterprise optional info  -->
+            <div class="panel panel-default">
 
-          <!-- enterprise optional info  -->
-          <div class="panel panel-default">
-
-            <div class="panel-heading">
-              <i class="fa fa-info-circle"></i> <span translate>TREE.ENTERPRISE</span> (<span translate>FORM.LABELS.OPTIONAL_INFO</span>)
-            </div>
-
-            <div class="panel-body">
-
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.po_box.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.PO_BOX
-                </label>
-                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
-                <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
+              <div class="panel-heading">
+                <i class="fa fa-info-circle"></i> <span translate>TREE.ENTERPRISE</span> (<span translate>FORM.LABELS.OPTIONAL_INFO</span>)
               </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.email.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.EMAIL
-                </label>
-                <input type="email" class="form-control" autocomplete="off" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
-                <div class="help-block" ng-messages="EnterpriseForm.email.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              <div class="panel-body">
+
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.po_box.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.PO_BOX
+                  </label>
+                  <input type="text" class="form-control" autocomplete="off" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
+                  <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
-              </div>
 
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.phone.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.PHONE
-                </label>
-                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
-                <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.email.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.EMAIL
+                  </label>
+                  <input type="email" class="form-control" autocomplete="off" name="email" ng-maxlength="EnterpriseCtrl.length100" ng-model="EnterpriseCtrl.enterprise.email">
+                  <div class="help-block" ng-messages="EnterpriseForm.email.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
                 </div>
+
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.phone.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.PHONE
+                  </label>
+                  <input type="tel" class="form-control" autocomplete="off" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
+                  <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
+                <bh-location-select
+                  name="location_id"
+                  location-uuid="EnterpriseCtrl.enterprise.location_id">
+                </bh-location-select>
+
+                <p class="text-center text-info">
+                  <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
+                    <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
+                  </a>
+                </p>
+
               </div>
-
-              <bh-location-select
-                name="location_id"
-                location-uuid="EnterpriseCtrl.enterprise.location_id">
-              </bh-location-select>
-
-              <p class="text-center text-info">
-                <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
-                  <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
-                </a>
-              </p>
-
             </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- right side section  -->
-      <div class="col-md-6">
-
-        <!-- project section -->
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
-          </div>
-
-          <ul class="list-group">
-            <li class="list-group-item clearfix" data-project="{{ ::p.abbr }}" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
-              <span>
-                <i class="fa fa-hospital-o"></i> {{ p.name }} ({{ p.abbr }})
-              </span>
-
-              <span class="pull-right">
-                <a data-method="update" ng-click="EnterpriseCtrl.editProject(p.id)" href style="padding: 0 5px;">
-                  <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
-                </a>
-
-                <a data-method="delete" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)" class="text-danger" style="padding: 0 5px;" href>
-                  <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
-                </a>
-              </span>
-            </li>
-          </ul>
-
-          <div class="panel-footer text-right">
-            <button type="submit" class="btn btn-default"
-              data-method="create"
-              ng-click="EnterpriseCtrl.addProject()">
-              <i class="fa fa-plus"></i> <span translate>FORM.LABELS.ADD</span>
-            </button>
-          </div>
         </div>
 
-        <!-- enterprise options section -->
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
+        <!-- right side section  -->
+        <div class="col-md-6">
+
+          <!-- project section -->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
+            </div>
+
+            <ul class="list-group">
+              <li class="list-group-item clearfix" data-project="{{ ::p.abbr }}" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
+                <span>
+                  <i class="fa fa-hospital-o"></i> {{ p.name }} ({{ p.abbr }})
+                </span>
+
+                <span class="pull-right">
+                  <a data-method="update" ng-click="EnterpriseCtrl.editProject(p.id)" href style="padding: 0 5px;">
+                    <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+                  </a>
+
+                  <a data-method="delete" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)" class="text-danger" style="padding: 0 5px;" href>
+                    <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+                  </a>
+                </span>
+              </li>
+            </ul>
+
+            <div class="panel-footer text-right">
+              <button type="button" class="btn btn-default"
+                data-method="create"
+                ng-click="EnterpriseCtrl.addProject()">
+                <i class="fa fa-plus"></i> <span translate>FORM.LABELS.ADD</span>
+              </button>
+            </div>
           </div>
-          <div class="panel-body">
+
+          <!-- enterprise options section -->
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
+            </div>
+            <div class="panel-body">
               <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.month_average_consumption.$invalid }">
                 <label class="control-label" translate>
                   FORM.LABELS.DEFINE_MONTH_AVERAGE_CONSUMPTION
                 </label>
                 <input type="number" class="form-control" autocomplete="off"
                   name="month_average_consumption" ng-model="EnterpriseCtrl.enterprise.settings.month_average_consumption"
-                  ng-change="EnterpriseCtrl.setMonthAverage(value)">
+                  ng-change="EnterpriseCtrl.setMonthAverage(value)" min="1" bh-integer>
                 <div class="help-block" ng-messages="EnterpriseForm.month_average_consumption.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
               </div>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_price_lock"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enablePriceLockSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_price_lock"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enablePriceLockSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_prepayments"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enablePrepaymentsSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_prepayments"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enablePrepaymentsSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_balance_on_invoice_receipt"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableBalanceOnInvoiceReceipSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_balance_on_invoice_receipt"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableBalanceOnInvoiceReceipSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_delete_records"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableDeleteRecordsSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_delete_records"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableDeleteRecordsSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_password_validation"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enablePasswordValidationSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_password_validation"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enablePasswordValidationSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_BARCODES_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_barcodes"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_BARCODES_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableBarcodesSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_BARCODES_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_barcodes"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_BARCODES_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableBarcodesSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_auto_stock_accounting"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableAutoStockAccountingSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_auto_stock_accounting"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableAutoStockAccountingSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_daily_consumption"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableDailyConsumptionSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_daily_consumption"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableDailyConsumptionSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_LABEL"
-              value="EnterpriseCtrl.enterprise.settings.enable_auto_email_report"
-              help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT"
-              on-change-callback="EnterpriseCtrl.enableAutoEmailReportSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_LABEL"
+                value="EnterpriseCtrl.enterprise.settings.enable_auto_email_report"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableAutoEmailReportSetting(value)">
+              </bh-yes-no-radios>
 
-            <bh-yes-no-radios
-              label="ENTERPRISE.SETTINGS.ENABLE_INDEX_PAYMENT_SYSTEM"
-              value="EnterpriseCtrl.enterprise.settings.enable_index_payment_system"
-              on-change-callback="EnterpriseCtrl.enableIndexPaymentSetting(value)">
-            </bh-yes-no-radios>
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_INDEX_PAYMENT_SYSTEM"
+                value="EnterpriseCtrl.enterprise.settings.enable_index_payment_system"
+                on-change-callback="EnterpriseCtrl.enableIndexPaymentSetting(value)">
+              </bh-yes-no-radios>
+            </div>
           </div>
-        </div>
 
-        <!-- exchange section -->
-        <bh-exchange></bh-exchange>
-    </div>
+          <!-- exchange section -->
+          <bh-exchange></bh-exchange>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
