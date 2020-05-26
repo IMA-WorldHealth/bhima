@@ -71,7 +71,7 @@ function getFileName(options, extension) {
   const fileDate = (new Date()).toLocaleDateString();
   const formattedName = `${translatedName} ${fileDate}`;
   const fileName = `${formattedName}${extension}`;
-  return fileName;
+  return encodeURIComponent(fileName);
 }
 
 
