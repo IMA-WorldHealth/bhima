@@ -1,9 +1,18 @@
 #!/bin/bash
 
+shutdown() {
+  # Get our process group id
+  PGID=$(ps -o pgid= $$ | grep -o [0-9]*)
+
+  # Kill it in a new new process group
+  setsid kill -- -$PGID
+  exit 0
+}
+
+trap "shutdown" SIGINT SIGTERM
+
 # bash script mode
 set -euo pipefail
-
-trap 'kill $(jobs -p)' EXIT
 
 echo "Building Test Databases"
 

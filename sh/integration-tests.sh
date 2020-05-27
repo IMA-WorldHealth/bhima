@@ -19,4 +19,5 @@ echo "[test] running tests using mocha"
 # run the tests
 ./node_modules/.bin/mocha --recursive --bail --exit ./test/integration/
 
+
 echo "[/test]"

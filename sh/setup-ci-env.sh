@@ -29,4 +29,4 @@ set +a
 mkdir -p test/artifacts
 
 # restart mysql once chanes have been made
-sudo service mysql restart
+sudo systemctl restart mysql

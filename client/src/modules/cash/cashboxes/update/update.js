@@ -40,7 +40,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   function submit(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return null;
+      return 0;
     }
 
     const box = angular.copy(vm.box);

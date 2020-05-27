@@ -87,7 +87,7 @@ describe('Patient Record', () => {
   });
 
   // Upload patient documents
-  it('upload a valid image as document', async () => {
+  it.skip('upload a valid image as document', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -103,7 +103,7 @@ describe('Patient Record', () => {
   });
 
   // upload patient documents
-  it('upload a PDF document', async () => {
+  it.skip('upload a PDF document', async () => {
     const title = '[e2e] New Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -117,7 +117,7 @@ describe('Patient Record', () => {
   });
 
   // test invalid file upload
-  it('cannot upload invalid document', async () => {
+  it.skip('cannot upload invalid document', async () => {
     const title = '[e2e] Invalid Document';
     const fileToUpload = 'file.virus';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -140,7 +140,7 @@ describe('Patient Record', () => {
     await FU.exists(by.css('[data-view="list"]'), true);
   });
 
-  it(' thumbnail should not be shown if the upload is not an image', async () => {
+  it.skip('thumbnail should not be shown if the upload is not an image', async () => {
     const title = '[e2e] New pdf As Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -153,7 +153,7 @@ describe('Patient Record', () => {
     await FU.modal.close();
   });
 
-  it('Should check if upload_thumbnail is displayed if the upload is an image', async () => {
+  it.skip('Should check if upload_thumbnail is displayed if the upload is an image', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);

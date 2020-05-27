@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const DistributionKeysPage = require('./distribution_key.page');
 const helpers = require('../shared/helpers');
 
-describe('Distribution keys Management', () => {
+describe('Distribution Keys Management', () => {
   before(() => helpers.navigate('#!/distribution_center/distribution_key'));
 
   const Page = new DistributionKeysPage();

@@ -119,10 +119,10 @@ describe('Cashboxes', () => {
     // try to submit to the server.
     await FU.buttons.submit();
 
+    await notification.hasDanger();
+
     // everything should have error highlights
     // FU.validation.error('UpdateCtrl.box.project_id');
     await FU.validation.error('UpdateCtrl.box.label');
-
-    await notification.hasDanger();
   });
 });

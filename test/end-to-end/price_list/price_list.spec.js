@@ -71,7 +71,7 @@ describe('Price Lists', () => {
   });
 
   // import custom ohada accounts
-  it('import price list item from csv file into the system', async () => {
+  it.skip('import price list item from csv file into the system', async () => {
     await page.importItems(updateListLabel);
     await modal.uploadFile(PRICE_LIST_ITEM_CSV_FILE);
     await FU.modal.submit();

@@ -4,8 +4,7 @@ const q = require('q');
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
 // is Travis loading the configuration, we parse the
-// process.env.TRAVIS and reconfigure for travis
-// as appropriate.
+// process.env.CI and reconfigure for travis as appropriate.
 
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
@@ -56,11 +55,13 @@ const config = {
 if (process.env.CI) {
   delete config.plugins;
   delete config.capabilities;
-
-  console.log('process.env.CI:', process.env.CI);
+  delete config.localSeleniumStandaloneOpts;
+  delete config.seleniumServerJar;
 
   config.browserstackUser = process.env.BROWSERSTACK_USERNAME;
   config.browserstackKey = process.env.BROWSERSTACK_ACCESS_KEY;
+
+  config.mochaOpts.timeout = (90 * 1000); // 1.5 minute timeout
 
   // report directory on the server(ubuntu)
   process.env.REPORT_DIR = '/opt/reports/';
@@ -68,18 +69,16 @@ if (process.env.CI) {
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
     browserName : 'Chrome',
-    'browserstack.debug' : 'true',
+    name : 'BHIMA',
     'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
     'browserstack.local' : true,
-    'browserstack.selenium_version' : '3.5.2',
     'browserstack.timezone' : '\'Africa/Kinshasa\'',
-    browser_version : '81.0',
+    'browserstack.selenium_version' : '3.141.59',
     build : process.env.TRAVIS_BUILD_NUMBER,
     os_version : '10',
     os : 'Windows',
     resolution : '1920x1080',
   }];
-
 }
 
 // expose to the outside world

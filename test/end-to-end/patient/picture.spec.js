@@ -6,7 +6,7 @@ const helpers = require('../shared/helpers');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-describe('Patient Record', () => {
+describe.skip('Patient Record', () => {
   const root = '#/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
