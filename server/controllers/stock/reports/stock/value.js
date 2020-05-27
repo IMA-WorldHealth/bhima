@@ -48,23 +48,33 @@ async function reporting(_options, session) {
     ORDER BY mov.text ASC;
   `;
 
+  /*
+   * The following query collects all the data related to the movement
+   * of stocks of an item in order to calculate the stock value
+   * With the aim of solving the problem, count the total number of
+   * entries into stock *quantityIn* as well as that of exit
+   * but also the cumulative value of entries *quantityCum* and exits *cumOut*
+   * and the quantity in stock after each movement of stock *quantityStock*
+  */
   const stockValues = await db.exec(sqlGetInventories, [db.bid(options.depot_uuid), options.dateTo]);
-
   stockValues.forEach(inventory => {
     const sqlGetValueByMovement = `
-      SELECT BUID(gl1.inventory_uuid) AS inventory_uuid, gl1.inventory_text, gl1.quantity, gl1.unit_cost, gl1.is_exit,
-      gl1.valueStock, gl1.quantityCheck, (@cumquant := gl1.quantity + @cumquant) AS quantityStock,
-      (@cumsum := gl1.quantityCheck + @cumsum) AS quantityCum, (@cumtotal := gl1.valueStock + @cumtotal) AS cumtotal
+      SELECT BUID(gl1.inventory_uuid) AS inventory_uuid, gl1.date, gl1.inventory_text, gl1.quantity, gl1.unit_cost,
+      gl1.is_exit, gl1.docRef, gl1.valueStock, gl1.quantityIn, (@cumquant := gl1.quantity + @cumquant) AS quantityStock,
+      (@cumsum := gl1.quantityIn + @cumsum) AS quantityCum, (@cumtotal := gl1.valueStock + @cumtotal) AS cumtotal,
+      (@cumOut := gl1.quantityOut + @cumOut) AS cumOut, gl1.created_at
       FROM (
         SELECT inv.uuid AS inventory_uuid, inv.text AS inventory_text, sm.date, IF(sm.is_exit, (sm.quantity * (-1)),
-        sm.quantity) AS quantity, sm.unit_cost, sm.is_exit, sm.flux_id,
-        IF (sm.is_exit, 0, (sm.quantity * sm.unit_cost)) AS valueStock, IF (sm.is_exit, 0, sm.quantity) AS quantityCheck
+        sm.quantity) AS quantity, sm.unit_cost, sm.is_exit, sm.flux_id, map.text AS docRef, sm.created_at,
+        IF (sm.is_exit, 0, (sm.quantity * sm.unit_cost)) AS valueStock, IF (sm.is_exit, 0, sm.quantity) AS quantityIn,
+        IF (sm.is_exit, sm.quantity, 0) AS quantityOut
         FROM stock_movement AS sm
         JOIN lot AS l ON l.uuid = sm.lot_uuid
         JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+        JOIN document_map AS map ON map.uuid = sm.document_uuid
         WHERE inv.uuid = ? AND sm.depot_uuid = ? AND DATE(sm.date) <= DATE(?)
-        ORDER BY sm.date, sm.flux_id ASC
-      ) AS gl1, (SELECT @cumquant := 0)z, (SELECT @cumsum := 0) AS b, (SELECT @cumtotal := 0)a
+        ORDER BY DATE(sm.date), sm.created_at  ASC
+      ) AS gl1, (SELECT @cumquant := 0)a, (SELECT @cumsum := 0) AS b, (SELECT @cumtotal := 0)c, (SELECT @cumOut := 0)d
     `;
 
     transaction
@@ -72,15 +82,43 @@ async function reporting(_options, session) {
   });
 
   const inventoriesValues = await transaction.execute();
+  inventoriesValues.forEach(inventory => {
+    let unitCost = 0;
+    let lastCumValue = 0;
+
+    inventory.forEach(item => {
+      item.oldUNITCOST = unitCost;
+      if (item.is_exit) {
+        item.newQuantityCum = item.quantityCum - item.cumOut;
+        item.newCumValue = item.quantityStock * unitCost;
+        item.stockUnitCost = item.newQuantityCum ? item.newCumValue / item.newQuantityCum : unitCost;
+
+        unitCost = item.stockUnitCost;
+        lastCumValue = item.newCumValue;
+      } else if (!item.is_exit) {
+        item.newQuantityCum = item.quantityCum - item.cumOut;
+        item.newCumValue = item.valueStock + lastCumValue;
+        item.stockUnitCost = item.newQuantityCum ? item.newCumValue / item.newQuantityCum : unitCost;
+
+        unitCost = item.stockUnitCost;
+        lastCumValue = item.newCumValue;
+      }
+    });
+  });
+
+  let stockTolal = 0;
 
   stockValues.forEach(inventory => {
+    inventory.movements = [];
     inventoriesValues.forEach(item => {
       const lastMovement = item[item.length - 1];
 
       if (inventory.inventory_uuid === lastMovement.inventory_uuid) {
         inventory.stockQtt = lastMovement.quantityStock;
-        inventory.stockUnitCost = lastMovement.cumtotal / lastMovement.quantityCum;
-        inventory.stockValue = lastMovement.quantityStock * inventory.stockUnitCost;
+        inventory.stockUnitCost = lastMovement.stockUnitCost;
+        inventory.stockValue = lastMovement.newCumValue;
+
+        stockTolal += inventory.stockValue;
       }
     });
   });
@@ -89,10 +127,12 @@ async function reporting(_options, session) {
     ? stockValues.filter(item => item.stockValue > 0) : stockValues;
 
   data.stockValues = stockValueElements || [];
-  const stokTolal = stockValues[1][0] || {};
-  data.stocktotal = stokTolal.total;
+
+  data.stocktotal = stockTolal;
   data.emptyResult = data.stockValues.length === 0;
-  data.rate = Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+  data.rate = exchangeRate.rate || 1;
+
   data.currency_id = options.currency_id;
   return report.render(data);
 }
