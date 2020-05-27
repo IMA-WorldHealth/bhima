@@ -12,3 +12,9 @@ UPDATE `unit` SET `path` = '/reports/stock_sheet', `url` = '/modules/reports/sto
 @date: 2020-05-26
 */
 ALTER TABLE enterprise_setting MODIFY `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1;
+
+/**
+@author: jniles
+@date: 2020-05-27
+*/
+DROP TABLE IF EXISTS `event`;

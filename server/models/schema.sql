@@ -588,21 +588,6 @@ CREATE TABLE `entity_map` (
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `event`;
-CREATE TABLE `event` (
-  `timestamp`   TIMESTAMP NOT NULL,
-  `user_id`     SMALLINT(5) UNSIGNED NOT NULL,
-  `channel`     VARCHAR(25) NOT NULL,
-  `entity`      VARCHAR(25) NOT NULL,
-  `type`        VARCHAR(25) NOT NULL,
-  `data`        TEXT NOT NULL, -- TODO, this should be JSON in newer MySQL
-  KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  INDEX event_channel (channel),
-  INDEX event_entity (entity),
-  INDEX event_type (type)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
   `id`    MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
