@@ -53,9 +53,11 @@ const config = {
 };
 
 // configuration for running on BrowserStack via Travis
-if (process.env.TRAVIS) {
+if (process.env.CI) {
   delete config.plugins;
   delete config.capabilities;
+
+  console.log('process.env.CI:', process.env.CI);
 
   config.browserstackUser = process.env.BROWSERSTACK_USERNAME;
   config.browserstackKey = process.env.BROWSERSTACK_ACCESS_KEY;
@@ -65,17 +67,17 @@ if (process.env.TRAVIS) {
 
   // modify the browsers to use Travis identifiers
   config.multiCapabilities = [{
-    build : process.env.TRAVIS_BUILD_NUMBER,
-    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    resolution : '1920x1080',
-    'browserstack.debug' : 'true',
-    os : 'Windows',
-    os_version : '10',
     browserName : 'Chrome',
-    browser_version : '81.0',
+    'browserstack.debug' : 'true',
+    'browserstack.localIdentifier' : process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
     'browserstack.local' : true,
-    'browserstack.timezone' : '\'Africa/Kinshasa\'',
     'browserstack.selenium_version' : '3.5.2',
+    'browserstack.timezone' : '\'Africa/Kinshasa\'',
+    browser_version : '81.0',
+    build : process.env.TRAVIS_BUILD_NUMBER,
+    os_version : '10',
+    os : 'Windows',
+    resolution : '1920x1080',
   }];
 
 }
