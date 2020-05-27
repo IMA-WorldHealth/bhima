@@ -50,7 +50,7 @@
     "jeremielodi"
   ],
   "dependencies": {
-    "@ima-worldhealth/coral": "^1.5.1",
+    "@ima-worldhealth/coral": "^1.5.2",
     "@types/angular": "^1.7.0",
     "@uirouter/angularjs": "^1.0.25",
     "accounting-js": "^1.1.1",
