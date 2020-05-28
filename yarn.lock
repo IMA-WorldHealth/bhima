@@ -28,13 +28,15 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-1.5.2.tgz#d539ab49d64d6871e4cfeef8fb7eb94c0727d81c"
-  integrity sha512-kimDrol0ONX/zTsNo98qsFLOTcpvo4H0BF3HkkJiik+LWEwn3YfF62gZbYEyOoeBHzJh6j/Ymr2tz2aP37lrxg==
+"@ima-worldhealth/coral@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.0.0.tgz#92ea47d61f9946de234b472858b646b2be83879b"
+  integrity sha512-beXbk1URPI5lAaFgfkpmiu94R5yWYpDNwweROgBtxZ3bpFvgtI1SFAPXouSXE0wYkYpWSXV6MrwthY5YKqfwrg==
   dependencies:
+    debug "^4.1.1"
     inline-source "7.2.0"
     puppeteer "3.1.0"
+    puppeteer-cluster "^0.21.0"
 
 "@ima-worldhealth/rewire@^4.1.0":
   version "4.1.0"
@@ -7410,6 +7412,13 @@ pupa@^2.0.1:
   integrity sha512-hEJH0s8PXLY/cdXh66tNEQGndDrIKNqNC5xmrysZy3i5C3oEoLna7YAOad+7u125+zH1HNXUmGEkrhb3c2VriA==
   dependencies:
     escape-goat "^2.0.0"
+
+puppeteer-cluster@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/puppeteer-cluster/-/puppeteer-cluster-0.21.0.tgz#79071aa9830312446b18ec9d99fe41f6d80ee103"
+  integrity sha512-/x5mei0vXxFPpJ7iUS+xJ3rOcxxYUa2YeEyuWI9m0M5e8ammPiCXjvOsTcni+4ZAop3L2gpZFkxafPvXWOoRfg==
+  dependencies:
+    debug "^4.1.1"
 
 puppeteer@3.1.0:
   version "3.1.0"
