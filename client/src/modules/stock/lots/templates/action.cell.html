@@ -14,6 +14,16 @@
       </a>
     </li>
     <li>
+      
+      <a ui-sref= "stockInventories(
+        { filters : [
+        { key : 'period', value : 'allTime'},
+        { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cachable : false},
+        { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cachable : false },
+        { key : 'includeEmptyLot', value : 1  },
+        ]})"translate>REPORT.VIEW_ITEM_STOCK</a>
+    </li>
+    <li>
       <a data-method="receipt" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-clock-o"></i> <span translate>LOTS.ASSIGNMENT_HISTORIC</span>
       </a>
