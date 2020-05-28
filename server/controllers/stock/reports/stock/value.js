@@ -106,7 +106,9 @@ async function reporting(_options, session) {
     });
   });
 
-  let stockTolal = 0;
+  let stockTotal = 0;
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+  const rate = exchangeRate.rate || 1;
 
   stockValues.forEach(inventory => {
     inventory.movements = [];
@@ -115,10 +117,10 @@ async function reporting(_options, session) {
 
       if (inventory.inventory_uuid === lastMovement.inventory_uuid) {
         inventory.stockQtt = lastMovement.quantityStock;
-        inventory.stockUnitCost = lastMovement.stockUnitCost;
-        inventory.stockValue = lastMovement.newCumValue;
+        inventory.stockUnitCost = lastMovement.stockUnitCost * rate;
+        inventory.stockValue = lastMovement.newCumValue * rate;
 
-        stockTolal += inventory.stockValue;
+        stockTotal += (inventory.stockValue * rate);
       }
     });
   });
@@ -128,10 +130,8 @@ async function reporting(_options, session) {
 
   data.stockValues = stockValueElements || [];
 
-  data.stocktotal = stockTolal;
+  data.stocktotal = stockTotal;
   data.emptyResult = data.stockValues.length === 0;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
-  data.rate = exchangeRate.rate || 1;
 
   data.currency_id = options.currency_id;
   return report.render(data);
