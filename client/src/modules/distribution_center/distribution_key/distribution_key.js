@@ -46,22 +46,15 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
       headerCellFilter : 'translate',
     }, {
       field : 'rate',
-      type : 'number',
       displayName : 'TABLE.COLUMNS.RATE',
       headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      footerCellClass : 'text-right',
-      cellFilter : 'number: 2',
-      footerCellFilter : 'number:2',
-      enableFiltering : true,
+      cellTemplate : '/modules/distribution_center/templates/rate.tmp.html',
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-      customTreeAggregationFinalizerFn : (aggregation) => {
-        aggregation.rendered = aggregation.value;
-      },
     }, {
       field : 'user_name',
       displayName : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
+      enableFiltering : true,
     }, {
       field : 'action',
       width : 120,
