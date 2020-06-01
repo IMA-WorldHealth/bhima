@@ -42,7 +42,7 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventory by state sold out', async () => {
+  it('find 0 inventory by state stock out', async () => {
     await FU.radio('$ctrl.searchQueries.status', 0);
     await FU.modal.submit();
     await GU.expectRowCount(gridId, 0);

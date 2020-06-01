@@ -28,7 +28,7 @@
     "ENTRY_TRANSFER"  : "Transfert",
     "TYPE_VALUE" : "Valeur de stock",
     "TYPE_QUANTITY" : "Quantité de stock",
-    "SOLD_OUT_WARNING" : "Alert : il y a {{total}} produits en rupture de stock",
+    "STOCK_OUT_WARNING" : "Alert : il y a {{total}} produits en rupture de stock",
     "AND_MORE" : "... et {{left}} autres",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
@@ -152,7 +152,7 @@
       "MINIMUM"       : "Stock Min Atteint",
       "OVER_MAX"      : "Stock Max Depassé",
       "SECURITY"      : "Stock de Securité Atteint",
-      "SOLD_OUT"      : "Rupture de stock"
+      "STOCK_OUT"      : "Rupture de stock"
     },
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",

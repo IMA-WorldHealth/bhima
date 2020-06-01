@@ -26,7 +26,7 @@ function StockServiceTests() {
   }));
 
   it('#statusLabelMap() returns the correct stock status label', () => {
-    expect(Stock.statusLabelMap('sold_out')).to.be.equal('STOCK.STATUS.SOLD_OUT');
+    expect(Stock.statusLabelMap('stock_out')).to.be.equal('STOCK.STATUS.STOCK_OUT');
     expect(Stock.statusLabelMap('in_stock')).to.be.equal('STOCK.STATUS.IN_STOCK');
     expect(Stock.statusLabelMap('security_reached')).to.be.equal('STOCK.STATUS.SECURITY');
     expect(Stock.statusLabelMap('minimum_reached')).to.be.equal('STOCK.STATUS.MINIMUM');

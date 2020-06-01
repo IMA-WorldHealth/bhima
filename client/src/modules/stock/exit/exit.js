@@ -635,12 +635,12 @@ function StockExitController(
 
   /**
    * @function stockOut
-   * get sold out inventories for a depot
+   * get stock out inventories for a depot
    */
   function stockOut(dateTo = new Date()) {
     if (!vm.depot) return;
     Stock.inventories.read(null, {
-      status : 'sold_out',
+      status : 'stock_out',
       depot_uuid : vm.depot.uuid,
       dateTo,
     }).then(inventories => {

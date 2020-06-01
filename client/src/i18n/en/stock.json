@@ -28,7 +28,7 @@
     "ENTRY_TRANSFER"  : "Transfer",
     "TYPE_VALUE" : "Stock value",
     "TYPE_QUANTITY" : "Stock quantity",
-    "SOLD_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
+    "STOCK_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
     "AND_MORE" : "... and {{left}} more",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
@@ -152,7 +152,7 @@
       "MINIMUM"       : "Minimum Stock Reached",
       "OVER_MAX"      : "Over Maximum",
       "SECURITY"      : "Security Stock Reached",
-      "SOLD_OUT"      : "Sold Out"
+      "STOCK_OUT"      : "Stock Out"
     },
     "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",
