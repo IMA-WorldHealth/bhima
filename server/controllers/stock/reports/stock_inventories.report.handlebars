@@ -57,7 +57,7 @@
             <td class="text-right" style="font-weight: bold;">{{quantity}}</td>
             <td>{{unit_type}}</td>
             <td style="font-weight: bold;">
-              {{#equal status 'sold_out'}}{{translate 'STOCK.STATUS.SOLD_OUT'}}{{/equal}}
+              {{#equal status 'stock_out'}}{{translate 'STOCK.STATUS.STOCK_OUT'}}{{/equal}}
               {{#equal status 'in_stock'}}{{translate 'STOCK.STATUS.IN_STOCK'}}{{/equal}}
               {{#equal status 'security_reached'}}{{translate 'STOCK.STATUS.SECURITY'}}{{/equal}}
               {{#equal status 'minimum_reached'}}{{translate 'STOCK.STATUS.MINIMUM'}}{{/equal}}

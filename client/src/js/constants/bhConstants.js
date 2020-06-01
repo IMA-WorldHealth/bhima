@@ -96,7 +96,7 @@ function constantConfig() {
       INVENTORY_ADJUSTMENT : 15,
     },
     stockStatus : {
-      IS_SOLD_OUT          : 'sold_out',
+      IS_STOCK_OUT          : 'stock_out',
       IS_IN_STOCK          : 'in_stock',
       HAS_SECURITY_WARNING : 'security_reached',
       HAS_MINIMUM_WARNING  : 'minimum_reached',

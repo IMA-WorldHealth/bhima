@@ -97,7 +97,7 @@
                 <th>
                   <span class="text-danger" 
                     translate-values="{ total : StockCtrl.soldOutInventories.length }"
-                    translate="{{ 'STOCK.SOLD_OUT_WARNING' }}">
+                    translate="{{ 'STOCK.STOCK_OUT_WARNING' }}">
                   </span>
                 </th>
               </tr>
@@ -120,7 +120,7 @@
                   { key : 'period', value : 'allTime'},
                   { key : 'includeEmptyLot', value : 1  },
                   { key : 'depot_uuid', value : StockCtrl.depot.uuid, displayValue: StockCtrl.depot.text, cacheable:false },
-                  { key : 'status', value : 'sold_out', displayValue: 'STOCK.STATUS.SOLD_OUT', cacheable:false }
+                  { key : 'status', value : 'stock_out', displayValue: 'STOCK.STATUS.STOCK_OUT', cacheable:false }
                   ]})"translate>FORM.LABELS.SEE_ALL</a>
                 </td>
               </tr>

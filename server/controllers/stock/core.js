@@ -366,7 +366,7 @@ function stockManagementProcess(inventories) {
     inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
     if (Q <= 0) {
-      inventory.status = 'sold_out';
+      inventory.status = 'stock_out';
       inventory.stock_out_date = inventory.last_movement_date;
     } else if (Q > 0 && Q <= inventory.S_SEC) {
       inventory.status = 'security_reached';
