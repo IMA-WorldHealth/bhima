@@ -18,3 +18,10 @@ ALTER TABLE enterprise_setting MODIFY `enable_auto_stock_accounting` TINYINT(1) 
 @date: 2020-05-27
 */
 DROP TABLE IF EXISTS `event`;
+
+/**
+@author: jeremielodi
+@date: 2020-06-01
+*/
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+('invoiceRegistryReport', 'Invoice Registry as report');

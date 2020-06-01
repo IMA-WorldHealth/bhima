@@ -33,6 +33,7 @@ function InvoiceRegistryController(
   vm.deleteInvoice = deleteInvoiceWithConfirmation;
   vm.Receipts = Receipts;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.openCronEmailModal = openCronEmailModal;
 
   // date format function
   vm.format = util.formatDate;
@@ -238,6 +239,13 @@ function InvoiceRegistryController(
   function toggleInlineFilter() {
     vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
+  function openCronEmailModal() {
+    return Modals.openCronEmailModal({
+      reportKey : 'invoiceRegistryReport',
+      details : Invoices.filters.formatHTTP(true),
+    });
   }
 
   /**

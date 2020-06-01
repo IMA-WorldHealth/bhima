@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'ModalService', 'NotifyService',
+  '$state', 'DepotService', 'NotifyService',
 ];
 
-function DepotModalController($state, Depots, ModalService, Notify) {
+function DepotModalController($state, Depots, Notify) {
   const vm = this;
 
   vm.depot = $state.params.depot;

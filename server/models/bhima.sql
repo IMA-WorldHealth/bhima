@@ -217,7 +217,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('inventoryChanges', 'REPORT.INVENTORY_CHANGE.TITLE'),
   ('monthlyConsumptionReport', 'REPORT.MONTHLY_CONSUMPTION.TITLE'),
   ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
-  ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE');
+  ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE'),
+  ('invoiceRegistryReport', 'Invoice Registry as report');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

@@ -33,6 +33,7 @@ const CREDIT_NOTE_TEMPLATE = './server/controllers/finance/reports/invoices/cred
 exports.report = report;
 exports.receipt = receipt;
 exports.creditNote = creditNote;
+exports.reporting = reporting;
 
 /**
  * @function report
@@ -41,22 +42,32 @@ exports.creditNote = creditNote;
  * @return {object} promise
  */
 async function report(req, res, next) {
-  const query = _.clone(req.query);
-  const filters = shared.formatFilters(query);
+  try {
+    const query = _.clone(req.query);
 
-  _.extend(query, {
+    const result = await reporting(query, req.session);
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+
+  }
+}
+
+
+async function reporting(_options, session) {
+  const filters = shared.formatFilters(_options);
+  _.extend(_options, {
     filename : 'INVOICE_REGISTRY.TITLE',
     csvKey : 'rows',
     orientation : 'landscape',
   });
 
-  try {
-    const reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
+  const reportInstance = new ReportManager(REPORT_TEMPLATE, session, _options);
 
-    // This is an easy way to make sure that all the data is captured from any
-    // given search without having to parse the parameters.  Just map the UUIDs
-    // and then we will use only the values previously used.
-    const sql = `
+  // This is an easy way to make sure that all the data is captured from any
+  // given search without having to parse the parameters.  Just map the UUIDs
+  // and then we will use only the values previously used.
+  const sql = `
     SELECT MIN(invoice.date) AS minDate, MAX(invoice.date) AS maxDate,
       SUM(invoice.cost) AS amount, COUNT(DISTINCT(user_id)) AS numUsers,
       COUNT(invoice.uuid) AS numInvoices,
@@ -67,34 +78,30 @@ async function report(req, res, next) {
     WHERE invoice.uuid IN (?);
   `;
 
-    const rows = await Invoices.find(query);
-    const uuids = rows.map(row => db.bid(row.uuid));
+  const rows = await Invoices.find(_options);
+  const uuids = rows.map(row => db.bid(row.uuid));
 
-    // if no uuids, return false as the aggregates
-    let aggregates = {};
-    if (uuids.length > 0) {
-      aggregates = await db.one(sql, [uuids]);
-    }
-
-    const hasMultipleProjects = aggregates.numProjects > 1;
-
-    let project = {};
-    if (query.project_id) {
-      project = await Projects.findDetails(query.project_id);
-    }
-
-    const result = await reportInstance.render({
-      project,
-      aggregates,
-      hasMultipleProjects,
-      rows,
-      filters,
-    });
-    res.set(result.headers).send(result.report);
-  } catch (e) {
-    next(e);
-
+  // if no uuids, return false as the aggregates
+  let aggregates = {};
+  if (uuids.length > 0) {
+    aggregates = await db.one(sql, [uuids]);
   }
+
+  const hasMultipleProjects = aggregates.numProjects > 1;
+
+  let project = {};
+  if (_options.project_id) {
+    project = await Projects.findDetails(_options.project_id);
+  }
+
+  const result = await reportInstance.render({
+    project,
+    aggregates,
+    hasMultipleProjects,
+    rows,
+    filters,
+  });
+  return result;
 }
 
 /** receipt */
