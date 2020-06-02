@@ -122,7 +122,7 @@
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
-      "ENTRY_DEPOT"    : "Stock Entry",
+      "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
       "ENTRY_INTEGRATION" : "Stock Entry - Integration",
