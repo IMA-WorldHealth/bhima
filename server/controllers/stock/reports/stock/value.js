@@ -20,7 +20,6 @@ function stockValue(req, res, next) {
 }
 
 async function reporting(_options, session) {
-  const transaction = db.transaction();
   const data = {};
   const enterpriseId = session.enterprise.id;
 
