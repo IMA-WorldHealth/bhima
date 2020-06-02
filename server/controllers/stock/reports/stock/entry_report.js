@@ -95,6 +95,7 @@ function formatAndCombine(data) {
    */
 function formatEntry(value, key) {
   return {
+    code : value && value[0] ? value[0].code : '',
     inventory_name : key,
     inventory_unit : value && value[0] ? value[0].unit_text : '',
     inventory_stock_entry_data : value,
