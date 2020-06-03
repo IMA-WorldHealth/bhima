@@ -55,7 +55,7 @@
           {{#each rows}}
             <tr>
               <td style="border-left: 1px solid #000;">{{reference}}</td>
-              <td style="border-right: 1px solid #000;">{{date date}}</td>
+              <td style="border-right: 1px solid #000;">{{timestamp date}}</td>
               {{!-- entry --}}
               <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td> <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
               <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
