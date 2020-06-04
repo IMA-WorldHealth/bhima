@@ -72,6 +72,9 @@ function ModalService(Modal) {
   // search fiscal year
   service.openSelectFiscalYear = openSelectFiscalYear;
 
+  // Cron email Modal to integrate in registries
+  service.openCronEmailModal = openCronEmailModal;
+
   service.openHostpitaliationIndicator = openHostpitaliationIndicator;
   service.openinventoryLogModal = openinventoryLogModal;
   service.editPatientGroup = editPatientGroup;
@@ -297,6 +300,19 @@ function ModalService(Modal) {
       controller   : 'SearchCashPaymentModalController',
       controllerAs : '$ctrl',
       resolve : { filters : () => filters },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** Cron email modal */
+  function openCronEmailModal(options) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/cronEmailModal.html',
+      controller   : 'CronEmailModalController',
+      controllerAs : 'ModalCtrl',
+      resolve : { options : () => options },
     });
 
     const instance = Modal.open(params);

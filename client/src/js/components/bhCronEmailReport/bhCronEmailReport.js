@@ -93,12 +93,13 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseRepo
   }
 
   function submit(cronForm) {
-    if ($ctrl.reportForm.$invalid) {
+    if ($ctrl.reportForm && $ctrl.reportForm.$invalid) {
       Notify.warn('CRON.PLEASE_FILL_REPORT_FORM');
       return false;
     }
 
     if (cronForm.$invalid) {
+      Notify.warn('CRON.PLEASE_FILL_REPORT_FORM');
       return false;
     }
 

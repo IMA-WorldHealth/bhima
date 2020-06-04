@@ -1,0 +1,19 @@
+<div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static"><b><span translate> CRON.EMAIL_PUSHING_SYSTEM</span></b></li>
+    </ol>
+  </div>
+
+<div class="modal-body" style="max-height: 500px; overflow-y:scroll">
+  <bh-cron-email-report
+      report-key="{{ModalCtrl.options.reportKey}}"
+      report-details="ModalCtrl.options.details"
+      on-select-report="ModalCtrl.onSelectReport(report)">
+  </bh-cron-email-report>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="ModalCtrl.close()" translate>
+    FORM.BUTTONS.CLOSE
+  </button>
+</div>

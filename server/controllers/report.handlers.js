@@ -10,4 +10,5 @@ module.exports = {
   cashflow : financeReports.cashflow.reporting,
   'unpaid-invoice-payments' : financeReports.unpaidInvoices.reporting,
   stock_value : stockReports.stockValueReporting,
+  invoiceRegistryReport : financeReports.invoices.reporting,
 };

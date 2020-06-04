@@ -1,6 +1,7 @@
 {
   "CRON":{
     "TITLE":"Cron",
+    "EMAIL_PUSHING_SYSTEM": "Système d'envoit des email",
     "AUTO_EMAIL_REPORT":"Envoi automatique de rapport par email",
     "FREQUENCY":"Fréquence",
     "RECEIVERS":"Recepteurs",
