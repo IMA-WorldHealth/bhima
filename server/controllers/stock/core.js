@@ -40,6 +40,7 @@ const DATE_FORMAT = 'YYYY-MM-DD';
 // exports
 module.exports = {
   flux,
+  getMovements,
   getLots,
   getLotsDepot,
   getLotsMovements,
@@ -296,6 +297,41 @@ async function getLotsMovements(depotUuid, params) {
   const lots = await getLots(sql, params, finalClause, orderBy);
 
   return lots;
+}
+
+/**
+ * @function getMovements
+ *
+ * @description returns movements for each depots
+ *
+ * @param {number} depot_uuid - optional depot uuid for retrieving on depot
+ *
+ * @param {object} params - A request query object
+ */
+async function getMovements(depotUuid, params) {
+
+  if (depotUuid) {
+    params.depot_uuid = depotUuid;
+  }
+
+  const sql = `
+  SELECT
+    m.description,
+    d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
+    BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
+    m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
+    f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference
+  FROM stock_movement m
+  JOIN depot d ON d.uuid = m.depot_uuid
+  JOIN flux f ON f.id = m.flux_id
+  LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+  LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
+  `;
+
+  const finalClause = 'GROUP BY document_uuid';
+  const orderBy = 'ORDER BY d.text, m.date';
+  const movements = await getLots(sql, params, finalClause, orderBy);
+  return movements;
 }
 
 /**

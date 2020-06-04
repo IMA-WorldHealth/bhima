@@ -19,6 +19,15 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('stockInlineMovements', {
+        url         : '/stock/inline-movements',
+        controller  : 'StockInlineMovementsController as StockCtrl',
+        templateUrl : 'modules/stock/inline-movements/registry.html',
+        params : {
+          filters : [],
+        },
+      })
+
       .state('stockInventories', {
         url         : '/stock/inventories',
         controller  : 'StockInventoriesController as StockCtrl',
