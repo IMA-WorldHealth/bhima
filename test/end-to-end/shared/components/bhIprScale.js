@@ -5,7 +5,7 @@ module.exports = {
   set      : async function set(scale) {
 
     // get the dropdown
-    const dropdown = element(by.css('[uib-dropdown-toggle]'));
+    const dropdown = element(by.id('ipr_scale'));
     await dropdown.click();
 
     // click the correct dropdown item
