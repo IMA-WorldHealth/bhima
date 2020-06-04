@@ -39,6 +39,10 @@ function DepotSelectController(Depots, Notify) {
   };
 
   $ctrl.searchByName = text => {
+    if (!text) {
+      return null;
+    }
+
     const options = {
       text : (text || '').toLowerCase(),
       exception : $ctrl.exception,
