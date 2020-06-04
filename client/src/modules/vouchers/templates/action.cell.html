@@ -34,6 +34,11 @@
         <span class="text-danger"><i class="fa fa-clone"></i> <span translate>FORM.BUTTONS.REVERSE_RECORD</span></span>
       </a>
     </li>
+    <li ng-show="row.entity.reference_uuid">
+      <a data-method="view-voucher" href ui-sref="vouchers({ filters : [{ key : 'uuid', value : row.entity.reference_uuid, displayValue: row.entity.reference }, { key : 'period', value : 'allTime' }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_VOUCHER</span>
+      </a>
+    </li>
 
     <!-- delete voucher record -->
     <li ng-if="grid.appScope.allowsRecordDeletion()">
