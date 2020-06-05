@@ -33,11 +33,6 @@ const config = {
     },
   },
 
-  plugins : [{
-    package : 'protractor-console-plugin',
-    failOnError : false,
-  }],
-
   // this will log the user in to begin with
   onPrepare : () => {
     return q.fcall(async () => {
