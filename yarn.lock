@@ -567,7 +567,12 @@ angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
   dependencies:
     ui-router-core "3.1.0"
 
-"angular@>=1.2.22 <2", "angular@>=1.4.0 1.7.x", angular@^1.7.9:
+"angular@>=1.2.22 <2", angular@^1.7.9, angular@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.0.tgz#b1ec179887869215cab6dfd0df2e42caa65b1b51"
+  integrity sha512-VdaMx+Qk0Skla7B5gw77a8hzlcOakwF8mjlW13DpIWIDlfqwAbSSLfd8N/qZnzEmQF4jC4iofInd3gE7vL8ZZg==
+
+"angular@>=1.4.0 1.7.x":
   version "1.7.9"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.9.tgz#e52616e8701c17724c3c238cfe4f9446fd570bc4"
   integrity sha512-5se7ZpcOtu0MBFlzGv5dsM1quQDoDeUTwZrWjGtTNA7O88cD8TEk5IEKCTDa3uECV9XnvKREVUr7du1ACiWGFQ==
