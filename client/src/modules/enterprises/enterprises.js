@@ -107,9 +107,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     const changes = util.filterFormElements(form, true);
 
     Object.keys(vm.enterprise.settings).forEach(key => {
-      if (changes[key]) {
-        delete changes[key];
-      }
+      delete changes[key];
     });
 
     changes.settings = angular.copy(vm.enterprise.settings);
