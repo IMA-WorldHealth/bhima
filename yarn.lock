@@ -501,10 +501,10 @@ angular-growl-notifications@^2.6.0:
   dependencies:
     angular ">=1.2.22 <2"
 
-angular-messages@^1.7.8:
-  version "1.7.9"
-  resolved "https://registry.yarnpkg.com/angular-messages/-/angular-messages-1.7.9.tgz#6403b7f56df4b17b62d88762ac5e6b1702347fd2"
-  integrity sha512-OdJihuO6AW+m1/r9OdW5riCwacn3dL1agQvgu6Cww3a7OARXXN0vxOpsZCNk4yg4CuD7Et3tiz4DymhvZkydvw==
+angular-messages@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/angular-messages/-/angular-messages-1.8.0.tgz#dcdb8ea7d85a939526921e8cf05950601dc2b8fb"
+  integrity sha512-LSlyTv80y1vg8Cfdz+RJ0BrraWkq0qsOZHyrHFT8NyYWC5yp6HQabvZvTpKv9YA+6o05wwAU90qXHSrnUlSflA==
 
 angular-mocks@^1.8.0:
   version "1.8.0"
