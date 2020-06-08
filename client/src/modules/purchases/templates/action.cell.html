@@ -28,6 +28,16 @@
         <i class="fa fa-arrows-h"></i> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
       </a>
     </li>
+    
+    <li>
+      <a data-method="view-stock-lot" href
+        ui-sref="stockInventories({ filters : [
+          { key : 'period', value : 'allTime' },
+          { key : 'includeEmptyLot', value : 1 },
+          { key : 'purchase_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
+        <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ITEM_STOCK</span>
+      </a>
+    </li>
 
     <li ng-if="!row.entity.hasStockMovement">
       <a
