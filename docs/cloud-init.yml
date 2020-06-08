@@ -6,6 +6,7 @@
 #   NODE_VERSION - node version to install.  This should be an integer (e.g. 12, 13, 14)
 #   BH_DATABASE_NAME - the name of the BHIMA database.  Often tied to the domain name.
 #   BH_DATABASE_PASSWORD - the password of the database. Defaults to $(uuid).
+#   BH_DATABASE_USER - the name of the database user
 #
 
 packages:
@@ -32,8 +33,8 @@ users:
 write_files:
   - path: /tmp/bhima-mysql-user.sql
     content: |
-      CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2020';
-      GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
+      CREATE USER 'BH_DATABASE_USER'@'localhost' IDENTIFIED BY 'BH_DATABASE_PASSWORD';
+      GRANT ALL PRIVILEGES ON BH_DATABASE_NAME.* TO 'BH_DATABASE_USER'@'localhost';
       FLUSH PRIVILEGES;
 
   - path: /tmp/.my.cnf
@@ -63,7 +64,6 @@ write_files:
       cp -r ./bhima/$FOLDER/. ./bhima
       rm -r ./bhima/$FOLDER
       rm bhima-latest-release.zip
-      cp bhima/.env.development bhima/.env.production
 
   - path: /tmp/99_mysql.cnf
     content: |
@@ -106,7 +106,7 @@ write_files:
        gzip_min_length 1000;
        gzip_types application/javascript application/rss+xml application/vnd.ms-fontobject application/x-font application/x-font-opentype application/x-font-otf application/x-font-truetype application/x-font-ttf application/x-javascript application/xhtml+xml application/xml font/opentype font/otf font/ttf image/svg+xml image/x-icon text/css text/javascript text/plain text/xml;
 
-       server_name demo.bhi.ma;
+       server_name BH_DOMAIN;
 
        location / {
          proxy_pass http://127.0.0.1:8080;
@@ -122,8 +122,11 @@ runcmd:
 
 # configure "global" variables
   - export BH_DOMAIN="demo.bhi.ma"
+
+# latest LTS NodeJS version
   - export NODE_VERSION="12"
   - export BH_DATABASE_NAME="bhima"
+  - export BH_DATABASE_USER="bhima"
   - export BH_DATABASE_PASSWORD="$(uuid)"
 
 # configure UFW
@@ -138,6 +141,13 @@ runcmd:
   - echo "mysql-community-server mysql-community-server/root-pass password $BH_DATABASE_PASSWORD" |  debconf-set-selections
   - echo "mysql-community-server mysql-community-server/re-root-pass password $BH_DATABASE_PASSWORD" | debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive apt-get install mysql-server mysql-client -y
+
+# use environmental variables to set user/password
+  - sed -i "s/BH_DATABASE_PASSWORD/$BH_DATABASE_PASSWORD/g" /tmp/bhima-mysql-user.sql
+  - sed -i "s/BH_DATABASE_USER/$BH_DATABASE_USER/g" /tmp/bhima-mysql-user.sql
+  - sed -i "s/BH_DATABASE_NAME/$BH_DATABASE_NAME/g" /tmp/bhima-mysql-user.sql
+
+# build the database users/permissions
   - mysql -u root  mysql < /tmp/bhima-mysql-user.sql
   - mv /tmp/99_mysql.cnf /etc/mysql/conf.d/
   - service mysql restart
@@ -158,6 +168,14 @@ runcmd:
   - cd /opt/
   - bash /tmp/bhima-latest-release.sh
   - cd bhima
+  - sed -i "/DB_PASS/d" .env.development
+  - sed -i "/DB_USER/d" .env.development
+  - sed -i "/DB_NAME/d" .env.development
+  - echo "# templating in variables" >> .env.development
+  - echo "DB_PASS=$BH_DATABASE_PASSWORD" >> .env.development
+  - echo "DB_USER=$BH_DATABASE_USER" >> .env.development
+  - echo "DB_NAME=$BH_DATABASE_NAME" >> .env.development
+  - cp .env.development .env.production
   - bash ./sh/build-init-database.sh
   - yarn --ignore-engines --frozen-lockfile
   - NODE_ENV=production yarn build
@@ -171,6 +189,7 @@ runcmd:
 
 # update nginx configuration
   - rm /etc/nginx/sites-enabled/default
+  - sed -i "s/BH_DOMAIN/$BH_DOMAIN/g" /tmp/nginx-bhima
   - mv /tmp/nginx-bhima /etc/nginx/sites-enabled/bhima
   - service nginx restart
 
