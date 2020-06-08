@@ -126,7 +126,7 @@
     "del": "^5.0.0",
     "eslint": "^6.0.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.21.1",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-if": "^3.0.0",
