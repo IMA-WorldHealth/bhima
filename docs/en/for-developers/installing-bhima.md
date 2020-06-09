@@ -51,6 +51,23 @@ sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 sudo apt-get install git
 ```
 
+### Getting dependencies for Puppeteer
+
+By default, your OS might not have all dependencies for running puppeteer, the PDF renderer based based on Chromium.  These vary by OS.  For Ubuntu/Debian, you can run the following to prepare your environment:
+
+```bash
+# Install puppeteer dependencies on Ubuntu
+sudo apt-get install ca-certificates fonts-liberation gconf-service \
+  libappindicator1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2  \
+  libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 \
+  libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 \
+  libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 \
+  libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
+  libxss1 libxtst6 lsb-release wget -y
+```
+
+For more information on other operating systems, [see the puppeteer troubleshooting documentation](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix).
+
 ### Getting the source
 
 Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima) using the following commands:
@@ -109,7 +126,7 @@ NODE_ENV="development" yarn build
 
 ### Creating a database
 
-_NOTE: BHIMA runs in _`sql_mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'`_. While it is not necessary to have this set to build the database, the tests will not pass unless the correct SQL\_MODE is set._
+_NOTE: BHIMA runs in `sql_mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"`. While it is not necessary to have this set to build the database, the tests will not pass unless the correct SQL\_MODE is set._
 
 ```bash
 #To configure MySQL with this setting, run the following commands:

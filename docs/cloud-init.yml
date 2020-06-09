@@ -1,5 +1,14 @@
 #cloud-config
 
+# NOTE:
+# This script uses several custom variables configured at the top of the run_cmd block:
+#   BH_DOMAIN - domain name where the server will be deployed. Used in nginx and letsencrypt config
+#   NODE_VERSION - node version to install.  This should be an integer (e.g. 12, 13, 14)
+#   BH_DATABASE_NAME - the name of the BHIMA database.  Often tied to the domain name.
+#   BH_DATABASE_PASSWORD - the password of the database. Defaults to $(uuid).
+#   BH_DATABASE_USER - the name of the database user
+#
+
 packages:
   - curl
   - nginx
@@ -24,9 +33,27 @@ users:
 write_files:
   - path: /tmp/bhima-mysql-user.sql
     content: |
-      CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'HISCongo2013';
-      GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
+      CREATE USER 'BH_DATABASE_USER'@'localhost' IDENTIFIED BY 'BH_DATABASE_PASSWORD';
+      GRANT ALL PRIVILEGES ON BH_DATABASE_NAME.* TO 'BH_DATABASE_USER'@'localhost';
       FLUSH PRIVILEGES;
+
+  - path: /tmp/.my.cnf
+    content: |
+      [client]
+      user=root
+      password=PASSWORD
+
+      default-character-set=utf8mb4
+
+      [mysql]
+      default-character-set=utf8mb4
+
+
+      [mysqld]
+      collation-server = utf8mb4_unicode_ci
+      init-connect='SET NAMES utf8mb4'
+      character-set-server = utf8mb4
+
 
   - path: /tmp/bhima-latest-release.sh
     content: |
@@ -37,7 +64,6 @@ write_files:
       cp -r ./bhima/$FOLDER/. ./bhima
       rm -r ./bhima/$FOLDER
       rm bhima-latest-release.zip
-      cp bhima/.env.development bhima/.env.production
 
   - path: /tmp/99_mysql.cnf
     content: |
@@ -80,7 +106,7 @@ write_files:
        gzip_min_length 1000;
        gzip_types application/javascript application/rss+xml application/vnd.ms-fontobject application/x-font application/x-font-opentype application/x-font-otf application/x-font-truetype application/x-font-ttf application/x-javascript application/xhtml+xml application/xml font/opentype font/otf font/ttf image/svg+xml image/x-icon text/css text/javascript text/plain text/xml;
 
-       server_name demo.bhi.ma;
+       server_name BH_DOMAIN;
 
        location / {
          proxy_pass http://127.0.0.1:8080;
@@ -94,6 +120,15 @@ write_files:
 
 runcmd:
 
+# configure "global" variables
+  - export BH_DOMAIN="demo.bhi.ma"
+
+# latest LTS NodeJS version
+  - export NODE_VERSION="12"
+  - export BH_DATABASE_NAME="bhima"
+  - export BH_DATABASE_USER="bhima"
+  - export BH_DATABASE_PASSWORD="$(uuid)"
+
 # configure UFW
   - ufw default deny incoming
   - ufw default allow outgoing
@@ -103,24 +138,26 @@ runcmd:
   - ufw enable
 
 # Install and configure MySQL
-  - export MYPASS="$(uuid)"
-  - echo "mysql-community-server mysql-community-server/root-pass password $MYPASS" |  debconf-set-selections
-  - echo "mysql-community-server mysql-community-server/re-root-pass password $MYPASS" | debconf-set-selections
+  - echo "mysql-community-server mysql-community-server/root-pass password $BH_DATABASE_PASSWORD" |  debconf-set-selections
+  - echo "mysql-community-server mysql-community-server/re-root-pass password $BH_DATABASE_PASSWORD" | debconf-set-selections
   - DEBIAN_FRONTEND=noninteractive apt-get install mysql-server mysql-client -y
+
+# use environmental variables to set user/password
+  - sed -i "s/BH_DATABASE_PASSWORD/$BH_DATABASE_PASSWORD/g" /tmp/bhima-mysql-user.sql
+  - sed -i "s/BH_DATABASE_USER/$BH_DATABASE_USER/g" /tmp/bhima-mysql-user.sql
+  - sed -i "s/BH_DATABASE_NAME/$BH_DATABASE_NAME/g" /tmp/bhima-mysql-user.sql
+
+# build the database users/permissions
   - mysql -u root  mysql < /tmp/bhima-mysql-user.sql
   - mv /tmp/99_mysql.cnf /etc/mysql/conf.d/
   - service mysql restart
+  - sed -i "s/PASSWORD/$BH_DATABASE_PASSWORD/g" /tmp/.my.cnf
+  - mv /tmp/.my.cnf /root/
 
 # install nodejs
-  - curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+  - curl -sL "https://deb.nodesource.com/setup_$NODE_VERSION.x" | sudo -E bash -
   - apt-get -qq update
   - apt-get install -y nodejs
-
-# install wkhtmltopdf
-  - wget -qc https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-  - tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-  - mv wkhtmltox/bin/wkhtmltopdf /usr/bin
-  - rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
 # install yarn
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -131,8 +168,16 @@ runcmd:
   - cd /opt/
   - bash /tmp/bhima-latest-release.sh
   - cd bhima
+  - sed -i "/DB_PASS/d" .env.development
+  - sed -i "/DB_USER/d" .env.development
+  - sed -i "/DB_NAME/d" .env.development
+  - echo "# templating in variables" >> .env.development
+  - echo "DB_PASS=$BH_DATABASE_PASSWORD" >> .env.development
+  - echo "DB_USER=$BH_DATABASE_USER" >> .env.development
+  - echo "DB_NAME=$BH_DATABASE_NAME" >> .env.development
+  - cp .env.development .env.production
   - bash ./sh/build-init-database.sh
-  - yarn --ignore-engines
+  - yarn --ignore-engines --frozen-lockfile
   - NODE_ENV=production yarn build
   - chown -R bhima:bhima .
 
@@ -144,9 +189,11 @@ runcmd:
 
 # update nginx configuration
   - rm /etc/nginx/sites-enabled/default
+  - sed -i "s/BH_DOMAIN/$BH_DOMAIN/g" /tmp/nginx-bhima
   - mv /tmp/nginx-bhima /etc/nginx/sites-enabled/bhima
   - service nginx restart
 
+# add monthly letsencrypt renewal script
   - add-apt-repository -y universe
   - add-apt-repository -y ppa:certbot/certbot
   - apt-get -y update
