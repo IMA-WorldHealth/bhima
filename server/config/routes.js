@@ -493,6 +493,7 @@ exports.configure = function configure(app) {
 
   // patients merge routes
   app.get('/patients/merge/count_employees', patients.merge.countEmployees);
+  app.get('/patients/merge/duplicates', patients.merge.getDuplicatePatients);
   app.post('/patients/merge', patients.merge.mergePatients);
 
   // Patients API

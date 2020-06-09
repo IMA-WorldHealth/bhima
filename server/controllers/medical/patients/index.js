@@ -8,7 +8,6 @@
  * This module is responsible for handling all crud operations relatives to patients
  * and define all patient API functions.
  *
- * @requires q
  * @requires lodash
  * @requires lib/db
  * @requires lib/util
@@ -699,7 +698,7 @@ function getStockMovements(req, res, next) {
 
 function stockMovementByPatient(patientUuid) {
   const sql = `
-      SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid, 
+      SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid,
       BUID(sm.depot_uuid) as depot_uuid,
       sm.unit_cost,
       (sm.quantity * sm.unit_cost) as value,
@@ -724,12 +723,12 @@ function stockConsumedPerPatient(patientUuid) {
     iv.text AS inventory_text, sm.quantity, sm.unit_cost,
     l.label AS lotLabel, un.text AS inventoryUnit
     FROM stock_movement AS sm
-    JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
-    JOIN inventory_unit AS un ON un.id = iv.unit_id
-    JOIN depot AS d ON d.uuid = sm.depot_uuid
-    JOIN patient AS p ON p.uuid = sm.entity_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+      JOIN inventory_unit AS un ON un.id = iv.unit_id
+      JOIN depot AS d ON d.uuid = sm.depot_uuid
+      JOIN patient AS p ON p.uuid = sm.entity_uuid
+      JOIN document_map AS map ON map.uuid = sm.document_uuid
     WHERE sm.entity_uuid = ?
     ORDER BY sm.date, sm.reference desc, iv.text asc;
   `;

@@ -191,6 +191,19 @@ describe('(/patients) Patients', () => {
     });
   });
 
+  it('GET /patients/merge/duplicates returns duplicate patients', () => {
+    return agent.get('/patients/merge/duplicates')
+      .then((res) => {
+        helpers.api.listed(res, 0);
+        return agent.get('/patients/merge/duplicates')
+          .query({ sensitivity : 0 });
+      })
+      .then((res) => {
+        helpers.api.listed(res, 0);
+      })
+      .catch(helpers.handler);
+  });
+
   it('GET /patients returns a list of patients', () => {
     return agent.get('/patients')
       .then((res) => {
