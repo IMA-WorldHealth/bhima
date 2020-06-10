@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body
   ng-if="row.groupHeader"
   ng-init="item = row.treeNode.children[0].row.entity"
   data-row="{{ row.treeNode.children[0].row.entity.auxiliary_label }}">
@@ -8,7 +8,7 @@
   </a>
 
   <ul data-row-menu="{{item.auxiliary_label}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{item.auxiliary_label}}</li>
+    <li class="bh-dropdown-header">{{item.auxiliary_label}}</li>
     <li>
       <a data-method="setting" ng-click="grid.appScope.settings(row.treeNode.children)" href>
         <i class="fa fa-cogs"></i> <span translate>FORM.LABELS.SETTINGS</span>

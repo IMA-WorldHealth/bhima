@@ -1,30 +1,29 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
   <a href>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">
-      <a>{{row.entity.label}}</a>
-    </li>
+    <li class="bh-dropdown-header">{{row.entity.label}} - {{row.entity.text}}</li>
     <li>
-      <a data-method="receipt" ng-click="grid.appScope.openLotModal(row.entity.uuid)" href>
+      <a data-method="edit" ng-click="grid.appScope.openLotModal(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
       </a>
     </li>
     <li>
-      
-      <a ui-sref= "stockInventories(
+      <a data-method="view-stock-articles" ui-sref= "stockInventories(
         { filters : [
         { key : 'period', value : 'allTime'},
         { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cachable : false},
         { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cachable : false },
         { key : 'includeEmptyLot', value : 1  },
-        ]})"translate>REPORT.VIEW_ITEM_STOCK</a>
+        ]})">
+        <i class="fa fa-file-text"></i> <span translate>REPORT.VIEW_ITEM_STOCK</span>
+      </a>
     </li>
     <li>
-      <a data-method="receipt" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
+      <a data-method="view-stock-history" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-clock-o"></i> <span translate>LOTS.ASSIGNMENT_HISTORIC</span>
       </a>
     </li>

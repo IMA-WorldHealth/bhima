@@ -5,10 +5,8 @@
   </a>
 
   <ul data-row-menu="{{row.entity.label}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header text-ellipsis"  style="max-width:250px;">
-      <span> {{row.entity.label}} </span>
-    </li>
-  
+    <li class="bh-dropdown-header">{{row.entity.label}}</li>
+
     <li class="divider"></li>
 
     <li>
@@ -16,12 +14,12 @@
         <i class="fa fa-edit"></i> <span translate>TABLE.COLUMNS.EDIT</span>
       </a>
     </li>
-    <li> 
+    <li>
       <a data-method="payslip" ng-click="grid.appScope.displayData(row.entity.uuid)" href>
         <i class="fa fa-file-text-o"></i> <span translate>FORM.BUTTONS.DISPLAY_DATA</span>
       </a>
-    </li>    	
-    <li class="divider"></li>	
+    </li>
+    <li class="divider"></li>
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
         <span class="text-danger">

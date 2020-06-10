@@ -12,44 +12,41 @@ InvoicingFeesController.$inject = [
  * downloads and displays all invoicing fees in the application via a ui-grid.
  */
 function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants, $timeout, uiGridConstants) {
-  var vm = this;
+  const vm = this;
 
-  var actionTemplate =
-    'modules/invoicing-fees/templates/action.cell.html';
-
-  var columns;
+  const actionTemplate = 'modules/invoicing-fees/templates/action.cell.html';
 
   vm.ROW_HIGHLIGHT_FLAG = bhConstants.grid.ROW_HIGHLIGHT_FLAG;
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
 
-  columns = [{
+  const columns = [{
     field : 'account',
     displayName : 'TABLE.COLUMNS.ACCOUNT',
-    headerCellFilter: 'translate',
-    width: '*',
+    headerCellFilter : 'translate',
+    width : '*',
   }, {
     field : 'label',
     displayName : 'TABLE.COLUMNS.LABEL',
-    headerCellFilter: 'translate',
+    headerCellFilter : 'translate',
   }, {
-    field: 'description',
-    displayName: 'TABLE.COLUMNS.DESCRIPTION',
-    headerCellFilter:'translate',
+    field : 'description',
+    displayName : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter : 'translate',
   }, {
     field : 'value',
     displayName : 'TABLE.COLUMNS.VALUE',
-    headerCellFilter: 'translate',
-    cellFilter:'percentage',
-    cellClass: 'text-right',
+    headerCellFilter : 'translate',
+    cellFilter : 'percentage',
+    cellClass : 'text-right',
   }, {
     field : 'created_at',
     displayName : 'TABLE.COLUMNS.DATE',
-    headerCellFilter: 'translate',
-    cellFilter:'date',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
   }, {
     field : 'action',
-    displayName: '',
+    displayName : '',
     enableSorting : false,
     enableFiltering : false,
     cellTemplate : actionTemplate,
@@ -57,12 +54,12 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
 
   // these options are for the ui-grid
   vm.options = {
-    appScopeProvider: vm,
+    appScopeProvider : vm,
     enableSorting : true,
     flatEntityAccess  : true,
-    enableColumnMenus: false,
-    onRegisterApi: registerGridApi,
-    rowTemplate: '/modules/templates/grid/highlight.row.html',
+    enableColumnMenus : false,
+    onRegisterApi : registerGridApi,
+    rowTemplate : '/modules/templates/grid/highlight.row.html',
     columnDefs :  columns,
   };
 
@@ -81,11 +78,11 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
    * Also highlights the row to draw attention to itself
    */
   function scrollToId(id) {
-    var rows = vm.api.grid.rows;
+    const { rows } = vm.api.grid;
 
     // find the matching row in the data
-    var target;
-    rows.forEach(function (row) {
+    let target;
+    rows.forEach((row) => {
       if (row.entity.id === id) { target = row; }
     });
 
@@ -101,12 +98,12 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
 
     // retrieve a detailed list of the invoicing fees in the application
     InvoicingServices.read(null, { detailed : 1 })
-      .then(function (invoicingServices) {
+      .then((invoicingServices) => {
 
         // make a pretty human readable account label
         // TODO(@jniles) - make this use the account_label.  Requires changing
         // the server
-        invoicingServices.forEach(function (service) {
+        invoicingServices.forEach((service) => {
           service.account = service.number;
         });
 
@@ -115,11 +112,11 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
 
         // scroll to the indicated id in the grid an id was passed in
         if ($state.params.id) {
-          $timeout(function () { scrollToId($state.params.id); });
+          $timeout(() => { scrollToId($state.params.id); });
         }
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         toggleLoadingIndicator();
       });
   }

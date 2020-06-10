@@ -1,25 +1,24 @@
-<div class="ui-grid-cell-contents">
-  <span uib-dropdown dropdown-append-to-body>
-    <a href uib-dropdown-toggle>
-      <span translate>FORM.BUTTONS.ACTIONS</span>
-      <i class="fa fa-caret-down"></i>
-    </a>
-    <ul class="dropdown-menu-right" uib-dropdown-menu>
-      <li>
-        <a href="/reports/archive/{{row.entity.uuid}}" download>
-          <i class="fa fa-cloud-download"></i> <span translate>REPORT.DOWNLOAD</span>
-        </a>
-      </li>
-      <li>
-        <a href data-action="email" ng-click="grid.appScope.emailReport(row.entity.uuid, row.entity.label)">
-          <i class="fa fa-envelope"></i> <span translate>TABLE.COLUMNS.EMAIL</span>
-        </a>
-      </li>
-      <li>
-        <a href ng-click="grid.appScope.deleteReport(row.entity.uuid)" data-action="delete">
-          <span class="text-danger"><i class="fa fa-trash"></i> <span translate>REPORT.DELETE</span></span>
-        </a>
-      </li>
-     </ul>
-  </span>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body>
+  <a href uib-dropdown-toggle>
+    <span translate>FORM.BUTTONS.ACTIONS</span>
+    <i class="fa fa-caret-down"></i>
+  </a>
+  <ul class="dropdown-menu-right" uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.label}}</li>
+    <li>
+      <a href="/reports/archive/{{row.entity.uuid}}" download>
+        <i class="fa fa-cloud-download"></i> <span translate>REPORT.DOWNLOAD</span>
+      </a>
+    </li>
+    <li>
+      <a href data-action="email" ng-click="grid.appScope.emailReport(row.entity.uuid, row.entity.label)">
+        <i class="fa fa-envelope"></i> <span translate>TABLE.COLUMNS.EMAIL</span>
+      </a>
+    </li>
+    <li>
+      <a href ng-click="grid.appScope.deleteReport(row.entity.uuid)" data-action="delete">
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>REPORT.DELETE</span></span>
+      </a>
+    </li>
+   </ul>
 </div>

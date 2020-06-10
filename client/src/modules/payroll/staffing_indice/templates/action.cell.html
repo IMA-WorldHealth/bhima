@@ -1,5 +1,5 @@
 <div
-  class="ui-grid-cell-contents text-action"
+  class="ui-grid-cell-contents text-right"
   data-row="{{row.entity.text}}"
   uib-dropdown dropdown-append-to-body>
 
@@ -9,12 +9,13 @@
   </a>
 
   <ul data-action="{{rowRenderIndex}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.display_name}} - {{row.entity.text}}</li>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createUpdateModal(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
-   
+
     <li class="divider"></li>
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
