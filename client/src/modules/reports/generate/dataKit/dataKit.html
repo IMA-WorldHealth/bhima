@@ -34,7 +34,7 @@
               date-from="ReportConfigCtrl.reportDetails.searchDateFrom.dateSurvey"
               date-to="ReportConfigCtrl.reportDetails.searchDateTo.dateSurvey">
             </bh-date-interval>
-            <hr>          
+            <hr>
 
             <div ng-if="ReportConfigCtrl.reportDetails.data_collector_id">
               <div ng-repeat="formItem in ReportConfigCtrl.formItems">
@@ -49,7 +49,7 @@
                     </div>
                   </div>
                 </div>
-        
+
                 <div class="row">
                   <div ng-if="formItem.typeForm === 'number' || formItem.typeForm === 'calculation'" class="form-group">
                     <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
@@ -61,7 +61,7 @@
                     </div>
                   </div>
                 </div>
-        
+
                 <!-- Date -->
                 <div class="row">
                   <div ng-if="formItem.typeForm === 'date'">
@@ -71,8 +71,8 @@
                       date-to="ReportConfigCtrl.reportDetails.searchDateTo[formItem.name]">
                     </bh-date-interval>
                   </div>
-                </div>  
-        
+                </div>
+
                 <!-- select_one -->
                 <div class="row">
                   <div ng-if="formItem.typeForm === 'select_one'">
@@ -81,7 +81,7 @@
                       list="ReportConfigCtrl.reportDetails[formItem.name]"
                       name="{{ formItem.name }}"
                       list-label="{{ formItem.label }}"
-                      group-label="formItem.choice_list_id"              
+                      group-label="formItem.choice_list_id"
                       on-select-callback="ReportConfigCtrl.onSelectList(list, formItem.name)">
                       <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
                     </bh-choice-list-select>

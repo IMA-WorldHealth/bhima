@@ -110,7 +110,7 @@ class FeeCenterPage {
    */
   async editFeeCenter(label, updateFeeCenter) {
     const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit-record', this.gridId);
     await FU.input('FeeCenterModalCtrl.feeCenter.label', updateFeeCenter.label);
 
     if (updateFeeCenter.is_update_reference) {
@@ -123,12 +123,12 @@ class FeeCenterPage {
       if (updateFeeCenter.is_profit) {
         await components.accountReferenceSelect.set(
           updateFeeCenter.reference_profit_id,
-          'account_other_profit_reference_id'
+          'account_other_profit_reference_id',
         );
       } else {
         await components.accountReferenceSelect.set(
           updateFeeCenter.reference_cost_id,
-          'account_cost_fixed_reference_id'
+          'account_cost_fixed_reference_id',
         );
       }
     }
@@ -143,7 +143,7 @@ class FeeCenterPage {
    */
   async errorEditFeeCenter(label, updateFeeCenter) {
     const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit-record', this.gridId);
     await FU.input('FeeCenterModalCtrl.feeCenter.label', updateFeeCenter.label);
 
     if (updateFeeCenter.is_update_reference) {
@@ -156,12 +156,12 @@ class FeeCenterPage {
       if (updateFeeCenter.is_profit) {
         await components.accountReferenceSelect.set(
           updateFeeCenter.reference_profit_id,
-          'account_other_profit_reference_id'
+          'account_other_profit_reference_id',
         );
       } else {
         await components.accountReferenceSelect.set(
           updateFeeCenter.reference_cost_id,
-          'account_cost_fixed_reference_id'
+          'account_cost_fixed_reference_id',
         );
       }
     }
@@ -177,7 +177,7 @@ class FeeCenterPage {
    */
   async deleteFeeCenter(label) {
     const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete-record', this.gridId);
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
   }
