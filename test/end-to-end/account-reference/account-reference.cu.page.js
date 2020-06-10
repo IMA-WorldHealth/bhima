@@ -54,9 +54,7 @@ class CreateUpdateAccountReferencePage {
   async setAccountValues(values) {
     await this.accounts.click();
 
-    await Promise.all(
-      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v)),
-    );
+    await FU.series(values, v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v));
 
     await this.modal.click();
   }
@@ -65,9 +63,7 @@ class CreateUpdateAccountReferencePage {
   async setAccountExceptionValues(values) {
     await this.accountsException.click();
 
-    await Promise.all(
-      values.map(v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v)),
-    );
+    await FU.series(values, v => FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v));
 
     await this.modal.click();
   }

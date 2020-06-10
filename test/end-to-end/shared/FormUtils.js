@@ -311,7 +311,7 @@ module.exports = {
   // chains an array of promises and runs them in series.
   series : async (array, callback) => {
     return array.reduce(
-      (promise, element) => promise.then(() => callback(element)),
+      (promise, element, index, array) => promise.then(() => callback(element, index, array)),
       Promise.resolve(),
     );
   },
