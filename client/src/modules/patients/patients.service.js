@@ -23,7 +23,7 @@ PatientService.$inject = [
  */
 function PatientService(
   Session, $uibModal, Documents, Visits, Filters, AppCache, Periods, Api,
-  $httpParamSerializer, Languages, bhConstants, HttpCache
+  $httpParamSerializer, Languages, bhConstants, HttpCache,
 ) {
   const baseUrl = '/patients/';
   const service = new Api(baseUrl);
@@ -42,6 +42,7 @@ function PatientService(
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
   service.merge = merge;
+  service.findDuplicatePatients = findDuplicatePatients;
   service.countEmployees = countEmployees;
 
   service.getFinancialActivity = getFinancialActivity;
@@ -53,6 +54,7 @@ function PatientService(
   service.balance = balance;
   service.download = download;
   service.openReturningPatientModal = openReturningPatientModal;
+  service.openFindDuplicatePatientsModal = openFindDuplicatePatientsModal;
 
   /**
    * @method merge
@@ -66,6 +68,25 @@ function PatientService(
     const path = `/patients/merge`;
     return service.$http.post(path, params)
       .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method findDuplicatePatients()
+   *
+   * @description
+   * Queries the server to look up patients which may be duplicates for
+   * merging.
+   */
+  function findDuplicatePatients(params) {
+    return service.$http.get(`${baseUrl}merge/duplicates`, { params })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function openFindDuplicatePatientsModal() {
+    return $uibModal.open({
+      templateUrl : 'modules/patients/registry/modals/findDuplicatePatients.modal.html',
+      controller : 'FindDuplicatePatientsModalController as ModalCtrl',
+    }).result;
   }
 
   /**
@@ -237,6 +258,7 @@ function PatientService(
 
   patientFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.NAME' },
+    { key : 'uuids', label : 'FORM.LABELS.REFERENCES' },
     { key : 'display_name', label : 'FORM.LABELS.NAME' },
     { key : 'sex', label : 'FORM.LABELS.GENDER' },
     { key : 'hospital_no', label : 'FORM.LABELS.HOSPITAL_NO' },
@@ -317,7 +339,7 @@ function PatientService(
       backdrop : 'static',
       controller : 'PatientRegistryModalController as $ctrl',
       resolve : {
-        filters : function paramsProvider() { return params; },
+        filters : () => params,
       },
     }).result;
   }

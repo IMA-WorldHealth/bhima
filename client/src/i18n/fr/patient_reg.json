@@ -10,6 +10,8 @@
     "PAGE_TITLE": "Enregistrement des Patients",
     "PATIENT_DETAILS": "Détails Patient",
     "REMOVE_PREVIOUS_ASSIGNMENT" : "Supprimer tous les groupes déjà assignés à ces patients",
-    "SUCCESS": "Patient enregistré avec succès"
+    "SUCCESS": "Patient enregistré avec succès",
+    "FIND_DUPLICATE_PATIENTS" : "Trouver des patients en double",
+    "NO_DUPLICATES_DETECTED" : "Aucun doublon détecté dans la base de données."
   }
 }

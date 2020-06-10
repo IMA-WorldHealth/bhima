@@ -12,33 +12,35 @@
  * - remove the debtor relate to patient to remove
  */
 const debug = require('debug')('bhima:patients:merge');
+const express = require('express');
 const db = require('../../../lib/db');
 
-exports.mergePatients = mergePatients;
-exports.countEmployees = countEmployees;
-exports.getDuplicatePatients = getDuplicatePatients;
+// router is mounted at /patients/merge
+const router = express.Router();
 
-function countEmployees(req, res, next) {
+router.get('/count_employees', async (req, res, next) => {
   const query = `
-    SELECT COUNT(*) AS total_employees FROM employee WHERE patient_uuid IN (?);
+    SELECT COUNT(*) AS total_employees
+    FROM employee
+    WHERE patient_uuid IN (?);
   `;
-  const patients = req.query.patients.map(uuid => db.bid(uuid));
-  db.exec(query, [patients])
-    .then(([data]) => {
-      res.status(200).json(data);
-    })
-    .catch(next)
-    .done();
-}
+  try {
+    const patients = req.query.patients.map(uuid => db.bid(uuid));
+    const [data] = await db.exec(query, [patients]);
+    res.status(200).json(data);
+  } catch (e) {
+    next(e);
+  }
+});
 
-async function getDuplicatePatients(req, res, next) {
+router.get('/duplicates', async (req, res, next) => {
   const sensitivity = req.params.sensitivity || 2;
   const duplicateSQL = `
-    SELECT COUNT(p.uuid) AS num_patients, p.display_name, GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others,
+    SELECT COUNT(p.uuid) AS num_patients, p.display_name, GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others
     FROM patient p LEFT JOIN entity_map em ON p.uuid = em.uuid
     GROUP BY LOWER(p.display_name) HAVING COUNT(p.uuid) > ?
     ORDER BY COUNT(p.uuid) DESC
-    LIMIT 10;
+    LIMIT 25;
   `;
 
   try {
@@ -47,7 +49,7 @@ async function getDuplicatePatients(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+});
 
 /**
  * @function mergePatients
@@ -55,8 +57,10 @@ async function getDuplicatePatients(req, res, next) {
  * @description
  * Receives a POST request from the client with "selected" and "other" as the two options
  * and merges all "other" patients into the "selected" patient.
+ *
+ * POST /patients/merge
  */
-async function mergePatients(req, res, next) {
+router.post('/', async (req, res, next) => {
   const { selected, other } = req.body;
 
   debug(`#mergePatients(): merging ${other.length + 1} patients together.`);
@@ -146,4 +150,6 @@ async function mergePatients(req, res, next) {
   } catch (e) {
     next(e);
   }
-}
+});
+
+exports.router = router;

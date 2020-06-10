@@ -45,8 +45,8 @@ const merge = require('./merge');
 exports.groups = groups;
 exports.documents = documents;
 exports.visits = visits;
-exports.pictures = pictures;
 exports.merge = merge;
+exports.pictures = pictures;
 exports.stockMovementByPatient = stockMovementByPatient;
 exports.stockConsumedPerPatient = stockConsumedPerPatient;
 
@@ -436,7 +436,9 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid']);
+  db.convert(options, [
+    'patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid', 'uuids',
+  ]);
 
   const filters = new FilterParser(options, {
     tableAlias : 'p',
@@ -452,6 +454,7 @@ function find(options) {
   filters.equals('health_area');
   filters.equals('project_id');
   filters.equals('uuid');
+  filters.equals('uuids', 'uuid', 'p', true);
 
   // filters for location
   const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
@@ -471,10 +474,8 @@ function find(options) {
   filters.equals('sex');
   filters.equals('hospital_no');
   filters.equals('user_id');
+  filters.equals('reference', 'text', 'em');
 
-  filters.custom('reference', 'em.text = ?');
-
-  // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY p.registration_date DESC');
 
   // applies filters and limits to defined sql, get parameters in correct order

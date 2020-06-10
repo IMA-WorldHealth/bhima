@@ -1,0 +1,38 @@
+<bh-modal-notify error="ModalCtrl.errorValue"></bh-modal-notify>
+
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.HOSPITAL</li>
+    <li class="static" translate>PATIENT_REGISTRY.TITLE</li>
+    <li class="title" translate>PATIENT_REG.FIND_DUPLICATE_PATIENTS</li>
+  </ol>
+</div>
+
+<div class="modal-body">
+  <p class="text-success" ng-if="ModalCtrl.hasNoDuplicates" translate>
+    PATIENT_REG.NO_DUPLICATES_DETECTED
+  </p>
+
+  <div
+    id="duplicate-patients-grid"
+    style="height: 40vh; margin-bottom: 1em;"
+    ui-grid="ModalCtrl.uiGridOptions"
+    ui-grid-auto-resize
+    ui-grid-selection>
+    <bh-grid-loading-indicator
+      loading-state="ModalCtrl.loading"
+      empty-state="ModalCtrl.uiGridOptions.data.length === 0"
+      error-state="ModalCtrl.hasError">
+    </bh-grid-loading-indicator>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button data-method="cancel" type="button" class="btn btn-default" ng-click="ModalCtrl.dismiss()">
+    <span translate>FORM.BUTTONS.CANCEL</span>
+  </button>
+
+  <button type="submit" class="btn btn-primary" ng-click="ModalCtrl.submit()">
+    <span translate>FORM.BUTTONS.SUBMIT</span>
+  </button>
+</div>

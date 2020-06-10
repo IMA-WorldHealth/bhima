@@ -33,6 +33,7 @@ function PatientRegistryController(
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.mergePatients = mergePatients;
+  vm.openFindDuplicatePatientsModal = openFindDuplicatePatientsModal;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -197,11 +198,28 @@ function PatientRegistryController(
     Patients.openSearchModal(filtersSnapshot)
       .then((changes) => {
         Patients.filters.replaceFilters(changes);
-
         Patients.cacheFilters();
         vm.latestViewFilters = Patients.filters.formatView();
         return load(Patients.filters.formatHTTP(true));
       });
+  }
+
+  /**
+   * @function openFindDuplicatePatientsModal
+   *
+   * @description
+   * Opens the modal to locate duplicate patients.  This is essentially a search
+   * modal and returns filters to the registry to filter the registry on duplciate
+   * patients.  If the modal is dismissed, nothing happens.
+   */
+  function openFindDuplicatePatientsModal() {
+    Patients.openFindDuplicatePatientsModal()
+      .then((changes) => {
+        Patients.filters.replaceFilters(changes);
+        vm.latestViewFilters = Patients.filters.formatView();
+        return load(Patients.filters.formatHTTP(true));
+      })
+      .catch(angular.noop);
   }
 
   // remove a filter with from the filter object, save the filters and reload

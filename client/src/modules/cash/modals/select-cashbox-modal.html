@@ -6,11 +6,10 @@
 </div>
 
 <div class="modal-body" data-cashbox-modal>
-
-  <p class ="text-danger" ng-if="!$ctrl.hasCashboxes" translate>
-    CASH.SELECTION.NO_CASHBOXE
+  <p class="text-danger" ng-if="!$ctrl.hasCashboxes" translate>
+    CASH.SELECTION.NO_CASHBOXES
   </p>
-  
+
   <label class="control-label" translate>CASH.SELECTION.CURRENT_PROJECT_CASHBOXES</label>
 
   <!-- list of cashboxes -->
@@ -42,7 +41,7 @@
   </p>
 
 
-  
+
 
   <label class="control-label" translate>CASH.SELECTION.OTHER_PROJECT_CASHBOXES</label>
   <ul ng-if="$ctrl.hasOtherProjectCashboxes" class="list-group">
