@@ -92,7 +92,11 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
 
   function onExitTypeChange() {
     // be sure at least one checkbox is checked
-    const sum = vm.includePatientExit + vm.includeServiceExit + vm.includeGroupedServiceExit + vm.includeDepotExit + vm.includeLossExit;
+    const sum = vm.includePatientExit
+      + vm.includeServiceExit
+      + vm.includeGroupedServiceExit
+      + vm.includeDepotExit
+      + vm.includeLossExit;
     vm.hasOneChecked = sum > 0;
   }
 }
