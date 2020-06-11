@@ -1,4 +1,3 @@
-/* Database Schema Version 0.9.0 */
 SET foreign_key_checks = 0;
 
 SET names 'utf8mb4';
@@ -198,7 +197,7 @@ DROP TABLE IF EXISTS `rubric_payroll`;
 CREATE TABLE `rubric_payroll` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(20) DEFAULT NULL,
+  `abbr` VARCHAR(20) DEFAULT NULL,
   `is_employee` TINYINT(1) DEFAULT 0,
   `is_percent` TINYINT(1) DEFAULT 0,
   `is_discount` TINYINT(1) DEFAULT 0,
@@ -314,9 +313,9 @@ CREATE TABLE `creditor` (
 DROP TABLE IF EXISTS `creditor_group`;
 
 CREATE TABLE `creditor_group` (
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
-  `name` varchar(80) NOT NULL,
+  `name` VARCHAR(80) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
@@ -330,8 +329,8 @@ CREATE TABLE `creditor_group` (
 
 DROP TABLE IF EXISTS `critere`;
 CREATE TABLE `critere` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` varchar(50) NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(50) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -340,9 +339,9 @@ CREATE TABLE `critere` (
 DROP TABLE IF EXISTS `currency`;
 CREATE TABLE `currency` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `format_key` varchar(20) NOT NULL,
-  `symbol` varchar(15) NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `format_key` VARCHAR(20) NOT NULL,
+  `symbol` VARCHAR(15) NOT NULL,
   `note` text,
   `min_monentary_unit` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
@@ -417,7 +416,7 @@ CREATE TABLE `debtor_group_history` (
   `previous_debtor_group` BINARY(16) DEFAULT NULL,
   `next_debtor_group` BINARY(16) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
+  `user_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `previous_debtor_group` (`previous_debtor_group`),
@@ -450,8 +449,8 @@ DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(191) NOT NULL,
-  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
-  `is_warehouse` smallINT(5) UNSIGNED NOT NULL DEFAULT 0,
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `is_warehouse` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_donation` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_integration` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -686,7 +685,7 @@ CREATE TABLE `general_ledger` (
 DROP TABLE IF EXISTS `grade`;
 CREATE TABLE `grade` (
   `uuid` BINARY(16) NOT NULL,
-  `code` varchar(30) DEFAULT NULL,
+  `code` VARCHAR(30) DEFAULT NULL,
   `text` VARCHAR(50) NOT NULL,
   `basic_salary` decimal(19,4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
@@ -698,9 +697,9 @@ DROP TABLE IF EXISTS `holiday`;
 
 CREATE TABLE `holiday` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `employee_uuid` binary(16) NOT NULL,
+  `employee_uuid` BINARY(16) NOT NULL,
   `percentage` float DEFAULT 0,
-  `label` varchar(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `dateFrom` date NOT NULL,
   `dateTo` date NOT NULL,
   PRIMARY KEY (`id`),
@@ -716,7 +715,7 @@ CREATE TABLE `holiday_paiement` (
   `holiday_nbdays` INT(10) UNSIGNED NOT NULL,
   `holiday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
-  `label` varchar(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
@@ -731,7 +730,7 @@ CREATE TABLE `offday_paiement` (
   `offday_id` INT(10) UNSIGNED NOT NULL,
   `offday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
-  `label` varchar(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `offday_id` (`offday_id`),
@@ -753,8 +752,8 @@ DROP TABLE IF EXISTS `inventory`;
 CREATE TABLE `inventory` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
-  `code` varchar(30) NOT NULL,
-  `text` varchar(100) NOT NULL,
+  `code` VARCHAR(30) NOT NULL,
+  `text` VARCHAR(100) NOT NULL,
   `price` DECIMAL(18,4) UNSIGNED NOT NULL DEFAULT 0.0,
   `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
@@ -794,8 +793,8 @@ CREATE TABLE `inventory` (
 DROP TABLE IF EXISTS `inventory_group`;
 CREATE TABLE `inventory_group` (
   `uuid` BINARY(16) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `code` varchar(30) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `code` VARCHAR(30) NOT NULL,
   `sales_account` mediumINT(8) UNSIGNED DEFAULT NULL,
   `cogs_account` mediumINT(8) UNSIGNED DEFAULT NULL,
   `stock_account` mediumINT(8) UNSIGNED DEFAULT NULL,
@@ -815,16 +814,16 @@ CREATE TABLE `inventory_group` (
 DROP TABLE IF EXISTS `inventory_type`;
 CREATE TABLE `inventory_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` varchar(30) NOT NULL,
+  `text` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_type_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory_unit`;
 CREATE TABLE `inventory_unit` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `abbr` varchar(10) NOT NULL,
-  `text` varchar(30) NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `abbr` VARCHAR(10) NOT NULL,
+  `text` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_unit_1` (`text`),
   UNIQUE KEY `inventory_unit_2` (`abbr`)
@@ -846,7 +845,7 @@ CREATE TABLE `language` (
 DROP TABLE IF EXISTS `offday`;
 CREATE TABLE `offday` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` varchar(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `date` date NOT NULL,
   `percent_pay` float DEFAULT '100',
   PRIMARY KEY (`id`),
@@ -888,7 +887,7 @@ DROP TABLE IF EXISTS `paiement_status`;
 
 CREATE TABLE `paiement_status` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
+  `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `paiement_status` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1085,7 +1084,7 @@ CREATE TABLE patient_group_subsidy (
 DROP TABLE IF EXISTS `discharge_type`;
 CREATE TABLE `discharge_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` varchar(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `discharge_type_1` (`id`, `label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1193,8 +1192,8 @@ DROP TABLE IF EXISTS `permission`;
 
 CREATE TABLE `permission` (
   `id` mediumINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `unit_id` smallINT(5) UNSIGNED NOT NULL,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `unit_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permission_1` (`unit_id`,`user_id`),
   KEY `unit_id` (`unit_id`),
@@ -1340,9 +1339,9 @@ CREATE TABLE `project` (
 DROP TABLE IF EXISTS `project_permission`;
 
 CREATE TABLE `project_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
-  `project_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
@@ -1413,7 +1412,7 @@ DROP TABLE IF EXISTS `purchase_status`;
 
 CREATE TABLE `purchase_status` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
+  `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `purchase_status` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1581,7 +1580,7 @@ CREATE TABLE `sector` (
 
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
-  `id` smallINT(5) UNSIGNED not null auto_increment,
+  `id` SMALLINT(5) UNSIGNED not null auto_increment,
   `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `project_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -1709,8 +1708,8 @@ CREATE TABLE `taxe_ipr_configuration` (
 DROP TABLE IF EXISTS `transaction_type`;
 CREATE TABLE `transaction_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
-  `type` varchar(30) NOT NULL,
+  `text` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(30) NOT NULL,
   `fixed` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_type_1` (`id`, `text`)
@@ -1720,12 +1719,11 @@ CREATE TABLE `transaction_type` (
 DROP TABLE IF EXISTS `unit`;
 
 CREATE TABLE `unit` (
-  `id` smallINT(5) UNSIGNED NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `key` varchar(70) NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL,
+  `name` VARCHAR(30) NOT NULL,
+  `key` VARCHAR(70) NOT NULL,
   `description` text NOT NULL,
-  `parent` smallINT(6) DEFAULT 0,
-  `url` tinytext,
+  `parent` SMALLINT(6) DEFAULT 0,
   `path` tinytext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit_1` (`name`, `key`)
@@ -1749,8 +1747,8 @@ CREATE TABLE `user` (
 
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
-  `uuid` binary(16) NOT NULL,
-  `label` varchar(50) NOT NULL,
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(50) NOT NULL,
   PRIMARY kEY(`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -1763,8 +1761,8 @@ CREATE TABLE `actions` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `role_actions` (
-  `uuid` binary(16) NOT NULL,
-  `role_uuid` binary(16) NOT NULL,
+  `uuid` BINARY(16) NOT NULL,
+  `role_uuid` BINARY(16) NOT NULL,
   `actions_id`INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`actions_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE,
@@ -1773,9 +1771,9 @@ CREATE TABLE `role_actions` (
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
-  `uuid` binary(16) NOT NULL,
+  `uuid` BINARY(16) NOT NULL,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `role_uuid` binary(16) NOT NULL,
+  `role_uuid` BINARY(16) NOT NULL,
   PRIMARY kEY(`uuid`),
   UNIQUE `role_for_user` (`user_id`,`role_uuid`),
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
@@ -1785,8 +1783,8 @@ CREATE TABLE `user_role` (
 
 DROP TABLE IF EXISTS `role_unit`;
 CREATE TABLE `role_unit` (
-  `uuid` binary(16) NOT NULL,
-  `role_uuid`  binary(16) NOT NULL,
+  `uuid` BINARY(16) NOT NULL,
+  `role_uuid`  BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY(`uuid`),
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -1842,8 +1840,8 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
   `voucher_uuid`    BINARY(16) NOT NULL,
-  `document_uuid`   binary(16) default null,
-  `entity_uuid`     binary(16) default null,
+  `document_uuid`   BINARY(16) default null,
+  `entity_uuid`     BINARY(16) default null,
   `description`     TEXT NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
@@ -2049,8 +2047,8 @@ CREATE TABLE `transaction_history` (
 DROP TABLE IF EXISTS `depot_permission`;
 
 CREATE TABLE `depot_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `depot_uuid`  BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
@@ -2063,8 +2061,8 @@ CREATE TABLE `depot_permission` (
 DROP TABLE IF EXISTS `cashbox_permission`;
 
 CREATE TABLE `cashbox_permission` (
-  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
@@ -2122,7 +2120,7 @@ DROP TABLE IF EXISTS `fee_center`;
 CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
-  `is_principal` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_principal` TINYINT(1) UNSIGNED DEFAULT 0,
   `project_id` SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`)
@@ -2133,9 +2131,9 @@ CREATE TABLE `reference_fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
-  `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
-  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_cost` TINYINT(1) UNSIGNED DEFAULT 0,
+  `is_variable` TINYINT(1) UNSIGNED DEFAULT 0,
+  `is_turnover` TINYINT(1) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
   KEY `fee_center_id` (`fee_center_id`),
@@ -2150,9 +2148,9 @@ CREATE TABLE `fee_center_distribution` (
   `row_uuid` BINARY(16) NOT NULL,
   `trans_id` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
-  `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
-  `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
-  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_cost` TINYINT(1) UNSIGNED DEFAULT 0,
+  `is_variable` TINYINT(1) UNSIGNED DEFAULT 0,
+  `is_turnover` TINYINT(1) UNSIGNED DEFAULT 0,
   `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
@@ -2211,7 +2209,7 @@ DROP TABLE IF EXISTS `account_reference_type`;
 CREATE TABLE `account_reference_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
-  `fixed` tinyint(1) DEFAULT 0,
+  `fixed` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_type_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -2249,7 +2247,6 @@ CREATE TABLE `indicator` (
   FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`type_id`) REFERENCES `indicator_type` (`id`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `hospitalization_indicator`;
 CREATE TABLE `hospitalization_indicator` (
@@ -2306,9 +2303,9 @@ DROP TABLE IF EXISTS `break_even_reference`;
 CREATE TABLE `break_even_reference` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
-  `is_cost` tinyint(1) DEFAULT 0,
-  `is_variable` tinyint(1) DEFAULT 0,
-  `is_turnover` tinyint(1) DEFAULT 0,
+  `is_cost` TINYINT(1) DEFAULT 0,
+  `is_variable` TINYINT(1) DEFAULT 0,
+  `is_turnover` TINYINT(1) DEFAULT 0,
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `break_even_reference_1` (`label`),
@@ -2323,7 +2320,7 @@ CREATE TABLE `inventory_log` (
   `inventory_uuid` BINARY(16) NOT NULL,
   `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `text` JSON,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `user_id` (`user_id`),
@@ -2397,11 +2394,11 @@ CREATE TABLE `choices_list_management` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `label` VARCHAR(100) NOT NULL,
-  `fixed` tinyint(1) DEFAULT 0,
+  `fixed` TINYINT(1) DEFAULT 0,
   `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
   `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0,
-  `is_group` tinyint(1) NOT NULL DEFAULT 0,
-  `is_title` tinyint(1) NOT NULL DEFAULT 0,
+  `is_group` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_title` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -2413,11 +2410,11 @@ CREATE TABLE `survey_form` (
   `type` VARCHAR(100) NOT NULL,
   `choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
   `filter_choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
-  `other_choice` tinyint(1) DEFAULT 0,
+  `other_choice` TINYINT(1) DEFAULT 0,
   `name` VARCHAR(100) NOT NULL,
   `label` VARCHAR(100) NOT NULL,
   `hint` TEXT,
-  `required` tinyint(1) DEFAULT 0,
+  `required` TINYINT(1) DEFAULT 0,
   `constraint` VARCHAR(100) NULL,
   `default` VARCHAR(100) NULL,
   `calculation` VARCHAR(100) NULL,
@@ -2433,7 +2430,7 @@ CREATE TABLE `survey_form_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   `type` VARCHAR(100) NOT NULL,
-  `is_list` tinyint(1) NOT NULL DEFAULT 0,
+  `is_list` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -2443,7 +2440,7 @@ CREATE TABLE `survey_data` (
   `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `is_deleted` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `data_collector_management_id` (`data_collector_management_id`),
   KEY `user_id` (`user_id`),
@@ -2495,7 +2492,7 @@ DROP TABLE IF EXISTS `analysis_tool_type`;
 CREATE TABLE `analysis_tool_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
-  `is_balance_sheet` tinyint(1) DEFAULT 0,
+  `is_balance_sheet` TINYINT(1) DEFAULT 0,
   `rank` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `analysis_tool_type_1` (`label`)
