@@ -1,7 +1,7 @@
 {
   "DEBTOR_GROUP": {
     "BACK": "Back to Debtor Groups",
-    "CHANGE" : "Debtor group changes",
+    "CHANGE" : "Changes in Debtor Group",
     "CLICK_TO_ADD" : "Click here to add a debtor group",
     "CREATE": "Create Debtor Group",
     "CREATE_ANOTHER": "Create another Debtor Group",

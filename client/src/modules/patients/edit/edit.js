@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 PatientEdit.$inject = [
   '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService',
-  'ScrollService', 'PatientGroupModal', 'bhConstants',
+  'ScrollService', 'PatientGroupModal', 'bhConstants', '$timeout',
 ];
 
-function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Constants) {
+function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Constants, $timeout) {
   const vm = this;
   const referenceId = $stateParams.uuid;
 
@@ -127,7 +127,11 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   };
 
   vm.updateDebtorGroup = function updateDebtorGroup() {
-    GroupModal.updateDebtor(vm.medical, updateDebtorModel);
+    GroupModal.updateDebtor(vm.medical, updateDebtorModel)
+      .then(() => {
+        vm.refreshDebtorGroupHistory = true;
+        $timeout(() => { vm.refreshDebtorGroupHistory = false; }, 250);
+      });
   };
 
   vm.updatePatientGroups = function updatePatientGroups() {
