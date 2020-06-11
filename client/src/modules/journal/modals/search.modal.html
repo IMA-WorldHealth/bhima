@@ -140,7 +140,7 @@
         <bh-currency-select
           required="false"
           currency-id="ModalCtrl.searchQueries.currency_id"
-          on-change="ModalCtrl.setCurrency(currencyId)">
+          on-change="ModalCtrl.onSetCurrency(currency)">
           <bh-clear on-clear="ModalCtrl.clear('currency_id')"></bh-clear>
         </bh-currency-select>
 
@@ -171,7 +171,7 @@
             <!-- refers to the ng-value of the currently selcted radio button -->
             <bh-yes-no-radios
               value ="ModalCtrl.defaultQueries.showFullTransactions"
-			  name="showFullTransactions"
+              name="showFullTransactions"
               on-change-callback="ModalCtrl.toggleFullTransaction(value)"
               label="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS"
               help-text="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS_HELP">

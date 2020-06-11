@@ -4,7 +4,7 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhCurrencySelect.tmpl.html',
     transclude  : true,
     bindings    : {
-      currencyId        : '<',
+      currencyId        : '<?',
       onChange          : '&',
       label             : '@?',
       disableIds        : '<?',
@@ -76,8 +76,8 @@ function bhCurrencySelect(Currencies) {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CURRENCY';
   };
 
-  $ctrl.valueChange = () => {
-    $ctrl.onChange({ currencyId : $ctrl.currencyId });
+  $ctrl.valueChange = (currency) => {
+    $ctrl.onChange({ currencyId : currency.id, currency });
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
