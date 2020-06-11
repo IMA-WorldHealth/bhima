@@ -10,8 +10,6 @@ module.exports = {
 
     await target.click();
 
-    return Promise.all(
-      depots.map(uid => FU.uiSelect('$ctrl.depotsUuids', uid))
-    );
+    await FU.series(depots, uid => FU.uiSelect('$ctrl.depotsUuids', uid));
   },
 };

@@ -2,6 +2,7 @@
 /* eslint  */
 
 const GU = require('../shared/GridUtils');
+const FU = require('../shared/FormUtils');
 
 class JournalPage {
   constructor() {
@@ -19,13 +20,13 @@ class JournalPage {
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    return Promise.all(rows
-      .map(async (row, index) => {
-        const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
-        if (attr === transId) {
-          await GU.selectRow(this.gridId, index);
-        }
-      }));
+    await FU.series(rows, async (row, index) => {
+      const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
+      if (attr === transId) {
+        await GU.selectRow(this.gridId, index);
+      }
+    });
+
   }
 
   async selectTransactions(transIds /* Array */) {
@@ -33,13 +34,12 @@ class JournalPage {
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-    return Promise.all(rows
-      .map(async (row, index) => {
-        const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
-        if (transIds.includes(attr)) {
-          await GU.selectRow(this.gridId, index);
-        }
-      }));
+    await FU.series(rows, async (row, index) => {
+      const attr = await row.$(`[data-rowcol]`).getAttribute('data-rowcol');
+      if (transIds.includes(attr)) {
+        await GU.selectRow(this.gridId, index);
+      }
+    });
   }
 
   async openGridConfigurationModal() {
