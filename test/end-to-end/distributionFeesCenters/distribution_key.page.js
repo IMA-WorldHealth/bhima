@@ -37,6 +37,7 @@ class FeeCenterPage {
     await components.percentageInput.set(50, 'principal_1');
     await components.percentageInput.set(25, 'principal_2');
     await components.percentageInput.set(25, 'principal_3');
+
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   }

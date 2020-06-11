@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DistributionCenterController.$inject = [
   'DistributionCenterService', 'NotifyService', 'uiGridConstants', '$state', 'GridColumnService',
-  'GridStateService', 'util', 'bhConstants',
+  'GridStateService', 'util', 'bhConstants', 'SessionService',
 ];
 
 /**
@@ -13,7 +13,7 @@ DistributionCenterController.$inject = [
  * It's responsible for creating, editing and updating a Distribution Center
  */
 function DistributionCenterController(DistributionCenters, Notify, uiGridConstants, $state, Columns,
-  GridState, util, bhConstants) {
+  GridState, util, bhConstants, Session) {
   const vm = this;
   const cacheKey = 'distribution_grid';
 
@@ -30,6 +30,7 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
   vm.breakdownPercentages = breakdownPercentages;
   vm.automaticBreakdown = automaticBreakdown;
   vm.format = util.formatDate;
+
   const TRANSACTION_TYPE_INVOICING = bhConstants.transactionType.INVOICING;
 
   // options for the UI grid
@@ -83,8 +84,8 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
         headerCellFilter : 'translate',
         cellClass : 'text-right',
         footerCellClass : 'text-right',
-        cellFilter : 'number: 2',
-        footerCellFilter : 'number:2',
+        cellFilter : 'currency:row.entity.currency_id',
+        footerCellFilter : 'currency:row.entity.currency_id',
         enableFiltering : true,
       }, {
         field : 'amount_equiv',
@@ -93,8 +94,8 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
         headerCellFilter : 'translate',
         cellClass : 'text-right',
         footerCellClass : 'text-right',
-        cellFilter : 'number: 2',
-        footerCellFilter : 'number:2',
+        cellFilter : `currency:${Session.enterprise.currency_id}`,
+        footerCellFilter : `currency:${Session.enterprise.currency_id}`,
         enableFiltering : true,
       }, {
         field : 'currencyName',
