@@ -1,5 +1,5 @@
 angular.module('bhima.filters')
-.filter('percentage', PercentageFilter);
+  .filter('percentage', PercentageFilter);
 
 /**
  * Percentage Filter
@@ -13,12 +13,12 @@ function PercentageFilter() {
     if (angular.isUndefined(number)) { return ''; }
 
     // cast value as number (or NaN)
-    var value = Number(number);
+    const value = Number(number);
 
     // angular's isNumber() method reports NaNs as numbers
-    if (!angular.isNumber(value) || isNaN(value)) { return number; }
+    if (!angular.isNumber(value) || Number.isNaN(value)) { return number; }
 
     // return the value + a percentage sign
-    return (Math.round(value * 100) / 100) + '%';
+    return `${Math.round(value * 100) / 100}%`;
   };
 }
