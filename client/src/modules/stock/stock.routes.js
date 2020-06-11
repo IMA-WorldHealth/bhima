@@ -10,14 +10,14 @@ angular.module('bhima.routes')
         },
       })
 
-      .state('stockMovements', {
-        url         : '/stock/movements',
-        controller  : 'StockMovementsController as StockCtrl',
-        templateUrl : 'modules/stock/movements/registry.html',
-        params : {
-          filters : [],
-        },
-      })
+    // .state('stockMovements', {
+    //   url         : '/stock/movements',
+    //   controller  : 'StockMovementsController as StockCtrl',
+    //   templateUrl : 'modules/stock/movements/registry.html',
+    //   params : {
+    //     filters : [],
+    //   },
+    // })
 
       .state('stockInlineMovements', {
         url         : '/stock/inline-movements',
