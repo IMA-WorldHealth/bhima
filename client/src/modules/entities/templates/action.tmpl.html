@@ -1,5 +1,5 @@
 <div
-  class="ui-grid-cell-contents text-center"
+  class="ui-grid-cell-contents text-right"
   uib-dropdown dropdown-append-to-body
   data-row="{{ row.entity.display_name }}">
   <a uib-dropdown-toggle href>
@@ -8,6 +8,7 @@
   </a>
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.display_name }}">
+    <li class="bh-dropdown-header">{{row.entity.display_name}}</li>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.editEntity(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>

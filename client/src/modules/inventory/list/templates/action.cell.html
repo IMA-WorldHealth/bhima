@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents" data-row-item="{{ row.entity.code }}" uib-dropdown dropdown-append-to-body>
+<div class="ui-grid-cell-contents text-right" data-row-item="{{ row.entity.code }}" uib-dropdown dropdown-append-to-body>
 
   <a href uib-dropdown-toggle>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
@@ -6,7 +6,7 @@
   </a>
 
   <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.code}}</li>
+    <li class="bh-dropdown-header">{{row.entity.code}} - {{row.entity.label}}</li>
     <li>
       <a href
         data-method="edit"

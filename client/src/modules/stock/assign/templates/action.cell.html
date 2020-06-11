@@ -1,13 +1,11 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
   <a href>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li>
-      <a href><span>{{ row.entity.label }}</span></a>
-    </li>
+  <ul data-action="{{rowRenderIndex}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{ row.entity.label }}</li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
         <span><i class="fa fa-file-o"></i> <span translate>FORM.LABELS.DOCUMENT</span></span>

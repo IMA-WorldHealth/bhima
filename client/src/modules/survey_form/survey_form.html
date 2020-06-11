@@ -4,14 +4,14 @@
         <li class="static" translate> TREE.ADMIN </li>
         <li class="title" translate> TREE.FORMS_CONFIGURATION </li>
       </ol>
-  
+
       <div class="toolbar">
         <div class="toolbar-item">
           <button ng-disabled="!SurveyFormCtrl.collectorId" class="btn btn-default text-capitalize" id="create" ui-sref="survey_form.create({ collectorId : SurveyFormCtrl.collectorId })" data-method="create">
             <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span>
           </button>
         </div>
-  
+
         <div class="toolbar-item">
           <button
             type="button"
@@ -22,7 +22,7 @@
             <i class="fa fa-filter"></i>
           </button>
         </div>
-  
+
         <div class="toolbar-item">
           <bh-data-collector
             on-update="SurveyFormCtrl.dataCollectorSelect(dataCollectorId)">
@@ -31,22 +31,21 @@
       </div>
     </div>
   </div>
-  
+
   <!-- main content -->
   <div class="flex-content">
-    <div class="container-fluid"> 
-      <div id="survey-form-grid" 
-        ui-grid="SurveyFormCtrl.gridOptions" 
-        class="grid-full-height" 
-        ui-grid-auto-resize 
-        ui-grid-resize-columns> 
-        
-        <bh-grid-loading-indicator 
+    <div class="container-fluid">
+      <div id="survey-form-grid"
+        ui-grid="SurveyFormCtrl.gridOptions"
+        class="grid-full-height"
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+
+        <bh-grid-loading-indicator
           loading-state="SurveyFormCtrl.loading"
-          empty-state="SurveyFormCtrl.gridOptions.data.length === 0" 
-          error-state="SurveyFormCtrl.hasError"> 
-        </bh-grid-loading-indicator> 
-      </div> 
-    </div> 
+          empty-state="SurveyFormCtrl.gridOptions.data.length === 0"
+          error-state="SurveyFormCtrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
   </div>
-  

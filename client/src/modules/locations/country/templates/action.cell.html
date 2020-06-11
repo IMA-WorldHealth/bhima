@@ -1,5 +1,5 @@
 <div
-  class="ui-grid-cell-contents text-action"
+  class="ui-grid-cell-contents text-right"
   data-row="{{row.entity.name}}"
   uib-dropdown dropdown-append-to-body>
 
@@ -9,6 +9,7 @@
   </a>
 
   <ul data-row-menu="{{row.entity.name}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.name}}</li>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createUpdateModal(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>

@@ -1,13 +1,11 @@
-<div 
-  class="ui-grid-cell-contents text-center"
-   uib-dropdown dropdown-append-to-body 
-   data-row="{{ row.entity.label }}">
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.label }}">
   <a uib-dropdown-toggle href>
     <span data-action="open-dropdown-menu" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.label }}">
+    <li class="bh-dropdown-header">{{row.entity.label}}</li>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createRoom(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
@@ -17,7 +15,7 @@
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.deleteRoom(row.entity.uuid)" href>
         <span class="text-danger">
-          <i class="fa fa-trash"></i> <span translate>DEPOT.DELETE</span>
+          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
         </span>
       </a>
     </li>

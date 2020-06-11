@@ -13,7 +13,7 @@ function IndicatorsFilesRegistryController(
 ) {
   const vm = this;
 
-  const cacheKey = 'AdmissionRegistry';
+  const cacheKey = 'IndicatorFilesRegistry';
 
   // the grid registry filterer
   const grid = IndicatorsDashboard.indicatorsFilesGridFilterer;

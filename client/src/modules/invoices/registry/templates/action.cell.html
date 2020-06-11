@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.reference }}">
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.reference }}">
 
   <a uib-dropdown-toggle href data-action="open-dropdown-menu">
     <span translate>FORM.BUTTONS.ACTIONS</span>
@@ -6,7 +6,7 @@
   </a>
 
   <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">
+    <li class="bh-dropdown-header">
       {{row.entity.reference}}
       <span ng-show="row.entity.edited" class="text-primary">
         <i class="fa fa-pencil"></i>
