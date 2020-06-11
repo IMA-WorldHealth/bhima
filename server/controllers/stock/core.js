@@ -322,6 +322,7 @@ async function getMovements(depotUuid, params) {
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference
   FROM stock_movement m
+  JOIN lot l ON l.uuid = m.lot_uuid
   JOIN depot d ON d.uuid = m.depot_uuid
   JOIN flux f ON f.id = m.flux_id
   LEFT JOIN document_map dm ON dm.uuid = m.document_uuid

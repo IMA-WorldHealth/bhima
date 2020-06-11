@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-  .controller('StockInlineMovementsController', StockInlineMovementsController);
+  .controller('StockMovementsController', StockMovementsController);
 
-StockInlineMovementsController.$inject = [
+StockMovementsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants',
   'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
   'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
@@ -9,18 +9,18 @@ StockInlineMovementsController.$inject = [
 ];
 
 /**
- * Stock inline movements Controller
+ * Stock movements registry Controller
  * This module is a registry page for stock movements
  * where each line represent a single movement
  */
-function StockInlineMovementsController(
+function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
   $translate, bhConstants,
 ) {
   const vm = this;
-  const cacheKey = 'inline-movements-grid';
-  const stockInlineMovementsFilters = Stock.filter.inlineMovement;
+  const cacheKey = 'movements-grid';
+  const stockMovementsFilters = Stock.filter.inlineMovement;
 
   // grid columns
   const columns = getGridColumns();
@@ -65,12 +65,12 @@ function StockInlineMovementsController(
       field : 'documentReference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inline-movements/templates/reference.cell.html',
+      cellTemplate : 'modules/stock/movements/templates/reference.cell.html',
     }, {
       field : 'io',
       displayName : 'STOCK.IO',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inline-movements/templates/io.cell.html',
+      cellTemplate : 'modules/stock/movements/templates/io.cell.html',
     }, {
       field : 'cost',
       type : 'number',
@@ -89,13 +89,13 @@ function StockInlineMovementsController(
       field : 'flux_id',
       displayName : 'STOCK.FLUX',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inline-movements/templates/flux.cell.html',
+      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
       field : 'action',
       displayName : '',
       enableFiltering : false,
       enableSorting : false,
-      cellTemplate : 'modules/stock/inline-movements/templates/action.cell.html',
+      cellTemplate : 'modules/stock/movements/templates/action.cell.html',
     }];
   }
 
@@ -128,7 +128,7 @@ function StockInlineMovementsController(
   const state = new GridState(vm.gridOptions, cacheKey);
 
   function getQueryString(options) {
-    return stockInlineMovementsFilters.getQueryString(options);
+    return stockMovementsFilters.getQueryString(options);
   }
 
   // grid api
@@ -162,10 +162,10 @@ function StockInlineMovementsController(
 
   // on remove one filter
   function onRemoveFilter(key) {
-    stockInlineMovementsFilters.remove(key);
-    stockInlineMovementsFilters.formatCache();
-    vm.latestViewFilters = stockInlineMovementsFilters.formatView();
-    return load(stockInlineMovementsFilters.formatHTTP(true));
+    stockMovementsFilters.remove(key);
+    stockMovementsFilters.formatCache();
+    vm.latestViewFilters = stockMovementsFilters.formatView();
+    return load(stockMovementsFilters.formatHTTP(true));
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -218,9 +218,9 @@ function StockInlineMovementsController(
 
   // search modal
   function search() {
-    const filtersSnapshot = stockInlineMovementsFilters.formatHTTP();
+    const filtersSnapshot = stockMovementsFilters.formatHTTP();
 
-    Modal.openSearchInlineMovements(filtersSnapshot)
+    Modal.openSearchMovements(filtersSnapshot)
       .then(handleSearchModal);
   }
 
@@ -228,10 +228,10 @@ function StockInlineMovementsController(
     // if there is no change , customer filters should not change
     if (!changes) { return; }
 
-    stockInlineMovementsFilters.replaceFilters(changes);
-    stockInlineMovementsFilters.formatCache();
-    vm.latestViewFilters = stockInlineMovementsFilters.formatView();
-    load(stockInlineMovementsFilters.formatHTTP(true));
+    stockMovementsFilters.replaceFilters(changes);
+    stockMovementsFilters.formatCache();
+    vm.latestViewFilters = stockMovementsFilters.formatView();
+    load(stockMovementsFilters.formatHTTP(true));
   }
 
   // get flux name
@@ -242,16 +242,16 @@ function StockInlineMovementsController(
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
-      stockInlineMovementsFilters.replaceFiltersFromState($state.params.filters);
-      stockInlineMovementsFilters.formatCache();
+      stockMovementsFilters.replaceFiltersFromState($state.params.filters);
+      stockMovementsFilters.formatCache();
     }
 
-    load(stockInlineMovementsFilters.formatHTTP(true));
-    vm.latestViewFilters = stockInlineMovementsFilters.formatView();
+    load(stockMovementsFilters.formatHTTP(true));
+    vm.latestViewFilters = stockMovementsFilters.formatView();
   }
 
   vm.downloadExcel = () => {
-    const filterOpts = stockInlineMovementsFilters.formatHTTP();
+    const filterOpts = stockMovementsFilters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,

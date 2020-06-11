@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('SearchInlineMovementsModalController', SearchInlineMovementsModalController);
+  .controller('SearchMovementsModalController', SearchMovementsModalController);
 
-SearchInlineMovementsModalController.$inject = [
+SearchMovementsModalController.$inject = [
   'data', 'NotifyService', '$uibModalInstance',
   'PeriodService', 'Store', 'util', 'StockService',
 ];
 
-function SearchInlineMovementsModalController(data, Notify, Instance, Periods, Store, util, Stock) {
+function SearchMovementsModalController(data, Notify, Instance, Periods, Store, util, Stock) {
   const vm = this;
   const displayValues = {};
   const changes = new Store({ identifier : 'key' });
