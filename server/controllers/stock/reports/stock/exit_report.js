@@ -72,6 +72,9 @@ function groupCollection(exitCollection) {
   // exit to service
   collection.exitToService = formatAndCombine(exitCollection.exitToService);
 
+  // exit to service grouped
+  collection.exitToServiceGrouped = formatAndCombine(exitCollection.exitToService, true);
+
   // exit to depot
   collection.exitToDepot = formatAndCombine(exitCollection.exitToDepot);
 
@@ -81,9 +84,9 @@ function groupCollection(exitCollection) {
   return collection;
 }
 
-function formatAndCombine(data) {
+function formatAndCombine(data, GROUP_BY_SERVICE) {
   const aggregate = _.chain(data)
-    .groupBy('text')
+    .groupBy(GROUP_BY_SERVICE ? 'service_display_name' : 'text')
     .map(formatExit)
     .value();
   const cost = _.sumBy(aggregate, 'inventory_stock_exit_cost');
@@ -116,6 +119,7 @@ async function collect(params) {
     showDetails,
     includePatientExit,
     includeServiceExit,
+    includeGroupedServiceExit,
     includeDepotExit,
     includeLossExit,
   } = params;
@@ -128,7 +132,7 @@ async function collect(params) {
   }
 
   // get stock exit to service
-  if (includeServiceExit) {
+  if (includeServiceExit || includeGroupedServiceExit) {
     data.exitToService = await StockExitToService.fetch(depotUuid, dateFrom, dateTo, showDetails);
   }
 

@@ -14,6 +14,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
   // default values
   vm.includePatientExit = 1;
   vm.includeServiceExit = 0;
+  vm.includeGroupedServiceExit = 0;
   vm.includeDepotExit = 0;
   vm.includeLossExit = 0;
   vm.previewGenerated = false;
@@ -53,6 +54,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
       dateTo : vm.dateTo,
       includePatientExit : vm.includePatientExit,
       includeServiceExit : vm.includeServiceExit,
+      includeGroupedServiceExit : vm.includeGroupedServiceExit,
       includeDepotExit : vm.includeDepotExit,
       includeLossExit : vm.includeLossExit,
       showDetails : vm.showDetails,
@@ -90,7 +92,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
 
   function onExitTypeChange() {
     // be sure at least one checkbox is checked
-    const sum = vm.includePatientExit + vm.includeServiceExit + vm.includeDepotExit + vm.includeLossExit;
+    const sum = vm.includePatientExit + vm.includeServiceExit + vm.includeGroupedServiceExit + vm.includeDepotExit + vm.includeLossExit;
     vm.hasOneChecked = sum > 0;
   }
 }

@@ -231,6 +231,7 @@
       "INCLUDE_INFORMATION": "Information to include",
       "INCLUDE_PATIENT_EXIT": "Include stock exit to patient",
       "INCLUDE_SERVICE_EXIT": "Include stock exit to service",
+      "INCLUDE_GROUPED_SERVICE_EXIT" : "Include stock exit grouped by services",
       "INCLUDE_DEPOT_EXIT": "Include stock exit to other depots",
       "INCLUDE_LOSS_EXIT": "Include stock loss",
       "SHOW_DETAILS": "Show Details",
