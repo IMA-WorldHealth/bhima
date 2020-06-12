@@ -11,30 +11,62 @@
  * - remove the patient to remove
  * - remove the debtor relate to patient to remove
  */
+const debug = require('debug')('bhima:patients:merge');
+const express = require('express');
 const db = require('../../../lib/db');
 
-exports.mergePatients = mergePatients;
-exports.countEmployees = countEmployees;
+// router is mounted at /patients/merge
+const router = express.Router();
 
-function countEmployees(req, res, next) {
+router.get('/count_employees', async (req, res, next) => {
   const query = `
-    SELECT COUNT(*) AS total_employees FROM employee WHERE patient_uuid IN (?);
+    SELECT COUNT(*) AS total_employees
+    FROM employee
+    WHERE patient_uuid IN (?);
   `;
-  const patients = req.query.patients.map(uuid => db.bid(uuid));
-  db.exec(query, [patients])
-    .then(([data]) => {
-      res.status(200).json(data);
-    })
-    .catch(next)
-    .done();
-}
+  try {
+    const patients = req.query.patients.map(uuid => db.bid(uuid));
+    const [data] = await db.exec(query, [patients]);
+    res.status(200).json(data);
+  } catch (e) {
+    next(e);
+  }
+});
 
-function mergePatients(req, res, next) {
-  const params = req.body;
-  const glb = {};
+router.get('/duplicates', async (req, res, next) => {
+  const sensitivity = req.params.sensitivity || 2;
+  const duplicateSQL = `
+    SELECT COUNT(p.uuid) AS num_patients, p.display_name, GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others
+    FROM patient p LEFT JOIN entity_map em ON p.uuid = em.uuid
+    GROUP BY LOWER(p.display_name) HAVING COUNT(p.uuid) > ?
+    ORDER BY COUNT(p.uuid) DESC
+    LIMIT 25;
+  `;
 
-  const selectedPatientUuid = db.bid(params.selected);
-  const otherPatientUuids = params.other.map(uuid => db.bid(uuid));
+  try {
+    const patients = await db.exec(duplicateSQL, [sensitivity]);
+    res.status(200).json(patients);
+  } catch (e) {
+    next(e);
+  }
+});
+
+/**
+ * @function mergePatients
+ *
+ * @description
+ * Receives a POST request from the client with "selected" and "other" as the two options
+ * and merges all "other" patients into the "selected" patient.
+ *
+ * POST /patients/merge
+ */
+router.post('/', async (req, res, next) => {
+  const { selected, other } = req.body;
+
+  debug(`#mergePatients(): merging ${other.length + 1} patients together.`);
+
+  const selectedPatientUuid = db.bid(selected);
+  const otherPatientUuids = other.map(uuid => db.bid(uuid));
 
   const getSelectedDebtorUuid = `SELECT debtor_uuid FROM patient WHERE uuid = ?`;
   const getOtherDebtorUuids = `SELECT debtor_uuid FROM patient WHERE uuid IN (?)`;
@@ -80,37 +112,44 @@ function mergePatients(req, res, next) {
     DELETE FROM patient WHERE uuid IN (?);
   `;
 
-  db.one(getSelectedDebtorUuid, [selectedPatientUuid])
-    .then(row => {
-      glb.selectedDebtorUuid = row.debtor_uuid;
-      return db.exec(getOtherDebtorUuids, otherPatientUuids);
-    })
-    .then(rows => {
-      glb.otherDebtorUuids = rows.map(row => row.debtor_uuid);
+  try {
+    const patient = await db.one(getSelectedDebtorUuid, [selectedPatientUuid]);
+    const debtorUuid = patient.debtor_uuid;
 
-      const transaction = db.transaction();
+    debug(`#mergePatient(): keeping "${patient.display_name}" (${debtorUuid}).`);
 
-      transaction.addQuery(replaceDebtorInJournal, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
-      transaction.addQuery(replaceDebtorInLedger, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
+    const rows = await db.exec(getOtherDebtorUuids, otherPatientUuids);
+    const otherDebtorUuids = rows.map(row => row.debtor_uuid);
+    const otherDebtorNames = rows
+      .map(row => `${row.display_name} (${row.debtor_uuid})`)
+      .join(',');
 
-      transaction.addQuery(replaceDebtorInCash, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
-      transaction.addQuery(replaceDebtorInDebtorGroupHistory, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
-      transaction.addQuery(replaceDebtorInInvoice, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
-      transaction.addQuery(replaceDebtorInPatient, [glb.selectedDebtorUuid, [glb.otherDebtorUuids]]);
+    debug(`#mergePatient(): removing ${otherDebtorNames}.`);
 
-      transaction.addQuery(replacePatientInEmployee, [selectedPatientUuid, [otherPatientUuids]]);
-      transaction.addQuery(replacePatientInPatientAssignment, [selectedPatientUuid, [otherPatientUuids]]);
-      transaction.addQuery(replacePatientInPatientDocument, [selectedPatientUuid, [otherPatientUuids]]);
-      transaction.addQuery(replacePatientInPatientHospitalization, [selectedPatientUuid, [otherPatientUuids]]);
-      transaction.addQuery(replacePatientInPatientVisit, [selectedPatientUuid, [otherPatientUuids]]);
+    const transaction = db.transaction()
+      .addQuery(replaceDebtorInJournal, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInLedger, [debtorUuid, [otherDebtorUuids]])
 
-      transaction.addQuery(removeOtherPatients, [otherPatientUuids]);
-      transaction.addQuery(removeOtherDebtors, [glb.otherDebtorUuids]);
-      return transaction.execute();
-    })
-    .then(() => {
-      res.sendStatus(204);
-    })
-    .catch(next)
-    .done();
-}
+      .addQuery(replaceDebtorInCash, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInDebtorGroupHistory, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInInvoice, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInPatient, [debtorUuid, [otherDebtorUuids]])
+
+      .addQuery(replacePatientInEmployee, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInPatientAssignment, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInPatientDocument, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInPatientHospitalization, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInPatientVisit, [selectedPatientUuid, [otherPatientUuids]])
+
+      .addQuery(removeOtherPatients, [otherPatientUuids])
+      .addQuery(removeOtherDebtors, [otherDebtorUuids]);
+
+    await transaction.execute();
+    debug(`#mergePatient(): Merged patients successfully.`);
+    res.sendStatus(204);
+  } catch (e) {
+    next(e);
+  }
+});
+
+exports.router = router;

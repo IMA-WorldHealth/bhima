@@ -8,7 +8,6 @@
  * This module is responsible for handling all crud operations relatives to patients
  * and define all patient API functions.
  *
- * @requires q
  * @requires lodash
  * @requires lib/db
  * @requires lib/util
@@ -46,8 +45,8 @@ const merge = require('./merge');
 exports.groups = groups;
 exports.documents = documents;
 exports.visits = visits;
-exports.pictures = pictures;
 exports.merge = merge;
+exports.pictures = pictures;
 exports.stockMovementByPatient = stockMovementByPatient;
 exports.stockConsumedPerPatient = stockConsumedPerPatient;
 
@@ -437,7 +436,9 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid']);
+  db.convert(options, [
+    'patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid', 'uuids',
+  ]);
 
   const filters = new FilterParser(options, {
     tableAlias : 'p',
@@ -453,6 +454,7 @@ function find(options) {
   filters.equals('health_area');
   filters.equals('project_id');
   filters.equals('uuid');
+  filters.equals('uuids', 'uuid', 'p', true);
 
   // filters for location
   const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
@@ -472,10 +474,8 @@ function find(options) {
   filters.equals('sex');
   filters.equals('hospital_no');
   filters.equals('user_id');
+  filters.equals('reference', 'text', 'em');
 
-  filters.custom('reference', 'em.text = ?');
-
-  // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY p.registration_date DESC');
 
   // applies filters and limits to defined sql, get parameters in correct order
@@ -699,7 +699,7 @@ function getStockMovements(req, res, next) {
 
 function stockMovementByPatient(patientUuid) {
   const sql = `
-      SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid, 
+      SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid,
       BUID(sm.depot_uuid) as depot_uuid,
       sm.unit_cost,
       (sm.quantity * sm.unit_cost) as value,
@@ -724,12 +724,12 @@ function stockConsumedPerPatient(patientUuid) {
     iv.text AS inventory_text, sm.quantity, sm.unit_cost,
     l.label AS lotLabel, un.text AS inventoryUnit
     FROM stock_movement AS sm
-    JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
-    JOIN inventory_unit AS un ON un.id = iv.unit_id
-    JOIN depot AS d ON d.uuid = sm.depot_uuid
-    JOIN patient AS p ON p.uuid = sm.entity_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+      JOIN inventory_unit AS un ON un.id = iv.unit_id
+      JOIN depot AS d ON d.uuid = sm.depot_uuid
+      JOIN patient AS p ON p.uuid = sm.entity_uuid
+      JOIN document_map AS map ON map.uuid = sm.document_uuid
     WHERE sm.entity_uuid = ?
     ORDER BY sm.date, sm.reference desc, iv.text asc;
   `;

@@ -39,13 +39,18 @@
                   <i class="fa fa-compress"></i> <span translate>FORM.LABELS.MERGE_PATIENTS</span>
               </a>
             </li>
+            <li role="menuitem">
+              <a href data-method="find-duplicate-patients" ng-click="PatientRegistryCtrl.openFindDuplicatePatientsModal()">
+                  <i class="fa fa-group"></i> <span translate>PATIENT_REG.FIND_DUPLICATE_PATIENTS</span>
+              </a>
+            </li>
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-                <a href data-method="change-patient-group" ng-click="PatientRegistryCtrl.changePatientGroup()">
-                  <i class="fa fa-edit"></i> <span translate>FORM.LABELS.CHANGE_PATIENT_GROUP</span>
-                </a>
-              </li>
+              <a href data-method="change-patient-group" ng-click="PatientRegistryCtrl.changePatientGroup()">
+                <i class="fa fa-edit"></i> <span translate>FORM.LABELS.CHANGE_PATIENT_GROUP</span>
+              </a>
+            </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a ng-href="/reports/medical/patients/?{{ PatientRegistryCtrl.download('pdf') }}" download="{{ 'PATIENT_REGISTRY.TITLE' | translate }}">

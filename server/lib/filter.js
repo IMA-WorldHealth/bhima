@@ -149,7 +149,6 @@ class FilterParser {
         preparedStatement = `${tableString}${columnAlias} = ${valueString}`;
       }
 
-
       this._addFilter(preparedStatement, this._filters[filterKey]);
       delete this._filters[filterKey];
     }

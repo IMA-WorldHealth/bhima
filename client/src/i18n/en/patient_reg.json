@@ -10,6 +10,8 @@
     "PAGE_TITLE": "Patient Registration",
     "PATIENT_DETAILS": "Patient Details",
     "REMOVE_PREVIOUS_ASSIGNMENT" : "Remove all patient groups already assigned to these patients.",
-    "SUCCESS": "Patient Registered Successfully"
+    "SUCCESS": "Patient Registered Successfully",
+    "FIND_DUPLICATE_PATIENTS" : "Find Duplicate Patients",
+    "NO_DUPLICATES_DETECTED" : "No duplicates detected in the database."
   }
 }

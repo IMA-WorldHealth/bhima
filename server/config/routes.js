@@ -491,9 +491,8 @@ exports.configure = function configure(app) {
   app.get('/patients/visits', patients.visits.list);
   app.get('/patients/visits/:uuid', patients.visits.detail);
 
-  // patients merge routes
-  app.get('/patients/merge/count_employees', patients.merge.countEmployees);
-  app.post('/patients/merge', patients.merge.mergePatients);
+  // patient merge routes
+  app.use('/patients/merge', patients.merge.router);
 
   // Patients API
   app.get('/patients', patients.read);
