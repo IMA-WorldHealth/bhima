@@ -14,7 +14,7 @@ CashTransferModalController.$inject = [
  */
 function CashTransferModalController(
   Currencies, Vouchers, Cashboxes, Accounts, Session, Cash, $state, Notify,
-  Receipts, bhConstants, VoucherForm
+  Receipts, bhConstants, VoucherForm,
 ) {
   const vm = this;
 
@@ -100,12 +100,13 @@ function CashTransferModalController(
         vm.disabledCurrencyIds = Cash.calculateDisabledIds(cashbox, vm.currencies);
 
         // load the accounts up for the voucher currency
-        loadAccountDetails(vm.voucher.details.currency_id);
+        loadAccountDetails({ id : vm.voucher.details.currency_id });
       })
       .catch(Notify.handleError);
   }
 
-  function loadAccountDetails(selectedCurrencyId) {
+  function loadAccountDetails(currency) {
+    const selectedCurrencyId = currency.id;
 
     // create the cashCurrencyMap
     cashCurrencyMap = mapCurrenciesToAccounts(vm.cashbox.currencies);

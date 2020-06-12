@@ -20,8 +20,8 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
     vm.previewResult = null;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.reportDetails.currency_id = currencyId;
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   vm.onSelectFiscalYear = (fiscalYear) => {

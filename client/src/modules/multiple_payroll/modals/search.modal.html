@@ -17,14 +17,14 @@
           required="true">
         </bh-payroll-period-select>
       </div>
-  
+
       <div class="col-sm-12">
         <bh-currency-select
           currency-id="$ctrl.searchQueries.currency_id"
-          on-change="$ctrl.setCurrency(currencyId)">
+          on-change="$ctrl.setCurrency(currency)">
         </bh-currency-select>
       </div>
-  
+
       <span ng-if="$ctrl.enterpriseCurrencyId !== $ctrl.searchQueries.currency_id">
         <bh-currency-input
           data-payment-currency-input
@@ -41,13 +41,13 @@
         <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
         <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
       </div>
-  
+
       <div class="col-sm-12" >
         <label class="control-label" translate>FORM.LABELS.CODE</label>
         <bh-clear on-clear="$ctrl.clear('code')"></bh-clear>
         <input type="text" class="form-control" name="code" ng-model="$ctrl.searchQueries.code">
       </div>
-  
+
       <!-- status -->
       <div class="col-sm-12" >
         <bh-payroll-status-select

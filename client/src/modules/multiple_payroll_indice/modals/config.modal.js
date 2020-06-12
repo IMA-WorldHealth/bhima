@@ -9,7 +9,7 @@ ConfigIndicePaiementModalController.$inject = [
 
 function ConfigIndicePaiementModalController(
   $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
-  Exchange, Session
+  Exchange, Session,
 ) {
   const vm = this;
   vm.config = {};
@@ -47,8 +47,8 @@ function ConfigIndicePaiementModalController(
 
   vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.payroll.currency_id = currencyId;
+  vm.setCurrency = function setCurrency(currency) {
+    vm.payroll.currency_id = currency.id;
   };
 
   // initialize module
@@ -109,6 +109,7 @@ function ConfigIndicePaiementModalController(
       rubrics : formatRubrics(vm.selectedRubrics),
       employee_uuid : $state.params.uuid,
     });
+
     return MultiplePayroll.create(data)
       .then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');

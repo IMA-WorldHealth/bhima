@@ -52,8 +52,8 @@ function IprTaxModalController($state, IprTaxes, Notify, AppCache) {
       .catch(Notify.handleError);
   }
 
-  vm.setCurrency = (currencyId) => {
-    vm.iprTax.currency_id = currencyId;
+  vm.setCurrency = (currency) => {
+    vm.iprTax.currency_id = currency.id;
   };
 
 }

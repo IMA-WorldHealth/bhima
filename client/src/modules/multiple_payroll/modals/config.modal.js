@@ -8,7 +8,7 @@ ConfigPaiementModalController.$inject = [
 
 function ConfigPaiementModalController(
   $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
-  Exchange, Session
+  Exchange, Session,
 ) {
   const vm = this;
   vm.config = {};
@@ -33,7 +33,7 @@ function ConfigPaiementModalController(
   vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
   // FIXE ME
-  // Dont use index but use the property to found label, display value and value for each filter (@lomamech) 
+  // Dont use index but use the property to found label, display value and value for each filter (@lomamech)
   vm.label = vm.latestViewFilters.defaultFilters[0]._label;
   vm.displayValue = vm.latestViewFilters.defaultFilters[0]._displayValue;
   vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
@@ -43,9 +43,9 @@ function ConfigPaiementModalController(
 
   vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.payroll.currency_id = currencyId;
-    const isSameCurrency = currencyId === vm.lastExchangeRate.currency_id;
+  vm.setCurrency = function setCurrency(currency) {
+    vm.payroll.currency_id = currency.id;
+    const isSameCurrency = currency.id === vm.lastExchangeRate.currency_id;
     const rate = isSameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
     calculatePaymentWithExchangeRate(rate);
   };
@@ -61,8 +61,8 @@ function ConfigPaiementModalController(
   Employees.read(vm.stateParams.uuid)
     .then((employee) => {
       vm.employee = employee;
-      vm.employee.basic_salary = vm.employee.individual_salary ?
-        vm.employee.individual_salary : vm.employee.basic_salary;
+      vm.employee.basic_salary = vm.employee.individual_salary
+        ? vm.employee.individual_salary : vm.employee.basic_salary;
 
       // Fixe Me: Use enterprise currency and other currency for to get exchange Rate between two Currency,
       // And Bhima Must be able to support more money @lomamech
@@ -70,7 +70,7 @@ function ConfigPaiementModalController(
     })
     .then((exchangeRate) => {
       vm.lastExchangeRate = exchangeRate.pop();
-      
+
       return Employees.advantage(vm.stateParams.uuid);
     })
     .then((advantages) => {
@@ -92,31 +92,31 @@ function ConfigPaiementModalController(
     .catch(Notify.handleError);
 
   Configuration.read(vm.idPeriod)
-  .then((period) => {
-    const params = {
-      dateFrom : period.dateFrom,
-      dateTo : period.dateTo,
-      employeeUuid : vm.stateParams.uuid,
-    };
+    .then((period) => {
+      const params = {
+        dateFrom : period.dateFrom,
+        dateTo : period.dateTo,
+        employeeUuid : vm.stateParams.uuid,
+      };
 
-    vm.periodDateTo = period.dateTo;
+      vm.periodDateTo = period.dateTo;
 
-    return MultiplePayroll.getConfiguration(vm.idPeriod, params);
-  })
-  .then((configurations) => {
-    vm.configurations = configurations;
-    vm.rubConfigured = configurations[0];
-    vm.payroll.off_days = configurations[5] ? configurations[5].length : 0;
-    vm.payroll.nb_holidays = configurations[6] ? configurations[6].length : 0;
+      return MultiplePayroll.getConfiguration(vm.idPeriod, params);
+    })
+    .then((configurations) => {
+      vm.configurations = configurations;
+      [vm.rubConfigured] = configurations;
+      vm.payroll.off_days = configurations[5] ? configurations[5].length : 0;
+      vm.payroll.nb_holidays = configurations[6] ? configurations[6].length : 0;
 
-    const workingDay = configurations[7][0].working_day - (vm.payroll.off_days + vm.payroll.nb_holidays);
+      const workingDay = configurations[7][0].working_day - (vm.payroll.off_days + vm.payroll.nb_holidays);
 
-    vm.payroll.working_day = workingDay;
-    vm.maxWorkingDay = workingDay;
+      vm.payroll.working_day = workingDay;
+      vm.maxWorkingDay = workingDay;
 
-    return Employees.advantage(vm.stateParams.uuid);
-  })
-  .catch(Notify.handleError);
+      return Employees.advantage(vm.stateParams.uuid);
+    })
+    .catch(Notify.handleError);
 
 
   // submit the data to the server from all two forms (update, create)

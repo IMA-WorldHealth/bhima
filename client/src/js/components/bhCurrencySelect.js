@@ -77,7 +77,7 @@ function bhCurrencySelect(Currencies) {
   };
 
   $ctrl.valueChange = (currency) => {
-    $ctrl.onChange({ currencyId : currency.id, currency });
+    $ctrl.onChange({ currency });
   };
 
   $ctrl.$onChanges = function onChanges(changes) {

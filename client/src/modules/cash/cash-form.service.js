@@ -143,7 +143,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
     }
 
     if (config.currency_id) {
-      this.setCurrency(config.currency_id);
+      this.setCurrency({ id : config.currency_id });
     }
 
     if (config.is_caution) {
@@ -186,8 +186,8 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * @description
    * Sets the currency and immediately digests
    */
-  CashForm.prototype.setCurrency = function setCurrency(id) {
-    this.details.currency_id = id;
+  CashForm.prototype.setCurrency = function setCurrency(currency) {
+    this.details.currency_id = currency.id;
     this.digest();
   };
 

@@ -20,7 +20,6 @@
               </a>
             </li>
 
-            
             <li role="menuitem">
               <a href data-action="patient-fled" ng-click="ComplexVoucherCtrl.openPatientFledModal()">
                 <i class="fa fa-building"></i> <span translate>VOUCHERS.GLOBAL.WRITE_OFF_PATIENT_INVOICES</span>
@@ -134,7 +133,7 @@
                 </div>
 
                 <bh-currency-select
-                  on-change="ComplexVoucherCtrl.onCurrencyChange(currencyId)"
+                  on-change="ComplexVoucherCtrl.onCurrencyChange(currency)"
                   currency-id="ComplexVoucherCtrl.Voucher.details.currency_id">
                 </bh-currency-select>
               </div>
