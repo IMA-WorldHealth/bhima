@@ -30,11 +30,11 @@ DROP TABLE IF EXISTS `event`;
  * @author: mbayopanda
  * @date: 2020-06-04
  */
-INSERT INTO `unit` VALUES
+INSERT INTO unit VALUES
   (271, 'Stock Inline Movements', 'TREE.STOCK_INLINE_MOVEMENTS', 'The stock movements registry', 160, '/modules/stock/inline-movements', '/stock/inline-movements');
 
 /**
  * @author: mbayopanda
  * @date: 2020-06-11
  */
-DELETE FROM `unit` WHERE id = 162;
+DELETE FROM unit WHERE id = 162;
