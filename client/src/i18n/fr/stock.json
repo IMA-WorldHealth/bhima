@@ -8,6 +8,8 @@
     "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
     "CACHED_DATA"     : "Donnees mises en cache",
     "CHOOSE_AGAIN"    : "(Cliquer Sur Cette Boite Pour Choisir Encore)",
+    "BY_INVENTORY"    : "Par produits",
+    "BY_SERVICE"      : "Par services",
     "CODE"            : "Code",
     "COST"            : "Coût",
     "DECREASE"        : "Diminution",

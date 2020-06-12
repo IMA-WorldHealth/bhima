@@ -6,6 +6,8 @@
     "AMOUNT"          : "Amount",
     "APPROVISIONING"  : "Quantity to order",
     "AT_LEAST_ONE_CHECKED" : "At least one option must be checked",
+    "BY_INVENTORY"    : "By Products",
+    "BY_SERVICE"      : "By Services",
     "CACHED_DATA"     : "Data saved",
     "CHOOSE_AGAIN"    : "(Click On This Box to Choose Again)",
     "CODE"            : "Code",

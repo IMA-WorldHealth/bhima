@@ -234,6 +234,7 @@
       "INCLUDE_INFORMATION" : "Information à inclure",
       "INCLUDE_PATIENT_EXIT" : "Inclure les distributions vers les patients",
       "INCLUDE_SERVICE_EXIT" : "Inclure les distributions vers les services",
+      "INCLUDE_GROUPED_SERVICE_EXIT" : "Inclure les distributions groupées par services",
       "INCLUDE_DEPOT_EXIT" : "Inclure les distributions vers d'autres dépôts",
       "INCLUDE_LOSS_EXIT" : "Inclure les pertes de stocks",
       "SHOW_DETAILS" : "Afficher les details",

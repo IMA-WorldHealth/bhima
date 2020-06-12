@@ -76,7 +76,7 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #EFEFEF;">
-              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}}</h3></th>
+              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}} <small>{{translate 'STOCK.BY_INVENTORY'}}</small></h3></th>
               <th colspan="2" class="text-right">{{currency exitToService.cost metadata.enterprise.currency_id}}</th>
             </tr>
           </thead>
@@ -95,6 +95,51 @@
                   <tr>
                     <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
                     <td class="text-left" style="border:none; width: 40%;">{{ service_display_name }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../metadata.enterprise.currency_id}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if exitToService.isEmpty}}
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock exit to service grouped by service -->
+      {{#if includeGroupedServiceExit}}
+        <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}} <small>{{translate 'STOCK.BY_SERVICE'}}</small></h3></th>
+              <th colspan="2" class="text-right">{{currency exitToServiceGrouped.cost metadata.enterprise.currency_id}}</th>
+            </tr>
+          </thead>
+          {{#each exitToServiceGrouped.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_exit_cost ../metadata.enterprise.currency_id}}</th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_exit_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">{{ text }}</td>
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
                     <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
