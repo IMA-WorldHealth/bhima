@@ -5,13 +5,14 @@ angular.module('bhima.components')
     transclude : true,
     bindings : {
       debtorUuid : '<',
+      refresh : '<?', // set to true to refresh history
       limit : '@?',
     },
   });
 
 bhDebtorGroupHistoryController.$inject = ['DebtorGroupService', 'NotifyService'];
 /**
- * Debtor group history component
+ * Debtor Group History Component
  *
  */
 function bhDebtorGroupHistoryController(DebtorGroup, Notify) {
@@ -23,16 +24,22 @@ function bhDebtorGroupHistoryController(DebtorGroup, Notify) {
     loadHistory();
   };
 
-  $ctrl.$onChanges = () => {
-    loadHistory();
+  $ctrl.$onChanges = (changes) => {
+    if (changes.debtorUuid || changes.refresh.currentValue) {
+      loadHistory();
+    }
   };
 
   function loadHistory() {
     const parameters = { limit : $ctrl.limit };
+    $ctrl.loading = true;
     DebtorGroup.history($ctrl.debtorUuid, parameters)
       .then(groupChanges => {
         $ctrl.groupChanges = groupChanges;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.loading = false;
+      });
   }
 }

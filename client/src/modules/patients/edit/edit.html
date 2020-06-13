@@ -81,11 +81,14 @@
                 <button
                   data-update-group-debtor
                   class="btn btn-warning btn-block"
-                  ng-click="PatientEditCtrl.updateDebtorGroup()"><span translate>FORM.BUTTONS.GROUPS_DEBTOR_UPDATE</span></button>
+                  ng-click="PatientEditCtrl.updateDebtorGroup()">
+                  <span translate>FORM.BUTTONS.GROUPS_DEBTOR_UPDATE</span>
+                </button>
               </div>
 
               <bh-debtor-group-history
                 debtor-uuid="PatientEditCtrl.medical.debtor_uuid"
+                refresh="PatientEditCtrl.refreshDebtorGroupHistory"
                 limit="5">
               </bh-debtor-group-history>
             </form>
@@ -121,7 +124,7 @@
                    <p class="form-control-static">
                       <span>{{PatientEditCtrl.medical.reference}}</span>
                    </p>
-                 
+
                  </div>
                </div>
 

@@ -2,12 +2,15 @@
   <div class="col-sm-12">
     <p><u><span translate>DEBTOR_GROUP.CHANGE</span></u></p>
     <ul class="list-unstyled">
-      <li ng-repeat="change in $ctrl.groupChanges">
+      <li ng-if="$ctrl.loading">
+        <span class="fa fa-circle-o-notch fa-spin"></span> <span translate>FORM.INFO.LOADING</span>
+      </li>
+      <li ng-repeat="change in $ctrl.groupChanges" ng-hide="$ctrl.loading">
         <i class="fa fa-clock-o"></i>
         <b>{{change.group_prev}} &#8594; {{change.group_next}}</b>
         <br/>
-        <span translate>FORM.LABELS.DATE</span> : {{change.created_at | date : 'medium'}}, 
-        <span translate>FORM.LABELS.BY</span> {{change.user}}
+        <span translate>FORM.LABELS.DATE</span> : {{change.created_at | date : 'medium'}}
+        <span style="text-transform:lowercase" translate>FORM.LABELS.BY</span> {{change.user}}
         <br/>
       </li>
     </ul>
