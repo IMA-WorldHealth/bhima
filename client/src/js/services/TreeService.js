@@ -4,8 +4,8 @@
  * @description
  * This file contains the generic class definition of a tree. A tree is defined
  * as an array of JSON objects having a parent key referring to another member
- * of the array.  The only exception is the root node, which does not need to be
- * in the tree.
+ * of the array.  The only exception is the root node, which should not be in
+ * the tree.
  *
  * This code is also found (in a similar form) on the server in /lib/Tree.js
  */
@@ -16,12 +16,15 @@ class TreeService {
     rootId : 0,
   }) {
     this._parentKey = options.parentKey;
-    this._rootNode = {
-      id : options.rootId,
-    };
 
     // expose the data array for data binding
     this.data = angular.copy(data);
+
+    // ensure that the root node is in the dataset
+    this._rootNode = {
+      id : options.rootId || 0,
+      label : 'ROOT',
+    };
 
     // build the tree with the provided root id and parentKey
     this._rootNode.children = this.buildTreeFromArray(this.data);
@@ -101,6 +104,7 @@ class TreeService {
    * Gets a node by its id.
    */
   find(id) {
+    if (id === this._rootNode.id) { return this._rootNode; }
     return this._nodeIndex[id];
   }
 
@@ -123,9 +127,8 @@ class TreeService {
   walk(fn, callFnBeforeRecurse = true, currentNode = this._rootNode, parentNode = null) {
     const callFnAfterRecurse = !callFnBeforeRecurse;
 
-    const recurse = () =>
-      currentNode.children.forEach(childNode =>
-        this.walk(fn, callFnBeforeRecurse, childNode, currentNode));
+    const recurse = () => currentNode.children
+      .forEach(childNode => this.walk(fn, callFnBeforeRecurse, childNode, currentNode));
 
     // if we start as the root node, then descend immediately.
     if (this.isRootNode(currentNode)) {
@@ -147,45 +150,6 @@ class TreeService {
     }
   }
 
-  filterByLeaf(prop, value) {
-    // set the property of the child to the parent up to the top
-    this._rootNode.children.forEach(node => {
-      this.interate(node, prop, value, this._rootNode);
-    });
-
-    // let filter tree now
-    const data = this.toArray().filter(row => row[prop] === value);
-
-    this._rootNode.children = this.buildTreeFromArray(data);
-    this.buildNodeIndex();
-  }
-
-  // set the child's property to parent recursively up to the top
-  setPropertyToParent(node, prop, value) {
-    node[prop] = value;
-    if (node.parentNode) {
-      this.setPropertyToParent(node.parentNode, prop, value);
-    }
-  }
-
-  // walk around the tree
-  // search the node by property's value
-  interate(node, prop, value, parent) {
-    node.parentNode = parent;
-
-    if (node[prop] === value && !parent[prop]) {
-      this.setPropertyToParent(parent, prop, value);
-    }
-
-    if (node.children) {
-      node.children.forEach(child => {
-        this.interate(child, prop, value, node);
-      });
-    }
-
-    delete node.parentNode;
-  }
-
   /**
    * @method sort
    *
@@ -204,11 +168,9 @@ TreeService.common = {
     currentNode.depth = (parentNode.depth || 0) + 1;
   },
 
-  sumOnProperty : (property, defaultValue = 0) =>
-    (currentNode, parentNode) => {
-      parentNode[property] =
-        (parentNode[property] || defaultValue) + currentNode[property];
-    },
+  sumOnProperty : (property, defaultValue = 0) => (currentNode, parentNode) => {
+    parentNode[property] = (parentNode[property] || defaultValue) + currentNode[property];
+  },
 };
 
 TreeService.$inject = [];
