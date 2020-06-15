@@ -124,7 +124,7 @@
     "chai-spies-next": "^0.9.3",
     "cssnano": "^4.1.10",
     "del": "^5.0.0",
-    "eslint": "^6.0.0",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.21.2",
     "gulp": "^4.0.0",
