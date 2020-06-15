@@ -12,7 +12,6 @@ const {
  * GET /reports/stock/inline-movements
  */
 async function stockInlineMovementsReport(req, res, next) {
-  let display = {};
   const optionReport = _.extend(req.query, pdfOptions, {
     filename : 'TREE.STOCK_INLINE_MOVEMENTS',
     csvKey : 'rows',
@@ -21,29 +20,19 @@ async function stockInlineMovementsReport(req, res, next) {
 
   // set up the report with report manager
   try {
-    if (req.query.displayNames) {
-      display = JSON.parse(req.query.displayNames);
-      delete req.query.displayNames;
-    }
-
     const report = new ReportManager(STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE, req.session, optionReport);
 
     const rows = await Stock.getMovements(null, req.query);
 
     const data = {
       rows,
-      display,
       filters : formatFilters(req.query),
     };
 
-    // group by depot
-    let depots = _.groupBy(rows, d => d.depot_text);
-
-    // make sure that they keys are sorted in alphabetical order
-    depots = _.mapValues(depots, lines => {
-      _.sortBy(lines, 'depot_text');
-      return lines;
-    });
+    const depots = _.chain(rows)
+      .groupBy(d => d.depot_text)
+      .mapValues(lines => _.sortBy(lines, 'depot_text'))
+      .value();
 
     data.depots = depots;
 

@@ -4,10 +4,15 @@
     <span class="caret"></span>
   </a>
 
+<<<<<<< HEAD
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">
       {{row.entity.documentReference}}
     </li>
+=======
+  <ul data-action="{{rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.documentReference}}</li>
+>>>>>>> 0c1e3b21c... update e2e tests
     <li>
       <a data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.document_uuid, row.entity.flux_id)" data-link-receipt="{{ ::row.entity.document_uuid }}" href>
         <i class="fa fa-file-pdf-o"></i> <span translate>STOCK.DOCUMENT</span>
