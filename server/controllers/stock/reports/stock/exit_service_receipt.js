@@ -41,7 +41,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 

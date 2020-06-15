@@ -12,14 +12,19 @@ function SearchMovementsModalController(data, Notify, Instance, Periods, Store, 
   const changes = new Store({ identifier : 'key' });
 
   const searchQueryOptions = [
-    'is_exit', 'depot_uuid', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
-    'patientReference', 'service_uuid', 'invoice_uuid',
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id',
+    'dateFrom', 'dateTo', 'user_id', 'patientReference', 'service_uuid', 'invoice_uuid',
   ];
 
   vm.filters = data;
 
   vm.searchQueries = {};
   vm.defaultQueries = {};
+
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    vm.searchQueries.inventory_uuid = inventory.uuid;
+    displayValues.inventory_uuid = inventory.label;
+  };
 
   // keep track of the initial search queries to make sure we properly restore
   // default display values

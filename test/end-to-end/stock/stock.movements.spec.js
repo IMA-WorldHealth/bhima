@@ -61,6 +61,18 @@ function StockMovementsRegistryTests() {
     await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
+  it('find movements by inventory', async () => {
+    await modal.setInventory('Quinine');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
+  });
+
+  it('find movements by lot name', async () => {
+    await modal.setLotLabel('VITAMINE-A');
+    await FU.modal.submit();
+    await GU.expectRowCount(gridId, 6 + depotGroupingRow);
+  });
+
   it('find by lots reasons for purchase order', async () => {
     await modal.setMovementReason(['Commande d\'achat']);
     await modal.submit();
