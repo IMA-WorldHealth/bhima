@@ -6,38 +6,25 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+  <div class="modal-body" style="overflow-y: scroll; max-height:80vh; ">
 
-    <div class="form-group">
-      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
-      <p class="form-control-static"> {{ UsersCashBoxModalCtrl.user.display_name }}</p>
-    </div>
+    <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+    <p class="form-control-static"> {{ UsersCashBoxModalCtrl.user.display_name }}</p>
 
     <span translate> FORM.INFO.USER_CASHBOX </span>
 
     <div ng-if="!UsersCashBoxModalCtrl.loading">
-      <div class="checkbox">
-        <label>
-          <input
-            type="checkbox"
-            ng-model="UsersCashBoxModalCtrl.isAllChecked"
-            ng-change="UsersCashBoxModalCtrl.onToggleAllChecked(UsersCashBoxModalCtrl.isAllChecked)" />
-          <strong id="check-all" translate>FORM.LABELS.CHECK_ALL</strong>
-        </label>
-      </div>
-
-      <div class="checkbox" ng-repeat="cashbox in UsersCashBoxModalCtrl.cashboxes track by cashbox.id">
-        <label>
-          <input type="checkbox" ng-model="cashbox.checked" ng-change="UsersCashBoxModalCtrl.onToggleCheckbox()" />
-          <span>{{::cashbox.label}}</span>
-        </label>
-      </div>
+      <bh-checkbox-tree
+        data="UsersCashBoxModalCtrl.cashboxes"
+        on-change="UsersCashBoxModalCtrl.onChangeSelection(data)"
+        checked-ids="UsersCashBoxModalCtrl.selected"
+        is-flat-tree="true"
+        labelKey="label">
+      </bh-checkbox-tree>
     </div>
-
     <div ng-if="UsersCashBoxModalCtrl.loading">
       <loading-indicator></loading-indicator>
     </div>
-
   </div>
 
   <div class="modal-footer">

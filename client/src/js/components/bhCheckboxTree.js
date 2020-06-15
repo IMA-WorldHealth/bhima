@@ -12,7 +12,7 @@ const template = `
     <div class="checkbox">
       <label>
         <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node.id, node._checked)" />
-        <strong data-label="{{node._label}}" translate>{{node._label}}</strong>
+        <span ng-class="{ 'text-bold' : node.children.length }" data-label="{{node._label}}" translate>{{node._label}}</span>
       </label>
     </div>
 
@@ -51,6 +51,7 @@ angular.module('bhima.components')
       idKey : '@?',
       labelKey : '@?',
       parentKey : '@?',
+      isFlatTree : '@?',
     },
   });
 
@@ -84,6 +85,9 @@ function bhCheckboxTreeController(Tree) {
     data.forEach(node => {
       node._label = node[$ctrl.labelKey];
       node._checked = false;
+
+      // work on flat arrays by faking a tree
+      if ($ctrl.isFlatTree) { node[$ctrl.parentKey] = 0; }
     });
 
     // create the tree
@@ -96,7 +100,7 @@ function bhCheckboxTreeController(Tree) {
     // ensure that the mask is an array
     const mask = [].concat($ctrl.checkedIds);
 
-    // initially, we don't use setNodeValue since we just want to make those as checked
+    // initially, we won't use setNodeValue since we just want to make those as checked
     // that the mask sets as checked, not parent/child nodes.
     mask
       .filter(id => id !== $ctrl.root.id)
