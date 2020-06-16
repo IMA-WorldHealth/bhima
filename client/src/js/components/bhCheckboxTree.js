@@ -80,7 +80,9 @@ function bhCheckboxTreeController(Tree) {
     }
   };
 
-  function buildTree(data = []) {
+  function buildTree(array = []) {
+    const data = [...array];
+
     // make easier template labels and default values to checked is false
     data.forEach(node => {
       node._label = node[$ctrl.labelKey];
@@ -97,8 +99,13 @@ function bhCheckboxTreeController(Tree) {
     // compute node depths
     $ctrl.tree.walk(Tree.common.computeNodeDepth);
 
-    // ensure that the mask is an array
-    const mask = [].concat($ctrl.checkedIds);
+    // ensure that checked ids are an array
+    if (!Array.isArray($ctrl.checkedIds)) {
+      return;
+    }
+
+    // ensure that the mask is a cloned array
+    const mask = [...$ctrl.checkedIds];
 
     // initially, we won't use setNodeValue since we just want to make those as checked
     // that the mask sets as checked, not parent/child nodes.
