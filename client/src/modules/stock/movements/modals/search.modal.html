@@ -19,7 +19,6 @@
           <div class="form-group">
             <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
             <br/>
-            <!-- Gender -->
             <div id="movement_orientation" class="form-group">
             <label class="control-label" translate>STOCK.DIRECTION</label>
             <div class="col-md-12">
@@ -52,20 +51,6 @@
             </div>
           </div>
 
-          <!-- patient reference -->
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.patientReference.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
-            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
-            <input
-              name="patientReference"
-              class="form-control"
-              ng-model="$ctrl.searchQueries.patientReference"">
-
-            <div class="help-block" ng-messages="ModalForm.patientReference.$error">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"
@@ -74,27 +59,27 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <!-- inventory -->	
+          <bh-inventory-select	
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"	
+            on-select-callback="$ctrl.onSelectInventory(inventory)"	
+            required="false">	
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>	
+          </bh-inventory-select>	
+
+          <!-- lot number  -->	
+          <div class="form-group">	
+            <label class="control-label" translate>STOCK.LOT</label>	
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>	
+            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">	
+          </div>
+
           <!-- service -->
           <bh-service-select
             service-uuid="$ctrl.searchQueries.service_uuid"
             on-select-callback="$ctrl.onSelectService(service)">
             <bh-clear on-clear="$ctrl.clear('service_uuid')"></bh-clear>
           </bh-service-select>
-
-          <!-- inventory -->
-          <bh-inventory-select
-            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
-            on-select-callback="$ctrl.onSelectInventory(inventory)"
-            required="false">
-            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
-          </bh-inventory-select>
-
-          <!-- lot number  -->
-          <div class="form-group">
-            <label class="control-label" translate>STOCK.LOT</label>
-            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
-            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
-          </div>
 
           <!-- movements flux -->
           <bh-flux-select

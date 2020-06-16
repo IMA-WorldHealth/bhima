@@ -813,6 +813,8 @@ exports.configure = function configure(app) {
   app.get('/stock/flux', stock.listStockFlux);
 
   // stock management API
+  app.get('/stock/movements', stock.listMovements);
+
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
 
@@ -833,6 +835,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/consumption_graph', stockReports.consumptionGraph);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
+  app.get('/reports/stock/inline_movements', stockReports.stockInlineMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/sheet', stockReports.stockSheetReport);
   app.get('/reports/stock/value', stockReports.stockValue);

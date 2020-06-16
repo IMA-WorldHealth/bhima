@@ -28,6 +28,7 @@ exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
 exports.listInventoryDepot = listInventoryDepot;
 exports.listLotsMovements = listLotsMovements;
+exports.listMovements = listMovements;
 exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
@@ -493,6 +494,20 @@ function listLotsMovements(req, res, next) {
   const params = req.query;
 
   core.getLotsMovements(null, params)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * GET /stock/movements
+ * returns list of stock movements
+ */
+function listMovements(req, res, next) {
+  const params = req.query;
+
+  core.getMovements(null, params)
     .then((rows) => {
       res.status(200).json(rows);
     })

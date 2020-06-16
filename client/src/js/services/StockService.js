@@ -15,6 +15,9 @@ function StockService(Api, StockFilterer) {
   // API for stock lots movements
   const movements = new Api('/stock/lots/movements');
 
+  // API for stock lots movements
+  const inlineMovements = new Api('/stock/movements');
+
   const status = new Api('/stock/status');
 
   // API for stock inventory in depots
@@ -61,6 +64,7 @@ function StockService(Api, StockFilterer) {
   const StockAssignFilters = new StockFilterer('stock-assign-filters');
   const StockRequisitionFilters = new StockFilterer('stock-requisition-filters');
   const StockMovementFilters = new StockFilterer('stock-movement-filters');
+  const StockInlineMovementFilters = new StockFilterer('stock-inline-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
   const StockDepotFilters = new StockFilterer('stock-depot-filters');
 
@@ -69,6 +73,7 @@ function StockService(Api, StockFilterer) {
     lot : StockLotFilters,
     stockAssign : StockAssignFilters,
     movement : StockMovementFilters,
+    inlineMovement : StockInlineMovementFilters,
     inventory : StockInventoryFilters,
     depot : StockDepotFilters,
     requisition : StockRequisitionFilters,
@@ -123,8 +128,8 @@ function StockService(Api, StockFilterer) {
   }
 
   /** Get label for purchase Status */
-  function statusLabelMap(status) {
-    return stockStatusLabelKeys[status];
+  function statusLabelMap(_status_) {
+    return stockStatusLabelKeys[_status_];
   }
 
   // download the template file
@@ -144,6 +149,7 @@ function StockService(Api, StockFilterer) {
     inventoryAdjustment,
     lots,
     movements,
+    inlineMovements,
     inventories,
     integration,
     transfers,

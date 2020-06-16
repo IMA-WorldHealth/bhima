@@ -46,7 +46,7 @@ async function stockExitPatientReceipt(documentUuid, session, options) {
     JOIN patient p ON p.uuid = m.entity_uuid
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_PATIENT} AND m.document_uuid = ?
   `;
 
