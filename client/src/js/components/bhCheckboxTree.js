@@ -1,6 +1,5 @@
 const template = `
 <div data-bh-checkbox-tree>
-
   <div class="checkbox">
     <label>
       <input type="checkbox" ng-model="$ctrl.root._checked" ng-change="$ctrl.setNodeValue($ctrl.root.id, $ctrl.root._checked)" />
@@ -24,18 +23,18 @@ const template = `
             <span data-label="{{child._label}}" translate>{{child._label}}</span>
           </label>
         </div>
-      </li>
 
-      <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
-        <li ng-repeat="grandchild in child.children track by grandchild.id">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild.id, grandchild._checked)" />
-              <span data-label="{{grandchild._label}}" translate>{{grandchild._label}}</span>
-            </label>
-          </div>
-        </li>
-      </ul>
+        <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
+          <li ng-repeat="grandchild in child.children track by grandchild.id">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild.id, grandchild._checked)" />
+                <span data-label="{{grandchild._label}}" translate>{{grandchild._label}}</span>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </li>
     </ul>
   </div>
 </div>`;
@@ -95,6 +94,8 @@ function bhCheckboxTreeController(Tree) {
     // create the tree
     $ctrl.tree = new Tree(data, { parentKey : $ctrl.parentKey, rootId : 0 });
     $ctrl.root = $ctrl.tree.getRootNode();
+
+    console.log('tree:', $ctrl.tree);
 
     // compute node depths
     $ctrl.tree.walk(Tree.common.computeNodeDepth);
@@ -192,6 +193,9 @@ function bhCheckboxTreeController(Tree) {
     // check if every child node is checked
     const isChecked = node.children.some(child => child._checked);
     node._checked = isChecked;
+
+    // recurse up to root
+    updateParentNodeCheckedState(node.parent);
   }
 
 }

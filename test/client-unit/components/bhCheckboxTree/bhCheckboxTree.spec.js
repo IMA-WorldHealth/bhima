@@ -64,14 +64,13 @@ function bhCheckboxTree() {
     expect(checkboxes).to.have.length(4);
   });
 
-  it.skip('renders a tree with three levels of depth', () => {
+  it('renders a tree with three levels of depth', () => {
     const data = [
       { id : 1, label : '1st Level', parent : 0 },
       { id : 2, label : '2nd Level', parent : 1 },
       { id : 3, label : '3rd Level', parent : 2 },
     ];
     const { element } = makeComponent(data, angular.noop);
-    console.log('element:', element);
     const checkboxes = findAll(element, '.checkbox');
     expect(checkboxes).to.have.length(4);
 
