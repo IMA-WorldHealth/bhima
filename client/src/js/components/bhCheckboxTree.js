@@ -95,8 +95,6 @@ function bhCheckboxTreeController(Tree) {
     $ctrl.tree = new Tree(data, { parentKey : $ctrl.parentKey, rootId : 0 });
     $ctrl.root = $ctrl.tree.getRootNode();
 
-    console.log('tree:', $ctrl.tree);
-
     // compute node depths
     $ctrl.tree.walk(Tree.common.computeNodeDepth);
 

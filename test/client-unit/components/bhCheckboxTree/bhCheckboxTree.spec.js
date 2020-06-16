@@ -70,12 +70,33 @@ function bhCheckboxTree() {
       { id : 2, label : '2nd Level', parent : 1 },
       { id : 3, label : '3rd Level', parent : 2 },
     ];
+
     const { element } = makeComponent(data, angular.noop);
     const checkboxes = findAll(element, '.checkbox');
     expect(checkboxes).to.have.length(4);
 
-    const lowestLevel = find(element, 'ul > ul > li > .checkbox span');
+    const lowestLevel = find(element, 'ul ul li .checkbox span');
     expect(lowestLevel).to.have.attribute('data-label', '3rd Level');
   });
 
+  it('renders a flat list as a tree with the is-flat-tree flag set', () => {
+    const { element } = makeComponent(tree, angular.noop, 'is-flat-true="true"', 'label-key="name"');
+    const checkboxes = findAll(element, '.checkbox');
+    expect(checkboxes).to.have.length(4);
+
+    const oneLevel = find(element, 'ul ul');
+    expect(oneLevel).to.equal(null);
+  });
+
+  it('calls the onChange callback when a checkbox is clicked', () => {
+    const { element, $scope } = makeComponent(tree, angular.noop, 'is-flat-true="true"', 'label-key="name"');
+
+    // simulate a click on one of the checkboxes
+    const node = find(element, '[data-label="Amy"]');
+
+    angular.element(node).click();
+    $scope.$apply();
+
+    expect($scope.callback).to.have.been.called();
+  });
 }
