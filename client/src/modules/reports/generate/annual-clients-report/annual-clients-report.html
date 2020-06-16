@@ -31,13 +31,13 @@
 
           <bh-currency-select
             currency-id="ReportConfigCtrl.reportDetails.currencyId"
-            on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)">
           </bh-currency-select>
 
           <bh-yes-no-radios
             label="REPORT.CLIENTS.HIDE_LOCKED_CLIENTS"
             value="ReportConfigCtrl.reportDetails.hideLockedClients"
-			name="hideLockedClients"
+            name="hideLockedClients"
             help-text="REPORT.CLIENTS.HIDE_LOCKED_CLIENTS_HELP_TEXT"
             on-change-callback="ReportConfigCtrl.onHideLockedClientsToggle(value)">
           </bh-yes-no-radios>
@@ -50,7 +50,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="col-md-6">
     <bh-cron-email-report
       report-id="17"

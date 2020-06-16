@@ -26,7 +26,6 @@ function StockValueConfigController($sce, Notify, SavedReports,
 
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.depot = depot;
-    formatData();
   };
 
   vm.onSelectCronReport = report => {
@@ -42,10 +41,9 @@ function StockValueConfigController($sce, Notify, SavedReports,
     vm.previewResult = null;
   };
 
-  vm.onSelectCurrency = (currencyId) => {
-    vm.reportDetails.currency_id = currencyId;
-    vm.currency_id = currencyId;
-    formatData();
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currency_id = currency.id;
+    vm.currency_id = currency.id;
   };
 
   function formatData() {
@@ -81,6 +79,7 @@ function StockValueConfigController($sce, Notify, SavedReports,
   };
 
   vm.requestSaveAs = function requestSaveAs() {
+    vm.reportDetails = formatData();
     const options = {
       url : reportUrl,
       report : reportData,

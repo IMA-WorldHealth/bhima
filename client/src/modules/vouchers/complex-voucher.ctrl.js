@@ -49,8 +49,8 @@ function ComplexJournalVoucherController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   };
 
-  vm.onCurrencyChange = function onCurrencyChange(currencyId) {
-    vm.Voucher.handleCurrencyChange(currencyId, true);
+  vm.onCurrencyChange = function onCurrencyChange(currency) {
+    vm.Voucher.handleCurrencyChange(currency.id, true);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   };
 

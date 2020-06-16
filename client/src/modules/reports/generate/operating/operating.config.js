@@ -5,7 +5,6 @@ OperatingConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-
 function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('configure_operating');
@@ -22,8 +21,8 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
     vm.reportDetails.periodFrom = period.id;
   };
 
-  vm.onSelectCurrency = (currencyId) => {
-    vm.reportDetails.currency_id = currencyId;
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {

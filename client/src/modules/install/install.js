@@ -34,8 +34,8 @@ function InstallApplicationController(InstallService, $state, Notify, Users) {
       .catch(Notify.handleError);
   }
 
-  vm.setCurrency = (currencyId) => {
-    vm.setup.enterprise.currency_id = currencyId;
+  vm.onSetCurrency = (currency) => {
+    vm.setup.enterprise.currency_id = currency.id;
   };
 
   // make sure that the passwords exist, conform to the password policy, and match each other

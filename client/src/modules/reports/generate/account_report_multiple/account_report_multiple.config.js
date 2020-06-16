@@ -8,7 +8,7 @@ AccountReportMultipleConfigController.$inject = [
 
 function AccountReportMultipleConfigController(
   $sce, Notify, SavedReports, AppCache, reportData, $state,
-  Moment, Session
+  Moment, Session,
 ) {
   const vm = this;
   const cache = new AppCache('configure_account_report_multiple');
@@ -34,8 +34,8 @@ function AccountReportMultipleConfigController(
     vm.previewResult = null;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.reportDetails.currency_id = currencyId;
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   // the selected account number has changed

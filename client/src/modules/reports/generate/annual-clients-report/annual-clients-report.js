@@ -35,8 +35,8 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
     vm.reportDetails = angular.copy(report);
   };
 
-  vm.onSelectCurrency = currencyId => {
-    vm.reportDetails.currencyId = currencyId;
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.onHideLockedClientsToggle = hideLockedClients => {

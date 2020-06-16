@@ -32,18 +32,6 @@ function VoucherRegistrySearchModalController(
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // load all the available currencies
-  Currencies.read()
-    .then(currencies => {
-      // cache a label for faster view rendering
-      currencies.forEach(currency => {
-        currency.label = Currencies.format(currency.id);
-      });
-
-      vm.currencies = currencies;
-    })
-    .catch(Notify.handleError);
-
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
@@ -98,13 +86,9 @@ function VoucherRegistrySearchModalController(
     });
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.searchQueries.currency_id = currencyId;
-    vm.currencies.forEach(currency => {
-      if (currency.id === currencyId) {
-        displayValues.currency_id = currency.label;
-      }
-    });
+  vm.setCurrency = function setCurrency(currency) {
+    vm.searchQueries.currency_id = currency.id;
+    displayValues.currency_id = currency.label;
   };
 
   // default filter limit - directly write to changes list
@@ -142,9 +126,8 @@ function VoucherRegistrySearchModalController(
         // To avoid overwriting a real display value, we first determine if the value changed in the current view.
         // If so, we do not use the previous display value.  If the values are identical, we can restore the
         // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue =
-          angular.equals(initialSearchQueries[_key], _value) &&
-          angular.isDefined(lastDisplayValues[_key]);
+        const usePreviousDisplayValue = angular.equals(initialSearchQueries[_key], _value)
+          && angular.isDefined(lastDisplayValues[_key]);
 
         // default to the raw value if no display value is defined
         const _displayValue = usePreviousDisplayValue ? lastDisplayValues[_key] : displayValues[_key] || _value;
