@@ -6,12 +6,8 @@ describe('bhCheckboxTree', bhCheckboxTree);
 function bhCheckboxTree() {
   beforeEach(module(
     'pascalprecht.translate',
-    'ngStorage',
-    'ui.bootstrap',
-    'tmh.dynamicLocale',
     'bhima.services',
     'bhima.components',
-    'bhima.constants',
     'templates',
   ));
 
@@ -89,13 +85,14 @@ function bhCheckboxTree() {
   });
 
   it('calls the onChange callback when a checkbox is clicked', () => {
-    const { element, $scope } = makeComponent(tree, angular.noop, 'is-flat-true="true"', 'label-key="name"');
+    const callback = () => { };
+    const { element, $scope } = makeComponent(tree, callback, 'is-flat-true="true"', 'label-key="name"');
 
     // simulate a click on one of the checkboxes
     const node = find(element, '[data-label="Amy"]');
 
-    angular.element(node).click();
-    $scope.$apply();
+    angular.element(node).trigger('click');
+    $scope.$digest();
 
     expect($scope.callback).to.have.been.called();
   });

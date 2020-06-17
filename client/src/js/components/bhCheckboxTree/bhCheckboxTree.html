@@ -1,0 +1,39 @@
+<div data-bh-checkbox-tree>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="$ctrl.root._checked" ng-change="$ctrl.setNodeValue($ctrl.root.id, $ctrl.root._checked)" />
+      <strong class="text-capitalize" data-root-node translate>FORM.LABELS.CHECK_ALL</strong>
+    </label>
+  </div>
+
+  <div ng-repeat="node in $ctrl.root.children track by node.id">
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node.id, node._checked)" />
+        <span ng-class="{ 'text-bold' : node.children.length }" data-label="{{node._label}}" translate>{{node._label}}</span>
+      </label>
+    </div>
+
+    <ul style="margin-left: calc({{node.depth}} * 15px)" class="list-unstyled">
+      <li ng-repeat="child in node.children track by child.id">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="child._checked" ng-change="$ctrl.setNodeValue(child.id, child._checked)" />
+            <span data-label="{{child._label}}" translate>{{child._label}}</span>
+          </label>
+        </div>
+
+        <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
+          <li ng-repeat="grandchild in child.children track by grandchild.id">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild.id, grandchild._checked)" />
+                <span data-label="{{grandchild._label}}" translate>{{grandchild._label}}</span>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>

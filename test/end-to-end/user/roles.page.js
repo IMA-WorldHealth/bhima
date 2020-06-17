@@ -56,7 +56,7 @@ class RolesPage {
   }
 
   setRole(txt) {
-    return bhCheckboxTree.toggle(txt);
+    return bhCheckboxTree.toggle([txt]);
   }
 
   setAction(id) {
