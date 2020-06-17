@@ -19,18 +19,18 @@ TIMEOUT=${BUILD_TIMEOUT:-8}
 echo "[test] Spawning server process..."
 # build and start the server
 ./node_modules/.bin/gulp build
-cd bin
-node server/app.js &
+# cd bin
+# node server/app.js &
 
-echo "[test] Spawned node process."
+# echo "[test] Spawned node process."
 
 # make sure we have enough time for the server to start
-echo "[test] Sleeping for $TIMEOUT seconds."
-sleep "$TIMEOUT"
+# echo "[test] Sleeping for $TIMEOUT seconds."
+# sleep "$TIMEOUT"
 
 echo "[test] running tests using mocha"
 
 # run the tests
-../node_modules/.bin/mocha --recursive --bail ../test/integration/
+NODE_ENV=development && ./node_modules/.bin/mocha --recursive --bail ./test/integration/
 
 echo "[/test]"

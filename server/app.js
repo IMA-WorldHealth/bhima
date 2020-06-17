@@ -67,7 +67,7 @@ function configureServer() {
 
   // create the server
   http.createServer(app)
-    .listen(process.env.PORT, () => {
+    .listen(port, () => {
       debug(`configureServer(): Server started in mode ${mode} on port ${port}.`);
     });
 }
@@ -99,3 +99,5 @@ process.on('unhandledRejection', (e) => {
 process.on('warning', (warning) => {
   debug('process.onWarning: %o', warning);
 });
+
+module.exports = app;
