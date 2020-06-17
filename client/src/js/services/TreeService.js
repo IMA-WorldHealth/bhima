@@ -13,29 +13,37 @@
 class TreeService {
   constructor(data = [], options = {
     parentKey : 'parent',
+    idKey : 'id',
     rootId : 0,
   }) {
-    this._parentKey = options.parentKey;
+    this._parentKey = options.parentKey || 'parent';
+    this._idKey = options.idKey || 'id';
 
     // expose the data array for data binding
     this.data = angular.copy(data);
 
     // ensure that the root node is in the dataset
     this._rootNode = {
-      id : options.rootId || 0,
       label : 'ROOT',
     };
+
+    // add identifier for root node
+    this._rootNode[this._idKey] = 0;
 
     // build the tree with the provided root id and parentKey
     this._rootNode.children = this.buildTreeFromArray(this.data);
     this.buildNodeIndex();
   }
 
+  id(node) {
+    return node && node[this._idKey];
+  }
+
   getRootNode() {
     return this._rootNode;
   }
 
-  buildTreeFromArray(nodes, parentId = this._rootNode.id) {
+  buildTreeFromArray(nodes, parentId = this.id(this._rootNode)) {
     // recursion base-case:  return nothing if empty array
     if (nodes.length === 0) { return null; }
 
@@ -45,7 +53,7 @@ class TreeService {
     // recurse - for each child node, compute their child-trees using the same
     // buildTreeFromArray() command
     children.forEach(node => {
-      node.children = this.buildTreeFromArray(nodes, node.id);
+      node.children = this.buildTreeFromArray(nodes, this.id(node));
     });
 
     // return the list of children
@@ -55,7 +63,7 @@ class TreeService {
   buildNodeIndex() {
     this._nodeIndex = {};
     this.walk(node => {
-      this._nodeIndex[node.id] = node;
+      this._nodeIndex[this.id(node)] = node;
     });
   }
 
@@ -94,18 +102,18 @@ class TreeService {
    * @param node {Object} - a tree node to compare.
    */
   isRootNode(node) {
-    return node.id === this._rootNode.id;
+    return this.id(node) === this.id(this._rootNode);
   }
 
   /**
    * @method find
    *
    * @description
-   * Gets a node by its id.
+   * Gets a node by its identifier.
    */
-  find(id) {
-    if (id === this._rootNode.id) { return this._rootNode; }
-    return this._nodeIndex[id];
+  find(ident) {
+    if (ident === this.id(this._rootNode)) { return this._rootNode; }
+    return this._nodeIndex[ident];
   }
 
   /**

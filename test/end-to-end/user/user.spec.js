@@ -34,7 +34,7 @@ describe('User Management Page', () => {
   const userCount = 4;
 
   const cashbox = {
-    text : 'Caisse Aux',
+    text : 'Caisse Auxiliaire',
   };
 
   before(() => helpers.navigate(path));
@@ -114,7 +114,8 @@ describe('User Management Page', () => {
 
   it(`sets the cashbox ${cashbox.text} management rights for "Regular User"`, async () => {
     await userPage.updateCashbox('Regular User');
-    await components.multipleCashBoxSelect.set([cashbox.text]);
+
+    await components.bhCheckboxTree.toggle([cashbox.text]);
 
     // submit the modal
     await FU.modal.submit();

@@ -1,34 +1,34 @@
 <div data-bh-checkbox-tree>
   <div class="checkbox">
-    <label>
-      <input type="checkbox" ng-model="$ctrl.root._checked" ng-change="$ctrl.setNodeValue($ctrl.root.id, $ctrl.root._checked)" />
-      <strong class="text-capitalize" data-root-node translate>FORM.LABELS.CHECK_ALL</strong>
+    <label data-root-node>
+      <input type="checkbox" ng-model="$ctrl.root._checked" ng-change="$ctrl.setNodeValue($ctrl.root, $ctrl.root._checked)" />
+      <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
     </label>
   </div>
 
-  <div ng-repeat="node in $ctrl.root.children track by node.id">
+  <div ng-repeat="node in $ctrl.root.children track by $ctrl.tree.id(node)">
     <div class="checkbox">
-      <label>
-        <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node.id, node._checked)" />
-        <span ng-class="{ 'text-bold' : node.children.length }" data-label="{{node._label}}" translate>{{node._label}}</span>
+      <label data-label="{{node._label}}">
+        <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node, node._checked)" />
+        <span ng-class="{ 'text-bold' : node.children.length }" translate>{{node._label}}</span>
       </label>
     </div>
 
     <ul style="margin-left: calc({{node.depth}} * 15px)" class="list-unstyled">
-      <li ng-repeat="child in node.children track by child.id">
+      <li ng-repeat="child in node.children track by $ctrl.tree.id(child)">
         <div class="checkbox">
-          <label>
-            <input type="checkbox" ng-model="child._checked" ng-change="$ctrl.setNodeValue(child.id, child._checked)" />
-            <span data-label="{{child._label}}" translate>{{child._label}}</span>
+          <label data-label="{{child._label}}">
+            <input type="checkbox" ng-model="child._checked" ng-change="$ctrl.setNodeValue(child, child._checked)" />
+            <span translate>{{child._label}}</span>
           </label>
         </div>
 
         <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
-          <li ng-repeat="grandchild in child.children track by grandchild.id">
+          <li ng-repeat="grandchild in child.children track by $ctrl.tree.id(grandchild)">
             <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild.id, grandchild._checked)" />
-                <span data-label="{{grandchild._label}}" translate>{{grandchild._label}}</span>
+              <label data-label="{{grandchild._label}}">
+                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild, grandchild._checked)" />
+                <span translate>{{grandchild._label}}</span>
               </label>
             </div>
           </li>

@@ -41,7 +41,7 @@ class RolesPage {
   }
 
   async checkAllPermissions() {
-    await browser.wait(EC.elementToBeClickable($(bhCheckboxTree.selector)), 1500);
+    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
     await bhCheckboxTree.toggleAllCheckboxes();
   }
 
@@ -55,7 +55,8 @@ class RolesPage {
     await row.menu.$('[data-method="edit-actions"]').click();
   }
 
-  setRole(txt) {
+  async setRole(txt) {
+    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
     return bhCheckboxTree.toggle([txt]);
   }
 

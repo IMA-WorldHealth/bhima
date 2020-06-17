@@ -51,14 +51,14 @@ function bhCheckboxTreeController(Tree) {
     });
 
     // create the tree
-    $ctrl.tree = new Tree(data, { parentKey : $ctrl.parentKey, rootId : 0 });
+    $ctrl.tree = new Tree(data, { parentKey : $ctrl.parentKey, rootId : 0, idKey : $ctrl.idKey });
     $ctrl.root = $ctrl.tree.getRootNode();
 
     // compute node depths
     $ctrl.tree.walk(Tree.common.computeNodeDepth);
 
     // ensure that checked ids are an array
-    if (!Array.isArray($ctrl.checkedIds)) {
+    if (!Array.isArray($ctrl.checkedIds) || data.length === 0) {
       return;
     }
 
@@ -68,9 +68,10 @@ function bhCheckboxTreeController(Tree) {
     // initially, we won't use setNodeValue since we just want to make those as checked
     // that the mask sets as checked, not parent/child nodes.
     mask
-      .filter(id => id !== $ctrl.root.id)
+      .filter(id => id !== $ctrl.tree.id($ctrl.root))
       .forEach(id => {
         const node = $ctrl.tree.find(id);
+        if (!node) { return; }
         node._checked = true;
       });
   }
@@ -85,7 +86,7 @@ function bhCheckboxTreeController(Tree) {
    */
   function getCheckedNodes() {
     const checked = [];
-    $ctrl.tree.walk(node => { if (node._checked) { checked.push(node.id); } });
+    $ctrl.tree.walk(node => { if (node._checked) { checked.push($ctrl.tree.id(node)); } });
 
     // toggle the root node if all child nodes are checked
     $ctrl.root._checked = checked.length === $ctrl.data.length;
@@ -102,7 +103,7 @@ function bhCheckboxTreeController(Tree) {
   /**
    * @function setNodeValue
    *
-   * @param {Number} id - the id of the node to set
+   * @param {Object} node - the node in the tree
    * @param {Boolean} isChecked - a boolean value to set the node to
    *
    * @description
@@ -111,15 +112,14 @@ function bhCheckboxTreeController(Tree) {
    * check to make sure the parent is automatically checked if needed.
    */
   $ctrl.setNodeValue = setNodeValue;
-  function setNodeValue(id, isChecked) {
-    const node = $ctrl.tree.find(id);
+  function setNodeValue(node, isChecked) {
 
     // set the value of the node to isChecked
     node._checked = isChecked;
 
     // recursively update all child nodes.
     if (isParentNode(node)) {
-      node.children.forEach(child => setNodeValue(child.id, isChecked));
+      node.children.forEach(child => setNodeValue(child, isChecked));
     }
 
     // make sure the parent is toggled if all children are toggled
