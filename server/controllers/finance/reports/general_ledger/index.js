@@ -25,8 +25,6 @@ function renderReport(req, res, next) {
     filename : 'TREE.GENERAL_LEDGER',
     orientation : 'landscape',
     csvKey   : 'rows',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   let report;

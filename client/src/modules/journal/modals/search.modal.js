@@ -12,7 +12,6 @@ function JournalSearchModalController(
   TransactionTypes, Journal,
 ) {
   const vm = this;
-  const currenciesMap = {};
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};

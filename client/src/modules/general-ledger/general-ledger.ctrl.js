@@ -16,7 +16,7 @@ GeneralLedgerController.$inject = [
  */
 function GeneralLedgerController(
   GeneralLedger, Session, Notify, uiGridConstants, Columns,
-  GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts, FormatTreeData
+  GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts, FormatTreeData,
 ) {
   const vm = this;
   const cacheKey = 'GeneralLedger';
@@ -57,7 +57,6 @@ function GeneralLedgerController(
       <span style="padding-left : {{row.entity.$$treeLevel * grid.appScope.indentTitleSpace}}px;"></span>
       {{grid.getCellValue(row, col)}}
     </span>`;
-
 
   function customAggregationFn(columnDefs, column) {
     return (vm.aggregates[column.field] || 0).toFixed(2);
@@ -268,7 +267,6 @@ function GeneralLedgerController(
     vm.gridOptions.columnDefs = [...newColumns, actions];
     vm.displayNames = columnConfig.getDisplayNames();
   }
-
 
   // fired when the footer changes and on startup.
   function onSelectFiscalYear(year) {
