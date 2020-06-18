@@ -28,14 +28,14 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.0.0.tgz#92ea47d61f9946de234b472858b646b2be83879b"
-  integrity sha512-beXbk1URPI5lAaFgfkpmiu94R5yWYpDNwweROgBtxZ3bpFvgtI1SFAPXouSXE0wYkYpWSXV6MrwthY5YKqfwrg==
+"@ima-worldhealth/coral@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.1.0.tgz#7f3f00b0e804c6dfee6c691d6d6490bc68cf3773"
+  integrity sha512-C19A2ORuWxUrbBoBstNAk26/fmJbfQggv0RdEvi/Edi/fNX+zMuWD+sQqHrJ9uBPjmCdPrLEMC+g+E8Si9EEOg==
   dependencies:
     debug "^4.1.1"
     inline-source "7.2.0"
-    puppeteer "3.1.0"
+    puppeteer "3.3.0"
     puppeteer-cluster "^0.21.0"
 
 "@ima-worldhealth/rewire@^4.1.0":
@@ -7575,10 +7575,10 @@ puppeteer-cluster@^0.21.0:
   dependencies:
     debug "^4.1.1"
 
-puppeteer@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-3.1.0.tgz#d44efdc5410809025f38bca2de106c3ae5c85a52"
-  integrity sha512-jLa9sqdVx0tPnr2FcwAq+8DSjGhSM4YpkwOf3JE22Ycyqm71SW7B5uGfTyMGFoLCmbCozbLZclCjasPb0flTRw==
+puppeteer@3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-3.3.0.tgz#95839af9fdc0aa4de7e5ee073a4c0adeb9e2d3d7"
+  integrity sha512-23zNqRltZ1PPoK28uRefWJ/zKb5Jhnzbbwbpcna2o5+QMn17F0khq5s1bdH3vPlyj+J36pubccR8wiNA/VE0Vw==
   dependencies:
     debug "^4.1.0"
     extract-zip "^2.0.0"
