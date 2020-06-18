@@ -12,14 +12,19 @@ function SearchMovementsModalController(data, Notify, Instance, Periods, Store, 
   const changes = new Store({ identifier : 'key' });
 
   const searchQueryOptions = [
-    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
-    'patientReference', 'service_uuid', 'invoice_uuid',
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id',
+    'dateFrom', 'dateTo', 'user_id', 'patientReference', 'service_uuid', 'invoice_uuid',
   ];
 
   vm.filters = data;
 
   vm.searchQueries = {};
   vm.defaultQueries = {};
+
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    vm.searchQueries.inventory_uuid = inventory.uuid;
+    displayValues.inventory_uuid = inventory.label;
+  };
 
   // keep track of the initial search queries to make sure we properly restore
   // default display values
@@ -41,12 +46,6 @@ function SearchMovementsModalController(data, Notify, Instance, Periods, Store, 
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
-  };
-
-  // custom filter inventory_uuid - assign the value to the params object
-  vm.onSelectInventory = function onSelectInventory(inventory) {
-    vm.searchQueries.inventory_uuid = inventory.uuid;
-    displayValues.inventory_uuid = inventory.label;
   };
 
   // Custom filter service_id - assign the value to the params object

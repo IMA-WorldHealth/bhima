@@ -38,8 +38,8 @@ function AccountReportConfigController(
     vm.reportDetails.includeUnpostedValues = bool;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.reportDetails.currency_id = currencyId;
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   vm.requestSaveAs = function requestSaveAs() {

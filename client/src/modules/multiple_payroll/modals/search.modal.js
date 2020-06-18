@@ -16,14 +16,14 @@ MultiPayrollSearchModalController.$inject = [
  */
 function MultiPayrollSearchModalController(
   ModalInstance, filters, Notify, Store, util,
-  MultiplePayroll, Currencies, Payroll, $translate, Session
+  MultiplePayroll, Currencies, Payroll, $translate, Session,
 ) {
   const vm = this;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
 
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
-    'payroll_configuration_id', 'currency_id', 'display_name', 'code', 'status_id'
+    'payroll_configuration_id', 'currency_id', 'display_name', 'code', 'status_id',
   ];
   const lastValues = {};
 
@@ -46,18 +46,6 @@ function MultiPayrollSearchModalController(
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-  // load all the available currencies
-  Currencies.read()
-    .then((currencies) => {
-      // cache a label for faster view rendering
-      currencies.forEach((currency) => {
-        currency.label = Currencies.format(currency.id);
-      });
-
-      vm.currencies = currencies;
-    })
-    .catch(Notify.handleError);
-
   // load all Paiement Status
   Payroll.paiementStatus()
     .then((paiementStatus) => {
@@ -77,13 +65,9 @@ function MultiPayrollSearchModalController(
     displayValues.payroll_configuration_id = period.label;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.currencies.forEach((currency) => {
-      if (currency.id === currencyId) {
-        displayValues.currency_id = currency.label;
-        vm.searchQueries.currency_id = currencyId;
-      }
-    });
+  vm.setCurrency = function setCurrency(currency) {
+    displayValues.currency_id = currency.label;
+    vm.searchQueries.currency_id = currency.id;
   };
 
   vm.onPayrollStatusChange = function onPayrollStatusChange(paiementStatus) {
@@ -107,15 +91,13 @@ function MultiPayrollSearchModalController(
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-    let _displayValue;
-
     if (form.$invalid) { return 0; }
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (_value, _key) => {
       if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
-        _displayValue = displayValues[_key] || lastValues[_key];
+        const _displayValue = displayValues[_key] || lastValues[_key];
 
         changes.post({ key : _key, value : _value, displayValue : _displayValue });
       }

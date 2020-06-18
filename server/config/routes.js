@@ -73,7 +73,6 @@ const stockReports = require('../controllers/stock/reports');
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');
-const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
 const debtors = require('../controllers/finance/debtors');
 const cashboxes = require('../controllers/finance/cashboxes');
@@ -356,10 +355,6 @@ exports.configure = function configure(app) {
   // special route for searching depot by name
   app.get('/depots/search/name', depots.searchByName);
 
-  // general ledger controller
-  // transitioning to a more traditional angular application architecture
-  app.get('/ledgers/general', gl.route);
-
   // currencies API
   app.get('/currencies', currencies.list);
   app.get('/currencies/:id', currencies.detail);
@@ -405,7 +400,6 @@ exports.configure = function configure(app) {
   app.post('/staffing_grade_indices', staffingIndices.gradeIndices.create);
   app.put('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.update);
   app.delete('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.delete);
-
 
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
@@ -552,7 +546,6 @@ exports.configure = function configure(app) {
   app.put('/debtor_groups/:uuid', debtorGroups.update);
   app.delete('/debtor_groups/:uuid', debtorGroups.delete);
 
-
   // users controller
   app.get('/users', users.list);
   app.post('/users', users.create);
@@ -612,7 +605,6 @@ exports.configure = function configure(app) {
   app.post('/cash', cash.create);
   app.put('/cash/:uuid', cash.update);
   app.get('/cash/checkin/:invoiceUuid', cash.checkInvoicePayment);
-
 
   // Enterprises api
   app.get('/enterprises', enterprises.list);
@@ -813,6 +805,8 @@ exports.configure = function configure(app) {
   app.get('/stock/flux', stock.listStockFlux);
 
   // stock management API
+  app.get('/stock/movements', stock.listMovements);
+
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
 
@@ -833,6 +827,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/consumption_graph', stockReports.consumptionGraph);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
+  app.get('/reports/stock/inline_movements', stockReports.stockInlineMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/sheet', stockReports.stockSheetReport);
   app.get('/reports/stock/value', stockReports.stockValue);

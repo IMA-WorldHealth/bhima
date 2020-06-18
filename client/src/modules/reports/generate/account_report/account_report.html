@@ -45,12 +45,12 @@
             <!-- the currency to be used in the footer -->
             <bh-currency-select
               currency-id="ReportConfigCtrl.reportDetails.currency_id"
-              on-change="ReportConfigCtrl.setCurrency(currencyId)">
+              on-change="ReportConfigCtrl.setCurrency(currency)">
             </bh-currency-select>
 
             <bh-yes-no-radios
               value="ReportConfigCtrl.reportDetails.includeUnpostedValues"
-			  name="includeUnpostedValues"
+              name="includeUnpostedValues"
               on-change-callback="ReportConfigCtrl.onChangeUnpostedValues(value)"
               name="includeUnpostedValues"
               label="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS"

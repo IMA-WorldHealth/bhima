@@ -16,7 +16,7 @@ MultiPayrollIndiceSearchModalController.$inject = [
  */
 function MultiPayrollIndiceSearchModalController(
   ModalInstance, filters, Notify, Store, util,
-  MultiplePayroll, Currencies, Payroll, $translate, Session
+  MultiplePayroll, Currencies, Payroll, $translate, Session,
 ) {
   const vm = this;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
@@ -47,18 +47,6 @@ function MultiPayrollIndiceSearchModalController(
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-  // load all the available currencies
-  Currencies.read()
-    .then((currencies) => {
-      // cache a label for faster view rendering
-      currencies.forEach((currency) => {
-        currency.label = Currencies.format(currency.id);
-      });
-
-      vm.currencies = currencies;
-    })
-    .catch(Notify.handleError);
-
   // load all Paiement Status
   Payroll.paiementStatus()
     .then((paiementStatus) => {
@@ -78,13 +66,9 @@ function MultiPayrollIndiceSearchModalController(
     displayValues.payroll_configuration_id = period.label;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.currencies.forEach((currency) => {
-      if (currency.id === currencyId) {
-        displayValues.currency_id = currency.label;
-        vm.searchQueries.currency_id = currencyId;
-      }
-    });
+  vm.setCurrency = function setCurrency(currency) {
+    displayValues.currency_id = currency.label;
+    vm.searchQueries.currency_id = currency.id;
   };
 
   vm.onPayrollStatusChange = function onPayrollStatusChange(paiementStatus) {

@@ -52,7 +52,7 @@
           <bh-yes-no-radios
             label="FORM.LABELS.CAUTION"
             value="$ctrl.searchQueries.is_caution"
-			name="is_caution"
+            name="is_caution"
             on-change-callback="$ctrl.onCautionChange(value)">
             <bh-clear on-clear="$ctrl.clear('is_caution')"></bh-clear>
           </bh-yes-no-radios>
@@ -75,7 +75,7 @@
 
           <bh-currency-select
             currency-id="$ctrl.searchQueries.currency_id"
-            on-change="$ctrl.setCurrency(currencyId)">
+            on-change="$ctrl.setCurrency(currency)">
             <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
           </bh-currency-select>
 

@@ -26,66 +26,64 @@ function StockMovementsRegistryTests() {
 
   const REFERENCE = 'SM.9.5';
 
-  it('finds lot for all time', async () => {
+  it('finds movements for all time', async () => {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCountAbove(gridId, 20);
+    await GU.expectRowCount(gridId, 16 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
     // for Entry
     await modal.setEntryExit(0);
     await modal.switchToDefaultFilterTab();
-    await modal.setLimit(10);
     await modal.submit();
-    await GU.expectRowCount(gridId, 11); // count the grouping row
+    await GU.expectRowCount(gridId, 7 + (2 * depotGroupingRow));
   });
 
   it('filters by entry/exit', async () => {
     // for Exit
     await modal.setEntryExit(1);
     await modal.switchToDefaultFilterTab();
-    await modal.setLimit(100);
     await modal.submit();
-    await GU.expectRowCount(gridId, 12 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 10 + depotGroupingRow);
   });
 
   it('find movements by depot', async () => {
     await modal.setDepot('Depot Secondaire');
     await modal.submit();
-    await GU.expectRowCount(gridId, 7);
+    await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find movements by Service', async () => {
     await modal.setServiceUuid('Administration');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find movements by inventory', async () => {
     await modal.setInventory('Quinine');
     await modal.submit();
-    await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 6 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 4 + depotGroupingRow);
   });
 
   it('find by lots reasons for purchase order', async () => {
     await modal.setMovementReason(['Commande d\'achat']);
     await modal.submit();
-    await GU.expectRowCount(gridId, 8 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to patient', async () => {
     // to patient
     await modal.setMovementReason(['Vers un patient']);
     await modal.submit();
-    await GU.expectRowCount(gridId, 4 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', async () => {
@@ -115,7 +113,7 @@ function StockMovementsRegistryTests() {
   it('find movements by reference', async () => {
     await modal.setReference(REFERENCE);
     await modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 }
 

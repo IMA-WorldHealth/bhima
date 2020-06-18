@@ -148,6 +148,7 @@
     "STOCK_INVENTORY_REPORT" : "[Stock] Stock Sheet",
     "STOCK_LOTS" : "Stock Lots",
     "STOCK_MOVEMENTS" : "Stock Movements",
+    "STOCK_INLINE_MOVEMENTS":"Movements Registry",
     "STOCK_REPORT" : "[Stock] Inventories",
     "STOCK_REQUISITION":"Requisition",
     "STOCK" : "Stock",

@@ -3,14 +3,14 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService', '$state',
+  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService', 'GeneralLedgerService', 'moment',
 ];
 
 /**
  * @module AccountsController
  *
  * @todo
- * there are performance issues on this page - this should be because of  row/cell templates, investigate
+ * There are performance issues on this page - this should be because of row/cell templates, investigate
  *
  * @description
  * This controller is responsible for configuring the Accounts Management UI grid
@@ -18,7 +18,7 @@ AccountsController.$inject = [
  */
 function AccountsController(
   $rootScope, $timeout, AccountGrid, Notify, Constants, Language,
-  uiGridConstants, Modal, Accounts
+  uiGridConstants, Modal, Accounts, GeneralLedger, moment,
 ) {
   const vm = this;
   const columns = gridColumns();
@@ -98,7 +98,7 @@ function AccountsController(
         name : 'actions',
         enableFiltering : false,
         displayName : '',
-        cellTemplate : '/modules/accounts/templates/grid.actionsCell.tmpl.html',
+        cellTemplate : '/modules/accounts/templates/actions.html',
         headerCellFilter : 'translate',
         width : 140,
       },
@@ -148,6 +148,18 @@ function AccountsController(
       vm.initialDataSet = false;
     }
   }
+
+  vm.openAccountReport = function openAccountReport(accountId) {
+    const opts = {
+      account_id : accountId,
+      dateFrom : moment().startOf('year').toDate(),
+      dateTo : moment().endOf('year').toDate(),
+      limit : 1000,
+      renderer : 'pdf',
+    };
+
+    return GeneralLedger.openAccountReport(opts);
+  };
 
   /**
    * @function remove

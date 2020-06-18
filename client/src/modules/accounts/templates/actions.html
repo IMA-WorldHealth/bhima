@@ -15,6 +15,14 @@
       </a>
     </li>
 
+    <li class="divider" ng-if="row.entity.type_id !== grid.appScope.Constants.accounts.TITLE"></li>
+
+    <li ng-if="row.entity.type_id !== grid.appScope.Constants.accounts.TITLE">
+      <a ng-href="/reports/finance/account_report/?{{ grid.appScope.openAccountReport(row.entity.id) }}" ng-attr-download="{{ REPORT.ACCOUNT | translate }}">
+        <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.ACCOUNT</span>
+      </a>
+    </li>
+
     <li class="divider"></li>
 
     <li>

@@ -25,6 +25,7 @@ const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
 const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
 const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
+const STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_inline_movements.report.handlebars`;
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
 const STOCK_SHEET_REPORT_TEMPLATE = `${BASE_PATH}/stock_sheet.report.handlebars`;
 const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`;
@@ -234,6 +235,7 @@ module.exports = {
   STOCK_ENTRY_REPORT_TEMPLATE,
   STOCK_LOTS_REPORT_TEMPLATE,
   STOCK_MOVEMENTS_REPORT_TEMPLATE,
+  STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE,
   STOCK_SHEET_REPORT_TEMPLATE,
   STOCK_INVENTORIES_REPORT_TEMPLATE,
   STOCK_VALUE_REPORT_TEMPLATE,

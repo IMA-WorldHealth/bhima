@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SearchCashPaymentModalController.$inject = [
   'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService',
-  'util', 'CashService', 'CurrencyService',
+  'util', 'CashService',
 ];
 
 /**
@@ -14,7 +14,7 @@ SearchCashPaymentModalController.$inject = [
  * POJO and are attached to the view.  They are modified here and returned to the parent controller
  * as a POJO.
  */
-function SearchCashPaymentModalController(Notify, Instance, filters, Store, Periods, util, Cash, Currencies) {
+function SearchCashPaymentModalController(Notify, Instance, filters, Store, Periods, util, Cash) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -52,18 +52,6 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
   }
 
-  // load all the available currencies
-  Currencies.read()
-    .then(currencies => {
-      // cache a label for faster view rendering
-      currencies.forEach(currency => {
-        currency.label = Currencies.format(currency.id);
-      });
-
-      vm.currencies = currencies;
-    })
-    .catch(Notify.handleError);
-
   vm.onSelectProject = (project) => {
     displayValues.project_id = project.name;
     vm.searchQueries.project_id = project.id;
@@ -86,12 +74,9 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     vm.searchQueries.is_caution = value;
   };
 
-  vm.setCurrency = function setCurrency(currencyId) {
-    vm.currencies.forEach(currency => {
-      if (currency.id === currencyId) {
-        displayValues.currency_id = currency.label;
-      }
-    });
+  vm.setCurrency = function setCurrency(currency) {
+    vm.searchQueries.currency_id = currency.id;
+    displayValues.currency_id = currency.label;
   };
 
   // default filter period - directly write to changes list

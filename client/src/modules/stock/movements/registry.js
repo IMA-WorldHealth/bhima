@@ -9,8 +9,9 @@ StockMovementsController.$inject = [
 ];
 
 /**
- * Stock movements Controller
+ * Stock movements registry Controller
  * This module is a registry page for stock movements
+ * where each line represent a single movement
  */
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
@@ -19,7 +20,7 @@ function StockMovementsController(
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
-  const stockMovementFilters = Stock.filter.movement;
+  const stockMovementsFilters = Stock.filter.inlineMovement;
 
   // grid columns
   const columns = getGridColumns();
@@ -45,9 +46,7 @@ function StockMovementsController(
 
   // grouping box
   vm.groupingBox = [
-    { label : 'STOCK.INVENTORY', value : 'text' },
     { label : 'STOCK.IO', value : 'io' },
-    { label : 'STOCK.LOT', value : 'label' },
   ];
 
   vm.gridApi = {};
@@ -63,56 +62,22 @@ function StockMovementsController(
       aggregationType : uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true,
     }, {
-      field : 'io',
-      displayName : 'STOCK.IO',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/io.cell.html',
-    }, {
       field : 'documentReference',
       displayName : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/reference.cell.html',
     }, {
-      field : 'text',
-      displayName : 'STOCK.INVENTORY',
+      field : 'io',
+      displayName : 'STOCK.IO',
       headerCellFilter : 'translate',
-    }, {
-      field : 'label',
-      displayName : 'STOCK.LOT',
-      headerCellFilter : 'translate',
-    }, {
-      field : 'quantity',
-      type : 'number',
-      displayName : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
-      aggregationHideLabel : true,
-      cellClass : 'text-right',
-      footerCellClass : 'text-right',
-    }, {
-      field : 'unit_type',
-      width : 75,
-      displayName : 'TABLE.COLUMNS.UNIT',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
-    }, {
-      field : 'unit_cost',
-      type : 'number',
-      displayName : 'STOCK.UNIT_COST',
-      headerCellFilter : 'translate',
-      cellFilter : 'currency:grid.appScope.enterprise.currency_id',
-      cellClass : 'text-right',
+      cellTemplate : 'modules/stock/movements/templates/io.cell.html',
     }, {
       field : 'cost',
       type : 'number',
       displayName : 'STOCK.COST',
       headerCellFilter : 'translate',
-      aggregationType : totalCost,
-      aggregationHideLabel : true,
       cellFilter : 'currency:grid.appScope.enterprise.currency_id',
       cellClass : 'text-right',
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
-      footerCellClass : 'text-right',
     }, {
       field : 'date',
       type : 'date',
@@ -163,7 +128,7 @@ function StockMovementsController(
   const state = new GridState(vm.gridOptions, cacheKey);
 
   function getQueryString(options) {
-    return stockMovementFilters.getQueryString(options);
+    return stockMovementsFilters.getQueryString(options);
   }
 
   // grid api
@@ -195,22 +160,12 @@ function StockMovementsController(
     mapFlux[fluxId].receipt(documentUuid);
   }
 
-  // aggregation total cost
-  function totalCost(items) {
-    const total = items.reduce(processTotalCost, 0);
-    return total;
-  }
-
-  function processTotalCost(previous, current) {
-    return (current.entity.quantity * current.entity.unit_cost) + previous;
-  }
-
   // on remove one filter
   function onRemoveFilter(key) {
-    stockMovementFilters.remove(key);
-    stockMovementFilters.formatCache();
-    vm.latestViewFilters = stockMovementFilters.formatView();
-    return load(stockMovementFilters.formatHTTP(true));
+    stockMovementsFilters.remove(key);
+    stockMovementsFilters.formatCache();
+    vm.latestViewFilters = stockMovementsFilters.formatView();
+    return load(stockMovementsFilters.formatHTTP(true));
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -233,20 +188,13 @@ function StockMovementsController(
     vm.hasError = false;
     vm.loading = true;
 
-    Stock.movements.read(null, filters)
+    Stock.inlineMovements.read(null, filters)
       .then(handleMovementRows)
       .catch(Notify.handleError)
       .finally(toggleLoading);
   }
 
-  function orderByDepot(rowA, rowB) {
-    return rowA.depot_text > rowB.depot_text ? 1 : -1;
-  }
-
   function handleMovementRows(rows) {
-    // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
-    rows.sort(orderByDepot);
-
     // preprocess data
     rows.forEach(handleMovementRow);
 
@@ -262,9 +210,6 @@ function StockMovementsController(
 
     // compute the fluxName from its ID
     row.fluxName = getFluxName(row.flux_id);
-
-    // compute the row cost
-    row.cost = row.quantity * row.unit_cost;
   }
 
   function toggleLoading() {
@@ -273,7 +218,7 @@ function StockMovementsController(
 
   // search modal
   function search() {
-    const filtersSnapshot = stockMovementFilters.formatHTTP();
+    const filtersSnapshot = stockMovementsFilters.formatHTTP();
 
     Modal.openSearchMovements(filtersSnapshot)
       .then(handleSearchModal);
@@ -283,10 +228,10 @@ function StockMovementsController(
     // if there is no change , customer filters should not change
     if (!changes) { return; }
 
-    stockMovementFilters.replaceFilters(changes);
-    stockMovementFilters.formatCache();
-    vm.latestViewFilters = stockMovementFilters.formatView();
-    load(stockMovementFilters.formatHTTP(true));
+    stockMovementsFilters.replaceFilters(changes);
+    stockMovementsFilters.formatCache();
+    vm.latestViewFilters = stockMovementsFilters.formatView();
+    load(stockMovementsFilters.formatHTTP(true));
   }
 
   // get flux name
@@ -297,16 +242,16 @@ function StockMovementsController(
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
-      stockMovementFilters.replaceFiltersFromState($state.params.filters);
-      stockMovementFilters.formatCache();
+      stockMovementsFilters.replaceFiltersFromState($state.params.filters);
+      stockMovementsFilters.formatCache();
     }
 
-    load(stockMovementFilters.formatHTTP(true));
-    vm.latestViewFilters = stockMovementFilters.formatView();
+    load(stockMovementsFilters.formatHTTP(true));
+    vm.latestViewFilters = stockMovementsFilters.formatView();
   }
 
   vm.downloadExcel = () => {
-    const filterOpts = stockMovementFilters.formatHTTP();
+    const filterOpts = stockMovementsFilters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,
