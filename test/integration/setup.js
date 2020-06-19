@@ -40,6 +40,7 @@ before(() => {
 });
 
 // runs after all tests are completed
-after(() => {
+after((done) => {
   console.log('Test suite completed.');
+  global.agent.close((err) => { done(err); });
 });

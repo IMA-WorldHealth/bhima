@@ -3,8 +3,6 @@
 # bash script mode
 set -euo pipefail
 
-trap 'kill $(jobs -p)' EXIT
-
 set -a
 source .env.development
 set +a
@@ -19,6 +17,6 @@ echo "[test] Spawning server process..."
 
 echo "[test] running tests using mocha"
 # run the tests
-NODE_ENV=development ./node_modules/.bin/mocha --recursive --bail --exit ./test/integration/
+./node_modules/.bin/mocha --recursive --bail --exit ./test/integration/
 
 echo "[/test]"
