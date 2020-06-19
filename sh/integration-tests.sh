@@ -19,6 +19,6 @@ echo "[test] Spawning server process..."
 
 echo "[test] running tests using mocha"
 # run the tests
-NODE_ENV=development ./node_modules/.bin/mocha --recursive --bail ./test/integration/
+NODE_ENV=development ./node_modules/.bin/mocha --recursive --bail --exit ./test/integration/
 
 echo "[/test]"

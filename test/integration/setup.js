@@ -18,11 +18,6 @@ const chaiDatetime = require('chai-datetime');
 // server
 const server = require('../../bin/server/app');
 
-// base URL for all tests
-const port = process.env.PORT || 8080;
-const baseUrl = `http://localhost:${port}`;
-global.baseUrl = baseUrl;
-
 // runs before any tests in the repository
 before(() => {
   console.log('Setting up test suite...');
@@ -45,8 +40,6 @@ before(() => {
 });
 
 // runs after all tests are completed
-after(done => {
-  delete require.cache[require.resolve('../../bin/server/app')];
+after(() => {
   console.log('Test suite completed.');
-  done();
 });
