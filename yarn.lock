@@ -28,10 +28,10 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.1.0.tgz#7f3f00b0e804c6dfee6c691d6d6490bc68cf3773"
-  integrity sha512-C19A2ORuWxUrbBoBstNAk26/fmJbfQggv0RdEvi/Edi/fNX+zMuWD+sQqHrJ9uBPjmCdPrLEMC+g+E8Si9EEOg==
+"@ima-worldhealth/coral@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.1.1.tgz#a108b28ca16b4cd07578d1fc6e8764c9e1464356"
+  integrity sha512-XTPpZPza6SnFZgndYiLF7XPh68O2Nr62FAe8FTwWV+m+suTyBLOFI4mQ/FLEAEew75ziZJXw4UQ1ofwREiR21A==
   dependencies:
     debug "^4.1.1"
     inline-source "7.2.0"
