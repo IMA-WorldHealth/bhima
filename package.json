@@ -90,7 +90,7 @@
     "ioredis": "^4.17.3",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.0",
-    "json-2-csv": "^3.7.2",
+    "json-2-csv": "^3.7.3",
     "lodash": "^4.17.11",
     "mailgun-js": "^0.22.0",
     "mkdirp": "^1.0.4",
@@ -111,7 +111,7 @@
     "uuid": "^8.1.0",
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
-    "winston": "^3.2.1"
+    "winston": "^3.3.0"
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
