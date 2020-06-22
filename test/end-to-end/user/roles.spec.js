@@ -27,7 +27,7 @@ function RolesManagementTests() {
 
   it('should edit permissions for a role', async () => {
     await page.editPermissions('Sécretaire');
-    await page.checkAllPerimission();
+    await page.checkAllPermissions();
     await page.submit();
     await components.notification.hasSuccess();
   });
@@ -64,7 +64,6 @@ function assigningRole() {
     await components.notification.hasSuccess();
   });
 }
-
 
 describe('Role Management Tests', () => {
   describe('Role Management', RolesManagementTests);

@@ -3,11 +3,12 @@ const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
 
+const { bhCheckboxTree } = require('../shared/components');
+
 class RolesPage {
   constructor() {
     this.gridId = 'roles-grid';
     this.roleLabel = element(by.model('RolesAddCtrl.role.label'));
-    this.checkAll = element(by.id('checkall'));
   }
 
   submit() {
@@ -39,10 +40,9 @@ class RolesPage {
     await row.menu.$('[data-method="edit-permissions"]').click();
   }
 
-  async checkAllPerimission() {
-    const checkbox = this.checkAll;
-    await browser.wait(EC.elementToBeClickable(checkbox), 1500);
-    await checkbox.click();
+  async checkAllPermissions() {
+    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
+    await bhCheckboxTree.toggleAllCheckboxes();
   }
 
   async assignRole(label) {
@@ -55,8 +55,9 @@ class RolesPage {
     await row.menu.$('[data-method="edit-actions"]').click();
   }
 
-  setRole(txt) {
-    return $(`[title="${txt}"]`).click();
+  async setRole(txt) {
+    await browser.wait(EC.presenceOf($(bhCheckboxTree.selector)), 1500);
+    return bhCheckboxTree.toggle([txt]);
   }
 
   setAction(id) {

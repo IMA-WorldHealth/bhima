@@ -7,48 +7,12 @@
   </div>
 
   <div class="modal-body" style="max-height: 75vh; overflow:auto;">
-    <div class="checkbox">
-      <label>
-        <input
-          type="checkbox"
-          ng-change="RolesPermissionsCtrl.toggleNode(0, RolesPermissionsCtrl.isAllChecked)"
-          ng-model="RolesPermissionsCtrl.isAllChecked" />
-        <span id="checkall" translate>FORM.LABELS.CHECK_ALL</span>
-      </label>
-    </div>
-
-    <hr />
-
-    <div ng-repeat="node in RolesPermissionsCtrl.tree track by node.id">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" ng-model="node.checked" ng-change="RolesPermissionsCtrl.toggleNode(node.id, node.checked)" />
-          <strong translate>{{node.key}}</strong>
-        </label>
-      </div>
-
-      <ul style="margin-left: calc({{node.depth}} * 15px)" class="list-unstyled">
-        <li ng-repeat="child in node.children track by child.id">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="child.checked" ng-change="RolesPermissionsCtrl.toggleNode(child.id, child.checked)" />
-              <span translate>{{child.key}}</span>
-            </label>
-            </div>
-        </li>
-
-        <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
-          <li ng-repeat="grandchild in child.children track by grandchild.id">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="grandchild.checked" ng-change="RolesPermissionsCtrl.toggleNode(grandchild.id, grandchild.checked)" />
-                <span translate>{{grandchild.key}}</span>
-              </label>
-            </div>
-          </li>
-        </ul>
-      </ul>
-    </div>
+    <bh-checkbox-tree
+      data="RolesPermissionsCtrl.units"
+      checked-ids="RolesPermissionsCtrl.mask"
+      label-key="key"
+      on-change="RolesPermissionsCtrl.onChangeTree(data)">
+    </bh-checkbox-tree>
   </div>
 
   <div class="modal-footer">

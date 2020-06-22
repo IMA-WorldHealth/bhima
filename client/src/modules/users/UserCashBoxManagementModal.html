@@ -1,31 +1,33 @@
 <form name="UserCashboxForm" bh-submit="UsersCashBoxModalCtrl.submit(UserCashboxForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="title">
-        <span translate>USERS.UPDATING_USER</span>
-        <label class="badge badge-warning" translate>USERS.SET_CASHBOX</label>
-      </li>
+      <li class="static" translate>USERS.UPDATING_USER</li>
+      <li class="title" translate>USERS.SET_CASHBOX</li>
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
-    <div class="form-group" ng-class="{ 'has-error' : UserCashboxForm.$submitted && UserCashboxForm.display_name.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
-      <div>
-        <h4><i>{{ UsersCashBoxModalCtrl.user.display_name }}</i></h4>
-      </div>
-    </div>
+  <div class="modal-body" style="overflow-y: scroll; max-height:80vh; ">
+    <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+    <p class="form-control-static"> {{ UsersCashBoxModalCtrl.user.display_name }}</p>
 
     <span translate> FORM.INFO.USER_CASHBOX </span>
 
-    <bh-multiple-cashbox-select
-      on-change="UsersCashBoxModalCtrl.onCashBoxChange(cashboxes)"
-      cashbox-ids="UsersCashBoxModalCtrl.initialUserCashboxes">
-    </bh-multiple-cashbox-select>
+    <div ng-if="!UsersCashBoxModalCtrl.loading">
+      <bh-checkbox-tree
+        data="UsersCashBoxModalCtrl.cashboxes"
+        on-change="UsersCashBoxModalCtrl.onChangeSelection(data)"
+        checked-ids="UsersCashBoxModalCtrl.selected"
+        is-flat-tree="true"
+        labelKey="label">
+      </bh-checkbox-tree>
+    </div>
+    <div ng-if="UsersCashBoxModalCtrl.loading">
+      <loading-indicator></loading-indicator>
+    </div>
   </div>
 
   <div class="modal-footer">
-    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersCashBoxModalCtrl.closeModal()">
+    <button id="user-cancel" type="button" class="btn btn-default" ui-sref="users.list">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 

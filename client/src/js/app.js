@@ -38,7 +38,7 @@ function localeConfig(tmhDynamicLocaleProvider) {
 // redirect to login if not signed in.
 function startupConfig(
   $rootScope, $state, $uibModalStack, SessionService, amMoment, Notify,
-  $location, InstallService
+  $location, InstallService,
 ) {
   const installStateRegexp = /#!\/install$/;
   const loginStateRegexp = /#!\/login$/;

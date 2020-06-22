@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
   .controller('UsersCashBoxManagementController', UsersCashBoxManagementController);
 
 UsersCashBoxManagementController.$inject = [
-  '$state', 'UserService', 'NotifyService', 'appcache',
+  '$state', 'UserService', 'NotifyService', 'appcache', 'CashboxService', '$q',
 ];
 
-function UsersCashBoxManagementController($state, Users, Notify, AppCache) {
+function UsersCashBoxManagementController($state, Users, Notify, AppCache, Cashboxes, $q) {
   const vm = this;
-  const cache = AppCache('UserCashbox');
+  const cache = AppCache('UserCashboxPermissions');
 
   if ($state.params.id) {
     cache.stateParams = $state.params;
@@ -18,21 +18,18 @@ function UsersCashBoxManagementController($state, Users, Notify, AppCache) {
 
   // the user object that is either edited or created
   vm.user = {};
-  vm.initialUserCashboxes = [];
 
   // exposed methods
   vm.submit = submit;
-  vm.closeModal = closeModal;
 
-  vm.onCashBoxChange = function onCashBoxChange(cashboxes) {
-    vm.user.cashboxes = cashboxes;
+  vm.onChangeSelection = (ids) => {
+    vm.ids = ids;
   };
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
     if (userForm.$invalid || !vm.user.id) { return null; }
-
-    return Users.cashBoxManagement(vm.user.id, vm.user.cashboxes)
+    return Users.cashBoxManagement(vm.user.id, vm.ids)
       .then(() => {
         Notify.success('USERS.UPDATED');
         $state.go('users.list');
@@ -40,22 +37,23 @@ function UsersCashBoxManagementController($state, Users, Notify, AppCache) {
       .catch(Notify.handleError);
   }
 
-  Users.cashboxes(vm.stateParams.id)
-    .then((cashboxes) => {
-      vm.initialUserCashboxes = cashboxes;
-      return Users.read(vm.stateParams.id);
-    })
-    .then((user) => {
-      vm.user = user;
+  function startup() {
+    vm.loading = true;
+    const promises = $q.all([
+      Cashboxes.read(),
+      Users.cashboxes(vm.stateParams.id),
+      Users.read(vm.stateParams.id),
+    ]);
 
-      // manually update the model as the bh-multiple-cashbox-select seems to ignore
-      // the first data update
-      vm.onCashBoxChange(vm.initialUserCashboxes);
-    })
-    .catch(Notify.handleError);
-
-  function closeModal() {
-    $state.go('users.list');
+    return promises
+      .then(([cashboxes, selected, user]) => {
+        angular.extend(vm, { cashboxes, selected, user });
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
+  startup();
 }

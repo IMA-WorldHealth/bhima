@@ -19,7 +19,6 @@ class UserPage {
       .count();
   }
 
-
   create() {
     return this.buttons.create();
   }
@@ -29,7 +28,6 @@ class UserPage {
     await row.dropdown().click();
     await row.edit().click();
   }
-
 
   async updateDepot(name) {
     const row = new GridRow(name);

@@ -27,7 +27,8 @@ function RolesService(Api) {
 
   service.userRoles = function userRoles(userId) {
     const url = `/roles/user/${userId}`;
-    return service.$http.get(url);
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
   };
 
   service.actions = function actions(roleUuid) {

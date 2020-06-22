@@ -10,69 +10,38 @@ function UsersRolesController(data, $uibModal, $uibModalInstance, RolesService, 
   const vm = this;
   vm.close = close;
   vm.user = angular.copy(data);
-  vm.loadRoles = loadRoles;
   vm.assignRolesToUser = assignRolesToUser;
-  vm.roles = [];
+  vm.onChangeRoleSelection = onChangeRoleSelection;
 
   // load all roles
   function loadRoles() {
     RolesService.userRoles(vm.user.id)
-      .then(response => {
-        delete vm.gridOptions.data;
-        vm.roles = response.data;
+      .then(roles => {
+        vm.roles = roles;
       })
       .catch(Notify.handleError);
+  }
+
+  function onChangeRoleSelection(uuids) {
+    vm.selected = uuids;
   }
 
   // assigned role to he user
   function assignRolesToUser() {
-    const codes = vm.roles
-      .filter(role => role.affected === 1)
-      .map(role => role.uuid);
-
     const param = {
       user_id : vm.user.id,
-      role_uuids : codes,
+      role_uuids : vm.selected || [],
     };
 
-    RolesService.assignToUser(param)
+    return RolesService.assignToUser(param)
       .then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');
-        vm.close();
+        close();
       })
       .catch(Notify.handleError);
   }
 
-  // ui-grid
-  const columns = [{
-    field : 'label',
-    displayName : 'Label',
-  }, {
-    field : '-',
-    width : 100,
-    displayName : 'Affecté',
-    enableFiltering : false,
-    cellTemplate : 'modules/roles/templates/userAssignedRole.cell.html',
-  }];
+  function close() { $uibModalInstance.close(); }
 
-  // ng-click="
-  vm.gridOptions = {
-    appScopeProvider : vm,
-    enableColumnMenus : false,
-    columnDefs : columns,
-    enableSorting : true,
-    data : [],
-    fastWatch : true,
-    flatEntityAccess : true,
-  };
-
-  vm.gridOptions.onRegisterApi = gridApi => {
-    vm.gridApi = gridApi;
-  };
-
-  function close() {
-    $uibModalInstance.close();
-  }
-
-  vm.loadRoles();
+  loadRoles();
 }
