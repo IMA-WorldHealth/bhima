@@ -47,5 +47,7 @@ sh/build-database-test.sh
 docs/_site/
 docs/.sass-cache/
 
+client/upload/
+
 yarn-error.log
 *.log

@@ -94,6 +94,14 @@ const filters = [{
   comparitor : '>',
   isDate : true,
 }, {
+  field : 'defaultPeriod',
+  displayName : 'TABLE.COLUMNS.PERIOD',
+  isPeriod : true,
+}, {
+  field : 'period',
+  displayName : 'TABLE.COLUMNS.PERIOD',
+  isPeriod : true,
+}, {
   field : 'expiration_date_to',
   displayName : 'STOCK.EXPIRATION_DATE',
   comparitor : '<',
@@ -181,7 +189,6 @@ const filters = [{
 // into human-readable text to be placed in the report, showing the properties
 // filtered on.
 function formatFilters(qs) {
-
   const displayValueMap = parseDisplayValues(qs.displayValues);
 
   return filters.filter(filter => {
@@ -203,7 +210,6 @@ function formatFilters(qs) {
     return false;
   });
 }
-
 
 function parseDisplayValues(displayValues = '') {
   return displayValues.split(',')
