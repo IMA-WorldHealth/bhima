@@ -3193,10 +3193,10 @@ eslint@^6.1.0:
     text-table "^0.2.0"
     v8-compile-cache "^2.0.3"
 
-eslint@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.3.0.tgz#f9f1fc3dc1227985d0db88769f2bbac7b4b875d7"
-  integrity sha512-dJMVXwfU5PT1cj2Nv2VPPrKahKTGdX+5Dh0Q3YuKt+Y2UhdL2YbzsVaBMyG9HC0tBismlv/r1+eZqs6SMIV38Q==
+eslint@^7.3.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-7.3.1.tgz#76392bd7e44468d046149ba128d1566c59acbe19"
+  integrity sha512-cQC/xj9bhWUcyi/RuMbRtC3I0eW8MH0jhRELSvpKYkWep3C6YZ2OkvcvJVUeO6gcunABmzptbXBuDoXsjHmfTA==
   dependencies:
     "@babel/code-frame" "^7.0.0"
     ajv "^6.10.0"
@@ -5407,10 +5407,10 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.7.3:
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.7.3.tgz#5a6d932c32b2e49697f9b99c29a3125a68e47949"
-  integrity sha512-fmp/xWxRaJ2k4DO0XWOfSMv0FvXYdTWPTbMNJrA9Y2rVGfEQcrPTL9lFK2h+pREFKOa9nQY5l6hYMae9zhdkdQ==
+json-2-csv@^3.7.4:
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.7.4.tgz#ef0f3019f9d0cbcfe8d04d3c044b91af6763120d"
+  integrity sha512-N1P4LNVdzs79WEpScZxVD3ygvgd3Lvl93a16JZN0vkPJfxbdVT8e9sQN5iir01LDEDZbsAHj5Tx4U6eFcf7RtQ==
   dependencies:
     deeks "2.2.6"
     doc-path "2.0.4"
