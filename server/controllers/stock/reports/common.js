@@ -13,7 +13,6 @@ const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.h
 const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
 
-
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
 const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
@@ -30,7 +29,6 @@ const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report
 const STOCK_SHEET_REPORT_TEMPLATE = `${BASE_PATH}/stock_sheet.report.handlebars`;
 const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`;
 
-
 // General imports
 const _ = require('lodash');
 
@@ -40,49 +38,11 @@ const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const Stock = require('../core');
 const ReportManager = require('../../../lib/ReportManager');
-const PeriodService = require('../../../lib/period');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
 const pdf = require('../../../lib/renderers/pdf');
 const barcode = require('../../../lib/barcode');
-
-/*
-* This function help to format filter display name
-* Whitch must appear in the report
-*/
-function formatFilters(qs) {
-  const columns = [
-    { field : 'depot_uuid', displayName : 'STOCK.DEPOT' },
-    { field : 'inventory_uuid', displayName : 'STOCK.INVENTORY' },
-    { field : 'status', displayName : 'FORM.LABELS.STATUS' },
-    { field : 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
-    { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
-    { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
-
-    {
-      field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true,
-    },
-    {
-      field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true,
-    },
-  ];
-
-  return columns.filter(column => {
-    const value = qs[column.field];
-
-    if (!_.isUndefined(value)) {
-      if (column.isPeriod) {
-        const service = new PeriodService(new Date());
-        column.value = service.periods[value].translateKey;
-      } else {
-        column.value = value;
-      }
-      return true;
-    }
-    return false;
-  });
-}
-
+const { formatFilters } = require('../../finance/reports/shared');
 
 /**
  * getDepotMovement
