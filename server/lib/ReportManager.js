@@ -185,7 +185,7 @@ class ReportManager {
     const renderHeaders = renderer.headers;
 
     if (fileName) {
-      renderHeaders['Content-Disposition'] = `filename=${fileName}`;
+      renderHeaders['Content-Disposition'] = `filename="${fileName}"`;
       renderHeaders.filename = fileName;
     }
 
