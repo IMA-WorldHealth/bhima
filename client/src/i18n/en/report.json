@@ -60,7 +60,9 @@
       "TITLE" : "Annual Clients Report",
       "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances.",
       "HIDE_LOCKED_CLIENTS" : "Hide Locked Clients",
-      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
+      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no.",
+      "INCLUDE_CASH_CLIENTS" : "Include Cash Clients",
+      "INCLUDE_CASH_CLIENTS_HELP_TEXT" : "Selecting this option will add in cash debtor groups.  By default only non-cash clients (conventions) are queried."
     },
     "CLOSING_BALANCE": "Closing Balance",
     "COMPARE_INVOICED_RECEIVED": {

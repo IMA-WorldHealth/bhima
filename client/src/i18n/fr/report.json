@@ -142,7 +142,7 @@
       "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
 
     },
-    
+
     "STOCK_CONSUMPTION_GRAPH_REPORT" : {
       "TITLE" : "Rapport graphique de la consommation de stock",
       "DESCRIPTION" : "Ce rapport montre graphiquement la consommation de stock durant une période pour un depot ou un inventaire"
@@ -208,7 +208,9 @@
       "TITLE" : "Rapport Annuel des Clients",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture.",
       "HIDE_LOCKED_CLIENTS" : "Masquer les clients verrouillés",
-      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Si vous sélectionnez oui, tous les clients verrouillés seront filtrés dans le rapport. Par défaut, la valeur est non."
+      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Si vous sélectionnez oui, tous les clients verrouillés seront filtrés dans le rapport. Par défaut, la valeur est non.",
+      "INCLUDE_CASH_CLIENTS" : "Inclure les payant cash",
+      "INCLUDE_CASH_CLIENTS_HELP_TEXT" : "La sélection de cette option ajoutera des groupes de débiteurs en espèces. Par défaut, seules les conventions sont interrogées."
     },
     "UNPAID_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de Factures Non-Payées",
