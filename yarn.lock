@@ -269,10 +269,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@types/angular@^1.6.25", "@types/angular@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.7.1.tgz#1a6a76561f98bd39a01c7e6d6eba55cd0888e435"
-  integrity sha512-MX/G4abbHoyMyMNFmajjhAdNpY3Kd2a6gIUrxmDsjf+D/NuzDdW/cmo5hfjfLish6q1QhR7+J52Lfw6rRtyFoA==
+"@types/angular@^1.6.25", "@types/angular@^1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.7.2.tgz#e996f4a5dc184dfe8c076c6ddbbe0d60caab639e"
+  integrity sha512-UBEgZTFg+tAvGZrJpTfTrRbBHXdcA3GErBs+QfIM1K8Gnzl7WghYc7gsbWRQ7rXvpnxmbffAFLPkKl32XEx8IQ==
 
 "@types/cacheable-request@^6.0.1":
   version "6.0.1"
