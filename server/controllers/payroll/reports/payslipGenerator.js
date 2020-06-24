@@ -30,11 +30,20 @@ const DEFAULT_OPTS = {
 function build(req, res, next) {
   const options = _.clone(req.query);
 
+  if (Array.isArray(options.employees)) {
+    for (let i = 0; i < options.employees.length; i++) {
+      options.employees[i] = db.bid(options.employees[i]);
+    }
+
+  } else {
+    options.employees = db.bid(options.employees);
+  }
+
   options.idPeriod = options.idPeriod || options.payroll_configuration_id;
 
   const params = {
     payroll_configuration_id : options.idPeriod,
-    reference : options.employees,
+    employeesUuid : options.employees,
   };
 
   let template;
@@ -138,10 +147,11 @@ function build(req, res, next) {
       data.total_non_taxable = totalGrossSalary - totalBaseTaxable;
       data.total_deduction = totalGrossSalary - totalNetSalary;
       // Get paiement_uuid for Selected Employee
-      const employeesPaiementUuid = dataEmployees.map(emp => db.bid(emp.uuid));
+      const employeesPaiementUuid = dataEmployees.map(emp => db.bid(emp.paiement_uuid));
+
       return PayrollConfig.payrollReportElements(options.idPeriod, options.employees, employeesPaiementUuid);
     })
-    .spread((rubrics, holidays, offDays, aggregateRubrics, aggregatePaiements, rubEmployees, rubEnterprises) => {
+    .spread((rubrics, holidays, offDays, rubEmployees, rubEnterprises) => {
       let TotalChargeEnterprise = 0;
       rubrics.forEach(item => {
         data.exchangeRatesByCurrency.forEach(exchange => {
