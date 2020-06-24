@@ -35,7 +35,7 @@ function CreateUpdateWardController(uuid, Session, Ward, ModalService, Notify, I
   }
 
   function onSelectService(service) {
-    vm.ward.service_id = service.id;
+    vm.ward.service_uuid = service.uuid;
   }
 
   // create or update a Ward

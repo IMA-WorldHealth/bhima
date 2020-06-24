@@ -27,14 +27,14 @@ const FilterParser = require('../../lib/filter');
 function list(req, res, next) {
   let sql = `
     SELECT
-      s.id, s.name,  BUID(s.uuid) AS uuid, s.hidden,
+      s.name, BUID(s.uuid) AS uuid, s.hidden,
       p.id AS project_id, p.name AS project_name
     FROM service AS s
     LEFT JOIN project AS p ON s.project_id = p.id`;
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, BUID(s.uuid) AS uuid, s.hidden,
+      SELECT s.name, s.enterprise_id, BUID(s.uuid) AS uuid, s.hidden,
       e.name AS enterprise_name, e.abbr, p.id AS project_id, p.name AS project_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
@@ -87,14 +87,13 @@ function create(req, res, next) {
   // add contextual information
   record.enterprise_id = req.session.enterprise.id;
 
-  delete record.id;
-
   // service unique uuid as entity uuid
-  record.uuid = db.bid(uuid());
+  const uid = uuid();
+  record.uuid = db.bid(uid);
 
   db.exec(sql, [record])
-    .then((result) => {
-      res.status(201).json({ id : result.insertId });
+    .then(() => {
+      res.status(201).json({ uuid : uid });
     })
     .catch(next)
     .done();
@@ -114,18 +113,17 @@ function create(req, res, next) {
 */
 function update(req, res, next) {
   const queryData = req.body;
-  const sql = `UPDATE service SET ? WHERE id = ?;`;
+  const sql = `UPDATE service SET ? WHERE uuid = ?;`;
 
-  delete queryData.id;
   delete queryData.uuid;
 
-  db.exec(sql, [queryData, req.params.id])
+  db.exec(sql, [queryData, db.bid(req.params.uuid)])
     .then((result) => {
       if (!result.affectedRows) {
-        throw new NotFound(`Could not find a service with id ${req.params.id}.`);
+        throw new NotFound(`Could not find a service with uuid ${req.params.uuid}.`);
       }
 
-      return lookupService(req.params.id);
+      return lookupService(req.params.uuid);
     })
     .then((service) => {
       res.status(200).json(service);
@@ -141,7 +139,8 @@ function update(req, res, next) {
  * Remove a service in the database.
  */
 function remove(req, res, next) {
-  db.delete('service', 'id', req.params.id, res, next, `Could not find a service with id ${req.params.id}`);
+  db.delete('service', 'uuid', db.bid(req.params.uuid), res, next,
+    `Could not find a service with uuid ${req.params.uuid}`);
 }
 
 /**
@@ -151,7 +150,7 @@ function remove(req, res, next) {
  * Return a service details from the database
  */
 function detail(req, res, next) {
-  lookupService(req.params.id)
+  lookupService(req.params.uuid)
     .then((row) => {
       res.status(200).json(row);
     })
@@ -165,21 +164,21 @@ function detail(req, res, next) {
  * @description
  * Return a service instance from the database
  *
- * @param {Number} id - the id of a service
+ * @param {String} uid - the uuid of a service
  * @returns {Promise} - returns the result of teh database query
  */
-function lookupService(id) {
+function lookupService(uid) {
+  console.log('uid:', uid);
   const sql = `
     SELECT
-      s.id, s.name, s.enterprise_id, s.hidden,
+      BUID(s.uuid) AS uuid, s.name, s.enterprise_id, s.hidden,
       p.id AS project_id, p.name AS project_name
     FROM
-      service AS s
-    LEFT JOIN project p ON p.id = s.project_id
+      service AS s LEFT JOIN project p ON p.id = s.project_id
     WHERE
-      s.id = ?;`;
+      s.uuid = ?;`;
 
-  return db.one(sql, id, id, 'service');
+  return db.one(sql, db.bid(uid), uid, 'service');
 }
 
 exports.list = list;

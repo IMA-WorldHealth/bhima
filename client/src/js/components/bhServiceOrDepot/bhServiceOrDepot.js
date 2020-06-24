@@ -36,7 +36,7 @@ function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
   function initCollections([requestors, depots, services]) {
     Object.assign($ctrl, { requestors, depots, services });
 
-    $ctrl.serviceIds = $ctrl.services.map(service => service.uuid);
+    $ctrl.serviceUuids = $ctrl.services.map(service => service.uuid);
     $ctrl.depotIds = $ctrl.depots.map(depot => depot.uuid);
 
     if ($ctrl.uuid) {
@@ -47,7 +47,7 @@ function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
   function getRequestorType(identifier) {
     const SERVICE_REQUESTOR_TYPE = 1;
     const DEPOT_REQUESTOR_TYPE = 2;
-    const foundInService = $ctrl.serviceIds.includes(identifier);
+    const foundInService = $ctrl.serviceUuids.includes(identifier);
     const foundInDepot = $ctrl.depotIds.includes(identifier);
 
     if (foundInService) {

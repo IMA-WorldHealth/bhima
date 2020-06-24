@@ -2,18 +2,21 @@
  * This file contains shared elements for ward management
  */
 
+const testService = 'aff85bdc-d7c6-4047-afe7-1724f8cd369e';
+const adminService = 'b1816006-5558-45f9-93a0-c222b5efa6cb';
+
 const ward1 = {
   uuid : 'F5A7264926C94F5DBFFA098207A7F24D', // exists in db
   name : 'Pavillon A',
   description : 'Test pavillon A',
-  service_id : 1,
+  service_uuid : testService,
 };
 
 const ward2 = {
   uuid : 'F4CE5F9FEDD34BD29B9C43B116C02747', // exists in db
   name : 'Pavillon B',
   description : 'Test pavillon B',
-  service_id : 2,
+  service_uuid : adminService,
 };
 
 const room1 = {

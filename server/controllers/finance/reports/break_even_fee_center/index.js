@@ -88,7 +88,7 @@ function report(req, res, next) {
       SELECT sfc.fee_center_id, f.label AS feeCenter, count(pv.uuid) AS numberOfCases
       FROM patient_visit AS pv
       JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
-      JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+      JOIN service_fee_center AS sfc ON sfc.service_uuid = pvs.service_uuid
       JOIN fee_center AS f ON f.id = sfc.fee_center_id
       WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
       GROUP BY sfc.fee_center_id
@@ -100,7 +100,7 @@ function report(req, res, next) {
       FROM indicator AS i
       JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
       JOIN period AS p ON p.id = i.period_id
-      JOIN service_fee_center AS sfc ON sfc.service_id = i.service_id
+      JOIN service_fee_center AS sfc ON sfc.service_uuid = i.service_uuid
       JOIN fee_center AS f ON f.id = sfc.fee_center_id
       WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)
       GROUP BY sfc.fee_center_id;

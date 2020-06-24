@@ -63,7 +63,7 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
   }
 
   function assignServiceRequisition([service]) {
-    if (!service || !service.id) {
+    if (!service || !service.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_SERVICE';
       throw new Error('The requisition is not for services');
     }

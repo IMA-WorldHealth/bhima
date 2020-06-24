@@ -121,7 +121,7 @@ function PatientInvoiceService(
 
   invoiceFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
+    { key : 'service_uuid', label : 'FORM.LABELS.SERVICE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },

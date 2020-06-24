@@ -33,7 +33,7 @@ function ServiceModalController($state, Services, Depots, $translate,
 
     const promise = (vm.isCreating)
       ? Services.create(vm.service)
-      : Services.update(vm.service.id, vm.service);
+      : Services.update(vm.service.uuid, vm.service);
 
     return promise
       .then(() => {

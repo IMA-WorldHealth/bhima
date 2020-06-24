@@ -104,7 +104,7 @@ describe('PatientInvoiceForm', () => {
 
   it('#constructor() sets the default service on startup', () => {
     const [service] = Mocks.services();
-    expect(form.details.service_id).to.equal(service.id);
+    expect(form.details.service_uuid).to.equal(service.uuid);
   });
 
   it('#setPatient() sets the patient and downloads relevant data', () => {

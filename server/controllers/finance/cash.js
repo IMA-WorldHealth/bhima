@@ -69,7 +69,7 @@ function lookup(uuid) {
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
       JOIN document_map dm ON i.uuid = dm.uuid
-      LEFT JOIN service AS s ON i.service_id = s.id
+      LEFT JOIN service AS s ON i.service_uuid = s.uuid
     WHERE ci.cash_uuid = ?
     ORDER BY i.date ASC;
   `;
@@ -171,7 +171,7 @@ function find(options) {
 
   filters.custom(
     'invoice_uuid',
-    'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = ?)'
+    'cash.uuid IN (SELECT cash_item.cash_uuid FROM cash_item WHERE cash_item.invoice_uuid = ?)',
   );
 
   const query = filters.applyQuery(sql);
@@ -257,7 +257,6 @@ const PREPAYMENT_LINK_TYPE_ID = 19;
  */
 function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
-
 
   const getInvoicePayment = `
     SELECT DISTINCT BUID(cash_item.cash_uuid) cash_uuid, BUID(cash_item.invoice_uuid) invoice_uuid, cash.reversed

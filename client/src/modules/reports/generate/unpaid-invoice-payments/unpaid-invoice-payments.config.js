@@ -34,7 +34,7 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
   };
 
   vm.onSelectService = service => {
-    vm.reportDetails.serviceId = service.id;
+    vm.reportDetails.serviceUuid = service.uuid;
   };
 
   vm.clearPreview = function clearPreview() {

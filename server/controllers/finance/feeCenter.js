@@ -19,9 +19,9 @@ async function lookupFeeCenter(id) {
     WHERE fee_center_id = ?`;
 
   const sqlServicesFeeCenter = `
-    SELECT service_fee_center.fee_center_id, service_fee_center.service_id AS id, service.name
+    SELECT service_fee_center.fee_center_id, BUID(service_fee_center.service_uuid) AS uuid, service.name
     FROM service_fee_center
-    JOIN service ON service.id = service_fee_center.service_id
+    JOIN service ON service.uuid = service_fee_center.service_uuid
     WHERE fee_center_id = ?`;
 
   const [feeCenter, references, services] = await Promise.all([
@@ -49,7 +49,7 @@ function list(req, res, next) {
     LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_fee_center AS sf ON sf.fee_center_id = f.id
-    LEFT JOIN service AS s ON s.id = sf.service_id
+    LEFT JOIN service AS s ON s.uuid = sf.service_uuid
     LEFT JOIN project AS p ON p.id = f.project_id`;
 
   filters.equals('is_principal');
@@ -117,14 +117,9 @@ async function create(req, res, next) {
     }
 
     if (data.services) {
-      const dataServices = data.services.map(item => [
-        feeCenterId,
-        item,
-      ]);
-
+      const dataServices = data.services.map(item => ([feeCenterId, db.bid(item)]));
       const sqlServices = `
-        INSERT INTO service_fee_center (fee_center_id, service_id) VALUES ?`;
-
+        INSERT INTO service_fee_center (fee_center_id, service_uuid) VALUES ?`;
       transaction
         .addQuery(sqlServices, [dataServices]);
     }
@@ -181,11 +176,11 @@ async function update(req, res, next) {
         // If we do not modify the services related to a cost center during the update,
         // these services remain of types objects reason for which one checks
         // the type finally to apply the appropriate formatting for each case
-        item.id || item,
+        db.bid(item.uuid || item),
       ]);
 
       const sqlServices = `
-      INSERT INTO service_fee_center (fee_center_id, service_id) VALUES ?`;
+      INSERT INTO service_fee_center (fee_center_id, service_uuid) VALUES ?`;
       transaction
         .addQuery(sqlServices, [dataServices]);
     }

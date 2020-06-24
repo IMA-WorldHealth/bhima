@@ -40,7 +40,7 @@ function GridFiltererService(
     { key : 'room_uuid', label : 'ROOM.TITLE' },
     { key : 'bed_id', label : 'BED.TITLE' },
     { key : 'hospitalized', label : 'PATIENT_RECORDS.VISITS.HOSPITALISATION' },
-    { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
+    { key : 'service_uuid', label : 'FORM.LABELS.SERVICE' },
     { key : 'is_new_case', label : 'PATIENT_RECORDS.VISITS.CASE' },
     { key : 'is_pregnant', label : 'PATIENT_RECORDS.VISITS.PREGNANT' },
     { key : 'is_refered', label : 'PATIENT_RECORDS.VISITS.REFERED' },

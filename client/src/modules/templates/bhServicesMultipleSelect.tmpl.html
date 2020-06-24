@@ -17,7 +17,7 @@
       <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}">
         <span>{{ $item.name }}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="service.id as service in ($ctrl.services | filter: { name : $select.search })">
+      <ui-select-choices ui-select-focus-patch repeat="service.uuid as service in ($ctrl.services | filter: { name : $select.search })">
         <span ng-bind-html="service.name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>

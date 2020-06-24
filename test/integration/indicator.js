@@ -9,6 +9,7 @@ const helpers = require('./helpers');
  * This test suite implements full CRUD on the /indicators_file HTTP API endpoint.
  */
 describe('(/indicators_file) The roles API endpoint', () => {
+  const { services } = helpers.data;
 
   const HOSPITALIZATION_TYPE = 1;
   const STAFF_TYPE = 2;
@@ -20,7 +21,7 @@ describe('(/indicators_file) The roles API endpoint', () => {
       status_id : 1,
       period_id : 201901,
       type_id : HOSPITALIZATION_TYPE,
-      service_id : 1,
+      service_uuid : services.test,
     },
     hospitalization : {
       uuid : 'B59AE07761764D0E9EA9438E2F6DF52F',
@@ -91,13 +92,13 @@ describe('(/indicators_file) The roles API endpoint', () => {
   };
 
   const indicatorFilesKeys = [
-    'uuid', 'service_id', 'status_id', 'type_id', 'period_id', 'user_id',
+    'uuid', 'service_uuid', 'status_id', 'type_id', 'period_id', 'user_id',
     'period_start', 'fiscal_year_id', 'fiscal_year_label', 'status_translate_key',
     'display_name', 'created_date', 'service_name', 'type_text', 'type_translate_key',
   ];
 
   const hopitalizationKeys = [
-    'uuid', 'status_id', 'period_id', 'user_id', 'type_id', 'service_id',
+    'uuid', 'status_id', 'period_id', 'user_id', 'type_id', 'service_uuid',
     'total_day_realized', 'total_beds', 'total_hospitalized_patient', 'total_death',
     'service_name', 'fiscal_year_id', 'total_external_patient',
   ];
@@ -115,7 +116,6 @@ describe('(/indicators_file) The roles API endpoint', () => {
     'total_drugs_purchased', 'total_staff_charge', 'total_operating_charge', 'total_depreciation',
     'total_debts', 'total_cash', 'total_stock_value', 'total_staff', 'fiscal_year_id',
   ];
-
 
   it('GET /indicators returns a list of indicators files (should be empty)', () => {
     return agent.get('/indicators')
@@ -228,7 +228,6 @@ describe('(/indicators_file) The roles API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('DELETE /indicators/hospitalization/:uuid delete an indicator', () => {
     return agent.delete(`/indicators/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)

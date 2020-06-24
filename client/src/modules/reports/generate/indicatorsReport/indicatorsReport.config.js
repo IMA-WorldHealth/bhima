@@ -43,7 +43,7 @@ function IndicatorsReportController($sce, Notify, SavedReports, AppCache, report
   };
 
   vm.onSelectService = service => {
-    vm.reportDetails.service_id = service.id;
+    vm.reportDetails.service_uuid = service.uuid;
   };
 
   vm.clear = (key) => {

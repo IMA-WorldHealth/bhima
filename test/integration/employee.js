@@ -10,6 +10,7 @@ const helpers = require('./helpers');
  */
 describe('(/employees) the employees API endpoint', () => {
 
+  const testService = 'AFF85BDCD7C64047AFE71724F8CD369E';
   // custom dates
   const embaucheDate = new Date('2016-01-01');
   const dob1 = new Date('1987-04-17');
@@ -31,7 +32,7 @@ describe('(/employees) the employees API endpoint', () => {
     email : 'me@info.com',
     fonction_id : 1,
     locked : 0,
-    service_id : 1,
+    service_uuid : testService,
     is_medical : 0,
     hospital_no : 'TP30',
     creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
@@ -58,7 +59,7 @@ describe('(/employees) the employees API endpoint', () => {
     bank_account : '00-99-88-77',
     email : 'me@info.com',
     fonction_id : 1,
-    service_id : 1,
+    service_uuid : testService,
     is_medical : 0,
     creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
     debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
@@ -80,7 +81,7 @@ describe('(/employees) the employees API endpoint', () => {
     email : 'me@info.com',
     fonction_id : 1,
     locked : 0,
-    service_id : 1,
+    service_uuid : testService,
     is_medical : 0,
     hospital_no : 'TP30',
     creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
@@ -191,13 +192,13 @@ describe('(/employees) the employees API endpoint', () => {
   });
 
   it('GET /employees filter employee of a given service', () => {
-    const conditions = { service_id : 1 };
+    const conditions = { service_uuid : testService };
     return agent.get('/employees')
       .query(conditions)
       .then((res) => {
         helpers.api.listed(res, 3);
-        expect(res.body[0].service_id).to.exist;
-        expect(res.body[0].service_id).to.be.equals(conditions.service_id);
+        expect(res.body[0].service_uuid).to.exist;
+        expect(res.body[0].service_uuid).to.be.equals(conditions.service_uuid);
       })
       .catch(helpers.handler);
   });
@@ -211,7 +212,7 @@ describe('(/employees) the employees API endpoint', () => {
         const expected = [
           'nb_spouse', 'nb_enfant', 'bank', 'bank_account',
           'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
-          'grade_uuid', 'basic_salary', 'service_id',
+          'grade_uuid', 'basic_salary', 'service_uuid',
           'creditor_uuid', 'locked',
         ];
 

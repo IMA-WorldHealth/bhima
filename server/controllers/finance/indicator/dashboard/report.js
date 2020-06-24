@@ -68,7 +68,7 @@ function report(req, res, next) {
       data.dateFrom = options.dateFrom;
       data.dateTo = options.dateTo;
 
-      return options.service_id ? service.lookupService(options.service_id) : {};
+      return options.service_uuid ? service.lookupService(options.service_uuid) : {};
     })
     .then(serviceObject => {
       data.serviceName = serviceObject.name;

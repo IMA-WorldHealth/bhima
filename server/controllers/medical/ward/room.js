@@ -74,7 +74,7 @@ function lookupRoom(uuid) {
       s.name AS service_name
     FROM room r
     JOIN ward w ON w.uuid = r.ward_uuid
-    LEFT JOIN service s ON s.id = w.service_id
+    LEFT JOIN service s ON s.uuid = w.service_uuid
     WHERE r.uuid=?
   `;
   return db.one(sql, [db.bid(uuid)]);
@@ -89,7 +89,7 @@ function lookupRooms(options) {
       (SELECT COUNT(*) FROM bed WHERE bed.room_uuid = r.uuid) AS nb_beds
     FROM room r
     JOIN ward w ON w.uuid = r.ward_uuid
-    LEFT JOIN service s ON s.id = w.service_id
+    LEFT JOIN service s ON s.uuid = w.service_uuid
   `;
 
   db.convert(options, ['ward_uuid']);

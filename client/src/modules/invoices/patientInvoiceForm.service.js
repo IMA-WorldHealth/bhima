@@ -67,7 +67,7 @@ function PatientInvoiceFormService(
     const hasServices = angular.isDefined(this.services) && this.services.length;
 
     if (hasServices) {
-      this.details.service_id = this.services[DEFAULT_SERVICE_IDX].id;
+      this.details.service_uuid = this.services[DEFAULT_SERVICE_IDX].id;
     }
   }
 
@@ -276,13 +276,13 @@ function PatientInvoiceFormService(
    * @method setService
    *
    * @description
-   * This method simply sets the `service_id` property of the invoice.
+   * This method simply sets the `service_uuid` property of the invoice.
    *
    * @param {Object} service - a service object as read from the database
    */
   PatientInvoiceForm.prototype.setService = function setService(service) {
     this.service = service;
-    this.details.service_id = service.id;
+    this.details.service_uuid = service.uuid;
   };
 
   /**
@@ -297,7 +297,7 @@ function PatientInvoiceFormService(
 
     // compute the selected service
     this.services.forEach(service => {
-      if (service.id === this.details.service_id) {
+      if (service.uuid === this.details.service_uuid) {
         selectedService = service;
       }
     });

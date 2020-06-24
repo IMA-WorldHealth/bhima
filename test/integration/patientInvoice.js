@@ -161,7 +161,7 @@ function InvoicingFeeScenario() {
     date : new Date(),
     cost : 35.14, // this cost should be calculated by the server (see test).
     description : 'A Simple Invoice of two items costing $35.14',
-    service_id : helpers.data.ADMIN_SERVICE,
+    service_uuid : helpers.data.services.admin,
     debtor_uuid : '3BE232F9A4B94AF6984C5D3F87D5C107',
     project_id : helpers.data.PROJECT,
     user_id  : helpers.data.OTHERUSER,
@@ -266,7 +266,7 @@ function InvoicingFeeScenario() {
     date : new Date('2016-01-28').toISOString(),
     cost  : 100,
     description : 'An invoice of two items costing $100 + a billing service',
-    service_id : helpers.data.ADMIN_SERVICE,
+    service_uuid : helpers.data.services.admin,
     debtor_uuid : '3BE232F9A4B94AF6984CJ5D3F87D5C107',
     project_id : helpers.data.PROJECT,
 
@@ -321,7 +321,7 @@ function InvoicingFeeScenario() {
     date : new Date('2016-01-28').toISOString(),
     cost : 39.34,
     description : 'An invoice of three items costing $39.34 + a subsidy',
-    service_id : helpers.data.ADMIN_SERVICE,
+    service_uuid : helpers.data.services.admin,
     debtor_uuid : '3BE232F9A4B94AF6984CJ5D3F87D5C107',
     project_id : helpers.data.PROJECT,
 

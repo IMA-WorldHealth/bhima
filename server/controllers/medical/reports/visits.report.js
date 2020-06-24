@@ -47,10 +47,10 @@ async function getData(options) {
       SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
       SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
     FROM service s
-      LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
+      LEFT JOIN patient_visit_service pvs ON s.uuid = pvs.service_uuid
       JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid
     WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?)
-    GROUP BY s.id;
+    GROUP BY s.uuid;
   `;
 
   const queryTotal = `
@@ -66,7 +66,7 @@ async function getData(options) {
       SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
       SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
     FROM service s
-      LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
+      LEFT JOIN patient_visit_service pvs ON s.uuid = pvs.service_uuid
       JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid
     WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?);
   `;

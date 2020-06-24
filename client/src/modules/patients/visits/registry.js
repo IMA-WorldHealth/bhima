@@ -14,7 +14,7 @@ AdmissionRegistryController.$inject = [
  */
 function AdmissionRegistryController(
   $state, Visits, Notify, util, uiGridConstants,
-  Columns, GridState, Languages, Receipts
+  Columns, GridState, Languages, Receipts,
 ) {
   const vm = this;
   const cacheKey = 'AdmissionRegistry';

@@ -32,8 +32,8 @@
                     <select
                       class="form-control"
                       name="service"
-                      ng-model="PatientInvoiceCtrl.Invoice.details.service_id"
-                      ng-options="service.id as service.name for service in PatientInvoiceCtrl.Invoice.services"
+                      ng-model="PatientInvoiceCtrl.Invoice.details.service_uuid"
+                      ng-options="service.uuid as service.name for service in PatientInvoiceCtrl.Invoice.services"
                       required>
                       <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
                     </select>

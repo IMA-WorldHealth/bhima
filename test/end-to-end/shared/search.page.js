@@ -70,7 +70,7 @@ class SearchModal {
   }
 
   setService(service) {
-    return FU.select('$ctrl.searchQueries.service_id', service, this.element);
+    return FU.select('$ctrl.searchQueries.service_uuid', service, this.element);
   }
 
   setDebtorGroup(name) {

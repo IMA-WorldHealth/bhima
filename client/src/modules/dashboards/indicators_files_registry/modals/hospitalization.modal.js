@@ -24,7 +24,7 @@ function HospitalizationModalController(
   };
 
   vm.onSelectService = service => {
-    vm.file.service_id = service.id;
+    vm.file.service_uuid = service.uuid;
     vm.selectedService = service.name;
     doesIndicatorsFileExists();
   };
@@ -42,7 +42,7 @@ function HospitalizationModalController(
           vm.indicators = details;
           vm.fiscal_year_id = details.fiscal_year_id;
           vm.file.period_id = details.period_id;
-          vm.file.service_id = details.service_id;
+          vm.file.service_uuid = details.service_uuid;
         })
         .catch(Notify.errorHandler);
     }
@@ -95,7 +95,7 @@ function HospitalizationModalController(
   }
 
   function doesIndicatorsFileExists() {
-    if (!vm.file.period_id || !vm.file.service_id) { return; }
+    if (!vm.file.period_id || !vm.file.service_uuid) { return; }
 
     vm.isExisting = false;
     vm.loading = true;
@@ -114,7 +114,7 @@ function HospitalizationModalController(
   function checkDuplicated() {
     return IndicatorsDashboard.indicatorsFiles.read(null, {
       period_id : vm.file.period_id,
-      service_id : vm.file.service_id,
+      service_uuid : vm.file.service_uuid,
       type_id : vm.file.type_id,
     }).then(rows => {
       return rows.length > 0;
