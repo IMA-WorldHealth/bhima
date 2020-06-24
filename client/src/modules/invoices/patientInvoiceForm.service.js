@@ -21,7 +21,7 @@ PatientInvoiceFormService.$inject = [
  */
 function PatientInvoiceFormService(
   Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem,
-  Constants, Services, $q, $translate, Notify, $timeout, $document
+  Constants, Services, $q, $translate, Notify, $timeout, $document,
 ) {
   const { ROW_ERROR_FLAG } = Constants.grid;
   const DEFAULT_SERVICE_IDX = 0;
@@ -67,7 +67,7 @@ function PatientInvoiceFormService(
     const hasServices = angular.isDefined(this.services) && this.services.length;
 
     if (hasServices) {
-      this.details.service_uuid = this.services[DEFAULT_SERVICE_IDX].id;
+      this.details.service_uuid = this.services[DEFAULT_SERVICE_IDX].uuid;
     }
   }
 
@@ -195,7 +195,6 @@ function PatientInvoiceFormService(
     return invalidItems;
   };
 
-
   /**
    * @method setPatient
    *
@@ -311,7 +310,6 @@ function PatientInvoiceFormService(
     });
   };
 
-
   /**
    * @method digest
    *
@@ -384,7 +382,6 @@ function PatientInvoiceFormService(
       return null;
     }
 
-
     // add the item to the store
     const item = new PatientInvoiceItem();
     this.store.post(item);
@@ -445,7 +442,6 @@ function PatientInvoiceFormService(
     // check for global configuration errors
     this.validate();
   };
-
 
   /**
    * @method readCache
