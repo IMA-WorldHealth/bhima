@@ -6,11 +6,12 @@
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
-    
+
     <ng-transclude></ng-transclude>
-    <ui-select name="service_uuid" 
+    <ui-select
+      name="service_uuid"
       ng-model="$ctrl.serviceUuid"
-      on-select="$ctrl.onSelect($item, $model)"
+      on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="service.uuid as service in $ctrl.services | filter: { hidden: '0', 'name': $select.search }">

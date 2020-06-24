@@ -4,7 +4,6 @@ angular.module('bhima.components')
     controller  : ServiceSelectController,
     transclude  : true,
     bindings    : {
-      serviceUuid        : '<?',
       serviceUuid : '<?',
       onSelectCallback : '&',
       label    : '@?',

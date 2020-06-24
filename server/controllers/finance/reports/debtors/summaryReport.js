@@ -40,11 +40,11 @@ async function summaryReport(req, res, next) {
     const inventoryGroupIndexMap = {};
     let gobalSum = 0;
 
-    const invoiceSql = ` 
+    const invoiceSql = `
       SELECT BUID(i.uuid) AS invoice_uuid, i.date, dm.text AS invRef, ent.text AS debtorRef,
         d.text, SUM(it.transaction_price) AS amount, i.cost as total, BUID(i.debtor_uuid) AS debtor_uuid,
-        invg.name as inventoryGroupName, BUID(invg.uuid) as inventoryGroupUuid, inv.text as inventoryName, i.service_uuid,
-         s.name as serviceName
+        invg.name as inventoryGroupName, BUID(invg.uuid) as inventoryGroupUuid, inv.text as inventoryName,
+        BUID(i.service_uuid) AS service_uuid, s.name as serviceName
       FROM invoice i
       JOIN invoice_item it ON it.invoice_uuid = i.uuid
       JOIN inventory inv ON inv.uuid = it.inventory_uuid
@@ -59,8 +59,7 @@ async function summaryReport(req, res, next) {
       ORDER BY i.date
     `;
 
-
-    const inventoryGroupsSql = ` 
+    const inventoryGroupsSql = `
       SELECT DISTINCT x.inventoryGroupUuid as id, x.inventoryGroupName as name
       FROM (${invoiceSql}) as x
     `;

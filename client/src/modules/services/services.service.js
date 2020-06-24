@@ -18,9 +18,12 @@ function ServiceService(Api) {
 
   function update(uuid, data) {
     delete data.abbr;
-    delete data.enterprise_name;
+    delete data.uuid;
     delete data.cost_center_name;
+    delete data.enterprise_name;
     delete data.profit_center_name;
+    delete data.project_name;
+    delete data.enterprise_id;
 
     return Api.update.call(this, uuid, data);
   }

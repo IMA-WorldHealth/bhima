@@ -15,10 +15,9 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'brea_report',
+  csvKey : 'dataConfigured',
   filename : 'TREE.BREAK_EVEN_REPORT',
   orientation : 'portrait',
-  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -83,7 +82,7 @@ function report(req, res, next) {
     `;
 
     const getFeeCenterReference = `
-      SELECT fc.label, fc.id, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
+      SELECT fc.label, fc.id, fc.is_principal, rf.fee_center_id, rf.account_reference_id,
       rf.is_cost, rf.is_variable, rf.is_turnover, ar.abbr
       FROM fee_center AS fc
       JOIN reference_fee_center AS rf ON rf.fee_center_id = fc.id
@@ -93,7 +92,7 @@ function report(req, res, next) {
 
     const getFeeCenterDistribution = `
       SELECT fcd.principal_fee_center_id, fcd.auxiliary_fee_center_id, fcd.is_cost,
-      fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,    
+      fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,
       fca.label AS auxiliary, fcp.label AS principal, SUM(fcd.debit_equiv) AS debit,
       SUM(fcd.credit_equiv) AS credit, gl.trans_date
       FROM fee_center_distribution AS fcd
@@ -205,10 +204,7 @@ function report(req, res, next) {
           project.data = projectSetting.breakEvenCalcul(project);
         });
 
-        const dataProjects = {
-          projects,
-        };
-        _.merge(data, dataProjects);
+        _.merge(data, { projects });
         return reporting.render(data);
       })
       .then(result => {

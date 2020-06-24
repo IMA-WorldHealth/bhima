@@ -168,7 +168,6 @@ function detail(req, res, next) {
  * @returns {Promise} - returns the result of teh database query
  */
 function lookupService(uid) {
-  console.log('uid:', uid);
   const sql = `
     SELECT
       BUID(s.uuid) AS uuid, s.name, s.enterprise_id, s.hidden,

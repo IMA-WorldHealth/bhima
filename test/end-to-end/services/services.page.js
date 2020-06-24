@@ -5,27 +5,14 @@
  * behaviour so it is a service page object
  * */
 
-/** loading grid actions * */
-const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class ServicePage {
 
   constructor() {
-    this.gridId = 'service-grid';
-    this.serviceGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 2;
-  }
-
-  /**
-   * send back the number of services in the grid
-   */
-  getServiceCount() {
-    return this.serviceGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
+    this.serviceGrid = element(by.id('service-grid'));
   }
 
   /**
@@ -52,9 +39,12 @@ class ServicePage {
   /**
    * simulate a click on the edit link of a service
    */
-  async editService(n, name, projectName) {
-    await GA.clickOnMethod(n, this.actionLinkColumn, 'edit', this.gridId);
-    await FU.input('ServiceModalCtrl.service.name', name);
+  async editService(name, updatedName, projectName) {
+    const row = new GridRow(name);
+    await row.dropdown().click();
+    await row.edit().click();
+
+    await FU.input('ServiceModalCtrl.service.name', updatedName);
 
     if (projectName) {
       await components.projectSelect.set(projectName);
@@ -68,8 +58,10 @@ class ServicePage {
   /**
    * simulate a click on the delete link of a service
    */
-  async deleteService(n) {
-    await GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
+  async deleteService(name) {
+    const row = new GridRow(name);
+    await row.dropdown().click();
+    await row.remove().click();
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
   }
@@ -77,16 +69,20 @@ class ServicePage {
   /**
    * cancel deletion process
    */
-  async cancelDeleteService(n) {
-    await GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
+  async cancelDeleteService(name) {
+    const row = new GridRow(name);
+    await row.dropdown().click();
+    await row.remove().click();
     await components.modalAction.dismiss();
   }
 
   /**
    * forbid deletion of used service
    */
-  async errorOnDeleteService(n) {
-    await GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
+  async errorOnDeleteService(name) {
+    const row = new GridRow(name);
+    await row.dropdown().click();
+    await row.remove().click();
     await components.modalAction.confirm();
     await components.notification.hasError();
   }

@@ -8,21 +8,21 @@ describe('Services', () => {
   const Page = new ServicePage();
 
   const service = {
-    name : 'Service E2E',
+    name : 'Pharmacie d\'Usage',
     project : 'Test Project A',
   };
 
-  const alternativeProject = 'Test Project B';
+  const updatedServiceName = 'Pharmacie de la Nuit';
+  const oldServiceName = 'Medecine Interne';
 
-  const NEW_RECORD_ROW = 2; // based on alphabetical sort and position
-  const OLD_RECORD_ROW = 2; // after the deletion of the latest the index is 2
+  const alternativeProject = 'Test Project B';
 
   it('successfully creates a new service', async () => {
     await Page.createService(service.name, service.project);
   });
 
   it('successfully edits a service', async () => {
-    await Page.editService(NEW_RECORD_ROW, service.name.concat(' updated'), alternativeProject);
+    await Page.editService(service.name, updatedServiceName, alternativeProject);
   });
 
   it('correctly blocks invalid form submission with relevant error classes', async () => {
@@ -30,14 +30,14 @@ describe('Services', () => {
   });
 
   it('successfully delete a service', async () => {
-    await Page.deleteService(NEW_RECORD_ROW);
-  });
-
-  it('no way to delete a service', async () => {
-    await Page.errorOnDeleteService(OLD_RECORD_ROW);
+    await Page.deleteService(updatedServiceName);
   });
 
   it('cancellation of removal process of a service', async () => {
-    await Page.cancelDeleteService(OLD_RECORD_ROW);
+    await Page.cancelDeleteService(oldServiceName);
+  });
+
+  it('no way to delete a service', async () => {
+    await Page.errorOnDeleteService(oldServiceName);
   });
 });

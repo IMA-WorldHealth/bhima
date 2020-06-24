@@ -10,6 +10,7 @@ module.exports.detail = detail;
 function create(req, res, next) {
   const data = req.body;
   data.uuid = db.bid(data.uuid || db.uuid());
+  db.convert(data, ['service_uuid']);
   const sql = 'INSERT INTO ward SET ?';
 
   db.exec(sql, data).then(() => {
@@ -23,6 +24,7 @@ function update(req, res, next) {
   const data = req.body;
   delete data.uuid;
   const uuid = db.bid(req.params.uuid);
+  db.convert(data, ['service_uuid']);
   const sql = `UPDATE ward SET ? WHERE uuid =?`;
 
   db.exec(sql, [data, uuid]).then(() => {
@@ -63,7 +65,7 @@ function read(req, res, next) {
 // get a specific ward
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, name, description, service_uuid
+    SELECT BUID(uuid) as uuid, name, description, BUID(service_uuid) as service_uuid
     FROM ward
     WHERE uuid=?
   `;
