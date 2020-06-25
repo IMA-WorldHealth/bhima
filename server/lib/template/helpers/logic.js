@@ -17,6 +17,14 @@ function gt(a, b, options) {
   return options.inverse(this);
 }
 
+// great than
+function between(a, b, c, options) {
+  if (a >= b && a <= c) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+}
+
 // less than
 function lt(a, b, options) {
   if (a < b) {
@@ -52,6 +60,7 @@ function fileExist(a, b, options) {
 exports.equal = equal;
 exports.gt = gt;
 exports.lt = lt;
+exports.between = between;
 exports.ignoreNan = ignoreNan;
 exports.inequal = inequal;
 exports.fileExist = fileExist;

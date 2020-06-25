@@ -163,6 +163,7 @@
     "CLIENT_DEBTS_REPORT": "[Clients] Dettes",
     "CLIENT_SUPPORT_REPORT": "[Clients] Prises en charges",
     "REALIZED_PROFIT_REPORT": "[Facturation] Recouvrement",
+    "COLLECTION_CAPACITY_REPORT": "Capacité de recouvrement",
     "INVENTORY_ADJUSTMENT":"Ajustement des stocks"
   }
 }

@@ -130,6 +130,7 @@ const debtorSummaryReport = require('../controllers/finance/reports/debtors/summ
 const clientDebts = require('../controllers/finance/reports/client_debts');
 const clientSupport = require('../controllers/finance/reports/client_support');
 const realizedProfit = require('../controllers/finance/reports/realized_profit');
+const collectionCapacity = require('../controllers/finance/reports/collection_capacity');
 
 // periods
 const period = require('../controllers/finance/period');
@@ -451,6 +452,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/clientDebts', clientDebts.report);
   app.get('/reports/finance/clientSupport', clientSupport.report);
   app.get('/reports/finance/realizedProfit', realizedProfit.report);
+  app.get('/reports/finance/collectionCapacity', collectionCapacity.report);
   app.get('/reports/finance/invoicedReceivedStock/:uuid', financeReports.invoicedReceivedStock.report);
 
   app.get('/reports/finance/systemUsageStat', systemUsage.document);

@@ -456,6 +456,18 @@
       "REMAINING" : "Reste",
       "INVOICED" : "Facturé",
       "PAID" : "Payé"
+    },
+    "COLLECTION_CAPACITY" : {
+      "TITLE":"Rapport de la capacité de recouvrement",
+      "DESCRIPTION":"Ce rapport montre la capacité de recouvrement de l'institution de façon journalière",
+      "REMAINING" : "Reste",
+      "INVOICED" : "Facturé",
+      "PAID" : "Payé",
+      "REGISTRATIONS" : "Fréquentation",
+      "INVOICES" : "Factures",
+      "PAYMENTS" : "Paiements",
+      "AVERAGE_COST" : "Coût moyen",
+      "RECOVERY_CAPACITY" : "Capacite de recouvrement"
     }
   }
 }

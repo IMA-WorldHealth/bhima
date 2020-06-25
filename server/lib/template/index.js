@@ -46,6 +46,7 @@ const hbs = exphbs.create({
     equal         : logic.equal,
     gt            : logic.gt,
     lt            : logic.lt,
+    between       : logic.between,
     inequal       : logic.inequal,
     fileExist     : logic.fileExist,
     absolute      : math.absolute,
