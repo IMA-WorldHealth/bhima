@@ -16,8 +16,8 @@
  *   routes.controller);
  *
  * @requires path
- * @requires mkdirp
  * @requires multer
+ * @requires fs
  * @requires debug
  * @requires lib/util
  *
@@ -27,12 +27,12 @@
  */
 
 const path = require('path');
-const mkdirp = require('mkdirp');
 const multer = require('multer');
+const fs = require('fs');
 const debug = require('debug')('app:uploader');
 
 const { uuid } = require('./util');
-const BadRequest = require('../lib/errors/BadRequest');
+const BadRequest = require('./errors/BadRequest');
 
 // configure the uploads directory based on global process variables
 const defaultDir = 'uploads'; // NOTE: this must be a relative path
@@ -41,7 +41,7 @@ const fsdir = path.join(process.cwd(), dir); // global path
 
 if (!process.env.UPLOAD_DIR) {
   debug(
-    `The environmental variable $UPLOAD_DIR is undefined.  The application will use ${fsdir} as the upload directory.`
+    `The environmental variable $UPLOAD_DIR is undefined.  The application will use ${fsdir} as the upload directory.`,
   );
 }
 
@@ -51,6 +51,8 @@ exports.directory = dir;
 // export the uploader
 exports.middleware = Uploader;
 exports.hasFilesToUpload = hasFilesToUpload;
+
+const mkdirp = (dpath) => fs.promises.mkdir(dpath, { recursive : true });
 
 /**
  * @constructor
