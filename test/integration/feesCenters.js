@@ -147,10 +147,18 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /FEE_CENTER/:ID should delete a Fee Center', () => {
+  it('DELETE /fee_center/:id should delete a Fee Center', () => {
     return agent.delete('/fee_center/'.concat(feeCenterId))
       .then((res) => {
         helpers.api.deleted(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /fee_center/:id should return 404 for an unknown fee center', () => {
+    return agent.delete('/fee_center/'.concat(404))
+      .then((res) => {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

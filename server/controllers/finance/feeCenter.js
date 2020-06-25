@@ -82,7 +82,6 @@ function detail(req, res, next) {
     .catch(next);
 }
 
-
 // POST /fee_center
 async function create(req, res, next) {
   try {
@@ -136,7 +135,6 @@ async function create(req, res, next) {
     next(err);
   }
 }
-
 
 // PUT /fee_center /:id
 async function update(req, res, next) {
@@ -210,7 +208,6 @@ function del(req, res, next) {
   const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
   const delServices = `DELETE FROM service_fee_center WHERE fee_center_id = ?;`;
 
-
   transaction
     .addQuery(delServices, [feeCenterId])
     .addQuery(delReferences, [feeCenterId])
@@ -218,9 +215,10 @@ function del(req, res, next) {
 
   transaction.execute()
     .then((rows) => {
-      // if nothing happened, let the client know via a 404 error
-      if (rows.affectedRows === 0) {
-        throw new NotFound(`Could not find a Fee Center with id ${feeCenterId}`);
+      const { affectedRows } = rows.pop();
+      // if there was no fee_center to delete, let the client know via a 404 error
+      if (affectedRows === 0) {
+        throw new NotFound(`Could not find a Fee Center with id ${feeCenterId}.`);
       }
 
       res.status(204).json();
@@ -237,5 +235,5 @@ exports.detail = detail;
 exports.create = create;
 // update feeCenter informations
 exports.update = update;
-// Delete a feeCenter
+// delete a feeCenter
 exports.delete = del;
