@@ -30,14 +30,8 @@ const DEFAULT_OPTS = {
 function build(req, res, next) {
   const options = _.clone(req.query);
 
-  if (Array.isArray(options.employees)) {
-    for (let i = 0; i < options.employees.length; i++) {
-      options.employees[i] = db.bid(options.employees[i]);
-    }
-
-  } else {
-    options.employees = db.bid(options.employees);
-  }
+  options.employees = [].concat(options.employees);
+  options.employees = options.employees.map(uid => db.bid(uid));
 
   options.idPeriod = options.idPeriod || options.payroll_configuration_id;
 

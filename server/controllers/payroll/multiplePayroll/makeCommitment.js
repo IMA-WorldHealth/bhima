@@ -20,13 +20,8 @@ function config(req, res, next) {
   // Collection of employee references select
   let employeesUuid = req.body.data;
 
-  if (Array.isArray(employeesUuid)) {
-    for (let i = 0; i < employeesUuid.length; i++) {
-      employeesUuid[i] = db.bid(employeesUuid[i]);
-    }
-  } else {
-    employeesUuid = db.bid(employeesUuid);
-  }
+  employeesUuid = [].concat(employeesUuid);
+  employeesUuid = employeesUuid.map(uid => db.bid(uid));
 
   const payrollConfigurationId = req.params.id;
   const projectId = req.session.project.id;
