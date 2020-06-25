@@ -295,7 +295,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
   };
 
   const dataCommitment = {
-    data : [1],
+    data : ['75e69409-562f-a2a8-45a1-3d7938b02500'],
   };
 
   const employeesNumber = 3;

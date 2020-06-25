@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'ReceiptModal', 'uiGridConstants', 'SessionService',
+  'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify, Sorting, Columns, GridState, $state,
-  Modals, Receipts, uiGridConstants, Session,
+  Receipts, uiGridConstants, Session,
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -190,8 +190,8 @@ function MultiplePayrollController(
     vm.getSelectedEmployees = employees;
 
     if (employees.length) {
-      // get All Employees Reference
-      const employeesRef = employees.map(emp => emp.reference);
+      // get All Employees Uuid
+      const employeesUuid = employees.map(emp => emp.employee_uuid);
 
       // returns true If one employee who is not configured is selected
       const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
@@ -203,7 +203,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employeesRef)
+        MultiplePayroll.paiementCommitment(idPeriod, employeesUuid)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;

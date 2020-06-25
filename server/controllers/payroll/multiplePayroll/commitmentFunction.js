@@ -24,7 +24,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
   const employeesWithholdingItem = [];
 
   employees.forEach(employee => {
-    const paiementUuid = db.bid(employee.uuid);
+    const paiementUuid = db.bid(employee.paiement_uuid);
 
     transactions.push({
       query : 'UPDATE paiement set status_id = 3 WHERE uuid = ?',
