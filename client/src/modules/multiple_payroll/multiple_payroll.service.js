@@ -96,14 +96,14 @@ function MultiplePayrollService(
   // downloads a type of report based on the
   function download(type, getSelectedEmployees) {
     const filterOpts = multiplePayrollFilters.formatHTTP();
-    let employeesRef = [];
+    let employeesUuid = [];
 
     if (getSelectedEmployees.length) {
-      // get All Employees Reference
-      employeesRef = getSelectedEmployees.map(emp => emp.reference);
+      // get All Employees Uuid
+      employeesUuid = getSelectedEmployees.map(emp => emp.employee_uuid);
     }
 
-    const defaultOpts = { renderer : type, lang : Languages.key, employees : employeesRef };
+    const defaultOpts = { renderer : type, lang : Languages.key, employees : employeesUuid };
 
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);

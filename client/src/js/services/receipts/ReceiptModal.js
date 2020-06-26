@@ -267,7 +267,6 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     return instance.result;
   }
 
-
   function payrollReport(periodPayroll, data, currency, socialCharge, conversionRate, notifyCreated) {
     const options = {
       title         : 'TREE.PAYROLL',

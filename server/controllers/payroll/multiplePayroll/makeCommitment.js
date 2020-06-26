@@ -18,7 +18,10 @@ const Exchange = require('../../finance/exchange');
 
 function config(req, res, next) {
   // Collection of employee references select
-  const referenceEmployees = req.body.data;
+  let employeesUuid = req.body.data;
+
+  employeesUuid = [].concat(employeesUuid);
+  employeesUuid = employeesUuid.map(uid => db.bid(uid));
 
   const payrollConfigurationId = req.params.id;
   const projectId = req.session.project.id;
@@ -61,12 +64,12 @@ function config(req, res, next) {
     JOIN rubric_paiement ON rubric_paiement.paiement_uuid = paiement.uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
     JOIN employee ON employee.uuid = paiement.employee_uuid
-    WHERE employee.reference IN (?) AND paiement.payroll_configuration_id = ?  AND rubric_paiement.value > 0
+    WHERE paiement.employee_uuid IN (?) AND paiement.payroll_configuration_id = ?  AND rubric_paiement.value > 0
     `;
 
   const options = {
     payroll_configuration_id : payrollConfigurationId,
-    reference : referenceEmployees,
+    employeesUuid,
   };
 
   configurationData.find(options)
@@ -74,7 +77,7 @@ function config(req, res, next) {
       data.employees = dataEmployees;
 
       return q.all([
-        db.exec(sqlGetRubricPayroll, [referenceEmployees, payrollConfigurationId]),
+        db.exec(sqlGetRubricPayroll, [employeesUuid, payrollConfigurationId]),
         db.exec(sqlGetRubricConfig, [payrollConfigurationId]),
         db.exec(sqlGetAccountPayroll, [payrollConfigurationId]),
         Exchange.getCurrentExchangeRateByCurrency(),

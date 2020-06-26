@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'ReceiptModal', 'uiGridConstants', 'SessionService',
+  'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify, Sorting, Columns, GridState, $state,
-  Modals, Receipts, uiGridConstants, Session,
+  Receipts, uiGridConstants, Session,
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -120,7 +120,6 @@ function MultiplePayrollController(
 
     MultiplePayroll.read(null, filters)
       .then((employees) => {
-
         vm.gridOptions.data = employees;
       })
       .catch(errorHandler)
@@ -191,8 +190,8 @@ function MultiplePayrollController(
     vm.getSelectedEmployees = employees;
 
     if (employees.length) {
-      // get All Employees Reference
-      const employeesRef = employees.map(emp => emp.reference);
+      // get All Employees Uuid
+      const employeesUuid = employees.map(emp => emp.employee_uuid);
 
       // returns true If one employee who is not configured is selected
       const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
@@ -204,7 +203,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employeesRef)
+        MultiplePayroll.paiementCommitment(idPeriod, employeesUuid)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;
@@ -259,8 +258,9 @@ function MultiplePayrollController(
     const employees = vm.gridApi.selection.getSelectedRows();
 
     if (employees.length) {
-      // get All Employees Reference
-      const employeesRef = employees.map(emp => emp.reference);
+      // get All Employees Uuid
+      const employeesUuid = employees.map(emp => emp.employee_uuid);
+
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currency = filters.currency_id;
       const conversionRate = filters.conversion_rate;
@@ -274,7 +274,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payroll(idPeriod, employeesRef, currency, conversionRate, true);
+        Receipts.payroll(idPeriod, employeesUuid, currency, conversionRate, true);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -290,8 +290,9 @@ function MultiplePayrollController(
     const employees = vm.gridApi.selection.getSelectedRows();
 
     if (employees.length) {
-      // get All Employees Reference
-      const employeesRef = employees.map(emp => emp.reference);
+      // get All Employees Uuid
+      const employeesUuid = employees.map(emp => emp.employee_uuid);
+
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currencyId = filters.currency_id;
       const conversionRate = filters.conversion_rate;
@@ -304,7 +305,7 @@ function MultiplePayrollController(
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge, conversionRate);
+        Receipts.payrollReport(idPeriod, employeesUuid, currencyId, socialCharge, conversionRate);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -316,7 +317,7 @@ function MultiplePayrollController(
     const currency = filters.currency_id;
     const conversionRate = filters.conversion_rate;
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-    Receipts.payroll(idPeriod, employee.reference, currency, conversionRate, true);
+    Receipts.payroll(idPeriod, employee.employee_uuid, currency, conversionRate, true);
   };
 
   vm.download = function download(type) {

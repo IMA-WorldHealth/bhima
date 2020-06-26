@@ -6,7 +6,6 @@
 
 const q = require('q');
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {
@@ -121,7 +120,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
     JOIN employee ON employee.uuid = paiement.employee_uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
-    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    WHERE paiement.payroll_configuration_id = ? AND employee.uuid IN (?)
     AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
   `;
@@ -138,28 +137,6 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     offday_paiement.label, offday_paiement.value
     FROM offday_paiement
     WHERE offday_paiement.paiement_uuid IN (?)
-  `;
-
-  const sqlAggregateRubrics = `
-    SELECT rubric_paiement.paiement_uuid, ROUND(SUM(rubric_paiement.value), 4) AS result,
-    rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label
-    FROM rubric_paiement
-    JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
-    JOIN employee ON employee.uuid = paiement.employee_uuid
-    JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
-    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
-    GROUP BY rubric_payroll.abbr
-    ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
-  `;
-
-  const sqlAggregatePaiements = `
-    SELECT paiement.payroll_configuration_id, SUM(paiement.basic_salary) AS total_basic_salary,
-    SUM(paiement.base_taxable) AS total_base_taxable, SUM(paiement.gross_salary) AS total_gross_salary,
-    SUM(paiement.net_salary) AS total_net_salary
-    FROM paiement
-    JOIN employee ON employee.uuid = paiement.employee_uuid
-    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
-    GROUP BY paiement.payroll_configuration_id
   `;
 
   const getRubricPayrollEmployee = `
@@ -190,8 +167,6 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     db.exec(sql, [idPeriod, employees]),
     db.exec(sqlHolidayPaiement, [employeesPaiementUuid]),
     db.exec(sqlOffDayPaiement, [employeesPaiementUuid]),
-    db.exec(sqlAggregateRubrics, [idPeriod, employees]),
-    db.exec(sqlAggregatePaiements, [idPeriod, employees]),
     db.exec(getRubricPayrollEmployee, [idPeriod]),
     db.exec(getRubricPayrollEnterprise, [idPeriod]),
   ]);
