@@ -80,56 +80,58 @@
           </dd>
         </dl>
 
-        <hr/>
-        <h5 style="margin-top:0;">
-          <i class="fa fa-medkit" aria-hidden="true"></i>
-          <strong>
-            <a href ui-sref="stockMovements({
-              filters : [
-                { key : 'entity_uuid', value : $ctrl.patientUuid, displayValue: $ctrl.data.patient.display_name },
-                { key : 'period', value : 'allTime' }
-              ]
-            })">
-            <span translate>PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT</span>
-            <span ng-if="!$ctrl.noStockMovement">
-              ({{$ctrl.dataMovement.length}})
-            </span>
-            </a>
-          </strong>
+        <h5 style="margin-top:0;" translate>
+          PATIENT_RECORDS.STOCK_MOVEMENTS_TO_PATIENT
         </h5>
 
-        <div class="col-sm-6 col-xs-12">
-          <table class="table table-responsive table-bordered table-condensed">
-            <thead>
-              <tr>
-                <td translate>FORM.LABELS.NR</td>
-                <td translate>FORM.LABELS.REFERENCE</td>
-                <td translate>FORM.LABELS.INVENTORY</td>                
-                <td translate>FORM.LABELS.DATE</td>
-                <td translate>FORM.LABELS.VALUE</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="dataMovement in $ctrl.dataMovement">
-                <td>{{ $index + 1 }}</td>
-                <td><strong> {{ dataMovement.reference_text }} </strong></th>
-                <td>{{dataMovement.inventory_name}}</td>
-                <td> {{ dataMovement.date | date : "dd/MM/yyyy HH:mm:ss" }} </td>
-                <td><strong> {{ dataMovement.value | currency:$ctrl.enterpriseCurrencyId }} </strong></th>
-                
-              </tr>
-              <tr  ng-if="!$ctrl.noStockMovement">
-                <td colspan="5" class="text-right">
-                  <span translate>FORM.LABELS.TOTAL</span> : 
-                  <span>{{$ctrl.dataMovementTotalValue | currency:$ctrl.enterpriseCurrencyId}}</span>
-                </td>
-              </tr>
-              <tr ng-if="$ctrl.noStockMovement">
-                <td colspan="5" translate>TABLE.COLUMNS.EMPTY</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table table-responsive table-condensed">
+          <thead>
+            <tr>
+              <th translate>FORM.LABELS.REFERENCE</th>
+              <th style="max-width:20%;" translate>FORM.LABELS.DEPOT</th>
+              <th style="max-width:45%;" translate>FORM.LABELS.INVENTORY</th>
+              <th translate>FORM.LABELS.DATE</th>
+              <th translate>FORM.LABELS.VALUE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="movement in $ctrl.dataMovement">
+              <th>
+                <bh-receipt value="movement.document_uuid" type="stockExitPatientReceipt" display-value="movement.reference_text" >
+                </bh-receipt>
+              </th>
+              <td>{{ movement.depot_name }}</td>
+              <td>{{ movement.inventory_name}}</td>
+              <td>{{ movement.date | date : "dd/MM/yyyy HH:mm:ss" }}</td>
+              <th class="text-right">{{ movement.value | currency:$ctrl.enterpriseCurrencyId }}</th>
+            </tr>
+
+            <tr ng-if="$ctrl.noStockMovement">
+              <td colspan="5" translate>TABLE.COLUMNS.EMPTY</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr ng-if="!$ctrl.noStockMovement">
+              <th colspan="3">
+                <a href ui-sref="stockMovements({
+                  filters : [
+                    { key : 'entity_uuid', value : $ctrl.patientUuid, displayValue: $ctrl.data.patient.display_name, cacheable: false },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  <i class="fa fa-link"></i>
+                  <span translate translate-values="{'numMovements':$ctrl.dataMovement.length}">
+                    PATIENT_RECORDS.VIEW_ALL_MOVEMENTS_TO_PATIENT
+                  </span>
+                </a>
+              </th>
+              <th colspan="2" class="text-right">
+                <span translate>FORM.LABELS.TOTAL</span>:
+                <span>{{$ctrl.dataMovementTotalValue | currency:$ctrl.enterpriseCurrencyId}}</span>
+              </th>
+            </tr>
+          </tfoot>
+        </table>
       </div>
 
       <!-- patient's records -->
