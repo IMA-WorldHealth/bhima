@@ -7,16 +7,12 @@ class InvoiceRegistryPage {
     this.grid = GU.getGrid(this.gridId);
   }
 
-  getInvoiceNumber() {
-    return GU.getRows(this.gridId).count();
-  }
-
   // asserts that the grid has a certain number of rows
   async expectNumberOfGridRows(number) {
     await GU.expectRowCount(
       this.gridId,
       number,
-      `Expected Invoice Registry's ui-grid row count to be ${number}.`
+      `Expected Invoice Registry's ui-grid row count to be ${number}.`,
     );
   }
 

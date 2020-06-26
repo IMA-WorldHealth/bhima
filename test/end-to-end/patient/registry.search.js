@@ -162,9 +162,10 @@ function PatientRegistrySearch() {
   it('changes the patient group for multiple patients', async () => {
     await FU.modal.cancel();
     const gridId = 'patient-registry';
-    GU.selectRow(gridId, 0);
-    GU.selectRow(gridId, 1);
-    element(by.id('menu')).click();
+    await GU.selectRow(gridId, 0);
+    await GU.selectRow(gridId, 1);
+
+    await element(by.id('menu')).click();
     await $('[data-method="change-patient-group"]').click();
 
     const group1 = '0B8FCC008640479D872A31D36361FCFD';
@@ -176,8 +177,8 @@ function PatientRegistrySearch() {
     await components.notification.hasSuccess();
 
     // deselect groups
-    GU.selectRow(gridId, 0);
-    GU.selectRow(gridId, 1);
+    await GU.selectRow(gridId, 0);
+    await GU.selectRow(gridId, 1);
   });
 
 }
