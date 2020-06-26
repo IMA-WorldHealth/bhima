@@ -41,7 +41,6 @@ module.exports = {
   fonctionSelect : require('./bhFonctionSelect'),
   gradeSelect : require('./bhGradeSelect'),
   purchaseStatusSelect : require('./bhPurchaseStatusSelect'),
-  multipleDepotSelect : require('./bhMultipleDepotSelect'),
   bhMultipleDepotSearchSelect : require('./bhMultipleDepotSearchSelect'),
   fluxSelect : require('./bhFluxSelect'),
   multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
