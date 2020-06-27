@@ -16,19 +16,20 @@ AnnualClientsReportController.$inject = [
  */
 function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedReports, reportData, Session) {
   const vm = this;
-  const cache = new AppCache('configure_clients');
+  const cache = new AppCache('AnnualClientsReport');
   const reportUrl = 'reports/finance/annual-clients-report';
 
   vm.reportDetails = {
     currencyId : Session.enterprise.currency_id,
     hideLockedClients : 0,
+    includeCashClients : 0,
   };
 
   checkCachedConfiguration();
 
   // update the fiscal year on selection
-  vm.onSelectFiscal = fiscal => {
-    vm.reportDetails.fiscalId = fiscal.id;
+  vm.onSelectFiscal = fiscalYear => {
+    vm.reportDetails.fiscalId = fiscalYear.id;
   };
 
   vm.onSelectCronReport = report => {
@@ -41,6 +42,10 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
 
   vm.onHideLockedClientsToggle = hideLockedClients => {
     vm.reportDetails.hideLockedClients = hideLockedClients;
+  };
+
+  vm.onIncludeCashClientsToggle = includeCashClients => {
+    Object.assign(vm.reportDetails, { includeCashClients });
   };
 
   vm.requestSaveAs = function requestSaveAs() {

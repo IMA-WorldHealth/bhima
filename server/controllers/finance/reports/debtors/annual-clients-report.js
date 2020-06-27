@@ -10,61 +10,56 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/annual-clients-re
 
 exports.annualClientsReport = annualClientsReport;
 exports.reporting = reporting;
+
+async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
+  const {
+    fiscalId, currencyId, hideLockedClients, includeCashClients,
+  } = options;
+
+  // convert to an integer
+  const shouldHideLockedClients = Number(hideLockedClients);
+  const shouldIncludeCashClients = Number(includeCashClients);
+
+  const isEnterpriseCurrency = parseInt(currencyId, 10) === enterpriseCurrencyId;
+
+  const [fiscalYear, exchange] = await Promise.all([
+    Fiscal.lookupFiscalYear(fiscalId),
+    Exchange.getExchangeRate(enterpriseCurrencyId, currencyId, new Date()),
+  ]);
+
+  const rate = exchange.rate || 1;
+
+  const [rows, footer] = await Promise.all([
+    getDebtorGroupMovements(fiscalYear.id, currencyId, rate, shouldHideLockedClients, shouldIncludeCashClients),
+    getTotalsFooter(fiscalYear.id, currencyId, rate, shouldHideLockedClients, shouldIncludeCashClients),
+  ]);
+
+  return {
+    rows, footer, fiscalYear, rate, isEnterpriseCurrency,
+  };
+}
+
 /**
  * @method annualClientsReport
  *
  * @description
  * The HTTP interface which actually creates the report.
  */
-function annualClientsReport(req, res, next) {
+async function annualClientsReport(req, res, next) {
   const options = _.extend(req.query, {
     filename : 'REPORT.CLIENTS.TITLE',
     orientation : 'portrait',
     csvKey   : 'rows',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
-  let report;
-
   try {
-    report = new ReportManager(TEMPLATE, req.session, options);
+    const reportManager = new ReportManager(TEMPLATE, req.session, options);
+    const data = await setupAnnualClientsReport(req.query, req.session.enterprise.currency_id);
+    const { headers, report } = await reportManager.render(data);
+    res.set(headers).send(report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  // fire the SQL for the report
-  const fiscalYearId = req.query.fiscalId;
-  const { currencyId, hideLockedClients } = req.query;
-
-  // convert to an integer
-  const shouldHideLockedClients = Number(hideLockedClients);
-
-  const data = {
-    isEnterpriseCurrency : parseInt(currencyId, 10) === req.session.enterprise.currency_id,
-  };
-
-  return Promise.all([
-    Fiscal.lookupFiscalYear(fiscalYearId),
-    Exchange.getExchangeRate(req.session.enterprise.id, currencyId, new Date()),
-  ])
-    .then(([fiscalYear, exchange]) => {
-      const rate = exchange.rate || 1;
-      _.extend(data, { fiscalYear, rate });
-
-      return Promise.all([
-        getDebtorGroupMovements(fiscalYearId, currencyId, rate, shouldHideLockedClients),
-        getTotalsFooter(fiscalYearId, currencyId, rate, shouldHideLockedClients),
-      ]);
-    })
-    .then(([rows, footer]) => {
-      _.extend(data, { rows, footer });
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next);
 }
 
 /**
@@ -74,38 +69,15 @@ function annualClientsReport(req, res, next) {
  * @param {*} session the session
  */
 async function reporting(options, session) {
-  try {
-    const params = options;
+  const params = _.extend({}, options, {
+    filename : 'REPORT.CLIENTS.TITLE',
+    orientation : 'portrait',
+    csvKey   : 'rows',
+  });
 
-    const report = new ReportManager(TEMPLATE, session, params);
-
-    // fire the SQL for the report
-    const fiscalYearId = params.fiscalId;
-    const { currencyId, hideLockedClients } = params;
-
-    // convert to an integer
-    const shouldHideLockedClients = Number(hideLockedClients);
-
-    const data = {
-      isEnterpriseCurrency : parseInt(currencyId, 10) === session.enterprise.currency_id,
-    };
-
-    const [fiscalYear, exchange] = await Promise.all([
-      Fiscal.lookupFiscalYear(fiscalYearId),
-      Exchange.getExchangeRate(session.enterprise.id, currencyId, new Date()),
-    ]);
-    const rate = exchange.rate || 1;
-    _.extend(data, { fiscalYear, rate });
-
-    const [rows, footer] = await Promise.all([
-      getDebtorGroupMovements(fiscalYearId, currencyId, rate, shouldHideLockedClients),
-      getTotalsFooter(fiscalYearId, currencyId, rate, shouldHideLockedClients),
-    ]);
-    _.extend(data, { rows, footer });
-    return report.render(data);
-  } catch (error) {
-    throw error;
-  }
+  const report = new ReportManager(TEMPLATE, session, params);
+  const data = await setupAnnualClientsReport(params, session.enterprise.currency_id);
+  return report.render(data);
 }
 
 /**
@@ -116,8 +88,9 @@ async function reporting(options, session) {
  * debtor group's accounts.  The currency and exchange rate are used to convert
  * the values into the correct currency rendering.
  */
-function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClients = 0) {
+function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClients = 0, includeCashClients = 0) {
   const hiddenClientsCondition = ' AND dg.locked = 0 ';
+  const excludeCashClientsCondition = 'AND dg.is_convention = 1 ';
   const sql = `
     SELECT ac.number AS accountNumber, dg.name AS groupName,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
@@ -130,8 +103,11 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClien
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
       LEFT JOIN account ac ON ac.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ? ${hideLockedClients ? hiddenClientsCondition : ''}
-    GROUP BY pt.account_id;
+    WHERE pt.fiscal_year_id = ?
+      ${hideLockedClients ? hiddenClientsCondition : ''}
+      ${includeCashClients ? '' : excludeCashClientsCondition}
+    GROUP BY pt.account_id
+    ORDER BY ac.number ASC, dg.name DESC;
   `;
 
   return db.exec(sql, fiscalYearId);
@@ -144,8 +120,9 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClien
  * This function computes the sum of all the values from the table of debtors
  * groups.
  */
-function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0) {
+function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0, includeCashClients = 0) {
   const hiddenClientsCondition = ' AND dg.locked = 0 ';
+  const excludeCashClientsCondition = 'AND dg.is_convention = 1 ';
   const sql = `
     SELECT ac.number AS accountNumber, ac.label AS accountLabel,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
@@ -158,7 +135,9 @@ function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0) 
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
       LEFT JOIN account ac ON ac.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ? ${hideLockedClients ? hiddenClientsCondition : ''};
+    WHERE pt.fiscal_year_id = ?
+      ${hideLockedClients ? hiddenClientsCondition : ''}
+      ${includeCashClients ? '' : excludeCashClientsCondition}
   `;
 
   return db.one(sql, fiscalYearId);

@@ -42,6 +42,14 @@
             on-change-callback="ReportConfigCtrl.onHideLockedClientsToggle(value)">
           </bh-yes-no-radios>
 
+          <bh-yes-no-radios
+            label="REPORT.CLIENTS.INCLUDE_CASH_CLIENTS"
+            value="ReportConfigCtrl.reportDetails.includeCashClients"
+            name="includeCashClients"
+            help-text="REPORT.CLIENTS.INCLUDE_CASH_CLIENTS_HELP_TEXT"
+            on-change-callback="ReportConfigCtrl.onIncludeCashClientsToggle(value)">
+          </bh-yes-no-radios>
+
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>
@@ -59,5 +67,4 @@
       on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
     </bh-cron-email-report>
   </div>
-</div>
 </div>
