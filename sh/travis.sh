@@ -21,7 +21,6 @@ mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
 if [ "$TEST_TYPE" = 'e2e' ]
 then
-
   echo "Downloading chrome revision: $CHROME_REVISION"
   echo "Download URL: https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/$CHROME_REVISION/chrome-linux.zip"
 

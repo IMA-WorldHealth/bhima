@@ -15,6 +15,12 @@ environment:
     - nodejs_version: "14"
     - nodejs_version: "12"
 
+matrix:
+  fast_finish: true
+
+skip_branch_with_pr: true
+clone_depth: 5
+
 install:
   - mysql --version
   - sh: nvm install $nodejs_version
