@@ -90,7 +90,7 @@ async function report(req, res, next) {
       SELECT 
         d.date, IFNULL(pa.registrations, 0) registrations, i.total_invoiced, IFNULL(p.total_paid, 0) total_paid,
         IF(pa.registrations <> 0, (IFNULL(i.total_invoiced, 0) / pa.registrations), 0) avg_cost,
-        IF(i.total_invoiced <> 0, (IFNULL(p.total_paid, 0) / i.total_invoiced), 0) recovery_capacity
+        IF(i.total_invoiced <> 0, ROUND((IFNULL(p.total_paid, 0) / i.total_invoiced), 2), 0) recovery_capacity
       FROM (${dateRange}) d
       LEFT JOIN (${invoices}) i ON i.invoice_date = d.date
       LEFT JOIN (${payments}) p ON p.trans_date = d.date

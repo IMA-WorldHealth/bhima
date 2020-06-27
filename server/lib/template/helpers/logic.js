@@ -17,7 +17,7 @@ function gt(a, b, options) {
   return options.inverse(this);
 }
 
-// great than
+// between
 function between(a, b, c, options) {
   if (a >= b && a <= c) {
     return options.fn(this);

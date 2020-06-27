@@ -15,6 +15,23 @@
         <small>{{date dateFrom}} - {{date dateTo}}</small>
       </h3>
 
+      <table class="table table-condensed" style="margin-bottom:16px; border:0px;">
+        <tr>
+          <td style="border: 0px;">
+            <span class="bg-success text-success" style="display: inline-block; width: 50px; border:1px solid #333;">&nbsp;</span>
+            <span>{{translate 'REPORT.COLLECTION_CAPACITY.RECOVERY_CAPACITY'}} &gt; 70%</span>
+          </td>
+          <td style="border: 0px;">
+            <span class="bg-warning text-warning" style="display: inline-block; width: 50px; border:1px solid #333;">&nbsp;</span>
+            <span>60% &lt; {{translate 'REPORT.COLLECTION_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 70%</span>
+          </td>
+          <td style="border: 0px;">
+            <span class="bg-danger text-danger" style="display: inline-block; width: 50px; border:1px solid #333;">&nbsp;</span>
+            <span>{{translate 'REPORT.COLLECTION_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 60%</span>
+          </td>
+        </tr>
+      </table>
+
       <table class="table table-striped table-condensed table-report table-bordered">
         <thead>
           <tr>
@@ -31,12 +48,12 @@
           <tr>
             <td>{{date row.date}}</td>
             <td style="width: 10em;" class="text-right">{{row.registrations}}</td>
-            <td class="text-right">{{debcred row.total_invoiced metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.avg_cost metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.total_paid metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred row.total_invoiced ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred row.avg_cost ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred row.total_paid ../metadata.enterprise.currency_id}}</td>
             <td 
               style="width: 15em;"
-              {{#gt row.recovery_capacity 0.7}} class="bg-success text-success text-right" {{/gt}}
+              {{#gt row.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
               {{#between row.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
               {{#lt row.recovery_capacity 0.6}} class="bg-danger text-danger text-right" {{/lt}}>
               {{percentage row.recovery_capacity}}
