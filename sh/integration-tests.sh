@@ -7,7 +7,7 @@ set -a
 source .env.development
 set +a
 
-./sh/build-database.sh
+./sh/build-database.sh || { echo 'failed to build DB' ; exit 1; }
 
 echo "[test]"
 

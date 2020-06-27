@@ -3,19 +3,15 @@ os: linux
 jdk:
   - oraclejdk8
 
-# Use google chrome v74.  According to the angular team, v74 is
-# the last version that works correctly with protractor.
-# See: https://github.com/angular/protractor/commit/d77731c270f5118518d0a57cee4aee97ff29a023
 env:
   global:
     - DBUS_SESSION_BUS_ADDRESS=/dev/null
-    - CHROME_REVISION=706915
-    - CHROMEDRIVER_VERSION="79.0.3945.36"
-    - CORAL_REUSE_BROWSER=1
 
 matrix:
+  fast_finish: true
   include:
     - node_js: lts/erbium
+      name: "[E2E] MySQL 5.7 on Node LTS"
       env:
         - TEST_TYPE=e2e
         - DB=MYSQL
@@ -24,6 +20,7 @@ matrix:
         - mysql
         - redis
     - node_js: node
+      name: "[E2E] MySQL 5.7 on Node Current"
       env:
         - TEST_TYPE=e2e
         - DB=MYSQL
@@ -32,6 +29,7 @@ matrix:
         - mysql
         - redis
     - node_js: node
+      name: "[E2E] MySQL 8 on Node Current"
       env:
         - TEST_TYPE=e2e
         - DB=MYSQL
@@ -40,6 +38,7 @@ matrix:
         - mysql
         - redis
     - node_js: lts/erbium
+      name: "[E2E] MariaDB 10.5 on Node LTS"
       env:
         - TEST_TYPE=e2e
         - DB=MARIADB
@@ -49,6 +48,7 @@ matrix:
       addons:
         mariadb: '10.5'
     - node_js: lts/erbium
+      name: "[Installation] MySQL 5.7 on Node LTS"
       env:
         - TEST_TYPE=installation
         - DB=MYSQL
@@ -57,6 +57,7 @@ matrix:
         - mysql
         - redis
     - node_js: node
+      name: "[Installation] MySQL 5.7 on Node Current"
       env:
         - TEST_TYPE=installation
         - DB=MYSQL
@@ -65,6 +66,7 @@ matrix:
         - mysql
         - redis
     - node_js: node
+      name: "[Installation] MySQL 8 on Node Current"
       env:
         - TEST_TYPE=installation
         - DB=MYSQL
@@ -73,6 +75,7 @@ matrix:
         - mysql
         - redis
     - node_js: lts/erbium
+      name: "[Installation] MariaDB 10.5 on Node LTS"
       env:
         - TEST_TYPE=installation
         - DB=MARIADB
@@ -91,12 +94,11 @@ language: node_js
 
 before_script:
   - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn build; fi"
-  - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn webdriver-manager update --versions.chrome=$CHROMEDRIVER_VERSION --gecko false; fi"
+  - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn webdriver-manager update --gecko false; fi"
 
 script:
   - sh -c "if [ '$TEST_TYPE' = 'e2e' ]; then yarn test:ends; fi"
   - sh -c "if [ '$TEST_TYPE' = 'installation' ]; then ./sh/install-tests.sh; fi"
-
 
 git:
   depth: 3
@@ -108,5 +110,5 @@ cache:
 
 branches:
   except:
-    # do not build any branches that have *.tmp in their name
+    # do not build any branches that end in *.tmp in their name
     - /.*\.tmp$/
