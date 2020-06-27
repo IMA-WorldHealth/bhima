@@ -36,6 +36,9 @@ const config = {
   // this will log the user in to begin with
   onPrepare : () => {
     return q.fcall(async () => {
+
+      await browser.driver.manage().window().maximize();
+
       await browser.get('http://localhost:8080/#!/login');
 
       // Turns off ng-animate animations for all elements in the
@@ -52,10 +55,8 @@ const config = {
 };
 
 // configuration for running on SauceLabs via Travis
-if (process.env.TRAVIS_BUILD_NUMBER) {
+if (process.env.CI) {
   // SauceLabs credentials
-  config.sauceUser = process.env.SAUCE_USERNAME;
-  config.sauceKey = process.env.SAUCE_ACCESS_KEY;
   // report directory on the server(ubuntu)
   process.env.REPORT_DIR = '/opt/reports/';
 
@@ -69,7 +70,7 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
     chromeOptions : {
-      args : ['--headless', '--disable-gpu', '--window-size=1280,1024'],
+      args : ['--headless', '--disable-gpu', '--window-size=1920,1080'],
     },
   }];
 
