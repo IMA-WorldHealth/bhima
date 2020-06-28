@@ -15,8 +15,8 @@ function PercentageFilter() {
     // cast value as number (or NaN)
     const value = Number(number);
 
-    // angular's isNumber() method reports NaNs as numbers
-    if (!angular.isNumber(value) || Number.isNaN(value)) { return number; }
+    // eslint-disable-next-line no-restricted-globals
+    if (!isFinite(value) || Number.isNaN(value)) { return ''; }
 
     // return the value + a percentage sign
     return `${Math.round(value * 100) / 100}%`;
