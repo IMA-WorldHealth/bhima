@@ -152,7 +152,8 @@ INSERT INTO unit VALUES
   (267, 'Monthly consumption report', 'TREE.MONTHLY_CONSUMPTION', 'Monthly consumption report', 144, '/reports/monthlyConsumptionReport'),
   (268, '[Stock] Consumption graph','TREE.STOCK_CONSUMPTION_GRAPH_REPORT','Stock Consumption graph report', 144,'/reports/stock_consumption_graph_report'),
   (269, 'Inventory Adjustment', 'TREE.INVENTORY_ADJUSTMENT', 'Inventory Adjustment', 160, '/stock/inventory-adjustment'),
-  (270, 'compare invoiced to received','TREE.COMPARE_INVOICED_RECEIVED','Compare invoiced items to received stock', 144,'/reports/invoicedReceivedStock');
+  (270, 'compare invoiced to received','TREE.COMPARE_INVOICED_RECEIVED','Compare invoiced items to received stock', 144,'/reports/invoicedReceivedStock'),
+  (271, 'Collection Capacity Report', 'TREE.COLLECTION_CAPACITY_REPORT', 'Collection Capacity Report', 144, '/reports/collectionCapacity');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -210,6 +211,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
   ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
+  ('collectionCapacity', 'REPORT.COLLECTION_CAPACITY.TITLE'),
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT'),
   ('configurable_analysis_report', 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE'),

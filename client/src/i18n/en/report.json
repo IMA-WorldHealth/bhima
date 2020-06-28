@@ -455,6 +455,18 @@
       "REMAINING" : "Remaining",
       "INVOICED" : "Invoiced",
       "PAID" : "Paid"
+    },
+    "COLLECTION_CAPACITY" : {
+      "TITLE":"Collection Capacity Report",
+      "DESCRIPTION":"This report shows the recovery capacity of the institution on a daily basis",
+      "REMAINING" : "Remaining",
+      "INVOICED" : "Invoiced",
+      "PAID" : "Paid",
+      "REGISTRATIONS" : "Registrations",
+      "INVOICES" : "Invoices",
+      "PAYMENTS" : "Payments",
+      "AVERAGE_COST" : "Average Cost",
+      "RECOVERY_CAPACITY" : "Recovery Capacity"
     }
   }
 }

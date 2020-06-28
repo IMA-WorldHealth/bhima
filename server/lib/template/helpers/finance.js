@@ -72,7 +72,7 @@ function debcred(value = 0, currencyId) {
 }
 
 function percentage(value = 0, decimal = 2) {
-  if (!value || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
+  if ((!value && value !== 0) || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
 
   const str = (value * 100).toFixed(decimal);
   return `${str}%`;

@@ -1,4 +1,3 @@
-
 /**
  * @overview finance/reports
  *
@@ -38,9 +37,10 @@ exports.breakEvenFeeCenter = require('./break_even_fee_center');
 
 exports.operating = require('./operating');
 exports.monthlyBalance = require('./monthlyBalance');
-exports.unpaidInvoices = require('../reports/unpaid-invoice-payments');
+exports.unpaidInvoices = require('./unpaid-invoice-payments');
 exports.stockValue = require('../../stock/reports/stock/value');
 
 exports.analysisAuxiliaryCashbox = require('./analysis_auxiliary_cashbox');
 exports.configurableAnalysisReport = require('./configurable_analysis_report');
 exports.invoicedReceivedStock = require('./invoicedReceivedStock');
+exports.collectionCapacity = require('./collection_capacity');

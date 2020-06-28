@@ -42,13 +42,13 @@ async function report(req, res, next) {
 
     const normalPayment = `
       SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger 
-      WHERE transaction_type_id = ${CAUTION_TRANSACTION_TYPE}
+      WHERE transaction_type_id = ${CASH_PAYMENT_TRANSACTION_TYPE}
       GROUP BY reference_uuid
     `;
 
     const cautionPayment = `
       SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger 
-      WHERE transaction_type_id = ${CASH_PAYMENT_TRANSACTION_TYPE}
+      WHERE transaction_type_id = ${CAUTION_TRANSACTION_TYPE}
       GROUP BY reference_uuid
     `;
 

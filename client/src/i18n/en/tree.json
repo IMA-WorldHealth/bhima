@@ -25,6 +25,7 @@
     "CHOICES_LIST_MANAGEMENT" : "Choices List Management",
     "CLIENT_DEBTS_REPORT": "[Clients] Debts Report",
     "CLIENT_SUPPORT_REPORT": "[Clients] Support Report",
+    "COLLECTION_CAPACITY_REPORT": "Recovery Capacity",
     "COMPARE_INVOICED_RECEIVED": "[Stock] Compare invoiced items to received stock",
     "COMPLEX_JOURNAL_VOUCHER" : "Journal Vouchers",
     "CONFIGURABLE_ANALYSIS_REPORT" : "Configurable analysis report",
