@@ -617,7 +617,6 @@ exports.configure = function configure(app) {
   app.post('/enterprises/:id/logo', upload.middleware('pics', 'logo'), enterprises.uploadLogo);
 
   // employees
-  app.get('/employees/search', employees.search);
   app.get('/employees', employees.list);
   app.get('/employees/:uuid', employees.detail);
   app.get('/employees/:uuid/advantage', employees.advantage);

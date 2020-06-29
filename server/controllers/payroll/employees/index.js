@@ -24,27 +24,11 @@ exports.list = list;
 exports.create = create;
 exports.update = update;
 exports.detail = detail;
-exports.search = search;
 exports.find = find;
 exports.advantage = advantage;
 exports.lookupEmployeeAdvantages = lookupEmployeeAdvantages;
 exports.patientToEmployee = patientToEmployee;
 exports.lookupEmployee = lookupEmployee;
-
-/**
- * @method list
- *
- * @description
- * Returns an array of each employee in the database
- */
-function list(req, res, next) {
-  find(req.query)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
 
 /**
  * Get list of availaible holidays for an employee
@@ -326,7 +310,6 @@ function create(req, res, next) {
   data.debtor_uuid = data.debtor_uuid || uuid();
   data.patient_uuid = patientID;
 
-
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
     'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
@@ -421,18 +404,14 @@ function create(req, res, next) {
 }
 
 /**
- * @method search
+ * @method list
  *
  * @description
  * A multi-parameter function that uses find() to query the database for
  * employee records.
  *
- * @example
- * // GET /employees/search?name={string}&detail={boolean}&limit={number}
- * // GET /employees/search?reference={string}&detail={boolean}&limit={number}
- * // GET /employees/search?fields={object}
  */
-function search(req, res, next) {
+function list(req, res, next) {
   find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
