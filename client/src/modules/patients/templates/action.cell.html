@@ -1,10 +1,11 @@
-<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
-  <a href>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.reference }}">
+  p
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.reference}} - {{row.entity.display_name}}</li>
     <li>
       <a data-method="record" ui-sref="patientRecord({ patientUuid : row.entity.uuid })" href>
@@ -12,44 +13,44 @@
       </a>
     </li>
     <li>
-      <a data-method="edit" ui-sref="patientEdit({uuid : row.entity.uuid})" href>
+      <a data-method="edit-record" ui-sref="patientEdit({uuid : row.entity.uuid})" href>
         <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
       </a>
     </li>
     <li>
-      <a data-method="card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
+      <a data-method="view-card" ng-click="grid.appScope.patientCard(row.entity.uuid)" href>
         <span class="fa fa-id-card-o"></span> <span translate>PATIENT_REGISTRY.CARD</span>
       </a>
     </li>
     <li>
-      <a data-method="fiche" ng-click="grid.appScope.patientFiche(row.entity.uuid)" href>
+      <a data-method="view-fiche" ng-click="grid.appScope.patientFiche(row.entity.uuid)" href>
         <span class="fa fa-hospital-o"></span> <span translate>PATIENT_REG.FICHE</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="financialActivities" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}?lang={{grid.appScope.languageKey}}" target="_blank">
+      <a data-method="view-finanical-activity" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}?lang={{grid.appScope.languageKey}}" target="_blank">
         <span class="fa fa-file-text-o"></span> <span translate>FORM.LABELS.VIEW_FINANCIAL_ACT</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="invoice" ui-sref="invoiceRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'patientReference', value : row.entity.reference }]})" href>
+      <a data-method="view-invoices" ui-sref="invoiceRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'patientReference', value : row.entity.reference }]})" href>
         <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
       </a>
     </li>
     <li>
-      <a data-method="payment" ui-sref="cashRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'patientReference', value : row.entity.reference }]})" href>
+      <a data-method="view-payments" ui-sref="cashRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'patientReference', value : row.entity.reference }]})" href>
         <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
       </a>
     </li>
     <li>
-      <a data-method="voucher" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }, { key : 'period', value : 'allTime' }]})" href>
+      <a data-method="view-vouchers" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }, { key : 'period', value : 'allTime' }]})" href>
         <span class="fa fa-address-card-o"></span> <span translate>PATIENT_REGISTRY.VOUCHERS</span>
       </a>
     </li>
     <li>
-      <a data-method="stock-movements" ui-sref="stockMovements({ filters : [{ key : 'patientReference', value : row.entity.reference, displayValue: row.entity.display_name, cacheable:false }, { key : 'period', value : 'allTime', cacheable:false }]})" href>
+      <a data-method="view-stock-movements" ui-sref="stockMovements({ filters : [{ key : 'patientReference', value : row.entity.reference, displayValue: row.entity.display_name, cacheable:false }, { key : 'period', value : 'allTime', cacheable:false }]})" href>
         <span class="fa fa-list-alt"></span> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
       </a>
     </li>
