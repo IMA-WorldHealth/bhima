@@ -263,7 +263,6 @@ function lookupPatientPriceList(patientUuid) {
     .then(([row]) => row && row.price_list_uuid);
 }
 
-
 /**
  * @method updatePatientDebCred
  *
@@ -545,7 +544,6 @@ function read(req, res, next) {
     .done();
 }
 
-
 function invoicingFees(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
@@ -700,19 +698,18 @@ function getStockMovements(req, res, next) {
 function stockMovementByPatient(patientUuid) {
   const sql = `
       SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid,
-      BUID(sm.depot_uuid) as depot_uuid,
-      sm.unit_cost,
-      (sm.quantity * sm.unit_cost) as value,
+      BUID(sm.depot_uuid) AS depot_uuid, d.text as depot_name,
+      sm.unit_cost, (sm.quantity * sm.unit_cost) AS value,
       sm.date, map.text AS reference_text,
       i.text AS inventory_name
     FROM stock_movement AS sm
-    JOIN depot AS d ON d.uuid = sm.depot_uuid
-    JOIN patient AS p ON p.uuid = sm.entity_uuid
-    JOIN lot l ON l.uuid = sm.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
+      JOIN depot AS d ON d.uuid = sm.depot_uuid
+      JOIN patient AS p ON p.uuid = sm.entity_uuid
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN document_map AS map ON map.uuid = sm.document_uuid
     WHERE sm.entity_uuid = ?
-    ORDER BY sm.date desc
+    ORDER BY sm.date DESC
   `;
 
   return db.exec(sql, [db.bid(patientUuid)]);

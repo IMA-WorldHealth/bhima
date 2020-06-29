@@ -71,6 +71,7 @@
       "OUTSIDE_HEALTH_ZONE":"Hors zone de santé"
     },
     "STOCK_MOVEMENTS_TO_PATIENT" : "Mouvements de stock distribués au patient",
+    "VIEW_ALL_MOVEMENTS_TO_PATIENT" : "Voir les {{numMovements}} mouvements du patient",
     "TRANSFER":{
       "TITLE":"Transfert",
       "NEW_DESTINATION_DESCRIPTION":"Veuillez séléctionner la nouvelle destination (pavillon, chambre et lit) du patient",

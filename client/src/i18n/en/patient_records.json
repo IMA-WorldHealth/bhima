@@ -65,12 +65,13 @@
       "OLD_CASES":"Old Cases",
       "HOSPITALIZED":"Hospitalized",
       "AMBULATORY":"Ambulatory",
-      "PREGNANT":"Pregnants",
+      "PREGNANT":"Pregnant Women",
       "REFERRED":"Referred",
       "INSIDE_HEALTH_ZONE":"Within Health Zone",
       "OUTSIDE_HEALTH_ZONE":"Outside Health Zone"
     },
     "STOCK_MOVEMENTS_TO_PATIENT" : "Stock movements distributed to the patient",
+    "VIEW_ALL_MOVEMENTS_TO_PATIENT" : "View All {{numMovements}} Distributions to Patient",
     "TRANSFER":{
       "TITLE":"Transfer",
       "NEW_DESTINATION_DESCRIPTION":"Please select the new destination (ward, room and bed) of the patient",
