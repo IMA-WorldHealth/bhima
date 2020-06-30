@@ -193,3 +193,23 @@ Our tests are broken into unit tests, end to end tests, and integration tests. T
 You can run all tests by simply typing `yarn test`.
 
 Enjoy using bhima!
+
+---
+
+### Trouble-Shooting
+
+#### MySQL Issues
+If the application fails to run and you get server errors like this:
+
+```
+MySQL 8.0 - Client does not support authentication protocol requested by server; consider upgrading MySQL client
+```
+
+The problem is that MySql by default requires a password-encoding mechanism that the MySQL interface (mysqljs) in Node.js does not support.  You need to instruct MySQL to accept the old-style password encoding.  Run mysql client as `root` and execute this command:
+
+```sql
+ALTER USER bhima IDENTIFIED WITH mysql_native_password BY 'password';
+```
+
+(replace 'password' with your desired password).  Once this is done MySQL should accept the passwords passed to it via Node.js.
+
