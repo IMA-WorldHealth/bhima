@@ -14,8 +14,12 @@ set -uo pipefail
 
 echo "[migrate] Migrating BHIMA database"
 
+ENVIRONMENT=${ENVIRONMENT:-"production"}
+
+echo "[migrate] Reading from $ENVIRONMENT."
+
 set -a
-source .env.development
+source .env.$ENVIRONMENT
 set +a
 
 # Set up variables used for naming things
