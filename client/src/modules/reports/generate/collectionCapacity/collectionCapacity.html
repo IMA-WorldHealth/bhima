@@ -29,6 +29,15 @@
               limit-min-fiscal>
             </bh-date-interval>
 
+            <bh-yes-no-radios
+              value="ReportConfigCtrl.reportDetails.includeUnpostedValues"
+              name="includeUnpostedValues"
+              on-change-callback="ReportConfigCtrl.onChangeUnpostedValues(value)"
+              name="includeUnpostedValues"
+              label="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS"
+              help-text="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS_HELP">
+            </bh-yes-no-radios>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>

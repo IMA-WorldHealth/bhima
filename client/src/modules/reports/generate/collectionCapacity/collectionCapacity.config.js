@@ -14,6 +14,10 @@ function CollectionCapacityController($sce, Notify, SavedReports, AppCache, repo
   vm.previewGenerated = false;
   vm.reportDetails = {};
 
+  vm.onChangeUnpostedValues = value => {
+    vm.reportDetails.includeUnpostedValues = value;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
