@@ -12,7 +12,11 @@ function CollectionCapacityController($sce, Notify, SavedReports, AppCache, repo
   const reportUrl = 'reports/finance/collectionCapacity';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+  vm.reportDetails = { includeUnpostedValues : 0 };
+
+  vm.onChangeUnpostedValues = value => {
+    vm.reportDetails.includeUnpostedValues = value;
+  };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;

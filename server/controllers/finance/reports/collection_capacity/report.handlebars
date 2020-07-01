@@ -12,6 +12,7 @@
       <!-- page title  -->
       <h3 class="text-center text-uppercase">
         <strong>{{translate 'REPORT.COLLECTION_CAPACITY.TITLE'}}</strong> <br>
+        {{#if includeUnpostedValues}}<strong>({{translate 'REPORT.PROVISIONARY'}})</strong><br>{{/if}}
         <small>{{date dateFrom}} - {{date dateTo}}</small>
       </h3>
 
@@ -61,6 +62,22 @@
           </tr>
           {{/each}}
         </tbody>
+        <tfoot>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+            <th style="width: 10em;" class="text-right">{{totals.registrations}}</th>
+            <th class="text-right">{{debcred totals.total_invoiced metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.avg_cost metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.total_paid metadata.enterprise.currency_id}}</th>
+            <th 
+              style="width: 15em;"
+              {{#gt totals.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
+              {{#between totals.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
+              {{#lt totals.recovery_capacity 0.6}} class="bg-danger text-danger text-right" {{/lt}}>
+              {{percentage totals.recovery_capacity}}
+            </th>
+          </tr>
+        </tfoot>
       </table>
 
     </div>
