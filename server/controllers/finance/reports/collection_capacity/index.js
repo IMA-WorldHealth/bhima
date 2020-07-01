@@ -40,21 +40,23 @@ async function report(req, res, next) {
     const formatedDateTo = moment(dateTo).format('YYYY-MM-DD');
 
     const includeUnpostedValues = qs.includeUnpostedValues ? Number(qs.includeUnpostedValues) : 0;
-    let generalTable = 'general_ledger';
+
+    let generalTable = `
+      SELECT trans_id, trans_date, debit_equiv, credit_equiv,
+        account_id, record_uuid, reference_uuid, transaction_type_id
+      FROM general_ledger WHERE DATE(trans_date) BETWEEN DATE("${formatedDateFrom}") AND DATE("${formatedDateTo}")
+    `;
 
     if (includeUnpostedValues) {
-      generalTable = `
-      (
-        SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
-          account_id, record_uuid, reference_uuid, created_at, transaction_type_id
+      generalTable += `
+        UNION ALL
+        SELECT trans_id, trans_date, debit_equiv, credit_equiv,
+          account_id, record_uuid, reference_uuid, transaction_type_id
         FROM posting_journal WHERE DATE(trans_date) BETWEEN DATE("${formatedDateFrom}") AND DATE("${formatedDateTo}")
-        UNION ALL 
-        SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
-          account_id, record_uuid, reference_uuid, created_at, transaction_type_id
-        FROM general_ledger WHERE DATE(trans_date) BETWEEN DATE("${formatedDateFrom}") AND DATE("${formatedDateTo}")
-      )
       `;
     }
+
+    generalTable = `(${generalTable})`;
 
     /**
      * credit to :
