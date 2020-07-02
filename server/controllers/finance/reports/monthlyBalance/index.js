@@ -1,9 +1,10 @@
 
 const q = require('q');
 const _ = require('lodash');
+const Tree = require('@ima-worldhealth/tree');
+
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
-const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const fiscal = require('../../fiscal');

@@ -9,16 +9,17 @@
  * @requires lib/db
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
- * @requires lib/Tree
+ * @requires @ima-worldhealth/tree
  * @requires constrollers/fiscal
  */
 
 
 const _ = require('lodash');
+const Tree = require('@ima-worldhealth/tree');
+
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
-const Tree = require('../../../../lib/Tree');
 const Fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/income_expense/report.handlebars';

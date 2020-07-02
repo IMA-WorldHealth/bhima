@@ -1,4 +1,4 @@
-const Tree = require('../../server/lib/Tree');
+const Tree = require('@ima-worldhealth/tree');
 const { expect } = require('chai');
 
 function TreeUnitTests() {

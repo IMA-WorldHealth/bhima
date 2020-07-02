@@ -16,8 +16,9 @@
 
 
 // module dependencies
+const Tree = require('@ima-worldhealth/tree');
+
 const db = require('../../../lib/db');
-const Tree = require('../../../lib/Tree');
 const Journal = require('../journal');
 
 const PERIODS = [

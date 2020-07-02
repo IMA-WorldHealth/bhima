@@ -12,8 +12,9 @@
  */
 
 const _ = require('lodash');
+const Tree = require('@ima-worldhealth/tree');
+
 const db = require('../../../../lib/db');
-const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
