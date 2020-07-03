@@ -27,10 +27,12 @@ async function stockEntryDonationReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
-      dm.text as document_reference
+      dm.text as document_reference, ig.tracking_expiration,
+      IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
@@ -65,13 +67,12 @@ async function stockEntryDonationReceipt(documentUuid, session, options) {
     voucher_reference     : voucherReference,
   };
 
-  data.rows = rows;
-
   // sum elements of rows by their `total` property
   data.total = data.rows.reduce((aggregate, row) => {
     return row.total + aggregate;
   }, 0);
 
+  data.rows = rows;
   return report.render(data);
 
 }

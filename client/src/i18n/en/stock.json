@@ -32,6 +32,8 @@
     "TYPE_QUANTITY" : "Stock quantity",
     "STOCK_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
     "AND_MORE" : "... and {{left}} more",
+    "TRACK_CONSUMPTION":"Track consumption",
+    "TRACK_EXPIRATION":"Track expiration",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
       "MISSING_LOT_NAME" : "Missing Lot Identifier",

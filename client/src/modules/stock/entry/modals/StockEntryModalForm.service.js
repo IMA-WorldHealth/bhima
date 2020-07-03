@@ -83,7 +83,7 @@ function StockEntryModalForm(uuid) {
     row._error = null;
 
     // if the stock does not expire/have an expiration date, generate a fake one
-    if (!this.opts.expires) {
+    if (!this.opts.tracking_expiration) {
       hasFutureExpirationDate = true;
       row.expiration_date = new Date((new Date().getFullYear() + 1000), new Date().getMonth());
     }

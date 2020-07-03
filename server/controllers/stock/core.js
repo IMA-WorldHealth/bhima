@@ -224,7 +224,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
       m.date AS entry_date,
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
-      ig.name AS group_name, ig.expires,
+      ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -720,24 +720,29 @@ function processMultipleLots(inventories) {
       // compute the lot coefficient
       let lotLifetime = 0;
       _.each(orderedInventoryLots, lot => {
-        // apply the same CMM to all lots and update monthly consumption
-        lot.avg_consumption = cmm;
-        lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
+        if (!lot.tracking_expiration) {
+          lot.expiration_date = '';
+        }
+        if (lot.tracking_consumption) {
+          // apply the same CMM to all lots and update monthly consumption
+          lot.avg_consumption = cmm;
+          lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
 
-        const zeroMSD = Math.round(lot.S_MONTH) === 0;
+          const zeroMSD = Math.round(lot.S_MONTH) === 0;
 
-        lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
-        lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
-        lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
-        lotLifetime += lot.S_LOT_LIFETIME;
+          const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
+          const today = new Date();
+          // if we have more months of stock than the expiration date,
+          // then we'll need to label these are in risk of expiration
+          const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
+          const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
+          lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
 
-        const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
-        const today = new Date();
-        // if we have more months of stock than the expiration date,
-        // then we'll need to label these are in risk of expiration
-        const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-        const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
-        lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
+          lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
+          lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
+          lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
+          lotLifetime += lot.S_LOT_LIFETIME;
+        }
         flattenLots.push(lot);
       });
     });

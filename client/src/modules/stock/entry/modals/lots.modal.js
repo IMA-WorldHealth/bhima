@@ -7,17 +7,19 @@ StockDefineLotsModalController.$inject = [
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm, Focus
+  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm, Focus,
 ) {
   const vm = this;
 
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
+
+  const tracking = Data.stockLine.tracking_expiration;
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
     unit_cost : Data.stockLine.unit_cost,
-    expires : Data.stockLine.expires,
+    tracking_expiration : tracking,
     rows : Data.stockLine.lots,
   });
 
@@ -70,7 +72,7 @@ function StockDefineLotsModalController(
     type : 'date',
     cellFilter : `date:"${bhConstants.dates.format}"`,
     width : 150,
-    visible : (vm.stockLine.expires !== 0),
+    visible : tracking,
     displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
@@ -175,7 +177,6 @@ function StockDefineLotsModalController(
 
   function submit(form) {
     vm.errors = vm.form.validate();
-
     // unfortunately, a negative number will not trigger the onChange() function
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.

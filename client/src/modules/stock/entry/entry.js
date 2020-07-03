@@ -425,7 +425,7 @@ function StockEntryController(
   function setLots(stockLine) {
     // Additionnal information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
-    stockLine.expires = inventory.expires;
+    stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
 
     StockModal.openDefineLots({
@@ -603,6 +603,7 @@ function StockEntryController(
     line.cost = line.quantity * line.unit_cost;
     line.expiration_date = new Date();
     line.unit = inventory.unit;
+    line.tracking_expiration = inventory.tracking_expiration;
     setInitialized(line);
   }
 

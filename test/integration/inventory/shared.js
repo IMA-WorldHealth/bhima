@@ -13,7 +13,7 @@ const inventoryGroup = {
   stock_account : 162, // 31110010 - 'Medicaments en comprimes *'
   sales_account : 242, // 70111010 - Vente Medicaments en comprimes
   cogs_account : 209, // 60310010 - Médicaments en comprimés
-  expires : 1,
+  tracking_expiration : 1,
   unique_item : 0,
 };
 
@@ -23,8 +23,9 @@ const updateGroup = {
   stock_account : 163, // 31110011 - Medicaments en Sirop *
   sales_account : 242, // 70111010 - Vente Medicaments en comprimes
   cogs_account : 209, // 60310010 - Médicaments en comprimés
-  expires : 1,
   unique_item : 0,
+  tracking_expiration : 1,
+  tracking_consumption : 0,
 };
 
 const inventoryType = {
