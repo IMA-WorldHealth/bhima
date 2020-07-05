@@ -1,10 +1,10 @@
 const _ = require('lodash');
+const Tree = require('@ima-worldhealth/tree');
+
 const Exchange = require('../../exchange');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
-const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
-
 const fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/operating/report.handlebars';

@@ -51,6 +51,7 @@
   ],
   "dependencies": {
     "@ima-worldhealth/coral": "^2.1.1",
+    "@ima-worldhealth/tree": "^2.2.0",
     "@types/angular": "^1.7.2",
     "@uirouter/angularjs": "^1.0.25",
     "accounting-js": "^1.1.1",

@@ -14,13 +14,13 @@
 const q = require('q');
 const _ = require('lodash');
 const debug = require('debug')('FiscalYear');
+const Tree = require('@ima-worldhealth/tree');
+
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 const FilterParser = require('../../lib/filter');
-
-const Tree = require('../../lib/Tree');
 
 // Account Service
 const AccountService = require('./accounts');
