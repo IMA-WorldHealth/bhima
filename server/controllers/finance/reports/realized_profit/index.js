@@ -59,13 +59,13 @@ async function report(req, res, next) {
     const globalQuery = `
       SELECT
         c.invoiced, (c.normal_paid + c.caution_paid + c.convention_paid) AS paid,
-        c.debtorGroupName, c.serviceName, c.invoice_uuid, c.service_uuid, c.debtor_group_uuid
+        c.debtorGroupName, c.serviceName, c.invoice_uuid, BUID(c.service_uuid) AS service_uuid, c.debtor_group_uuid
       FROM (
         SELECT
           SUM(gl.debit_equiv - gl.credit_equiv) AS invoiced,
           IFNULL(z.paid, 0) AS normal_paid, IFNULL(x.paid, 0) AS caution_paid, IFNULL(y.paid, 0) AS convention_paid,
           dg.name debtorGroupName, s.name serviceName,
-          iv.uuid AS invoice_uuid, BUID(s.uuid) AS service_uuid, dg.uuid AS debtor_group_uuid
+          iv.uuid AS invoice_uuid, iv.service_uuid, dg.uuid AS debtor_group_uuid
         FROM general_ledger gl
         JOIN invoice iv ON iv.uuid = gl.record_uuid
         JOIN service s ON s.uuid = iv.service_uuid

@@ -80,5 +80,6 @@ async function getData(options) {
     db.exec(queryData, queryParams),
     db.exec(queryTotal, queryParams),
   ]);
+
   return { data, total };
 }
