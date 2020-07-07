@@ -12,7 +12,7 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
   const reportUrl = 'reports/stock/sheet';
 
   vm.previewGenerated = false;
-  vm.havingDateInterval = 0;
+  vm.hasDateInterval = 0;
 
   vm.reportDetails = {
     dateTo : new Date(),
@@ -23,7 +23,7 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
   checkCachedConfiguration();
 
   vm.changeHavingDateInterval = value => {
-    vm.havingDateInterval = value;
+    vm.hasDateInterval = value;
     vm.reportDetails.dateFrom = value ? new Date() : undefined;
     vm.reportDetails.dateTo = new Date();
   };
@@ -61,7 +61,7 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
     // update cached configuration
     cache.reportDetails = angular.copy(options);
 
-    if (vm.havingDateInterval) {
+    if (vm.hasDateInterval) {
       options.dateFrom = moment(options.dateFrom).format('YYYY-MM-DD');
     }
 
