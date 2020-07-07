@@ -25,6 +25,26 @@ angular.module('bhima.routes')
         url         : '/locations/country',
         controller  : 'CountryController as CountryCtrl',
         templateUrl : 'modules/locations/country/country.html',
+      })
+      .state('locationsMerge', {
+        url         : '/locations/merge',
+        params      : {
+          locations : [],
+        },
+        onEnter : ['$uibModal', mergeLocationsModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
+function mergeLocationsModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+    controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+  });
+}
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
+}

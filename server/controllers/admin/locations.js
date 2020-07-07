@@ -549,3 +549,73 @@ exports.delete.village = (req, res, next) => {
     res.sendStatus(204);
   }).catch(next);
 };
+
+exports.merge = (req, res, next) => {
+  const { selected, other, locationStatus } = req.body;
+
+  const transaction = db.transaction();
+
+  if (locationStatus === 'country') {
+    const replaceCountryInProvince = `
+      UPDATE province SET country_uuid = ? WHERE country_uuid = ?;`;
+
+    const removeOtherCountry = `
+      DELETE FROM country WHERE uuid IN (?);`;
+
+    transaction
+      .addQuery(replaceCountryInProvince, [db.bid(selected), db.bid(other)])
+      .addQuery(removeOtherCountry, [db.bid(other)]);
+  } else if (locationStatus === 'province') {
+
+    const replaceProvinceInSector = `
+      UPDATE sector SET province_uuid = ? WHERE province_uuid = ?;`;
+
+    const removeOtherProvince = `
+      DELETE FROM province WHERE uuid IN (?);`;
+
+    transaction
+      .addQuery(replaceProvinceInSector, [db.bid(selected), db.bid(other)])
+      .addQuery(removeOtherProvince, [db.bid(other)]);
+  } else if (locationStatus === 'sector') {
+
+    const replaceSectorInVillage = `
+      UPDATE village SET sector_uuid = ? WHERE sector_uuid = ?;`;
+
+    const removeOtherSector = `
+      DELETE FROM sector WHERE uuid IN (?);`;
+
+    transaction
+      .addQuery(replaceSectorInVillage, [db.bid(selected), db.bid(other)])
+      .addQuery(removeOtherSector, [db.bid(other)]);
+  } else if (locationStatus === 'village') {
+
+    // debtor_group
+    const replaceVillageInDebtorGroup = `
+      UPDATE debtor_group SET location_id = ? WHERE location_id = ?;`;
+
+    // enterprise
+    const replaceVillageInEnterprise = `
+      UPDATE enterprise SET location_id = ? WHERE location_id = ?;`;
+
+    // Patient
+    const replaceVillageInPatient1 = `
+      UPDATE patient SET current_location_id = ? WHERE current_location_id = ?;`;
+
+    const replaceVillageInPatient2 = `
+      UPDATE patient SET origin_location_id = ? WHERE origin_location_id = ?;`;
+
+    const removeOtherVillage = `
+      DELETE FROM village WHERE uuid IN (?);`;
+
+    transaction
+      .addQuery(replaceVillageInDebtorGroup, [db.bid(selected), db.bid(other)])
+      .addQuery(replaceVillageInEnterprise, [db.bid(selected), db.bid(other)])
+      .addQuery(replaceVillageInPatient1, [db.bid(selected), db.bid(other)])
+      .addQuery(replaceVillageInPatient2, [db.bid(selected), db.bid(other)])
+      .addQuery(removeOtherVillage, [db.bid(other)]);
+  }
+
+  transaction.execute().then(() => {
+    res.sendStatus(200);
+  }).catch(next);
+};

@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('CountryController', CountryController);
 
 CountryController.$inject = [
-  'LocationService', 'util', 'NotifyService',
+  '$state', 'LocationService', 'util', 'NotifyService',
   '$uibModal', 'ModalService', 'uiGridConstants',
 ];
 
-function CountryController(locationService, util, Notify, $uibModal, Modal, uiGridConstants) {
+function CountryController($state, locationService, util, Notify, $uibModal, Modal, uiGridConstants) {
   const vm = this;
   vm.session = {};
   vm.view = 'default';
@@ -89,6 +89,48 @@ function CountryController(locationService, util, Notify, $uibModal, Modal, uiGr
       });
   };
 
+  vm.createUpdateModal = (selectedCountry = {}) => {
+    return $uibModal.open({
+      templateUrl : 'modules/locations/country/modal/createUpdate.html',
+      controller : 'CreateUpdateCountryController as ModalCtrl',
+      resolve : { data : () => selectedCountry },
+    }).result.then(result => {
+      if (result) refreshCountries();
+    });
+  };
+
+  vm.mergeCountries = function mergeCountries() {
+    const selectedCountries = vm.gridApi.selection.getSelectedRows();
+    if (selectedCountries.length) {
+      if (selectedCountries.length === 2) {
+        const countries = selectedCountries.map(c => c);
+        const locations = {
+          locations : countries,
+          status : 'country',
+        };
+
+        $uibModal.open({
+          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+          resolve : { data : () => locations },
+        }).result.then(result => {
+          if (result) refreshCountries();
+        });
+
+      } else {
+        Notify.warn('FORM.WARNINGS.ONLY_TWO_COUNTRIES');
+      }
+    } else {
+      Notify.warn('FORM.WARNINGS.NO_COUNTRIES_HAS_SELECTED');
+    }
+  };
+
+  /**
+   * @function toggleInlineFilter
+   *
+   * @description
+   * Switches the inline filter on and off.
+   */
   vm.toggleInlineFilter = function toggleInlineFilter() {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

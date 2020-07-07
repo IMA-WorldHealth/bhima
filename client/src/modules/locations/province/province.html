@@ -14,6 +14,11 @@
           </button>
         </div>
         <div class="toolbar-item">
+          <button ng-click="ProvinceCtrl.mergeProvinces()"  class="btn btn-default text-capitalize" data-method="merge">
+            <i class="fa fa-compress"></i> <span translate>PROVINCE.MERGE_PROVINCES</span>
+          </button>
+        </div>
+        <div class="toolbar-item">
           <!-- Links to the main menu of management maps as well as the button for adding countries -->
           <button ui-sref="locations" class="btn btn-default text-capitalize">
             <span class="glyphicon glyphicon-globe"></span><span translate> LOCATION.LOCATION_MANAGER </span>
@@ -34,6 +39,7 @@
         ui-grid="ProvinceCtrl.gridOptions"
         ui-grid-auto-resize
         ui-grid-resize-columns
+        ui-grid-selection
         ui-grid-move-columns>
   
         <bh-grid-loading-indicator

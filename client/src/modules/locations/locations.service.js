@@ -58,6 +58,7 @@ function LocationService($http, util, Modal) {
   service.update.province = updateProvince;
   service.update.sector = updateSector;
   service.update.village = updateVillage;
+  service.merge = merge;
 
   service.delete = {
     country : removeCountry,
@@ -65,7 +66,6 @@ function LocationService($http, util, Modal) {
     sector : removeSector,
     village : removeVillage,
   };
-
 
   /** launch the "add location" modal */
   service.modal = modal;
@@ -181,12 +181,10 @@ function LocationService($http, util, Modal) {
       .then(util.unwrapHttpResponse);
   }
 
-
   function removeCountry(uuid) {
     return $http.delete(`/locations/countries/${uuid}`)
       .then(util.unwrapHttpResponse);
   }
-
 
   function removeProvince(uuid) {
     return $http.delete(`/locations/provinces/${uuid}`)
@@ -231,6 +229,20 @@ function LocationService($http, util, Modal) {
     };
 
     return $http.put('/locations/villages/'.concat(uuid), villageClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method merge
+   *
+   * @description
+   * This method merge two locations into a one
+   *
+   * @param {object} params { selected: String, other: Array }
+   */
+  function merge(params) {
+    const path = `/locations/merge`;
+    return $http.post(path, params)
       .then(util.unwrapHttpResponse);
   }
 

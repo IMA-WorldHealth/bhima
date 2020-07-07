@@ -17,6 +17,42 @@ describe('(/locations) Locations Interface', () => {
   const numProvinces = 25;
   const numCountries = 1;
 
+  const mergeCountry = {
+    selected : 'DBE330B65CDE48308C30DC00ECCD1A5F',
+    other : 'C17240C65F0244048D4D15809C7887B6',
+    locationStatus : 'country',
+  };
+
+  const mergeProvince1 = {
+    selected : '0xF6FC74697E5845CBB87CF08AF93EDADE',
+    other : '9308D98C326F427D9E5BC62A894AA334',
+    locationStatus : 'province',
+  };
+
+  const mergeSector1 = {
+    selected : '0404E9EAEBD64F20B1F86DC9F9313450',
+    other : '5B4FBED5763743A090048FB053B17593',
+    locationStatus : 'sector',
+  };
+
+  const mergeSector2 = {
+    selected : '0404E9EAEBD64F20B1F86DC9F9313450',
+    other : '0AA4E8785ACB4E0CBE0B8E7B61CAE782',
+    locationStatus : 'sector',
+  };
+
+  const mergeVillage1 = {
+    selected : 'B472A67F24624EFC9CB52201530CCBD4',
+    other : '03C1C626183A4B549C2DB01434D44867',
+    locationStatus : 'village',
+  };
+
+  const mergeVillage2 = {
+    selected : '1F162A109F6747889EFFC1FEA42FCC9B',
+    other : 'B472A67F24624EFC9CB52201530CCBD4',
+    locationStatus : 'village',
+  };
+
   /*
    * Selected sector, province, and country uuids to test the query string
    * filtering of the dataset.
@@ -31,6 +67,61 @@ describe('(/locations) Locations Interface', () => {
   const numFilteredVillages = 1;
   const numFilteredSectors = 1;
   const numFilteredProvinces = 25;
+
+  /** Merge Locations */
+  it('POST /locations/merge/ should Merge country', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeCountry)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/merge/ should Merge province first', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeProvince1)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/merge/ should Merge Sector first', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeSector1)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/merge/ should Merge Village first', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeVillage1)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/merge/ should Merge Sector second', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeSector2)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /locations/merge/ should Merge Village second', () => {
+    return agent.post('/locations/merge/')
+      .send(mergeVillage2)
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
 
   /* the test enterprise's location uuid */
   const detailUuid = '1f162a10-9f67-4788-9eff-c1fea42fcc9b';
@@ -113,7 +204,6 @@ describe('(/locations) Locations Interface', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('GET /locations/detail/ returns a list of all locations country, province, district and village', () => {
     return agent.get('/locations/detail/')

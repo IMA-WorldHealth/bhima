@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('VillageController', VillageController);
 
 VillageController.$inject = [
-  'LocationService', 'util', 'NotifyService',
+  '$state', 'LocationService', 'util', 'NotifyService',
   'ModalService', '$uibModal', 'uiGridConstants', 'LocationService',
 ];
 
-function VillageController(locationService, util, Notify,
+function VillageController($state, locationService, util, Notify,
   Modal, $uibModal, uiGridConstants, Location) {
 
   const vm = this;
@@ -110,6 +110,33 @@ function VillageController(locationService, util, Notify,
           })
           .catch(Notify.handleError);
       });
+  };
+
+  vm.mergeVillages = function Villages() {
+    const selectedVillages = vm.gridApi.selection.getSelectedRows();
+    if (selectedVillages.length) {
+      if (selectedVillages.length === 2) {
+        const villages = selectedVillages.map(v => v);
+
+        const locations = {
+          locations : villages,
+          status : 'village',
+        };
+
+        $uibModal.open({
+          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+          resolve : { data : () => locations },
+        }).result.then(result => {
+          if (result) refreshVillages();
+        });
+
+      } else {
+        Notify.warn('FORM.WARNINGS.ONLY_TWO_VILLAGES');
+      }
+    } else {
+      Notify.warn('FORM.WARNINGS.NO_VILLAGES_HAS_SELECTED');
+    }
   };
 
   /**

@@ -1,5 +1,8 @@
+/* global element, by */
+
 const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
@@ -15,6 +18,43 @@ describe('Sectors Management', () => {
 
   const sector2 = sector;
   sector2.name = 'test-sector';
+
+  const gridId = 'sector-grid';
+  const referenceLocation = 'Lukunga';
+
+  it('Merge Sector', async () => {
+    // Prevent mixing with no country selected
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with less than two sectors
+    await GU.selectRow(gridId, 0);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with more than two sectors
+    await GU.selectRow(gridId, 1);
+    await GU.selectRow(gridId, 2);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Merging succes
+    await GU.selectRow(gridId, 2);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="${referenceLocation}"]`)).click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes
+    await GU.selectRow(gridId, 0);
+    await GU.selectRow(gridId, 1);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="${referenceLocation}"]`)).click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
 
   it('creates a new sector', async () => {
     // switch to the create form

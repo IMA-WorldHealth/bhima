@@ -1,0 +1,44 @@
+<form name="MergeLocationsForm" bh-submit="MergeLocationsModalCtrl.submit()" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>FORM.LABELS.MERGE_LOCATIONS_TO_ONE</span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <p>
+      <i><span translate>FORM.INFO.SELECT_LOCATION_CONSIDER</span></i>
+    </p>
+
+    <ul class="list-group">
+      <li
+        data-reference="{{ p.name }}"
+        style="cursor: pointer;"
+        class="list-group-item"
+        ng-class="{'active' : MergeLocationsModalCtrl.selected === p.uuid }"
+        ng-repeat="p in MergeLocationsModalCtrl.locations"
+        ng-click="MergeLocationsModalCtrl.selectLocation(p.uuid)">
+        <span ng-show="MergeLocationsModalCtrl.selected === p.uuid" class="badge">
+          <i class="fa fa-check"></i>
+        </span>
+        <span>
+          <strong>{{ p.name }}</strong><br>
+        </span>
+      </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="MergeLocationsModalCtrl.cancelUiSref()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="MergeLocationsForm.$loading">
+      <span translate>FORM.LABELS.MERGE_LOCATIONS</span>
+    </bh-loading-button>
+  </div>
+</form>
+  
