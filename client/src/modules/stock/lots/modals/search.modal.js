@@ -4,9 +4,10 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchLotsModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
+  'SearchModalUtilService',
 ];
 
-function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) {
+function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, SearchModal) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -22,10 +23,6 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
   const lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
-
-  // keep track of the initial search queries to make sure we properly restore
-  // default display values
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -82,25 +79,5 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
 
   vm.cancel = function cancel() { Instance.close(); };
 
-  vm.submit = function submit() {
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-
-        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
-        // If so, we do not use the previous display value.  If the values are identical, we can restore the
-        // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
-        && angular.isDefined(lastDisplayValues[key]);
-
-        // default to the raw value if no display value is defined
-        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
-
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-    return Instance.close(loggedChanges);
-  };
+  vm.submit = () => SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
 }

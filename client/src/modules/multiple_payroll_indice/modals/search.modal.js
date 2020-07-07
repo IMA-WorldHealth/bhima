@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 MultiPayrollIndiceSearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'Store', 'util',
-  'MultiplePayrollService', 'CurrencyService', 'PayrollConfigurationService', '$translate', 'SessionService',
+  'MultiplePayrollService', 'PayrollConfigurationService',
+  '$translate', 'SessionService', 'SearchModalUtilService',
 ];
 
 /**
@@ -16,7 +17,7 @@ MultiPayrollIndiceSearchModalController.$inject = [
  */
 function MultiPayrollIndiceSearchModalController(
   ModalInstance, filters, Notify, Store, util,
-  MultiplePayroll, Currencies, Payroll, $translate, Session,
+  MultiplePayroll, Payroll, $translate, Session, SearchModal,
 ) {
   const vm = this;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
@@ -34,11 +35,9 @@ function MultiPayrollIndiceSearchModalController(
   const displayValues = {};
   const lastDisplayValues = MultiplePayroll.filters.formatView().defaultFilters;
 
-
   lastDisplayValues.forEach((last) => {
     lastValues[last._key] = last._displayValue;
   });
-
 
   vm.filters = filters;
   // searchQueries is the same id:value pair
@@ -92,23 +91,8 @@ function MultiPayrollIndiceSearchModalController(
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-    let _displayValue;
-
     if (form.$invalid) { return 0; }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (_value, _key) => {
-      if (angular.isDefined(_value)) {
-        // default to the original value if no display value is defined
-        _displayValue = displayValues[_key] || lastValues[_key];
-
-        changes.post({ key : _key, value : _value, displayValue : _displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the voucher controller
-    return ModalInstance.close(loggedChanges);
+    return SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
   };
 }

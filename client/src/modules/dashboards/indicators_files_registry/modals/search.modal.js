@@ -2,13 +2,14 @@ angular.module('bhima.controllers')
   .controller('SearchIndicatorsFilesModalController', SearchIndicatorsFilesModalController);
 
 SearchIndicatorsFilesModalController.$inject = [
-  '$uibModalInstance', 'filters', 'Store', 'util', 'PeriodService',
+  '$uibModalInstance', 'filters', 'Store', 'util',
   'IndicatorsDashboardService', 'NotifyService', '$translate',
+  'SearchModalUtilService',
 ];
 
 function SearchIndicatorsFilesModalController(
-  ModalInstance, filters, Store, util, Periods,
-  IndicatorsDashboard, Notify, $translate
+  ModalInstance, filters, Store, util,
+  IndicatorsDashboard, Notify, $translate, SearchModal,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
@@ -33,8 +34,6 @@ function SearchIndicatorsFilesModalController(
   const lastDisplayValues = IndicatorsDashboard.indicatorsFilesGridFilterer.getDisplayValueMap();
 
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // bind methods
   vm.submit = submit;
@@ -90,30 +89,9 @@ function SearchIndicatorsFilesModalController(
     return item;
   }
 
-
   // returns the parameters to the parent controller
   function submit() {
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-
-        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
-        // If so, we do not use the previous display value.  If the values are identical, we can restore the
-        // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
-          && angular.isDefined(lastDisplayValues[key]);
-
-        // default to the raw value if no display value is defined
-        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
-
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the Admission Registry Controller
-    return ModalInstance.close(loggedChanges);
+    return SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
   }
 
   function clear(...value) {

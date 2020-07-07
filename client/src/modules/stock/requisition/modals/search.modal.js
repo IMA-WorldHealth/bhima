@@ -4,9 +4,10 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchStockRequisitionModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
+  'SearchModalUtilService',
 ];
 
-function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock) {
+function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock, SearchModal) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -20,7 +21,6 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
 
   const displayValues = {};
   const lastDisplayValues = Stock.filter.requisition.getDisplayValueMap();
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   vm.onSelectPeriod = function onSelectPeriod(period) {
     const periodFilters = Periods.processFilterChanges(period);
@@ -58,17 +58,6 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.cancel = Instance.dismiss;
 
   vm.submit = function submit() {
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
-          && angular.isDefined(lastDisplayValues[key]);
-        const displayValue = usePreviousDisplayValue
-          ? lastDisplayValues[key] : displayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-    return Instance.close(loggedChanges);
+    return SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
   };
 }
