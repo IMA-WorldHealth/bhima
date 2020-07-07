@@ -13,10 +13,11 @@ Thanks to BHIMA it is possible to carry out stock movements such as:
 - [Stock exits](./movement.exit.md)
   - To a patient
   - To a service
-  - To another deposit
+  - To another depot
   - As a stock loss
 - [Stock adjustments](./movement.adjustment.md): When the physical quantities differ from the quantities in BHIMA, it is possible to adjust either positively or negatively the quantity of stocks concerned.
 
-<div class = "bs-callout bs-callout-info">
-It should be noted that any movement of stocks (inflows, outflows, adjustments) is recorded in the inventory movement register. This allows you to have the history of stock movements at any time.
+<div class="bs-callout bs-callout-info">
+  It should be noted that any movement of stocks (inflows, outflows, adjustments) is recorded in the stock
+  movement registry. This allows you to have the history of stock movements at any time.
 </div>
