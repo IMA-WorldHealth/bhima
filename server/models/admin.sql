@@ -149,22 +149,22 @@ END $$
 CALL zMergeServices(fromId, toId);
 
 DESCRIPTION
-Merges two services by changing the service_id pointers to the new service and
+Merges two services by changing the service_uuid pointers to the new service and
 then removing the previous service.
 */
 DROP PROCEDURE IF EXISTS zMergeServices$$
 CREATE PROCEDURE zMergeServices(
-  IN from_service_id INTEGER,
-  IN to_service_id INTEGER
+  IN from_service_uuid BINARY(16),
+  IN to_service_uuid BINARY(16)
 ) BEGIN
 
-  UPDATE invoice SET service_id = to_service_id WHERE service_id = from_service_id;
-  UPDATE employee SET service_id = to_service_id WHERE service_id = from_service_id;
-  UPDATE patient_visit_service SET service_id = to_service_id WHERE service_id = from_service_id;
-  UPDATE ward SET service_id = to_service_id WHERE service_id = from_service_id;
-  UPDATE service_fee_center SET service_id = to_service_id WHERE service_id = from_service_id;
-  UPDATE indicator SET service_id = to_service_id WHERE service_id = from_service_id;
-  DELETE FROM service WHERE id = from_service_id;
+  UPDATE invoice SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE employee SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE patient_visit_service SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE ward SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE service_fee_center SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE indicator SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  DELETE FROM service WHERE id = from_service_uuid;
 END $$
 
 /*

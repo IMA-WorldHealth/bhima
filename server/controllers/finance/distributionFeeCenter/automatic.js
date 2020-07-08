@@ -13,11 +13,11 @@ async function automatic(req, res, next) {
 
   const sql = `
     SELECT BUID(gl.uuid) AS row_uuid, gl.trans_id, gl.debit_equiv, gl.credit_equiv, gl.account_id,
-      gl.record_uuid, sfc.fee_center_id, iv.description, iv.service_id, s.name AS serviceName
+      gl.record_uuid, sfc.fee_center_id, iv.description, iv.service_uuid, s.name AS serviceName
     FROM general_ledger AS gl
     JOIN invoice AS iv ON iv.uuid = gl.record_uuid
-    JOIN service AS s ON s.id = iv.service_id
-    JOIN service_fee_center AS sfc ON sfc.service_id = s.id
+    JOIN service AS s ON s.uuid = iv.service_uuid
+    JOIN service_fee_center AS sfc ON sfc.service_uuid = s.uuid
     WHERE gl.uuid IN (?)
   `;
 

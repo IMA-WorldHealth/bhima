@@ -61,7 +61,7 @@ const filters = [{
   field : 'invoice_uuid',
   displayName : 'FORM.LABELS.INVOICE',
 }, {
-  field : 'service_id',
+  field : 'service_uuid',
   displayName : 'FORM.LABELS.SERVICE',
 }, {
   field : 'inventory_uuid',

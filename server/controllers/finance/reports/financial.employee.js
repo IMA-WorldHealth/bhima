@@ -11,8 +11,8 @@ const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 
 const Employee = require('../../payroll/employees');
-const Creditors = require('../../finance/creditors');
-const Debtors = require('../../finance/debtors');
+const Creditors = require('../creditors');
+const Debtors = require('../debtors');
 const db = require('../../../lib/db');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';

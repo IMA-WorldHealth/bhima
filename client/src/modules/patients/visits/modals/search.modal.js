@@ -14,7 +14,7 @@ function AdmissionRegistryModalController(ModalInstance, filters, Store, util, P
 
   const searchQueryOptions = [
     'display_name', 'hospital_no', 'reference', 'start_date', 'end_date',
-    'ward_name', 'room_label', 'bed_label', 'hospitalized', 'service_id',
+    'ward_name', 'room_label', 'bed_label', 'hospitalized', 'service_uuid',
     'is_pregnant', 'inside_health_zone', 'is_refered', 'is_new_case',
   ];
 
@@ -56,8 +56,8 @@ function AdmissionRegistryModalController(ModalInstance, filters, Store, util, P
   };
 
   vm.onSelectService = service => {
-    vm.searchQueries.service_id = service.id;
-    displayValues.service_id = service.name;
+    vm.searchQueries.service_uuid = service.uuid;
+    displayValues.service_uuid = service.name;
   };
 
   // default filter limit - directly write to changes list

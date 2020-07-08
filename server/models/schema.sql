@@ -502,7 +502,7 @@ CREATE TABLE `employee` (
   `bank`          VARCHAR(30) DEFAULT NULL,
   `bank_account`  VARCHAR(30) DEFAULT NULL,
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
-  `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
+  `service_uuid`  BINARY(16) DEFAULT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
@@ -512,12 +512,12 @@ CREATE TABLE `employee` (
   UNIQUE KEY `employee_1` (`code`),
   UNIQUE KEY `employee_2` (`patient_uuid`),
   KEY `fonction_id` (`fonction_id`),
-  KEY `service_id` (`service_id`),
+  KEY `service_uuid` (`service_uuid`),
   KEY `creditor_uuid` (`creditor_uuid`),
   KEY `grade_uuid` (`grade_uuid`),
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
-  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
+  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
   FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
@@ -1101,7 +1101,7 @@ CREATE TABLE `patient_visit` (
   `end_diagnosis_id` INT(10) UNSIGNED,
   `hospitalized` TINYINT(1) NOT NULL DEFAULT 0,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `last_service_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `last_service_uuid` BINARY(16) NOT NULL,
   `discharge_type_id` SMALLINT(5) UNSIGNED NULL,
   `inside_health_zone` TINYINT(1),
   `is_pregnant` TINYINT(1) DEFAULT 0,
@@ -1113,7 +1113,7 @@ CREATE TABLE `patient_visit` (
   KEY `user_id` (`user_id`),
   KEY `start_diagnosis_id` (`start_diagnosis_id`),
   KEY `end_diagnosis_id` (`end_diagnosis_id`),
-  KEY `last_service_id` (`last_service_id`),
+  KEY `last_service_uuid` (`last_service_uuid`),
   KEY `discharge_type_id` (`discharge_type_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1126,11 +1126,11 @@ CREATE TABLE `patient_visit_service` (
   `uuid`               BINARY(16) NOT NULL,
   `date`               DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `patient_visit_uuid` BINARY(16) NOT NULL,
-  `service_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `service_uuid`       BINARY(16) NOT NULL,
   `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`uuid`),
    FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
-   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE
+   FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_hospitalization`;
@@ -1479,7 +1479,7 @@ CREATE TABLE `invoice` (
   `uuid`                BINARY(16) NOT NULL,
   `cost`                DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0,
   `debtor_uuid`         BINARY(16) NOT NULL,
-  `service_id`          SMALLINT(5) UNSIGNED DEFAULT NULL,
+  `service_uuid`        BINARY(16) DEFAULT NULL,
   `user_id`             SMALLINT(5) UNSIGNED NOT NULL,
   `date`                DATETIME NOT NULL,
   `description`         TEXT NOT NULL,
@@ -1492,11 +1492,11 @@ CREATE TABLE `invoice` (
   KEY `reference` (`reference`),
   KEY `project_id` (`project_id`),
   KEY `debtor_uuid` (`debtor_uuid`),
-  KEY `service_id` (`service_id`),
+  KEY `service_uuid` (`service_uuid`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
+  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -1580,14 +1580,12 @@ CREATE TABLE `sector` (
 
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
-  `id` SMALLINT(5) UNSIGNED not null auto_increment,
-  `uuid` BINARY(16) NULL,
+  `uuid`  BINARY(16) NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `hidden` TINYINT(1) DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `service_0` (`uuid`),
+  PRIMARY KEY (`uuid`),
   UNIQUE KEY `service_1` (`name`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`)
@@ -1598,10 +1596,10 @@ CREATE TABLE `ward`(
  `uuid` BINARY(16) NOT NULL,
  `name` VARCHAR(100) NOT NULL,
  `description` text NULL,
- `service_id` SMALLINT(5) UNSIGNED NULL,
+ `service_uuid` BINARY(16) NULL,
   PRIMARY KEY(`uuid`),
   KEY `name_1` (`name`),
-  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
+  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `room_type`;
@@ -2175,12 +2173,12 @@ DROP TABLE IF EXISTS `service_fee_center`;
 CREATE TABLE `service_fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `service_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `service_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `service_fee_center_1` (`service_id`),
+  UNIQUE KEY `service_fee_center_1` (`service_uuid`),
   KEY `fee_center_id` (`fee_center_id`),
-  KEY `service_id` (`service_id`),
-  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
+  KEY `service_uuid` (`service_uuid`),
+  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
   FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -2234,14 +2232,14 @@ CREATE TABLE `indicator_type` (
 DROP TABLE IF EXISTS `indicator`;
 CREATE TABLE `indicator` (
   `uuid` BINARY(16) NOT NULL,
-  `service_id`SMALLINT(5) UNSIGNED NULL,
+  `service_uuid` BINARY(16) NULL,
   `status_id` SMALLINT(5) UNSIGNED NOT NULL,
   `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `type_id` SMALLINT(5) UNSIGNED NOT NULL,
   `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `unique_indicator_1` (`service_id`, `period_id`),
+  UNIQUE KEY `unique_indicator_1` (`service_uuid`, `period_id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE,

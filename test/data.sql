@@ -18,11 +18,15 @@ INSERT INTO `project` VALUES
   (2, 'Test Project B', 'TPB', 1, 2, 0),
   (3, 'Test Project C', 'TPC', 1, 2, 0);
 
+SET @testService = HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e');
+SET @adminService = HUID('b1816006-5558-45f9-93a0-c222b5efa6cb');
+SET @medicineInterneService = HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac');
+
 -- Services
-INSERT INTO `service`(id, uuid, enterprise_id, project_id, name) VALUES
-  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 1, 'Test Service'),
-  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 1, 'Administration'),
-  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 1, 'Medecine Interne');
+INSERT INTO `service` (uuid, enterprise_id, project_id, name) VALUES
+  (@testService, 1, 1, 'Test Service'),
+  (@adminService, 1, 1, 'Administration'),
+  (@medicineInterneService, 1, 1, 'Medecine Interne');
 
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `created`, `reference_id`) VALUES
@@ -2783,9 +2787,9 @@ INSERT INTO `patient` VALUES
   (HUID('0f2ddc0e-686b-47c0-ad80-989671aa9f1f'), 1, 5, HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), 'Bad Patient Doublon', '2017-08-24 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1110', '', 1, '2015-11-14 07:04:49', NULL, NULL);
 
 -- Patient Visits
-INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_id`) VALUES
-  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1),
-  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1);
+INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_uuid`) VALUES
+  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, @testService),
+  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, @testService);
 
 INSERT INTO `patient_assignment` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65')),
@@ -2833,9 +2837,9 @@ INSERT INTO `reference` VALUES
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
   (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
 
-INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_id`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
-  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'), NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
-  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, 1, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 0);
+INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
+  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB','1201-3456-5423-03', 1, @medicineInterneService, HUID('42d3756a-7770-4bb8-a899-7953cd859892'), NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
+  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, @testService, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 0);
 
 -- invoicing fee configuration
 
@@ -2871,11 +2875,11 @@ SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
 SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
 SET @fourth_invoice = HUID('8460def8-b1b1-11e8-92f9-c3fddff20f76');
 
-INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
-  (1, @first_invoice, 75.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, NOW(), 'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
-  (1, @second_invoice, 25.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-07 14:34:35', 'TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-07 14:31:14'),
-  (1, @third_invoice, 5.1300, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-02 09:34:35', 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-02 09:31:14'),
-  (1, @fourth_invoice, 10, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 3, 1, '2016-01-02 11:54:00', 'Facture a Test Patient 2 pour 10$', '2016-01-02 11:54:00');
+INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_uuid, user_id, date, description, created_at) VALUES
+  (1, @first_invoice, 75.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), @testService, 1, NOW(), 'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
+  (1, @second_invoice, 25.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'),@testService, 1, '2016-01-07 14:34:35', 'TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-07 14:31:14'),
+  (1, @third_invoice, 5.1300, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), @testService,  1, '2016-01-02 09:34:35', 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-02 09:31:14'),
+  (1, @fourth_invoice, 10, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), @medicineInterneService, 1, '2016-01-02 11:54:00', 'Facture a Test Patient 2 pour 10$', '2016-01-02 11:54:00');
 
 -- inventory items to use in invoice
 SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');
@@ -3197,15 +3201,15 @@ INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id
   (0xF77740B0DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 182, 0.0000, 100.0000, 0.0000, 100.0000, 2, NULL, NULL, NULL, 1, 1, '2018-11-01 09:42:17', NULL);
 
 -- INVOICE FOR DISTRIBUTION FEE CENTER
-INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_id`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`) VALUES
-  (1, 0x79B0393553C54498A5ECA8CA6DFEA7AC, 256.6200, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 3, 1, '2018-11-05 10:26:05', 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 0, 0, '2018-11-05 10:26:32');
+INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_uuid`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`) VALUES
+  (1, 0x79B0393553C54498A5ECA8CA6DFEA7AC, 256.6200, 0x3BE232F9A4B94AF6984C5D3F87D5C107, @medicineInterneService, 1, '2018-11-05 10:26:05', 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 0, 0, '2018-11-05 10:26:32');
 
 INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) VALUES
   (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0x3B456F6FAA594CE5BD80C91647EB6CF9, @multivitamine, 100, 1.9000, 1.9000, 0.0000, 190.0000),
   (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, @prednisone, 40, 5.1200, 5.1200, 0.0000, 204.8000);
 
 -- SERVICE FEE CENTER
-INSERT INTO `service_fee_center` (`id`, `fee_center_id`, `service_id`) VALUES (1, 2, 3);
+INSERT INTO `service_fee_center` (`id`, `fee_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
@@ -3266,9 +3270,9 @@ INSERT INTO room_type VALUES
 -- default wards for test
 SET @ward1 = HUID('f5a72649-26c9-4f5d-bffa-098207a7f24d');
 SET @ward2 = HUID('f4ce5f9f-edd3-4bd2-9b9c-43b116c02747');
-INSERT INTO ward VALUES
-  (@ward1, 'Pavillon A', 'Test pavillon A', 1),
-  (@ward2, 'Pavillon B', 'Test pavillon B', 2);
+INSERT INTO ward (uuid, name, description, service_uuid) VALUES
+  (@ward1, 'Pavillon A', 'Test pavillon A', @testService),
+  (@ward2, 'Pavillon B', 'Test pavillon B', @adminService);
 
 -- default rooms for tests
 INSERT INTO room VALUES

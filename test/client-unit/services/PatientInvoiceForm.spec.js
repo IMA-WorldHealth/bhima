@@ -1,3 +1,5 @@
+/* global inject, expect, chai */
+/* eslint no-unused-expressions:off */
 describe('PatientInvoiceForm', () => {
   let PatientInvoiceForm;
   let httpBackend;
@@ -16,10 +18,15 @@ describe('PatientInvoiceForm', () => {
     'ngStorage',
     'pascalprecht.translate',
     'tmh.dynamicLocale',
-    'bhima.mocks'
+    'bhima.mocks',
   ));
 
-  beforeEach(inject((_PatientInvoiceForm_, $httpBackend, _SessionService_, _MockDataService_, _$document_, _$timeout_) => {
+  beforeEach(inject((
+    _PatientInvoiceForm_,
+    $httpBackend, _SessionService_,
+    _MockDataService_, _$document_,
+    _$timeout_,
+  ) => {
     PatientInvoiceForm = _PatientInvoiceForm_;
     Session = _SessionService_;
     Mocks = _MockDataService_;
@@ -104,7 +111,7 @@ describe('PatientInvoiceForm', () => {
 
   it('#constructor() sets the default service on startup', () => {
     const [service] = Mocks.services();
-    expect(form.details.service_id).to.equal(service.id);
+    expect(form.details.service_uuid).to.equal(service.uuid);
   });
 
   it('#setPatient() sets the patient and downloads relevant data', () => {

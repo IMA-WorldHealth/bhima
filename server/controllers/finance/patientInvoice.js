@@ -81,7 +81,6 @@ function balance(req, res, next) {
     .done();
 }
 
-
 /**
  * @method lookupInvoice
  *
@@ -99,12 +98,12 @@ function lookupInvoice(invoiceUuid) {
       BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}',
       project.abbr, invoice.reference) AS reference, invoice.cost,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
-      patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
-      invoice.user_id, invoice.date, invoice.created_at, user.display_name, invoice.service_id,
+      patient.display_name AS debtor_name, BUID(patient.uuid) as patient_uuid,
+      invoice.user_id, invoice.date, invoice.created_at, user.display_name, BUID(invoice.service_uuid) AS service_uuid,
       service.name AS serviceName, enterprise.currency_id
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
-    JOIN service ON invoice.service_id = service.id
+    JOIN service ON invoice.service_uuid = service.uuid
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
@@ -219,7 +218,7 @@ function create(req, res, next) {
 function find(options) {
   // ensure expected options are parsed as binary
   db.convert(options, [
-    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid', 'uuid',
+    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid', 'uuid', 'service_uuid',
   ]);
 
   const filters = new FilterParser(options, { tableAlias : 'invoice' });
@@ -245,7 +244,7 @@ function find(options) {
     JOIN project AS proj ON proj.id = invoice.project_id
     JOIN entity_map AS em ON em.uuid = patient.uuid
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
-    JOIN service ON service.id = invoice.service_id
+    JOIN service ON service.uuid = invoice.service_uuid
     JOIN user ON user.id = invoice.user_id
   `;
 
@@ -256,7 +255,7 @@ function find(options) {
   filters.equals('patientUuid', 'uuid', 'patient');
   filters.equals('project_id');
   filters.equals('reversed');
-  filters.equals('service_id');
+  filters.equals('service_uuid');
   filters.equals('user_id');
   filters.equals('uuid');
 
@@ -267,12 +266,12 @@ function find(options) {
 
   filters.custom(
     'cash_uuid',
-    'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = ?)'
+    'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = ?)',
   );
 
   filters.custom(
     'inventory_uuid',
-    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)'
+    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)',
   );
 
   filters.period('period', 'date');

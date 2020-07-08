@@ -15,8 +15,6 @@ const TEMPLATE = './server/controllers/finance/reports/realized_profit/report.ha
 
 const DEFAULT_OPTIONS = {
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
 };
 
 /**
@@ -41,19 +39,19 @@ async function report(req, res, next) {
     const CONVENTION_TRANSACTION_TYPE = 3;
 
     const normalPayment = `
-      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger 
+      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger
       WHERE transaction_type_id = ${CASH_PAYMENT_TRANSACTION_TYPE}
       GROUP BY reference_uuid
     `;
 
     const cautionPayment = `
-      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger 
+      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger
       WHERE transaction_type_id = ${CAUTION_TRANSACTION_TYPE}
       GROUP BY reference_uuid
     `;
 
     const conventionPayment = `
-      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger 
+      SELECT reference_uuid, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS paid FROM general_ledger
       WHERE transaction_type_id = ${CONVENTION_TRANSACTION_TYPE}
       GROUP BY reference_uuid
     `;
@@ -61,35 +59,35 @@ async function report(req, res, next) {
     const globalQuery = `
       SELECT
         c.invoiced, (c.normal_paid + c.caution_paid + c.convention_paid) AS paid,
-        c.debtorGroupName, c.serviceName, c.invoice_uuid, c.service_id, c.debtor_group_uuid
+        c.debtorGroupName, c.serviceName, c.invoice_uuid, BUID(c.service_uuid) AS service_uuid, c.debtor_group_uuid
       FROM (
         SELECT
           SUM(gl.debit_equiv - gl.credit_equiv) AS invoiced,
           IFNULL(z.paid, 0) AS normal_paid, IFNULL(x.paid, 0) AS caution_paid, IFNULL(y.paid, 0) AS convention_paid,
           dg.name debtorGroupName, s.name serviceName,
-          iv.uuid AS invoice_uuid, s.id AS service_id, dg.uuid AS debtor_group_uuid
-        FROM general_ledger gl 
+          iv.uuid AS invoice_uuid, iv.service_uuid, dg.uuid AS debtor_group_uuid
+        FROM general_ledger gl
         JOIN invoice iv ON iv.uuid = gl.record_uuid
-        JOIN service s ON s.id = iv.service_id
+        JOIN service s ON s.uuid = iv.service_uuid
         LEFT JOIN (${normalPayment})z ON z.reference_uuid = iv.uuid
         LEFT JOIN (${cautionPayment})x ON x.reference_uuid = iv.uuid
         LEFT JOIN (${conventionPayment})y ON y.reference_uuid = iv.uuid
         JOIN debtor d ON d.uuid = gl.entity_uuid
         JOIN debtor_group dg ON dg.uuid = d.group_uuid
         WHERE iv.reversed = 0 AND (DATE(gl.trans_date) >= ? AND DATE(gl.trans_date) <= ?)
-        GROUP BY iv.uuid, iv.service_id, dg.uuid
+        GROUP BY iv.uuid, iv.service_uuid, dg.uuid
       )c
     `;
 
     const groupByServiceAndDebtorGroup = `
-      GROUP BY w.service_id, w.debtor_group_uuid 
+      GROUP BY w.service_uuid, w.debtor_group_uuid
     `;
 
     const tableQuery = `
       SELECT
         SUM(w.paid) paid, SUM(w.invoiced) invoiced, SUM(w.invoiced - w.paid) remaining,
-        w.debtorGroupName, w.serviceName, w.service_id, w.debtor_group_uuid 
-      FROM (${globalQuery})w 
+        w.debtorGroupName, w.serviceName, w.service_uuid, w.debtor_group_uuid
+      FROM (${globalQuery})w
     `;
 
     const parameters = [

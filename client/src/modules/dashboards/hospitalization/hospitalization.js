@@ -15,13 +15,13 @@ function HospitalizationDashboardController(IndicatorsDashboard, Notify) {
   vm.onChangeFilter = selected => {
 
     if (selected.service === null) {
-      delete vm.selected.service_id;
+      delete vm.selected.service_uuid;
       delete vm.selected.service;
     }
 
-    if (selected.service && selected.service.id) {
+    if (selected.service && selected.service.uuid) {
       vm.selected.service = selected.service;
-      vm.selected.service_id = selected.service.id;
+      vm.selected.service_uuid = selected.service.uuid;
     }
 
     if (selected.dateFrom) {

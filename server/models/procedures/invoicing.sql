@@ -17,7 +17,7 @@ CREATE PROCEDURE StageInvoice(
   IN date DATETIME,
   IN cost DECIMAL(19, 4) UNSIGNED,
   IN description TEXT,
-  IN service_id SMALLINT(5) UNSIGNED,
+  IN service_uuid BINARY(16),
   IN debtor_uuid BINARY(16),
   IN project_id SMALLINT(5),
   IN user_id SMALLINT(5),
@@ -32,12 +32,12 @@ BEGIN
 
   IF (`no_invoice_stage` = 1) THEN
     CREATE TEMPORARY TABLE stage_invoice (
-      SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date,
+      SELECT project_id, uuid, cost, debtor_uuid, service_uuid, user_id, date,
         description
     );
   ELSE
     INSERT INTO stage_invoice (
-      SELECT project_id, uuid, cost, debtor_uuid, service_id, user_id, date,
+      SELECT project_id, uuid, cost, debtor_uuid, service_uuid, user_id, date,
         description
     );
   END IF;
@@ -154,7 +154,7 @@ BEGIN
 
   -- invoice details
   INSERT INTO invoice (
-    project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description
+    project_id, uuid, cost, debtor_uuid, service_uuid, user_id, date, description
   )
   SELECT * FROM stage_invoice WHERE stage_invoice.uuid = uuid;
 
@@ -960,11 +960,11 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
       balances.debit_equiv AS debit,
       balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
       dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
-      s.name as 'serviceName', s.id as 'serviceId',
+      s.name as 'serviceName', s.uuid as 'serviceUuid',
       ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage
     FROM tmp_invoices_1 AS iv
         JOIN invoice ivc ON ivc.uuid = iv.uuid
-        JOIN service s On s.id = ivc.service_id
+        JOIN service s On s.uuid = ivc.service_uuid
         JOIN debtor dbt ON ivc.debtor_uuid = dbt.uuid
         JOIN debtor_group dbtg ON dbtg.uuid = dbt.group_uuid
         JOIN project p ON p.id = ivc.project_id

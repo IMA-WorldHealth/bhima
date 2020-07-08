@@ -64,15 +64,15 @@
     });
 
     service.services = () => [{
-      id : 1,
+      uuid : 'B1816006555845F993A0C222B5EFA6CB',
       enterprise_id : 1,
       name : 'Administration',
     }, {
-      id : 2,
+      uuid : 'AFF85BDCD7C64047AFE71724F8CD369E',
       enterprise_id : 1,
       name : 'Surgery',
     }, {
-      id : 2,
+      uuid : 'E3988489EF6641DF88FA8B8ED6AA03AC',
       enterprise_id : 1,
       name : 'Internal Medicine',
     }];

@@ -81,7 +81,7 @@ function lookupBeds(options) {
     FROM bed b
     JOIN room r ON r.uuid = b.room_uuid
     JOIN ward w ON w.uuid = r.ward_uuid
-    LEFT JOIN service s ON s.id = w.service_id
+    LEFT JOIN service s ON s.uuid = w.service_uuid
   `;
 
   const filters = new FilterParser(options);
@@ -105,7 +105,7 @@ function lookupBed(id) {
     FROM bed b
     JOIN room r ON r.uuid = b.room_uuid
     JOIN ward w ON w.uuid = r.ward_uuid
-    LEFT JOIN service s ON s.id = w.service_id
+    LEFT JOIN service s ON s.uuid = w.service_uuid
     WHERE b.id = ?
   `;
   return db.one(sql, [id]);

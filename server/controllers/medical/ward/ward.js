@@ -6,11 +6,11 @@ module.exports.delete = remove;
 module.exports.read = read;
 module.exports.detail = detail;
 
-
 // register a new ward
 function create(req, res, next) {
   const data = req.body;
   data.uuid = db.bid(data.uuid || db.uuid());
+  db.convert(data, ['service_uuid']);
   const sql = 'INSERT INTO ward SET ?';
 
   db.exec(sql, data).then(() => {
@@ -24,6 +24,7 @@ function update(req, res, next) {
   const data = req.body;
   delete data.uuid;
   const uuid = db.bid(req.params.uuid);
+  db.convert(data, ['service_uuid']);
   const sql = `UPDATE ward SET ? WHERE uuid =?`;
 
   db.exec(sql, [data, uuid]).then(() => {
@@ -46,13 +47,13 @@ function remove(req, res, next) {
 // get all wards
 function read(req, res, next) {
   const sql = `
-    SELECT BUID(w.uuid) as uuid, w.name, 
-      w.description, w.service_id,
+    SELECT BUID(w.uuid) as uuid, w.name,
+      w.description, BUID(w.service_uuid) as service_uuid,
       s.name as serviceName,
       (SELECT COUNT(*) FROM room WHERE room.ward_uuid = w.uuid) AS nb_rooms,
       (SELECT COUNT(*) FROM bed JOIN room ir ON ir.uuid = bed.room_uuid WHERE ir.ward_uuid = w.uuid) AS nb_beds
     FROM ward w
-    LEFT JOIN service s ON s.id = w.service_id
+    LEFT JOIN service s ON s.uuid = w.service_uuid
   `;
 
   db.exec(sql).then(wards => {
@@ -64,7 +65,7 @@ function read(req, res, next) {
 // get a specific ward
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, name, description, service_id
+    SELECT BUID(uuid) as uuid, name, description, BUID(service_uuid) as service_uuid
     FROM ward
     WHERE uuid=?
   `;

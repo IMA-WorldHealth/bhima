@@ -89,8 +89,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor <option> element
    */
-  select : function select(model, option, anchor) {
-    anchor = anchor || $('body');
+  select : function select(model, option, anchor = $('body')) {
     const select = anchor.element(by.model(model));
     const choice = select.element(by.cssContainingText('option', option));
     return choice.click();

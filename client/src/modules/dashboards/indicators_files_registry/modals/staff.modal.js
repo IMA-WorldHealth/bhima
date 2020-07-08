@@ -107,7 +107,7 @@ function StaffModalController(
   function checkDuplicated() {
     return IndicatorsDashboard.indicatorsFiles.read(null, {
       period_id : vm.file.period_id,
-      service_id : vm.file.service_id,
+      service_uuid : vm.file.service_uuid,
       type_id : vm.file.type_id,
     }).then(rows => {
       return rows.length > 0;

@@ -97,7 +97,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
        sex : 'F',
        dob : '1960-06-29T22:00:00.000Z',
        date_embauche : '2016-01-01T00:00:00.000Z',
-       service_id : 1,
+       service_uuid : 1,
        nb_spouse : 0,
        nb_enfant : 0,
        grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',

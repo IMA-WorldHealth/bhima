@@ -9,7 +9,9 @@ module.exports.detail = detail;
 function create(req, res, next) {
   const { indicator, hospitalization } = req.body;
 
-  indicator.uuid = indicator.uuid ? db.bid(indicator.uuid) : db.bid(uuid());
+  db.convert(indicator, ['uuid', 'service_uuid']);
+
+  indicator.uuid = indicator.uuid ? indicator.uuid : db.bid(uuid());
   indicator.user_id = req.session.user.id;
 
   hospitalization.uuid = hospitalization.uuid ? db.bid(hospitalization.uuid) : db.bid(uuid());
@@ -27,10 +29,10 @@ function create(req, res, next) {
   }).catch(next);
 }
 
-
 function update(req, res, next) {
   const { indicator, hospitalization } = req.body;
-  db.convert(hospitalization, ['indicator_uuid']);
+  db.convert(hospitalization, ['indicator_uuid', 'service_uuid']);
+  db.convert(indicator, ['service_uuid']);
   const _uuid = db.bid(req.params.uuid);
   delete hospitalization.uuid;
   delete indicator.uuid;
@@ -46,7 +48,6 @@ function update(req, res, next) {
     res.sendStatus(200);
   }).catch(next);
 }
-
 
 function remove(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
@@ -66,18 +67,17 @@ function remove(req, res, next) {
   }).catch(next);
 }
 
-
 async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
 
   const query = `
-    SELECT 
-      BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id, i.service_id,
+    SELECT
+      BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id, BUID(i.service_uuid) as service_uuid,
       hi.total_day_realized, hi.total_beds, hi.total_external_patient,
       hi.total_hospitalized_patient, hi.total_death, s.name as service_name,
       p.fiscal_year_id
     FROM indicator i
-    JOIN service s ON s.id = i.service_id
+    JOIN service s ON s.uuid = i.service_uuid
     JOIN period p ON p.id = i.period_id
     JOIN hospitalization_indicator hi ON hi.indicator_uuid = i.uuid
     WHERE i.uuid = ?

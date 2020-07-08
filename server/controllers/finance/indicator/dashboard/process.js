@@ -10,7 +10,7 @@ exports.processPeriodicIndicators = processPeriodicIndicators;
 /**
  * @function processIndicators
  * @description this function helps to calculate all indicators
- * @param {object} options - may contain date_start, date_end, service_id
+ * @param {object} options - may contain date_start, date_end, service_uuid
  * @returns {array}
  */
 async function processIndicators(options) {

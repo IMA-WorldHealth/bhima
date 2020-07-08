@@ -9,14 +9,8 @@ ServiceModalController.$inject = [
 function ServiceModalController($state, Services, Depots, $translate,
   SessionService, ModalService, util, Notify) {
   const vm = this;
-  const paramService = $state.params.service || {};
+  vm.service = { ...$state.params.service };
 
-  vm.service = {
-    id : paramService.id,
-    name : paramService.name,
-    hidden : paramService.hidden,
-    project_id : paramService.project_id,
-  };
   vm.isCreating = !!($state.params.creating);
 
   // exposed methods
@@ -33,7 +27,7 @@ function ServiceModalController($state, Services, Depots, $translate,
 
     const promise = (vm.isCreating)
       ? Services.create(vm.service)
-      : Services.update(vm.service.id, vm.service);
+      : Services.update(vm.service.uuid, vm.service);
 
     return promise
       .then(() => {

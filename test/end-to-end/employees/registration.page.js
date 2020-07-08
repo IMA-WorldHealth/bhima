@@ -55,7 +55,7 @@ class RegistrationPage {
 
   // set service
   setService(service) {
-    return FU.uiSelect('EmployeeCtrl.employee.service_id', service);
+    return FU.uiSelect('EmployeeCtrl.employee.service_uuid', service);
   }
 
   // set grade
@@ -158,7 +158,7 @@ class RegistrationPage {
     await FU.validation.ok('EmployeeCtrl.employee.email');
     await FU.validation.ok('EmployeeCtrl.employee.bank');
     await FU.validation.ok('EmployeeCtrl.employee.bank_account');
-    await FU.validation.ok('EmployeeCtrl.employee.service_id');
+    await FU.validation.ok('EmployeeCtrl.employee.service_uuid');
     await FU.validation.ok('EmployeeCtrl.employee.fonction_id');
     await FU.validation.ok('EmployeeCtrl.employee.adresse');
   }
