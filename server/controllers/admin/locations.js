@@ -560,7 +560,7 @@ exports.merge = (req, res, next) => {
       UPDATE province SET country_uuid = ? WHERE country_uuid = ?;`;
 
     const removeOtherCountry = `
-      DELETE FROM country WHERE uuid IN (?);`;
+      DELETE FROM country WHERE uuid = ?;`;
 
     transaction
       .addQuery(replaceCountryInProvince, [db.bid(selected), db.bid(other)])
@@ -571,7 +571,7 @@ exports.merge = (req, res, next) => {
       UPDATE sector SET province_uuid = ? WHERE province_uuid = ?;`;
 
     const removeOtherProvince = `
-      DELETE FROM province WHERE uuid IN (?);`;
+      DELETE FROM province WHERE uuid = ?;`;
 
     transaction
       .addQuery(replaceProvinceInSector, [db.bid(selected), db.bid(other)])
@@ -582,7 +582,7 @@ exports.merge = (req, res, next) => {
       UPDATE village SET sector_uuid = ? WHERE sector_uuid = ?;`;
 
     const removeOtherSector = `
-      DELETE FROM sector WHERE uuid IN (?);`;
+      DELETE FROM sector WHERE uuid = ?;`;
 
     transaction
       .addQuery(replaceSectorInVillage, [db.bid(selected), db.bid(other)])
@@ -605,7 +605,7 @@ exports.merge = (req, res, next) => {
       UPDATE patient SET origin_location_id = ? WHERE origin_location_id = ?;`;
 
     const removeOtherVillage = `
-      DELETE FROM village WHERE uuid IN (?);`;
+      DELETE FROM village WHERE uuid = ?;`;
 
     transaction
       .addQuery(replaceVillageInDebtorGroup, [db.bid(selected), db.bid(other)])
