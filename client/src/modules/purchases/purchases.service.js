@@ -39,6 +39,7 @@ function PurchaseOrderService(
   purchaseFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   purchaseFilters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'supplier_uuid', label : 'FORM.LABELS.SUPPLIER' },

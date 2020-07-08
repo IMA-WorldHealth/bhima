@@ -6,7 +6,7 @@ InventoryListController.$inject = [
   'InventoryService', 'NotifyService', 'uiGridConstants',
   'ModalService', '$state', 'FilterService', 'appcache',
   'GridColumnService', 'GridStateService', 'GridExportService',
-  'LanguageService', 'SessionService', '$rootScope',
+  'LanguageService', 'SessionService', '$rootScope'
 ];
 
 /**
@@ -15,7 +15,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session, $rootScope,
+  GridExport, Languages, Session, $rootScope
 ) {
 
   const vm = this;

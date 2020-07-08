@@ -44,6 +44,14 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
+
+            <li role="separator" class="divider" bh-require-enterprise-setting="barcodes"></li>
+            <li role="menuitem" bh-require-enterprise-setting="barcodes">
+              <a href ng-click="PurchaseListCtrl.openBarcodeScanner()" data-action="scan-barcode">
+                <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN</span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </div>

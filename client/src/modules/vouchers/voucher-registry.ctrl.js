@@ -5,7 +5,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
-  'SessionService', 'BarcodeService',
+  'SessionService', 'BarcodeService'
 ];
 
 /**

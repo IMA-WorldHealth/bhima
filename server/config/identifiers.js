@@ -65,7 +65,7 @@ module.exports = {
   },
   PURCHASE_ORDER : {
     key   : 'PO',
-    table : 'purchase_order',
+    table : 'purchase',
   },
   DONATION : {
     key   : 'DON',
