@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SearchPurchaseOrderModalController.$inject = [
   '$uibModalInstance', 'params', 'Store', 'util', 'PeriodService',
-  'NotifyService', 'PurchaseOrderService', '$translate',
+  'NotifyService', 'PurchaseOrderService', '$translate', 'SearchModalUtilService',
 ];
 
 /**
@@ -16,7 +16,7 @@ SearchPurchaseOrderModalController.$inject = [
  */
 function SearchPurchaseOrderModalController(
   ModalInstance, params, Store, util, Periods, Notify, PurchaseOrder,
-  $translate,
+  $translate, SearchModal,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
@@ -77,7 +77,6 @@ function SearchPurchaseOrderModalController(
     vm.searchQueries.supplier_uuid = supplier.uuid;
   };
 
-
   vm.onPurchaseStatusChange = function onPurchaseStatusChange(purchaseStatus) {
     vm.searchQueries.status_id = purchaseStatus;
     let statusText = '/';
@@ -112,18 +111,7 @@ function SearchPurchaseOrderModalController(
 
   // returns the parameters to the parent controller
   function submit() {
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the Purchase Order Registry Controller
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return ModalInstance.close(loggedChanges);
   }
 

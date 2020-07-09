@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 JournalSearchModalController.$inject = [
   '$uibModalInstance', 'NotifyService', 'Store', 'filters', 'options',
   'PeriodService', '$translate', 'util', 'TransactionTypeService',
-  'JournalService',
+  'JournalService', 'SearchModalUtilService',
 ];
 
 function JournalSearchModalController(
   Instance, Notify, Store, filters, options, Periods, $translate, util,
-  TransactionTypes, Journal,
+  TransactionTypes, Journal, SearchModal,
 ) {
   const vm = this;
 
@@ -152,18 +152,7 @@ function JournalSearchModalController(
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the JournalController
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return Instance.close(loggedChanges);
   };
 }

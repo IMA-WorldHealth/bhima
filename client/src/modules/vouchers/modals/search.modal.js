@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 VoucherRegistrySearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'PeriodService', 'Store',
-  'util', 'VoucherService', 'TransactionTypeService', '$translate', 'CurrencyService',
+  'util', 'VoucherService', 'TransactionTypeService', '$translate', 'SearchModalUtilService',
 ];
 
 /**
@@ -16,7 +16,7 @@ VoucherRegistrySearchModalController.$inject = [
  */
 function VoucherRegistrySearchModalController(
   ModalInstance, filters, Notify, Periods, Store, util, Vouchers,
-  TransactionTypeService, $translate, Currencies,
+  TransactionTypeService, $translate, SearchModal,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
@@ -34,10 +34,6 @@ function VoucherRegistrySearchModalController(
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  // keep track of the initial search queries to make sure we properly restore
-  // default display values
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
@@ -119,26 +115,8 @@ function VoucherRegistrySearchModalController(
       vm.clear('type_ids');
     }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (_value, _key) => {
-      if (angular.isDefined(_value)) {
-
-        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
-        // If so, we do not use the previous display value.  If the values are identical, we can restore the
-        // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue = angular.equals(initialSearchQueries[_key], _value)
-          && angular.isDefined(lastDisplayValues[_key]);
-
-        // default to the raw value if no display value is defined
-        const _displayValue = usePreviousDisplayValue ? lastDisplayValues[_key] : displayValues[_key] || _value;
-        changes.post({ key : _key, value : _value, displayValue : _displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the voucher controller
-    ModalInstance.close(loggedChanges);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
   };
 
 }

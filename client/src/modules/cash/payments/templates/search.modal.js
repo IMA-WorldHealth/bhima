@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('SearchCashPaymentModalController', SearchCashPaymentModalController);
 
 SearchCashPaymentModalController.$inject = [
-  'NotifyService', '$uibModalInstance', 'filters', 'Store', 'PeriodService',
-  'util', 'CashService',
+  '$uibModalInstance', 'filters', 'Store', 'PeriodService',
+  'util', 'CashService', 'SearchModalUtilService',
 ];
 
 /**
@@ -14,7 +14,7 @@ SearchCashPaymentModalController.$inject = [
  * POJO and are attached to the view.  They are modified here and returned to the parent controller
  * as a POJO.
  */
-function SearchCashPaymentModalController(Notify, Instance, filters, Store, Periods, util, Cash) {
+function SearchCashPaymentModalController(Instance, filters, Store, Periods, util, Cash, SearchModal) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -32,10 +32,6 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  // keep track of the initial search queries to make sure we properly restore
-  // default display values
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // assign default filters
   if (filters.limit) {
@@ -103,26 +99,7 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit() {
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-
-        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
-        // If so, we do not use the previous display value.  If the values are identical, we can restore the
-        // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
-          && angular.isDefined(lastDisplayValues[key]);
-
-        // default to the raw value if no display value is defined
-        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
-
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the CashController
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return Instance.close(loggedChanges);
   };
 }

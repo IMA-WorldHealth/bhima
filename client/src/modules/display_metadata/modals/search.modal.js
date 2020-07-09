@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DisplayMetadataSearchModalController.$inject = [
   '$uibModalInstance', 'Store', 'SurveyFormService', 'NotifyService', 'AppCache',
-  'ChoicesListManagementService', 'filters',
+  'ChoicesListManagementService', 'filters', 'SearchModalUtilService',
 ];
 
 /**
@@ -15,8 +15,8 @@ DisplayMetadataSearchModalController.$inject = [
  * preset by passing in a filters object using filtersProvider().
  */
 function DisplayMetadataSearchModalController(
-  ModalInstance, Store, SurveyForm, Notify, AppCache, ChoicesList, filters
-
+  ModalInstance, Store, SurveyForm, Notify, AppCache, ChoicesList, filters,
+  SearchModal,
 ) {
   const vm = this;
   vm.onSelectSurveyForm = onSelectSurveyForm;
@@ -77,18 +77,9 @@ function DisplayMetadataSearchModalController(
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-    let _displayValue;
     if (form.$invalid) { return 0; }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (_value, _key) => {
-      if (angular.isDefined(_value)) {
-
-        // default to the original value if no display value is defined
-        _displayValue = displayValues[_key] || lastValues[_key];
-        changes.post({ key : _key, value : _value, displayValue : _displayValue });
-      }
-    });
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastValues);
 
     const multipleChoiceLength = Object.keys(vm.multipleChoice).length;
     if (multipleChoiceLength) {
@@ -104,7 +95,7 @@ function DisplayMetadataSearchModalController(
     }
 
     const allChanges = {
-      loggedChanges : changes.getAll(),
+      loggedChanges,
       collectorId : vm.searchQueries.data_collector_id,
       includePatientData : vm.include_patient_data,
       searchDateFrom : vm.searchDateFrom,
