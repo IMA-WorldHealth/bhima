@@ -91,7 +91,8 @@ function SearchIndicatorsFilesModalController(
 
   // returns the parameters to the parent controller
   function submit() {
-    return SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
   }
 
   function clear(...value) {

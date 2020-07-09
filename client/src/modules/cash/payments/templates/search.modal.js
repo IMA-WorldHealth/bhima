@@ -99,6 +99,7 @@ function SearchCashPaymentModalController(Instance, filters, Store, Periods, uti
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit() {
-    return SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return Instance.close(loggedChanges);
   };
 }

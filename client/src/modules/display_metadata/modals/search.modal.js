@@ -79,7 +79,7 @@ function DisplayMetadataSearchModalController(
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
 
-    SearchModal.applyChanges(vm.searchQueries, changes, displayValues, lastValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastValues);
 
     const multipleChoiceLength = Object.keys(vm.multipleChoice).length;
     if (multipleChoiceLength) {
@@ -95,7 +95,7 @@ function DisplayMetadataSearchModalController(
     }
 
     const allChanges = {
-      loggedChanges : changes.getAll(),
+      loggedChanges,
       collectorId : vm.searchQueries.data_collector_id,
       includePatientData : vm.include_patient_data,
       searchDateFrom : vm.searchDateFrom,

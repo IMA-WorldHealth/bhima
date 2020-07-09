@@ -79,7 +79,8 @@ function ReferenceSearchModalController(
       displayValues.number = null;
     }
 
-    return SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
   }
 
   // dismiss the modal

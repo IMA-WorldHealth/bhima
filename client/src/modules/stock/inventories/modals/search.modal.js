@@ -96,7 +96,8 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
       displayValues.status = Stock.statusLabelMap(vm.searchQueries.status);
     }
 
-    return SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return Instance.close(loggedChanges);
   };
 
 }

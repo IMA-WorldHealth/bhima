@@ -152,6 +152,7 @@ function JournalSearchModalController(
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
 
-    return SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return Instance.close(loggedChanges);
   };
 }

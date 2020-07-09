@@ -58,6 +58,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.cancel = Instance.dismiss;
 
   vm.submit = function submit() {
-    return SearchModal.submit(Instance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return Instance.close(loggedChanges);
   };
 }

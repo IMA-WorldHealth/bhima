@@ -115,7 +115,8 @@ function VoucherRegistrySearchModalController(
       vm.clear('type_ids');
     }
 
-    return SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
   };
 
 }

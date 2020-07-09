@@ -93,7 +93,8 @@ function InvoiceRegistrySearchModalController(
   };
 
   // returns the filters to the journal to be used to refresh the page
-  vm.submit = () => SearchModal.submit(
-    ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues,
-  );
+  vm.submit = () => {
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
+  };
 }

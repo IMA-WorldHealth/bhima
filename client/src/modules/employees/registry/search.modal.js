@@ -87,9 +87,10 @@ function EmployeeRegistryModalController(ModalInstance, SearchModal, Store, util
 
   // returns the parameters to the parent controller
   function submit(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
-    SearchModal.submit(ModalInstance, vm.searchQueries, changes, displayValues, lastDisplayValues);
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+    return ModalInstance.close(loggedChanges);
   }
 
   // default filter limit - directly write to changes list
