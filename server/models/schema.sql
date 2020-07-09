@@ -1358,7 +1358,6 @@ CREATE TABLE `province` (
   `name` VARCHAR(100) NOT NULL,
   `country_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `province_1` (`name`, `country_uuid`),
   KEY `country_uuid` (`country_uuid`),
   FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1572,7 +1571,6 @@ CREATE TABLE `sector` (
   `name` VARCHAR(80) NOT NULL,
   `province_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `sector_1` (`name`, `province_uuid`),
   KEY `province_id` (`province_uuid`),
   FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1798,7 +1796,6 @@ CREATE TABLE `village` (
   `longitude`   DECIMAL(19, 6) NULL,
   `latitude`    DECIMAL(19, 6) NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
