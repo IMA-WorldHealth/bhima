@@ -44,13 +44,6 @@
       </div>
     </div>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
-        <span translate>FORM.LABELS.CONSUMABLE</span>
-      </label>
-    </div>
-
     <div class="checkbox" ng-if="$ctrl.isUpdateState">
       <label>
         <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.locked">
@@ -74,24 +67,6 @@
       </div>
     </div>
 
-    <!-- default quantity -->
-    <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.default_quantity.$invalid }">
-      <label class="control-label" translate>
-        FORM.LABELS.DEFAULT_QUANTITY
-      </label>
-        <bh-info template="default_quantity.tmpl.html" direction="right"></bh-info>
-      <input class="form-control"
-        type="number"
-        ng-min="1"
-        name="default_quantity"
-        autocomplete="off"
-        ng-model="$ctrl.item.default_quantity"
-        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.QUANTITY' }">
-      <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.group_uuid.$invalid }">
@@ -137,6 +112,33 @@
       <div class="help-block" ng-messages="ActionForm.unit_id.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
+    </div>
+
+    
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="consumable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.consumable">
+        <span translate>FORM.LABELS.CONSUMABLE</span>
+      </label>
+    </div>
+
+        <!-- default quantity -->
+    <div class="form-group"
+        ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.default_quantity.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.DEFAULT_QUANTITY
+        </label>
+          <bh-info template="default_quantity.tmpl.html" direction="right"></bh-info>
+        <input class="form-control"
+          type="number"
+          ng-min="1"
+          name="default_quantity"
+          autocomplete="off"
+          ng-model="$ctrl.item.default_quantity"
+          translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.QUANTITY' }">
+        <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
     </div>
 
     <div class="form-group">
