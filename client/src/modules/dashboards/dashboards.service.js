@@ -58,7 +58,7 @@ function IndicatorsDashboardService(Api, GridRegistryFilterer, $uibModal) {
     delete indicators.fiscal_year_id;
     delete indicators.user_id;
     delete indicators.type_id;
-    delete indicators.service_id;
+    delete indicators.service_uuid;
     delete indicators.period_id;
     delete indicators.status_id;
   }

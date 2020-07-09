@@ -35,6 +35,7 @@ async function stockSheetReport(req, res, next) {
     data.rows = rows.movements;
     data.totals = rows.totals;
     data.result = rows.result;
+    data.dateFrom = options.dateFrom;
     data.dateTo = options.dateTo;
 
     const result = await report.render(data);

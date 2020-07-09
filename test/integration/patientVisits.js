@@ -4,6 +4,7 @@ const helpers = require('./helpers');
 
 describe('(/patients/:uuid/visits) Patient Visits', () => {
 
+  const { services } = helpers.data;
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
   const pregnantUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
   const BASE_VISITS = 1;
@@ -12,7 +13,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     'patient_uuid', 'uuid', 'start_date', 'end_date', 'start_notes',
     'end_notes', 'start_diagnosis_id', 'end_diagnosis_id', 'is_open',
     'user_id', 'username', 'start_diagnosis_code', 'start_diagnosis_label',
-    'hospitalized', 'last_service_id', 'discharge_type_id', 'inside_health_zone',
+    'hospitalized', 'last_service_uuid', 'discharge_type_id', 'inside_health_zone',
     'is_pregnant', 'is_refered', 'is_new_case', 'ward_name', 'room_label', 'bed_label',
     'hospital_no', 'service_name', 'discharge_label', 'duration', 'display_name', 'reference',
   ];
@@ -26,7 +27,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     start_notes : 'This was the start',
     start_diagnosis_id : 1234,
     user_id : 1,
-    service : { id : 1 },
+    service : { uuid : services.test },
   };
 
   const pregnantVisitOptions = {
@@ -39,7 +40,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     is_refered : 1,
     is_new_case : 0,
     inside_health_zone : 1,
-    service : { id : 1 },
+    service : { uuid : services.test },
     bed : { room_uuid : 'A6F9527BA7B44A2C9F4FDD7323BBCF72' },
   };
 
@@ -51,7 +52,6 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
       })
       .catch(helpers.api.handler);
   });
-
 
   it('GET /patients/:uuid/visits?limit={N} limits the results', () => {
     const LIMIT = 1;
@@ -110,7 +110,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
         expect(res.body.uuid).to.equal(lastVisitUuid);
         expect(res.body.start_notes).to.equal(visitOptions.start_notes);
         expect(res.body.is_open).to.equal(1);
-        expect(res.body.last_service_id).to.equal(visitOptions.service.id);
+        expect(res.body.last_service_uuid).to.equal(visitOptions.service.uuid);
 
         // default values
         expect(res.body.is_new_case).to.equal(1);
@@ -131,7 +131,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
         expect(res.body.uuid).to.equal(pregnantLastVisitUuid);
         expect(res.body.start_notes).to.equal(pregnantVisitOptions.start_notes);
         expect(res.body.is_open).to.equal(1);
-        expect(res.body.last_service_id).to.equal(pregnantVisitOptions.service.id);
+        expect(res.body.last_service_uuid).to.equal(pregnantVisitOptions.service.uuid);
 
         // default values
         expect(res.body.is_new_case).to.equal(0);
@@ -185,7 +185,6 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
       })
       .catch(helpers.api.handler);
   });
-
 
   it('GET /patients/visits?is_open=1 should find all open patient visits', () => {
     const NUM_MATCHES = 2;

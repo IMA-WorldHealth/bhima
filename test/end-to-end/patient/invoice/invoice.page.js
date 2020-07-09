@@ -40,12 +40,12 @@ function PatientInvoicePage() {
     );
 
     // select the first enabled service in the list
-    await FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
+    await FU.select('PatientInvoiceCtrl.Invoice.details.service_uuid', 'Administration');
   };
 
   // this exposes the ability to set the service at any time
   page.service = function service(name) {
-    return FU.select('PatientInvoiceCtrl.Invoice.details.service_id', name);
+    return FU.select('PatientInvoiceCtrl.Invoice.details.service_uuid', name);
   };
 
   // try to click the submit button

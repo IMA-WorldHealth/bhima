@@ -244,9 +244,9 @@ exports.configure = function configure(app) {
   app.post('/services', services.create);
   app.get('/services', services.list);
   app.get('/services/count', services.countServiceByProject);
-  app.get('/services/:id', services.detail);
-  app.put('/services/:id', services.update);
-  app.delete('/services/:id', services.remove);
+  app.get('/services/:uuid', services.detail);
+  app.put('/services/:uuid', services.update);
+  app.delete('/services/:uuid', services.remove);
 
   // API for subsidies routes crud
   app.get('/subsidies', subsidies.list);

@@ -31,7 +31,7 @@ async function hospitalization(options) {
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid
       JOIN period p ON p.id = ind.period_id
-      JOIN service s ON s.id = ind.service_id
+      JOIN service s ON s.uuid = ind.service_uuid
     `;
 
     const sqlLastAggregated = `
@@ -43,7 +43,7 @@ async function hospitalization(options) {
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid
       JOIN period p ON p.id = ind.period_id
-      JOIN service s ON s.id = ind.service_id
+      JOIN service s ON s.uuid = ind.service_uuid
     `;
 
     db.convert(options, ['uuid', 'indicator_uuid']);
@@ -227,7 +227,7 @@ function defaultFilters(filters) {
   filters.custom('period_id', 'ind.period_id=?');
   filters.custom('dateFrom', 'DATE(p.start_date) >= DATE(?)');
   filters.custom('dateTo', 'DATE(p.end_date) <= DATE(?)');
-  filters.equals('service_id', 'service_id', 'ind');
+  filters.equals('service_uuid', 'service_uuid', 'ind');
   filters.setOrder('ORDER BY p.start_date DESC');
   return filters;
 }

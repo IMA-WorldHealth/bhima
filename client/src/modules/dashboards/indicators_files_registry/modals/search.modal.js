@@ -18,7 +18,7 @@ function SearchIndicatorsFilesModalController(
   const displayValues = {};
 
   const searchQueryOptions = [
-    'fiscal_year_id', 'period_id', 'type_id', 'status_id', 'service_id', 'user_id',
+    'fiscal_year_id', 'period_id', 'type_id', 'status_id', 'service_uuid', 'user_id',
   ];
 
   vm.filters = filters;
@@ -60,7 +60,7 @@ function SearchIndicatorsFilesModalController(
   };
 
   vm.onSelectService = service => {
-    vm.searchQueries.service_id = service.id;
+    vm.searchQueries.service_uuid = service.uuid;
   };
 
   vm.onSelectType = type => {

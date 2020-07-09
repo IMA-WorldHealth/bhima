@@ -73,7 +73,7 @@ async function reporting(_options, session) {
       COUNT(invoice.uuid) AS numInvoices,
       COUNT(DISTINCT(project_id)) AS numProjects,
       COUNT(DISTINCT(DATE(invoice.date))) AS numDays,
-      COUNT(DISTINCT(invoice.service_id)) AS numServices
+      COUNT(DISTINCT(invoice.service_uuid)) AS numServices
     FROM invoice
     WHERE invoice.uuid IN (?);
   `;

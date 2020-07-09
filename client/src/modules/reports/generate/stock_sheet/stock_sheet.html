@@ -41,8 +41,24 @@
             <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
+          <!-- sort by real movement date -->
+          <bh-yes-no-radios
+            label="SETTINGS.HAVING_DATE_INTERVAL"
+            value="ReportConfigCtrl.hasDateInterval"
+            name="hasDateInterval"
+            help-text="SETTINGS.HAVING_DATE_INTERVAL_HELP_TEXT"
+            on-change-callback="ReportConfigCtrl.changeHavingDateInterval(value)">
+          </bh-yes-no-radios>
+
+          <bh-date-interval
+            ng-if="ReportConfigCtrl.hasDateInterval"
+            date-from="ReportConfigCtrl.reportDetails.dateFrom" 
+            date-to="ReportConfigCtrl.reportDetails.dateTo">
+          </bh-date-interval>
+
           <!-- choose date until  -->
           <bh-date-editor
+            ng-if="!ReportConfigCtrl.hasDateInterval"
             label="FORM.LABELS.UNTIL_DATE"
             date-value="ReportConfigCtrl.reportDetails.dateTo"
             on-change="ReportConfigCtrl.onDateChange(date)"
@@ -53,7 +69,7 @@
           <bh-yes-no-radios
             label="SETTINGS.ORDER_BY_CREATED_AT"
             value="ReportConfigCtrl.reportDetails.orderByCreatedAt"
-			name="orderByCreatedAt"
+            name="orderByCreatedAt"
             help-text="SETTINGS.ORDER_BY_CREATED_AT_HELP_TEXT"
             on-change-callback="ReportConfigCtrl.setOrderByCreatedAt(value)">
           </bh-yes-no-radios>

@@ -11,7 +11,7 @@ describe('(/services) The Service API', () => {
   };
 
   const responseKeys = [
-    'id', 'name', 'enterprise_id', 'hidden', 'project_id', 'project_name',
+    'uuid', 'name', 'enterprise_id', 'hidden', 'project_id', 'project_name',
   ];
 
   it('POST /services adds a services', () => {
@@ -19,8 +19,8 @@ describe('(/services) The Service API', () => {
       .send(newService)
       .then((res) => {
         helpers.api.created(res);
-        newService.id = res.body.id;
-        return agent.get(`/services/${newService.id}`);
+        newService.uuid = res.body.uuid;
+        return agent.get(`/services/${newService.uuid}`);
       })
       .then((res) => {
         expect(res).to.have.status(200);
@@ -37,36 +37,36 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /services/:id returns one services', () => {
-    return agent.get(`/services/${newService.id}`)
+  it('GET /services/:uuid returns one services', () => {
+    return agent.get(`/services/${newService.uuid}`)
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
-        expect(res.body.id).to.be.equal(newService.id);
+        expect(res.body.uuid).to.be.equal(newService.uuid);
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /services/:id updates the newly added services', () => {
+  it('PUT /services/:uuid updates the newly added services', () => {
     const updateInfo = { name : 'other' };
-    return agent.put(`/services/${newService.id}`)
+    return agent.put(`/services/${newService.uuid}`)
       .send(updateInfo)
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        expect(res.body.id).to.equal(newService.id);
+        expect(res.body.uuid).to.equal(newService.uuid);
         expect(res.body.name).to.equal(updateInfo.name);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /services/:id deletes a service', () => {
-    return agent.delete(`/services/${newService.id}`)
+  it('DELETE /services/:uuid deletes a service', () => {
+    return agent.delete(`/services/${newService.uuid}`)
       .then((res) => {
         helpers.api.deleted(res);
-        return agent.get(`/services/${newService.id}`);
+        return agent.get(`/services/${newService.uuid}`);
       })
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -74,7 +74,7 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /services/:id will send back a 404 if the services id does not exist', () => {
+  it('DELETE /services/:uuid will send back a 404 if the services id does not exist', () => {
     return agent.delete('/services/123456789')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -82,7 +82,7 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /services/:id will send back a 404 if the services id is a string', () => {
+  it('DELETE /services/:uuid will send back a 404 if the services id is a string', () => {
     return agent.delete('/services/str')
       .then((res) => {
         helpers.api.errored(res, 404);

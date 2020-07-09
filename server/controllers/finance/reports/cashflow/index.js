@@ -62,7 +62,7 @@ async function reportByService(req, res, next) {
   const tableQuery = `
     cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
       JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-      JOIN service ON service.id = invoice.service_id
+      JOIN service ON service.uuid = invoice.service_uuid
   `;
 
   const whereQuery = `

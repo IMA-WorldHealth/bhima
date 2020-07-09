@@ -114,7 +114,7 @@ function lookupEmployee(uid) {
   const sql = `
     SELECT
       BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
-      patient.dob, employee.date_embauche, employee.service_id,
+      patient.dob, employee.date_embauche, BUID(employee.service_uuid) as service_uuid,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, patient.hospital_no,
@@ -132,7 +132,7 @@ function lookupEmployee(uid) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id
+      LEFT JOIN service ON service.uuid = employee.service_uuid
       LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
     WHERE employee.uuid = ?;
   `;
@@ -191,7 +191,7 @@ function update(req, res, next) {
 
   const employee = db.convert(req.body, [
     'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid',
-    'current_location_id', 'origin_location_id',
+    'current_location_id', 'origin_location_id', 'service_uuid',
   ]);
 
   // Remove whitespace from Patient display_name
@@ -241,7 +241,7 @@ function update(req, res, next) {
 
   const clean = {
     date_embauche : employee.date_embauche,
-    service_id : employee.service_id,
+    service_uuid : employee.service_uuid,
     nb_enfant : employee.nb_enfant,
     grade_uuid : employee.grade_uuid,
     locked : employee.locked,
@@ -313,7 +313,7 @@ function create(req, res, next) {
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
     'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
-    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid', 'service_uuid',
   ]);
 
   // Remove whitespace from Patient display_name
@@ -431,13 +431,14 @@ function list(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
+  db.convert(options, ['service_uuid']);
 
   const sql = `
     SELECT
       BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
-      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse,
-      employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
-      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
+      patient.dob, employee.date_embauche, BUID(employee.service_uuid) as service_uuid, employee.nb_spouse,
+      employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked, grade.text,
+      grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
       employee.bank, employee.bank_account,
       employee.individual_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
@@ -453,7 +454,7 @@ function find(options) {
      JOIN debtor ON patient.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-     LEFT JOIN service ON service.id = employee.service_id
+     LEFT JOIN service ON service.uuid = employee.service_uuid
      LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
   `;
 
@@ -469,7 +470,7 @@ function find(options) {
   filters.dateTo('dateBirthTo', 'dob', 'patient');
   filters.equals('sex', 'sex', 'patient');
   filters.equals('code', 'code', 'employee');
-  filters.equals('service_id', 'service_id', 'employee');
+  filters.equals('service_uuid', 'service_uuid', 'employee');
   filters.equals('fonction_id', 'fonction_id', 'employee');
   filters.equals('grade_uuid', 'grade_uuid', 'employee');
   filters.equals('is_medical', 'is_medical', 'employee');
@@ -505,7 +506,7 @@ function patientToEmployee(req, res, next) {
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
     'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
-    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid', 'service_uuid',
   ]);
 
   // Remove whitespace from Patient display_name

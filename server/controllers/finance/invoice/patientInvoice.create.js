@@ -43,15 +43,16 @@ module.exports = createInvoice;
  * ids.
  */
 function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription) {
-
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || util.uuid());
+
+  db.convert(invoiceDetails, ['debtor_uuid', 'service_uuid']);
 
   const invoicingFees = processInvoicingFees(invoiceUuid, invoiceDetails.invoicingFees);
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
   const items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
-  const debtorUuid = db.bid(invoiceDetails.debtor_uuid);
+  const debtorUuid = invoiceDetails.debtor_uuid;
   const invoice = processInvoice(invoiceUuid, invoiceDetails);
 
   // 'stage' - make all data that will be required for writing an invoice available to the database procedures
@@ -93,7 +94,7 @@ function processInvoice(invoiceUuid, invoice) {
   delete invoice.reference;
 
   const keys = [
-    'date', 'cost', 'description', 'service_id',
+    'date', 'cost', 'description', 'service_uuid',
     'debtor_uuid', 'project_id', 'user_id', 'uuid',
   ];
 

@@ -45,7 +45,7 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
     displayValues.depot_uuid = depot.text;
   };
 
-  // Custom filter service_id - assign the value to the params object
+  // Custom filter service_uuid - assign the value to the params object
   vm.onSelectService = service => {
     vm.searchQueries.service_uuid = service.uuid;
     displayValues.service_uuid = service.name;

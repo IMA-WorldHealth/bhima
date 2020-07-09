@@ -4,7 +4,6 @@ angular.module('bhima.components')
     controller  : ServiceSelectController,
     transclude  : true,
     bindings    : {
-      serviceId        : '<?',
       serviceUuid : '<?',
       onSelectCallback : '&',
       label    : '@?',
@@ -45,7 +44,7 @@ function ServiceSelectController(Services, Notify) {
   function selectServiceByUuid(uuid) {
     $ctrl.services.forEach(service => {
       if (service.uuid === uuid) {
-        $ctrl.serviceId = service.id;
+        $ctrl.serviceUuid = service.uuid;
       }
     });
   }

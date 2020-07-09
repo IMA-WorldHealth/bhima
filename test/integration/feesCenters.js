@@ -10,6 +10,8 @@ const helpers = require('./helpers');
 describe('(/fee_center) The /fee_center  API endpoint', () => {
   // Fee Center we will add during this test suite.
 
+  const { services } = helpers.data;
+
   const feeCenter = {
     id : 10,
     label : 'Centre de Frais Test',
@@ -22,7 +24,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       account_reference_id : 8,
       is_cost : 0,
     }],
-    services : [1, 2],
+    services : [services.test, services.admin],
   };
 
   const feeCenterUpt1 = {
@@ -52,7 +54,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
   const numFeeCenter = 6;
   const feeCenterId = 7;
 
-  it('GET /FEE_CENTER returns a list of Fees Centers', () => {
+  it('GET /fee_center returns a list of Fees Centers', () => {
     return agent.get('/fee_center')
       .then((res) => {
         helpers.api.listed(res, numFeeCenter);
@@ -60,7 +62,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /FEE_CENTER should create a new Fee Center', () => {
+  it('POST /fee_center should create a new Fee Center', () => {
     return agent.post('/fee_center')
       .send(feeCenter)
       .then((res) => {
@@ -70,7 +72,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FEE_CENTER/:ID result should be empty for an unknown id', () => {
+  it('GET /fee_center/:ID result should be empty for an unknown id', () => {
     return agent.get('/fee_center/123456789')
       .then((res) => {
         const response = res.body;
@@ -81,7 +83,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FEE_CENTER/:ID result should be empty if the fee center id is a string', () => {
+  it('GET /fee_center/:ID result should be empty if the fee center id is a string', () => {
     return agent.get('/fee_center/str')
       .then((res) => {
         const response = res.body;
@@ -92,7 +94,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FEE_CENTER/:ID result should be empty when the id is a string', () => {
+  it('GET /fee_center/:ID result should be empty when the id is a string', () => {
     return agent.get('/fee_center/str')
       .then((res) => {
         const response = res.body;
@@ -103,7 +105,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /FEE_CENTER/:ID should update the Label for an existing Fee Center ', () => {
+  it('PUT /fee_center/:ID should update the Label for an existing Fee Center ', () => {
     return agent.put('/fee_center/'.concat(feeCenterId))
       .send(feeCenterUpt1)
       .then((res) => {
@@ -114,7 +116,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /FEE_CENTER/:ID should return 400 for an non-existing Fee Center ', () => {
+  it('PUT /fee_center/:ID should return 400 for an non-existing Fee Center ', () => {
     return agent.put('/fee_center/4321')
       .send(feeCenterUpt2)
       .then((res) => {
@@ -123,7 +125,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /FEE_CENTER should return 400 if the Fee Center id is a string ', () => {
+  it('PUT /fee_center should return 400 if the Fee Center id is a string ', () => {
     return agent.put('/fee_center/str')
       .send(feeCenterUpt2)
       .then((res) => {
@@ -132,7 +134,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /FEE_CENTER  should update Fee Center Type, Reference fee Center for an existing Fee Center ', () => {
+  it('PUT /fee_center  should update Fee Center Type, Reference fee Center for an existing Fee Center ', () => {
     return agent.put('/fee_center/'.concat(feeCenterId))
       .send(feeCenterUpt2)
       .then((res) => {

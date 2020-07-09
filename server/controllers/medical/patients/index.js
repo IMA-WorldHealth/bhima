@@ -276,12 +276,12 @@ async function updatePatientDebCred(patientUuid) {
   const buid = db.bid(patientUuid);
 
   const sql = `
-    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid, patient.display_name,
-      CONCAT_WS('.', 'PA', project.abbr, patient.reference) as patientReference
+    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid,
+      patient.display_name, em.text as patientReference
     FROM debtor
-    JOIN patient ON patient.debtor_uuid = debtor.uuid
-    JOIN project ON project.id = patient.project_id
-    LEFT JOIN employee ON employee.patient_uuid = patient.uuid
+      JOIN patient ON patient.debtor_uuid = debtor.uuid
+      JOIN entity_map em ON em.uuid = patient.uuid
+      LEFT JOIN employee ON employee.patient_uuid = patient.uuid
     WHERE patient.uuid = ?
   `;
 

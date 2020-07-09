@@ -79,7 +79,7 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
       .then((bool) => {
         if (!bool) { return; }
 
-        Services.delete(service.id)
+        Services.delete(service.uuid)
           .then(() => {
             Notify.success('SERVICE.DELETED');
             loadServices();

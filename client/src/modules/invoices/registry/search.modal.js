@@ -37,7 +37,7 @@ function InvoiceRegistrySearchModalController(
   //       these are known when the filter service is defined
   const searchQueryOptions = [
     'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient',
-    'currency_id', 'reversed', 'service_id', 'debtor_group_uuid', 'description',
+    'currency_id', 'reversed', 'service_uuid', 'debtor_group_uuid', 'description',
     'project_id',
   ];
 
@@ -64,10 +64,10 @@ function InvoiceRegistrySearchModalController(
     vm.searchQueries.project_id = project.id;
   };
 
-  // custom filter service_id - assign the value to the searchQueries object
+  // custom filter service_uuid - assign the value to the searchQueries object
   vm.onSelectService = function onSelectService(service) {
-    displayValues.service_id = service.name;
-    vm.searchQueries.service_id = service.id;
+    displayValues.service_uuid = service.name;
+    vm.searchQueries.service_uuid = service.uuid;
   };
 
   // default filter limit - directly write to changes list

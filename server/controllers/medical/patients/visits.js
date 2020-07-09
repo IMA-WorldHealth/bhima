@@ -1,4 +1,3 @@
-
 /**
  * @module medical/patients/visits
  *
@@ -42,7 +41,8 @@ const COLUMNS = `
   patient.display_name, patient.hospital_no, em.text AS reference,
   s.name AS service_name,
   dt.label AS discharge_label,
-  inside_health_zone, is_new_case, is_refered, is_pregnant, last_service_id, discharge_type_id
+  inside_health_zone, is_new_case, is_refered, is_pregnant, BUID(last_service_uuid) AS last_service_uuid,
+  discharge_type_id
 `;
 
 const LAST_BED_LOCATION = `
@@ -64,7 +64,7 @@ const LAST_BED_LOCATION = `
 
 const TABLES = `
   patient_visit
-  JOIN service s ON s.id = patient_visit.last_service_id
+  JOIN service s ON s.uuid = patient_visit.last_service_uuid
   JOIN patient ON patient.uuid = patient_visit.patient_uuid
   JOIN entity_map em ON em.uuid = patient.uuid
   JOIN user ON patient_visit.user_id = user.id
@@ -76,7 +76,7 @@ const TABLES = `
 const REQUIRE_DIAGNOSES = false;
 
 function find(options) {
-  db.convert(options, ['uuid', 'patient_uuid', 'ward_uuid', 'room_uuid']);
+  db.convert(options, ['uuid', 'patient_uuid', 'ward_uuid', 'room_uuid', 'service_uuid']);
   const filters = new FilterParser(options);
 
   const sql = `SELECT ${COLUMNS} FROM ${TABLES}`;
@@ -101,12 +101,12 @@ function find(options) {
   filters.equals('hospital_no');
   filters.equals('user_id', 'user_id', 'patient_visit');
 
-  filters.equals('service_id', 'id', 's');
+  filters.equals('service_uuid', 'uuid', 's');
   filters.equals('ward_uuid', 'ward_uuid', 'z');
   filters.equals('room_uuid', 'room_uuid', 'z');
   filters.equals('bed_id', 'bed_id', 'z');
 
-  filters.equals('service_id', 'id', 's');
+  filters.equals('service_uuid', 'uuid', 's');
   filters.equals('hospitalized');
   filters.equals('is_new_case');
   filters.equals('is_pregnant');
@@ -137,7 +137,6 @@ function list(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method detail
@@ -210,6 +209,8 @@ function admission(req, res, next) {
   data.uuid = db.bid(visitUuid);
   data.patient_uuid = req.params.uuid;
 
+  db.convert(data, ['service_uuid']);
+
   // add user id
   data.user_id = req.session.user.id;
 
@@ -248,7 +249,7 @@ function createVisit(data) {
     INSERT INTO patient_visit SET ?;
   `;
   const transaction = db.transaction();
-  visit.last_service_id = service.id;
+  visit.last_service_uuid = db.bid(service.uuid);
   transaction.addQuery(sqlInsertVisit, [visit]);
   transaction.addQuery(visitService.query, [visitService.parameters]);
   return transaction.execute();
@@ -282,7 +283,7 @@ async function createHospitalization(data) {
   const transaction = db.transaction();
 
   // insert the visit of the patient
-  visit.last_service_id = service.id;
+  visit.last_service_uuid = db.bid(service.uuid);
   transaction.addQuery('INSERT INTO patient_visit SET ?;', [visit]);
 
   // insert a new patient visit service
@@ -305,7 +306,7 @@ function getVisitServiceQuery(data) {
   `;
   const paramInsertService = {
     uuid : db.bid(uuid()),
-    service_id : service.id,
+    service_uuid : db.bid(service.uuid),
     patient_visit_uuid : visit.uuid,
   };
   return {

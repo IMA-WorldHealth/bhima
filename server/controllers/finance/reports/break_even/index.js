@@ -15,10 +15,9 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'brea_report',
+  csvKey : 'dataConfigured',
   filename : 'TREE.BREAK_EVEN_REPORT',
   orientation : 'portrait',
-  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -83,7 +82,7 @@ function report(req, res, next) {
     `;
 
     const getFeeCenterReference = `
-      SELECT fc.label, fc.id, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
+      SELECT fc.label, fc.id, fc.is_principal, rf.fee_center_id, rf.account_reference_id,
       rf.is_cost, rf.is_variable, rf.is_turnover, ar.abbr
       FROM fee_center AS fc
       JOIN reference_fee_center AS rf ON rf.fee_center_id = fc.id
@@ -93,7 +92,7 @@ function report(req, res, next) {
 
     const getFeeCenterDistribution = `
       SELECT fcd.principal_fee_center_id, fcd.auxiliary_fee_center_id, fcd.is_cost,
-      fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,    
+      fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,
       fca.label AS auxiliary, fcp.label AS principal, SUM(fcd.debit_equiv) AS debit,
       SUM(fcd.credit_equiv) AS credit, gl.trans_date
       FROM fee_center_distribution AS fcd
@@ -111,7 +110,7 @@ function report(req, res, next) {
         p.name AS project_name
         FROM patient_visit AS pv
         JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
-        JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+        JOIN service_fee_center AS sfc ON sfc.service_uuid = pvs.service_uuid
         JOIN fee_center AS f ON f.id = sfc.fee_center_id
         JOIN project AS p ON p.id = f.project_id
         WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
@@ -124,8 +123,8 @@ function report(req, res, next) {
         FROM indicator AS i
         JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
         JOIN period AS p ON p.id = i.period_id
-        JOIN service_fee_center AS sfc ON sfc.service_id = i.service_id
-        JOIN service AS s ON s.id = sfc.service_id
+        JOIN service_fee_center AS sfc ON sfc.service_uuid = i.service_uuid
+        JOIN service AS s ON s.uuid = sfc.service_uuid
         JOIN fee_center AS f ON f.id = sfc.fee_center_id
         JOIN project AS pr ON pr.id = f.project_id
         WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)
@@ -205,10 +204,7 @@ function report(req, res, next) {
           project.data = projectSetting.breakEvenCalcul(project);
         });
 
-        const dataProjects = {
-          projects,
-        };
-        _.merge(data, dataProjects);
+        _.merge(data, { projects });
         return reporting.render(data);
       })
       .then(result => {
