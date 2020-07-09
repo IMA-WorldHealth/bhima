@@ -92,7 +92,7 @@
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.0",
     "json-2-csv": "^3.7.5",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mailgun-js": "^0.22.0",
     "moment": "^2.27.0",
     "morgan": "^1.9.1",
