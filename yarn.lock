@@ -591,12 +591,12 @@ angular-translate-loader-url@^2.18.1:
   dependencies:
     angular-translate "~2.18.2"
 
-angular-translate@^2.18.1, angular-translate@~2.18.2:
-  version "2.18.2"
-  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.18.2.tgz#2a26653d179f7043c0ffa66fdf65155d01c82e06"
-  integrity sha512-aAtNieh0fUv6yM6vKuWsdswT0BbOf6kvsu+QZ15Fp10rKEienMs3M8aPWyd9IVZ5pA1GaRJir6T8OvWGG4J+Fw==
+angular-translate@^2.18.3, angular-translate@~2.18.2:
+  version "2.18.3"
+  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.18.3.tgz#e1c1b4e985bb6492063a0ac744e0f6b21a44403c"
+  integrity sha512-ziEi1nTaNIsdn3iKpcALaSFjM9CjwvoIWE/EKepajB/6qT5oB3K1IU5VcaH7Bd0scNRfaJpW+qUD6nsHWDEZ6A==
   dependencies:
-    angular "^1.7.9"
+    angular "^1.8.0"
 
 angular-ui-bootstrap@^2.5.6:
   version "2.5.6"
@@ -616,7 +616,7 @@ angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
   dependencies:
     ui-router-core "3.1.0"
 
-"angular@>=1.2.22 <2", angular@^1.7.9, angular@^1.8.0:
+"angular@>=1.2.22 <2", angular@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.0.tgz#b1ec179887869215cab6dfd0df2e42caa65b1b51"
   integrity sha512-VdaMx+Qk0Skla7B5gw77a8hzlcOakwF8mjlW13DpIWIDlfqwAbSSLfd8N/qZnzEmQF4jC4iofInd3gE7vL8ZZg==
