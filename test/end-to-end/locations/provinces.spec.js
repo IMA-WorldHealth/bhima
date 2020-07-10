@@ -1,10 +1,12 @@
+/* global element, by */
+
 const { expect } = require('chai');
 
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
-
 
 describe('Provinces Management', () => {
   const path = '#!/locations/province';
@@ -20,6 +22,34 @@ describe('Provinces Management', () => {
     country : 'République Démocratique du Congo',
     name : 'another Province',
   };
+
+  const gridId = 'province-grid';
+  const referenceLocation = 'Équateur';
+
+  it('Merge Province', async () => {
+    // Prevent mixing with no province selected
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with less than two provinces
+    await GU.selectRow(gridId, 1);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with more than two provinces
+    await GU.selectRow(gridId, 16);
+    await GU.selectRow(gridId, 3);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Merging succes
+    await GU.selectRow(gridId, 3);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="${referenceLocation}"]`)).click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
 
   it('creates a new province', async () => {
     // switch to the create form

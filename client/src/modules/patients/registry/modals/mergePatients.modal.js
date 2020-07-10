@@ -27,6 +27,11 @@ function MergePatientsModalController(Patients, $state, Notify, Instance) {
   function submit() {
     if (vm.allAreEmployees) { return null; }
 
+    // Quick fix prevent fatar error : 2020-07-07 By: lomamech
+    if (!vm.selected) {
+      return Notify.danger('FORM.WARNINGS.EMPTY_SELECTION');
+    }
+
     const params = {
       selected : vm.selected,
       other : vm.patients.filter(p => p.uuid !== vm.selected).map(p => p.uuid),

@@ -79,3 +79,14 @@ ALTER TABLE `service` DROP COLUMN `id`;
 
 
 ALTER TABLE `service` ADD PRIMARY KEY (`uuid`);
+
+/**
+@author: lomamech:
+@date: 2020-07-09
+*/
+
+ALTER TABLE `province` DROP INDEX `province_1`;
+
+ALTER TABLE `sector` DROP INDEX `sector_1`;
+
+ALTER TABLE `village` DROP INDEX `village_1`;

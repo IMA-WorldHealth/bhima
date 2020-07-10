@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('SectorController', SectorController);
 
 SectorController.$inject = [
-  'LocationService', 'util', 'NotifyService',
+  '$state', 'LocationService', 'util', 'NotifyService',
   'ModalService', '$uibModal', 'uiGridConstants',
 ];
 
-function SectorController(locationService, util, Notify,
+function SectorController($state, locationService, util, Notify,
   Modal, $uibModal, uiGridConstants) {
 
   const vm = this;
@@ -94,6 +94,33 @@ function SectorController(locationService, util, Notify,
           })
           .catch(Notify.handleError);
       });
+  };
+
+  vm.mergeSectors = function mergeSectors() {
+    const selectedSectors = vm.gridApi.selection.getSelectedRows();
+    if (selectedSectors.length) {
+      if (selectedSectors.length === 2) {
+        const sectors = selectedSectors.map(s => s);
+
+        const locations = {
+          locations : sectors,
+          status : 'sector',
+        };
+
+        $uibModal.open({
+          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+          resolve : { data : () => locations },
+        }).result.then(result => {
+          if (result) refreshSectors();
+        });
+
+      } else {
+        Notify.warn('FORM.WARNINGS.ONLY_TWO_SECTORS');
+      }
+    } else {
+      Notify.warn('FORM.WARNINGS.NO_SECTORS_HAS_SELECTED');
+    }
   };
 
   /**

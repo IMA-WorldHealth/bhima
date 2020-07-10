@@ -1,4 +1,7 @@
+/* global element, by */
+
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
@@ -14,6 +17,29 @@ describe('Countries Management', () => {
     name : 'another country',
   };
 
+  const gridId = 'country-grid';
+  const referenceLocation = 'République Démocratique du Congo';
+
+  it('Merge country', async () => {
+    // Prevent mixing with no country selected
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with less than two countries
+    await GU.selectRow(gridId, 0);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Merging succes
+    await GU.selectRow(gridId, 1);
+
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="${referenceLocation}"]`)).click();
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
+
   it('creates a new country', async () => {
     await FU.buttons.create();
     await components.inpuText.set('name', country.name);
@@ -22,7 +48,6 @@ describe('Countries Management', () => {
 
     await components.notification.hasSuccess();
   });
-
 
   it('edits a country', async () => {
     const menu = await openDropdownMenu(country.name);
@@ -55,7 +80,6 @@ describe('Countries Management', () => {
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
-
 
   it('blocks invalid form submission with relevant error classes', async () => {
     // switch to the create form
