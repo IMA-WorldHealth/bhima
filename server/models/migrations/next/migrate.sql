@@ -79,7 +79,6 @@ ALTER TABLE `service` DROP COLUMN `id`;
 
 
 ALTER TABLE `service` ADD PRIMARY KEY (`uuid`);
-  ('collectionCapacity', 'REPORT.COLLECTION_CAPACITY.TITLE');
 
 /**
 @author: lomamech:
