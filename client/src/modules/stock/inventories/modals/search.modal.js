@@ -3,10 +3,11 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchInventoriesModalController.$inject = [
-  'data', 'NotifyService', '$uibModalInstance', 'Store', 'PeriodService', 'util', 'StockService',
+  'data', '$uibModalInstance', 'Store', 'PeriodService', 'util', 'StockService',
+  'SearchModalUtilService',
 ];
 
-function SearchInventoriesModalController(data, Notify, Instance, Store, Periods, util, Stock) {
+function SearchInventoriesModalController(data, Instance, Store, Periods, util, Stock, SearchModal) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
@@ -95,17 +96,7 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
       displayValues.status = Stock.statusLabelMap(vm.searchQueries.status);
     }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return Instance.close(loggedChanges);
   };
 

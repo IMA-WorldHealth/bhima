@@ -2,12 +2,13 @@ angular.module('bhima.controllers')
   .controller('StaffingSearchModalController', StaffingSearchModalController);
 
 StaffingSearchModalController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'Store', 'filters', 'options',
-  '$translate', 'util', 'StaffingIndiceService', 'PeriodService',
+  '$uibModalInstance', 'Store', 'filters', 'options',
+  'util', 'StaffingIndiceService', 'PeriodService',
+  'SearchModalUtilService',
 ];
 
 function StaffingSearchModalController(
-  Instance, Notify, Store, filters, options, $translate, util, Journal, Periods
+  Instance, Store, filters, options, util, Journal, Periods, SearchModal,
 ) {
   const vm = this;
 
@@ -68,7 +69,6 @@ function StaffingSearchModalController(
     vm.defaultQueries.account_id = filters.account_id;
   }
 
-
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
@@ -87,18 +87,8 @@ function StaffingSearchModalController(
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit(form) {
     if (form.$invalid) { return 0; }
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
 
-    const loggedChanges = changes.getAll();
-
-    // return values to the JournalController
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return Instance.close(loggedChanges);
   };
 }

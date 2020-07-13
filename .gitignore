@@ -43,6 +43,9 @@ nbproject/
 # Ignore test files
 sh/build-database-test.sh
 
+# Ignore local temporary files
+temp/
+
 # ignore documentation bad files
 docs/_site/
 docs/.sass-cache/

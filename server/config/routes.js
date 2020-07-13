@@ -201,6 +201,8 @@ exports.configure = function configure(app) {
   app.delete('/locations/sectors/:uuid', locations.delete.sector);
   app.delete('/locations/villages/:uuid', locations.delete.village);
 
+  app.post('/locations/merge/', locations.merge);
+
   app.post('/groups/:key/:id', groups.updateSubscriptions);
 
   // API for account type routes CRUD

@@ -24,7 +24,7 @@ indexIdentifiers();
  * use the same schema.
  *
  * ##Current Schema
- * ${receiptIdentifier}.${uuid(6)}
+ * ${receiptIdentifier}.${uuid(8)}
  *
  */
 const UUID_ACCURACY_LENGTH = 8;

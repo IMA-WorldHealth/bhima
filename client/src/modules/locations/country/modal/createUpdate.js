@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('CreateUpdateCountryController', CreateUpdateCountryController);
 
 CreateUpdateCountryController.$inject = [
-  'data', '$state', 'LocationService', 'NotifyService', '$uibModalInstance',
+  'data', 'LocationService', 'NotifyService', '$uibModalInstance',
 ];
 
-function CreateUpdateCountryController(data, $state, Location, Notify, Instance) {
+function CreateUpdateCountryController(data, Location, Notify, Instance) {
   const vm = this;
   vm.close = Instance.close;
   vm.submit = submit;

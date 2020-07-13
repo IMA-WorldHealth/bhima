@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('ProvinceController', ProvinceController);
 
 ProvinceController.$inject = [
-  'LocationService', 'util', 'NotifyService',
+  '$state', 'LocationService', 'util', 'NotifyService',
   'ModalService', '$uibModal', 'uiGridConstants',
 ];
 
-function ProvinceController(locationService, util, Notify,
+function ProvinceController($state, locationService, util, Notify,
   Modal, $uibModal, uiGridConstants) {
 
   const vm = this;
@@ -61,7 +61,6 @@ function ProvinceController(locationService, util, Notify,
     cellTemplate : 'modules/locations/country/templates/action.cell.html',
   }];
 
-
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
@@ -88,6 +87,33 @@ function ProvinceController(locationService, util, Notify,
           })
           .catch(Notify.handleError);
       });
+  };
+
+  vm.mergeProvinces = function mergeProvinces() {
+    const selectedProvinces = vm.gridApi.selection.getSelectedRows();
+    if (selectedProvinces.length) {
+      if (selectedProvinces.length === 2) {
+        const provinces = selectedProvinces.map(p => p);
+
+        const locations = {
+          locations : provinces,
+          status : 'province',
+        };
+
+        $uibModal.open({
+          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+          resolve : { data : () => locations },
+        }).result.then(result => {
+          if (result) refreshProvinces();
+        });
+
+      } else {
+        Notify.warn('FORM.WARNINGS.ONLY_TWO_PROVINCES');
+      }
+    } else {
+      Notify.warn('FORM.WARNINGS.NO_PROVINCES_HAS_SELECTED');
+    }
   };
 
   /**

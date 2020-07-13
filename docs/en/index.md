@@ -10,6 +10,7 @@ This manual is split into chapters:
 4. [Inventory and Stock Management](./stock-management)
 5. Reporting and Statistics
 6. [Developer Reference](./for-developers)
+7. [Glossary](./glossary.md)
 
 # About
 

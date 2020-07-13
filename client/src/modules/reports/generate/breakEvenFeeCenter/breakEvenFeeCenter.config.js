@@ -28,15 +28,16 @@ function BreakEvenFeeCenterConfigController($sce, Notify, SavedReports, AppCache
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return null; }
 
     if (!vm.reportDetails.defineFeeCenters) {
       vm.reportDetails.feeCenters = [];
     }
 
+    // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);

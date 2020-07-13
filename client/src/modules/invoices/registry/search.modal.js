@@ -2,7 +2,9 @@ angular.module('bhima.controllers')
   .controller('InvoiceRegistrySearchModalController', InvoiceRegistrySearchModalController);
 
 InvoiceRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'Store', 'PeriodService', 'util', 'PatientInvoiceService',
+  '$uibModalInstance', 'filters', 'Store',
+  'PeriodService', 'util', 'PatientInvoiceService',
+  'SearchModalUtilService',
 ];
 
 /**
@@ -12,7 +14,10 @@ InvoiceRegistrySearchModalController.$inject = [
  * This controller is responsible to collecting data from the search form and modifying
  * the underlying filters before passing them back to the parent controller.
  */
-function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, Store, Periods, util, Invoices) {
+function InvoiceRegistrySearchModalController(
+  ModalInstance, filters, Store,
+  Periods, util, Invoices, SearchModal,
+) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   vm.filters = filters;
@@ -38,10 +43,6 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  // keep track of the initial search queries to make sure we properly restore
-  // default display values
-  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // set controller data
   vm.cancel = ModalInstance.close;
@@ -92,27 +93,8 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
   };
 
   // returns the filters to the journal to be used to refresh the page
-  vm.submit = function submit() {
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
-        // If so, we do not use the previous display value.  If the values are identical, we can restore the
-        // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue =
-          angular.equals(initialSearchQueries[key], value) &&
-          angular.isDefined(lastDisplayValues[key]);
-
-        // default to the raw value if no display value is defined
-        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
-
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
-
-    // return values to the Invoice Registry Controller
+  vm.submit = () => {
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return ModalInstance.close(loggedChanges);
   };
 }

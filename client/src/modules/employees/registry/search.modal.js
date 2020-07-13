@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('EmployeeRegistryModalController', EmployeeRegistryModalController);
 
 EmployeeRegistryModalController.$inject = [
-  '$uibModalInstance', 'bhConstants', 'Store', 'util', 'filters', 'EmployeeService',
+  '$uibModalInstance', 'SearchModalUtilService', 'Store', 'util', 'filters', 'EmployeeService',
 ];
 
 /**
@@ -12,7 +12,7 @@ EmployeeRegistryModalController.$inject = [
  * This controller is responsible for setting up the filters for the employee
  * search functionality on the employee registry page.
  */
-function EmployeeRegistryModalController(ModalInstance, bhConstants, Store, util, filters, Employees) {
+function EmployeeRegistryModalController(ModalInstance, SearchModal, Store, util, filters, Employees) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -89,19 +89,9 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, Store, util
   function submit(form) {
     if (form.$invalid) { return 0; }
 
-    // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (value, key) => {
-      if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key, value, displayValue });
-      }
-    });
-
-    const loggedChanges = changes.getAll();
+    const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return ModalInstance.close(loggedChanges);
   }
-
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {

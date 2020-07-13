@@ -14,16 +14,19 @@
           </button>
         </div>
         <div class="toolbar-item">
+          <button ng-click="CountryCtrl.mergeCountries()"  class="btn btn-default text-capitalize" data-method="merge">
+            <i class="fa fa-compress"></i> <span translate>COUNTRY.MERGE_COUNTRIES</span>
+          </button>
+        </div>
+        <div class="toolbar-item">
           <!-- Links to the main menu of management maps as well as the button for adding countries -->
           <button ui-sref="locations" class="btn btn-default text-capitalize">
             <span class="glyphicon glyphicon-globe"></span><span translate> LOCATION.LOCATION_MANAGER </span>
           </button>
         </div>
-        <div class="toolbar-item">
-          <button ng-class="{ 'btn-info' : CountryCtrl.gridOptions.enableFiltering }" class="btn btn-default" data-method="filter" ng-click="CountryCtrl.filtering.toggleInlineFiltering()">
-            <i class="fa fa-filter"></i>
-          </button>
-        </div>
+
+        <bh-filter-toggle on-toggle="CountryCtrl.toggleInlineFilter()">
+        </bh-filter-toggle>
       </div>
     </div>
   </div>
@@ -37,6 +40,7 @@
         ui-grid="CountryCtrl.gridOptions"
         ui-grid-auto-resize
         ui-grid-resize-columns
+        ui-grid-selection
         ui-grid-move-columns>
   
         <bh-grid-loading-indicator
