@@ -200,7 +200,7 @@ function PurchaseListController(
    * modal.
    */
   function openBarcodeScanner() {
-    Barcode.modal({ shouldSearch : false })
+    Barcode.modal({ shouldSearch : true })
       .then(record => {
         // alert('Keys: ' + record.uuid);
         PurchaseOrder.filters.replaceFilters([
