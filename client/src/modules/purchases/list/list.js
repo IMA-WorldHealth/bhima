@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
-  'ReceiptModal', 'bhConstants', 'BarcodeService'
+  'ReceiptModal', 'bhConstants', 'BarcodeService',
 ];
 
 /**
@@ -14,7 +14,7 @@ PurchaseListController.$inject = [
  */
 function PurchaseListController(
   $state, PurchaseOrder, Notify, uiGridConstants,
-  Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode
+  Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode,
 ) {
   const vm = this;
   const cacheKey = 'PurchaseRegistry';
@@ -202,10 +202,9 @@ function PurchaseListController(
   function openBarcodeScanner() {
     Barcode.modal({ shouldSearch : true })
       .then(record => {
-        // alert('Keys: ' + record.uuid);
         PurchaseOrder.filters.replaceFilters([
           { key : 'uuid', value : record.uuid, displayValue : record.reference },
-          { key : 'period', value : 'allTime' }
+          { key : 'period', value : 'allTime' },
         ]);
 
         load(PurchaseOrder.filters.formatHTTP(true));

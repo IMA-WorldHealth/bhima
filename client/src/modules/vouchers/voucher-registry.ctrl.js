@@ -5,7 +5,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
-  'SessionService', 'BarcodeService'
+  'SessionService', 'BarcodeService',
 ];
 
 /**
@@ -18,7 +18,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridConstants, Receipts, TransactionTypes, bhConstants,
-  Sorting, Columns, GridState, $state, Modals, util, Session, Barcode
+  Sorting, Columns, GridState, $state, Modals, util, Session, Barcode,
 ) {
   const vm = this;
 
