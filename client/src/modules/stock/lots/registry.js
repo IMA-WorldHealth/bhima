@@ -210,7 +210,6 @@ function StockLotsController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-
   /**
    * @function openBarcodeScanner
    *
@@ -229,7 +228,6 @@ function StockLotsController(
         vm.latestViewFilters = stockLotFilters.formatView();
       });
   }
-
 
   startup();
 }
