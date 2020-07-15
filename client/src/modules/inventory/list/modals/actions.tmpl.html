@@ -104,7 +104,7 @@
         class="form-control"
         name="unit_id"
         ng-model="$ctrl.item.unit_id"
-        ng-options="unit.id as unit.text for unit in $ctrl.units"
+        ng-options="unit.id as unit.text for unit in $ctrl.units | orderBy:'text'"
         required>
         <option value="" disabled translate>FORM.SELECT.INVENTORY_UNIT</option>
       </select>
