@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
-  'ReceiptModal', 'bhConstants',
+  'ReceiptModal', 'bhConstants', 'BarcodeService',
 ];
 
 /**
@@ -14,7 +14,7 @@ PurchaseListController.$inject = [
  */
 function PurchaseListController(
   $state, PurchaseOrder, Notify, uiGridConstants,
-  Columns, GridState, Session, Modal, ReceiptModal, bhConstants,
+  Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode,
 ) {
   const vm = this;
   const cacheKey = 'PurchaseRegistry';
@@ -26,6 +26,9 @@ function PurchaseListController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = PurchaseOrder.download;
   vm.status = bhConstants.purchaseStatus;
+
+  // barcode scanner
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   vm.editStatus = editStatus;
 
@@ -188,6 +191,28 @@ function PurchaseListController(
     load(PurchaseOrder.filters.formatHTTP(true));
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }
+
+  /**
+   * @function searchByBarcode()
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal({ shouldSearch : true })
+      .then(record => {
+        PurchaseOrder.filters.replaceFilters([
+          { key : 'uuid', value : record.uuid, displayValue : record.reference },
+          { key : 'period', value : 'allTime' },
+        ]);
+
+        load(PurchaseOrder.filters.formatHTTP(true));
+        vm.latestViewFilters = PurchaseOrder.filters.formatView();
+      });
+
+  }
+
 
   // fire up the module
   startup();

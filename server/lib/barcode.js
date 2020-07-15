@@ -12,6 +12,7 @@ const { lookupPatient } = require('../controllers/medical/patients');
 const { lookupInvoice } = require('../controllers/finance/patientInvoice');
 const lookupCashPayment = require('../controllers/finance/cash').lookup;
 const { lookupVoucher } = require('../controllers/finance/vouchers');
+const lookupPurchaseOrder = require('../controllers/finance/purchases').lookup;
 
 const identifiersIndex = {};
 indexIdentifiers();
@@ -83,4 +84,5 @@ function indexIdentifiers() {
   identifiers.INVOICE.lookup = lookupInvoice;
   identifiers.CASH_PAYMENT.lookup = lookupCashPayment;
   identifiers.VOUCHER.lookup = lookupVoucher;
+  identifiers.PURCHASE_ORDER.lookup = lookupPurchaseOrder;
 }
