@@ -464,8 +464,6 @@ function getStockConsumption(periodIds) {
  */
 async function getDailyStockConsumption(params) {
 
-  params.consumption = true;
-
   const consumptionValue = `
     ((
       (m.flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE}))
@@ -479,14 +477,18 @@ async function getDailyStockConsumption(params) {
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
-    SELECT SUM(m.quantity) as quantity,
+    SELECT 
+      COUNT(m.uuid) as movement_number,
+      SUM(m.quantity) as quantity,
       SUM(m.quantity * m.unit_cost) as value,
       DATE(m.date) as date,
       BUID(i.uuid) AS inventory_uuid,
+      BUID(m.uuid) AS uuid,
       i.text AS inventory_name,
       d.text AS depot_name,
       BUID(d.uuid) AS depot_uuid
     FROM stock_movement m
+    JOIN flux f ON m.flux_id = f.id
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
@@ -497,9 +499,16 @@ async function getDailyStockConsumption(params) {
   filters.equals('depot_uuid', 'uuid', 'd');
   filters.equals('period_id');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('flux_id', 'id', 'f', true);
+  filters.equals('is_exit');
   filters.custom('consumption', consumptionValue);
 
-  filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  if (params.consumption) {
+    filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  } else {
+    filters.setGroup('GROUP BY DATE(m.date)');
+  }
+
   filters.setOrder('ORDER BY m.date ');
 
   const rqtSQl = filters.applyQuery(sql);
@@ -507,6 +516,7 @@ async function getDailyStockConsumption(params) {
 
   return db.exec(rqtSQl, rqtParams);
 }
+
 /**
  * @function getStockConsumptionAverage
  *

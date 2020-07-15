@@ -106,6 +106,7 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirma
 */
 
 ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
+
 ALTER TABLE `village` DROP INDEX `village_1`
   ('collectionCapacity', 'REPORT.COLLECTION_CAPACITY.TITLE');
 
@@ -308,3 +309,14 @@ CREATE TEMPORARY TABLE ru AS
 INSERT IGNORE INTO `role_unit` SELECT HUID(uuid()), role_uuid, unit_id FROM ru;
 
 DROP TEMPORARY TABLE `ru`;
+
+
+/**
+@author : jeremielodi
+date : 13/07/2020
+*/
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+('stock_movement_report', 'Stock Movement Dashboad');
+
+INSERT INTO unit VALUES
+(288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report');

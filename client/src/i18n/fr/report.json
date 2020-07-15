@@ -147,6 +147,12 @@
       "TITLE" : "Rapport graphique de la consommation de stock",
       "DESCRIPTION" : "Ce rapport montre graphiquement la consommation de stock durant une période pour un depot ou un inventaire"
     },
+
+    "STOCK_MOVEMENT_REPORT" : {
+      "TITLE" : "Rapport graphique des mouvements de stock",
+      "DESCRIPTION" : ""
+    },
+
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",

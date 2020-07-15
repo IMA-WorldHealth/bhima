@@ -1,5 +1,5 @@
 const {
-  _, db, util, ReportManager, pdfOptions, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
+  _, db, util, ReportManager, pdfOptions, STOCK_MOVEMENT_REPORT_TEMPLATE,
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
@@ -13,25 +13,20 @@ const chartjs = require('../../../../lib/chart');
    *
    * GET /reports/stock/consumption_graph
    */
-async function stockConsumptionGrathReport(req, res, next) {
+async function document(req, res, next) {
   try {
 
     const params = _.clone(req.query);
 
     const optionReport = _.extend(params, pdfOptions, {
-      filename : 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE',
+      filename : 'REPORT.STOCK_MOVEMENT_REPORT.TITLE',
     });
 
     // set up the report with report manager
-    const report = new ReportManager(STOCK_CONSUMPTION_GRAPTH_TEMPLATE, req.session, optionReport);
+    const report = new ReportManager(STOCK_MOVEMENT_REPORT_TEMPLATE, req.session, optionReport);
 
-    const depotSql = 'SELECT text FROM depot WHERE uuid=?';
     const options = req.query;
-    let depot = {};
 
-    if (options.depot_uuid) {
-      depot = await db.one(depotSql, db.bid(options.depot_uuid));
-    }
     let dateFrom = '';
     let dateTo = '';
 
@@ -40,28 +35,27 @@ async function stockConsumptionGrathReport(req, res, next) {
       dateFrom = period.start_date;
       dateTo = period.end_date;
     }
-    options.consumption = true;
-    const result = await stockCore.getDailyStockConsumption(options);
+    const result = await stockCore.getDailyStockConsumption(params);
+
     util.dateFormatter(result, 'DD');
 
-    const reportType = options.reportType || 'quantity';
+    const reportType = options.reportType || 'movement_number';
 
     const reportResult = await report.render({
       dateFrom,
       dateTo,
-      depot,
       chartjs : chartjs.barChart({
         label : 'date',
         data : result,
-        showLegend : true,
+        uniqueColor : true,
         item : {
-          uuid : 'inventory_uuid',
-          name : 'inventory_name',
-          value : options.reportType || 'quantity',
+          uuid : 'date',
+          name : 'date',
+          value : reportType,
         },
         yAxesLabelString : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
         xAxesLabelString : i18n(options.lang)('FORM.LABELS.DAYS'),
-        canvasId : 'stockConsumptionChart',
+        canvasId : 'stockMovementReportChart',
       }),
     });
     res.set(reportResult.headers).send(reportResult.report);
@@ -70,5 +64,4 @@ async function stockConsumptionGrathReport(req, res, next) {
   }
 }
 
-
-module.exports = stockConsumptionGrathReport;
+module.exports = document;
