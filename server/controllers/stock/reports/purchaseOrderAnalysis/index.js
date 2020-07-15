@@ -105,11 +105,12 @@ async function report(req, res, next) {
       JOIN stock_movement AS sm ON sm.lot_uuid = l.uuid
       JOIN depot AS d ON d.uuid = sm.depot_uuid
       JOIN document_map AS dm1 ON dm1.uuid = sm.document_uuid
-      WHERE p.uuid = ? AND sm.is_exit = 0
+      WHERE p.uuid = ? AND sm.is_exit = 0 AND sm.flux_id = ?
       ORDER BY iv.text ASC, l.entry_date ASC
     `;
 
     const uidPurchase = db.bid(params.purchase_uuid);
+    const PURCHASE_FLUX_ID = 1;
 
     const [
       purchase, inventoriesOrdered, inventoriesInStock, inventoriesInStockDetailled,
@@ -117,7 +118,7 @@ async function report(req, res, next) {
       Purchases.find({ uuid : params.purchase_uuid }),
       db.exec(sqlInventoriesOrdered, uidPurchase),
       db.exec(sqlInventoriesInStock, uidPurchase),
-      db.exec(sqlInventoriesInStockDetailled, uidPurchase),
+      db.exec(sqlInventoriesInStockDetailled, [uidPurchase, PURCHASE_FLUX_ID]),
     ]);
 
     inventoriesOrdered.forEach(ordered => {
