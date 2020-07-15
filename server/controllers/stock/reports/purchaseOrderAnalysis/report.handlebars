@@ -55,8 +55,8 @@
           <tbody>
             {{#each this.inventoriesOrdered}}
               <tr>
-                <td><strong> {{ code }} </strong></td>
-                <td><strong> {{ inventory_text }} </strong> </td>
+                <td>{{ code }}</td>
+                <td>{{ inventory_text }}</td>
                 <td class="text-right">{{ quantity_ordered }}</td>
                 <td class="text-right">{{ quantity_inStock }}</td>
                 <td class="text-right"><strong>{{ quantity_difference }}</strong></td>
@@ -102,6 +102,8 @@
                   <td class="text-center" colspan="6">{{translate "TABLE.COLUMNS.EMPTY"}}</td>
                 </tr>
               {{/each}}
+            </tbody>
+            <tfoot>
               <tr>
                 <td colspan="6"></td>
               </tr>
@@ -132,7 +134,7 @@
                   <strong>{{translate status.text}}</strong>
                 </td>
               </tr>
-            </tbody>
+            </tfoot>
           </table>
           <br>
         {{/each}}
