@@ -20,6 +20,8 @@ function StockInventoryAdjustmentController(
 ) {
   const vm = this;
 
+  const { INVENTORY_ADJUSTMENT } = bhConstants.flux;
+
   // global variables
   vm.Stock = new StockForm('StockInventoryAdjustment');
   vm.movement = {};
@@ -50,43 +52,33 @@ function StockInventoryAdjustmentController(
       displayName : '',
       cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
       enableFiltering : false,
-    },
-
-    {
+    }, {
       field : 'code',
       width : 120,
       displayName : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
-    },
-
-    {
+    }, {
       field : 'description',
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
       enableSorting : true,
-    },
-
-    {
+    }, {
       field : 'label',
       width : 150,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/inventory-adjustment/templates/lot.tmpl.html',
       enableSorting : true,
-    },
-
-    {
+    }, {
       field : 'available_lot',
       width : 150,
       displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
       enableFiltering : false,
-    },
-
-    {
+    }, {
       field : 'quantity',
       width : 180,
       displayName : 'INVENTORY_ADJUSTMENT.NEW_QUANTITY',
@@ -94,9 +86,7 @@ function StockInventoryAdjustmentController(
       cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
-    },
-
-    {
+    }, {
       field : 'expiration_date',
       width : 150,
       displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
@@ -218,7 +208,7 @@ function StockInventoryAdjustmentController(
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 0,
-      flux_id : bhConstants.flux.INVENTORY_ADJUSTMENT,
+      flux_id : INVENTORY_ADJUSTMENT,
       user_id : Session.user.id,
     };
 
@@ -239,9 +229,12 @@ function StockInventoryAdjustmentController(
     }
 
     return Stock.inventoryAdjustment.create(movement)
-      .then(document => {
+      .then(() => {
+        // since we have effectively performed an inventory, instead of rendering a receipt,
+        // we will render the "Articles in Stock" report for this depot.
+        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
+
         vm.Stock.store.clear();
-        ReceiptModal.stockAdjustmentReceipt(document.uuid, bhConstants.flux.INVENTORY_ADJUSTMENT);
       })
       .catch(Notify.handleError);
   }

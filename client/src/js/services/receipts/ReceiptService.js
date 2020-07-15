@@ -182,6 +182,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
+  service.stockAdjustmentReport = stockAdjustmentReport;
 
   // stock requisition receipt
   function stockRequisitionReceipt(uuid, options) {
@@ -250,6 +251,18 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   // stock adjustment receipt
   function stockAdjustmentReceipt(uuid, options) {
     return genericStockReceipt(uuid, options);
+  }
+
+  // render the "articles in stock" report for the stock adjustment
+  function stockAdjustmentReport(depotUuid, dateTo, options) {
+    const opts = Object.assign(options, {
+      depot_uuid : depotUuid,
+      dateTo,
+      posReceipt : false,
+      reportId : 12,
+    });
+    const route = '/reports/stock/inventories';
+    return fetch(route, opts);
   }
 
   // ========================== end stock ==========================

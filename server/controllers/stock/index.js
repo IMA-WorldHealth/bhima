@@ -46,7 +46,6 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
 // stock transfers
 exports.getStockTransfers = getStockTransfers;
 
-
 /**
  * POST /stock/lots
  * Create a new stock lots entry
@@ -215,7 +214,7 @@ function createIntegration(req, res, next) {
 
 /**
  * POST /stock/inventory_adjustment
- * stock inventory adjustement
+ * Stock inventory adjustement
  */
 async function createInventoryAdjustment(req, res, next) {
   try {
@@ -225,6 +224,7 @@ async function createInventoryAdjustment(req, res, next) {
       throw new Error('No defined depot');
     }
 
+    // only consider lots that have changed.
     const lots = movement.lots
       .filter(l => l.quantity !== l.oldQuantity);
 
@@ -236,8 +236,10 @@ async function createInventoryAdjustment(req, res, next) {
 
     const positiveAdjustmentUuid = uuid();
     const negativeAdjustmentUuid = uuid();
+
     // get all lots with positive quantities
     const positiveQuantities = lots.filter(lot => lot.oldQuantity > 0);
+
     // get all lots with negative quantities
     // negative quantities occurs during some extra stock exit when quantity in stock
     // is already under or equal to zero
@@ -314,6 +316,7 @@ async function createInventoryAdjustment(req, res, next) {
         delete lot.oldQuantity;
         return lot;
       });
+
     movement.is_exit = 0;
     movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
     movement.lots = positiveLots;
