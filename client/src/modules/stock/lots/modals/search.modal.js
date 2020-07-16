@@ -18,11 +18,15 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
     'entry_date_to', 'expiration_date_from', 'expiration_date_to', 'includeEmptyLot',
+    'is_expired',
   ];
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
   const lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
+
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -50,8 +54,10 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     displayValues.includeEmptyLot = vm.searchQueries.includeEmptyLot;
   };
 
-  // assign already defined custom filters to searchQueries object
-  vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
+  // toggle expired stock
+  vm.onToggleExpired = function onToggleExpired(bool) {
+    vm.searchQueries.is_expired = bool;
+  };
 
   if (data.limit) {
     vm.defaultQueries.limit = data.limit;

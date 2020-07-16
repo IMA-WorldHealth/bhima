@@ -1,5 +1,4 @@
-{
-  "STOCK" : {
+{ "STOCK" : {
     "ALERT"           : "Alert",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
@@ -21,6 +20,7 @@
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
     "EMPTY"           : "You do not have any stock in your depot",
+    "EXPIRED"         : "Expired",
     "ENTRY"           : "Stock Entry",
     "ENTRY_DATE"      : "Entry Date",
     "ENTRY_DOCUMENT"  : "Entry Document",
@@ -161,7 +161,9 @@
     "UNIT_COST"       : "Unit cost",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date",
     "STOCK_COST_DESCRIPTION" : "Monetary values are based on the cost of purchasing inventory, not the selling price",
-    "STOCK_UNIT_COST_ROUNDED" : "The unit cost is rounded with two decimals"
+    "STOCK_UNIT_COST_ROUNDED" : "The unit cost is rounded with two decimals",
+    "TOGGLE_EXPIRED_STOCK" : "Show expired lots?",
+    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired."
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",

@@ -30,6 +30,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
     { key : 'service_uuid', label : 'STOCK.SERVICE' },
+    { key : 'is_expired', label : 'STOCK.EXPIRED' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
