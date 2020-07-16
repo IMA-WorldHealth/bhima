@@ -23,6 +23,8 @@
       "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "Enable to see the balance and the paid amount on an invoice",
       "ENABLE_BARCODES_LABEL" : "Enables barcodes throughout the application",
       "ENABLE_BARCODES_HELP_TEXT" : "Enable to place barcodes on most printed records and enable options to scan barcodes for document inputs.",
+      "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Enable automatic confirmation of purchase orders",
+      "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT" : "Enable automatic confirmation of purchase orders when they are created without requiring manual confirmation",
       "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Enables realtime stock accounting",
       "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured.",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Enable sending automatic reports by email",

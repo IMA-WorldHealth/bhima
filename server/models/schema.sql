@@ -572,6 +572,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_balance_on_invoice_receipt` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,

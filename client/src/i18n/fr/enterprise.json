@@ -23,6 +23,8 @@
       "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "L'activation de cette option permet de voir les montants payés ainsi que le solde pour une facture",
       "ENABLE_BARCODES_LABEL" : "Activer les codes à barres dans l'application",
       "ENABLE_BARCODES_HELP_TEXT" : "L'activation de cette fonction placera des codes à barres sur la plupart des enregistrements imprimés et activera les options permettant de numériser des codes à barres pour les entrées de document.",
+      "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Activer la confirmation automatique des commandes d'achat",
+      "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT" : "Activer la confirmation automatique des bons de commande lorsqu'ils sont créés sans nécessiter de confirmation manuelle.",
       "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Activer la comptabilisation de stock en temps réel",
       "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "L'activation de cette option va écrire automatiquement et en temps réel dans le journal toutes les transactions liées aux mouvements de stock. Les comptes des inventaires et groupes d'inventaire doivent être bien configurés au préalable",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Activer l'envoie des rapports automatiques par email",
