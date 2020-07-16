@@ -74,7 +74,6 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler),
   );
 
-
   // list all movement relatives to 'Service Administration'
   it(
     `GET /stock/lots/movements?service_uuid=...
@@ -184,14 +183,29 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler),
   );
 
-  it(
-    `/stock/inventories/depots Get Inventories in Stock By Depot`,
-    () => agent.get(`/stock/inventories/depots?depot_uuid=${shared.depotPrincipalUuid}&limit=1000&includeEmptyLot=0`)
-      .then((res) => {
-        helpers.api.listed(res, 4);
+  it(`GET /stock/inventories/depots filters on expired lots`,
+    () => agent.get(`/stock/inventories/depots`)
+      .query({ limit : 1000, includeEmptyLot : 0, is_expired : 1 })
+      .then(res => {
+        helpers.api.listed(res, 5);
+      })
+      .catch(helpers.handler));
 
-        // This is the test of automatically calculated key values
-        /*
+  it(`GET /stock/inventories/depots filters on non-expired lots`,
+    () => agent.get(`/stock/inventories/depots`)
+      .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 })
+      .then(res => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler));
+
+  it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, () => agent.get(`/stock/inventories/depots`)
+    .query({ depot_uuid : shared.depotPrincipalUuid, limit : 1000, includeEmptyLot : 0 })
+    .then((res) => {
+      helpers.api.listed(res, 4);
+
+      // This is the test of automatically calculated key values
+      /*
         expect(res.body[1].quantity).to.be.equal(155);
         expect(res.body[1].avg_consumption).to.be.equal(10);
         expect(res.body[1].S_SEC).to.be.equal(10);
@@ -207,21 +221,20 @@ describe('(/stock/) The Stock HTTP API', () => {
         expect(res.body[2].S_MONTH).to.be.equal(3);
         */
 
-        expect(res.body[1].quantity).to.be.equal(150);
-        expect(res.body[1].avg_consumption).to.be.equal(10);
-        expect(res.body[1].S_SEC).to.be.equal(10);
-        expect(res.body[1].S_MIN).to.be.equal(20);
-        expect(res.body[1].S_MAX).to.be.equal(20);
-        expect(res.body[1].S_MONTH).to.be.equal(15);
+      expect(res.body[1].quantity).to.be.equal(150);
+      expect(res.body[1].avg_consumption).to.be.equal(10);
+      expect(res.body[1].S_SEC).to.be.equal(10);
+      expect(res.body[1].S_MIN).to.be.equal(20);
+      expect(res.body[1].S_MAX).to.be.equal(20);
+      expect(res.body[1].S_MONTH).to.be.equal(15);
 
-        expect(res.body[2].quantity).to.be.equal(180300);
-        expect(res.body[2].avg_consumption).to.be.equal(49916.67);
-        expect(res.body[2].S_SEC).to.be.equal(49916.67);
-        expect(res.body[2].S_MIN).to.be.equal(99833.34);
-        expect(res.body[2].S_MAX).to.be.equal(99833.34);
-        expect(res.body[2].S_MONTH).to.be.equal(3);
+      expect(res.body[2].quantity).to.be.equal(180300);
+      expect(res.body[2].avg_consumption).to.be.equal(49916.67);
+      expect(res.body[2].S_SEC).to.be.equal(49916.67);
+      expect(res.body[2].S_MIN).to.be.equal(99833.34);
+      expect(res.body[2].S_MAX).to.be.equal(99833.34);
+      expect(res.body[2].S_MONTH).to.be.equal(3);
 
-      })
-      .catch(helpers.handler),
-  );
+    })
+    .catch(helpers.handler));
 });

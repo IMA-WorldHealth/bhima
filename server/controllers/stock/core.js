@@ -104,6 +104,11 @@ function getLotFilters(parameters) {
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
 
+  // NOTE(@jniles)
+  // is_expired is based off the server time, not off the client time.
+  filters.custom('is_expired',
+    'IF(DATE(l.expiration_date) < DATE(NOW()), 1, 0) = ?');
+
   // NOTE(@jniles):
   // this filters the lots on the entity_uuid associated with the text reference.  It is
   // an "IN" filter because the patient could have a patient_uuid or debtor_uuid specified.
@@ -450,7 +455,6 @@ function getStockConsumption(periodIds) {
   return db.exec(sql, [periodIds]);
 }
 
-
 /**
  * @function getDailyStockConsumption
  *
@@ -558,20 +562,20 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
     ROUND((w.quantity / w.days) * 30.5) AS quantity,
     w.code, w.text, w.days,
     BUID(w.depot_uuid) depot_uuid, BUID(w.inventory_uuid) uuid
-  FROM 
+  FROM
   (
     SELECT
       z.text, SUM(IF(z.date, 1, 0)) days, SUM(z.consumption) consumption, SUM(z.quantity) quantity,
       z.depot_uuid, z.inventory_uuid, z.code
     FROM (
-      SELECT 
+      SELECT
         count(*) consumption, SUM(sm.quantity) quantity,  sm.date,
         i.uuid inventory_uuid, i.text, i.code,
         sm.depot_uuid
-      FROM stock_movement sm 
+      FROM stock_movement sm
       JOIN lot l ON l.uuid = sm.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
-      WHERE 
+      WHERE
         (DATE(sm.date) BETWEEN ? AND ?) AND flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE})
       GROUP BY sm.depot_uuid, i.uuid, DATE(sm.date)
       HAVING quantity > 0
