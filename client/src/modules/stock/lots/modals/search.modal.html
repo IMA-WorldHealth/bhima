@@ -69,6 +69,15 @@
             mode="clean">
           </bh-date-interval>
 
+          <bh-yes-no-radios
+            label="STOCK.TOGGLE_EXPIRED_STOCK"
+            value="$ctrl.searchQueries.is_expired"
+            name="is_expired"
+            help-text="STOCK.TOGGLE_EXPIRED_STOCK_HELP_TEXT"
+            on-change-callback="$ctrl.onToggleExpired(value)">
+            <bh-clear on-clear="$ctrl.clear('is_expired')"></bh-clear>
+          </bh-yes-no-radios>
+
           <!-- include exhausted lots  -->
           <div class="checkbox">
             <label>

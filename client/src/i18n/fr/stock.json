@@ -21,6 +21,7 @@
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
     "EMPTY"           : "Vous n'avez aucun stock dans votre dépôt",
+    "EXPIRED"         : "Expiré",
     "ENTRY"           : "Entrée de stock",
     "ENTRY_DATE"      : "Date d'entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",
@@ -161,7 +162,9 @@
     "UNIT_COST"       : "Coût unitaire",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date",
     "STOCK_COST_DESCRIPTION" : "Les valeurs monetaires sont basées sur le coût d'achat de stock et non sur le prix de vente",
-    "STOCK_UNIT_COST_ROUNDED" : "Le cout unitaire est arrondi avec deux decimales"
+    "STOCK_UNIT_COST_ROUNDED" : "Le cout unitaire est arrondi avec deux decimales",
+    "TOGGLE_EXPIRED_STOCK" : "Afficher le stock expiré?",
+    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Cela ajoutera un filtre sur les lots arrivés à expiration."
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
