@@ -91,8 +91,7 @@ ALTER TABLE `sector` DROP INDEX `sector_1`;
 
 ALTER TABLE `village` DROP INDEX `village_1`;
 
-
-/**
+/*
 @author jmcameron
 @date: 2020-07-17
 @description Add flag for automatic confirmation of purchase orders to the enterprise settings. [PR 4733]
