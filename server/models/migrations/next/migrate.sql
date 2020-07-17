@@ -98,4 +98,4 @@ ALTER TABLE `village` DROP INDEX `village_1`;
 Add flag for automatic confirmation of purchase orders to the enterprise settings
 */
 
-ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 1;
