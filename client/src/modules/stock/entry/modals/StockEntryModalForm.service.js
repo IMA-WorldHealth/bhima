@@ -56,7 +56,7 @@ function StockEntryModalForm(uuid) {
 
   StockForm.prototype.setUnitCost = function setUnitCost(value) {
     this.unit_cost = value;
-  }
+  };
 
   StockForm.prototype.removeItem = function removeItem(idx) {
     this.rows.splice(idx, 1);
@@ -118,7 +118,7 @@ function StockEntryModalForm(uuid) {
       errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
     }
 
-    if (this.unit_cost == undefined) {
+    if (this.unit_cost === undefined) {
       errors.push(ERR_MISSING_LOT_UNIT_COST);
     }
 
