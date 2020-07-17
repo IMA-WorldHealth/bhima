@@ -138,7 +138,7 @@ function PurchaseListController(
       .catch(handler);
   }
 
-  /** load purchase orders */
+  /* load purchase orders */
   function load(filters) {
     // flush error and loading states
     vm.hasError = false;

@@ -10,7 +10,7 @@ IntegerValidatorDirective.$inject = [];
  * input with a valid ngModel.
  *
  * @example
- * <input name="int" type="number" bhInteger>
+ * <input name="int" type="number" bh-integer>
  *
  * <div ng-messages="form.int.$error">
  *   <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
