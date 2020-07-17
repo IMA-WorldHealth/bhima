@@ -14,6 +14,7 @@ StockEntryModalForm.$inject = ['uuid'];
 function StockEntryModalForm(uuid) {
   const ERR_NO_ROWS = 'STOCK.ERRORS.NO_ROWS';
   const ERR_LOT_QUANTITY_OVER_GLOBAL = 'STOCK.ERRORS.LOT_QUANTITY_OVER_GLOBAL';
+  const ERR_MISSING_LOT_UNIT_COST = 'STOCK.ERRORS.MISSING_LOT_UNIT_COST';
   const ERR_INVALID_QUANTITY = 'STOCK.ERRORS.INVALID_LOT_QUANTITY';
   const ERR_INVALID_EXPIRATION = 'STOCK.ERRORS.INVALID_LOT_EXPIRATION';
   const ERR_INVALID_IDENTIFIER = 'STOCK.ERRORS.MISSING_LOT_NAME';
@@ -35,6 +36,7 @@ function StockEntryModalForm(uuid) {
   function StockForm(opts = {}) {
     this.rows = [];
     this.opts = opts;
+    this.unit_cost = opts.unit_cost || 0.0;
 
     if (opts.rows) {
       this.rows = opts.rows.map(row => new Lot(row));
@@ -51,6 +53,10 @@ function StockEntryModalForm(uuid) {
   StockForm.prototype.setMaxQuantity = function setMaxQuantity(value) {
     this.opts.max_quantity = value;
   };
+
+  StockForm.prototype.setUnitCost = function setUnitCost(value) {
+    this.unit_cost = value;
+  }
 
   StockForm.prototype.removeItem = function removeItem(idx) {
     this.rows.splice(idx, 1);
@@ -110,6 +116,10 @@ function StockEntryModalForm(uuid) {
 
     if (this.opts.max_quantity < this.total()) {
       errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
+    }
+
+    if (this.unit_cost == undefined) {
+      errors.push(ERR_MISSING_LOT_UNIT_COST);
     }
 
     this.rows.forEach(lot => {

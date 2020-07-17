@@ -40,6 +40,9 @@
         <input
           class="form-control"
           type="number"
+          required
+          min="0"
+          ng-change="$ctrl.onChangeUnitCost()"
           ng-model="$ctrl.stockLine.unit_cost"
           ng-model-options="{ '*' : '$inherit' }">
         <span class="input-group-addon">{{ $ctrl.enterprise.currencySymbol }}</span>
