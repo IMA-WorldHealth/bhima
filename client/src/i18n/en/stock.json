@@ -41,7 +41,7 @@
       "LOT_ROW_WITH_ERRORS" : "Lot line contains invalid data",
       "EXCESSIVE_QUANTITY": "Excessive Quantity",
       "LOT_QUANTITY_OVER_GLOBAL": "Total lot quantity is more than the global quantity",
-      "MISSING_LOT_UNIT_COST": "A value is required for lot unit cost",
+      "MISSING_LOT_UNIT_COST": "A non-negative value is required for lot unit cost",
       "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiration date"
     },
     "EXPIRATION_DATE" : "Expiration Date",
