@@ -880,6 +880,12 @@ a[disabled] {
   background-color: #ffb3b3 !important;
 }
 
+.expired {
+  /* text-decoration : line-through; */
+  background-color: #ffb3b3 !important;
+}
+
+
 .dropdown-menu {
   z-index : 9999;
 }
