@@ -145,13 +145,13 @@ function StockDefineLotsModalController(
   }
 
   function onChanges() {
-    vm.form.setMaxQuantity(vm.stockLine.quantity);
     vm.errors = vm.form.validate();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
   // validate only if there are lots rows
   function onChangeQuantity() {
+    vm.form.setMaxQuantity(vm.stockLine.quantity);
     if (!vm.form.rows.length) { return; }
     onChanges();
   }
