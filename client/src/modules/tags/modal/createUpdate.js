@@ -3,11 +3,17 @@ angular.module('bhima.controllers')
 
 TagsModalController.$inject = [
   'data', '$state', 'TagsService', 'NotifyService',
-  '$uibModalInstance', '$rootScope',
+  '$uibModalInstance', '$rootScope', 'ColorService',
 ];
 
-function TagsModalController(data, $state, TagsService, Notify, Instance, $rootScope) {
+function TagsModalController(
+  data, $state, TagsService, Notify, Instance, $rootScope, Colors,
+) {
   const vm = this;
+  vm.colors = Colors.list.map(e => {
+    e.iconColor = { color : e.value, 'font-size' : '14px' };
+    return e;
+  });
   vm.close = Instance.close;
   vm.submit = submit;
 

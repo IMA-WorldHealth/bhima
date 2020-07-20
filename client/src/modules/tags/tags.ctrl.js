@@ -41,7 +41,10 @@ function TagsController($uibModal, Tags, Modal,
     vm.errorState = false;
     Tags.read()
       .then(tags => {
-        vm.gridOptions.data = tags;
+        vm.gridOptions.data = tags.map(t => {
+          t.iconColor = { color : t.color, 'font-size' : '14px' };
+          return t;
+        });
       })
       .catch(err => {
         vm.errorState = true;
@@ -58,6 +61,7 @@ function TagsController($uibModal, Tags, Modal,
     field : 'name',
     displayName : 'FORM.LABELS.NAME',
     headerCellFilter : 'translate',
+    cellTemplate : '/modules/tags/templates/name.cell.html',
   }, {
     field : 'actions',
     enableFiltering : false,

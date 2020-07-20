@@ -2185,6 +2185,7 @@ CREATE TABLE `service_fee_center` (
 CREATE TABLE `tags`(
   `uuid` BINARY(16) NOT NULL PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
+  `color` VARCHAR(20) NULL,
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

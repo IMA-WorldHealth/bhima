@@ -12,14 +12,26 @@
     </div>
   
     <div class="modal-body">
-      <div class="row">
-        <div class="form-group" ng-class="{ 'has-error' : tagsForm.name.$invalid && tagsForm.$submitted }">
-          <label class="control-label" translate>FORM.LABELS.NAME</label>
-          <input type="text" class="form-control col-md-9" name="name" ng-model="ModalCtrl.tags.name" required>
-          <div class="help-block" ng-messages="tagsForm.name.$error" ng-show="tagsForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
+      <div class="form-group" ng-class="{ 'has-error' : tagsForm.name.$invalid && tagsForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.NAME</label>
+        <input type="text" class="form-control col-md-9" name="name" ng-model="ModalCtrl.tags.name" required>
+        <div class="help-block" ng-messages="tagsForm.name.$error" ng-show="tagsForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>TAG.SELECT.COLOR</label>
+
+        <ui-select tagging name="color" ng-model="ModalCtrl.tags.color">
+          <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
+            <i class="fa fa-circle" ng-style="$select.selected.iconColor"></i>
+            <span translate>{{$select.selected.name}}</span>
+          </ui-select-match>
+          <ui-select-choices repeat="color.value as color in ModalCtrl.colors | filter: {'name' :$select.search}">
+            <span><i class="fa fa-circle" ng-style="color.iconColor"></i> <span translate>{{ color.name }}</span></span>
+          </ui-select-choices>
+        </ui-select> 
       </div>
     </div>
   

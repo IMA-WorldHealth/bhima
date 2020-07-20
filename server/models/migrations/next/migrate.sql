@@ -1,12 +1,10 @@
 /* migration script from the version 1.14.0 to the next */
-    /* migration script from the version 1.14.0 to the next */
-    /*
-    @jeremielodi
-    2020-08-06
-    rename all foreign key constraints
-    */
 
-
+/*
+@jeremielodi
+2020-08-06
+rename all foreign key constraints
+*/
 
 -- DROP all foreign keys from a table
 
@@ -695,3 +693,9 @@ WHERE report_key = "collectionCapacity";
  * @description: add address field in the enterprise table
  */
 ALTER TABLE enterprise ADD COLUMN `address` VARCHAR(200) DEFAULT NULL;
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-07-20
+ */
+ALTER TABLE `tags` ADD COLUMN `color` VARCHAR(50) NULL;
