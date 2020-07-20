@@ -90,3 +90,11 @@ ALTER TABLE `province` DROP INDEX `province_1`;
 ALTER TABLE `sector` DROP INDEX `sector_1`;
 
 ALTER TABLE `village` DROP INDEX `village_1`;
+
+/**
+@author: jmcameron
+@date: 2020-07-20
+@description: Convert enable_daily_consumption to a 1-bit boolean from SMALLINT(5)
+*/
+
+ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
