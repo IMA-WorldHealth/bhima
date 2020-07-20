@@ -32,6 +32,7 @@ function StockLotsController(
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
+    rowTemplate : '/modules/stock/lots/templates/row.expired.html',
     showGridFooter : true,
     gridFooterTemplate : LotsRegistry.gridFooterTemplate,
     onRegisterApi,
