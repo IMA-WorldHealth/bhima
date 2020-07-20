@@ -192,9 +192,11 @@ describe('StockEntryModalForm', () => {
     third.quantity = -100;
 
     const form = new StockForm({ rows : [first, second, third], expires : true });
+    delete form.unit_cost;
     const errors = form.validate();
 
     const expectedErrors = [
+      'STOCK.ERRORS.MISSING_LOT_UNIT_COST',
       'STOCK.ERRORS.INVALID_LOT_EXPIRATION',
       'STOCK.ERRORS.INVALID_LOT_QUANTITY',
     ];
