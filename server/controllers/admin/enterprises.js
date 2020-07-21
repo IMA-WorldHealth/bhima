@@ -27,7 +27,7 @@ exports.list = function list(req, res, next) {
         enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt,
         enable_barcodes, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation,
         enable_auto_email_report, enable_index_payment_system,
-        month_average_consumption, enable_daily_consumption
+        month_average_consumption, enable_daily_consumption, location_default_type_root
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -83,7 +83,7 @@ function lookupEnterprise(id) {
   const sql = `
     SELECT id, name, abbr, email, po_box, phone, address,
       BUID(location_id) AS location_id, logo, currency_id,
-      gain_account_id, loss_account_id
+      gain_account_id, loss_account_id, location_default_type_root
     FROM enterprise WHERE id = ?;
   `;
 
@@ -121,7 +121,8 @@ function lookupByProjectId(id) {
     SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone, e.address,
       BUID(e.location_id) AS location_id, e.logo, e.currency_id,
       e.gain_account_id, e.loss_account_id,
-      CONCAT_WS(' ', village.name, sector.name, province.name) AS location
+      CONCAT_WS(' ', village.name, sector.name, province.name) AS location,
+      e.location_default_type_root
     FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
       JOIN village ON e.location_id = village.uuid
       JOIN sector ON village.sector_uuid = sector.uuid

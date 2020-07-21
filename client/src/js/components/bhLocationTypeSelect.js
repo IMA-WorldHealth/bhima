@@ -8,6 +8,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       required : '@?',
       label : '@?',
+      name  : '@?',
     },
   });
 
@@ -22,6 +23,8 @@ LocationTypeSelectController.$inject = [
 function LocationTypeSelectController(locationService, Notify, $translate) {
   const $ctrl = this;
   $ctrl.label = $ctrl.label || 'FORM.LABELS.TYPE';
+  $ctrl.name = $ctrl.name || 'location_type_id';
+
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
     locationService.types()

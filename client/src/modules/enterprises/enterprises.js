@@ -66,6 +66,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
       .then(enterprises => {
+        console.log('EQWWWWWWwwwwwwww');
+        console.log(enterprises);
+
         vm.hasEnterprise = (enterprises.length > 0);
         vm.enterprises = vm.hasEnterprise ? enterprises : [];
 
@@ -92,7 +95,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   }
 
   function onSelectLocationTypeSelect(type) {
-    vm.enterprise.location_type_default_root = type.id;
+    vm.enterprise.location_default_type_root = type.id;
   }
 
   // form submission
@@ -110,6 +113,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
     const creation = (vm.hasEnterprise === false);
     const changes = util.filterFormElements(form, true);
+
+    console.log('THI CHANGESSSSssssssssssss');
+    console.log(changes);
 
     Object.keys(vm.enterprise.settings).forEach(key => {
       delete changes[key];

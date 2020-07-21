@@ -8,7 +8,7 @@
     </label>
     
     <ng-transclude></ng-transclude>
-    <ui-select name="location_type_id" 
+    <ui-select name="{{$ctrl.name}}" 
       ng-required ="$ctrl.required"
       ng-model="$ctrl.location_type_id"
       on-select="$ctrl.onSelect($item, $model)">

@@ -110,6 +110,14 @@
                   on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
                   required="false">
                 </bh-account-select>
+                <hr/>
+                <bh-location-type-select
+                  location-type-id="EnterpriseCtrl.enterprise.location_default_type_root"
+                  label="ENTERPRISE.HIGHEST_DEFAULT_LOCATION_TYPE"
+                  name="location_default_type_root"
+                  on-select-callback="EnterpriseCtrl.onSelectLocationTypeSelect(type)"
+                  required="false">
+                </bh-location-type-select>
               </div>
 
               <div class="panel-footer text-right" id="submission">
@@ -167,15 +175,6 @@
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
-
-                <bh-location-type-select
-                  location-type-id="EnterpriseCtrl.location_type_default_root"
-                  label="ENTERPRISE.HIGHEST_DEFAULT_LOCATION_TYPE"
-                  on-select-callback="EnterpriseCtrl.onSelectLocationTypeSelect(grade)"
-                  required="true">
-                </bh-location-type-select>
-
-                <hr/>
                 <bh-location-select
                   name="location_id"
                   location-uuid="EnterpriseCtrl.enterprise.location_id">
