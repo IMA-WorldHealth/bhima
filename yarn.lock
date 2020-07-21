@@ -416,6 +416,11 @@
   resolved "https://registry.yarnpkg.com/@uirouter/core/-/core-6.0.4.tgz#fcdc75ab10f1035176acf87a27d9d27a0101ecf9"
   integrity sha512-TQ9XOzZY+jmWKkU4993MAEBIy7Bs3kijDzj+A6RHR8gq/3UoQm3Q/l1igfao5GZyBjid7eRVeipPK14ovCYQ3g==
 
+"@uirouter/core@6.0.6":
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/@uirouter/core/-/core-6.0.6.tgz#4bea0ca88790a939d8e84ba05a31b96f50d9abe8"
+  integrity sha512-+i1iNaPQRp1JoEnxi4EsTX30bSvkWtPEenENWdvdIzX615Q3WCWwnbW9DtrwX9gSD5qmWEaQEtGMU0uF3qJ+1g==
+
 JSONStream@^1.0.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
@@ -620,11 +625,12 @@ angular-ui-grid@^4.8.0:
   dependencies:
     angular ">=1.4.0 1.7.x"
 
-angular-ui-router@angular-ui/angular-ui-router-bower#1.0.0-rc.1:
-  version "1.0.0-rc.1"
-  resolved "https://codeload.github.com/angular-ui/angular-ui-router-bower/tar.gz/06f6ab4b7593a2895293450409a2f9a09cbc8d86"
+angular-ui-router@^1.0.27:
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/angular-ui-router/-/angular-ui-router-1.0.27.tgz#998c14068dab5d9420016b7e0899ab2b74239c20"
+  integrity sha512-Y2I1Z0knCpYWs5T4WSCucSf2PfAEx+2ANGZmBX8ZZKo5KVtSUb0YpfeTQRHz9XAPr9Y7bBcQox1H3dOQS7ouEQ==
   dependencies:
-    ui-router-core "3.1.0"
+    "@uirouter/core" "6.0.6"
 
 "angular@>=1.2.22 <2", angular@^1.8.0:
   version "1.8.0"
@@ -9388,11 +9394,6 @@ uglify-to-browserify@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
   integrity sha1-bgkk1r2mta/jSeOabWMoUKD4grc=
-
-ui-router-core@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ui-router-core/-/ui-router-core-3.1.0.tgz#c297e8198631ab2e36892a95d0f9a92c18efbc17"
-  integrity sha1-wpfoGYYxqy42iSqV0PmpLBjvvBc=
 
 ui-select@0.17.1:
   version "0.17.1"
