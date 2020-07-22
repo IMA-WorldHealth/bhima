@@ -68,6 +68,7 @@
     "INVENTORY"       : "Inventory",
     "INVENTORY_GROUP" : "Inventory Group",
     "INVENTORY_NOT_AVAILABLE" : "Inventories not available",
+    "IS_IN_OF_RISK_EXPIRATION" : "At risk of expiration",
     "PRODUCT_NOT_AVAILABLE" : "Products not available",
     "IMPORT" : {
       "STOCK_FROM_FILE" : "Import stock from a file",

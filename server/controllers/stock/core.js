@@ -731,6 +731,13 @@ function processMultipleLots(inventories) {
         lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
         lotLifetime += lot.S_LOT_LIFETIME;
 
+        const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
+        const today = new Date();
+        // if we have more months of stock than the expiration date,
+        // then we'll need to label these are in risk of expiration
+        const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
+        const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
+        lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
         flattenLots.push(lot);
       });
     });

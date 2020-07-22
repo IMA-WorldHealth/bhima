@@ -121,7 +121,16 @@ function LotsRegistryService(uiGridConstants, Session) {
         direction : uiGridConstants.DESC,
         priority : 3,
       },
-    }, {
+    },
+    {
+      field : 'IS_IN_RISK_EXPIRATION',
+      displayName : 'STOCK.IS_IN_OF_RISK_EXPIRATION',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/in_risk_of_expiration.html',
+      cellClass : 'text-right',
+      type : 'number',
+    },
+    {
       field : 'S_RISK_QUANTITY',
       displayName : 'STOCK.RISK_QUANTITY',
       headerCellFilter : 'translate',
