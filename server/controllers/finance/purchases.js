@@ -244,7 +244,6 @@ function create(req, res, next) {
     .done();
 }
 
-
 /**
  * @method list
  *
@@ -516,7 +515,6 @@ function purchaseBalance(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @function purchaseState
