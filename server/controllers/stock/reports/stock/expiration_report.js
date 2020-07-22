@@ -1,9 +1,7 @@
 const {
-  _, db, util, ReportManager, pdfOptions, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
+  _, db, ReportManager, pdfOptions, STOCK_EXPIRATION_REPORT_TEMPLATE,
 } = require('../common');
 const stockCore = require('../../core');
-const i18n = require('../../../../lib/helpers/translate');
-const chartjs = require('../../../../lib/chart');
 /**
    * @method stockEntryReport
    *
@@ -13,7 +11,7 @@ const chartjs = require('../../../../lib/chart');
    *
    * GET /reports/stock/consumption_graph
    */
-async function stockConsumptionGrathReport(req, res, next) {
+async function stockExpirationReport(req, res, next) {
   try {
 
     const params = _.clone(req.query);
@@ -23,7 +21,7 @@ async function stockConsumptionGrathReport(req, res, next) {
     });
 
     // set up the report with report manager
-    const report = new ReportManager(STOCK_CONSUMPTION_GRAPTH_TEMPLATE, req.session, optionReport);
+    const report = new ReportManager(STOCK_EXPIRATION_REPORT_TEMPLATE, req.session, optionReport);
 
     const depotSql = 'SELECT text FROM depot WHERE uuid=?';
     const options = req.query;
@@ -40,29 +38,36 @@ async function stockConsumptionGrathReport(req, res, next) {
       dateFrom = period.start_date;
       dateTo = period.end_date;
     }
-    options.consumption = true;
-    const result = await stockCore.getDailyStockConsumption(options);
-    util.dateFormatter(result, 'DD');
+    const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
 
-    const reportType = options.reportType || 'quantity';
+    const resultByDepot = _.groupBy(lots, 'depot_uuid');
+    const depotUuids = Object.keys(resultByDepot);
+    const result = {};
+    depotUuids.forEach(depotUuid => {
+      const depotLots = resultByDepot[depotUuid].filter(row => {
+        return row.status === 'stock_out' || row.IS_IN_RISK_EXPIRATION;
+      });
+
+      if (depotLots.length > 0) { // there are lots in this depot
+        let total = 0;
+        depotLots.forEach(lot => {
+          lot.value = lot.mvt_quantity * lot.unit_cost;
+          total += lot.value;
+        });
+
+        result[depotUuid] = {
+          rows : depotLots,
+          total,
+          depot_name : depotLots[0].depot_text,
+        };
+      }
+    });
 
     const reportResult = await report.render({
       dateFrom,
       dateTo,
       depot,
-      chartjs : chartjs.barChart({
-        label : 'date',
-        data : result,
-        showLegend : true,
-        item : {
-          uuid : 'inventory_uuid',
-          name : 'inventory_name',
-          value : options.reportType || 'quantity',
-        },
-        yAxesLabelString : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
-        xAxesLabelString : i18n(options.lang)('FORM.LABELS.DAYS'),
-        canvasId : 'stockConsumptionChart',
-      }),
+      result,
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
@@ -70,4 +75,4 @@ async function stockConsumptionGrathReport(req, res, next) {
   }
 }
 
-module.exports = stockConsumptionGrathReport;
+module.exports = stockExpirationReport;
