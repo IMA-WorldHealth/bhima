@@ -90,3 +90,12 @@ ALTER TABLE `province` DROP INDEX `province_1`;
 ALTER TABLE `sector` DROP INDEX `sector_1`;
 
 ALTER TABLE `village` DROP INDEX `village_1`;
+
+
+/*
+@author jmcameron
+@description
+Add flag for automatic confirmation of purchase orders to the enterprise settings
+*/
+
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 1;
