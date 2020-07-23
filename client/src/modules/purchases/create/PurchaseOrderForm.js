@@ -106,7 +106,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this._invalid = invalidItems.length > 0;
     this._valid = !this._invalid;
 
-
     return invalidItems;
   };
 
