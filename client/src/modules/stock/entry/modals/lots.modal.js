@@ -16,6 +16,7 @@ function StockDefineLotsModalController(
   // initialize the form instance
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
+    unit_cost : Data.stockLine.unit_cost,
     expires : Data.stockLine.expires,
     rows : Data.stockLine.lots,
   });
@@ -37,6 +38,7 @@ function StockDefineLotsModalController(
   vm.onLotBlur = onLotBlur;
   vm.onChanges = onChanges;
   vm.onChangeQuantity = onChangeQuantity;
+  vm.onChangeUnitCost = onChangeUnitCost;
   vm.onDateChange = onDateChange;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
@@ -143,14 +145,19 @@ function StockDefineLotsModalController(
   }
 
   function onChanges() {
-    vm.form.setMaxQuantity(vm.stockLine.quantity);
     vm.errors = vm.form.validate();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
   // validate only if there are lots rows
   function onChangeQuantity() {
+    vm.form.setMaxQuantity(vm.stockLine.quantity);
     if (!vm.form.rows.length) { return; }
+    onChanges();
+  }
+
+  function onChangeUnitCost() {
+    vm.form.setUnitCost(vm.stockLine.unit_cost);
     onChanges();
   }
 
