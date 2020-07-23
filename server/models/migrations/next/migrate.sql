@@ -92,10 +92,18 @@ ALTER TABLE `sector` DROP INDEX `sector_1`;
 ALTER TABLE `village` DROP INDEX `village_1`;
 
 
-/*
+/**
 @author jmcameron
-@description
-Add flag for automatic confirmation of purchase orders to the enterprise settings
+@date: 2020-07-17
+@description Add flag for automatic confirmation of purchase orders to the enterprise settings. [PR 4733]
 */
 
 ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 1;
+
+/**
+@author: jmcameron
+@date: 2020-07-20
+@description: Convert enable_daily_consumption to a 1-bit boolean (from SMALLINT(5)).  [PR 4745]
+*/
+
+ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
