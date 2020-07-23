@@ -1,4 +1,3 @@
-
 /**
  * @module lots/
  *
@@ -24,6 +23,7 @@ exports.assignments = assignments;
  */
 function details(req, res, next) {
   const bid = db.bid(req.params.uuid);
+  let info = {};
   const query = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
@@ -36,7 +36,18 @@ function details(req, res, next) {
 
   db.one(query, [bid])
     .then(row => {
-      res.status(200).json(row);
+      info = row;
+      const queryTags = `
+        SELECT BUID(t.uuid) uuid, t.name, t.color
+        FROM tags t
+        JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+        WHERE lt.lot_uuid = ?
+      `;
+      return db.exec(queryTags, [bid]);
+    })
+    .then(tags => {
+      info.tags = tags;
+      res.status(200).json(info);
     })
     .catch(next)
     .done();
@@ -46,21 +57,34 @@ function details(req, res, next) {
  * PUT /stock/lots/:uuid
  * Edit a stock lot
  */
-function update(req, res, next) {
+async function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
   const allowedToEdit = ['label', 'expiration_date', 'unit_cost'];
   const params = _.pick(req.body, allowedToEdit);
+  const { tags } = req.body;
 
   if (params.expiration_date) {
     params.expiration_date = moment(params.expiration_date).format('YYYY-MM-DD');
   }
 
-  db.exec('UPDATE lot SET ? WHERE uuid = ?', [params, bid])
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch(next)
-    .done();
+  try {
+    await db.exec('UPDATE lot SET ? WHERE uuid = ?', [params, bid]);
+
+    if (tags) {
+      // update tags
+      const transaction = db.transaction();
+      transaction.addQuery('DELETE FROM lot_tag WHERE lot_uuid = ?', [bid]);
+      tags.forEach(uuid => {
+        const binaryTagUuid = db.bid(uuid);
+        transaction.addQuery('INSERT INTO lot_tag(lot_uuid, tag_uuid) VALUES (?, ?);', [bid, binaryTagUuid]);
+      });
+      await transaction.execute();
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**

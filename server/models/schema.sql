@@ -1878,6 +1878,14 @@ CREATE TABLE `lot` (
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `lot_tag`;
+CREATE TABLE `lot_tag` (
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `tag_uuid`          BINARY(16) NOT NULL,
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `stock_assign`;
 CREATE TABLE `stock_assign` (
   `uuid`              BINARY(16) NOT NULL,

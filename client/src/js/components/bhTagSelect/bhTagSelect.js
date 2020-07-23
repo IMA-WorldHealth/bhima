@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhTagSelect', {
-    templateUrl : 'js/components/bhTagSelect/bhTagSelect.tmpl.html',
+    templateUrl : 'js/components/bhTagSelect/bhTagSelect.html',
     controller  : TagSelectController,
     transclude  : true,
     bindings    : {
@@ -29,6 +29,10 @@ function TagSelectController(Tags, Notify) {
   $ctrl.onChanges = () => {
     $ctrl.onSelectCallback({ tags : $ctrl.tagUuids });
     loadTags();
+  };
+
+  $ctrl.getTagColor = t => {
+    return t ? { color : t.color, 'font-size' : '14px' } : null;
   };
 
   function loadTags() {

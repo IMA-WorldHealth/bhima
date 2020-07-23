@@ -18,11 +18,12 @@
       ng-required="$ctrl.required">
 
       <ui-select-match placeholder="{{ 'FORM.SELECT.TAGS' | translate }}">
-        <span>{{$item.display_name}}</span>
+        <i class="fa fa-circle" ng-style="$ctrl.getTagColor($item)"></i>
+        <span>{{$item.name}}</span>
       </ui-select-match>
 
       <ui-select-choices repeat="tag.uuid as tag in $ctrl.tags | filter: { 'name': $select.search }">
-        <strong ng-bind-html="tag.name | highlight:$select.search"></strong>
+        <span><i class="fa fa-circle" ng-style="$ctrl.getTagColor($item)"></i> <span translate>{{ tag.name }}</span></span>
       </ui-select-choices>
     </ui-select>    
 
