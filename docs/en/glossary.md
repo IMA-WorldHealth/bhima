@@ -9,7 +9,7 @@ The average monthly consumption is a measure of the consumption of a drug or
 medication by patients or hospital services.  Importantly, the AMC does _not_
 include the loss of drugs due to expiry, theft, or other losses.  The AMC may
 be defined for the entire institution or by pharmacy in the institution. In
-French this is CMM.
+French this is  Consommation Mensuelle Moyenne (CMM).
 
 ---
 ## D
@@ -75,9 +75,8 @@ given by manufacturers and are not necessarily unique to BHIMA.
 
 #### STOCK ADJUSTMENT
 When a physical inventory of stock reveals that the actual count of stock
-items differs from the count in the "Theoretical Quantity" (as tracked by the
-BHIMA system), then an "Stock Adjustment" should be performed to update the
-BHIMA system (and the "Theoretical Quantity").
+items in a depot or pharmacy differs from the count in the BHIMA software,
+then an "Stock Adjustment" should be performed to update the BHIMA software.
 
 #### STOCK ENTRY
 "Stock entries" occur when an item of stock is added to a Depot.  Types of
@@ -100,8 +99,7 @@ stock entries include:
 #### STOCK EXIT
 "Stock exits" occur when an item is removed from a Depot.  This includes exits due to:
 
-* **Exit to an individual* - Stock items leaving the depot for use in the
-  hospital or clinic
+* **Exit to an individual** - Stock items leaving the pharmacy or depot directly to a patient.  A stock exit to an individual can optionally be associated with an invoice billed to the patient.
 
 * **Distribution to a service** - Stock items leaving the depot for use by a
   hospital service (such as sutures for the operating room).
