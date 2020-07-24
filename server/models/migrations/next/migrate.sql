@@ -107,3 +107,13 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirma
 */
 
 ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE `village` DROP INDEX `village_1`
+  ('collectionCapacity', 'REPORT.COLLECTION_CAPACITY.TITLE');
+
+/**
+ * @author: jeremielodi
+ * @date: 2020-07-03
+ */
+ALTER TABLE `inventory_group` ADD`tracking_consumption`  TINYINT(1) DEFAULT 1;
+
+ALTER TABLE `inventory_group` CHANGE `expires`  `tracking_expiration`  TINYINT(1) DEFAULT 1;

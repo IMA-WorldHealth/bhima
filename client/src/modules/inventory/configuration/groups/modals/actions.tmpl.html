@@ -72,17 +72,25 @@
 
     <div class="checkbox">
       <label>
-       <input type="checkbox" name="expires" ng-model="$ctrl.session.expires" ng-true-value="1" ng-false-value="0"/>
-       <span translate>INVENTORY.EXPIRES</span>
+       <input type="checkbox" name="unique_item" ng-model= "$ctrl.session.unique_item" ng-true-value="1" ng-false-value="0"/>
+       <span translate>INVENTORY.UNIQUE_ITEM</span>
       </label>
     </div>
 
     <div class="checkbox">
       <label>
-       <input type="checkbox" name="unique_item" ng-model= "$ctrl.session.unique_item" ng-true-value="1" ng-false-value="0"/>
-       <span translate>INVENTORY.UNIQUE_ITEM</span>
+       <input type="checkbox" name="tracking_consumption" ng-model= "$ctrl.session.tracking_consumption" ng-true-value="1" ng-false-value="0"/>
+       <span translate>STOCK.TRACK_CONSUMPTION</span>
       </label>
     </div>
+
+    <div class="checkbox">
+      <label>
+       <input type="checkbox" name="tracking_expiration" ng-model= "$ctrl.session.tracking_expiration" ng-true-value="1" ng-false-value="0"/>
+       <span translate>STOCK.TRACK_EXPIRATION</span>
+      </label>
+    </div>
+
   </div>
 
   <div class="modal-footer">

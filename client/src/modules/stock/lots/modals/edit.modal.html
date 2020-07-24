@@ -27,6 +27,7 @@
         label="STOCK.EXPIRATION_DATE"
         date-value="$ctrl.model.expiration_date"
         on-change="$ctrl.onDateChange(date)"
+        ng-if="$ctrl.trackingExpiration"
         allow-future-date="true"
         required="true">
       </bh-date-editor>
