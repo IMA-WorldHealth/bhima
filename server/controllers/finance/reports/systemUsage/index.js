@@ -1,15 +1,13 @@
-
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 
-const TEMPLATE = './server/controllers/finance/reports/sytemUsage/system.usage.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/systemUsage/system.usage.handlebars';
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
   filename : 'REPORT.SYSTEM_USAGE_STAT.TITLE',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 // expose to the API
 exports.document = document;
@@ -22,28 +20,34 @@ async function document(req, res, next) {
 
     const patientsNbr = `
       SELECT HOUR(created_at) as 'hour', COUNT(patient.uuid) as 'number'
-      FROM patient 
+      FROM patient
       WHERE DATE(created_at) = DATE(?)
       GROUP BY HOUR(created_at)
     `;
 
     const invoicesNbr = `
       SELECT HOUR(created_at)  as 'hour', COUNT(invoice.uuid) as 'number'
-      FROM invoice 
+      FROM invoice
       WHERE DATE(created_at) = DATE(?)
       GROUP BY HOUR(created_at)
     `;
 
     const cashNbr = `
       SELECT HOUR(created_at)  as 'hour', COUNT(cash.uuid) as 'number'
-      FROM cash 
+      FROM cash
       WHERE DATE(created_at) = DATE(?)
       GROUP BY HOUR(created_at)
     `;
 
-    const patients = await db.exec(patientsNbr, date);
-    const invoices = await db.exec(invoicesNbr, date);
-    const cashPayments = await db.exec(cashNbr, date);
+    const [
+      patients,
+      invoices,
+      cashPayments,
+    ] = await Promise.all([
+      db.exec(patientsNbr, date),
+      db.exec(invoicesNbr, date),
+      db.exec(cashNbr, date),
+    ]);
 
     const patientMap = _.groupBy(patients, 'hour');
     const cashPaymentMap = _.groupBy(cashPayments, 'hour');
