@@ -146,8 +146,11 @@ function StockLotsController(
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
 
-        vm.gridOptions.data = lots;
-        console.log('>>> lots : ', lots);
+        // serialize tag names for filters
+        vm.gridOptions.data = lots.map(lot => {
+          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
+          return lot;
+        });
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
@@ -155,6 +158,11 @@ function StockLotsController(
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
   }
+
+  // returns a style for a given tag
+  vm.getTagColor = t => {
+    return t ? { color : t.color, 'font-size' : '14px' } : null;
+  };
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {

@@ -23,7 +23,7 @@
       </ui-select-match>
 
       <ui-select-choices repeat="tag.uuid as tag in $ctrl.tags | filter: { 'name': $select.search }">
-        <span><i class="fa fa-circle" ng-style="$ctrl.getTagColor($item)"></i> <span translate>{{ tag.name }}</span></span>
+        <span><i class="fa fa-circle" ng-style="$ctrl.getTagColor(tag)"></i> <span translate>{{ tag.name }}</span></span>
       </ui-select-choices>
     </ui-select>    
 

@@ -16,6 +16,17 @@ const db = require('../../lib/db');
 exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
+exports.getLotTags = getLotTags;
+
+function getLotTags(bid) {
+  const queryTags = `
+    SELECT BUID(t.uuid) uuid, t.name, t.color
+    FROM tags t
+    JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+    WHERE lt.lot_uuid = ?
+  `;
+  return db.exec(queryTags, [bid]);
+}
 
 /**
  * GET /stock/lots/:uuid
@@ -37,13 +48,7 @@ function details(req, res, next) {
   db.one(query, [bid])
     .then(row => {
       info = row;
-      const queryTags = `
-        SELECT BUID(t.uuid) uuid, t.name, t.color
-        FROM tags t
-        JOIN lot_tag lt ON lt.tag_uuid = t.uuid
-        WHERE lt.lot_uuid = ?
-      `;
-      return db.exec(queryTags, [bid]);
+      return getLotTags(bid);
     })
     .then(tags => {
       info.tags = tags;

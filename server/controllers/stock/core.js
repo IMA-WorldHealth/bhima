@@ -82,6 +82,7 @@ function getLotFilters(parameters) {
     'invoice_uuid',
     'purchase_uuid',
     'tag_uuid',
+    'tags',
   ]);
 
   const filters = new FilterParser(params);
@@ -106,6 +107,10 @@ function getLotFilters(parameters) {
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
   filters.equals('tag_uuid', 'tags', 't');
+
+  // tags
+  filters.custom('tags',
+    't.uuid IN (?)');
 
   // NOTE(@jniles)
   // is_expired is based off the server time, not off the client time.
@@ -160,8 +165,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
         l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-        dm.text AS documentReference, ser.name AS service_name,
-        t.name AS tag_name, t.color
+        dm.text AS documentReference, ser.name AS service_name
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       JOIN inventory_unit iu ON iu.id = i.unit_id
@@ -170,8 +174,6 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
-      LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
-      LEFT JOIN tags t ON t.uuid = lt.tag_uuid
   `;
 
   const filters = getLotFilters(parameters);
@@ -296,8 +298,7 @@ async function getLotsMovements(depotUuid, params) {
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay, BUID(m.invoice_uuid) AS invoice_uuid, idm.text AS invoice_reference,
-      iu.text AS unit_type, dm.text AS documentReference,
-      t.name AS tag_name, t.color
+      iu.text AS unit_type, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -307,8 +308,6 @@ async function getLotsMovements(depotUuid, params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN document_map idm ON idm.uuid = m.invoice_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
-    LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
-    LEFT JOIN tags t ON t.uuid = lt.tag_uuid
   `;
 
   const orderBy = 'ORDER BY m.date, dm.text, l.label';

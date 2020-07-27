@@ -20,6 +20,7 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
+const Lots = require('./lots');
 
 // expose to the API
 exports.createStock = createStock;
@@ -478,15 +479,15 @@ function depotMovement(document, params) {
  * GET /stock/lots
  * this function helps to list lots
  */
-function listLots(req, res, next) {
+async function listLots(req, res, next) {
   const params = req.query;
 
-  core.getLots(null, params)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  try {
+    const rows = await core.getLots(null, params);
+    res.status(200).json(rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -521,7 +522,7 @@ function listMovements(req, res, next) {
  * GET /stock/lots/depots/
  * returns list of each lots in each depots with their quantities
  */
-function listLotsDepot(req, res, next) {
+async function listLotsDepot(req, res, next) {
   const params = req.query;
   params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   params.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
@@ -530,12 +531,19 @@ function listLotsDepot(req, res, next) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;
   }
-  core.getLotsDepot(null, params)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  try {
+    const data = await core.getLotsDepot(null, params);
+
+    const rows = await Promise.all(data.map(async (line) => {
+      const tags = await Lots.getLotTags(db.bid(line.uuid));
+      line.tags = tags;
+      return line;
+    }));
+
+    res.status(200).json(rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**

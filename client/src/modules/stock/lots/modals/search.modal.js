@@ -37,6 +37,12 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     });
   };
 
+  vm.onSelectTags = tag => {
+    console.log(tag);
+    vm.searchQueries.tags = tag;
+    displayValues.tag_uuid = tag.name;
+  };
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
