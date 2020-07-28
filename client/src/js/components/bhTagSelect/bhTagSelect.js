@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : TagSelectController,
     transclude  : true,
     bindings    : {
-      tagUuids      : '<',
+      tagUuids         : '<',
       onSelectCallback : '&',
       required         : '<?',
       label            : '@?',
@@ -38,12 +38,8 @@ function TagSelectController(Tags, Notify) {
   function loadTags() {
     Tags.read(null)
       .then(tags => {
-        if ($ctrl.tagUuids.length) {
-          const givenTags = $ctrl.tagUuids.map(e => e.uuid);
-          $ctrl.tags = tags.filter(e => givenTags.includes(e.uuid) === false);
-        } else {
-          $ctrl.tags = tags;
-        }
+        const identifiers = $ctrl.tagUuids.map(t => t.uuid);
+        $ctrl.tags = $ctrl.tagUuids.length ? tags.filter(t => identifiers.includes(t.uuid) === false) : tags;
       })
       .catch(Notify.handleError);
   }

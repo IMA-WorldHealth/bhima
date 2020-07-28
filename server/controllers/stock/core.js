@@ -109,8 +109,7 @@ function getLotFilters(parameters) {
   filters.equals('tag_uuid', 'tags', 't');
 
   // tags
-  filters.custom('tags',
-    't.uuid IN (?)');
+  filters.custom('tags', 't.uuid IN (?)', [params.tags]);
 
   // NOTE(@jniles)
   // is_expired is based off the server time, not off the client time.

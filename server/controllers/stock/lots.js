@@ -79,8 +79,8 @@ async function update(req, res, next) {
       // update tags
       const transaction = db.transaction();
       transaction.addQuery('DELETE FROM lot_tag WHERE lot_uuid = ?', [bid]);
-      tags.forEach(uuid => {
-        const binaryTagUuid = db.bid(uuid);
+      tags.forEach(t => {
+        const binaryTagUuid = db.bid(t.uuid);
         transaction.addQuery('INSERT INTO lot_tag(lot_uuid, tag_uuid) VALUES (?, ?);', [bid, binaryTagUuid]);
       });
       await transaction.execute();
