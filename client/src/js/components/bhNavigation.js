@@ -31,8 +31,8 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
   function loadTreeUnits() {
     Tree.units()
       .then(units => {
-
         Tree.sortByTranslationKey(units);
+
         $ctrl.units = units;
 
         calculateUnitIndex($ctrl.units);
