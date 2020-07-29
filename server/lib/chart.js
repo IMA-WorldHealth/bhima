@@ -46,6 +46,8 @@ function barChart(params) {
   const {
     label, data, item, yAxesLabelString,
     xAxesLabelString, canvasId,
+    showLegend,
+    uniqueColor,
   } = params;
 
   const chart = {
@@ -85,17 +87,20 @@ function barChart(params) {
     so the array's length must be equals to label's length
 
    */
+  const defaultColor = `rgba(0, 0, 255, 0.7)`;
   const items = Object.keys(_.groupBy(data, item.uuid));
   chart.labels.forEach(day => {
+
     items.forEach(invt => {
       let dataset = {};
       if (serieMap[invt]) {
         dataset = serieMap[invt];
       } else {
         serieMap[invt] = dataset;
-        dataset.backgroundColor = util.getRandomColor();
+        dataset.backgroundColor = uniqueColor ? defaultColor : util.getRandomColor();
       }
       dataset.data = dataset.data || [];
+
       let found = false;
       labelsData[day].forEach(dayItem => {
         if (invt === dayItem[item.uuid]) {
@@ -138,8 +143,10 @@ function barChart(params) {
               animationDuration: 0 // duration of animations when hovering an item
             },
             responsiveAnimationDuration: 0,
+          
             legend:  {
               position : 'bottom',
+              display: ${showLegend}
             },
             scales: {
               yAxes: [{
@@ -153,7 +160,7 @@ function barChart(params) {
               }],
             xAxes: [{
             scaleLabel: {
-              display: true,
+              display: true,             
               labelString: "${xAxesLabelString}"
             }
             }]

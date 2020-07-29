@@ -12,6 +12,7 @@ const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebar
 const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.handlebars`;
 const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
+const STOCK_MOVEMENT_REPORT_TEMPLATE = `${BASE_PATH}/stock_movement_report.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
@@ -200,4 +201,5 @@ module.exports = {
   STOCK_INVENTORIES_REPORT_TEMPLATE,
   STOCK_VALUE_REPORT_TEMPLATE,
   STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
+  STOCK_MOVEMENT_REPORT_TEMPLATE,
 };

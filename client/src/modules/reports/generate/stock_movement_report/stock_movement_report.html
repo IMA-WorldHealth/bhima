@@ -1,0 +1,89 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 translate>REPORT.STOCK_MOVEMENT_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.STOCK_MOVEMENT_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+
+            
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
+            
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-period-selection>
+          
+              <!-- movements flux -->
+          <bh-flux-select
+            on-change="ReportConfigCtrl.onFluxChange(flux)"
+            flux-ids="ReportConfigCtrl.reportDetails.flux_id">
+          </bh-flux-select>
+
+
+          <div class="form-group">
+            <label translate>FORM.LABELS.TYPE</label>
+                        
+            <div class="radio">
+              <label>
+                <input type="radio" name="movement_number" value="movement_number" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
+                <span translate>FORM.LABELS.MOVEMENT_NUMBER</span>
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="value" value="value" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
+                <span translate>FORM.LABELS.MOVEMENT_VALUE</span>
+              </label>
+            </div>
+          </div>
+
+            <div class="form-group">
+              <label translate>STOCK.MOVEMENT</label>
+                          
+              <div class="radio">
+                <label>
+                  <input type="radio" name="is_exit" value="0" ng-model="ReportConfigCtrl.reportDetails.is_exit"/>
+                  <span translate>STOCK.ENTRY</span>
+                </label>
+              </div>
+                             
+              <div class="radio">
+                <label>
+                  <input type="radio" name="is_exit" value="1" ng-model="ReportConfigCtrl.reportDetails.is_exit"/>
+                  <span translate>STOCK.OUTPUT</span>
+                </label>
+              </div>
+            </div>
+            <!-- preview -->
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

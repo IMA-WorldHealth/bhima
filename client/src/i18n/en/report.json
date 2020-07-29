@@ -152,6 +152,12 @@
       "TITLE" : "Stock Consumption's graph report",
       "DESCRIPTION" : "This report graphically shows the consumption of stock during a period for a depot or inventory"
     },
+
+    "STOCK_MOVEMENT_REPORT" : {
+      "TITLE" : "Stock Movement Graphical report",
+      "DESCRIPTION" : ""
+    },
+
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
