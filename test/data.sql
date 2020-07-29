@@ -394,7 +394,7 @@ INSERT INTO cashbox_permission (user_id, cashbox_id) VALUES
   (@superUser, 2),
   (2, 1);
 
-INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`, `expires`, `unique_item`) VALUES
+INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`, `tracking_expiration`, `unique_item`) VALUES
   (0xD81D0C1D727C11EA8241000C2997DDC0,'Anti Retro Viraux','D.ARV',242,162,201,NULL,1,0),
   (0xD81D0FEB727C11EA8241000C2997DDC0,'Tests diagnostics','D.DGT',242,162,201,NULL,1,0),
   (0xD81D12F0727C11EA8241000C2997DDC0,'Antiseptiques & Désinfectants','D.DIS',242,162,201,NULL,1,0),

@@ -224,7 +224,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
       m.date AS entry_date,
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
-      ig.name AS group_name, ig.expires,
+      ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -464,8 +464,6 @@ function getStockConsumption(periodIds) {
  */
 async function getDailyStockConsumption(params) {
 
-  params.consumption = true;
-
   const consumptionValue = `
     ((
       (m.flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE}))
@@ -479,14 +477,18 @@ async function getDailyStockConsumption(params) {
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
-    SELECT SUM(m.quantity) as quantity,
+    SELECT 
+      COUNT(m.uuid) as movement_number,
+      SUM(m.quantity) as quantity,
       SUM(m.quantity * m.unit_cost) as value,
       DATE(m.date) as date,
       BUID(i.uuid) AS inventory_uuid,
+      BUID(m.uuid) AS uuid,
       i.text AS inventory_name,
       d.text AS depot_name,
       BUID(d.uuid) AS depot_uuid
     FROM stock_movement m
+    JOIN flux f ON m.flux_id = f.id
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
@@ -497,9 +499,16 @@ async function getDailyStockConsumption(params) {
   filters.equals('depot_uuid', 'uuid', 'd');
   filters.equals('period_id');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('flux_id', 'id', 'f', true);
+  filters.equals('is_exit');
   filters.custom('consumption', consumptionValue);
 
-  filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  if (params.consumption) {
+    filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  } else {
+    filters.setGroup('GROUP BY DATE(m.date)');
+  }
+
   filters.setOrder('ORDER BY m.date ');
 
   const rqtSQl = filters.applyQuery(sql);
@@ -507,6 +516,7 @@ async function getDailyStockConsumption(params) {
 
   return db.exec(rqtSQl, rqtParams);
 }
+
 /**
  * @function getStockConsumptionAverage
  *
@@ -720,24 +730,29 @@ function processMultipleLots(inventories) {
       // compute the lot coefficient
       let lotLifetime = 0;
       _.each(orderedInventoryLots, lot => {
-        // apply the same CMM to all lots and update monthly consumption
-        lot.avg_consumption = cmm;
-        lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
+        if (!lot.tracking_expiration) {
+          lot.expiration_date = '';
+        }
+        if (lot.tracking_consumption) {
+          // apply the same CMM to all lots and update monthly consumption
+          lot.avg_consumption = cmm;
+          lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
 
-        const zeroMSD = Math.round(lot.S_MONTH) === 0;
+          const zeroMSD = Math.round(lot.S_MONTH) === 0;
 
-        lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
-        lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
-        lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
-        lotLifetime += lot.S_LOT_LIFETIME;
+          const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
+          const today = new Date();
+          // if we have more months of stock than the expiration date,
+          // then we'll need to label these are in risk of expiration
+          const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
+          const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
+          lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
 
-        const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
-        const today = new Date();
-        // if we have more months of stock than the expiration date,
-        // then we'll need to label these are in risk of expiration
-        const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-        const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
-        lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
+          lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
+          lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
+          lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
+          lotLifetime += lot.S_LOT_LIFETIME;
+        }
         flattenLots.push(lot);
       });
     });

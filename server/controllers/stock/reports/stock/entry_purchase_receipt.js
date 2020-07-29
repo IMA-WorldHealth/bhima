@@ -25,10 +25,12 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference,
       p.note, p.cost, p.date AS purchase_date, p.payment_method,
       s.display_name AS supplier_display_name, proj.name AS project_display_name,
-      dm.text as document_reference
+      dm.text as document_reference, ig.tracking_expiration,
+      IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
     JOIN purchase p ON p.uuid = l.origin_uuid
@@ -73,7 +75,6 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
     barcode               : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
   };
-
   data.rows = rows;
   return report.render(data);
 }

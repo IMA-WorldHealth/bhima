@@ -44,7 +44,6 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
       .catch(Notify.handleError);
   }
 
-
   function onSelectCOGSAccount(account) {
     vm.session.cogs_account = account.id;
   }
@@ -70,8 +69,9 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
       sales_account : o.sales_account,
       stock_account : o.stock_account,
       cogs_account  : o.cogs_account,
-      expires : o.expires,
       unique_item : o.unique_item,
+      tracking_consumption : o.tracking_consumption,
+      tracking_expiration : o.tracking_expiration,
     };
   }
 
@@ -87,7 +87,8 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
 
     if (vm.isCreateState) {
       // by default all inventory (for a group) expires and doesn't have a unique item
-      vm.session.expires = 1;
+      vm.session.tracking_expiration = 1;
+      vm.session.tracking_consumption = 1;
       vm.session.unique_item = 0;
     }
   }

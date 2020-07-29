@@ -33,6 +33,8 @@
     "TYPE_QUANTITY" : "Quantité de stock",
     "STOCK_OUT_WARNING" : "Alert : il y a {{total}} produits en rupture de stock",
     "AND_MORE" : "... et {{left}} autres",
+    "TRACK_CONSUMPTION":"Suivre la consommation",
+    "TRACK_EXPIRATION":"Suivre l'expiration",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",
