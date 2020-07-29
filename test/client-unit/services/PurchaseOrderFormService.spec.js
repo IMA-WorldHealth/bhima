@@ -2,7 +2,6 @@
 /* eslint no-unused-expressions:off, no-restricted-properties:off */
 describe('PurchaseOrderForm', () => {
   let PurchaseOrderForm;
-  // let PurchaseOrderItem;
   let Mocks;
   let Session;
   let httpBackend;
@@ -23,7 +22,6 @@ describe('PurchaseOrderForm', () => {
 
   beforeEach(inject((
     _PurchaseOrderForm_,
-    // _PurchaseOrderItemService_,
     _MockDataService_,
     _SessionService_,
     $httpBackend,
@@ -31,7 +29,6 @@ describe('PurchaseOrderForm', () => {
   ) => {
 
     PurchaseOrderForm = _PurchaseOrderForm_;
-    // PurchaseOrderItem = _PurchaseOrderItemService_;
     Mocks = _MockDataService_;
     Session = _SessionService_;
     $timeout = _$timeout_;
