@@ -32,6 +32,8 @@
     "TYPE_QUANTITY" : "Stock quantity",
     "STOCK_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
     "AND_MORE" : "... and {{left}} more",
+    "TRACK_CONSUMPTION":"Track consumption",
+    "TRACK_EXPIRATION":"Track expiration",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
       "MISSING_LOT_NAME" : "Missing Lot Identifier",
@@ -41,6 +43,7 @@
       "LOT_ROW_WITH_ERRORS" : "Lot line contains invalid data",
       "EXCESSIVE_QUANTITY": "Excessive Quantity",
       "LOT_QUANTITY_OVER_GLOBAL": "Total lot quantity is more than the global quantity",
+      "MISSING_LOT_UNIT_COST": "A non-negative value is required for lot unit cost",
       "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiration date"
     },
     "EXPIRATION_DATE" : "Expiration Date",
@@ -67,6 +70,7 @@
     "INVENTORY"       : "Inventory",
     "INVENTORY_GROUP" : "Inventory Group",
     "INVENTORY_NOT_AVAILABLE" : "Inventories not available",
+    "IS_IN_OF_RISK_EXPIRATION" : "At risk of expiration",
     "PRODUCT_NOT_AVAILABLE" : "Products not available",
     "IMPORT" : {
       "STOCK_FROM_FILE" : "Import stock from a file",

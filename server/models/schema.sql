@@ -572,10 +572,11 @@ CREATE TABLE `enterprise_setting` (
   `enable_balance_on_invoice_receipt` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
-  `enable_daily_consumption` SMALLINT(5) NOT NULL DEFAULT 0,
+  `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -799,8 +800,9 @@ CREATE TABLE `inventory_group` (
   `cogs_account` mediumINT(8) UNSIGNED DEFAULT NULL,
   `stock_account` mediumINT(8) UNSIGNED DEFAULT NULL,
   `donation_account` mediumINT(8) UNSIGNED DEFAULT NULL,
-  `expires` TINYINT(1) DEFAULT 1,
   `unique_item`  TINYINT(1) DEFAULT 0,
+  `tracking_consumption`  TINYINT(1) DEFAULT 1,
+  `tracking_expiration`  TINYINT(1) DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `inventory_group_1` (`name`),
   UNIQUE KEY `inventory_group_2` (`code`),

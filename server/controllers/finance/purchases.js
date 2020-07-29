@@ -24,6 +24,10 @@ const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
 
+// See the schema for purchase_status and the value of
+// PURCHASES.STATUS.CONFIRMED in the bhima.sql data
+const PURCHASE_STATUS_CONFIRMED_ID = 2;
+
 const entityIdentifier = identifiers.PURCHASE_ORDER.key;
 
 // create a new purchase order
@@ -167,6 +171,10 @@ function create(req, res, next) {
   data.project_id = req.session.project.id;
   data.currency_id = req.session.enterprise.currency_id;
 
+  if (req.session.enterprise.settings.enable_auto_purchase_order_confirmation) {
+    data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
+  }
+
   const sql = 'INSERT INTO purchase SET ?';
 
   const itemSql = `
@@ -243,7 +251,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method list
@@ -516,7 +523,6 @@ function purchaseBalance(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @function purchaseState

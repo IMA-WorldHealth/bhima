@@ -25,5 +25,15 @@
         <i class="fa fa-cart-plus"></i> <span translate>TREE.INVENTORY_LIST</span>
       </a>
     </li>
+
+    <li>
+      <a data-method="stock-lots" href
+        ui-sref="stockLots({
+          filters : [
+            { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue: row.entity.text,  cacheable: false }
+        ]})">
+        <i class="fa fa-cubes"></i> <span translate>INVENTORY.VIEW_LOTS_IN_STOCK</span>
+      </a>
+    </li>
   </ul>
 </div>

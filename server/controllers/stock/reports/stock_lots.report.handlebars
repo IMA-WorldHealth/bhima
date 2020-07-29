@@ -63,7 +63,7 @@
             <td class="text-right">{{quantity}}</td>
             <td class="text-right">{{unit_type}}</td>
             <td class="text-right">{{date entry_date}}</td>
-            {{#if item.expires}}
+            {{#if item.tracking_expiration}}
               <td class="text-right">{{date expiration_date}}</td>
               <td class="text-right">{{delay_expiration}}</td>
             {{else}}

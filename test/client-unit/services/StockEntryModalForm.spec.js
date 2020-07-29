@@ -117,7 +117,7 @@ describe('StockEntryModalForm', () => {
     // set date in the past by a couple years
     data.expiration_date = new Date(Date.now() - Math.pow(10, 11));
 
-    const form = new StockForm({ rows : [data], expires : true });
+    const form = new StockForm({ rows : [data], tracking_expiration : true });
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);
@@ -131,7 +131,7 @@ describe('StockEntryModalForm', () => {
     // set date in the past by a couple years
     data.expiration_date = new Date(Date.now() - Math.pow(10, 11));
 
-    const form = new StockForm({ rows : [data], expires : true });
+    const form = new StockForm({ rows : [data], tracking_expiration : true });
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);
@@ -191,10 +191,12 @@ describe('StockEntryModalForm', () => {
     first.expiration_date = new Date(Date.now() - Math.pow(10, 11));
     third.quantity = -100;
 
-    const form = new StockForm({ rows : [first, second, third], expires : true });
+    const form = new StockForm({ rows : [first, second, third], tracking_expiration : true });
+    delete form.unit_cost;
     const errors = form.validate();
 
     const expectedErrors = [
+      'STOCK.ERRORS.MISSING_LOT_UNIT_COST',
       'STOCK.ERRORS.INVALID_LOT_EXPIRATION',
       'STOCK.ERRORS.INVALID_LOT_QUANTITY',
     ];
@@ -202,12 +204,12 @@ describe('StockEntryModalForm', () => {
     expect(errors).to.deep.equal(expectedErrors);
   });
 
-  it('#validate() will ignore expiration date if `expires` is false', () => {
+  it('#validate() will ignore expiration date if `tracking_expiration` is false', () => {
     const data = clone(sampleRow);
     // set date in the past by a couple years
     data.expiration_date = new Date(Date.now() - Math.pow(10, 11));
 
-    const form = new StockForm({ rows : [data], expires : false });
+    const form = new StockForm({ rows : [data], tracking_expiration : false });
     const errors = form.validate();
     expect(errors).to.deep.equal([]);
   });

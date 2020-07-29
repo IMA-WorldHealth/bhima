@@ -9,8 +9,8 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report, enable_auto_stock_accounting) VALUES
-  (1, 0, 1, 1, 1, 0);
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation) VALUES
+  (1, 0, 1, 1, 1, 0, 0);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -394,7 +394,7 @@ INSERT INTO cashbox_permission (user_id, cashbox_id) VALUES
   (@superUser, 2),
   (2, 1);
 
-INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`, `expires`, `unique_item`) VALUES
+INSERT INTO `inventory_group` (`uuid`, `name`, `code`, `sales_account`, `cogs_account`, `stock_account`, `donation_account`, `tracking_expiration`, `unique_item`) VALUES
   (0xD81D0C1D727C11EA8241000C2997DDC0,'Anti Retro Viraux','D.ARV',242,162,201,NULL,1,0),
   (0xD81D0FEB727C11EA8241000C2997DDC0,'Tests diagnostics','D.DGT',242,162,201,NULL,1,0),
   (0xD81D12F0727C11EA8241000C2997DDC0,'Antiseptiques & Désinfectants','D.DIS',242,162,201,NULL,1,0),

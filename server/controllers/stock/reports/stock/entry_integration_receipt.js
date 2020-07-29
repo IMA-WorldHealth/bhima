@@ -26,11 +26,13 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, integ.reference) AS integration_reference,
       integ.description, integ.date AS integration_date,
-      proj.name AS project_display_name,
+      proj.name AS project_display_name, ig.tracking_expiration,
+      IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires,
       dm.text as document_reference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
     JOIN integration integ ON integ.uuid = l.origin_uuid

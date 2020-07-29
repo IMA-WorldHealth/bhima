@@ -168,7 +168,6 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     return instance.result;
   }
 
-
   /**
    * @method voucher
    *
@@ -333,6 +332,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+  service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAssignReceipt = stockAssignReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
 
@@ -492,6 +492,17 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   }
 
   /**
+   * @method stockAdjustmentReport
+   * @param {string} depotUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockAdjustmentReport(depotUuid, date, notifyCreated) {
+    const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockAdjustmentReport(depotUuid, date, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
    * @method ReceiptFactory
    * @description A factory for receipts
    */
@@ -514,7 +525,6 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     const instance = Modal.open(configuration);
     return instance.result;
   }
-
 
   // ================================ end stock =================================
 

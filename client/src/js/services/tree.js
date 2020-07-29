@@ -30,7 +30,19 @@ function Tree($http, $translate, util, TreeClass) {
       .then(data => new TreeClass(data));
   }
 
-  /** recursively sort an array of BHIMA units respecting translation keys. */
+  // returns 1 if unit is a parent or 0 if not.
+  function hasChildren(unit) {
+    const bool = unit.children && unit.children.length > 0;
+    return bool ? 1 : 0;
+  }
+
+  /**
+   * @function sortByTranslationKey
+   *
+   * @description
+   * Recursively sort an array of BHIMA units respecting translation keys.
+   *
+   */
   function sortByTranslationKey(unitArray) {
     if (angular.isUndefined(unitArray)) {
       return;
@@ -39,7 +51,12 @@ function Tree($http, $translate, util, TreeClass) {
     unitArray.sort((a, b) => {
       const aValue = $translate.instant(a.key);
       const bValue = $translate.instant(b.key);
-      return aValue.localeCompare(bValue);
+
+      // make sure parents sink to the bottom of the sorted list.
+      const parentWeight = (hasChildren(a) - hasChildren(b));
+
+      // prioritize sorting by parents, then by i18nValue
+      return (parentWeight || aValue.localeCompare(bValue));
     });
 
     // recursively step into each set of children
