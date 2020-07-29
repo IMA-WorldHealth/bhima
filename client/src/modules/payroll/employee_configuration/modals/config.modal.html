@@ -1,4 +1,4 @@
-<form name="EmployeeForm" bh-submit="EmployeeConfigModalCtrl.submit(EmployeeForm)" novalidate>
+<form name="EmployeeForm" bh-submit="EmployeeConfigModalCtrl.submit()" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="title">
@@ -9,36 +9,18 @@
   </div>
 
   <div class="modal-body">
-    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
-      <li ng-if="!EmployeeConfigModalCtrl.employees.length" class="list-group-item">      
-        <span translate>TABLE.COLUMNS.EMPTY</span>       
-      </li>
+    <p ng-if="EmployeeConfigModalCtrl.employees.length === 0" translate>
+      TABLE.COLUMNS.EMPTY
+    </p>
 
-      <li ng-if="EmployeeConfigModalCtrl.employees.length" class="list-group-item">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" id="all" ng-model="EmployeeConfigModalCtrl.all" ng-change="EmployeeConfigModalCtrl.toggleAllEmployees(EmployeeConfigModalCtrl.all)">
-            <b translate>FORM.LABELS.ALL_EMPLOYEES</b>
-          </label>
-        </div>
-      </li>
-
-      <li ng-repeat="employee in EmployeeConfigModalCtrl.employees" class="list-group-item">
-        <div style="margin:0" class="checkbox">
-          <label style="padding-left: 12%">
-            <div ng-if="!employee.locked">
-              <input type="checkbox" ng-model="employee.checked">
-              <strong>{{ employee.display_name }}</strong>
-            </div>
-
-            <div ng-if="employee.locked">
-              <i class="fa fa-lock"></i>
-              <span>{{ employee.display_name }}</span>
-            </div>
-          </label> 
-        </div>
-      </li>
-    </ul>  
+    <bh-checkbox-tree
+      is-flat-tree="true"
+      data="EmployeeConfigModalCtrl.employees"
+      checked-ids="EmployeeConfigModalCtrl.checkedUuids"
+      id-key="uuid"
+      label-key="display_name"
+      on-change="EmployeeConfigModalCtrl.onChangeRoleSelection(data)">
+    </bh-checkbox-tree>
   </div>
 
   <div class="modal-footer">

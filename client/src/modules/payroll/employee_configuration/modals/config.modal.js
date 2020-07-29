@@ -17,13 +17,14 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
   } else {
     vm.stateParams = cache.stateParams;
   }
+
   vm.isCreating = vm.stateParams.creating;
+
+  vm.onChangeRoleSelection = onChangeRoleSelection;
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
-  vm.toggleAllEmployees = toggleAllEmployees;
-  vm.all = false;
 
   if (!vm.isCreating) {
     Config.read(vm.stateParams.id)
@@ -33,37 +34,26 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
       .catch(Notify.handleError);
   }
 
+  function onChangeRoleSelection(data) {
+    vm.checked = data;
+  }
+
   Employees.read()
     .then((employees) => {
       vm.employees = employees;
-
       return Config.getEmployeeConfiguration(vm.stateParams.id);
     })
     .then((employeeConfig) => {
-
-      employeeConfig.forEach(object => {
-        vm.employees.forEach(employee => {
-          if (employee.uuid === object.employee_uuid) { employee.checked = true; }
-        });
-      });
+      vm.checkedUuids = employeeConfig.map(row => row.employee_uuid);
     })
     .catch(Notify.handleError);
 
-  // toggles all Employees to match there Configuration Employee's setting
-  function toggleAllEmployees(bool) {
-    vm.employees.forEach((employee) => {
-      employee.checked = employee.locked ? null : bool;
-    });
-  }
-
   // submit the data to the server for configure week day
-  function submit(employeeConfigForm) {
-    if (employeeConfigForm.$invalid || employeeConfigForm.$pristine) { return 0; }
+  function submit() {
+    // no changes have occured, just close the modal.
+    if (!vm.checked || !vm.checked.length) { return closeModal(); }
 
-    const employeesChecked = vm.employees.filter(employee => employee.checked)
-      .map(employee => employee.uuid);
-
-    return Config.setEmployees(vm.stateParams.id, employeesChecked)
+    return Config.setEmployees(vm.stateParams.id, vm.checked)
       .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
         $state.go('configurationEmployee', null, { reload : true });
