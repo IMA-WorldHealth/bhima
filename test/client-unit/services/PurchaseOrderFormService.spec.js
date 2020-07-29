@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions:off, no-restricted-properties:off */
 describe('PurchaseOrderForm', () => {
   let PurchaseOrderForm;
-  let PurchaseOrderItem;
+  // let PurchaseOrderItem;
   let Mocks;
   let Session;
   let httpBackend;
@@ -23,7 +23,7 @@ describe('PurchaseOrderForm', () => {
 
   beforeEach(inject((
     _PurchaseOrderForm_,
-    _PurchaseOrderItemService_,
+    // _PurchaseOrderItemService_,
     _MockDataService_,
     _SessionService_,
     $httpBackend,
@@ -31,7 +31,7 @@ describe('PurchaseOrderForm', () => {
   ) => {
 
     PurchaseOrderForm = _PurchaseOrderForm_;
-    PurchaseOrderItem = _PurchaseOrderItemService_;
+    // PurchaseOrderItem = _PurchaseOrderItemService_;
     Mocks = _MockDataService_;
     Session = _SessionService_;
     $timeout = _$timeout_;
@@ -101,7 +101,7 @@ describe('PurchaseOrderForm', () => {
     expect(form.store.data.length).to.equal(0);
 
     // Create a Purchase Order Item on the form
-    let item = form.addItem();
+    const item = form.addItem();
     item.inventory_uuid = form.inventory.available.data[0].uuid;
     form.configureItem(item);
 
@@ -116,14 +116,14 @@ describe('PurchaseOrderForm', () => {
   it('sets totals correctly when #digest() is callled', () => {
 
     // Get the UUIDs for a couple of inventory items
-    let uuid1 = form.inventory.available.data[0].uuid;
-    let uuid2 = form.inventory.available.data[1].uuid;
+    const uuid1 = form.inventory.available.data[0].uuid;
+    const uuid2 = form.inventory.available.data[1].uuid;
 
     // First, verify that the initial cost is 0
     expect(form.details.cost).to.equal(0);
 
     // Add a PO item to the form
-    let item1 = form.addItem();
+    const item1 = form.addItem();
     item1.inventory_uuid = uuid1;
     form.configureItem(item1);
     item1.quantity = 2;
@@ -136,7 +136,7 @@ describe('PurchaseOrderForm', () => {
     expect(form.details.cost).to.eql(4.6);
 
     // Add a secpmd PO item to the form
-    let item2 = form.addItem();
+    const item2 = form.addItem();
     item2.inventory_uuid = uuid2;
     form.configureItem(item2);
     item2.quantity = 3;
