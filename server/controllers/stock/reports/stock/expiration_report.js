@@ -30,14 +30,10 @@ async function stockExpirationReport(req, res, next) {
     if (options.depot_uuid) {
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
-    let dateFrom = '';
-    let dateTo = '';
 
-    if (params.period_id) {
-      const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
-      dateFrom = period.start_date;
-      dateTo = period.end_date;
-    }
+    const dateFrom = new Date(options.dateFrom);
+    const dateTo = new Date(options.dateTo);
+
     const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
 
     const resultByDepot = _.groupBy(lots, 'depot_uuid');
@@ -45,7 +41,17 @@ async function stockExpirationReport(req, res, next) {
     const result = {};
     depotUuids.forEach(depotUuid => {
       const depotLots = resultByDepot[depotUuid].filter(row => {
-        return row.status === 'stock_out' || row.IS_IN_RISK_EXPIRATION;
+        let found = false;
+        if (row.status === 'stock_out') {
+          row.status = `STOCK.STATUS.${row.status.toUpperCase()}`;
+          row.color = 'red';
+          found = true;
+        } else if (row.IS_IN_RISK_EXPIRATION) {
+          row.status = `STOCK.STATUS.IS_IN_OF_RISK_EXPIRATION`;
+          row.color = '#f5cb42';
+          found = true;
+        }
+        return found;
       });
 
       if (depotLots.length > 0) { // there are lots in this depot

@@ -43,13 +43,26 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
     vm.previewResult = null;
   };
 
+  function formatData(data) {
+    const formatted = angular.copy(data);
+    if (!vm.chooseOneDepot) {
+      delete formatted.depot_uuid;
+    }
+
+    if (!vm.chooseOneInventory) {
+      delete formatted.inventory_uuid;
+    }
+    return formatted;
+  }
+
   vm.preview = form => {
     if (form.$invalid) {
       return 0;
     }
 
     // update cached configuration
-    cache.reportDetails = angular.copy(vm.reportDetails);
+    cache.reportDetails = formatData(vm.reportDetails);
+
     angular.extend(vm.reportDetails, { lang : Languages.key });
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))

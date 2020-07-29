@@ -1,5 +1,6 @@
 {{> head title="TREE.STOCK_EXPIRATION_REPORT" }}
 
+ {{> header }}
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
 
@@ -33,7 +34,7 @@
                 <th>{{translate 'STOCK.EXPIRATION'}}</th>
                 <th>{{translate 'STOCK.QUANTITY'}}</th>
                 <th>{{translate 'FORM.LABELS.VALUE'}}</th>
-                <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+                <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +47,7 @@
                 <td>{{date expiration_date}}</td>
                 <td class="text-right">{{quantity}}</td>
                 <td class="text-right">{{currency value ../enterprise.currency_id}}</td>
-                <td>{{status}}</td>
+                <td style="text-transform: uppercase;text-shadow: 0px 0px #001;color: {{color}};">{{translate status}}</td>
             </tr>
             {{/each}}
         <tr>
