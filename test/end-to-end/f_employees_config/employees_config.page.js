@@ -1,5 +1,4 @@
 /* eslint  */
-/* global element, by */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
@@ -44,7 +43,7 @@ class EmployeeConfigPage {
     await row.dropdown().click();
     await row.method('config').click();
 
-    await element(by.id('all')).click();
+    await components.bhCheckboxTree.toggleAllCheckboxes();
 
     await FU.modal.submit();
     await components.notification.hasSuccess();
@@ -59,10 +58,10 @@ class EmployeeConfigPage {
     await row.method('config').click();
 
     // First click for select all
-    await element(by.id('all')).click();
+    await components.bhCheckboxTree.toggleAllCheckboxes();
 
     // Second click for unselect all
-    await element(by.id('all')).click();
+    await components.bhCheckboxTree.toggleAllCheckboxes();
 
     await FU.modal.submit();
     await components.notification.hasSuccess();

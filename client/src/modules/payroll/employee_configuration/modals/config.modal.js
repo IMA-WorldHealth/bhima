@@ -45,14 +45,14 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
     })
     .then((employeeConfig) => {
       vm.checkedUuids = employeeConfig.map(row => row.employee_uuid);
+
+      // clone the original values as the new values.
+      vm.checked = [...vm.checkedUuids];
     })
     .catch(Notify.handleError);
 
   // submit the data to the server for configure week day
   function submit() {
-    // no changes have occured, just close the modal.
-    if (!vm.checked || !vm.checked.length) { return closeModal(); }
-
     return Config.setEmployees(vm.stateParams.id, vm.checked)
       .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
