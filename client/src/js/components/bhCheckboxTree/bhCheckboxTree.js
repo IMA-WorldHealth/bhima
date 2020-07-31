@@ -36,7 +36,31 @@ function bhCheckboxTreeController(Tree) {
     if (changes.data && changes.data.currentValue) {
       buildTree(changes.data.currentValue);
     }
+
+    if (changes.checkedIds && changes.checkedIds.currentValue) {
+      processCheckedIds();
+    }
   };
+
+  function processCheckedIds() {
+    // ensure that checked ids are an array
+    if (!Array.isArray($ctrl.checkedIds) || $ctrl.data.length === 0) {
+      return;
+    }
+
+    // ensure that the mask is a cloned array
+    const mask = [...$ctrl.checkedIds];
+
+    // initially, we won't use setNodeValue since we just want to make those as checked
+    // that the mask sets as checked, not parent/child nodes.
+    mask
+      .filter(id => id !== $ctrl.tree.id($ctrl.root))
+      .forEach(id => {
+        const node = $ctrl.tree.find(id);
+        if (!node) { return; }
+        node._checked = true;
+      });
+  }
 
   function buildTree(array = []) {
     const data = [...array];
@@ -57,23 +81,7 @@ function bhCheckboxTreeController(Tree) {
     // compute node depths
     $ctrl.tree.walk(Tree.common.computeNodeDepth);
 
-    // ensure that checked ids are an array
-    if (!Array.isArray($ctrl.checkedIds) || data.length === 0) {
-      return;
-    }
-
-    // ensure that the mask is a cloned array
-    const mask = [...$ctrl.checkedIds];
-
-    // initially, we won't use setNodeValue since we just want to make those as checked
-    // that the mask sets as checked, not parent/child nodes.
-    mask
-      .filter(id => id !== $ctrl.tree.id($ctrl.root))
-      .forEach(id => {
-        const node = $ctrl.tree.find(id);
-        if (!node) { return; }
-        node._checked = true;
-      });
+    processCheckedIds();
   }
 
   /**
