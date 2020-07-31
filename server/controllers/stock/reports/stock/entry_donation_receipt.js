@@ -67,12 +67,13 @@ async function stockEntryDonationReceipt(documentUuid, session, options) {
     voucher_reference     : voucherReference,
   };
 
+  data.rows = rows;
+
   // sum elements of rows by their `total` property
   data.total = data.rows.reduce((aggregate, row) => {
     return row.total + aggregate;
   }, 0);
 
-  data.rows = rows;
   return report.render(data);
 
 }
