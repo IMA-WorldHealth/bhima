@@ -43,14 +43,14 @@ SET collation_connection = 'utf8mb4_unicode_ci';
 " > $MIGRATION_FILE
 
 echo "[migrate] Adding DROP TRIGGERS for $DATABASE."
-mysql -e "SELECT CONCAT('DROP TRIGGER IF EXISTS ', trigger_name, ';') FROM information_schema.triggers WHERE trigger_schema = '$DATABASE';" \
+mysql -u $DB_USER --password=$DB_PASS -e "SELECT CONCAT('DROP TRIGGER IF EXISTS ', trigger_name, ';') FROM information_schema.triggers WHERE trigger_schema = '$DATABASE';" \
   | sed '1d' \
   >> $MIGRATION_FILE
 
 echo "" >> $MIGRATION_FILE
 
 echo "[migrate] Adding DROP ROUTINES for $DATABASE."
-mysql -e "SELECT CONCAT('DROP ',ROUTINE_TYPE,' IF EXISTS ',ROUTINE_SCHEMA,'.',ROUTINE_NAME,';') as stmt FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '$DATABASE';" \
+mysql -u $DB_USER --password=$DB_PASS -e "SELECT CONCAT('DROP ',ROUTINE_TYPE,' IF EXISTS ',ROUTINE_SCHEMA,'.',ROUTINE_NAME,';') as stmt FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = '$DATABASE';" \
   | sed '1d' \
   >> $MIGRATION_FILE
 

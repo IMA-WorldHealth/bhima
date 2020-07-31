@@ -89,7 +89,9 @@ ALTER TABLE `province` DROP INDEX `province_1`;
 
 ALTER TABLE `sector` DROP INDEX `sector_1`;
 
-ALTER TABLE `village` DROP INDEX `village_1`;
+/* ??? ALTER TABLE `village` DROP INDEX `village_1`; 
+JMC: Disabled since this fails when using migration script  2020-07-31
+*/
 
 /*
 @author jmcameron
@@ -106,8 +108,6 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirma
 */
 
 ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
-
-ALTER TABLE `village` DROP INDEX `village_1`;
 
 /**
  * @author: jeremielodi
