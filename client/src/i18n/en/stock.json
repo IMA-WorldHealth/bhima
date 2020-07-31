@@ -135,7 +135,6 @@
       "EXIT_PATIENT"   : "Stock exit to patient",
       "EXIT_PATIENTS"   : "Stock exit to patients",
       "EXIT_DEPOT"     : "Stock exit to depot",
-      "EXIT_DEPOTS"     : "Stock exit to depots",
       "EXIT_SERVICE"   : "Stock exit to service",
       "EXIT_SERVICES"   : "Stock exit to services",
       "EXIT_LOSS"      : "Stock Exit - Loss"
@@ -207,7 +206,7 @@
     "REGISTRY" : "Movements Registry"
   },
   "INVENTORIES" : {
-    "REGISTRY" : "Inventories Registry"
+    "REGISTRY" : "Inventory Registry"
   },
   "ASSIGN" : {
     "TITLE" : "Assignment",
