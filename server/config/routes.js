@@ -96,7 +96,7 @@ const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
 const voucherTools = require('../controllers/finance/voucherTools');
-const systemUsage = require('../controllers/finance/reports/sytemUsage');
+const systemUsage = require('../controllers/finance/reports/systemUsage');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
