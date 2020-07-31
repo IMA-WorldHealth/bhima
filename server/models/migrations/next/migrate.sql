@@ -107,8 +107,7 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_purchase_order_confirma
 
 ALTER TABLE `enterprise_setting` MODIFY COLUMN `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0;
 
-ALTER TABLE `village` DROP INDEX `village_1`
-  ('collectionCapacity', 'REPORT.COLLECTION_CAPACITY.TITLE');
+ALTER TABLE `village` DROP INDEX `village_1`;
 
 /**
  * @author: jeremielodi
