@@ -8,7 +8,6 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       required : '@?',
       label : '@?',
-      name  : '@?',
     },
   });
 
@@ -23,7 +22,6 @@ LocationTypeSelectController.$inject = [
 function LocationTypeSelectController(locationService, Notify, $translate) {
   const $ctrl = this;
   $ctrl.label = $ctrl.label || 'FORM.LABELS.TYPE';
-  $ctrl.name = $ctrl.name || 'location_type_id';
 
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
@@ -43,7 +41,7 @@ function LocationTypeSelectController(locationService, Notify, $translate) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ type : $item });
   };
 }

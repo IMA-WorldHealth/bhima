@@ -13,13 +13,13 @@
   <div class="modal-body">
     <div class="row">
 
-      <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.type.$invalid }">
+      <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.typeLabel.$invalid }">
         <label class="control-label" translate> FORM.LABELS.LABEL </label>
         <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.LOCATION_TYPE' | translate }}" autocomplete="off"
           ng-maxlength="ModalCtrl.maxLength" class="form-control" name="typeLabel" ng-model="ModalCtrl.type.typeLabel"
           ng-disabled="ModalCtrl.isFixed"
-          required>
-        <div class="help-block" ng-messages="typeForm.type.$error" ng-show="typeForm.$submitted">
+          ng-required="true">
+        <div class="help-block" ng-messages="typeForm.typeLabel.$error" ng-show="typeForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>

@@ -41,7 +41,6 @@ function LocationService($http, util, Modal) {
   service.sectors = sectors;
   service.villages = villages;
   service.locations = locations;
-  service.readLocations = readLocations;
 
   /** detail interfacs */
   service.location = location;
@@ -64,6 +63,7 @@ function LocationService($http, util, Modal) {
 
   service.merge = merge;
   service.types = types;
+  service.loadLocationsRoot = loadLocationsRoot;
 
   service.delete = {
     country : removeCountry,
@@ -94,13 +94,6 @@ function LocationService($http, util, Modal) {
       .then(util.unwrapHttpResponse);
   }
 
-  /**
-   * fetch a list of locations configured from the server
-   * @public
-   */
-  function readLocations() {
-    return request('/readLocations');
-  }
 
   /**
    * fetch a list of villages from the server
@@ -140,6 +133,14 @@ function LocationService($http, util, Modal) {
    */
   function types(options) {
     return request('/types', { params : options });
+  }
+
+  /**
+   * fetch a list of types locations from the server
+   * @public
+   */
+  function loadLocationsRoot(options) {
+    return request('/root', { params : options });
   }
 
   /**

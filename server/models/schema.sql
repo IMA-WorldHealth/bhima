@@ -560,7 +560,7 @@ CREATE TABLE `enterprise` (
   `po_box`          VARCHAR(30) DEFAULT NULL,
   `gain_account_id` INT UNSIGNED NULL,
   `loss_account_id` INT UNSIGNED NULL,
-  `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL, 
+  `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `enterprise_1` (`name`),
   KEY `location_uuid` (`location_uuid`),

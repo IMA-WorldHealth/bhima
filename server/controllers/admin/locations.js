@@ -29,14 +29,7 @@ exports.lookupVillage = lookupVillage;
  * @return {array}
  */
 exports.readLocations = function readLocations(req, res, next) {
-  const sql = `
-    SELECT l.id, BUID(l.uuid) location_uuid, l.name, BUID(l.parent_uuid) AS parent_uuid,
-    l.parent, l.location_type_id, l.longitude, l.latitude, t.translation_key, t.color
-    FROM locations AS l
-    JOIN location_type AS t ON t.id = l.location_type_id
-    ORDER BY l.name ASC;`;
-
-  db.exec(sql)
+  getLocations()
     .then((data) => {
 
       res.status(200).json(data);
@@ -44,6 +37,17 @@ exports.readLocations = function readLocations(req, res, next) {
     .catch(next)
     .done();
 };
+
+function getLocations() {
+  const sql = `
+    SELECT l.id, BUID(l.uuid) location_uuid, l.name, BUID(l.parent_uuid) AS parent_uuid,
+    l.parent, l.location_type_id, l.longitude, l.latitude, t.translation_key, t.color
+    FROM locations AS l
+    JOIN location_type AS t ON t.id = l.location_type_id
+    ORDER BY l.name ASC;`;
+
+  return db.exec(sql);
+}
 
 /**
  * GET /locations/villages
@@ -227,6 +231,99 @@ exports.types = function types(req, res, next) {
     .done();
 };
 
+/**
+ * GET /locations/root
+ *
+ * This method all root locations.
+ *
+ * @method root
+ * @return {array} an array of (uuid, name)
+ */
+exports.root = function root(req, res, next) {
+  const locationId = req.query.locationId;
+
+  const locationTypeRoot = (req.query.allRoot === 'true') ? null : req.session.enterprise.location_default_type_root;
+
+  let clauseWhere;
+  let deepLevel = 0;
+
+  const getDeepness = `
+    SELECT DISTINCT(l.location_type_id) AS location_type_id
+    FROM locations AS l
+    WHERE l.id IN (SELECT parent FROM locations);
+  `;
+
+  const excludeTypeId = req.query.excludeType ? `AND l.location_type_id <> ${req.query.excludeType}` : '';
+
+  if (!req.query.parentId) {
+    clauseWhere = locationTypeRoot ? `WHERE l.location_type_id = ${locationTypeRoot} ${excludeTypeId}`
+      : `WHERE l.parent = 0 AND l.parent_uuid IS NULL ${excludeTypeId}`;
+  } else {
+    clauseWhere = `WHERE l.parent = ${req.query.parentId} ${excludeTypeId}`;
+  }
+
+  db.exec(getDeepness)
+    .then((deep) => {
+      deepLevel = deep.length;
+
+      const sql = `
+        SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent, BUID(l.parent_uuid) AS parent_uuid,
+        l.location_type_id, t.translation_key, t.color
+        FROM locations AS l
+        JOIN location_type AS t ON t.id = l.location_type_id ${clauseWhere};`;
+
+      const sqlAggregat = `
+        SELECT DISTINCT(t.id) AS id, t.translation_key, t.color
+        FROM location_type AS t
+        JOIN locations AS l ON l.location_type_id = t.id
+        ${clauseWhere};`;
+
+      let sqlHeader = ``;
+      let sqlJoin = ``;
+
+      for (let i = 1; i <= deepLevel; i++) {
+        sqlHeader += `
+          l${i}.id AS location_id_${i}, l${i}.name AS name_${i}, l${i}.location_type_id AS location_type_id_${i},
+          t${i}.translation_key AS translation_key_${i}, t${i}.color AS color_${i},
+          `;
+
+        const joinCondition = (i === 1) ? `loc` : `l${i - 1}`;
+
+        sqlJoin += `
+          LEFT JOIN locations AS l${i} ON l${i}.id = ${joinCondition}.parent
+          LEFT JOIN location_type AS t${i} ON t${i}.id = l${i}.location_type_id`;
+      }
+
+      const deepnessCondition = locationId ? `WHERE l.id = ${locationId}` : ``;
+
+      const getLocationsDeepness = `
+        SELECT loc.id, loc.name, loc.parent, loc.location_type_id, loc.translation_key, 
+        ${sqlHeader} loc.is_leaves
+        FROM (
+          SELECT l.id, l.name, l.parent, l.location_type_id, t.translation_key, t.is_leaves
+          FROM locations AS l
+          JOIN location_type AS t ON t.id = l.location_type_id
+          ${deepnessCondition}
+          ORDER BY l.name ASC
+        ) AS loc ${sqlJoin}
+      `;
+
+      return Promise.all([db.exec(sql), db.exec(sqlAggregat), db.exec(getLocationsDeepness)]);
+    })
+    .then(([rows, aggregates, locationsDeep]) => {
+      const data = {
+        rows,
+        aggregates,
+        locationsDeep,
+        deepLevel,
+      };
+
+      res.status(200).json(data);
+    })
+    .catch(next);
+
+};
+
 function lookupVillage(uid) {
   // convert hex uuid into binary
   const bid = db.bid(uid);
@@ -287,6 +384,18 @@ function lookupType(typeId) {
   return db.one(sql, [typeId]);
 }
 
+function lookupConfiguration(loctionId) {
+  const sql = `
+    SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent,
+    BUID(l.parent_uuid) AS parent_uuid, l.location_type_id, l.longitude, l.latitude,
+    t.translation_key, t.color
+    FROM locations AS l
+    JOIN location_type AS t ON t.id = l.location_type_id
+    WHERE l.id = ?;`;
+
+  return db.one(sql, [loctionId]);
+}
+
 /**
  * GET /locations/detail/:uuid
  *
@@ -344,6 +453,23 @@ exports.list = function list(req, res, next) {
     .catch(next)
     .done();
 };
+
+/**
+* GET //locations/readLocations/:id
+*
+* Returns the detail of a single location
+*/
+exports.locationDetail = function locationDetail(req, res, next) {
+  const { id } = req.params;
+
+  lookupConfiguration(id)
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
+};
+
 
 /** bindings for creation methods */
 exports.create = {};
@@ -459,6 +585,35 @@ exports.create.type = function type(req, res, next) {
   const data = req.body;
 
   const sql = `INSERT INTO location_type SET ?;`;
+
+  db.exec(sql, [data])
+    .then(rows => {
+      res.status(201).json({ id : rows.insertId });
+    })
+    .catch(next)
+    .done();
+};
+
+/**
+ * POST /locations/configuration
+ *
+ * This method add location in configuration on database and returns its id and uuid.
+ *
+ * @method createConfiguration
+ * @returns {string} uuid - the unique id for the country.
+ */
+exports.create.configuration = function createConfiguration(req, res, next) {
+  // create a UUID if not provided
+  const data = req.body;
+  data.uuid = req.body.uuid || uuid();
+
+  data.uuid = db.bid(data.uuid);
+
+  if (data.parent_uuid) {
+    data.parent_uuid = db.bid(data.parent_uuid);
+  }
+
+  const sql = `INSERT INTO locations SET ?;`;
 
   db.exec(sql, [data])
     .then(rows => {
@@ -604,6 +759,65 @@ exports.update.type = function updateType(req, res, next) {
   db.exec(sql, [data, typeId])
     .then(() => {
       return lookupType(typeId);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
+};
+
+/**
+ * PUT /locations/types/:id
+ *
+ * This method update a location types in the database.
+ *
+ * @method updateType
+ */
+exports.update.type = function updateType(req, res, next) {
+  const typeId = req.params.id;
+  const data = req.body;
+
+  const sql = 'UPDATE location_type SET ? WHERE id = ?;';
+
+  db.exec(sql, [data, typeId])
+    .then(() => {
+      return lookupType(typeId);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
+};
+
+/**
+ * PUT /locations/configurations/:id
+ *
+ * This method update a location configurations in the database.
+ *
+ * @method updateConfiguration
+ */
+exports.update.configuration = function updateConfiguration(req, res, next) {
+  const locationId = req.params.id;
+  const data = req.body;
+
+  delete data.translation_key;
+  delete data.color;
+
+  if (data.uuid) {
+    data.uuid = db.bid(data.uuid);
+  }
+
+  if (data.parent_uuid) {
+    data.parent_uuid = db.bid(data.parent_uuid);
+  }
+
+  const sql = 'UPDATE locations SET ? WHERE id = ?;';
+
+  db.exec(sql, [data, locationId])
+    .then(() => {
+      return lookupConfiguration(locationId);
     })
     .then((record) => {
       res.status(200).json(record);

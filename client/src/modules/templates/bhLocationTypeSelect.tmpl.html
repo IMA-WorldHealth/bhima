@@ -1,16 +1,18 @@
-<div bh-location-type-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="LocationTypeForm" bh-location-type-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : LocationTypeForm.$$parent.$submitted && LocationTypeForm.location_type_id.$invalid }">
+    ng-class="{ 'has-error' : LocationTypeForm.$submitted && LocationTypeForm.location_type_id.$invalid }">
 
     <label class="control-label" translate>
-      {{$ctrl.label}}
+      {{ $ctrl.label }}
     </label>
-    
     <ng-transclude></ng-transclude>
-    <ui-select name="{{$ctrl.name}}" 
-      ng-required ="$ctrl.required"
-      ng-model="$ctrl.location_type_id"
+    <ui-select
+      $ctrl.multipleChoice
+      $ctrl.required
+      name="location_type_id"
+      ng-model= "$ctrl.locationTypeId"
+      ng-required="$ctrl.required"
       on-select="$ctrl.onSelect($item, $model)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
         <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span> <span>{{$select.selected.typeLabel}}</span>
@@ -21,7 +23,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="LocationTypeForm.location_type_id.$error" ng-show="LocationTypeForm.$$parent.$submitted">
+    <div class="help-block" ng-messages="LocationTypeForm.location_type_id.$error" ng-show="LocationTypeForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

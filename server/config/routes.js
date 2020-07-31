@@ -180,11 +180,18 @@ exports.configure = function configure(app) {
 
   // API for locations
   app.get('/locations/readLocations', locations.readLocations);
+  app.get('/locations/readLocations/:id', locations.locationDetail);
+  app.post('/locations/readLocations', locations.create.configuration);
+  app.put('/locations/readLocations/:id', locations.update.configuration);
+  app.delete('/locations/readLocations/:id', locations.create.configuration);
+
   app.get('/locations/villages', locations.villages);
   app.get('/locations/sectors', locations.sectors);
   app.get('/locations/provinces', locations.provinces);
   app.get('/locations/countries', locations.countries);
   app.get('/locations/types', locations.types);
+  app.get('/locations/root', locations.root);
+
   app.post('/locations/countries', locations.create.country);
   app.post('/locations/provinces', locations.create.province);
   app.post('/locations/sectors', locations.create.sector);

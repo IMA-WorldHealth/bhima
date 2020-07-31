@@ -31,51 +31,61 @@
       </div>
     </div>
 
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
+        <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}"
+          autocomplete="off" class="form-control" name="longitude" ng-model="ConfigLocationsModalCtrl.locations.longitude">
+      </div>
+    </div>
+
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
+        <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}"
+          autocomplete="off" class="form-control" name="latitude" ng-model="ConfigLocationsModalCtrl.locations.latitude">
+      </div>
+    </div>
+
     <bh-location-type-select
       location-type-id ="ConfigLocationsModalCtrl.locations.location_type_id"
-      on-select-callback="ConfigLocationsModalCtrl.onSelectGrade(type)">
+      on-select-callback="ConfigLocationsModalCtrl.onSelectLocationTypeSelect(type)"
+      required="true">
       <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
     </bh-location-type-select>
-
     <hr>
 
-    <bh-choice-list-select id="parent" list="ConfigLocationsModalCtrl.choice.parent" name="parent" is-title="1"
-      list-label="FORM.LABELS.SELECT_HIGHER_ENTITY" on-select-callback="ConfigLocationsModalCtrl.onSelectParent(list)">
-      <bh-clear on-clear="ConfigLocationsModalCtrl.clear('parent')"></bh-clear>
-    </bh-choice-list-select>
-
-    <bh-choice-list-select id="group_label" list="ConfigLocationsModalCtrl.choice.group_label" name="group_label"
-      is-group="1" list-label="FORM.SELECT.SELECT_GROUP"
-      on-select-callback="ConfigLocationsModalCtrl.onSelectGroup(list)">
-      <bh-clear on-clear="ConfigLocationsModalCtrl.clear('group_label')"></bh-clear>
-    </bh-choice-list-select>
-
-    <!-- is_title -->
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" id="is_title" ng-true-value="1" ng-false-value="0"
-          ng-model="ConfigLocationsModalCtrl.choice.is_title">
-        <span translate>
-          <strong>
-            FORM.INFO.IS_TITLE
-          </strong>
-        </span>
-      </label>
+    <div ng-if="ConfigLocationsModalCtrl.locations.location_type_id">
+      <bh-yes-no-radios
+        label="FORM.LABELS.DEFINE_LOCATION_HIGHEST"
+        value="ConfigLocationsModalCtrl.is_highest"
+        name="is_highest"
+        on-change-callback="ConfigLocationsModalCtrl.onDefineLocationChange(value)">
+      </bh-yes-no-radios>
     </div>
 
-    <!-- is_group -->
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" id="is_group" ng-true-value="1" ng-false-value="0"
-          ng-model="ConfigLocationsModalCtrl.choice.is_group">
-        <span translate>
-          <strong>
-            FORM.INFO.IS_GROUP
-          </strong>
-        </span>
-      </label>
-    </div>
+    <div ng-if="!ConfigLocationsModalCtrl.is_highest">
+      <bh-location-configuration-select
+        label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
+        location-id="ConfigLocationsModalCtrl.locations.id"
+        parent-id="ConfigLocationsModalCtrl.locations.parent"
+        parent = "ConfigLocationsModalCtrl.locations.location_type_id"
+        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(parent)"
+        allow-all-root="!ConfigLocationsModalCtrl.isCreating"
+        required="true">
+        <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
+      </bh-location-configuration-select>
 
+      <!-- <bh-location-configuration-select
+        label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
+        parent-id="ConfigLocationsModalCtrl.locations.parent"
+        parent = "ConfigLocationsModalCtrl.locations.location_type_id"
+        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(parent)"
+        required="true">
+        <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
+      </bh-location-configuration-select> -->
+
+    </div>
   </div>
 
   <div class="modal-footer">

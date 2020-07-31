@@ -156,6 +156,7 @@ exports.create = function create(req, res, next) {
 
 // PUT /enterprises/:id
 exports.update = function update(req, res, next) {
+
   const sql = 'UPDATE enterprise SET ? WHERE id = ?;';
   const data = db.convert(req.body, ['location_id']);
 

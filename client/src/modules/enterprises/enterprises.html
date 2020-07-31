@@ -101,15 +101,17 @@
                   required="false">
                 </bh-account-select>
 
+                <!-- loss account  -->
                 <bh-account-select
                   id="loss-account-id"
                   account-id="EnterpriseCtrl.enterprise.loss_account_id"
                   label="FORM.LABELS.LOSS_ACCOUNT"
                   name="loss_account_id"
-                  exclude-title-accounts="true"
                   on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
+                  exclude-title-accounts="true"
                   required="false">
                 </bh-account-select>
+
                 <hr/>
                 <bh-location-type-select
                   location-type-id="EnterpriseCtrl.enterprise.location_default_type_root"

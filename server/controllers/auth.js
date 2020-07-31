@@ -184,7 +184,7 @@ async function loadSessionInformation(user) {
   sql = `
     SELECT e.id, e.name, e.abbr, e.phone, e.email, e.address, BUID(e.location_id) as location_id, e.currency_id,
       c.symbol AS currencySymbol, c.name AS currencyName, e.po_box, e.logo,
-      CONCAT_WS(' / ', village.name, sector.name, province.name) AS location
+      CONCAT_WS(' / ', village.name, sector.name, province.name) AS location, e.location_default_type_root
     FROM enterprise AS e
       JOIN currency AS c ON e.currency_id = c.id
       JOIN village ON village.uuid = e.location_id

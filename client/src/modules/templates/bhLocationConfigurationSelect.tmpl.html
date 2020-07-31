@@ -1,0 +1,81 @@
+<div ng-form="LocationConfigurationForm" bh-location-configuration-select ng-model-options="{ updateOn: 'default' }">
+  <div>
+    <label class="label label-warning text-uppercase" ng-if="$ctrl.typeHighest" translate>FORM.INFO.TYPE_LOCATION_ONLY_HIGHEST</label>
+  </div>
+  
+  <div ng-if ="!$ctrl.typeHighest"
+    class="form-group"
+    ng-class="{ 'has-error' : LocationConfigurationForm.$submitted && LocationConfigurationForm.location_configuration_id.$invalid }">
+    <hr>
+    <span class="text-bold text-decoration" translate> {{  $ctrl.label }} </span><br>
+    <span ng-repeat="aggregate in $ctrl.aggregates">
+      <span ng-if="$index > 0"> / </span>
+      <span style="color : {{ aggregate.color }}" class="fa fa-circle"></span>
+      <label class="control-label" translate>
+        {{ aggregate.translation_key }}
+      </label>
+    </span>
+
+    <ui-select
+      $ctrl.multipleChoice
+      $ctrl.required
+      name="location_configuration_id"
+      ng-model= "$ctrl.locationConfigurationId"
+      ng-change="$ctrl.loadLeaves($ctrl.locationConfigurationId, 'root')"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+        <span ng-if="$ctrl.multipleRoot">
+          <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span>
+        </span>
+        <span>{{$select.selected.name}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="root.id as root in $ctrl.roots | filter: { 'name': $select.search }">
+        <span ng-if="$ctrl.multipleRoot">
+          <span style="color : {{ root.color }}" class="fa fa-circle"></span>
+        </span>        
+        <span ng-bind-html="root.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+    <div class="help-block" ng-messages="LocationConfigurationForm.$leave.id.$error" ng-show="LocationConfigurationForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+
+    <div ng-repeat="leave in $ctrl.locationLeaves">
+      <br>
+      <div id="{{leave.id}}">
+        <span ng-repeat="aggregate in leave.aggregates">
+          <span ng-if="$index > 0"> / </span>
+          <span style="color : {{ aggregate.color }}" class="fa fa-circle"></span>
+          <label class="control-label" translate>
+            {{ aggregate.translation_key }}
+          </label>
+        </span>        
+        
+        <ui-select
+          $ctrl.multipleChoice
+          $ctrl.required
+          name="leave.id"
+          ng-change="$ctrl.loadLeaves(leave.model, $index)"
+          ng-model= "leave.model"
+          on-select="$ctrl.onSelect($item, $model)">
+          <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+            <span ng-if="leave.multipleRoot">
+              <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span>
+            </span>
+            <span>{{$select.selected.name}}</span>
+          </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="root.id as root in leave.elements | filter: { 'name': $select.search }">
+            <span ng-if="leave.multipleRoot">
+              <span style="color : {{ root.color }}" class="fa fa-circle"></span>
+            </span>             
+            <span ng-bind-html="root.name | highlight:$select.search"></span>
+          </ui-select-choices>
+        </ui-select>
+        <div class="help-block" ng-messages="LocationConfigurationForm.$leave.id.$error" ng-show="LocationConfigurationForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>

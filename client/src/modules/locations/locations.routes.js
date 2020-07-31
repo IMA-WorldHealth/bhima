@@ -47,14 +47,21 @@ angular.module('bhima.routes')
       .state('locationsConfiguration.create', {
         url : '/create',
         params : {
-          choices_list_management : { value : null },
+          configurations : { value : null },
           creating : { value : true },
-          parentId : { value : null },
+        },
+        onEnter : ['$uibModal', locationManagementModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+      .state('locationsConfiguration.edit', {
+        url : '/:id/edit',
+        params : {
+          configurations : { value : null },
+          creating : { value : false },
         },
         onEnter : ['$uibModal', locationManagementModal],
         onExit : ['$uibModalStack', closeModal],
       });
-
   }]);
 
 function mergeLocationsModal($modal) {

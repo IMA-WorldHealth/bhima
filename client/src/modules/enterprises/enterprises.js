@@ -66,9 +66,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
       .then(enterprises => {
-        console.log('EQWWWWWWwwwwwwww');
-        console.log(enterprises);
-
         vm.hasEnterprise = (enterprises.length > 0);
         vm.enterprises = vm.hasEnterprise ? enterprises : [];
 
@@ -114,14 +111,16 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     const creation = (vm.hasEnterprise === false);
     const changes = util.filterFormElements(form, true);
 
-    console.log('THI CHANGESSSSssssssssssss');
-    console.log(changes);
-
     Object.keys(vm.enterprise.settings).forEach(key => {
       delete changes[key];
     });
 
     changes.settings = angular.copy(vm.enterprise.settings);
+
+    // For taking over location_default_type_root, account for gain and loss
+    changes.gain_account_id = vm.enterprise.gain_account_id;
+    changes.loss_account_id = vm.enterprise.loss_account_id;
+    changes.location_default_type_root = vm.enterprise.location_default_type_root;
 
     const promise = (creation)
       ? Enterprises.create(changes)

@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('LocationsConfigController', LocationsConfigController);
 
 LocationsConfigController.$inject = [
-  '$state', '$translate', 'ChoicesListManagementService', 'NotifyService', 'uiGridConstants', 'ModalService',
-  'FormatTreeDataService', 'LocationService',
+  '$translate', 'LocationConfigurationService', 'NotifyService', 'uiGridConstants', 'ModalService',
+  'FormatTreeDataService',
 ];
 
 /**
@@ -11,8 +11,8 @@ LocationsConfigController.$inject = [
  * This module is responsible for handling the CRUD operation on Locations management
  */
 
-function LocationsConfigController($state, $translate, ChoicesListManagement, Notify, uiGridConstants, ModalService,
-  FormatTreeData, LocationService) {
+function LocationsConfigController($translate, LocationConfiguration, Notify, uiGridConstants, ModalService,
+  FormatTreeData) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -50,24 +50,10 @@ function LocationsConfigController($state, $translate, ChoicesListManagement, No
         cellTemplate : '/modules/locations/configurations/templates/addChildren.tmpl.html',
       },
       {
-        field : 'label',
-        displayName : 'FORM.LABELS.DESIGNATION',
-        enableFiltering : 'true',
-        headerCellFilter : 'translate',
-        cellTemplate : '/modules/choices_list_management/templates/gridLabels.tmpl.html',
-      },
-      {
-        field : 'is_title',
-        displayName : 'FORM.LABELS.TITLE',
-        enableFiltering : 'true',
-        headerCellFilter : 'translate',
-        cellTemplate : '/modules/choices_list_management/templates/is_title.tmpl.html',
-      },
-      {
         field : 'action',
         displayName : '',
         enableFiltering : 'false',
-        cellTemplate : '/modules/choices_list_management/templates/action.cell.tmpl.html',
+        cellTemplate : '/modules/locations/configurations/templates/action.cell.tmpl.html',
       },
     ],
   };
@@ -83,17 +69,12 @@ function LocationsConfigController($state, $translate, ChoicesListManagement, No
   }
 
   // bind methods
-  vm.edit = edit;
   vm.remove = remove;
-
-  function edit(choicesListManagement) {
-    $state.go('choices_list_management.edit', { id : choicesListManagement.id });
-  }
 
   function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(() => {
-        ChoicesListManagement.delete(id)
+        LocationConfiguration.delete(id)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadGrid();
@@ -111,7 +92,7 @@ function LocationsConfigController($state, $translate, ChoicesListManagement, No
     vm.hasError = false;
     vm.loading = true;
 
-    LocationService.readLocations()
+    LocationConfiguration.read()
       .then((data) => {
         data.forEach(type => {
           type.typeLabel = $translate.instant(type.translation_key);
