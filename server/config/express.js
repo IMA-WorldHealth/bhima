@@ -40,7 +40,7 @@ exports.configure = function configure(app) {
   debug('configuring middleware.');
 
   // helmet guards
-  app.use(helmet());
+  app.use(helmet({ contentSecurityPolicy : { directives : { defaultSrc : ['\'self\'', '\'unsafe-inline\''] } } }));
 
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended : false }));
