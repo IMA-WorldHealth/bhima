@@ -24,7 +24,7 @@
       ng-change="$ctrl.loadLeaves($ctrl.locationConfigurationId, 'root')"
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+      <ui-select-match>
         <span ng-if="$ctrl.multipleRoot">
           <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span>
         </span>
@@ -59,7 +59,7 @@
           ng-change="$ctrl.loadLeaves(leave.model, $index)"
           ng-model= "leave.model"
           on-select="$ctrl.onSelect($item, $model)">
-          <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+          <ui-select-match>
             <span ng-if="leave.multipleRoot">
               <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span>
             </span>
@@ -77,5 +77,10 @@
         </div>  
       </div>
     </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
   </div>
 </div>

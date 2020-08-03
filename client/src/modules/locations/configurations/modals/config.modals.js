@@ -15,7 +15,9 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
 
   vm.choice = {};
   vm.stateParams = {};
+  vm.parentElement = {};
   vm.locations = {};
+  vm.is_highest = 1;
 
   // exposed methods
   vm.submit = submit;
@@ -29,6 +31,7 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
     vm.stateParams = cache.stateParams;
   }
   vm.isCreating = vm.stateParams.creating;
+  vm.parentId = vm.stateParams.parentId;
 
   if (!vm.isCreating) {
     LocationConfiguration.read(vm.stateParams.id)
@@ -42,15 +45,24 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
       .catch(Notify.handleError);
   }
 
+  if (vm.parentId) {
+    vm.is_highest = 0;
+    vm.locations.parent = vm.parentId;
+
+    LocationConfiguration.read(vm.parentId)
+      .then(parent => {
+        vm.parentElement = parent;
+      })
+      .catch(Notify.handleError);
+  }
+
   vm.onSelectLocationTypeSelect = onSelectLocationTypeSelect;
   vm.onDefineLocationChange = onDefineLocationChange;
   vm.onSelectParent = onSelectParent;
 
-  vm.is_highest = 1;
-
   function onSelectLocationTypeSelect(type) {
     vm.locations.location_type_id = type.id;
-    vm.is_highest = 1;
+    vm.is_highest = vm.stateParams.parentId ? 0 : 1;
   }
 
   function onDefineLocationChange(value) {

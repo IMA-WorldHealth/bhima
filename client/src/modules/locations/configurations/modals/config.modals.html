@@ -55,7 +55,7 @@
     </bh-location-type-select>
     <hr>
 
-    <div ng-if="ConfigLocationsModalCtrl.locations.location_type_id">
+    <div ng-if="ConfigLocationsModalCtrl.locations.location_type_id && !ConfigLocationsModalCtrl.parentId">
       <bh-yes-no-radios
         label="FORM.LABELS.DEFINE_LOCATION_HIGHEST"
         value="ConfigLocationsModalCtrl.is_highest"
@@ -64,7 +64,7 @@
       </bh-yes-no-radios>
     </div>
 
-    <div ng-if="!ConfigLocationsModalCtrl.is_highest">
+    <div ng-if="!ConfigLocationsModalCtrl.is_highest  && !ConfigLocationsModalCtrl.parentId">
       <bh-location-configuration-select
         label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
         location-id="ConfigLocationsModalCtrl.locations.id"
@@ -75,16 +75,11 @@
         required="true">
         <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
       </bh-location-configuration-select>
+    </div>
 
-      <!-- <bh-location-configuration-select
-        label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
-        parent-id="ConfigLocationsModalCtrl.locations.parent"
-        parent = "ConfigLocationsModalCtrl.locations.location_type_id"
-        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(parent)"
-        required="true">
-        <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
-      </bh-location-configuration-select> -->
-
+    <div ng-if="ConfigLocationsModalCtrl.parentId">
+      <span style="color : {{ ConfigLocationsModalCtrl.parentElement.color }}" class="fa fa-circle"></span>
+      <span translate>{{ ConfigLocationsModalCtrl.parentElement.translation_key }}</span>: <strong> {{ ConfigLocationsModalCtrl.parentElement.name }} </strong>
     </div>
   </div>
 

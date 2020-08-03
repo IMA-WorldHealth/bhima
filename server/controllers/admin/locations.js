@@ -868,6 +868,13 @@ exports.delete.type = (req, res, next) => {
   }).catch(next);
 };
 
+exports.delete.configuration = (req, res, next) => {
+  const sql = 'DELETE FROM locations WHERE id=?';
+
+  db.exec(sql, req.params.id).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
+};
 
 exports.merge = (req, res, next) => {
   const { selected, other, locationStatus } = req.body;

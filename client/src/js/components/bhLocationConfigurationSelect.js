@@ -38,7 +38,6 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
     locationService.loadLocationsRoot(params)
       .then((data) => {
-
         if (data.rows.length) {
           let locationPath = {};
           $ctrl.aggregates = data.aggregates;
@@ -52,7 +51,6 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
             });
 
             const deepLevelPlus = data.deepLevel + 1;
-
             for (let i = 1; i < deepLevelPlus; i++) {
               const indicePathId = `location_id_${deepLevelPlus - i}`;
               const indicePathLabel = `translation_key_${deepLevelPlus - i}`;

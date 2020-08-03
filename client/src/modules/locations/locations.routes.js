@@ -48,6 +48,7 @@ angular.module('bhima.routes')
         url : '/create',
         params : {
           configurations : { value : null },
+          parentId : { value : null },
           creating : { value : true },
         },
         onEnter : ['$uibModal', locationManagementModal],

@@ -183,7 +183,7 @@ exports.configure = function configure(app) {
   app.get('/locations/readLocations/:id', locations.locationDetail);
   app.post('/locations/readLocations', locations.create.configuration);
   app.put('/locations/readLocations/:id', locations.update.configuration);
-  app.delete('/locations/readLocations/:id', locations.create.configuration);
+  app.delete('/locations/readLocations/:id', locations.delete.configuration);
 
   app.get('/locations/villages', locations.villages);
   app.get('/locations/sectors', locations.sectors);
