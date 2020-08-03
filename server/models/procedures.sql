@@ -75,4 +75,10 @@ SOURCE server/models/procedures/payroll.sql
   analysis procedures
 */
 SOURCE server/models/procedures/analysis.sql
+
+/*
+  migration process procedures
+*/
+SOURCE server/models/procedures/migration-process.sql
+
 DELIMITER ;
