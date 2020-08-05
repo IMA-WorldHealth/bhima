@@ -137,7 +137,7 @@
       "EXIT_DEPOT"     : "Stock exit to depot",
       "EXIT_SERVICE"   : "Stock exit to service",
       "EXIT_SERVICES"   : "Stock exit to services",
-      "EXIT_LOSS"      : "Stock Exit - Loss"
+      "EXIT_LOSS"      : "Stock exit to loss"
     },
     "RECEIVER"        : "Receiver",
     "RECEPTION_TRANSFER" : "Transfer",
