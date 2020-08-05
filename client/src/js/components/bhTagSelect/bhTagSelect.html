@@ -3,11 +3,13 @@
     class="form-group"
     ng-class="{ 'has-error' : TagForm.$submitted && TagForm.tagUuids.$invalid }">
 
-    <label class="control-label" translate>
-      {{ $ctrl.label }}
+    <label class="control-label">
+      <span translate>{{ $ctrl.label }}</span>&nbsp;
+      <a style="cursor: pointer;" ng-click="$ctrl.createUpdateTagsModal()" translate>TAG.ADD</a>
     </label>
     
     <ng-transclude></ng-transclude>
+
     <ui-select 
       name="tagUuids" 
       ng-model="$ctrl.tagUuids"

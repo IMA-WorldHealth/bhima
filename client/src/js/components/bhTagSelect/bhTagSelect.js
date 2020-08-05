@@ -11,16 +11,22 @@ angular.module('bhima.components')
     },
   });
 
-TagSelectController.$inject = ['TagService', 'NotifyService'];
+TagSelectController.$inject = ['$rootScope', 'TagService', 'NotifyService'];
 
 /**
  * Tag selection component
  */
-function TagSelectController(Tags, Notify) {
+function TagSelectController($rootScope, Tags, Notify) {
   const $ctrl = this;
 
+  $ctrl.createUpdateTagsModal = Tags.createUpdateTagsModal;
+
+  $rootScope.$on('TAGS_CHANGED', () => {
+    loadTags();
+  });
+
   $ctrl.$onInit = function onInit() {
-    $ctrl.label = $ctrl.label || 'TAG.LABEL';
+    $ctrl.label = $ctrl.label || 'TAG.TAGS';
     $ctrl.tagUuids = $ctrl.tagUuids || [];
     loadTags();
   };

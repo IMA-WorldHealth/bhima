@@ -1,14 +1,30 @@
 angular.module('bhima.services')
-  .service('TagsService', TagsService);
+  .service('TagService', TagService);
 
-TagsService.$inject = ['PrototypeApiService'];
+TagService.$inject = ['PrototypeApiService', 'util', '$uibModal'];
 
 /**
- * Tags Service
+ * @class TagService
+ * @extends PrototypeApiService
  *
- * A service wrapper for the /tags HTTP endpoint.
+ * @description
+ * Encapsulates common requests to the /tags/ URL.
  */
-function TagsService(Api) {
-  const service = new Api('/tags/');
+function TagService(Api, util, $uibModal) {
+  const baseUrl = '/tags/';
+  const service = new Api(baseUrl);
+  service.types = new Api(baseUrl.concat('types/'));
+
+  const tagKeys = ['uuid', 'name', 'color'];
+  service.clean = tag => util.maskObjectFromKeys(tag, tagKeys);
+
+  service.createUpdateTagsModal = (tag) => {
+    $uibModal.open({
+      templateUrl : 'modules/tags/modal/createUpdate.html',
+      controller : 'TagsModalController as ModalCtrl',
+      resolve : { data : () => tag },
+    });
+  };
+
   return service;
 }

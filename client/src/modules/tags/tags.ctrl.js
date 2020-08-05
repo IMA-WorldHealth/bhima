@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('TagsController', TagsController);
 
 TagsController.$inject = [
-  '$uibModal', 'TagsService', 'ModalService',
+  '$uibModal', 'TagService', 'ModalService',
   'NotifyService', 'uiGridConstants', '$rootScope',
 ];
 
@@ -11,13 +11,7 @@ function TagsController($uibModal, Tags, Modal, Notify, uiGridConstants, $rootSc
 
   vm.canEditTags = false;
 
-  vm.createUpdateTagsModal = (tag) => {
-    $uibModal.open({
-      templateUrl : 'modules/tags/modal/createUpdate.html',
-      controller : 'TagsModalController as ModalCtrl',
-      resolve : { data : () => tag },
-    });
-  };
+  vm.createUpdateTagsModal = Tags.createUpdateTagsModal;
 
   vm.remove = function remove(uuid) {
     const message = 'FORM.DIALOGS.CONFIRM_ACTION';
