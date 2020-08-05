@@ -24,22 +24,19 @@ function DepotService(Api, Modal) {
    *
    * @param isDepotRequired helps to keep the modal displayed as long as no depot was submitted
    */
-  service.openSelectionModal = function openSelectionModal(depot, isDepotRequired) {
-    service.isDepotRequired = isDepotRequired || false;
+  service.openSelectionModal = function openSelectionModal(depot, isDepotRequired = false) {
+    service.isDepotRequired = isDepotRequired;
     return Modal.open({
       controller : 'SelectDepotModalController as $ctrl',
       templateUrl : 'modules/stock/depot-selection.modal.html',
       resolve : {
-        depot : function injectDepot() { return depot; },
+        depot : () => depot,
       },
-      backdrop : 'static',
-      keyboard : false,
     }).result;
   };
 
   service.searchByName = function searchByName(options = {}) {
     const target = baseUrl.concat('search/name');
-
     return service.$http.get(target, { params : options })
       .then(service.util.unwrapHttpResponse);
   };
