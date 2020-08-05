@@ -1,12 +1,15 @@
 angular.module('bhima.controllers')
   .controller('InventoryGroupsActionsModalController', InventoryGroupsActionsModalController);
-
 InventoryGroupsActionsModalController.$inject = [
-  'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data', 'SessionService',
+  'InventoryGroupService', 'NotifyService', '$uibModalInstance', 'data', 'SessionService', 'bhConstants',
 ];
 
-function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data, Session) {
+function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance, Data, Session, Constants) {
   const vm = this;
+
+  vm.INCOME_ACCOUNT_TYPE_ID = Constants.accounts.INCOME;
+  vm.EXPENSE_ACCOUNT_TYPE_ID = Constants.accounts.EXPENSE;
+  vm.ASSET_ACCOUNT_TYPE_ID = Constants.accounts.ASSET;
 
   // session
   vm.session = {};

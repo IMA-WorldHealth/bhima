@@ -41,6 +41,7 @@
       data-sales-account
       name="sales_account"
       account-id="$ctrl.session.sales_account"
+      account-type-id="$ctrl.INCOME_ACCOUNT_TYPE_ID"
       exclude-title-accounts="true"
       required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectSalesAccount(account)">
@@ -52,6 +53,7 @@
       data-stock-account
       name="stock_account"
       account-id="$ctrl.session.stock_account"
+      account-type-id="$ctrl.ASSET_ACCOUNT_TYPE_ID"
       exclude-title-accounts="true"
       required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectStockAccount(account)">
@@ -63,6 +65,7 @@
       data-cogs-account
       name="cogs_account"
       account-id="$ctrl.session.cogs_account"
+      account-type-id="$ctrl.EXPENSE_ACCOUNT_TYPE_ID"
       exclude-title-accounts="true"
       required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectCOGSAccount(account)">
