@@ -14,6 +14,7 @@ function TagsPage() {
   page.editTags = editTags;
   page.deleteTags = deleteTags;
   page.openCreateModal = openCreateModal;
+  page.setColor = setColor;
 
   const departmentName = element(by.model('ModalCtrl.tags.name'));
 
@@ -23,6 +24,10 @@ function TagsPage() {
 
   function setName(txt) {
     return departmentName.clear().sendKeys(txt);
+  }
+
+  function setColor(color) {
+    return FU.uiSelect('ModalCtrl.tags.color', color);
   }
 
   async function openDropdownMenu(label) {

@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('TagsController', TagsController);
 
 TagsController.$inject = [
-  '$uibModal', 'TagService', 'ModalService',
+  'TagService', 'ModalService',
   'NotifyService', 'uiGridConstants', '$rootScope',
 ];
 
-function TagsController($uibModal, Tags, Modal, Notify, uiGridConstants, $rootScope) {
+function TagsController(Tags, Modal, Notify, uiGridConstants, $rootScope) {
   const vm = this;
 
   vm.canEditTags = false;

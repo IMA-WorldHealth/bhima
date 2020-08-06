@@ -26,6 +26,14 @@ function TagsModalController(
       return false;
     }
 
+    if (typeof (vm.tags) === 'object') {
+      delete vm.tags.iconColor;
+    } else if (Array.isArray(vm.tags)) {
+      vm.tags.forEach(t => {
+        delete t.iconColor;
+      });
+    }
+
     const operation = vm.isCreation
       ? TagsService.create(vm.tags)
       : TagsService.update(data.uuid, vm.tags);
