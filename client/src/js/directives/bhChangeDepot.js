@@ -41,7 +41,8 @@ function bhChangeDepotController(Depots, AppCache, Notify) {
       }
 
       function changeDepot() {
-        // if requirement is true the modal cannot be canceled
+        // if requirement is true the modal will use History.back() to
+        // cancel the modal.
         const requirement = !cache.depotUuid;
 
         return Depots.openSelectionModal($ctrl.currentDepot, requirement)

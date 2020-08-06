@@ -50,8 +50,8 @@
       </li>
     </ul>
 
-    <a href ng-click="$ctrl.showAllDepots()" ng-if="$ctrl.depots.length > $ctrl.limit && !$ctrl.showAll" 
-      class="text-right text-primary pull-right" 
+    <a href ng-click="$ctrl.showAllDepots()" ng-if="$ctrl.depots.length > $ctrl.limit && !$ctrl.showAll"
+      class="text-right text-primary pull-right"
       translate-values="{ number : $ctrl.totalOtherDepots }"
       translate>DEPOT.MODAL.AND_MORE_DEPOTS
     </a>
@@ -64,8 +64,6 @@
     type="button"
     class="btn btn-default"
     ng-click="$ctrl.cancel()"
-
-    ng-disabled="$ctrl.isDepotRequired"
     translate>
     FORM.BUTTONS.CANCEL
   </button>

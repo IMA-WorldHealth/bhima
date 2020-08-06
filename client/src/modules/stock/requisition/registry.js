@@ -22,7 +22,6 @@ function StockRequisitionController(
   const stockRequisitionFilters = Stock.filter.requisition;
   vm.status = [];
 
-
   // grid columns
   const columns = [
     {
@@ -83,7 +82,7 @@ function StockRequisitionController(
 
   const gridFooterTemplate = `
     <div style="padding-left: 10px;">
-      <b>{{ grid.appScope.countGridRows() }}</b> 
+      <b>{{ grid.appScope.countGridRows() }}</b>
       <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
   `;
