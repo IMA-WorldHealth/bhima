@@ -32,6 +32,7 @@
     "TYPE_VALUE" : "Valeur de stock",
     "TYPE_QUANTITY" : "Quantité de stock",
     "STOCK_OUT_WARNING" : "Alert : il y a {{total}} produits en rupture de stock",
+    "STOCK_EXPIRED_WARNING" : "Alert : il y a  {{total}} produits expirés",
     "AND_MORE" : "... et {{left}} autres",
     "TRACK_CONSUMPTION":"Suivre la consommation",
     "TRACK_EXPIRATION":"Suivre l'expiration",

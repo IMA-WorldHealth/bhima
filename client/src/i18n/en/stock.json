@@ -31,6 +31,7 @@
     "TYPE_VALUE" : "Stock value",
     "TYPE_QUANTITY" : "Stock quantity",
     "STOCK_OUT_WARNING" : "Alert : there are {{total}} products out of stock",
+    "STOCK_EXPIRED_WARNING" : "Alert : there are {{total}} expired products",
     "AND_MORE" : "... and {{left}} more",
     "TRACK_CONSUMPTION":"Track consumption",
     "TRACK_EXPIRATION":"Track expiration",

@@ -54,7 +54,7 @@
 
       <!-- date and note -->
       <div class="row">
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-8 col-md-4">
           <!-- date -->
           <bh-date-editor
             date-value="StockCtrl.movement.date"
@@ -87,11 +87,17 @@
           </div>
         </div>
 
-        <div class="col-xs-12 col-md-6 panel-default">
+        <div class="col-xs-6 col-md-3 panel-default">
           <bh-stock-sold-out
             depot-uuid="StockCtrl.depot.uuid"
             date="StockCtrl.movement.date">
           </bh-stock-sold-out>
+        </div>
+        <div class="col-xs-10 col-md-5 panel-default">
+          <bh-stock-expired
+            depot-uuid="StockCtrl.depot.uuid"
+            date="StockCtrl.movement.date">
+          </bh-stock-expired>
         </div>
       </div>
 
