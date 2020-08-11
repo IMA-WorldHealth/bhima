@@ -23,9 +23,9 @@ CREATE TABLE `account` (
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `reference_id` (`reference_id`),
-  FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
+  CONSTRAINT `account__account_type` FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
+  CONSTRAINT `account__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_category`;
@@ -46,7 +46,7 @@ CREATE TABLE `account_type` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_type_1` (`type`),
   KEY `account_category_id` (`account_category_id`),
-  FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
+  CONSTRAINT `acc_type__acc_category` FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_reference`;
@@ -72,8 +72,8 @@ CREATE TABLE `account_reference_item` (
   PRIMARY KEY (`id`),
   KEY `account_reference_id` (`account_reference_id`),
   KEY `account_id` (`account_id`),
-  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `acc_ref_item__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
+  CONSTRAINT `acc_ref_item__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_assignment`;
@@ -84,8 +84,8 @@ CREATE TABLE `patient_assignment` (
   PRIMARY KEY (`uuid`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
   KEY `patient_uuid` (`patient_uuid`),
-  FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `patient_assignment__patient_group` FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_assignment__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -102,7 +102,7 @@ CREATE TABLE invoicing_fee (
   UNIQUE KEY `invoicing_fee_1` (`label`),
   UNIQUE KEY `invoicing_fee_2` (`account_id`, `label`),
   KEY `account_id` (`account_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `invoicing_fee__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `budget`;
@@ -113,8 +113,8 @@ CREATE TABLE `budget` (
   `budget` DECIMAL(10,4) UNSIGNED DEFAULT NULL,
   KEY `account_id` (`account_id`),
   KEY `period_id` (`period_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
+  CONSTRAINT `budget__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `budget__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   UNIQUE KEY `budget_1` (`account_id`, `period_id`),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -143,11 +143,11 @@ CREATE TABLE `cash` (
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `user_id` (`user_id`),
   KEY `cashbox_id` (`cashbox_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
+  CONSTRAINT `cash__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `cash__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `cash__debtor` FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  CONSTRAINT `cash__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `cash__cashbox` FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_item`;
@@ -159,7 +159,7 @@ CREATE TABLE `cash_item` (
   PRIMARY KEY (`uuid`),
   KEY `cash_uuid` (`cash_uuid`),
   INDEX (`invoice_uuid`),
-  FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
+  CONSTRAINT `cash_item__cash`FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_box`;
@@ -171,7 +171,7 @@ CREATE TABLE `cash_box` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `cash_box_1` (`label`),
   KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
+  CONSTRAINT `cashbox__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `payroll_configuration`;
@@ -187,10 +187,10 @@ CREATE TABLE `payroll_configuration` (
   `config_ipr_id`INT(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payroll_configuration` (`label`),
-  FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
-  FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`),
-  FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`),
-  FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`)
+  CONSTRAINT `payroll_conf__conf_rubric` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
+  CONSTRAINT  `payroll_conf__conf_account` FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`),
+  CONSTRAINT  `payroll_conf__conf_weekend`FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`),
+  CONSTRAINT `payroll_conf__conf_employee` FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `rubric_payroll`;
@@ -222,8 +222,8 @@ CREATE TABLE `rubric_payroll` (
   UNIQUE KEY `rubric_payroll_2` (`abbr`),
   KEY `debtor_account_id` (`debtor_account_id`),
   KEY `expense_account_id` (`expense_account_id`),
-  FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`expense_account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `rubric_payroll__debtor_account` FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `rubric_payroll__expense_account` FOREIGN KEY (`expense_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `rubric_payroll_item`;
@@ -232,8 +232,8 @@ CREATE TABLE `rubric_payroll_item` (
   `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
   `item_id` INT(10) UNSIGNED NOT NULL,
   UNIQUE KEY `uniq_item`(`rubric_payroll_id`, `item_id`),
-  FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`),
-  FOREIGN KEY (`item_id`) REFERENCES `rubric_payroll` (`id`)
+  CONSTRAINT  `rubric_pay_item__rubric_pay1` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`),
+  CONSTRAINT  `rubric_pay_item__rubric_pay2` FOREIGN KEY (`item_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
@@ -250,10 +250,10 @@ CREATE TABLE `cash_box_account_currency` (
   KEY `cash_box_id` (`cash_box_id`),
   KEY `account_id` (`account_id`),
   KEY `transfer_account_id` (`transfer_account_id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `cashbox_acc_currency__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `cashbox_acc_currency__cashbox` FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `cashbox_acc_currency__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `cashbox_acc_currency__transfert_acc` FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_accounting`;
@@ -265,7 +265,7 @@ CREATE TABLE `config_accounting` (
   UNIQUE KEY `config_accounting_1` (`label`),
   UNIQUE KEY `config_accounting_2` (`label`, `account_id`),
   KEY `account_id` (`account_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `config_acc__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `weekend_config`;
@@ -284,7 +284,7 @@ CREATE TABLE `config_week_days` (
   `weekend_config_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `weekend_config_id` (`weekend_config_id`),
-  FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
+  CONSTRAINT `config_week_days__weekend_config` FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `country`;
@@ -307,7 +307,7 @@ CREATE TABLE `creditor` (
   UNIQUE KEY `creditor_1` (`text`),
   UNIQUE KEY `creditor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
-  FOREIGN KEY (`group_uuid`) REFERENCES `creditor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `creditor__creditor_group` FOREIGN KEY (`group_uuid`) REFERENCES `creditor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `creditor_group`;
@@ -323,8 +323,8 @@ CREATE TABLE `creditor_group` (
   UNIQUE KEY `credit_group_2` (`name`, `account_id`),
   KEY `account_id` (`account_id`),
   KEY `enterprise_id` (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `creditor_group__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `creditor_group__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `critere`;
@@ -357,7 +357,7 @@ CREATE TABLE `debtor` (
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),
-  FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
+  CONSTRAINT `debtor__debtor_group` FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -388,15 +388,15 @@ CREATE TABLE `debtor_group` (
   KEY `account_id` (`account_id`),
   KEY `location_id` (`location_id`),
   KEY `price_list_uuid` (`price_list_uuid`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
-  FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
+  CONSTRAINT `debtor_group__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `debtor_group__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `debtor_group__pricelist` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS debtor_group_invoicing_fee;
 
-CREATE TABLE debtor_group_invoicing_fee (
+CREATE TABLE `debtor_group_invoicing_fee` (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debtor_group_uuid`      BINARY(16) NOT NULL,
   `invoicing_fee_id`      SMALLINT UNSIGNED NOT NULL,
@@ -404,8 +404,8 @@ CREATE TABLE debtor_group_invoicing_fee (
   PRIMARY KEY (`id`),
   KEY `debtor_group_uuid` (`debtor_group_uuid`),
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `ebtor_group_invoicing_fee__invoicing_fee` FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ebtor_group_invoicing_fee__debtor_group` FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -422,10 +422,10 @@ CREATE TABLE `debtor_group_history` (
   KEY `previous_debtor_group` (`previous_debtor_group`),
   KEY `next_debtor_group` (`next_debtor_group`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
-  FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `debtor_group_history__debtor` FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  CONSTRAINT `debtor_group_history__prev_debtor_group` FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  CONSTRAINT `debtor_group_history__next_debtor_group` FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  CONSTRAINT `debtor_group_history__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -440,8 +440,8 @@ CREATE TABLE debtor_group_subsidy (
   UNIQUE KEY `debtor_group_subsidy_1` (`debtor_group_uuid`, `subsidy_id`),
   KEY `debtor_group_uuid` (`debtor_group_uuid`),
   KEY `subsidy_id` (`subsidy_id`),
-  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `debtorgroup_subsidy__subsidy` FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `debtorgroup_subsidy__debtor_group` FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -478,8 +478,8 @@ CREATE TABLE discount (
   UNIQUE KEY `discount_2` (`account_id`, `inventory_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `account_id` (`account_id`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `discount__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `discount__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -516,11 +516,11 @@ CREATE TABLE `employee` (
   KEY `creditor_uuid` (`creditor_uuid`),
   KEY `grade_uuid` (`grade_uuid`),
   KEY `patient_uuid` (`patient_uuid`),
-  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
-  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
-  FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
+  CONSTRAINT  `employee__fonction` FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
+  CONSTRAINT  `employee__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
+  CONSTRAINT  `employee__creditor` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
+  CONSTRAINT  `employee__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
+  CONSTRAINT `employee__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `employee_advantage`;
@@ -532,8 +532,8 @@ CREATE TABLE `employee_advantage` (
   PRIMARY KEY (`id`),
   KEY `employee_uuid` (`employee_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
-  FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+  CONSTRAINT `employee_advantage__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  CONSTRAINT `employee_advantage__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -556,10 +556,10 @@ CREATE TABLE `enterprise` (
   KEY `currency_id` (`currency_id`),
   KEY `gain_account_id` (`gain_account_id`),
   KEY `loss_account_id` (`loss_account_id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
-  FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `enterprise__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `enterprise__location` FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `enterprise__gain_account` FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `enterprise__loss_account` FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `enterprise_setting`;
@@ -578,7 +578,7 @@ CREATE TABLE `enterprise_setting` (
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
   `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+  CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `entity_map`;
@@ -600,8 +600,8 @@ CREATE TABLE `exchange_rate` (
   KEY `currency_id` (`currency_id`),
   INDEX `rate` (`rate`),
   INDEX `date` (`date`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
+  CONSTRAINT `exchange_rate__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `exchange_rate__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -624,8 +624,8 @@ CREATE TABLE `fiscal_year` (
   UNIQUE KEY `fiscal_year_2` (`enterprise_id`, `start_date`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `fiscal_year__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `fiscal_year__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -674,12 +674,12 @@ CREATE TABLE `general_ledger` (
   INDEX `entity_uuid` (`entity_uuid`),
   INDEX `account_id` (`account_id`),
   INDEX `trans_id_reference_number` (`trans_id_reference_number`),
-  FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `general_ledger__fiscal_year` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
+  CONSTRAINT `general_ledger__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
+  CONSTRAINT `general_ledger__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `general_ledger__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `general_ledger__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `general_ledger__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -706,7 +706,7 @@ CREATE TABLE `holiday` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `holiday_1` (`employee_uuid`, `dateFrom`, `dateTo`),
   KEY `employee_uuid` (`employee_uuid`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
+  CONSTRAINT `holiday__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `holiday_paiement`;
@@ -720,8 +720,8 @@ CREATE TABLE `holiday_paiement` (
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
+  CONSTRAINT `holiday_paiement__paiment` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `holiday_paiement__holiday` FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -735,8 +735,8 @@ CREATE TABLE `offday_paiement` (
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `offday_id` (`offday_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`)
+  CONSTRAINT `offday_paiement__paiment` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `offday_paiement__offday` FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `icd10`;
@@ -784,10 +784,10 @@ CREATE TABLE `inventory` (
   KEY `group_uuid` (`group_uuid`),
   KEY `unit_id` (`unit_id`),
   KEY `type_id` (`type_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`group_uuid`) REFERENCES `inventory_group` (`uuid`),
-  FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
-  FOREIGN KEY (`type_id`) REFERENCES `inventory_type` (`id`)
+  CONSTRAINT `inventory__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `inventory__inventory_group` FOREIGN KEY (`group_uuid`) REFERENCES `inventory_group` (`uuid`),
+  CONSTRAINT `inventory__enventory_unit` FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
+  CONSTRAINT `inventory__inventory_type` FOREIGN KEY (`type_id`) REFERENCES `inventory_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -877,10 +877,10 @@ CREATE TABLE `paiement` (
   KEY `payroll_configuration_id` (`payroll_configuration_id`),
   KEY `currency_id` (`currency_id`),
   KEY `status_id` (`status_id`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
-  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`status_id`) REFERENCES `paiement_status` (`id`)
+  CONSTRAINT `paiement__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  CONSTRAINT `paiement__payroll_configuration`  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
+  CONSTRAINT `paiement__currency`  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `paiement__pay_status`  FOREIGN KEY (`status_id`) REFERENCES `paiement_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -907,10 +907,10 @@ CREATE TABLE `stage_payment_indice` (
   KEY `employee_uuid` (`employee_uuid`),
   KEY `payroll_configuration_id` (`payroll_configuration_id`),
   KEY `currency_id` (`currency_id`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
-  FOREIGN KEY (`rubric_id`) REFERENCES `rubric_payroll` (`id`),
-  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
+  CONSTRAINT `stage_pay_indice__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  CONSTRAINT `stage_pay_indice__rubric` FOREIGN KEY (`rubric_id`) REFERENCES `rubric_payroll` (`id`),
+  CONSTRAINT `stage_pay_indice__payroll_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
+  CONSTRAINT `stage_pay_indice__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -926,8 +926,8 @@ CREATE TABLE `rubric_paiement` (
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+  CONSTRAINT  `rubric_paiement__paiement` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT  `rubric_paiement__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `price_list`;
@@ -941,7 +941,7 @@ CREATE TABLE `price_list` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `prices_1` (`label`),
   KEY `enterprise_id` (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+  CONSTRAINT `price_list__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -959,8 +959,8 @@ CREATE TABLE `price_list_item` (
   UNIQUE KEY `price_list_item_2` (`price_list_uuid`, `inventory_uuid`),
   KEY `price_list_uuid` (`price_list_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
-  FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE
+  CONSTRAINT `price_list_item__price_list` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `price_list_item__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- TODO write schema change (transactions) INTo SQL update script
@@ -1016,11 +1016,11 @@ CREATE TABLE `patient` (
   /* @TODO fulltext index may degrade INSERT performance over time */
   FULLTEXT `display_name` (`display_name`),
 
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
-  FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `patient__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `patient__debtor` FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient__current_location` FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
+  CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
+  CONSTRAINT `patient__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_document`;
@@ -1035,8 +1035,8 @@ CREATE TABLE `patient_document` (
   `size`         INTEGER UNSIGNED NOT NULL,
   `user_id`      SMALLINT(5) UNSIGNED NOT NULL,
   KEY `patient_uuid` (`patient_uuid`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `patient_document__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_document__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_group`;
@@ -1051,8 +1051,8 @@ CREATE TABLE `patient_group` (
    UNIQUE KEY `patient_group_1` (`name`),
    KEY `enterprise_id` (`enterprise_id`),
    KEY `price_list_uuid` (`price_list_uuid`),
-   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE SET NULL ON UPDATE CASCADE
+   CONSTRAINT `patient_group__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+   CONSTRAINT `patient_group__pricelist` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS patient_group_invoicing_fee;
@@ -1064,8 +1064,8 @@ CREATE TABLE patient_group_invoicing_fee (
   PRIMARY KEY (`id`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `patient_group_inv_fee__iv_fee` FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_group_inv_fee__patient_group` FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1079,8 +1079,8 @@ CREATE TABLE patient_group_subsidy (
   PRIMARY KEY (`id`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
   KEY `subsidy_id` (`subsidy_id`),
-  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `patient_group_subsidy__subsidy` FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_group_subsidy__patient_group` FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `discharge_type`;
@@ -1117,10 +1117,10 @@ CREATE TABLE `patient_visit` (
   KEY `end_diagnosis_id` (`end_diagnosis_id`),
   KEY `last_service_uuid` (`last_service_uuid`),
   KEY `discharge_type_id` (`discharge_type_id`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `patient_visit__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_visit__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `patient_visit__start_diagnosis` FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `patient_visit__end_diagnosis`FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_visit_service`;
@@ -1131,8 +1131,8 @@ CREATE TABLE `patient_visit_service` (
   `service_uuid`       BINARY(16) NOT NULL,
   `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`uuid`),
-   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
-   FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`) ON UPDATE CASCADE
+   CONSTRAINT `patient_visit_service__patient_visit` FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   CONSTRAINT `patient_visit_service__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_hospitalization`;
@@ -1145,10 +1145,10 @@ CREATE TABLE `patient_hospitalization` (
   `bed_id`             SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`uuid`),
-   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
-   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON UPDATE CASCADE,
-   FOREIGN KEY (`room_uuid`) REFERENCES `room` (`uuid`) ON UPDATE CASCADE,
-   FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
+   CONSTRAINT `patient_hosp__patient_visit` FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   CONSTRAINT `patient_hosp__patient`  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON UPDATE CASCADE,
+   CONSTRAINT `patient_hosp__room`  FOREIGN KEY (`room_uuid`) REFERENCES `room` (`uuid`) ON UPDATE CASCADE,
+   CONSTRAINT `patient_hosp__bed`  FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `period`;
@@ -1164,7 +1164,7 @@ CREATE TABLE `period` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `period_1` (`start_date`, `end_date`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
-  FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
+  CONSTRAINT `period__fiscal_year` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1183,10 +1183,10 @@ CREATE TABLE `period_total` (
   KEY `account_id` (`account_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `period_id` (`period_id`),
-  FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
+  CONSTRAINT `period_total__fiscal_year` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
+  CONSTRAINT `period_total__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `period_total__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `period_total__period`FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1200,8 +1200,8 @@ CREATE TABLE `permission` (
   UNIQUE KEY `permission_1` (`unit_id`,`user_id`),
   KEY `unit_id` (`unit_id`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `permission__unit` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `entity_type`;
@@ -1273,7 +1273,7 @@ CREATE TABLE `cron_email_report` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `label` (`label`, `report_id`),
   KEY `entity_group_uuid` (`entity_group_uuid`),
-  FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
+  CONSTRAINT `cron_email_report__entity_group` FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `posting_journal`;
@@ -1314,12 +1314,12 @@ CREATE TABLE `posting_journal` (
   INDEX `entity_uuid` (`entity_uuid`),
   INDEX `account_id` (`account_id`),
   INDEX `trans_id_reference_number` (`trans_id_reference_number`),
-  FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `pg__fiscal_year` FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`),
+  CONSTRAINT `pg__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
+  CONSTRAINT `pg__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `pg__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `pg__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `pg__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project`;
@@ -1335,7 +1335,7 @@ CREATE TABLE `project` (
   UNIQUE KEY `project_1` (`name`),
   UNIQUE KEY `project_2` (`abbr`),
   KEY `enterprise_id` (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+  CONSTRAINT `project__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project_permission`;
@@ -1348,8 +1348,8 @@ CREATE TABLE `project_permission` (
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `project_permission__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `project_permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1361,7 +1361,7 @@ CREATE TABLE `province` (
   `country_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `country_uuid` (`country_uuid`),
-  FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
+  CONSTRAINT `province__country` FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase`;
@@ -1386,10 +1386,10 @@ CREATE TABLE `purchase` (
   KEY `supplier_uuid` (`supplier_uuid`),
   KEY `user_id` (`user_id`),
   KEY `status_id` (`status_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`)
+  CONSTRAINT `purchase__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `purchase__supplier` FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
+  CONSTRAINT `purchase__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `purchase__status` FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase_item`;
@@ -1405,8 +1405,8 @@ CREATE TABLE `purchase_item` (
   UNIQUE KEY `purchase_item_1` (`purchase_uuid`, `inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
-  FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+  CONSTRAINT `purchase_item__purchase` FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `purchase_item__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase_status`;
@@ -1442,7 +1442,7 @@ CREATE TABLE `reference_group` (
   `section_bilan_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `section_bilan_id` (`section_bilan_id`),
-  FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
+  CONSTRAINT `reference_group__section_bilan` FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1468,8 +1468,8 @@ CREATE TABLE `saved_report` (
   PRIMARY KEY (`uuid`),
   KEY `user_id` (`user_id`),
   KEY `report_id` (`report_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
+  CONSTRAINT  `saved_report__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT  `saved_report__report` FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
 ) ENGINE= InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `invoice`;
@@ -1495,10 +1495,10 @@ CREATE TABLE `invoice` (
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `service_uuid` (`service_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `invoice__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `invoice__debtor` FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  CONSTRAINT `invoice__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
+  CONSTRAINT `invoice__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS invoice_invoicing_fee;
@@ -1509,8 +1509,8 @@ CREATE TABLE invoice_invoicing_fee (
   PRIMARY KEY (`invoice_uuid`, `invoicing_fee_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`)
+  CONSTRAINT `invoice_invoicing_fee__invoice` FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `invoice_invoicing_fee__invoicing_fee` FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `invoice_item`;
@@ -1528,8 +1528,8 @@ CREATE TABLE `invoice_item` (
   UNIQUE KEY `invoice_item_1` (`invoice_uuid`, `inventory_uuid`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+  CONSTRAINT `invoice_item__invoice` FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `invoice_item__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS invoice_subsidy;
@@ -1542,8 +1542,8 @@ CREATE TABLE `invoice_subsidy` (
   UNIQUE KEY `invoice_subsidy_1` (`invoice_uuid`, `subsidy_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `subsidy_id` (`subsidy_id`),
-  FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`)
+  CONSTRAINT `invoice_subsidy__invoice` FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `invoice_subsidy__subsidy` FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `section_bilan`;
@@ -1574,7 +1574,7 @@ CREATE TABLE `sector` (
   `province_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `province_id` (`province_uuid`),
-  FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
+  CONSTRAINT `sector__province` FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1588,7 +1588,7 @@ CREATE TABLE `service` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `service_1` (`name`),
   KEY `enterprise_id` (`enterprise_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`)
+  CONSTRAINT `service__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `ward`;
@@ -1599,7 +1599,7 @@ CREATE TABLE `ward`(
  `service_uuid` BINARY(16) NULL,
   PRIMARY KEY(`uuid`),
   KEY `name_1` (`name`),
-  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`)
+  CONSTRAINT `ward__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `room_type`;
@@ -1618,8 +1618,8 @@ CREATE TABLE `room`(
  `room_type_id` SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY(`uuid`),
   UNIQUE KEY `room_label_0` (`label`, `ward_uuid`),
-  FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
-  FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
+  CONSTRAINT `room__ward` FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
+  CONSTRAINT `room__room_type` FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `bed`;
@@ -1631,8 +1631,8 @@ CREATE TABLE `bed`(
  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY(`id`),
   UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
+  CONSTRAINT `bed__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `bed__room` FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1648,7 +1648,7 @@ CREATE TABLE subsidy (
   PRIMARY KEY (`id`),
   UNIQUE KEY `subsidy_1` (`label`),
   KEY `account_id` (`account_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `subsidy__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1669,7 +1669,7 @@ CREATE TABLE `supplier` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `supplier__creditor` FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `taxe_ipr`;
@@ -1680,7 +1680,7 @@ CREATE TABLE `taxe_ipr` (
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `taxe_ipr__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `taxe_ipr_configuration`;
@@ -1700,7 +1700,7 @@ CREATE TABLE `taxe_ipr_configuration` (
   `taxe_ipr_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `taxe_ipr_id` (`taxe_ipr_id`),
-  FOREIGN KEY (`taxe_ipr_id`) REFERENCES `taxe_ipr` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `taxe_ipr_config__taxe_ipr` FOREIGN KEY (`taxe_ipr_id`) REFERENCES `taxe_ipr` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `transaction_type`;
@@ -1763,8 +1763,8 @@ CREATE TABLE `role_actions` (
   `role_uuid` BINARY(16) NOT NULL,
   `actions_id`INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
-  FOREIGN KEY (`actions_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE  ON DELETE CASCADE
+  CONSTRAINT `role_actions__action` FOREIGN KEY (`actions_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `role_actions__role` FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE  ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `user_role`;
@@ -1774,8 +1774,8 @@ CREATE TABLE `user_role` (
   `role_uuid` BINARY(16) NOT NULL,
   PRIMARY kEY(`uuid`),
   UNIQUE `role_for_user` (`user_id`,`role_uuid`),
-  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `user_role__role` FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
+  CONSTRAINT `user_role__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1785,8 +1785,8 @@ CREATE TABLE `role_unit` (
   `role_uuid`  BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY(`uuid`),
-  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `role_unit__role` FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT `role_unit__unit`  FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1799,7 +1799,7 @@ CREATE TABLE `village` (
   `latitude`    DECIMAL(19, 6) NULL,
   PRIMARY KEY (`uuid`),
   KEY `sector_id` (`sector_uuid`),
-  FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
+  CONSTRAINT `village__sector` FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- NOTE: type_id is the transaction_type table.  FK not possible due to NULLs.
@@ -1823,9 +1823,9 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   INDEX (`reference_uuid`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `voucher__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `voucher__currency`  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `voucher__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   UNIQUE KEY `voucher_1` (`project_id`, `reference`),
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1845,8 +1845,8 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   KEY `voucher_uuid` (`voucher_uuid`),
   INDEX (`document_uuid`),
   INDEX (`entity_uuid`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
+  CONSTRAINT `voucher_item__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `voucher_item__voucher` FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- stock tables
@@ -1874,7 +1874,7 @@ CREATE TABLE `lot` (
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+  CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_assign`;
@@ -1893,9 +1893,9 @@ CREATE TABLE `stock_assign` (
   KEY `lot_uuid` (`lot_uuid`),
   KEY `entity_uuid` (`entity_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
-  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+  CONSTRAINT `stock_assign__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  CONSTRAINT `stock_assign__entity` FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
+  CONSTRAINT `stock_assign__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `status`;
@@ -1931,7 +1931,7 @@ CREATE TABLE `stock_requisition` (
   UNIQUE KEY `stock_requisition_uuid` (`uuid`),
   KEY `requestor_uuid` (`requestor_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+  CONSTRAINT `stock_requisition__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_requisition_item`;
@@ -1940,7 +1940,7 @@ CREATE TABLE `stock_requisition_item` (
   `inventory_uuid`    BINARY(16) NOT NULL,
   `quantity`          INT(11) NOT NULL DEFAULT 0,
   KEY `requisition_uuid` (`requisition_uuid`),
-  FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`)
+  CONSTRAINT `stock_req_item__stock_req_item` FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_movement`;
@@ -1968,11 +1968,11 @@ CREATE TABLE `stock_movement` (
   KEY `flux_id` (`flux_id`),
   KEY `user_id` (`user_id`),
   KEY `period_id` (`period_id`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
-  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
+  CONSTRAINT `stock_movement__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `stock_movement__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  CONSTRAINT `stock_movement__flux` FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
+  CONSTRAINT `stock_movement__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `stock_movement__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donor
@@ -2018,9 +2018,9 @@ CREATE TABLE `stock_consumption` (
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
   KEY `period_id` (`period_id`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
+  CONSTRAINT `stock_consumption__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
+  CONSTRAINT `stock_consumption__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `stock_consumption__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2037,7 +2037,7 @@ CREATE TABLE `transaction_history` (
   PRIMARY KEY (`uuid`),
   KEY `record_uuid` (`record_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `transaction_history__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2051,8 +2051,8 @@ CREATE TABLE `depot_permission` (
   UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
   KEY `user_id` (`user_id`),
   KEY `depot_uuid` (`depot_uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `depot_permission__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `depot_permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cashbox_permission`;
@@ -2065,8 +2065,8 @@ CREATE TABLE `cashbox_permission` (
   UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
   KEY `user_id` (`user_id`),
   KEY `cashbox_id` (`cashbox_id`),
-  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `cashbox_permission__cashbox` FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
+  CONSTRAINT `cashbox_permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2087,8 +2087,8 @@ CREATE TABLE `config_rubric_item` (
   PRIMARY KEY (`id`),
   KEY `config_rubric_id` (`config_rubric_id`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
-  CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+  CONSTRAINT `config_rubric_item__config_rubric` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
+  CONSTRAINT `config_rubric_item__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_employee`;
@@ -2109,8 +2109,8 @@ CREATE TABLE `config_employee_item` (
   KEY `config_employee_id` (`config_employee_id`),
   KEY `employee_uuid` (`employee_uuid`),
   UNIQUE KEY  (`config_employee_id`, `employee_uuid`),
-  FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
+  CONSTRAINT `config_employee_item__config_employee` FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
+  CONSTRAINT `config_employee_item__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `fee_center`;
@@ -2135,8 +2135,8 @@ CREATE TABLE `reference_fee_center` (
   UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
   KEY `fee_center_id` (`fee_center_id`),
   KEY `account_reference_id` (`account_reference_id`),
-  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
+  CONSTRAINT `reference_fee_center__fee_center` FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `reference_fee_center__account_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `fee_center_distribution`;
@@ -2161,11 +2161,11 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
   INDEX `principal_fee_center_id` (`principal_fee_center_id`),
-  FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
-  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `fee_center_distribution__general_ledger` FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
+  CONSTRAINT `fee_center_distribution__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `fee_center_distribution__auxiliary_fee_center`  FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `fee_center_distribution__principal_fee_center`  FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `fee_center_distribution__user`  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `service_fee_center`;
@@ -2177,8 +2177,8 @@ CREATE TABLE `service_fee_center` (
   UNIQUE KEY `service_fee_center_1` (`service_uuid`),
   KEY `fee_center_id` (`fee_center_id`),
   KEY `service_uuid` (`service_uuid`),
-  FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
-  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
+  CONSTRAINT `service_fee_center__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
+  CONSTRAINT `service_fee_center__fee_center`  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `tags`(
@@ -2197,9 +2197,9 @@ CREATE TABLE `distribution_key` (
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
   INDEX `principal_fee_center_id` (`principal_fee_center_id`),
-  FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `distribution_key__auxiliary_fc` FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `distribution_key__principal_fc` FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `distribution_key__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_reference_type`;
@@ -2239,10 +2239,10 @@ CREATE TABLE `indicator` (
   `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `unique_indicator_1` (`service_uuid`, `period_id`),
-  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`type_id`) REFERENCES `indicator_type` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `indicator__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `indicator__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `indicator__indicator_status` FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `indicator__indicator_type` FOREIGN KEY (`type_id`) REFERENCES `indicator_type` (`id`) ON UPDATE CASCADE
 )ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `hospitalization_indicator`;
@@ -2255,7 +2255,7 @@ CREATE TABLE `hospitalization_indicator` (
   `total_death` INT DEFAULT 0,
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+  CONSTRAINT `hosp_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `staff_indicator`;
@@ -2272,7 +2272,7 @@ CREATE TABLE `staff_indicator` (
   `total_hospitalized_patient` INT DEFAULT 0,
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+  CONSTRAINT `staff_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `finance_indicator`;
@@ -2293,7 +2293,7 @@ CREATE TABLE `finance_indicator` (
   `total_staff` INT DEFAULT 0,
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
-  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+  CONSTRAINT `finance_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `break_even_reference`;
@@ -2307,7 +2307,7 @@ CREATE TABLE `break_even_reference` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `break_even_reference_1` (`label`),
   KEY `account_reference_id` (`account_reference_id`),
-  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
+  CONSTRAINT `break_even_ref__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2321,7 +2321,7 @@ CREATE TABLE `inventory_log` (
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `inventory_log__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2337,9 +2337,9 @@ CREATE TABLE `staffing_indice` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL,
   PRIMARY KEY (`uuid`),
-  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
-  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
-  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
+  CONSTRAINT `staffing_indice__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  CONSTRAINT `staffing_indice__fonction` FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
+  CONSTRAINT `staffing_indice__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `staffing_grade_indice`;
@@ -2349,7 +2349,7 @@ CREATE TABLE `staffing_grade_indice` (
   `grade_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_uuid_uniq`(`grade_uuid`),
-  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
+  CONSTRAINT `staffing_grade_indice__grade` FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `staffing_function_indice`;
@@ -2359,7 +2359,7 @@ CREATE TABLE `staffing_function_indice` (
   `fonction_id`   TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `fonction_id_uniq`(`fonction_id`),
-  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`)
+  CONSTRAINT `staffing_function_indice__fct`  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `staffing_indice_parameters`;
@@ -2370,7 +2370,7 @@ CREATE TABLE `staffing_indice_parameters` (
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
-  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+  CONSTRAINT `staffing_indice_param__payrall_config` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `data_collector_management`;
@@ -2419,7 +2419,7 @@ CREATE TABLE `survey_form` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `survey_form_1` (`data_collector_management_id`, `name`, `label`),
   KEY `data_collector_management_id` (`data_collector_management_id`),
-  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`)
+  CONSTRAINT `survey_form__data_collector_management` FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `survey_form_type`;
@@ -2441,8 +2441,8 @@ CREATE TABLE `survey_data` (
   PRIMARY KEY (`uuid`),
   KEY `data_collector_management_id` (`data_collector_management_id`),
   KEY `user_id` (`user_id`),
-  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `survey_data__data_collector_management` FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`),
+  CONSTRAINT `survey_data__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `survey_data_item`;
@@ -2455,8 +2455,8 @@ CREATE TABLE `survey_data_item` (
   PRIMARY KEY (`uuid`),
   KEY `survey_form_id` (`survey_form_id`),
   KEY `survey_data_uuid` (`survey_data_uuid`),
-  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
-  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+  CONSTRAINT `survey_data_item__survey_form` FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  CONSTRAINT `survey_data_item__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `survey_data_log`;
@@ -2473,16 +2473,16 @@ CREATE TABLE `survey_data_log` (
   PRIMARY KEY (`uuid`),
   KEY `survey_form_id` (`survey_form_id`),
   KEY `survey_data_uuid` (`survey_data_uuid`),
-  FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
-  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
+  CONSTRAINT `survey_data_log__survey_form` FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
+  CONSTRAINT `survey_data_log__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `medical_sheet`;
 CREATE TABLE `medical_sheet` (
   `survey_data_uuid` BINARY(16),
   `patient_uuid` BINARY(16),
-  FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
+  CONSTRAINT `medical_sheet__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`),
+  CONSTRAINT `medical_sheet__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `analysis_tool_type`;
@@ -2505,8 +2505,8 @@ CREATE TABLE `configuration_analysis_tools` (
   UNIQUE KEY `configuration_analysis_tools_1` (`label`),
   KEY `account_reference_id` (`account_reference_id`),
   KEY `analysis_tool_type_id` (`analysis_tool_type_id`),
-  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
-  FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
+  CONSTRAINT `config_analysis_tools__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
+  CONSTRAINT `config_analysis_tools__analysis_tool_type` FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
