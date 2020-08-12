@@ -82,7 +82,7 @@ function StockLotsRegistryTests() {
   it('find lots by expiration date', async () => {
     await modal.setdateInterval('01/01/2017', '31/12/2017', 'expiration-date');
     await modal.submit();
-    await GU.expectRowCount(gridId, depotGroupingRow - 1); // 1 expired in this date range
+    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find inventories by group', async () => {
