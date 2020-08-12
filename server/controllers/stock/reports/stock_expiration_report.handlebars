@@ -1,0 +1,66 @@
+{{> head title="TREE.STOCK_EXPIRATION_REPORT" }}
+
+ {{> header }}
+<!-- body  -->
+<div class="container" style="font-size: 0.9em;">
+
+
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+    <!-- page title  -->
+        <h2 class="text-center">
+          {{translate 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'}}
+        </h2>
+
+        {{#if depot.text}}
+          <h4 class="text-center">{{depot.text}}</h4>
+        {{/if}}
+        <h4 class="text-center">
+          {{date dateFrom}} - {{date dateTo}}
+        </h4>
+      </div>
+      
+
+    {{#each result as |line|}}
+
+    <h4><b>{{line.depot_name}}</b></h4>
+    <table class="table table-condensed table-bordered table-report">
+        <thead>
+            <tr>
+                <th>{{translate 'STOCK.INVENTORY'}}</th>
+                <th>{{translate 'STOCK.LOT'}}</th>
+                <th>{{translate 'STOCK.EXPIRATION'}}</th>
+                <th>{{translate 'STOCK.QUANTITY'}}</th>
+                <th>{{translate 'FORM.LABELS.VALUE'}}</th>
+                <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {{#each line.rows}}
+
+            <tr>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td>{{date expiration_date}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{currency value ../enterprise.currency_id}}</td>
+                <td style="text-transform: uppercase;text-shadow: 0px 0px #001;color: {{color}};">{{translate status}}</td>
+            </tr>
+            {{/each}}
+        <tr>
+            <td colspan="4"><b>{{translate 'TABLE.COLUMNS.TOTAL'}}</b></td>
+            <td class="text-right">{{currency line.total ../enterprise.currency_id}}</td>
+            <td></td>
+        </tr>
+        </tbody>
+
+    </table>
+    <br>
+    {{else}}
+    {{> emptyTable columns=6}}
+    {{/each}}
+
+</div>

@@ -142,7 +142,10 @@
       "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
 
     },
-
+    "STOCK_EXPIRATION_REPORT" : {
+      "TITLE": "Rapport d'expiration de stock",
+      "DESCRIPTION": ""
+    },
     "STOCK_CONSUMPTION_GRAPH_REPORT" : {
       "TITLE" : "Rapport graphique de la consommation de stock",
       "DESCRIPTION" : "Ce rapport montre graphiquement la consommation de stock durant une période pour un depot ou un inventaire"

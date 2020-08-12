@@ -71,7 +71,6 @@
     "INVENTORY"       : "Inventaire",
     "INVENTORY_GROUP" : "Groupe d'inventaire",
     "INVENTORY_NOT_AVAILABLE" : "Inventaire(s) non disponible",
-    "IS_IN_OF_RISK_EXPIRATION" : "A risque d'expiration",
     "PRODUCT_NOT_AVAILABLE" : "Produit(s) non disponible",
     "IMPORT" : {
       "STOCK_FROM_FILE" : "Importation de stock à partir d'un fichier",
@@ -159,7 +158,8 @@
       "MINIMUM"       : "Stock Min Atteint",
       "OVER_MAX"      : "Stock Max Depassé",
       "SECURITY"      : "Stock de Securité Atteint",
-      "STOCK_OUT"      : "Rupture de stock"
+      "STOCK_OUT"      : "Rupture de stock",
+      "IS_IN_OF_RISK_EXPIRATION" : "A risque d'expiration"
     },
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",

@@ -70,5 +70,4 @@ async function stockConsumptionGrathReport(req, res, next) {
   }
 }
 
-
 module.exports = stockConsumptionGrathReport;

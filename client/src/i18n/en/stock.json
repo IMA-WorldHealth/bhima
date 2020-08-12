@@ -70,7 +70,6 @@
     "INVENTORY"       : "Inventory",
     "INVENTORY_GROUP" : "Inventory Group",
     "INVENTORY_NOT_AVAILABLE" : "Inventories not available",
-    "IS_IN_OF_RISK_EXPIRATION" : "At risk of expiration",
     "PRODUCT_NOT_AVAILABLE" : "Products not available",
     "IMPORT" : {
       "STOCK_FROM_FILE" : "Import stock from a file",
@@ -157,7 +156,8 @@
       "MINIMUM"       : "Minimum Stock Reached",
       "OVER_MAX"      : "Over Maximum",
       "SECURITY"      : "Security Stock Reached",
-      "STOCK_OUT"      : "Stock Out"
+      "STOCK_OUT"      : "Stock Out",
+      "IS_IN_OF_RISK_EXPIRATION" : "At risk of expiration"
     },
     "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",

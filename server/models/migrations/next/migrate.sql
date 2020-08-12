@@ -1,3 +1,4 @@
+/* migration script from the version 1.14.0 to the next */
     /* migration script from the version 1.14.0 to the next */
     /*
     @jeremielodi
@@ -655,3 +656,19 @@ DELIMITER ;
     ADD CONSTRAINT `config_analysis_tools__analysis_tool_type` FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`);
 
     SET foreign_key_checks = 1;
+
+
+
+
+/*
+@author : jeremielodi
+@date : 2020-07-22
+@subject : Stock expiration report
+*/
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE');
+
+ INSERT INTO unit VALUES
+(289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report');
+

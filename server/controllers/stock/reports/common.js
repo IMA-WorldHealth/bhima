@@ -29,6 +29,7 @@ const STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_inline_moveme
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
 const STOCK_SHEET_REPORT_TEMPLATE = `${BASE_PATH}/stock_sheet.report.handlebars`;
 const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`;
+const STOCK_EXPIRATION_REPORT_TEMPLATE = `${BASE_PATH}/stock_expiration_report.handlebars`;
 
 // General imports
 const _ = require('lodash');
@@ -202,4 +203,5 @@ module.exports = {
   STOCK_VALUE_REPORT_TEMPLATE,
   STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
   STOCK_MOVEMENT_REPORT_TEMPLATE,
+  STOCK_EXPIRATION_REPORT_TEMPLATE,
 };
