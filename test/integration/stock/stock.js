@@ -187,7 +187,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     () => agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 1 })
       .then(res => {
-        helpers.api.listed(res, 5);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler));
 
@@ -195,7 +195,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     () => agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 })
       .then(res => {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler));
 

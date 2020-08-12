@@ -97,6 +97,7 @@ function getLotFilters(parameters) {
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
   filters.equals('reference', 'text', 'dm');
@@ -217,6 +218,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
+      SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,

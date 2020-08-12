@@ -161,9 +161,8 @@ INSERT INTO unit VALUES
   (285,'Purchase Reports','TREE.REPORTS','reports for the purchasing modules',154,'/PURCHASE_FOLDER/reports'),
   (286,'Fee Center Reports','TREE.REPORTS','reports for the fee center modules',218,'/fee_center/reports'),
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
-  (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report');
-
- 
+  (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
+  (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -231,7 +230,9 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_consumption_graph_report', 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'),
   ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE'),
   ('invoiceRegistryReport', 'Invoice Registry as report'),
-  ('stock_movement_report', 'Stock Movement Report');
+  ('stock_movement_report', 'Stock Movement Report'),
+  ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE');
+
 -- Supported Languages
 INSERT INTO `language` VALUES
   (1,'Francais','fr', 'fr-be'),

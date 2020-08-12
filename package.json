@@ -53,7 +53,7 @@
     "@ima-worldhealth/coral": "^2.1.2",
     "@ima-worldhealth/tree": "^2.2.0",
     "@types/angular": "^1.7.2",
-    "@uirouter/angularjs": "^1.0.25",
+    "@uirouter/angularjs": "^1.0.28",
     "accounting-js": "^1.1.1",
     "angular": "^1.8.0",
     "angular-animate": "^1.8.0",
@@ -152,7 +152,7 @@
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.9.4",
     "release-it": "^13.6.6",
-    "sinon": "^9.0.2",
+    "sinon": "^9.0.3",
     "standard-version": "^8.0.2",
     "typescript": "^3.9.7"
   },

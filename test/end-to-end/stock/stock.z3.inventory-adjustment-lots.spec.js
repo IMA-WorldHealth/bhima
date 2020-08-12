@@ -23,7 +23,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 3;
+  const LOT_FOR_ALLTIME = 2;
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
@@ -37,7 +37,7 @@ function StockLotsRegistryTests() {
   it('find only lots setted during the adjustment process', async () => {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      lot : 'QUININE-A',
+      lot : 'QUININE-B',
       quantity : '17',
     };
     const vitamine = {

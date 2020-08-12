@@ -44,7 +44,7 @@ exports.configure = function configure(app) {
     contentSecurityPolicy : {
       directives : {
         defaultSrc : ['\'self\'', '\'unsafe-inline\'', 'blob:'],
-        fontSrc : ['\'self\'', '\'https://fonts.gstatic.com\''],
+        fontSrc : ['\'self\'', 'https://fonts.gstatic.com'],
       },
     },
   }));

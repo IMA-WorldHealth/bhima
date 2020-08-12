@@ -50,6 +50,7 @@ angular.module('bhima.routes')
       'invoicedReceivedStock',
       'collectionCapacity',
       'stock_movement_report',
+      'stock_expiration_report',
     ];
 
     function resolveReportData($stateParams, SavedReports) {
