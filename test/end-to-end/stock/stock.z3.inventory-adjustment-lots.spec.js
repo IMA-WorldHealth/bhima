@@ -37,7 +37,7 @@ function StockLotsRegistryTests() {
   it('find only lots setted during the adjustment process', async () => {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      lot : 'QUININE-C',
+      lot : 'QUININE-B',
       quantity : '17',
     };
     const vitamine = {
