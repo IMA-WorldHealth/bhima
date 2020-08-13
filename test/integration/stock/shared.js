@@ -86,6 +86,33 @@ const movementFirstLots = {
   lots,
 };
 
+const movementFromDonation = {
+  depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
+  date        : new Date(),
+  is_exit     : 0,
+  description : 'Stock Exit to patient',
+  flux_id     : flux.FROM_DONATION,
+  user_id     : 1,
+  lots        : [
+    {
+      inventory_uuid : helpers.data.QUININE,
+      uuid      : 'ae735e99-8faf-417b-aa63-9b404fca991c', // QUININE-A
+      quantity  : 20,
+      label : 'don1',
+      unit_cost : 1.5,
+      origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
+      expiration_date : '2050-02-10',
+    }, {
+      inventory_uuid : helpers.data.MULTIVITAMINE,
+      uuid      : '064ab1d9-5246-4402-ae8a-958fcdb07c35', // VITAMINE-A
+      quantity  : 10,
+      unit_cost : 2,
+      label : 'don2',
+      origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
+      expiration_date : '2050-02-10',
+    },
+  ],
+};
 const movementOutPatient = {
   depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
   entity_uuid : '274c51ae-efcc-4238-98c6-f402bfb39866',
@@ -131,7 +158,7 @@ const movementDepot = {
 };
 
 const depotPrincipalUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
-const depotPrincipalMvt = 26; // 10 initial plus 3 distributions + 10 imported
+const depotPrincipalMvt = 28; // 10 initial plus 3 distributions + 10 imported
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
 const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
@@ -200,6 +227,7 @@ const requisitionFromDepot = {
 
 module.exports = {
   movementFirstLots,
+  movementFromDonation,
   movementOutPatient,
   movementDepot,
   depotPrincipalMvt,

@@ -3409,3 +3409,9 @@ INSERT INTO `sector` (`uuid`, `name`, `province_uuid`) VALUES (0x5B4FBED5763743A
 
 INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0x03C1C626183A4B549C2DB01434D44867, 'Merge village 2', 0x0AA4E8785ACB4E0CBE0B8E7B61CAE782, NULL, NULL);
 INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0xB472A67F24624EFC9CB52201530CCBD4, 'Merge Village 1', 0x5B4FBED5763743A090048FB053B17593, NULL, NULL);
+
+
+INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
+
+INSERT INTO `donation`(`uuid`, `project_id`, `date`, `donor_id`)
+VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), 1, NOW(), 1);
