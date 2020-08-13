@@ -22,10 +22,10 @@ function StockInventoriesRegistryTests() {
   const gridId = 'stock-inventory-grid';
   const GROUPING_ROW = 1;
 
-  it('find 2 inventory in Depot Principal plus one line for the Grouping', async () => {
+  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2 + GROUPING_ROW);
+    await GU.expectRowCount(gridId, 3 + GROUPING_ROW);
     await filters.resetFilters();
   });
 

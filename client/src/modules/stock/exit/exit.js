@@ -236,7 +236,11 @@ function StockExitController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
-        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
+        if (vm.movement.exit_type === 'loss') {
+          item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
+        } else {
+          item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid) && lot.lifetime > 0);
+        }
       })
       .catch(Notify.handleError);
   }
@@ -418,8 +422,21 @@ function StockExitController(
     delete vm.selectedEntityUuid;
   }
 
+  function expiredLots() {
+    return vm.selectedLots.some(lotId => vm.stockForm.store.data[0].lots
+      .some(lot => lot.uuid === lotId && lot.lifetime < 0));
+  }
+
   function submit(form) {
     if (form.$invalid) { return null; }
+
+    if (vm.movement.exit_type !== 'loss' && expiredLots()) {
+      // NOTE: This check may not be necessary, since the user cannot select
+      //       expired lots/batches directly.  But lots can also come in via
+      //       Invoices(Patient) or Requisions(Service/Depot), so it seems
+      //       prudent to check again here.
+      return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
+    }
 
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
