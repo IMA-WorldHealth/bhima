@@ -12,7 +12,7 @@
     </div>
   
     <div class="modal-body">
-      <div class="form-group" ng-class="{ 'has-error' : tagsForm.name.$invalid && tagsForm.$submitted }">
+      <div class="form-group clearfix" ng-class="{ 'has-error' : tagsForm.name.$invalid && tagsForm.$submitted }">
         <label class="control-label" translate>FORM.LABELS.NAME</label>
         <input type="text" class="form-control col-md-9" name="name" ng-model="ModalCtrl.tags.name" required>
         <div class="help-block" ng-messages="tagsForm.name.$error" ng-show="tagsForm.$submitted">

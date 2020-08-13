@@ -7,7 +7,7 @@ function TagsPage() {
   const page = this;
 
   // the grid id
-  const gridId = 'tagss-grid';
+  const gridId = 'tags-grid';
 
   page.gridId = gridId;
   page.setName = setName;
@@ -16,14 +16,14 @@ function TagsPage() {
   page.openCreateModal = openCreateModal;
   page.setColor = setColor;
 
-  const departmentName = element(by.model('ModalCtrl.tags.name'));
+  const tagName = element(by.model('ModalCtrl.tags.name'));
 
   page.submit = function submit() {
     return FU.modal.submit();
   };
 
   function setName(txt) {
-    return departmentName.clear().sendKeys(txt);
+    return tagName.clear().sendKeys(txt);
   }
 
   function setColor(color) {

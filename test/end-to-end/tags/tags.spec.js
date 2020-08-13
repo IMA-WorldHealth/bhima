@@ -1,9 +1,9 @@
 const helpers = require('../shared/helpers');
-const RolesPage = require('./tags.page');
+const TagPage = require('./tags.page');
 const components = require('../shared/components');
 
 // the page object
-const page = new RolesPage();
+const page = new TagPage();
 
 function tagsManagementTests() {
 
@@ -34,7 +34,7 @@ function tagsManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should edit tags', async () => {
+  it.skip('should edit tags', async () => {
     await page.editTags('Tag1');
     await page.setName('Repaired');
     await page.setColor('Jaune');
@@ -42,7 +42,7 @@ function tagsManagementTests() {
     await components.notification.hasSuccess();
   });
 
-  it('should delete the test tags', async () => {
+  it.skip('should delete the test tags', async () => {
     await page.deleteTags('Test tag');
     await page.submit();
     await components.notification.hasSuccess();
