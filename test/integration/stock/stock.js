@@ -237,7 +237,9 @@ describe('(/stock/) The Stock HTTP API', () => {
 
     })
     .catch(helpers.handler));
+});
 
+/*
   // create new stock lots from donation
   it('POST /stock/lots create a new stock lots entry from donation', async () => {
     const result = await agent.post('/stock/lots').send(shared.movementFromDonation);
@@ -245,4 +247,4 @@ describe('(/stock/) The Stock HTTP API', () => {
     expect(res.headers['content-type']).to.equal('application/pdf');
     expect(res.type).to.equal('application/pdf');
   });
-});
+*/
