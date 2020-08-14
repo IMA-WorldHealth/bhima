@@ -397,15 +397,20 @@ function getLotsOrigins(depotUuid, params) {
  *   S_RP: Risk of Expiration.
  */
 function stockManagementProcess(inventories) {
-  const current = moment();
   let CM;
   let Q;
   let CM_NOT_ZERO;
-  let delay;
 
   for (let i = 0; i < inventories.length; i++) {
     const inventory = inventories[i];
+
+    // the quantity of stock available in the given depot
     Q = inventory.quantity; // the quantity
+
+    // Average Monthly Consumption (CMM/AMC)
+    // This is calculuated during the stock exit to a patient or a service
+    // It is _not_ the average of stock exits, as both movements to other depots
+    // and stock loss are not included in this.
     CM = inventory.avg_consumption; // consommation mensuelle
     CM_NOT_ZERO = !CM ? 1 : CM;
 
