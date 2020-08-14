@@ -38,11 +38,11 @@ function TagSelectController($rootScope, Tags, Notify) {
   };
 
   $ctrl.getTagColor = t => {
-    return t ? { color : t.color, 'font-size' : '14px' } : null;
+    return t ? { color : t.color } : null;
   };
 
   function loadTags() {
-    Tags.read(null)
+    Tags.read()
       .then(tags => {
         const identifiers = $ctrl.tagUuids.map(t => t.uuid);
         $ctrl.tags = $ctrl.tagUuids.length ? tags.filter(t => identifiers.includes(t.uuid) === false) : tags;

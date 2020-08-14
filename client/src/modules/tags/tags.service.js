@@ -12,10 +12,11 @@ TagService.$inject = ['PrototypeApiService', 'util', '$uibModal'];
  */
 function TagService(Api, util, $uibModal) {
   const baseUrl = '/tags/';
+  const tagKeys = ['uuid', 'name', 'color'];
   const service = new Api(baseUrl);
+
   service.types = new Api(baseUrl.concat('types/'));
 
-  const tagKeys = ['uuid', 'name', 'color'];
   service.clean = tag => util.maskObjectFromKeys(tag, tagKeys);
 
   service.createUpdateTagsModal = (tag) => {

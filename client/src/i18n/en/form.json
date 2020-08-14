@@ -883,7 +883,7 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
-            "TAGS":"Select tags to join",
+            "TAGS":"Select tags to add",
             "PATIENT_TO_CONSIDER":"Select the patient to consider",
             "ACCOUNT_REFERENCE" : "Select an Account Reference",
             "ACCOUNT_REFERENCE_TYPE" : "Select an Account Reference Type",

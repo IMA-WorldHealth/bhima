@@ -10,10 +10,7 @@ function TagsModalController(
   data, TagsService, Notify, Instance, $rootScope, Colors,
 ) {
   const vm = this;
-  vm.colors = Colors.list.map(e => {
-    e.iconColor = { color : e.value, 'font-size' : '14px' };
-    return e;
-  });
+  vm.colors = Colors.list.map(addIconStyle);
   vm.close = Instance.close;
   vm.submit = submit;
 
@@ -21,18 +18,19 @@ function TagsModalController(
   vm.isCreation = !vm.tags.uuid;
   vm.action = vm.isCreation ? 'FORM.LABELS.CREATE' : 'FORM.LABELS.UPDATE';
 
+  function addIconStyle(item) {
+    item.style = { color : item.value };
+    return item;
+  }
+
   function submit(form) {
     if (form.$invalid) {
       return false;
     }
 
-    if (typeof (vm.tags) === 'object') {
-      delete vm.tags.iconColor;
-    } else if (Array.isArray(vm.tags)) {
-      vm.tags.forEach(t => {
-        delete t.iconColor;
-      });
-    }
+    [].concat(vm.tags).forEach(tag => {
+      delete tag.style;
+    });
 
     const operation = vm.isCreation
       ? TagsService.create(vm.tags)

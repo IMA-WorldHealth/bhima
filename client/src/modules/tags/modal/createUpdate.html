@@ -25,11 +25,11 @@
 
         <ui-select tagging name="color" ng-model="ModalCtrl.tags.color">
           <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
-            <i class="fa fa-circle" ng-style="$select.selected.iconColor"></i>
+            <i class="fa fa-circle" ng-style="$select.selected.style"></i>
             <span translate>{{$select.selected.name}}</span>
           </ui-select-match>
           <ui-select-choices repeat="color.value as color in ModalCtrl.colors | filter: {'name' :$select.search}">
-            <span><i class="fa fa-circle" ng-style="color.iconColor"></i> <span translate>{{ color.name }}</span></span>
+            <span><i class="fa fa-circle" ng-style="color.style"></i> <span translate>{{ color.name }}</span></span>
           </ui-select-choices>
         </ui-select> 
       </div>

@@ -149,6 +149,7 @@ function StockLotsController(
         // serialize tag names for filters
         vm.gridOptions.data = lots.map(lot => {
           lot.tagNames = lot.tags.map(tag => tag.name).join(',');
+          lot.tags.forEach(addColorStyle);
           return lot;
         });
 
@@ -159,10 +160,9 @@ function StockLotsController(
       .finally(toggleLoadingIndicator);
   }
 
-  // returns a style for a given tag
-  vm.getTagColor = t => {
-    return t ? { color : t.color, 'font-size' : '14px' } : null;
-  };
+  function addColorStyle(tag) {
+    tag.style = { color : tag.color };
+  }
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {

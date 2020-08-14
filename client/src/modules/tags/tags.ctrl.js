@@ -35,7 +35,7 @@ function TagsController(Tags, Modal, Notify, uiGridConstants, $rootScope) {
     Tags.read()
       .then(tags => {
         vm.gridOptions.data = tags.map(t => {
-          t.iconColor = { color : t.color, 'font-size' : '14px' };
+          t.style = { color : t.color };
           return t;
         });
       })
