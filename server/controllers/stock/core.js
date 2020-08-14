@@ -389,6 +389,12 @@ function getLotsOrigins(depotUuid, params) {
  *
  * @description
  * Stock Management Processing
+ *
+ * DEFINITIONS:
+ *   S_SEC: Security Stock - one month of stock on hand based on the average consumption.
+ *   S_MIN: Minimum stock - twice the security stock.
+ *
+ *   S_RP: Risk of Expiration.
  */
 function stockManagementProcess(inventories) {
   const current = moment();
@@ -402,14 +408,38 @@ function stockManagementProcess(inventories) {
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
     CM_NOT_ZERO = !CM ? 1 : CM;
+
+    // Compute the Security Stock
+    // Security stock is defined by taking the average monthly consumption (AMC or CMM)
+    // and multiplying it by the Lead Time (inventory.delay).  The Lead Time is by default 1 month.
+    // This gives you a security stock quantity.
     inventory.S_SEC = CM * inventory.delay; // stock de securite
+
+    // Compute Minimum Stock
+    // The minumum of stock required is double the security stock.
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
+
+    // Compute Maximum Stock
+    // The maximum stock is the minumum stock plus the amount able to be consumed in a
+    // single purchase interval.
     inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
+
+    // Compute Months of Stock Remaining
+    // The months of stock remaining is the quantity in stock divided by the Average
+    // monthly consumption.
     inventory.S_MONTH = Math.floor(inventory.quantity / CM_NOT_ZERO); // mois de stock
+
+    // Compute the Refill Quantity
+    // The refill quantity is the amount of stock needed to order to reach your maximum stock.
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
+
+    // Compute the Risk of Stock Expiry
+    // The risk of stock expiry is the quantity of drugs that will expire before you
+    // can use them.
     inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
+    // compute the inventory status code
     if (Q <= 0) {
       inventory.status = 'stock_out';
       inventory.stock_out_date = inventory.last_movement_date;
@@ -429,9 +459,6 @@ function stockManagementProcess(inventories) {
     inventory.S_SEC = util.roundDecimal(inventory.S_SEC, 2);
     inventory.S_MIN = util.roundDecimal(inventory.S_MIN, 2);
     inventory.S_MAX = util.roundDecimal(inventory.S_MAX, 2);
-
-    delay = moment(new Date(inventory.expiration_date)).diff(current);
-    inventory.delay_expiration = moment.duration(delay).humanize();
   }
 
   return inventories;
@@ -479,7 +506,7 @@ async function getDailyStockConsumption(params) {
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
-    SELECT 
+    SELECT
       COUNT(m.uuid) as movement_number,
       SUM(m.quantity) as quantity,
       SUM(m.quantity * m.unit_cost) as value,
