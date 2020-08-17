@@ -466,8 +466,8 @@
       "INVOICED" : "Invoiced",
       "PAID" : "Paid"
     },
-    "COLLECTION_CAPACITY" : {
-      "TITLE":"Collection Capacity Report",
+    "RECOVERY_CAPACITY" : {
+      "TITLE":"Recovery Capacity Report",
       "DESCRIPTION":"This report shows the recovery capacity of the institution on a daily basis",
       "REMAINING" : "Remaining",
       "INVOICED" : "Invoiced",

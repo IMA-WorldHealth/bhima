@@ -672,3 +672,19 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
  INSERT INTO unit VALUES
 (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report');
 
+/*
+ * @author: mbayopanda
+ * @date: 2020-08-17
+ * @description: rename collection capacity to recovery capacity
+ */
+UPDATE unit SET
+  `name` = "Recovery Capacity",
+  `key` = "TREE.RECOVERY_CAPACITY_REPORT",
+  `description` = "Recovery Capacity Report",
+  `path` = "/reports/recoveryCapacity"
+WHERE id = 271;
+
+UPDATE `report` SET
+  `report_key` = "recoveryCapacity",
+  `title_key` = "REPORT.RECOVERY_CAPACITY.TITLE"
+WHERE report_key = "collectionCapacity";
