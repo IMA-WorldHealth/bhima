@@ -1,15 +1,15 @@
 angular.module('bhima.controllers')
-  .controller('collectionCapacityController', CollectionCapacityController);
+  .controller('recoveryCapacityController', RecoveryCapacityController);
 
-CollectionCapacityController.$inject = [
+RecoveryCapacityController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
 ];
 
-function CollectionCapacityController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function RecoveryCapacityController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
-  const cache = new AppCache('collectionCapacity');
-  const reportUrl = 'reports/finance/collectionCapacity';
+  const cache = new AppCache('recoveryCapacity');
+  const reportUrl = 'reports/finance/recoveryCapacity';
 
   vm.previewGenerated = false;
   vm.reportDetails = { includeUnpostedValues : 0 };

@@ -1,5 +1,5 @@
 /**
- * @overview ./finance/reports/collection_capacity/
+ * @overview ./finance/reports/recovery_capacity/
  */
 
 const _ = require('lodash');
@@ -11,7 +11,7 @@ const db = require('../../../../lib/db');
 module.exports.report = report;
 
 // path to the template to render
-const TEMPLATE = './server/controllers/finance/reports/collection_capacity/report.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/recovery_capacity/report.handlebars';
 
 const DEFAULT_OPTIONS = {
   orientation : 'portrait',
