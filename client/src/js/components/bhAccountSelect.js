@@ -10,24 +10,27 @@ angular.module('bhima.components')
       required         : '<?',
       accountTypeId :  '<?',
       label            : '@?',
+      name             : '@?',
       excludeTitleAccounts : '@?',
     },
   });
 
 bhAccountSelectController.$inject = [
-  'AccountService', 'FormatTreeDataService', 'bhConstants', '$scope',
+  'AccountService', 'FormatTreeDataService', 'bhConstants', '$scope', '$timeout',
 ];
 
 /**
  * Account selection component
  */
-function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope) {
+function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope, $timeout) {
   const $ctrl = this;
 
   const TITLE_ACCOUNT_TYPE_ID = bhConstants.accounts.TITLE;
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
+    // default for form name
+    $ctrl.name = $ctrl.name || 'AccountForm';
 
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
@@ -42,9 +45,17 @@ function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope
     $ctrl.excludeTitleAccounts = angular.isDefined($ctrl.excludeTitleAccounts)
       ? $ctrl.excludeTitleAccounts : true;
 
+    // alias the name as AccountForm
+    $timeout(aliasComponentForm);
+
     // load accounts
     return loadHttpAccounts();
   };
+
+  // this makes the HTML much more readable by reference AccountForm instead of the name
+  function aliasComponentForm() {
+    $scope.AccountForm = $scope[$ctrl.name];
+  }
 
   /**
    * @function parseAccountTypeIds
@@ -72,7 +83,7 @@ function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope
 
   // loads accounts from the server
   function loadHttpAccounts() {
-    const params = {};
+    const params = { hidden : 0 };
 
     if ($ctrl.accountTypeId) {
       params.detailed = 1;
@@ -80,9 +91,6 @@ function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope
     } else {
       params.detailed = 0;
     }
-
-    // NOTE: this will hide all "hidden" accounts
-    params.hidden = 0;
 
     // load accounts
     return Accounts.read(null, params)
@@ -99,10 +107,10 @@ function bhAccountSelectController(Accounts, FormatTreeData, bhConstants, $scope
   }
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function onSelect($item) {
-    $ctrl.onSelectCallback({ account : $item });
+  $ctrl.onSelect = function onSelect(account) {
+    $ctrl.onSelectCallback({ account });
 
     // alias the AccountForm name so that we can find it via filterFormElements
-    $scope.AccountForm.$bhValue = $item.id;
+    $scope[$ctrl.name].$bhValue = account.id;
   };
 }

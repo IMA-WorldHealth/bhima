@@ -11,9 +11,9 @@ describe('Inventory Configuration', () => {
   const group = {
     name : 'Medicaments en Sirop for Fun',
     code : '1700',
-    sales_account : 'Caisse Principale USD',
-    stock_account : 'Medicaments en Sirop',
-    cogs_account  : 'Médicaments en Sirop',
+    sales_account : 'Vente Medicaments en comprimes',
+    stock_account : 'Medicaments en comprimes',
+    cogs_account  : 'Achats Médicaments',
     expires : 1,
     unique_item : 0,
   };
@@ -21,13 +21,13 @@ describe('Inventory Configuration', () => {
   const groupWithOnlySalesAccount = {
     name : 'Group With Only Sales Account',
     code : '1900',
-    sales_account : '77111010', // 77111010 - Interets de Prets *
+    sales_account : '70611012', // Hospitalisation
   };
 
   const updateGroup = {
     name : '[E2E] Inventory Group updated',
     code : '2500',
-    sales_account : '57110010', // Caisse principale
+    sales_account : '70611011', // Optique
   };
 
   // inventory type

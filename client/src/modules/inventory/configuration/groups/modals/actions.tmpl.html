@@ -53,7 +53,7 @@
       data-stock-account
       name="stock_account"
       account-id="$ctrl.session.stock_account"
-      account-type-id="$ctrl.ASSET_ACCOUNT_TYPE_ID"
+      account-type-id="[$ctrl.ASSET_ACCOUNT_TYPE_ID, $CTRL.EQUITY_ACCOUNT_TYPE_ID]"
       exclude-title-accounts="true"
       required="$ctrl.enableAutoStockAccounting"
       on-select-callback="$ctrl.onSelectStockAccount(account)">
