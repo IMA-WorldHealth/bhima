@@ -138,7 +138,7 @@ function StockLotsController(
 
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
-          lot.delay_expiration = moment.duration(delay).humanize();
+          lot.delay_expiration = moment.duration(delay).humanize(true);
         });
 
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY

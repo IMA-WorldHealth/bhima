@@ -393,13 +393,18 @@ function getLotsOrigins(depotUuid, params) {
  * DEFINITIONS:
  *   S_SEC: Security Stock - one month of stock on hand based on the average consumption.
  *   S_MIN: Minimum stock - twice the security stock.
- *
  *   S_RP: Risk of Expiration.
  */
 function stockManagementProcess(inventories) {
   let CM;
   let Q;
   let CM_NOT_ZERO;
+
+  // @const the minimum months of stock to keep on hand as security stock
+  // This affects the calculation of the minimum stock
+  // NOTE(@jniles) - should this be moved into some database variable or
+  // global constant?
+  const MIN_MONTHS_OF_SECURITY_STOCK = 2;
 
   for (let i = 0; i < inventories.length; i++) {
     const inventory = inventories[i];
@@ -422,7 +427,7 @@ function stockManagementProcess(inventories) {
 
     // Compute Minimum Stock
     // The minumum of stock required is double the security stock.
-    inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
+    inventory.S_MIN = inventory.S_SEC * MIN_MONTHS_OF_SECURITY_STOCK; // stock minimum
 
     // Compute Maximum Stock
     // The maximum stock is the minumum stock plus the amount able to be consumed in a
