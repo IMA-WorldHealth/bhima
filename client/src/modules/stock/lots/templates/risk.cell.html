@@ -1,3 +1,5 @@
 <div class="ui-grid-cell-contents text-right" ng-class="{'text-danger': row.entity.S_RISK < 0, 'text-success': row.entity.S_RISK >= 0}">
-  {{ row.entity.S_RISK }} <span translate>FORM.LABELS.MONTH</span>
+  <span ng-if="row.entity.hasExpirationDate">
+    {{ row.entity.S_RISK }} <span translate>FORM.LABELS.MONTH</span>
+  </span>
 </div>

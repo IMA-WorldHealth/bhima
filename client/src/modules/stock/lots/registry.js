@@ -134,6 +134,8 @@ function StockLotsController(
     Stock.lots.read(null, filters)
       .then((lots) => {
 
+        lots.forEach(LotsRegistry.formatLotsWithoutExpirationDate);
+
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
 
