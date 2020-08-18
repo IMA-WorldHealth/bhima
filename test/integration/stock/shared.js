@@ -86,6 +86,31 @@ const movementFirstLots = {
   lots,
 };
 
+const movementFromDonation = {
+  depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
+  date        : new Date(),
+  is_exit     : 0,
+  description : 'Stock Exit to Donation',
+  flux_id     : flux.FROM_DONATION,
+  user_id     : 1,
+  lots        : [
+    {
+      inventory_uuid : helpers.data.QUININE,
+      quantity  : 20,
+      label : 'don1',
+      unit_cost : 1.5,
+      origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
+      expiration_date : '2050-02-10',
+    }, {
+      inventory_uuid : helpers.data.MULTIVITAMINE,
+      quantity  : 10,
+      unit_cost : 2,
+      label : 'don2',
+      origin_uuid : 'ae735e99-8faf-417b-aa63-9b404fca390d',
+      expiration_date : '2050-02-10',
+    },
+  ],
+};
 const movementOutPatient = {
   depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
   entity_uuid : '274c51ae-efcc-4238-98c6-f402bfb39866',
@@ -200,6 +225,7 @@ const requisitionFromDepot = {
 
 module.exports = {
   movementFirstLots,
+  movementFromDonation,
   movementOutPatient,
   movementDepot,
   depotPrincipalMvt,
