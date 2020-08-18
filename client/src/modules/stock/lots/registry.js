@@ -4,6 +4,7 @@ angular.module('bhima.controllers')
 StockLotsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
   'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer', 'BarcodeService', 'LotsRegistryService',
+  'moment',
 ];
 
 /**
@@ -12,7 +13,7 @@ StockLotsController.$inject = [
  */
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages, Grouping,
-  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry,
+  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry, moment,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -133,6 +134,12 @@ function StockLotsController(
 
     Stock.lots.read(null, filters)
       .then((lots) => {
+        const current = new Date();
+
+        lots.forEach((lot) => {
+          const delay = moment(new Date(lot.expiration_date)).diff(current);
+          lot.delay_expiration = moment.duration(delay).humanize(true);
+        });
 
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
