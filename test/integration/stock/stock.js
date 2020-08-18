@@ -1,5 +1,4 @@
 /* global expect, agent */
-/* jshint expr : true */
 
 const helpers = require('../helpers');
 const shared = require('./shared');
@@ -26,7 +25,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     const [firstMvt] = mvtsByDocument;
     const res3 = await agent.get(`/stock/lots/movements?reference=${firstMvt.documentReference}`);
 
-    expect(res3.body).to.be.deep.equal(mvtsByDocument);
+    expect(res3.body).to.deep.equal(mvtsByDocument);
 
   });
 
@@ -114,7 +113,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       });
     helpers.api.listed(res, 1);
     const lotQuinine = res.body[0];
-    expect(lotQuinine.initial_quantity).to.be.equal(100);
+    expect(lotQuinine.initial_quantity).to.equal(100);
   });
 
   // list exit of QUININE-A from 'Depot Principal'
@@ -132,7 +131,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     res.body.forEach(row => {
       totalExit += row.quantity;
     });
-    expect(totalExit).to.be.equal(101);
+    expect(totalExit).to.equal(101);
   });
 
   it(`GET /stock/lots/movements filters on user`, async () => {
@@ -149,23 +148,21 @@ describe('(/stock/) The Stock HTTP API', () => {
       const res = await agent
         .get(`/stock/lots/depots?lot_uuid=${shared.lotQuinineUuid}&depot_uuid=${shared.depotPrincipalUuid}`);
       helpers.api.listed(res, 1);
-      expect(res.body[0].quantity).to.be.equal(0);
+      expect(res.body[0].quantity).to.equal(0);
     },
   );
 
-  it(`GET /stock/inventories/depots filters on expired lots`,
-    async () => {
-      const res = await agent.get(`/stock/inventories/depots`)
-        .query({ limit : 1000, includeEmptyLot : 0, is_expired : 1 });
-      helpers.api.listed(res, 3);
-    });
+  it(`GET /stock/inventories/depots filters on expired lots`, async () => {
+    const res = await agent.get(`/stock/inventories/depots`)
+      .query({ limit : 1000, includeEmptyLot : 0, is_expired : 1 });
+    helpers.api.listed(res, 3);
+  });
 
-  it(`GET /stock/inventories/depots filters on non-expired lots`,
-    async () => {
-      const res = await agent.get(`/stock/inventories/depots`)
-        .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 });
-      helpers.api.listed(res, 5);
-    });
+  it(`GET /stock/inventories/depots filters on non-expired lots`, async () => {
+    const res = await agent.get(`/stock/inventories/depots`)
+      .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 });
+    helpers.api.listed(res, 5);
+  });
 
   it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
@@ -173,42 +170,35 @@ describe('(/stock/) The Stock HTTP API', () => {
 
     helpers.api.listed(res, 4);
 
-    // This is the test of automatically calculated key values
-    /*
-        expect(res.body[1].quantity).to.be.equal(155);
-        expect(res.body[1].avg_consumption).to.be.equal(10);
-        expect(res.body[1].S_SEC).to.be.equal(10);
-        expect(res.body[1].S_MIN).to.be.equal(20);
-        expect(res.body[1].S_MAX).to.be.equal(20);
-        expect(res.body[1].S_MONTH).to.be.equal(15);
+    expect(res.body[1].quantity).to.equal(150);
+    expect(res.body[1].avg_consumption).to.equal(10);
+    expect(res.body[1].S_SEC).to.equal(10);
+    expect(res.body[1].S_MIN).to.equal(20);
+    expect(res.body[1].S_MAX).to.equal(20);
+    expect(res.body[1].S_MONTH).to.equal(15);
 
-        expect(res.body[2].quantity).to.be.equal(180300);
-        expect(res.body[2].avg_consumption).to.be.equal(49916.67);
-        expect(res.body[2].S_SEC).to.be.equal(49916.67);
-        expect(res.body[2].S_MIN).to.be.equal(99833.34);
-        expect(res.body[2].S_MAX).to.be.equal(99833.34);
-        expect(res.body[2].S_MONTH).to.be.equal(3);
-    */
-
-    expect(res.body[1].quantity).to.be.equal(150);
-    expect(res.body[1].avg_consumption).to.be.equal(10);
-    expect(res.body[1].S_SEC).to.be.equal(10);
-    expect(res.body[1].S_MIN).to.be.equal(20);
-    expect(res.body[1].S_MAX).to.be.equal(20);
-    expect(res.body[1].S_MONTH).to.be.equal(15);
-
-    expect(res.body[2].quantity).to.be.equal(180300);
-    expect(res.body[2].avg_consumption).to.be.equal(49916.67);
-    expect(res.body[2].S_SEC).to.be.equal(49916.67);
-    expect(res.body[2].S_MIN).to.be.equal(99833.34);
-    expect(res.body[2].S_MAX).to.be.equal(99833.34);
-    expect(res.body[2].S_MONTH).to.be.equal(3);
+    expect(res.body[2].quantity).to.equal(180300);
+    expect(res.body[2].avg_consumption).to.equal(49916.67);
+    expect(res.body[2].S_SEC).to.equal(49916.67);
+    expect(res.body[2].S_MIN).to.equal(99833.34);
+    expect(res.body[2].S_MAX).to.equal(99833.34);
+    expect(res.body[2].S_MONTH).to.equal(3);
   });
 
   it('POST /stock/lots create a new stock lots entry from donation', async () => {
     const result = await agent.post('/stock/lots').send(shared.movementFromDonation);
-    const res = await agent.get(`/receipts/stock/${result.body.uuid}?lang=fr&posReceipt=0&renderer=pdf`);
-    expect(res.headers['content-type']).to.equal('application/pdf');
-    expect(res.type).to.equal('application/pdf');
+    helpers.api.created(result);
+
+    const res = await agent.get(`/receipts/stock/${result.body.uuid}?lang=fr&posReceipt=0&renderer=json`);
+    expect(res).to.have.status(200);
+
+    const { details, rows } = res.body;
+    const src = shared.movementFromDonation;
+
+    // check that this is the same record
+    expect(details.description).to.equal(src.description);
+    const labels = rows.map(row => row.label);
+    const srcLabels = src.lots.map(lot => lot.label);
+    expect(labels).to.deep.equal(srcLabels);
   });
 });

@@ -90,13 +90,12 @@ const movementFromDonation = {
   depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
   date        : new Date(),
   is_exit     : 0,
-  description : 'Stock Exit to patient',
+  description : 'Stock Exit to Donation',
   flux_id     : flux.FROM_DONATION,
   user_id     : 1,
   lots        : [
     {
       inventory_uuid : helpers.data.QUININE,
-      uuid      : 'ae735e99-8faf-417b-aa63-9b404fca991c', // QUININE-A
       quantity  : 20,
       label : 'don1',
       unit_cost : 1.5,
@@ -104,7 +103,6 @@ const movementFromDonation = {
       expiration_date : '2050-02-10',
     }, {
       inventory_uuid : helpers.data.MULTIVITAMINE,
-      uuid      : '064ab1d9-5246-4402-ae8a-958fcdb07c35', // VITAMINE-A
       quantity  : 10,
       unit_cost : 2,
       label : 'don2',

@@ -1,5 +1,4 @@
 /* global expect, agent */
-/* jshint expr : true */
 const moment = require('moment');
 const helpers = require('../helpers');
 const shared = require('./shared');
