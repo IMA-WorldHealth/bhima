@@ -151,6 +151,24 @@ function LotsRegistryService(uiGridConstants, Session) {
     </div>
   `;
 
+  /**
+   * @function formatLotsWithoutExpirationDate
+   *
+   * @description
+   * Removes values from lots that do not have expiration dates so they do not show up in the
+   * registry view.
+   */
+  service.formatLotsWithoutExpirationDate = (lot) => {
+    lot.hasExpirationDate = (lot.tracking_expiration === 1);
+    if (!lot.hasExpirationDate) {
+      delete lot.delay_expiration;
+      delete lot.expiration_date;
+      delete lot.lifetime;
+      delete lot.S_LOT_LIFETIME;
+      delete lot.S_RP;
+    }
+  };
+
   service.orderByDepot = (rowA, rowB) => {
     return String(rowA.depot_text).localeCompare(rowB.depot_text);
   };
