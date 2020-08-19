@@ -248,6 +248,7 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
         },
         "LABELS": {
+            "ADDRESS_IN_DOCUMENTS":"Adresse (à afficher sur les documents)",
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Compte",
             "ACCOUNT_CONFIGURATION" : "Configuration du Compte",

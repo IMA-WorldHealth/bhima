@@ -688,3 +688,10 @@ UPDATE `report` SET
   `report_key` = "recoveryCapacity",
   `title_key` = "REPORT.RECOVERY_CAPACITY.TITLE"
 WHERE report_key = "collectionCapacity";
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-08-17
+ * @description: add address field in the enterprise table
+ */
+ALTER TABLE enterprise ADD COLUMN `address` VARCHAR(200) DEFAULT NULL;

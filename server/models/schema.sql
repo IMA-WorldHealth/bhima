@@ -544,6 +544,7 @@ CREATE TABLE `enterprise` (
   `abbr`            VARCHAR(10) DEFAULT NULL,
   `phone`           VARCHAR(20) DEFAULT NULL,
   `email`           VARCHAR(100) DEFAULT NULL,
+  `address`         VARCHAR(200) DEFAULT NULL,
   `location_id`     BINARY(16) DEFAULT NULL,
   `logo`            VARCHAR(100) DEFAULT NULL,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
