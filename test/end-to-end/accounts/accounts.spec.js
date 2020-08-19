@@ -71,13 +71,13 @@ describe('Account Management', () => {
     // @todo removed to allow types to be updated - this should be reintroduced
     expect(await element(by.id('type-static')).getText()).to.equal(account.type);
     expect(
-      await element(by.model('AccountEditCtrl.account.label')).getAttribute('value')
+      await element(by.model('AccountEditCtrl.account.label')).getAttribute('value'),
     ).to.equal(account.label);
   });
 
   it('updates an account title and parent', async () => {
     await FU.input('AccountEditCtrl.account.label', 'Updated Inventory Accounts');
-    await FU.uiSelect('AccountEditCtrl.account.parent', 'Medicaments');
+    await FU.uiSelect('AccountEditCtrl.account.parent', 'Médicaments');
     await FU.modal.submit();
 
     await components.notification.hasSuccess();

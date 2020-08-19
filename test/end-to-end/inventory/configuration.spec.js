@@ -9,11 +9,11 @@ describe('Inventory Configuration', () => {
   before(() => helpers.navigate(url));
 
   const group = {
-    name : 'Medicaments en Sirop for Fun',
+    name : 'Médicaments en Sirop Comprimes',
     code : '1700',
-    sales_account : 'Vente Medicaments en comprimes',
-    stock_account : 'Medicaments en comprimes',
-    cogs_account  : 'Achats Médicaments',
+    sales_account : 'Vente Médicaments en comprimes',
+    stock_account : 'Médicaments en comprimes',
+    cogs_account  : 'Achat Médicaments',
     expires : 1,
     unique_item : 0,
   };
