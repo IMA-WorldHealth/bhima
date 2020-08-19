@@ -14,7 +14,7 @@
 
   <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
   <strong>{{metadata.project.name}} ({{metadata.project.abbr}})</strong> <br>
-  <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{metadata.enterprise.location}} <br>
-  <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{metadata.enterprise.phone}} <br>
-  <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{metadata.enterprise.email}}
+  {{#if metadata.enterprise.phone}}<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{metadata.enterprise.phone}} <br>{{/if}}
+  {{#if metadata.enterprise.email}}<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{metadata.enterprise.email}} <br>{{/if}}
+  {{#if metadata.enterprise.address}}<span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{metadata.enterprise.address}}{{/if}}
 </div>
