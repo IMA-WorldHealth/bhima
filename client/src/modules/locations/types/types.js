@@ -59,8 +59,11 @@ function TypesController($translate, locationService, util, Notify,
     headerCellFilter : 'translate',
     cellTemplate : '/modules/locations/types/templates/typeLabel.cell.html',
   }, {
+    field : 'label_name',
+    displayName : 'FORM.LABELS.NAME',
+    headerCellFilter : 'translate',
+  }, {
     field : 'is_leaves',
-    width : 200,
     displayName : 'FORM.LABELS.TREE_LEAVES',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/locations/types/templates/tree_leave.cell.html',

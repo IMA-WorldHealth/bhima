@@ -1,21 +1,21 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('LocationController', LocationController);
+  .controller('LocationController', LocationController);
 
 LocationController.$inject = [
-  'LocationService'
+  'LocationService', 'NotifyService', '$translate', 'GridColumnService', 'GridStateService',
 ];
 
-function LocationController(locationService) {
-  var vm = this;
-  var session = vm.session = {};
+function LocationController(locationService, Notify, $translate, Columns, GridState) {
+  const vm = this;
+  const session = {};
+  vm.openColumnConfigModal = openColumnConfigModal;
 
-  session.loading = false;  
+  vm.session = session;
+
+  session.loading = false;
   vm.view = 'default';
-
-  function handler(error) {
-    console.error(error);
-  }
+  const cacheKey = 'locationGrid';
 
   // fired on startup
   function startup() {
@@ -23,39 +23,32 @@ function LocationController(locationService) {
     session.loading = true;
 
     // load location
-    locationService.locations().then((data) => {
-      vm.gridOptions.data = data;
+    locationService.locations({ is_leave : true }).then((locations) => {
+      locations.data.forEach(location => {
+        location.typeLabel = $translate.instant(location.translation_key);
+      });
+
+      const columns = [{
+        field : 'name',
+        displayName : 'FORM.LABELS.LOCATION',
+        headerCellFilter : 'translate',
+      }, {
+        field : 'typeLabel',
+        displayName : 'TABLE.COLUMNS.TYPE',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/locations/types/templates/typeLabel.cell.html',
+      }];
+
+      vm.gridOptions.columnDefs = columns.concat(locations.columns);
+      vm.gridOptions.data = locations.data;
       session.loading = false;
-    }).catch(handler);
-
+    }).catch(Notify.handleError);
   }
-
-  const columns = [{
-    field : 'village',
-    displayName : 'TABLE.COLUMNS.VILLAGE',
-    headerCellFilter : 'translate',
-  },
-  {
-    field : 'sector',
-    displayName : 'TABLE.COLUMNS.SECTOR',
-    headerCellFilter : 'translate',
-  },
-  {
-    field : 'province',
-    displayName : 'TABLE.COLUMNS.PROVINCE',
-    headerCellFilter : 'translate',
-  },
-  {
-    field : 'country',
-    displayName : 'TABLE.COLUMNS.COUNTRY',
-    headerCellFilter : 'translate',
-  }];
 
   // ng-click="
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
-    columnDefs : columns,
     enableSorting : true,
     fastWatch : true,
     flatEntityAccess : true,
@@ -63,6 +56,21 @@ function LocationController(locationService) {
       vm.gridApi = gridApi;
     },
   };
+
+  const columnConfig = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+  };
+
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    columnConfig.openConfigurationModal();
+  }
 
   startup();
 }

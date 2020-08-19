@@ -12,7 +12,6 @@
   </div>
   <div class="modal-body">
     <div class="row">
-
       <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.typeLabel.$invalid }">
         <label class="control-label" translate> FORM.LABELS.LABEL </label>
         <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.LOCATION_TYPE' | translate }}" autocomplete="off"
@@ -21,6 +20,20 @@
           ng-required="true">
         <div class="help-block" ng-messages="typeForm.typeLabel.$error" ng-show="typeForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : (typeForm.$submitted && typeForm.label_name.$invalid) || !ModalCtrl.check }">
+        <label class="control-label" translate> FORM.LABELS.NAME </label>
+        <div>
+          <input name="label_name" ng-model="ModalCtrl.type.label_name" ng-keyup="ModalCtrl.checkVariableName()" autocomplete="off"
+            ng-disabled="ModalCtrl.isFixed" ng-maxlength="90" class="form-control" required>
+          <div class="help-block" ng-messages="typeForm.label_name.$error" ng-show="typeForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+          <div ng-if="!ModalCtrl.check" id="error_format" class="help-block">
+            <p translate>FORM.VALIDATION.FORMAT_NAME_VARIABLE </p>
+          </div>
         </div>
       </div>
 

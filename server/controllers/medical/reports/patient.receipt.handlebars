@@ -53,19 +53,17 @@
   <!-- Information only shown on larger form identities -->
   {{#unless simplified}}
   <div class="row">
-    <div class="col-xs-7">
-      <span><u>{{translate "FORM.LABELS.ORIGIN"}}</u></span> <br />
+    <div class="col-xs-6">
+      <span><u>{{translate "FORM.LABELS.ORIGIN"}}</u></span>
       <address>
-        <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
-        <span>{{village.country_name}}</span>
+        <span>{{ originLocation }}</span>
       </address>
     </div>
 
-    <div class="col-xs-5">
-      <span><u>{{translate "FORM.LABELS.ADDRESS"}}</u></span> <br />
+    <div class="col-xs-6">
+      <span><u>{{translate "FORM.LABELS.ADDRESS"}}</u></span>
       <address>
-        <span>{{currentVillage.name}}, {{currentVillage.sector_name}}, {{currentVillage.province_name}}</span> <br />
-        <span>{{currentVillage.country_name}}</span>
+        <span>{{ currentLocation }}</span>
       </address>
     </div>
   </div>

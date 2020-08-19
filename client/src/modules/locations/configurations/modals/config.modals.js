@@ -80,6 +80,8 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
     if (configLocationForm.$invalid) { return null; }
     if (configLocationForm.$pristine) { return null; }
 
+    delete vm.locations.label_name;
+
     const promise = (vm.isCreating)
       ? LocationConfiguration.create(vm.locations)
       : LocationConfiguration.update(vm.locations.id, vm.locations);

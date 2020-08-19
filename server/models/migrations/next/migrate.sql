@@ -393,6 +393,22 @@ DELIMITER ;
     ADD CONSTRAINT `purchase__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
     ADD CONSTRAINT `purchase__status` FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`);
 
+<<<<<<< 97085290ebdd62b23961866e760d8349ee255170
+=======
+/**
+@author: lomamech:
+@date: 2020-08-03
+*/
+-- Alter table enterprise
+ALTER TABLE `enterprise` ADD COLUMN `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL;
+
+
+-- UPLOAD country
+-- 
+INSERT INTO location (uuid, name, location_type_id)
+SELECT uuid, name, 4 AS location_type_id
+FROM country;
+>>>>>>> Save Changing
 
     CALL drop_constraints('purchase_item');
     ALTER TABLE `purchase_item`

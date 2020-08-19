@@ -367,7 +367,7 @@ CREATE TABLE `debtor_group` (
   `uuid` BINARY(16) NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
-  `location_id` BINARY(16) NOT NULL,
+  `location_uuid` BINARY(16) NOT NULL,
   `phone` VARCHAR(20) DEFAULT '',
   `email` VARCHAR(100) DEFAULT '',
   `note` TEXT,
@@ -386,13 +386,15 @@ CREATE TABLE `debtor_group` (
   UNIQUE KEY `debtor_group_2` (`name`, `account_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `account_id` (`account_id`),
-  KEY `location_id` (`location_id`),
+  KEY `location_uuid` (`location_uuid`),
   KEY `price_list_uuid` (`price_list_uuid`),
   CONSTRAINT `debtor_group__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `debtor_group__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`),
   CONSTRAINT `debtor_group__pricelist` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+  FOREIGN KEY (`location_uuid`) REFERENCES `location` (`uuid`),
 
 DROP TABLE IF EXISTS debtor_group_invoicing_fee;
 
@@ -540,6 +542,7 @@ DROP TABLE IF EXISTS `location_type`;
 CREATE TABLE `location_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `translation_key` VARCHAR(35) NOT NULL,
+  `label_type` VARCHAR(40) NOT NULL,
   `color` VARCHAR(8) NULL,
   `fixed` TINYINT(1) NOT NULL DEFAULT 0,
   `is_leaves` TINYINT(1) DEFAULT 0,
@@ -559,7 +562,7 @@ CREATE TABLE `location` (
   `latitude`    DECIMAL(19, 6) NULL,
   PRIMARY KEY (`id`),
   INDEX (`uuid`),
-  FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
+  CONSTRAINT `location__location_type` FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `enterprise`;
@@ -1045,8 +1048,8 @@ CREATE TABLE `patient` (
 
   CONSTRAINT `patient__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   CONSTRAINT `patient__debtor` FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `patient__current_location` FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
-  CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
+  CONSTRAINT `patient__current_location` FOREIGN KEY (`current_location_id`) REFERENCES `location` (`uuid`) ON UPDATE CASCADE,
+  CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `location` (`uuid`) ON UPDATE CASCADE,
   CONSTRAINT `patient__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
