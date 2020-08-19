@@ -141,6 +141,8 @@ function StockLotsController(
           lot.delay_expiration = moment.duration(delay).humanize(true);
         });
 
+        lots.forEach(LotsRegistry.formatLotsWithoutExpirationDate);
+
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
 
