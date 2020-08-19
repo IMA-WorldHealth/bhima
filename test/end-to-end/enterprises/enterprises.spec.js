@@ -7,8 +7,23 @@ const components = require('../shared/components');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-describe('Enterprises', () => {
+describe.only('Enterprises', () => {
   const location = '#!/enterprises';
+
+  const locations = [
+    {
+      location01 : 'Merge Country',
+      location02 : 'Merge Province',
+      location03 : 'Merge Town 1',
+      location04 : 'Merge Township 1',
+    },
+    {
+      location01 : 'République Démocratique du Congo',
+      location02 : 'Kinshasa',
+      location03 : 'Lukunga',
+      location04 : 'Gombe',
+    },
+  ];
 
   // enterprise
   const enterprise = {
@@ -19,6 +34,7 @@ describe('Enterprises', () => {
     phone           : '01500',
     gain_account_id : 'Gain de change',
     loss_account_id : '67611010', // 67611010 - Différences de change
+    location_default_type_root : 'Commune',
   };
 
   // default enterprise
@@ -39,6 +55,32 @@ describe('Enterprises', () => {
     abbr,
   };
 
+  // Select location in location component
+  async function selectLocationLabel(label) {
+    // select the item of the dropdown menu matching the label
+    let searchString = label;
+    let labelForRegex = label.replace('(', '\\(');
+    labelForRegex = labelForRegex.replace(')', '\\)');
+
+    switch ('contains') {
+    case 'exact':
+      searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
+      break;
+    case 'fullWord':
+      searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
+      break;
+    case 'accountName':
+      searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
+      break;
+    default:
+    case 'contains':
+      searchString = label;
+      break;
+    }
+
+    return searchString;
+  }
+
   // project update
   const abbrUpdate = suffix();
   const projectUpdate = {
@@ -54,6 +96,7 @@ describe('Enterprises', () => {
    * so we need only to update enterprise informations
    */
   it('set enterprise data', async () => {
+
     await FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     await FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
@@ -64,8 +107,46 @@ describe('Enterprises', () => {
     await FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
     await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
+    await components.locationTypeSelect.set(enterprise.location_default_type_root);
+
     // select the locations specified
-    await components.locationSelect.set(helpers.data.locations);
+    await components.locationConfigurationSelect.set(locations[0].location01);
+
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = selectLocationLabel(locations[0].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = selectLocationLabel(locations[0].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = selectLocationLabel(locations[0].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
 
     // submit the page to the server
     await FU.buttons.submit();

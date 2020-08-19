@@ -49,6 +49,11 @@ function getLocations() {
   return db.exec(sql);
 }
 
+/*
+ * This function makes it possible to obtain the degree of depth existing in
+ * the tree structure of locations, excluding the types
+ * that have no children in the configuration
+ */
 function getDeepness() {
   const sql = `
     SELECT COUNT(DISTINCT(l.location_type_id)) AS location_level_deepness
@@ -231,6 +236,7 @@ function sqlLocationType(params) {
 exports.root = function root(req, res, next) {
   const { locationId } = req.query;
 
+  // is null if the ALLR option is enabled if not, the default type is enabled
   const locationTypeRoot = (req.query.allRoot === 'true') ? null : req.session.enterprise.location_default_type_root;
 
   let clauseWhere;
@@ -238,6 +244,7 @@ exports.root = function root(req, res, next) {
 
   const excludeTypeId = req.query.excludeType ? `AND l.location_type_id <> ${req.query.excludeType}` : '';
 
+  // Here we try to create the Sql request dynamically with respect to the parameters sent
   if (!req.query.parentId) {
     clauseWhere = locationTypeRoot ? `WHERE l.location_type_id = ${locationTypeRoot} ${excludeTypeId}`
       : `WHERE l.parent = 0 AND l.parent_uuid IS NULL ${excludeTypeId}`;
@@ -249,12 +256,14 @@ exports.root = function root(req, res, next) {
     .then((deep) => {
       deepLevel = deep.location_level_deepness;
 
+      // This query allows you to obtain the parent locations
       const sql = `
         SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent, BUID(l.parent_uuid) AS parent_uuid,
         l.location_type_id, t.translation_key, t.color, t.label_name
         FROM location AS l
         JOIN location_type AS t ON t.id = l.location_type_id ${clauseWhere} ORDER BY l.name ASC;`;
 
+      // This query allows to obtain the different types corresponding to the above locations.
       const sqlAggregat = `
         SELECT DISTINCT(t.id) AS id, t.translation_key, t.color, t.label_name
         FROM location_type AS t
@@ -264,6 +273,9 @@ exports.root = function root(req, res, next) {
 
       let sqlHeader = ``;
       let sqlJoin = ``;
+
+      // Here we try to add indices for each level of localization the indices start from 1 
+      // for the root up to the size of the depth in the tree structure
 
       for (let i = 1; i <= deepLevel; i++) {
         sqlHeader += `
@@ -280,6 +292,12 @@ exports.root = function root(req, res, next) {
 
       const deepnessCondition = locationId ? `WHERE l.id = ${locationId}` : ``;
 
+      /*
+       * The following query makes it possible to join all the locations,
+       * with respect to their parents and according to the depth of the locations
+       *
+       * And if the locationId parameter is defined the results will only be defined in relation to the parameters
+       */
       const getLocationsDeepness = `
         SELECT loc.id, loc.name, loc.parent, loc.location_type_id, loc.translation_key, loc.label_name, 
         ${sqlHeader} loc.is_leaves
@@ -291,6 +309,40 @@ exports.root = function root(req, res, next) {
           ORDER BY l.name ASC
         ) AS loc ${sqlJoin}
       `;
+
+      /*
+        * The query to generate looks like this
+        *
+        * SELECT loc.id, loc.name, loc.parent, loc.location_type_id, loc.translation_key, loc.label_name,
+
+            l1.id AS location_id_1, l1.name AS name_1, l1.location_type_id AS location_type_id_1,
+            t1.translation_key AS translation_key_1, t1.color AS color_1,
+
+            l2.id AS location_id_2, l2.name AS name_2, l2.location_type_id AS location_type_id_2,
+            t2.translation_key AS translation_key_2, t2.color AS color_2,
+
+            l3.id AS location_id_3, l3.name AS name_3, l3.location_type_id AS location_type_id_3,
+            t3.translation_key AS translation_key_3, t3.color AS color_3,
+
+            l4.id AS location_id_4, l4.name AS name_4, l4.location_type_id AS location_type_id_4,
+            t4.translation_key AS translation_key_4, t4.color AS color_4,
+            loc.is_leaves
+          FROM (
+            SELECT l.id, l.name, l.parent, l.location_type_id, t.translation_key, t.label_name, t.is_leaves
+            FROM location AS l
+            JOIN location_type AS t ON t.id = l.location_type_id
+
+            ORDER BY l.name ASC
+          ) AS loc
+          LEFT JOIN location AS l1 ON l1.id = loc.parent
+          LEFT JOIN location_type AS t1 ON t1.id = l1.location_type_id
+          LEFT JOIN location AS l2 ON l2.id = l1.parent
+          LEFT JOIN location_type AS t2 ON t2.id = l2.location_type_id
+          LEFT JOIN location AS l3 ON l3.id = l2.parent
+          LEFT JOIN location_type AS t3 ON t3.id = l3.location_type_id
+          LEFT JOIN location AS l4 ON l4.id = l3.parent
+          LEFT JOIN location_type AS t4 ON t4.id = l4.location_type_id
+      */
 
       return Promise.all([db.exec(sql), db.exec(sqlAggregat), db.exec(getLocationsDeepness)]);
     })

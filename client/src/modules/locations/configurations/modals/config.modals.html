@@ -70,7 +70,7 @@
         label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
         location-id="ConfigLocationsModalCtrl.locations.id"
         parent-id="ConfigLocationsModalCtrl.locations.parent"
-        parent = "ConfigLocationsModalCtrl.locations.location_type_id"
+        exclude-type = "ConfigLocationsModalCtrl.locations.location_type_id"
         on-select-callback="ConfigLocationsModalCtrl.onSelectParent(location)"
         allow-all-root="!ConfigLocationsModalCtrl.isCreating"
         required="true">

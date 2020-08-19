@@ -10,7 +10,7 @@ angular.module('bhima.components')
       addLocation : '<?',
       operationalMode : '<?',
       required : '@?',
-      parent : '<?',
+      excludeType : '<?',
       label : '@?',
       allowAllRoot : '<?',
     },
@@ -33,10 +33,29 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
   function onInit() {
     $ctrl.required = $ctrl.required || false;
-
+    /*
+     * When the component is called for the very first time,
+     * the first request to the server consists in fetching
+     * all the locations (parent territorial entities)
+     *
+     * $ctrl.locationId : parameter is used to search for all the parents of the selected
+     *                    location up to the entity with the highest level in the tree structure
+     *
+     * $ctrl.excludeType : This is the type of data to exclude when selecting locations
+     *
+     * $ctrl.allowAllRoot : Allows to select all the territorial entities defined as root,
+     *                      if this parameter is defined as false in this case,
+     *                      only the entities having the type defined as location default type root
+     *                      In Enterprise Parameter
+     * $ctrl.operationalMode : is used for all the other cases where the component is used
+     *                         in another form except the form for recording locations
+     *
+     * $ctrl.parentId : is used to fetch to get the Parent entity
+     *
+     */
     const params = {
       locationId : $ctrl.locationId,
-      excludeType : $ctrl.parent,
+      excludeType : $ctrl.excludeType,
       allRoot : $ctrl.allowAllRoot,
     };
 
@@ -47,6 +66,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
           $ctrl.aggregates = data.aggregates;
           $ctrl.multipleRoot = data.aggregates.length > 1;
 
+          // When trying to get parents for location
           if ($ctrl.parentId || $ctrl.operationalMode) {
             data.locationsDeep.forEach(path => {
               if ($ctrl.parentId) {
@@ -61,6 +81,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
             });
 
             const deepLevelPlus = data.deepLevel + 1;
+            // Here we try to place the different levels of localization in a table according to their degree of depth
             for (let i = 1; i < deepLevelPlus; i++) {
               const indicePathId = `location_id_${deepLevelPlus - i}`;
               const indicePathLabel = `translation_key_${deepLevelPlus - i}`;
@@ -121,6 +142,8 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
   };
 
+  // Here we try to obtain the child locations for a location that is not root and
+  // the results obtained are displayed in the view of the component
   $ctrl.loadLeaves = function loadLeaves(locationId, option) {
     const excludeType = $ctrl.parent || null;
 
@@ -183,6 +206,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
       .catch(Notify.handleError);
   };
 
+  // This function is used when you need to add a new location directly in the recording interface
   function addLocationModal() {
     locationService.modal()
       .then((data) => {

@@ -67,8 +67,6 @@ function LocationsConfigController($translate, LocationService, Notify, uiGridCo
     }
   }
 
-  console.log('ICI NOUSSSSssssssss');
-
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;
     vm.gridOptions.enableFiltering = vm.filterEnabled;
