@@ -112,6 +112,7 @@
             "WARNING": "Attention",
             "CONFIRM_MODAL": "La confirmation est nécessaire",
             "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?",
+            "DELETE_DONOR": "Voulez-vous vraiment supprimer ce donateur?",
             "DELETE_SUPPLIER" : "Voulez-vous supprimer ce fournisseur?"
         },
         "ERRORS": {

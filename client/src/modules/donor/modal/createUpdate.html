@@ -1,0 +1,39 @@
+<form name="donorForm" bh-submit="DonorAddCtrl.submit(donorForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.DONOR</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{DonorAddCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.display_name.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.NAME</label>
+        <input type="text" class="form-control col-md-9" name="label" ng-model="DonorAddCtrl.donor.display_name" required>
+        <div class="help-block" ng-messages="donorForm.label.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="DonorAddCtrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="donorForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>
