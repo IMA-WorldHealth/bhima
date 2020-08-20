@@ -766,3 +766,10 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_supplier_credit` TINYINT(1) 
  * @desc: add enterprise setting for strict depot permission which will restrict stock registries to depot owner
  */
  ALTER TABLE `enterprise_setting` ADD COLUMN `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*@author : jeremielodi
+@date : 2020-08-19
+@subject : Donor management
+*/
+INSERT INTO unit VALUES
+(290,'Donors','TREE.DONOR','Donors management',1,'/donors');
