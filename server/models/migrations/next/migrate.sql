@@ -777,3 +777,10 @@ INSERT INTO `actions`(`id`, `description`) VALUES
 
 
 ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit';
+
+/*@author : jeremielodi
+@date : 2020-08-19
+@subject : Donor management
+*/
+INSERT INTO unit VALUES
+(290,'Donors','TREE.DONOR','Donors management',1,'/donors');
