@@ -16,5 +16,10 @@
   <strong>{{metadata.project.name}} ({{metadata.project.abbr}})</strong> <br>
   {{#if metadata.enterprise.phone}}<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{metadata.enterprise.phone}} <br>{{/if}}
   {{#if metadata.enterprise.email}}<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{metadata.enterprise.email}} <br>{{/if}}
-  {{#if metadata.enterprise.address}}<span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{metadata.enterprise.address}}{{/if}}
+  <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: 
+  {{#if metadata.enterprise.address}}
+    {{metadata.enterprise.address}}
+  {{else}}
+    {{metadata.enterprise.location}}
+  {{/if}}
 </div>
