@@ -787,3 +787,10 @@ ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit
 */
 
 UPDATE unit SET parent = 233 WHERE id = 238;
+
+/*@author : jeremielodi
+@date : 2020-08-19
+@subject : Donor management
+*/
+INSERT INTO unit VALUES
+(290,'Donors','TREE.DONOR','Donors management',1,'/donors');
