@@ -112,6 +112,7 @@
             "WARNING": "Warning",
             "CONFIRM_MODAL": "Confirmation Needed",
             "DELETE_ROLE": "Do you really want to delete this role?",
+            "DELETE_DONOR": "Do you really want to delete this donor?",
             "DELETE_SUPPLIER" : "Do you really want to delete this supplier?"
         },
         "ERRORS": {

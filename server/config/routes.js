@@ -25,6 +25,7 @@ const install = require('../controllers/install');
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
 const users = require('../controllers/admin/users');
+const donor = require('../controllers/admin/donor');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
 const services = require('../controllers/admin/services');
@@ -564,6 +565,12 @@ exports.configure = function configure(app) {
   app.get('/users/:id/cashboxes', users.cashboxes.list);
   app.post('/users/:id/cashboxes', users.cashboxes.create);
 
+  // donor controller
+  app.get('/donors', donor.read);
+  app.post('/donors', donor.create);
+  app.get('/donors/:id', donor.detail);
+  app.put('/donors/:id', donor.update);
+  app.delete('/donors/:id', donor.remove);
   // projects controller
   app.get('/projects/:id', projects.detail);
   app.put('/projects/:id', projects.update);
