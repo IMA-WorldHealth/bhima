@@ -112,8 +112,9 @@
             "WARNING": "Warning",
             "CONFIRM_MODAL": "Confirmation Needed",
             "DELETE_ROLE": "Do you really want to delete this role?",
-            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?",
-            "UNPOST_TRANSACTIONS" : "Do you realy want to unpost transactions?"
+            "UNPOST_TRANSACTIONS" : "Do you realy want to unpost transactions?",
+            "DELETE_DONOR": "Do you really want to delete this donor?",
+            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
