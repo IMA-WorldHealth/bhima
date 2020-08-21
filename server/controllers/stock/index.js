@@ -7,10 +7,12 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
+ * @requires lodash
  * @requires lib/uuid
  * @requires lib/db
  * @requires stock/core
  */
+const _ = require('lodash');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
@@ -20,7 +22,6 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
-const Lots = require('./lots');
 
 // expose to the API
 exports.createStock = createStock;
@@ -534,13 +535,23 @@ async function listLotsDepot(req, res, next) {
   try {
     const data = await core.getLotsDepot(null, params);
 
-    const rows = await Promise.all(data.map(async (line) => {
-      const tags = await Lots.getLotTags(db.bid(line.uuid));
-      line.tags = tags;
-      return line;
-    }));
+    const queryTags = `
+      SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
+      FROM tags t
+      JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+      WHERE lt.lot_uuid IN (?)
+    `;
+    const lotUuids = data.map(row => db.bid(row.uuid));
+    const tags = await db.exec(queryTags, [lotUuids]);
 
-    res.status(200).json(rows);
+    // make a lot_uuid -> tags map.
+    const tagMap = _.groupBy(tags, 'lot_uuid');
+
+    data.forEach(lot => {
+      lot.tags = tagMap[lot.uuid] || [];
+    });
+
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }

@@ -45,7 +45,7 @@ function TagSelectController($rootScope, Tags, Notify) {
     Tags.read()
       .then(tags => {
         const identifiers = $ctrl.tagUuids.map(t => t.uuid);
-        $ctrl.tags = $ctrl.tagUuids.length ? tags.filter(t => identifiers.includes(t.uuid) === false) : tags;
+        $ctrl.tags = identifiers.length ? tags.filter(t => identifiers.includes(t.uuid) === false) : tags;
       })
       .catch(Notify.handleError);
   }
