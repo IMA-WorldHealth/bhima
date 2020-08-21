@@ -169,9 +169,9 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (152, 1, 1, 24480040, 'Mobiliers Hopital', 21, 0, '2016-10-23 16:05:34', NULL),
   (156, 1, 1, 28310010, 'Amortissement Batiments', 24, 0, '2016-10-23 16:05:34', NULL),
   (160, 6, 1, 311, 'MARCHANDISES A', 26, 0, '2016-10-23 16:05:34', NULL),
-  (161, 6, 1, 3111, 'Medicaments', 160, 0, '2016-10-23 16:05:34', NULL),
-  (162, 1, 1, 31110010, 'Medicaments en comprimes *', 161, 0, '2016-10-23 16:05:34', NULL),
-  (163, 1, 1, 31110011, 'Medicaments en Sirop *', 161, 0, '2016-10-23 16:05:34', NULL),
+  (161, 6, 1, 3111, 'Médicaments', 160, 0, '2016-10-23 16:05:34', NULL),
+  (162, 1, 1, 31110010, 'Médicaments en comprimes *', 161, 0, '2016-10-23 16:05:34', NULL),
+  (163, 1, 1, 31110011, 'Médicaments en Sirop *', 161, 0, '2016-10-23 16:05:34', NULL),
   (170, 6, 1, 4011, 'Fournisseurs', 32, 0, '2016-10-23 16:05:34', NULL),
   (171, 1, 1, 41111000, 'SNEL', 173, 0, '2016-10-23 16:05:34', NULL),
   (172, 1, 1, 41111001, 'REGIDESO', 173, 0, '2016-10-23 16:05:34', NULL),
@@ -227,9 +227,9 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (221, 6, 1, 676, 'PERTES DE CHANGE', 54, 0, '2016-10-23 16:05:34', NULL),
   (222, 5, 1, 67611010, 'Différences de change', 221, 0, '2016-10-23 16:05:34', NULL),
   (240, 6, 1, 701, 'VENTES DE MARCHANDISES', 57, 0, '2016-10-23 16:05:34', NULL),
-  (241, 6, 1, 7011, 'Vente des medicaments dans la Region Ohada', 240, 0, '2016-10-23 16:05:34', NULL),
-  (242, 4, 1, 70111010, 'Vente Medicaments en comprimes', 241, 0, '2016-10-23 16:05:34', NULL),
-  (243, 4, 1, 70111011, 'Vente Medicaments en Sirop', 241, 0, '2016-10-23 16:05:34', NULL),
+  (241, 6, 1, 7011, 'Vente des Médicaments dans la Region Ohada', 240, 0, '2016-10-23 16:05:34', NULL),
+  (242, 4, 1, 70111010, 'Vente Médicaments en comprimes', 241, 0, '2016-10-23 16:05:34', NULL),
+  (243, 4, 1, 70111011, 'Vente Médicaments en Sirop', 241, 0, '2016-10-23 16:05:34', NULL),
   (244, 6, 1, 706, 'SERVICES VENDUS', 57, 0, '2016-10-23 16:05:34', NULL),
   (245, 6, 1, 7061, 'Services vendus dans la Region ohada', 244, 0, '2016-10-23 16:05:34', NULL),
   (246, 4, 1, 70611010, 'Consultations', 245, 0, '2016-10-23 16:05:34', NULL),
@@ -3293,7 +3293,7 @@ INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_
 
 -- data_collector_management
 INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES
-  (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1),
+  (1, 'Fiche Kardex', 'Fiche de consommation Médicament', 1, '#E0FFFF', 1, 1),
   (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
 
 -- choices_list_management
