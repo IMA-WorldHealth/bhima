@@ -28,7 +28,6 @@ exports.reload = reload;
 // expose session locally
 exports.loadSessionInformation = loadSessionInformation;
 
-
 function loginRoute(req, res, next) {
   const { username, password, project } = req.body;
   login(username, password, project)
@@ -183,7 +182,7 @@ async function loadSessionInformation(user) {
   //   the current enterprise
   //   the current project
   sql = `
-    SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
+    SELECT e.id, e.name, e.abbr, e.phone, e.email, e.address, BUID(e.location_id) as location_id, e.currency_id,
       c.symbol AS currencySymbol, c.name AS currencyName, e.po_box, e.logo,
       CONCAT_WS(' / ', village.name, sector.name, province.name) AS location
     FROM enterprise AS e

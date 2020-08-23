@@ -248,6 +248,7 @@
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },
         "LABELS" : {
+            "ADDRESS_IN_DOCUMENTS":"Address (to be displayed on documents)",
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Account",
             "ACCOUNT_CONFIGURATION" : "Account Setup",
