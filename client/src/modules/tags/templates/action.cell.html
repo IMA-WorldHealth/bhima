@@ -3,12 +3,12 @@
   data-row="{{row.entity.name}}"
   uib-dropdown dropdown-append-to-body>
 
-  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+  <a uib-dropdown-toggle href>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{ row.entity.name }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul data-action="{{rowRenderIndex}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.name}}</li>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createUpdateTagsModal(row.entity)" href>

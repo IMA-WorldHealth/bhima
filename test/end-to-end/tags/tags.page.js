@@ -1,7 +1,7 @@
 /* global by, element */
 
 const FU = require('../shared/FormUtils');
-const GridRow = require('../shared/GridRow');
+const GridAction = require('../shared/GridAction');
 
 function TagsPage() {
   const page = this;
@@ -30,20 +30,12 @@ function TagsPage() {
     return FU.uiSelect('ModalCtrl.tags.color', color);
   }
 
-  async function openDropdownMenu(label) {
-    const row = new GridRow(label);
-    await row.dropdown().click();
-    return row;
+  async function editTags(rowIndex) {
+    await GridAction.clickOnMethod(rowIndex, 1, 'edit-record', gridId);
   }
 
-  async function editTags(label) {
-    const row = await openDropdownMenu(label);
-    return row.edit().click();
-  }
-
-  async function deleteTags(label) {
-    const row = await openDropdownMenu(label);
-    await row.remove().click();
+  async function deleteTags(rowIndex) {
+    await GridAction.clickOnMethod(rowIndex, 1, 'delete-record', gridId);
   }
 
   function openCreateModal() {
