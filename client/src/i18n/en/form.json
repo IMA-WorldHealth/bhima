@@ -22,7 +22,7 @@
             "CONFIRM": "Confirm",
             "CONFIRM_CANCEL": "Confirm Cancellation",
             "COLLAPSE_RECORDS" : "Collapse Records",
-            "CONNECTION": "Connection",
+            "CONNECTION": "Log in",
             "DELETE": "Delete",
             "DELETE_RECORD": "Delete Record",
             "DEPOT_MANAGEMENT": "Depots Management",
@@ -116,7 +116,7 @@
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
-            "CONNECTION": "Connection error",
+            "CONNECTION": "Log in error",
             "NOT_CONFIGURED": "Some lines in the grid are not yet configured.",
             "GENERIC": "The form contains errors.",
             "HAS_ERROR": "Contains an error",
