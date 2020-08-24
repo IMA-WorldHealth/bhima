@@ -794,3 +794,8 @@ UPDATE unit SET parent = 233 WHERE id = 238;
 */
 INSERT INTO unit VALUES
 (290,'Donors','TREE.DONOR','Donors management',1,'/donors');
+
+ALTER TABLE `donor` 
+  ADD COLUMN `email`  VARCHAR(50) DEFAULT NULL,
+  ADD COLUMN `phone`  VARCHAR(50) DEFAULT NULL,
+  ADD COLUMN `address`  VARCHAR(150) DEFAULT NULL;

@@ -50,7 +50,23 @@ function DonorController($uibModal, Donor, Modal, Notify, uiGridConstants) {
     field : 'display_name',
     displayName : 'FORM.LABELS.NAME',
     headerCellFilter : 'translate',
-  }, {
+  },
+  {
+    field : 'phone',
+    displayName : 'FORM.LABELS.PHONE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'email',
+    displayName : 'FORM.LABELS.EMAIL',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'address',
+    displayName : 'FORM.LABELS.ADDRESS',
+    headerCellFilter : 'translate',
+  },
+  {
     field : 'actions',
     enableFiltering : false,
     width : 100,
