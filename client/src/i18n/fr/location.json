@@ -29,6 +29,7 @@
 "MANAGE_PROVINCE":"Gerer Les Province",
 "MANAGE_SECTOR":"Gerer Les Secteurs",
 "MANAGE_VILLAGE":"Gerer Les Villages/Communes",
+"MERGE_LOCATIONS": "Fusionner les localisations",
 "MERGE_SUCCESS":"Les localisations fusionnées avec succès",
 "REGISTERED":"Localisations Enregistrées",
 "TITLE":"Gestion des localisations",

@@ -23,10 +23,6 @@ function TypesController($translate, locationService, util, Notify,
     refreshTypes();
   }
 
-  vm.messages = {
-    country : locationService.messages.country,
-  };
-
   // refresh the displayed Provinces
   function refreshTypes() {
     return locationService.types().then((types) => {
@@ -104,33 +100,6 @@ function TypesController($translate, locationService, util, Notify,
           })
           .catch(Notify.handleError);
       });
-  };
-
-  vm.mergeTypes = function Types() {
-    const selectedTypes = vm.gridApi.selection.getSelectedRows();
-    if (selectedTypes.length) {
-      if (selectedTypes.length === 2) {
-        const types = selectedTypes.map(v => v);
-
-        const locations = {
-          locations : types,
-          status : 'type',
-        };
-
-        $uibModal.open({
-          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
-          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
-          resolve : { data : () => locations },
-        }).result.then(result => {
-          if (result) refreshTypes();
-        });
-
-      } else {
-        Notify.warn('FORM.WARNINGS.ONLY_TWO_VILLAGES');
-      }
-    } else {
-      Notify.warn('FORM.WARNINGS.NO_VILLAGES_HAS_SELECTED');
-    }
   };
 
   /**

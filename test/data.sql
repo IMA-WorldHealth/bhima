@@ -3401,17 +3401,10 @@ INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`, `period_id`) VALUES (0xCDBC3B5BC15E40C7AE7B67F8BDCCF47F, 0x39741655AF0E49AABC917F33F0CA2609, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution vers le patient Test 2 Patient (PA.TPA.2) à partir du dépôt Depot Principal : Distribution vers un patient', 9, '2020-04-08 18:41:17', 5, 1.2000, 1, 1, 5, NULL, '2020-04-08 18:41:38', 202004);
 
 -- DATA FOR MERGE LOCATION
-INSERT INTO `country` (`uuid`, `name`) VALUES (0xC17240C65F0244048D4D15809C7887B6, 'Merge Country');
-INSERT INTO `province` (`uuid`, `name`, `country_uuid`) VALUES (0x9308D98C326F427D9E5BC62A894AA334, 'Merge Province', 0xC17240C65F0244048D4D15809C7887B6);
-
-INSERT INTO `sector` (`uuid`, `name`, `province_uuid`) VALUES (0x0AA4E8785ACB4E0CBE0B8E7B61CAE782, 'Merge Secteur 1', 0x9308D98C326F427D9E5BC62A894AA334);
-INSERT INTO `sector` (`uuid`, `name`, `province_uuid`) VALUES (0x5B4FBED5763743A090048FB053B17593, 'Merge Secteur 2', 0x9308D98C326F427D9E5BC62A894AA334);
-
-INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0x03C1C626183A4B549C2DB01434D44867, 'Merge village 2', 0x0AA4E8785ACB4E0CBE0B8E7B61CAE782, NULL, NULL);
-INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0xB472A67F24624EFC9CB52201530CCBD4, 'Merge Village 1', 0x5B4FBED5763743A090048FB053B17593, NULL, NULL);
-
-
-INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
-
-INSERT INTO `donation`(`uuid`, `project_id`, `date`, `donor_id`)
-VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), 1, NOW(), 1);
+INSERT INTO `location` (`id`, `uuid`, `name`, `parent`, `parent_uuid`, `location_type_id`, `longitude`, `latitude`) VALUES
+(29, 0xF3E0C18CE8D94C86A0F8991503764C94, 'Merge Country', 0, NULL, 4, NULL, NULL),
+(30, 0xE0CE3D8DF7A74D178190569492E70AA4, 'Merge Province', 29, 0xF3E0C18CE8D94C86A0F8991503764C94, 9, NULL, NULL),
+(31, 0xB7824136E94E49F48446EC9C1308AC01, 'Merge Town 1', 30, 0xE0CE3D8DF7A74D178190569492E70AA4, 15, NULL, NULL),
+(32, 0xC365E37DA6404CD39C61C95628FCFA30, 'Merge Town 2', 30, 0xE0CE3D8DF7A74D178190569492E70AA4, 15, NULL, NULL),
+(33, 0x15356573135D4D5D978DB2E013DE950F, 'Merge Township 1', 31, 0xB7824136E94E49F48446EC9C1308AC01, 16, NULL, NULL),
+(34, 0x8188E9A25A6F4FCAA69D0911B31E1916, 'Merge Township 1', 32, 0xC365E37DA6404CD39C61C95628FCFA30, 17, NULL, NULL);

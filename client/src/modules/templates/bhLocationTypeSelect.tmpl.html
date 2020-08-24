@@ -6,10 +6,7 @@
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
-    <ng-transclude></ng-transclude>
     <ui-select
-      $ctrl.multipleChoice
-      $ctrl.required
       name="location_type_id"
       ng-model= "$ctrl.locationTypeId"
       ng-required="$ctrl.required"

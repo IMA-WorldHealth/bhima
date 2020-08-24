@@ -147,6 +147,7 @@ function lookupByProjectId(id) {
 // POST /enterprises
 exports.create = function create(req, res, next) {
   const enterprise = db.convert(req.body.enterprise, ['location_uuid']);
+
   const sql = 'INSERT INTO enterprise SET ?;';
 
   db.exec(sql, [enterprise])

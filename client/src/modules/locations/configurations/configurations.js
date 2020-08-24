@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('LocationsConfigController', LocationsConfigController);
 
 LocationsConfigController.$inject = [
-  '$translate', 'LocationConfigurationService', 'NotifyService', 'uiGridConstants', 'ModalService',
-  'FormatTreeDataService',
+  '$translate', 'LocationService', 'NotifyService', 'uiGridConstants', 'ModalService',
+  'FormatTreeDataService', '$uibModal',
 ];
 
 /**
@@ -11,8 +11,8 @@ LocationsConfigController.$inject = [
  * This module is responsible for handling the CRUD operation on Locations management
  */
 
-function LocationsConfigController($translate, LocationConfiguration, Notify, uiGridConstants, ModalService,
-  FormatTreeData) {
+function LocationsConfigController($translate, LocationService, Notify, uiGridConstants, ModalService,
+  FormatTreeData, $uibModal) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -44,7 +44,6 @@ function LocationsConfigController($translate, LocationConfiguration, Notify, ui
       {
         field : 'addChildren',
         displayName : '',
-        enableFiltering : 'true',
         width : '40',
         headerCellFilter : 'translate',
         cellTemplate : '/modules/locations/configurations/templates/addChildren.tmpl.html',
@@ -52,7 +51,6 @@ function LocationsConfigController($translate, LocationConfiguration, Notify, ui
       {
         field : 'action',
         displayName : '',
-        enableFiltering : 'false',
         cellTemplate : '/modules/locations/configurations/templates/action.cell.tmpl.html',
       },
     ],
@@ -74,7 +72,7 @@ function LocationsConfigController($translate, LocationConfiguration, Notify, ui
   function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(() => {
-        LocationConfiguration.delete(id)
+        LocationService.delete(id)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadGrid();
@@ -92,7 +90,7 @@ function LocationsConfigController($translate, LocationConfiguration, Notify, ui
     vm.hasError = false;
     vm.loading = true;
 
-    LocationConfiguration.read()
+    LocationService.read()
       .then((data) => {
         data.forEach(type => {
           type.typeLabel = $translate.instant(type.translation_key);
@@ -109,6 +107,28 @@ function LocationsConfigController($translate, LocationConfiguration, Notify, ui
       .catch(handleError)
       .finally(toggleLoadingIndicator);
   }
+
+  vm.mergeLocations = function mergeLocations() {
+    const selectedLocations = vm.gridApi.selection.getSelectedRows();
+    if (selectedLocations.length) {
+      if (selectedLocations.length === 2) {
+        const locations = selectedLocations.map(l => l);
+
+        $uibModal.open({
+          templateUrl : 'modules/locations/modals/mergeLocations.modal.html',
+          controller : 'MergeLocationsModalController as MergeLocationsModalCtrl',
+          resolve : { data : () => locations },
+        }).result.then(result => {
+          if (result) loadGrid();
+        });
+
+      } else {
+        Notify.warn('FORM.WARNINGS.ONLY_TWO_LOCATIONS');
+      }
+    } else {
+      Notify.warn('FORM.WARNINGS.NO_LOCATIONS_HAS_SELECTED');
+    }
+  };
 
   function toggleLoadingIndicator() {
     vm.loading = false;

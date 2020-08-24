@@ -6,7 +6,7 @@ LocationController.$inject = [
   'LocationService', 'NotifyService', '$translate', 'GridColumnService', 'GridStateService',
 ];
 
-function LocationController(locationService, Notify, $translate, Columns, GridState) {
+function LocationController(LocationService, Notify, $translate, Columns, GridState) {
   const vm = this;
   const session = {};
   vm.openColumnConfigModal = openColumnConfigModal;
@@ -23,7 +23,7 @@ function LocationController(locationService, Notify, $translate, Columns, GridSt
     session.loading = true;
 
     // load location
-    locationService.locations({ is_leave : true }).then((locations) => {
+    LocationService.locations({ is_leave : true }).then((locations) => {
       locations.data.forEach(location => {
         location.typeLabel = $translate.instant(location.translation_key);
       });

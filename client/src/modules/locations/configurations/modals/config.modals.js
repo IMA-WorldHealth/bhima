@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('ConfigLocationsModalController', ConfigLocationsModalController);
 
 ConfigLocationsModalController.$inject = [
-  '$state', 'LocationConfigurationService', 'NotifyService', 'appcache',
+  '$state', 'LocationService', 'NotifyService', 'appcache',
 ];
 
 /**
  * Configuration locations Modal Controller
  */
 
-function ConfigLocationsModalController($state, LocationConfiguration, Notify, AppCache) {
+function ConfigLocationsModalController($state, LocationService, Notify, AppCache) {
   const vm = this;
   const cache = AppCache('ConfigModalLocation');
 
@@ -32,9 +32,12 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
   }
   vm.isCreating = vm.stateParams.creating;
   vm.parentId = vm.stateParams.parentId;
+  vm.parentUuid = vm.stateParams.parentUuid;
+
+  vm.locationTypeId = vm.stateParams.locationTypeId;
 
   if (!vm.isCreating) {
-    LocationConfiguration.read(vm.stateParams.id)
+    LocationService.read(vm.stateParams.id)
       .then(data => {
         vm.locations = data;
 
@@ -49,11 +52,19 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
     vm.is_highest = 0;
     vm.locations.parent = vm.parentId;
 
-    LocationConfiguration.read(vm.parentId)
+    LocationService.read(vm.parentId)
       .then(parent => {
         vm.parentElement = parent;
       })
       .catch(Notify.handleError);
+  }
+
+  if (vm.locationTypeId) {
+    vm.excludeType = vm.locationTypeId;
+  }
+
+  if (vm.parentUuid) {
+    vm.locations.parent_uuid = vm.parentUuid;
   }
 
   vm.onSelectLocationTypeSelect = onSelectLocationTypeSelect;
@@ -83,8 +94,8 @@ function ConfigLocationsModalController($state, LocationConfiguration, Notify, A
     delete vm.locations.label_name;
 
     const promise = (vm.isCreating)
-      ? LocationConfiguration.create(vm.locations)
-      : LocationConfiguration.update(vm.locations.id, vm.locations);
+      ? LocationService.create(vm.locations)
+      : LocationService.update(vm.locations.id, vm.locations);
 
     return promise
       .then(() => {

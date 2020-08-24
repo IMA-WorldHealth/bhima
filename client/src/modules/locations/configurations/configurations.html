@@ -17,6 +17,12 @@
       </div>
 
       <div class="toolbar-item">
+        <button ng-click="LocationsConfigCtrl.mergeLocations()"  class="btn btn-default text-capitalize" data-method="merge">
+          <i class="fa fa-compress"></i> <span translate>LOCATION.MERGE_LOCATIONS</span>
+        </button>
+      </div>
+  
+      <div class="toolbar-item">
         <button type="button" ng-click="LocationsConfigCtrl.toggleFilter()" data-method="filter"
           class="btn btn-default" ng-class="{ 'btn-info' : LocationsConfigCtrl.filterEnabled }">
           <i class="fa fa-filter"></i>
@@ -29,8 +35,14 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="choices-list-management-grid" ui-grid="LocationsConfigCtrl.gridOptions" class="grid-full-height"
-      ui-grid-tree-view ui-grid-auto-resize ui-grid-resize-columns>
+    <div
+      id="location-configuration-grid"
+      ui-grid="LocationsConfigCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-selection
+      ui-grid-tree-view
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
 
       <bh-grid-loading-indicator loading-state="LocationsConfigCtrl.loading"
         empty-state="LocationsConfigCtrl.gridOptions.data.length === 0"

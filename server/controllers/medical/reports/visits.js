@@ -45,7 +45,7 @@ function getReportData(uuid) {
       // allow logical switches in patient sex
       data.patient.isMale = patient.sex === 'M';
 
-      return Locations.lookupVillage(patient.origin_location_id);
+      return Locations.lookupConfiguration(patient.origin_id);
     })
     .then(location => {
       // bind location

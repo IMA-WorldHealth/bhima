@@ -49,11 +49,9 @@
           <label class="control-label" translate>
             {{ aggregate.translation_key }}
           </label>
-        </span>        
+        </span>
         
         <ui-select
-          $ctrl.multipleChoice
-          $ctrl.required
           name="leave.id"
           ng-change="$ctrl.loadLeaves(leave.model, $index)"
           ng-model= "leave.model"

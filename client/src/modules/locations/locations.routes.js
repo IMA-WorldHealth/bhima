@@ -49,6 +49,8 @@ angular.module('bhima.routes')
         params : {
           configurations : { value : null },
           parentId : { value : null },
+          parentUuid : { value : null },
+          locationTypeId : { value : null },
           creating : { value : true },
         },
         onEnter : ['$uibModal', locationManagementModal],

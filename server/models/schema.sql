@@ -287,15 +287,6 @@ CREATE TABLE `config_week_days` (
   CONSTRAINT `config_week_days__weekend_config` FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `country`;
-
-CREATE TABLE `country` (
-  `uuid` BINARY(16) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `country_1` (`name`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `creditor`;
 
@@ -542,7 +533,7 @@ DROP TABLE IF EXISTS `location_type`;
 CREATE TABLE `location_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `translation_key` VARCHAR(35) NOT NULL,
-  `label_type` VARCHAR(40) NOT NULL,
+  `label_name` VARCHAR(40) NOT NULL,
   `color` VARCHAR(8) NULL,
   `fixed` TINYINT(1) NOT NULL DEFAULT 0,
   `is_leaves` TINYINT(1) DEFAULT 0,
@@ -1383,16 +1374,6 @@ CREATE TABLE `project_permission` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `province`;
-
-CREATE TABLE `province` (
-  `uuid` BINARY(16) NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `country_uuid` BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `country_uuid` (`country_uuid`),
-  CONSTRAINT `province__country` FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase`;
 
@@ -1595,18 +1576,6 @@ CREATE TABLE `section_resultat` (
   `is_charge` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `sector`;
-CREATE TABLE `sector` (
-  `uuid` BINARY(16) NOT NULL,
-  `name` VARCHAR(80) NOT NULL,
-  `province_uuid` BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `province_id` (`province_uuid`),
-  CONSTRAINT `sector__province` FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
@@ -1819,18 +1788,6 @@ CREATE TABLE `role_unit` (
   CONSTRAINT `role_unit__unit`  FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `village`;
-CREATE TABLE `village` (
-  `uuid`        BINARY(16) NOT NULL,
-  `name`        VARCHAR(80) NOT NULL,
-  `sector_uuid` BINARY(16) NOT NULL,
-  `longitude`   DECIMAL(19, 6) NULL,
-  `latitude`    DECIMAL(19, 6) NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `sector_id` (`sector_uuid`),
-  CONSTRAINT `village__sector` FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- NOTE: type_id is the transaction_type table.  FK not possible due to NULLs.
 DROP TABLE IF EXISTS `voucher`;

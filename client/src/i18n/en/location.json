@@ -29,6 +29,7 @@
 "MANAGE_PROVINCE":"Manage Province",
 "MANAGE_SECTOR":"Manage Sector",
 "MANAGE_VILLAGE":"Manage Village/Township",
+"MERGE_LOCATIONS": "Merge locations",
 "MERGE_SUCCESS":"Locations successfully merged",
 "REGISTERED":"Registered Locations",
 "TITLE":"Location Manager",

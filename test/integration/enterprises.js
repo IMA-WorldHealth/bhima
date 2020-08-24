@@ -19,16 +19,17 @@ describe('(/enterprises) Enterprises API', () => {
     email : 'enterprises@test.org',
     po_box : 'enterprises',
     phone : '2016',
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_uuid : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     logo : null,
     currency_id : 2,
+    location_default_type_root : 4,
   };
 
   const updateEnterprise = {
     name : 'updateEnterprises',
     abbr : 'upd',
     phone : '00904940950932016',
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_uuid : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     currency_id : 1,
     settings : { enable_price_lock : 0, enable_barcodes : 1 },
   };
@@ -43,7 +44,7 @@ describe('(/enterprises) Enterprises API', () => {
     email : 'enterprises@test.org',
     po_box : 'enterprises',
     phone : '2016',
-    location_id : null,
+    location_uuid : null,
     logo : null,
     currency_id : null,
   };
@@ -53,8 +54,8 @@ describe('(/enterprises) Enterprises API', () => {
 
   /* response keys from a detailed query */
   const responseKeys = [
-    'id', 'name', 'abbr', 'email', 'po_box', 'phone',
-    'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id',
+    'id', 'name', 'abbr', 'email', 'po_box', 'phone', 'location_default_type_root',
+    'location_uuid', 'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id',
     'settings', 'address',
   ];
 

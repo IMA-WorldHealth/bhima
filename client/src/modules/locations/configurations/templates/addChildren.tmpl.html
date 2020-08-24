@@ -1,6 +1,6 @@
 <div class="ui-grid-cell-contents" data-title-row="{{ row.entity.name }}">
   <a data-action="add-child"
-    ui-sref="locationsConfiguration.create({ parentId : row.entity.id })">
+    ui-sref="locationsConfiguration.create({ parentId : row.entity.id, parentUuid : row.entity.location_uuid, locationTypeId : row.entity.location_type_id})">
     <i class="fa fa-plus-square-o"></i>
   </a>
 </div>

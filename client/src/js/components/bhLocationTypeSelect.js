@@ -5,6 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       locationTypeId   : '<',
+      excludeType : '<?',
       onSelectCallback : '&',
       required : '@?',
       label : '@?',
@@ -25,7 +26,7 @@ function LocationTypeSelectController(locationService, Notify, $translate) {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
-    locationService.types()
+    locationService.types({ excludeType : $ctrl.excludeType })
       .then((types) => {
         types.forEach(type => {
           type.typeLabel = $translate.instant(type.translation_key);

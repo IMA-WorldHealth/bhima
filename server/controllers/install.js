@@ -69,10 +69,10 @@ exports.checkBasicInstallExist = async (req, res, next) => {
  * @function defaultEnterpriseLocation
  *
  * @description
- * Grabs the first village in the database as the default enterprise location.
+ * Grabs the first location in the database as the default enterprise location.
  */
 function defaultEnterpriseLocation() {
-  return db.one(`SELECT uuid FROM village LIMIT 1;`);
+  return db.one(`SELECT uuid FROM location LIMIT 1;`);
 }
 
 

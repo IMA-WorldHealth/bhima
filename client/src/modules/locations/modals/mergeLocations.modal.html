@@ -14,17 +14,19 @@
 
     <ul class="list-group">
       <li
-        data-reference="{{ p.name }}"
+        data-reference="{{ l.name }}"
         style="cursor: pointer;"
         class="list-group-item"
-        ng-class="{'active' : MergeLocationsModalCtrl.selected === p.uuid }"
-        ng-repeat="p in MergeLocationsModalCtrl.locations"
-        ng-click="MergeLocationsModalCtrl.selectLocation(p.uuid)">
-        <span ng-show="MergeLocationsModalCtrl.selected === p.uuid" class="badge">
+        ng-class="{'active' : MergeLocationsModalCtrl.selected.uuid === l.location_uuid }"
+        ng-repeat="l in MergeLocationsModalCtrl.locations"
+        ng-click="MergeLocationsModalCtrl.selectLocation(l)">
+        <span ng-show="MergeLocationsModalCtrl.selected.uuid === l.location_uuid" class="badge">
           <i class="fa fa-check"></i>
         </span>
         <span>
-          <strong>{{ p.name }}</strong><br>
+          <span style="color : {{ l.color }}" class="fa fa-circle"></span>
+          <span translate>{{ l.translation_key }}</span>:
+          <strong>{{ l.name }}</strong><br>
         </span>
       </li>
       </ul>
