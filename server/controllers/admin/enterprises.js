@@ -21,7 +21,7 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone,
+      SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone, e.address,
         BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
         e.gain_account_id, e.loss_account_id, e.location_default_type_root,
       s.enable_price_lock, s.enable_prepayments, s.enable_delete_records,
@@ -85,7 +85,7 @@ exports.detail = function detail(req, res, next) {
 
 function lookupEnterprise(id) {
   const sql = `
-    SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone,
+    SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone, e.address,
       BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
       e.gain_account_id, e.loss_account_id, e.location_default_type_root,
       l.id AS location_id
@@ -125,7 +125,7 @@ function lookupEnterprise(id) {
  */
 function lookupByProjectId(id) {
   const sql = `
-    SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone,
+    SELECT e.id, e.name, e.abbr, e.email, e.address, e.po_box, e.phone,
       BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
       e.gain_account_id, e.loss_account_id, location.id AS location_id 
     FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
