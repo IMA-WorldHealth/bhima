@@ -1,10 +1,12 @@
 /* migration script from the version 1.14.0 to the next */
+    /* migration script from the version 1.14.0 to the next */
+    /*
+    @jeremielodi
+    2020-08-06
+    rename all foreign key constraints
+    */
 
-/*
-@jeremielodi
-2020-08-06
-rename all foreign key constraints
-*/
+
 
 -- DROP all foreign keys from a table
 
@@ -385,7 +387,6 @@ DELIMITER ;
     ALTER TABLE `province` ADD CONSTRAINT `province__country` FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`);
 
 
-
     CALL drop_constraints('purchase');
     ALTER TABLE `purchase` 
     ADD CONSTRAINT `purchase__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
@@ -393,22 +394,6 @@ DELIMITER ;
     ADD CONSTRAINT `purchase__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
     ADD CONSTRAINT `purchase__status` FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`);
 
-<<<<<<< 97085290ebdd62b23961866e760d8349ee255170
-=======
-/**
-@author: lomamech:
-@date: 2020-08-03
-*/
--- Alter table enterprise
-ALTER TABLE `enterprise` ADD COLUMN `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL;
-
-
--- UPLOAD country
--- 
-INSERT INTO location (uuid, name, location_type_id)
-SELECT uuid, name, 4 AS location_type_id
-FROM country;
->>>>>>> Save Changing
 
     CALL drop_constraints('purchase_item');
     ALTER TABLE `purchase_item`
@@ -703,23 +688,3 @@ UPDATE `report` SET
   `title_key` = "REPORT.RECOVERY_CAPACITY.TITLE"
 WHERE report_key = "collectionCapacity";
 
-/*
- * @author: mbayopanda
- * @date: 2020-08-17
- * @description: add address field in the enterprise table
- */
-ALTER TABLE enterprise ADD COLUMN `address` VARCHAR(200) DEFAULT NULL;
-
-/*
- * @author: mbayopanda
- * @date: 2020-07-20
- */
-ALTER TABLE `tags` ADD COLUMN `color` VARCHAR(50) NULL;
-
-DROP TABLE IF EXISTS `lot_tag`;
-CREATE TABLE `lot_tag` (
-  `lot_uuid`          BINARY(16) NOT NULL,
-  `tag_uuid`          BINARY(16) NOT NULL,
-  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

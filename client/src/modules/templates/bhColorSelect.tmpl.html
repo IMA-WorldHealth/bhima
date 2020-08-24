@@ -12,7 +12,7 @@
       ng-required ="$ctrl.required"
       ng-model="$ctrl.value"
       on-select="$ctrl.onSelect($item, $model)">
-      <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
+      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
         <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
         <span>{{$select.selected.name}}</span>
       </ui-select-match>
