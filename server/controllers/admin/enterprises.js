@@ -124,7 +124,6 @@ function lookupEnterprise(id) {
  * @returns {Promise} - the result of the database query.
  */
 function lookupByProjectId(id) {
-
   const sql = `
     SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone,
       BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,

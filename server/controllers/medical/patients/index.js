@@ -40,6 +40,7 @@ const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
 const merge = require('./merge');
+const locations = require('../../admin/locations');
 
 // bind submodules
 exports.groups = groups;
@@ -459,9 +460,10 @@ function find(options) {
   filters.equals('uuids', 'uuid', 'p', true);
 
   // filters for location
-  const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
-  const originNameParams = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
-  filters.custom('originLocationLabel', originNameSql, originNameParams);
+  // const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
+  // const originNameParams = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
+  // filters.custom('originLocationLabel', originNameSql, originNameParams);
+
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
@@ -538,9 +540,77 @@ function patientEntityQuery(detailed) {
  * // GET /patient
  */
 function read(req, res, next) {
-  find(req.query)
+  const location = req.session.enterprise.locationDeepLevel;
+  const { query } = req;
+  let patients = [];
+
+  find(query)
     .then((rows) => {
-      res.status(200).json(rows);
+      patients = rows;
+
+      return locations.dynamiqueLocationJoin(location.location_level_deepness, { is_leave : false });
+    })
+    .then((allLocations) => {
+      patients.forEach(patient => {
+        patient.filtered = true;
+        let checkCurrentFilter = true;
+        let checkOriginFilter = true;
+
+        allLocations.data.forEach(loc => {
+          if (patient.current_id === loc.id) {
+            Object.keys(loc).forEach((key) => {
+
+              if (key !== 'id' && key !== 'parent' && key !== 'location_type_id'
+              && key !== 'translation_key' && key !== 'color') {
+                const newIndex = `current_${key}`;
+                patient[newIndex] = loc[key];
+
+                if (query.currentLocationLabel) {
+                  checkCurrentFilter = false;
+
+                  allLocations.types.forEach(type => {
+                    const currentKey = `${type.label_name}_name`;
+                    if (loc[currentKey]) {
+                      if (loc[currentKey].includes(query.currentLocationLabel)
+                        || patient.current_location_name.includes(query.currentLocationLabel)) {
+                        checkCurrentFilter = true;
+                      }
+                    }
+                  });
+                }
+              }
+            });
+          }
+
+          if (patient.origin_id === loc.id) {
+            Object.keys(loc).forEach((key) => {
+              if (key !== 'id' && key !== 'parent' && key !== 'location_type_id'
+              && key !== 'translation_key' && key !== 'color') {
+                const newIndex = `origin_${key}`;
+                patient[newIndex] = loc[key];
+                if (query.originLocationLabel) {
+                  checkOriginFilter = false;
+                  allLocations.types.forEach(type => {
+                    const originKey = `${type.label_name}_name`;
+                    if (loc[originKey]) {
+                      if (loc[originKey].includes(query.originLocationLabel)
+                        || patient.origin_location_name.includes(query.originLocationLabel)) {
+                        checkOriginFilter = true;
+                      }
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+
+        patient.filtered = checkCurrentFilter && checkOriginFilter;
+      });
+
+      patients = patients.filter(patient => patient.filtered === true);
+
+      res.status(200).json(patients);
     })
     .catch(next)
     .done();

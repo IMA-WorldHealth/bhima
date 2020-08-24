@@ -197,7 +197,9 @@ async function loadSessionInformation(user) {
 
   const allLocations = await locations.getLocations();
 
-  session.enterprise.location = locations.buildPath(allLocations, session.enterprise.location_id, false);
+  session.enterprise.location = await locations.buildPath(allLocations, session.enterprise.location_id, false);
+
+  session.enterprise.locationDeepLevel = await locations.getDeepness();
 
   sql = `
     SELECT

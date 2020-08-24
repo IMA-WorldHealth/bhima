@@ -7,6 +7,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       locationId : '<?',
       parentId : '<?',
+      addLocation : '<?',
       operationalMode : '<?',
       required : '@?',
       parent : '<?',
@@ -27,8 +28,10 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
   const $ctrl = this;
   $ctrl.locationLeaves = [];
   $ctrl.arrayLocationPath = [];
+  $ctrl.addLocationModal = addLocationModal;
+  $ctrl.$onInit = onInit;
 
-  $ctrl.$onInit = function onInit() {
+  function onInit() {
     $ctrl.required = $ctrl.required || false;
 
     const params = {
@@ -101,7 +104,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
       })
       .catch(Notify.handleError);
-  };
+  }
 
   $ctrl.$onChanges = (changes) => {
     if (changes.parent) {
@@ -174,15 +177,30 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
               multipleRoot,
             },
           );
-
         }
 
       })
       .catch(Notify.handleError);
   };
 
+  function addLocationModal() {
+    locationService.modal()
+      .then((data) => {
+        $ctrl.locationId = data.id;
+        const item = {
+          id : data.id,
+          uuid : data.uuid,
+        };
+
+        $ctrl.allowAllRoot = true;
+        onInit();
+        $ctrl.onSelectCallback({ location : item });
+      });
+  }
+
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = ($item) => {
+
     $ctrl.onSelectCallback({ location : $item });
   };
 }

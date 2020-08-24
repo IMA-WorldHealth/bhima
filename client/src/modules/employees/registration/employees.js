@@ -18,6 +18,17 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.isUpdating = $state.params.uuid;
   vm.origin = '';
 
+  vm.onSelectLocationOrigin = onSelectLocationOrigin;
+  vm.onSelectLocationCurrent = onSelectLocationCurrent;
+
+  function onSelectLocationOrigin(location) {
+    vm.employee.origin_location_id = location.uuid;
+  }
+
+  function onSelectLocationCurrent(location) {
+    vm.employee.current_location_id = location.uuid;
+  }
+
   if (referenceUuid && !saveAsEmployee) {
     Employees.read(referenceUuid)
       .then((employee) => {
@@ -103,8 +114,8 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.employee = {};
 
   // default location
-  vm.employee.origin_location_id = Session.enterprise.location_id;
-  vm.employee.current_location_id = Session.enterprise.location_id;
+  vm.employee.origin_id = Session.enterprise.location_id;
+  vm.employee.current_id = Session.enterprise.location_id;
 
   // Expose methods to the scope
   vm.submit = submit;
@@ -154,11 +165,13 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     vm.functions = data;
   }).catch(Notify.handleError);
 
-
   // submit the data to the server
   function submit(employeeForm) {
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
     let promise;
+
+    delete vm.employee.origin_id;
+    delete vm.employee.current_id;
 
     if (!vm.employee.is_patient) {
       promise = (!referenceUuid)

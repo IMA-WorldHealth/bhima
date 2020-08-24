@@ -6,106 +6,72 @@
     </ol>
   </div>
 
-  <div class="modal-body">
-
-    <div class="row text-center">
-      <div class="btn-group">
-        <button
-          ng-repeat="(key, view) in LocationModalCtrl.views track by $index"
-          type="button"
-          class="btn btn-default"
-          ng-class="{ 'active' : LocationModalCtrl.view.index === view.index }"
-          ng-click="LocationModalCtrl.setView(view.cacheKey)"
-          data-location-view-key="{{ ::key }}"
-          translate>
-          {{ view.translateKey }}
-        </button>
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px;">
+    <!-- name -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.LOCATION_NAME</label>
+      <div>
+        <input name="name" ng-model="LocationModalCtrl.locations.name" autocomplete="off" ng-maxlength="90"
+          class="form-control" required>
+        <div class="help-block" ng-messages="LocationModalForm.name.$error"
+          ng-show="LocationModalForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
       </div>
     </div>
 
-    <div class="form-group"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.country.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.COUNTRY</label>
-      <select
-        ng-if="LocationModalCtrl.view.index > 1"
-        class="form-control"
-        name="country"
-        ng-model="LocationModalCtrl.country"
-        ng-change="LocationModalCtrl.loadProvinces()"
-        ng-options="country as country.name for country in LocationModalCtrl.countries track by country.uuid"
-        required>
-        <option value="" disabled translate>{{ LocationModalCtrl.messages.country }}</option>
-      </select>
-      <input
-        ng-if="LocationModalCtrl.view.index === 1"
-        class="form-control"
-        name="country"
-        ng-model="LocationModalCtrl.country"
-        placeholder="{{ ::'FORM.PLACEHOLDERS.COUNTRY' | translate }}"
-        required>
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
+        <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}"
+          autocomplete="off" class="form-control" name="longitude" ng-model="LocationModalCtrl.locations.longitude">
+      </div>
     </div>
 
-    <div class="form-group"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.province.$invalid }"
-      ng-if="LocationModalCtrl.view.index > 1">
-      <label class="control-label" translate>FORM.LABELS.PROVINCE</label>
-      <select
-        ng-if="LocationModalCtrl.view.index > 2"
-        class="form-control"
-        name="province"
-        ng-model="LocationModalCtrl.province"
-        ng-options="province as province.name for province in LocationModalCtrl.provinces track by province.uuid"
-        ng-change="LocationModalCtrl.loadSectors()"
-        required>
-        <option value="" disabled translate>{{ LocationModalCtrl.messages.province }}</option>
-      </select>
-
-      <input
-        ng-if="LocationModalCtrl.view.index === 2"
-        class="form-control"
-        name="province"
-        ng-model="LocationModalCtrl.province"
-        placeholder="{{ ::'FORM.PLACEHOLDERS.PROVINCE' | translate }}"
-        required>
+    <div class="col-xs-6">
+      <div class="form-group">
+        <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
+        <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}"
+          autocomplete="off" class="form-control" name="latitude" ng-model="LocationModalCtrl.locations.latitude">
+      </div>
     </div>
 
-    <div class="form-group"
-      ng-if="LocationModalCtrl.view.index > 2"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.sector.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.SECTOR</label>
-      <select
-        ng-if="LocationModalCtrl.view.index > 3"
-        class="form-control"
-        name="sector"
-        ng-model="LocationModalCtrl.sector"
-        ng-options="sector as sector.name for sector in LocationModalCtrl.sectors track by sector.uuid"
-        required>
-        <option value="" disabled translate>{{ LocationModalCtrl.messages.sector }}</option>
-      </select>
-      <input
-        ng-if="LocationModalCtrl.view.index === 3"
-        name="sector"
-        class="form-control"
-        ng-model="LocationModalCtrl.sector"
-        placeholder="{{ ::'FORM.PLACEHOLDERS.SECTOR' | translate }}"
-        required>
+    <bh-location-type-select
+      location-type-id ="LocationModalCtrl.locations.location_type_id"
+      on-select-callback="LocationModalCtrl.onSelectLocationTypeSelect(type)"
+      required="true">
+      <bh-clear on-clear="LocationModalCtrl.clear('location_type_id')"></bh-clear>
+    </bh-location-type-select>
+    <hr>
+
+    <div ng-if="LocationModalCtrl.locations.location_type_id && !LocationModalCtrl.parentId">
+      <bh-yes-no-radios
+        label="FORM.LABELS.DEFINE_LOCATION_HIGHEST"
+        value="LocationModalCtrl.is_highest"
+        name="is_highest"
+        on-change-callback="LocationModalCtrl.onDefineLocationChange(value)">
+      </bh-yes-no-radios>
+    </div>    
+
+    <div ng-if="!LocationModalCtrl.is_highest  && !LocationModalCtrl.parentId">
+      <bh-location-configuration-select
+        label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
+        location-id="LocationModalCtrl.locations.id"
+        parent-id="LocationModalCtrl.locations.parent"
+        parent = "LocationModalCtrl.locations.location_type_id"
+        on-select-callback="LocationModalCtrl.onSelectParent(location)"
+        allow-all-root="false"
+        required="true">
+      </bh-location-configuration-select>
     </div>
 
-    <div class="form-group"
-      ng-if="LocationModalCtrl.view.index > 3"
-      ng-class="{ 'has-error' : LocationModalForm.$submitted && LocationModalForm.village.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.VILLAGE</label>
-      <input
-        class="form-control"
-        name="village"
-        ng-model="LocationModalCtrl.village"
-        placeholder="{{ ::'FORM.PLACEHOLDERS.VILLAGE' | translate }}"
-        required>
-    </div>
+    <div ng-if="LocationModalCtrl.parentId">
+      <span style="color : {{ LocationModalCtrl.parentElement.color }}" class="fa fa-circle"></span>
+      <span translate>{{ LocationModalCtrl.parentElement.translation_key }}</span>: <strong> {{ LocationModalCtrl.parentElement.name }} </strong>
+    </div>    
 
-    <p class="text-danger" ng-show="LocationModalForm.$submitted && LocationModalForm.$invalid">
-      <span class="fa fa-warning"></span> <span translate>FORM.ERRORS.GENERIC</span>
-    </p>
+
   </div>
 
   <div class="modal-footer">

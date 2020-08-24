@@ -20,6 +20,8 @@ const db = require('../../lib/db');
 
 exports.getLocations = getLocations;
 exports.buildPath = buildPath;
+exports.dynamiqueLocationJoin = dynamiqueLocationJoin;
+exports.getDeepness = getDeepness;
 
 exports.lookupVillage = lookupVillage;
 
@@ -52,6 +54,16 @@ function getLocations() {
   return db.exec(sql);
 }
 
+function getDeepness() {
+  const sql = `
+    SELECT COUNT(DISTINCT(l.location_type_id)) AS location_level_deepness
+    FROM location AS l
+    WHERE l.id IN (SELECT parent FROM location);
+  `;
+
+  return db.one(sql);
+}
+
 function buildPath(locations, locationId, root) {
   let path = ``;
   if (locations.path === 0) { return null; }
@@ -75,6 +87,94 @@ function buildPath(locations, locationId, root) {
   }
 
   return path;
+}
+
+function dynamiqueLocationJoin(deepLevel, params) {
+  let sqlHeader = ``;
+  let sqlJoin = ``;
+  let whereCondition = ``;
+
+  for (let i = 1; i <= deepLevel; i++) {
+    sqlHeader += `
+      l${i}.id AS location_id_${i}, l${i}.name AS name_${i}, l${i}.location_type_id AS location_type_id_${i},
+      t${i}.translation_key AS translation_key_${i}, t${i}.color AS color_${i},
+      `;
+
+    const joinCondition = (i === 1) ? `loc` : `l${i - 1}`;
+
+    sqlJoin += `
+      LEFT JOIN location AS l${i} ON l${i}.id = ${joinCondition}.parent
+      LEFT JOIN location_type AS t${i} ON t${i}.id = l${i}.location_type_id`;
+  }
+
+  if (params.is_leave === 'true') {
+    whereCondition = `WHERE loc.id IN (
+      SELECT l.id
+      FROM location AS l
+      JOIN location_type AS t ON t.id = l.location_type_id
+      WHERE t.is_leaves = 1 OR  l.id NOT IN (SELECT parent FROM location))`;
+  }
+
+  const getLocationsDeepness = `
+    SELECT loc.id, loc.name, loc.parent, loc.location_type_id, loc.translation_key, loc.color, loc.label_name, 
+    ${sqlHeader} loc.is_leaves
+    FROM (
+      SELECT l.id, l.name, l.parent, l.location_type_id, t.translation_key, t.color, t.label_name, t.is_leaves
+      FROM location AS l
+      JOIN location_type AS t ON t.id = l.location_type_id
+      ORDER BY l.name ASC
+    ) AS loc ${sqlJoin}
+    ${whereCondition}
+    ORDER BY loc.name ASC
+  `;
+
+  const getTypes = sqlLocationType(params);
+
+  return Promise.all([db.exec(getTypes), db.exec(getLocationsDeepness)])
+    .then(([types, locationsDeep]) => {
+
+      const columns = [];
+      const data = [];
+
+      types.forEach(type => {
+        columns.push({
+          field : `${type.label_name}_name`,
+          displayName : type.translation_key,
+          headerCellFilter : 'translate',
+        });
+      });
+
+      locationsDeep.forEach(location => {
+        const element = {
+          id : location.id,
+          name : location.name,
+          parent : location.parent,
+          location_type_id : location.location_type_id,
+          translation_key : location.translation_key,
+          color : location.color,
+        };
+
+        types.forEach(type => {
+
+          for (let i = 1; i <= deepLevel; i++) {
+            if (type.id === location[`location_type_id_${i}`]) {
+              element[`${type.label_name}_id`] = location[`location_id_${i}`];
+              element[`${type.label_name}_name`] = location[`name_${i}`];
+            }
+          }
+        });
+
+        data.push(element);
+      });
+
+      const locations = {
+        data,
+        columns,
+        types,
+      };
+
+      return locations;
+    });
 }
 
 /**
@@ -266,7 +366,8 @@ function sqlLocationType(params) {
 
   return `
     SELECT id, translation_key, label_name, color, fixed, is_leaves
-    FROM location_type ${condition};`;
+    FROM location_type ${condition}
+    ORDER BY label_name ASC`;
 }
 
 /**
@@ -285,12 +386,6 @@ exports.root = function root(req, res, next) {
   let clauseWhere;
   let deepLevel = 0;
 
-  const getDeepness = `
-    SELECT DISTINCT(l.location_type_id) AS location_type_id
-    FROM location AS l
-    WHERE l.id IN (SELECT parent FROM location);
-  `;
-
   const excludeTypeId = req.query.excludeType ? `AND l.location_type_id <> ${req.query.excludeType}` : '';
 
   if (!req.query.parentId) {
@@ -300,21 +395,22 @@ exports.root = function root(req, res, next) {
     clauseWhere = `WHERE l.parent = ${req.query.parentId} ${excludeTypeId}`;
   }
 
-  db.exec(getDeepness)
+  getDeepness()
     .then((deep) => {
-      deepLevel = deep.length;
+      deepLevel = deep.location_level_deepness;
 
       const sql = `
         SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent, BUID(l.parent_uuid) AS parent_uuid,
         l.location_type_id, t.translation_key, t.color, t.label_name
         FROM location AS l
-        JOIN location_type AS t ON t.id = l.location_type_id ${clauseWhere};`;
+        JOIN location_type AS t ON t.id = l.location_type_id ${clauseWhere} ORDER BY l.name ASC;`;
 
       const sqlAggregat = `
         SELECT DISTINCT(t.id) AS id, t.translation_key, t.color, t.label_name
         FROM location_type AS t
         JOIN location AS l ON l.location_type_id = t.id
-        ${clauseWhere};`;
+        ${clauseWhere}
+        ORDER BY l.name ASC;`;
 
       let sqlHeader = ``;
       let sqlJoin = ``;
@@ -475,103 +571,15 @@ exports.detail = function detail(req, res, next) {
  * sector, countryUuid, country}
  */
 exports.list = function list(req, res, next) {
-  let deepLevel = 0;
-
   const params = req.query;
-  console.log('PARAMSSsssssssss');
-  console.log(params);
 
-  const getDeepness = `
-    SELECT COUNT(DISTINCT(l.location_type_id)) AS location_level_deepness
-    FROM location AS l
-    WHERE l.id IN (SELECT parent FROM location);
-  `;
-
-  db.one(getDeepness)
+  getDeepness()
     .then((deep) => {
-      deepLevel = deep.location_level_deepness;
-      let sqlHeader = ``;
-      let sqlJoin = ``;
-      let whereCondition = ``;
+      const deepLevel = deep.location_level_deepness;
 
-      for (let i = 1; i <= deepLevel; i++) {
-        sqlHeader += `
-          l${i}.id AS location_id_${i}, l${i}.name AS name_${i}, l${i}.location_type_id AS location_type_id_${i},
-          t${i}.translation_key AS translation_key_${i}, t${i}.color AS color_${i},
-          `;
-
-        const joinCondition = (i === 1) ? `loc` : `l${i - 1}`;
-
-        sqlJoin += `
-          LEFT JOIN location AS l${i} ON l${i}.id = ${joinCondition}.parent
-          LEFT JOIN location_type AS t${i} ON t${i}.id = l${i}.location_type_id`;
-      }
-
-      if (params.is_leave === 'true') {
-        whereCondition = `WHERE loc.id IN (
-          SELECT l.id
-          FROM location AS l
-          JOIN location_type AS t ON t.id = l.location_type_id
-          WHERE t.is_leaves = 1 OR  l.id NOT IN (SELECT parent FROM location))`;
-      }
-
-      const getLocationsDeepness = `
-        SELECT loc.id, loc.name, loc.parent, loc.location_type_id, loc.translation_key, loc.color, loc.label_name, 
-        ${sqlHeader} loc.is_leaves
-        FROM (
-          SELECT l.id, l.name, l.parent, l.location_type_id, t.translation_key, t.color, t.label_name, t.is_leaves
-          FROM location AS l
-          JOIN location_type AS t ON t.id = l.location_type_id
-          ORDER BY l.name ASC
-        ) AS loc ${sqlJoin}
-        ${whereCondition}
-        ORDER BY loc.name ASC
-      `;
-
-      const getTypes = sqlLocationType(params);
-
-      return Promise.all([db.exec(getTypes), db.exec(getLocationsDeepness)]);
+      return dynamiqueLocationJoin(deepLevel, params);
     })
-    .then(([types, locationsDeep]) => {
-
-      const columns = [];
-      const data = [];
-
-      types.forEach(type => {
-        columns.push({
-          field : `${type.label_name}_name`,
-          displayName : type.translation_key,
-          headerCellFilter : 'translate',
-        });
-      });
-
-      locationsDeep.forEach(location => {
-        const element = {
-          id : location.id,
-          name : location.name,
-          parent : location.parent,
-          location_type_id : location.location_type_id,
-          translation_key : location.translation_key,
-          color : location.color,
-        };
-
-        types.forEach(type => {
-          for (let i = 1; i <= deepLevel; i++) {
-            if (type.id === location[`location_type_id_${i}`]) {
-              element[`${type.label_name}_id`] = location[`location_id_${i}`];
-              element[`${type.label_name}_name`] = location[`name_${i}`];
-            }
-          }
-        });
-
-        data.push(element);
-      });
-
-      const locations = {
-        data,
-        columns,
-      };
-
+    .then((locations) => {
       res.status(200).json(locations);
     })
     .catch(next);
@@ -729,6 +737,7 @@ exports.create.configuration = function createConfiguration(req, res, next) {
   // create a UUID if not provided
   const data = req.body;
   data.uuid = req.body.uuid || uuid();
+  const locationUuid = req.body.uuid;
 
   data.uuid = db.bid(data.uuid);
 
@@ -740,7 +749,7 @@ exports.create.configuration = function createConfiguration(req, res, next) {
 
   db.exec(sql, [data])
     .then(rows => {
-      res.status(201).json({ id : rows.insertId });
+      res.status(201).json({ id : rows.insertId, uuid : locationUuid });
     })
     .catch(next)
     .done();

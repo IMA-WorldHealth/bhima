@@ -124,7 +124,8 @@ function lookupEmployee(uid) {
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid, entity_map.text AS reference,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
-      BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id
+      BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id,
+      current.id AS current_id, origin.id AS origin_id
     FROM employee
       JOIN grade ON employee.grade_uuid = grade.uuid
       LEFT JOIN fonction ON employee.fonction_id = fonction.id
@@ -132,6 +133,8 @@ function lookupEmployee(uid) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+      JOIN location AS current ON current.uuid = patient.current_location_id
+      JOIN location AS origin ON origin.uuid = patient.origin_location_id
       LEFT JOIN service ON service.uuid = employee.service_uuid
       LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
     WHERE employee.uuid = ?;

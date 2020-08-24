@@ -121,6 +121,19 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.currentLocationLabel.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.CURRENT_LOCATION
+            </label>
+            <bh-clear on-clear="$ctrl.clear('currentLocationLabel')"></bh-clear>
+
+            <input type="text" class="form-control" name="currentLocationLabel" ng-model="$ctrl.searchQueries.currentLocationLabel">
+            <div class="help-block" ng-messages="ModalForm.currentLocationLabel.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
         </div>
       </uib-tab>
 
