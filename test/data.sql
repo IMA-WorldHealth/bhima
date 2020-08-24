@@ -3400,6 +3400,11 @@ INSERT INTO `configuration_analysis_tools` (`id`, `label`, `account_reference_id
 -- To test the display of stock movements linked to a patient
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`, `period_id`) VALUES (0xCDBC3B5BC15E40C7AE7B67F8BDCCF47F, 0x39741655AF0E49AABC917F33F0CA2609, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution vers le patient Test 2 Patient (PA.TPA.2) à partir du dépôt Depot Principal : Distribution vers un patient', 9, '2020-04-08 18:41:17', 5, 1.2000, 1, 1, 5, NULL, '2020-04-08 18:41:38', 202004);
 
+INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
+
+INSERT INTO `donation`(`uuid`, `project_id`, `date`, `donor_id`)
+VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), 1, NOW(), 1);
+
 -- DATA FOR MERGE LOCATION
 INSERT INTO `location` (`id`, `uuid`, `name`, `parent`, `parent_uuid`, `location_type_id`, `longitude`, `latitude`) VALUES
 (29, 0xF3E0C18CE8D94C86A0F8991503764C94, 'Merge Country', 0, NULL, 4, NULL, NULL),

@@ -381,11 +381,9 @@ CREATE TABLE `debtor_group` (
   KEY `price_list_uuid` (`price_list_uuid`),
   CONSTRAINT `debtor_group__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `debtor_group__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`),
+  CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_uuid`) REFERENCES `location` (`uuid`),
   CONSTRAINT `debtor_group__pricelist` FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-  FOREIGN KEY (`location_uuid`) REFERENCES `location` (`uuid`),
 
 DROP TABLE IF EXISTS debtor_group_invoicing_fee;
 
