@@ -246,7 +246,8 @@
             "USE_INDICATOR_DASHBOARD": "Use case numbers from indicator dashboard",
             "VALIDATE_DISTRIBUTION": "Please click here to validate the distribution of all Ancillary Cost Centers to the Main Cost Centers according to the respective distribution keys",
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
-            "VIEW_CLOSING_BALANCE": "View Closing Balance"
+            "VIEW_CLOSING_BALANCE": "View Closing Balance",
+            "WILL_DEFINED_LEAF": "Will be defined for the lowest locations (leaf)"
         },
         "LABELS" : {
             "ADDRESS_IN_DOCUMENTS":"Address (to be displayed on documents)",
@@ -1010,7 +1011,8 @@
             "PAGE_NOT_FOUND": "The page you requested could not be found",
             "PERCENTAGE_BREACKDOWN": "Percentage breakdown is not possible when selecting transactions that belong to different expense centers",
             "REMAINS_DISTRIBUTION": "It remains {{ value }}",
-            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server."
+            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server.",
+            "YOU_CANNOT_MERGE_LOCATIONS_DIFF_TYPE": "You cannot merge two locations of different type"
         }
     }
 }

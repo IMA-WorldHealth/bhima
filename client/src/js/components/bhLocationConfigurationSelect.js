@@ -78,6 +78,10 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
           // When trying to get parents for location
           if ($ctrl.parentId || $ctrl.operationalMode) {
+            /*
+             * When the operational mode or the identifier is provided, the component searches
+             * among the paths for existing locations, which correspond to the identifier provided in parameter
+             */
             data.locationsDeep.forEach(path => {
               if ($ctrl.parentId) {
                 if (path.parent === $ctrl.parentId) {
@@ -94,6 +98,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
             // Here we try to place the different levels of localization in a table according to their degree of depth
             for (let i = 1; i < deepLevelPlus; i++) {
+              // Here we try to insert in the table, in order of growth, the elements with the highest index as root
               const indicePathId = `location_id_${deepLevelPlus - i}`;
               const indicePathLabel = `translation_key_${deepLevelPlus - i}`;
               const indicePathType = `location_type_id_${deepLevelPlus - i}`;
@@ -155,7 +160,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
   // Here we try to obtain the child locations for a location that is not root and
   // the results obtained are displayed in the view of the component
   $ctrl.loadLeaves = function loadLeaves(locationId, option) {
-    const excludeType = $ctrl.parent || null;
+    const excludeType = $ctrl.excludeType || null;
 
     if (option === 'root') {
       $ctrl.locationLeaves = [];

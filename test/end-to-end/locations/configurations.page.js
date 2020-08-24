@@ -9,7 +9,9 @@
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+const { browser } = require('protractor');
 
 // Select location in location component
 async function selectLocationLabel(label) {
@@ -212,6 +214,80 @@ class LocationFormManagementPage {
 
     FU.modal.submit();
     await components.notification.hasError();
+  }
+
+  async mergeLocations() {
+    // Prevent mixing with no location selected
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with less than two location
+    await GU.selectRow(this.gridId, 0);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Prevent mixing with more than two locations
+    await GU.selectRow(this.gridId, 1);
+    await GU.selectRow(this.gridId, 2);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await components.notification.hasWarn();
+
+    // Merging succes Township
+    await GU.selectRow(this.gridId, 0);
+    await GU.selectRow(this.gridId, 1);
+    await GU.selectRow(this.gridId, 2);
+
+    await GU.selectRow(this.gridId, 3);
+    await GU.selectRow(this.gridId, 5);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="Merge Town 2"]`)).click();
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes Town
+    await GU.selectRow(this.gridId, 2);
+    await GU.selectRow(this.gridId, 3);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="Merge Town 1"]`)).click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes Town 2
+    await GU.selectRow(this.gridId, 3);
+    await GU.selectRow(this.gridId, 16);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="Gombe"]`)).click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes Country
+    await GU.selectRow(this.gridId, 0);
+    await GU.selectRow(this.gridId, 3);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="République Démocratique du Congo"]`)).click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes Province
+    await GU.selectRow(this.gridId, 1);
+    await GU.selectRow(this.gridId, 19);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="Bas-Uele"]`)).click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+
+    // Merging succes Town
+    await GU.selectRow(this.gridId, 8);
+    await GU.selectRow(this.gridId, 20);
+    await element(by.css(`[data-method="merge"]`)).click();
+    await element(by.css(`[data-reference="Kananga"]`)).click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
 }

@@ -101,7 +101,7 @@ function PatientRegistrySearch() {
   });
 
   it(`should find patients with origin location "${parameters.originVillageName}" `, async () => {
-    const NUM_MATCHING = 6;
+    const NUM_MATCHING = 5;
     await FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
     await FU.modal.submit();
     await expectNumberOfGridRows(NUM_MATCHING);

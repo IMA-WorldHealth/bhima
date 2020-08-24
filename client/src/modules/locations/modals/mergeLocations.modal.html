@@ -34,11 +34,15 @@
   </div>
 
   <div class="modal-footer">
+    <p ng-if="!MergeLocationsModalCtrl.checkSameType" class="badge badge-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.WARNINGS.YOU_CANNOT_MERGE_LOCATIONS_DIFF_TYPE</span>
+    </p>
+        
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="MergeLocationsModalCtrl.cancelUiSref()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button loading-state="MergeLocationsForm.$loading">
+    <bh-loading-button ng-if="MergeLocationsModalCtrl.checkSameType" loading-state="MergeLocationsForm.$loading">
       <span translate>FORM.LABELS.MERGE_LOCATIONS</span>
     </bh-loading-button>
   </div>

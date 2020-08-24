@@ -2,7 +2,7 @@
 const helpers = require('../shared/helpers');
 const RegistrationPage = require('./registration.page.js');
 
-describe.only('Employees', () => {
+describe('Employees', () => {
   const path = '#!/employees/register';
   const registrationPage = new RegistrationPage();
   const employee = {

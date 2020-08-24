@@ -1,3 +1,6 @@
+/* global */
+/* eslint  */
+
 const helpers = require('../shared/helpers');
 const LocationFormManagement = require('./configurations.page');
 
@@ -21,6 +24,13 @@ describe('Locations Configuration', () => {
     parent : 'United States of America',
     latitude : '38.8973',
     longitude : '-77.0362',
+    type : 'District',
+  };
+
+  // Create District for Deletion test
+  const newLocationDistrictDelete = {
+    parent : 'Merge Country',
+    name : 'York',
     type : 'District',
   };
 
@@ -67,6 +77,11 @@ describe('Locations Configuration', () => {
     await Page.createLocationLevel01(newLocationDistrict);
   });
 
+  it('successfully creates Deletable Disctrict', async () => {
+    await Page.openAddChild(newLocationTownParent.parent);
+    await Page.createLocationFromParent(newLocationDistrictDelete);
+  });
+
   it('successfully creates a new Town', async () => {
     await Page.createLocationLevel02(newLocationTown);
   });
@@ -87,7 +102,7 @@ describe('Locations Configuration', () => {
   });
 
   it('successfully delete a location Element', async () => {
-    await Page.delete(updateLocationElement.updateName);
+    await Page.delete(newLocationDistrictDelete.name);
   });
 
   it('Unable to delete because this location is defined as parent', async () => {
@@ -97,4 +112,9 @@ describe('Locations Configuration', () => {
   it('Cannot delete entity because entity is used in another table', async () => {
     await Page.deleteError('Gombe');
   });
+
+  it('Merge locations', async () => {
+    await Page.mergeLocations();
+  });
+
 });
