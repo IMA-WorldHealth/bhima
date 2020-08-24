@@ -14,6 +14,9 @@ describe('(/donors) The donros API endpoint', () => {
   const newDonor = {
     id : 2,
     display_name : 'IMA',
+    email : 'ima@gmail.com',
+    phone : '+243810000001',
+    address : '289 Kinshasa, RDC',
   };
 
   const updatedDonor = {
