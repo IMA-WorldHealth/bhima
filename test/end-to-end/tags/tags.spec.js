@@ -35,7 +35,7 @@ function tagsManagementTests() {
   });
 
   it('should edit tags', async () => {
-    await page.editTags(0);
+    await page.editTags('Tag1');
     await page.setName('Repaired');
     await page.setColor('Jaune');
     await page.submit();
@@ -43,7 +43,7 @@ function tagsManagementTests() {
   });
 
   it('should delete the test tags', async () => {
-    await page.deleteTags(0);
+    await page.deleteTags('Test tag');
     await page.submit();
     await components.notification.hasSuccess();
   });
