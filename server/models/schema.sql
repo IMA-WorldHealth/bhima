@@ -2010,6 +2010,9 @@ DROP TABLE IF EXISTS `donor`;
 CREATE TABLE `donor` (
   `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `display_name` VARCHAR(191) NOT NULL,
+  `phone` VARCHAR(50) NULL,
+  `email` VARCHAR(50) NULL,
+  `address` VARCHAR(150) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
