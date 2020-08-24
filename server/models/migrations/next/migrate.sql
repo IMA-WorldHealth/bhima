@@ -744,6 +744,32 @@ INSERT INTO `location_type` (`id`, `translation_key`, `label_name`, `color`, `fi
 (20, 'LOCATION.LOCATION_TYPE.VILLAGE', 'village', '#00ffff', 1, 0),
 (21, 'LOCATION.LOCATION_TYPE.ZONE', 'zone', '#8A2BE2', 1, 0);
 
+-- Script for Upload location from old tables
+-- UPLOAD country
+-- 
+INSERT INTO location (uuid, name, location_type_id)
+SELECT uuid, name, 6 AS location_type_id
+FROM country;
+
+-- UPLOAD PROVINCE
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
+SELECT p.uuid, p.name, l.id AS parent, l.uuid AS parent_uuid, 12 AS location_type_id
+FROM province AS p
+JOIN location AS l ON l.uuid = p.country_uuid;
+
+-- UPLOAD SECTOR
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
+SELECT s.uuid, s.name, l.id AS parent, l.uuid AS parent_uuid, 14 AS location_type_id
+FROM sector AS s
+JOIN location AS l ON l.uuid = s.province_uuid;
+
+-- UPLOAD VILLAGE
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id, latitude, longitude)
+SELECT v.uuid, v.name, l.id AS parent, l.uuid AS parent_uuid, 20 AS location_type_id, v.latitude, v.longitude
+FROM village AS v
+JOIN location AS l ON l.uuid = v.sector_uuid;
+
+
 -- Update table enterprise
 ALTER TABLE `enterprise` DROP FOREIGN KEY `enterprise__location`;
 ALTER TABLE `enterprise` ADD CONSTRAINT `enterprise__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`);
@@ -760,28 +786,3 @@ ALTER TABLE `patient` ADD CONSTRAINT `patient__current_location` FOREIGN KEY (`c
 
 ALTER TABLE `patient` DROP FOREIGN KEY `patient__origin_location`;
 ALTER TABLE `patient` ADD CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `location` (`uuid`);
-
--- Script for Upload location from old tables
--- UPLOAD country
--- 
-INSERT INTO location (uuid, name, location_type_id)
-SELECT uuid, name, 4 AS location_type_id
-FROM country;
-
--- UPLOAD PROVINCE
-INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
-SELECT p.uuid, p.name, l.id AS parent, l.uuid AS parent_uuid, 9 AS location_type_id
-FROM province AS p
-JOIN location AS l ON l.uuid = p.country_uuid;
-
--- UPLOAD SECTOR
-INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
-SELECT s.uuid, s.name, l.id AS parent, l.uuid AS parent_uuid, 11 AS location_type_id
-FROM sector AS s
-JOIN location AS l ON l.uuid = s.province_uuid;
-
--- UPLOAD VILLAGE
-INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id, latitude, longitude)
-SELECT v.uuid, v.name, l.id AS parent, l.uuid AS parent_uuid, 17 AS location_type_id, v.latitude, v.longitude
-FROM village AS v
-JOIN location AS l ON l.uuid = v.sector_uuid;
