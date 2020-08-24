@@ -26,6 +26,7 @@ const install = require('../controllers/install');
 const rolesCtrl = require('../controllers/admin/roles');
 const users = require('../controllers/admin/users');
 const donor = require('../controllers/admin/donor');
+const donation = require('../controllers/admin/donation');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
 const services = require('../controllers/admin/services');
@@ -571,6 +572,14 @@ exports.configure = function configure(app) {
   app.get('/donors/:id', donor.detail);
   app.put('/donors/:id', donor.update);
   app.delete('/donors/:id', donor.remove);
+
+  // donor controller
+  app.get('/donations', donation.read);
+  app.post('/donations', donation.create);
+  app.get('/donations/:uuid', donation.detail);
+  app.put('/donations/:uuid', donation.update);
+  app.delete('/donations/:uuid', donation.remove);
+
   // projects controller
   app.get('/projects/:id', projects.detail);
   app.put('/projects/:id', projects.update);
