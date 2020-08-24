@@ -35,9 +35,19 @@ function PatientRegistrationController(
 
   // Set up page elements data (debtor select data)
   vm.onSelectDebtor = onSelectDebtor;
+  vm.onSelectLocationOrigin = onSelectLocationOrigin;
+  vm.onSelectLocationCurrent = onSelectLocationCurrent;
 
   function onSelectDebtor(debtorGroup) {
     vm.finance.debtor_group_uuid = debtorGroup.uuid;
+  }
+
+  function onSelectLocationOrigin(location) {
+    vm.medical.origin_location_id = location.uuid;
+  }
+
+  function onSelectLocationCurrent(location) {
+    vm.medical.current_location_id = location.uuid;
   }
 
   // define limits for DOB
@@ -56,6 +66,9 @@ function PatientRegistrationController(
     if (RegistrationForm.$invalid) {
       return Notify.danger('FORM.ERRORS.INVALID');
     }
+
+    delete vm.medical.origin_id;
+    delete vm.medical.current_id;
 
     return Patients.create(vm.medical, vm.finance)
       .then((confirmation) => {

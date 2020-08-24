@@ -54,11 +54,14 @@ function lookupDebtorGroup(uid) {
   let debtorGroup = {};
 
   const sql = `
-    SELECT BUID(uuid) AS uuid, enterprise_id, name, account_id, BUID(location_id) as location_id,
-      phone, email, note, locked, max_credit, is_convention, BUID(price_list_uuid) AS price_list_uuid,
-      apply_subsidies, apply_discounts, apply_invoicing_fees, color
-    FROM debtor_group
-    WHERE uuid = ?;
+    SELECT BUID(dg.uuid) AS uuid, dg.enterprise_id, dg.name, dg.account_id,
+      BUID(dg.location_uuid) as location_uuid, dg.phone, dg.email, dg.note, dg.locked,
+      dg.max_credit, dg.is_convention, BUID(dg.price_list_uuid) AS price_list_uuid,
+      dg.apply_subsidies, dg.apply_discounts, dg.apply_invoicing_fees, dg.color,
+      l.id AS location_id
+    FROM debtor_group AS dg
+    JOIN location AS l ON l.uuid = dg.location_uuid
+    WHERE dg.uuid = ?;
   `;
 
   return db.one(sql, [db.bid(uid)], uid, 'debtor group')
@@ -110,7 +113,7 @@ function lookupSubsidies(uid) {
  *   uuid : {uuid},
  *   name : {string},
  *   account_id : {number},
- *   location_id : {uuid},
+ *   location_uuid : {uuid},
  *   phone : {string},
  *   email : {string},
  *   note : {string},
@@ -127,7 +130,7 @@ function create(req, res, next) {
   const sql = 'INSERT INTO debtor_group SET ? ;';
 
   // convert any incoming uuids into binary
-  const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
+  const data = db.convert(req.body, ['price_list_uuid', 'location_uuid']);
 
   // generate a uuid if one doesn't exist, and convert to binary
   const recordUuid = data.uuid || uuid();
@@ -153,7 +156,7 @@ function update(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // convert any incoming uuids to binary
-  const data = db.convert(req.body, ['price_list_uuid', 'location_id']);
+  const data = db.convert(req.body, ['price_list_uuid', 'location_uuid']);
 
   // prevent updating the uuid, if it exists
   delete data.uuid;
@@ -207,13 +210,15 @@ function list(req, res, next) {
      */
     sql = `
       SELECT BUID(debtor_group.uuid) as uuid, debtor_group.name, debtor_group.account_id,
-        BUID(debtor_group.location_id) as location_id, debtor_group.phone, debtor_group.email,
+        BUID(debtor_group.location_uuid) as location_uuid, debtor_group.phone, debtor_group.email,
         debtor_group.note, debtor_group.locked, debtor_group.max_credit, debtor_group.is_convention,
         BUID(debtor_group.price_list_uuid) as price_list_uuid, debtor_group.created_at,
         debtor_group.apply_subsidies, debtor_group.apply_discounts, debtor_group.apply_invoicing_fees,
-        COUNT(debtor.uuid) as total_debtors, account.number AS account_number, color
+        COUNT(debtor.uuid) as total_debtors, account.number AS account_number, debtor_group.color,
+        location.id as location_id
       FROM debtor_group
       JOIN account ON account.id =  debtor_group.account_id
+      JOIN location ON location.uuid = debtor_group.location_uuid
       LEFT JOIN debtor ON debtor.group_uuid = debtor_group.uuid
     `;
 

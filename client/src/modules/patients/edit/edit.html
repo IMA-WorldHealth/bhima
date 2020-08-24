@@ -237,24 +237,28 @@
                 <hr>
                 <div class="form-group">
                     <div class="col-md-5 col-md-offset-1">
-                      <h4><span translate>FORM.LABELS.ORIGIN_LOCATION</span></h4>
-                      <bh-location-select
-                        name="origin_location_id"
-                        id="origin-location-id"
-                        location-uuid="PatientEditCtrl.medical.origin_location_id">
-                      </bh-location-select>
+                      <bh-location-configuration-select
+                        label="FORM.LABELS.ORIGIN_LOCATION"
+                        location-id="PatientEditCtrl.medical.origin_id"
+                        operational-mode="true"
+                        on-select-callback="PatientEditCtrl.onSelectLocationOrigin(location)"
+                        allow-all-root="true"
+                        required="true">
+                      </bh-location-configuration-select>
                     </div>
 
                     <!-- separate location searches given a certain screen size -->
                     <div class="visible-sm-block visible-xs-block"><hr></div>
 
                     <div class="col-md-5 col-md-offset-1">
-                      <h4><span translate>FORM.LABELS.CURRENT_LOCATION</span></h4>
-                      <bh-location-select
-                        name="current_location_id"
-                        id="current-location-id"
-                        location-uuid="PatientEditCtrl.medical.current_location_id">
-                      </bh-location-select>
+                      <bh-location-configuration-select
+                        label="FORM.LABELS.CURRENT_LOCATION"
+                        location-id="PatientEditCtrl.medical.current_id"
+                        operational-mode="true"
+                        on-select-callback="PatientEditCtrl.onSelectLocationCurrent(location)"
+                        allow-all-root="true"
+                        required="true">
+                      </bh-location-configuration-select>
                     </div>
                 </div>
               </div>

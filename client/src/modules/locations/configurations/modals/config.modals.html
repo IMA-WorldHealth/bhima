@@ -70,10 +70,9 @@
         location-id="ConfigLocationsModalCtrl.locations.id"
         parent-id="ConfigLocationsModalCtrl.locations.parent"
         parent = "ConfigLocationsModalCtrl.locations.location_type_id"
-        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(parent)"
+        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(location)"
         allow-all-root="!ConfigLocationsModalCtrl.isCreating"
         required="true">
-        <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
       </bh-location-configuration-select>
     </div>
 

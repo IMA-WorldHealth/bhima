@@ -16,6 +16,8 @@ const q = require('q');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 
+const locations = require('./admin/locations');
+
 // POST /auth/login
 exports.login = loginRoute;
 
@@ -182,18 +184,20 @@ async function loadSessionInformation(user) {
   //   the current enterprise
   //   the current project
   sql = `
-    SELECT e.id, e.name, e.abbr, e.phone, e.email, e.address, BUID(e.location_id) as location_id, e.currency_id,
+    SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_uuid) as location_uuid, e.currency_id,
       c.symbol AS currencySymbol, c.name AS currencyName, e.po_box, e.logo,
-      CONCAT_WS(' / ', village.name, sector.name, province.name) AS location, e.location_default_type_root
+      l.id AS location_id, e.location_default_type_root
     FROM enterprise AS e
       JOIN currency AS c ON e.currency_id = c.id
-      JOIN village ON village.uuid = e.location_id
-      JOIN sector ON sector.uuid = village.sector_uuid
-      JOIN province ON province.uuid = sector.province_uuid
+      JOIN location AS l ON l.uuid = e.location_uuid
     WHERE e.id = ?;
   `;
 
   session.enterprise = await db.one(sql, [user.enterprise_id]);
+
+  const allLocations = await locations.getLocations();
+
+  session.enterprise.location = locations.buildPath(allLocations, session.enterprise.location_id, false);
 
   sql = `
     SELECT
@@ -219,7 +223,6 @@ async function loadSessionInformation(user) {
 
   return session;
 }
-
 
 /**
  * @method reload

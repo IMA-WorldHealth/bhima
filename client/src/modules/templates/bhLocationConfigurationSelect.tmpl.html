@@ -6,7 +6,6 @@
   <div ng-if ="!$ctrl.typeHighest"
     class="form-group"
     ng-class="{ 'has-error' : LocationConfigurationForm.$submitted && LocationConfigurationForm.location_configuration_id.$invalid }">
-    <hr>
     <span class="text-bold text-decoration" translate> {{  $ctrl.label }} </span><br>
     <span ng-repeat="aggregate in $ctrl.aggregates">
       <span ng-if="$index > 0"> / </span>

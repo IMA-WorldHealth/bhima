@@ -62,6 +62,7 @@
             "CREDITOR_SOLD": "Creditor Sold",
             "CREATED_BY": "Created by",
             "CURRENCY": "Currency",
+            "CURRENT_LOCATION": "Current location",
             "DATA_SOURCE": "Data Source",
             "DATE": "Date",
             "DATE_MONTH": {
@@ -163,6 +164,7 @@
             "NUM": "Number",
             "NUMBER_CASES": "Number of cases",
             "OF": "of",
+            "ORIGIN_LOCATION": "Origin location",
             "PASSIVE": "Passive",
             "PATIENT": "Patient",
             "PATIENT_NAME": "Patient Name",

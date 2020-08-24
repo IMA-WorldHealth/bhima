@@ -18,6 +18,9 @@
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 
+exports.getLocations = getLocations;
+exports.buildPath = buildPath;
+
 exports.lookupVillage = lookupVillage;
 
 /**
@@ -42,11 +45,36 @@ function getLocations() {
   const sql = `
     SELECT l.id, BUID(l.uuid) location_uuid, l.name, BUID(l.parent_uuid) AS parent_uuid,
     l.parent, l.location_type_id, l.longitude, l.latitude, t.translation_key, t.color
-    FROM locations AS l
+    FROM location AS l
     JOIN location_type AS t ON t.id = l.location_type_id
     ORDER BY l.name ASC;`;
 
   return db.exec(sql);
+}
+
+function buildPath(locations, locationId, root) {
+  let path = ``;
+  if (locations.path === 0) { return null; }
+  recursiveParent(locations, locationId);
+
+  function recursiveParent(data, id) {
+    const node = data.filter(d => d.id === id);
+    // if (node[0].parent !== 0) {
+
+    if (root) {
+      const temp = `/ ${node[0].name}`;
+      path = `${temp}${path}`;
+    } else if (node[0].parent !== 0) {
+      const temp = `/ ${node[0].name}`;
+      path = `${temp}${path}`;
+    }
+
+    if (node[0].parent && node[0].parent !== 0) {
+      recursiveParent(data, node[0].parent);
+    }
+  }
+
+  return path;
 }
 
 /**
@@ -240,7 +268,7 @@ exports.types = function types(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.root = function root(req, res, next) {
-  const locationId = req.query.locationId;
+  const { locationId } = req.query;
 
   const locationTypeRoot = (req.query.allRoot === 'true') ? null : req.session.enterprise.location_default_type_root;
 
@@ -249,8 +277,8 @@ exports.root = function root(req, res, next) {
 
   const getDeepness = `
     SELECT DISTINCT(l.location_type_id) AS location_type_id
-    FROM locations AS l
-    WHERE l.id IN (SELECT parent FROM locations);
+    FROM location AS l
+    WHERE l.id IN (SELECT parent FROM location);
   `;
 
   const excludeTypeId = req.query.excludeType ? `AND l.location_type_id <> ${req.query.excludeType}` : '';
@@ -269,13 +297,13 @@ exports.root = function root(req, res, next) {
       const sql = `
         SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent, BUID(l.parent_uuid) AS parent_uuid,
         l.location_type_id, t.translation_key, t.color
-        FROM locations AS l
+        FROM location AS l
         JOIN location_type AS t ON t.id = l.location_type_id ${clauseWhere};`;
 
       const sqlAggregat = `
         SELECT DISTINCT(t.id) AS id, t.translation_key, t.color
         FROM location_type AS t
-        JOIN locations AS l ON l.location_type_id = t.id
+        JOIN location AS l ON l.location_type_id = t.id
         ${clauseWhere};`;
 
       let sqlHeader = ``;
@@ -290,7 +318,7 @@ exports.root = function root(req, res, next) {
         const joinCondition = (i === 1) ? `loc` : `l${i - 1}`;
 
         sqlJoin += `
-          LEFT JOIN locations AS l${i} ON l${i}.id = ${joinCondition}.parent
+          LEFT JOIN location AS l${i} ON l${i}.id = ${joinCondition}.parent
           LEFT JOIN location_type AS t${i} ON t${i}.id = l${i}.location_type_id`;
       }
 
@@ -301,7 +329,7 @@ exports.root = function root(req, res, next) {
         ${sqlHeader} loc.is_leaves
         FROM (
           SELECT l.id, l.name, l.parent, l.location_type_id, t.translation_key, t.is_leaves
-          FROM locations AS l
+          FROM location AS l
           JOIN location_type AS t ON t.id = l.location_type_id
           ${deepnessCondition}
           ORDER BY l.name ASC
@@ -389,7 +417,7 @@ function lookupConfiguration(loctionId) {
     SELECT l.id, BUID(l.uuid) AS uuid, l.name, l.parent,
     BUID(l.parent_uuid) AS parent_uuid, l.location_type_id, l.longitude, l.latitude,
     t.translation_key, t.color
-    FROM locations AS l
+    FROM location AS l
     JOIN location_type AS t ON t.id = l.location_type_id
     WHERE l.id = ?;`;
 
@@ -613,7 +641,7 @@ exports.create.configuration = function createConfiguration(req, res, next) {
     data.parent_uuid = db.bid(data.parent_uuid);
   }
 
-  const sql = `INSERT INTO locations SET ?;`;
+  const sql = `INSERT INTO location SET ?;`;
 
   db.exec(sql, [data])
     .then(rows => {
@@ -813,7 +841,7 @@ exports.update.configuration = function updateConfiguration(req, res, next) {
     data.parent_uuid = db.bid(data.parent_uuid);
   }
 
-  const sql = 'UPDATE locations SET ? WHERE id = ?;';
+  const sql = 'UPDATE location SET ? WHERE id = ?;';
 
   db.exec(sql, [data, locationId])
     .then(() => {
@@ -869,7 +897,7 @@ exports.delete.type = (req, res, next) => {
 };
 
 exports.delete.configuration = (req, res, next) => {
-  const sql = 'DELETE FROM locations WHERE id=?';
+  const sql = 'DELETE FROM location WHERE id=?';
 
   db.exec(sql, req.params.id).then(() => {
     res.sendStatus(204);

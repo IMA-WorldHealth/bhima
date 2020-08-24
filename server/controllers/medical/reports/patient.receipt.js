@@ -67,13 +67,13 @@ async function build(req, res, next) {
     patient.enterprise_name = req.session.enterprise.name;
     patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
 
-    const [village, currentVillage] = await Promise.all([
+    const [originLocation, currentLocation] = await Promise.all([
       Locations.lookupVillage(patient.origin_location_id),
       Locations.lookupVillage(patient.current_location_id),
     ]);
 
     const result = await report.render({
-      patient, village, currentVillage, simplified : requestedSimplifiedCard,
+      patient, originLocation, currentLocation, simplified : requestedSimplifiedCard,
     });
 
     res.set(result.headers).send(result.report);

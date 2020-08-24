@@ -7,6 +7,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       locationId : '<?',
       parentId : '<?',
+      operationalMode : '<?',
       required : '@?',
       parent : '<?',
       label : '@?',
@@ -43,10 +44,16 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
           $ctrl.aggregates = data.aggregates;
           $ctrl.multipleRoot = data.aggregates.length > 1;
 
-          if ($ctrl.parentId) {
+          if ($ctrl.parentId || $ctrl.operationalMode) {
             data.locationsDeep.forEach(path => {
-              if (path.parent === $ctrl.parentId) {
-                locationPath = path;
+              if ($ctrl.parentId) {
+                if (path.parent === $ctrl.parentId) {
+                  locationPath = path;
+                }
+              } else if ($ctrl.operationalMode) {
+                if (path.id === $ctrl.locationId) {
+                  locationPath = path;
+                }
               }
             });
 
@@ -65,8 +72,10 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
               }
             }
 
-            $ctrl.locationConfigurationId = $ctrl.arrayLocationPath[0].id;
-            $ctrl.loadLeaves($ctrl.locationConfigurationId, 'root');
+            if ($ctrl.arrayLocationPath[0]) {
+              $ctrl.locationConfigurationId = $ctrl.arrayLocationPath[0].id;
+              $ctrl.loadLeaves($ctrl.locationConfigurationId, 'root');
+            }
 
             for (let i = 1; i < $ctrl.arrayLocationPath.length; i++) {
               $ctrl.loadLeaves($ctrl.arrayLocationPath[i].id, i);
@@ -152,6 +161,10 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
             });
           }
 
+          if ($ctrl.operationalMode && !locationValue) {
+            locationValue = $ctrl.locationId;
+          }
+
           $ctrl.locationLeaves.push(
             {
               id : `location_${locationId}`,
@@ -170,6 +183,6 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = ($item) => {
-    $ctrl.onSelectCallback({ parent : $item });
+    $ctrl.onSelectCallback({ location : $item });
   };
 }

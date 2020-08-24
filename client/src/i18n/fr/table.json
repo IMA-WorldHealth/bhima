@@ -62,6 +62,7 @@
             "CREDIT_SOURCE": "Crédit (source)",
             "CREDITOR_SOLD": "Solde Créditeur",
             "CURRENCY": "Monnaie",
+            "CURRENT_LOCATION": "Localisation actuelle",
             "DATE": "Date",
             "DATE_MONTH": {
                 "JANUARY": "Janvier",
@@ -163,6 +164,7 @@
             "NUM": "Numéro",
             "NUMBER_CASES": "Nombre de cas",
             "OF": "sur",
+            "ORIGIN_LOCATION": "Localisation d'origine",
             "PASSIVE": "Passive",
             "PATIENT": "Patient",
             "PATIENT_NAME": "Nom du Patient",

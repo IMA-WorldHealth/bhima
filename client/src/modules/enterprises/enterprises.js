@@ -29,6 +29,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.setThumbnail = setThumbnail;
   vm.onSelectLocationTypeSelect = onSelectLocationTypeSelect;
+  vm.onSelectLocation = onSelectLocation;
 
   function uploadLogo(file) {
     if (!vm.hasThumbnail) { return null; }
@@ -95,6 +96,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     vm.enterprise.location_default_type_root = type.id;
   }
 
+  function onSelectLocation(location) {
+    vm.enterprise.location_uuid = location.uuid;
+  }
+
   // form submission
   function submit(form) {
     if (form.$invalid) {
@@ -118,9 +123,11 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     changes.settings = angular.copy(vm.enterprise.settings);
 
     // For taking over location_default_type_root, account for gain and loss
+    // location uuid
     changes.gain_account_id = vm.enterprise.gain_account_id;
     changes.loss_account_id = vm.enterprise.loss_account_id;
     changes.location_default_type_root = vm.enterprise.location_default_type_root;
+    changes.location_uuid = vm.enterprise.location_uuid;
 
     const promise = (creation)
       ? Enterprises.create(changes)

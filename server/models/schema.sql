@@ -547,6 +547,21 @@ CREATE TABLE `location_type` (
   UNIQUE KEY `location_type_1` (`translation_key`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `location`;
+CREATE TABLE `location` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uuid` BINARY(16) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `parent` SMALLINT(6) DEFAULT 0,
+  `parent_uuid` BINARY(16) NULL,  
+  `location_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `longitude`   DECIMAL(19, 6) NULL,
+  `latitude`    DECIMAL(19, 6) NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`uuid`),
+  FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `id`              SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -2528,21 +2543,6 @@ CREATE TABLE `configuration_analysis_tools` (
   KEY `analysis_tool_type_id` (`analysis_tool_type_id`),
   CONSTRAINT `config_analysis_tools__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
   CONSTRAINT `config_analysis_tools__analysis_tool_type` FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `locations`;
-CREATE TABLE `locations` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uuid` BINARY(16) NOT NULL,
-  `name` VARCHAR(45) NOT NULL,
-  `parent` SMALLINT(6) DEFAULT 0,
-  `parent_uuid` BINARY(16) NULL,  
-  `location_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `longitude`   DECIMAL(19, 6) NULL,
-  `latitude`    DECIMAL(19, 6) NULL,
-  PRIMARY KEY (`id`),
-  INDEX (`uuid`),
-  FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

@@ -220,7 +220,8 @@ async function lookupPatient(patientUuid) {
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
-      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area
+      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area,
+      org.id AS origin_id, cur.id AS current_id
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
@@ -228,6 +229,8 @@ async function lookupPatient(patientUuid) {
       JOIN user AS u ON p.user_id = u.id
       JOIN account AS a ON a.id = dg.account_id
       JOIN entity_map AS em ON p.uuid = em.uuid
+      JOIN location AS org ON org.uuid = p.origin_location_id
+      JOIN location AS cur ON cur.uuid = p.current_location_id
     WHERE p.uuid = ?;
   `;
 
@@ -505,16 +508,15 @@ function patientEntityQuery(detailed) {
     SELECT
       BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
-      p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
-      originProvince.name as originProvinceName ${detailedColumns}
+      p.health_zone, p.health_area, u.display_name as userName, l.id as origin_id,
+      l.name as origin_location_name, lc.id as current_id, lc.name as current_location_name, dg.color,
+      dg.name AS debtorGroupName, proj.name AS project_name ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
-      JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
-      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid
+      JOIN location as l ON l.uuid = p.origin_location_id
+      JOIN location as lc ON lc.uuid = p.current_location_id
       JOIN user AS u ON p.user_id = u.id
       JOIN entity_map AS em ON p.uuid = em.uuid
   `;

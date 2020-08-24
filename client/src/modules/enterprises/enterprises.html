@@ -177,10 +177,14 @@
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
-                <bh-location-select
-                  name="location_id"
-                  location-uuid="EnterpriseCtrl.enterprise.location_id">
-                </bh-location-select>
+
+                <bh-location-configuration-select
+                  location-id="EnterpriseCtrl.enterprise.location_id"
+                  operational-mode="true"
+                  on-select-callback="EnterpriseCtrl.onSelectLocation(location)"
+                  allow-all-root="true"
+                  required="true">
+                </bh-location-configuration-select>
 
                 <p class="text-center text-info">
                   <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
