@@ -2,8 +2,8 @@
 /* eslint  */
 
 /**
- * This class is represents a Survey Form page in term of structure and
- * behaviour so it is a Survey Form Management page object
+ * This class is represents Locations configurations page in term of structure and
+ * behaviour so it is a Location Form Management page object
  */
 
 /* loading grid actions */
@@ -12,15 +12,7 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 // Select location in location component
-async function selectLocationLabel(model, label, rank) {
-  // select the item of the dropdown menu matching the label
-
-  // get the HTML <div> element that will trigger the select input
-  const select = element(by.model(model)).get(rank);
-
-  // trigger the <input> rendering
-  await select.click();
-
+async function selectLocationLabel(label) {
   // select the item of the dropdown menu matching the label
   let searchString = label;
   let labelForRegex = label.replace('(', '\\(');
@@ -42,39 +34,55 @@ async function selectLocationLabel(model, label, rank) {
     break;
   }
 
-  const option = select.element(
-    by.cssContainingText(
-      '.dropdown-menu [role="option"]', searchString,
-    ),
-  );
-  await option.click();
-
+  return searchString;
 }
 
 class LocationFormManagementPage {
   constructor() {
     this.gridId = 'location-configuration-grid';
-    this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 5;
+  }
+
+  getGrid() {
+    return element(by.id(this.gridId));
+  }
+
+  getTitleRow(name) {
+    return this.getGrid().$(`[data-title-row="${name}"]`);
+  }
+
+  getDataRow(name) {
+    return this.getGrid().$(`[data-row="${name}"]`);
+  }
+
+  async openAddChild(name) {
+    return this.getTitleRow(name)
+      .$('[data-action="add-child"]')
+      .click();
+  }
+
+  async openEdit(name) {
+    const row = new GridRow(name);
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
   /**
-   * simulate the create Survey Form button click to show the dialog of creation
+   * simulate the create Location Form button click to show the dialog of creation
    */
   async createLocationRoot(locationForm) {
-    await FU.buttons.create();
+    FU.buttons.create();
 
     await FU.input('ConfigLocationsModalCtrl.locations.name', locationForm.name);
     await FU.input('ConfigLocationsModalCtrl.locations.latitude', locationForm.latitude);
     await FU.input('ConfigLocationsModalCtrl.locations.longitude', locationForm.longitude);
     await components.locationTypeSelect.set(locationForm.type);
 
-    await FU.buttons.submit();
+    FU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
   async createLocationLevel01(locationForm) {
-    await FU.buttons.create();
+    FU.buttons.create();
 
     await FU.input('ConfigLocationsModalCtrl.locations.name', locationForm.name);
     await FU.input('ConfigLocationsModalCtrl.locations.latitude', locationForm.latitude);
@@ -85,12 +93,12 @@ class LocationFormManagementPage {
 
     await components.locationConfigurationSelect.set(locationForm.parent);
 
-    await FU.buttons.submit();
+    FU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
   async createLocationLevel02(locationForm) {
-    await FU.buttons.create();
+    FU.buttons.create();
 
     await FU.input('ConfigLocationsModalCtrl.locations.name', locationForm.name);
     await FU.input('ConfigLocationsModalCtrl.locations.latitude', locationForm.latitude);
@@ -108,7 +116,7 @@ class LocationFormManagementPage {
   }
 
   async createLocationLevel03(locationForm) {
-    await FU.buttons.create();
+    FU.buttons.create();
 
     await FU.input('ConfigLocationsModalCtrl.locations.name', locationForm.name);
     await FU.input('ConfigLocationsModalCtrl.locations.latitude', locationForm.latitude);
@@ -119,72 +127,64 @@ class LocationFormManagementPage {
 
     await components.locationConfigurationSelect.set(locationForm.parent);
 
-    await element(by.model('leave.model')).get(0).click();
+    // Location Level 0
+    const select01 = element(by.id('level_0'));
+    await select01.click();
+    const filterLocation01 = selectLocationLabel(locationForm.parent01);
 
-    // await element.all(by.model('leave.model')).get(0).click();
+    const option01 = select01.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation01,
+      ),
+    );
+    await option01.click();
 
-    // await FU.uiSelect('leave.model', locationForm.parent01, null, null, 0);
-    // await FU.uiSelect('leave.model', locationForm.parent02, null, null, 1);
+    // Location Level 1
+    const select02 = element(by.id('level_1'));
+    await select02.click();
+    const filterLocation02 = selectLocationLabel(locationForm.parent02);
 
-    browser.sleep('25000');
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
 
-    console.log('BOMMmmmmmmmmmmmm');
-
-    // element.all(by.model('leave.model')).get(1).click();
-    // element(by.model(model))
-
-    // await FU.uiSelect('leave.model'[0], locationForm.parent01, '', '', '', 0);
-    // await FU.uiSelect('leave.model'[1], locationForm.parent02, '', '', '', 1);
-
-    // await FU.buttons.submit();
-    // await components.notification.hasSuccess();
-  }
-
-  /**
-   * Verify the validation of the parameter name for several scenarios
-   */
-  async checkValidate(SurveyForm, surveyFormName) {
-    await components.dataCollector.set(SurveyForm.dataCollector);
-    await FU.buttons.create();
-    await components.surveyFormTypeSelect.set(SurveyForm.type);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', surveyFormName);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    await FU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
-    await element(by.id('is_required')).click();
-    await FU.buttons.submit();
-    await FU.exists(by.id('error_format'), true);
-    await FU.modal.cancel();
-  }
-
-  /**
-   * simulate the create Survey Form button click to show the dialog of creation
-   */
-
-  async createDeletable(SurveyForm) {
-    await FU.buttons.create();
-    await components.surveyFormTypeSelect.set(SurveyForm.type);
-    await components.choiceListSelect.set(SurveyForm.choice_list_id);
-    await components.surveyListSelect.set(SurveyForm.filter_choice_list_id);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    await element(by.id('is_required')).click();
-    await FU.buttons.submit();
+    FU.buttons.submit();
     await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the edit link of a function
    */
-  async edit(label, updateSurveyForm) {
-    const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.edit().click();
-    await components.surveyFormTypeSelect.set(updateSurveyForm.type);
-    await components.choiceListSelect.set(updateSurveyForm.choice_list_id);
-    await FU.input('SurveyFormModalCtrl.surveyForm.name', updateSurveyForm.name);
-    await FU.input('SurveyFormModalCtrl.surveyForm.label', updateSurveyForm.label);
-    await FU.input('SurveyFormModalCtrl.surveyForm.hint', updateSurveyForm.hint);
-    await element(by.id('is_required')).click();
+  async edit(updateLocationForm) {
+    await FU.input('ConfigLocationsModalCtrl.locations.name', updateLocationForm.updateName);
+    await components.locationTypeSelect.set(updateLocationForm.type);
+
+    await components.yesNoRadios.set('no', 'is_highest');
+
+    await components.locationConfigurationSelect.set(updateLocationForm.parent);
+
+    // Location Level 0
+    const select01 = element(by.id('level_0'));
+    await select01.click();
+    const filterLocation01 = selectLocationLabel(updateLocationForm.parent01);
+
+    const option01 = select01.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation01,
+      ),
+    );
+    await option01.click();
+
+    FU.buttons.submit();
+    await components.notification.hasSuccess();
+  }
+
+  async createLocationFromParent(locationForm) {
+    await FU.input('ConfigLocationsModalCtrl.locations.name', locationForm.name);
+    await components.locationTypeSelect.set(locationForm.type);
 
     await FU.buttons.submit();
     await components.notification.hasSuccess();
@@ -198,9 +198,22 @@ class LocationFormManagementPage {
     await row.dropdown().click();
     await row.remove().click();
 
-    await FU.modal.submit();
+    FU.modal.submit();
     await components.notification.hasSuccess();
   }
+
+  /**
+   * simulate a click on the delete link of a function
+   */
+  async deleteError(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    await row.remove().click();
+
+    FU.modal.submit();
+    await components.notification.hasError();
+  }
+
 }
 
 module.exports = LocationFormManagementPage;

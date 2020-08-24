@@ -12,6 +12,7 @@
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
+const Unauthorized = require('../../lib/errors/Unauthorized');
 
 exports.getLocations = getLocations;
 exports.buildPath = buildPath;
@@ -495,11 +496,25 @@ exports.delete.type = (req, res, next) => {
 };
 
 exports.delete.configuration = (req, res, next) => {
-  const sql = 'DELETE FROM location WHERE id=?';
+  const locationId = req.params.id;
 
-  db.exec(sql, req.params.id).then(() => {
-    res.sendStatus(204);
-  }).catch(next);
+  const checkChildren = `
+    SELECT count(location.id) AS countLocation FROM location WHERE location.parent = ?;`;
+
+  db.one(checkChildren, [locationId])
+    .then((data) => {
+
+      if (data.countLocation > 0) {
+        throw new Unauthorized('This location is Parent in Location management', 'ERRORS.UNABLE_DELETE_LOCATION');
+      }
+
+      const sql = 'DELETE FROM location WHERE id=?';
+
+      return db.exec(sql, locationId);
+    })
+    .then(() => {
+      res.sendStatus(204);
+    }).catch(next);
 };
 
 exports.merge = (req, res, next) => {

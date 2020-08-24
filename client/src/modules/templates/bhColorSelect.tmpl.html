@@ -1,0 +1,29 @@
+<div bh-color-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : ColorForm.$$parent.$submitted && ColorForm.value.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="value" 
+      ng-required ="$ctrl.required"
+      ng-model="$ctrl.value"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
+        <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+        <span>{{$select.selected.name}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="color.value as color in $ctrl.colors | filter: { 'name': $select.search }">
+        <i class="fa fa-circle" style="color: {{color.value}}; font-sze:14px"></i>
+        <span ng-bind-html="color.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="ColorForm.value.$error" ng-show="ColorForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

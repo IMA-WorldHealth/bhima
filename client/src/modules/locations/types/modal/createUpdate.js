@@ -17,6 +17,11 @@ function CreateUpdateTypeController(data, Location, Notify, Instance, Color, Sur
   vm.colors = Color.list;
   vm.isFixed = vm.type.fixed;
   vm.checkVariableName = checkVariableName;
+  vm.onSelectColor = onSelectColor;
+
+  function onSelectColor(color) {
+    vm.type.color = color.value;
+  }
 
   vm.action = vm.isCreate ? 'FORM.LABELS.CREATE' : 'FORM.LABELS.UPDATE';
 

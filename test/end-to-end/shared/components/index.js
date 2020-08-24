@@ -81,4 +81,5 @@ module.exports = {
   tagSelect : require('./bhTagSelect'),
   locationTypeSelect : require('./bhLocationTypeSelect'),
   locationConfigurationSelect : require('./bhLocationConfigurationSelect'),
+  colorSelect : require('./bhColorSelect'),
 };

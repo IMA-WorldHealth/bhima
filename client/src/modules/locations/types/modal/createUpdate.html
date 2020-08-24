@@ -11,62 +11,57 @@
     </ol>
   </div>
   <div class="modal-body">
-    <div class="row">
-      <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.typeLabel.$invalid }">
-        <label class="control-label" translate> FORM.LABELS.LABEL </label>
-        <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.LOCATION_TYPE' | translate }}" autocomplete="off"
-          ng-maxlength="ModalCtrl.maxLength" class="form-control" name="typeLabel" ng-model="ModalCtrl.type.typeLabel"
-          ng-disabled="ModalCtrl.isFixed"
-          ng-required="true">
-        <div class="help-block" ng-messages="typeForm.typeLabel.$error" ng-show="typeForm.$submitted">
+    <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.typeLabel.$invalid }">
+      <label class="control-label" translate> FORM.LABELS.LABEL </label>
+      <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.LOCATION_TYPE' | translate }}" autocomplete="off"
+        ng-maxlength="ModalCtrl.maxLength" class="form-control" name="typeLabel" ng-model="ModalCtrl.type.typeLabel"
+        ng-disabled="ModalCtrl.isFixed"
+        ng-required="true">
+      <div class="help-block" ng-messages="typeForm.typeLabel.$error" ng-show="typeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : (typeForm.$submitted && typeForm.label_name.$invalid) || !ModalCtrl.check }">
+      <label class="control-label" translate> FORM.LABELS.NAME </label>
+      <div>
+        <input name="label_name" ng-model="ModalCtrl.type.label_name" ng-keyup="ModalCtrl.checkVariableName()" autocomplete="off"
+          ng-disabled="ModalCtrl.isFixed" ng-maxlength="90" class="form-control" required>
+        <div class="help-block" ng-messages="typeForm.label_name.$error" ng-show="typeForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
-      </div>
-
-      <div class="form-group" ng-class="{ 'has-error' : (typeForm.$submitted && typeForm.label_name.$invalid) || !ModalCtrl.check }">
-        <label class="control-label" translate> FORM.LABELS.NAME </label>
-        <div>
-          <input name="label_name" ng-model="ModalCtrl.type.label_name" ng-keyup="ModalCtrl.checkVariableName()" autocomplete="off"
-            ng-disabled="ModalCtrl.isFixed" ng-maxlength="90" class="form-control" required>
-          <div class="help-block" ng-messages="typeForm.label_name.$error" ng-show="typeForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-          <div ng-if="!ModalCtrl.check" id="error_format" class="help-block">
-            <p translate>FORM.VALIDATION.FORMAT_NAME_VARIABLE </p>
-          </div>
+        <div ng-if="!ModalCtrl.check" id="error_format" class="help-block">
+          <p translate>FORM.VALIDATION.FORMAT_NAME_VARIABLE </p>
         </div>
       </div>
+    </div>
 
-      <div
-      class="form-group has-feedback"
-      ng-class="{'has-error' : !ModalCtrl.type.color && typeForm.$submitted}">
-      <label class="control-label" translate>FORM.LABELS.COLOR</label>
+    <!-- color -->
+    <bh-color-select
+      value="ModalCtrl.type.color"
+      on-select-callback="ModalCtrl.onSelectColor(color)">
+    </bh-color-select>
 
-      <ui-select tagging name="color" ng-model="ModalCtrl.type.color">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
-          <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
-          <span translate>{{$select.selected.name}}</span>
-        </ui-select-match>
-        <ui-select-choices repeat="val.value as val in ModalCtrl.colors | filter: {'name' :$select.search}">
-          <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
-        </ui-select>
-      </div>
-
-      <div class="form-group">
-        <div class="checkbox">
-          <label>
-          <input type="checkbox" name="is_leaves" ng-true-value="1" ng-false-value="0"
-              ng-model="ModalCtrl.type.is_leaves">
-            <span translate>FORM.LABELS.IS_LOWEST_LOCALIZATION</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- error feedback area -->
-      <div ng-if="ModalCtrl.state.errored && typeForm.$submitted" class="text-danger" data-role="feedback"
-        style="margin-top:10px;">
-        <i class="glyphicon glyphicon-remove-sign"></i><span translate> FORM.ERRORS.HAS_ERRORS </span>
-      </div>
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="is_leaves"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="ModalCtrl.type.is_leaves">
+        <span>
+          <strong translate>
+            FORM.INFO.IS_RELATED_PATIENT
+          </strong>
+        </span>
+      </label>
+    </div>
+  
+    <!-- error feedback area -->
+    <div ng-if="ModalCtrl.state.errored && typeForm.$submitted" class="text-danger" data-role="feedback"
+      style="margin-top:10px;">
+      <i class="glyphicon glyphicon-remove-sign"></i><span translate> FORM.ERRORS.HAS_ERRORS </span>
     </div>
   </div>
   <div class="modal-footer">
@@ -75,6 +70,7 @@
     </button>
 
     <bh-loading-button loading-state="typeForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

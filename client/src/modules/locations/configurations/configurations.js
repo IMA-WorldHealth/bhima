@@ -58,7 +58,16 @@ function LocationsConfigController($translate, LocationService, Notify, uiGridCo
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
+    gridApi.grid.registerDataChangeCallback(expandOnSetData);
   }
+
+  function expandOnSetData(grid) {
+    if (grid.options.data.length > 0) {
+      grid.api.treeBase.expandAllRows();
+    }
+  }
+
+  console.log('ICI NOUSSSSssssssss');
 
   function toggleFilter() {
     vm.filterEnabled = !vm.filterEnabled;

@@ -170,7 +170,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
           $ctrl.locationLeaves.push(
             {
-              id : `location_${locationId}`,
+              id : `level_${$ctrl.locationLeaves.length}`,
               elements : data.rows,
               model : locationValue,
               aggregates,

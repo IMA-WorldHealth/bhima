@@ -183,6 +183,7 @@ describe('(/locations) Locations Interface', () => {
   });
 
   /* CREATE methods */
+  const clownVillage = 43;
 
   const country = {
     id : 35,
@@ -335,7 +336,7 @@ describe('(/locations) Locations Interface', () => {
 
   it('POST /locations (villages) should create the same village name in a different sector', () => {
     const copy = _.clone(village);
-    copy.id = 43;
+    copy.id = clownVillage;
     copy.parent = sector2.id;
     copy.parent_uuid = sector2.uuid;
     copy.uuid = helpers.uuid();
@@ -384,6 +385,15 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
+  it('PUT /locations/:id (countries) Cannot delete parent', () => {
+    return agent.put(`/locations/${country.id}`)
+      .send({ name : 'Update New Country' })
+      .then((res) => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /locations/:id (countries) should update a Country', () => {
     return agent.put(`/locations/${country.id}`)
       .send({ name : 'Update New Country' })
@@ -396,16 +406,16 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /locations/:id (countries) should delete a Country', () => {
-    return agent.delete(`/locations/${country2.id}`)
+  it('DELETE /locations/:id (villages) should delete a Village', () => {
+    return agent.delete(`/locations/${village2.id}`)
       .then((res) => {
         expect(res).to.have.status(204);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /locations/:id (provinces) should delete a province', () => {
-    return agent.delete(`/locations/${province2.id}`)
+  it('DELETE /locations/:id (villages) should delete a clownVillage', () => {
+    return agent.delete(`/locations/${clownVillage}`)
       .then((res) => {
         expect(res).to.have.status(204);
       })
@@ -420,8 +430,16 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /locations/:id (villages) should delete a Village', () => {
-    return agent.delete(`/locations/${village2.id}`)
+  it('DELETE /locations/:id (provinces) should delete a province', () => {
+    return agent.delete(`/locations/${province2.id}`)
+      .then((res) => {
+        expect(res).to.have.status(204);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /locations/:id (countries) should delete a Country', () => {
+    return agent.delete(`/locations/${country2.id}`)
       .then((res) => {
         expect(res).to.have.status(204);
       })

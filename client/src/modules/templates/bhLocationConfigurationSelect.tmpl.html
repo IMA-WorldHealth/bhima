@@ -50,7 +50,7 @@
             {{ aggregate.translation_key }}
           </label>
         </span>
-        
+
         <ui-select
           name="leave.id"
           ng-change="$ctrl.loadLeaves(leave.model, $index)"
@@ -65,7 +65,7 @@
           <ui-select-choices ui-select-focus-patch repeat="root.id as root in leave.elements | filter: { 'name': $select.search }">
             <span ng-if="leave.multipleRoot">
               <span style="color : {{ root.color }}" class="fa fa-circle"></span>
-            </span>             
+            </span>
             <span ng-bind-html="root.name | highlight:$select.search"></span>
           </ui-select-choices>
         </ui-select>

@@ -1,11 +1,11 @@
 const helpers = require('../shared/helpers');
-const locationFormManagement = require('./configurations.page');
+const LocationFormManagement = require('./configurations.page');
 
-describe.only('Locations Configuration', () => {
+describe('Locations Configuration', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/locations/configuration'));
 
-  const Page = new locationFormManagement();
+  const Page = new LocationFormManagement();
 
   // Create Country
   const newLocationElement = {
@@ -45,81 +45,56 @@ describe.only('Locations Configuration', () => {
     type : 'Secteur',
   };
 
-  // it('successfully creates a new Location', async () => {
-  //   await Page.createLocationRoot(newLocationElement);
-  // });
+  const newLocationTownParent = {
+    parent : 'Merge Country',
+    name : 'Other Town',
+    type : 'Ville',
+  };
 
-  // it('successfully creates a new Disctrit', async () => {
-  //   await Page.createLocationLevel01(newLocationDistrict);
-  // });
+  const updateLocationElement = {
+    name : 'Merge Township 1',
+    updateName : 'Kananga',
+    type : 'Ville',
+    parent : 'République Démocratique du Congo',
+    parent01 : 'Kasaï-Central',
+  };
 
-  // it('successfully creates a new Town', async () => {
-  //   await Page.createLocationLevel02(newLocationTown);
-  // });
+  it('successfully creates a new Location', async () => {
+    await Page.createLocationRoot(newLocationElement);
+  });
+
+  it('successfully creates a new Disctrit', async () => {
+    await Page.createLocationLevel01(newLocationDistrict);
+  });
+
+  it('successfully creates a new Town', async () => {
+    await Page.createLocationLevel02(newLocationTown);
+  });
 
   it('successfully creates a new Sector', async () => {
     await Page.createLocationLevel03(newLocationSector);
   });
 
-  // const checkValidationName = {
-  //   dataCollector : 'Fiche Kardex',
-  //   type : 'Image',
-  //   label : 'Validation Variable Name',
-  //   name1 : 'Name with space',
-  //   name2 : 'Namewith,and;',
-  //   name3 : 'Namewith@',
-  //   name4 : 'Namewith\'and "',
-  //   name5 : 'Namewith()',
-  //   hint : 'Veuillez renseigner le nom de l\' image',
-  // };
+  it('Add a new Township from its Parent', async () => {
+    await Page.openAddChild(newLocationTownParent.parent);
+    await Page.createLocationFromParent(newLocationTownParent);
+  });
 
-  //  Sélection Multiple
+  // Change Name, and Parent for a location
+  it('successfully edits a Location', async () => {
+    await Page.openEdit(updateLocationElement.name);
+    await Page.edit(updateLocationElement);
+  });
 
-  // const updateSurveyFormElement = {
-  //   type : 'Sélection Multiple',
-  //   choice_list_id : 'Médicament',
-  //   name : 'medConsommes',
-  //   label : 'Médicaments consommés',
-  //   hint : 'Effacer',
-  // };
+  it('successfully delete a location Element', async () => {
+    await Page.delete(updateLocationElement.updateName);
+  });
 
-  // const deleteListElement = {
-  //   type : 'Sélection Unique',
-  //   choice_list_id : 'Médicament',
-  //   filter_choice_list_id : 'Médicaments consommés',
-  //   name : 'ElementSup',
-  //   label : 'Element a supprimer',
-  // };
+  it('Unable to delete because this location is defined as parent', async () => {
+    await Page.deleteError('Merge Town 2');
+  });
 
-  // it('Failed to create a form element whose name parameter with space', async () => {
-  //   await Page.checkValidate(checkValidationName, checkValidationName.name1);
-  // });
-
-  // it('Failed to create a form element whose name parameter with virgul', async () => {
-  //   await Page.checkValidate(checkValidationName, checkValidationName.name2);
-  // });
-
-  // it('Failed to create a form element whose name parameter with @ ', async () => {
-  //   await Page.checkValidate(checkValidationName, checkValidationName.name3);
-  // });
-
-  // it('Failed to create a form element whose name parameter with Quotation mark and apostrophe ', async () => {
-  //   await Page.checkValidate(checkValidationName, checkValidationName.name4);
-  // });
-
-  // it('Failed to create a form element whose name parameter with parenthesis ', async () => {
-  //   await Page.checkValidate(checkValidationName, checkValidationName.name5);
-  // });
-
-  // it('successfully edits a Survey Form Element', async () => {
-  //   await Page.edit(newSurveyFormElement.label, updateSurveyFormElement);
-  // });
-
-  // it('successfully creates a deletable element', async () => {
-  //   await Page.createDeletable(deleteListElement);
-  // });
-
-  // it('successfully delete a list Element', async () => {
-  //   await Page.delete(deleteListElement.label);
-  // });
+  it('Cannot delete entity because entity is used in another table', async () => {
+    await Page.deleteError('Gombe');
+  });
 });

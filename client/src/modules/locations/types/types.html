@@ -13,11 +13,6 @@
             <i class="fa fa-plus"></i> <span translate>LOCATION.TYPE_REGISTER</span>
           </button>
         </div>
-        <!-- <div class="toolbar-item">
-          <button ng-click="TypesCtrl.mergeVillages()"  class="btn btn-default text-capitalize" data-method="merge">
-            <i class="fa fa-compress"></i> <span translate>VILLAGE.MERGE_VILLAGES</span>
-          </button>
-        </div> -->
         <div class="toolbar-item">
           <!-- Links to the main menu of management maps as well as the button for adding countries -->
           <button ui-sref="locations" class="btn btn-default text-capitalize">
@@ -34,12 +29,11 @@
   <div class="flex-content">
     <div class="container-fluid">
       <div
-        id="village-grid"
+        id="type-grid"
         class="grid-full-height"
         ui-grid="TypesCtrl.gridOptions"
         ui-grid-auto-resize
         ui-grid-resize-columns
-        ui-grid-selection
         ui-grid-move-columns>
   
         <bh-grid-loading-indicator
