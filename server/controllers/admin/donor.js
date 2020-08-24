@@ -24,14 +24,14 @@ function update(req, res, next) {
 }
 
 function read(req, res, next) {
-  db.exec(`SELECT id, display_name FROM donor`).then(donors => {
+  db.exec(`SELECT id, display_name, email, phone, address FROM donor`).then(donors => {
     res.status(200).json(donors);
   }).catch(next);
 }
 
 function detail(req, res, next) {
   const { id } = req.params;
-  db.one(`SELECT id, display_name FROM donor WHERE id=?`, id).then(donor => {
+  db.one(`SELECT id, display_name, email, phone, address FROM donor WHERE id=?`, id).then(donor => {
     res.status(200).json(donor);
   }).catch(next);
 }
