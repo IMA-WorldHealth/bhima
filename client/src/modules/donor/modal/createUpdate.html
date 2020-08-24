@@ -20,6 +20,32 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.phone.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.PHONE</label>
+        <input type="tel" class="form-control col-md-9" name="phone" ng-model="DonorAddCtrl.donor.phone">
+        <div class="help-block" ng-messages="donorForm.phone.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.email.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.EMAIL</label>
+        <input type="email" class="form-control col-md-9" name="email" ng-model="DonorAddCtrl.donor.email">
+        <div class="help-block" ng-messages="donorForm.email.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.address.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.ADDRESS</label>
+        <input type="text" class="form-control col-md-9" name="address" ng-model="DonorAddCtrl.donor.address">
+        <div class="help-block" ng-messages="donorForm.address.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
     </div>
   </div>
 
