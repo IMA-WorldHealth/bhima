@@ -28,6 +28,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.setThumbnail = setThumbnail;
+  vm.onSelectLocationTypeSelect = onSelectLocationTypeSelect;
 
   function uploadLogo(file) {
     if (!vm.hasThumbnail) { return null; }
@@ -88,6 +89,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function onSelectLossAccount(account) {
     vm.enterprise.loss_account_id = account.id;
+  }
+
+  function onSelectLocationTypeSelect(type) {
+    vm.enterprise.location_type_default_root = type.id;
   }
 
   // form submission

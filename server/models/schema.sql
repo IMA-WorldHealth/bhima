@@ -536,6 +536,16 @@ CREATE TABLE `employee_advantage` (
   CONSTRAINT `employee_advantage__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `location_type`;
+CREATE TABLE `location_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `translation_key` VARCHAR(35) NOT NULL,
+  `color` VARCHAR(8) NULL,
+  `fixed` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_leaves` TINYINT(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_type_1` (`translation_key`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
@@ -544,23 +554,24 @@ CREATE TABLE `enterprise` (
   `abbr`            VARCHAR(10) DEFAULT NULL,
   `phone`           VARCHAR(20) DEFAULT NULL,
   `email`           VARCHAR(100) DEFAULT NULL,
-  `address`         VARCHAR(200) DEFAULT NULL,
-  `location_id`     BINARY(16) DEFAULT NULL,
+  `location_uuid`     BINARY(16) DEFAULT NULL,
   `logo`            VARCHAR(100) DEFAULT NULL,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   `po_box`          VARCHAR(30) DEFAULT NULL,
   `gain_account_id` INT UNSIGNED NULL,
   `loss_account_id` INT UNSIGNED NULL,
+  `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL, 
   PRIMARY KEY (`id`),
   UNIQUE KEY `enterprise_1` (`name`),
-  KEY `location_id` (`location_id`),
+  KEY `location_uuid` (`location_uuid`),
   KEY `currency_id` (`currency_id`),
   KEY `gain_account_id` (`gain_account_id`),
   KEY `loss_account_id` (`loss_account_id`),
   CONSTRAINT `enterprise__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  CONSTRAINT `enterprise__location` FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `enterprise__location` FOREIGN KEY (`location_uuid`) REFERENCES `location` (`uuid`),
   CONSTRAINT `enterprise__gain_account` FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `enterprise__loss_account` FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
+  CONSTRAINT `enterprise__loss_account` FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `enterprise__location_type` FOREIGN KEY (`location_default_type_root`) REFERENCES `location_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `enterprise_setting`;
@@ -2517,6 +2528,21 @@ CREATE TABLE `configuration_analysis_tools` (
   KEY `analysis_tool_type_id` (`analysis_tool_type_id`),
   CONSTRAINT `config_analysis_tools__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
   CONSTRAINT `config_analysis_tools__analysis_tool_type` FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `locations`;
+CREATE TABLE `locations` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uuid` BINARY(16) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `parent` SMALLINT(6) DEFAULT 0,
+  `parent_uuid` BINARY(16) NULL,  
+  `location_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `longitude`   DECIMAL(19, 6) NULL,
+  `latitude`    DECIMAL(19, 6) NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`uuid`),
+  FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

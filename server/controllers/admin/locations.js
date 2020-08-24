@@ -5,6 +5,7 @@
  *   /locations/villages
  *   /locations/sectors
  *   /locations/provinces
+ *   /locations/types
  *   /locations/village/:uuid
  *   /locations/sector/:uuid
  *   /locations/province/:uuid
@@ -18,6 +19,31 @@ const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 
 exports.lookupVillage = lookupVillage;
+
+/**
+ * GET /locations/readLocations
+ *
+ * This method lists all locations configured in the database.
+ *
+ * @method readLocations
+ * @return {array}
+ */
+exports.readLocations = function readLocations(req, res, next) {
+  const sql = `
+    SELECT l.id, BUID(l.uuid) location_uuid, l.name, BUID(l.parent_uuid) AS parent_uuid,
+    l.parent, l.location_type_id, l.longitude, l.latitude, t.translation_key, t.color
+    FROM locations AS l
+    JOIN location_type AS t ON t.id = l.location_type_id
+    ORDER BY l.name ASC;`;
+
+  db.exec(sql)
+    .then((data) => {
+
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
+};
 
 /**
  * GET /locations/villages
@@ -91,7 +117,6 @@ exports.sectors = function sectors(req, res, next) {
     sql = 'SELECT BUID(sector.uuid) as uuid, sector.name FROM sector ';
   }
 
-
   sql += (req.query.province)
     ? ' WHERE sector.province_uuid = ? ORDER BY sector.name ASC;'
     : ' ORDER BY sector.name ASC;';
@@ -139,7 +164,6 @@ exports.provinces = function provinces(req, res, next) {
       FROM province`;
   }
 
-
   sql += (req.query.country)
     ? ' WHERE province.country_uuid = ? ORDER BY province.name ASC;'
     : ' ORDER BY province.name ASC;';
@@ -180,6 +204,28 @@ exports.countries = function countries(req, res, next) {
     .done();
 };
 
+/**
+ * GET /locations/types
+ *
+ * This method lists all locations types in the database.
+ *
+ * @method types
+ * @return {array} an array of (uuid, name)
+ */
+exports.types = function types(req, res, next) {
+  const sql = `
+    SELECT
+      id, translation_key, color, fixed, is_leaves
+    FROM
+      location_type;`;
+
+  db.exec(sql)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
+};
 
 function lookupVillage(uid) {
   // convert hex uuid into binary
@@ -231,6 +277,14 @@ function lookupCountry(uid) {
     WHERE country.uuid = ?;`;
 
   return db.one(sql, [bid]);
+}
+
+function lookupType(typeId) {
+
+  const sql = `SELECT id, translation_key, color, fixed, is_leaves
+    FROM location_type WHERE id = ?;`;
+
+  return db.one(sql, [typeId]);
 }
 
 /**
@@ -291,7 +345,6 @@ exports.list = function list(req, res, next) {
     .done();
 };
 
-
 /** bindings for creation methods */
 exports.create = {};
 
@@ -344,7 +397,6 @@ exports.create.province = function createProvince(req, res, next) {
     .done();
 };
 
-
 /**
  * POST /locations/sector
  *
@@ -395,6 +447,26 @@ exports.create.village = function createVillage(req, res, next) {
     .done();
 };
 
+/**
+ * POST /locations/type
+ *
+ * This method creates a location type reference in the database and returns its id.
+ *
+ * @method createType
+ * @returns {string} id - the unique id for the type.
+ */
+exports.create.type = function type(req, res, next) {
+  const data = req.body;
+
+  const sql = `INSERT INTO location_type SET ?;`;
+
+  db.exec(sql, [data])
+    .then(rows => {
+      res.status(201).json({ id : rows.insertId });
+    })
+    .catch(next)
+    .done();
+};
 
 /** bindings for update methods */
 exports.update = {};
@@ -516,6 +588,30 @@ exports.update.village = function updateVillage(req, res, next) {
     .done();
 };
 
+/**
+ * PUT /locations/types/:id
+ *
+ * This method update a location types in the database.
+ *
+ * @method updateType
+ */
+exports.update.type = function updateType(req, res, next) {
+  const typeId = req.params.id;
+  const data = req.body;
+
+  const sql = 'UPDATE location_type SET ? WHERE id = ?;';
+
+  db.exec(sql, [data, typeId])
+    .then(() => {
+      return lookupType(typeId);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
+};
+
 exports.delete = {};
 
 exports.delete.country = (req, res, next) => {
@@ -549,6 +645,15 @@ exports.delete.village = (req, res, next) => {
     res.sendStatus(204);
   }).catch(next);
 };
+
+exports.delete.type = (req, res, next) => {
+  const sql = 'DELETE FROM location_type WHERE id=?';
+
+  db.exec(sql, req.params.id).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
+};
+
 
 exports.merge = (req, res, next) => {
   const { selected, other, locationStatus } = req.body;

@@ -1,0 +1,67 @@
+<form name="typeForm" bh-submit="ModalCtrl.submit(typeForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>LOCATION.TYPES</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+
+      <div class="form-group" ng-class="{ 'has-error' : typeForm.$submitted && typeForm.type.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.LABEL </label>
+        <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.LOCATION_TYPE' | translate }}" autocomplete="off"
+          ng-maxlength="ModalCtrl.maxLength" class="form-control" name="typeLabel" ng-model="ModalCtrl.type.typeLabel"
+          ng-disabled="ModalCtrl.isFixed"
+          required>
+        <div class="help-block" ng-messages="typeForm.type.$error" ng-show="typeForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div
+      class="form-group has-feedback"
+      ng-class="{'has-error' : !ModalCtrl.type.color && typeForm.$submitted}">
+      <label class="control-label" translate>FORM.LABELS.COLOR</label>
+
+      <ui-select tagging name="color" ng-model="ModalCtrl.type.color">
+        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
+          <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+          <span translate>{{$select.selected.name}}</span>
+        </ui-select-match>
+        <ui-select-choices repeat="val.value as val in ModalCtrl.colors | filter: {'name' :$select.search}">
+          <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
+        </ui-select>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+          <input type="checkbox" name="is_leaves" ng-true-value="1" ng-false-value="0"
+              ng-model="ModalCtrl.type.is_leaves">
+            <span translate>FORM.LABELS.IS_LOWEST_LOCALIZATION</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- error feedback area -->
+      <div ng-if="ModalCtrl.state.errored && typeForm.$submitted" class="text-danger" data-role="feedback"
+        style="margin-top:10px;">
+        <i class="glyphicon glyphicon-remove-sign"></i><span translate> FORM.ERRORS.HAS_ERRORS </span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" data-method="cancel" class="btn btn-default" ng-click="ModalCtrl.close()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="typeForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

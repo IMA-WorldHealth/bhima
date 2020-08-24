@@ -179,14 +179,17 @@ exports.configure = function configure(app) {
   app.delete('/exchange/:id', exchange.delete);
 
   // API for locations
+  app.get('/locations/readLocations', locations.readLocations);
   app.get('/locations/villages', locations.villages);
   app.get('/locations/sectors', locations.sectors);
   app.get('/locations/provinces', locations.provinces);
   app.get('/locations/countries', locations.countries);
+  app.get('/locations/types', locations.types);
   app.post('/locations/countries', locations.create.country);
   app.post('/locations/provinces', locations.create.province);
   app.post('/locations/sectors', locations.create.sector);
   app.post('/locations/villages', locations.create.village);
+  app.post('/locations/types', locations.create.type);
 
   app.get('/locations/detail/:uuid', locations.detail);
   app.get('/locations/detail/', locations.list);
@@ -195,11 +198,13 @@ exports.configure = function configure(app) {
   app.put('/locations/sectors/:uuid', locations.update.sector);
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
+  app.put('/locations/types/:id', locations.update.type);
 
   app.delete('/locations/countries/:uuid', locations.delete.country);
   app.delete('/locations/provinces/:uuid', locations.delete.province);
   app.delete('/locations/sectors/:uuid', locations.delete.sector);
   app.delete('/locations/villages/:uuid', locations.delete.village);
+  app.delete('/locations/types/:id', locations.delete.type);
 
   app.post('/locations/merge/', locations.merge);
 

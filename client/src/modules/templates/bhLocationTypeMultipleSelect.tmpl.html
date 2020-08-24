@@ -1,0 +1,32 @@
+<div ng-form="LocationTypeMultipleSelectForm" bh-location-type-multiple-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : LocationTypeMultipleSelectForm.$submitted && LocationTypeMultipleSelectForm.type.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ui-select
+      multiple
+      name="type"
+      ng-model="$ctrl.typeIds"
+      on-select="$ctrl.handleChange($ctrl.typeIds)"
+      on-remove="$ctrl.handleChange($ctrl.typeIds)"
+      close-on-select="false"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+        <span style="color : {{ $item.color }}" class="fa fa-circle"> </span>
+        <span><strong>{{ $item.typeLabel }}</strong></span>
+      </ui-select-match>
+
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.types | filter: { typeLabel : $select.search } | orderBy: 'typeLabel')">
+        <span style="color : {{ type.color }}" class="fa fa-circle"></span>
+        <span ng-bind-html="type.typeLabel | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="LocationTypeMultipleSelectForm.$error" ng-show="LocationTypeMultipleSelectForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

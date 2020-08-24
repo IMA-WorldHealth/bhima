@@ -36,6 +36,7 @@ function ColorService($translate) {
     { name : 'bisque', value : '#FFE4C4' },
     { name : 'blanchedalmond', value : '#FFEBCD' },
     { name : 'blue', value : '#0000FF' },
+    { name : 'blue_azure', value : '#007FFF' },
     { name : 'brown', value : '#A52A2A' },
     { name : 'burlywood', value : '#DEB887' },
     { name : 'cadetblue', value : '#5F9EA0' },

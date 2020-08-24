@@ -1,0 +1,28 @@
+<div bh-location-type-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : LocationTypeForm.$$parent.$submitted && LocationTypeForm.location_type_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="location_type_id" 
+      ng-required ="$ctrl.required"
+      ng-model="$ctrl.location_type_id"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TYPE' | translate }}">
+        <span style="color : {{ $select.selected.color }}" class="fa fa-circle"></span> <span>{{$select.selected.typeLabel}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'typeLabel': $select.search }">
+        <span style="color : {{ type.color }}" class="fa fa-circle"></span>
+        <span ng-bind-html="type.typeLabel | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="LocationTypeForm.location_type_id.$error" ng-show="LocationTypeForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

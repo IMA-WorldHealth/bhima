@@ -41,6 +41,7 @@ function LocationService($http, util, Modal) {
   service.sectors = sectors;
   service.villages = villages;
   service.locations = locations;
+  service.readLocations = readLocations;
 
   /** detail interfacs */
   service.location = location;
@@ -51,6 +52,7 @@ function LocationService($http, util, Modal) {
   service.create.province = createProvince;
   service.create.sector = createSector;
   service.create.village = createVillage;
+  service.create.type = createType;
 
   /** location update interfaces */
   service.update = {};
@@ -58,13 +60,17 @@ function LocationService($http, util, Modal) {
   service.update.province = updateProvince;
   service.update.sector = updateSector;
   service.update.village = updateVillage;
+  service.update.type = updateType;
+
   service.merge = merge;
+  service.types = types;
 
   service.delete = {
     country : removeCountry,
     province : removeProvince,
     sector : removeSector,
     village : removeVillage,
+    type : removeType,
   };
 
   /** launch the "add location" modal */
@@ -89,13 +95,20 @@ function LocationService($http, util, Modal) {
   }
 
   /**
+   * fetch a list of locations configured from the server
+   * @public
+   */
+  function readLocations() {
+    return request('/readLocations');
+  }
+
+  /**
    * fetch a list of villages from the server
    * @public
    */
   function villages(options) {
     return request('/villages', { params : options });
   }
-
 
   /**
    * fetch a list of sectors from the server
@@ -119,6 +132,14 @@ function LocationService($http, util, Modal) {
    */
   function countries() {
     return request('/countries');
+  }
+
+  /**
+   * fetch a list of types locations from the server
+   * @public
+   */
+  function types(options) {
+    return request('/types', { params : options });
   }
 
   /**
@@ -172,6 +193,10 @@ function LocationService($http, util, Modal) {
     return createGeneric('/villages', data);
   }
 
+  function createType(data) {
+    return createGeneric('/types', data);
+  }
+
   /**
    * Update location in the database
    * @public
@@ -197,6 +222,10 @@ function LocationService($http, util, Modal) {
   }
   function removeVillage(uuid) {
     return $http.delete(`/locations/villages/${uuid}`)
+      .then(util.unwrapHttpResponse);
+  }
+  function removeType(id) {
+    return $http.delete(`/locations/types/${id}`)
       .then(util.unwrapHttpResponse);
   }
 
@@ -229,6 +258,11 @@ function LocationService($http, util, Modal) {
     };
 
     return $http.put('/locations/villages/'.concat(uuid), villageClean)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function updateType(id, type) {
+    return $http.put('/locations/types/'.concat(id), type)
       .then(util.unwrapHttpResponse);
   }
 

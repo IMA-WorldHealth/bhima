@@ -3,10 +3,12 @@
     "ADD_ENTERPRISE" : "Ajouter une entreprise",
     "ALL_ENTERPRISES" : "Tous les entreprises",
     "CONFIGURATION_ENTERPRISE" : "Configuration d'entreprise",
+    "DEFINE_LOWEST_TYPES_LOCATIONS": "Les types de localisation type les plus inferieurs",
     "DESCRIPTION_1" : "Gérer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
     "DESCRIPTION_2" : "Modifier l'enterprise sélectionnée",
     "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
     "EDITING_ENTERPRISE" : "Edition entreprise",
+    "HIGHEST_DEFAULT_LOCATION_TYPE": "Le type de localisation par défaut le plus élévé",
     "TITLE" : "Gestion des entreprises",
     "UPDATE_LOGO":"Mettre à jour le logo",
     "SETTINGS" : {
