@@ -260,7 +260,7 @@ function StockEntryController(
    * @description
    * set movement information according the selected entity and populate the grid
    */
-  function handleSelectedEntity(_entities, _type) {
+  function handleSelectedEntity(_entities, _type, noPopulate = false) {
     if (!_entities || !_entities.length) {
       resetSelectedEntity();
       return;
@@ -276,7 +276,10 @@ function StockEntryController(
     setDescription(vm.movement.entity);
 
     // populate the grid
-    populate(_entities);
+    if (!noPopulate) {
+      populate(_entities);
+    }
+
   }
 
   /**
@@ -348,9 +351,17 @@ function StockEntryController(
   function handleDonationSelection() {
     const description = $translate.instant('STOCK.RECEPTION_DONATION');
     initSelectedEntity(description);
+
     if (vm.gridOptions.data.length === 0) {
       vm.addItems(1);
     }
+
+    StockModal.openFindDonation()
+      .then((donation) => {
+        handleSelectedEntity(donation, 'donation', true);
+        setSelectedEntity(vm.movement.entity.instance);
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -505,7 +516,6 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-
   /**
    * @method submitIntegration
    * @description prepare the stock movement and send data to the server as new stock integration
@@ -547,14 +557,7 @@ function StockEntryController(
       user_id     : vm.stockForm.details.user_id,
     };
 
-    /*
-      the origin_uuid of lots is set on the client
-      because donation table depends on donor, and donor management
-      is not yet implemented in the application
-
-      TODO: add a donor management module
-    */
-    movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
+    movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     return Stock.stocks.create(movement)
       .then((document) => {
