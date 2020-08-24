@@ -123,9 +123,9 @@ function DepotManagementController(
       .then(data => {
         // format location
         vm.gridOptions.data = data.map(item => {
+
           item.location = item.location_uuid
-            ? ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
-              .concat(`(${item.country_name})`) : '';
+            ? ''.concat(`${item.location_parent_name} / ${item.location_name} `) : '';
           return item;
         });
       })

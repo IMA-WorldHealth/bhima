@@ -29,7 +29,7 @@ describe('Depots Management', () => {
   };
 
   it('successfully creates a new depot', async () => {
-    await page.createDepot(depot.text, false, true, helpers.data.locations);
+    await page.createDepot(depot.text, false, true, helpers.data.locations[1]);
   });
 
   it('successfully edits a depot', async () => {
@@ -37,7 +37,7 @@ describe('Depots Management', () => {
   });
 
   it.skip('join a location to a depot', async () => {
-    await page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
+    await page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations[1]);
   });
 
   it.skip('remove a location to a depot', async () => {

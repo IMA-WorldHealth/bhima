@@ -22,10 +22,12 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.onSelectLocationCurrent = onSelectLocationCurrent;
 
   function onSelectLocationOrigin(location) {
+    vm.employee.origin_id = location.id;
     vm.employee.origin_location_id = location.uuid;
   }
 
   function onSelectLocationCurrent(location) {
+    vm.employee.current_id = location.id;
     vm.employee.current_location_id = location.uuid;
   }
 
@@ -115,7 +117,10 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
   // default location
   vm.employee.origin_id = Session.enterprise.location_id;
+  vm.employee.origin_location_id = Session.enterprise.location_uuid;
+
   vm.employee.current_id = Session.enterprise.location_id;
+  vm.employee.current_location_id = Session.enterprise.location_uuid;
 
   // Expose methods to the scope
   vm.submit = submit;

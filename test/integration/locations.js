@@ -189,14 +189,14 @@ describe('(/locations) Locations Interface', () => {
     id : 35,
     uuid : helpers.uuid(),
     name : 'Test Country',
-    location_type_id : 4,
+    location_type_id : 6,
   };
 
   const country2 = {
     id : 36,
     uuid : helpers.uuid(),
     name : 'Another Country',
-    location_type_id : 4,
+    location_type_id : 6,
   };
 
   const province = {
@@ -205,7 +205,7 @@ describe('(/locations) Locations Interface', () => {
     parent : country.id,
     parent_uuid : country.uuid,
     name : 'Test Province',
-    location_type_id : 9,
+    location_type_id : 12,
   };
 
   const province2 = {
@@ -214,7 +214,7 @@ describe('(/locations) Locations Interface', () => {
     parent : country.id,
     parent_uuid : country.uuid,
     name : 'Another Province',
-    location_type_id : 9,
+    location_type_id : 12,
   };
 
   const sector = {
@@ -223,7 +223,7 @@ describe('(/locations) Locations Interface', () => {
     parent : province.id,
     parent_uuid : province.uuid,
     name : 'Test Sector',
-    location_type_id : 11,
+    location_type_id : 14,
   };
 
   const sector2 = {
@@ -232,7 +232,7 @@ describe('(/locations) Locations Interface', () => {
     parent : province.id,
     parent_uuid : province.uuid,
     name : 'Another Sector',
-    location_type_id : 11,
+    location_type_id : 14,
   };
 
   const village = {
@@ -241,7 +241,7 @@ describe('(/locations) Locations Interface', () => {
     name : 'Test Village',
     parent : sector.id,
     parent_uuid : sector.uuid,
-    location_type_id : 17,
+    location_type_id : 20,
   };
 
   const village2 = {
@@ -250,7 +250,7 @@ describe('(/locations) Locations Interface', () => {
     name : 'Another Village',
     parent : sector.id,
     parent_uuid : sector.uuid,
-    location_type_id : 17,
+    location_type_id : 20,
   };
 
   it('POST /locations (countries) should create a country', () => {

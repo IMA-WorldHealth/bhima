@@ -1,4 +1,4 @@
-/* global element, by */
+/* global element, by, browser */
 /* eslint  */
 
 /**
@@ -7,6 +7,7 @@
  */
 
 const FU = require('../shared/FormUtils');
+const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
 
@@ -36,7 +37,6 @@ class RegistrationPage {
     const id = (sex === 'M') ? 'male' : 'female';
     return $(`[id="${id}"]`).click();
   }
-
 
   // set number of spouse
   setNumberChild(nbEnfant) {
@@ -125,13 +125,124 @@ class RegistrationPage {
   }
 
   // set origin location
-  setOriginLocation(locations) {
-    return components.locationSelect.set(locations, 'origin-location-id');
+  async setOriginLocation(locations) {
+    await components.locationConfigurationSelect.set(locations.location01);
+
+    // Location Level 2
+    const select02 = element(by.id('origin_location_id_level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations.location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('origin_location_id_level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations.location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('origin_location_id_level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations.location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
   }
 
-  // set current location
-  setCurrentLocation(locations) {
-    return components.locationSelect.set(locations, 'current-location-id');
+  // set add new current location
+  async setAddCurrentLocation(locations) {
+    // Click add location
+    const addCurrentLocation = element(by.id('origin_location_id_modal_open'));
+    await addCurrentLocation.click();
+
+    // Click checkbox register_again
+    const registerAgain = element(by.id('register_again'));
+    await registerAgain.click();
+
+    // Add United States
+    await FU.input('LocationModalCtrl.locations.name', locations.location01.name);
+    await components.locationTypeSelect.set(locations.location01.type);
+    FU.buttons.submit();
+
+    // Add Illinois
+    await FU.input('LocationModalCtrl.locations.name', locations.location02.name);
+    await components.locationTypeSelect.set(locations.location02.type);
+
+    await components.yesNoRadios.set('no', 'is_highest');
+    await components.locationConfigurationSelect.set(locations.location01.name);
+
+    FU.buttons.submit();
+
+    // Add Cook, DuPage
+    await FU.input('LocationModalCtrl.locations.name', locations.location03.name);
+    await components.locationTypeSelect.set(locations.location03.type);
+
+    await components.yesNoRadios.set('no', 'is_highest');
+    await components.locationConfigurationSelect.set(locations.location01.name);
+
+    // Level 0
+    const select01 = element(by.id('level_0'));
+    await select01.click();
+    const filterLocation01 = helpers.selectLocationLabel(locations.location02.name);
+
+    const option01 = select01.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation01,
+      ),
+    );
+    await option01.click();
+
+    FU.buttons.submit();
+
+    // Add Chicago
+    await FU.input('LocationModalCtrl.locations.name', locations.location04.name);
+    await components.locationTypeSelect.set(locations.location04.type);
+
+    await components.yesNoRadios.set('no', 'is_highest');
+    await components.locationConfigurationSelect.set(locations.location01.name);
+
+    // Level 0
+    const select03 = element(by.id('level_0'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations.location02.name);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Level 1
+    const select04 = element(by.id('level_1'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations.location03.name);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
+
+    await registerAgain.click();
+
+    FU.buttons.submit();
   }
 
   isEmployeeCreated(resp) {

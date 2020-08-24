@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 EnterpriseController.$inject = [
   'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
-  'ScrollService', 'SessionService', 'Upload', '$timeout',
+  'ScrollService', 'SessionService', 'Upload', '$timeout', '$state',
 ];
 
 /**
@@ -12,7 +12,8 @@ EnterpriseController.$inject = [
  * @description
  * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session, Upload, $timeout) {
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal,
+  ScrollTo, Session, Upload, $timeout, $state) {
   const vm = this;
 
   vm.enterprise = {};
@@ -63,7 +64,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   // fired on startup
   function startup() {
-
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
       .then(enterprises => {
@@ -75,6 +75,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+
         return refreshProjects();
       })
       .catch(Notify.handleError);
@@ -97,6 +98,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   }
 
   function onSelectLocation(location) {
+    vm.cachLocationId = location.id;
     vm.enterprise.location_uuid = location.uuid;
   }
 
@@ -129,6 +131,8 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     changes.location_default_type_root = vm.enterprise.location_default_type_root;
     changes.location_uuid = vm.enterprise.location_uuid;
 
+    vm.enterprise.location_id = vm.cachLocationId;
+
     const promise = (creation)
       ? Enterprises.create(changes)
       : Enterprises.update(vm.enterprise.id, changes);
@@ -139,6 +143,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       })
       .then(() => Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS'))
       .then(() => Session.reload())
+      .then(() => refresh())
       .catch(Notify.handleError);
   }
 
@@ -154,6 +159,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       .then(projects => {
         vm.projects = projects;
       });
+  }
+
+  function refresh() {
+    $state.go('enterprises', {}, { reload : 'enterprises' });
   }
 
   /**

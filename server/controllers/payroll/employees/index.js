@@ -449,11 +449,14 @@ function find(options) {
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
       BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id,
-      service.name as service_name, entity_map.text as reference
+      service.name as service_name, entity_map.text as reference, origin.id as origin_id,
+      current.id as current_id
     FROM employee
      JOIN grade ON employee.grade_uuid = grade.uuid
      LEFT JOIN fonction ON employee.fonction_id = fonction.id
      JOIN patient ON patient.uuid = employee.patient_uuid
+     JOIN location AS origin ON origin.uuid = patient.origin_location_id
+     JOIN location AS current ON current.uuid = patient.current_location_id
      JOIN debtor ON patient.debtor_uuid = debtor.uuid
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid

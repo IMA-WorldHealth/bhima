@@ -20,6 +20,31 @@ exports.navigate = async function navigate(browserPath) {
   await browser.setLocation(destination);
 };
 
+// Select location in location component
+exports.selectLocationLabel = async function selectLocationLabel(label) {
+  // select the item of the dropdown menu matching the label
+  let searchString = label;
+  let labelForRegex = label.replace('(', '\\(');
+  labelForRegex = labelForRegex.replace(')', '\\)');
+
+  switch ('contains') {
+  case 'exact':
+    searchString = new RegExp(`^\\s*${labelForRegex}$`, 'm');
+    break;
+  case 'fullWord':
+    searchString = new RegExp(`\\s+${labelForRegex}(\\s|$)`);
+    break;
+  case 'accountName':
+    searchString = new RegExp(`\\d+\\s+${labelForRegex}\\s+`);
+    break;
+  default:
+  case 'contains':
+    searchString = label;
+    break;
+  }
+  return searchString;
+};
+
 // get the browser path after the hash
 exports.getCurrentPath = async function getCurrentPath() {
   const url = await browser.getCurrentUrl();
@@ -35,9 +60,35 @@ exports.data = {
 
   // location IDs for the location select component
   locations : [
-    'DBE330B65CDE48308C30DC00ECCD1A5F', // Democratic Republic of the Congo
-    'F6FC74697E5845CBB87CF08AF93EDADE', // Bas Congo,
-    '0404E9EAEBD64F20B1F86DC9F9313450', // Tshikapa,
-    '1F162A109F6747889EFFC1FEA42FCC9B', // kele
+    {
+      location01 : 'Merge Country',
+      location02 : 'Merge Province',
+      location03 : 'Merge Town 1',
+      location04 : 'Merge Township 1',
+    },
+    {
+      location01 : 'République Démocratique du Congo',
+      location02 : 'Kinshasa',
+      location03 : 'Lukunga',
+      location04 : 'Gombe',
+    },
+    {
+      location01 : {
+        name : 'United States of America',
+        type : 'Pays',
+      },
+      location02 : {
+        name : 'Illinois',
+        type : 'État',
+      },
+      location03 : {
+        name : 'Cook, DuPage',
+        type : 'Comté',
+      },
+      location04 : {
+        name : 'Chicago',
+        type : 'Cité',
+      },
+    },
   ],
 };

@@ -22,7 +22,10 @@
   "TOWN": "Ville",
   "TOWNSHIP": "Commune",
   "VILLAGE": "Village",
-  "ZONE": "Zone"
+  "ZONE": "Zone",
+  "COUNTIE": "Comté",
+  "PREFECTURE": "Préfecture",
+  "NATION": "Nation"
 },
 "MANAGER_CONFIGURATION":"Configuration des localisations",
 "MANAGE_COUNTRY":"Gerer Les Pays",

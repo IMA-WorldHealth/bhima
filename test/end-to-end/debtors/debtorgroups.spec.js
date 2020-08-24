@@ -17,6 +17,21 @@ describe('Debtor Groups Management', () => {
   // helper to quickly get a group by uuid
   const getGroupRow = (uuid) => $(`[data-group-entry="${uuid}"]`);
 
+  const locations = [
+    {
+      location01 : 'Merge Country',
+      location02 : 'Merge Province',
+      location03 : 'Merge Town 1',
+      location04 : 'Merge Township 1',
+    },
+    {
+      location01 : 'République Démocratique du Congo',
+      location02 : 'Kinshasa',
+      location03 : 'Lukunga',
+      location04 : 'Gombe',
+    },
+  ];
+
   it('lists base test debtor groups', async () => {
     expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUPS);
   });
@@ -34,9 +49,47 @@ describe('Debtor Groups Management', () => {
     await FU.input('GroupUpdateCtrl.group.phone', '+243 834 443');
     await FU.input('GroupUpdateCtrl.group.email', 'e2e@email.com');
 
-    await FU.select('GroupUpdateCtrl.group.price_list_uuid', 'Test Price List');
+    // select the locations specified
+    await components.locationConfigurationSelect.set(locations[0].location01);
 
-    await FU.buttons.submit();
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations[0].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations[0].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations[0].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
+
+    FU.select('GroupUpdateCtrl.group.price_list_uuid', 'Test Price List');
+
+    FU.buttons.submit();
 
     await components.notification.hasSuccess();
 
@@ -59,13 +112,50 @@ describe('Debtor Groups Management', () => {
     await components.notification.hasSuccess();
   });
 
-
   it('updates a debtor group', async () => {
     const updateGroup = element.all(by.css('[data-group-entry]'));
     await updateGroup.all(by.css('[data-method="update"]')).first().click();
 
     await FU.input('GroupUpdateCtrl.group.max_credit', '500');
     await FU.input('GroupUpdateCtrl.group.name', '[Updated]');
+
+    // select the locations specified
+    await components.locationConfigurationSelect.set(locations[1].location01);
+
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations[1].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations[1].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations[1].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
 
     await FU.buttons.submit();
 

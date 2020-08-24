@@ -22,7 +22,10 @@
     "TOWN": "Town",
     "TOWNSHIP": "Township",
     "VILLAGE": "Village",
-    "ZONE": "Zone"
+    "ZONE": "Zone",
+    "COUNTIE": "Countie",
+    "PREFECTURE": "Prefecture",
+    "NATION": "Nation"
 },
 "MANAGER_CONFIGURATION":"Location Manager Configuration",
 "MANAGE_COUNTRY":"Manage Country",

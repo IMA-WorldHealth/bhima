@@ -42,7 +42,7 @@
 
     <div ng-repeat="leave in $ctrl.locationLeaves">
       <br>
-      <div id="{{leave.id}}">
+      <div id="{{$ctrl.tag}}{{leave.id}}">
         <span ng-repeat="aggregate in leave.aggregates">
           <span ng-if="$index > 0"> / </span>
           <span style="color : {{ aggregate.color }}" class="fa fa-circle"></span>
@@ -50,7 +50,6 @@
             {{ aggregate.translation_key }}
           </label>
         </span>
-
         <ui-select
           name="leave.id"
           ng-change="$ctrl.loadLeaves(leave.model, $index)"
@@ -76,7 +75,7 @@
     </div>
     <br>
     <div ng-if="$ctrl.addLocation">
-      <a href ng-click="$ctrl.addLocationModal()" data-location-modal-open>
+      <a href ng-click="$ctrl.addLocationModal()" id="{{$ctrl.tag}}modal_open" data-location-modal-open>
         <span class="glyphicon glyphicon-modal-window"></span>
         <span translate>FORM.LABELS.LOCATION_REGISTER</span>
       </a>

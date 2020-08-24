@@ -248,7 +248,9 @@
                       <bh-location-configuration-select
                         label="FORM.LABELS.ORIGIN_LOCATION"
                         location-id="EmployeeCtrl.employee.origin_id"
+                        tag="origin_location_id_"
                         operational-mode="true"
+                        add-location="true"
                         on-select-callback="EmployeeCtrl.onSelectLocationOrigin(location)"
                         allow-all-root="true"
                         required="true">
@@ -257,12 +259,13 @@
 
                     <!-- separate location searches given a certain screen size -->
                     <div class="visible-sm-block visible-xs-block"><hr></div>
-
                     <div class="col-md-5 col-md-offset-1">
                       <bh-location-configuration-select
                         label="FORM.LABELS.CURRENT_LOCATION"
                         location-id="EmployeeCtrl.employee.current_id"
+                        tag="current_location_id_"
                         operational-mode="true"
+                        add-location="true"
                         on-select-callback="EmployeeCtrl.onSelectLocationCurrent(location)"
                         allow-all-root="true"
                         required="true">

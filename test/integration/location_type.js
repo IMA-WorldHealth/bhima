@@ -19,7 +19,7 @@ describe('(/locations/types) API endpoint', () => {
   };
 
   const responseKeys = ['id', 'translation_key', 'fixed', 'color', 'is_leaves', 'label_name'];
-  const numLocationTypes = 18;
+  const numLocationTypes = 21;
 
   it('GET /locations/types returns a list of Location type ', () => {
     return agent.get('/locations/types')

@@ -12,6 +12,7 @@ angular.module('bhima.components')
       required : '@?',
       excludeType : '<?',
       label : '@?',
+      tag : '@?',
       allowAllRoot : '<?',
     },
   });
@@ -19,11 +20,29 @@ angular.module('bhima.components')
 LocationConfigurationSelectController.$inject = [
   'LocationService', 'NotifyService', '$translate',
 ];
-
 /**
  * Location Configuration Select Controller
  *
+ * When the component is called for the very first time,
+ * the first request to the server consists in fetching
+ * all the locations (parent territorial entities)
+ *
+ * $ctrl.locationId : parameter is used to search for all the parents of the selected
+ *                    location up to the entity with the highest level in the tree structure
+ *
+ * $ctrl.excludeType : This is the type of data to exclude when selecting locations
+ *
+ * $ctrl.allowAllRoot : Allows to select all the territorial entities defined as root,
+ *                      if this parameter is defined as false in this case,
+ *                      only the entities having the type defined as location default type root
+ *                      In Enterprise Parameter
+ * $ctrl.operationalMode : is used for all the other cases where the component is used
+ *                         in another form except the form for recording locations
+ *
+ * $ctrl.parentId : is used to fetch to get the Parent entity
+ *
  */
+
 function LocationConfigurationSelectController(locationService, Notify, $translate) {
   const $ctrl = this;
   $ctrl.locationLeaves = [];
@@ -37,32 +56,23 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
      * When the component is called for the very first time,
      * the first request to the server consists in fetching
      * all the locations (parent territorial entities)
-     *
-     * $ctrl.locationId : parameter is used to search for all the parents of the selected
-     *                    location up to the entity with the highest level in the tree structure
-     *
-     * $ctrl.excludeType : This is the type of data to exclude when selecting locations
-     *
-     * $ctrl.allowAllRoot : Allows to select all the territorial entities defined as root,
-     *                      if this parameter is defined as false in this case,
-     *                      only the entities having the type defined as location default type root
-     *                      In Enterprise Parameter
-     * $ctrl.operationalMode : is used for all the other cases where the component is used
-     *                         in another form except the form for recording locations
-     *
-     * $ctrl.parentId : is used to fetch to get the Parent entity
-     *
      */
+
     const params = {
       locationId : $ctrl.locationId,
       excludeType : $ctrl.excludeType,
       allRoot : $ctrl.allowAllRoot,
     };
 
+    loadLocationsTree(params);
+  }
+
+  function loadLocationsTree(params) {
     locationService.loadLocationsRoot(params)
       .then((data) => {
         if (data.rows.length) {
           let locationPath = {};
+
           $ctrl.aggregates = data.aggregates;
           $ctrl.multipleRoot = data.aggregates.length > 1;
 
@@ -81,6 +91,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
             });
 
             const deepLevelPlus = data.deepLevel + 1;
+
             // Here we try to place the different levels of localization in a table according to their degree of depth
             for (let i = 1; i < deepLevelPlus; i++) {
               const indicePathId = `location_id_${deepLevelPlus - i}`;
@@ -128,18 +139,17 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
   }
 
   $ctrl.$onChanges = (changes) => {
-    if (changes.parent) {
-      $ctrl.parent = changes.parent.currentValue || null;
-    }
-
-    if (changes.parentId) {
-      $ctrl.parentId = changes.parentId.currentValue || null;
-    }
-
     if (changes.locationId) {
-      $ctrl.locationId = changes.locationId.currentValue || null;
-    }
+      const { previousValue } = changes.locationId;
+      const { currentValue } = changes.locationId;
 
+      if (!previousValue && currentValue) {
+
+        $ctrl.locationId = currentValue;
+
+        loadLocationsTree({ locationId : currentValue });
+      }
+    }
   };
 
   // Here we try to obtain the child locations for a location that is not root and
@@ -150,6 +160,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
     if (option === 'root') {
       $ctrl.locationLeaves = [];
     } else {
+
       const optionIndex = option + 1;
       const temporaryArray = [];
 
@@ -210,21 +221,15 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
   function addLocationModal() {
     locationService.modal()
       .then((data) => {
+        $ctrl.onSelectCallback({ location : data });
         $ctrl.locationId = data.id;
-        const item = {
-          id : data.id,
-          uuid : data.uuid,
-        };
-
-        $ctrl.allowAllRoot = true;
+        $ctrl.arrayLocationPath = [];
         onInit();
-        $ctrl.onSelectCallback({ location : item });
       });
   }
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = ($item) => {
-
     $ctrl.onSelectCallback({ location : $item });
   };
 }
