@@ -884,6 +884,7 @@
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
+            "TAGS":"Sélectionner les étiquettes à joindre",
             "PATIENT_TO_CONSIDER":"Sélectionner le patient à considérer",
             "ACCOUNT_REFERENCE" : "Sélectionner la référence des comptes",
             "ACCOUNT_REFERENCE_TYPE" : "Sélectionner le type de référence des comptes",

@@ -7,37 +7,42 @@ function TagsPage() {
   const page = this;
 
   // the grid id
-  const gridId = 'tagss-grid';
+  const gridId = 'tags-grid';
 
   page.gridId = gridId;
   page.setName = setName;
   page.editTags = editTags;
   page.deleteTags = deleteTags;
   page.openCreateModal = openCreateModal;
+  page.setColor = setColor;
 
-  const departmentName = element(by.model('ModalCtrl.tags.name'));
+  const tagName = element(by.model('ModalCtrl.tags.name'));
 
   page.submit = function submit() {
     return FU.modal.submit();
   };
 
   function setName(txt) {
-    return departmentName.clear().sendKeys(txt);
+    return tagName.clear().sendKeys(txt);
   }
 
-  async function openDropdownMenu(label) {
+  function setColor(color) {
+    return FU.uiSelect('ModalCtrl.tags.color', color);
+  }
+
+  async function showDragAndDropMenu(label) {
     const row = new GridRow(label);
     await row.dropdown().click();
     return row;
   }
 
   async function editTags(label) {
-    const row = await openDropdownMenu(label);
-    return row.edit().click();
+    const row = await showDragAndDropMenu(label);
+    await row.edit().click();
   }
 
   async function deleteTags(label) {
-    const row = await openDropdownMenu(label);
+    const row = await showDragAndDropMenu(label);
     await row.remove().click();
   }
 

@@ -69,7 +69,6 @@ exports.report = (req, res, next) => {
   }
 };
 
-
 function lookupPriceList(uuid) {
   const priceListSql = `
     SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at

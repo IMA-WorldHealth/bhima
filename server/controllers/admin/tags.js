@@ -35,7 +35,7 @@ function update(req, res, next) {
 // get all tags
 function read(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, name
+    SELECT BUID(uuid) as uuid, name, color
     FROM tags
     ORDER BY name ASC
   `;
@@ -49,7 +49,7 @@ function read(req, res, next) {
 // get a tag detail
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, name
+    SELECT BUID(uuid) as uuid, name, color
     FROM tags
     WHERE uuid =?
   `;

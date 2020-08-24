@@ -38,6 +38,11 @@
         currency-id="$ctrl.enterprise.currency_id"
         model="$ctrl.model.unit_cost">
       </bh-currency-input>
+
+      <bh-tag-select
+        tag-uuids="$ctrl.model.tags"
+        on-select-callback="$ctrl.onSelectTags(tags)">
+      </bh-tag-select>
     </div>
   
     <div class="modal-footer">

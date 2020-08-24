@@ -7,10 +7,12 @@
  *
  * This module is responsible for handling all crud operations relatives to stocks
  * and define all stock API functions
+ * @requires lodash
  * @requires lib/uuid
  * @requires lib/db
  * @requires stock/core
  */
+const _ = require('lodash');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
@@ -478,15 +480,15 @@ function depotMovement(document, params) {
  * GET /stock/lots
  * this function helps to list lots
  */
-function listLots(req, res, next) {
+async function listLots(req, res, next) {
   const params = req.query;
 
-  core.getLots(null, params)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  try {
+    const rows = await core.getLots(null, params);
+    res.status(200).json(rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -521,7 +523,7 @@ function listMovements(req, res, next) {
  * GET /stock/lots/depots/
  * returns list of each lots in each depots with their quantities
  */
-function listLotsDepot(req, res, next) {
+async function listLotsDepot(req, res, next) {
   const params = req.query;
   params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   params.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
@@ -530,12 +532,29 @@ function listLotsDepot(req, res, next) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;
   }
-  core.getLotsDepot(null, params)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  try {
+    const data = await core.getLotsDepot(null, params);
+
+    const queryTags = `
+      SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
+      FROM tags t
+      JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+      WHERE lt.lot_uuid IN (?)
+    `;
+    const lotUuids = data.map(row => db.bid(row.uuid));
+    const tags = await db.exec(queryTags, [lotUuids]);
+
+    // make a lot_uuid -> tags map.
+    const tagMap = _.groupBy(tags, 'lot_uuid');
+
+    data.forEach(lot => {
+      lot.tags = tagMap[lot.uuid] || [];
+    });
+
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
