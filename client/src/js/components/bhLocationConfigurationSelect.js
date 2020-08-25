@@ -109,6 +109,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
                   label : $translate.instant(locationPath[indicePathLabel]),
                   type_id : locationPath[indicePathType],
                 });
+
               }
             }
 
@@ -116,6 +117,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
               $ctrl.locationConfigurationId = $ctrl.arrayLocationPath[0].id;
               $ctrl.loadLeaves($ctrl.locationConfigurationId, 'root');
             }
+
 
             for (let i = 1; i < $ctrl.arrayLocationPath.length; i++) {
               $ctrl.loadLeaves($ctrl.arrayLocationPath[i].id, i);
@@ -145,13 +147,11 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
   $ctrl.$onChanges = (changes) => {
     if (changes.locationId) {
-      const { previousValue } = changes.locationId;
-      const { currentValue } = changes.locationId;
+      const { previousValue } = parseInt(changes.locationId, 10);
+      const { currentValue } = parseInt(changes.locationId, 10);
 
       if (!previousValue && currentValue) {
-
         $ctrl.locationId = currentValue;
-
         loadLocationsTree({ locationId : currentValue });
       }
     }
@@ -174,7 +174,7 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
           temporaryArray.push($ctrl.locationLeaves[i]);
         }
 
-        delete $ctrl.locationLeaves;
+        $ctrl.locationLeaves = [];
         $ctrl.locationLeaves = temporaryArray;
       }
     }
@@ -197,9 +197,11 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
 
           if ($ctrl.arrayLocationPath) {
             $ctrl.arrayLocationPath.forEach(path => {
-              if (path.type_id === data.aggregates[0].id) {
-                locationValue = path.id;
-              }
+              data.aggregates.forEach(aggr => {
+                if (path.type_id === aggr.id) {
+                  locationValue = path.id;
+                }
+              });
             });
           }
 
@@ -217,7 +219,6 @@ function LocationConfigurationSelectController(locationService, Notify, $transla
             },
           );
         }
-
       })
       .catch(Notify.handleError);
   };

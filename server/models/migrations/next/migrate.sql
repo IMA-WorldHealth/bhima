@@ -773,7 +773,12 @@ JOIN location AS l ON l.uuid = v.sector_uuid;
 -- Update table enterprise
 ALTER TABLE `enterprise` DROP FOREIGN KEY `enterprise__location`;
 ALTER TABLE `enterprise` ADD CONSTRAINT `enterprise__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`);
-ALTER TABLE `enterprise` CHANGE `location_id` `location_uuid` BINARY( 16 ) NULL DEFAULT NULL;
+
+ALTER TABLE `enterprise`
+	CHANGE COLUMN `location_id` `location_uuid` BINARY(16) NULL DEFAULT NULL AFTER `email`;
+
+ALTER TABLE `enterprise` ADD COLUMN `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL;
+UPDATE `enterprise` SET `location_default_type_root` = 6;
 
 -- Update table debtor_group
 ALTER TABLE `debtor_group` DROP FOREIGN KEY `debtor_group__location`;
@@ -786,3 +791,15 @@ ALTER TABLE `patient` ADD CONSTRAINT `patient__current_location` FOREIGN KEY (`c
 
 ALTER TABLE `patient` DROP FOREIGN KEY `patient__origin_location`;
 ALTER TABLE `patient` ADD CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `location` (`uuid`);
+
+-- DROP TABLE Village
+DROP TABLE `village`;
+
+-- DROP TABLE Sector
+DROP TABLE `sector`;
+
+-- DROP TABLE province
+DROP TABLE province;
+
+-- DROP TABLE country
+DROP TABLE country;
