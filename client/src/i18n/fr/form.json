@@ -21,7 +21,7 @@
             "CONFIGURE_PAYMENT": "Configurer pour le Paiement",
             "CONFIRM": "Confirmer",
             "CONFIRM_CANCEL": "Confirmer Annulation",
-            "CONNECTION": "Connexion",
+            "CONNECTION": "Se connecter",
             "COLLAPSE_RECORDS" : "Effondrer les enregistrements",
             "DELETE": "Supprimer",
             "DELETE_RECORD": "Supprimer Enregistrement",
@@ -248,6 +248,7 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
         },
         "LABELS": {
+            "ADDRESS_IN_DOCUMENTS":"Adresse (à afficher sur les documents)",
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Compte",
             "ACCOUNT_CONFIGURATION" : "Configuration du Compte",
@@ -883,6 +884,7 @@
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
+            "TAGS":"Sélectionner les étiquettes à joindre",
             "PATIENT_TO_CONSIDER":"Sélectionner le patient à considérer",
             "ACCOUNT_REFERENCE" : "Sélectionner la référence des comptes",
             "ACCOUNT_REFERENCE_TYPE" : "Sélectionner le type de référence des comptes",

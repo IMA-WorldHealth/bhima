@@ -31,6 +31,8 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
     { key : 'service_uuid', label : 'STOCK.SERVICE' },
     { key : 'is_expired', label : 'STOCK.EXPIRED' },
+    { key : 'tag_uuid', label : 'TAG.LABEL' },
+    { key : 'tags', label : 'TAG.LABEL' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

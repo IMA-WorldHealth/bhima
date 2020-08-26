@@ -202,7 +202,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       });
   }
 
-
   /**
    * @function proxy
    *

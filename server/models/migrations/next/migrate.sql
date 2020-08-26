@@ -1,12 +1,10 @@
 /* migration script from the version 1.14.0 to the next */
-    /* migration script from the version 1.14.0 to the next */
-    /*
-    @jeremielodi
-    2020-08-06
-    rename all foreign key constraints
-    */
 
-
+/*
+@jeremielodi
+2020-08-06
+rename all foreign key constraints
+*/
 
 -- DROP all foreign keys from a table
 
@@ -688,3 +686,24 @@ UPDATE `report` SET
   `report_key` = "recoveryCapacity",
   `title_key` = "REPORT.RECOVERY_CAPACITY.TITLE"
 WHERE report_key = "collectionCapacity";
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-08-17
+ * @description: add address field in the enterprise table
+ */
+ALTER TABLE enterprise ADD COLUMN `address` VARCHAR(200) DEFAULT NULL;
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-07-20
+ */
+ALTER TABLE `tags` ADD COLUMN `color` VARCHAR(50) NULL;
+
+DROP TABLE IF EXISTS `lot_tag`;
+CREATE TABLE `lot_tag` (
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `tag_uuid`          BINARY(16) NOT NULL,
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

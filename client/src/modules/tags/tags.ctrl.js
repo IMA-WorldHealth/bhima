@@ -2,23 +2,16 @@ angular.module('bhima.controllers')
   .controller('TagsController', TagsController);
 
 TagsController.$inject = [
-  '$uibModal', 'TagsService', 'ModalService',
-  'NotifyService', 'bhConstants', 'uiGridConstants', '$rootScope',
+  'TagService', 'ModalService',
+  'NotifyService', 'uiGridConstants', '$rootScope',
 ];
 
-function TagsController($uibModal, Tags, Modal,
-  Notify, bhConstants, uiGridConstants, $rootScope) {
+function TagsController(Tags, Modal, Notify, uiGridConstants, $rootScope) {
   const vm = this;
 
   vm.canEditTags = false;
 
-  vm.createUpdateTagsModal = (tag) => {
-    $uibModal.open({
-      templateUrl : 'modules/tags/modal/createUpdate.html',
-      controller : 'TagsModalController as ModalCtrl',
-      resolve : { data : () => tag },
-    });
-  };
+  vm.createUpdateTagsModal = Tags.createUpdateTagsModal;
 
   vm.remove = function remove(uuid) {
     const message = 'FORM.DIALOGS.CONFIRM_ACTION';
@@ -41,7 +34,10 @@ function TagsController($uibModal, Tags, Modal,
     vm.errorState = false;
     Tags.read()
       .then(tags => {
-        vm.gridOptions.data = tags;
+        vm.gridOptions.data = tags.map(t => {
+          t.style = { color : t.color };
+          return t;
+        });
       })
       .catch(err => {
         vm.errorState = true;
@@ -58,6 +54,7 @@ function TagsController($uibModal, Tags, Modal,
     field : 'name',
     displayName : 'FORM.LABELS.NAME',
     headerCellFilter : 'translate',
+    cellTemplate : '/modules/tags/templates/name.cell.html',
   }, {
     field : 'actions',
     enableFiltering : false,

@@ -136,6 +136,12 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
       type : 'number',
+    },
+    {
+      field : 'tagNames',
+      displayName : 'TAG.LABEL',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/tags.cell.html',
     }, {
       field : 'action',
       displayName : '',

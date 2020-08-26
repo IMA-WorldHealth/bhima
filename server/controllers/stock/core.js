@@ -81,6 +81,8 @@ function getLotFilters(parameters) {
     'service_uuid',
     'invoice_uuid',
     'purchase_uuid',
+    'tag_uuid',
+    'tags',
   ]);
 
   const filters = new FilterParser(params);
@@ -104,6 +106,10 @@ function getLotFilters(parameters) {
   filters.equals('service_uuid', 'uuid', 'serv');
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
+  filters.equals('tag_uuid', 'tags', 't');
+
+  // tags
+  filters.custom('tags', 't.uuid IN (?)', [params.tags]);
 
   // NOTE(@jniles)
   // is_expired is based off the server time, not off the client time.
@@ -227,7 +233,8 @@ function getLotsDepot(depotUuid, params, finalClause) {
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference
+      dm.text AS documentReference,
+      t.name AS tag_name, t.color
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -235,6 +242,8 @@ function getLotsDepot(depotUuid, params, finalClause) {
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
+    LEFT JOIN tags t ON t.uuid = lt.tag_uuid
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, l.label `;

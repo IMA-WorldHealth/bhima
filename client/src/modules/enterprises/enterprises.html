@@ -128,6 +128,16 @@
 
               <div class="panel-body">
 
+                <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.address.$invalid }">
+                  <label class="control-label" translate>
+                    FORM.LABELS.ADDRESS_IN_DOCUMENTS
+                  </label>
+                  <input type="text" class="form-control" autocomplete="off" name="address" ng-model="EnterpriseCtrl.enterprise.address">
+                  <div class="help-block" ng-messages="EnterpriseForm.address.$error" ng-show="EnterpriseForm.$submitted">
+                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                  </div>
+                </div>
+
                 <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.po_box.$invalid }">
                   <label class="control-label" translate>
                     FORM.LABELS.PO_BOX

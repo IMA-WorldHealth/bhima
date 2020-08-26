@@ -51,6 +51,13 @@
             </div>
           </div>
 
+          <!-- tags -->
+          <bh-tag-select
+            tag-uuids="$ctrl.searchQueries.tags"
+            on-select-callback="$ctrl.onSelectTags(tags)">
+            <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
+          </bh-tag-select>
+
           <!--entry date -->
           <bh-date-interval
             label="STOCK.ENTRY_DATE"

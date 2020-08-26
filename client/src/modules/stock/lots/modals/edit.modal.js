@@ -11,6 +11,7 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
   vm.model = {};
   vm.enterprise = Session.enterprise;
   vm.onDateChange = onDateChange;
+  vm.onSelectTags = onSelectTags;
   vm.cancel = Instance.dismiss;
   vm.submit = submit;
 
@@ -29,6 +30,10 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
 
   function onDateChange(date) {
     vm.model.expiration_date = date;
+  }
+
+  function onSelectTags(tags) {
+    vm.model.tags = tags;
   }
 
   function submit(form) {
