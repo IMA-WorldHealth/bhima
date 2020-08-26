@@ -113,7 +113,7 @@ function createEnterpriseProjectUser(enterprise, project, user, locationUuid) {
 
   // assign default properties
   Object.assign(user, DEFAULTS.user);
-  Object.assign(enterprise, DEFAULTS.enterprise, { location_id : locationUuid });
+  Object.assign(enterprise, DEFAULTS.enterprise, { location_uuid : locationUuid });
   Object.assign(project, DEFAULTS.project);
 
   if (user.repassword) {
