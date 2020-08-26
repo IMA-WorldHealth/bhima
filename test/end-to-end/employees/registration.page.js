@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 /* eslint  */
 
 /**

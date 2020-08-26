@@ -11,7 +11,6 @@ const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
-const { browser } = require('protractor');
 
 // Select location in location component
 async function selectLocationLabel(label) {

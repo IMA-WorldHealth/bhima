@@ -274,7 +274,7 @@ exports.root = function root(req, res, next) {
       let sqlHeader = ``;
       let sqlJoin = ``;
 
-      // Here we try to add indices for each level of localization the indices start from 1 
+      // Here we try to add indices for each level of localization the indices start from 1
       // for the root up to the size of the depth in the tree structure
 
       for (let i = 1; i <= deepLevel; i++) {
