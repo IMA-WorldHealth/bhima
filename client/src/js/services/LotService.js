@@ -46,7 +46,7 @@ function LotService(Api, $http, util) {
     lots.near_expiration = false;
     lots.at_risk = false;
     if (lot.quantity <= 0) {
-      lot.exhaused = true;
+      lot.exhausted = true;
     } else if (lot.lifetime < 0) {
       // Equivalent to: lot.quantity > 0 && lot.lifetime < 0
       lot.expired = true;
