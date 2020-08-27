@@ -203,8 +203,11 @@
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
     "ASSIGNMENT_CURRENT":"En cours",
     "NO_ASSIGNMENT":"Aucune assignation",
-    "INCLUDE_EXHAUSTED_LOTS":"Inclure les lots épuisés"
-
+    "INCLUDE_EXHAUSTED_LOTS":"Inclure les lots épuisés",
+    "CLICK_TO_SEE":"Cliquez ici pour voir les lots",
+    "SHOW_WARNINGS":"Cliquer pour afficher les avertissements",
+    "NO_RISK_OF_EXPIRATION":"Aucun lots à risque de péremption",
+    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} du lot {{label}}, expiration : {{expiration}}"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"

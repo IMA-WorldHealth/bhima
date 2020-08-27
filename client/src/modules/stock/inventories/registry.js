@@ -6,6 +6,7 @@ StockInventoriesController.$inject = [
   'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
   'GridGroupingService', 'bhConstants', 'GridStateService',
   '$state', 'GridColumnService', '$httpParamSerializer', 'BarcodeService',
+  'moment',
 ];
 
 /**
@@ -15,7 +16,7 @@ StockInventoriesController.$inject = [
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns,
-  $httpParamSerializer, Barcode,
+  $httpParamSerializer, Barcode, moment,
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
@@ -41,6 +42,12 @@ function StockInventoriesController(
     field            : 'group_name',
     displayName      : 'STOCK.INVENTORY_GROUP',
     headerCellFilter : 'translate',
+  }, {
+    field            : 'warning',
+    displayName      : 'STOCK.LOTS',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
+    width            : 50,
   }, {
     field            : 'quantity',
     displayName      : 'STOCK.QUANTITY',
@@ -135,6 +142,29 @@ function StockInventoriesController(
   vm.gridApi = {};
   vm.saveGridState = state.saveGridState;
   vm.getQueryString = Stock.getQueryString;
+
+  vm.toggleTooltip = row => {
+    if (row.tooltipIsOpen) {
+      row.tooltipIsOpen = !row.tooltipIsOpen;
+      return;
+    }
+
+    Stock.lots.read(null, {
+      inventory_uuid : row.inventory_uuid,
+      depot_uuid : row.depot_uuid,
+    })
+      .then(lots => {
+        row.lots = lots
+          .map(item => {
+            const delay = moment(new Date(item.expiration_date)).diff(new Date());
+            item.delay_expiration = moment.duration(delay).humanize(true);
+            return item;
+          })
+          .filter(item => item.quantity > 0 && item.IS_IN_RISK_EXPIRATION === true);
+        row.tooltipIsOpen = true;
+      })
+      .catch(Notify.handleError);
+  };
 
   function clearGridState() {
     state.clearGridState();

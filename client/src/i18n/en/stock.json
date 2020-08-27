@@ -201,7 +201,11 @@
     "ASSIGNMENT_HISTORIC":"Assignment Historic",
     "ASSIGNMENT_CURRENT":"Current",
     "NO_ASSIGNMENT":"No Assignment",
-    "INCLUDE_EXHAUSTED_LOTS":"Include Exhausted Lots"
+    "INCLUDE_EXHAUSTED_LOTS":"Include Exhausted Lots",
+    "CLICK_TO_SEE":"Click here to see lots",
+    "SHOW_WARNINGS":"Click to show Warnings",
+    "NO_RISK_OF_EXPIRATION":"No lots with expiration risk",
+    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} of the lot {{label}}, expiration : {{expiration}}"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"
