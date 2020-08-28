@@ -158,7 +158,7 @@
       "OVER_MAX"      : "Over Maximum",
       "SECURITY"      : "Security Stock Reached",
       "STOCK_OUT"      : "Stock Out",
-      "IS_IN_OF_RISK_EXPIRATION" : "At risk of expiration"
+      "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
     },
     "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",

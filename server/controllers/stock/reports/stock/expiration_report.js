@@ -47,7 +47,7 @@ async function stockExpirationReport(req, res, next) {
           row.color = 'red';
           found = true;
         } else if (row.IS_IN_RISK_EXPIRATION) {
-          row.status = `STOCK.STATUS.IS_IN_OF_RISK_EXPIRATION`;
+          row.status = `STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION`;
           row.color = '#f5cb42';
           found = true;
         }

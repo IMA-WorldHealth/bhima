@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('StockLotsController', StockLotsController);
 
 StockLotsController.$inject = [
-  'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
-  'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer', 'BarcodeService', 'LotsRegistryService',
-  'moment',
+  'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
+  'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
+  'BarcodeService', 'LotService', 'LotsRegistryService', 'moment',
 ];
 
 /**
@@ -12,8 +12,9 @@ StockLotsController.$inject = [
  * This module is a registry page for stock lots
  */
 function StockLotsController(
-  Stock, Notify, uiGridConstants, Modal, Languages, Grouping,
-  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry, moment,
+  Stock, Notify, uiGridConstants, Modal, Languages,
+  Grouping, GridState, Columns, $state, $httpParamSerializer,
+  Barcode, LotService, LotsRegistry, moment,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -139,6 +140,7 @@ function StockLotsController(
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
+          LotService.computeLotWarningFlags(lot);
         });
 
         lots.forEach(LotsRegistry.formatLotsWithoutExpirationDate);

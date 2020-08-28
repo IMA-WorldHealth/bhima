@@ -881,10 +881,21 @@ a[disabled] {
 }
 
 .expired {
-  /* text-decoration : line-through; */
-  background-color: #ffb3b3 !important;
+  background-color: #ff000083 !important;
 }
 
+.at-risk {
+  background-color: #ffff6686 !important; 
+}
+
+.at-risk-of-expiring {
+  background-color: #ff880191 !important; 
+}
+
+.out-of-stock {
+  /* text-decoration : line-through; */
+  background-color: #cc00ff8f !important; 
+}
 
 .dropdown-menu {
   z-index : 9999;

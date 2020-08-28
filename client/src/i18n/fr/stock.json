@@ -160,7 +160,7 @@
       "OVER_MAX"      : "Stock Max Depassé",
       "SECURITY"      : "Stock de Securité Atteint",
       "STOCK_OUT"      : "Rupture de stock",
-      "IS_IN_OF_RISK_EXPIRATION" : "A risque d'expiration"
+      "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration"
     },
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",
