@@ -622,15 +622,33 @@ async function listLotsDepot(req, res, next) {
  * @todo process stock alert, rupture of stock
  * @todo prevision for purchase
  */
-function listInventoryDepot(req, res, next) {
+async function listInventoryDepot(req, res, next) {
   const params = req.query;
   const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
-  core.getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption)
-    .then((rows) => res.status(200).json(rows))
-    .catch(next)
-    .done();
+  try {
+    const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption];
+    const inventories = await core.getInventoryQuantityAndConsumption(...inventoriesParameters);
+    const lots = await core.getLotsDepot(null, params);
+
+    for (let i = 0; i < inventories.length; i++) {
+      let hasRiskyLots = false;
+      for (let j = 0; j < lots.length; j++) {
+        if (lots[j].depot_uuid === inventories[i].depot_uuid && lots[j].uuid === inventories[i].uuid) {
+          if (lots[j].IS_IN_RISK_EXPIRATION && lots[j].quantity > 0) {
+            hasRiskyLots = true;
+            break;
+          }
+        }
+      }
+
+      inventories[i].has_risky_lots = hasRiskyLots;
+    }
+    res.status(200).json(inventories);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**

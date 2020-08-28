@@ -1,4 +1,4 @@
-<div style="cursor: pointer;" ng-click="grid.appScope.toggleTooltip(row.entity)" translate-attr="{'title': 'LOTS.SHOW_WARNINGS' }" class="ui-grid-cell-contents text-center" translate>
+<div ng-if="!row.groupHeader" style="cursor: pointer;" ng-click="grid.appScope.toggleTooltip(row.entity)" translate-attr="{'title': 'LOTS.SHOW_WARNINGS' }" class="ui-grid-cell-contents text-center" translate>
   <span 
     uib-popover-template="'warningLotsMessage.html'" 
     popover-trigger="none" 
@@ -19,15 +19,15 @@
 
   <!-- expiration risk -->
   <div ng-if="row.entity.lots.length">
-    <div ng-repeat="lot in row.entity.lots | limitTo: 3">
+    <div ng-repeat="lot in row.entity.lots track by lot.uuid | limitTo: 3">
       <i class="fa fa-warning text-danger"></i> 
       <span class="text-danger" 
         translate="LOTS.RISK_OF_EXPIRATION"
         translate-values="{
-          quantity : row.entity.quantity,
-          unit : row.entity.unit_type,
-          label : row.entity.label,
-          expiration : row.entity.delay_expiration
+          quantity : lot.quantity,
+          unit : lot.unit_type,
+          label : lot.label,
+          expiration : lot.delay_expiration
         }"></span>
     </div>
   </div>

@@ -43,7 +43,7 @@ function StockInventoriesController(
     displayName      : 'STOCK.INVENTORY_GROUP',
     headerCellFilter : 'translate',
   }, {
-    field            : 'warning',
+    field            : 'has_risky_lots',
     displayName      : 'STOCK.LOTS',
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
