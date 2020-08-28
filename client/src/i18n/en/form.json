@@ -539,6 +539,7 @@
             "MEMBERSHIP_FEE": "Membership fees",
             "MENU": "Menu",
             "MIDDLE_NAME": "Middle Name",
+            "MIN_MONTHS_SECURITY_STOCK": "Minimum number of months of security stock",
             "MONTH_CUMUL" : "Accumulated Monthly",
             "MONTH_ECART" : "Monthly Difference",
             "MONTH_IMPOT" : "Monthly Impot",

@@ -26,7 +26,7 @@ function CashPaymentsRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('finds only two payment for today', async () => {
+  it('finds only two payments for today', async () => {
     const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('today');

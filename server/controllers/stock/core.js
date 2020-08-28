@@ -226,6 +226,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
+      d.min_months_security_stock,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
@@ -291,7 +292,8 @@ async function getLotsMovements(depotUuid, params) {
   const sql = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description,
-      d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
+      d.text AS depot_text, d.min_months_security_stock,
+      IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
       l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
       BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
@@ -401,19 +403,13 @@ function getLotsOrigins(depotUuid, params) {
  *
  * DEFINITIONS:
  *   S_SEC: Security Stock - one month of stock on hand based on the average consumption.
- *   S_MIN: Minimum stock - twice the security stock.
+ *   S_MIN: Minimum stock - typically the security stock (depends on the depot)
  *   S_RP: Risk of Expiration.
  */
 function stockManagementProcess(inventories) {
   let CM;
   let Q;
   let CM_NOT_ZERO;
-
-  // @const the minimum months of stock to keep on hand as security stock
-  // This affects the calculation of the minimum stock
-  // NOTE(@jniles) - should this be moved into some database variable or
-  // global constant?
-  const MIN_MONTHS_OF_SECURITY_STOCK = 2;
 
   for (let i = 0; i < inventories.length; i++) {
     const inventory = inventories[i];
@@ -436,7 +432,7 @@ function stockManagementProcess(inventories) {
 
     // Compute Minimum Stock
     // The minumum of stock required is double the security stock.
-    inventory.S_MIN = inventory.S_SEC * MIN_MONTHS_OF_SECURITY_STOCK; // stock minimum
+    inventory.S_MIN = inventory.S_SEC * inventory.min_months_security_stock;
 
     // Compute Maximum Stock
     // The maximum stock is the minumum stock plus the amount able to be consumed in a
@@ -709,7 +705,8 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption, ena
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
-      d.text AS depot_text, l.unit_cost, l.expiration_date,
+      d.text AS depot_text, d.min_months_security_stock,
+      l.unit_cost, l.expiration_date,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
@@ -846,7 +843,8 @@ function getInventoryMovements(params) {
 
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
-      d.text AS depot_text, l.unit_cost, l.expiration_date,
+      d.text AS depot_text, d.min_months_security_stock,
+      l.unit_cost, l.expiration_date,
       m.quantity, m.is_exit, m.date,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
