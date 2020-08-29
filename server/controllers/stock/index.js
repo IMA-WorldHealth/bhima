@@ -642,10 +642,16 @@ async function listInventoryDepot(req, res, next) {
           }
         }
       }
-
       inventories[i].has_risky_lots = hasRiskyLots;
     }
-    res.status(200).json(inventories);
+
+    let rows = inventories;
+
+    if (params.show_only_risky) {
+      rows = inventories.filter(item => item.has_risky_lots === true);
+    }
+
+    res.status(200).json(rows);
   } catch (error) {
     next(error);
   }

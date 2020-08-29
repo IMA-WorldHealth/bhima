@@ -205,7 +205,8 @@
     "CLICK_TO_SEE":"Click here to see lots",
     "SHOW_WARNINGS":"Click to show Warnings",
     "NO_RISK_OF_EXPIRATION":"No lots with expiration risk",
-    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} of the lot {{label}}, expiration : {{expiration}}"
+    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} of the lot {{label}}, expiration : {{expiration}}",
+    "SHOW_ONLY_RISKY":"Show only inventories with risky lots"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"

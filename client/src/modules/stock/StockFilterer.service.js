@@ -33,6 +33,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'is_expired', label : 'STOCK.EXPIRED' },
     { key : 'tag_uuid', label : 'TAG.LABEL' },
     { key : 'tags', label : 'TAG.LABEL' },
+    { key : 'show_only_risky', label : 'LOTS.SHOW_ONLY_RISKY' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

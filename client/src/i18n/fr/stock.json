@@ -207,7 +207,8 @@
     "CLICK_TO_SEE":"Cliquez ici pour voir les lots",
     "SHOW_WARNINGS":"Cliquer pour afficher les avertissements",
     "NO_RISK_OF_EXPIRATION":"Aucun lots à risque de péremption",
-    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} du lot {{label}}, expiration : {{expiration}}"
+    "RISK_OF_EXPIRATION":"{{quantity}} {{unit}} du lot {{label}}, expiration : {{expiration}}",
+    "SHOW_ONLY_RISKY":"Afficher uniquement les articles ayant des lots à risque"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"

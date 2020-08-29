@@ -43,12 +43,6 @@ function StockInventoriesController(
     displayName      : 'STOCK.INVENTORY_GROUP',
     headerCellFilter : 'translate',
   }, {
-    field            : 'has_risky_lots',
-    displayName      : 'STOCK.LOTS',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
-    width            : 50,
-  }, {
     field            : 'quantity',
     displayName      : 'STOCK.QUANTITY',
     headerCellFilter : 'translate',
@@ -59,6 +53,11 @@ function StockInventoriesController(
     displayName      : 'TABLE.COLUMNS.UNIT',
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html',
+  }, {
+    field            : 'has_risky_lots',
+    displayName      : '',
+    cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
+    width            : 50,
   }, {
     field            : 'status',
     displayName      : 'STOCK.STATUS.LABEL',
