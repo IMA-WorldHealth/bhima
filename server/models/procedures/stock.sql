@@ -372,8 +372,8 @@ CREATE PROCEDURE `computeStockQuantity` (
       ORDER BY  `date`
     ) AS x
     ORDER BY x.date;
-    
-    
+
+
     SET @row_i = 0;
     SET _row_uuid = NULL;
 
@@ -397,7 +397,7 @@ CREATE PROCEDURE `computeStockQuantity` (
       AND DATE(`start_date`) <= _start_date
     ORDER BY `start_date` DESC
     LIMIT 1;
-    
+
 
     IF @date_exists = 0 THEN
       SET _row_uuid  = HUID(uuid());
