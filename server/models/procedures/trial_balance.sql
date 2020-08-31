@@ -94,6 +94,10 @@ USAGE: CALL TrialBalanceErrors()
 */
 CREATE PROCEDURE TrialBalanceErrors()
 BEGIN
+  DECLARE title_account_id INT UNSIGNED DEFAULT NULL;
+
+  -- @const the account type for title accounts is 6.
+  SET title_account_id = 6;
 
   -- this will hold our error cases
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_errors (
@@ -102,6 +106,14 @@ BEGIN
     error_description TEXT,
     code TEXT
   );
+
+  -- check if there are any title accounts in the mix
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(a.number,' - ', a.label) as error_description, 'POSTING_JOURNAL.ERRORS.HAS_TITLE_ACCOUNT_BALANCE' AS code
+    FROM posting_journal AS pj
+      JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
+      JOIN account a ON pj.account_id = a.id
+    WHERE a.type_id = title_account_id GROUP BY pj.record_uuid;
 
   -- check if dates are in the correct period
   INSERT INTO stage_trial_balance_errors

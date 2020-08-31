@@ -35,6 +35,7 @@
       "EDIT_INVALID_ACCOUNT" : "Transaction avec des comptes non valides",
       "EDIT_INVALID_ENTITY" : "Transaction avec une entité non valide",
       "EDIT_INVALID_REFERENCE" : "Transaction avec référence non valide",
+      "HAS_TITLE_ACCOUNT_BALANCE": "La transaction contient un compte de type titre avec un solde. Cela indique des données corrompues dans votre base de données. Pour corriger cette erreur, contactez un administrateur système.",
       "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
       "LOCKED_CREDITOR_GROUP_ACCOUNT" : "Ces transactions utilisent un compte d'un groupe de créditeurs verrouillé et peuvent avoir été faites par erreur. Pour corriger cela, modifiez les transactions ou déverrouillez le groupe de créditeurs.",
       "LOCKED_DEBTOR_GROUP_ACCOUNT" : "Ces transactions utilisent un compte d'un groupe de débiteurs verrouillé et peuvent avoir été faites par erreur. Pour corriger cela, modifiez les transactions ou déverrouillez le groupe de débiteurs.",

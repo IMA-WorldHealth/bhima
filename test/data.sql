@@ -2931,8 +2931,8 @@ INSERT INTO `voucher_item` (`uuid`, `account_id`, `debit`, `credit`, `voucher_uu
   (HUID('9317a11a-b1b2-11e8-93d6-b30828591803'), 182, 0, 100, @first_voucher, NULL, NULL),
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
   (HUID('953defee-b1b2-11e8-ac16-3b802412d42d'), 242, 0, 200, @second_voucher, NULL, NULL),
-  (HUID('97ad9a22-b1b2-11e8-acba-6b85fd27d57d'), 125, 300, 0, @third_voucher, @cash_payment, HUID('2f0b966c-b1b3-11e8-8dd2-1715a827ad9b')),
-  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL),
+  (HUID('97ad9a22-b1b2-11e8-acba-6b85fd27d57d'), 213, 300, 0, @third_voucher, @cash_payment, HUID('2f0b966c-b1b3-11e8-8dd2-1715a827ad9b')),
+  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 163, 0, 300, @third_voucher, NULL, NULL),
   (HUID('1033b476-cbbd-11e8-957e-ebcbf45a948a'), 242, 75, 0, @fourth_voucher, NULL, NULL),
   (HUID('1955afa0-cbbd-11e8-84bd-03f165897e6a'), 188, 0, 75, @fourth_voucher, NULL, NULL);
 
