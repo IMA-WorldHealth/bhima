@@ -707,3 +707,25 @@ CREATE TABLE `lot_tag` (
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+/*
+ * @author: jeremielodi 
+   on @jniles PR https://github.com/IMA-WorldHealth/bhima/pull/4866
+ * @date: 2020-08-31
+ */
+DROP TABLE IF EXISTS `stock_movement_status`;
+CREATE TABLE  `stock_movement_status` (
+    `uuid` BINARY(16),
+    `start_date` DATE,
+    `end_date` DATE,
+    `quantity` DECIMAL(19,4),
+    `in_quantity` DECIMAL(19,4),
+    `out_quantity` DECIMAL(19,4),
+    `inventory_uuid` BINARY(16),
+    `depot_uuid` BINARY(16),
+    PRIMARY KEY(`uuid`),
+    KEY `depot_uuid` (`depot_uuid`),
+    KEY `inventory_uuid` (`inventory_uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
