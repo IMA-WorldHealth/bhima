@@ -283,6 +283,9 @@ Computes the quantity in stock from the startDate until now for a given inventor
 
 Originally written by @jeremielodi
 */
+
+DELIMITER $$
+
 DROP PROCEDURE IF EXISTS `computeStockQuantity`$$
 CREATE PROCEDURE `computeStockQuantity` (
   IN _start_date DATE,
@@ -291,25 +294,10 @@ CREATE PROCEDURE `computeStockQuantity` (
 ) BEGIN
   DECLARE done BOOLEAN;
   DECLARE _depot_uuid, _row_uuid BINARY(16);
-  DECLARE _inventory_name TEXT;
   DECLARE _end_date DATE;
   DECLARE _qtt, _in_qtt, _out_qtt DECIMAL(19, 4);
 
-  -- DROP TEMPORARY TABLE IF EXISTS `stock_movement_status`;
-  CREATE TEMPORARY TABLE IF NOT EXISTS `stock_movement_status` (
-    `uuid` BINARY(16),
-    `start_date` DATE,
-    `end_date` DATE,
-    `quantity` DECIMAL(19,4),
-    `in_quantity` DECIMAL(19,4),
-    `out_quantity` DECIMAL(19,4),
-    `inventory_uuid` BINARY(16),
-    `inventory_name` varchar(100),
-    `depot_uuid` BINARY(16),
-    PRIMARY KEY(`uuid`),
-    KEY `depot_uuid` (`depot_uuid`),
-    KEY `inventory_uuid` (`inventory_uuid`)
-   ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 
   DROP TEMPORARY TABLE IF EXISTS `temp_stock_movement`;
@@ -339,6 +327,7 @@ CREATE PROCEDURE `computeStockQuantity` (
   ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
   SET _end_date = NOW();
+  SET _start_date = DATE(_start_date);
   SET @depot_number = 0;
 
   DELETE FROM `temp_depot`;
@@ -378,12 +367,13 @@ CREATE PROCEDURE `computeStockQuantity` (
       FROM `stock_movement` m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-      WHERE i.uuid = _inventory_uuid AND m.date <= _end_date AND m.depot_uuid =  @depot_uuid
+      WHERE i.uuid = _inventory_uuid AND DATE(m.date) <= DATE(_end_date) AND m.depot_uuid =  @depot_uuid
       GROUP BY  DATE(m.date), m.depot_uuid
       ORDER BY  `date`
     ) AS x
     ORDER BY x.date;
-
+    
+    
     SET @row_i = 0;
     SET _row_uuid = NULL;
 
@@ -391,12 +381,11 @@ CREATE PROCEDURE `computeStockQuantity` (
     FROM temp_stock_movement m
       JOIN inventory i ON i.uuid = m.inventory_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
-    WHERE m.date <=_start_date AND m.depot_uuid = @depot_uuid
+    WHERE DATE(m.date) <=_start_date AND m.depot_uuid = @depot_uuid
     LIMIT 1;
-
     SET _qtt = IFNULL(_qtt, 0);
 
-    DELETE FROM temp_stock_movement WHERE `date`<=_start_date AND `depot_uuid` = @depot_uuid;
+    DELETE FROM temp_stock_movement WHERE DATE(`date`) <=_start_date AND `depot_uuid` = @depot_uuid;
 
     -- check if this date already exist in stock_movement_status for the inventory
     SET @date_exists = 0;
@@ -405,13 +394,14 @@ CREATE PROCEDURE `computeStockQuantity` (
       INTO _row_uuid,  @date_exists
     FROM `stock_movement_status`
     WHERE `depot_uuid` = @depot_uuid AND `inventory_uuid` = _inventory_uuid
-      AND `start_date` <= _start_date
+      AND DATE(`start_date`) <= _start_date
     ORDER BY `start_date` DESC
     LIMIT 1;
+    
 
     IF @date_exists = 0 THEN
       SET _row_uuid  = HUID(uuid());
-      INSERT INTO  `stock_movement_status` VALUES (_row_uuid, _start_date, _start_date, _qtt, 0, 0, _inventory_uuid, _inventory_name, @depot_uuid);
+      INSERT INTO  `stock_movement_status` VALUES (_row_uuid, _start_date, _start_date, _qtt, 0, 0, _inventory_uuid, @depot_uuid);
     END IF;
 
     SELECT `reference` INTO @row_i
@@ -445,7 +435,7 @@ CREATE PROCEDURE `computeStockQuantity` (
         IF @current_qtt <> _qtt THEN
           SET _row_uuid = HUID(UUID());
           SET _qtt = @current_qtt + _qtt;
-          INSERT INTO  `stock_movement_status` VALUES (_row_uuid, @current_date, @current_date, _qtt, _in_qtt, _out_qtt, _inventory_uuid, _inventory_name,  @depot_uuid);
+          INSERT INTO  `stock_movement_status` VALUES (_row_uuid, @current_date, @current_date, _qtt, _in_qtt, _out_qtt, _inventory_uuid,  @depot_uuid);
         END IF;
         SET @row_i= @row_i + 1;
       END WHILE;
@@ -456,6 +446,25 @@ CREATE PROCEDURE `computeStockQuantity` (
     SET @depot_counter = @depot_counter +1;
     SET _row_uuid = NULL;
   END WHILE;
+END$$
+
+
+DROP PROCEDURE IF EXISTS `computeStockQuantityByLotUuid`$$
+CREATE PROCEDURE `computeStockQuantityByLotUuid` (
+  IN _start_date DATE,
+  IN _lot_uuid BINARY(16),
+  IN _depot_filter_uuid BINARY(16)
+)
+BEGIN
+
+  DECLARE _inventory_uuid BINARY(16);
+  SELECT inventory_uuid
+  INTO _inventory_uuid
+  FROM lot
+  WHERE uuid = _lot_uuid
+  LIMIT 1;
+
+  CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_filter_uuid);
 END$$
 
 DELIMITER ;

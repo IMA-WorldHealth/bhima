@@ -199,7 +199,7 @@ CALL zComputeAllInventoryStockQuantities(startDate, depotUuid)
 
 DESCRIPTION
 Recomputes the quantity in stock for all inventory items for a given depot.
-
+If _depot_uuid is NULL, Recomputation will be done for every depots
 */
 DROP PROCEDURE IF EXISTS zComputeAllInventoryStockQuantities $$
 CREATE PROCEDURE zComputeAllInventoryStockQuantities (
