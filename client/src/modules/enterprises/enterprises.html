@@ -236,6 +236,17 @@
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
               </div>
+              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.default_min_months_security_stock.$invalid }">
+                <label class="control-label" translate>
+                  ENTERPRISE.SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
+                </label>
+                <input type="number" class="form-control" autocomplete="off"
+                  name="default_min_months_security_stock" ng-model="EnterpriseCtrl.enterprise.settings.default_min_months_security_stock"
+                  ng-change="EnterpriseCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
+                <div class="help-block" ng-messages="EnterpriseForm.default_min_months_security_stock.$error" ng-show="EnterpriseForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
 
               <bh-yes-no-radios
                 label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"

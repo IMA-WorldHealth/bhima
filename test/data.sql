@@ -2973,8 +2973,8 @@ SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
 SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");
 
 INSERT INTO `depot` VALUES
-  (@depot_uuid, 'Depot Principal', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL),
-  (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL);
+  (@depot_uuid, 'Depot Principal', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2),
+  (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3);
 
 -- Set Depot Management By User
 INSERT INTO depot_permission (user_id, depot_uuid) VALUES
@@ -2987,11 +2987,11 @@ SET @multivitamine = HUID('f6556e72-9d05-4799-8cbd-0a03b1810185');
 
 -- stock lots
 INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`) VALUES
-  (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 100, 1.2000, date_add(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
-  (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 20, 0.5000, date_add(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
-  (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 200, 0.8000, date_add(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
+  (HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), 'VITAMINE-A', 100, 100, 1.2000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
+  (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 20, 0.5000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
+  (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 200, 0.8000, DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), 'QUININE-A', 100, 100, 1.2000, '2017-04-30', @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
-  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, date_add(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25');
+  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25');
 
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES
@@ -3005,10 +3005,14 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
 -- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES
   (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, NULL, '2019-10-28 13:02:07', 201910),
-  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35', 201910);
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, NULL, '2019-10-28 13:03:35', 201910),
+  (0x00068A69CBF54B10960234E913B6EE2C, 0xB88D7A6CCA094F0689C03738DC55C3CC, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x064AB1D952464402AE8A958FCDB07B35, 0x274C51AEEFCC423898C6F402BFB39866, 'Distribution to Test 2 Patient', 9, DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK),  10, 1.2000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), '%Y%m')),
+  (0xA45397EC170B43D7A246947BFE40EE81, 0x63C5CBB248CE452B97FF0D6BD6B9120B, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, 0xD1D7F856D41444008B948BA9445A2BC0, 'Distribution to the patient Employee Test 1', 9, DATE_ADD(CURRENT_DATE, INTERVAL -2 WEEK), 5, 0.8000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -2 WEEK), DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -2 WEEK), '%Y%m'));
 
 INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
-  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
+  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80),
+  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), '%Y%m'),  10),
+  (0xF6556E729D0547998CBD0A03B1810185, 0xF9CAEB16168443C5A6C447DBAC1DF296, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), '%Y%m'),  5);
 
 -- Rubric Payroll
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `value`) VALUES

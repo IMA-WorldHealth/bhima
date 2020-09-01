@@ -11,6 +11,7 @@
     "UPDATE_LOGO":"Update the enterprise logo",
     "SETTINGS" : {
       "TITLE" : "Enterprise Settings",
+      "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
       "ENABLE_PRICE_LOCK_LABEL" : "Lock Price Changes for Patient Invoicing",
       "ENABLE_PRICE_LOCK_HELP_TEXT" : "Enable to prohibit users from modifying the prices of inventory items in the Patient Invoice module.",
       "ENABLE_PREPAYMENTS_LABEL" : "Enable Cash Prepayments",

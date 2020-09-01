@@ -119,6 +119,18 @@
       </div>
     </div>
 
+    <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.min_months_security_stock.$invalid }">
+      <label class="control-label" translate>
+        FORM.LABELS.MIN_MONTHS_SECURITY_STOCK
+      </label>
+      <input name="min_months_security_stock" class="form-control" ng-model="DepotModalCtrl.depot.min_months_security_stock"
+        type="number" min="1" autocomplete="off" required bh-integer>
+      <div class="help-block" ng-show="DepotForm.$submitted"
+           ng-messages="DepotForm.min_months_security_stock.$error">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">

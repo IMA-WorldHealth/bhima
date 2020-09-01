@@ -707,3 +707,11 @@ CREATE TABLE `lot_tag` (
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: jmcameron
+ * @date: 2020-08-28
+ * @description: add min_months_security_stock to enterprise and depot tables
+ */
+ALTER TABLE `depot` ADD COLUMN `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2;
+ALTER TABLE `enterprise_setting` ADD COLUMN `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2;

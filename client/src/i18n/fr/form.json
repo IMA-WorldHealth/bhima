@@ -543,6 +543,7 @@
             "MEMBERSHIP_FEE": "Cotisations",
             "MENU": "Menu",
             "MIDDLE_NAME": "Post-nom",
+            "MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois de stock de sécurité",
             "MONTH_CUMUL" : "Cumul Mensuel",
             "MONTH_ECART" : "Ecart Mensuel",
             "MONTH_IMPOT" : "Impot Mensuel",

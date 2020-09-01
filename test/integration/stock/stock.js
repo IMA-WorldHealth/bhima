@@ -38,7 +38,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   // list all movement relatives to 'Depot Principal'
   it(
     `GET /stock/lots/movements?depot_uuid=...
-    returns movements for Depot Principal (13: 10 IN + 3 OUT)`,
+    returns movements for Depot Principal`,
     async () => {
       const res = await agent.get(`/stock/lots/movements?depot_uuid=${shared.depotPrincipalUuid}`);
       helpers.api.listed(res, shared.depotPrincipalMvt);
@@ -47,10 +47,10 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // list all movement relatives to patient 'PA.TPA.2'
   it(
-    `GET /stock/lots/movements?patientReference=PA.TPA.2 returns two movements for patient PA.TPA.2`,
+    `GET /stock/lots/movements?patientReference=PA.TPA.2 returns three movements for patient PA.TPA.2`,
     async () => {
       const res = await agent.get('/stock/lots/movements').query({ patientReference : 'PA.TPA.2' });
-      helpers.api.listed(res, 3);
+      helpers.api.listed(res, 4);
     },
   );
 
@@ -67,17 +67,17 @@ describe('(/stock/) The Stock HTTP API', () => {
   // list all stock exit relatives to 'Depot Principal'
   it(
     `GET /stock/lots/movements?is_exit=1&depot_uuid=...
-    returns exits for Depot Principal (3 OUT)`,
+    returns exits for Depot Principal (5 OUT)`,
     async () => {
       const res = await agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${shared.depotPrincipalUuid}`);
-      helpers.api.listed(res, 6);
+      helpers.api.listed(res, 8);
     },
   );
 
   // (report) render all stock exit
   it(
     `GET /reports/stock/lots?renderer=json
-    returns exits for all depots (10 OUT)`,
+    returns exits for all depots (12 OUT)`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json`);
       expect(res.body.rows.length).to.equal(22);
@@ -87,7 +87,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   // (report) render all stock exit relatives to 'Depot Principal'
   it(
     `GET /reports/stock/lots?renderer=json
-    returns exits for Depot principal(10 OUT)`,
+    returns exits for Depot principal(12 OUT)`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json&depot_uuid=${shared.depotPrincipalUuid}`);
       expect(res.body.rows.length).to.equal(20);
@@ -136,7 +136,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/lots/movements filters on user`, async () => {
     const res = await agent.get('/stock/lots/movements').query({ user_id : 1 });
-    helpers.api.listed(res, 28);
+    helpers.api.listed(res, 30);
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
@@ -170,12 +170,12 @@ describe('(/stock/) The Stock HTTP API', () => {
 
     helpers.api.listed(res, 4);
 
-    expect(res.body[1].quantity).to.equal(150);
-    expect(res.body[1].avg_consumption).to.equal(10);
-    expect(res.body[1].S_SEC).to.equal(10);
-    expect(res.body[1].S_MIN).to.equal(20);
-    expect(res.body[1].S_MAX).to.equal(20);
-    expect(res.body[1].S_MONTH).to.equal(15);
+    expect(res.body[1].quantity).to.equal(140);
+    expect(res.body[1].avg_consumption).to.equal(8);
+    expect(res.body[1].S_SEC).to.equal(8);
+    expect(res.body[1].S_MIN).to.equal(16);
+    expect(res.body[1].S_MAX).to.equal(16);
+    expect(res.body[1].S_MONTH).to.equal(17);
 
     expect(res.body[2].quantity).to.equal(180300);
     expect(res.body[2].avg_consumption).to.equal(49916.67);

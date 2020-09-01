@@ -11,6 +11,7 @@
     "UPDATE_LOGO":"Mettre à jour le logo",
     "SETTINGS" : {
       "TITLE" : "Parametres de l'Enterprise",
+      "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
       "ENABLE_PRICE_LOCK_LABEL" : "Verrouiller les changements de prix pour la facturation des patients",
       "ENABLE_PRICE_LOCK_HELP_TEXT" : "L'activation de cette fonctionnalité empêchera les utilisateurs de modifier les prix des articles en stock dans le module Facturation de Patients.",
       "ENABLE_PREPAYMENTS_LABEL" : "Activer les Cautions",
