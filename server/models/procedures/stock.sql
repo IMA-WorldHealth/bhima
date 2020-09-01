@@ -334,19 +334,19 @@ CREATE PROCEDURE `computeStockQuantity` (
 
   SET @filter_by_depot = (_depot_filter_uuid IS NOT NULL);
 
-  IF @filter_by_depot = 0  THEN -- will work for each depot
+  IF @filter_by_depot = 0  THEN -- will compute inventory's quantity in each depot
     INSERT INTO `temp_depot`
     SELECT (@depot_number:=@depot_number + 1)as ref, `uuid`, `text`
     FROM depot;
   ELSE
-    INSERT INTO `temp_depot`  -- will work just for a specific depot
+    INSERT INTO `temp_depot`  -- will compute inventory's quantity just in a specific depot
     SELECT (@depot_number := @depot_number + 1) as ref, `uuid`, `text`
     FROM depot
     WHERE `uuid` = _depot_filter_uuid;
   END IF;
 
   SET @depot_counter = 1;
-  -- let's loop throw all inventories
+  -- let's loop through all inventories
 
   WHILE (@depot_counter <= @depot_number) DO
     SET @depot_uuid = (SELECT `uuid` FROM `temp_depot` WHERE `reference` = @depot_counter);
@@ -373,7 +373,6 @@ CREATE PROCEDURE `computeStockQuantity` (
     ) AS x
     ORDER BY x.date;
 
-
     SET @row_i = 0;
     SET _row_uuid = NULL;
 
@@ -397,7 +396,6 @@ CREATE PROCEDURE `computeStockQuantity` (
       AND DATE(`start_date`) <= _start_date
     ORDER BY `start_date` DESC
     LIMIT 1;
-
 
     IF @date_exists = 0 THEN
       SET _row_uuid  = HUID(uuid());
@@ -465,6 +463,85 @@ BEGIN
   LIMIT 1;
 
   CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_filter_uuid);
+END$$
+
+
+/*
+ This procedure is designed for calculating the CMM for an inventory in a depot during a period
+ It actually retrieve the CMM value for each aglorithm we have so we get just choose which one to use
+*/
+DROP PROCEDURE IF EXISTS `getCMM`$$
+CREATE PROCEDURE `getCMM` (
+  IN _start_date DATE,
+  IN _end_date DATE,
+  IN _inventory_uuid BINARY(16),
+  IN _depot_uuid BINARY(16)
+  )
+  BEGIN
+
+  SET @last_inventory_mvt_date = NULL;
+  --
+  SELECT `end_date`
+  INTO  @last_inventory_mvt_date
+  FROM stock_movement_status m
+  JOIN inventory i ON m.inventory_uuid = i.uuid
+  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
+  ORDER BY `end_date` DESC LIMIT 1;
+
+
+  SET @sum_consumed_quantity = 0;
+  SET @sum_stock_day = 0;
+  SET @sum_consumption_day =0;
+  SET @sum_stock_out_days = 0;
+
+  SET @sum_days = DATEDIFF( @end_date,  @start_date) + 1;
+  SET @number_of_month = (DATEDIFF(@end_date,  @start_date) + 1)/30.5;
+
+
+  SELECT
+      SUM(cmm_data.out_quantity) AS sum_consumed_quantity,
+    SUM(IF(cmm_data.out_quantity <> 0, cmm_data.frequency, 0)) AS sum_consumption_day,
+    SUM(IF(cmm_data.in_stock_quantity = 0, cmm_data.frequency, 0)) AS sum_stock_out_days,
+    SUM(IF(cmm_data.in_stock_quantity <> 0, cmm_data.frequency, 0)) AS sum_stock_day
+  INTO @sum_consumed_quantity, @sum_consumption_day, @sum_stock_day, @sum_stock_out_days
+  FROM (
+      SELECT x.start_date, x.end_date, x.in_quantity, x.out_quantity, x.in_stock_quantity,
+          x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) +1) AS frequency
+      FROM (
+          SELECT
+
+          IF(m.start_date <@start_date, @start_date, m.start_date) AS start_date ,
+          IF(m.end_date > @end_date, @end_date,  IF(m.end_date = @last_inventory_mvt_date AND
+                  @last_inventory_mvt_date < @end_date, @end_date, m.end_date )) AS end_date,
+
+          in_quantity, out_quantity, m.quantity AS `in_stock_quantity`,
+          i.text as 'inventory', d.text AS `depot`
+          FROM stock_movement_status m
+          JOIN depot d ON d.uuid = m.depot_uuid
+          JOIN inventory i ON i.uuid = m.inventory_uuid
+
+          WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
+              AND  ((m.start_date >= @start_date) OR  (m.start_date <= @start_date AND m.end_date >= @start_date))
+              AND ( (m.end_date <=  @end_date) OR ( m.start_date < @end_date ))
+          ORDER BY d.text
+      ) AS `x`
+  ) AS `cmm_data`;
+
+
+
+  SET @algo1 = ( @sum_consumed_quantity/(IF((@sum_stock_day = NULL) OR (@sum_stock_day = 0),1, @sum_stock_day)))*30.5;
+
+  SET @algo2 = ((@sum_consumed_quantity)/(IF( (@sum_consumption_day = NULL) OR @sum_consumption_day = 0,1, @sum_consumption_day)))  * 30.5;
+
+  SET @algo3 =((@sum_consumed_quantity)/ (IF(@sum_days = NULL OR @sum_days = 0,1, @sum_days)))*30.5;
+
+  SET @algo_msh = (@sum_consumed_quantity/(@number_of_month - (@sum_stock_out_days/30.5) ));
+
+
+  -- SELECT @sum_consumed_quantity, @sum_consumption_day, @sum_stock_day, @sum_stock_out_days, @number_of_month, @sum_days;
+
+  SELECT @algo1, @algo2, @algo3, @algo_msh;
+
 END$$
 
 DELIMITER ;
