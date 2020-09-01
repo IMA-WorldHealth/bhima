@@ -11,7 +11,7 @@
         <span><i class="fa fa-file-o"></i> <span translate>FORM.LABELS.DOCUMENT</span></span>
       </a>
     </li>
-    <li>
+    <li ng-if="row.entity.status_key === 'in_progress'">
       <a data-method="remove-record" href ng-click="grid.appScope.removeRequisition(row.entity.uuid)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
       </a>
