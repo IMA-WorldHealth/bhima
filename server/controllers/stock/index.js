@@ -138,6 +138,15 @@ async function createStock(req, res, next) {
   }
 }
 
+/**
+ * @function updateQuantityInStockAfterMovement
+ *
+ * @description
+ * This function is called after each stock movement to ensure that the quantity in stock is updated in
+ * the stock_movement_status table.  It takes in an array of inventory uuids, the date, and the depot's
+ * identifier.  To reduce churn, it first filers out duplicate inventory uuids before calling the stored
+ * procedure.
+ */
 function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid) {
   const txn = db.transaction();
 
@@ -165,7 +174,6 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
  */
 async function insertNewStock(session, params, originTable = 'integration') {
   const transaction = db.transaction();
-  const transaction2 = db.transaction();
   const identifier = uuid();
   const documentUuid = uuid();
 
@@ -182,8 +190,6 @@ async function insertNewStock(session, params, originTable = 'integration') {
   const sql = `INSERT INTO ${originTable} SET ?`;
 
   transaction.addQuery(sql, [integration]);
-
-  const recomputeCMMDataQuery = `CALL computeStockQuantityByLotUuid(?, ?, ?);`;
 
   params.lots.forEach((lot) => {
     const lotUuid = uuid();
@@ -216,12 +222,6 @@ async function insertNewStock(session, params, originTable = 'integration') {
       description : params.movement.description,
       period_id : periodId,
     });
-
-    // aggregate data for CMM calculation
-    transaction2.addQuery(recomputeCMMDataQuery, [
-      new Date(params.movement.date),
-      db.bid(lotUuid),
-      db.bid(params.movement.depot_uuid)]);
   });
 
   // gather inventory uuids for use later recomputing the stock quantities
@@ -412,7 +412,6 @@ async function normalMovement(document, params, metadata) {
   let createMovementObject;
 
   const transaction = db.transaction();
-  const transaction2 = db.transaction();
   const parameters = params;
 
   const isDistributable = !!(
@@ -421,9 +420,6 @@ async function normalMovement(document, params, metadata) {
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
   parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
-
-  // aggregate data for CMM calculation
-  const recomputeCMMDataQuery = `CALL computeStockQuantityByLotUuid(?, ?, ?);`;
 
   parameters.lots.forEach((lot) => {
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
@@ -447,10 +443,6 @@ async function normalMovement(document, params, metadata) {
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
 
-    transaction2.addQuery(recomputeCMMDataQuery, [
-      document.date,
-      db.bid(lot.uuid),
-      db.bid(parameters.depot_uuid)]);
     // track distribution to patient and service
     if (isDistributable) {
       const consumptionParams = [
@@ -461,7 +453,7 @@ async function normalMovement(document, params, metadata) {
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
-  const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
+  const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
   const projectId = metadata.project.id;
   const currencyId = metadata.enterprise.currency_id;
@@ -487,7 +479,6 @@ async function depotMovement(document, params) {
 
   let isWarehouse;
   const transaction = db.transaction();
-  const transaction2 = db.transaction();
   const parameters = params;
   const isExit = parameters.isExit ? 1 : 0;
 
@@ -499,7 +490,6 @@ async function depotMovement(document, params) {
   const entityUuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
   const fluxId = isExit ? core.flux.TO_OTHER_DEPOT : core.flux.FROM_OTHER_DEPOT;
 
-  const recomputeCMMDataQuery = `CALL computeStockQuantityByLotUuid(?, ?, ?);`;
   parameters.lots.forEach((lot) => {
     record = {
       depot_uuid : depotUuid,
@@ -520,11 +510,6 @@ async function depotMovement(document, params) {
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
 
     isWarehouse = !!(parameters.from_depot_is_warehouse);
-
-    transaction2.addQuery(recomputeCMMDataQuery, [
-      document.date,
-      db.bid(lot.uuid),
-      depotUuid]);
 
     // track distribution to other depot from a warehouse
     if (record.is_exit && isWarehouse) {

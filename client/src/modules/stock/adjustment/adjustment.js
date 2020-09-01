@@ -243,6 +243,7 @@ function StockAdjustmentController(
         uuid : row.lot.uuid,
         quantity : row.quantity,
         unit_cost : row.lot.unit_cost,
+        inventory_uuid : row.lot.inventory_uuid,
       };
     });
 
