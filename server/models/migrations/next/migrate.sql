@@ -1,10 +1,12 @@
 /* migration script from the version 1.14.0 to the next */
+    /* migration script from the version 1.14.0 to the next */
+    /*
+    @jeremielodi
+    2020-08-06
+    rename all foreign key constraints
+    */
 
-/*
-@jeremielodi
-2020-08-06
-rename all foreign key constraints
-*/
+
 
 -- DROP all foreign keys from a table
 
@@ -385,7 +387,6 @@ DELIMITER ;
     ALTER TABLE `province` ADD CONSTRAINT `province__country` FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`);
 
 
-
     CALL drop_constraints('purchase');
     ALTER TABLE `purchase` 
     ADD CONSTRAINT `purchase__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
@@ -688,22 +689,117 @@ UPDATE `report` SET
 WHERE report_key = "collectionCapacity";
 
 /*
- * @author: mbayopanda
- * @date: 2020-08-17
- * @description: add address field in the enterprise table
+ * @author: lomamech
+ * @date: 2020-08-24
+ * @description: Refactor Locations management
  */
-ALTER TABLE enterprise ADD COLUMN `address` VARCHAR(200) DEFAULT NULL;
 
-/*
- * @author: mbayopanda
- * @date: 2020-07-20
- */
-ALTER TABLE `tags` ADD COLUMN `color` VARCHAR(50) NULL;
-
-DROP TABLE IF EXISTS `lot_tag`;
-CREATE TABLE `lot_tag` (
-  `lot_uuid`          BINARY(16) NOT NULL,
-  `tag_uuid`          BINARY(16) NOT NULL,
-  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
+DROP TABLE IF EXISTS `location_type`;
+CREATE TABLE `location_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `translation_key` VARCHAR(35) NOT NULL,
+  `label_name` VARCHAR(40) NOT NULL,
+  `color` VARCHAR(8) NULL,
+  `fixed` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_leaves` TINYINT(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_type_1` (`translation_key`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `location`;
+CREATE TABLE `location` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uuid` BINARY(16) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `parent` SMALLINT(6) DEFAULT 0,
+  `parent_uuid` BINARY(16) NULL,  
+  `location_type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `longitude`   DECIMAL(19, 6) NULL,
+  `latitude`    DECIMAL(19, 6) NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`uuid`),
+  CONSTRAINT `location__location_type` FOREIGN KEY (`location_type_id`) REFERENCES `location_type` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT INTO `location_type` (`id`, `translation_key`, `label_name`, `color`, `fixed`, `is_leaves`) VALUES 
+(1, 'LOCATION.LOCATION_TYPE.BOROUGH', 'borough', '#9ACD32', 1, 0),
+(2, 'LOCATION.LOCATION_TYPE.CHIEFDOM', 'chiefdom', '#DC143C', 1, 0),
+(3, 'LOCATION.LOCATION_TYPE.CITY', 'city', '#FF4500', 1, 0),
+(4, 'LOCATION.LOCATION_TYPE.COMMUNITY', 'community', '#228B22', 1, 0),
+(5, 'LOCATION.LOCATION_TYPE.COUNTIE', 'countie', '#EE82EE', 0, 0),
+(6, 'LOCATION.LOCATION_TYPE.COUNTRY', 'country', '#007FFF', 1, 0),
+(7, 'LOCATION.LOCATION_TYPE.DEPARTMENT', 'department', '#6A5ACD', 1, 0),
+(8, 'LOCATION.LOCATION_TYPE.DISTRICT', 'district', '#ffff00', 1, 0),
+(9, 'LOCATION.LOCATION_TYPE.GROUP', 'group', '#00FF00', 1, 0),
+(10, 'LOCATION.LOCATION_TYPE.NATION', 'nation', '#00FA9A', 0, 0),
+(11, 'LOCATION.LOCATION_TYPE.PREFECTURE', 'prefecture', '#7B68EE', 0, 0),
+(12, 'LOCATION.LOCATION_TYPE.PROVINCE', 'province', '#F72618', 1, 0),
+(13, 'LOCATION.LOCATION_TYPE.REGION', 'region', '#7FFF00', 1, 0),
+(14, 'LOCATION.LOCATION_TYPE.SECTOR', 'sector', '#40E0D0', 1, 0),
+(15, 'LOCATION.LOCATION_TYPE.STATE', 'state', '#9400D3', 1, 0),
+(16, 'LOCATION.LOCATION_TYPE.STREET', 'street', '#2E8B57', 1, 0),
+(17, 'LOCATION.LOCATION_TYPE.TERRITORY', 'territory', '#ED7E15', 1, 0),
+(18, 'LOCATION.LOCATION_TYPE.TOWN', 'town', '#FF7F50', 1, 0),
+(19, 'LOCATION.LOCATION_TYPE.TOWNSHIP', 'township', '#00ff00', 1, 0),
+(20, 'LOCATION.LOCATION_TYPE.VILLAGE', 'village', '#00ffff', 1, 0),
+(21, 'LOCATION.LOCATION_TYPE.ZONE', 'zone', '#8A2BE2', 1, 0);
+
+-- Script for Upload location from old tables
+-- UPLOAD country
+-- 
+INSERT INTO location (uuid, name, location_type_id)
+SELECT uuid, name, 6 AS location_type_id
+FROM country;
+
+-- UPLOAD PROVINCE
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
+SELECT p.uuid, p.name, l.id AS parent, l.uuid AS parent_uuid, 12 AS location_type_id
+FROM province AS p
+JOIN location AS l ON l.uuid = p.country_uuid;
+
+-- UPLOAD SECTOR
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id)
+SELECT s.uuid, s.name, l.id AS parent, l.uuid AS parent_uuid, 14 AS location_type_id
+FROM sector AS s
+JOIN location AS l ON l.uuid = s.province_uuid;
+
+-- UPLOAD VILLAGE
+INSERT INTO location (uuid, name, parent, parent_uuid, location_type_id, latitude, longitude)
+SELECT v.uuid, v.name, l.id AS parent, l.uuid AS parent_uuid, 20 AS location_type_id, v.latitude, v.longitude
+FROM village AS v
+JOIN location AS l ON l.uuid = v.sector_uuid;
+
+
+-- Update table enterprise
+ALTER TABLE `enterprise` DROP FOREIGN KEY `enterprise__location`;
+ALTER TABLE `enterprise` ADD CONSTRAINT `enterprise__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`);
+
+ALTER TABLE `enterprise`
+	CHANGE COLUMN `location_id` `location_uuid` BINARY(16) NULL DEFAULT NULL AFTER `email`;
+
+ALTER TABLE `enterprise` ADD COLUMN `location_default_type_root` MEDIUMINT(8) UNSIGNED NOT NULL;
+UPDATE `enterprise` SET `location_default_type_root` = 6;
+
+-- Update table debtor_group
+ALTER TABLE `debtor_group` DROP FOREIGN KEY `debtor_group__location`;
+ALTER TABLE `debtor_group` ADD CONSTRAINT `debtor_group__location` FOREIGN KEY (`location_id`) REFERENCES `location` (`uuid`);
+ALTER TABLE `debtor_group` CHANGE `location_id` `location_uuid` BINARY( 16 ) NULL DEFAULT NULL;
+
+-- UPDATE TABLE patient
+ALTER TABLE `patient` DROP FOREIGN KEY `patient__current_location`;
+ALTER TABLE `patient` ADD CONSTRAINT `patient__current_location` FOREIGN KEY (`current_location_id`) REFERENCES `location` (`uuid`);
+
+ALTER TABLE `patient` DROP FOREIGN KEY `patient__origin_location`;
+ALTER TABLE `patient` ADD CONSTRAINT `patient__origin_location` FOREIGN KEY (`origin_location_id`) REFERENCES `location` (`uuid`);
+
+-- DROP TABLE Village
+DROP TABLE `village`;
+
+-- DROP TABLE Sector
+DROP TABLE `sector`;
+
+-- DROP TABLE province
+DROP TABLE province;
+
+-- DROP TABLE country
+DROP TABLE country;

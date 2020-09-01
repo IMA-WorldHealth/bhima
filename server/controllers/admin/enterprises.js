@@ -21,15 +21,19 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT id, name, abbr, email, po_box, phone, address,
-        BUID(location_id) AS location_id, logo, currency_id,
-        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
-        enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt,
-        enable_barcodes, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation,
-        enable_auto_email_report, enable_index_payment_system,
-        month_average_consumption, enable_daily_consumption
-      FROM enterprise LEFT JOIN enterprise_setting
-        ON enterprise.id = enterprise_setting.enterprise_id
+      SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone, e.address,
+        BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
+        e.gain_account_id, e.loss_account_id, e.location_default_type_root,
+      s.enable_price_lock, s.enable_prepayments, s.enable_delete_records,
+      s.enable_password_validation, s.enable_balance_on_invoice_receipt,
+        s.enable_barcodes, s.enable_auto_stock_accounting,
+        s.enable_auto_purchase_order_confirmation,
+        s.enable_auto_email_report, s.enable_index_payment_system,
+        s.month_average_consumption, s.enable_daily_consumption,
+        l.id AS location_id
+      FROM enterprise AS e
+        JOIN location AS l ON l.uuid = e.location_uuid
+        LEFT JOIN enterprise_setting AS s ON e.id = s.enterprise_id
       ;`;
   }
 
@@ -81,10 +85,13 @@ exports.detail = function detail(req, res, next) {
 
 function lookupEnterprise(id) {
   const sql = `
-    SELECT id, name, abbr, email, po_box, phone, address,
-      BUID(location_id) AS location_id, logo, currency_id,
-      gain_account_id, loss_account_id
-    FROM enterprise WHERE id = ?;
+    SELECT e.id, e.name, e.abbr, e.email, e.po_box, e.phone, e.address,
+      BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
+      e.gain_account_id, e.loss_account_id, e.location_default_type_root,
+      l.id AS location_id
+    FROM enterprise AS e
+    JOIN location AS l ON l.uuid = e.location_uuid
+    WHERE e.id = ?;
   `;
 
   const settingsSQL = `
@@ -118,14 +125,11 @@ function lookupEnterprise(id) {
  */
 function lookupByProjectId(id) {
   const sql = `
-    SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone, e.address,
-      BUID(e.location_id) AS location_id, e.logo, e.currency_id,
-      e.gain_account_id, e.loss_account_id,
-      CONCAT_WS(' ', village.name, sector.name, province.name) AS location
+    SELECT e.id, e.name, e.abbr, e.email, e.address, e.po_box, e.phone,
+      BUID(e.location_uuid) AS location_uuid, e.logo, e.currency_id,
+      e.gain_account_id, e.loss_account_id, location.id AS location_id 
     FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
-      JOIN village ON e.location_id = village.uuid
-      JOIN sector ON village.sector_uuid = sector.uuid
-      JOIN province ON sector.province_uuid = province.uuid
+    JOIN location ON e.location_uuid = location.uuid
     WHERE p.id = ?
     LIMIT 1;
   `;
@@ -142,7 +146,8 @@ function lookupByProjectId(id) {
 
 // POST /enterprises
 exports.create = function create(req, res, next) {
-  const enterprise = db.convert(req.body.enterprise, ['location_id']);
+  const enterprise = db.convert(req.body.enterprise, ['location_uuid']);
+
   const sql = 'INSERT INTO enterprise SET ?;';
 
   db.exec(sql, [enterprise])
@@ -155,8 +160,9 @@ exports.create = function create(req, res, next) {
 
 // PUT /enterprises/:id
 exports.update = function update(req, res, next) {
+
   const sql = 'UPDATE enterprise SET ? WHERE id = ?;';
-  const data = db.convert(req.body, ['location_id']);
+  const data = db.convert(req.body, ['location_uuid']);
 
   const { settings } = data;
   delete data.settings;

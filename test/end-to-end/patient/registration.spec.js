@@ -28,12 +28,87 @@ describe('Patient Registration', () => {
     await element(by.id('male')).click();
 
     // set the locations via the "locations" array
-    await components.locationSelect.set(helpers.data.locations, 'origin-location-id');
-    await components.locationSelect.set(helpers.data.locations, 'current-location-id');
+    // await components.locationSelect.set(helpers.data.locations, 'origin-location-id');
+    // select the locations specified
+    await components.locationConfigurationSelect.set(helpers.data.locations[1].location01, 'origin-location-id');
+
+    // Location Level 2
+    const select02 = element(by.id('origin_location_id_level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(helpers.data.locations[1].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('origin_location_id_level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(helpers.data.locations[1].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('origin_location_id_level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(helpers.data.locations[1].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
+
+    // 'current-location-id'
+    await components.locationConfigurationSelect.set(helpers.data.locations[1].location01, 'current-location-id');
+
+    // Location Level 2
+    const select002 = element(by.id('current_location_id_level_0'));
+    await select002.click();
+    const filterLocation002 = helpers.selectLocationLabel(helpers.data.locations[1].location02);
+
+    const option002 = select002.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation002,
+      ),
+    );
+    await option002.click();
+    // Location Level 3
+    const select003 = element(by.id('current_location_id_level_1'));
+    await select003.click();
+    const filterLocation003 = helpers.selectLocationLabel(helpers.data.locations[1].location03);
+
+    const option003 = select003.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation003,
+      ),
+    );
+    await option003.click();
+
+    // Location Level 4
+    const select004 = element(by.id('current_location_id_level_2'));
+    await select004.click();
+    const filterLocation004 = helpers.selectLocationLabel(helpers.data.locations[1].location04);
+
+    const option004 = select004.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation004,
+      ),
+    );
+    await option004.click();
+
+    // await components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
     await components.debtorGroupSelect.set('NGO IMA World Health');
-
 
     // submit the patient registration form
     await FU.buttons.submit();

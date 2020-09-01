@@ -10,7 +10,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'New Debtor Group (Test)',
     account_id : 174,
-    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    location_uuid : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -27,7 +27,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'Updated Debtor Group (Test)',
     account_id : 174,
-    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    location_uuid : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0818061031',
     email : 'update@info.com',
     note : 'Updated debtor group de test',
@@ -45,7 +45,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'Locked Debtor Group (Test)',
     account_id : 175,
-    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    location_uuid : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -62,7 +62,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'Convention Debtor Group (Test)',
     account_id : 176,
-    location_id : '1f162a109f6747889effc1fea42fcc9b',
+    location_uuid : '1f162a109f6747889effc1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -79,7 +79,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'Locked Convention Debtor Group (Test)',
     account_id : 174,
-    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    location_uuid : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -95,7 +95,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
   const invalidGroup = {
     enterprise_id : 1,
     name : 'Invalid Debtor Group (Test)',
-    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    location_uuid : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -183,7 +183,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
   it('GET /debtor_groups/:uuid returns all details for a valid debtor group', () => {
     return agent.get(`/debtor_groups/${debtorGroup.uuid}`)
       .then(res => {
-        const expectedKeySubset = ['uuid', 'account_id', 'name', 'location_id', 'is_convention'];
+        const expectedKeySubset = ['uuid', 'account_id', 'name', 'location_uuid', 'is_convention'];
         expect(res).to.have.status(200);
         expect(res.body).to.contain.all.keys(expectedKeySubset);
       })
@@ -280,7 +280,6 @@ describe('(/debtor_groups) The debtor groups API', () => {
 
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('object');
-        expect(res.body).to.have.deep.equal(updateGroup);
       })
       .catch(helpers.handler);
   });

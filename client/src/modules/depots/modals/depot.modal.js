@@ -9,13 +9,21 @@ function DepotModalController($state, Depots, Notify) {
   const vm = this;
 
   vm.depot = $state.params.depot;
+
   vm.isCreating = !!($state.params.creating);
 
   // make sure hasLocation is set
-  vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+  if (vm.depot) {
+    vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+  }
 
   // exposed methods
+  vm.onSelectLocation = onSelectLocation;
   vm.submit = submit;
+
+  function onSelectLocation(location) {
+    vm.depot.location_uuid = location.uuid;
+  }
 
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
@@ -33,6 +41,10 @@ function DepotModalController($state, Depots, Notify) {
     if (vm.hasLocation === 0) {
       vm.depot.location_uuid = null;
     }
+
+    delete vm.depot.location_id;
+    delete vm.depot.location_name;
+    delete vm.depot.location_parent_name;
 
     const promise = (vm.isCreating)
       ? Depots.create(vm.depot)

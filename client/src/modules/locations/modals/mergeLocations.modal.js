@@ -7,20 +7,28 @@ MergeLocationsModalController.$inject = [
 
 function MergeLocationsModalController(Locations, data, Notify, Instance) {
   const vm = this;
-  let otherLocation;
 
-  vm.locations = data.locations;
-  vm.locationStatus = data.status;
-
+  vm.locations = data;
   vm.submit = submit;
   vm.cancelUiSref = cancelUiSref;
 
-  vm.selectLocation = uuid => {
-    vm.selected = uuid;
+  // Checks if the locations to be mixed are of the same types
+  vm.checkSameType = vm.locations[0].location_type_id === vm.locations[1].location_type_id;
+
+  vm.selectLocation = selected => {
+    vm.selected = {
+      id : selected.id,
+      uuid : selected.location_uuid,
+      locationTypeId : selected.location_type_id,
+    };
 
     vm.locations.forEach(location => {
-      if (location.uuid !== vm.selected) {
-        otherLocation = location.uuid;
+      if (location.location_uuid !== vm.selected.uuid) {
+        vm.otherLocation = {
+          id : location.id,
+          uuid : location.location_uuid,
+          locationTypeId : location.location_type_id,
+        };
       }
     });
   };
@@ -36,8 +44,7 @@ function MergeLocationsModalController(Locations, data, Notify, Instance) {
 
     const params = {
       selected : vm.selected,
-      other : otherLocation,
-      locationStatus : vm.locationStatus,
+      other : vm.otherLocation,
     };
 
     return Locations.merge(params)

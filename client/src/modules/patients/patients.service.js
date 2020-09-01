@@ -282,6 +282,7 @@ function PatientService(
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD' },
     { key : 'originLocationLabel', label : 'FORM.LABELS.ORIGIN_LOCATION' },
+    { key : 'currentLocationLabel', label : 'FORM.LABELS.CURRENT_LOCATION' },
   ]);
 
   if (filterCache.filters) {

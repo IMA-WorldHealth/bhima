@@ -101,15 +101,25 @@
                   required="false">
                 </bh-account-select>
 
+                <!-- loss account  -->
                 <bh-account-select
                   id="loss-account-id"
                   account-id="EnterpriseCtrl.enterprise.loss_account_id"
                   label="FORM.LABELS.LOSS_ACCOUNT"
                   name="loss_account_id"
-                  exclude-title-accounts="true"
                   on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
+                  exclude-title-accounts="true"
                   required="false">
                 </bh-account-select>
+
+                <hr/>
+                <bh-location-type-select
+                  location-type-id="EnterpriseCtrl.enterprise.location_default_type_root"
+                  label="ENTERPRISE.HIGHEST_DEFAULT_LOCATION_TYPE"
+                  name="location_default_type_root"
+                  on-select-callback="EnterpriseCtrl.onSelectLocationTypeSelect(type)"
+                  required="false">
+                </bh-location-type-select>
               </div>
 
               <div class="panel-footer text-right" id="submission">
@@ -168,10 +178,13 @@
                   </div>
                 </div>
 
-                <bh-location-select
-                  name="location_id"
-                  location-uuid="EnterpriseCtrl.enterprise.location_id">
-                </bh-location-select>
+                <bh-location-configuration-select
+                  location-id="EnterpriseCtrl.enterprise.location_id"
+                  operational-mode="true"
+                  on-select-callback="EnterpriseCtrl.onSelectLocation(location)"
+                  allow-all-root="true"
+                  required="true">
+                </bh-location-configuration-select>
 
                 <p class="text-center text-info">
                   <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">

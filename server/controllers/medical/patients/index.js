@@ -40,6 +40,7 @@ const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
 const merge = require('./merge');
+const locations = require('../../admin/locations');
 
 // bind submodules
 exports.groups = groups;
@@ -214,13 +215,14 @@ async function lookupPatient(patientUuid) {
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
       p.health_zone, p.health_area, BUID(p.origin_location_id) as origin_location_id,
-      BUID(p.current_location_id) as current_location_id, em.text AS reference,
-      p.title, p.address_1, p.address_2, p.father_name, p.mother_name,
+      BUID(p.current_location_id) as current_location_id, BUID(p.origin_location_id) as origin_location_id,
+      em.text AS reference, p.title, p.address_1, p.address_2, p.father_name, p.mother_name,
       p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
-      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area
+      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area,
+      org.id AS origin_id, cur.id AS current_id
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
@@ -228,6 +230,8 @@ async function lookupPatient(patientUuid) {
       JOIN user AS u ON p.user_id = u.id
       JOIN account AS a ON a.id = dg.account_id
       JOIN entity_map AS em ON p.uuid = em.uuid
+      JOIN location AS org ON org.uuid = p.origin_location_id
+      JOIN location AS cur ON cur.uuid = p.current_location_id
     WHERE p.uuid = ?;
   `;
 
@@ -456,9 +460,10 @@ function find(options) {
   filters.equals('uuids', 'uuid', 'p', true);
 
   // filters for location
-  const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
-  const originNameParams = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
-  filters.custom('originLocationLabel', originNameSql, originNameParams);
+  // const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
+  // const originNameParams = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
+  // filters.custom('originLocationLabel', originNameSql, originNameParams);
+
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
@@ -505,16 +510,15 @@ function patientEntityQuery(detailed) {
     SELECT
       BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
-      p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
-      originProvince.name as originProvinceName ${detailedColumns}
+      p.health_zone, p.health_area, u.display_name as userName, l.id as origin_id,
+      l.name as origin_location_name, lc.id as current_id, lc.name as current_location_name, dg.color,
+      dg.name AS debtorGroupName, proj.name AS project_name ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
-      JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
-      JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
-      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid
+      JOIN location as l ON l.uuid = p.origin_location_id
+      JOIN location as lc ON lc.uuid = p.current_location_id
       JOIN user AS u ON p.user_id = u.id
       JOIN entity_map AS em ON p.uuid = em.uuid
   `;
@@ -536,9 +540,77 @@ function patientEntityQuery(detailed) {
  * // GET /patient
  */
 function read(req, res, next) {
-  find(req.query)
+  const location = req.session.enterprise.locationDeepLevel;
+  const { query } = req;
+  let patients = [];
+
+  find(query)
     .then((rows) => {
-      res.status(200).json(rows);
+      patients = rows;
+
+      return locations.dynamiqueLocationJoin(location.location_level_deepness, { is_leave : false });
+    })
+    .then((allLocations) => {
+      patients.forEach(patient => {
+        patient.filtered = true;
+        let checkCurrentFilter = true;
+        let checkOriginFilter = true;
+
+        allLocations.data.forEach(loc => {
+          if (patient.current_id === loc.id) {
+            Object.keys(loc).forEach((key) => {
+
+              if (key !== 'id' && key !== 'parent' && key !== 'location_type_id'
+              && key !== 'translation_key' && key !== 'color') {
+                const newIndex = `current_${key}`;
+                patient[newIndex] = loc[key];
+
+                if (query.currentLocationLabel) {
+                  checkCurrentFilter = false;
+
+                  allLocations.types.forEach(type => {
+                    const currentKey = `${type.label_name}_name`;
+                    if (loc[currentKey]) {
+                      if (loc[currentKey].includes(query.currentLocationLabel)
+                        || patient.current_location_name.includes(query.currentLocationLabel)) {
+                        checkCurrentFilter = true;
+                      }
+                    }
+                  });
+                }
+              }
+            });
+          }
+
+          if (patient.origin_id === loc.id) {
+            Object.keys(loc).forEach((key) => {
+              if (key !== 'id' && key !== 'parent' && key !== 'location_type_id'
+              && key !== 'translation_key' && key !== 'color') {
+                const newIndex = `origin_${key}`;
+                patient[newIndex] = loc[key];
+                if (query.originLocationLabel) {
+                  checkOriginFilter = false;
+                  allLocations.types.forEach(type => {
+                    const originKey = `${type.label_name}_name`;
+                    if (loc[originKey]) {
+                      if (loc[originKey].includes(query.originLocationLabel)
+                        || patient.origin_location_name.includes(query.originLocationLabel)) {
+                        checkOriginFilter = true;
+                      }
+                    }
+                  });
+                }
+              }
+            });
+          }
+        });
+
+        patient.filtered = checkCurrentFilter && checkOriginFilter;
+      });
+
+      patients = patients.filter(patient => patient.filtered === true);
+
+      res.status(200).json(patients);
     })
     .catch(next)
     .done();

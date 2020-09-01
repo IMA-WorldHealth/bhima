@@ -91,11 +91,13 @@
 
           <div class="form-group">
             <!-- required -->
-            <bh-location-select
-              id="location"
-              name="location_id"
-              location-uuid="GroupUpdateCtrl.group.location_id"
-              required></bh-location-select>
+            <bh-location-configuration-select
+              location-id="GroupUpdateCtrl.group.location_id"
+              operational-mode="true"
+              on-select-callback="GroupUpdateCtrl.onSelectLocation(location)"
+              allow-all-root="true"
+              required="true">
+            </bh-location-configuration-select>
           </div>
 
 

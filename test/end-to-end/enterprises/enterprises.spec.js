@@ -10,6 +10,21 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
 describe('Enterprises', () => {
   const location = '#!/enterprises';
 
+  const locations = [
+    {
+      location01 : 'Merge Country',
+      location02 : 'Merge Province',
+      location03 : 'Merge Town 1',
+      location04 : 'Merge Township 1',
+    },
+    {
+      location01 : 'République Démocratique du Congo',
+      location02 : 'Kinshasa',
+      location03 : 'Lukunga',
+      location04 : 'Gombe',
+    },
+  ];
+
   // enterprise
   const enterprise = {
     name            : 'Interchurch Medical Assistance',
@@ -53,7 +68,55 @@ describe('Enterprises', () => {
    * The actual enterprise module doesn't need to create new one
    * so we need only to update enterprise informations
    */
+
+  // Set default enterprise data for others tests
+  it('Update enterprise default location', async () => {
+    // select the locations specified
+    await components.locationConfigurationSelect.set(locations[0].location01);
+
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations[0].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations[0].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations[0].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
+
+    // submit the page to the server
+    FU.buttons.submit();
+
+    await components.notification.hasSuccess();
+  });
+
   it('set enterprise data', async () => {
+
     await FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     await FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
@@ -65,10 +128,45 @@ describe('Enterprises', () => {
     await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
     // select the locations specified
-    await components.locationSelect.set(helpers.data.locations);
+    await components.locationConfigurationSelect.set(locations[1].location01);
+
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations[1].location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations[1].location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations[1].location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
 
     // submit the page to the server
-    await FU.buttons.submit();
+    FU.buttons.submit();
 
     await components.notification.hasSuccess();
   });
@@ -105,9 +203,6 @@ describe('Enterprises', () => {
     await FU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
     await FU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
     await FU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
-
-    // select the locations specified
-    await components.locationSelect.set(helpers.data.locations);
 
     // submit the page to the server
     await FU.buttons.submit();

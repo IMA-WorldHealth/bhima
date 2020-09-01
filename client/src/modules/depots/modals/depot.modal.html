@@ -113,9 +113,13 @@
       </div>
 
       <div ng-if="DepotModalCtrl.hasLocation">
-        <bh-location-select
-          location-uuid="DepotModalCtrl.depot.location_uuid">
-        </bh-location-select>
+        <bh-location-configuration-select
+          location-id="DepotModalCtrl.depot.location_id"
+          operational-mode="true"
+          on-select-callback="DepotModalCtrl.onSelectLocation(location)"
+          allow-all-root="true"
+          required="true">
+        </bh-location-configuration-select>
       </div>
     </div>
 

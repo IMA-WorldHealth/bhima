@@ -69,10 +69,10 @@ exports.checkBasicInstallExist = async (req, res, next) => {
  * @function defaultEnterpriseLocation
  *
  * @description
- * Grabs the first village in the database as the default enterprise location.
+ * Grabs the first location in the database as the default enterprise location.
  */
 function defaultEnterpriseLocation() {
-  return db.one(`SELECT uuid FROM village LIMIT 1;`);
+  return db.one(`SELECT uuid FROM location LIMIT 1;`);
 }
 
 
@@ -113,7 +113,7 @@ function createEnterpriseProjectUser(enterprise, project, user, locationUuid) {
 
   // assign default properties
   Object.assign(user, DEFAULTS.user);
-  Object.assign(enterprise, DEFAULTS.enterprise, { location_id : locationUuid });
+  Object.assign(enterprise, DEFAULTS.enterprise, { location_uuid : locationUuid });
   Object.assign(project, DEFAULTS.project);
 
   if (user.repassword) {

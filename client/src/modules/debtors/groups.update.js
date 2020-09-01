@@ -7,13 +7,14 @@ angular.module('bhima.controllers')
 
 DebtorGroupsUpdateController.$inject = [
   '$state', 'DebtorGroupService', 'PriceListService',
-  'ScrollService', 'util', 'NotifyService', 'ModalService', 'ColorService',
+  'NotifyService', 'ModalService', 'ColorService',
 ];
 
 function DebtorGroupsUpdateController(
   $state, DebtorGroups, Prices,
-  ScrollTo, util, Notify, Modal, Color
+  Notify, Modal, Color,
 ) {
+
   const vm = this;
   vm.group = {};
   const target = $state.params.uuid;
@@ -23,6 +24,7 @@ function DebtorGroupsUpdateController(
   vm.state = $state;
   vm.invoicingFeeSubscriptions = invoicingFeeSubscriptions;
   vm.subsidySubscriptions = subsidySubscriptions;
+  vm.onSelectLocation = onSelectLocation;
 
   vm.$loading = true;
   vm.$loaded = false;
@@ -34,6 +36,7 @@ function DebtorGroupsUpdateController(
   Prices.read()
     .then(priceLists => {
       vm.priceLists = priceLists;
+
       return DebtorGroups.read(target);
     })
     .then((result) => {
@@ -51,11 +54,14 @@ function DebtorGroupsUpdateController(
       vm.$loading = false;
     });
 
-
   function formatData(group) {
     delete group.subsidies;
     delete group.invoicingFees;
     return group;
+  }
+
+  function onSelectLocation(location) {
+    vm.group.location_uuid = location.uuid;
   }
 
   function submit(debtorGroupForm) {
@@ -73,6 +79,8 @@ function DebtorGroupsUpdateController(
       $state.go('debtorGroups.list', null, { reload : true });
       return;
     }
+
+    delete vm.group.location_id;
 
     let submitDebtorGroup = angular.copy(vm.group);
     submitDebtorGroup = formatData(submitDebtorGroup);

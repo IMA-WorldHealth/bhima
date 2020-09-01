@@ -1,0 +1,40 @@
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.ADMIN</li>
+        <li class="static">
+          <a ui-sref="locations" translate href>TREE.LOCATION</a>
+        </li>
+        <li class="title" translate>LOCATION.TYPES</li>
+      </ol>
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <button class="btn btn-default" ng-click="TypesCtrl.createUpdateModal()" data-method="create">
+            <i class="fa fa-plus"></i> <span translate>LOCATION.TYPE_REGISTER</span>
+          </button>
+        </div>
+        <bh-filter-toggle on-toggle="TypesCtrl.toggleInlineFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div>
+  </div>
+  
+  
+  <div class="flex-content">
+    <div class="container-fluid">
+      <div
+        id="type-grid"
+        class="grid-full-height"
+        ui-grid="TypesCtrl.gridOptions"
+        ui-grid-auto-resize
+        ui-grid-resize-columns
+        ui-grid-move-columns>
+  
+        <bh-grid-loading-indicator
+          loading-state="TypesCtrl.loading"
+          empty-state="TypesCtrl.gridOptions.data.length === 0">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+  </div>
+  

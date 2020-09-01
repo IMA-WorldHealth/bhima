@@ -89,7 +89,8 @@ function update(req, res, next) {
       const sql = `
         SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
           allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-          allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
+          allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
+          BUID(location_uuid) AS location_uuid
         FROM depot WHERE uuid = ?`;
       return db.exec(sql, [uid]);
     })
@@ -126,14 +127,12 @@ function list(req, res, next) {
       GROUP_CONCAT(DISTINCT u.display_name ORDER BY u.display_name DESC SEPARATOR ', ') AS users,
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
-      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid, l.id as location_id,
+      l.name as location_name, l1.name as location_parent_name
     FROM depot d
-    LEFT JOIN village v ON v.uuid = d.location_uuid
-    LEFT JOIN sector s ON s.uuid = v.sector_uuid
-    LEFT JOIN province p ON p.uuid = s.province_uuid
-    LEFT JOIN country c ON c.uuid = p.country_uuid
-    LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+    LEFT JOIN location l ON l.uuid = d.location_uuid
+    LEFT JOIN location l1 ON l1.uuid = l.parent_uuid
+    LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid    
     LEFT JOIN user u ON u.id = dp.user_id
   `;
 
@@ -200,12 +199,10 @@ function searchByName(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+      l.name as location_name, l1.name as location_parent_name
     FROM depot d
-      LEFT JOIN village v ON v.uuid = d.location_uuid
-      LEFT JOIN sector s ON s.uuid = v.sector_uuid
-      LEFT JOIN province p ON p.uuid = s.province_uuid
-      LEFT JOIN country c ON c.uuid = p.country_uuid
+      LEFT JOIN location l ON l.uuid = d.location_uuid
+      LEFT JOIN location l1 ON l1.uuid = l.parent_uuid
   `;
 
   filters.custom(
@@ -239,9 +236,11 @@ function detail(req, res, next) {
   const sql = `
     SELECT
       BUID(d.uuid) as uuid, d.text, d.is_warehouse,
-      allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-      allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration, d.allow_entry_transfer,
+      d.allow_exit_debtor, d.allow_exit_service, d.allow_exit_transfer, d.allow_exit_loss, d.location_uuid,
+      l.id AS location_id
     FROM depot AS d
+    LEFT JOIN location AS l ON l.uuid = d.location_uuid
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
 
   const requireUserPermissions = ` AND

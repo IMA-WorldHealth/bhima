@@ -36,6 +36,7 @@ function DebtorGroupCreateController(
 
   vm.onSelectAccountCallback = onSelectAccount;
   vm.cancel = cancel;
+  vm.onSelectLocation = onSelectLocation;
 
   /* @todo This controller should not be concerned about individual price lists */
   Prices.read()
@@ -62,6 +63,7 @@ function DebtorGroupCreateController(
 
     // set default values
     vm.group.location_id = Session.enterprise.location_id;
+    vm.group.location_uuid = Session.enterprise.location_uuid;
 
     // assigning policy logic
     vm.group.apply_discounts = policies.subsidies;
@@ -77,6 +79,10 @@ function DebtorGroupCreateController(
     vm.group.account_id = account.id;
   }
 
+  function onSelectLocation(location) {
+    vm.group.location_uuid = location.uuid;
+  }
+
   function cancel() {
     $state.go('debtorGroups.list');
   }
@@ -90,6 +96,8 @@ function DebtorGroupCreateController(
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return;
     }
+
+    delete vm.group.location_id;
 
     // in order to display account correctly the entire account is stored in the
     // ng-model, we should extract this

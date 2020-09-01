@@ -3,10 +3,12 @@
     "ADD_ENTERPRISE" : "Add Enterprise.",
     "ALL_ENTERPRISES" : "All Enterprises",
     "CONFIGURATION_ENTERPRISE" : "Configuration Enterprise",
+    "DEFINE_LOWEST_TYPES_LOCATIONS": "Définir les plus bas types de localisation",
     "DESCRIPTION_1" : "Manage the application Companies from here. For now clearing the enterprise is not taken into account.",
     "DESCRIPTION_2" : "Edit selected enterprise",
     "DESCRIPTION_3" : "Add a new enterprise.",
     "EDITING_ENTERPRISE" : "Editing enterprise",
+    "HIGHEST_DEFAULT_LOCATION_TYPE": "Highest default location type",
     "TITLE" : "Enterprise Management",
     "UPDATE_LOGO":"Update the enterprise logo",
     "SETTINGS" : {

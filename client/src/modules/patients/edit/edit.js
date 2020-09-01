@@ -13,6 +13,16 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   vm.medical = {};
   vm.patient = null;
   vm.unknownId = false;
+  vm.onSelectLocationOrigin = onSelectLocationOrigin;
+  vm.onSelectLocationCurrent = onSelectLocationCurrent;
+
+  function onSelectLocationOrigin(location) {
+    vm.medical.origin_location_id = location.uuid;
+  }
+
+  function onSelectLocationCurrent(location) {
+    vm.medical.current_location_id = location.uuid;
+  }
 
   vm.origin = '';
 
@@ -110,6 +120,14 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
     }
 
     const submitPatient = util.filterFormElements(patientDetailsForm, true);
+
+    if (vm.medical.origin_location_id) {
+      submitPatient.origin_location_id = vm.medical.origin_location_id;
+    }
+
+    if (vm.medical.current_location_id) {
+      submitPatient.current_location_id = vm.medical.current_location_id;
+    }
 
     return Patients.update(vm.medical.uuid, submitPatient)
       .then((updatedPatient) => {

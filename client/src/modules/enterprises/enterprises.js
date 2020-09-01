@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 EnterpriseController.$inject = [
   'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
-  'ScrollService', 'SessionService', 'Upload', '$timeout',
+  'ScrollService', 'SessionService', 'Upload', '$timeout', '$state',
 ];
 
 /**
@@ -12,7 +12,8 @@ EnterpriseController.$inject = [
  * @description
  * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session, Upload, $timeout) {
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal,
+  ScrollTo, Session, Upload, $timeout, $state) {
   const vm = this;
 
   vm.enterprise = {};
@@ -28,6 +29,8 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.setThumbnail = setThumbnail;
+  vm.onSelectLocationTypeSelect = onSelectLocationTypeSelect;
+  vm.onSelectLocation = onSelectLocation;
 
   function uploadLogo(file) {
     if (!vm.hasThumbnail) { return null; }
@@ -61,7 +64,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   // fired on startup
   function startup() {
-
     // load enterprises
     Enterprises.read(null, { detailed : 1 })
       .then(enterprises => {
@@ -73,6 +75,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+
         return refreshProjects();
       })
       .catch(Notify.handleError);
@@ -88,6 +91,15 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function onSelectLossAccount(account) {
     vm.enterprise.loss_account_id = account.id;
+  }
+
+  function onSelectLocationTypeSelect(type) {
+    vm.enterprise.location_default_type_root = type.id;
+  }
+
+  function onSelectLocation(location) {
+    vm.cachLocationId = location.id;
+    vm.enterprise.location_uuid = location.uuid;
   }
 
   // form submission
@@ -112,6 +124,15 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
     changes.settings = angular.copy(vm.enterprise.settings);
 
+    // For taking over location_default_type_root, account for gain and loss
+    // location uuid
+    changes.gain_account_id = vm.enterprise.gain_account_id;
+    changes.loss_account_id = vm.enterprise.loss_account_id;
+    changes.location_default_type_root = vm.enterprise.location_default_type_root;
+    changes.location_uuid = vm.enterprise.location_uuid;
+
+    vm.enterprise.location_id = vm.cachLocationId;
+
     const promise = (creation)
       ? Enterprises.create(changes)
       : Enterprises.update(vm.enterprise.id, changes);
@@ -122,6 +143,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       })
       .then(() => Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS'))
       .then(() => Session.reload())
+      .then(() => refresh())
       .catch(Notify.handleError);
   }
 
@@ -137,6 +159,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       .then(projects => {
         vm.projects = projects;
       });
+  }
+
+  function refresh() {
+    $state.go('enterprises', {}, { reload : 'enterprises' });
   }
 
   /**

@@ -25,6 +25,7 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
     'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo',
     'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid', 'project_id',
     'patient_group_uuid', 'user_id', 'defaultPeriod', 'originLocationLabel',
+    'currentLocationLabel',
   ];
 
   vm.filters = filters;

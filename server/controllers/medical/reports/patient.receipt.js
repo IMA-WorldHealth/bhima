@@ -61,19 +61,20 @@ async function build(req, res, next) {
   try {
     const report = new ReportManager(template, req.session, options);
     const patient = await Patients.lookupPatient(req.params.uuid);
+    const allLocations = await Locations.getLocations();
 
     patient.barcode = barcode.generate(entityIdentifier, patient.uuid);
 
     patient.enterprise_name = req.session.enterprise.name;
     patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
 
-    const [village, currentVillage] = await Promise.all([
-      Locations.lookupVillage(patient.origin_location_id),
-      Locations.lookupVillage(patient.current_location_id),
+    const [originLocation, currentLocation] = await Promise.all([
+      Locations.buildPath(allLocations, patient.origin_id, true),
+      Locations.buildPath(allLocations, patient.current_id, true),
     ]);
 
     const result = await report.render({
-      patient, village, currentVillage, simplified : requestedSimplifiedCard,
+      patient, originLocation, currentLocation, simplified : requestedSimplifiedCard,
     });
 
     res.set(result.headers).send(result.report);

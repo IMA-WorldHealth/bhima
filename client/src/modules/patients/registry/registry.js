@@ -68,6 +68,12 @@ function PatientRegistryController(
     displayName : 'TABLE.COLUMNS.GENDER',
     headerCellFilter : 'translate',
   }, {
+    field : 'dob',
+    cellFilter : 'date',
+    displayName : 'TABLE.COLUMNS.DOB',
+    headerCellFilter : 'translate',
+    type : 'date',
+  }, {
     field : 'hospital_no',
     displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR',
     headerCellFilter : 'translate',
@@ -91,27 +97,18 @@ function PatientRegistryController(
     headerCellFilter : 'translate',
     type : 'date',
   }, {
-    field : 'dob',
-    cellFilter : 'date',
-    displayName : 'TABLE.COLUMNS.DOB',
+    field : 'origin_location_name',
+    displayName : 'TABLE.COLUMNS.ORIGIN_LOCATION',
     headerCellFilter : 'translate',
-    type : 'date',
+  }, {
+    field : 'current_location_name',
+    displayName : 'TABLE.COLUMNS.CURRENT_LOCATION',
+    headerCellFilter : 'translate',
   }, {
     field : 'userName',
     displayName : 'TABLE.COLUMNS.USER',
     headerCellFilter : 'translate',
   }, {
-    field : 'originVillageName',
-    displayName : 'FORM.LABELS.ORIGIN_VILLAGE',
-    headerCellFilter : 'translate',
-    visible : false,
-  }, {
-    field : 'originProvinceName',
-    displayName : 'FORM.LABELS.ORIGIN_PROVINCE',
-    headerCellFilter : 'translate',
-    visible : false,
-  },
-  {
     field : 'health_area',
     displayName : 'FORM.LABELS.HEALTH_AREA',
     headerCellFilter : 'translate',
@@ -119,11 +116,6 @@ function PatientRegistryController(
   }, {
     field : 'health_zone',
     displayName : 'FORM.LABELS.HEALTH_ZONE',
-    headerCellFilter : 'translate',
-    visible : false,
-  }, {
-    field : 'originSectorName',
-    displayName : 'FORM.LABELS.ORIGIN_SECTOR',
     headerCellFilter : 'translate',
     visible : false,
   }, {
@@ -184,6 +176,7 @@ function PatientRegistryController(
         });
 
         // put data in the grid
+
         vm.uiGridOptions.data = patients;
       })
       .catch(handler)

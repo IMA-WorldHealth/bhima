@@ -8,6 +8,7 @@
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
+const helpers = require('../shared/helpers');
 
 class DepotPage {
   constructor() {
@@ -32,7 +33,45 @@ class DepotPage {
 
     if (hasLocation) {
       await $('[name="has_location"]').click();
-      await components.locationSelect.set(location);
+
+      // select the locations specified
+      await components.locationConfigurationSelect.set(location.location01);
+
+      // Location Level 2
+      const select02 = element(by.id('level_0'));
+      await select02.click();
+      const filterLocation02 = helpers.selectLocationLabel(location.location02);
+
+      const option02 = select02.element(
+        by.cssContainingText(
+          '.dropdown-menu [role="option"]', filterLocation02,
+        ),
+      );
+      await option02.click();
+      // Location Level 3
+      const select03 = element(by.id('level_1'));
+      await select03.click();
+      const filterLocation03 = helpers.selectLocationLabel(location.location03);
+
+      const option03 = select03.element(
+        by.cssContainingText(
+          '.dropdown-menu [role="option"]', filterLocation03,
+        ),
+      );
+      await option03.click();
+
+      // Location Level 4
+      const select04 = element(by.id('level_2'));
+      await select04.click();
+      const filterLocation04 = helpers.selectLocationLabel(location.location04);
+
+      const option04 = select04.element(
+        by.cssContainingText(
+          '.dropdown-menu [role="option"]', filterLocation04,
+        ),
+      );
+      await option04.click();
+
     }
 
     await FU.buttons.submit();
@@ -86,7 +125,43 @@ class DepotPage {
 
     expect(await elm.isSelected()).to.equal(true);
 
-    await components.locationSelect.set(locations);
+    // select the locations specified
+    await components.locationConfigurationSelect.set(locations.location01);
+
+    // Location Level 2
+    const select02 = element(by.id('level_0'));
+    await select02.click();
+    const filterLocation02 = helpers.selectLocationLabel(locations.location02);
+
+    const option02 = select02.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation02,
+      ),
+    );
+    await option02.click();
+    // Location Level 3
+    const select03 = element(by.id('level_1'));
+    await select03.click();
+    const filterLocation03 = helpers.selectLocationLabel(locations.location03);
+
+    const option03 = select03.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation03,
+      ),
+    );
+    await option03.click();
+
+    // Location Level 4
+    const select04 = element(by.id('level_2'));
+    await select04.click();
+    const filterLocation04 = helpers.selectLocationLabel(locations.location04);
+
+    const option04 = select04.element(
+      by.cssContainingText(
+        '.dropdown-menu [role="option"]', filterLocation04,
+      ),
+    );
+    await option04.click();
 
     await FU.buttons.submit();
     await components.notification.hasSuccess();

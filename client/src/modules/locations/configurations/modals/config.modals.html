@@ -1,0 +1,104 @@
+<form name="ConfigLocationForm" bh-submit="ConfigLocationsModalCtrl.submit(ConfigLocationForm)"
+  novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="static" translate>TREE.LOCATION</li>
+
+      <li ng-if="ConfigLocationsModalCtrl.isCreating" data-method="create" class="title">
+        <span translate>FORM.LABELS.CONFIGURATIONS</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!ConfigLocationsModalCtrl.isCreating" data-method="update" class="title">
+        <span translate>FORM.LABELS.CONFIGURATIONS</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+    <!-- name -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : ConfigLocationForm.$submitted && ConfigLocationForm.name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.LOCATION_NAME</label>
+      <div>
+        <input name="name" ng-model="ConfigLocationsModalCtrl.locations.name" autocomplete="off" ng-maxlength="90"
+          class="form-control" required>
+        <div class="help-block" ng-messages="ConfigLocationForm.name.$error"
+          ng-show="ConfigLocationForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : ConfigLocationForm.$submitted && ConfigLocationForm.longitude.$invalid }">
+      <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
+      <input type="number" step="any" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}"
+        autocomplete="off" class="form-control" name="longitude" ng-model="ConfigLocationsModalCtrl.locations.longitude">
+    </div>
+
+    <div class="form-group"
+    ng-class="{ 'has-error' : ConfigLocationForm.$submitted && ConfigLocationForm.latitude.$invalid }">
+      <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
+      <input type="number" step="any" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}"
+        autocomplete="off" class="form-control" name="latitude" ng-model="ConfigLocationsModalCtrl.locations.latitude">
+    </div>
+
+    <bh-location-type-select
+      id="location_type"
+      location-type-id ="ConfigLocationsModalCtrl.locations.location_type_id"
+      on-select-callback="ConfigLocationsModalCtrl.onSelectLocationTypeSelect(type)"
+      exclude-type="ConfigLocationsModalCtrl.excludeType"
+      required="true">
+      <bh-clear on-clear="ConfigLocationsModalCtrl.clear('location_type_id')"></bh-clear>
+    </bh-location-type-select>
+    <hr>
+
+    <div ng-if="ConfigLocationsModalCtrl.locations.location_type_id && !ConfigLocationsModalCtrl.parentId">
+      <bh-yes-no-radios
+        id="is_highest"
+        label="FORM.LABELS.DEFINE_LOCATION_HIGHEST"
+        value="ConfigLocationsModalCtrl.is_highest"
+        name="is_highest"
+        on-change-callback="ConfigLocationsModalCtrl.onDefineLocationChange(value)">
+      </bh-yes-no-radios>
+    </div>
+
+    <div ng-if="!ConfigLocationsModalCtrl.is_highest  && !ConfigLocationsModalCtrl.parentId">
+      <bh-location-configuration-select
+        label="FORM.LABELS.DEFINE_SUPERIOR_TERRITORIAL_ENTITY"
+        location-id="ConfigLocationsModalCtrl.locations.id"
+        parent-id="ConfigLocationsModalCtrl.locations.parent"
+        exclude-type = "ConfigLocationsModalCtrl.locations.location_type_id"
+        on-select-callback="ConfigLocationsModalCtrl.onSelectParent(location)"
+        allow-all-root="!ConfigLocationsModalCtrl.isCreating"
+        required="true">
+      </bh-location-configuration-select>
+    </div>
+
+    <div ng-if="ConfigLocationsModalCtrl.parentId">
+      <span style="color : {{ ConfigLocationsModalCtrl.parentElement.color }}" class="fa fa-circle"></span>
+      <span translate>{{ ConfigLocationsModalCtrl.parentElement.translation_key }}</span>: <strong> {{ ConfigLocationsModalCtrl.parentElement.name }} </strong>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <p id="choices-list-management-same" ng-if="ConfigLocationsModalCtrl.hasNoChange" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_CHANGE</span>
+    </p>
+
+    <p ng-if="ConfigLocationForm.$submitted && ConfigLocationForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.GENERIC</span>
+    </p>
+
+    <button data-method="cancel" type="button" class="btn btn-default"
+      ng-click="ConfigLocationsModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ConfigLocationForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
