@@ -12,7 +12,6 @@ describe('(/journal) API endpoint', () => {
   const NUM_ROW_ALL_RECORDS = 23;
   const NUM_ROWS_FETCHING_TRANSACTION = 4;
 
-
   it('GET /journal returns a set of records', () => agent.get('/journal')
     .then((res) => {
       helpers.api.listed(res, NUM_ROW_ALL_RECORDS);
@@ -162,7 +161,7 @@ function CorrectionTests() {
   };
 
   const correction = [{
-    account_id : 200,
+    account_id : 201,
     credit : 0,
     debit : 100,
     description : 'Fourth Voucher to be Posted',
@@ -190,7 +189,7 @@ function CorrectionTests() {
         expect(res.body.details).to.be.an('object');
         expect(res.body.details).to.have.keys('reversal', 'correction');
         expect(res.body.details.reversal.description).to.equal(
-          '(CORRECTION) Transaction reversed using Administrative Voucher Tools TPA8'
+          '(CORRECTION) Transaction reversed using Administrative Voucher Tools TPA8',
         );
 
         return agent.get(`/vouchers/${CORRECT_UUID}`);
