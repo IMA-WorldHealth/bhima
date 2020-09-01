@@ -18,14 +18,14 @@ BEGIN
 DECLARE _constraint_name VARCHAR(100);
 
 DECLARE done BOOLEAN;
-DECLARE curs1 CURSOR FOR 
+DECLARE curs1 CURSOR FOR
    SELECT CONSTRAINT_NAME
 		 FROM
 	    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
 	   WHERE CONSTRAINT_SCHEMA = DATABASE()
 	   AND TABLE_NAME = _table_name;
-	   
-	   
+
+
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
 OPEN curs1;
@@ -34,7 +34,7 @@ OPEN curs1;
     IF done THEN
       LEAVE read_loop;
     END IF;
-        
+
     SET @drop_foreign_key =  CONCAT('ALTER TABLE ', _table_name, ' DROP FOREIGN KEY ', _constraint_name);
     PREPARE drop_query FROM @drop_foreign_key;
     EXECUTE drop_query;
@@ -48,7 +48,7 @@ DELIMITER ;
     SET foreign_key_checks = 0;
 
     CALL drop_constraints('account');
-    ALTER TABLE `account` 
+    ALTER TABLE `account`
     ADD CONSTRAINT `account__account_type` FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
     ADD CONSTRAINT `account__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
     ADD CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`);
@@ -76,7 +76,7 @@ DELIMITER ;
     ALTER TABLE `budget`
     ADD CONSTRAINT `budget__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
     ADD CONSTRAINT `budget__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`);
-    
+
     CALL drop_constraints('cash');
     ALTER TABLE `cash`
     ADD  CONSTRAINT `cash__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
@@ -306,11 +306,11 @@ DELIMITER ;
 
 
     CALL drop_constraints('patient_group_invoicing_fee');
-    ALTER TABLE `patient_group_invoicing_fee` 
+    ALTER TABLE `patient_group_invoicing_fee`
     ADD CONSTRAINT `patient_group_inv_fee__iv_fee` FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT `patient_group_inv_fee__patient_group` FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-    
+
     CALL drop_constraints('patient_group_subsidy');
     ALTER TABLE `patient_group_subsidy`
     ADD CONSTRAINT `patient_group_subsidy__subsidy` FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -322,7 +322,7 @@ DELIMITER ;
     ADD CONSTRAINT `patient_visit__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     ADD CONSTRAINT `patient_visit__start_diagnosis` FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
     ADD CONSTRAINT `patient_visit__end_diagnosis`FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE;
-    
+
     CALL drop_constraints('patient_visit_service');
     ALTER TABLE `patient_visit_service`
     ADD CONSTRAINT `patient_visit_service__patient_visit` FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
@@ -387,7 +387,7 @@ DELIMITER ;
 
 
     CALL drop_constraints('purchase');
-    ALTER TABLE `purchase` 
+    ALTER TABLE `purchase`
     ADD CONSTRAINT `purchase__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
     ADD CONSTRAINT `purchase__supplier` FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
     ADD CONSTRAINT `purchase__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
@@ -444,7 +444,7 @@ DELIMITER ;
 
 
     CALL drop_constraints('room');
-    ALTER TABLE `room`  
+    ALTER TABLE `room`
     ADD CONSTRAINT `room__ward` FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
     ADD CONSTRAINT `room__room_type` FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`);
 
@@ -529,26 +529,26 @@ DELIMITER ;
     CALL drop_constraints('transaction_history');
     ALTER TABLE `transaction_history` ADD  CONSTRAINT `transaction_history__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-    
+
     CALL drop_constraints('depot_permission');
     ALTER TABLE `depot_permission`
     ADD CONSTRAINT `depot_permission__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     ADD CONSTRAINT `depot_permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-    
+
     CALL drop_constraints('cashbox_permission');
     ALTER TABLE `cashbox_permission`
     ADD CONSTRAINT `cashbox_permission__cashbox` FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
     ADD CONSTRAINT `cashbox_permission__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
-    
+
     CALL drop_constraints('config_employee_item');
     ALTER TABLE `config_employee_item`
     ADD CONSTRAINT `config_employee_item__config_employee` FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
     ADD CONSTRAINT `config_employee_item__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`);
 
 
-    
+
     CALL drop_constraints('reference_fee_center');
     ALTER TABLE `reference_fee_center`
     ADD CONSTRAINT `reference_fee_center__fee_center` FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -583,15 +583,15 @@ DELIMITER ;
     ADD CONSTRAINT `indicator__indicator_status` FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE,
     ADD CONSTRAINT `indicator__indicator_type` FOREIGN KEY (`type_id`) REFERENCES `indicator_type` (`id`) ON UPDATE CASCADE;
 
-    
+
     CALL drop_constraints('hospitalization_indicator');
     ALTER TABLE `hospitalization_indicator` ADD   CONSTRAINT `hosp_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE;
 
-        
+
     CALL drop_constraints('staff_indicator');
     ALTER TABLE `staff_indicator` ADD CONSTRAINT `staff_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE;
 
-        
+
     CALL drop_constraints('finance_indicator');
     ALTER TABLE `finance_indicator` ADD CONSTRAINT `finance_indicator__indicator` FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE;
 
@@ -628,28 +628,28 @@ DELIMITER ;
     ALTER TABLE `survey_form` ADD CONSTRAINT `survey_form__data_collector_management` FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`);
 
     CALL drop_constraints('survey_data');
-    ALTER TABLE `survey_data` 
+    ALTER TABLE `survey_data`
     ADD  CONSTRAINT `survey_data__data_collector_management` FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`),
     ADD  CONSTRAINT `survey_data__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
     CALL drop_constraints('survey_data_item');
-    ALTER TABLE `survey_data_item` 
+    ALTER TABLE `survey_data_item`
     ADD CONSTRAINT `survey_data_item__survey_form` FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
     ADD CONSTRAINT `survey_data_item__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`);
 
     CALL drop_constraints('survey_data_log');
-    ALTER TABLE `survey_data_log` 
+    ALTER TABLE `survey_data_log`
     ADD CONSTRAINT `survey_data_log__survey_form` FOREIGN KEY (`survey_form_id`) REFERENCES `survey_form` (`id`),
     ADD CONSTRAINT `survey_data_log__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`);
 
     CALL drop_constraints('medical_sheet');
-    ALTER TABLE `medical_sheet` 
+    ALTER TABLE `medical_sheet`
     ADD CONSTRAINT `medical_sheet__survey_data` FOREIGN KEY (`survey_data_uuid`) REFERENCES `survey_data` (`uuid`),
     ADD CONSTRAINT `medical_sheet__patient` FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`);
 
-    
+
     CALL drop_constraints('configuration_analysis_tools');
-    ALTER TABLE `configuration_analysis_tools` 
+    ALTER TABLE `configuration_analysis_tools`
     ADD CONSTRAINT `config_analysis_tools__acc_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
     ADD CONSTRAINT `config_analysis_tools__analysis_tool_type` FOREIGN KEY (`analysis_tool_type_id`) REFERENCES `analysis_tool_type` (`id`);
 
@@ -710,22 +710,23 @@ CREATE TABLE `lot_tag` (
 
 
 /*
- * @author: jeremielodi 
+ * @author: jeremielodi
    on @jniles PR https://github.com/IMA-WorldHealth/bhima/pull/4866
  * @date: 2020-08-31
  */
 DROP TABLE IF EXISTS `stock_movement_status`;
 CREATE TABLE  `stock_movement_status` (
-    `uuid` BINARY(16),
+    `uuid` BINARY(16) NOT NULL,
     `start_date` DATE,
     `end_date` DATE,
-    `quantity` DECIMAL(19,4),
-    `in_quantity` DECIMAL(19,4),
-    `out_quantity` DECIMAL(19,4),
-    `inventory_uuid` BINARY(16),
-    `depot_uuid` BINARY(16),
+    `quantity` DECIMAL(19,4) NOT NULL,
+    `in_quantity` DECIMAL(19,4) NOT NULL,
+    `out_quantity` DECIMAL(19,4) NOT NULL,
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `depot_uuid` BINARY(16) NOT NULL,
     PRIMARY KEY(`uuid`),
     KEY `depot_uuid` (`depot_uuid`),
-    KEY `inventory_uuid` (`inventory_uuid`)
+    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+    KEY `inventory_uuid` (`inventory_uuid`),
+    CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-

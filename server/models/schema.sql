@@ -1190,8 +1190,6 @@ CREATE TABLE `period_total` (
   CONSTRAINT `period_total__period`FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
- 
 DROP TABLE IF EXISTS `permission`;
 
 CREATE TABLE `permission` (
@@ -1987,17 +1985,19 @@ CREATE TABLE `stock_movement` (
 
 DROP TABLE IF EXISTS `stock_movement_status`;
 CREATE TABLE  `stock_movement_status` (
-    `uuid` BINARY(16),
+    `uuid` BINARY(16) NOT NULL,
     `start_date` DATE,
     `end_date` DATE,
-    `quantity` DECIMAL(19,4),
-    `in_quantity` DECIMAL(19,4),
-    `out_quantity` DECIMAL(19,4),
-    `inventory_uuid` BINARY(16),
-    `depot_uuid` BINARY(16),
+    `quantity` DECIMAL(19,4) NOT NULL,
+    `in_quantity` DECIMAL(19,4) NOT NULL,
+    `out_quantity` DECIMAL(19,4) NOT NULL,
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `depot_uuid` BINARY(16) NOT NULL,
     PRIMARY KEY(`uuid`),
     KEY `depot_uuid` (`depot_uuid`),
-    KEY `inventory_uuid` (`inventory_uuid`)
+    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+    KEY `inventory_uuid` (`inventory_uuid`),
+    CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
