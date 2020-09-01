@@ -635,7 +635,9 @@ async function listInventoryDepot(req, res, next) {
     for (let i = 0; i < inventories.length; i++) {
       let hasRiskyLots = false;
       for (let j = 0; j < lots.length; j++) {
-        if (lots[j].depot_uuid === inventories[i].depot_uuid && lots[j].uuid === inventories[i].uuid) {
+        const hasSameDepot = lots[j].depot_uuid === inventories[i].depot_uuid;
+        const hasSameInventory = lots[j].inventory_uuid === inventories[i].inventory_uuid;
+        if (hasSameDepot && hasSameInventory) {
           if (lots[j].IS_IN_RISK_EXPIRATION && lots[j].quantity > 0) {
             hasRiskyLots = true;
             break;

@@ -154,12 +154,12 @@ function StockInventoriesController(
     })
       .then(lots => {
         row.lots = lots
+          .filter(item => item.quantity > 0 && item.IS_IN_RISK_EXPIRATION === true)
           .map(item => {
             const delay = moment(new Date(item.expiration_date)).diff(new Date());
             item.delay_expiration = moment.duration(delay).humanize(true);
             return item;
-          })
-          .filter(item => item.quantity > 0 && item.IS_IN_RISK_EXPIRATION === true);
+          });
         row.tooltipIsOpen = true;
       })
       .catch(Notify.handleError);
