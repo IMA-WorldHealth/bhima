@@ -62,7 +62,7 @@ To manage stock with BHIMA there are some dependencies that must be completed be
 
 This management requires certain prerequisites:
 
-- **The presence of deposits**: stocks are always in deposits, from which you can not manage stocks without defining deposits.
+- **The presence of depots**: stocks are always in deposits, from which you can not manage stocks without defining deposits.
 
 - **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in repositories
 
