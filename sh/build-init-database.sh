@@ -9,7 +9,7 @@ set -uo pipefail
 echo "[ build ] Building BHIMA Database"
 
 set -a
-source .env.development
+source .env || { echo '[build-init-database.sh] could not load .env, using variables from environment.' ; }
 set +a
 
 # set build timeout

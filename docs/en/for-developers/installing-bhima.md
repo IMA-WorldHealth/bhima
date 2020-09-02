@@ -95,20 +95,21 @@ git config -global url."https://".insteadOf git://
 
 The dependencies should now be set!
 
-BHIMA uses environmental variables to connect to the database and toggle features. These are found in the `.env.development` file included in the top level of the repository. By default, the build script will copy all files named `.env.*` into the build folder `bin/` when building the application. At runtime, the file corresponding to `.env.$NODE_ENV` will be used to configure the application. For the default node instance, `NODE_ENV="development"`. Please set this globally, if it is not set by default on your machine.
+BHIMA uses environmental variables to connect to the database and toggle features. These are found in the `.env.sample` file included in the top level of the repository. You'll need to set these in a `.env` file to be read by the application at runtime.
 
-Before building, edit your `.env.development` to set up your MySQL database connection parameters. Their variables should be self-explanatory.
+Before building, create your `.env` file based on the sample template to set up your MySQL database connection parameters. Their variables should be self-explanatory.
 
-Use the following command to edit the .env.development file if desired \(make your changes and then type ctrl + x to exit and save\):
+Use the following command to edit the .env file if desired \(make your changes and then type ctrl + x to exit and save\):
 
 ```bash
-nano .env.development
+cp .env.sample .env
+nano .env
 ```
 
 ### Configure the bhima user in MySQL and build the app
 
 ```bash
-#Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env.development file):
+#Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env file):
 
 sudo mysql -u root -p
 CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'password';
@@ -212,4 +213,3 @@ ALTER USER bhima IDENTIFIED WITH mysql_native_password BY 'password';
 ```
 
 (replace 'password' with your desired password).  Once this is done MySQL should accept the passwords passed to it via Node.js.
-

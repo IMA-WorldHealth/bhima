@@ -4,7 +4,7 @@
 set -euo pipefail
 
 set -a
-source .env.development
+source .env || { echo '[travis.sh] did not load .env, using variables from environment.' ; }
 set +a
 
 mysql --version

@@ -1,5 +1,5 @@
 /**
- * @module stock/
+ * @module stock
  *
  *
  * @description

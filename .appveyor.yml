@@ -1,34 +1,37 @@
+version: 1.0.{build}
+
 image:
   - Ubuntu2004
-  - Ubuntu1604
   - Ubuntu1804
+  - Ubuntu1604
 
 stack: mysql, redis
 
+build: off
+
 environment:
-  DB_PASS: Password12!
-  DB_HOST: localhost
-  DB_USER: root
-  DB_NAME: bhima_test
-  CORAL_REUSE_BROWSER: 1
   matrix:
-    - nodejs_version: "14"
-    - nodejs_version: "12"
+    - nodejs_version: 14
+    - nodejs_version: 12
 
 matrix:
   fast_finish: true
 
 skip_branch_with_pr: true
-clone_depth: 5
+clone_depth: 3
+
+max_jobs: 5
 
 install:
   - mysql --version
-  - sh: nvm install $nodejs_version
-  - bash ./sh/setup-ci-env.sh
-  - bash ./sh/appveyor.sh
+  - nvm install $nodejs_version
+  - ./sh/setup-ci-env.sh
+  - echo Outside DB_USER $DB_USER
+  - echo Outside DB_HOST $DB_HOST
+  - echo Outside DB_NAME $DB_NAME
+  - echo Outside SESS_SECRET $SESS_SECRET
+  - ./sh/appveyor.sh
   - yarn
-
-build: off
 
 services:
   - mysql

@@ -6,7 +6,7 @@ set -euo pipefail
 trap 'kill $(jobs -p)' EXIT
 
 set -a
-source .env.development
+source .env || { echo '[install-tests.sh] could not load .env, using variables from environment.' ; }
 set +a
 
 ./sh/build-init-database.sh
