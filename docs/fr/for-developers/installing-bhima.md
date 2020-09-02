@@ -79,20 +79,21 @@ git config -global url. "https: //" .insteadOf git: //
 
 Les dépendances devraient maintenant être définies!
 
-BHIMA utilise des variables d'environnement pour se connecter à la base de données et basculer entre des fonctionnalités. Ceux-ci se trouvent dans le fichier `.env.development` inclus dans le niveau supérieur du référentiel. Par défaut, le script de construction copiera tous les fichiers nommés `.env.*` Dans le dossier de construction `bin /` lors de la génération de l'application. Au moment de l'exécution, le fichier correspondant à `.env. $ NODE_ENV` sera utilisé pour configurer l'application. Pour l'instance de noeud par défaut, `NODE_ENV =" development "`. Veuillez définir ceci globalement, s'il n'est pas défini par défaut sur votre machine.
+BHIMA utilise des variables d'environnement pour se connecter à la base de données et basculer entre des fonctionnalités. Ceux-ci se trouvent dans le fichier `.env.sample` inclus dans le niveau supérieur du référentiel. Copiez les elements vers une fichier `.env` avec vos propres variables.
 
-Avant de construire, éditez votre `.env.development` pour configurer vos paramètres de connexion à la base de données MySQL. Leurs variables doivent être explicites.
+Avant de construire, éditez votre `.env` pour configurer vos paramètres de connexion à la base de données MySQL. Leurs variables doivent être explicites.
 
-Utilisez la commande suivante pour modifier le fichier .env.development si vous le souhaitez \(apportez vos modifications, puis tapez ctrl + x pour quitter et enregistrer \):
+Utilisez la commande suivante pour modifier le fichier .env si vous le souhaitez \(apportez vos modifications, puis tapez ctrl + x pour quitter et enregistrer \):
 
 ```bash
-nano .env.development
+cp .env.sample .env
+nano .env
 ```
 
 ### Configurez l'utilisateur bhima dans MySQL et construisez l'application.
 
 ```bash
-# Exécutez les commandes suivantes pour créer l'utilisateur bhima dans MySQL afin qu'il puisse construire la base de données (assurez-vous que l'utilisateur et #password correspondent tous les deux à ce que vous avez défini dans le fichier .env.development):
+# Exécutez les commandes suivantes pour créer l'utilisateur bhima dans MySQL afin qu'il puisse construire la base de données (assurez-vous que l'utilisateur et #password correspondent tous les deux à ce que vous avez défini dans le fichier .env):
 
 sudo mysql -u root -p
 CREATE USER 'bhima' @ 'localhost' IDENTIFIED BY 'mot de passe';
