@@ -7,19 +7,17 @@ set -uo pipefail
 # to the next version.  It will only pull in data from the next/*.sql folder, so it can only
 # upgrade from the most recent version to the current version.
 
-# NOTE: the file used to determined variables is the .env.development file.  Please make sure
+# NOTE: the file used to determined variables is the .env file.  Please make sure
 # this file is up to date.
 
 # TODO(@jniles) - look up current version, and pull in all versions until present version.
 
 echo "[migrate] Migrating BHIMA database"
 
-ENVIRONMENT=${ENVIRONMENT:-"production"}
-
-echo "[migrate] Reading from $ENVIRONMENT."
+echo "[migrate] Reading settings from .env."
 
 set -a
-source .env.$ENVIRONMENT
+source .env || { echo '[setup-migration-script.sh] could not load .env, using variables from environment.' ; }
 set +a
 
 # Set up variables used for naming things

@@ -16,9 +16,7 @@ before(() => {
   chai.use(require('chai-spies-next'));
 
   // load environmental variables
-  const path = require('path');
-  const env = path.resolve(__dirname, '../../.env.development');
-  require('dotenv').config({ path : env });
+  require('dotenv').config();
 });
 
 /**

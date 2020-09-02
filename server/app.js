@@ -22,37 +22,13 @@
  */
 
 require('use-strict');
-const dotEnv = require('dotenv');
-
-configureEnvironmentVariables();
+require('dotenv').config();
 
 const http = require('http');
 const express = require('express');
 const debug = require('debug')('app');
 
 const app = express();
-
-/**
- * @function configureEnvironmentVariables
- *
- * @description
- * Uses dotenv to add environmental variables from the .env.* file to the
- * process object.  If the NODE_ENV system variable is not set, the function
- * defaults to 'production'
- */
-function configureEnvironmentVariables() {
-  // if the process NODE_ENV is not set, default to production.
-  process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-
-  // normalize the environmental variable name
-  const env = process.env.NODE_ENV.toLowerCase();
-
-  // decode the file path for the environmental variables.
-  const dotfile = `server/.env.${env}`.trim();
-
-  // load the environmental variables into process using the dotenv module
-  dotEnv.config({ path : dotfile });
-}
 
 /**
  * @function configureServer
