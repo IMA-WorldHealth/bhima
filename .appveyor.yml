@@ -1,34 +1,43 @@
 image:
   - Ubuntu2004
-  - Ubuntu1604
   - Ubuntu1804
+  - Ubuntu1604
 
 stack: mysql, redis
 
+build: off
+
 environment:
-  DB_PASS: Password12!
-  DB_HOST: localhost
-  DB_USER: root
-  DB_NAME: bhima_test
-  CORAL_REUSE_BROWSER: 1
+  SESS_SECRET: 1a3184a126e42fa0d9466cf14841f8a218cd92e961f5677b30
+  PORT: 8080
+  DB_PORT: 3306
+  DB_HOST: 127.0.0.1
+  DB_USER: bhima
+  DB_PASS: d4f53162-ed13-11ea-a21b-3ff4e8e44fb1
+  DB_NAME: bhima_appveyor
+  DEBUG: app,errors
+  UPLOAD_DIR: client/upload
+  MAILGUN_API_KEY: key-XXX
+  MAILGUN_DOMAIN: sandbox3ffc48c87d5e4c1c9fa257342faf6f75.mailgun.org
+  MAILGUN_SERVER_ADDRESS: "test@bhi.ma"
+  BUILD_TIMEOUT: 30
   matrix:
-    - nodejs_version: "14"
-    - nodejs_version: "12"
+    - nodejs_version: 14
+    - nodejs_version: 12
 
 matrix:
   fast_finish: true
 
 skip_branch_with_pr: true
-clone_depth: 5
+clone_depth: 3
 
 install:
+  - sh: echo $SESS_SECRET
   - mysql --version
   - sh: nvm install $nodejs_version
   - bash ./sh/setup-ci-env.sh
   - bash ./sh/appveyor.sh
   - yarn
-
-build: off
 
 services:
   - mysql
