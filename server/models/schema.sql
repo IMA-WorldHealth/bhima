@@ -460,6 +460,7 @@ CREATE TABLE `depot` (
   `allow_exit_transfer` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_exit_loss` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `location_uuid` BINARY(16) NULL,
+  `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -577,6 +578,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
+  `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)

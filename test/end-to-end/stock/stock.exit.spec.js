@@ -65,7 +65,7 @@ function StockExiTests() {
     await page.addRows(2);
 
     // first item
-    await page.setItem(0, 'Quinine', 'QUININE-B', 14);
+    await page.setItem(0, 'Quinine', 'QUININE-B', 8);
 
     // second item
     await page.setItem(1, 'Vitamines', 'VITAMINE-B', 5);

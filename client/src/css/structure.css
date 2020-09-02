@@ -724,6 +724,10 @@ growl-notification.fading.ng-leave.ng-leave-active {
   max-width : calc(100% - 50px);
 }
 
+.form-warning {
+  color : #ff0000 !important;
+}
+
 /* 'Card' Utility class */
 .text-float-util {
   text-align : right;
@@ -885,16 +889,16 @@ a[disabled] {
 }
 
 .at-risk {
-  background-color: #ffff6686 !important; 
+  background-color: #ffff6686 !important;
 }
 
 .at-risk-of-expiring {
-  background-color: #ff880191 !important; 
+  background-color: #ff880191 !important;
 }
 
 .out-of-stock {
   /* text-decoration : line-through; */
-  background-color: #cc00ff8f !important; 
+  background-color: #cc00ff8f !important;
 }
 
 .dropdown-menu {

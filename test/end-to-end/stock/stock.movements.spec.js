@@ -30,7 +30,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 16 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 18 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
@@ -46,7 +46,7 @@ function StockMovementsRegistryTests() {
     await modal.setEntryExit(1);
     await modal.switchToDefaultFilterTab();
     await modal.submit();
-    await GU.expectRowCount(gridId, 10 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 12 + depotGroupingRow);
   });
 
   it('find movements by depot', async () => {
@@ -70,7 +70,7 @@ function StockMovementsRegistryTests() {
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 4 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
   it('find by lots reasons for purchase order', async () => {
@@ -83,7 +83,7 @@ function StockMovementsRegistryTests() {
     // to patient
     await modal.setMovementReason(['Vers un patient']);
     await modal.submit();
-    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', async () => {
@@ -113,7 +113,7 @@ function StockMovementsRegistryTests() {
   it('find movements by reference', async () => {
     await modal.setReference(REFERENCE);
     await modal.submit();
-    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 }
 

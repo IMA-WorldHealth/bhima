@@ -57,7 +57,7 @@ function StockLotsRegistryTests() {
   it('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 18 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 17 + depotGroupingRow);
   });
 
   it('find lots by inventory', async () => {
@@ -70,7 +70,7 @@ function StockLotsRegistryTests() {
   it('find lot by name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await modal.submit();
-    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
   it('find lots by entry date', async () => {
@@ -88,7 +88,7 @@ function StockLotsRegistryTests() {
   it('find inventories by group', async () => {
     await components.inventoryGroupSelect.set(inventoryGroup);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 10);
+    await GU.expectRowCount(gridId, 9);
     await filters.resetFilters();
   });
 }

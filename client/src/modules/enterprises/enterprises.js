@@ -231,6 +231,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.setMonthAverage = function setMonthAverage() {
     $touched = true;
   };
+  vm.setDefaultMinMonthsSecurityStock = function setDefaultMinMonthsSecurityStock() {
+    $touched = true;
+  };
 
   startup();
 }

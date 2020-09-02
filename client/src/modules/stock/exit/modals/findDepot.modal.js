@@ -83,7 +83,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
       throw new Error('The requisition is not for depots');
     }
 
-    if (depot && depot.uuid === vm.selected.uuid) {
+    if (Data.depot.uuid === vm.selected.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_THE_SAME_DEPOT';
       throw new Error('The requisition cannot be for the same depot');
     }

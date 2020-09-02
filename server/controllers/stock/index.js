@@ -586,24 +586,29 @@ async function listLotsDepot(req, res, next) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;
   }
+
   try {
     const data = await core.getLotsDepot(null, params);
 
     const queryTags = `
       SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
       FROM tags t
-      JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+        JOIN lot_tag lt ON lt.tag_uuid = t.uuid
       WHERE lt.lot_uuid IN (?)
     `;
-    const lotUuids = data.map(row => db.bid(row.uuid));
-    const tags = await db.exec(queryTags, [lotUuids]);
 
-    // make a lot_uuid -> tags map.
-    const tagMap = _.groupBy(tags, 'lot_uuid');
+    // if we have an empty set, do not query tags.
+    if (data.length !== 0) {
+      const lotUuids = data.map(row => db.bid(row.uuid));
+      const tags = await db.exec(queryTags, [lotUuids]);
 
-    data.forEach(lot => {
-      lot.tags = tagMap[lot.uuid] || [];
-    });
+      // make a lot_uuid -> tags map.
+      const tagMap = _.groupBy(tags, 'lot_uuid');
+
+      data.forEach(lot => {
+        lot.tags = tagMap[lot.uuid] || [];
+      });
+    }
 
     res.status(200).json(data);
   } catch (error) {

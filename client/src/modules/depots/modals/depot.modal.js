@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'NotifyService',
+  '$state', 'DepotService', 'NotifyService', 'SessionService',
 ];
 
-function DepotModalController($state, Depots, Notify) {
+function DepotModalController($state, Depots, Notify, Session) {
   const vm = this;
 
   vm.depot = $state.params.depot;
@@ -13,6 +13,11 @@ function DepotModalController($state, Depots, Notify) {
 
   // make sure hasLocation is set
   vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+
+  // If creating, insert the default min_months_security_stock
+  if (vm.isCreating) {
+    vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
+  }
 
   // exposed methods
   vm.submit = submit;
