@@ -27,8 +27,8 @@ bin/
 client/src/upload/
 test/artifacts/
 
-# ignore configuration
-.env.production
+# ignore dotenv configuration
+.env
 
 # ignore visual studio files
 .vscode/*

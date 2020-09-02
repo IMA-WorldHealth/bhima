@@ -7,10 +7,6 @@ trap 'kill $(jobs -p)' EXIT
 
 echo "Building Test Databases"
 
-set -a
-source .env.development
-set +a
-
 ./sh/build-database.sh || { echo 'failed to build DB' ; exit 1; }
 
 echo "[test]"

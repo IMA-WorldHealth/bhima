@@ -3,10 +3,6 @@
 # bash script mode
 set -euo pipefail
 
-set -a
-source .env.development
-set +a
-
 ./sh/build-database.sh || { echo 'failed to build DB' ; exit 1; }
 
 echo "[test]"

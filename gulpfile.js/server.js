@@ -7,16 +7,10 @@ const {
 
 const del = require('del');
 
-const {
-  isProduction,
-} = require('./util');
-
-// static variables
 const SERVER_FOLDER = path.join(__dirname, '../bin/server/');
+const SERVER_PATHS = ['../server/**/*{.js,.handlebars,.csv}'];
 
-const ENV = `../.env.${isProduction ? 'production' : 'development'}`;
-const SERVER_FILES = ['../server/**/*{.js,.handlebars,.csv}', ENV]
-  .map(p => path.join(__dirname, p));
+const SERVER_FILES = SERVER_PATHS.map(p => path.join(__dirname, p));
 
 /**
  * @function cleanServer
@@ -24,6 +18,8 @@ const SERVER_FILES = ['../server/**/*{.js,.handlebars,.csv}', ENV]
  * with the new version.
  */
 const cleanServer = () => del(SERVER_FOLDER);
+
+const cleanEnv = () => del(path.join(__dirname, '../bin/.env'));
 
 /**
  * @function moveServerFiles
@@ -35,6 +31,18 @@ const cleanServer = () => del(SERVER_FOLDER);
 function moveServerFiles() {
   return src(SERVER_FILES)
     .pipe(dest(SERVER_FOLDER));
+}
+
+/**
+ * @function moveEnvFile
+ *
+ * @description
+ * Copies the .env file over to the build dir.
+ */
+function moveEnvFile(cb) {
+  if (process.env.CI) { return cb(); }
+  return src(path.join(__dirname, '../.env'))
+    .pipe(dest(path.join(__dirname, '../bin/')));
 }
 
 /**
@@ -55,4 +63,4 @@ async function createReportsDirectory(cb) {
 }
 
 // expose the gulp functions to the outside world
-module.exports = series(cleanServer, createReportsDirectory, moveServerFiles);
+module.exports = series(cleanServer, cleanEnv, createReportsDirectory, moveEnvFile, moveServerFiles);

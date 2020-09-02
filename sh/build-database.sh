@@ -9,7 +9,7 @@ echo "[build]"
 echo "Building BHIMA Database"
 
 set -a
-source .env.development
+source .env || { echo '[build-database.sh] did not load .env, using variables from environment.' ; }
 set +a
 
 # set build timeout
@@ -28,7 +28,7 @@ mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" 
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || { echo 'failed to create DB' ; exit 1; }
 
 echo "[build] database schema"
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/schema.sql || { echo 'failed to build DB scheme' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/schema.sql || { echo 'failed to build DB schema' ; exit 1; }
 
 echo "[build] triggers"
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < server/models/triggers.sql || { echo 'failed to import triggers into DB' ; exit 1; }

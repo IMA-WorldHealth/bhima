@@ -5,7 +5,7 @@ set -eo pipefail
 
 # get DB settings
 set -a
-source .env.development
+source .env || { echo '[test.sh] did not load .env, using variables from environment.' ; }
 set +a
 
 function startfold {

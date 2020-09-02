@@ -22,10 +22,6 @@ sql-mode=\"STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION\" " | sudo tee -a /etc/mysq
 ## set database environment
 set -euo pipefail
 
-set -a
-source .env.development
-set +a
-
 mkdir -p test/artifacts
 
 # restart mysql once chanes have been made
