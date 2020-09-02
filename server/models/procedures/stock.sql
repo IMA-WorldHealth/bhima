@@ -380,10 +380,15 @@ CREATE PROCEDURE `computeStockQuantity` (
     FROM temp_stock_movement m
       JOIN inventory i ON i.uuid = m.inventory_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
-    WHERE DATE(m.date) <=_start_date AND m.depot_uuid = @depot_uuid
-    LIMIT 1;
+    WHERE DATE(m.date) <=_start_date AND m.depot_uuid = @depot_uuid;
+
     SET _qtt = IFNULL(_qtt, 0);
 
+    SELECT in_quantity, out_quantity 
+    INTO _in_qtt, _out_qtt
+    FROM temp_stock_movement m
+    WHERE DATE(m.date) =DATE(_start_date) AND m.depot_uuid = @depot_uuid;
+  
     DELETE FROM temp_stock_movement WHERE DATE(`date`) <=_start_date AND `depot_uuid` = @depot_uuid;
 
     -- check if this date already exist in stock_movement_status for the inventory
@@ -399,7 +404,8 @@ CREATE PROCEDURE `computeStockQuantity` (
 
     IF @date_exists = 0 THEN
       SET _row_uuid  = HUID(uuid());
-      INSERT INTO  `stock_movement_status` VALUES (_row_uuid, _start_date, _start_date, _qtt, 0, 0, _inventory_uuid, @depot_uuid);
+      INSERT INTO  `stock_movement_status`
+      VALUES (_row_uuid, _start_date, _start_date, _qtt, IFNULL(_in_qtt, 0), IFNULL(_out_qtt, 0), _inventory_uuid, @depot_uuid);
     END IF;
 
     SELECT `reference` INTO @row_i
