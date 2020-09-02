@@ -52,85 +52,118 @@ exports.getStockTransfers = getStockTransfers;
  * POST /stock/lots
  * Create a new stock lots entry
  */
-function createStock(req, res, next) {
-  const params = req.body;
-  const documentUuid = uuid();
+async function createStock(req, res, next) {
 
-  Fiscal.lookupFiscalYearByDate(params.date)
-    .then(result => {
-      const periodId = result.id;
+  try {
+    const params = req.body;
+    const documentUuid = uuid();
 
-      const transaction = db.transaction();
-      const document = {
-        uuid : documentUuid,
-        date : new Date(params.date),
-        user : req.session.user.id,
-        depot_uuid : params.depot_uuid,
-        flux_id : params.flux_id,
-        description : params.description,
+    const period = await Fiscal.lookupFiscalYearByDate(params.date);
+    const periodId = period.id;
+    const transaction = db.transaction();
+    const document = {
+      uuid : documentUuid,
+      date : new Date(params.date),
+      user : req.session.user.id,
+      depot_uuid : params.depot_uuid,
+      flux_id : params.flux_id,
+      description : params.description,
+    };
+
+    // prepare lot insertion query
+    const createLotQuery = 'INSERT INTO lot SET ?';
+
+    // prepare movement insertion query
+    const createMovementQuery = 'INSERT INTO stock_movement SET ?';
+
+    params.lots.forEach(lot => {
+      // parse the expiration date
+      const date = new Date(lot.expiration_date);
+
+      // the lot object to insert
+      const createLotObject = {
+        uuid : db.bid(uuid()),
+        label : lot.label,
+        initial_quantity : lot.quantity,
+        quantity : lot.quantity,
+        unit_cost : lot.unit_cost,
+        expiration_date : date,
+        inventory_uuid : db.bid(lot.inventory_uuid),
+        origin_uuid : db.bid(lot.origin_uuid),
+        delay : 0,
       };
 
-      // prepare lot insertion query
-      const createLotQuery = 'INSERT INTO lot SET ?';
+      // the movement object to insert
+      const createMovementObject = {
+        uuid : db.bid(uuid()),
+        lot_uuid : createLotObject.uuid,
+        depot_uuid : db.bid(document.depot_uuid),
+        document_uuid : db.bid(documentUuid),
+        flux_id : params.flux_id,
+        date : document.date,
+        quantity : lot.quantity,
+        unit_cost : lot.unit_cost,
+        is_exit : 0,
+        user_id : document.user,
+        description : document.description,
+        period_id : periodId,
+      };
 
-      // prepare movement insertion query
-      const createMovementQuery = 'INSERT INTO stock_movement SET ?';
+      // adding a lot insertion query into the transaction
+      transaction.addQuery(createLotQuery, [createLotObject]);
 
-      params.lots.forEach((lot) => {
-        // parse the expiration date
-        const date = new Date(lot.expiration_date);
+      // adding a movement insertion query into the transaction
+      transaction.addQuery(createMovementQuery, [createMovementObject]);
+    });
 
-        // the lot object to insert
-        const createLotObject = {
-          uuid : db.bid(uuid()),
-          label : lot.label,
-          initial_quantity : lot.quantity,
-          quantity : lot.quantity,
-          unit_cost : lot.unit_cost,
-          expiration_date : date,
-          inventory_uuid : db.bid(lot.inventory_uuid),
-          origin_uuid : db.bid(lot.origin_uuid),
-          delay : 0,
-        };
+    const isExit = 0;
+    const postingParams = [db.bid(documentUuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
 
-        // the movement object to insert
-        const createMovementObject = {
-          uuid : db.bid(uuid()),
-          lot_uuid : createLotObject.uuid,
-          depot_uuid : db.bid(document.depot_uuid),
-          document_uuid : db.bid(documentUuid),
-          flux_id : params.flux_id,
-          date : document.date,
-          quantity : lot.quantity,
-          unit_cost : lot.unit_cost,
-          is_exit : 0,
-          user_id : document.user,
-          description : document.description,
-          period_id : periodId,
-        };
+    if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+      transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+    }
 
-        // adding a lot insertion query into the transaction
-        transaction.addQuery(createLotQuery, [createLotObject]);
+    // gather inventory uuids for use later recomputing the stock quantities
+    const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
 
-        // adding a movement insertion query into the transaction
-        transaction.addQuery(createMovementQuery, [createMovementObject]);
-      });
+    // execute all operations as one transaction
+    await transaction.execute();
 
-      const isExit = 0;
-      const postingParams = [db.bid(documentUuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
+    // update the quantity in stock as needed
+    await updateQuantityInStockAfterMovement(inventoryUuids, params.date, document.depot_uuid);
 
-      if (req.session.enterprise.settings.enable_auto_stock_accounting) {
-        transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
-      }
+    res.status(201).json({ uuid : documentUuid });
+  } catch (ex) {
+    next(ex);
+  }
+}
 
-      // execute all operations as one transaction
-      return transaction.execute();
-    })
-    .then(() => {
-      res.status(201).json({ uuid : documentUuid });
-    })
-    .catch(next)
-    .done();
+/**
+ * @function updateQuantityInStockAfterMovement
+ *
+ * @description
+ * This function is called after each stock movement to ensure that the quantity in stock is updated in
+ * the stock_movement_status table.  It takes in an array of inventory uuids, the date, and the depot's
+ * identifier.  To reduce churn, it first filers out duplicate inventory uuids before calling the stored
+ * procedure.
+ */
+function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid) {
+  const txn = db.transaction();
+
+  // makes a unique array of inventory uuids so we don't do extra calls
+  const uniqueInventoryUuids = inventoryUuids
+    .filter((uid, index, array) => array.lastIndexOf(uid) === index);
+
+  // loop through the inventory uuids, queuing up them to rerun
+  uniqueInventoryUuids.forEach(uid => {
+    txn.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
+      new Date(mvmtDate),
+      db.bid(uid),
+      db.bid(depotUuid),
+    ]);
+  });
+
+  return txn.execute();
 }
 
 /**
@@ -153,6 +186,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
     description : params.movement.description || originTable,
     date : new Date(params.movement.date),
   };
+
   const sql = `INSERT INTO ${originTable} SET ?`;
 
   transaction.addQuery(sql, [integration]);
@@ -190,6 +224,9 @@ async function insertNewStock(session, params, originTable = 'integration') {
     });
   });
 
+  // gather inventory uuids for use later recomputing the stock quantities
+  const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
+
   const postingParams = [
     db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
   ];
@@ -199,6 +236,8 @@ async function insertNewStock(session, params, originTable = 'integration') {
   }
 
   await transaction.execute();
+  // update the quantity in stock as needed
+  await updateQuantityInStockAfterMovement(inventoryUuids, integration.date, params.movement.depot_uuid);
   return documentUuid;
 }
 
@@ -368,7 +407,7 @@ function createMovement(req, res, next) {
  * @function normalMovement
  * @description there are only lines for IN or OUT
  */
-function normalMovement(document, params, metadata) {
+async function normalMovement(document, params, metadata) {
   let createMovementQuery;
   let createMovementObject;
 
@@ -413,6 +452,9 @@ function normalMovement(document, params, metadata) {
     }
   });
 
+  // gather inventory uuids for later quantity in stock calculation updates
+  const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
+
   const projectId = metadata.project.id;
   const currencyId = metadata.enterprise.currency_id;
   const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
@@ -421,14 +463,19 @@ function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
   }
 
-  return transaction.execute();
+  const result = await transaction.execute();
+
+  // update the quantity in stock as needed
+  await updateQuantityInStockAfterMovement(inventoryUuids, document.date, parameters.depot_uuid);
+
+  return result;
 }
 
 /**
  * @function depotMovement
  * @description movement between depots
  */
-function depotMovement(document, params) {
+async function depotMovement(document, params) {
 
   let isWarehouse;
   const transaction = db.transaction();
@@ -473,7 +520,14 @@ function depotMovement(document, params) {
     }
   });
 
-  return transaction.execute();
+  // gather inventory uuids for later quantity in stock calculation updates
+  const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
+
+  const result = await transaction.execute();
+
+  // update the quantity in stock as needed
+  await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
+  return result;
 }
 
 /**

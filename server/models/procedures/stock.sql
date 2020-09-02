@@ -274,4 +274,274 @@ BEGIN
   VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId, periodId);
 END $$
 
+-- the main procedure that loops through stock_movement , retrieve and caculate cmm data
+/*
+CALL computeStockQuantity(startDate, inventoryUuid, depotUuid);
+
+DESCRIPTION
+Computes the quantity in stock from the startDate until now for a given inventoryUuid.
+
+Originally written by @jeremielodi
+*/
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `computeStockQuantity`$$
+CREATE PROCEDURE `computeStockQuantity` (
+  IN _start_date DATE,
+  IN _inventory_uuid BINARY(16),
+  IN _depot_filter_uuid BINARY(16)
+) BEGIN
+  DECLARE done BOOLEAN;
+  DECLARE _depot_uuid, _row_uuid BINARY(16);
+  DECLARE _end_date DATE;
+  DECLARE _qtt, _in_qtt, _out_qtt DECIMAL(19, 4);
+
+
+
+
+  DROP TEMPORARY TABLE IF EXISTS `temp_stock_movement`;
+
+    -- every stock movement for a inventory will be stored here in order to facilitate search
+  CREATE TEMPORARY TABLE `temp_stock_movement` (
+    `reference` INT,
+    `date` DATE,
+    `depot_uuid` BINARY(16),
+    `inventory_uuid` BINARY(16),
+    `quantity` DECIMAL(19,4),
+    `in_quantity` DECIMAL(19,4),
+    `out_quantity` DECIMAL(19,4),
+    `is_exit` TINYINT(2),
+    KEY `depot_uuid` (`depot_uuid`),
+    KEY `inventory_uuid` (`inventory_uuid`),
+    KEY `reference` (`reference`)
+  ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+  -- every stock movement for a inventory will be stored here in order to facilitate search
+  CREATE TEMPORARY TABLE IF NOT EXISTS `temp_depot` (
+    `reference` INT,
+    `uuid` BINARY(16),
+    `text` varchar(100),
+    KEY `uuid` (`uuid`),
+    KEY `reference` (`reference`)
+  ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+  SET _end_date = NOW();
+  SET _start_date = DATE(_start_date);
+  SET @depot_number = 0;
+
+  DELETE FROM `temp_depot`;
+
+  SET @filter_by_depot = (_depot_filter_uuid IS NOT NULL);
+
+  IF @filter_by_depot = 0  THEN -- will compute inventory's quantity in each depot
+    INSERT INTO `temp_depot`
+    SELECT (@depot_number:=@depot_number + 1)as ref, `uuid`, `text`
+    FROM depot;
+  ELSE
+    INSERT INTO `temp_depot`  -- will compute inventory's quantity just in a specific depot
+    SELECT (@depot_number := @depot_number + 1) as ref, `uuid`, `text`
+    FROM depot
+    WHERE `uuid` = _depot_filter_uuid;
+  END IF;
+
+  SET @depot_counter = 1;
+  -- let's loop through all inventories
+
+  WHILE (@depot_counter <= @depot_number) DO
+    SET @depot_uuid = (SELECT `uuid` FROM `temp_depot` WHERE `reference` = @depot_counter);
+
+    -- delete all inventory's data for this period
+
+    DELETE FROM `stock_movement_status`
+    WHERE  `start_date` >= _start_date AND  `end_date` <= _end_date AND  `inventory_uuid` = _inventory_uuid AND `depot_uuid` =  @depot_uuid;
+
+    DELETE FROM `temp_stock_movement` WHERE 1;
+    INSERT INTO `temp_stock_movement`
+
+    SELECT (@row_number:=@row_number + 1) AS `reference`, x.* FROM (
+      SELECT DATE(m.date) AS `date`,  m.depot_uuid, i.uuid,
+        SUM( IFNULL(m.quantity * IF(m.is_exit = 1, -1, 1), 0)) AS quantity,
+        SUM(IF(m.is_exit = 0, m.quantity, 0)),
+        SUM(IF(m.is_exit = 1, m.quantity, 0)), m.is_exit
+      FROM `stock_movement` m
+        JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN inventory i ON i.uuid = l.inventory_uuid
+      WHERE i.uuid = _inventory_uuid AND DATE(m.date) <= DATE(_end_date) AND m.depot_uuid =  @depot_uuid
+      GROUP BY  DATE(m.date), m.depot_uuid
+      ORDER BY  `date`
+    ) AS x
+    ORDER BY x.date;
+
+    SET @row_i = 0;
+    SET _row_uuid = NULL;
+
+    SELECT SUM(quantity) AS quantity INTO _qtt
+    FROM temp_stock_movement m
+      JOIN inventory i ON i.uuid = m.inventory_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+    WHERE DATE(m.date) <=_start_date AND m.depot_uuid = @depot_uuid
+    LIMIT 1;
+    SET _qtt = IFNULL(_qtt, 0);
+
+    DELETE FROM temp_stock_movement WHERE DATE(`date`) <=_start_date AND `depot_uuid` = @depot_uuid;
+
+    -- check if this date already exist in stock_movement_status for the inventory
+    SET @date_exists = 0;
+
+    SELECT `uuid`, count(`uuid`) as nbr
+      INTO _row_uuid,  @date_exists
+    FROM `stock_movement_status`
+    WHERE `depot_uuid` = @depot_uuid AND `inventory_uuid` = _inventory_uuid
+      AND DATE(`start_date`) <= _start_date
+    ORDER BY `start_date` DESC
+    LIMIT 1;
+
+    IF @date_exists = 0 THEN
+      SET _row_uuid  = HUID(uuid());
+      INSERT INTO  `stock_movement_status` VALUES (_row_uuid, _start_date, _start_date, _qtt, 0, 0, _inventory_uuid, @depot_uuid);
+    END IF;
+
+    SELECT `reference` INTO @row_i
+    FROM temp_stock_movement
+    WHERE `date` > _start_date
+    LIMIT 1;
+
+    SET @mvts_number = (SELECT COUNT(*) from temp_stock_movement  WHERE `date` > _start_date);
+    SET  @row_number = @row_i + @mvts_number - 1;
+
+    SET @row_i = IFNULL(@row_i, 0);
+
+    IF @row_i = 0 THEN
+      UPDATE `stock_movement_status` SET `end_date` = _end_date WHERE `uuid` = _row_uuid;
+    ELSE
+      WHILE (@row_i < @row_number + 1) DO
+        SET _in_qtt = 0;
+        SET _out_qtt = 0;
+
+        SET @current_qtt = 0;
+        SET @current_date = _start_date;
+
+        SELECT  m.quantity, m.in_quantity, m.out_quantity, m.date
+          INTO @current_qtt, _in_qtt, _out_qtt, @current_date
+        FROM temp_stock_movement m
+        JOIN inventory i ON i.uuid = m.inventory_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid
+        WHERE m.reference = @row_i
+        GROUP BY m.depot_uuid;
+        UPDATE `stock_movement_status` SET `end_date` = DATE_SUB(@current_date, INTERVAL 1 DAY) WHERE `uuid` = _row_uuid;
+        IF @current_qtt <> _qtt THEN
+          SET _row_uuid = HUID(UUID());
+          SET _qtt = @current_qtt + _qtt;
+          INSERT INTO  `stock_movement_status` VALUES (_row_uuid, @current_date, @current_date, _qtt, _in_qtt, _out_qtt, _inventory_uuid,  @depot_uuid);
+        END IF;
+        SET @row_i= @row_i + 1;
+      END WHILE;
+    END IF;
+
+    UPDATE `stock_movement_status` SET `end_date` = _end_date WHERE `uuid` = _row_uuid;
+    SET _qtt = 0;
+    SET @depot_counter = @depot_counter +1;
+    SET _row_uuid = NULL;
+  END WHILE;
+END$$
+
+
+DROP PROCEDURE IF EXISTS `computeStockQuantityByLotUuid`$$
+CREATE PROCEDURE `computeStockQuantityByLotUuid` (
+  IN _start_date DATE,
+  IN _lot_uuid BINARY(16),
+  IN _depot_filter_uuid BINARY(16)
+)
+BEGIN
+
+  DECLARE _inventory_uuid BINARY(16);
+  SELECT inventory_uuid
+  INTO _inventory_uuid
+  FROM lot
+  WHERE uuid = _lot_uuid
+  LIMIT 1;
+
+  CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_filter_uuid);
+END$$
+
+
+/*
+ This procedure is designed for calculating the CMM for an inventory in a depot during a period
+ It actually retrieve the CMM value for each aglorithm we have so we get just choose which one to use
+*/
+DROP PROCEDURE IF EXISTS `getCMM`$$
+CREATE PROCEDURE `getCMM` (
+  IN _start_date DATE,
+  IN _end_date DATE,
+  IN _inventory_uuid BINARY(16),
+  IN _depot_uuid BINARY(16)
+  )
+  BEGIN
+
+  SET @last_inventory_mvt_date = NULL;
+  --
+  SELECT `end_date`
+  INTO  @last_inventory_mvt_date
+  FROM stock_movement_status m
+  JOIN inventory i ON m.inventory_uuid = i.uuid
+  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
+  ORDER BY `end_date` DESC LIMIT 1;
+
+
+  SET @sum_consumed_quantity = 0;
+  SET @sum_stock_day = 0;
+  SET @sum_consumption_day =0;
+  SET @sum_stock_out_days = 0;
+
+  SET @sum_days = DATEDIFF( @end_date,  @start_date) + 1;
+  SET @number_of_month = (DATEDIFF(@end_date,  @start_date) + 1)/30.5;
+
+
+  SELECT
+      SUM(cmm_data.out_quantity) AS sum_consumed_quantity,
+    SUM(IF(cmm_data.out_quantity <> 0, cmm_data.frequency, 0)) AS sum_consumption_day,
+    SUM(IF(cmm_data.in_stock_quantity = 0, cmm_data.frequency, 0)) AS sum_stock_out_days,
+    SUM(IF(cmm_data.in_stock_quantity <> 0, cmm_data.frequency, 0)) AS sum_stock_day
+  INTO @sum_consumed_quantity, @sum_consumption_day, @sum_stock_day, @sum_stock_out_days
+  FROM (
+      SELECT x.start_date, x.end_date, x.in_quantity, x.out_quantity, x.in_stock_quantity,
+          x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) +1) AS frequency
+      FROM (
+          SELECT
+
+          IF(m.start_date <@start_date, @start_date, m.start_date) AS start_date ,
+          IF(m.end_date > @end_date, @end_date,  IF(m.end_date = @last_inventory_mvt_date AND
+                  @last_inventory_mvt_date < @end_date, @end_date, m.end_date )) AS end_date,
+
+          in_quantity, out_quantity, m.quantity AS `in_stock_quantity`,
+          i.text as 'inventory', d.text AS `depot`
+          FROM stock_movement_status m
+          JOIN depot d ON d.uuid = m.depot_uuid
+          JOIN inventory i ON i.uuid = m.inventory_uuid
+
+          WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
+              AND  ((m.start_date >= @start_date) OR  (m.start_date <= @start_date AND m.end_date >= @start_date))
+              AND ( (m.end_date <=  @end_date) OR ( m.start_date < @end_date ))
+          ORDER BY d.text
+      ) AS `x`
+  ) AS `cmm_data`;
+
+
+
+  SET @algo1 = ( @sum_consumed_quantity/(IF((@sum_stock_day = NULL) OR (@sum_stock_day = 0),1, @sum_stock_day)))*30.5;
+
+  SET @algo2 = ((@sum_consumed_quantity)/(IF( (@sum_consumption_day = NULL) OR @sum_consumption_day = 0,1, @sum_consumption_day)))  * 30.5;
+
+  SET @algo3 =((@sum_consumed_quantity)/ (IF(@sum_days = NULL OR @sum_days = 0,1, @sum_days)))*30.5;
+
+  SET @algo_msh = (@sum_consumed_quantity/(@number_of_month - (@sum_stock_out_days/30.5) ));
+
+
+  -- SELECT @sum_consumed_quantity, @sum_consumption_day, @sum_stock_day, @sum_stock_out_days, @number_of_month, @sum_days;
+
+  SELECT @algo1, @algo2, @algo3, @algo_msh;
+
+END$$
+
 DELIMITER ;
