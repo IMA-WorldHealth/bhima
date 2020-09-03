@@ -622,15 +622,70 @@ async function listLotsDepot(req, res, next) {
  * @todo process stock alert, rupture of stock
  * @todo prevision for purchase
  */
-function listInventoryDepot(req, res, next) {
+async function listInventoryDepot(req, res, next) {
   const params = req.query;
   const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
-  core.getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption)
-    .then((rows) => res.status(200).json(rows))
-    .catch(next)
-    .done();
+  try {
+    const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption];
+
+    const [inventories, lots] = await Promise.all([
+      core.getInventoryQuantityAndConsumption(...inventoriesParameters),
+      core.getLotsDepot(null, params),
+    ]);
+
+    for (let i = 0; i < inventories.length; i++) {
+      let hasRiskyLots = false;
+      let hasExpiredLots = false;
+      let hasNearExpireLots = false;
+
+      let riskyLotsQuantity = 0;
+      let expiredLotsQuantity = 0;
+      let nearExpireLotsQuantity = 0;
+
+      for (let j = 0; j < lots.length; j++) {
+        const hasSameDepot = lots[j].depot_uuid === inventories[i].depot_uuid;
+        const hasSameInventory = lots[j].inventory_uuid === inventories[i].inventory_uuid;
+        if (hasSameDepot && hasSameInventory) {
+          const lot = lots[j];
+          if (lot.quantity <= 0) {
+            // lot exhausted
+          } else if (lot.lifetime < 0) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime < 0
+            hasExpiredLots = true;
+            expiredLotsQuantity += lot.quantity;
+          } else if (lot.IS_IN_RISK_EXPIRATION) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.IS_IN_RISK_EXPIRATION
+            hasNearExpireLots = true;
+            nearExpireLotsQuantity += lot.quantity;
+          } else if (lot.S_RISK <= 0) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.S_RISK <= 0
+            hasRiskyLots = true;
+            riskyLotsQuantity += lot.quantity;
+          }
+        }
+      }
+
+      inventories[i].hasNearExpireLots = hasNearExpireLots;
+      inventories[i].hasRiskyLots = hasRiskyLots;
+      inventories[i].hasExpiredLots = hasExpiredLots;
+
+      inventories[i].nearExpireLotsQuantity = nearExpireLotsQuantity;
+      inventories[i].riskyLotsQuantity = riskyLotsQuantity;
+      inventories[i].expiredLotsQuantity = expiredLotsQuantity;
+    }
+
+    let rows = inventories;
+
+    if (params.show_only_risky) {
+      rows = inventories.filter(item => (item.hasRiskyLots || item.hasNearExpireLots || item.hasExpiredLots));
+    }
+
+    res.status(200).json(rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**

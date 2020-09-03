@@ -53,6 +53,11 @@ function StockInventoriesController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html',
   }, {
+    field            : 'has_risky_lots',
+    displayName      : '',
+    cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
+    width            : 50,
+  }, {
     field            : 'status',
     displayName      : 'STOCK.STATUS.LABEL',
     headerCellFilter : 'translate',
@@ -189,6 +194,10 @@ function StockInventoriesController(
   }
 
   function setStatusFlag(item) {
+    item.noAlert = !item.hasRiskyLots && !item.hasNearExpireLots && !item.hasExpiredLots;
+    item.alert = item.hasExpiredLots;
+    item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
+
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_STOCK_OUT;
     item.isInStock = item.status === bhConstants.stockStatus.IS_IN_STOCK;
     item.hasSecurityWarning = item.status === bhConstants.stockStatus.HAS_SECURITY_WARNING;
