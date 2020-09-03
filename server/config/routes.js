@@ -793,6 +793,7 @@ exports.configure = function configure(app) {
   app.get('/stock/requisition', stock.requisition.list);
   app.get('/stock/requisition/:uuid', stock.requisition.details);
   app.post('/stock/requisition', stock.requisition.create);
+
   app.put('/stock/requisition/:uuid', stock.requisition.update);
   app.delete('/stock/requisition/:uuid', stock.requisition.deleteRequisition);
 
