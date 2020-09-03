@@ -1,4 +1,6 @@
 const db = require('../../lib/db');
+const util = require('../../lib/util');
+const FilterParser = require('../../lib/filter');
 
 module.exports = {
   create,
@@ -9,12 +11,25 @@ module.exports = {
 };
 
 function create(req, res, next) {
-  const data = req.body;
-  data.uuid = data.uuid ? db.bid(data.uuid) : db.uuid();
+  const { donation, items } = req.body;
+  const uuidString = donation.uuid || util.uuid();
+  donation.uuid = db.bid(uuidString);
+  donation.date = new Date(donation.date);
+  const transaction = db.transaction();
 
-  db.exec(`INSERT INTO donation SET ?`, data).then(() => {
-    res.sendStatus(201);
+  transaction.addQuery(`INSERT INTO donation SET ?`, donation);
+
+  items.forEach(item => {
+    item.uuid = db.uuid();
+    item.donation_uuid = donation.uuid;
+    item.inventory_uuid = db.bid(item.inventory_uuid);
+    transaction.addQuery(`INSERT INTO donation_item SET ?`, item);
+  });
+
+  transaction.execute().then(() => {
+    res.status(201).json({ uuid : uuidString });
   }).catch(next);
+
 }
 
 function update(req, res, next) {
@@ -26,6 +41,9 @@ function update(req, res, next) {
 }
 
 function read(req, res, next) {
+  const data = db.convert(req.query, ['uuid']);
+  const filters = new FilterParser(data, { tableAlias : 'dt' });
+
   const sql = `
     SELECT BUID(dt.uuid) as uuid, dt.reference, dt.project_id,
       dt.description,
@@ -36,7 +54,12 @@ function read(req, res, next) {
     JOIN donor d ON d.id= dt.donor_id
     `;
 
-  db.exec(sql).then(donations => {
+  filters.equals('uuid');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters).then(donations => {
     res.status(200).json(donations);
   }).catch(next);
 }
