@@ -358,7 +358,7 @@ function StockEntryController(
 
     StockModal.openFindDonation()
       .then((donation) => {
-        handleSelectedEntity(donation, 'donation', true);
+        handleSelectedEntity(donation, 'donation');
         setSelectedEntity(vm.movement.entity.instance);
       })
       .catch(Notify.handleError);
