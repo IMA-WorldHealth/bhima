@@ -608,12 +608,19 @@ function StockExitController(
     return Stock.movements.create(movement)
       .then(document => {
         documentUuid = document.uuid;
-
         // update requisition status if needed
         if (!vm.requisition) { return null; }
 
+        const movementRequisition = {
+          stock_requisition_uuid : vm.requisition.uuid,
+          document_uuid : documentUuid,
+        };
+
         const COMPLETED_STATUS = 2;
-        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+        return Stock.stockRequisition.update(vm.requisition.uuid, {
+          status_id : COMPLETED_STATUS,
+          movementRequisition,
+        });
       })
       .then(() => {
         ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);

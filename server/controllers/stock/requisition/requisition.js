@@ -146,6 +146,10 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
+    const dataMovementRequisition = db.convert(
+      req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid']
+    );
+
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
     const requisition = _.omit(req.body, 'items');
@@ -153,6 +157,12 @@ exports.update = async (req, res, next) => {
 
     if (requisition.uuid) {
       delete requisition.uuid;
+    }
+
+    if (requisition.movementRequisition) {
+      // Just to make a link between the stock issues coming from the requisition
+      transaction.addQuery('INSERT INTO stock_requisition_movement SET ?;', dataMovementRequisition);
+      delete requisition.movementRequisition;
     }
 
     requisition.date = requisition.date ? new Date(requisition.date) : new Date();
