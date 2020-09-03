@@ -58,6 +58,11 @@ BEGIN
     SELECT purchase.uuid, CONCAT_WS('.', 'PO', project.abbr, purchase.reference)
     FROM purchase JOIN project where project.id = purchase.project_id;
 
+  -- donations
+  INSERT INTO document_map
+    SELECT donation.uuid, CONCAT_WS('.', 'DO', project.abbr, donation.reference)
+    FROM donation JOIN project where project.id = donation.project_id;
+
   -- vouchers
   INSERT INTO document_map
     SELECT voucher.uuid, CONCAT_WS('.', 'VO', project.abbr, voucher.reference)
