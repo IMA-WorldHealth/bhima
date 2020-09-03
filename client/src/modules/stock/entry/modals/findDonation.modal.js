@@ -32,7 +32,7 @@ function StockFindDonationModalController(
       field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html',
+      cellTemplate     : 'modules/stock/entry/modals/templates/donation_reference.tmpl.html',
     },
 
     {
@@ -89,7 +89,7 @@ function StockFindDonationModalController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  /** get purchase document */
+  /** get donation document */
   function showReceipt(uuid) {
     Receipts.purchase(uuid);
   }
@@ -126,7 +126,10 @@ function StockFindDonationModalController(
 
     if (!vm.showAddDonation) {
       if (!vm.selectedRow || (vm.selectedRow && !vm.selectedRow.uuid)) { return null; }
-      return Instance.close([].concat(vm.selectedRow));
+      Donation.stockBalance(vm.selectedRow.uuid).then(donations => {
+        return Instance.close([].concat(donations));
+      });
+      return true;
     }
     const itemsValid = hasValidInput();
     if (form.$invalid || !itemsValid) {
@@ -146,7 +149,7 @@ function StockFindDonationModalController(
     })
       .then((result) => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');
-        return Donation.read(null, { uuid : result.uuid });
+        return Donation.stockBalance(result.uuid);
       }).then(donations => {
         return Instance.close(donations);
       })
@@ -274,7 +277,7 @@ function StockFindDonationModalController(
    * @description [grid] check if all rows in the grid have lots defined
    */
   function hasValidInput() {
-    const rows = vm.stockForm.store;
+    const rows = vm.stockForm.store.data;
     const validData = rows.filter(line => line._valid);
     return (validData.length === rows.length) && rows.length > 0;
   }
