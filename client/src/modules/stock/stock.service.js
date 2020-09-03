@@ -233,6 +233,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/entry/modals/findDonation.modal.html',
       controller   : 'StockFindDonationModalController',
       controllerAs : '$ctrl',
+      size : 'lg',
       resolve      : { data : () => request },
     });
 
