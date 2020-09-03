@@ -629,8 +629,11 @@ async function listInventoryDepot(req, res, next) {
 
   try {
     const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption];
-    const inventories = await core.getInventoryQuantityAndConsumption(...inventoriesParameters);
-    const lots = await core.getLotsDepot(null, params);
+
+    const [inventories, lots] = await Promise.all([
+      core.getInventoryQuantityAndConsumption(...inventoriesParameters),
+      core.getLotsDepot(null, params),
+    ]);
 
     for (let i = 0; i < inventories.length; i++) {
       let hasRiskyLots = false;

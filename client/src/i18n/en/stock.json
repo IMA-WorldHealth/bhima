@@ -207,7 +207,7 @@
     "NO_RISK_OF_EXPIRATION":"No lots with expiration risk",
     "RISK_OF_EXPIRATION":"There are {{quantity}} {{unit}} at risk of expiration",
     "EXPIRED":"There are {{quantity}} {{unit}} expired",
-    "NEAR_EXPIRE":"There are {{quantity}} {{unit}} near to expire",
+    "NEAR_EXPIRE":"There are {{quantity}} {{unit}} expiring soon",
     "SHOW_ONLY_RISKY_LOTS":"Show only inventories with risky lots"
   },
   "MOVEMENTS" : {

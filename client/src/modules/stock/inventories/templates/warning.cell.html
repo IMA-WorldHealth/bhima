@@ -2,7 +2,7 @@
   <span 
     uib-tooltip-template="'warningLotsMessage.html'" 
     tooltip-append-to-body="true"
-    translate>
+    tooltip-placement="right">
     <i ng-if="row.entity.noAlert"  class="fa fa-check text-success"></i>
 
     <i ng-if="row.entity.alert" class="fa fa-exclamation-triangle text-danger"></i>
@@ -14,13 +14,12 @@
 <script type="text/ng-template" id="warningLotsMessage.html">
   <!-- no expiration risk -->
   <div ng-if="row.entity.noAlert">
-    <i class="fa fa-check text-success"></i> <span class="text-success" translate>LOTS.NO_RISK_OF_EXPIRATION</span>
+    <span translate>LOTS.NO_RISK_OF_EXPIRATION</span>
   </div>
 
   <!-- risky lots -->
   <div ng-if="row.entity.riskyLotsQuantity">
-    <i class="fa fa-warning text-warning"></i> 
-    <span class="text-warning" 
+    <span
       translate="LOTS.RISK_OF_EXPIRATION"
       translate-values="{ quantity : row.entity.riskyLotsQuantity, unit : row.entity.unit_type }">
     </span>
@@ -28,8 +27,7 @@
 
   <!-- expired lots -->
   <div ng-if="row.entity.nearExpireLotsQuantity">
-    <i class="fa fa-warning text-warning"></i> 
-    <span class="text-warning" 
+    <span
       translate="LOTS.NEAR_EXPIRE"
       translate-values="{ quantity : row.entity.nearExpireLotsQuantity, unit : row.entity.unit_type }">
     </span>
@@ -37,8 +35,7 @@
 
   <!-- expired lots -->
   <div ng-if="row.entity.expiredLotsQuantity">
-    <i class="fa fa-warning text-danger"></i> 
-    <span class="text-danger" 
+    <span
       translate="LOTS.EXPIRED"
       translate-values="{ quantity : row.entity.expiredLotsQuantity, unit : row.entity.unit_type }">
     </span>
