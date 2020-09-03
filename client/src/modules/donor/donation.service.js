@@ -11,5 +11,12 @@ DonationService.$inject = ['PrototypeApiService'];
  */
 function DonationService(Api) {
   const service = new Api('/donations/');
+  service.stockBalance = stockBalance;
+
+  function stockBalance(id) {
+    const url = ''.concat(id, '/stock_balance');
+    return Api.read.call(service, url);
+  }
+
   return service;
 }
