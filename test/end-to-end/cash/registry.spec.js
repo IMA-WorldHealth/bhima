@@ -26,7 +26,7 @@ function CashPaymentsRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('finds only two payments for today', async () => {
+  it('finds only 2 payment for today', async () => {
     const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('today');
@@ -34,14 +34,13 @@ function CashPaymentsRegistryTests() {
     await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
-  it('finds one payments for this last year', async () => {
-    const DEFAULT_PAYMENTS_FOR_TODAY = 2;
+  it('finds 2 payments for this last year', async () => {
+    const DEFAULT_PAYMENTS_FOR_LAST_YEAR = 2;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('year');
     await modal.submit();
-    await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
+    await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_LAST_YEAR);
   });
-
 
   it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, async () => {
     await modal.switchToDefaultFilterTab();

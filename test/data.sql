@@ -1194,7 +1194,7 @@ INSERT INTO `inventory`
   (1,HUID(UUID()),'DORA_ERYT2T-_0','Erythromycine, 250mg, Tab, 1000, Vrac',8.9800,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
   (1,HUID(UUID()),'DORA_ERYT2T-_1','Erythromycine, 250mg, Tab, 100, Vrac',3.4500,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
   (1,HUID(UUID()),'DORA_ERYT2TB_0','Erythromycin 250 mg (as stearate) blister',4.9200,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
-  (1,HUID(UUID()),'DORA_ERYT5T-_0','Erythromycine, 500mg, Tab, 500, Vrac',3.1800,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
+  (1,HUID('3cf8d982-eef9-11ea-8801-00155d871701'),'DORA_ERYT5T-_0','Erythromycine, 500mg, Tab, 500, Vrac',3.1800,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
   (1,HUID(UUID()),'DORA_ERYT5T-_2','Erythromycine 500mg (as stearate), tablets, 100 Tabs',5.2600,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
   (1,HUID(UUID()),'DORA_ERYT5TB_0','Erythromycine stearate 500mg comp, Blister 10*10',7.8500,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
   (1,HUID(UUID()),'DORA_ETHA1TB_0','Ethambutol HCl, 100mg, Tab, 100, Blister',4.2800,1,0xD81D17A7727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1,0.0000,0.0000,NULL,0,0,'2020-03-30 12:49:56',NULL),
@@ -2984,6 +2984,7 @@ INSERT INTO depot_permission (user_id, depot_uuid) VALUES
 SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');
 SET @paracetemol = HUID('6b4825f1-4e6e-4799-8a81-860531281437');
 SET @multivitamine = HUID('f6556e72-9d05-4799-8cbd-0a03b1810185');
+SET @erythromycine = HUID('3cf8d982-eef9-11ea-8801-00155d871701');
 
 -- stock lots
 INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`) VALUES
@@ -2991,7 +2992,8 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
   (HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), 'VITAMINE-B', 20, 20, 0.5000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @multivitamine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 200, 0.8000, DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), 'QUININE-A', 100, 100, 1.2000, '2017-04-30', @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
-  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25');
+  (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
+  (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A',	10, 0,	3.1800,	DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine, HUID('1908da7a-7892-48d7-a924-be647e5215ef'),	0, '2020-09-04 15:20:22');
 
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES
@@ -3000,7 +3002,9 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('a4ff7358-f1f8-4301-86e4-e9e6fe99bd31'), HUID('5a0e06c2-6ca7-4633-8b17-92e2a59db44c'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 20, 0.5000, 0, 201702, 1),
   (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 201702, 1),
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 201702, 1),
-  (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 201702, 1);
+  (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 201702, 1),
+  (HUID('5c0e5c53-8437-4694-85af-4b3f2135243c'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('76d46d03-030f-49ec-80d9-c863aae1a407'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2020-09-04 08:20:22', 10, 3.1800, 0, 202009, 1),
+  (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2020-09-04 15:20:48', 10, 3.1800, 1, 202009, 1);
 
 -- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES

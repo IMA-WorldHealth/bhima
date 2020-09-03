@@ -17,7 +17,7 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to', 'includeEmptyLot',
+    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
     'is_expired',
   ];
 
@@ -54,19 +54,18 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     displayValues.inventory_uuid = inventory.label;
   };
 
-  // include empty lots
-  vm.setIncludeEmptyLot = () => {
-    displayValues.includeEmptyLot = vm.searchQueries.includeEmptyLot;
+  // include/exclude empty lots
+  vm.setIncludeEmptyLot = (value) => {
+    vm.defaultQueries.includeEmptyLot = value;
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'includeEmptyLot', value });
+    }
   };
 
   // toggle expired stock
   vm.onToggleExpired = function onToggleExpired(bool) {
     vm.searchQueries.is_expired = bool;
   };
-
-  if (data.limit) {
-    vm.defaultQueries.limit = data.limit;
-  }
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
@@ -88,7 +87,17 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     delete vm.searchQueries[key];
   };
 
-  vm.cancel = function cancel() { Instance.close(); };
+  if (data.includeEmptyLot) {
+    vm.defaultQueries.includeEmptyLot = data.includeEmptyLot;
+  } else {
+    vm.defaultQueries.includeEmptyLot = 0;
+  }
+
+  if (data.limit) {
+    vm.defaultQueries.limit = data.limit;
+  }
+
+  vm.cancel = () => Instance.dismiss();
 
   vm.submit = () => {
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);

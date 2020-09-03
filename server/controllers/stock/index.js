@@ -536,7 +536,6 @@ async function depotMovement(document, params) {
  */
 async function listLots(req, res, next) {
   const params = req.query;
-
   try {
     const rows = await core.getLots(null, params);
     res.status(200).json(rows);
@@ -581,7 +580,6 @@ async function listLotsDepot(req, res, next) {
   const params = req.query;
   params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   params.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
-
   if (params.defaultPeriod) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;

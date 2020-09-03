@@ -67,39 +67,39 @@ describe('(/stock/) The Stock HTTP API', () => {
   // list all stock exit relatives to 'Depot Principal'
   it(
     `GET /stock/lots/movements?is_exit=1&depot_uuid=...
-    returns exits for Depot Principal (5 OUT)`,
+    returns list of lot exits for Depot Principal`,
     async () => {
       const res = await agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${shared.depotPrincipalUuid}`);
-      helpers.api.listed(res, 8);
+      helpers.api.listed(res, 9);
     },
   );
 
   // (report) render all stock exit
   it(
     `GET /reports/stock/lots?renderer=json
-    returns exits for all depots (12 OUT)`,
+    returns exits for all depots`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json`);
-      expect(res.body.rows.length).to.equal(22);
+      expect(res.body.rows.length).to.equal(23);
     },
   );
 
   // (report) render all stock exit relatives to 'Depot Principal'
   it(
     `GET /reports/stock/lots?renderer=json
-    returns exits for Depot principal(12 OUT)`,
+    returns render of all lot exits for Depot principal`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json&depot_uuid=${shared.depotPrincipalUuid}`);
-      expect(res.body.rows.length).to.equal(20);
+      expect(res.body.rows.length).to.equal(21);
     },
   );
 
   // list all stock entry relatives to 'Depot Principal'
   it(
-    `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal (10 IN)`,
+    `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal`,
     async () => {
       const res = await agent.get(`/stock/lots/movements?is_exit=0&depot_uuid=${shared.depotPrincipalUuid}`);
-      helpers.api.listed(res, 20);
+      helpers.api.listed(res, 21);
     },
   );
 
@@ -136,7 +136,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/lots/movements filters on user`, async () => {
     const res = await agent.get('/stock/lots/movements').query({ user_id : 1 });
-    helpers.api.listed(res, 30);
+    helpers.api.listed(res, 32);
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
@@ -171,11 +171,11 @@ describe('(/stock/) The Stock HTTP API', () => {
     helpers.api.listed(res, 4);
 
     expect(res.body[1].quantity).to.equal(140);
-    expect(res.body[1].avg_consumption).to.equal(8);
-    expect(res.body[1].S_SEC).to.equal(8);
-    expect(res.body[1].S_MIN).to.equal(16);
-    expect(res.body[1].S_MAX).to.equal(16);
-    expect(res.body[1].S_MONTH).to.equal(17);
+    expect(res.body[1].avg_consumption).to.equal(15);
+    expect(res.body[1].S_SEC).to.equal(15);
+    expect(res.body[1].S_MIN).to.equal(30);
+    expect(res.body[1].S_MAX).to.equal(30);
+    expect(res.body[1].S_MONTH).to.equal(9);
 
     expect(res.body[2].quantity).to.equal(180300);
     expect(res.body[2].avg_consumption).to.equal(49916.67);

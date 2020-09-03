@@ -10,7 +10,7 @@ class="table table-condensed table-bordered">
 <thead>
   <tr>
     <th colspan="2">
-      <span class="text-danger" 
+      <span class="text-danger"
         translate-values="{ total : $ctrl.expiredInventories.length }"
         translate="{{ 'STOCK.STOCK_EXPIRED_WARNING' }}">
       </span>
@@ -29,7 +29,7 @@ class="table table-condensed table-bordered">
 
   <tr>
     <td colspan="2">
-      <span class="text-danger" 
+      <span class="text-danger"
         ng-show="($ctrl.expiredInventories.length - 5) > 0"
         translate-values="{ left : ($ctrl.expiredInventories.length - 5)}"
         translate="{{ 'STOCK.AND_MORE' }}">
@@ -37,7 +37,6 @@ class="table table-condensed table-bordered">
 
     <a ui-sref= "stockLots({ filters : [
       { key : 'period', value : 'allTime'},
-      { key : 'includeEmptyLot', value : 0  },
       { key : 'depot_uuid', value : $ctrl.depot.uuid, displayValue: $ctrl.depot.text, cacheable:false },
       { key : 'includeEmptyLot', value : 0 },
       { key : 'is_expired', value : 1, cacheable:false }

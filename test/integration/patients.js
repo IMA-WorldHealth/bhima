@@ -282,7 +282,7 @@ describe('(/patients) Patients', () => {
       .then((res) => {
         const expectedKeys = ['document_uuid', 'depot_uuid', 'date', 'reference_text'];
         expect(res.body[0]).to.contain.keys(expectedKeys);
-        expect(res.body[0].reference_text).to.equal('SM.9.5');
+        expect(res.body[0].reference_text).to.equal('SM.9.7');
       });
 
   });

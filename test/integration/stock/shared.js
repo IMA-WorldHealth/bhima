@@ -156,7 +156,7 @@ const movementDepot = {
 };
 
 const depotPrincipalUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
-const depotPrincipalMvt = 28; // 10 initial plus 3 distributions + 10 imported
+const depotPrincipalMvt = 30; // 12 initial plus 3 distributions + 10? imported
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
 const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
