@@ -577,6 +577,8 @@ exports.configure = function configure(app) {
   app.get('/donations', donation.read);
   app.post('/donations', donation.create);
   app.get('/donations/:uuid', donation.detail);
+  app.get('/donations/:uuid/stock_balance', donation.stockBalance);
+
   app.put('/donations/:uuid', donation.update);
   app.delete('/donations/:uuid', donation.remove);
 
