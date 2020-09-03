@@ -910,6 +910,7 @@
             "DATE_INTERVAL": "Select a date interval",
             "DEBTOR_GROUP": "Select a Debtor Group",
             "DEPOT": "Select a Depot",
+            "DONOR": "Select a donor",
             "ENTERPRISE": "Select an Enterprise",
             "FEE_CENTER": "Select a Fee Center",
             "FISCAL_YEAR": "Select a Fiscal Year",
