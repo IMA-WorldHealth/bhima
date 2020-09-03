@@ -2029,6 +2029,20 @@ CREATE TABLE `donation` (
   UNIQUE KEY `donation_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+CREATE TABLE `donation_item` (
+  `uuid` BINARY(16) NOT NULL,
+  `donation_uuid`   BINARY(16) NOT NULL,
+  `inventory_uuid`  BINARY(16) NOT NULL,
+  `quantity`        INT(11) NOT NULL DEFAULT 0,
+  `unit_price`      DECIMAL(19,8) UNSIGNED NOT NULL DEFAULT 0.00,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `donation_item_1` (`donation_uuid`, `inventory_uuid`),
+  KEY `donation_uuid` (`donation_uuid`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  CONSTRAINT `donation_item__donation` FOREIGN KEY (`donation_uuid`) REFERENCES `donation` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `donation_item__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 -- integration
 DROP TABLE IF EXISTS `integration`;
 CREATE TABLE `integration` (
