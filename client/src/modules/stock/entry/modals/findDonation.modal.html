@@ -9,8 +9,8 @@
       <span translate>FORM.LABELS.SEARCH</span> 
       <span translate>STOCK.ENTRY_DONATION</span>
     </div>
-
-    <div class="toolbar text-right">
+   <div class="toolbar pull-right">
+    <div class="toolbar">
       <div class="toolbar-item">
         <button type="button"
           ng-click="$ctrl.toggleFilter()"
@@ -20,13 +20,25 @@
         </button>
       </div>
     </div>
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button type="button"
+          ng-click="$ctrl.toggleAddDonation()"
+          class="btn btn-sm btn-default"
+          ng-class="{ 'btn-info' : $ctrl.showAddDonation }">
+          <span class="fa fa-plus"></span>
+        </button>
+      </div>
+    </div>
+   </div>
   </div>
 
   <div class="modal-body">
-    <div class="row">
+    
+    <div class="row"  ng-if="!$ctrl.showAddDonation">
       <div class="col-xs-12">
         <div
-          id="PurchaseGrid"
+          id="DonationGrid"
           ui-grid="$ctrl.gridOptions"
           ui-grid-auto-resize
           ui-grid-resize-columns
@@ -38,6 +50,87 @@
           </bh-grid-loading-indicator>
         </div>
       </div>
+    </div>
+
+    <div class="row" ng-if="$ctrl.showAddDonation">
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+         <div class="col-sm-6">
+          
+          <bh-date-editor
+            date-value="$ctrl.donation.date"
+            required = "true"
+            on-change="$ctrl.onDateChange(date)"
+            allow-future-date="false">
+          </bh-date-editor>
+
+          <div class="form-group" ng-class="{ 'has-error' : FindForm.donor_id.$invalid && FindForm.$submitted }">
+            <label class="control-label" translate>TREE.DONOR</label>
+          
+            <select 
+            name="donor_id"
+            class="form-control" 
+            ng-model="$ctrl.donation.donor_id"
+            ng-options="d.id as d.display_name for d in $ctrl.donors"
+            ng-required="true">
+            <option value="" disabled translate>FORM.SELECT.DONOR</option>
+          </select>
+            <div class="help-block" ng-messages="FindForm.label.$error" ng-show="FindForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+         </div>
+         <div class="col-sm-6">
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.donation.project_id"
+            name="project_id"
+            required = "true"
+            on-select-callback="$ctrl.onSelectProject(project)">
+          </bh-project-select>
+
+          <div
+          class="form-group"
+          ng-class="{'has-error' : FindForm.$submitted && FindForm.description.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.DESCRIPTION </label>
+          <textarea
+            ng-model="$ctrl.donation.description"
+            name="description"
+            class="form-control"
+            rows="4"
+            ng-maxlength="$ctrl.maxLength"
+            required>
+          </textarea>
+          <div class="help-block" ng-messages="FindForm.notes.$error" ng-show="FindForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+         </div>
+
+         
+    
+      </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- "Add number of grid rows" input-group -->
+        <bh-add-item
+         disable="$ctrl.donation"
+         callback="$ctrl.addItems(numItem)">
+       </bh-add-item>
+
+       <!-- @todo - hacky check for inventory to prevent local variables -->
+
+       <div
+       id="new-donation-grid"
+       ui-grid="$ctrl.newDonationGridOptions"
+       ui-grid-resize-columns
+       style="height : 200px; width : 100%;">
+       </div>
+
     </div>
   </div>
 
