@@ -1,44 +1,46 @@
-<div ng-if="!row.groupHeader" style="cursor: pointer;" ng-click="grid.appScope.toggleTooltip(row.entity)" translate-attr="{'title': 'LOTS.SHOW_WARNINGS' }" class="ui-grid-cell-contents text-center" translate>
+<div ng-if="!row.groupHeader" class="ui-grid-cell-contents text-center" translate>
   <span 
-    uib-popover-template="'warningLotsMessage.html'" 
-    popover-trigger="none" 
-    popover-is-open="row.entity.tooltipIsOpen" 
-    popover-append-to-body="true"
+    uib-tooltip-template="'warningLotsMessage.html'" 
+    tooltip-append-to-body="true"
     translate>
-    <i ng-if="!row.entity.has_risky_lots"  class="fa fa-check text-success"></i>
-    
-    <i ng-if="row.entity.has_risky_lots" class="fa fa-warning text-danger"></i>
+    <i ng-if="row.entity.noAlert"  class="fa fa-check text-success"></i>
+
+    <i ng-if="row.entity.alert" class="fa fa-exclamation-triangle text-danger"></i>
+
+    <i ng-if="row.entity.warning" class="fa fa-exclamation-circle text-warning"></i>
   </span>
 </div>
 
 <script type="text/ng-template" id="warningLotsMessage.html">
   <!-- no expiration risk -->
-  <div ng-if="!row.entity.lots.length">
+  <div ng-if="row.entity.noAlert">
     <i class="fa fa-check text-success"></i> <span class="text-success" translate>LOTS.NO_RISK_OF_EXPIRATION</span>
   </div>
 
-  <!-- expiration risk -->
-  <div ng-if="row.entity.lots.length">
-    <div ng-repeat="lot in row.entity.lots track by lot.uuid | limitTo: 3">
-      <i class="fa fa-warning text-danger"></i> 
-      <span class="text-danger" 
-        translate="LOTS.RISK_OF_EXPIRATION"
-        translate-values="{
-          quantity : lot.quantity,
-          unit : lot.unit_type,
-          label : lot.label,
-          expiration : lot.delay_expiration
-        }"></span>
-    </div>
+  <!-- risky lots -->
+  <div ng-if="row.entity.riskyLotsQuantity">
+    <i class="fa fa-warning text-warning"></i> 
+    <span class="text-warning" 
+      translate="LOTS.RISK_OF_EXPIRATION"
+      translate-values="{ quantity : row.entity.riskyLotsQuantity, unit : row.entity.unit_type }">
+    </span>
   </div>
 
-  <div ng-if="row.entity.lots.length > 3">...</div>
+  <!-- expired lots -->
+  <div ng-if="row.entity.nearExpireLotsQuantity">
+    <i class="fa fa-warning text-warning"></i> 
+    <span class="text-warning" 
+      translate="LOTS.NEAR_EXPIRE"
+      translate-values="{ quantity : row.entity.nearExpireLotsQuantity, unit : row.entity.unit_type }">
+    </span>
+  </div>
 
-  <div class="text-right">
-    <a ui-sref="stockLots({ filters : [
-      { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cacheable: false },
-      { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cacheable: false },
-      { key : 'limit', value : 1000, cacheable: false }
-    ]})" href>Voir les lots</a>
+  <!-- expired lots -->
+  <div ng-if="row.entity.expiredLotsQuantity">
+    <i class="fa fa-warning text-danger"></i> 
+    <span class="text-danger" 
+      translate="LOTS.EXPIRED"
+      translate-values="{ quantity : row.entity.expiredLotsQuantity, unit : row.entity.unit_type }">
+    </span>
   </div>
 </script>

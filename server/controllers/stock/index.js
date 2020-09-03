@@ -634,23 +634,49 @@ async function listInventoryDepot(req, res, next) {
 
     for (let i = 0; i < inventories.length; i++) {
       let hasRiskyLots = false;
+      let hasExpiredLots = false;
+      let hasNearExpireLots = false;
+
+      let riskyLotsQuantity = 0;
+      let expiredLotsQuantity = 0;
+      let nearExpireLotsQuantity = 0;
+
       for (let j = 0; j < lots.length; j++) {
         const hasSameDepot = lots[j].depot_uuid === inventories[i].depot_uuid;
         const hasSameInventory = lots[j].inventory_uuid === inventories[i].inventory_uuid;
         if (hasSameDepot && hasSameInventory) {
-          if (lots[j].IS_IN_RISK_EXPIRATION && lots[j].quantity > 0) {
+          const lot = lots[j];
+          if (lot.quantity <= 0) {
+            // lot exhausted
+          } else if (lot.lifetime < 0) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime < 0
+            hasExpiredLots = true;
+            expiredLotsQuantity += lot.quantity;
+          } else if (lot.IS_IN_RISK_EXPIRATION) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.IS_IN_RISK_EXPIRATION
+            hasNearExpireLots = true;
+            nearExpireLotsQuantity += lot.quantity;
+          } else if (lot.S_RISK <= 0) {
+            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.S_RISK <= 0
             hasRiskyLots = true;
-            break;
+            riskyLotsQuantity += lot.quantity;
           }
         }
       }
-      inventories[i].has_risky_lots = hasRiskyLots;
+
+      inventories[i].hasNearExpireLots = hasNearExpireLots;
+      inventories[i].hasRiskyLots = hasRiskyLots;
+      inventories[i].hasExpiredLots = hasExpiredLots;
+
+      inventories[i].nearExpireLotsQuantity = nearExpireLotsQuantity;
+      inventories[i].riskyLotsQuantity = riskyLotsQuantity;
+      inventories[i].expiredLotsQuantity = expiredLotsQuantity;
     }
 
     let rows = inventories;
 
     if (params.show_only_risky) {
-      rows = inventories.filter(item => item.has_risky_lots === true);
+      rows = inventories.filter(item => (item.hasRiskyLots || item.hasNearExpireLots || item.hasExpiredLots));
     }
 
     res.status(200).json(rows);

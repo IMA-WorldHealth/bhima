@@ -6,7 +6,6 @@ StockInventoriesController.$inject = [
   'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
   'GridGroupingService', 'bhConstants', 'GridStateService',
   '$state', 'GridColumnService', '$httpParamSerializer', 'BarcodeService',
-  'moment',
 ];
 
 /**
@@ -16,7 +15,7 @@ StockInventoriesController.$inject = [
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns,
-  $httpParamSerializer, Barcode, moment,
+  $httpParamSerializer, Barcode,
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
@@ -142,29 +141,6 @@ function StockInventoriesController(
   vm.saveGridState = state.saveGridState;
   vm.getQueryString = Stock.getQueryString;
 
-  vm.toggleTooltip = row => {
-    if (row.tooltipIsOpen) {
-      row.tooltipIsOpen = !row.tooltipIsOpen;
-      return;
-    }
-
-    Stock.lots.read(null, {
-      inventory_uuid : row.inventory_uuid,
-      depot_uuid : row.depot_uuid,
-    })
-      .then(lots => {
-        row.lots = lots
-          .filter(item => item.quantity > 0 && item.IS_IN_RISK_EXPIRATION === true)
-          .map(item => {
-            const delay = moment(new Date(item.expiration_date)).diff(new Date());
-            item.delay_expiration = moment.duration(delay).humanize(true);
-            return item;
-          });
-        row.tooltipIsOpen = true;
-      })
-      .catch(Notify.handleError);
-  };
-
   function clearGridState() {
     state.clearGridState();
     $state.reload();
@@ -218,6 +194,10 @@ function StockInventoriesController(
   }
 
   function setStatusFlag(item) {
+    item.noAlert = !item.hasRiskyLots && !item.hasNearExpireLots && !item.hasExpiredLots;
+    item.alert = item.hasExpiredLots;
+    item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
+
     item.isSoldOut = item.status === bhConstants.stockStatus.IS_STOCK_OUT;
     item.isInStock = item.status === bhConstants.stockStatus.IS_IN_STOCK;
     item.hasSecurityWarning = item.status === bhConstants.stockStatus.HAS_SECURITY_WARNING;
