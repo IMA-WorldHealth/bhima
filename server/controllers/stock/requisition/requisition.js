@@ -147,7 +147,7 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const dataMovementRequisition = db.convert(
-      req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid']
+      req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid'],
     );
 
     const transaction = db.transaction();
@@ -160,9 +160,35 @@ exports.update = async (req, res, next) => {
     }
 
     if (requisition.movementRequisition) {
-      // Just to make a link between the stock issues coming from the requisition
-      transaction.addQuery('INSERT INTO stock_requisition_movement SET ?;', dataMovementRequisition);
       delete requisition.movementRequisition;
+
+      // Just to make a link between the stock issues coming from the requisition
+      await db.exec('INSERT INTO stock_requisition_movement SET ?;', dataMovementRequisition);
+
+      const checkRequisitionBalance = `
+      SELECT requisition.total_quantity, requisition.stock_requisition,
+      (requisition.total_quantity - movement.total_quantity) AS diff
+      FROM (
+        SELECT SUM(sr.quantity) AS total_quantity, BUID(sr.requisition_uuid) AS stock_requisition
+        FROM stock_requisition_item AS sr
+        WHERE sr.requisition_uuid = ?
+      ) AS requisition
+      JOIN (
+        SELECT SUM(sm.quantity) AS total_quantity, BUID(rm.stock_requisition_uuid) AS stock_requisition
+        FROM stock_movement AS sm
+        JOIN stock_requisition_movement AS rm ON rm.document_uuid = sm.document_uuid
+        WHERE rm.stock_requisition_uuid = ? AND sm.is_exit = 1
+      ) AS movement ON movement.stock_requisition = requisition.stock_requisition;
+    `;
+
+      const balanceQuantity = await db.one(checkRequisitionBalance, [
+        dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
+      ]);
+
+      if (balanceQuantity.diff > 0) {
+        // Partially
+        requisition.status_id = 3;
+      }
     }
 
     requisition.date = requisition.date ? new Date(requisition.date) : new Date();
