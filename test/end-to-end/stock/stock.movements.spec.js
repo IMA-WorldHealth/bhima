@@ -30,7 +30,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 18 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 19 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
@@ -70,7 +70,7 @@ function StockMovementsRegistryTests() {
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 7 + depotGroupingRow);
   });
 
   it('find by lots reasons for purchase order', async () => {

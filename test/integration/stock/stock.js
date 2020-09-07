@@ -171,11 +171,11 @@ describe('(/stock/) The Stock HTTP API', () => {
     helpers.api.listed(res, 4);
 
     expect(res.body[1].quantity).to.equal(140);
-    expect(res.body[1].avg_consumption).to.equal(8);
-    expect(res.body[1].S_SEC).to.equal(8);
-    expect(res.body[1].S_MIN).to.equal(16);
-    expect(res.body[1].S_MAX).to.equal(16);
-    expect(res.body[1].S_MONTH).to.equal(17);
+    expect(res.body[1].avg_consumption).to.equal(15);
+    expect(res.body[1].S_SEC).to.equal(15);
+    expect(res.body[1].S_MIN).to.equal(30);
+    expect(res.body[1].S_MAX).to.equal(30);
+    expect(res.body[1].S_MONTH).to.equal(9);
 
     expect(res.body[2].quantity).to.equal(180300);
     expect(res.body[2].avg_consumption).to.equal(49916.67);

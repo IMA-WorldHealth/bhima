@@ -97,7 +97,7 @@ function StockExitPage() {
   /**
    * @method setItem
    */
-  page.setItem = async function setInventory(rowNumber, code, lot, quantity) {
+  page.setItem = async function setItem(rowNumber, code, lot, quantity) {
     // inventory code column
     const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
@@ -126,7 +126,6 @@ function StockExitPage() {
    */
   page.setLot = async (rowNumber, lot) => {
     const lotCell = await GU.getCell(gridId, rowNumber, 3);
-
     await FU.uiSelectAppended('row.entity.lot', lot, lotCell);
   };
 

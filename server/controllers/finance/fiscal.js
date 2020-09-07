@@ -75,7 +75,6 @@ function lookupFiscalYear(id) {
   return db.one(sql, [id], id, 'fiscal year');
 }
 
-
 function getFiscalYearByPeriodId(periodId) {
   const sql = `
     SELECT id, enterprise_id, number_of_months, label, start_date, end_date,
@@ -88,7 +87,6 @@ function getFiscalYearByPeriodId(periodId) {
 
   return db.one(sql, periodId);
 }
-
 
 /**
  * @method list

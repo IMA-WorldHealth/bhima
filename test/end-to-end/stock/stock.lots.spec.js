@@ -66,7 +66,6 @@ function StockLotsRegistryTests() {
     await GU.expectRowCount(gridId, 4 + (2 * depotGroupingRow));
   });
 
-
   it('find lot by name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await modal.submit();
