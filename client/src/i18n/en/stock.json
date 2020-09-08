@@ -160,7 +160,8 @@
       "STOCK_OUT"      : "Stock Out",
       "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
     },
-    "SUCCESS"         : "Successfully created a movement",
+    "STOCK_MOVEMENTS" : "View Stock Movements",
+	"SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date",

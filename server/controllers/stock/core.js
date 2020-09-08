@@ -84,6 +84,7 @@ function getLotFilters(parameters) {
     'purchase_uuid',
     'tag_uuid',
     'tags',
+    'stock_requisition_uuid',
   ]);
 
   const filters = new FilterParser(params);
@@ -108,6 +109,7 @@ function getLotFilters(parameters) {
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
   filters.equals('tag_uuid', 'tags', 't');
+  filters.equals('stock_requisition_uuid', 'uuid', 'sr');
 
   // depot permission check
   filters.custom(
