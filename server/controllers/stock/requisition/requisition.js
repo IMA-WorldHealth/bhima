@@ -146,9 +146,6 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const dataMovementRequisition = db.convert(
-      req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid'],
-    );
 
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
@@ -160,6 +157,10 @@ exports.update = async (req, res, next) => {
     }
 
     if (requisition.movementRequisition) {
+      const dataMovementRequisition = db.convert(
+        req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid'],
+      );
+
       delete requisition.movementRequisition;
 
       // Just to make a link between the stock issues coming from the requisition
