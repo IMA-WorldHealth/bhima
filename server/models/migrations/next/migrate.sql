@@ -738,3 +738,10 @@ CREATE TABLE  `stock_movement_status` (
     KEY `inventory_uuid` (`inventory_uuid`),
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-09-07
+ * @description: Add the importance level column in the inventory table
+ */
+ALTER TABLE inventory ADD COLUMN `importance` VARCHAR(20) NULL COMMENT 'Inventory level of importance : LOW, MID, HIGH';
