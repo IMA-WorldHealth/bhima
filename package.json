@@ -50,7 +50,7 @@
     "jeremielodi"
   ],
   "dependencies": {
-    "@ima-worldhealth/coral": "^2.2.0",
+    "@ima-worldhealth/coral": "^2.2.1",
     "@ima-worldhealth/tree": "^2.3.0",
     "@types/angular": "^1.7.3",
     "@uirouter/angularjs": "^1.0.28",
