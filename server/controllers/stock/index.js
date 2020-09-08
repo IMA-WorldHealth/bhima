@@ -371,10 +371,14 @@ async function createInventoryAdjustment(req, res, next) {
 }
 
 /**
- * POST /stock/movement
- * Create a new stock movement
+ * @function createMovement
+ *
+ * @description
+ * Create a new stock movement.
+ *
+ * POST /stock/lots/movement
  */
-function createMovement(req, res, next) {
+async function createMovement(req, res, next) {
   const params = req.body;
 
   const document = {
@@ -383,24 +387,23 @@ function createMovement(req, res, next) {
     user : req.session.user.id,
   };
 
-  Fiscal.lookupFiscalYearByDate(params.date)
-    .then(result => {
-      params.period_id = result.id;
+  const metadata = {
+    project : req.session.project,
+    enterprise : req.session.enterprise,
+  };
 
-      const metadata = {
-        project : req.session.project,
-        enterprise : req.session.enterprise,
-      };
+  try {
+    const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
+    params.period_id = periodId;
 
-      const process = (params.from_depot && params.to_depot) ? depotMovement : normalMovement;
+    const isDepotMovement = (params.from_depot && params.to_depot);
+    const stockMovementFn = isDepotMovement ? depotMovement : normalMovement;
+    await stockMovementFn(document, params, metadata);
 
-      return process(document, params, metadata);
-    })
-    .then(() => {
-      res.status(201).json({ uuid : document.uuid });
-    })
-    .catch(next)
-    .done();
+    res.status(201).json({ uuid : document.uuid });
+  } catch (err) {
+    next(err);
+  }
 }
 
 /**
