@@ -200,9 +200,9 @@
         name="importance"
         ng-model="$ctrl.item.importance">
         <option value="" disabled translate>INVENTORY.IMPORTANCE_LEVEL_SELECT</option>
-        <option value="LOW" translate>INVENTORY.LOW</option>
-        <option value="MID" translate>INVENTORY.MID</option>
-        <option value="HIGH" translate>INVENTORY.HIGH</option>
+        <option ng-value="1" translate>INVENTORY.LOW</option>
+        <option ng-value="2" translate>INVENTORY.MID</option>
+        <option ng-value="3" translate>INVENTORY.HIGH</option>
       </select>
     </div>
 
