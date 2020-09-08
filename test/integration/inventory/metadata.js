@@ -18,6 +18,8 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     type_id : 1,
     consumable : 0,
     sellable : 1,
+    tracker : 1,
+    importance : 'MID'
   };
 
   const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
@@ -103,6 +105,28 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .then(res => {
         helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the tracker column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ tracker : 1 })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+        expect(item.tracker).to.equal(1);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the importance column', () => {
+    return agent.get('/inventory/metadata')
+      .query({ importance : 'MID' })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+        expect(item.importance).to.equal('MID');
       })
       .catch(helpers.handler);
   });
