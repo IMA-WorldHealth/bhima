@@ -220,6 +220,11 @@
             "PAYMENT": "Référence du Paiement",
             "PREVIOUS": "Précédent",
             "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
+            "REQUISITION": {
+              "CANCEL": "Annuler la demande de réquisition des stocks",
+              "DONE": "La requisition ne pourra plus être completée, et sera consideré comme fait",
+              "IN_PROGRESS": "Rehabilité la demande de requisition"
+            },
             "RESULT_FOUND": "Résultat trouvé",
             "ROWS": "enregistrements",
             "SALE_DETAILS": "Détaille de la Facture",
@@ -936,6 +941,7 @@
             "RENDERER" : "Sélectionner un rendu",
             "REFERENCE": "Sélectionner la Référence",
             "REFERENCE_GROUP": "Sélectionner un groupe de référence",
+            "REFERENCE_REQUISITION": "Sélectionner la référence de la requisition",
             "REPORT_TYPE": "Sélectionner le type de rapport",
             "RESULT_ACCOUNT_SCT": "Sélectionnez une section de compte de résultats",
             "ROOT_ACCOUNT": "Sélectionner le compte titre",
