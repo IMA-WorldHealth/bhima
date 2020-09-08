@@ -9,12 +9,11 @@
 
   <!-- reference -->
   <div class="form-group" ng-if="$ctrl.requisitionVoucherExist">
-    <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-    <input
-      name="requisitionReference"
-      class="form-control"
-      ng-model="$ctrl.requisitionReference"
-      ng-change="$ctrl.onChangeReference()">
+    <!-- Requisition -->
+    <bh-requisition-select
+      requisition-uuid="$ctrl.requisitionReference"
+      on-select-callback="$ctrl.onSelectRequisition(requisition)">
+    </bh-requisition-select>
 
     <div class="help-block" ng-show="$ctrl.message">
       <p translate>{{ $ctrl.message }}</p>
