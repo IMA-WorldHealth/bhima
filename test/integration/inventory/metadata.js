@@ -19,7 +19,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     consumable : 0,
     sellable : 1,
     tracker : 1,
-    importance : 'MID',
+    importance : 2,
   };
 
   const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
@@ -45,7 +45,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /inventory/metadata create a new inventory metadata', () => {
     return agent.post('/inventory/metadata')
       .send(metadata)
@@ -55,7 +54,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('PUT /inventory/metadata/:uuid update an existing inventory metadata', () => {
     return agent.put(`/inventory/metadata/${metadata.uuid}`)
@@ -122,11 +120,11 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
 
   it('GET /inventory/metadata filters on the importance column', () => {
     return agent.get('/inventory/metadata')
-      .query({ importance : 'MID' })
+      .query({ importance : 2 })
       .then(res => {
         helpers.api.listed(res, 1);
         const [item] = res.body;
-        expect(item.importance).to.equal('MID');
+        expect(item.importance).to.equal(2);
       })
       .catch(helpers.handler);
   });
@@ -211,7 +209,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
-
 
   // count inventory in the group
   it('GET /inventory/groups/:uuid/count', () => {
