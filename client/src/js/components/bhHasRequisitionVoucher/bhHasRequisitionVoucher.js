@@ -22,7 +22,7 @@ function bhHasRequisitionVoucherController() {
     $ctrl.requisitionVoucherExist = value;
   };
 
-  $ctrl.onChangeReference = () => {
-    $ctrl.onChange({ reference : $ctrl.requisitionReference });
+  $ctrl.onSelectRequisition = (requisition) => {
+    $ctrl.onChange({ reference : requisition.reference });
   };
 }

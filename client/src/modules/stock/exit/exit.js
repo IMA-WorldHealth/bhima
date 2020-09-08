@@ -578,7 +578,7 @@ function StockExitController(
         // update requisition status if needed
         if (!vm.requisition) { return null; }
 
-        const COMPLETED_STATUS = 2;
+        const COMPLETED_STATUS = 6;
         return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
       })
       .then(() => {
@@ -617,7 +617,7 @@ function StockExitController(
           document_uuid : documentUuid,
         };
 
-        const COMPLETED_STATUS = 2;
+        const COMPLETED_STATUS = 6;
         return Stock.stockRequisition.update(vm.requisition.uuid, {
           status_id : COMPLETED_STATUS,
           movementRequisition,

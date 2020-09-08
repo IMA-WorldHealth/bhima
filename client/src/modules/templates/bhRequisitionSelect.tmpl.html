@@ -1,0 +1,25 @@
+<div bh-requisition-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : RequisitionForm.$$parent.$submitted && RequisitionForm.requisition_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="requisition_uuid" 
+      ng-required ="$ctrl.required"
+      ng-model="$ctrl.requisitionUuid"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.REFERENCE_REQUISITION' | translate }}"><span>{{$select.selected.reference}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="requisition.uuid as requisition in $ctrl.requisitions | filter: { 'reference': $select.search }">
+        <span ng-bind-html="requisition.reference | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="RequisitionForm.requisition_uuid.$error" ng-show="RequisitionForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
