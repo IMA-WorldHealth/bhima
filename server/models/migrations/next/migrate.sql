@@ -745,3 +745,4 @@ CREATE TABLE  `stock_movement_status` (
  * @description: Add the importance level column in the inventory table
  */
 ALTER TABLE inventory ADD COLUMN `importance` VARCHAR(20) NULL COMMENT 'Inventory level of importance : LOW, MID, HIGH';
+ALTER TABLE inventory ADD COLUMN `tracker` TINYINT(1) NOT NULL DEFAULT 0;

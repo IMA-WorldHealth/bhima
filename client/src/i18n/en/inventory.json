@@ -44,6 +44,12 @@
         "VIEW_LOTS_IN_STOCK" : "View Lots in Stock",
         "PREVIOUS_VALUE" : "Previous Value",
         "UPDATED_VALUE" : "Updated Value",
-        "CHANGES" : "Changes"
+        "CHANGES" : "Changes",
+        "IMPORTANCE_LEVEL":"Importance Level",
+        "IMPORTANCE_LEVEL_SELECT":"Select the importance level",
+        "LOW":"Low",
+        "MID":"Mid",
+        "HIGH":"High",
+        "TRACKER":"Tracker"
     }
 }
