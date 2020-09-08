@@ -778,6 +778,7 @@ CREATE TABLE `inventory` (
   `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering INTerval',
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
+  `importance` VARCHAR(20) NULL COMMENT 'Inventory level of importance : LOW, MID, HIGH' ,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
