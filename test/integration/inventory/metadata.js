@@ -19,7 +19,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     consumable : 0,
     sellable : 1,
     tracker : 1,
-    importance : 'MID'
+    importance : 'MID',
   };
 
   const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
