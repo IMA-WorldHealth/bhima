@@ -54,6 +54,7 @@ module.exports = {
   STOCK_MOVEMENT : {
     key : 'SM',
     table : 'stock_movement',
+    documentPath : '/receipts/stock/',
     redirectPath : '/#/stock/movements',
   },
   STOCK_LOT : {

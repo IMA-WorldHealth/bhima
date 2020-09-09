@@ -2,10 +2,9 @@
 const _ = require('lodash');
 
 // module dependencies
-const db = require('../lib/db');
+const db = require('./db');
 const identifiers = require('../config/identifiers');
-const stockCommon = require('../controllers/stock/reports/common');
-const BadRequest = require('../lib/errors/BadRequest');
+const BadRequest = require('./errors/BadRequest');
 
 exports.getEntity = getEntity;
 
@@ -18,7 +17,7 @@ indexIdentifiers();
 // It requires a  reference code and language as paramters
 // The reference code is a combination of table_key.project_abbr.reference
 // The table name is variable, it can be :invoice, cash or voucher
-function getEntity(req, res, next) {
+async function getEntity(req, res, next) {
   const codeRef = req.params.codeRef.split('.');
   const { language } = req.params;
 
@@ -33,66 +32,56 @@ function getEntity(req, res, next) {
   // handle employee reference
   const EMPLOYEE_PREFIX = 'EM';
 
-  const fluxId = codeRef[1];
+  const isStockMovement = (code === STOCK_MOVEMENT_PREFIX);
+  const isEmployee = (code === EMPLOYEE_PREFIX);
 
-  if (code === STOCK_MOVEMENT_PREFIX) {
-    const type = getStockMovementType(fluxId);
-    const queryDocument = `SELECT BUID(uuid) as uuid FROM document_map WHERE text = ?`;
+  try {
+    // consider corner cases to guard against infinite redirects
+    if (!documentDefinition) {
+      throw new BadRequest(`Invalid document type provided - '${code}'`);
+    }
 
-    return db.one(queryDocument, [req.params.codeRef])
-      .then(entity => {
-        const uuid = entity.uuid;
-        const path = `/receipts/stock/${type.path}/`;
-        const url = `${path}${uuid}?lang=${language}&renderer=pdf`;
-        res.redirect(url);
-      })
-      .catch(next)
-      .done();
+    if (!documentDefinition.documentPath) {
+      throw new BadRequest(`Document type does not support document path - '${code}'`);
+    }
+
+    let url;
+
+    // render a stock movement receipt
+    if (isStockMovement) {
+      const queryDocument = `SELECT BUID(uuid) as uuid FROM document_map WHERE text = ?`;
+      const { uuid } = await db.one(queryDocument, [req.params.codeRef]);
+      url = `${documentDefinition.documentPath}${uuid}?lang=${language}&renderer=pdf`;
+
+      // render the employee card
+    } else if (isEmployee) {
+      const queryEntity = `
+        SELECT BUID(employee.uuid) AS uuid
+        FROM entity_map
+          JOIN employee ON employee.creditor_uuid = entity_map.uuid
+        WHERE entity_map.text = ?
+      `;
+
+      const { uuid } = await db.one(queryEntity, [req.params.codeRef]);
+      url = `${documentDefinition.documentPath}?lang=${language}&renderer=pdf&employee_uuid=${uuid}`;
+
+      // render a regular document type
+    } else {
+      const query = `
+        SELECT BUID(uuid) as uuid
+        FROM ${documentDefinition.table} as documentTable JOIN project ON documentTable.project_id = project.id
+        WHERE project.abbr = ? AND documentTable.reference = ?
+      `;
+
+      // search for full UUID
+      const { uuid } = await db.one(query, [projectName, reference]);
+      url = `${documentDefinition.documentPath}${uuid}?lang=${language}&renderer=pdf`;
+    }
+
+    res.redirect(url);
+  } catch (e) {
+    next(e);
   }
-
-  if (code === EMPLOYEE_PREFIX) {
-    const queryEntity = `
-      SELECT BUID(entity_map.uuid) as uuid, BUID(employee.uuid) AS employee_uuid
-      FROM entity_map
-      JOIN employee ON employee.creditor_uuid = entity_map.uuid
-      WHERE entity_map.text = ?
-    `;
-
-    return db.one(queryEntity, [req.params.codeRef])
-      .then(entity => {
-        const uuid = entity.employee_uuid;
-        const url = `${documentDefinition.documentPath}?lang=${language}&renderer=pdf&employee_uuid=${uuid}`;
-        res.redirect(url);
-      })
-      .catch(next)
-      .done();
-  }
-
-  // consider corner cases to gaurd against infinite redirects
-  if (!documentDefinition) {
-    throw new BadRequest(`Invalid document type provided - '${code}'`);
-  }
-
-  if (!documentDefinition.documentPath) {
-    throw new BadRequest(`Document type does not support document path - '${code}'`);
-  }
-
-  const query = `
-    SELECT BUID(uuid) as uuid
-    FROM ${documentDefinition.table} as documentTable JOIN project ON documentTable.project_id = project.id
-    WHERE project.abbr = ? AND documentTable.reference = ?
-  `;
-
-  // search for full UUID
-  db.one(query, [projectName, reference])
-    .then((entity) => {
-      const { uuid } = entity;
-      const url = `${documentDefinition.documentPath}${uuid}?lang=${language}&renderer=pdf`;
-
-      res.redirect(url);
-    })
-    .catch(next)
-    .done();
 }
 
 function indexIdentifiers() {
@@ -100,9 +89,3 @@ function indexIdentifiers() {
     identifiersIndex[entity.key] = entity;
   });
 }
-
-// get stock movement type
-function getStockMovementType(id) {
-  return stockCommon.stockFluxReceipt[id];
-}
-
