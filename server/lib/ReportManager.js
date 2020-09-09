@@ -32,6 +32,7 @@ const translateHelper = require('./helpers/translate');
 const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
 
+const { FORCE_HTML_RECEIPT_RENDERER } = process.env;
 
 // renderers
 const renderers = {
@@ -64,7 +65,6 @@ const SAVE_SQL = `
   INSERT INTO saved_report SET ?;
 `;
 
-
 function getFileName(options, extension) {
   const translate = translateHelper(options.lang);
   const translatedName = translate(options.filename);
@@ -73,7 +73,6 @@ function getFileName(options, extension) {
   const fileName = `${formattedName}${extension}`;
   return encodeURIComponent(fileName);
 }
-
 
 // Class Declaration
 
@@ -103,6 +102,11 @@ class ReportManager {
 
     // normalize the path for different operating systems
     this.template = path.normalize(templatePath);
+
+    // manually override the rendering if this flag is set
+    if (FORCE_HTML_RECEIPT_RENDERER) {
+      this.options.renderer = 'html';
+    }
 
     // set the renderer based on the provided options
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
