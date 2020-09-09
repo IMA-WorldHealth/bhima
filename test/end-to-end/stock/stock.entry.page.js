@@ -28,6 +28,16 @@ function StockEntryPage() {
   };
 
   /**
+   * @method setDonation
+   * @param {string} rowNumber - the purchase line on the modal
+   */
+  page.setDonation = async (rowNumber) => {
+    await components.stockEntryExitType.set('donation');
+    await GU.selectRow('DonationGrid', rowNumber);
+    await FU.modal.submit();
+  };
+
+  /**
    * @method setTransfer
    * @param {string} rowNumber - movement line on the modal grid
    */

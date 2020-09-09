@@ -21,7 +21,29 @@ function StockEntryTests() {
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
+  it('Should enter stock from a donation', async () => {
+
+    // select the purchase order
+    await page.setDonation(0);
+
+    await page.setDate(new Date());
+
+    await page.setDescription(DESCRIPTION.concat(' - Donation'));
+
+    const lots = [
+      { label : 'LY-ONE', quantity : 100, expiration_date : expireInThreeYears },
+      { label : 'LY-TWO', quantity : 50, expiration_date : expireInTwoYears },
+      { label : 'LY-THREE', quantity : 50, expiration_date : expireInOneYear },
+    ];
+
+    await page.setLots(0, lots, false);
+
+    // submit
+    await page.submit();
+  });
+
   it('Should enter stock from a purchase order', async () => {
+    await this.timeout(60000);
     // select the purchase order
     await page.setPurchase(0);
 

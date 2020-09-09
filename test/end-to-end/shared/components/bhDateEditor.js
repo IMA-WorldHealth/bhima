@@ -16,7 +16,7 @@ module.exports = {
    * @param {String} id - a CSS id to select on.
    */
   set : async function set(date, id, elementClick) {
-    const elementCloseComponent = elementClick || '.header-image';
+    const elementCloseComponent = elementClick || '[bh-date-editor-label]';
 
     // fail hard if the user did not pass into
     /* if (!(date instanceof Date)) {

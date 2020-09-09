@@ -3421,5 +3421,10 @@ INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) V
 
 INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
 
+SET @donation_uuid = HUID('ae735e99-8faf-417b-aa63-9b404fca390d');
 INSERT INTO `donation`(`uuid`, `date`, `donor_id`)
-VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), NOW(), 1);
+VALUES(@donation_uuid, NOW(), 1);
+
+
+INSERT INTO `donation_item` (`uuid`, `donation_uuid`, `inventory_uuid`, `quantity`, `unit_price`)
+VALUES(HUID(uuid()), @donation_uuid, @multivitamine, 200, 1300);
