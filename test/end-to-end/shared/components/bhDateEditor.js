@@ -17,7 +17,8 @@ module.exports = {
    * @param {String} elementClick - determine a css class that will clicked to
    *   close the selection component Dates.
    */
-  set : async function set(date, id, elementClick = '.header-image') {
+  set : async function set(date, id, elementClick) {
+    const elementCloseComponent = elementClick || '.header-image';
 
     // fail hard if the user did not pass into
     /* if (!(date instanceof Date)) {
@@ -49,7 +50,9 @@ module.exports = {
     // at this point, the datepicker is still open, and will intercept all
     // clicks that are made to any elements it is covering.  In order to make
     // the dropdown go away, we will click on the top-left bhima logo to blur
+    // in default option, If not, the click will be on an element of the form,
+    // if and only if the logo is not visible, for example for the modal window
     // the dropdown and remove it.
-    await element(by.css(elementClick)).click();
+    await element(by.css(elementCloseComponent)).click();
   },
 };

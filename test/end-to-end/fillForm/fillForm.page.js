@@ -40,6 +40,7 @@ class FillFormManagementPage {
     await browser.findElement(by.css('[name="poids"]')).sendKeys(fillForm.poids);
     await browser.findElement(by.css('[name="dosekilos"]')).sendKeys(fillForm.dosekilos);
     await browser.findElement(by.css('[name="nombreFois"]')).sendKeys(fillForm.nombreFois);
+    await components.dateEditor.set(new Date(fillForm.date), null, '.title');
     await browser.findElement(by.css('[name="voie"]')).sendKeys(fillForm.voie);
     await browser.findElement(by.css('[ng-model="hours"]')).sendKeys(fillForm.hours);
     await browser.findElement(by.css('[ng-model="minutes"]')).sendKeys(fillForm.minutes);
@@ -55,6 +56,7 @@ class FillFormManagementPage {
     await browser.findElement(by.css('[name="poids"]')).sendKeys(fillForm.poids);
     await browser.findElement(by.css('[name="dosekilos"]')).sendKeys(fillForm.dosekilos);
     await browser.findElement(by.css('[name="nombreFois"]')).sendKeys(fillForm.nombreFois);
+    await components.dateEditor.set(new Date(fillForm.date), null, '.title');
     await browser.findElement(by.css('[name="voie"]')).sendKeys(fillForm.voie);
     await browser.findElement(by.css('[ng-model="hours"]')).sendKeys(fillForm.hours);
     await browser.findElement(by.css('[ng-model="minutes"]')).sendKeys(fillForm.minutes);
