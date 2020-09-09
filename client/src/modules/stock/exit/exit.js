@@ -352,7 +352,7 @@ function StockExitController(
 
   // find service
   function findService() {
-    StockModal.openFindService({ entity_uuid : vm.selectedEntityUuid })
+    StockModal.openFindService({ depot : vm.depot, entity_uuid : vm.selectedEntityUuid })
       .then(service => {
         handleSelectedEntity(service, 'service');
       })
@@ -576,10 +576,18 @@ function StockExitController(
         documentUuid = document.uuid;
 
         // update requisition status if needed
-        if (!vm.requisition) { return null; }
+        if (!vm.requisition.uuid) { return null; }
+
+        const movementRequisition = {
+          stock_requisition_uuid : vm.requisition.uuid,
+          document_uuid : documentUuid,
+        };
 
         const COMPLETED_STATUS = 6;
-        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+        return Stock.stockRequisition.update(vm.requisition.uuid, {
+          status_id : COMPLETED_STATUS,
+          movementRequisition,
+        });
       })
       .then(() => {
         ReceiptModal.stockExitServiceReceipt(documentUuid, bhConstants.flux.TO_SERVICE);
@@ -610,7 +618,7 @@ function StockExitController(
       .then(document => {
         documentUuid = document.uuid;
         // update requisition status if needed
-        if (!vm.requisition) { return null; }
+        if (!vm.requisition.uuid) { return null; }
 
         const movementRequisition = {
           stock_requisition_uuid : vm.requisition.uuid,
