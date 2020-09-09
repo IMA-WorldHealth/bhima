@@ -3421,5 +3421,5 @@ INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) V
 
 INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
 
-INSERT INTO `donation`(`uuid`, `project_id`, `date`, `donor_id`)
-VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), 1, NOW(), 1);
+INSERT INTO `donation`(`uuid`, `date`, `donor_id`)
+VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), NOW(), 1);

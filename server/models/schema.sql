@@ -2021,7 +2021,6 @@ DROP TABLE IF EXISTS `donation`;
 CREATE TABLE `donation` (
   `uuid`            BINARY(16) NOT NULL,
   `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `description`     TEXT NULL,
   `date`            DATE NOT NULL,
   `donor_id`        INT(11) NOT NULL,
