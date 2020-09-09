@@ -28,13 +28,6 @@ function create(req, res, next) {
     transaction.addQuery(`INSERT INTO donation_item SET ?`, item);
   });
 
-  transaction.addQuery(`
-    INSERT INTO document_map
-    SELECT do.uuid, CONCAT_WS('.', 'DO', project.abbr, do.reference)
-    FROM donation do 
-    JOIN project where project.id = do.project_id AND do.uuid=?
-  `, donation.uuid);
-
   transaction.execute().then(() => {
     res.status(201).json({ uuid : uuidString });
   }).catch(next);
@@ -54,14 +47,12 @@ function read(req, res, next) {
   const filters = new FilterParser(data, { tableAlias : 'dt' });
 
   const sql = `
-    SELECT BUID(dt.uuid) as uuid, dt.project_id, dm.text as reference,
+    SELECT BUID(dt.uuid) as uuid, dt.reference,
       dt.description,
       dt.date,
-      dt.donor_id, d.display_name, p.name as project_name
+      dt.donor_id, d.display_name
     FROM donation dt
-    JOIN project p ON p.id= dt.project_id
     JOIN donor d ON d.id= dt.donor_id
-    JOIN document_map dm ON dm.uuid = dt.uuid
     `;
 
   filters.equals('uuid');
@@ -76,7 +67,7 @@ function read(req, res, next) {
 
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, reference, project_id, description, date, donor_id 
+    SELECT BUID(uuid) as uuid, reference, description, date, donor_id 
     FROM donation
     WHERE uuid=?`;
   const { uuid } = req.params;
@@ -96,18 +87,23 @@ function donationBalance(req, res, next) {
   const FROM_DONATION_ID = flux.FROM_DONATION;
   const donationUuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT x.* FROM (
-      SELECT dt.uuid  as uuid, dt.project_id, dm.text as reference,
+    SELECT BUID(x.uuid)  as uuid, x.reference,
+    x.description, x.inventory_uuid,
+    x.quantity, x.unit_price, x.date,
+    x.donor_id, x.display_name,
+    x.distributed_quantity,
+    x.balance
+        
+    FROM (
+      SELECT dt.uuid  as uuid, dt.reference,
         dt.description, BUID(dti.inventory_uuid) AS inventory_uuid,
         dti.quantity, dti.unit_price, dt.date,
-        dt.donor_id, d.display_name, p.name as project_name,
+        dt.donor_id, d.display_name,
         IFNULL(distributed.quantity, 0) AS distributed_quantity,
         (dti.quantity - IFNULL(distributed.quantity, 0)) AS balance
       FROM donation dt
-      JOIN project p ON p.id= dt.project_id
       JOIN donor d ON d.id= dt.donor_id
       JOIN donation_item dti ON dti.donation_uuid = dt.uuid
-      JOIN document_map dm ON dm.uuid = dt.uuid
       LEFT JOIN
       (
         SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.origin_uuid
