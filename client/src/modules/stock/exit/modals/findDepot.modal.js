@@ -64,25 +64,31 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
       throw new Error('Requisition Not Found');
     }
 
-    if (requisition.status_key === 'done') {
+    if (requisition.status_key === 'done' || requisition.status_key === 'completed') {
       vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
       throw new Error('Requisition Already Used');
     }
 
-    return Stock.stockRequisition.read(requisition.uuid);
+    if (requisition.status_key === 'cancelled') {
+      vm.requisitionMessage = 'REQUISITION.CANCELLED';
+      throw new Error('Requisition Cancelled');
+    }
+
+    return Stock.stockRequisition.read(requisition.uuid, { balance : true });
   }
 
   function depotDetails(requisition) {
     vm.requisition = requisition;
-    return Depot.read(null, { uuid : vm.requisition.requestor_uuid });
-  }
 
-  function assignDepotRequisition([depot]) {
-    if (!depot || !depot.uuid) {
+    if (vm.requisition.depot_uuid !== Data.depot.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
       throw new Error('The requisition is not for depots');
     }
 
+    return Depot.read(null, { uuid : vm.requisition.requestor_uuid });
+  }
+
+  function assignDepotRequisition([depot]) {
     if (Data.depot.uuid === vm.selected.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_THE_SAME_DEPOT';
       throw new Error('The requisition cannot be for the same depot');

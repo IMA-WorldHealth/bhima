@@ -2,7 +2,7 @@
   <bh-yes-no-radios
     label="REQUISITION.DOES_REQUISITION_EXIST"
     value="$ctrl.requisitionVoucherExist"
-	name="requisitionVoucherExist"
+	  name="requisitionVoucherExist"
     help-text="REQUISITION.DOES_REQUISITION_EXIST_HELP"
     on-change-callback="$ctrl.onChangeVoucherExist(value)">
   </bh-yes-no-radios>
@@ -12,6 +12,8 @@
     <!-- Requisition -->
     <bh-requisition-select
       requisition-uuid="$ctrl.requisitionReference"
+      depot-uuid="$ctrl.depot"
+      service-uuid="$ctrl.service"
       on-select-callback="$ctrl.onSelectRequisition(requisition)">
     </bh-requisition-select>
 
