@@ -44,6 +44,11 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
   }
 
   function requisitionDetails([requisition]) {
+    if (Data.depot.uuid !== requisition.depot_uuid) {
+      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
+      throw new Error('The requisition is not for depots');
+    }
+
     if (!requisition || !requisition.uuid) {
       vm.requisitionMessage = 'REQUISITION.VOUCHER_NOT_FOUND';
       throw new Error('Requisition Not Found');
@@ -54,7 +59,7 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
       throw new Error('Requisition Already Used');
     }
 
-    return Stock.stockRequisition.read(requisition.uuid);
+    return Stock.stockRequisition.read(requisition.uuid, { balance : true });
   }
 
   function serviceDetails(requisition) {
