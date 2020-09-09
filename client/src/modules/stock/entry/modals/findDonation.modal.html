@@ -82,14 +82,6 @@
           </div>
          </div>
          <div class="col-sm-6">
-          <!-- filter by project -->
-          <bh-project-select
-            project-id="$ctrl.donation.project_id"
-            name="project_id"
-            required = "true"
-            on-select-callback="$ctrl.onSelectProject(project)">
-          </bh-project-select>
-
           <div
           class="form-group"
           ng-class="{'has-error' : FindForm.$submitted && FindForm.description.$invalid }">
@@ -106,11 +98,7 @@
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
           </div>
         </div>
-
-         </div>
-
-         
-    
+      </div>
       </div>
       </div>
     </div>
