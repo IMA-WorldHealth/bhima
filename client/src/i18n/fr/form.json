@@ -833,11 +833,11 @@
             "ROLES" : "Rôles",
             "STATUS_TYPE":{
                 "IN_PROGRESS":"En cours",
-                "COMPLETED":"Terminé",
+                "COMPLETED":"complétée",
                 "PARTIALLY":"Partiellement",
                 "DRAFT":"Brouillon",
-                "CANCELLED":"Annulé",
-                "DONE":"Traité"
+                "CANCELLED":"Annulée",
+                "DONE":"Traitée"
             }
         },
         "LEGENDS": {

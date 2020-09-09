@@ -12,6 +12,12 @@
   </div>
 
   <div class="modal-body">
+    <!-- Date -->
+    <bh-date-editor
+      date-value="$ctrl.model.date"
+      on-change="$ctrl.onDateChange(date)">
+    </bh-date-editor>
+
     <!-- service or depot -->
     <bh-service-or-depot
       uuid="$ctrl.model.requestor_uuid"
