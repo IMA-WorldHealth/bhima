@@ -70,7 +70,7 @@ function StockMovementsRegistryTests() {
   it('find movements by lot name', async () => {
     await modal.setLotLabel('VITAMINE-A');
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 7 + depotGroupingRow);
   });
 
   it('find by lots reasons for purchase order', async () => {

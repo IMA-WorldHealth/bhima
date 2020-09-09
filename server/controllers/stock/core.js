@@ -287,7 +287,7 @@ async function getLotsMovements(depotUuid, params) {
   }
 
   if (params.groupByDocument === 1) {
-    finalClause = 'GROUP BY document_uuid';
+    finalClause = 'GROUP BY document_uuid, is_exit';
     delete params.groupByDocument;
   }
 
@@ -350,7 +350,7 @@ async function getMovements(depotUuid, params) {
   LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
   `;
 
-  const finalClause = 'GROUP BY document_uuid';
+  const finalClause = 'GROUP BY document_uuid, is_exit';
   const orderBy = 'ORDER BY d.text, m.date';
   const movements = await getLots(sql, params, finalClause, orderBy);
   return movements;

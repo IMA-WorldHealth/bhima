@@ -23,7 +23,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 2;
+  const LOT_FOR_ALLTIME = 19;
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
