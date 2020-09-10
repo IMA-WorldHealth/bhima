@@ -743,6 +743,10 @@ CREATE TABLE  `stock_movement_status` (
  * @author: mbayopanda
  * @date: 2020-09-07
  * @description: Add the importance level column in the inventory table
+ *    the importance value can be : 
+ *    NULL -> The inventory doesn't need a particular focus for dashboards
+ *    1 -> LOW 
+ *    2 -> MID 
+ *    3 -> HIGH
  */
 ALTER TABLE inventory ADD COLUMN `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH';
-ALTER TABLE inventory ADD COLUMN `tracker` TINYINT(1) NOT NULL DEFAULT 0;

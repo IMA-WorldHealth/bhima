@@ -50,6 +50,7 @@
         "LOW":"Low",
         "MID":"Mid",
         "HIGH":"High",
+        "NONE":"None",
         "TRACKER":"Tracker"
     }
 }

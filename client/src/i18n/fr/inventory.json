@@ -50,6 +50,7 @@
         "LOW":"Faible",
         "MID":"Moyen",
         "HIGH":"Elevé",
+        "NONE":"Aucune",
         "TRACKER":"Traceur (Molecule traceur)"
     }
 }
