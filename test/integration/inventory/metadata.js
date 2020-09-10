@@ -18,6 +18,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     type_id : 1,
     consumable : 0,
     sellable : 1,
+    importance : 2,
   };
 
   const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
@@ -43,7 +44,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /inventory/metadata create a new inventory metadata', () => {
     return agent.post('/inventory/metadata')
       .send(metadata)
@@ -53,7 +53,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('PUT /inventory/metadata/:uuid update an existing inventory metadata', () => {
     return agent.put(`/inventory/metadata/${metadata.uuid}`)
@@ -103,6 +102,30 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .then(res => {
         helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata filters on the importance column', () => {
+    let allItemCounted;
+    return agent.get('/inventory/metadata')
+      .then(res => {
+        allItemCounted = res.body.length;
+        return agent.get('/inventory/metadata')
+          .query({ importance : 2 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 1);
+        const [item] = res.body;
+        expect(item.importance).to.equal(2);
+        return agent.get('/inventory/metadata')
+          .query({ importance : null });
+      })
+      .then(res => {
+        helpers.api.listed(res, allItemCounted - 1);
+        const items = res.body;
+        const allItemsHaveNullImportance = items.every(item => item.importance === null);
+        expect(allItemsHaveNullImportance).to.equal(true);
       })
       .catch(helpers.handler);
   });
@@ -187,7 +210,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       })
       .catch(helpers.handler);
   });
-
 
   // count inventory in the group
   it('GET /inventory/groups/:uuid/count', () => {

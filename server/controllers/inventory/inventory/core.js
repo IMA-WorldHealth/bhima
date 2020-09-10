@@ -130,7 +130,6 @@ async function updateItemsMetadata(record, identifier, session) {
     record.group_uuid = db.bid(record.group_uuid);
   }
 
-
   const sql = 'UPDATE inventory SET ? WHERE uuid = ?;';
   // if there is no property to update this query won't work
 
@@ -189,6 +188,11 @@ function getItemsMetadata(params) {
   const usePreviousPrice = params.use_previous_price && parseInt(params.use_previous_price, 10);
   delete params.usePreviousPrice;
 
+  if (params.importance === '' || params.importance === null) {
+    params.find_null_importance = true;
+    delete params.importance;
+  }
+
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
   const previousPriceQuery = `IFNULL(
@@ -205,6 +209,7 @@ function getItemsMetadata(params) {
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
+      inventory.importance,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
@@ -224,7 +229,8 @@ function getItemsMetadata(params) {
   filters.equals('label');
   filters.equals('sellable');
   filters.equals('note');
-
+  filters.equals('importance');
+  filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
   filters.setOrder('ORDER BY inventory.code ASC');
 
@@ -232,7 +238,6 @@ function getItemsMetadata(params) {
   const parameters = filters.parameters();
   return db.exec(query, parameters);
 }
-
 
 // This function helps to delete an inventory
 function remove(_uuid) {
@@ -255,7 +260,8 @@ function getItemsMetadataById(uid) {
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval,
-      i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration
+      i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration,
+      i.importance
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND

@@ -249,6 +249,14 @@
               </div>
 
               <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
+                value="EnterpriseCtrl.enterprise.settings.enable_supplier_credit"
+                name="enable_supplier_credit"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
+                on-change-callback="EnterpriseCtrl.enableSupplierCredit(value)">
+              </bh-yes-no-radios>
+
+              <bh-yes-no-radios
                 label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
                 value="EnterpriseCtrl.enterprise.settings.enable_price_lock"
                 name="enable_price_lock"

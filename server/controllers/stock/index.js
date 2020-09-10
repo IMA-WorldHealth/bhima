@@ -109,6 +109,10 @@ async function createStock(req, res, next) {
         period_id : periodId,
       };
 
+      if (params.entity_uuid) {
+        createMovementObject.entity_uuid = db.bid(params.entity_uuid);
+      }
+
       // adding a lot insertion query into the transaction
       transaction.addQuery(createLotQuery, [createLotObject]);
 

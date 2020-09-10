@@ -184,6 +184,24 @@
       </label>
     </div>
 
+    <hr>
+
+    <div class="form-group">
+      <label class="control-label" translate>INVENTORY.IMPORTANCE_LEVEL</label>
+      <select
+        class="form-control"
+        name="importance"
+        ng-model="$ctrl.item.importance">
+        <option value="" disabled translate>INVENTORY.IMPORTANCE_LEVEL_SELECT</option>
+        <option ng-value="null" translate>INVENTORY.NONE</option>
+        <option ng-value="1" translate>INVENTORY.LOW</option>
+        <option ng-value="2" translate>INVENTORY.MID</option>
+        <option ng-value="3" translate>INVENTORY.HIGH</option>
+      </select>
+    </div>
+
+    <hr>
+
     <div class="form-group">
       <label class="control-label" translate>FORM.LABELS.NOTE</label>
       <textarea class="form-control" name="note"  ng-model="$ctrl.item.note">
