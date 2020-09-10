@@ -34,14 +34,13 @@
     <form name="StockExitForm" bh-submit="StockCtrl.submit(StockExitForm)" novalidate>
       <!-- destination -->
       <div class="row">
-        <bh-stock-entry-exit-type
-          on-entry-exit-type-select-callback="StockCtrl.selectExitType(type)"
+        <bh-stock-exit-type
+          on-select-callback="StockCtrl.selectExitType(type)"
           reference="StockCtrl.reference"
           display-name="StockCtrl.displayName"
-          is-entry="false"
           depot="StockCtrl.depot"
           reset="StockCtrl.resetEntryExitTypes">
-        </bh-stock-entry-exit-type>
+        </bh-stock-exit-type>
       </div>
 
       <!-- entity -->
