@@ -580,6 +580,7 @@ CREATE TABLE `enterprise_setting` (
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
   `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1667,7 +1668,7 @@ CREATE TABLE `supplier` (
   `fax`             VARCHAR(45) DEFAULT NULL,
   `note`            TEXT,
   `phone`           VARCHAR(15) DEFAULT NULL,
-  `INTernational`   TINYINT(1) NOT NULL DEFAULT 0,
+  `international`   TINYINT(1) NOT NULL DEFAULT 0,
   `locked`          TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `supplier_1` (`display_name`),
@@ -1960,7 +1961,7 @@ CREATE TABLE `stock_movement` (
   `document_uuid`   BINARY(16) NOT NULL,
   `depot_uuid`      BINARY(16) NOT NULL,
   `lot_uuid`        BINARY(16) NOT NULL,
-  `entity_uuid`     BINARY(16) NULL,
+  `entity_uuid`     BINARY(16) NULL, -- holds the patient_uuid, destination depot_uuid, service_uuid, or purchase_order uuid
   `description`     TEXT NULL,
   `flux_id`         INT(11) NOT NULL,
   `date`            DATETIME NOT NULL,

@@ -64,6 +64,10 @@ BEGIN
   DECLARE v_is_exit TINYINT(1);
   DECLARE v_item_description TEXT;
 
+  DECLARE sm_flux_id INT(11);
+  DECLARE es_enable_supplier_credit TINYINT(1) DEFAULT 0;
+  DECLARE FROM_PURCHASE_FLUX_ID INT(11) DEFAULT 1;
+
   -- transaction type
   DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
   DECLARE STOCK_ENTRY_TYPE SMALLINT(5) DEFAULT 14;
@@ -124,6 +128,31 @@ BEGIN
     SET voucher_type_id = STOCK_ENTRY_TYPE;
   END IF;
 
+  -- get the flux id
+  SET sm_flux_id = (SELECT flux_id FROM stock_movement WHERE document_uuid = documentUuid AND is_exit = isExit LIMIT 1);
+
+  -- check if enable_supplier_credit is set for this enterprise
+  SET es_enable_supplier_credit = (
+    SELECT enable_supplier_credit FROM enterprise_setting AS es
+      JOIN enterprise AS e ON e.id = es.enterprise_id
+      JOIN project AS p ON e.id = p.enterprise_id
+    WHERE p.id = projectId
+  );
+
+  -- if this is from a purchase, grap the supplier's account as the account to credit in the voucher, not
+  -- the COGS account
+  IF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND es_enable_supplier_credit = 1) THEN
+    SET voucher_item_account_credit = (
+      SELECT creditor_group.account_id FROM purchase
+        JOIN supplier ON purchase.supplier_uuid = supplier.uuid
+        JOIN creditor ON supplier.creditor_uuid = creditor.uuid
+        JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
+      WHERE purchase.uuid IN (
+        SELECT entity_uuid FROM stock_movement WHERE document_uuid = documentUuid AND is_exit = isExit
+      )
+    );
+  END IF;
+
   -- insert into voucher
   INSERT INTO voucher (uuid, date, project_id, currency_id, user_id, type_id, description, amount) VALUES (
     voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id,
@@ -145,6 +174,9 @@ BEGIN
     if (v_is_exit = 1) THEN
       SET voucher_item_account_debit = v_cogs_account;
       SET voucher_item_account_credit = v_stock_account;
+    ELSEIF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND es_enable_supplier_credit = 1) THEN
+      -- we already set the credit account above for the purchase case
+      SET voucher_item_account_debit = v_stock_account;
     ELSE
       SET voucher_item_account_debit = v_stock_account;
       SET voucher_item_account_credit = v_cogs_account;
@@ -384,11 +416,11 @@ CREATE PROCEDURE `computeStockQuantity` (
 
     SET _qtt = IFNULL(_qtt, 0);
 
-    SELECT in_quantity, out_quantity 
+    SELECT in_quantity, out_quantity
     INTO _in_qtt, _out_qtt
     FROM temp_stock_movement m
     WHERE DATE(m.date) =DATE(_start_date) AND m.depot_uuid = @depot_uuid;
-  
+
     DELETE FROM temp_stock_movement WHERE DATE(`date`) <=_start_date AND `depot_uuid` = @depot_uuid;
 
     -- check if this date already exist in stock_movement_status for the inventory

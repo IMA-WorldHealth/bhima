@@ -743,10 +743,19 @@ CREATE TABLE  `stock_movement_status` (
  * @author: mbayopanda
  * @date: 2020-09-07
  * @description: Add the importance level column in the inventory table
- *    the importance value can be : 
+ *    the importance value can be :
  *    NULL -> The inventory doesn't need a particular focus for dashboards
- *    1 -> LOW 
- *    2 -> MID 
+ *    1 -> LOW
+ *    2 -> MID
  *    3 -> HIGH
  */
 ALTER TABLE inventory ADD COLUMN `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH';
+
+
+/*
+ * @author: jniles
+ * @date: 2020-09-10
+ * @description: add enterprise setting for crediting supplier's invoice on stock
+ * entry from purchase.
+ */
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0;
