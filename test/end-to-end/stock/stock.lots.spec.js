@@ -87,7 +87,7 @@ function StockLotsRegistryTests() {
   it('find inventories by group', async () => {
     await components.inventoryGroupSelect.set(inventoryGroup);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 10);
+    await GU.expectRowCount(gridId, 9);
     await filters.resetFilters();
   });
 }
