@@ -186,13 +186,6 @@
 
     <hr>
 
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" name="tracker" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.tracker">
-        <span translate>INVENTORY.TRACKER</span>
-      </label>
-    </div>
-
     <div class="form-group">
       <label class="control-label" translate>INVENTORY.IMPORTANCE_LEVEL</label>
       <select
@@ -200,6 +193,7 @@
         name="importance"
         ng-model="$ctrl.item.importance">
         <option value="" disabled translate>INVENTORY.IMPORTANCE_LEVEL_SELECT</option>
+        <option ng-value="null" translate>INVENTORY.NONE</option>
         <option ng-value="1" translate>INVENTORY.LOW</option>
         <option ng-value="2" translate>INVENTORY.MID</option>
         <option ng-value="3" translate>INVENTORY.HIGH</option>

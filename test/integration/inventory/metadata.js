@@ -18,7 +18,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     type_id : 1,
     consumable : 0,
     sellable : 1,
-    tracker : 1,
     importance : 2,
   };
 
@@ -107,24 +106,26 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /inventory/metadata filters on the tracker column', () => {
-    return agent.get('/inventory/metadata')
-      .query({ tracker : 1 })
-      .then(res => {
-        helpers.api.listed(res, 1);
-        const [item] = res.body;
-        expect(item.tracker).to.equal(1);
-      })
-      .catch(helpers.handler);
-  });
-
   it('GET /inventory/metadata filters on the importance column', () => {
+    let allItemCounted;
     return agent.get('/inventory/metadata')
-      .query({ importance : 2 })
+      .then(res => {
+        allItemCounted = res.body.length;
+        return agent.get('/inventory/metadata')
+          .query({ importance : 2 });
+      })
       .then(res => {
         helpers.api.listed(res, 1);
         const [item] = res.body;
         expect(item.importance).to.equal(2);
+        return agent.get('/inventory/metadata')
+          .query({ importance : null });
+      })
+      .then(res => {
+        helpers.api.listed(res, allItemCounted - 1);
+        const items = res.body;
+        const allItemsHaveNullImportance = items.every(item => item.importance === null);
+        expect(allItemsHaveNullImportance).to.equal(true);
       })
       .catch(helpers.handler);
   });

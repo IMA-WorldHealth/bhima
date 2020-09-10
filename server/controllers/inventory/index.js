@@ -58,7 +58,6 @@ exports.importing = importing;
 exports.logs = inventoryLog;
 exports.logDownLoad = logDownLoad;
 
-
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
@@ -87,7 +86,6 @@ function updateInventoryItems(req, res, next) {
       core.errorHandler(error, req, res, next);
     });
 }
-
 
 function inventoryLog(req, res, next) {
   core.inventoryLog(req.params.uuid).then(logs => {
@@ -148,7 +146,6 @@ async function logDownLoad(req, res, next) {
       lines.push({ column1 : '', column2 : '', column3 : '' });
     });
 
-
     const options = {
       csvKey : 'rows',
       suppressDefaultFormatting : true,
@@ -186,7 +183,6 @@ function getInventoryItems(req, res, next) {
     .done();
 }
 
-
 /**
 * GET /inventory/metadata/:uuid
 * Returns a description of the item from the inventory table.
@@ -205,7 +201,6 @@ function getInventoryItemsById(req, res, next) {
     })
     .done();
 }
-
 
 /**
  * DELETE /inventory/metadata/:uuid
