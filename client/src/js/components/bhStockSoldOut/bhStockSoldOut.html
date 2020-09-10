@@ -11,7 +11,7 @@ class="table table-condensed table-bordered">
 <thead>
   <tr>
     <th>
-      <span class="text-danger" 
+      <span class="text-danger"
         translate-values="{ total : $ctrl.soldOutInventories.length }"
         translate="{{ 'STOCK.STOCK_OUT_WARNING' }}">
       </span>
@@ -25,7 +25,7 @@ class="table table-condensed table-bordered">
 
   <tr>
     <td>
-      <span class="text-danger" 
+      <span class="text-danger"
         ng-show="($ctrl.soldOutInventories.length - 5) > 0"
         translate-values="{ left : ($ctrl.soldOutInventories.length - 5)}"
         translate="{{ 'STOCK.AND_MORE' }}">
@@ -33,7 +33,7 @@ class="table table-condensed table-bordered">
 
     <a ui-sref= "stockInventories({ filters : [
       { key : 'period', value : 'allTime'},
-      { key : 'includeEmptyLot', value : 1  },
+      { key : 'includeEmptyLot', value : 1 },
       { key : 'depot_uuid', value : $ctrl.depot.uuid, displayValue: $ctrl.depot.text, cacheable:false },
       { key : 'status', value : 'stock_out', displayValue: 'STOCK.STATUS.STOCK_OUT', cacheable:false }
       ]})" translate>FORM.LABELS.SEE_ALL</a>

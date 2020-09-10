@@ -144,6 +144,12 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
       if (assignedKeys.indexOf('limit') === -1) {
         this._filters.assignFilter('limit', 100);
       }
+
+      // assign default includeEmptyLot filter
+      if (assignedKeys.indexOf('includeEmptyLot') === -1) {
+        this._filters.assignFilter('includeEmptyLot', 0);
+      }
+
     }
 
     assignFilter(key, value) {

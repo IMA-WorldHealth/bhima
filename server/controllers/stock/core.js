@@ -13,6 +13,7 @@
 
 const _ = require('lodash');
 const moment = require('moment');
+// const { param } = require('jquery');  ??? Does not seem necessary and hound complains about it
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
@@ -174,7 +175,6 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
       LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
   `;
-
   const filters = getLotFilters(parameters);
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
@@ -204,8 +204,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
  */
 function getLotsDepot(depotUuid, params, finalClause) {
   let _status;
-  // token of query to add if only no empty lots should be returned
-  let excludeToken = '';
+  let emptyLotToken = ''; // query token to include/exclude empty lots
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -216,9 +215,12 @@ function getLotsDepot(depotUuid, params, finalClause) {
     delete params.status;
   }
 
-  if (Number(params.includeEmptyLot) === 0) {
-    excludeToken = 'HAVING quantity > 0';
+  const includeEmptyLot = Number(params.includeEmptyLot);
+  if (includeEmptyLot === 0) {
+    emptyLotToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
+  } else if (includeEmptyLot === 2) {
+    emptyLotToken = 'HAVING quantity=0';
   }
 
   const sql = `
@@ -247,7 +249,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
     LEFT JOIN tags t ON t.uuid = lt.tag_uuid
   `;
 
-  const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, l.label `;
+  const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;
 
   const filters = getLotFilters(params);
   filters.setGroup(groupByClause);
@@ -675,7 +677,7 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption, ena
   let delay;
   let purchaseInterval;
   let requirePurchaseOrder;
-  let excludeToken = '';
+  let emptyLotToken = ''; // query token to include/exclude empty lots
 
   if (params.status) {
     _status = params.status;
@@ -697,9 +699,12 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption, ena
     delete params.require_po;
   }
 
-  if (Number(params.includeEmptyLot) === 0) {
-    excludeToken = 'HAVING quantity > 0';
+  const includeEmptyLot = Number(params.includeEmptyLot);
+  if (includeEmptyLot === 0) {
+    emptyLotToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
+  } else if (includeEmptyLot === 2) {
+    emptyLotToken = 'HAVING quantity=0';
   }
 
   const sql = `
@@ -723,7 +728,7 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption, ena
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY ig.name, i.text `;
+  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;
 
   return getLots(sql, params, clause)
     .then(inventories => processStockConsumptionAverage(

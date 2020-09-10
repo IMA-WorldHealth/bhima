@@ -130,9 +130,6 @@ function StockLotsController(
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // no negative or empty lot
-    filters.includeEmptyLot = filters.includeEmptyLot || 0;
-
     Stock.lots.read(null, filters)
       .then((lots) => {
         const current = new Date();

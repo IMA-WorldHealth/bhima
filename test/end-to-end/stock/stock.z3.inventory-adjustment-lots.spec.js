@@ -34,25 +34,34 @@ function StockLotsRegistryTests() {
     await GU.expectRowCount(gridId, GROUPING_ROW + LOT_FOR_ALLTIME);
   });
 
-  it('find only lots setted during the adjustment process', async () => {
+  it('find only lots set during the adjustment process', async () => {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
       lot : 'QUININE-B',
       quantity : '17',
     };
+
     const vitamine = {
       label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
       lot : 'VITAMINE-B',
       quantity : '23',
     };
+
     await modal.setDepot('Depot Principal');
+
+    // set the default value for include/exclude exhausted lots.
+    await modal.switchToDefaultFilterTab();
+    await $('[data-exclude-exhausted-lots]').click();
+
     await modal.submit();
+
     await GU.expectCellValueMatch(gridId, 1, 2, vitamine.label);
     await GU.expectCellValueMatch(gridId, 1, 4, vitamine.lot);
     await GU.expectCellValueMatch(gridId, 1, 5, vitamine.quantity);
     await GU.expectCellValueMatch(gridId, 2, 2, quinine.label);
     await GU.expectCellValueMatch(gridId, 2, 4, quinine.lot);
     await GU.expectCellValueMatch(gridId, 2, 5, quinine.quantity);
+
     await filters.resetFilters();
   });
 }

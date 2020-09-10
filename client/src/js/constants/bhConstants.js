@@ -125,7 +125,7 @@ function constantConfig() {
     },
     defaultFilters : [
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'includeEmptyLot', label : 'STOCK.INCLUDE_EMPTY_LOT' },
+      { key : 'includeEmptyLot', label : 'STOCK.INCLUDE_EMPTY_LOTS' },
       {
         key : 'custom_period_start',
         label : 'PERIODS.START',

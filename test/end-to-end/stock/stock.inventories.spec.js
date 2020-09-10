@@ -65,7 +65,7 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventories  by state plus one line for grouping (minimum reached)', async () => {
+  it('find 0 inventories by state plus one line for grouping (minimum reached)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 3);
     await FU.modal.submit();
 

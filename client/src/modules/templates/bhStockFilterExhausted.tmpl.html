@@ -1,0 +1,52 @@
+<div class="form-group" data-bh-stock-filter-exhausted>
+  <label class="control-label" translate>
+    LOTS.INCLUDE_EXHAUSTED_LOTS
+  </label>
+
+  <ng-transclude></ng-transclude>
+
+  <div>
+    <div class="radio">
+      <label class="radio-inline" data-exclude-exhausted-lots>
+        <input
+          type="radio"
+          name="{{$ctrl.name}}"
+          ng-value="0"
+          ng-model="$ctrl.value"
+          ng-change="$ctrl.onChange($ctrl.value)"
+          required>
+        <span translate>LOTS.EXCLUDE_EXHAUSTED_LOTS</span>
+      </label>
+    </div>
+
+    <div class="radio">
+      <label class="radio-inline" data-include-exhausted-lots>
+        <input
+          type="radio"
+          name="{{$ctrl.name}}"
+          ng-value="1"
+          ng-model="$ctrl.value"
+          ng-change="$ctrl.onChange($ctrl.value)"
+          required>
+        <span translate>LOTS.INCLUDE_EXHAUSTED_LOTS</span>
+      </label>
+    </div>
+
+    <div class="radio">
+      <label class="radio-inline" data-include-only-exhausted-lots>
+        <input
+          type="radio"
+          name="{{$ctrl.name}}"
+          ng-value="2"
+          ng-model="$ctrl.value"
+          ng-change="$ctrl.onChange($ctrl.value)"
+          required>
+        <span translate>LOTS.INCLUDE_ONLY_EXHAUSTED_LOTS</span>
+      </label>
+    </div>
+
+    <span class="help-block" ng-show="$ctrl.helpText" translate>
+      STOCK.INCLUDE_EMPTY_LOTS_HELP
+    </span>
+  </div>
+</div>

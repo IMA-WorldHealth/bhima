@@ -64,8 +64,9 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
     }
   };
 
-  // on select include empty lot
-  vm.onSelectIncludeEmptyLot = value => {
+  // include empty lots
+  vm.setIncludeEmptyLot = (value) => {
+    vm.defaultQueries.includeEmptyLot = value;
     if (angular.isDefined(value)) {
       changes.post({ key : 'includeEmptyLot', value });
     }
@@ -86,6 +87,8 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
 
   if (data.includeEmptyLot) {
     vm.defaultQueries.includeEmptyLot = data.includeEmptyLot;
+  } else {
+    vm.defaultQueries.includeEmptyLot = 0;
   }
 
   vm.cancel = function cancel() { Instance.close(); };
