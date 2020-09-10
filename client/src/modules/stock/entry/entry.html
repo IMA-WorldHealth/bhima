@@ -36,14 +36,13 @@
 
       <!-- activator -->
       <div class="row">
-        <bh-stock-entry-exit-type
-          on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)"
+        <bh-stock-entry-type
+          on-select-callback="StockCtrl.selectEntryType(type)"
           reference="StockCtrl.reference"
           display-name="StockCtrl.displayName"
-          is-entry="true"
           depot="StockCtrl.depot"
           reset="StockCtrl.resetEntryExitTypes">
-        </bh-stock-entry-exit-type>
+        </bh-stock-entry-type>
       </div>
 
       <!-- date and note -->
