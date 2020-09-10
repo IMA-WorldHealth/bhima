@@ -28,7 +28,7 @@ function StockLotsRegistryTests() {
   // techinically this is 26 in total, but the grid doesn't render that
   // many on small screens
   const LOT_FOR_ALLTIME = 22;
-  const LOT_FOR_TODAY = 19;
+  const LOT_FOR_TODAY = 14;
   const LOT_FOR_LAST_YEAR = 27;
 
   const inventoryGroup = 'Injectable';
