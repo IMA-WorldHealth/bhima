@@ -29,7 +29,7 @@ function StockLotsRegistryTests() {
   // many on small screens
   const LOT_FOR_ALLTIME = 22;
   const LOT_FOR_TODAY = 14;
-  const LOT_FOR_LAST_YEAR = 27;
+  const LOT_FOR_LAST_YEAR = 21;
 
   const inventoryGroup = 'Injectable';
 
