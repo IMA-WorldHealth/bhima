@@ -213,7 +213,6 @@ function PurchaseListController(
 
   }
 
-
   // fire up the module
   startup();
 }

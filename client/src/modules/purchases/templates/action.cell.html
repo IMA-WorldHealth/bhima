@@ -29,7 +29,7 @@
       </a>
     </li>
 
-    <li>
+    <li ng-if="row.entity.hasStockMovement">
       <a data-method="view-stock-lot" href
         ui-sref="stockInventories({ filters : [
           { key : 'period', value : 'allTime' },
