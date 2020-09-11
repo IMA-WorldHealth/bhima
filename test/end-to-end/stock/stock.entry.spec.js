@@ -21,9 +21,26 @@ function StockEntryTests() {
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should enter stock from a donation', async () => {
+  it('Should enter stock from a new donation', async () => {
 
-    // select the purchase order
+    await page.newDonation({
+      donor : 'Jeremie LODI',
+      description : 'Test - new donation from modal',
+      inventory :  {
+        name : 'Vitamines',
+        quantity : 120,
+        unit_price : 250.5,
+      },
+      lots : [
+        { label : 'LD-ONE', quantity : 100, expiration_date : expireInThreeYears },
+        { label : 'LD-TWO', quantity : 20, expiration_date : expireInTwoYears },
+      ],
+    });
+  });
+
+  it('Should enter stock from a donation', async () => {
+    await this.timeout(60000);
+    // select the donation order
     await page.setDonation(0);
 
     await page.setDate(new Date());
