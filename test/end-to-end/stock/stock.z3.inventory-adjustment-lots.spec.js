@@ -23,7 +23,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 2;
+  const LOT_FOR_ALLTIME = 6;
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
@@ -43,7 +43,7 @@ function StockLotsRegistryTests() {
 
     const vitamine = {
       label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      lot : 'VITAMINE-B',
+      lot : 'LY-THREE',
       quantity : '23',
     };
 
