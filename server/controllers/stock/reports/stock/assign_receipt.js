@@ -2,7 +2,6 @@ const {
   _, ReportManager, db, identifiers, barcode, STOCK_ASSIGN_TEMPLATE,
 } = require('../common');
 
-
 /**
  * @method stockAssignReceipt
  *

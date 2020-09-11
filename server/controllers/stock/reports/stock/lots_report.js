@@ -47,6 +47,7 @@ function stockLotsReport(req, res, next) {
 
   options.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   options.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+  options.user = req.session.user;
 
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
@@ -71,8 +72,7 @@ function stockLotsReport(req, res, next) {
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function compare(a, b) {

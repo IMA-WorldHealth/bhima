@@ -37,6 +37,8 @@ async function stockInventoriesReport(req, res, next) {
 
     delete options.label;
 
+    options.user = req.session.user;
+
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
     const rows = await Stock.getInventoryQuantityAndConsumption(
       options, monthAverageConsumption, enableDailyConsumption,

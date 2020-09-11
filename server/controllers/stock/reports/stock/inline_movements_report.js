@@ -22,7 +22,10 @@ async function stockInlineMovementsReport(req, res, next) {
   try {
     const report = new ReportManager(STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE, req.session, optionReport);
 
-    const rows = await Stock.getMovements(null, req.query);
+    const params = req.query;
+    params.user = req.session.user;
+
+    const rows = await Stock.getMovements(null, params);
 
     const data = {
       rows,
