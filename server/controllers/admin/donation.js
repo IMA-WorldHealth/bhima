@@ -88,11 +88,11 @@ function donationBalance(req, res, next) {
   const donationUuid = db.bid(req.params.uuid);
   const sql = `
     SELECT BUID(x.uuid)  as uuid, x.reference,
-    x.description, x.inventory_uuid,
-    x.quantity, x.unit_price, x.date,
-    x.donor_id, x.display_name,
-    x.distributed_quantity,
-    x.balance
+      x.description, x.inventory_uuid,
+      x.quantity, x.unit_price, x.date,
+      x.donor_id, x.display_name,
+      x.distributed_quantity,
+      x.balance
         
     FROM (
       SELECT dt.uuid  as uuid, dt.reference,
@@ -117,6 +117,7 @@ function donationBalance(req, res, next) {
         AND distributed.origin_uuid = dt.uuid
   ) AS x
       WHERE  x.uuid=? HAVING x.balance > 0 AND x.balance <= x.quantity
+      ORDER BY x.date ASC
   `;
 
   db.exec(sql, [FROM_DONATION_ID, donationUuid, donationUuid])
