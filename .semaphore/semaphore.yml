@@ -1,19 +1,49 @@
 version: v1.0
-name: Run in Docker
+name: Integration Tests
 agent:
   machine:
     type: e1-standard-2
-  containers:
-    - name: main
-      image: 'semaphoreci/node:10' # Your primary container where commands are run
-    - name: database
-      image: 'postgres:11'
-
+    os_image: ubuntu1804
 blocks:
-  - name: Hello World
+  - name: Update Dependencies
     task:
       jobs:
-        - name: Test job
+        - name: Update Dependencies
           commands:
-            - checkout # Check out the code
-            - echo "Hello from my 'main' container"
+            - apt-get -y update && apt-get install mysql-client redis-tools
+            - echo "done"
+  - name: Testing Matrix
+    task:
+      prologue:
+        commands:
+          - sem-service start redis
+      env_vars:
+        - name: DB_USER
+          value: bhimasemaphore
+        - name: DB_HOST
+          value: 127.0.0.1
+        - name: DB_PASSWORD
+          value: 6a50c5ed121ac12b35b96cbb59b5
+        - name: DB_PORT
+          value: '3306'
+        - name: DB_NAME
+          value: bhima-semaphore
+      jobs:
+        - name: Run Test Matrix
+          commands:
+            - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode=''STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'''
+            - nvm install $NODEJS_VERSION
+            - checkout
+            - 'npm run build:db'
+            - npm run build
+            - 'npm run test:server-unit'
+            - echo "done."
+          matrix:
+            - env_var: MYSQL_VERSION
+              value:
+                - '5.7'
+                - '8'
+            - env_var: NODEJS_VERSION
+              value:
+                - '12'
+                - '14'
