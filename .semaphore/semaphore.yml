@@ -23,7 +23,7 @@ blocks:
           value: bhima
         - name: DB_HOST
           value: 127.0.0.1
-        - name: DB_PASSWORD
+        - name: DB_PASS
           value: 6a50c5ed121ac12b35b96cbb59b5
         - name: DB_PORT
           value: '3306'
@@ -34,7 +34,7 @@ blocks:
       jobs:
         - name: Run Test Matrix
           commands:
-            - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"'
+            - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASS --db=$DB_NAME --sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"'
             - nvm install $NODEJS_VERSION
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
