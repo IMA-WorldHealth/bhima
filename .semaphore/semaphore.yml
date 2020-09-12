@@ -34,6 +34,7 @@ blocks:
             - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"'
             - nvm install $NODEJS_VERSION
             - checkout
+            - npm install
             - 'npm run build:db'
             - npm run build
             - 'npm run test:server-unit'
