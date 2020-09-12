@@ -10,7 +10,7 @@ blocks:
       jobs:
         - name: Update Dependencies
           commands:
-            - apt-get -y update && apt-get install mysql-client redis-tools
+            - sudo apt-get -y update && sudo apt-get install mysql-client redis-tools
             - echo "done"
   - name: Testing Matrix
     task:
