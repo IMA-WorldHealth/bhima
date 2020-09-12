@@ -11,6 +11,7 @@ blocks:
         - name: Update Dependencies
           commands:
             - sudo apt-get -y update && sudo apt-get install mysql-client redis-tools
+            - sudo apt autoremove -y && sudo apt autoclean -y
             - echo "done"
   - name: Testing Matrix
     task:
@@ -19,7 +20,7 @@ blocks:
           - sem-service start redis
       env_vars:
         - name: DB_USER
-          value: bhimasemaphore
+          value: bhima
         - name: DB_HOST
           value: 127.0.0.1
         - name: DB_PASSWORD
@@ -28,12 +29,15 @@ blocks:
           value: '3306'
         - name: DB_NAME
           value: bhima-semaphore
+        - name: PORT
+          value: '8080'
       jobs:
         - name: Run Test Matrix
           commands:
             - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"'
             - nvm install $NODEJS_VERSION
             - checkout
+            - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
             - npm install
             - 'npm run build:db'
             - npm run build
