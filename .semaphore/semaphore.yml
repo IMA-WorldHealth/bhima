@@ -38,10 +38,10 @@ blocks:
             - nvm install $NODEJS_VERSION
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
-            - npm install
-            - 'npm run build:db'
-            - npm run build
-            - 'npm run test:server-unit'
+            - yarn
+            - 'yarn build:db'
+            - yarn build
+            - 'yarn test:server-unit'
             - echo "done."
           matrix:
             - env_var: MYSQL_VERSION

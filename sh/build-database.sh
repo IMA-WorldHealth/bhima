@@ -21,6 +21,8 @@ if [ "$1" == "debug" ]; then
     fout=/dev/tty
 fi
 
+echo "Building database: $DB_USER,$DB_PASS,$DB_HOST,$DB_NAME'"
+
 # build the test database
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" || { echo 'failed to drop DB' ; exit 1; }
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || { echo 'failed to create DB' ; exit 1; }
