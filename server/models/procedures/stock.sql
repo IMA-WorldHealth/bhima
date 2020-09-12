@@ -97,10 +97,10 @@ BEGIN
   WHERE ig.stock_account IS NULL AND ig.cogs_account IS NULL AND sm.document_uuid = documentUuid AND sm.is_exit = isExit;
 
   IF (v_has_invalid_accounts > 0) THEN
-    SIGNAL ERR_INVALID_INVENTORY_ACCOUNTS SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
+    SIGNAL ERR_INVALID_INVENTORY_ACCOUNTS SET MESSAGE_TEXT = 'Every inventory should belong to a group with a COGS account and stock account.';
   END IF;
 
-  -- temporarise the stock movement
+  -- temporary table for the stock movement
   CREATE TEMPORARY TABLE stage_stock_movement (
       SELECT
         projectId as project_id, currencyId as currency_id,
@@ -162,9 +162,15 @@ BEGIN
   -- handle voucher items via cursor
   OPEN stage_stock_movement_cursor;
 
+  -- create a temporary table for voucher credit items
+  CREATE TEMPORARY TABLE tmp_voucher_credit_item (
+    `account_id`      INT UNSIGNED NOT NULL,
+    `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000,
+    `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0000
+  );
+
   -- loop in the cursor
   insert_voucher_item : LOOP
-
     FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit, v_item_description;
 
     IF v_finished = 1 THEN
@@ -186,17 +192,24 @@ BEGIN
     INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
       VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid, v_item_description);
 
-    -- insert credit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
-      VALUES (HUID(UUID()), voucher_item_account_credit, 0, (v_unit_cost * v_quantity), voucher_uuid, v_document_uuid, v_item_description);
+    -- insert credit into temporary table for later aggregation.
+    INSERT INTO tmp_voucher_credit_item (account_id, debit, credit)
+      VALUES (voucher_item_account_credit, 0, (v_unit_cost * v_quantity));
 
   END LOOP insert_voucher_item;
+
+  -- write the credit lines
+  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
+    SELECT HUID(UUID()), tmp_v.account_id, SUM(tmp_v.debit), SUM(tmp_v.credit), voucher_uuid, documentUuid, voucher_description
+    FROM tmp_voucher_credit_item AS tmp_v
+    GROUP BY tmp_v.account_id;
 
   -- close the cursor
   CLOSE stage_stock_movement_cursor;
 
   -- drop the stage tabel
   DROP TEMPORARY TABLE stage_stock_movement;
+  DROP TEMPORARY TABLE tmp_voucher_credit_item;
 
   -- post voucher into journal
   CALL PostVoucher(voucher_uuid);
