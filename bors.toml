@@ -1,6 +1,6 @@
 status = [
   "continuous-integration/travis-ci/push",
-  "continuous-integration/semaphoreci/branch"
+  "ci/semaphoreci/push"
 ]
 
 delete_merged_branches = true
