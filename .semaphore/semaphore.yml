@@ -31,7 +31,7 @@ blocks:
       jobs:
         - name: Run Test Matrix
           commands:
-            - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode=''STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'''
+            - 'sem-service start mysql $MYSQL_VERSION --username=$DB_USER --password=$DB_PASSWORD --db=$DB_NAME --sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"'
             - nvm install $NODEJS_VERSION
             - checkout
             - 'npm run build:db'
@@ -40,10 +40,10 @@ blocks:
             - echo "done."
           matrix:
             - env_var: MYSQL_VERSION
-              value:
+              values:
                 - '5.7'
                 - '8'
             - env_var: NODEJS_VERSION
-              value:
+              values:
                 - '12'
                 - '14'
