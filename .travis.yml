@@ -48,43 +48,6 @@ matrix:
         - redis
       addons:
         mariadb: '10.5'
-    - node_js: lts/erbium
-      name: "[Installation] MySQL 5.7 on Node LTS"
-      env:
-        - TEST_TYPE=installation
-        - DB=MYSQL
-        - DB_VERSION=5.7
-      services:
-        - mysql
-        - redis
-    - node_js: node
-      name: "[Installation] MySQL 5.7 on Node Current"
-      env:
-        - TEST_TYPE=installation
-        - DB=MYSQL
-        - DB_VERSION=5.7
-      services:
-        - mysql
-        - redis
-    - node_js: node
-      name: "[Installation] MySQL 8 on Node Current"
-      env:
-        - TEST_TYPE=installation
-        - DB=MYSQL
-        - DB_VERSION=8.0
-      services:
-        - mysql
-        - redis
-    - node_js: lts/erbium
-      name: "[Installation] MariaDB 10.5 on Node LTS"
-      env:
-        - TEST_TYPE=installation
-        - DB=MARIADB
-        - DB_VERSION=10.5
-      services:
-        - redis
-      addons:
-        mariadb: '10.5'
 
 before_install:
   - sh -c "if [ '$DB' = 'MYSQL' ] && [ '$DB_VERSION' = '8.0' ]; then sudo ./sh/travis-install-mysql8.sh; fi"
