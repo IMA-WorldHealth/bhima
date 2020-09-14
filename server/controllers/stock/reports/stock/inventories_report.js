@@ -37,7 +37,9 @@ async function stockInventoriesReport(req, res, next) {
 
     delete options.label;
 
-    options.user = req.session.user;
+    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+      options.check_user_id = req.session.user.id;
+    }
 
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
     const rows = await Stock.getInventoryQuantityAndConsumption(

@@ -23,7 +23,10 @@ async function stockInlineMovementsReport(req, res, next) {
     const report = new ReportManager(STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE, req.session, optionReport);
 
     const params = req.query;
-    params.user = req.session.user;
+
+    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+      params.check_user_id = req.session.user.id;
+    }
 
     const rows = await Stock.getMovements(null, params);
 

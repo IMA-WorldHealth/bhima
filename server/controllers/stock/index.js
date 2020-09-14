@@ -557,7 +557,10 @@ async function listLots(req, res, next) {
  */
 function listLotsMovements(req, res, next) {
   const params = req.query;
-  params.user = req.session.user;
+
+  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    params.check_user_id = req.session.user.id;
+  }
 
   core.getLotsMovements(null, params)
     .then((rows) => {
@@ -572,7 +575,10 @@ function listLotsMovements(req, res, next) {
  */
 function listMovements(req, res, next) {
   const params = req.query;
-  params.user = req.session.user;
+
+  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    params.check_user_id = req.session.user.id;
+  }
 
   core.getMovements(null, params)
     .then((rows) => {
@@ -589,7 +595,10 @@ async function listLotsDepot(req, res, next) {
   const params = req.query;
   params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   params.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
-  params.user = req.session.user;
+
+  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    params.check_user_id = req.session.user.id;
+  }
 
   if (params.defaultPeriod) {
     params.defaultPeriodEntry = params.defaultPeriod;
@@ -637,7 +646,9 @@ async function listInventoryDepot(req, res, next) {
   const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
   // expose connected user data
-  params.user = req.session.user;
+  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    params.check_user_id = req.session.user.id;
+  }
 
   try {
     const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption];

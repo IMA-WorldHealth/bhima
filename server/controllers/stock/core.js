@@ -110,7 +110,10 @@ function getLotFilters(parameters) {
   filters.equals('tag_uuid', 'tags', 't');
 
   // depot permission check
-  filters.custom('depot_permission_check', 'd.uuid IN (?)', [params.depot_permission_check]);
+  filters.custom(
+    'check_user_id',
+    'd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)',
+  );
 
   // tags
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
@@ -226,8 +229,6 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     emptyLotToken = 'HAVING quantity=0';
   }
 
-  await setDepotPermissionCheck(params);
-
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
@@ -295,8 +296,6 @@ async function getLotsMovements(depotUuid, params) {
     delete params.groupByDocument;
   }
 
-  await setDepotPermissionCheck(params);
-
   const sql = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description,
@@ -339,8 +338,6 @@ async function getMovements(depotUuid, params) {
   if (depotUuid) {
     params.depot_uuid = depotUuid;
   }
-
-  await setDepotPermissionCheck(params);
 
   const sql = `
   SELECT
@@ -679,17 +676,6 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
 }
 
 /**
- * setDepotPermissionCheck
- * @param {*} params
- */
-async function setDepotPermissionCheck(params) {
-  const depotPermissionQuery = 'SELECT depot_uuid FROM depot_permission WHERE user_id = ?';
-  const depotPermission = await db.exec(depotPermissionQuery, [params.user.id]);
-  params.depot_permission_check = depotPermission.map(item => item.depot_uuid);
-  delete params.user;
-}
-
-/**
  * Inventory Quantity and Consumptions
  */
 async function getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption) {
@@ -726,8 +712,6 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
   } else if (includeEmptyLot === 2) {
     emptyLotToken = 'HAVING quantity=0';
   }
-
-  await setDepotPermissionCheck(params);
 
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
