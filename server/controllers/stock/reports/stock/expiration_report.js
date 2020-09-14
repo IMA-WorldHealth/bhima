@@ -1,80 +1,86 @@
 const {
   _, db, ReportManager, pdfOptions, STOCK_EXPIRATION_REPORT_TEMPLATE,
 } = require('../common');
-const stockCore = require('../../core');
-/**
-   * @method stockEntryReport
-   *
-   * @description
-   * This method builds the stock entry report as either a JSON, PDF, or HTML
-   * file to be sent to the client.
-   *
-   * GET /reports/stock/consumption_graph
-   */
-async function stockExpirationReport(req, res, next) {
-  try {
 
-    const params = _.clone(req.query);
+const stockCore = require('../../core');
+
+/**
+ * @method stockExpirationReport
+ *
+ * @description
+ *
+ */
+async function stockExpirationReport(req, res, next) {
+
+  try {
+    const params = { includeEmptyLot : 0, ...req.query };
 
     const optionReport = _.extend(params, pdfOptions, {
-      filename : 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE',
+      filename : 'REPORT.STOCK_EXPIRATION_REPORT.TITLE',
     });
 
     // set up the report with report manager
     const report = new ReportManager(STOCK_EXPIRATION_REPORT_TEMPLATE, req.session, optionReport);
 
-    const depotSql = 'SELECT text FROM depot WHERE uuid=?';
-    const options = req.query;
+    const options = params;
     let depot = {};
 
     if (options.depot_uuid) {
+      const depotSql = 'SELECT text FROM depot WHERE uuid = ?';
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
 
-    const dateFrom = new Date(options.dateFrom);
-    const dateTo = new Date(options.dateTo);
+    // clean off the label if it exists so it doesn't mess up the PDF export
+    delete options.label;
 
+    // get the lots for this depot
     const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
 
-    const resultByDepot = _.groupBy(lots, 'depot_uuid');
-    const depotUuids = Object.keys(resultByDepot);
-    const result = {};
-    depotUuids.forEach(depotUuid => {
-      const depotLots = resultByDepot[depotUuid].filter(row => {
-        let found = false;
-        if (row.status === 'stock_out') {
-          row.status = `STOCK.STATUS.${row.status.toUpperCase()}`;
-          row.color = 'red';
-          found = true;
-        } else if (row.IS_IN_RISK_EXPIRATION) {
-          row.status = `STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION`;
-          row.color = '#f5cb42';
-          found = true;
+    // get the lots that are "at risk"
+    const risky = lots.filter(lot => lot.IS_IN_RISK_EXPIRATION);
+
+    // make sure lots are grouped by depot.
+    const groupedByDepot = _.groupBy(risky, 'depot_uuid');
+
+    // grand totals
+    const totals = {
+      expired : { value : 0, quantity : 0 },
+      at_risk : { value : 0, quantity : 0 },
+    };
+
+    const today = new Date();
+
+    const values = _.map(groupedByDepot, (rows) => {
+      let total = 0;
+
+      rows.forEach(lot => {
+        lot.value = (lot.mvt_quantity * lot.unit_cost);
+        total += lot.value;
+
+        if (lot.expiration_date < today) {
+          lot.statusKey = 'STOCK.EXPIRED';
+          lot.classKey = 'bg-danger text-danger';
+          totals.expired.value += lot.value;
+          totals.expired.quantity += lot.mvt_quantity;
+        } else {
+          lot.statusKey = 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION';
+          lot.classKey = 'bg-warning text-warning';
+          totals.at_risk.value += lot.value;
+          totals.at_risk.quantity += lot.mvt_quantity;
         }
-        return found;
       });
 
-      if (depotLots.length > 0) { // there are lots in this depot
-        let total = 0;
-        depotLots.forEach(lot => {
-          lot.value = lot.mvt_quantity * lot.unit_cost;
-          total += lot.value;
-        });
-
-        result[depotUuid] = {
-          rows : depotLots,
-          total,
-          depot_name : depotLots[0].depot_text,
-        };
-      }
+      return {
+        total,
+        rows,
+        depot_name : rows[0].depot_text,
+      };
     });
 
     const reportResult = await report.render({
-      dateFrom,
-      dateTo,
-      depot,
-      result,
+      depot, result : values, totals,
     });
+
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
     next(error);

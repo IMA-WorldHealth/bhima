@@ -24,13 +24,6 @@
 
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-            <bh-date-interval
-              date-from="ReportConfigCtrl.reportDetails.dateFrom"
-              date-to="ReportConfigCtrl.reportDetails.dateTo"
-              required="true"
-              limit-min-fiscal>
-            </bh-date-interval>   
-
               <!-- depot options -->
           <div class="checkbox">
             <label>
@@ -41,35 +34,15 @@
 
           <!-- select depot -->
           <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
-            
+
             <!-- select depot -->
             <bh-depot-select
               depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
               on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
               <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
-             </bh-depot-select>
-          </div>
-            
-              <!-- inventory options -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneInventory">
-              <span translate>REPORT.STOCK.ONE_INVENTORY</span>
-            </label>
+           </bh-depot-select>
           </div>
 
-          <!-- select inventory -->
-            <div ng-if="!!ReportConfigCtrl.chooseOneInventory">
-              
-              <!-- select inventory -->
-              <bh-inventory-select
-                inventory-uuid="ReportConfigCtrl.reportDetails.inventory_uuid"
-                on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
-                only-consumable="true">
-                
-                <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
-                </bh-inventory-select>
-            </div>
             <!-- preview -->
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

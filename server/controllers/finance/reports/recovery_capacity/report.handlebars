@@ -52,7 +52,7 @@
             <td class="text-right">{{debcred row.total_invoiced ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred row.avg_cost ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred row.total_paid ../metadata.enterprise.currency_id}}</td>
-            <td 
+            <td
               style="width: 15em;"
               {{#gt row.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
               {{#between row.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
@@ -69,7 +69,7 @@
             <th class="text-right">{{debcred totals.total_invoiced metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.avg_cost metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.total_paid metadata.enterprise.currency_id}}</th>
-            <th 
+            <th
               style="width: 15em;"
               {{#gt totals.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
               {{#between totals.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}

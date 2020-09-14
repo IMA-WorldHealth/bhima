@@ -220,7 +220,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
     emptyLotToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
   } else if (includeEmptyLot === 2) {
-    emptyLotToken = 'HAVING quantity=0';
+    emptyLotToken = 'HAVING quantity = 0';
   }
 
   const sql = `
@@ -796,7 +796,7 @@ function processMultipleLots(inventories) {
           // if we have more months of stock than the expiration date,
           // then we'll need to label these are in risk of expiration
           const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-          const isInRiskOfExpiration = lot.expiration_date < moment(today).add(numDaysOfStockLeft, 'days').toDate();
+          const isInRiskOfExpiration = lot.expiration_date <= moment(today).add(numDaysOfStockLeft, 'days').toDate();
           lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
 
           lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;

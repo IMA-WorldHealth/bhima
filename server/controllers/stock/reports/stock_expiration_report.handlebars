@@ -1,66 +1,97 @@
-{{> head title="TREE.STOCK_EXPIRATION_REPORT" }}
-
- {{> header }}
-<!-- body  -->
-<div class="container" style="font-size: 0.9em;">
+{{> head title="REPORT.STOCK_EXPIRATION_REPORT.TITLE" }}
 
 
-    <!-- body  -->
-    <div class="row">
-      <div class="col-xs-12">
+<body>
 
-    <!-- page title  -->
-        <h2 class="text-center">
-          {{translate 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'}}
-        </h2>
+  {{> header }}
 
-        {{#if depot.text}}
-          <h4 class="text-center">{{depot.text}}</h4>
-        {{/if}}
-        <h4 class="text-center">
-          {{date dateFrom}} - {{date dateTo}}
-        </h4>
+  <style>
+    .card {
+      border: 1px solid #A0A0A0;
+      padding: 10px;
+    }
+    .card .title {
+      margin: 0;
+      padding: 0;
+      margin-bottom: 5px;
+    }
+    .card .value {
+      font-size: 3em;
+    }
+  </style>
+
+
+  <h2 class="text-center">
+    {{translate 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'}}
+  </h2>
+
+  {{#if depot.text}}
+    <h4 class="text-center">{{depot.text}}</h4>
+  {{/if}}
+
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="card" >
+        <label class="title">{{translate 'STOCK.EXPIRED'}}</label>
+        <div class="details text-right text-danger">
+          <b class="value">{{currency totals.expired.value metadata.enterprise.currency_id}}</b>
+        </div>
       </div>
-      
+    </div>
 
-    {{#each result as |line|}}
+    <div class="col-xs-6">
+      <div class="card">
+        <label class="title">{{translate 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION'}}</label>
+        <div class="details text-right text-warning">
+          <b class="value">{{currency totals.at_risk.value metadata.enterprise.currency_id}}</b>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <h4><b>{{line.depot_name}}</b></h4>
+  {{#each result as |depot|}}
+    <h4><b>{{depot.depot_name}}</b></h4>
+
     <table class="table table-condensed table-bordered table-report">
-        <thead>
-            <tr>
-                <th>{{translate 'STOCK.INVENTORY'}}</th>
-                <th>{{translate 'STOCK.LOT'}}</th>
-                <th>{{translate 'STOCK.EXPIRATION'}}</th>
-                <th>{{translate 'STOCK.QUANTITY'}}</th>
-                <th>{{translate 'FORM.LABELS.VALUE'}}</th>
-                <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
-            </tr>
-        </thead>
-        <tbody>
-
-            {{#each line.rows}}
-
-            <tr>
-                <td>{{text}}</td>
-                <td>{{label}}</td>
-                <td>{{date expiration_date}}</td>
-                <td class="text-right">{{quantity}}</td>
-                <td class="text-right">{{currency value ../enterprise.currency_id}}</td>
-                <td style="text-transform: uppercase;text-shadow: 0px 0px #001;color: {{color}};">{{translate status}}</td>
-            </tr>
-            {{/each}}
+      <thead>
         <tr>
-            <td colspan="4"><b>{{translate 'TABLE.COLUMNS.TOTAL'}}</b></td>
-            <td class="text-right">{{currency line.total ../enterprise.currency_id}}</td>
-            <td></td>
+          <th>{{translate 'STOCK.INVENTORY'}}</th>
+          <th>{{translate 'STOCK.LOT'}}</th>
+          <th>{{translate 'STOCK.EXPIRATION'}}</th>
+          <th>{{translate 'STOCK.QUANTITY'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.UNIT'}}</th>
+          <th>{{translate 'REPORT.STOCK.UNIT_COST'}}</th>
+          <th>{{translate 'FORM.LABELS.VALUE'}}</th>
+          <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
         </tr>
-        </tbody>
+      </thead>
 
+      <tbody>
+        {{#each depot.rows as |lot| }}
+          <tr>
+            <td>{{lot.text}}</td>
+            <td>{{lot.label}}</td>
+            <td>{{date lot.expiration_date}}</td>
+            <td class="text-right">{{lot.quantity}}</td>
+            <td>{{lot.unit_type}}</td>
+            <td>{{currency lot.unit_cost ../../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency lot.value ../../metadata.enterprise.currency_id}}</td>
+            <td class="{{lot.classKey}}">{{translate lot.statusKey}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="6">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+          <th class="text-right">{{currency depot.total ../metadata.enterprise.currency_id}}</th>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
-    <br>
-    {{else}}
-    {{> emptyTable columns=6}}
-    {{/each}}
-
-</div>
+    <br />
+  {{else}}
+    <table>
+      <tbody>{{> emptyTable columns=8}}</tbody>
+    </table>
+  {{/each}}
+</body>
