@@ -112,6 +112,7 @@
             "WARNING": "Attention",
             "CONFIRM_MODAL": "La confirmation est nécessaire",
             "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?",
+            "DELETE_DONOR": "Voulez-vous vraiment supprimer ce donateur?",
             "DELETE_SUPPLIER" : "Voulez-vous supprimer ce fournisseur?"
         },
         "ERRORS": {
@@ -910,6 +911,7 @@
             "DATE_INTERVAL": "Sélectionner un intervalle de date",
             "DEBTOR_GROUP": "Sélectionner un Groupe Débiteur",
             "DEPOT": "Sélectionner un dépôt",
+            "DONOR": "Sélectionner un donateur",
             "ENTERPRISE": "Sélectionner une entreprise",
             "FEE_CENTER": "Sélectionner un centre de frais",
             "FISCAL_YEAR": "Sélectionner une année fiscale",
