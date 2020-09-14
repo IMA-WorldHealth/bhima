@@ -3,7 +3,6 @@ const {
   getVoucherReferenceForStockMovement,
 } = require('../common');
 
-
 /**
  * @method stockAdjustmentReceipt
  *

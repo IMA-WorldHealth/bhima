@@ -109,6 +109,12 @@ function getLotFilters(parameters) {
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
   filters.equals('tag_uuid', 'tags', 't');
 
+  // depot permission check
+  filters.custom(
+    'check_user_id',
+    'd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)',
+  );
+
   // tags
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
 
@@ -202,7 +208,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
  *
  * @param {string} finalClause - An optional final clause (GROUP BY, ...) to add to query built
  */
-function getLotsDepot(depotUuid, params, finalClause) {
+async function getLotsDepot(depotUuid, params, finalClause) {
   let _status;
   let emptyLotToken = ''; // query token to include/exclude empty lots
 
@@ -256,18 +262,17 @@ function getLotsDepot(depotUuid, params, finalClause) {
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
-  return db.exec(query, queryParameters)
-    .then(inventories => processStockConsumptionAverage(
-      inventories, params.dateTo, params.monthAverageConsumption, params.enableDailyConsumption,
-    ))
-    .then(stockManagementProcess)
-    .then(processMultipleLots)
-    .then((rows) => {
-      if (_status) {
-        return rows.filter(row => row.status === _status);
-      }
-      return rows;
-    });
+
+  const inventories = await db.exec(query, queryParameters);
+  const processParameters = [inventories, params.dateTo, params.monthAverageConsumption, params.enableDailyConsumption];
+  const resultFromProcess = await processStockConsumptionAverage(...processParameters);
+  const inventoriesWithManagementData = await stockManagementProcess(resultFromProcess);
+  const inventoriesWithLotsProcessed = await processMultipleLots(inventoriesWithManagementData);
+
+  if (_status) {
+    return inventoriesWithLotsProcessed.filter(row => row.status === _status);
+  }
+  return inventoriesWithLotsProcessed;
 }
 
 /**
@@ -673,7 +678,7 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
 /**
  * Inventory Quantity and Consumptions
  */
-function getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption) {
+async function getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption) {
   let _status;
   let delay;
   let purchaseInterval;
@@ -731,24 +736,22 @@ function getInventoryQuantityAndConsumption(params, monthAverageConsumption, ena
 
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;
 
-  return getLots(sql, params, clause)
-    .then(inventories => processStockConsumptionAverage(
-      inventories, params.dateTo, monthAverageConsumption, enableDailyConsumption,
-    ))
-    .then(inventories => stockManagementProcess(inventories, delay, purchaseInterval))
-    .then(rows => {
-      let filteredRows = rows;
+  const inventories = await getLots(sql, params, clause);
+  const processParams = [inventories, params.dateTo, monthAverageConsumption, enableDailyConsumption];
+  const inventoriesProcessed = await processStockConsumptionAverage(...processParams);
+  const inventoriesWithManagementData = await stockManagementProcess(inventoriesProcessed, delay, purchaseInterval);
 
-      if (_status) {
-        filteredRows = filteredRows.filter(row => row.status === _status);
-      }
+  let filteredRows = inventoriesWithManagementData;
 
-      if (requirePurchaseOrder) {
-        filteredRows = filteredRows.filter(row => row.S_Q > 0);
-      }
+  if (_status) {
+    filteredRows = filteredRows.filter(row => row.status === _status);
+  }
 
-      return filteredRows;
-    });
+  if (requirePurchaseOrder) {
+    filteredRows = filteredRows.filter(row => row.S_Q > 0);
+  }
+
+  return filteredRows;
 }
 
 /**

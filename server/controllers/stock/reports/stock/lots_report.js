@@ -48,6 +48,10 @@ function stockLotsReport(req, res, next) {
   options.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   options.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
+  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    options.check_user_id = req.session.user.id;
+  }
+
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
       data.rows = rows;
@@ -71,8 +75,7 @@ function stockLotsReport(req, res, next) {
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function compare(a, b) {
