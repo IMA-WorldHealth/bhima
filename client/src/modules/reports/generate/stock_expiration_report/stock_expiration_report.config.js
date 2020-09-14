@@ -22,10 +22,6 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
     vm.reportDetails.depot_uuid = depot.uuid;
   };
 
-  vm.onSelectInventory = inventory => {
-    vm.reportDetails.inventory_uuid = inventory.uuid;
-  };
-
   vm.onSelectFiscalYear = year => {
     vm.reportDetails.fiscal_id = year.id;
   };
