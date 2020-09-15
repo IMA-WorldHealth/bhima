@@ -18,6 +18,12 @@
       </a>
     </li>
 
+    <li ng-if="row.entity.stock_requisition_uuid">
+      <a data-method="view-requisition" href ui-sref="stockRequisition({ filters : [{ key : 'reference', value : row.entity.document_requisition, displayValue: displayValue}]})">
+        <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.VIEW_REQUISITION</span>
+      </a>
+    </li>
+
     <li ng-if="row.entity.invoice_uuid">
       <a data-method="view-invoice" href ui-sref="invoiceRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'uuid', value : row.entity.invoice_uuid, displayValue: row.entity.invoice_reference, cacheable:false }]})">
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>

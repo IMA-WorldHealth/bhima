@@ -79,4 +79,5 @@ module.exports = {
   analysisToolTypeSelect : require('./bhAnalysisToolTypeSelect'),
   bhCheckboxTree : require('./bhCheckboxTree'),
   tagSelect : require('./bhTagSelect'),
+  requisitionSelect : require('./bhRequisitionSelect'),
 };

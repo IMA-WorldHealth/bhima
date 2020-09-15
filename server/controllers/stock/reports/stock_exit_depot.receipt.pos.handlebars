@@ -13,6 +13,10 @@
 <p style="margin-top: 0px">
   <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{exit.details.depot_name}}</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span> : <strong>{{exit.details.document_reference}}</strong> <br>
+  {{#if exit.details.document_requisition}}
+    <span>{{translate 'FORM.LABELS.REQUISITION_REFERENCE'}}</span>: <strong>{{exit.details.document_requisition}}</strong> <br>
+  {{/if}}
+
   {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{exit.details.user_display_name}}
 </p>
 
