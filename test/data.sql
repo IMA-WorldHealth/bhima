@@ -2981,6 +2981,7 @@ INSERT INTO `depot` VALUES
 -- Set Depot Management By User
 INSERT INTO depot_permission (user_id, depot_uuid) VALUES
   (@superUser, @depot_uuid),
+  (@superUser, @second_depot_uuid),
   (@superUser, @third_deposit_uuid);
 
 -- TODO : As soon as the stored Procedure for Stock accounting landed, stock movement records should be posted also
