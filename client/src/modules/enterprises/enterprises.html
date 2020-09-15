@@ -342,6 +342,14 @@
                 name="enable_index_payment_system"
                 on-change-callback="EnterpriseCtrl.enableIndexPaymentSetting(value)">
               </bh-yes-no-radios>
+
+              <bh-yes-no-radios
+                label="ENTERPRISE.SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
+                help-text="ENTERPRISE.SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
+                value="EnterpriseCtrl.enterprise.settings.enable_strict_depot_permission"
+                name="enable_strict_depot_permission"
+                on-change-callback="EnterpriseCtrl.enableStrictDepotPermissionSetting(value)">
+              </bh-yes-no-radios>
             </div>
           </div>
 
