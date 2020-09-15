@@ -44,17 +44,32 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
   }
 
   function requisitionDetails([requisition]) {
+    if (Data.depot.uuid !== requisition.depot_uuid) {
+      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
+      vm.requisitionLabel = 'label label-warning';
+      throw new Error('The requisition is not for depots');
+    }
+
     if (!requisition || !requisition.uuid) {
       vm.requisitionMessage = 'REQUISITION.VOUCHER_NOT_FOUND';
+      vm.requisitionLabel = 'label label-warning';
       throw new Error('Requisition Not Found');
     }
 
-    if (requisition.status_key === 'done') {
+    if (requisition.status_key === 'done' || requisition.status_key === 'completed'
+      || requisition.status_key === 'excessive') {
       vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
+      vm.requisitionLabel = 'label label-success';
       throw new Error('Requisition Already Used');
     }
 
-    return Stock.stockRequisition.read(requisition.uuid);
+    if (requisition.status_key === 'cancelled') {
+      vm.requisitionMessage = 'REQUISITION.CANCELLED';
+      vm.requisitionLabel = 'label label-danger';
+      throw new Error('Requisition Cancelled');
+    }
+
+    return Stock.stockRequisition.read(requisition.uuid, { balance : true });
   }
 
   function serviceDetails(requisition) {
@@ -65,6 +80,7 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
   function assignServiceRequisition([service]) {
     if (!service || !service.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_SERVICE';
+      vm.requisitionLabel = 'label label-warning';
       throw new Error('The requisition is not for services');
     }
 
@@ -77,5 +93,4 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
   function cancel() {
     Instance.close(vm.selected);
   }
-
 }
