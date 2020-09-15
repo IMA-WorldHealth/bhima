@@ -15,6 +15,7 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id',
     'dateFrom', 'dateTo', 'user_id', 'patientReference', 'service_uuid', 'invoice_uuid',
+    'stock_requisition_uuid',
   ];
 
   vm.filters = data;
@@ -43,6 +44,12 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
+  };
+
+  // custom filter stock_requisition_uuid - assign the value to the params object
+  vm.onSelectRequisition = function onSelectRequisition(requisition) {
+    vm.searchQueries.stock_requisition_uuid = requisition.uuid;
+    displayValues.stock_requisition_uuid = requisition.reference;
   };
 
   // Custom filter service_uuid - assign the value to the params object
