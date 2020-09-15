@@ -37,13 +37,13 @@ function StockLotsRegistryTests() {
   it('find only lots set during the adjustment process', async () => {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      lot : 'QUININE-B',
+      lot : 'QUININE-C',
       quantity : '17',
     };
 
     const vitamine = {
-      label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      lot : 'VITAMINE-B',
+      label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      lot : '759170203',
       quantity : '23',
     };
 
