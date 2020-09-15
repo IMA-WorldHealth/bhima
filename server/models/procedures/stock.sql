@@ -375,7 +375,8 @@ CREATE PROCEDURE `computeStockQuantity` (
   SET _start_date = DATE(_start_date);
   SET @depot_number = 0;
 
-  DELETE FROM `temp_depot`;
+  DROP TEMPORARY TABLE IF EXISTS `stock_movement_status`;
+  DELETE FROM `temp_depot` WHERE 1;
 
   SET @filter_by_depot = (_depot_filter_uuid IS NOT NULL);
 
@@ -591,7 +592,11 @@ CREATE PROCEDURE `getCMM` (
 
   -- SELECT @sum_consumed_quantity, @sum_consumption_day, @sum_stock_day, @sum_stock_out_days, @number_of_month, @sum_days;
 
-  SELECT @algo1, @algo2, @algo3, @algo_msh;
+  SELECT IFNULL(@algo1, 0) as algo1,
+    ROUND(IFNULL(@algo2, 0), 2) as algo2,
+    ROUND(IFNULL(@algo3, 0),2) as algo3,
+    ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh;
+
 
 END$$
 
