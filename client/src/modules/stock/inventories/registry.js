@@ -70,7 +70,7 @@ function StockInventoriesController(
     enableFiltering : false,
     enableSorting   : false,
     cellClass       : 'text-right',
-    cellTemplate    : '',
+    cellTemplate     : 'modules/stock/inventories/templates/cmm.cell.html',
   }, {
     field            : 'S_MONTH',
     displayName      : 'MS',
