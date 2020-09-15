@@ -12,7 +12,7 @@
       </a>
     </li>
 
-    <li ng-if="row.entity.status_key !== 'completed' && row.entity.status_key !== 'done'">
+    <li ng-if="row.entity.status_key !== 'completed' && row.entity.status_key !== 'done' && row.entity.status_key !== 'excessive'">
       <a
         href
         class="text-action"
@@ -28,7 +28,7 @@
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
       </a>
     </li>
-    <li ng-if="row.entity.status_key === 'partially' || row.entity.status_key === 'completed' || row.entity.status_key === 'cancelled'">
+    <li ng-if="row.entity.status_key === 'partially' || row.entity.status_key === 'done' ||  row.entity.status_key === 'completed' || row.entity.status_key === 'excessive'">
       <a href
         data-method="view-stock-movements"
         ui-sref="stockMovements({ filters : [
