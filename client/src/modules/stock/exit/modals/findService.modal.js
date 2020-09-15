@@ -56,7 +56,8 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock)
       throw new Error('Requisition Not Found');
     }
 
-    if (requisition.status_key === 'done' || requisition.status_key === 'completed') {
+    if (requisition.status_key === 'done' || requisition.status_key === 'completed'
+      || requisition.status_key === 'excessive') {
       vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
       vm.requisitionLabel = 'label label-success';
       throw new Error('Requisition Already Used');
