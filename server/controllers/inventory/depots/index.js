@@ -184,6 +184,11 @@ function hasUuids(uuids, filters) {
 function searchByName(req, res, next) {
   const options = {};
   options.text = req.query.text;
+
+  if (req.query.only_user) {
+    options.user_id = req.session.user.id;
+  }
+
   options.exception = req.query.exception;
   options.limit = req.query.limit || 10;
   options.enterprise_id = req.session.enterprise.id;
@@ -208,12 +213,20 @@ function searchByName(req, res, next) {
       LEFT JOIN sector s ON s.uuid = v.sector_uuid
       LEFT JOIN province p ON p.uuid = s.province_uuid
       LEFT JOIN country c ON c.uuid = p.country_uuid
+      LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+      LEFT JOIN user u ON u.id = dp.user_id      
   `;
 
   filters.custom(
     'exception',
     'd.uuid NOT IN (?)',
   );
+
+  filters.custom(
+    'user_id',
+    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
+  );
+
   filters.fullText('text', 'text', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
   filters.setOrder('ORDER BY d.text');
