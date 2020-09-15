@@ -20,7 +20,7 @@ function StockRequisitionTests() {
   const DEPOT_TERTIAIRE = 'Depot Tertiaire';
 
   const SERVICE = 'Test Service';
-  const REFERENCES = ['SREQ.1', 'SREQ.2', 'SREQ.3', 'SREQ.4'];
+  const REFERENCES = ['SREQ.5', 'SREQ.6', 'SREQ.7', 'SREQ.8'];
   const NOT_REFERENCE = 'SREQ.ZERO';
 
   it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
@@ -84,7 +84,7 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setRequestor(DEPOT_SECONDAIRE, 'depot');
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
 
     await SearchModal.open();
     await modal.reset();
@@ -98,7 +98,7 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setRequestor(SERVICE, 'service');
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
   });
 
   it('Search requisition by depot supplier', async () => {
@@ -106,13 +106,13 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setDepot(DEPOT_SECONDAIRE);
     await modal.submit();
-    await page.expectRowCount(4);
+    await page.expectRowCount(7);
 
     await SearchModal.open();
     await modal.reset();
     await modal.setDepot(DEPOT_PRINCIPAL);
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
   });
 
   it('Search requisition by reference', async () => {
@@ -156,7 +156,6 @@ function StockRequisitionTests() {
     await modal.setReference(REFERENCES[3]);
     await modal.submit();
     await page.changeStatus(0, 'cancelled');
-
   });
 }
 
