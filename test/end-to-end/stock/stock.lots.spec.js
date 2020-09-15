@@ -51,7 +51,7 @@ function StockLotsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCountAbove(gridId, LOT_FOR_ALLTIME);
+    await GU.expectRowCount(gridId, LOT_FOR_ALLTIME);
   });
 
   it('find lots in depot principal', async () => {
