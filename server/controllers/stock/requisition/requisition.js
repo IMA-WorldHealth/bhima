@@ -275,12 +275,6 @@ exports.update = async (req, res, next) => {
       }
     }
 
-    console.log('PLUSSSSsssssssss');
-    console.log(uuid);
-
-    console.log('REQQQQQQQQQQQQQ');
-    console.log(requisition);
-
     transaction.addQuery('UPDATE stock_requisition SET ? WHERE uuid = ?;', [binarize(requisition), uuid]);
 
     if (requisitionItems && requisitionItems.length) {
