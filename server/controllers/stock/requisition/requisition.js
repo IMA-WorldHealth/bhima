@@ -235,13 +235,46 @@ exports.update = async (req, res, next) => {
         dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
       ]);
 
+      const checkExcessiveBalance = `
+      SELECT COUNT(balance.inventory_uuid) AS numberExcessive
+        FROM (
+        SELECT req.inventory_uuid, req.code, req.inventoryType,
+        (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
+            FROM (
+              SELECT BUID(i.uuid) inventory_uuid, i.code, it.text as inventoryType, sri.quantity
+              FROM stock_requisition_item sri
+              JOIN inventory i ON i.uuid = sri.inventory_uuid
+              JOIN inventory_type it ON i.type_id = it.id
+              WHERE sri.requisition_uuid = ?
+            ) AS req
+            LEFT JOIN (
+              SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text AS inventoryType, SUM(m.quantity) AS quantity
+              FROM stock_movement AS m
+              JOIN lot AS l ON l.uuid = m.lot_uuid
+              JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+              JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
+              WHERE srm.stock_requisition_uuid = ?
+              GROUP BY inv.uuid
+            ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
+          ) AS balance
+          WHERE balance.quantity < 0;
+        `;
+
+      const excessiveStatus = await db.one(checkExcessiveBalance, [
+        dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
+      ]);
+
       if (movementStatus.numberInventoryPartial > 0) {
         // Partially
         requisition.status_id = 3;
       }
+
+      if (movementStatus.numberInventoryPartial === 0 && excessiveStatus.numberExcessive > 0) {
+        // Excessive
+        requisition.status_id = 7;
+      }
     }
 
-    requisition.date = requisition.date ? new Date(requisition.date) : new Date();
     transaction.addQuery('UPDATE stock_requisition SET ? WHERE uuid = ?;', [binarize(requisition), uuid]);
 
     if (requisitionItems && requisitionItems.length) {
