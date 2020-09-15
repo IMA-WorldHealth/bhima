@@ -107,7 +107,7 @@ describe('(/depots) The depots API ', () => {
   it('GET /depots should returns the list of depots', () => {
     return agent.get('/depots')
       .then((res) => {
-        helpers.api.listed(res, 4);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });

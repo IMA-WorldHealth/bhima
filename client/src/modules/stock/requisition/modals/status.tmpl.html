@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static"><span translate>FORM.LABELS.STATUS</span> <span translate>REQUISITION.STOCK_REQUISITION</span></li>
+    <li class="title">{{ $ctrl.requisition.reference }}</li>
+  </ol>
+</div>
+
+<form 
+  name="ModalForm"
+  ng-submit="$ctrl.submit($ctrl.status)"
+  data-modal="requisition-status"
+  novalidate>
+
+<div class="modal-body">
+  <div class="form-group" ng-if="$ctrl.requisition.status_key === 'partially'">
+    <label class="text-action">
+      <input type="radio" id="done" name="status" ng-model="$ctrl.status" value="2"> 
+      <span class="label label-primary" translate>FORM.LABELS.STATUS_TYPE.DONE</span>
+      <p translate>FORM.INFO.REQUISITION.DONE</p>
+    </label>
+  </div>
+
+  <div class="form-group" ng-if="$ctrl.requisition.status_key === 'in_progress'">
+    <label class="text-action">
+      <input type="radio" id="cancelled" name="status" ng-model="$ctrl.status" value="5">
+      <span class="label label-danger" translate>FORM.LABELS.STATUS_TYPE.CANCELLED</span>
+      <p translate>FORM.INFO.REQUISITION.CANCEL</p>
+    </label>
+  </div>
+
+  <div class="form-group" ng-if="$ctrl.requisition.status_key === 'cancelled'">
+    <label class="text-action">
+      <input type="radio" id="in_progress" name="status" ng-model="$ctrl.status" value="1">
+      <span class="label label-default" translate>FORM.LABELS.STATUS_TYPE.IN_PROGRESS</span>
+      <p translate>FORM.INFO.REQUISITION.IN_PROGRESS</p>
+    </label>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="$ctrl.close()"
+    data-method="close"
+    translate>
+    FORM.BUTTONS.CLOSE
+  </button>
+
+  <bh-loading-button loading-state="ModalForm.$loading">
+    <span translate>FORM.BUTTONS.SUBMIT</span>
+  </bh-loading-button>
+</div>
+</form>

@@ -74,6 +74,13 @@
             <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">	
           </div>
 
+          <!-- Requisition -->
+          <bh-requisition-select
+            requisition-uuid="ModalCtrl.searchQueries.stock_requisition_uuid"
+            on-select-callback="$ctrl.onSelectRequisition(requisition)">
+            <bh-clear on-clear="ModalCtrl.clear('stock_requisition_uuid')"></bh-clear>
+          </bh-requisition-select>
+
           <!-- service -->
           <bh-service-select
             service-uuid="$ctrl.searchQueries.service_uuid"

@@ -11,7 +11,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
     'depot_requestor', 'reference', 'items', 'status_key', 'title_key',
   ];
 
-  // create new stock requisition on "Depot Principal" from a service
+  // create new stock requisition on "Depot Principal" from a servicedelete stock requisition
   it('POST /stock/requisition create a new stock requisition from a service', () => {
     return agent.post('/stock/requisition')
       .send(shared.requisitionFromService)
@@ -37,7 +37,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
   it('GET /stock/requisition list all stock requisitions', () => {
     return agent.get('/stock/requisition')
       .then(res => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });
@@ -66,10 +66,10 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
   it('GET /stock/requisition get requisitions of a given depot', () => {
     return agent.get(`/stock/requisition?depot_uuid=${shared.depotPrincipalUuid}`)
       .then(res => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
         return agent.get(`/stock/requisition?depot_uuid=${shared.depotSecondaireUuid}`);
       })
-      .then(res => helpers.api.listed(res, 0))
+      .then(res => helpers.api.listed(res, 3))
       .catch(helpers.handler);
   });
 
@@ -83,7 +83,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
       requestor_type_id : 2,
       depot_uuid : shared.depotPrincipalUuid,
       description : 'Updated Requisition for a depot',
-      date : new Date(),
+      status_id : 5,
     };
     return agent.put(`/stock/requisition/${variables.requisitionFromServiceUuid}`)
       .send(update)
@@ -119,7 +119,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
           .filter(uuid => uuid === variables.requisitionFromServiceUuid)
           .length === 0;
         expect(doesnExist).to.be.equal(true);
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
