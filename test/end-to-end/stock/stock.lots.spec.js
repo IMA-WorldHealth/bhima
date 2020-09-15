@@ -27,9 +27,9 @@ function StockLotsRegistryTests() {
   const depotGroupingRow = 1;
   // techinically this is 26 in total, but the grid doesn't render that
   // many on small screens
-  const LOT_FOR_ALLTIME = 22;
-  const LOT_FOR_TODAY = 14;
-  const LOT_FOR_LAST_YEAR = 21;
+  const LOT_FOR_ALLTIME = 26;
+  const LOT_FOR_TODAY = 13;
+  const LOT_FOR_LAST_YEAR = 20;
 
   const inventoryGroup = 'Injectable';
 
@@ -51,13 +51,13 @@ function StockLotsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCountAbove(gridId, LOT_FOR_ALLTIME);
+    await GU.expectRowCount(gridId, LOT_FOR_ALLTIME);
   });
 
   it('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 17 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 16 + depotGroupingRow);
   });
 
   it('find lots by inventory', async () => {
