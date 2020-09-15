@@ -14,7 +14,7 @@
 <div class="modal-body">
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'partially'">
     <label class="text-action">
-      <input type="radio" name="status" ng-model="$ctrl.status" value="2" ng-disabled="$ctrl.isStored"> 
+      <input type="radio" id="done" name="status" ng-model="$ctrl.status" value="2"> 
       <span class="label label-primary" translate>FORM.LABELS.STATUS_TYPE.DONE</span>
       <p translate>FORM.INFO.REQUISITION.DONE</p>
     </label>
@@ -22,7 +22,7 @@
 
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'in_progress'">
     <label class="text-action">
-      <input type="radio" name="status" ng-model="$ctrl.status" value="5" ng-disabled="$ctrl.isStored"> 
+      <input type="radio" id="cancelled" name="status" ng-model="$ctrl.status" value="5"> 
       <span class="label label-danger" translate>FORM.LABELS.STATUS_TYPE.CANCELLED</span>
       <p translate>FORM.INFO.REQUISITION.CANCEL</p>
     </label>
@@ -30,7 +30,7 @@
 
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'cancelled'">
     <label class="text-action">
-      <input type="radio" name="status" ng-model="$ctrl.status" value="1" ng-disabled="$ctrl.isStored"> 
+      <input type="radio" id="in_progress" name="status" ng-model="$ctrl.status" value="1"> 
       <span class="label label-default" translate>FORM.LABELS.STATUS_TYPE.IN_PROGRESS</span>
       <p translate>FORM.INFO.REQUISITION.IN_PROGRESS</p>
     </label>
