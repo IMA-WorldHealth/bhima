@@ -25,6 +25,11 @@ async function stockExpirationReport(req, res, next) {
 
     const depotSql = 'SELECT text FROM depot WHERE uuid=?';
     const options = req.query;
+
+    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+      options.check_user_id = req.session.user.id;
+    }
+
     let depot = {};
 
     if (options.depot_uuid) {

@@ -759,3 +759,10 @@ ALTER TABLE inventory ADD COLUMN `importance` SMALLINT(5) NULL COMMENT 'Inventor
  * entry from purchase.
  */
 ALTER TABLE `enterprise_setting` ADD COLUMN `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-09-16
+ * @desc: add enterprise setting for strict depot permission which will restrict stock registries to depot owner
+ */
+ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0;

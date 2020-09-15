@@ -29,7 +29,6 @@ async function reporting(_options, session) {
 
   const report = new ReportManager(STOCK_VALUE_REPORT_TEMPLATE, session, optionReport);
 
-
   const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options.params;
   data.dateTo = options.dateTo;
   data.depot = await db.one('SELECT * FROM depot WHERE uuid=?', [db.bid(options.depot_uuid)]);
@@ -103,7 +102,6 @@ async function reporting(_options, session) {
 
   const stockValueElements = options.exclude_zero_value
     ? stockValues.filter(item => item.stockValue > 0) : stockValues;
-
 
   data.stockValues = stockValueElements || [];
 
