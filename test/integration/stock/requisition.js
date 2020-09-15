@@ -83,7 +83,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
       requestor_type_id : 2,
       depot_uuid : shared.depotPrincipalUuid,
       description : 'Updated Requisition for a depot',
-      date : new Date(),
+      status_id : 5,
     };
     return agent.put(`/stock/requisition/${variables.requisitionFromServiceUuid}`)
       .send(update)
