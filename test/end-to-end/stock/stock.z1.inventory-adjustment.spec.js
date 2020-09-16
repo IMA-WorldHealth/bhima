@@ -25,7 +25,7 @@ function StockInventoryAdjustmentTests() {
     await page.setDescription(DESCRIPTION);
 
     // set all other to zero
-    for (let i = 0; i < 17; i++) {
+    for (let i = 0; i < 16; i++) {
       // eslint-disable-next-line
       await page.setQuantity(i, 5, 0);
     }

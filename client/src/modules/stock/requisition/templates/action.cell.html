@@ -1,19 +1,41 @@
-<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
-  <a href>
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body>
+  <a href uib-dropdown-toggle>
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{ row.entity.reference }}</li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
         <span><i class="fa fa-file-o"></i> <span translate>FORM.LABELS.DOCUMENT</span></span>
       </a>
     </li>
-    <li>
+
+    <li ng-if="row.entity.status_key !== 'completed' && row.entity.status_key !== 'done' && row.entity.status_key !== 'excessive'">
+      <a
+        href
+        class="text-action"
+        ng-click="grid.appScope.editStatus(row.entity)"
+        data-edit-metadata="{{ row.entity.uuid }}"
+        data-method="edit">
+        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+      </a>
+    </li>
+
+    <li ng-if="row.entity.status_key === 'in_progress'">
       <a data-method="remove-record" href ng-click="grid.appScope.removeRequisition(row.entity.uuid)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
+      </a>
+    </li>
+    <li ng-if="row.entity.status_key === 'partially' || row.entity.status_key === 'done' ||  row.entity.status_key === 'completed' || row.entity.status_key === 'excessive'">
+      <a href
+        data-method="view-stock-movements"
+        ui-sref="stockMovements({ filters : [
+          { key : 'stock_requisition_uuid', value : row.entity.uuid, displayValue : row.entity.reference },
+          { key : 'limit', value : 1000, cacheable: false }
+        ]})" href>
+        <i class="fa fa-arrows-h"></i> <span translate>STOCK.STOCK_MOVEMENTS</span>
       </a>
     </li>
   </ul>
