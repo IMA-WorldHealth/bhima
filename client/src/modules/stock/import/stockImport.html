@@ -14,7 +14,9 @@
       <div class="toolbar-item">
         <bh-dropdown-menu>
           <bh-dropdown-menu-item>
-            <bh-change-depot on-select="StockCtrl.onChangeDepot(depot)"></bh-change-depot>
+            <a href>
+              <bh-change-depot on-select="StockCtrl.onChangeDepot(depot)"></bh-change-depot>
+            </a>
           </bh-dropdown-menu-item>
         </bh-dropdown-menu>
       </div>
@@ -43,7 +45,7 @@
           <br>
 
           <div>
-            <span translate>STOCK.IMPORT.TEMPLATE_FILE_DESCRIPTION</span> 
+            <span translate>STOCK.IMPORT.TEMPLATE_FILE_DESCRIPTION</span>
             <a ng-click="StockCtrl.downloadTemplate()" href>
               <i class="fa fa-cloud-download"></i>
               <span translate>STOCK.IMPORT.DOWNLOAD_TEMPLATE_HERE</span>
