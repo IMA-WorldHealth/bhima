@@ -34,6 +34,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'tag_uuid', label : 'TAG.LABEL' },
     { key : 'tags', label : 'TAG.LABEL' },
     { key : 'show_only_risky', label : 'LOTS.SHOW_ONLY_RISKY' },
+    { key : 'stock_requisition_uuid', label : 'FORM.LABELS.REQUISITION_REFERENCE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
