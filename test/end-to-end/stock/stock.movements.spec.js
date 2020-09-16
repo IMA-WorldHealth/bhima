@@ -117,4 +117,4 @@ function StockMovementsRegistryTests() {
   });
 }
 
-describe.only('Stock Movement Registry', StockMovementsRegistryTests);
+describe('Stock Movement Registry', StockMovementsRegistryTests);
