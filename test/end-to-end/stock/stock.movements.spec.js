@@ -30,7 +30,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 21 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 24 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
@@ -117,4 +117,4 @@ function StockMovementsRegistryTests() {
   });
 }
 
-describe('Stock Movement Registry', StockMovementsRegistryTests);
+describe.only('Stock Movement Registry', StockMovementsRegistryTests);
