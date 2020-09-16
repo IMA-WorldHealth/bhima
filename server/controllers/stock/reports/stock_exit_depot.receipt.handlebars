@@ -23,6 +23,11 @@
         <h4>{{translate 'STOCK.TO'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.otherDepotName}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{exit.details.document_reference}}</strong> <br>
+
+        {{#if exit.details.document_requisition}}
+          <span>{{translate 'FORM.LABELS.REQUISITION_REFERENCE'}}</span>: <strong>{{exit.details.document_requisition}}</strong> <br>
+        {{/if}}
+
       </div>
     </div>
 
