@@ -5,5 +5,6 @@ angular.module('bhima.routes')
         url         : '/settings',
         controller  : 'settings as SettingsCtrl',
         templateUrl : 'modules/settings/settings.html',
+        data : { allowAuthPassthrough : true },
       });
   }]);
