@@ -19,6 +19,7 @@
     "NO_DEPOT" : "No Depot",
     "NO_DEPOT_ASSIGNED_TO_USER" : "You are not allowed to access any depot or there's no depot registered yet. Please contact the administrator if needed",
     "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",
+    "SELECT_MAIN_DEPOT" : "Select Main Depot",
     "TITLE" : "Depot Management",
     "UPDATED" : "Depot updated successfully",
     "WAREHOUSE" : "Warehouse",
