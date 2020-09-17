@@ -222,7 +222,7 @@
             "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
             "REQUISITION": {
               "CANCEL": "Annuler la demande de réquisition des stocks",
-              "DONE": "La requisition ne pourra plus être completée, et sera consideré comme fait",
+              "DONE": "La requisition ne pourra plus être completée et sera consideré comme fait",
               "IN_PROGRESS": "Rehabilité la demande de requisition"
             },
             "RESULT_FOUND": "Résultat trouvé",
