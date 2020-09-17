@@ -52,20 +52,21 @@ async function getDetailsBalance(identifier) {
   const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
 
   const sql = `
-    SELECT req.inventory_uuid, req.code, req.inventoryType,
+    SELECT req.inventory_uuid, req.code, req.text, req.inventoryType,
     (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
     FROM (
-      SELECT BUID(i.uuid) inventory_uuid, i.code, it.text as inventoryType, sri.quantity
+      SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, it.text as inventoryType, sri.quantity
       FROM stock_requisition_item sri
       JOIN inventory i ON i.uuid = sri.inventory_uuid
       JOIN inventory_type it ON i.type_id = it.id
       WHERE sri.requisition_uuid = ?
     ) AS req
     LEFT JOIN (
-      SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text AS inventoryType, SUM(m.quantity) AS quantity
+      SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text, it.text AS inventoryType, SUM(m.quantity) AS quantity
       FROM stock_movement AS m
       JOIN lot AS l ON l.uuid = m.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+      JOIN inventory_type it ON inv.type_id = it.id
       JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
       WHERE srm.stock_requisition_uuid = ?
       GROUP BY inv.uuid
