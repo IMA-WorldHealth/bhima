@@ -221,7 +221,7 @@
             "RECORD_SAME":"No changes have been made to the form",
             "REQUISITION": {
               "CANCEL": "Cancel the inventory requisition request",
-              "DONE": "The requisition can no longer be completed, and will be considered done",
+              "DONE": "The requisition can no longer be completed and will be considered done",
               "IN_PROGRESS": "Rehabilitated the requisition request"
             },
             "RESULT_FOUND": "Result found",

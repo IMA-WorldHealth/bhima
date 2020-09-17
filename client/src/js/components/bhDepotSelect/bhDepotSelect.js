@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       depotUuid        : '<',
-      user             : '<',
+      user             : '<?',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
