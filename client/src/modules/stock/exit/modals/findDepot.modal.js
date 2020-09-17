@@ -87,7 +87,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
     if (vm.requisition.depot_uuid !== Data.depot.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
       vm.requisitionLabel = 'label label-warning';
-      throw new Error('The requisition is not for depots');
+      throw new Error('This requisition is not for this depot');
     }
 
     return Depot.read(null, { uuid : vm.requisition.requestor_uuid });

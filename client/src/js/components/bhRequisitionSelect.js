@@ -22,8 +22,9 @@ RequisitionSelectController.$inject = [
  */
 function RequisitionSelectController(Stock, Notify) {
   const $ctrl = this;
-  $ctrl.label = $ctrl.label || 'FORM.LABELS.REQUISITION_REFERENCE';
+
   $ctrl.$onInit = function onInit() {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.REQUISITION_REFERENCE';
     $ctrl.required = $ctrl.required || false;
 
     const params = {};

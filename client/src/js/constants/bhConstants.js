@@ -95,6 +95,9 @@ function constantConfig() {
       INVENTORY_RESET  : 14,
       INVENTORY_ADJUSTMENT : 15,
     },
+    stockRequisition : {
+      completed_status : 6,
+    },
     stockStatus : {
       IS_STOCK_OUT          : 'stock_out',
       IS_IN_STOCK          : 'in_stock',
