@@ -73,8 +73,7 @@ async function getDetailsBalance(identifier) {
     WHERE (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) > 0;
   `;
 
-  const requisition = await db.one(sqlRequisition, [uuid]);
-  const items = await db.exec(sql, [uuid, uuid]);
+  const [requisition, items] = await Promise.all([db.one(sqlRequisition, [uuid]), db.exec(sql, [uuid, uuid])]);
 
   return _.assignIn({ items }, requisition);
 }
