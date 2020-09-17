@@ -5,8 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       requisitionUuid : '<',
-      depotUuid : '<',
-      serviceUuid : '<',
+      requestorUuid : '<?',
       onSelectCallback : '&',
       required : '@?',
       label : '@?',
@@ -26,15 +25,9 @@ function RequisitionSelectController(Stock, Notify) {
   $ctrl.label = $ctrl.label || 'FORM.LABELS.REQUISITION_REFERENCE';
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
+
     const params = {};
-
-    if ($ctrl.depotUuid) {
-      params.requestor_uuid = $ctrl.depotUuid;
-    }
-
-    if ($ctrl.serviceUuid) {
-      params.requestor_uuid = $ctrl.serviceUuid;
-    }
+    params.requestor_uuid = $ctrl.requestorUuid;
 
     Stock.stockRequisition.read(null, params)
       .then((requisitions) => {
