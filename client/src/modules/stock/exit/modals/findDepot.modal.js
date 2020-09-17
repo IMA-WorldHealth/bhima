@@ -17,7 +17,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
   vm.submit = submit;
   vm.cancel = cancel;
 
-  Depot.read()
+  Depot.read(null, { only_user : true })
     .then(depots => {
       bundle.depots = depots;
 
@@ -61,30 +61,42 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
   function requisitionDetails([requisition]) {
     if (!requisition || !requisition.uuid) {
       vm.requisitionMessage = 'REQUISITION.VOUCHER_NOT_FOUND';
+      vm.requisitionLabel = 'label label-primary';
       throw new Error('Requisition Not Found');
     }
 
-    if (requisition.status_key === 'done') {
+    if (requisition.status_key === 'done' || requisition.status_key === 'completed'
+      || requisition.status_key === 'excessive') {
       vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
+      vm.requisitionLabel = 'label label-success';
       throw new Error('Requisition Already Used');
     }
 
-    return Stock.stockRequisition.read(requisition.uuid);
+    if (requisition.status_key === 'cancelled') {
+      vm.requisitionMessage = 'REQUISITION.CANCELLED';
+      vm.requisitionLabel = 'label label-danger';
+      throw new Error('Requisition Cancelled');
+    }
+
+    return Stock.stockRequisition.read(requisition.uuid, { balance : true });
   }
 
   function depotDetails(requisition) {
     vm.requisition = requisition;
+
+    if (vm.requisition.depot_uuid !== Data.depot.uuid) {
+      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
+      vm.requisitionLabel = 'label label-warning';
+      throw new Error('This requisition is not for this depot');
+    }
+
     return Depot.read(null, { uuid : vm.requisition.requestor_uuid });
   }
 
   function assignDepotRequisition([depot]) {
-    if (!depot || !depot.uuid) {
-      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
-      throw new Error('The requisition is not for depots');
-    }
-
     if (Data.depot.uuid === vm.selected.uuid) {
       vm.requisitionMessage = 'REQUISITION.NOT_FOR_THE_SAME_DEPOT';
+      vm.requisitionLabel = 'label label-danger';
       throw new Error('The requisition cannot be for the same depot');
     }
 

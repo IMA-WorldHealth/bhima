@@ -5,6 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       depotUuid        : '<',
+      user             : '<?',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
@@ -47,6 +48,10 @@ function DepotSelectController(Depots, Notify) {
       text : (text || '').toLowerCase(),
       exception : $ctrl.exception,
     };
+
+    if ($ctrl.user) {
+      options.only_user = true;
+    }
 
     return Depots.searchByName(options);
   };
