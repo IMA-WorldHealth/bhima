@@ -7,8 +7,7 @@ angular.module('bhima.components')
       classeLabel : '<',
       reference : '<',
       onChange  : '&',
-      depot : '<',
-      service : '<',
+      requestor : '<?',
     },
   });
 
@@ -22,11 +21,7 @@ function bhHasRequisitionVoucherController() {
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
-    if (changes.depot && changes.depot.currentValue) {
-      $ctrl.requisitionVoucherExist = 0;
-    }
-
-    if (changes.service && changes.service.currentValue) {
+    if (changes.requestor && changes.requestor.currentValue) {
       $ctrl.requisitionVoucherExist = 0;
     }
   };
