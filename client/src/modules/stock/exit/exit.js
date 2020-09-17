@@ -583,7 +583,7 @@ function StockExitController(
           document_uuid : documentUuid,
         };
 
-        const COMPLETED_STATUS = 6;
+        const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
         return Stock.stockRequisition.update(vm.requisition.uuid, {
           status_id : COMPLETED_STATUS,
           movementRequisition,
@@ -625,7 +625,7 @@ function StockExitController(
           document_uuid : documentUuid,
         };
 
-        const COMPLETED_STATUS = 6;
+        const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
         return Stock.stockRequisition.update(vm.requisition.uuid, {
           status_id : COMPLETED_STATUS,
           movementRequisition,
