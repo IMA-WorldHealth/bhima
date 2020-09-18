@@ -766,3 +766,11 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_supplier_credit` TINYINT(1) 
  * @desc: add enterprise setting for strict depot permission which will restrict stock registries to depot owner
  */
  ALTER TABLE `enterprise_setting` ADD COLUMN `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*
+ * @author: jeremielodi
+ * @date: 2020-09-18
+ * @desc: unpost transactions #4927
+ */
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS');
