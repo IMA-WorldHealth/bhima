@@ -724,7 +724,7 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
       i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-      dm.text AS documentReference
+      dm.text AS documentReference, d.enterprise_id
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -749,6 +749,28 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
 
   if (requirePurchaseOrder) {
     filteredRows = filteredRows.filter(row => row.S_Q > 0);
+  }
+
+  if (filteredRows.length > 0) {
+    const settingsql = `SELECT month_average_consumption FROM enterprise_setting WHERE enterprise_id=?`;
+    const setting = await db.one(settingsql, filteredRows[0].enterprise_id);
+    const nbrMonth = setting.month_average_consumption;
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30.5 * nbrMonth);
+    const endDate = new Date();
+
+    const cmms = await Promise.all(filteredRows.map(inventory => {
+      return db.exec(`CALL getCMM(?,?,?,?) `, [
+        startDate,
+        endDate,
+        db.bid(inventory.inventory_uuid),
+        db.bid(inventory.depot_uuid),
+      ]);
+    }));
+    filteredRows.forEach((inv, index) => {
+      _.extend(inv, { cmm : cmms[index][0][0] });
+    });
   }
 
   return filteredRows;
