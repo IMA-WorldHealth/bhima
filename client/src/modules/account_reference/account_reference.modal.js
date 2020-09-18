@@ -3,15 +3,17 @@ angular.module('bhima.controllers')
 
 AccountReferenceModalController.$inject = [
   '$state', 'AccountService', 'AccountReferenceService',
-  'NotifyService', 'appcache', 'FormatTreeDataService',
+  'NotifyService', 'appcache', 'FormatTreeDataService', 'params',
 ];
 
-function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache, FormatTreeData) {
+function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache, FormatTreeData, params) {
   const vm = this;
   const cache = AppCache('AccountReferenceModal');
 
   vm.accountReference = {};
-  vm.stateParams = {};
+
+  // check if we are in the create state
+  vm.isCreateState = params.isCreateState;
 
   // exposed methods
   vm.submit = submit;
@@ -19,16 +21,15 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   vm.clear = clear;
   vm.onSelectAccountReferenceType = onSelectAccountReferenceType;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
-    vm.stateParams = cache.stateParams;
+  if (vm.isCreateState || params.id) {
+    cache.stateParams = params;
+    vm.params = cache.stateParams;
   } else {
-    vm.stateParams = cache.stateParams;
+    vm.params = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
 
-  if (!vm.isCreating) {
-    AccountReferences.read(vm.stateParams.id)
+  if (!vm.isCreateState) {
+    AccountReferences.read(vm.params.id)
       .then(reference => {
         vm.accountReference = reference;
       })
@@ -65,13 +66,13 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
 
     if (accountReferenceForm.$pristine) { return null; }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? AccountReferences.create(vm.accountReference)
       : AccountReferences.update(vm.accountReference.id, vm.accountReference);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'ACCOUNT.REFERENCE.CREATED' : 'ACCOUNT.REFERENCE.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'ACCOUNT.REFERENCE.CREATED' : 'ACCOUNT.REFERENCE.UPDATED';
         Notify.success(translateKey);
         $state.go('account_reference.list', null, { reload : true });
       })
