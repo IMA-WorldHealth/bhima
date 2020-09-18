@@ -119,7 +119,7 @@ INSERT INTO unit VALUES
   (235,'Hospitalization dashboard','TREE.DASHBOARDS.HOSPITALIZATION','Tableau de bord des hospitalisations',233,'/dashboards/hospitalization'),
   (236,'Human Resources dashboard','TREE.DASHBOARDS.HUMAN_RESOURCES','Tableau de bord du Personnel',233,'/dashboards/staff'),
   (237,'Finances dashboard','TREE.DASHBOARDS.FINANCES','Tableau de bord des finances',233,'/dashboards/finances'),
-  (238,'Indicators report','TREE.INDICATORS_REPORT','Rapport sur les indicateurs',286,'/reports/indicatorsReport'),
+  (238,'Indicators report','TREE.INDICATORS_REPORT','Rapport sur les indicateurs',233,'/reports/indicatorsReport'),
   (239,'Visits Report','TREE.VISITS_REPORT','Visits registry',280,'/reports/visit_report'),
   (240,'[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report',282,'/reports/stock_entry'),
   (241,'Entity Folder','ENTITY.MANAGEMENT','Entity Folder',0,'/ENTITY_FOLDER'),
@@ -162,7 +162,8 @@ INSERT INTO unit VALUES
   (286,'Fee Center Reports','TREE.REPORTS','reports for the fee center modules',218,'/fee_center/reports'),
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
   (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
-  (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report');
+  (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
+  (290, '[Stock] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -324,7 +325,8 @@ INSERT INTO `flux` VALUES
 -- Roles Actions
 
 INSERT INTO `actions`(`id`, `description`) VALUES
-  (1, 'FORM.LABELS.CAN_EDIT_ROLES');
+  (1, 'FORM.LABELS.CAN_EDIT_ROLES'),
+  (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS');
 
 -- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES

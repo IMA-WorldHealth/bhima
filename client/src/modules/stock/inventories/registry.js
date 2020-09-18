@@ -198,7 +198,7 @@ function StockInventoriesController(
     item.alert = item.hasExpiredLots;
     item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
 
-    item.isSoldOut = item.status === bhConstants.stockStatus.IS_STOCK_OUT;
+    item.hasStockOut = item.status === bhConstants.stockStatus.IS_STOCK_OUT;
     item.isInStock = item.status === bhConstants.stockStatus.IS_IN_STOCK;
     item.hasSecurityWarning = item.status === bhConstants.stockStatus.HAS_SECURITY_WARNING;
     item.hasMinimumWarning = item.status === bhConstants.stockStatus.HAS_MINIMUM_WARNING;

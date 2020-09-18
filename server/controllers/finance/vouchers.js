@@ -266,11 +266,15 @@ function createVoucher(voucherDetails, userId, projectId) {
   const vuid = voucherDetails.uuid || util.uuid();
   voucherDetails.uuid = db.bid(vuid);
 
+  const SALARY_PAYMENT_VOUCHER_TYPE_ID = 7;
+
+
   // preprocess the items so they have uuids as required
   items.forEach(value => {
     let item = value;
+
     // Only for Employee Salary Paiement
-    if (voucherType === 7) {
+    if (voucherType === SALARY_PAYMENT_VOUCHER_TYPE_ID) {
       if (item.document_uuid) {
         const updatePaiement = `
           UPDATE paiement SET
@@ -326,7 +330,6 @@ function createVoucher(voucherDetails, userId, projectId) {
       return { uuid : vuid, transactionResult };
     });
 }
-
 
 /**
  * @function safelyDeleteVoucher

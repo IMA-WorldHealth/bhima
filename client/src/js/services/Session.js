@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('SessionService', SessionService);
 
 SessionService.$inject = [
-  '$sessionStorage', '$http', '$state', 'util', '$rootScope', '$q',
+  '$sessionStorage', '$http', '$state', 'util', '$rootScope', '$q', '$location',
 ];
 
 /**
@@ -19,7 +19,7 @@ SessionService.$inject = [
  *
  * @constructor
  */
-function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
+function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $location) {
   const service = this;
 
   // set up the storage instance
@@ -43,11 +43,65 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
 
   service.isSettingEnabled = isSettingEnabled;
 
+  service.isLoggedIn = () => !!service.user;
+
+  service.hasStateAuthorisation = (state) => {
+    // if the state is a "public" state (allowAuthPassthrough is true),
+    // approve the transition
+    const hasPermission = state.data && state.data.allowAuthPassthrough;
+    if (hasPermission) { return true; }
+
+    // check if the user is allowed to access that path
+    // TODO(@jniles): use state.url or state names for authorisation
+    const authorized = service.paths.some((data) => checkUserAuthorization(data, $location.path()));
+    return authorized;
+  };
+
+  /**
+   * @method checkUserAuthorization
+   *
+   * @description
+   * Simple method to check the current path the user is accessing against the
+   * users known permissions.
+   *
+   * Checks one known permission (data) against the path the user is accessing (path).
+   *
+   * @param {Object} data - a route object containing a known route path as well as
+   *                        information on if this user is authorised, route
+   *                        objects passed in that match the target path will be aproved
+   */
+  function checkUserAuthorization(data, path) {
+
+    // check to see if the route permission object (data) passed in begins with the path being accessed
+    // only do more expensive check if the path is a valid partial match
+    if (path.indexOf(data.path) === 0) {
+      // split the current target path and the role permission object path into sections
+      const rolePermissionPathSections = data.path.split('/');
+      const targetPathSections = path.split('/');
+
+      // ensure that EVERY section on the role permission path matches the target path
+      // this allows for additional routing beyond exact matching however the base of the
+      // path must EXACTLY match the permission object
+      const targetPathMatches = rolePermissionPathSections.every((permissionPathSection, index) => {
+        // check that this section of the target path exactly matches the required route permission object
+        // at the same index
+        const targetPathSection = targetPathSections[index];
+        return permissionPathSection === targetPathSection;
+      });
+
+      return targetPathMatches && data.authorized;
+    }
+
+    // this was not a valid partial match - the route cannot be authorised with this permission
+    return false;
+  }
+
   // set the user, enterprise, and project for the session
   // this should happen right after login
-  function create(user, enterprise, project, paths) {
+  function create(user, enterprise, stockSettings, project, paths) {
     $storage.user = user;
     $storage.enterprise = enterprise;
+    $storage.stock_settings = stockSettings;
     $storage.project = project;
     $storage.paths = paths;
 
@@ -55,17 +109,17 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
     load();
   }
 
-  /** unsets a user's session, destroying */
+  /** unsets a user's session, destroying it */
   function destroy() {
     delete $storage.user;
     delete $storage.enterprise;
+    delete $storage.stock_settings;
     delete $storage.project;
     delete $storage.paths;
 
     // update bindings
     load();
 
-    // TODO - use $state
     $state.go('login');
   }
 
@@ -83,10 +137,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
       .then(session => {
 
         // create the user session in the $storage
-        create(session.user, session.enterprise, session.project, session.paths);
-
-        // navigate to the main page
-        $state.go('index');
+        create(session.user, session.enterprise, session.stock_settings, session.project, session.paths);
 
         // notify login event
         $rootScope.$emit('session:login');
@@ -119,6 +170,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
   function load() {
     service.user = $storage.user;
     service.enterprise = $storage.enterprise;
+    service.stock_settings = $storage.stock_settings;
     service.project = $storage.project;
     service.paths = $storage.paths;
   }
@@ -130,7 +182,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q) {
         .then((session) => {
 
           // re-create the user session in the $storage
-          create(session.user, session.enterprise, session.project, session.paths);
+          create(session.user, session.enterprise, session.stock_settings, session.project, session.paths);
 
           // tell the tree to re-download a user's units
           $rootScope.$emit('session:reload');

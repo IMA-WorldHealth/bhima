@@ -3,11 +3,11 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.ACCOUNT_REFERENCE_MANAGEMENT</li>
 
-      <li ng-if="AccountReferenceModalCtrl.isCreating" class="title">
+      <li ng-if="AccountReferenceModalCtrl.isCreateState" class="title">
         <span translate>ACCOUNT.REFERENCE.ADD_REFERENCE</span>
         <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
       </li>
-      <li ng-if="!AccountReferenceModalCtrl.isCreating" class="title">
+      <li ng-if="!AccountReferenceModalCtrl.isCreateState" class="title">
         <span translate>ACCOUNT.REFERENCE.UPDATE_REFERENCE</span>
         <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
@@ -129,7 +129,7 @@
   </div>
 
   <div class="modal-footer">
-    <p id="account-reference-same" ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$pristine && !AccountReferenceModalCtrl.isCreating" class="text-warning">
+    <p id="account-reference-same" ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$pristine && !AccountReferenceModalCtrl.isCreateState" class="text-warning">
       <i class="fa fa-warning"></i> <span translate>ACCOUNT.RECORD_SAME</span>
     </p>
 

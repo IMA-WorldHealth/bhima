@@ -24,7 +24,7 @@ async function stockInlineMovementsReport(req, res, next) {
 
     const params = req.query;
 
-    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    if (req.session.stock_settings.enable_strict_depot_permission) {
       params.check_user_id = req.session.user.id;
     }
 

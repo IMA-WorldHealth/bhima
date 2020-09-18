@@ -1,7 +1,6 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function multiplePayrollRoutes($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     $stateProvider
-      // Multiple Payroll Registry
       .state('multiple_payroll', {
         url         : '/multiple_payroll',
         controller  : 'MultiplePayrollController as MultiplePayrollCtrl',
@@ -14,24 +13,22 @@ angular.module('bhima.routes')
       .state('multiple_payroll.config', {
         url : '/:uuid/config',
         params : {
-          config : { value : null },
+          uuid : { value : null },
           filters : [],
         },
-        onEnter : ['$uibModal', configurationMultiplePayroll],
+        onEnter : ['$uibModal', '$transition$', configurationMultiplePayroll],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationMultiplePayroll($modal) {
+function configurationMultiplePayroll($modal, $transition) {
   $modal.open({
-    keyboard : false,
     size : 'lg',
-    backdrop : 'static',
     templateUrl : 'modules/multiple_payroll/modals/config.modal.html',
     controller : 'ConfigPaiementModalController as ConfigPaiementModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
-
 
 function closeModal(ModalStack) {
   ModalStack.dismissAll();

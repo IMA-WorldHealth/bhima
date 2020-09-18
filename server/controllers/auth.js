@@ -14,6 +14,7 @@
 const _ = require('lodash');
 const q = require('q');
 const db = require('../lib/db');
+const debug = require('debug')('app');
 const Unauthorized = require('../lib/errors/Unauthorized');
 
 // POST /auth/login
@@ -201,14 +202,28 @@ async function loadSessionInformation(user) {
     FROM enterprise_setting
     WHERE enterprise_id = ?;
   `;
-
   session.enterprise.settings = await db.one(sql, [session.user.enterprise_id]);
+
+  sql = `
+    SELECT
+      *
+    FROM stock_setting
+    WHERE enterprise_id = ?;
+  `;
+  try {
+    session.stock_settings = await db.one(sql, [session.user.enterprise_id]);
+  } catch (err) {
+    // If the stock_setting table row does not exist, create one with defaults
+    await db.exec('INSERT INTO stock_setting SET ?;',
+      { enterprise_id : session.user.enterprise_id });
+    debug(`Created default stock_setting for enterprise ${session.user.enterprise_id}!`);
+    session.stock_settings = await db.one(sql, [session.user.enterprise_id]);
+  }
 
   sql = `
    SELECT p.id, p.name, p.abbr, p.enterprise_id
    FROM project AS p WHERE p.id = ?;
   `;
-
   const projects = await db.exec(sql, [session.user.project_id]);
 
   if (!projects.length) {
