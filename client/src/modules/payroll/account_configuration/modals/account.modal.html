@@ -1,11 +1,11 @@
 <form name="AccountConfigForm" bh-submit="AccountConfigModalCtrl.submit(AccountConfigForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li ng-if="AccountConfigModalCtrl.isCreating" class="title">
+      <li ng-if="AccountConfigModalCtrl.isCreateState" class="title">
         <span translate>TREE.PAYROLL_ACCOUNT_CONFIGURATION</span>
         <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
       </li>
-      <li ng-if="!AccountConfigModalCtrl.isCreating" class="title">
+      <li ng-if="!AccountConfigModalCtrl.isCreateState" class="title">
         <span translate>TREE.PAYROLL_ACCOUNT_CONFIGURATION</span>
         <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
       </li>
