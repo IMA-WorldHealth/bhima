@@ -43,7 +43,7 @@ function StockLotsRegistryTests() {
 
     const vitamine = {
       label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      lot : 'VITAMINE-B',
+      lot : 'LY-THREE',
       quantity : '23',
     };
 
