@@ -2,20 +2,20 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'NotifyService', 'SessionService',
+  '$state', 'DepotService', 'NotifyService', 'SessionService', 'params',
 ];
 
-function DepotModalController($state, Depots, Notify, Session) {
+function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
-  vm.depot = $state.params.depot;
-  vm.isCreating = !!($state.params.creating);
+  vm.depot = params.depot;
+  vm.isCreateState = params.isCreateState;
 
   // make sure hasLocation is set
   vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
 
-  // If creating, insert the default min_months_security_stock
-  if (vm.isCreating) {
+  // if creating, insert the default min_months_security_stock
+  if (vm.isCreateState) {
     vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
   }
 
@@ -39,13 +39,13 @@ function DepotModalController($state, Depots, Notify, Session) {
       vm.depot.location_uuid = null;
     }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? Depots.create(vm.depot)
       : Depots.update(vm.depot.uuid, vm.depot);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'DEPOT.CREATED' : 'DEPOT.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'DEPOT.CREATED' : 'DEPOT.UPDATED';
         Notify.success(translateKey);
         $state.go('depots', null, { reload : true });
       })
