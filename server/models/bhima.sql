@@ -324,7 +324,8 @@ INSERT INTO `flux` VALUES
 -- Roles Actions
 
 INSERT INTO `actions`(`id`, `description`) VALUES
-  (1, 'FORM.LABELS.CAN_EDIT_ROLES');
+  (1, 'FORM.LABELS.CAN_EDIT_ROLES'),
+  (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS');
 
 -- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES

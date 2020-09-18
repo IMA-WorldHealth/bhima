@@ -327,6 +327,7 @@
             "CANCEL": "Annuler",
             "CANCELED": "Annulée",
             "CAN_EDIT_ROLES" : "Possibilité d'éditer le rôle",
+            "CAN_UNPOST_TRANSACTIONS" : "Possibilité déposter les transactions",
             "CASH_ACCOUNT": "Compte caisse",
             "CASHBOX": "Caisse",
             "CASHIER": "Caissier",

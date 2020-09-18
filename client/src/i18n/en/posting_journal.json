@@ -21,6 +21,7 @@
     "OUTDATED_DATA_MESSAGE_1" : "The data displayed may have changed since it was loaded.",
     "OUTDATED_DATA_MESSAGE_2" : "the latest data.",
     "CLICK_HERE_TO_RELOAD" : "Click here to reload",
+    "UNPOST": "Unpost",
     "CONFIGURATION": {
       "TITLE" : "Column configuration",
       "COLUMNS" : "Columns"
@@ -60,7 +61,8 @@
       "MISSING_ENTITY" : "Record without entity type and entity ID",
       "NO_TRANSACTIONS_SELECTED" : "No transactions selected. You must be in Transaction view to use this tool.",
       "MULTIPLE_TRANSACTION_EDIT_DISABLED" : "You have multiple transactions selected. Multiple transaction editing is currently disabled.",
-      "TRIAL_BALANCE_HAS_POSTED_RECORDS" : "You have selected posted records!  The Trial Balance can only show results of unposted records."
+      "TRIAL_BALANCE_HAS_POSTED_RECORDS" : "You have selected posted records!  The Trial Balance can only show results of unposted records.",
+      "TRIAL_BALANCE_HAS_UNPOSTED_RECORDS" : "You have selected unposted records!"
     },
     "TRIAL_BALANCE" : {
       "TITLE" : "Trial Balance",

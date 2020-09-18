@@ -97,3 +97,20 @@ exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
     .catch(next)
     .done();
 };
+
+exports.unpostTransactions = (req, res, next) => {
+
+  const { recordUuids } = req.body;
+  const transaction = db.transaction();
+
+  recordUuids.forEach(recordUuid => {
+    transaction.addQuery('CALL zUnpostRecord(?)', db.bid(recordUuid));
+  });
+
+  transaction.addQuery('CALL zRecalculatePeriodTotals()');
+
+  transaction.execute().then(() => {
+    res.sendStatus(201);
+  }).catch(next);
+
+};
