@@ -1,4 +1,3 @@
-
 angular.module('bhima.routes')
   .config(['$stateProvider', accountStateProvider]);
 
@@ -14,9 +13,10 @@ function accountStateProvider($stateProvider) {
     .state('accounts.create', {
       url : '/create',
       params : {
+        isCreateState : { value : true },
         parentId : { squash : true, value : null },
       },
-      onEnter : ['$uibModal', accountsModal],
+      onEnter : ['$uibModal', '$transition$', accountsModal],
       onExit : ['$uibModalStack', closeModal],
     })
 
@@ -32,7 +32,7 @@ function accountStateProvider($stateProvider) {
       params : {
         id : { squash : true, value : null },
       },
-      onEnter : ['$uibModal', accountsModal],
+      onEnter : ['$uibModal', '$transition$', accountsModal],
       onExit : ['$uibModalStack', closeModal],
     })
 
@@ -43,18 +43,19 @@ function accountStateProvider($stateProvider) {
     });
 }
 
-function accountsModal($modal) {
+function accountsModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/accounts/edit/accounts.edit.modal.html',
     controller : 'AccountEditController as AccountEditCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function importAccountsModal($modal) {
   $modal.open({
     templateUrl : 'modules/accounts/modals/import.html',
     controller : 'ImportAccountsController as ImportAccountsCtrl',
-  });
+  }).result.catch(angular.noop);
 }
 
 function closeModal($uibModalStack) {

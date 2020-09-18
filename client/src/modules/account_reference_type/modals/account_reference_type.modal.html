@@ -5,12 +5,12 @@
 
       <li class="title">
         <span translate>TREE.ACCOUNT_REFERENCE_TYPE</span>
-        <label ng-if="AccountReferenceTypeModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-        <label ng-if="!AccountReferenceTypeModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        <label ng-if="AccountReferenceTypeModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!AccountReferenceTypeModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
-  
+
   <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
     <!-- label -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceTypeForm.$submitted && AccountReferenceTypeForm.description.$invalid }">
