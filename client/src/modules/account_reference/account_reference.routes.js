@@ -27,9 +27,7 @@ angular.module('bhima.routes')
       })
       .state('account_reference.edit', {
         url : '/:id/edit',
-        params : {
-          id : null,
-        },
+        params : { id : null },
         onEnter : ['$uibModal', '$transition$', accountReferenceModal],
         onExit : ['$uibModalStack', closeModal],
       });
