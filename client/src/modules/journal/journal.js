@@ -6,7 +6,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', 'GridExportService',
   'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
-  'util',
+  'util', 'RolesService',
 ];
 
 /**
@@ -33,7 +33,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions, util
+  $httpParamSerializer, Transactions, util, Roles,
 ) {
   // store journal data
   const journalStore = new Store({
@@ -62,6 +62,7 @@ function JournalController(
   vm.languages = Languages;
   vm.gridApi = {};
 
+  checkUnpostTransactionsAllowability();
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -89,6 +90,14 @@ function JournalController(
       })
       .catch(Notify.handleError);
   };
+
+  function checkUnpostTransactionsAllowability() {
+    Roles.userHasAction(bhConstants.actions.CAN_UNPOST_TRANSACTIONS)
+      .then(response => {
+        vm.canUnpostTransactiosn = response.data;
+      })
+      .catch(Notify.handleError);
+  }
 
   // update local rows
   function updateGridComment(rows, comment) {
@@ -358,6 +367,39 @@ function JournalController(
     //  1) Overview
     //  2) Errors
     $state.go('TrialBalanceOverview');
+  };
+
+  vm.unpostTransactions = () => {
+    const message = 'FORM.DIALOGS.UNPOST_TRANSACTIONS';
+    Modal.confirm(message)
+      .then(confirmResponse => {
+        if (!confirmResponse) {
+          return;
+        }
+
+        // gather the selected transactions together
+        const selectedTransactionIds = selection.selected.groups;
+
+        // make sure a row is selected before running the trial balance
+        if (selectedTransactionIds.length === 0) {
+          Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
+          return;
+        }
+
+        const rows = vm.gridApi.selection.getSelectedRows();
+        const hasUnpostedRecords = rows.some(row => row.posted === 0);
+
+        if (hasUnpostedRecords) {
+          Notify.warn('POSTING_JOURNAL.WARNINGS.TRIAL_BALANCE_HAS_UNPOSTED_RECORDS');
+          return;
+        }
+
+        const selectedRecordUuids = selectedTransactionIds.map(lookupIntermediateRecordUuid);
+
+        TrialBalance.unpostTransactions(selectedRecordUuids).then(() => {
+          vm.reloadData();
+        });
+      });
   };
 
   // format Export Parameters
