@@ -323,6 +323,7 @@
             "CANCEL": "Cancel",
             "CANCELED": "Canceled",
             "CAN_EDIT_ROLES" : "Ability to edit roles",
+            "CAN_UNPOST_TRANSACTIONS" : "Can unpost transactions",
             "CASH_ACCOUNT": "Cash Account",
             "CASHBOX": "Cashbox",
             "CASHIER": "Cashier",
