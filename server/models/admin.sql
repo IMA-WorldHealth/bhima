@@ -226,4 +226,18 @@ CREATE PROCEDURE zComputeAllInventoryStockQuantities (
   CLOSE inventory_cursor;
 END$$
 
+
+DROP PROCEDURE IF EXISTS  zUnpostRecord $$
+CREATE PROCEDURE zUnpostRecord(
+  IN _record_uuid BINARY(16)
+)
+BEGIN
+
+  INSERT INTO posting_journal 
+  SELECT * FROM general_ledger WHERE record_uuid = _record_uuid;
+
+  DELETE FROM general_ledger WHERE record_uuid = _record_uuid;
+
+END$$
+
 DELIMITER ;
