@@ -2,23 +2,23 @@ angular.module('bhima.controllers')
   .controller('EmployeeConfigModalController', EmployeeConfigModalController);
 
 EmployeeConfigModalController.$inject = [
-  '$state', 'ConfigurationEmployeeService', 'NotifyService', 'appcache', 'bhConstants', 'EmployeeService',
+  '$state', 'ConfigurationEmployeeService', 'NotifyService', 'appcache', 'bhConstants', 'EmployeeService', 'params',
 ];
 
-function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConstants, Employees) {
+function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConstants, Employees, params) {
   const vm = this;
   vm.config = {};
 
   const cache = AppCache('EmployeeModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    vm.stateParams = params;
+    cache.stateParams = params;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   vm.onChangeRoleSelection = onChangeRoleSelection;
 
@@ -26,7 +26,7 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Config.read(vm.stateParams.id)
       .then((config) => {
         vm.config = config;

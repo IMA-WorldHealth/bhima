@@ -2,23 +2,23 @@ angular.module('bhima.controllers')
   .controller('AccountConfigModalController', AccountConfigModalController);
 
 AccountConfigModalController.$inject = [
-  '$state', 'ConfigurationAccountService', 'NotifyService', 'appcache',
+  '$state', 'ConfigurationAccountService', 'NotifyService', 'appcache', 'params',
 ];
 
-function AccountConfigModalController($state, Config, Notify, AppCache) {
+function AccountConfigModalController($state, Config, Notify, AppCache, params) {
   const vm = this;
   vm.accountConfig = {};
 
   const cache = AppCache('AccountConfigModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  vm.isCreateState = params.isCreateState;
+
+  if (vm.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-
-  vm.isCreateState = vm.stateParams.creating;
 
   vm.onSelectAccount = function onSelectAccount(account) {
     vm.accountConfig.account_id = account.id;
