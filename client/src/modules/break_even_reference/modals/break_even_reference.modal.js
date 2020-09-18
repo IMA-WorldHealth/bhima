@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('BreakEvenReferenceModalController', BreakEvenReferenceModalController);
 
 BreakEvenReferenceModalController.$inject = [
-  '$state', 'BreakEvenReferenceService', 'NotifyService', 'appcache',
+  '$state', 'BreakEvenReferenceService', 'NotifyService', 'appcache', 'params',
 ];
 
 /**
  * Break Even Reference Modal Controller
  */
-
-function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, AppCache) {
+function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, AppCache, params) {
   const vm = this;
   const cache = AppCache('BreakEvenReferenceModal');
 
@@ -21,17 +20,18 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
   vm.closeModal = closeModal;
   vm.onSelectAccountReference = onSelectAccountReference;
   vm.setRevenueType = setRevenueType;
-  vm.inSetRevenueType = inSetRevenueType;
+  vm.unsetRevenueType = unsetRevenueType;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
 
-  if (!vm.isCreating) {
+  vm.isCreateState = params.isCreateState;
+
+  if (!vm.isCreateState) {
     BreakEvenReference.read(vm.stateParams.id)
       .then(data => {
         vm.reference = data;
@@ -48,7 +48,7 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
     vm.revenueType = 1;
   }
 
-  function inSetRevenueType() {
+  function unsetRevenueType() {
     vm.revenueType = 0;
   }
 
@@ -65,13 +65,13 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
       vm.reference.is_turnover = null;
     }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? BreakEvenReference.create(vm.reference)
       : BreakEvenReference.update(vm.reference.id, vm.reference);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('break_even_reference', null, { reload : true });
       })
