@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
   .controller('EntityGroupModalController', EntityGroupModalController);
 
 EntityGroupModalController.$inject = [
-  '$state', 'EntityGroupService', 'NotifyService',
+  '$state', 'EntityGroupService', 'NotifyService', 'params',
 ];
 
-function EntityGroupModalController($state, EntityGroup, Notify) {
+function EntityGroupModalController($state, EntityGroup, Notify, params) {
   const vm = this;
-  const entityGroupUuid = $state.params.uuid || {};
+  const entityGroupUuid = params.uuid || {};
 
   vm.group = {};
-  vm.isCreating = !!($state.params.creating);
+  vm.isCreateState = !!(params.isCreateState);
 
   // exposed methods
   vm.submit = submit;
@@ -23,8 +23,8 @@ function EntityGroupModalController($state, EntityGroup, Notify) {
     delete vm[key];
   };
 
-  function init() {
-    if (vm.isCreating) { return; }
+  function startup() {
+    if (vm.isCreateState) { return; }
 
     EntityGroup.read(entityGroupUuid)
       .then(group => {
@@ -44,14 +44,14 @@ function EntityGroupModalController($state, EntityGroup, Notify) {
       return 0;
     }
 
-    const params = vm.group;
-    const promise = (vm.isCreating)
-      ? EntityGroup.create(params)
-      : EntityGroup.update(entityGroupUuid, params);
+    const parameters = vm.group;
+    const promise = (vm.isCreateState)
+      ? EntityGroup.create(parameters)
+      : EntityGroup.update(entityGroupUuid, parameters);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'ENTITY.CREATED' : 'ENTITY.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'ENTITY.CREATED' : 'ENTITY.UPDATED';
         Notify.success(translateKey);
         $state.go('entityGroup', null, { reload : true });
       })
@@ -62,5 +62,5 @@ function EntityGroupModalController($state, EntityGroup, Notify) {
     $state.go('entityGroup');
   }
 
-  init();
+  startup();
 }
