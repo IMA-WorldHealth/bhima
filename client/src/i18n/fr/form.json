@@ -112,7 +112,8 @@
             "WARNING": "Attention",
             "CONFIRM_MODAL": "La confirmation est nécessaire",
             "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?",
-            "DELETE_SUPPLIER" : "Voulez-vous supprimer ce fournisseur?"
+            "DELETE_SUPPLIER" : "Voulez-vous supprimer ce fournisseur?",
+            "UNPOST_TRANSACTIONS" : "Voulez-vous vraiment déposter les transactions?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "Au moins une colonne doit être sélectionnée",
@@ -327,6 +328,7 @@
             "CANCEL": "Annuler",
             "CANCELED": "Annulée",
             "CAN_EDIT_ROLES" : "Possibilité d'éditer le rôle",
+            "CAN_UNPOST_TRANSACTIONS" : "Possibilité de déposter les transactions",
             "CASH_ACCOUNT": "Compte caisse",
             "CASHBOX": "Caisse",
             "CASHIER": "Caissier",

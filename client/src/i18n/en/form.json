@@ -112,7 +112,8 @@
             "WARNING": "Warning",
             "CONFIRM_MODAL": "Confirmation Needed",
             "DELETE_ROLE": "Do you really want to delete this role?",
-            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?"
+            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?",
+            "UNPOST_TRANSACTIONS" : "Do you realy want to unpost transactions?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
@@ -323,6 +324,7 @@
             "CANCEL": "Cancel",
             "CANCELED": "Canceled",
             "CAN_EDIT_ROLES" : "Ability to edit roles",
+            "CAN_UNPOST_TRANSACTIONS" : "Can unpost transactions",
             "CASH_ACCOUNT": "Cash Account",
             "CASHBOX": "Cashbox",
             "CASHIER": "Cashier",
