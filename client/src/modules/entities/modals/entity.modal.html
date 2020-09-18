@@ -1,11 +1,11 @@
 <form name="EntityForm" bh-submit="EntityModalCtrl.submit(EntityForm)" novalidate>
   <div class="modal-header">
   <ol class="headercrumb">
-    <li ng-if="EntityModalCtrl.isCreating" class="title">
+    <li ng-if="EntityModalCtrl.isCreateState" class="title">
       <span translate>ENTITY.ADD_ENTITY</span>
       <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
     </li>
-    <li ng-if="!EntityModalCtrl.isCreating" class="title">
+    <li ng-if="!EntityModalCtrl.isCreateState" class="title">
       <span translate>ENTITY.EDIT_ENTITY</span>
       <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
     </li>
