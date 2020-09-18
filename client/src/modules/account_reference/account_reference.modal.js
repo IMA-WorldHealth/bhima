@@ -6,7 +6,10 @@ AccountReferenceModalController.$inject = [
   'NotifyService', 'appcache', 'FormatTreeDataService', 'params',
 ];
 
-function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache, FormatTreeData, params) {
+function AccountReferenceModalController(
+  $state, Accounts, AccountReferences,
+  Notify, AppCache, FormatTreeData, params
+) {
   const vm = this;
   const cache = AppCache('AccountReferenceModal');
 
