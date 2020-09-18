@@ -1856,6 +1856,17 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
 
 -- stock tables
 
+DROP TABLE IF EXISTS `stock_setting`;
+CREATE TABLE `stock_setting` (
+  `enterprise_id`  SMALLINT(5) UNSIGNED NOT NULL,
+  `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
+  `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
+  `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
+  CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `flux`;
 CREATE TABLE `flux` (
   `id`    INT(11) NOT NULL,
