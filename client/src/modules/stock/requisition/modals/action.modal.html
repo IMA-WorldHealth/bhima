@@ -12,6 +12,12 @@
   </div>
 
   <div class="modal-body">
+    <!-- Date -->
+    <bh-date-editor
+      date-value="$ctrl.model.date"
+      on-change="$ctrl.onDateChange(date)">
+    </bh-date-editor>
+
     <!-- service or depot -->
     <bh-service-or-depot
       uuid="$ctrl.model.requestor_uuid"
@@ -50,6 +56,7 @@
     <div id="depot-supplier" class="form-group">
       <bh-depot-select
         depot-uuid="$ctrl.model.depot_uuid"
+        user="true"
         required="true"
         exception="$ctrl.model.requestor_uuid"
         on-select-callback="$ctrl.onSelectDepot(depot)">

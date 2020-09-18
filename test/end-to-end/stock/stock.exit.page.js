@@ -54,6 +54,47 @@ function StockExitPage() {
   };
 
   /**
+   * @method setServiceRequisition
+   * @param {string} requisition.service - the service requisition name
+   */
+  page.setServiceRequisition = async function setServiceRequisition(requisition) {
+    await components.stockEntryExitType.set('service');
+    const modalContent = element(by.css('[class="modal-content"]'));
+    await FU.uiSelect('$ctrl.selected', requisition.service, modalContent);
+    await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
+    await components.requisitionSelect.set(requisition.reference);
+    await FU.modal.submit();
+  };
+
+  /**
+   * @method setDepotRequisition
+   * @param {string} requisition.depot - the depot requisition name
+   */
+  page.setDepotRequisition = async function setDepotRequisition(requisition) {
+    await components.stockEntryExitType.set('depot');
+    const modalContent = element(by.css('[class="modal-content"]'));
+    await FU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
+    await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
+    await components.requisitionSelect.set(requisition.reference);
+    await FU.modal.submit();
+  };
+
+  /**
+   * @method preventDepotRequisition
+   * @param {string} requisition.depot - the depot requisition name
+   */
+  page.preventDepotRequisition = async function preventDepotRequisition(requisition) {
+    await components.stockEntryExitType.set('depot');
+    const modalContent = element(by.css('[class="modal-content"]'));
+    await FU.uiSelect('$ctrl.selected', requisition.depot, modalContent);
+    await components.yesNoRadios.set('yes', 'requisitionVoucherExist');
+    await components.requisitionSelect.set(requisition.reference);
+    await FU.modal.submit();
+    await FU.exists(by.className(requisition.className), true);
+    await FU.modal.cancel();
+  };
+
+  /**
    * @method setDestinationDepot
    * @param {string} depot - the depot name
    */
@@ -124,9 +165,16 @@ function StockExitPage() {
   /**
    * @method setLot
    */
-  page.setLot = async (rowNumber, lot) => {
+  page.setLot = async (rowNumber, lot, quantity) => {
     const lotCell = await GU.getCell(gridId, rowNumber, 3);
     await FU.uiSelectAppended('row.entity.lot', lot, lotCell);
+
+    if (quantity) {
+      // inventory quantity column
+      const quantityCell = await GU.getCell(gridId, rowNumber, 4);
+      // set the quantity
+      await FU.input('row.entity.quantity', quantity, quantityCell);
+    }
   };
 
   /**

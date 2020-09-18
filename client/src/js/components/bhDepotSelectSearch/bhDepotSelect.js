@@ -78,7 +78,6 @@ function DepotSearchSelectController(Depots, uuidService) {
     $ctrl.handleChange();
   };
 
-
   function loadSelected(depotsUuids) {
     if (!(depotsUuids.length > 0)) return;
     Depots.read(null, { uuids : depotsUuids }).then(depots => {
