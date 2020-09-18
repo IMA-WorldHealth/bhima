@@ -17,7 +17,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock) {
   vm.submit = submit;
   vm.cancel = cancel;
 
-  Depot.read(null, { only_user : true })
+  Depot.read()
     .then(depots => {
       bundle.depots = depots;
 

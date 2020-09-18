@@ -41,7 +41,6 @@
   <div ng-if="$ctrl.requestorType.type_key === 'depot'">
     <bh-depot-select
       depot-uuid="$ctrl.uuid"
-      user="true"
       label="REQUISITION.DEPOT_REQUESTOR"
       on-select-callback="$ctrl.onSelectRequestor(depot)"
       required="true">
