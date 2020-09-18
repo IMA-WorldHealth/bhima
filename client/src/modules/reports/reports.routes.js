@@ -62,15 +62,24 @@ angular.module('bhima.routes')
 
     }
 
+    // make sure that the state's transitions refresh the abstract state
+    const onEnter = ['$transition$', '$state$', (transition, state) => {
+      const { key } = state.params;
+      const SavedReports = transition.injector().get('BaseReportService');
+
+      // run to update the current report.
+      return SavedReports.setCurrentReportByRequestKey(key);
+    }];
+
     $stateProvider
       .state('reportsBase', {
         url : '/reports',
+        abstract : true,
         controller : 'ReportsController as ReportCtrl',
         templateUrl : 'modules/reports/reports.html',
         resolve : {
           reportData : ['$stateParams', 'BaseReportService', resolveReportData],
         },
-        abstract : true,
       })
       .state('reportsBase.reportsArchive', {
         url : '/:key/archive',
@@ -91,6 +100,7 @@ angular.module('bhima.routes')
         resolve : {
           reportData : ['$stateParams', 'BaseReportService', resolveReportData],
         },
+        onEnter,
       });
     });
   }]);

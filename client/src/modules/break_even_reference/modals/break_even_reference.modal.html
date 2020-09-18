@@ -4,8 +4,8 @@
       <li class="static" translate>TREE.ADMIN</li>
       <li class="title">
         <span translate>TREE.BREAK_EVEN_REFERENCE</span>
-        <label ng-if="BreakEvenReferenceModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-        <label ng-if="!BreakEvenReferenceModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        <label ng-if="BreakEvenReferenceModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!BreakEvenReferenceModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
@@ -40,7 +40,7 @@
             type="radio"
             name="is_cost"
             ng-value="1"
-            ng-click="BreakEvenReferenceModalCtrl.inSetRevenueType()"
+            ng-click="BreakEvenReferenceModalCtrl.unsetRevenueType()"
             ng-model="BreakEvenReferenceModalCtrl.reference.is_cost"
             id="is_cost"
             required
@@ -118,7 +118,7 @@
   </div>
 
   <div class="modal-footer">
-    <p id="break-even-reference-same" ng-if="BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.$pristine && !BreakEvenReferenceModalCtrl.isCreating" class="text-warning">
+    <p id="break-even-reference-same" ng-if="BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.$pristine && !BreakEvenReferenceModalCtrl.isCreateState" class="text-warning">
       <i class="fa fa-warning"></i> <span translate>FORM.INFO.RECORD_SAME</span>
     </p>
 
