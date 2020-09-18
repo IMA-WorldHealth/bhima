@@ -1,13 +1,10 @@
 <form name="EmployeeForm" bh-submit="EmployeeModalCtrl.submit(EmployeeForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li ng-if="EmployeeModalCtrl.isCreating" class="title">
+      <li class="title">
         <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
-        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
-      </li>
-      <li ng-if="!EmployeeModalCtrl.isCreating" class="title">
-        <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
-        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+        <label ng-show="EmployeeModalCtrl.isCreateState" class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+        <label ng-hide="EmployeeModalCtrl.isCreateState" class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
