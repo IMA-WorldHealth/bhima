@@ -6,35 +6,31 @@ angular.module('bhima.routes')
         controller  : 'AccountReferenceTypeController as AccountReferenceTypeCtrl',
         templateUrl : 'modules/account_reference_type/account_reference_type.html',
       })
-
       .state('account_reference_type.create', {
         url : '/create',
         params : {
-          account_reference_type : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', accountReferenceTypeModal],
+        onEnter : ['$uibModal', '$transition$', accountReferenceTypeModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('account_reference_type.edit', {
         url : '/:id/edit',
         params : {
-          account_reference_type : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', accountReferenceTypeModal],
+        onEnter : ['$uibModal', '$transition$', accountReferenceTypeModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function accountReferenceTypeModal($modal) {
+function accountReferenceTypeModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/account_reference_type/modals/account_reference_type.modal.html',
     controller : 'AccountReferenceTypeModalController as AccountReferenceTypeModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
