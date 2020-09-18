@@ -6,6 +6,9 @@ const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const FilterParser = require('../../../lib/filter');
 
+const REQUISITION_STATUS_PARTIAL = 3;
+const REQUISITION_STATUS_EXCESSIVE = 7;
+
 const SELECT_QUERY = `
   SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
@@ -266,12 +269,12 @@ exports.update = async (req, res, next) => {
 
       if (movementStatus.numberInventoryPartial > 0) {
         // Partially
-        requisition.status_id = 3;
+        requisition.status_id = REQUISITION_STATUS_PARTIAL;
       }
 
       if (movementStatus.numberInventoryPartial === 0 && excessiveStatus.numberExcessive > 0) {
         // Excessive
-        requisition.status_id = 7;
+        requisition.status_id = REQUISITION_STATUS_EXCESSIVE;
       }
     }
 
