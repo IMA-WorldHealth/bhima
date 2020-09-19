@@ -10,31 +10,28 @@ angular.module('bhima.routes')
       .state('configuration_analysis_tools.create', {
         url : '/create',
         params : {
-          configuration_analysis_tools : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', configurationAnalysisToolsModal],
+        onEnter : ['$uibModal', '$transition$', configurationAnalysisToolsModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('configuration_analysis_tools.edit', {
         url : '/:id/edit',
         params : {
-          configuration_analysis_tools : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', configurationAnalysisToolsModal],
+        onEnter : ['$uibModal', '$transition$', configurationAnalysisToolsModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationAnalysisToolsModal($modal) {
+function configurationAnalysisToolsModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/configuration_analysis_tools/modals/configuration_analysis_tools.modal.html',
     controller : 'ConfigurationAnalysisToolsModalController as ConfigurationAnalysisToolsModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

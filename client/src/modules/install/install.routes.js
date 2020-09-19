@@ -7,5 +7,6 @@ function installStateProvider($stateProvider) {
       url : '/install',
       controller : 'InstallApplicationController as InstallCtrl',
       templateUrl : 'modules/install/install.html',
+      data : { isInstallState : true, allowAuthPassthrough : true },
     });
 }
