@@ -213,12 +213,12 @@ function ModalService(Modal) {
   }
 
   /** Inventory List Modals for actions */
-  function openInventoryListActions(request) {
+  function openInventoryListActions(request, parameters) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/inventory/list/modals/actions.tmpl.html',
       controller   : 'InventoryListActionsModalController',
       controllerAs : '$ctrl',
-      resolve : { data : () => request },
+      resolve : { data : () => request, params : () => parameters },
     });
 
     const instance = Modal.open(params);
