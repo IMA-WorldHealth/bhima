@@ -10,31 +10,28 @@ angular.module('bhima.routes')
       .state('functions.create', {
         url : '/create',
         params : {
-          function : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', functionModal],
+        onEnter : ['$uibModal', '$transition$', functionModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('functions.edit', {
         url : '/:id/edit',
         params : {
-          function : { value : null },
-          creating : { value : false },
+          id : { value : false },
         },
-        onEnter : ['$uibModal', functionModal],
+        onEnter : ['$uibModal', '$transition$', functionModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function functionModal($modal) {
+function functionModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/functions/modals/function.modal.html',
     controller : 'FunctionModalController as FunctionModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
