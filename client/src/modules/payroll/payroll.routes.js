@@ -20,7 +20,6 @@ angular.module('bhima.routes')
         url : '/:id/edit',
         params : {
           id : { value : null },
-          isCreateState : { value : false },
         },
         onEnter : ['$uibModal', '$transition$', payrollModal],
         onExit : ['$uibModalStack', closeModal],
