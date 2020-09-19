@@ -10,32 +10,30 @@ angular.module('bhima.routes')
       .state('choices_list_management.create', {
         url : '/create',
         params : {
-          choices_list_management : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
           parentId : { value : null },
         },
-        onEnter : ['$uibModal', choicesListManagementModal],
+        onEnter : ['$uibModal', '$transition$', choicesListManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('choices_list_management.edit', {
         url : '/:id/edit',
         params : {
-          choices_list_management : { value : null },
-          creating : { value : false },
+          id : { value : null },
+          isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', choicesListManagementModal],
+        onEnter : ['$uibModal', '$transition$', choicesListManagementModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function choicesListManagementModal($modal) {
+function choicesListManagementModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/choices_list_management/modals/choices_list_management.modals.html',
     controller : 'ChoicesListManagementModalController as ChoicesListManagementModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
