@@ -1,4 +1,3 @@
-"use strict";
 /**
  * @overview server
  * Basic Hospital Information Management Application
@@ -21,18 +20,20 @@
  * @license GPL-2.0
  * @copyright IMA World Health 2016
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-require("use-strict");
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const http_1 = __importDefault(require("http"));
-const express_1 = __importDefault(require("express"));
-const debug_1 = __importDefault(require("debug"));
-const debug = debug_1.default('app');
-const app = express_1.default();
+
+import 'use-strict';
+import dotEnv from 'dotenv';
+
+dotEnv.config();
+
+import http from 'http';
+import express from 'express';
+import dbg from 'debug';
+
+const debug = dbg('app');
+
+const app = express();
+
 /**
  * @function configureServer
  *
@@ -40,34 +41,43 @@ const app = express_1.default();
  * Set up the HTTP server to listen on the correct
  */
 function configureServer() {
-    // destruct the environmental variables
-    const port = process.env.PORT || '8080';
-    const mode = process.env.NODE_ENV || 'production';
-    // create the server
-    http_1.default.createServer(app)
-        .listen(port, () => {
-        debug(`configureServer(): Server started in mode ${mode} on port ${port}.`);
+  // destruct the environmental variables
+  const port:string = process.env.PORT || '8080';
+  const mode:string = process.env.NODE_ENV || 'production';
+
+  // create the server
+  http.createServer(app)
+    .listen(port, () => {
+      debug(`configureServer(): Server started in mode ${mode} on port ${port}.`);
     });
 }
+
 // run configuration tools
 configureServer();
+
 // Configure application middleware stack, inject authentication session
 require('./config/express').configure(app);
+
 // Link routes
 require('./config/routes').configure(app);
+
 // link error handling
 require('./config/express').errorHandling(app);
+
 // ensure the process terminates gracefully when an error occurs.
 process.on('uncaughtException', (e) => {
-    debug('process.onUncaughException: %o', e);
-    process.exit(1);
+  debug('process.onUncaughException: %o', e);
+  process.exit(1);
 });
+
 // crash on unhandled promise rejections
 process.on('unhandledRejection', (e) => {
-    debug('process.onUnhandledRejection: %o', e);
-    process.exit(1);
+  debug('process.onUnhandledRejection: %o', e);
+  process.exit(1);
 });
+
 process.on('warning', (warning) => {
-    debug('process.onWarning: %o', warning);
+  debug('process.onWarning: %o', warning);
 });
+
 module.exports = app;
