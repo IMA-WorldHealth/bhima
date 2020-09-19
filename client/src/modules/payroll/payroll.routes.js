@@ -10,31 +10,29 @@ angular.module('bhima.routes')
       .state('payroll.create', {
         url : '/create',
         params : {
-          payroll : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', payrollModal],
+        onEnter : ['$uibModal', '$transition$', payrollModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('payroll.edit', {
         url : '/:id/edit',
         params : {
-          payroll : { value : null },
-          creating : { value : false },
+          id : { value : null },
+          isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', payrollModal],
+        onEnter : ['$uibModal', '$transition$', payrollModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function payrollModal($modal) {
+function payrollModal($modal, $transition) {
   return $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/payroll/modals/payroll.modal.html',
     controller : 'PayrollConfigModalController as PayrollConfigModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
