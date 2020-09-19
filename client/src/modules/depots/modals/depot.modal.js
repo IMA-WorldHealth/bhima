@@ -9,12 +9,18 @@ function DepotModalController($state, Depots, Notify, Session) {
   const vm = this;
 
   vm.depot = $state.params.depot;
+
   vm.isCreating = !!($state.params.creating);
 
   // make sure hasLocation is set
   if (vm.depot) {
     vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
     vm.mainDepot = vm.depot.parent ? 1 : 0;
+  }
+
+  if ($state.params.parentId) {
+    vm.mainDepot = 1;
+    vm.depot.parent = $state.params.parentId;
   }
 
   // If creating, insert the default min_months_security_stock
@@ -44,6 +50,10 @@ function DepotModalController($state, Depots, Notify, Session) {
 
     if (vm.hasLocation === 0) {
       vm.depot.location_uuid = null;
+    }
+
+    if (vm.mainDepot === 0) {
+      vm.depot.parent = 0;
     }
 
     const promise = (vm.isCreating)
