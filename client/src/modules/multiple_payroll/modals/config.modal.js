@@ -13,6 +13,7 @@ function ConfigPaiementModalController(
   const vm = this;
   vm.config = {};
   vm.payroll = {};
+
   vm.enterprise = Session.enterprise;
   vm.lastExchangeRate = {};
 
