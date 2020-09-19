@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('OffdayModalController', OffdayModalController);
 
 OffdayModalController.$inject = [
-  '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment', 'params',
 ];
 
 function OffdayModalController($state, Offdays, Notify, AppCache, moment, params) {
@@ -12,8 +12,8 @@ function OffdayModalController($state, Offdays, Notify, AppCache, moment, params
   const cache = AppCache('OffdayModal');
 
   if (params.isCreateState || params.id) {
-    vm.stateParams = params;
     cache.stateParams = params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }

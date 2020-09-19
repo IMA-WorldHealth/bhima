@@ -1,5 +1,3 @@
-/* global element, by */
-
 /**
  * This class is represents a offday page in term of structure and
  * behaviour so it is a offday page object
@@ -11,19 +9,6 @@ const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 class OffdayPage {
-  constructor() {
-    this.offdayGrid = element(by.id('offday-grid'));
-  }
-
-  /**
-   * send back the number of offdays in the grid
-   */
-  getOffdayCount() {
-    return this.offdayGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
-  }
 
   /**
    * simulate the create offday button click to show the dialog of creation
@@ -32,7 +17,7 @@ class OffdayPage {
     await FU.buttons.create();
     await FU.input('OffdayModalCtrl.offday.label', offday.label);
 
-    components.dateEditor.set(new Date(offday.date), null, '.title');
+    components.dateEditor.set(new Date(offday.date), null, '[uib-modal] .title');
 
     await FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
 
@@ -65,7 +50,7 @@ class OffdayPage {
 
     await FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
 
-    components.dateEditor.set(new Date(updateOffday.date), null, '.title');
+    components.dateEditor.set(new Date(updateOffday.date), null, '[uib-modal] .title');
 
     await FU.input('OffdayModalCtrl.offday.percent_pay', updateOffday.percent_pay);
 
