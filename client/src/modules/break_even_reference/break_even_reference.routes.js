@@ -10,31 +10,29 @@ angular.module('bhima.routes')
       .state('break_even_reference.create', {
         url : '/create',
         params : {
-          break_even_reference : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', breakEvenReferenceModal],
+        onEnter : ['$uibModal', '$transition$', breakEvenReferenceModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('break_even_reference.edit', {
         url : '/:id/edit',
         params : {
-          break_even_reference : { value : null },
-          creating : { value : false },
+          id : { value : null },
+          isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', breakEvenReferenceModal],
+        onEnter : ['$uibModal', '$transition$', breakEvenReferenceModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function breakEvenReferenceModal($modal) {
+function breakEvenReferenceModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/break_even_reference/modals/break_even_reference.modal.html',
     controller : 'BreakEvenReferenceModalController as BreakEvenReferenceModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

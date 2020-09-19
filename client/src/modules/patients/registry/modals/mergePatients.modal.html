@@ -1,9 +1,8 @@
 <form name="MergePatientsForm" bh-submit="MergePatientsModalCtrl.submit()" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li>
-        <span translate>FORM.LABELS.MERGE_PATIENTS_TO_ONE</span>
-      </li>
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>FORM.LABELS.MERGE_PATIENTS_TO_ONE</li>
     </ol>
   </div>
 
@@ -13,12 +12,12 @@
         <p>
           <i><span translate>FORM.LABELS.MERGE_PATIENTS_DESC</span></i>
         </p>
-    
+
         <ul class="list-group">
           <li
             data-reference="{{ p.reference }}"
             style="cursor: pointer;"
-            class="list-group-item" 
+            class="list-group-item"
             ng-class="{'active' : MergePatientsModalCtrl.selected === p.uuid }"
             ng-repeat="p in MergePatientsModalCtrl.patients"
             ng-click="MergePatientsModalCtrl.selectPatient(p.uuid)">
@@ -62,4 +61,3 @@
     </bh-loading-button>
   </div>
 </form>
-  

@@ -33,7 +33,7 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
         helpers.api.listed(res, numConfiguration);
         expect(res.body[0]).to.have.all.keys(
           'id', 'label', 'abbr', 'account_reference_id',
-          'analysis_tool_type_id', 'typeLabel'
+          'analysis_tool_type_id', 'typeLabel',
         );
       })
       .catch(helpers.handler);
@@ -45,7 +45,7 @@ describe('(/configuration_analysis_tools) Configuration Analysis Tools', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
         expect(res.body).to.have.all.keys(
-          'id', 'label', 'account_reference_id', 'analysis_tool_type_id'
+          'id', 'label', 'account_reference_id', 'analysis_tool_type_id',
         );
       })
       .catch(helpers.handler);

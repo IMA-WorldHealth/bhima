@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
 UserModalController.$inject = [
-  '$state', 'ProjectService', 'UserService', 'NotifyService', 'appcache',
+  '$state', 'ProjectService', 'UserService', 'NotifyService', 'appcache', 'params',
 ];
 
-function UserModalController($state, Projects, Users, Notify, AppCache) {
+function UserModalController($state, Projects, Users, Notify, AppCache, params) {
   const vm = this;
 
   const cache = AppCache('UserModal');
@@ -20,14 +20,14 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
   vm.validPassword = validPassword;
   vm.editPassword = editPassword;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   Projects.read()
     .then((projects) => {
@@ -35,7 +35,7 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
     })
     .catch(Notify.handleError);
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Users.read(vm.stateParams.id)
       .then((user) => {
         vm.user = user;
@@ -48,14 +48,14 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-    if (userForm.$pristine && !vm.isCreating) { return closeModal(); }
+    if (userForm.$pristine && !vm.isCreateState) { return closeModal(); }
     if (userForm.$invalid) { return 0; }
 
-    const promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
+    const promise = (vm.isCreateState) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'USERS.CREATED' : 'USERS.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'USERS.CREATED' : 'USERS.UPDATED';
         Notify.success(translateKey);
         $state.go('users.list', null, { reload : true });
       })

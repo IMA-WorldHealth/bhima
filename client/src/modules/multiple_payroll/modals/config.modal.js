@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 ConfigPaiementModalController.$inject = [
   '$state', 'NotifyService', 'appcache', 'EmployeeService', 'MultiplePayrollService', 'PayrollConfigurationService',
-  'ExchangeRateService', 'SessionService',
+  'ExchangeRateService', 'SessionService', 'params',
 ];
 
 function ConfigPaiementModalController(
   $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
-  Exchange, Session,
+  Exchange, Session, params,
 ) {
   const vm = this;
   vm.config = {};
@@ -18,8 +18,8 @@ function ConfigPaiementModalController(
 
   const cache = AppCache('multiple-payroll-grid');
 
-  if ($state.params.creating || $state.params.uuid) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.uuid) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
 
   } else {
@@ -93,7 +93,7 @@ function ConfigPaiementModalController(
 
   Configuration.read(vm.idPeriod)
     .then((period) => {
-      const params = {
+      const parameters = {
         dateFrom : period.dateFrom,
         dateTo : period.dateTo,
         employeeUuid : vm.stateParams.uuid,
@@ -101,7 +101,7 @@ function ConfigPaiementModalController(
 
       vm.periodDateTo = period.dateTo;
 
-      return MultiplePayroll.getConfiguration(vm.idPeriod, params);
+      return MultiplePayroll.getConfiguration(vm.idPeriod, parameters);
     })
     .then((configurations) => {
       vm.configurations = configurations;
@@ -118,7 +118,6 @@ function ConfigPaiementModalController(
     })
     .catch(Notify.handleError);
 
-
   // submit the data to the server from all two forms (update, create)
   function submit(ConfigPaiementForm) {
 
@@ -127,10 +126,14 @@ function ConfigPaiementModalController(
     }
 
     vm.payroll.employee = vm.employee;
+
+    /* eslint-disable prefer-destructuring */
     vm.payroll.offDays = vm.configurations[5];
     vm.payroll.holidays = vm.configurations[2];
     vm.payroll.daysPeriod = vm.configurations[7][0];
     vm.payroll.iprScales = vm.configurations[4];
+    /* eslint-enable prefer-destructuring */
+
     vm.payroll.periodDateTo = vm.periodDateTo;
 
     return MultiplePayroll.setConfiguration(vm.idPeriod, vm.payroll)

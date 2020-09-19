@@ -22,6 +22,7 @@ function UserService(Api) {
   service.updateDepots = updateDepots;
   service.cashBoxManagement = cashBoxManagement;
 
+
   /* ------------------------------------------------------------------------ */
 
   // updates a user with id

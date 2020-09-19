@@ -1,6 +1,5 @@
-
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
 
     $stateProvider
       .state('users', {
@@ -13,9 +12,9 @@ angular.module('bhima.routes')
       .state('users.create', {
         url : '/create',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', usersModal],
+        onEnter : ['$uibModal', '$transition$', usersModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.list', {
@@ -29,7 +28,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter : ['$uibModal', usersModal],
+        onEnter : ['$uibModal', '$transition$', usersModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.depotManagement', {
@@ -37,7 +36,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter : ['$uibModal', depotManagementModal],
+        onEnter : ['$uibModal', '$transition$', depotManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.cashBoxManagement', {
@@ -45,7 +44,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter : ['$uibModal', cashBoxManagementModal],
+        onEnter : ['$uibModal', '$transition$', cashBoxManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.editPassword', {
@@ -53,48 +52,44 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter : ['$uibModal', userPasswordModal],
+        onEnter : ['$uibModal', '$transition$', userPasswordModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function usersModal($modal) {
+function usersModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/users/user.modal.html',
     controller : 'UserModalController as UserModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function userPasswordModal($modal) {
+function userPasswordModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
     size : 'md',
-    backdrop : 'static',
     templateUrl : 'modules/users/UserEditPasswordModal.html',
     controller :  'UsersPasswordModalController as UsersPasswordModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function depotManagementModal($modal) {
+function depotManagementModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
     size : 'md',
-    backdrop : 'static',
     templateUrl : 'modules/users/UserDepotManagementModal.html',
     controller :  'UsersDepotManagementController as UsersDepotModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function cashBoxManagementModal($modal) {
+function cashBoxManagementModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
     size : 'md',
-    backdrop : 'static',
     templateUrl : 'modules/users/UserCashBoxManagementModal.html',
     controller :  'UsersCashBoxManagementController as UsersCashBoxModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
