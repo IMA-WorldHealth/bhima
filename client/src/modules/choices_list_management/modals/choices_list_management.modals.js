@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('ChoicesListManagementModalController', ChoicesListManagementModalController);
 
 ChoicesListManagementModalController.$inject = [
-  '$state', 'ChoicesListManagementService', 'NotifyService', 'appcache',
+  '$state', 'ChoicesListManagementService', 'NotifyService', 'appcache', 'params',
 ];
 
 /**
- * CHOICES LIST MANAGEMENT Modal Controller
+ * choices list management modal controller
  */
-
-function ChoicesListManagementModalController($state, ChoicesListManagement, Notify, AppCache) {
+function ChoicesListManagementModalController($state, ChoicesListManagement, Notify, AppCache, params) {
   const vm = this;
   const cache = AppCache('ChoicesListManagementModal');
 
@@ -23,16 +22,16 @@ function ChoicesListManagementModalController($state, ChoicesListManagement, Not
   vm.onSelectParent = onSelectParent;
   vm.onSelectGroup = onSelectGroup;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
-    vm.choice.parent = $state.params.parentId;
+    vm.choice.parent = params.parentId;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     ChoicesListManagement.read(vm.stateParams.id)
       .then(data => {
         vm.choice = data;
@@ -40,7 +39,7 @@ function ChoicesListManagementModalController($state, ChoicesListManagement, Not
       .catch(Notify.handleError);
   }
 
-  // load CHOICES LIST MANAGEMENT
+  // load choices list management
   ChoicesListManagement.read()
     .then(choicesList => {
       vm.choicesList = choicesList;
@@ -49,17 +48,17 @@ function ChoicesListManagementModalController($state, ChoicesListManagement, Not
 
   // submit the data to the server from all two forms (update, create)
   function submit(choicesListManagementForm) {
-    vm.hasNoChange = choicesListManagementForm.$submitted && choicesListManagementForm.$pristine && !vm.isCreating;
+    vm.hasNoChange = choicesListManagementForm.$submitted && choicesListManagementForm.$pristine && !vm.isCreateState;
     if (choicesListManagementForm.$invalid) { return null; }
     if (choicesListManagementForm.$pristine) { return null; }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? ChoicesListManagement.create(vm.choice)
       : ChoicesListManagement.update(vm.choice.id, vm.choice);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('choices_list_management', null, { reload : true });
       })

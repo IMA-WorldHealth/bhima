@@ -1,11 +1,11 @@
 <form name="IprTaxForm" bh-submit="IprTaxConfigModalCtrl.submit(IprTaxForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li ng-if="IprTaxConfigModalCtrl.isCreating" class="title">
+      <li ng-if="IprTaxConfigModalCtrl.isCreateState" class="title">
         <span translate>IPRTAX.ADD_SCALE</span>
         <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
       </li>
-      <li ng-if="!IprTaxConfigModalCtrl.isCreating" class="title">
+      <li ng-if="!IprTaxConfigModalCtrl.isCreateState" class="title">
         <span translate>IPRTAX.EDIT_SCALE</span>
         <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
       </li>

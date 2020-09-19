@@ -1,38 +1,37 @@
 angular.module('bhima.routes')
-.config(['$stateProvider', function ($stateProvider) {
-  $stateProvider
-    .state('holidays', {
-      url         : '/holidays',
-      controller  : 'HolidayManagementController as HolidayCtrl',
-      templateUrl : 'modules/holidays/holidays.html',
-    })
+  .config(['$stateProvider', ($stateProvider) => {
+    $stateProvider
+      .state('holidays', {
+        url         : '/holidays',
+        controller  : 'HolidayManagementController as HolidayCtrl',
+        templateUrl : 'modules/holidays/holidays.html',
+      })
 
-    .state('holidays.create', {
-      url : '/create',
-      params : {
-        creating : { value : true },
-      },
-      onEnter : ['$uibModal', holidayModal],
-      onExit : ['$uibModalStack', closeModal],
-    })
+      .state('holidays.create', {
+        url : '/create',
+        params : {
+          isCreateState : { value : true },
+        },
+        onEnter : ['$uibModal', '$transition$', holidayModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
 
-    .state('holidays.edit', {
-      url : '/:id/edit',
-      params : {
-        creating : { value : false },
-      },
-      onEnter : ['$uibModal', holidayModal],
-      onExit : ['$uibModalStack', closeModal],
-    });
-}]);
+      .state('holidays.edit', {
+        url : '/:id/edit',
+        params : {
+          id : { value : null },
+        },
+        onEnter : ['$uibModal', '$transition$', holidayModal],
+        onExit : ['$uibModalStack', closeModal],
+      });
+  }]);
 
-function holidayModal($modal) {
+function holidayModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/holidays/modals/holiday.modal.html',
     controller : 'HolidayModalController as HolidayModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
