@@ -12,6 +12,8 @@
 
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
+const role = require('../../admin/roles');
+const identifiers = require('../../../config/identifiers');
 
 // wrapper to reuse staging code
 // txn is a db.transaction()
@@ -96,4 +98,46 @@ exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
     .then(() => res.sendStatus(201))
     .catch(next)
     .done();
+};
+
+exports.unpostTransactions = async (req, res, next) => {
+
+  try {
+    const { recordUuids } = req.body;
+    const transaction = db.transaction();
+
+    recordUuids.forEach(recordUuid => {
+      transaction.addQuery('CALL zUnpostRecord(?)', db.bid(recordUuid));
+
+      transaction.addQuery('INSERT INTO transaction_history SET ?', {
+        uuid : db.uuid(),
+        record_uuid : db.bid(recordUuid),
+        user_id : req.session.user.id,
+        action : 'unpost',
+      });
+    });
+
+    transaction.addQuery('CALL zRecalculatePeriodTotals()');
+
+    const permissions = await role.isAllowed({
+      actionId : identifiers.ACTIONS.CAN_UNPOST_TRANSACTIONS,
+      userId : req.session.user.id,
+    });
+
+    if (permissions.length > 0) {
+      if (!(permissions[0].nbr > 0)) {
+        res.status(403).json(false);
+        return;
+      }
+    } else {
+      res.status(403).json(false);
+      return;
+    }
+
+    await transaction.execute();
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+
 };
