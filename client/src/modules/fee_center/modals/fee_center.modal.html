@@ -1,11 +1,11 @@
 <form name="FeeCenterForm" bh-submit="FeeCenterModalCtrl.submit(FeeCenterForm)" novalidate>
   <div class="modal-header">
   <ol class="headercrumb">
-    <li ng-if="FeeCenterModalCtrl.isCreating" class="title">
+    <li ng-if="FeeCenterModalCtrl.isCreateState" class="title">
       <span translate> FEE_CENTER.ADD_FEE_CENTER </span>
       <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
     </li>
-    <li ng-if="!FeeCenterModalCtrl.isCreating" class="title">
+    <li ng-if="!FeeCenterModalCtrl.isCreateState" class="title">
       <span translate> FEE_CENTER.EDIT_FEE_CENTER </span>
       <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
     </li>

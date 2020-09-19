@@ -2,23 +2,24 @@ angular.module('bhima.controllers')
   .controller('FeeCenterModalController', FeeCenterModalController);
 
 FeeCenterModalController.$inject = [
-  '$state', 'FeeCenterService', 'ModalService', 'NotifyService', 'appcache',
+  '$state', 'FeeCenterService', 'ModalService', 'NotifyService', 'appcache', 'params',
 ];
 
-function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCache) {
+function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCache, params) {
   const vm = this;
   vm.feeCenter = {};
   vm.referenceFeeCenter = [];
 
   const cache = AppCache('FeeCenterModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;
@@ -31,7 +32,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   vm.clear = clear;
   vm.reset = reset;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
         [vm.feeCenter] = data.feeCenter;
@@ -181,13 +182,13 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       project_id : vm.feeCenter.project_id,
     };
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? FeeCenter.create(data)
       : FeeCenter.update(vm.feeCenter.id, data);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('fee_center', null, { reload : true });
       })
