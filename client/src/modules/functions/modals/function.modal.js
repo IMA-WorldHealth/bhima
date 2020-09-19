@@ -2,22 +2,22 @@ angular.module('bhima.controllers')
   .controller('FunctionModalController', FunctionModalController);
 
 FunctionModalController.$inject = [
-  '$state', 'FunctionService', 'NotifyService', 'appcache',
+  '$state', 'FunctionService', 'NotifyService', 'appcache', 'params',
 ];
 
-function FunctionModalController($state, Functions, Notify, AppCache) {
+function FunctionModalController($state, Functions, Notify, AppCache, params) {
   const vm = this;
 
   const cache = AppCache('FunctionModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreateState = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;

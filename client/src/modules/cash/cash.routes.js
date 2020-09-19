@@ -58,14 +58,11 @@ angular.module('bhima.routes')
       });
   }]);
 
-
 function cashboxSelectionModal(Modal) {
   Modal.open({
     templateUrl : 'modules/cash/modals/select-cashbox-modal.html',
     controller  : 'SelectCashboxModalController as $ctrl',
-    backdrop    : 'static',
-    keyboard    : false,
-  });
+  }).result.catch(angular.noop);
 }
 
 function transferModal($state, Modal) {
@@ -98,7 +95,6 @@ function debtorInvoicesModal($state, Modal) {
   Modal.open({
     templateUrl : 'modules/cash/modals/invoice-modal.html',
     controller  : 'CashInvoiceModalController as CashInvoiceModalCtrl',
-    backdrop    : 'static',
     animation   : false,
     keyboard    : true,
   }).result.finally(() => {

@@ -1,11 +1,11 @@
 <form name="EntityGroupForm" bh-submit="EntityGroupModalCtrl.submit(EntityGroupForm)" novalidate>
   <div class="modal-header">
   <ol class="headercrumb">
-    <li ng-if="EntityGroupModalCtrl.isCreating" class="title">
+    <li ng-if="EntityGroupModalCtrl.isCreateState" class="title">
       <span translate>ENTITY.GROUP.ADD</span>
       <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
     </li>
-    <li ng-if="!EntityGroupModalCtrl.isCreating" class="title">
+    <li ng-if="!EntityGroupModalCtrl.isCreateState" class="title">
       <span translate>ENTITY.GROUP.EDIT</span>
       <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
     </li>

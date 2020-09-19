@@ -10,10 +10,9 @@ angular.module('bhima.routes')
       .state('entityGroup.create', {
         url : '/create',
         params : {
-          uuid : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', entityGroupModal],
+        onEnter : ['$uibModal', '$transition$', entityGroupModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
@@ -21,20 +20,18 @@ angular.module('bhima.routes')
         url : '/:uuid/edit',
         params : {
           uuid : { value : null },
-          creating : { value : false },
         },
-        onEnter : ['$uibModal', entityGroupModal],
+        onEnter : ['$uibModal', '$transition$', entityGroupModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function entityGroupModal($modal) {
+function entityGroupModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/entity_group/modals/entity_group.modal.html',
     controller : 'EntityGroupModalController as EntityGroupModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

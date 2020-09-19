@@ -17,21 +17,19 @@ angular.module('bhima.routes')
           config : { value : null },
           filters : [],
         },
-        onEnter : ['$uibModal', configurationMultiplePayroll],
+        onEnter : ['$uibModal', '$transition$', configurationMultiplePayroll],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationMultiplePayroll($modal) {
+function configurationMultiplePayroll($modal, $transition) {
   $modal.open({
-    keyboard : false,
     size : 'lg',
-    backdrop : 'static',
     templateUrl : 'modules/multiple_payroll/modals/config.modal.html',
     controller : 'ConfigPaiementModalController as ConfigPaiementModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
-
 
 function closeModal(ModalStack) {
   ModalStack.dismissAll();
