@@ -11,7 +11,7 @@ describe('cronEmailReport', () => {
 
   describe('#addDynamicDatesOptions', () => {
     before(() => {
-      const cronEmailReport = rewire('../../../server/controllers/admin/cronEmailReport');
+      const cronEmailReport = rewire('../../../bin/server/controllers/admin/cronEmailReport');
       addDynamicDatesOptions = cronEmailReport.__get__('addDynamicDatesOptions');
     });
 
