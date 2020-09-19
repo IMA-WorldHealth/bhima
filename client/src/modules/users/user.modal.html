@@ -3,11 +3,11 @@
     <ol class="headercrumb">
       <li class="static" translate>USERS.TITLE</li>
 
-      <li ng-if="UserModalCtrl.isCreating" class="title">
+      <li ng-if="UserModalCtrl.isCreateState" class="title">
         <span translate>USERS.ADDING_USER</span>
         <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
       </li>
-      <li ng-if="!UserModalCtrl.isCreating" class="title">
+      <li ng-if="!UserModalCtrl.isCreateState" class="title">
         <span translate>USERS.UPDATING_USER</span>
         <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
@@ -80,13 +80,13 @@
       </div>
     </div>
 
-    <div ng-if="!UserModalCtrl.isCreating" class="form-group">
+    <div ng-if="!UserModalCtrl.isCreateState" class="form-group">
       <button id="user-edit-password" type="button" class="btn btn-warning btn-block" ng-click="UserModalCtrl.editPassword()">
         <i class="fa fa-lock"></i> <span translate>FORM.BUTTONS.UPDATE_PASSWORD</span>
       </button>
     </div>
 
-    <div ng-if="UserModalCtrl.isCreating">
+    <div ng-if="UserModalCtrl.isCreateState">
 
       <div class="form-group has-feedback"
         ng-class="{ 'has-error' : UserForm.$submitted && !UserModalCtrl.validPassword() }"
