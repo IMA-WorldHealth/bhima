@@ -10,31 +10,26 @@ angular.module('bhima.routes')
       .state('offdays.create', {
         url : '/create',
         params : {
-          offday : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', offdayModal],
+        onEnter : ['$uibModal', '$transition$', offdayModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('offdays.edit', {
         url : '/:id/edit',
-        params : {
-          offday : { value : null },
-          creating : { value : false },
-        },
-        onEnter : ['$uibModal', offdayModal],
+        params : { id : { value : null } },
+        onEnter : ['$uibModal', '$transition$', offdayModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function offdayModal($modal) {
+function offdayModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/offdays/modals/offday.modal.html',
     controller : 'OffdayModalController as OffdayModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
