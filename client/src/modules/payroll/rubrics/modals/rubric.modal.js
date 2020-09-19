@@ -3,29 +3,31 @@ angular.module('bhima.controllers')
 
 RubricModalController.$inject = [
   '$state', 'RubricService', 'NotifyService',
-  'appcache', 'SessionService',
+  'appcache', 'SessionService', 'params',
 ];
 
-function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
+function RubricModalController($state, Rubrics, Notify, AppCache, Session, params) {
   const vm = this;
-
   const cache = AppCache('RubricModal');
+
   vm.rubric = {
     is_monetary_value : 1,
     is_indice : 0,
     indice_to_grap : 0,
   };
+
   vm.indexesMap = Rubrics.indexesMap;
 
   vm.enableIndexPayment = Session.enterprise.settings.enable_index_payment_system;
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    vm.stateParams = params;
+    cache.stateParams = params;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   vm.selectDebtorAccount = (account) => {
     vm.rubric.debtor_account_id = account.id;
@@ -55,12 +57,11 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
     vm.rubric.is_indice = value;
   };
 
-
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Rubrics.read(vm.stateParams.id)
       .then((rubric) => {
         vm.rubric = rubric;
@@ -88,11 +89,11 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
       return false;
     }
 
-    const promise = (vm.isCreating) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);
+    const promise = (vm.isCreateState) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('rubrics', null, { reload : true });
       })

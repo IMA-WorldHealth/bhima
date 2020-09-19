@@ -82,8 +82,6 @@ function onInvoicingFeeEnterFactory(stateType) {
     Modal.open({
       templateUrl : 'modules/invoicing-fees/invoicing-fees-modal.html',
       controller  : ctrl,
-      backdrop    : 'static',
-      keyboard    : false,
     }).result
       .then((id) => {
         Notify.success(message);

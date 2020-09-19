@@ -2,29 +2,29 @@ angular.module('bhima.controllers')
   .controller('IprTaxModalController', IprTaxModalController);
 
 IprTaxModalController.$inject = [
-  '$state', 'IprTaxService', 'NotifyService', 'appcache',
+  '$state', 'IprTaxService', 'NotifyService', 'appcache', 'params',
 ];
 
-function IprTaxModalController($state, IprTaxes, Notify, AppCache) {
+function IprTaxModalController($state, IprTaxes, Notify, AppCache, params) {
   const vm = this;
   vm.iprTax = {};
 
   const cache = AppCache('IprTaxModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    vm.stateParams = params;
+    cache.stateParams = params;
 
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     IprTaxes.read(vm.stateParams.id)
       .then((iprTax) => {
         vm.iprTax = iprTax;
@@ -39,13 +39,13 @@ function IprTaxModalController($state, IprTaxes, Notify, AppCache) {
 
     delete vm.iprTax.symbol;
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? IprTaxes.create(vm.iprTax)
       : IprTaxes.update(vm.iprTax.id, vm.iprTax);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('ipr_tax', null, { reload : true });
       })
@@ -55,5 +55,4 @@ function IprTaxModalController($state, IprTaxes, Notify, AppCache) {
   vm.setCurrency = (currency) => {
     vm.iprTax.currency_id = currency.id;
   };
-
 }
