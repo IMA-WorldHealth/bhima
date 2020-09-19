@@ -16,41 +16,42 @@ angular.module('bhima.routes')
       .state('display_metadata.patientfill', {
         url : '/:id/:patient/fill',
         params : {
-          fill_form : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', fillFormModal],
+        onEnter : ['$uibModal', '$transition$', fillFormModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('display_metadata.patientEdit', {
         url : '/:id/:uuid/:patient/:include/edit',
         params : {
-          fill_form : { value : null },
-          creating : { value : true },
+          id : { value : null },
+          uuid : { value : null },
+          patient : { value : null },
+          include : { value : null },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', fillFormModal],
+        onEnter : ['$uibModal', '$transition$', fillFormModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('display_metadata.edit', {
         url : '/:id/:uuid/edit',
         params : {
-          fill_form : { value : null },
-          creating : { value : false },
+          uuid : { value : null },
+          isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', fillFormModal],
+        onEnter : ['$uibModal', '$transition$', fillFormModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function fillFormModal($modal) {
+function fillFormModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/fill_form/modals/fill_form.modals.html',
     controller : 'FillFormModalController as FillFormModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
