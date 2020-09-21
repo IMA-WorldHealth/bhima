@@ -2,18 +2,18 @@ angular.module('bhima.controllers')
   .controller('EntityModalController', EntityModalController);
 
 EntityModalController.$inject = [
-  '$state', 'EntityService', 'NotifyService',
+  '$state', 'EntityService', 'NotifyService', 'params',
 ];
 
-function EntityModalController($state, Entities, Notify) {
+function EntityModalController($state, Entities, Notify, params) {
   const vm = this;
 
-  vm.isCreating = !!($state.params.creating);
+  vm.isCreateState = params.isCreateState;
   vm.entity = {};
 
   function startup() {
-    if (!vm.isCreating) {
-      Entities.read($state.params.uuid)
+    if (!vm.isCreateState) {
+      Entities.read(params.uuid)
         .then(entity => {
           vm.entity = entity;
         })
@@ -47,15 +47,15 @@ function EntityModalController($state, Entities, Notify) {
       return 0;
     }
 
-    const params = Entities.clean(vm.entity);
+    const parameters = Entities.clean(vm.entity);
 
-    const promise = (vm.isCreating)
-      ? Entities.create(params)
-      : Entities.update(params.uuid, params);
+    const promise = (vm.isCreateState)
+      ? Entities.create(parameters)
+      : Entities.update(parameters.uuid, parameters);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'ENTITY.CREATED' : 'ENTITY.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'ENTITY.CREATED' : 'ENTITY.UPDATED';
         Notify.success(translateKey);
         $state.go('entities', null, { reload : true });
       })
