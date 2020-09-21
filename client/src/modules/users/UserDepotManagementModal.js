@@ -2,16 +2,15 @@ angular.module('bhima.controllers')
   .controller('UsersDepotManagementController', UsersDepotManagementController);
 
 UsersDepotManagementController.$inject = [
-  '$state', 'UserService',
-  'NotifyService', 'appcache',
+  '$state', 'UserService', 'NotifyService', 'appcache', 'params',
 ];
 
-function UsersDepotManagementController($state, Users, Notify, AppCache) {
+function UsersDepotManagementController($state, Users, Notify, AppCache, params) {
   const vm = this;
   const cache = AppCache('UserDepot');
 
-  if ($state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
@@ -55,5 +54,4 @@ function UsersDepotManagementController($state, Users, Notify, AppCache) {
   function closeModal() {
     $state.go('users.list');
   }
-
 }

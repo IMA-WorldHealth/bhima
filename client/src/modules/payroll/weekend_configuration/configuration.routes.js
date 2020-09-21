@@ -10,29 +10,28 @@ angular.module('bhima.routes')
       .state('configurationWeekend.create', {
         url : '/create',
         params : {
-          weekEnd : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', configurationWeekendModal],
+        onEnter : ['$uibModal', '$transition$', configurationWeekendModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('configurationWeekend.edit', {
         url : '/:id/edit',
         params : {
-          weekEnd : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', configurationWeekendModal],
+        onEnter : ['$uibModal', '$transition$', configurationWeekendModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationWeekendModal($modal) {
+function configurationWeekendModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/payroll/weekend_configuration/modals/weekEnd.modal.html',
     controller : 'WeekendModalController as WeekendModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

@@ -2,24 +2,24 @@ angular.module('bhima.controllers')
   .controller('WeekendModalController', WeekendModalController);
 
 WeekendModalController.$inject = [
-  '$state', 'ConfigurationWeekendService', 'NotifyService', 'appcache', 'bhConstants',
+  '$state', 'ConfigurationWeekendService', 'NotifyService', 'appcache', 'bhConstants', 'params',
 ];
 
-function WeekendModalController($state, Config, Notify, AppCache, bhConstants) {
+function WeekendModalController($state, Config, Notify, AppCache, bhConstants, params) {
   const vm = this;
   vm.weekend = {};
   vm.weekend.daysChecked = {};
 
   const cache = AppCache('WeekendModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreateState = vm.stateParams.creating;
+  vm.isCreateState = params.isCreateState;
 
   // exposed methods
   vm.submit = submit;

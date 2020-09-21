@@ -2,31 +2,32 @@ angular.module('bhima.controllers')
   .controller('ConfigModalController', ConfigModalController);
 
 ConfigModalController.$inject = [
-  '$state', 'ConfigurationService', 'ModalService', 'NotifyService', 'appcache',
+  '$state', 'ConfigurationService', 'ModalService', 'NotifyService', 'appcache', 'params',
 ];
 
-function ConfigModalController($state, Configs, ModalService, Notify, AppCache) {
-  var vm = this;
+function ConfigModalController($state, Configs, ModalService, Notify, AppCache, params) {
+  const vm = this;
   vm.rubric = {};
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Configs.read(vm.stateParams.id)
-      .then(function (rubric) {
+      .then((rubric) => {
         vm.rubric = rubric;
-
         vm.setting = true;
       })
       .catch(Notify.handleError);
@@ -34,17 +35,15 @@ function ConfigModalController($state, Configs, ModalService, Notify, AppCache) 
 
   // submit the data to the server from all two forms (update, create)
   function submit(rubricForm) {
-    var promise;
-
     if (rubricForm.$invalid || rubricForm.$pristine) { return 0; }
 
-    promise = (vm.isCreating) ?
-      Configs.create(vm.rubric) :
-      Configs.update(vm.rubric.id, vm.rubric);
+    const promise = (vm.isCreateState)
+      ? Configs.create(vm.rubric)
+      : Configs.update(vm.rubric.id, vm.rubric);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('configurationRubric', null, { reload : true });
       })
