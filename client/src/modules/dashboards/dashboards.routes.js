@@ -19,7 +19,6 @@ angular.module('bhima.routes')
       .state('indicatorsFilesRegistry.editHospitalizationFile', {
         url : '/editHospitalizationFile',
         params : {
-          isCreateState : { value : false },
           uuid : null,
         },
         onEnter : ['$uibModal', '$transition$', hospitalizationModal],
@@ -38,7 +37,6 @@ angular.module('bhima.routes')
       .state('indicatorsFilesRegistry.editStaffFile', {
         url : '/editStaffFile',
         params : {
-          isCreateState : { value : false },
           uuid : null,
         },
         onEnter : ['$uibModal', '$transition$', staffModal],
@@ -57,7 +55,6 @@ angular.module('bhima.routes')
       .state('indicatorsFilesRegistry.editFinanceFile', {
         url : '/editFinanceFile',
         params : {
-          isCreateState : { value : false },
           uuid : null,
         },
         onEnter : ['$uibModal', '$transition$', financeModal],
