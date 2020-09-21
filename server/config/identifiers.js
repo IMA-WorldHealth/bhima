@@ -12,6 +12,10 @@
  */
 
 module.exports = {
+  ACTIONS : {
+    CAN_EDIT_ROLES : 1,
+    CAN_UNPOST_TRANSACTIONS : 2,
+  },
   VOUCHER : {
     key   : 'VO',
     table : 'voucher',
