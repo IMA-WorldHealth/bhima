@@ -20,6 +20,9 @@ npm-debug.log
 # ignore bower installation target
 client/vendor/
 
+# ignore built server files
+server/
+
 # ignore built files
 bin/
 
