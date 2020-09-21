@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) { // eslint-disable-line
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('configurationAccount', {
         url         : '/payroll/account_configuration',
@@ -10,49 +10,28 @@ angular.module('bhima.routes')
       .state('configurationAccount.create', {
         url : '/create',
         params : {
-          account : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', configurationAccountModal],
+        onEnter : ['$uibModal', '$transition$', configurationAccountModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('configurationAccount.edit', {
         url : '/:id/edit',
         params : {
-          account : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', configurationAccountModal],
-        onExit : ['$uibModalStack', closeModal],
-      })
-
-      .state('configurationAccount.config', {
-        url : '/:id/config',
-        params : {
-          account : { value : null },
-        },
-        onEnter : ['$uibModal', configurationAccount],
+        onEnter : ['$uibModal', '$transition$', configurationAccountModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationAccountModal($modal) {
+function configurationAccountModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/payroll/account_configuration/modals/account.modal.html',
     controller : 'AccountConfigModalController as AccountConfigModalCtrl',
-  });
-}
-
-function configurationAccount($modal) {
-  $modal.open({
-    keyboard : false,
-    backdrop : 'static',
-    templateUrl : 'modules/payroll/account_configuration/modals/config.modal.html',
-    controller : 'AccountConfigModalController as AccountConfigModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

@@ -2,23 +2,23 @@ angular.module('bhima.controllers')
   .controller('IprTaxConfigModalController', IprTaxConfigModalController);
 
 IprTaxConfigModalController.$inject = [
-  '$state', 'IprTaxService', 'IprTaxConfigService', 'NotifyService', 'appcache',
+  '$state', 'IprTaxService', 'IprTaxConfigService', 'NotifyService', 'appcache', 'params',
 ];
 
-function IprTaxConfigModalController($state, IprTax, IprConfig, Notify, AppCache) {
+function IprTaxConfigModalController($state, IprTax, IprConfig, Notify, AppCache, params) {
   const vm = this;
   vm.iprTax = {};
 
   const cache = AppCache('IprTaxConfigModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    vm.stateParams = params;
+    cache.stateParams = params;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;
@@ -40,7 +40,7 @@ function IprTaxConfigModalController($state, IprTax, IprConfig, Notify, AppCache
       .catch(Notify.handleError);
   }
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     IprConfig.read(vm.stateParams.id)
       .then((iprTax) => {
         vm.iprTax = iprTax;
@@ -54,12 +54,12 @@ function IprTaxConfigModalController($state, IprTax, IprConfig, Notify, AppCache
     if (iprTaxForm.$invalid) { return 0; }
     const iprConfigData = IprConfig.configData(vm.iprTax, vm.iprConfig);
 
-    const promise = (vm.isCreating) ? IprConfig.create(iprConfigData)
+    const promise = (vm.isCreateState) ? IprConfig.create(iprConfigData)
       : IprConfig.update(vm.iprTax.id, iprConfigData);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('iprConfiguration', null, { reload : true });
       })

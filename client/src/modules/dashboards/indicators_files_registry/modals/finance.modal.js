@@ -2,19 +2,17 @@ angular.module('bhima.controllers')
   .controller('FinanceModalController', FinanceModalController);
 
 FinanceModalController.$inject = [
-  '$state', 'IndicatorsDashboardService', 'NotifyService',
+  '$state', 'IndicatorsDashboardService', 'NotifyService', 'params',
 ];
 
-function FinanceModalController(
-  $state, IndicatorsDashboard, Notify
-) {
+function FinanceModalController($state, IndicatorsDashboard, Notify, params) {
   const vm = this;
 
   vm.file = { type_id : IndicatorsDashboard.FINANCE_TYPE_ID };
   vm.indicators = {};
 
-  const { uuid } = $state.params;
-  vm.isCreating = !!($state.params.creating);
+  const { uuid } = params;
+  vm.isCreateState = params.isCreateState;
 
   vm.onSelectPeriod = selected => {
     vm.fiscal_year_id = selected.fiscal && selected.fiscal.id ? selected.fiscal.id : undefined;
@@ -63,14 +61,14 @@ function FinanceModalController(
 
     return checkDuplicated()
       .then(isExisting => {
-        if (isExisting && vm.isCreating) {
+        if (isExisting && vm.isCreateState) {
           vm.isExisting = true;
           return null;
         }
 
         // hack for server match
         const bundle = { indicator : vm.file, finances : vm.indicators };
-        const promise = (vm.isCreating)
+        const promise = (vm.isCreateState)
           ? IndicatorsDashboard.finances.create(bundle)
           : IndicatorsDashboard.finances.update(uuid, bundle);
         return promise;
@@ -78,7 +76,7 @@ function FinanceModalController(
       .then(() => {
         if (vm.isExisting) { return; }
 
-        const translateKey = (vm.isCreating)
+        const translateKey = (vm.isCreateState)
           ? 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_ADDED'
           : 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_UPDATED';
         Notify.success(translateKey);

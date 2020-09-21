@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 LoginController.$inject = [
   'appcache', 'SessionService', 'LanguageService', 'ProjectService',
-  'NotifyService', 'InstallService',
+  'NotifyService', 'InstallService', '$state',
 ];
 
 /**
@@ -11,7 +11,7 @@ LoginController.$inject = [
  *
  * The login controller powers the bhima login page.
  */
-function LoginController(AppCache, Session, Languages, Projects, Notify, Install) {
+function LoginController(AppCache, Session, Languages, Projects, Notify, Install, $state) {
   const vm = this;
 
   // the is the same as the SettingsContoller
@@ -84,9 +84,9 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
 
     // if the project was found in the cache, set it to the default project
     // otherwise, use the defaultProjectIndex to set the default project
-    vm.credentials.project = (cache.project) ?
-      cache.project.id :
-      vm.projects[defaultProjectIndex].id;
+    vm.credentials.project = (cache.project)
+      ? cache.project.id
+      : vm.projects[defaultProjectIndex].id;
   }
 
   // logs the user in, creates the user client session
@@ -102,6 +102,9 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
 
   function cacheProject(session) {
     cache.project = session.project;
+
+    // navigate to the main page
+    $state.go('index');
   }
 
   function handleLoginResponse(response) {

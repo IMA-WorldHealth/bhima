@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
   .controller('UsersCashBoxManagementController', UsersCashBoxManagementController);
 
 UsersCashBoxManagementController.$inject = [
-  '$state', 'UserService', 'NotifyService', 'appcache', 'CashboxService', '$q',
+  '$state', 'UserService', 'NotifyService', 'appcache', 'CashboxService', '$q', 'params',
 ];
 
-function UsersCashBoxManagementController($state, Users, Notify, AppCache, Cashboxes, $q) {
+function UsersCashBoxManagementController($state, Users, Notify, AppCache, Cashboxes, $q, params) {
   const vm = this;
   const cache = AppCache('UserCashboxPermissions');
 
-  if ($state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;

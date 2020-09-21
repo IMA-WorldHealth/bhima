@@ -12,8 +12,7 @@ PayrollConfigurationController.$inject = [
  * It's responsible for creating, editing and updating a Payroll Configuration
  */
 function PayrollConfigurationController(PayrollConfigurations, ModalService, Notify, uiGridConstants, $state) {
-  var vm = this;
-  var gridColumn;
+  const vm = this;
 
   // bind methods
   vm.deletePayrollConfiguration = deletePayrollConfiguration;
@@ -24,7 +23,7 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService, Not
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  gridColumn = [
+  const gridColumn = [
     { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
     {
       field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate',

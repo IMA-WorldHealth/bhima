@@ -26,7 +26,6 @@ function create(req, res, next) {
   }).catch(next);
 }
 
-
 function update(req, res, next) {
   const { indicator, finances } = req.body;
   db.convert(finances, ['indicator_uuid']);
@@ -45,7 +44,6 @@ function update(req, res, next) {
     res.sendStatus(200);
   }).catch(next);
 }
-
 
 function remove(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
@@ -69,7 +67,7 @@ async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
 
   const query = `
-    SELECT 
+    SELECT
       BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id,
       hi.total_revenue, hi.total_subsidies,
       hi.total_drugs_sale, hi.total_expenses, hi.total_other_charge, total_drugs_purchased,
