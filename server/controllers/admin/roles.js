@@ -1,18 +1,21 @@
 const q = require('q');
 const db = require('../../lib/db');
 
-exports.list = list;
-exports.detail = detail;
-exports.create = create;
-exports.update = update;
-exports.remove = remove;
-exports.units = units;
-exports.assignUnitsToRole = assignUnitsToRole;
-exports.assignRolesToUser = assignRolesToUser;
-exports.listForUser = listForUser;
-exports.rolesAction = rolesAction;
-exports.hasAction = hasAction;
-exports.assignActionToRole = assignActionToRole;
+module.exports = {
+  list,
+  detail,
+  create,
+  update,
+  remove,
+  units,
+  assignUnitsToRole,
+  assignRolesToUser,
+  listForUser,
+  rolesAction,
+  hasAction,
+  assignActionToRole,
+  isAllowed,
+};
 
 function list(req, res, next) {
   const sql = `
@@ -113,7 +116,6 @@ function assignUnitsToRole(req, res, next) {
     .done();
 }
 
-
 // retrieves affected and not affected role by a user id
 function listForUser(req, res, next) {
   const userId = req.params.id;
@@ -137,7 +139,6 @@ function listForUser(req, res, next) {
     .done();
 }
 
-
 function rolesAction(req, res, next) {
   const roleUuid = db.bid(req.params.roleUuid);
 
@@ -159,7 +160,6 @@ function rolesAction(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 // affect roles to a user
 // actions ares permissions for a role used most of the time in the view
@@ -189,20 +189,32 @@ function assignActionToRole(req, res, next) {
     .done();
 }
 
-function hasAction(req, res, next) {
-  const actionId = req.params.action_id;
-  const userId = req.session.user.id;
-
+async function isAllowed(params) {
+  const { actionId, userId } = params;
   const sql = `
     SELECT count(ra.uuid) as nbr FROM role_actions ra
     JOIN user_role as ur ON ur.role_uuid = ra.role_uuid
     WHERE actions_id =? AND ur.user_id = ?
   `;
 
-  db.one(sql, [actionId, userId])
-    .then(row => {
-      res.status(200).json(row.nbr > 0);
-    })
+  const result = await db.exec(sql, [actionId, userId]);
+  if (result.length > 0) {
+    return result[0].nbr > 0;
+  }
+  return false;
+}
+
+function hasAction(req, res, next) {
+  isAllowed({
+    actionId : req.params.action_id,
+    userId : req.session.user.id,
+  }).then(result => {
+    if (result) {
+      res.status(200).json(true);
+    } else {
+      res.status(403).json(false);
+    }
+  })
     .catch(next)
     .done();
 }

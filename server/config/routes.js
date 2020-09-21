@@ -264,7 +264,7 @@ exports.configure = function configure(app) {
   // API for trial balance
   app.post('/journal/trialbalance', trialBalance.runTrialBalance);
   app.post('/journal/transactions', trialBalance.postToGeneralLedger);
-
+  app.post('/journal/transactions/unpost', trialBalance.unpostTransactions);
   // API for journal
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);

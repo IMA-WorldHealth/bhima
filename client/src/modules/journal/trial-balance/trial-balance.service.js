@@ -28,6 +28,7 @@ function TrialBalanceService(util, $http, Accounts, Constants) {
   let promise;
 
   service.postToGeneralLedger = postToGeneralLedger;
+  service.unpostTransactions = unpostTransactions;
   service.bindGridExporter = bindGridExporter;
   service.exportGrid = exportGrid;
 
@@ -113,6 +114,16 @@ function TrialBalanceService(util, $http, Accounts, Constants) {
       });
   }
 
+  /**
+   * @function unpostTransactions
+   *
+   * @description
+   * This function attempts to unpost records
+   * from the general ledger to allow modification in the posting journal
+   */
+  function unpostTransactions(recordUuids) {
+    return $http.post(url.concat('/transactions/unpost'), { recordUuids });
+  }
   /**
    * @function bindGridExporter
    *
