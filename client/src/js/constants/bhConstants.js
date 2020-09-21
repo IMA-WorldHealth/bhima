@@ -12,6 +12,7 @@ function constantConfig() {
   return {
     actions : {
       CAN_EDIT_ROLES : 1,
+      CAN_UNPOST_TRANSACTIONS : 2,
     },
     accounts : {
       ROOT  : 0,
