@@ -2076,6 +2076,7 @@ CREATE TABLE `transaction_history` (
   `record_uuid`      BINARY(16) NOT NULL,
   `timestamp`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `action` VARCHAR(15) DEFAULT 'edit',
   PRIMARY KEY (`uuid`),
   KEY `record_uuid` (`record_uuid`),
   KEY `user_id` (`user_id`),
