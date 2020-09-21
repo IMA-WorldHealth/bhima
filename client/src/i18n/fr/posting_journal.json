@@ -22,6 +22,7 @@
     "NO_TRANSACTION_TYPE" : "Aucun type de transaction affecté",
     "OUTDATED_DATA_MESSAGE_1" : "Les données affichées peuvent avoir changé depuis leur chargement",
     "OUTDATED_DATA_MESSAGE_2" : "les dernières données.",
+    "UNPOST": "Déposter",
     "CONFIGURATION": {
       "TITLE" : "Configuration colonnes",
       "COLUMNS" : "Colonnes"
@@ -61,7 +62,8 @@
       "MISSING_ENTITY" : "Ligne(s) sans type entite et ID entite",
       "NO_TRANSACTIONS_SELECTED" : "Aucune transaction sélectionnée. Vous devez étre en mode Transaction pour utiliser cet outil.",
       "MULTIPLE_TRANSACTION_EDIT_DISABLED" : "Vous avez sélectionné plusieurs transactions. L'édition de plusieurs transactions est actuellement désactivée.",
-      "TRIAL_BALANCE_HAS_POSTED_RECORDS" : "Vous avez sélectionné des enregistrements postés! Le solde des essais ne peut afficher que les résultats des enregistrements non postés."
+      "TRIAL_BALANCE_HAS_POSTED_RECORDS" : "Vous avez sélectionné des enregistrements postés! Le solde des essais ne peut afficher que les résultats des enregistrements non postés.",
+      "TRIAL_BALANCE_HAS_UNPOSTED_RECORDS" : "Vous avez sélectionné des enregistrements non postés!"
     },
     "TRIAL_BALANCE": {
       "TITLE" : "Rapprochement au Grand Livre",
