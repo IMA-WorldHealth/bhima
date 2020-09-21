@@ -26,6 +26,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   vm.onSelectIprConfig = onSelectIprConfig;
   vm.onSelectWeekendConfig = onSelectWeekendConfig;
   vm.onSelectEmployeeConfig = onSelectEmployeeConfig;
+  vm.cancel = cancel;
 
   vm.clear = clear;
 
@@ -66,6 +67,10 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   // deletes a filter from the custom filter object
   function clear(key) {
     delete vm.payroll[key];
+  }
+
+  function cancel() {
+    $state.go('payroll', null, { reload : true });
   }
 
   // submit the data to the server from all two forms (update, create)
