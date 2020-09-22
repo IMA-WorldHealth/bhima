@@ -9,31 +9,28 @@ angular.module('bhima.routes')
       .state('fee_center.create', {
         url : '/create',
         params : {
-          fee_center : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', feeCenterModal],
+        onEnter : ['$uibModal', '$transition$', feeCenterModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('fee_center.edit', {
         url : '/:id/edit',
         params : {
-          fee_center : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', feeCenterModal],
+        onEnter : ['$uibModal', '$transition$', feeCenterModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function feeCenterModal($modal) {
+function feeCenterModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/fee_center/modals/fee_center.modal.html',
     controller : 'FeeCenterModalController as FeeCenterModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

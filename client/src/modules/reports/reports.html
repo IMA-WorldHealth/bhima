@@ -3,10 +3,10 @@
 
     <ol class="headercrumb">
       <li class="static" translate>TREE.REPORTS</li>
-      <li ng-hide="ReportCtrl.isArchive()" class="title" translate>{{ ReportCtrl.report.title_key }}</li>
+      <li ng-hide="ReportCtrl.isArchive()" class="title" translate>{{ ReportCtrl.SavedReports.current.title_key }}</li>
       <li ng-if="ReportCtrl.isArchive()">
-        <a data-method="report-config" ui-sref="^.reportsBase.{{ReportCtrl.report.report_key}}" translate>
-          {{ ReportCtrl.report.title_key }}
+        <a data-method="report-config" ui-sref="^.reportsBase.{{ReportCtrl.SavedReports.current.report_key}}" translate>
+          {{ ReportCtrl.SavedReports.current.title_key }}
         </a>
       </li>
       <li ng-show="ReportCtrl.isArchive()" class="title" translate>REPORT.UTIL.VIEW_ARCHIVE</li>
@@ -16,7 +16,7 @@
         class="toolbar-item"
         ng-if="!ReportCtrl.isArchive()">
         <button
-          ui-sref="reportsBase.reportsArchive({key : ReportCtrl.report.report_key})"
+          ui-sref="reportsBase.reportsArchive({key : ReportCtrl.SavedReports.current.report_key})"
           class="btn btn-default"
           data-method="archive"
           id="view-report-archive">

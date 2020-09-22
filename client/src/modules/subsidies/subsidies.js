@@ -1,13 +1,12 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
   .controller('SubsidyController', SubsidyController);
 
 SubsidyController.$inject = [
-  'SubsidyService', 'ModalService', 'util', 'NotifyService',
+  'SubsidyService', 'ModalService', 'NotifyService',
   'uiGridConstants', '$state',
 ];
 
-function SubsidyController(Subsidy, ModalService, util, Notify, uiGridConstants, $state) {
+function SubsidyController(Subsidy, ModalService, Notify, uiGridConstants, $state) {
   const vm = this;
 
   // bind methods

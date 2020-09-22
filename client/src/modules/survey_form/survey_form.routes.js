@@ -10,33 +10,29 @@ angular.module('bhima.routes')
       .state('survey_form.create', {
         url : '/create',
         params : {
-          survey_form : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
           collectorId : { value : true },
         },
-        onEnter : ['$uibModal', surveyFormModal],
+        onEnter : ['$uibModal', '$transition$', surveyFormModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('survey_form.edit', {
         url : '/:id/edit',
         params : {
-          survey_form : { value : null },
-          creating : { value : false },
           collectorId : { value : true },
         },
-        onEnter : ['$uibModal', surveyFormModal],
+        onEnter : ['$uibModal', '$transition$', surveyFormModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function surveyFormModal($modal) {
+function surveyFormModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/survey_form/modals/survey_form.modals.html',
     controller : 'SurveyFormModalController as SurveyFormModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

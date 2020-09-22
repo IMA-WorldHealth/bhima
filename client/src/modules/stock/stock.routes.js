@@ -99,7 +99,6 @@ angular.module('bhima.routes')
       });
   }]);
 
-
 function closeModals($uibModalStack) {
   $uibModalStack.dismissAll();
 }

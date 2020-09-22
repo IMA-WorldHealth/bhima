@@ -4,8 +4,8 @@
       <li class="static" translate>TREE.ADMIN</li>
       <li class="title">
         <span translate>TREE.CONFIGURATION_ANALYSIS_TOOLS</span>
-        <label ng-if="ConfigurationAnalysisToolsModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-        <label ng-if="!ConfigurationAnalysisToolsModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        <label ng-if="ConfigurationAnalysisToolsModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!ConfigurationAnalysisToolsModalCtrl.isCreateState" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
@@ -31,7 +31,7 @@
       on-select-callback="ConfigurationAnalysisToolsModalCtrl.onSelectAccountReference(accountReference)"
       required="true">
     </bh-account-reference-select>
-    
+
     <bh-analysis-tool-type-select
       type-id="ConfigurationAnalysisToolsModalCtrl.reference.analysis_tool_type_id"
       id="analysis_tool_type_id"
@@ -41,7 +41,7 @@
   </div>
 
   <div class="modal-footer">
-    <p id="break-even-reference-same" ng-if="ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.$pristine && !ConfigurationAnalysisToolsModalCtrl.isCreating" class="text-warning">
+    <p id="break-even-reference-same" ng-if="ConfigurationAnalysisToolsForm.$submitted && ConfigurationAnalysisToolsForm.$pristine && !ConfigurationAnalysisToolsModalCtrl.isCreateState" class="text-warning">
       <i class="fa fa-warning"></i> <span translate>FORM.INFO.RECORD_SAME</span>
     </p>
 
