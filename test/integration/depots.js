@@ -10,6 +10,7 @@ describe('(/depots) The depots API ', () => {
     text : 'New Depot',
     enterprise_id : 1,
     is_warehouse : 0,
+    parent : 0,
   };
 
   // second depot object
@@ -17,6 +18,7 @@ describe('(/depots) The depots API ', () => {
     text : 'Second Depot',
     enterprise_id : 1,
     is_warehouse : 0,
+    parent : 0,
   };
 
   // depot object with missing uuid
@@ -24,9 +26,20 @@ describe('(/depots) The depots API ', () => {
     text : 'New Depot',
     enterprise_id : 1,
     is_warehouse : 0,
+    parent : 0,
+  };
+
+  // removable depot
+  const removableDepot = {
+    text : 'Removable Depot',
+    enterprise_id : 1,
+    is_warehouse : 1,
+    parent : 0,
   };
 
   // update depot
+  const secondDepotUuid = 'D4BB1452E4FA4742A281814140246877';
+
   const editDepot = {
     text : 'Edited Depot',
     is_warehouse : 1,
@@ -38,13 +51,7 @@ describe('(/depots) The depots API ', () => {
     allow_exit_service : 1,
     allow_exit_transfer : 1,
     allow_exit_loss : 1,
-  };
-
-  // removable depot
-  const removableDepot = {
-    text : 'Removable Depot',
-    enterprise_id : 1,
-    is_warehouse : 1,
+    parent : secondDepotUuid,
   };
 
   it('POST /depots create a new depot in the database', () => {
@@ -100,6 +107,8 @@ describe('(/depots) The depots API ', () => {
         expect(res.body[0].allow_exit_transfer).to.be.equal(editDepot.allow_exit_transfer);
 
         expect(res.body[0].allow_exit_loss).to.be.equal(editDepot.allow_exit_loss);
+
+        expect(res.body[0].parent).to.be.equal(editDepot.parent);
       })
       .catch(helpers.handler);
   });

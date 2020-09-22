@@ -105,7 +105,7 @@ function update(req, res, next) {
         SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
           allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
           allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-          min_months_security_stock, IF(parent, BUID(parent), 0) as parent
+          min_months_security_stock, IF(parent IS NULL, 0, BUID(parent)) as parent
         FROM depot WHERE uuid = ?`;
       return db.exec(sql, [uid]);
     })

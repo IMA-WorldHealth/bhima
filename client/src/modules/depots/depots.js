@@ -141,6 +141,7 @@ function DepotManagementController(
         });
 
         const treeData = FormatTreeData.formatStore(depotsData);
+
         vm.gridOptions.data = treeData;
 
       })
