@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-  .controller('StockSettingsCtrl', StockSettingsCtrl);
+  .controller('StockSettingsController', StockSettingsController);
 
-StockSettingsCtrl.$inject = [
+StockSettingsController.$inject = [
   // 'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   // 'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
   // 'BarcodeService', 'LotService', 'LotsRegistryService', 'moment',
@@ -11,7 +11,7 @@ StockSettingsCtrl.$inject = [
  * Stock lots Controller
  * This module is a registry page for stock lots
  */
-function StockSettingsCtrl(
+function StockSettingsController(
   // Stock, Notify, uiGridConstants, Modal, Languages,
   // Grouping, GridState, Columns, $state, $httpParamSerializer,
   // Barcode, LotService, LotsRegistry, moment,
