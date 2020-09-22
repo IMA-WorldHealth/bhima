@@ -6,11 +6,14 @@ const {
 } = require('gulp');
 
 const del = require('del');
+const typescript = require('gulp-typescript');
 
 const SERVER_FOLDER = path.join(__dirname, '../bin/server/');
 const SERVER_PATHS = ['../server/**/*{.js,.handlebars,.csv}'];
 
 const SERVER_FILES = SERVER_PATHS.map(p => path.join(__dirname, p));
+const SERVER_SRC_PATHS = ['../server/**/*{.js,.ts}'];
+const SERVER_SRC_FILES = SERVER_SRC_PATHS.map(p => path.join(__dirname, p));
 
 /**
  * @function cleanServer
@@ -20,6 +23,29 @@ const SERVER_FILES = SERVER_PATHS.map(p => path.join(__dirname, p));
 const cleanServer = () => del(SERVER_FOLDER);
 
 const cleanEnv = () => del(path.join(__dirname, '../bin/.env'));
+
+const typescriptConfig = {
+  allowJs : true,
+  target : 'es6',
+  lib : ['es6', 'dom'],
+  module: 'commonjs',
+  esModuleInterop: true,
+  strict: true,
+  skipLibCheck: true,
+  forceConsistentCasingInFileNames: true,
+};
+
+/**
+ * @function compileTypescript
+ *
+ * @description
+ * Collect all BHIMA application code and return a single versioned JS file.
+ */
+function compileTypescriptForServer() {
+  return src(SERVER_SRC_FILES)
+    .pipe(typescript(typescriptConfig))
+    .pipe(dest(SERVER_FOLDER));
+}
 
 /**
  * @function moveServerFiles
@@ -63,4 +89,10 @@ async function createReportsDirectory(cb) {
 }
 
 // expose the gulp functions to the outside world
-module.exports = series(cleanServer, cleanEnv, createReportsDirectory, moveEnvFile, moveServerFiles);
+module.exports = series(
+  cleanServer,
+  cleanEnv,
+  createReportsDirectory,
+  moveEnvFile,
+  compileTypescriptForServer,
+);
