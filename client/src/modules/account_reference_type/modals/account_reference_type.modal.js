@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceTypeModalController', AccountReferenceTypeModalController);
 
 AccountReferenceTypeModalController.$inject = [
-  '$state', 'AccountReferenceTypeService', 'NotifyService', 'appcache',
+  '$state', 'AccountReferenceTypeService', 'NotifyService', 'appcache', 'params',
 ];
 
 /**
  * Account Reference Type Modal Controller
  */
 
-function AccountReferenceTypeModalController($state, AccountReferenceType, Notify, AppCache) {
+function AccountReferenceTypeModalController($state, AccountReferenceType, Notify, AppCache, params) {
   const vm = this;
   const cache = AppCache('AccountReferenceTypeModal');
 
@@ -21,15 +21,16 @@ function AccountReferenceTypeModalController($state, AccountReferenceType, Notif
   vm.closeModal = closeModal;
   vm.clear = clear;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  vm.isCreateState = params.isCreateState;
+
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     AccountReferenceType.read(vm.stateParams.id)
       .then(data => {
         vm.types = data;
@@ -46,17 +47,17 @@ function AccountReferenceTypeModalController($state, AccountReferenceType, Notif
 
   // submit the data to the server from all two forms (update, create)
   function submit(accountReferenceTypeForm) {
-    vm.hasNoChange = accountReferenceTypeForm.$submitted && accountReferenceTypeForm.$pristine && !vm.isCreating;
+    vm.hasNoChange = accountReferenceTypeForm.$submitted && accountReferenceTypeForm.$pristine && !vm.isCreateState;
 
     if (accountReferenceTypeForm.$invalid || accountReferenceTypeForm.$pristine) { return null; }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? AccountReferenceType.create(vm.types)
       : AccountReferenceType.update(vm.types.id, vm.types);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('account_reference_type', null, { reload : true });
       })

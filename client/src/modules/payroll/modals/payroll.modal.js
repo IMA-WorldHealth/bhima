@@ -2,23 +2,22 @@ angular.module('bhima.controllers')
   .controller('PayrollConfigModalController', PayrollConfigModalController);
 
 PayrollConfigModalController.$inject = [
-  '$state', 'PayrollConfigurationService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'PayrollConfigurationService', 'NotifyService', 'appcache', 'moment', 'params',
 ];
 
-function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
+function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment, params) {
   const vm = this;
   vm.payroll = {};
-
   const cache = AppCache('PayrollModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;
@@ -27,10 +26,11 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   vm.onSelectIprConfig = onSelectIprConfig;
   vm.onSelectWeekendConfig = onSelectWeekendConfig;
   vm.onSelectEmployeeConfig = onSelectEmployeeConfig;
+  vm.cancel = cancel;
 
   vm.clear = clear;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     PayrollConfigurations.read(vm.stateParams.id)
       .then(payroll => {
         payroll.dateFrom = new Date(payroll.dateFrom);
@@ -69,6 +69,10 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
     delete vm.payroll[key];
   }
 
+  function cancel() {
+    $state.go('payroll', null, { reload : true });
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit(payrollForm) {
     if (payrollForm.$invalid) { return 0; }
@@ -76,13 +80,13 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');
     vm.payroll.dateTo = moment(vm.payroll.dateTo).format('YYYY-MM-DD');
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? PayrollConfigurations.create(vm.payroll)
       : PayrollConfigurations.update(vm.payroll.id, vm.payroll);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('payroll', null, { reload : true });
       })
