@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 InventoryListActionsModalController.$inject = [
   'AccountService', 'InventoryService', 'NotifyService', '$uibModalInstance',
-  '$state', 'util', 'appcache', 'SessionService', '$rootScope',
+  '$state', 'util', 'appcache', 'SessionService', '$rootScope', 'params',
 ];
 
 function InventoryListActionsModalController(
-  Account, Inventory, Notify, Instance,
-  $state, util, AppCache, SessionService, $rootScope,
+  Account, Inventory, Notify, Instance, $state,
+  util, AppCache, SessionService, $rootScope, params,
 ) {
   const vm = this;
   const cache = AppCache('InventoryList');
@@ -18,11 +18,11 @@ function InventoryListActionsModalController(
   vm.stateParams = {};
   vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
-  cache.stateParams = $state.params;
+  cache.stateParams = params;
   vm.stateParams = cache.stateParams;
 
-  if ($state.params.uuid || $state.params.creating) {
-    cache.stateParams = $state.params;
+  if (params.uuid || params.isCreateState) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
@@ -33,7 +33,7 @@ function InventoryListActionsModalController(
   vm.isUpdateState = angular.isDefined(vm.identifier);
   vm.isCreateState = !angular.isDefined(vm.identifier);
 
-  // toggle for creating multiple inventory items at once
+  // toggle for isCreateState multiple inventory items at once
   vm.createAnotherItem = false;
 
   // expose to the view

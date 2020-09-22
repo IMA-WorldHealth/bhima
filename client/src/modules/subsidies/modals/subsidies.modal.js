@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('SubsidyModalController', SubsidyModalController);
 
 SubsidyModalController.$inject = [
-  '$state', 'SubsidyService', 'NotifyService',
+  '$state', 'SubsidyService', 'NotifyService', 'params',
 ];
 
-function SubsidyModalController($state, Subsidy, Notify) {
+function SubsidyModalController($state, Subsidy, Notify, params) {
   const vm = this;
 
-  vm.identifier = $state.params.id;
-  vm.isCreating = !!($state.params.creating);
+  vm.identifier = params.id;
+  vm.isCreateState = !!(params.isCreateState);
 
   // exposed methods
   vm.submit = submit;
@@ -20,7 +20,7 @@ function SubsidyModalController($state, Subsidy, Notify) {
   }
 
   function startup() {
-    if (!vm.isCreating) {
+    if (!vm.isCreateState) {
       Subsidy.read(vm.identifier)
         .then(subsidy => {
           vm.subsidy = subsidy;
@@ -43,13 +43,13 @@ function SubsidyModalController($state, Subsidy, Notify) {
     }
 
     const subsidy = angular.copy(vm.subsidy);
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? Subsidy.create(subsidy)
       : Subsidy.update(subsidy.id, subsidy);
 
     promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'SUBSIDY.CREATED' : 'SUBSIDY.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'SUBSIDY.CREATED' : 'SUBSIDY.UPDATED';
         Notify.success(translateKey);
         $state.go('subsidies', null, { reload : true });
       })

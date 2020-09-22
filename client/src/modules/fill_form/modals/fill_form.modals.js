@@ -3,15 +3,14 @@ angular.module('bhima.controllers')
 
 FillFormModalController.$inject = [
   '$state', 'FillFormService', 'NotifyService', 'appcache', 'SurveyFormService',
-  'DataCollectorManagementService', 'Upload', 'PatientService',
+  'DataCollectorManagementService', 'Upload', 'PatientService', 'params',
 ];
 
 /**
  * FILL FORM Modal Controller
  */
-
 function FillFormModalController($state, FillForm, Notify, AppCache,
-  SurveyForm, DataCollectorManagement, Upload, Patients) {
+  SurveyForm, DataCollectorManagement, Upload, Patients, params) {
   const vm = this;
   const cache = AppCache('FillFormModalController');
 
@@ -36,15 +35,15 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   vm.include_patient_data = 0;
   let include = 0;
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
   if (vm.stateParams.include) {
-    include = parseInt(vm.stateParams.include, 0);
+    include = parseInt(vm.stateParams.include, 10);
   }
 
   function onSelectList(list, value) {
@@ -107,7 +106,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   }
 
   if (vm.stateParams.patient) {
-    Patients.read($state.params.patient)
+    Patients.read(params.patient)
       .then((patient) => {
         vm.patient = patient;
       })
@@ -189,7 +188,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
 
   // submit the data to the server from all two forms (update, create)
   function submit(fillForm) {
-    vm.hasNoChange = fillForm.$submitted && fillForm.$pristine && !vm.isCreating;
+    vm.hasNoChange = fillForm.$submitted && fillForm.$pristine && !vm.isCreateState;
     if (fillForm.$invalid) { return null; }
     if (fillForm.$pristine) { return null; }
 

@@ -52,21 +52,18 @@ angular.module('bhima.routes')
 
       .state('patientRegistry.merge', {
         url         : '/merge',
-        params      : {
-          patients : [],
-        },
-        onEnter : ['$uibModal', mergePatientsModal],
+        params      : { patients : [] },
+        onEnter : ['$uibModal', '$transition$', mergePatientsModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function mergePatientsModal($modal) {
+function mergePatientsModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/patients/registry/modals/mergePatients.modal.html',
     controller : 'MergePatientsModalController as MergePatientsModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

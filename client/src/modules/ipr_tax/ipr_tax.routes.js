@@ -16,56 +16,56 @@ angular.module('bhima.routes')
       .state('ipr_tax.create', {
         url : '/create',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', iprTaxModal],
+        onEnter : ['$uibModal', '$transition$', iprTaxModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('iprConfiguration.createConfig', {
         url : '/:taxIprId/configuration/create',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
+          taxIprId : { value : null },
         },
-        onEnter : ['$uibModal', iprTaxConfigModal],
+        onEnter : ['$uibModal', '$transition$', iprTaxConfigModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('ipr_tax.edit', {
         url : '/:id/edit',
         params : {
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', iprTaxModal],
+        onEnter : ['$uibModal', '$transition$', iprTaxModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('iprConfiguration.editConfig', {
         url : '/:taxIprId/configuration/:id/edit',
         params : {
-          creating : { value : false },
+          taxIprId : { value : null },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', iprTaxConfigModal],
+        onEnter : ['$uibModal', '$transition$', iprTaxConfigModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function iprTaxModal($modal) {
+function iprTaxModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/ipr_tax/modals/ipr_tax.modal.html',
     controller : 'IprTaxModalController as IprTaxModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function iprTaxConfigModal($modal) {
+function iprTaxConfigModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/ipr_tax/modals/ipr_tax_config.modal.html',
     controller : 'IprTaxConfigModalController as IprTaxConfigModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

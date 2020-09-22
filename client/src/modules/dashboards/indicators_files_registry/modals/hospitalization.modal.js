@@ -2,19 +2,19 @@ angular.module('bhima.controllers')
   .controller('HospitalizationModalController', HospitalizationModalController);
 
 HospitalizationModalController.$inject = [
-  '$state', 'IndicatorsDashboardService', 'NotifyService',
+  '$state', 'IndicatorsDashboardService', 'NotifyService', 'params',
 ];
 
 function HospitalizationModalController(
-  $state, IndicatorsDashboard, Notify
+  $state, IndicatorsDashboard, Notify, params,
 ) {
   const vm = this;
 
   vm.file = { type_id : IndicatorsDashboard.HOSPITALIZATION_TYPE_ID };
   vm.indicators = {};
 
-  const { uuid } = $state.params;
-  vm.isCreating = !!($state.params.creating);
+  const { uuid } = params;
+  vm.isCreateState = params.isCreateState;
 
   vm.onSelectPeriod = selected => {
     vm.fiscal_year_id = selected.fiscal && selected.fiscal.id ? selected.fiscal.id : undefined;
@@ -70,14 +70,14 @@ function HospitalizationModalController(
 
     return checkDuplicated()
       .then(isExisting => {
-        if (isExisting && vm.isCreating) {
+        if (isExisting && vm.isCreateState) {
           vm.isExisting = true;
           return null;
         }
 
         // hack for server match
         const bundle = { indicator : vm.file, hospitalization : vm.indicators };
-        const promise = (vm.isCreating)
+        const promise = (vm.isCreateState)
           ? IndicatorsDashboard.hospitalization.create(bundle)
           : IndicatorsDashboard.hospitalization.update(uuid, bundle);
         return promise;
@@ -85,10 +85,12 @@ function HospitalizationModalController(
       .then(() => {
         if (vm.isExisting) { return; }
 
-        const translateKey = (vm.isCreating)
+        const translateKey = (vm.isCreateState)
           ? 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_ADDED'
           : 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_UPDATED';
+
         Notify.success(translateKey);
+
         $state.go('indicatorsFilesRegistry', null, { reload : true });
       })
       .catch(Notify.handleError);

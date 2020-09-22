@@ -3,27 +3,24 @@ angular.module('bhima.controllers')
 
 AccountEditController.$inject = [
   '$rootScope', '$state', 'AccountStoreService', 'AccountService',
-  'NotifyService', 'util', 'bhConstants', 'ModalService', 'appcache',
+  'NotifyService', 'util', 'bhConstants', 'appcache', 'params',
 ];
 
 function AccountEditController(
   $rootScope, $state, AccountStore, Accounts,
-  Notify, util, Constants, ModalService, AppCache
+  Notify, util, Constants, AppCache, params,
 ) {
   const cache = AppCache('AccountEdit');
   const vm = this;
+
   vm.stateParams = {};
-  vm.stateCurrent = {};
+  vm.isCreateState = params.isCreateState;
 
-  if ($state.params.id || $state.current.name) {
-    cache.stateParams = $state.params;
-    cache.stateCurrent = $state.current;
-
+  if (params.id || vm.isCreateState) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
-    vm.stateCurrent = cache.stateCurrent;
   } else {
     vm.stateParams = cache.stateParams;
-    vm.stateCurrent = cache.stateCurrent;
   }
 
   const { id, parentId } = vm.stateParams;
@@ -41,16 +38,6 @@ function AccountEditController(
 
   vm.batchCreate = false;
   vm.account = null;
-
-  // states that are available as sibling states - these can be used to show and hide
-  // relevant components
-  vm.states = {
-    create : 'accounts.create',
-    edit : 'accounts.edit',
-  };
-
-  vm.state = angular.copy(vm.stateCurrent.name);
-  vm.isCreateState = (vm.state === vm.states.create);
 
   // variables to track custom modal error handling, these will be replaced
   // with either the Notification library or a uniform modal error handling utility
@@ -71,17 +58,17 @@ function AccountEditController(
     code : 'ERRORS.NOT_FOUND',
   };
 
-  settupPage()
+  setupPage()
     .then(setAccount);
 
   /**
-   * @method settupPage
+   * @method setupPage
    *
    * @description
    * Initialise required variables and fetch initial stores for udpating/ creating
    * accounts.
    */
-  function settupPage() {
+  function setupPage() {
     return AccountStore.accounts()
       .then(handleAccountStore)
       .then(handleAccountType);
@@ -157,7 +144,6 @@ function AccountEditController(
     vm.account.type_id = cacheType || null;
   }
 
-
   vm.titleChangedValidation = titleChangedValidation;
 
   // @todo form validation using validators on a component
@@ -171,7 +157,6 @@ function AccountEditController(
       vm.invalidTitleAccount = false;
     }
   }
-
 
   /** @todo re-factor method - potentially these two actions should be split into two controllers */
   function updateAccount(accountForm) {
@@ -255,7 +240,7 @@ function AccountEditController(
   function resetModal(accountForm) {
     accountForm.$setPristine();
     accountForm.$setUntouched();
-    settupPage()
+    setupPage()
       .then(setAccount);
   }
 
@@ -263,6 +248,7 @@ function AccountEditController(
     if (!typeStore) {
       return null;
     }
+
     return typeStore.get(typeId).translation_key;
   }
 
