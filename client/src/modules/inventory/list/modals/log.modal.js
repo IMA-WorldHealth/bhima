@@ -13,7 +13,6 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
     vm.inventory = inventory;
   });
 
-
   Inventory.inventoryLog(data.uuid).then(logs => {
     vm.logs = [];
     logs.forEach(log => {
@@ -43,13 +42,12 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
 
   });
 
-
   function formatKeys(record) {
     const removables = ['group_uuid', 'type_id', 'unit_id'];
     removables.forEach(r => {
       delete record[r];
     });
-    if (record.text) {
+    if (record.label) {
       record.text = record.label;
     }
     return record;
@@ -80,6 +78,5 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
     result.to = current[key];
     return result;
   }
-
 
 }
