@@ -103,7 +103,6 @@ angular.module('bhima.routes')
         controller  : 'StockSettingsController as StockSettingsCtrl',
         templateUrl : 'modules/stock/settings/stock-settings.html',
         params : {
-          filters : [],
         },
       });
   }]);
