@@ -9,7 +9,7 @@ const del = require('del');
 const typescript = require('gulp-typescript');
 
 const SERVER_FOLDER = path.join(__dirname, '../bin/server/');
-const SERVER_PATHS = ['../server/**/*{.js,.handlebars,.csv}'];
+const SERVER_PATHS = ['../server/**/*{.handlebars,.csv}'];
 
 const SERVER_FILES = SERVER_PATHS.map(p => path.join(__dirname, p));
 const SERVER_SRC_PATHS = ['../server/**/*{.js,.ts}'];
@@ -51,7 +51,7 @@ function compileTypescriptForServer() {
  * @function moveServerFiles
  *
  * @description
- * Copies the server files from the server folder into a distribution
+ * Copies the server files (not js or ts) from the server folder into a distribution
  * folder.
  */
 function moveServerFiles() {
@@ -95,4 +95,5 @@ module.exports = series(
   createReportsDirectory,
   moveEnvFile,
   compileTypescriptForServer,
+  moveServerFiles,
 );
