@@ -10,7 +10,7 @@ angular.module('bhima.routes')
       .state('subsidies.create', {
         url : '/create',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
         onEnter : ['$uibModal', subsidyModal],
         onExit : ['$uibModalStack', closeModal],
@@ -20,20 +20,18 @@ angular.module('bhima.routes')
         url : '/:id/edit',
         params : {
           id : { value : null },
-          creating : { value : false },
         },
-        onEnter : ['$uibModal', subsidyModal],
+        onEnter : ['$uibModal', '$transition$', subsidyModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function subsidyModal($modal) {
+function subsidyModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/subsidies/modals/subsidies.modal.html',
     controller : 'SubsidyModalController as SubsidyModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
