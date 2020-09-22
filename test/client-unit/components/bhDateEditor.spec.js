@@ -25,7 +25,7 @@ function bhDateEditorTests() {
     'bhima.constants',
     'templates',
     'bhima.mocks',
-    'ui.router'
+    'ui.router',
   ));
 
   let $scope;
@@ -95,7 +95,6 @@ function bhDateEditorTests() {
   it('changing the date value should fire the onChange event', () => {
     const input = find(element, '[data-date-editor-input]');
 
-
     // make sure the input is not readonly
     clickOnCalendarButton(element);
 
@@ -105,7 +104,6 @@ function bhDateEditorTests() {
 
     expect($scope.callback).to.have.been.called();
   });
-
 
   it('Should not allow future date to be selected', () => {
     const input = find(element, '[data-date-editor-input]');
@@ -138,7 +136,7 @@ function bhDateEditorTests() {
   });
 
   describe('limit-min-fiscal flag', () => {
-    let fiscalLimitElement = `
+    const fiscalLimitElement = `
       <bh-date-editor date-value="date" limit-min-fiscal></bh-date-editor>
     `;
     let fiscalElement;

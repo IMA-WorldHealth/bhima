@@ -78,6 +78,7 @@ function bhDateEditorController(bhConstants, Session, Fiscal) {
         delete $ctrl.dateValue;
       }
     }
+
     $ctrl.onChange({ date : $ctrl.dateValue });
   };
 
