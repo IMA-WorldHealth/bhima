@@ -11,9 +11,16 @@
           <span class="fa fa-plus"></span> <span translate>DEPOT.ADD_DEPOT</span>
         </button>
       </div>
-
       <bh-search-button on-click="DepotCtrl.search()"></bh-search-button>
+      <div class="toolbar-item">
+        <button ng-if="DepotCtrl.treeStructure" ng-class="{ 'btn-info' : DepotCtrl.treeStructure }" class="btn btn-default" data-method="tree_mode" ng-click="DepotCtrl.toggleTreeMode()">
+          <i class="fa fa-tree"></i> <span class="visible-lg-inline" translate>FORM.LABELS.TREE_STRUCTURE</span>
+        </button>
 
+        <button ng-if="DepotCtrl.listStructure" ng-class="{ 'btn-default' : DepotCtrl.listStructure }" class="btn btn-default" data-method="list_mode" ng-click="DepotCtrl.toggleTreeMode()">
+          <i class="fa fa-list"></i> <span class="visible-lg-inline" translate>FORM.LABELS.LIST_STRUCTURE</span>
+        </button>
+      </div>
       <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
     </div>
   </div>
@@ -29,7 +36,27 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="depot-grid"
+    <div
+      id="depot-grid"
+      ng-if="DepotCtrl.treeStructure"      
+      ui-grid="DepotCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-tree-view>
+
+      <bh-grid-loading-indicator
+        loading-state="DepotCtrl.loading"
+        empty-state="DepotCtrl.gridOptions.data.length === 0"
+        error-state="DepotCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div 
+      id="depot-grid"
+      ng-if="DepotCtrl.listStructure"
       ui-grid="DepotCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-auto-resize

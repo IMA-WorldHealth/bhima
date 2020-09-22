@@ -11,6 +11,7 @@ angular.module('bhima.routes')
         url : '/create',
         params : {
           depot : { value : {} },
+          parentId : { squash : true, value : null },
           creating : { value : true },
         },
         onEnter : ['$uibModal', depotModal],
