@@ -10,10 +10,9 @@ angular.module('bhima.routes')
       .state('depots.create', {
         url : '/create',
         params : {
-          depot : { value : {} },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', depotModal],
+        onEnter : ['$uibModal', '$transition$', depotModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
@@ -21,20 +20,19 @@ angular.module('bhima.routes')
         url : '/edit',
         params : {
           depot : { value : {} },
-          creating : { value : false },
+          isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', depotModal],
+        onEnter : ['$uibModal', '$transition$', depotModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function depotModal($modal) {
+function depotModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/depots/modals/depot.modal.html',
     controller : 'DepotModalController as DepotModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

@@ -10,57 +10,54 @@ angular.module('bhima.routes')
       .state('indicatorsFilesRegistry.addHospitalizationFile', {
         url : '/addHospitalizationFile',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', hospitalizationModal],
+        onEnter : ['$uibModal', '$transition$', hospitalizationModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('indicatorsFilesRegistry.editHospitalizationFile', {
         url : '/editHospitalizationFile',
         params : {
-          creating : { value : false },
           uuid : null,
         },
-        onEnter : ['$uibModal', hospitalizationModal],
+        onEnter : ['$uibModal', '$transition$', hospitalizationModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('indicatorsFilesRegistry.addStaffFile', {
         url : '/addStaffFile',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', staffModal],
+        onEnter : ['$uibModal', '$transition$', staffModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('indicatorsFilesRegistry.editStaffFile', {
         url : '/editStaffFile',
         params : {
-          creating : { value : false },
           uuid : null,
         },
-        onEnter : ['$uibModal', staffModal],
+        onEnter : ['$uibModal', '$transition$', staffModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('indicatorsFilesRegistry.addFinanceFile', {
         url : '/addFinanceFile',
         params : {
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', financeModal],
+        onEnter : ['$uibModal', '$transition$', financeModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('indicatorsFilesRegistry.editFinanceFile', {
         url : '/editFinanceFile',
         params : {
-          creating : { value : false },
           uuid : null,
         },
-        onEnter : ['$uibModal', financeModal],
+        onEnter : ['$uibModal', '$transition$', financeModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
@@ -83,34 +80,31 @@ angular.module('bhima.routes')
       });
   }]);
 
-function hospitalizationModal($modal) {
+function hospitalizationModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     size : 'lg',
     templateUrl : 'modules/dashboards/indicators_files_registry/modals/hospitalization.modal.html',
     controller : 'HospitalizationModalController as $ctrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function staffModal($modal) {
+function staffModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     size : 'lg',
     templateUrl : 'modules/dashboards/indicators_files_registry/modals/staff.modal.html',
     controller : 'StaffModalController as $ctrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
-function financeModal($modal) {
+function financeModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     size : 'lg',
     templateUrl : 'modules/dashboards/indicators_files_registry/modals/finance.modal.html',
     controller : 'FinanceModalController as $ctrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

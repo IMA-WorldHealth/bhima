@@ -35,15 +35,16 @@ function inventoryStateProvider($stateProvider) {
         creating : { value : true },
         filters : [],
       },
-      onEnter : ['$state', 'ModalService', onEnterInventoryFactory('create')],
+      onEnter : ['$state', 'ModalService', '$transition$', onEnterInventoryFactory('create')],
       onExit : ['$uibModalStack', closeModal],
     })
     .state('inventory.update', {
       url : '/:uuid/update',
-      onEnter : ['$state', 'ModalService', onEnterInventoryFactory('update')],
+      onEnter : ['$state', 'ModalService', '$transition$', onEnterInventoryFactory('update')],
       onExit : ['$uibModalStack', closeModal],
       params : {
         filters : [],
+        uuid : { value : null },
       },
     })
     .state('inventory.list', {
@@ -65,8 +66,8 @@ function closeModal($uibModalStack) {
 function onEnterInventoryFactory(stateType) {
   const isCreateState = (stateType === 'create');
 
-  return function onEnter($state, Modal) {
-    const instance = Modal.openInventoryListActions();
+  return function onEnter($state, Modal, $transition) {
+    const instance = Modal.openInventoryListActions(null, $transition.params('to'));
     instance
       .then((_uuid) => {
         const params = { uuid : _uuid };

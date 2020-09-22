@@ -2,23 +2,23 @@ angular.module('bhima.controllers')
   .controller('OffdayModalController', OffdayModalController);
 
 OffdayModalController.$inject = [
-  '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment', 'params',
 ];
 
-function OffdayModalController($state, Offdays, Notify, AppCache, moment) {
+function OffdayModalController($state, Offdays, Notify, AppCache, moment, params) {
   const vm = this;
   vm.offday = {};
 
   const cache = AppCache('OffdayModal');
 
-  if ($state.params.creating || $state.params.id) {
-    vm.stateParams = $state.params;
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // update the date
   vm.onDateChange = (date) => {
@@ -28,7 +28,7 @@ function OffdayModalController($state, Offdays, Notify, AppCache, moment) {
   // exposed methods
   vm.submit = submit;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Offdays.read(vm.stateParams.id)
       .then((offday) => {
         offday.date = new Date(offday.date);
@@ -43,13 +43,13 @@ function OffdayModalController($state, Offdays, Notify, AppCache, moment) {
 
     vm.offday.date = moment(vm.offday.date).format('YYYY-MM-DD');
 
-    const promise = (vm.isCreating) ?
-      Offdays.create(vm.offday) :
-      Offdays.update(vm.offday.id, vm.offday);
+    const promise = (vm.isCreateState)
+      ? Offdays.create(vm.offday)
+      : Offdays.update(vm.offday.id, vm.offday);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('offdays', null, { reload : true });
       })

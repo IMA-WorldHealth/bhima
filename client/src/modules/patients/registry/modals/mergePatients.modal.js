@@ -2,13 +2,13 @@ angular.module('bhima.controllers')
   .controller('MergePatientsModalController', MergePatientsModalController);
 
 MergePatientsModalController.$inject = [
-  'PatientService', '$state', 'NotifyService', '$uibModalInstance',
+  'PatientService', '$state', 'NotifyService', '$uibModalInstance', 'params',
 ];
 
-function MergePatientsModalController(Patients, $state, Notify, Instance) {
+function MergePatientsModalController(Patients, $state, Notify, Instance, parameters) {
   const vm = this;
 
-  vm.patients = $state.params.patients;
+  vm.patients = parameters.patients;
   vm.submit = submit;
 
   vm.selectPatient = uuid => {

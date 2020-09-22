@@ -16,6 +16,18 @@ function BaseReportService($http, Modal, util, Languages) {
   service.emailReportModal = emailReportModal;
   service.emailReport = emailReport;
 
+  service.current = {};
+
+  service.setCurrentReportByRequestKey = setCurrentReportByRequestKey;
+
+  // sets the current service state based on the
+  function setCurrentReportByRequestKey(key) {
+    return requestKey(key)
+      .then(([report]) => {
+        service.current = report;
+      });
+  }
+
   function requestKey(key) {
     const url = '/reports/keys/';
     return $http.get(url.concat(key))

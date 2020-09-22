@@ -10,32 +10,29 @@ angular.module('bhima.routes')
       .state('fill_form.fill', {
         url : '/:id/fill',
         params : {
-          fill_form : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', fillFormModal],
+        onEnter : ['$uibModal', '$transition$', fillFormModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('fill_form.edit', {
         url : '/:id/:uuid/edit',
         params : {
-          fill_form : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', fillFormModal],
+        onEnter : ['$uibModal', '$transition$', fillFormModal],
         onExit : ['$uibModalStack', closeModal],
       });
 
   }]);
 
-function fillFormModal($modal) {
+function fillFormModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/fill_form/modals/fill_form.modals.html',
     controller : 'FillFormModalController as FillFormModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {

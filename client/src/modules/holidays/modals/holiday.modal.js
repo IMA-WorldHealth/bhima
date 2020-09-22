@@ -2,23 +2,23 @@ angular.module('bhima.controllers')
   .controller('HolidayModalController', HolidayModalController);
 
 HolidayModalController.$inject = [
-  '$state', 'HolidayService', 'ModalService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'HolidayService', 'ModalService', 'NotifyService', 'appcache', 'moment', 'params',
 ];
 
-function HolidayModalController($state, Holidays, ModalService, Notify, AppCache, moment) {
+function HolidayModalController($state, Holidays, ModalService, Notify, AppCache, moment, params) {
   const vm = this;
   vm.holiday = {};
 
   const cache = AppCache('HolidayModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
 
-  vm.isCreateState = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
   // exposed methods
   vm.submit = submit;

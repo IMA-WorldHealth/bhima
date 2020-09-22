@@ -2,16 +2,16 @@ angular.module('bhima.controllers')
   .controller('ServiceModalController', ServiceModalController);
 
 ServiceModalController.$inject = [
-  '$state', 'ServiceService', 'DepotService', '$translate',
-  'SessionService', 'ModalService', 'util', 'NotifyService',
+  '$state', 'ServiceService', 'NotifyService', 'params',
 ];
 
-function ServiceModalController($state, Services, Depots, $translate,
-  SessionService, ModalService, util, Notify) {
+function ServiceModalController(
+  $state, Services, Notify, params,
+) {
   const vm = this;
-  vm.service = { ...$state.params.service };
 
-  vm.isCreating = !!($state.params.creating);
+  vm.service = { ...params.service };
+  vm.isCreateState = !!(params.isCreateState);
 
   // exposed methods
   vm.submit = submit;
@@ -25,13 +25,13 @@ function ServiceModalController($state, Services, Depots, $translate,
   function submit(serviceForm) {
     if (serviceForm.$invalid || serviceForm.$pristine) { return 0; }
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? Services.create(vm.service)
       : Services.update(vm.service.uuid, vm.service);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'SERVICE.CREATED' : 'SERVICE.UPDATED';
+        const translateKey = (vm.isCreateState) ? 'SERVICE.CREATED' : 'SERVICE.UPDATED';
         Notify.success(translateKey);
         $state.go('services', null, { reload : true });
       })
