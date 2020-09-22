@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('SurveyFormModalController', SurveyFormModalController);
 
 SurveyFormModalController.$inject = [
-  '$state', 'SurveyFormService', 'NotifyService', 'appcache', 'DataCollectorManagementService',
+  '$state', 'SurveyFormService', 'NotifyService', 'appcache', 'DataCollectorManagementService', 'params',
 ];
 
 /**
  * SURVEY FORM Modal Controller
  */
-
-function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCollectorManagement) {
+function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCollectorManagement, params) {
   const vm = this;
   const cache = AppCache('SurveyFormModal');
 
@@ -46,25 +45,25 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
     }
   }
 
-  if ($state.params.collectorId) {
-    vm.surveyForm.data_collector_management_id = $state.params.collectorId;
+  if (params.collectorId) {
+    vm.surveyForm.data_collector_management_id = params.collectorId;
 
-    DataCollectorManagement.read($state.params.collectorId)
+    DataCollectorManagement.read(params.collectorId)
       .then(data => {
         vm.dataCollector = data;
       })
       .catch(Notify.handleError);
   }
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+  vm.isCreateState = vm.stateParams.isCreateState;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     SurveyForm.read(vm.stateParams.id)
       .then(data => {
         vm.selectList = data.choice_list_id;
@@ -84,7 +83,7 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
 
   // submit the data to the server from all two forms (update, create)
   function submit(surveyForm) {
-    vm.hasNoChange = surveyForm.$submitted && surveyForm.$pristine && !vm.isCreating;
+    vm.hasNoChange = surveyForm.$submitted && surveyForm.$pristine && !vm.isCreateState;
 
     if (surveyForm.$invalid || !vm.check) { return null; }
     if (surveyForm.$pristine) { return null; }
@@ -95,13 +94,13 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
 
     vm.surveyForm.name = vm.surveyForm.name.trim();
 
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? SurveyForm.create(vm.surveyForm)
       : SurveyForm.update(vm.surveyForm.id, vm.surveyForm);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('survey_form', null, { reload : true });
       })

@@ -2,27 +2,22 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>TREE.ADMIN</li>
-
-      <li ng-if="SurveyFormModalCtrl.isCreating" class="title">
+      <li class="title">
         <span translate>TREE.FORMS_CONFIGURATION</span>
-        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-      </li>
-      <li ng-if="!SurveyFormModalCtrl.isCreating" class="title">
-        <span translate>TREE.FORMS_CONFIGURATION</span>
-        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        <label ng-if="SurveyFormModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!SurveyFormModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
 
   <div style="background-color: {{ SurveyFormModalCtrl.dataCollector.color }}; border-radius : 25px ; text-align: center; text-decoration-color: #ffffff; text-shadow: rgb(255, 255, 255) 5px 3px 8px;">
-    <h1><strong>
-      <span translate>
-        {{ SurveyFormModalCtrl.dataCollector.label }}
-      </span>
-    </strong></h1>  
+    <h1>
+      <strong translate>{{ SurveyFormModalCtrl.dataCollector.label }}</strong>
+    </h1>
   </div>
 
   <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+
     <!-- Type -->
     <bh-survey-form-type-select
       id="type_element"
@@ -73,7 +68,7 @@
         </bh-survey-list-select>
       </div>
 
-      <!-- TO DO 
+      <!-- TO DO
         <div class="checkbox">
         <label>
           <input
