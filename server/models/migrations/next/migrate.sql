@@ -777,3 +777,10 @@ INSERT INTO `actions`(`id`, `description`) VALUES
 
 
 ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit';
+
+/*
+ * @author: lomamech
+ * @date: 2020-09-22
+ * @desc: Improvement of the depot management interface
+ */
+ ALTER TABLE `depot` ADD COLUMN `parent` BINARY(16) NULL;
