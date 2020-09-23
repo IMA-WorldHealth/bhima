@@ -15,7 +15,6 @@ function AccountReportMultipleConfigController(
   const reportUrl = 'reports/finance/account_report_multiple';
   vm.previewGenerated = false;
 
-
   vm.reportDetails = {
     currency_id : Session.enterprise.currency_id,
     accountIds : [],

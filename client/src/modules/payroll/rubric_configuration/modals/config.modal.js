@@ -2,22 +2,23 @@ angular.module('bhima.controllers')
   .controller('RubricConfigModalController', RubricConfigModalController);
 
 RubricConfigModalController.$inject = [
-  '$state', 'ConfigurationService', 'NotifyService', 'appcache', 'RubricService',
+  '$state', 'ConfigurationService', 'NotifyService', 'appcache', 'RubricService', 'params',
 ];
 
-function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics) {
+function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics, params) {
   const vm = this;
   vm.config = {};
 
   const cache = AppCache('RubricConfigModal');
 
-  if ($state.params.creating || $state.params.id) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = params.isCreateState;
 
   // exposed methods
   vm.all = false;

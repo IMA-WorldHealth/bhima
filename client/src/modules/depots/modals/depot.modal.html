@@ -1,11 +1,11 @@
 <form name="DepotForm" bh-submit="DepotModalCtrl.submit(DepotForm)" novalidate>
   <div class="modal-header">
   <ol class="headercrumb">
-    <li ng-if="DepotModalCtrl.isCreating" class="title">
+    <li ng-if="DepotModalCtrl.isCreateState" class="title">
       <span translate>DEPOT.ADD_DEPOT</span>
       <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
     </li>
-    <li ng-if="!DepotModalCtrl.isCreating" class="title">
+    <li ng-if="!DepotModalCtrl.isCreateState" class="title">
       <span translate>DEPOT.EDIT_DEPOT</span>
       <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
     </li>

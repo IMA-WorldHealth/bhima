@@ -52,7 +52,6 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
     return loadIndexes(StaffingIndice.filters.formatHTTP(true));
   };
 
-
   vm.remove = function remove(uuid) {
     const message = 'FORM.DIALOGS.CONFIRM_DELETE';
     Modal.confirm(message)
@@ -161,7 +160,6 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
       if (change) loadIndexes();
     });
   };
-
 
   vm.openGradeIndiceModal = () => {
     $uibModal.open({

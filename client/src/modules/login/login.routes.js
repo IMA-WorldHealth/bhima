@@ -5,5 +5,6 @@ angular.module('bhima.routes')
         url         : '/login',
         controller  : 'LoginController as LoginCtrl',
         templateUrl : 'modules/login/login.html',
+        data : { isLoginState : true, allowAuthPassthrough : true },
       });
   }]);

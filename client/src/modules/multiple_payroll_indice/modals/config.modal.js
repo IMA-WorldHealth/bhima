@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 ConfigIndicePaiementModalController.$inject = [
   '$state', 'NotifyService', 'appcache', 'EmployeeService',
   'MultipleIndicesPayrollService', 'PayrollConfigurationService',
-  'ExchangeRateService', 'SessionService',
+  'ExchangeRateService', 'SessionService', 'params',
 ];
 
 function ConfigIndicePaiementModalController(
   $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
-  Exchange, Session,
+  Exchange, Session, params,
 ) {
   const vm = this;
   vm.config = {};
@@ -23,8 +23,8 @@ function ConfigIndicePaiementModalController(
 
   const cache = AppCache('multiple-indice-payroll-grid');
 
-  if ($state.params.creating || $state.params.uuid) {
-    cache.stateParams = $state.params;
+  if (params.isCreateState || params.uuid) {
+    cache.stateParams = params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
@@ -53,16 +53,16 @@ function ConfigIndicePaiementModalController(
 
   // initialize module
   function startup() {
-    if ($state.params.filters.length) {
-      MultiplePayroll.filters.replaceFiltersFromState($state.params.filters);
+    if (params.filters.length) {
+      MultiplePayroll.filters.replaceFiltersFromState(params.filters);
       MultiplePayroll.cacheFilters();
     }
 
     vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
-    const params = MultiplePayroll.filters.formatHTTP(true);
-    params.employee_uuid = $state.params.uuid;
-    load(params);
+    const parameters = MultiplePayroll.filters.formatHTTP(true);
+    parameters.employee_uuid = parameters.uuid;
+    load(parameters);
 
   }
 
@@ -85,7 +85,6 @@ function ConfigIndicePaiementModalController(
       .catch(Notify.handleError);
   }
 
-
   function formatRubrics(object) {
     const keys = Object.keys(vm.selectedRubrics);
     return keys.map(k => {
@@ -105,9 +104,10 @@ function ConfigIndicePaiementModalController(
     }
 
     const data = MultiplePayroll.filters.formatHTTP(true);
+
     angular.extend(data, {
       rubrics : formatRubrics(vm.selectedRubrics),
-      employee_uuid : $state.params.uuid,
+      employee_uuid : params.uuid,
     });
 
     return MultiplePayroll.create(data)

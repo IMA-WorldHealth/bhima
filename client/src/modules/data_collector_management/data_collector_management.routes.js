@@ -10,31 +10,28 @@ angular.module('bhima.routes')
       .state('data_collector_management.create', {
         url : '/create',
         params : {
-          data_collector_management : { value : null },
-          creating : { value : true },
+          isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', dataCollectorManagementModal],
+        onEnter : ['$uibModal', '$transition$', dataCollectorManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
       .state('data_collector_management.edit', {
         url : '/:id/edit',
         params : {
-          data_collector_management : { value : null },
-          creating : { value : false },
+          id : { value : null },
         },
-        onEnter : ['$uibModal', dataCollectorManagementModal],
+        onEnter : ['$uibModal', '$transition$', dataCollectorManagementModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function dataCollectorManagementModal($modal) {
+function dataCollectorManagementModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/data_collector_management/modals/data_collector_management.modals.html',
     controller : 'DataCollectorManagementModalController as DataCollectorManagementModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
