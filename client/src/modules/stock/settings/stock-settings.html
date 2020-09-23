@@ -71,8 +71,13 @@
             on-change-callback="StockSettingsCtrl.enableStrictDepotPermissionSetting(value)">
           </bh-yes-no-radios>
         </div>
-      </div>
 
+        <div class="panel-footer" id="submission">
+          <bh-loading-button loading-state="EnterpriseForm.$loading">
+            <span translate>FORM.BUTTONS.UPDATE</span>
+          </bh-loading-button>
+        </div>
+      </div>
     </form>
   </div>
 </div>
