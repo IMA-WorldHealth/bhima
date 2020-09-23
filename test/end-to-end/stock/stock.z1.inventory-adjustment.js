@@ -41,8 +41,8 @@ function StockInventoryAdjustmentTests() {
   });
 }
 
-describe('Stock Inventory Adjustment', () => {
+module.exports = () => {
   describe('Inventory Adjustment Test', StockInventoryAdjustmentTests);
   describe('Inventory Registry After Adjustment', StockInventoriesRegistryTests);
   describe('Lots Registry After Adjustment', StockLotsRegistryTests);
-});
+};

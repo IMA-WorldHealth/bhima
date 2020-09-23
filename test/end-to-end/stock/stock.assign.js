@@ -128,4 +128,4 @@ function StockAssignTests() {
   });
 }
 
-describe('Stock Assign Module', StockAssignTests);
+module.exports = StockAssignTests;
