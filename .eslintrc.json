@@ -15,6 +15,9 @@
     "jquery" : true,
     "mocha" : true
   },
+  "parserOptions" : {
+    "project" : "tsconfig.json"
+  },
   "rules" : {
     "padded-blocks" : "off",
     "array-bracket-spacing" : "warn",

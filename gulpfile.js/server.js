@@ -24,16 +24,7 @@ const cleanServer = () => del(SERVER_FOLDER);
 
 const cleanEnv = () => del(path.join(__dirname, '../bin/.env'));
 
-const typescriptConfig = {
-  allowJs : true,
-  target : 'es6',
-  lib : ['es6', 'dom'],
-  module: 'commonjs',
-  esModuleInterop: true,
-  strict: true,
-  skipLibCheck: true,
-  forceConsistentCasingInFileNames: true,
-};
+const typescriptConfig = require(path.resolve(__dirname, '../tsconfig.json'));
 
 /**
  * @function compileTypescript
