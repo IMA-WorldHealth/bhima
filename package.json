@@ -10,7 +10,7 @@
     "test:integration": "cross-env SUITE=\"integration\" ./sh/test.sh",
     "test:ends": "cross-env SUITE=\"end-to-end\" ./sh/test.sh",
     "test:client-unit": "cross-env SUITE=\"client-unit\" ./sh/test.sh",
-    "test:server-unit": "cross-env SUITE=\"server-unit\" ./sh/test.sh",
+    "test:server-unit": "cross-env NODE_ENV=development gulp build && cross-env SUITE=\"server-unit\" ./sh/test.sh",
     "build": "cross-env ./node_modules/.bin/gulp build",
     "build:db": "cross-env ./sh/build-database.sh",
     "build:clean": "cross-env ./sh/build-init-database.sh",
