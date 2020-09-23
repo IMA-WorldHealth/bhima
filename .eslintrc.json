@@ -1,13 +1,22 @@
 {
-  "extends" : "airbnb-base",
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
   "plugins" : [
-    "import"
+    "import",
+    "@typescript-eslint"
   ],
   "env" : {
     "browser" : true,
     "node" : true,
     "jquery" : true,
     "mocha" : true
+  },
+  "parserOptions" : {
+    "project" : "tsconfig.json"
   },
   "rules" : {
     "padded-blocks" : "off",
