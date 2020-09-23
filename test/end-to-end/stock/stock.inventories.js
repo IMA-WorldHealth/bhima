@@ -97,4 +97,4 @@ function StockInventoriesRegistryTests() {
   });
 }
 
-describe('Stock Inventory Registry', StockInventoriesRegistryTests);
+module.exports = StockInventoriesRegistryTests;

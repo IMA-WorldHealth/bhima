@@ -52,4 +52,4 @@ function StockAdjustmentTests() {
   });
 }
 
-describe('Stock Adjustment Test', StockAdjustmentTests);
+module.exports = StockAdjustmentTests;

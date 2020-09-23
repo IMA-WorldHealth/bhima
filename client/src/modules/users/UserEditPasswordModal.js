@@ -1,8 +1,7 @@
-
 angular.module('bhima.controllers')
   .controller('UsersPasswordModalController', UsersPasswordModalController);
 
-UsersPasswordModalController.$inject = ['$state', 'UserService', 'NotifyService'];
+UsersPasswordModalController.$inject = ['$state', 'UserService', 'NotifyService', 'params'];
 
 /**
 * User Password Modal Controller
@@ -10,7 +9,7 @@ UsersPasswordModalController.$inject = ['$state', 'UserService', 'NotifyService'
 * This controller is responsible for changing a user's password.  Provides a
 * simply modal interface to
 */
-function UsersPasswordModalController($state, Users, Notify) {
+function UsersPasswordModalController($state, Users, Notify, params) {
   const vm = this;
 
   vm.validPassword = validPassword;
@@ -24,11 +23,11 @@ function UsersPasswordModalController($state, Users, Notify) {
 
   // submits the password form
   function submit(passwordForm) {
-    if (passwordForm.$invalid) { return; }
-    if (passwordForm.$pristine || !validPassword()) { return; }
+    if (passwordForm.$invalid) { return 0; }
+    if (passwordForm.$pristine || !validPassword()) { return 0; }
 
     // try to update the user's password
-    return Users.updatePassword($state.params.id, { password : vm.user.password })
+    return Users.updatePassword(params.id, { password : vm.user.password })
       .then(() => {
         Notify.success('USERS.UPDATED');
         $state.go('users.edit', { id : vm.user.id, creating : false });
@@ -40,7 +39,7 @@ function UsersPasswordModalController($state, Users, Notify) {
     $state.go('users.edit', { id : vm.user.id, creating : false });
   }
 
-  Users.read($state.params.id)
+  Users.read(params.id)
     .then((user) => {
       vm.user = user;
     })

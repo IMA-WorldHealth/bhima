@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function Provider($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
 
     $stateProvider.state('roles', {
       url : '/roles',

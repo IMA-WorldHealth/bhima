@@ -1,41 +1,39 @@
 angular.module('bhima.routes')
-.config(['$stateProvider', function ($stateProvider) {
-  $stateProvider
+  .config(['$stateProvider', ($stateProvider) => {
+    $stateProvider
 
-    .state('services', {
-      url         : '/services',
-      controller  : 'ServicesController as ServicesCtrl',
-      templateUrl : 'modules/services/services.html',
-    })
+      .state('services', {
+        url         : '/services',
+        controller  : 'ServicesController as ServicesCtrl',
+        templateUrl : 'modules/services/services.html',
+      })
 
-    .state('services.create', {
-      url : '/create',
-      params : {
-        service : { value : null },
-        creating : { value : true },
-      },
-      onEnter : ['$uibModal', serviceModal],
-      onExit : ['$uibModalStack', closeModal],
-    })
+      .state('services.create', {
+        url : '/create',
+        params : {
+          isCreateState : { value : true },
+        },
+        onEnter : ['$uibModal', '$transition$', serviceModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
 
-    .state('services.edit', {
-      url : '/edit',
-      params : {
-        service : { value : null },
-        creating : { value : false },
-      },
-      onEnter : ['$uibModal', serviceModal],
-      onExit : ['$uibModalStack', closeModal],
-    });
-}]);
+      .state('services.edit', {
+        url : '/edit',
+        params : {
+          service : { value : null },
+          isCreateState : { value : false },
+        },
+        onEnter : ['$uibModal', '$transition$', serviceModal],
+        onExit : ['$uibModalStack', closeModal],
+      });
+  }]);
 
-function serviceModal($modal) {
+function serviceModal($modal, $transition) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/services/modals/service.modal.html',
     controller : 'ServiceModalController as ServiceModalCtrl',
-  });
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
 }
 
 function closeModal(ModalStack) {
