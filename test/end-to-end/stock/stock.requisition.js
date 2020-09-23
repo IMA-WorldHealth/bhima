@@ -127,4 +127,4 @@ function StockRequisitionTests() {
   });
 }
 
-describe('Stock Requisition Module', StockRequisitionTests);
+module.exports = StockRequisitionTests;

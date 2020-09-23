@@ -92,4 +92,4 @@ function StockLotsRegistryTests() {
   });
 }
 
-describe('Stock Lots Registry', StockLotsRegistryTests);
+module.exports = StockLotsRegistryTests;
