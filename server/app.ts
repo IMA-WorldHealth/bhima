@@ -22,9 +22,7 @@
  */
 
 import 'use-strict';
-import dotEnv from 'dotenv';
-
-dotEnv.config();
+import 'dotenv/config';
 
 import http from 'http';
 import express from 'express';
