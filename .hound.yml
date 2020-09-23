@@ -1,7 +1,7 @@
 eslint:
   enabled: true
   config_file: .eslintrc.json
-  version: 5.7.0
+  version: 6.8.0
 
 scss:
   enabled: false

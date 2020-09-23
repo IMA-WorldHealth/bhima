@@ -15,7 +15,7 @@ describe('cronEmailReport', () => {
     let clock;
 
     before(() => {
-      const cronEmailReport = rewire('../../../server/controllers/admin/cronEmailReport');
+      const cronEmailReport = rewire('../../../bin/server/controllers/admin/cronEmailReport');
       addJob = cronEmailReport.__get__('addJob');
       removeJob = cronEmailReport.__get__('removeJob');
       CURRENT_JOBS = cronEmailReport.__get__('CURRENT_JOBS');
