@@ -30,4 +30,4 @@ function StockImportTests() {
   });
 }
 
-describe('Stock Import', StockImportTests);
+module.exports = StockImportTests;

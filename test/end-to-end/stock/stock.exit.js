@@ -109,4 +109,4 @@ function StockExiTests() {
   });
 }
 
-describe('Stock Exit Test', StockExiTests);
+module.exports = StockExiTests;

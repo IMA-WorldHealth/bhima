@@ -89,6 +89,7 @@ function StockEntryTests() {
 
     await page.setLots(0, lots, true);
 
+    await this.timeout(600000);
     // submit
     await page.submit();
   });
@@ -117,4 +118,4 @@ function StockEntryTests() {
   });
 }
 
-describe('Stock Entry Test', StockEntryTests);
+module.exports = StockEntryTests;
