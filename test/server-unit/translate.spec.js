@@ -9,7 +9,7 @@ const dictionaries = {
   fr : require('../fixtures/translations-fr.json'),
 };
 
-const translate = rewire('../../server/lib/helpers/translate');
+const translate = rewire('../../bin/server/lib/helpers/translate');
 translate.__set__('dictionaries', dictionaries);
 
 function TranslateUnitTests() {
