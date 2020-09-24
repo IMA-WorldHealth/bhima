@@ -23,7 +23,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 2;
+  const LOT_FOR_ALLTIME = 7;
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
@@ -36,14 +36,14 @@ function StockLotsRegistryTests() {
 
   it('find only lots set during the adjustment process', async () => {
     const quinine = {
-      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      lot : 'QUININE-B',
+      label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      lot : '759170203',
       quantity : '17',
     };
 
     const vitamine = {
       label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      lot : 'VITAMINE-B',
+      lot : 'LY-THREE',
       quantity : '23',
     };
 
