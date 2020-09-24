@@ -142,6 +142,7 @@ function DepotManagementController(
         // format location
         const depotsData = data.map(item => {
           item.id = item.uuid;
+          item.parent = item.parent_uuid;
 
           if (item.parent === '0') {
             item.parent = 0;

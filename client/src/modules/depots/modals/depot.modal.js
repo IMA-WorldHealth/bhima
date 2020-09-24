@@ -29,7 +29,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 =======
   if ($state.params.parentId) {
     vm.mainDepot = 1;
-    vm.depot.parent = $state.params.parentId;
+    vm.depot.parent_uuid = $state.params.parentId;
   }
 
   // If creating, insert the default min_months_security_stock
@@ -42,7 +42,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   vm.submit = submit;
 
   vm.onSelectDepot = depot => {
-    vm.depot.parent = depot.uuid;
+    vm.depot.parent_uuid = depot.uuid;
   };
 
   // submit the data to the server from all two forms (update, create)
@@ -66,8 +66,11 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     const promise = (vm.isCreateState)
 =======
     if (vm.mainDepot === 0) {
-      vm.depot.parent = 0;
+      vm.depot.parent_uuid = 0;
     }
+
+    // Delete element parent
+    delete vm.depot.parent;
 
     const promise = (vm.isCreating)
 >>>>>>> refactor: Manage depots as a tree structure
