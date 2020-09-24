@@ -1,21 +1,21 @@
 <div class="ui-grid-cell-contents" translate>
-    <div ng-if="row.entity.isSoldOut" class="label label-danger" translate>
-        STOCK.STATUS.STOCK_OUT
+    <div ng-if="row.entity.hasStockOut" class="label label-danger" translate>
+      STOCK.STATUS.STOCK_OUT
     </div>
 
     <div ng-if="row.entity.isInStock" class="label label-success" translate>
-        STOCK.STATUS.IN_STOCK
+      STOCK.STATUS.IN_STOCK
     </div>
 
     <div ng-if="row.entity.hasSecurityWarning" class="label label-warning" translate>
-        STOCK.STATUS.SECURITY
+      STOCK.STATUS.SECURITY
     </div>
 
     <div ng-if="row.entity.hasMinimumWarning" class="label label-info" translate>
-        STOCK.STATUS.MINIMUM
+      STOCK.STATUS.MINIMUM
     </div>
 
     <div ng-if="row.entity.hasOverageWarning" class="label label-primary" translate>
-        STOCK.STATUS.OVER_MAX
+      STOCK.STATUS.OVER_MAX
     </div>
 </div>
