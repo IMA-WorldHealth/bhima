@@ -118,4 +118,3 @@ function StockMovementsRegistryTests() {
 }
 
 module.exports = StockMovementsRegistryTests;
-describe.only('Stock Movement Registry', StockMovementsRegistryTests);
