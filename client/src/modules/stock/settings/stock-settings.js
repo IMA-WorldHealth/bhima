@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('StockSettingsController', StockSettingsController);
 
 StockSettingsController.$inject = [
-  'EnterpriseService', 'util', 'NotifyService',
+  'StockSettingsService', 'EnterpriseService', 'util', 'NotifyService',
   // 'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   // 'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
   // 'BarcodeService', 'LotService', 'LotsRegistryService', 'moment',
@@ -13,7 +13,7 @@ StockSettingsController.$inject = [
  * This module is a registry page for stock lots
  */
 function StockSettingsController(
-  Enterprises, util, Notify,
+  StockSettings, Enterprises, util, Notify,
   // Stock, uiGridConstants, Modal, Languages,
   // Grouping, GridState, Columns, $state, $httpParamSerializer,
   // Barcode, LotService, LotsRegistry, moment,
@@ -27,6 +27,20 @@ function StockSettingsController(
 
   // bind methods
   vm.submit = submit;
+
+  // fired on startup
+  function startup() {
+
+    // load enterprises
+    Enterprises.read(null, { detailed: 1 })
+      .then(enterprises => {
+        vm.hasEnterprise = (enterprises.length > 0);
+        vm.enterprises = vm.hasEnterprise ? enterprises : [];
+        vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+        // ??? return true;
+      })
+      .catch(Notify.handleError);
+  }
 
   // form submission
   function submit(form) {
@@ -87,4 +101,5 @@ function StockSettingsController(
     $touched = true;
   };
 
+  startup();
 }

@@ -779,6 +779,7 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  // API for getting stock status
   app.get('/stock/status', stock.listStatus);
 
   // API routes for /stock/assign end point
@@ -823,6 +824,12 @@ exports.configure = function configure(app) {
   // stock integration
   app.post('/stock/integration', stock.createIntegration);
   app.post('/stock/inventory_adjustment', stock.createInventoryAdjustment);
+
+  // stock settings API
+  app.post('/stock/setting', stock.createSettings);
+  app.get('/stock/setting', stock.stockSettings);
+  app.get('/stock/setting/:id', stock.stockSetting);
+  app.put('/stock/setting/:id', stock.updateSetting);
 
   // stock reports API
   app.get('/reports/stock/exit', stockReports.stockExitReport);
