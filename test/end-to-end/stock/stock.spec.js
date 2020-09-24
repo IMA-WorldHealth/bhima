@@ -23,4 +23,5 @@ describe('Stock end-to-end test', () => {
   describe('Stock Movement Registry', StockMovementsRegistryTests);
   describe('Stock Requisition Module', StockRequisitionTests);
   describe('Stock Inventory Adjustment', StockInventoryAdjustement);
+
 });

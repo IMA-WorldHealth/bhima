@@ -1,4 +1,4 @@
-/* global by, protractor */
+/* global by, element, protractor */
 /* eslint no-await-in-loop:off */
 
 const FU = require('../shared/FormUtils');
@@ -25,6 +25,36 @@ function StockEntryPage() {
     await components.stockEntryExitType.set('purchase');
     await GU.selectRow('PurchaseGrid', rowNumber);
     await FU.modal.submit();
+  };
+
+  /**
+   * @method setDonation
+   * @param {string} rowNumber - the purchase line on the modal
+   */
+  page.setDonation = async (rowNumber) => {
+    await components.stockEntryExitType.set('donation');
+    await GU.selectRow('DonationGrid', rowNumber);
+    await FU.modal.submit();
+  };
+
+  page.newDonation = async (params) => {
+
+    const { inventory, lots, description } = params;
+    await components.stockEntryExitType.set('donation');
+    await element(by.id('new_donation_btn')).click();
+    await components.dateEditor.set(new Date());
+    await element(by.model('$ctrl.donation.description')).clear().sendKeys(description);
+    await FU.select('$ctrl.donation.donor_id', params.donor);
+    // fill inventory grid
+
+    await components.addItem.set(1);
+    await page.addItem(0, inventory.name, inventory.quantity, inventory.unit_price);
+
+    await FU.buttons.submit();
+
+    await page.setLots(0, lots, false);
+    // submit
+    await page.submit();
   };
 
   /**
@@ -67,6 +97,27 @@ function StockEntryPage() {
     await components.addItem.set(n);
   };
 
+  // add item
+  page.addItem = async function setInventory(rowNumber, code, quantity, price) {
+    const modalGridId = 'new-donation-grid';
+    // inventory code column
+    const itemCell = await GU.getCell(modalGridId, rowNumber, 1);
+
+    // inventory quantity column
+    const quantityCell = await GU.getCell(modalGridId, rowNumber, 3);
+    const unitPriceCell = await GU.getCell(modalGridId, rowNumber, 4);
+
+    // enter data into the typeahead input.
+    await FU.input('row.entity.inventory_uuid', code, itemCell);
+
+    const externalAnchor = element(by.css('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)'));
+    const option = externalAnchor.all(by.cssContainingText('[role="option"]', code)).first();
+    await option.click();
+
+    // set the quantity
+    await FU.input('row.entity.quantity', quantity, quantityCell);
+    await FU.input('row.entity.unit_price', price, unitPriceCell);
+  };
   /**
    * @method setItem
    */
