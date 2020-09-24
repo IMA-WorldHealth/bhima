@@ -76,6 +76,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
     .then(data => {
       data.map(item => {
         item.id = item.uuid;
+        item.parent = item.parent_uuid;
         item.key = item.text;
         item._checked = false;
 
