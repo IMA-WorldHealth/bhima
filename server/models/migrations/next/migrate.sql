@@ -777,3 +777,13 @@ INSERT INTO `actions`(`id`, `description`) VALUES
 
 
 ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit';
+
+
+
+/*
+@author : jeremielodi
+@subjet : put indicator report into dashboard folder
+@date : 2020-09-24
+*/
+
+UPDATE unit SET parent = 233 WHERE id = 238;

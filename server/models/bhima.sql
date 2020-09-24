@@ -119,7 +119,7 @@ INSERT INTO unit VALUES
   (235,'Hospitalization dashboard','TREE.DASHBOARDS.HOSPITALIZATION','Tableau de bord des hospitalisations',233,'/dashboards/hospitalization'),
   (236,'Human Resources dashboard','TREE.DASHBOARDS.HUMAN_RESOURCES','Tableau de bord du Personnel',233,'/dashboards/staff'),
   (237,'Finances dashboard','TREE.DASHBOARDS.FINANCES','Tableau de bord des finances',233,'/dashboards/finances'),
-  (238,'Indicators report','TREE.INDICATORS_REPORT','Rapport sur les indicateurs',286,'/reports/indicatorsReport'),
+  (238,'Indicators report','TREE.INDICATORS_REPORT','Rapport sur les indicateurs',233,'/reports/indicatorsReport'),
   (239,'Visits Report','TREE.VISITS_REPORT','Visits registry',280,'/reports/visit_report'),
   (240,'[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report',282,'/reports/stock_entry'),
   (241,'Entity Folder','ENTITY.MANAGEMENT','Entity Folder',0,'/ENTITY_FOLDER'),
