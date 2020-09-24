@@ -1,50 +1,56 @@
 angular.module('bhima.components')
   .component('bhStockSoldOut', {
-    templateUrl : 'js/components/bhStockSoldOutController/bhStockSoldOut.html',
+    templateUrl : 'js/components/bhStockSoldOut/bhStockSoldOut.html',
     controller  : bhStockSoldOutController,
-    transclude  : true,
     bindings    : {
       depotUuid : '<',
       date : '<',
     },
   });
 
-bhStockSoldOutController.$inject = ['StockService', 'moment', 'NotifyService'];
+bhStockSoldOutController.$inject = ['StockService', 'moment', 'NotifyService', '$filter'];
 
 /**
- * service or depot selection component
+ * @function bhStockSoldOutController
  */
-function bhStockSoldOutController(Stock, moment, Notify) {
+function bhStockSoldOutController(Stock, moment, Notify, $filter) {
   const $ctrl = this;
   $ctrl.loading = false;
   $ctrl.soldOutInventories = [];
 
+  const $date = $filter('date');
+
   $ctrl.$onInit = () => {
-    stockOut();
+    fetchStockOuts();
   };
 
   $ctrl.$onChanges = () => {
-    stockOut();
+    fetchStockOuts();
   };
 
   /**
-   * @function stockOut
-   * get stock out inventories for a depot
+   * @function fetchStockOuts
+   * Get stock out inventories for a depot on a particular date.
    */
-  function stockOut() {
-    const dateTo = $ctrl.date || new Date();
+  function fetchStockOuts() {
     if (!$ctrl.depotUuid) return;
+    const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
+
     Stock.inventories.read(null, {
       status : 'stock_out',
       depot_uuid : $ctrl.depotUuid,
       dateTo,
-    }).then(inventories => {
-      inventories.forEach(inventory => {
-        inventory.stock_out_date = moment(inventory.stock_out_date).fromNow();
-      });
-      $ctrl.soldOutInventories = inventories;
-    }).catch(Notify.handleError)
+    })
+      .then(inventories => {
+        inventories.forEach(inventory => {
+          inventory.stock_out_date_raw = $date(inventory.stock_out_date);
+          inventory.stock_out_date = moment(inventory.stock_out_date).fromNow();
+        });
+
+        $ctrl.soldOutInventories = inventories;
+      })
+      .catch(Notify.handleError)
       .finally(() => {
         $ctrl.loading = false;
       });

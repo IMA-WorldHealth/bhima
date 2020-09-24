@@ -1,49 +1,48 @@
-<div class="row">
-  <bh-grid-loading-indicator
-  loading-state="$ctrl.loading">
-</bh-grid-loading-indicator>
+<div>
+  <bh-grid-loading-indicator loading-state="$ctrl.loading">
+  </bh-grid-loading-indicator>
 
+  <table
+    ng-show="$ctrl.expiredInventories.length > 0"
+    class="table table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th colspan="2">
+          <span class="text-danger"
+            translate-values="{ total : $ctrl.expiredInventories.length }"
+            translate="{{ 'STOCK.STOCK_EXPIRED_WARNING' }}">
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th translate>FORM.LABELS.INVENTORY</th>
+        <th translate>FORM.LABELS.LOT</th>
+      </tr>
+      <tr ng-repeat="inventory in $ctrl.expiredInventories | limitTo : 5">
+        <td>{{inventory.text}} (<u translate-attr="{'title' : inventory.expiration_date_raw}">{{inventory.expiration_date}}</u>)</td>
+        <td class="lot-width">{{inventory.label}}</td>
+      </tr>
 
-<table
-ng-show = "$ctrl.expiredInventories.length > 0"
-class="table table-condensed table-bordered">
-<thead>
-  <tr>
-    <th colspan="2">
-      <span class="text-danger"
-        translate-values="{ total : $ctrl.expiredInventories.length }"
-        translate="{{ 'STOCK.STOCK_EXPIRED_WARNING' }}">
-      </span>
-    </th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <th translate>FORM.LABELS.INVENTORY</th>
-    <th translate>FORM.LABELS.LOT</th>
-  </tr>
-  <tr ng-repeat = "inventory in $ctrl.expiredInventories | limitTo : 5">
-    <td>{{inventory.text}} ({{inventory.expiration_date}})</td>
-    <td class="lot-width">{{inventory.label}}</td>
-  </tr>
+      <tr>
+        <td colspan="2">
+          <span class="text-danger"
+            ng-show="($ctrl.expiredInventories.length - 5) > 0"
+            translate-values="{ left : ($ctrl.expiredInventories.length - 5)}"
+            translate="{{ 'STOCK.AND_MORE' }}">
+          </span>
 
-  <tr>
-    <td colspan="2">
-      <span class="text-danger"
-        ng-show="($ctrl.expiredInventories.length - 5) > 0"
-        translate-values="{ left : ($ctrl.expiredInventories.length - 5)}"
-        translate="{{ 'STOCK.AND_MORE' }}">
-      </span>
-
-    <a ui-sref= "stockLots({ filters : [
-      { key : 'period', value : 'allTime'},
-      { key : 'depot_uuid', value : $ctrl.depot.uuid, displayValue: $ctrl.depot.text, cacheable:false },
-      { key : 'includeEmptyLot', value : 0 },
-      { key : 'is_expired', value : 1, cacheable:false }
-      ]})" translate>FORM.LABELS.SEE_ALL</a>
-    </td>
-  </tr>
-</tbody>
-</table>
+          <a ui-sref="stockLots({ filters : [
+            { key : 'period', value : 'allTime'},
+            { key : 'depot_uuid', value : $ctrl.depot.uuid, displayValue: $ctrl.depot.text, cacheable:false },
+            { key : 'includeEmptyLot', value : 0 },
+            { key : 'is_expired', value : 1, cacheable:false }
+            ]})" translate>
+            FORM.LABELS.SEE_ALL
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-

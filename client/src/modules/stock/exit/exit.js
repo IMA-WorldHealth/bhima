@@ -127,6 +127,7 @@ function StockExitController(
         cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
       },
       {
+        displayName : '',
         field : 'actions',
         width : 25,
         cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
