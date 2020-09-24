@@ -33,8 +33,8 @@
       "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system",
       "ENABLE_DAILY_CONSUMPTION_LABEL" : "??? Enable CMM calculation based on days of consumption",
       "ENABLE_DAILY_CONSUMPTION_HELP_TEXT" : "??? The CMM (Average Monthly Consumption) is calculated taking into account the quantities consumed over the number of days on which there was consumption",
-      "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "Enable Automatic Crediting of Supplier on Stock Entry",
-      "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Automatically adds the transactions to credit the supplier for the value of stock received in a depot when entering stock from a purchase order.  This is only triggered if the automatic stock accounting is set as well.",
+      "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "??? Enable Automatic Crediting of Supplier on Stock Entry",
+      "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "??? Automatically adds the transactions to credit the supplier for the value of stock received in a depot when entering stock from a purchase order.  This is only triggered if the automatic stock accounting is set as well.",
       "ENABLE_STRICT_DEPOT_PERMISSION" : "???Enable permission to view depots in stock registries",
       "ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT" : "???Limit the consultation of stock registries to users according to their depots"
     }

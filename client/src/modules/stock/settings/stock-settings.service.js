@@ -23,8 +23,6 @@ function StockSettingsService($http, util) {
   }
 
   function update(id, settings) {
-    delete settings.id;
-
     return $http.put(baseUrl.concat(id), settings)
       .then(util.unwrapHttpResponse);
   }
