@@ -1,12 +1,11 @@
 <div ng-if="!row.groupHeader" class="ui-grid-cell-contents text-center" translate>
-  <span 
-    uib-tooltip-template="'warningLotsMessage.html'" 
+  <span
+    ng-if="!row.entity.hasStockOut"
+    uib-tooltip-template="'warningLotsMessage.html'"
     tooltip-append-to-body="true"
     tooltip-placement="right">
     <i ng-if="row.entity.noAlert"  class="fa fa-check text-success"></i>
-
     <i ng-if="row.entity.alert" class="fa fa-exclamation-triangle text-danger"></i>
-
     <i ng-if="row.entity.warning" class="fa fa-exclamation-circle text-warning"></i>
   </span>
 </div>
