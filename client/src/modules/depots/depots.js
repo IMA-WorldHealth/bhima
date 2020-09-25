@@ -27,10 +27,6 @@ function DepotManagementController(
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
-  vm.toggleTreeMode = toggleTreeMode;
-
-  vm.treeStructure = true;
-  vm.listStructure = false;
 
   // depot parent indent value in pixels
   vm.indentTitleSpace = 20;
@@ -99,12 +95,6 @@ function DepotManagementController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function toggleTreeMode() {
-    vm.treeStructure = !vm.treeStructure;
-    vm.listStructure = !vm.listStructure;
-    startup();
-  }
-
   // on remove one filter
   function onRemoveFilter(key) {
     stockDepotFilters.remove(key);
@@ -115,9 +105,6 @@ function DepotManagementController(
 
   // search modal
   function search() {
-    vm.treeStructure = false;
-    vm.listStructure = true;
-
     const filtersSnapshot = stockDepotFilters.formatHTTP();
     Modal.openSearchDepots(filtersSnapshot)
       .then(handleSearchModal);
@@ -154,9 +141,7 @@ function DepotManagementController(
           return item;
         });
 
-        const treeData = vm.treeStructure ? FormatTreeData.formatStore(depotsData) : depotsData;
-
-        vm.gridOptions.data = treeData;
+        vm.gridOptions.data = FormatTreeData.formatStore(depotsData);
 
       })
       .catch(Notify.handleError)
