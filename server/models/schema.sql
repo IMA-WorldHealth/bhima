@@ -461,6 +461,7 @@ CREATE TABLE `depot` (
   `allow_exit_loss` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `location_uuid` BINARY(16) NULL,
   `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
+  `parent_uuid` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

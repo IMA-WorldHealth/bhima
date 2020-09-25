@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DepotManagementController.$inject = [
   'DepotService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
-  'StockService', 'StockModalService',
+  'StockService', 'StockModalService', 'FormatTreeDataService',
 ];
 
 /**
@@ -13,7 +13,8 @@ DepotManagementController.$inject = [
  * It's responsible for creating, editing and updating a depot
  */
 function DepotManagementController(
-  Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal
+  Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal,
+  FormatTreeData,
 ) {
   const vm = this;
 
@@ -27,6 +28,9 @@ function DepotManagementController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
 
+  // depot parent indent value in pixels
+  vm.indentTitleSpace = 20;
+
   // global variables
   vm.gridApi = {};
 
@@ -38,6 +42,7 @@ function DepotManagementController(
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
+    showTreeExpandNoChildren : false,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
@@ -121,13 +126,23 @@ function DepotManagementController(
 
     Depots.read(null, filters)
       .then(data => {
-        // format location
-        vm.gridOptions.data = data.map(item => {
+        // format depots tree
+        const depotsData = data.map(item => {
+          item.id = item.uuid;
+          item.parent = item.parent_uuid;
+
+          if (item.parent === '0') {
+            item.parent = 0;
+          }
+
           item.location = item.location_uuid
             ? ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
               .concat(`(${item.country_name})`) : '';
           return item;
         });
+
+        vm.gridOptions.data = FormatTreeData.formatStore(depotsData);
+
       })
       .catch(Notify.handleError)
       .finally(() => {

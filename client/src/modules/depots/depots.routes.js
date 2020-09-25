@@ -10,6 +10,7 @@ angular.module('bhima.routes')
       .state('depots.create', {
         url : '/create',
         params : {
+          parentId : { squash : true, value : null },
           isCreateState : { value : true },
         },
         onEnter : ['$uibModal', '$transition$', depotModal],

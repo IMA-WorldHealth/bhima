@@ -10,13 +10,26 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
   vm.depot = params.depot || {};
   vm.isCreateState = params.isCreateState;
+  vm.onSelectDepot = onSelectDepot;
 
   // make sure hasLocation is set
   vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
 
+  if (vm.depot.parent === 0) {
+    delete vm.depot.parent_uuid;
+  }
+
+  if (params.parentId) {
+    vm.depot.parent_uuid = params.parentId;
+  }
+
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
     vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
+  }
+
+  function onSelectDepot(depot) {
+    vm.depot.parent_uuid = depot.uuid;
   }
 
   // exposed methods
@@ -37,6 +50,10 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
     if (vm.hasLocation === 0) {
       vm.depot.location_uuid = null;
+    }
+
+    if (!vm.depot.parent_uuid) {
+      vm.depot.parent_uuid = 0;
     }
 
     const promise = (vm.isCreateState)
