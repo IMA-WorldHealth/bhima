@@ -6,6 +6,9 @@ const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const FilterParser = require('../../../lib/filter');
 
+const REQUISITION_STATUS_PARTIAL = 3;
+const REQUISITION_STATUS_EXCESSIVE = 7;
+
 const SELECT_QUERY = `
   SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
@@ -39,6 +42,43 @@ async function getDetails(identifier) {
   `;
   const requisition = await db.one(sqlRequisition, [uuid]);
   const items = await db.exec(sqlRequisitionItems, [uuid]);
+  return _.assignIn({ items }, requisition);
+}
+
+/**
+ * @function getDetailsBalance
+ * @description Returns the balance of inventories distributed for the requisition
+ * @param {object} identifier The identifier of the record
+ */
+async function getDetailsBalance(identifier) {
+  const uuid = identifier;
+  const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
+
+  const sql = `
+    SELECT req.inventory_uuid, req.code, req.text, req.inventoryType,
+    (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
+    FROM (
+      SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, it.text as inventoryType, sri.quantity
+      FROM stock_requisition_item sri
+      JOIN inventory i ON i.uuid = sri.inventory_uuid
+      JOIN inventory_type it ON i.type_id = it.id
+      WHERE sri.requisition_uuid = ?
+    ) AS req
+    LEFT JOIN (
+      SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text, it.text AS inventoryType, SUM(m.quantity) AS quantity
+      FROM stock_movement AS m
+      JOIN lot AS l ON l.uuid = m.lot_uuid
+      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+      JOIN inventory_type it ON inv.type_id = it.id
+      JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
+      WHERE srm.stock_requisition_uuid = ?
+      GROUP BY inv.uuid
+    ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
+    WHERE (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) > 0;
+  `;
+
+  const [requisition, items] = await Promise.all([db.one(sqlRequisition, [uuid]), db.exec(sql, [uuid, uuid])]);
+
   return _.assignIn({ items }, requisition);
 }
 
@@ -97,7 +137,10 @@ function getStockRequisition(params) {
 
 exports.details = async (req, res, next) => {
   try {
-    const result = await getDetails(db.bid(req.params.uuid));
+    const params = req.query;
+
+    const result = params.balance
+      ? await getDetailsBalance(db.bid(req.params.uuid)) : await getDetails(db.bid(req.params.uuid));
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -124,7 +167,7 @@ exports.create = async (req, res, next) => {
 
     requisition.uuid = identifier;
     requisition.user_id = req.session.user.id;
-    requisition.date = new Date();
+    requisition.date = new Date(requisition.date) || new Date();
 
     transaction.addQuery('INSERT INTO stock_requisition SET ?;', binarize(requisition));
 
@@ -146,6 +189,7 @@ exports.create = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
+
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
     const requisition = _.omit(req.body, 'items');
@@ -155,7 +199,85 @@ exports.update = async (req, res, next) => {
       delete requisition.uuid;
     }
 
-    requisition.date = requisition.date ? new Date(requisition.date) : new Date();
+    if (requisition.movementRequisition) {
+      const dataMovementRequisition = db.convert(
+        req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid'],
+      );
+
+      delete requisition.movementRequisition;
+
+      // Just to make a link between the stock issues coming from the requisition
+      await db.exec('INSERT INTO stock_requisition_movement SET ?;', dataMovementRequisition);
+
+      const checkRequisitionBalance = `
+      SELECT COUNT(balance.inventory_uuid) AS numberInventoryPartial
+        FROM (
+        SELECT req.inventory_uuid, req.code, req.inventoryType,
+        (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
+            FROM (
+              SELECT BUID(i.uuid) inventory_uuid, i.code, it.text as inventoryType, sri.quantity
+              FROM stock_requisition_item sri
+              JOIN inventory i ON i.uuid = sri.inventory_uuid
+              JOIN inventory_type it ON i.type_id = it.id
+              WHERE sri.requisition_uuid = ?
+            ) AS req
+            LEFT JOIN (
+              SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text AS inventoryType, SUM(m.quantity) AS quantity
+              FROM stock_movement AS m
+              JOIN lot AS l ON l.uuid = m.lot_uuid
+              JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+              JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
+              WHERE srm.stock_requisition_uuid = ?
+              GROUP BY inv.uuid
+            ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
+          ) AS balance
+          WHERE balance.quantity > 0;
+        `;
+
+      const movementStatus = await db.one(checkRequisitionBalance, [
+        dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
+      ]);
+
+      const checkExcessiveBalance = `
+      SELECT COUNT(balance.inventory_uuid) AS numberExcessive
+        FROM (
+        SELECT req.inventory_uuid, req.code, req.inventoryType,
+        (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
+            FROM (
+              SELECT BUID(i.uuid) inventory_uuid, i.code, it.text as inventoryType, sri.quantity
+              FROM stock_requisition_item sri
+              JOIN inventory i ON i.uuid = sri.inventory_uuid
+              JOIN inventory_type it ON i.type_id = it.id
+              WHERE sri.requisition_uuid = ?
+            ) AS req
+            LEFT JOIN (
+              SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text AS inventoryType, SUM(m.quantity) AS quantity
+              FROM stock_movement AS m
+              JOIN lot AS l ON l.uuid = m.lot_uuid
+              JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+              JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
+              WHERE srm.stock_requisition_uuid = ?
+              GROUP BY inv.uuid
+            ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
+          ) AS balance
+          WHERE balance.quantity < 0;
+        `;
+
+      const excessiveStatus = await db.one(checkExcessiveBalance, [
+        dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
+      ]);
+
+      if (movementStatus.numberInventoryPartial > 0) {
+        // Partially
+        requisition.status_id = REQUISITION_STATUS_PARTIAL;
+      }
+
+      if (movementStatus.numberInventoryPartial === 0 && excessiveStatus.numberExcessive > 0) {
+        // Excessive
+        requisition.status_id = REQUISITION_STATUS_EXCESSIVE;
+      }
+    }
+
     transaction.addQuery('UPDATE stock_requisition SET ? WHERE uuid = ?;', [binarize(requisition), uuid]);
 
     if (requisitionItems && requisitionItems.length) {
@@ -191,3 +313,4 @@ exports.deleteRequisition = async (req, res, next) => {
 };
 
 exports.getDetails = getDetails;
+exports.getDetailsBalance = getDetailsBalance;

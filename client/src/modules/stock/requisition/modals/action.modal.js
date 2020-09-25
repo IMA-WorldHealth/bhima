@@ -51,6 +51,8 @@ function ActionRequisitionModalController(
   };
 
   vm.model = {};
+  vm.model.date = new Date();
+
   vm.addItem = addItem;
   vm.removeItem = removeItem;
   vm.configureItem = configureItem;
@@ -59,6 +61,10 @@ function ActionRequisitionModalController(
 
   vm.onSelectDepot = depot => {
     vm.model.depot_uuid = depot.uuid;
+  };
+
+  vm.onDateChange = date => {
+    vm.model.date = date;
   };
 
   vm.onSelectRequestor = requestor => {
@@ -153,7 +159,6 @@ function ActionRequisitionModalController(
 
     vm.gridOptions.data = store.data;
   }
-
 
   function removeItem(row) {
     store.remove(row.id);
