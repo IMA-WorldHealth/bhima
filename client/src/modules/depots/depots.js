@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DepotManagementController.$inject = [
   'DepotService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
-  'StockService', 'StockModalService',
+  'StockService', 'StockModalService', 'FormatTreeDataService',
 ];
 
 /**
@@ -13,7 +13,8 @@ DepotManagementController.$inject = [
  * It's responsible for creating, editing and updating a depot
  */
 function DepotManagementController(
-  Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal
+  Depots, ModalService, Notify, uiGridConstants, $state, Stock, Modal,
+  FormatTreeData,
 ) {
   const vm = this;
 
@@ -26,6 +27,13 @@ function DepotManagementController(
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
+  vm.toggleTreeMode = toggleTreeMode;
+
+  vm.treeStructure = true;
+  vm.listStructure = false;
+
+  // depot parent indent value in pixels
+  vm.indentTitleSpace = 20;
 
   // global variables
   vm.gridApi = {};
@@ -38,6 +46,7 @@ function DepotManagementController(
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
+    showTreeExpandNoChildren : false,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
@@ -90,6 +99,12 @@ function DepotManagementController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  function toggleTreeMode() {
+    vm.treeStructure = !vm.treeStructure;
+    vm.listStructure = !vm.listStructure;
+    startup();
+  }
+
   // on remove one filter
   function onRemoveFilter(key) {
     stockDepotFilters.remove(key);
@@ -100,6 +115,9 @@ function DepotManagementController(
 
   // search modal
   function search() {
+    vm.treeStructure = false;
+    vm.listStructure = true;
+
     const filtersSnapshot = stockDepotFilters.formatHTTP();
     Modal.openSearchDepots(filtersSnapshot)
       .then(handleSearchModal);
@@ -122,12 +140,24 @@ function DepotManagementController(
     Depots.read(null, filters)
       .then(data => {
         // format location
-        vm.gridOptions.data = data.map(item => {
+        const depotsData = data.map(item => {
+          item.id = item.uuid;
+          item.parent = item.parent_uuid;
+
+          if (item.parent === '0') {
+            item.parent = 0;
+          }
+
           item.location = item.location_uuid
             ? ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
               .concat(`(${item.country_name})`) : '';
           return item;
         });
+
+        const treeData = vm.treeStructure ? FormatTreeData.formatStore(depotsData) : depotsData;
+
+        vm.gridOptions.data = treeData;
+
       })
       .catch(Notify.handleError)
       .finally(() => {
