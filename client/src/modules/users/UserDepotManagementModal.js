@@ -26,6 +26,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
+  vm.toggleFilter = toggleFilter;
 
   vm.onDepotChange = (depots) => {
     vm.user.depots = depots;
@@ -49,6 +50,18 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
     depots.forEach(depot => {
       depot._checked = allStatus;
     });
+  }
+
+  // Naive filter toggle - performance analysis should be done on this
+  function toggleFilter() {
+    if (vm.filterActive) {
+
+      // clear the filter
+      vm.filterActive = false;
+      vm.filter = '';
+    } else {
+      vm.filterActive = true;
+    }
   }
 
   // submit the data to the server from all two forms (update, create)
