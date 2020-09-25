@@ -35,7 +35,7 @@ function StockSettingsController(
     Enterprises.read()
       .then(enterprises => {
         // Assume the the enterprise data has been created already
-        vm.enterprise = vm.enterprises[0];
+        vm.enterprise = enterprises[0];
         const params = { 'enterprise_id': vm.enterprise.id };
 
         // Now look up (or create) the stock settings
@@ -46,7 +46,7 @@ function StockSettingsController(
             } else {
               // No rows in stock_setting table, create one with defaults for this enterprise
               StockSettings.create(vm.enterprise.id)
-                .then(ok => {
+                .then(_ok => {
                   // Get the data from the newly created stock_setting row
                   StockSettings.read(null, params)
                     .then(settings2 => {
@@ -103,9 +103,9 @@ function StockSettingsController(
     };
   }
 
-  vm.enableAutoStockAccountingSetting = proxy('enable_auto_stock_accounting');
-  vm.enableAutoPurchaseOrderConfirmationSetting = proxy('enable_auto_purchase_order_confirmation');
-  vm.enableDailyConsumptionSetting = proxy('enable_daily_consumption');
+  vm.enableAutoStockAccounting = proxy('enable_auto_stock_accounting');
+  vm.enableAutoPurchaseOrderConfirmation = proxy('enable_auto_purchase_order_confirmation');
+  vm.enableDailyConsumption = proxy('enable_daily_consumption');
   vm.enableStrictDepotPermission = proxy('enable_strict_depot_permission');
   vm.enableSupplierCredit = proxy('enable_supplier_credit');
   vm.setMonthAverage = function setMonthAverage() {

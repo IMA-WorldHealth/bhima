@@ -36,7 +36,8 @@
             <label class="control-label" translate>
               SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
             </label>
-            <input type="number" class="form-control" autocomplete="off" name="default_min_months_security_stock"
+            <input type="number" class="form-control" autocomplete="off"
+              name="default_min_months_security_stock"
               ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
               ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
             <div class="help-block" ng-messages="StockSettingsForm.default_min_months_security_stock.$error"
@@ -46,28 +47,31 @@
           </div>
 
           <bh-yes-no-radios label="SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
-            value="StockSettingsCtrl.settings.enable_daily_consumption" name="enable_daily_consumption"
+            value="StockSettingsCtrl.settings.enable_daily_consumption"
+            name="enable_daily_consumption"
             help-text="SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableDailyConsumptionSetting(value)">
+            on-change-callback="StockSettingsCtrl.enableDailyConsumption(value)">
           </bh-yes-no-radios>
 
           <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
             value="StockSettingsCtrl.settings.enable_auto_purchase_order_confirmation"
             name="enable_auto_purchase_order_confirmation"
             help-text="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmationSetting(value)">
+            on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
           </bh-yes-no-radios>
 
           <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
+            value="StockSettingsCtrl.settings.enable_strict_depot_permission"
+            name="enable_strict_depot_permission"
             help-text="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
-            value="StockSettingsCtrl.settings.enable_strict_depot_permission" name="enable_strict_depot_permission"
-            on-change-callback="StockSettingsCtrl.enableStrictDepotPermissionSetting(value)">
+            on-change-callback="StockSettingsCtrl.enableStrictDepotPermission(value)">
           </bh-yes-no-radios>
 
           <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
-            value="StockSettingsCtrl.settings.enable_auto_stock_accounting" name="enable_auto_stock_accounting"
+            value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
+            name="enable_auto_stock_accounting"
             help-text="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableAutoStockAccountingSetting(value)">
+            on-change-callback="StockSettingsCtrl.enableAutoStockAccounting(value)">
           </bh-yes-no-radios>
 
           <bh-yes-no-radios label="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
