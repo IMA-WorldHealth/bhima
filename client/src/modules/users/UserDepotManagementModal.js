@@ -27,6 +27,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
   vm.submit = submit;
   vm.closeModal = closeModal;
   vm.toggleFilter = toggleFilter;
+  vm.loading = true;
 
   vm.onDepotChange = (depots) => {
     vm.user.depots = depots;
@@ -108,6 +109,8 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
       });
 
       vm.depotsData = FormatTreeData.formatStore(data);
+      vm.loading = false;
+
     })
     .catch(Notify.handleError);
 

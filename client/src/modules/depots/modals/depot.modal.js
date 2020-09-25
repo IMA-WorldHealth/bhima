@@ -2,54 +2,33 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'NotifyService', 'SessionService',
+  '$state', 'DepotService', 'NotifyService', 'SessionService', 'params',
 ];
 
-function DepotModalController($state, Depots, Notify, Session) {
+function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
-  vm.depot = $state.params.depot;
-  vm.clear = clear;
-
-  vm.isCreating = !!($state.params.creating);
+  vm.depot = params.depot || {};
+  vm.isCreateState = params.isCreateState;
 
   // make sure hasLocation is set
-  if (vm.depot) {
-    if (vm.depot.parent === 0) {
-      delete vm.depot.parent_uuid;
-    }
+  vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
 
-    vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+  if (vm.depot.parent === 0) {
+    delete vm.depot.parent_uuid;
   }
 
-  if ($state.params.parentId) {
-    vm.depot.parent_uuid = $state.params.parentId;
+  if (params.parentId) {
+    vm.depot.parent_uuid = params.parentId;
   }
 
-  // If creating, insert the default min_months_security_stock
-  if (vm.isCreating) {
+  // if creating, insert the default min_months_security_stock
+  if (vm.isCreateState) {
     vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
-  }
-
-  function clear(element) {
-    delete vm.depot[element];
-
-    // This is a trick just to mark the modification of the formula,
-    // because when deleting the parent repository,
-    // the form does not seem to be modified.
-    vm.clearParent = true;
   }
 
   // exposed methods
   vm.submit = submit;
-
-  vm.onSelectDepot = depot => {
-    if (depot.uuid === '0') {
-      depot.uuid = null;
-    }
-
-    vm.depot.parent_uuid = depot.uuid;
-  };
 
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
@@ -57,7 +36,7 @@ function DepotModalController($state, Depots, Notify, Session) {
       return 0;
     }
 
-    if (depotForm.$pristine && !vm.clearParent) {
+    if (depotForm.$pristine) {
       cancel();
       return 0;
     }
@@ -72,10 +51,7 @@ function DepotModalController($state, Depots, Notify, Session) {
       vm.depot.parent_uuid = 0;
     }
 
-    // Delete element parent
-    delete vm.depot.parent;
-
-    const promise = (vm.isCreating)
+    const promise = (vm.isCreateState)
       ? Depots.create(vm.depot)
       : Depots.update(vm.depot.uuid, vm.depot);
 
