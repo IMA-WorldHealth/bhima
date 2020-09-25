@@ -19,12 +19,23 @@
     </div>
 
     <span translate> FORM.INFO.USER_DEPOT </span>
-    <bh-checkbox-tree
-      data="UsersDepotModalCtrl.depotsData"
-      checked-ids="UsersDepotModalCtrl.depotsUser"
-      label-key="key"
-      on-change="UsersDepotModalCtrl.onDepotChange(data)">
-    </bh-checkbox-tree>
+    <div class="checkbox">
+      <label data-root-node>
+        <input type="checkbox" ng-model="UsersDepotModalCtrl.all" ng-change="UsersDepotModalCtrl.setAllNodeValue(UsersDepotModalCtrl.depotsData, UsersDepotModalCtrl.all)" />
+        <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
+      </label>
+    </div>
+
+    <div ng-repeat="depot in UsersDepotModalCtrl.depotsData">
+      <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
+        <div class="checkbox">
+          <label data-label="{{child._label}}">
+            <input type="checkbox" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
+            <span translate>{{depot.text}}</span>
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
