@@ -122,9 +122,6 @@ class DepotPage {
     await row.dropdown().click();
     await row.edit().click();
 
-    const elm = $('[name="define_main"]');
-    await elm.click();
-
     await components.depotSelect.set(item.parent);
 
     await FU.buttons.submit();
