@@ -15,7 +15,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 //    otherwise it will look up the entry for Enterprise.id=1
 exports.list = function list(req, res, next) {
   const enterpriseId = req.query.enterprise_id || '1';
-  let sql = `
+  const sql = `
     SELECT month_average_consumption, default_min_months_security_stock,
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
       enable_daily_consumption, enable_strict_depot_permission,
