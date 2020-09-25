@@ -1,6 +1,7 @@
 {
   "DEPOT" : {
     "ADD_DEPOT" : "Ajouter un dépôt",
+    "ADD_DEPENDANT_DEPOT": "Ajouter un dépôt dépendant",
     "ALL_DEPOTS" : "Tous les dépôts",
     "CREATED" : "Dépôt crée avec succès",
     "CHANGE" : "Changer Dépôt",

@@ -1,6 +1,7 @@
 {
   "DEPOT" : {
     "ADD_DEPOT" : "Add a Depot",
+    "ADD_DEPENDANT_DEPOT": "Add dependent Depot",
     "ALL_DEPOTS" : "All Depots",
     "CREATED" : "Depot created successfully",
     "CHANGE" : "Change Depot",
