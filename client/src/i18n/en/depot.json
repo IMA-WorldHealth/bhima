@@ -1,7 +1,7 @@
 {
   "DEPOT" : {
     "ADD_DEPOT" : "Add a Depot",
-    "ADD_DEPENDANT_DEPOT": "Add dependent Depot",
+    "ADD_DEPENDENT_DEPOT": "Add dependent Depot",
     "ALL_DEPOTS" : "All Depots",
     "CREATED" : "Depot created successfully",
     "CHANGE" : "Change Depot",
@@ -20,7 +20,7 @@
     "NO_DEPOT" : "No Depot",
     "NO_DEPOT_ASSIGNED_TO_USER" : "You are not allowed to access any depot or there's no depot registered yet. Please contact the administrator if needed",
     "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",
-    "SELECT_MAIN_DEPOT" : "Select Main Depot",
+    "PARENT_DEPOT" : "Parent Depot",
     "TITLE" : "Depot Management",
     "UPDATED" : "Depot updated successfully",
     "WAREHOUSE" : "Warehouse",

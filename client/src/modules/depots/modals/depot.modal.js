@@ -2,46 +2,52 @@ angular.module('bhima.controllers')
   .controller('DepotModalController', DepotModalController);
 
 DepotModalController.$inject = [
-  '$state', 'DepotService', 'NotifyService', 'SessionService', 'params',
+  '$state', 'DepotService', 'NotifyService', 'SessionService',
 ];
 
-function DepotModalController($state, Depots, Notify, Session, params) {
+function DepotModalController($state, Depots, Notify, Session) {
   const vm = this;
 
-<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
-  vm.depot = params.depot || {};
-  vm.isCreateState = params.isCreateState;
-=======
   vm.depot = $state.params.depot;
+  vm.clear = clear;
 
   vm.isCreating = !!($state.params.creating);
->>>>>>> refactor: Manage depots as a tree structure
 
   // make sure hasLocation is set
   if (vm.depot) {
+    if (vm.depot.parent === 0) {
+      delete vm.depot.parent_uuid;
+    }
+
     vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
-    vm.mainDepot = vm.depot.parent ? 1 : 0;
   }
 
-<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
-  // if creating, insert the default min_months_security_stock
-  if (vm.isCreateState) {
-=======
   if ($state.params.parentId) {
-    vm.mainDepot = 1;
     vm.depot.parent_uuid = $state.params.parentId;
   }
 
   // If creating, insert the default min_months_security_stock
   if (vm.isCreating) {
->>>>>>> refactor: Manage depots as a tree structure
     vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
+  }
+
+  function clear(element) {
+    delete vm.depot[element];
+
+    // This is a trick just to mark the modification of the formula,
+    // because when deleting the parent repository,
+    // the form does not seem to be modified.
+    vm.clearParent = true;
   }
 
   // exposed methods
   vm.submit = submit;
 
   vm.onSelectDepot = depot => {
+    if (depot.uuid === '0') {
+      depot.uuid = null;
+    }
+
     vm.depot.parent_uuid = depot.uuid;
   };
 
@@ -51,7 +57,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
       return 0;
     }
 
-    if (depotForm.$pristine) {
+    if (depotForm.$pristine && !vm.clearParent) {
       cancel();
       return 0;
     }
@@ -62,10 +68,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
       vm.depot.location_uuid = null;
     }
 
-<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
-    const promise = (vm.isCreateState)
-=======
-    if (vm.mainDepot === 0) {
+    if (!vm.depot.parent_uuid) {
       vm.depot.parent_uuid = 0;
     }
 
@@ -73,7 +76,6 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     delete vm.depot.parent;
 
     const promise = (vm.isCreating)
->>>>>>> refactor: Manage depots as a tree structure
       ? Depots.create(vm.depot)
       : Depots.update(vm.depot.uuid, vm.depot);
 
