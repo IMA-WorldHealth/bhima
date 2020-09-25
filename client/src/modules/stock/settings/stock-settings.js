@@ -22,6 +22,7 @@ function StockSettingsController(
 
   vm.enterprise = {};
   vm.hasEnterprise = false;
+  vm.hasSettings = false;
   vm.settings = {};
 
   let $touched = false;
@@ -39,13 +40,21 @@ function StockSettingsController(
         vm.enterprises = vm.hasEnterprise ? enterprises : [];
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
 
-        // Now look up the stock settings
-        StockSettings.read(null, { 'enterprise_id' : vm.enterprise.id})
-        .then(settings => {
-          vm.settings = settings[0];
-        });
+        // Now look up (or create) the stock settings
+        StockSettings.read(null, { 'enterprise_id': vm.enterprise.id })
+          .then(settings => {
+            if (settings.length > 0) {
+              vm.settings = settings[0];
+            } else {
+              console.log("Creating...");
+              StockSettings.create({ 'enterprise_id': vm.enterprise_id })
+                .then(settings => {
+                  vm.settings = settings[0];
+                });
+            }
+          });
       })
-      .catch(Notify.handleError)
+      .catch(Notify.handleError);
   }
 
   // form submission

@@ -47,47 +47,28 @@ exports.list = function list(req, res, next) {
 // };
 
 
-// // POST /stock/setting
-// exports.create = function create(req, res, next) {
-//   const enterprise = db.convert(req.body.enterprise, ['location_id']);
-//   const sql = 'INSERT INTO enterprise SET ?;';
+// POST /stock/setting
+exports.create = function create(req, res, next) {
+  const settings = req.body;
+  console.log("B: "+JSON.stringify(settings,null,2));
+  console.log("Res: "+JSON.stringify(Object.keys(res),null,2));
+  console.log("Req: "+JSON.stringify(req.params,null,2));
+  // const settings = db.convert(req.body.settings, ['enterprise_id']);
+  const sql = 'INSERT INTO stock_setting SET ?;';
+  console.log("S: "+JSON.stringify(data,null,2));
 
-//   db.exec(sql, [enterprise])
-//     .then(row => {
-//       res.status(201).json({ id : row.insertId });
-//     })
-//     .catch(next)
-//     .done();
-// };
-
-// // PUT /stock/setting/:id
-// exports.update = function update(req, res, next) {
-//   const sql = 'UPDATE enterprise SET ? WHERE id = ?;';
-//   const data = db.convert(req.body, ['location_id']);
-
-//   const { settings } = data;
-//   delete data.settings;
-
-//   data.id = req.params.id;
-
-//   db.exec(sql, [data, data.id])
-//     .then((row) => {
-//       if (!row.affectedRows) {
-//         throw new NotFound(`Could not find an enterprise with id ${req.params.id}`);
-//       }
-
-//       return db.exec('UPDATE enterprise_setting SET ? WHERE enterprise_id = ?', [settings, req.params.id]);
-//     })
-//     .then(() => lookupEnterprise(req.params.id))
-//     .then((enterprise) => {
-//       res.status(200).json(enterprise);
-//     })
-//     .catch(next)
-//     .done();
-// };
-
+  // db.exec(sql, [settings])
+  //   .then(row => {
+  //     res.status(201).json({ enterprise_id : row.insertId });
+  //   })
+  //   .catch(next)
+  //   .done();
+};
 
 // PUT /stock/setting/:id
+//
+//  Update the settings in stock_settings for the settings
+//  with enterprise_id given by the 'id' parameter
 exports.update = function update(req, res, next) {
   const sql = 'UPDATE stock_setting SET ? WHERE enterprise_id = ?';
   const { settings } = req.body;
@@ -97,7 +78,7 @@ exports.update = function update(req, res, next) {
       if (!row.affectedRows) {
         throw new NotFound(`Could not find a stock_setting with enterprise id ${req.params.id}`);
       }
-
+      // Get the updated values
       return db.exec('UPDATE stock_setting SET ? WHERE enterprise_id = ?', [settings, req.params.id]);
     })
     .then((updatedSettings) => {

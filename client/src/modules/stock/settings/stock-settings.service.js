@@ -18,6 +18,7 @@ function StockSettingsService($http, util) {
   }
 
   function create(settings) {
+    console.log("SSS: "+JSON.stringify(settings,null,2));
     return $http.post(baseUrl, { settings })
       .then(util.unwrapHttpResponse);
   }
