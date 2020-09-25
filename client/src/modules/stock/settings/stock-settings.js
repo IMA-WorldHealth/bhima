@@ -21,8 +21,6 @@ function StockSettingsController(
   const vm = this;
 
   vm.enterprise = {};
-  vm.hasEnterprise = false;
-  vm.hasSettings = false;
   vm.settings = {};
 
   let $touched = false;
@@ -36,20 +34,26 @@ function StockSettingsController(
     // load enterprises
     Enterprises.read()
       .then(enterprises => {
-        vm.hasEnterprise = (enterprises.length > 0);
-        vm.enterprises = vm.hasEnterprise ? enterprises : [];
-        vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
+        // Assume the the enterprise data has been created already
+        vm.enterprise = vm.enterprises[0];
+        const params = { 'enterprise_id': vm.enterprise.id };
 
         // Now look up (or create) the stock settings
-        StockSettings.read(null, { 'enterprise_id': vm.enterprise.id })
+        StockSettings.read(null, params)
           .then(settings => {
             if (settings.length > 0) {
               vm.settings = settings[0];
             } else {
-              console.log("Creating...");
-              StockSettings.create({ 'enterprise_id': vm.enterprise_id })
-                .then(settings => {
-                  vm.settings = settings[0];
+              // No rows in stock_setting table, create one with defaults for this enterprise
+              StockSettings.create(vm.enterprise.id)
+                .then(ok => {
+                  // Get the data from the newly created stock_setting row
+                  StockSettings.read(null, params)
+                    .then(settings2 => {
+                      Notify.success('SETTINGS.STOCK_SETTING_DATA_CREATED');
+                      vm.settings = settings2[0];
+                    })
+                    .catch(Notify.handleError);
                 });
             }
           });
@@ -70,28 +74,18 @@ function StockSettingsController(
       return 0;
     }
 
-    // const creation = (vm.hasEnterprise === false);
-    const creation = false; // ???
     const changes = util.filterFormElements(form, true);
-
     Object.keys(vm.settings).forEach(key => {
       delete changes[key];
     });
-
     changes.settings = angular.copy(vm.settings);
-
-    // const promise = (creation)
-    //   ? Enterprises.create(changes)
-    //   : Enterprises.update(vm.enterprise.id, changes);
 
     const promise = StockSettings.update(vm.enterprise.id, changes);
 
     return promise
-      .then(() => Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS'))
+      .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
       .then(() => Session.reload())
       .catch(Notify.handleError);
-
-    return 1;
   }
 
   /**

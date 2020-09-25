@@ -50,19 +50,13 @@ exports.list = function list(req, res, next) {
 // POST /stock/setting
 exports.create = function create(req, res, next) {
   const settings = req.body;
-  console.log("B: "+JSON.stringify(settings,null,2));
-  console.log("Res: "+JSON.stringify(Object.keys(res),null,2));
-  console.log("Req: "+JSON.stringify(req.params,null,2));
-  // const settings = db.convert(req.body.settings, ['enterprise_id']);
   const sql = 'INSERT INTO stock_setting SET ?;';
-  console.log("S: "+JSON.stringify(data,null,2));
-
-  // db.exec(sql, [settings])
-  //   .then(row => {
-  //     res.status(201).json({ enterprise_id : row.insertId });
-  //   })
-  //   .catch(next)
-  //   .done();
+  db.exec(sql, [settings])
+    .then(row => {
+      res.status(201).json({ enterprise_id : row.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 // PUT /stock/setting/:id

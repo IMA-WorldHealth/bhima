@@ -2998,6 +2998,7 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
 
 -- stock settings (go with defaults)
 -- INSERT INTO `stock_setting` (`enterprise_id`) VALUES (1);
+-- ??? Disabled during testing
 
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES
