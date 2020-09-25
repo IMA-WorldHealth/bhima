@@ -8,8 +8,14 @@ DepotModalController.$inject = [
 function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
+<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
   vm.depot = params.depot || {};
   vm.isCreateState = params.isCreateState;
+=======
+  vm.depot = $state.params.depot;
+
+  vm.isCreating = !!($state.params.creating);
+>>>>>>> refactor: Manage depots as a tree structure
 
   // make sure hasLocation is set
   if (vm.depot) {
@@ -17,8 +23,18 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.mainDepot = vm.depot.parent ? 1 : 0;
   }
 
+<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
+=======
+  if ($state.params.parentId) {
+    vm.mainDepot = 1;
+    vm.depot.parent = $state.params.parentId;
+  }
+
+  // If creating, insert the default min_months_security_stock
+  if (vm.isCreating) {
+>>>>>>> refactor: Manage depots as a tree structure
     vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
   }
 
@@ -46,7 +62,15 @@ function DepotModalController($state, Depots, Notify, Session, params) {
       vm.depot.location_uuid = null;
     }
 
+<<<<<<< ddb5cdc78811fb67f592ae6cae168b5946f59ae3
     const promise = (vm.isCreateState)
+=======
+    if (vm.mainDepot === 0) {
+      vm.depot.parent = 0;
+    }
+
+    const promise = (vm.isCreating)
+>>>>>>> refactor: Manage depots as a tree structure
       ? Depots.create(vm.depot)
       : Depots.update(vm.depot.uuid, vm.depot);
 
