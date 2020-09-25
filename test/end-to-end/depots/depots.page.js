@@ -148,7 +148,7 @@ class DepotPage {
    * simulate a click on the delete link of a depot
    */
   async deleteDepot(text) {
-    await $('[data-method="tree_mode"]').click();
+    await element(by.css('.ui-grid-tree-base-row-header-buttons')).click();
 
     const row = new GridRow(text);
     await row.dropdown().click();
@@ -157,7 +157,7 @@ class DepotPage {
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
 
-    await $('[data-method="list_mode"]').click();
+    await element(by.css('.ui-grid-tree-base-row-header-buttons')).click();
   }
 
   /**
