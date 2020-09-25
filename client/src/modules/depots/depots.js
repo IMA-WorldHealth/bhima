@@ -126,7 +126,7 @@ function DepotManagementController(
 
     Depots.read(null, filters)
       .then(data => {
-        // format location
+        // format depots tree
         const depotsData = data.map(item => {
           item.id = item.uuid;
           item.parent = item.parent_uuid;
