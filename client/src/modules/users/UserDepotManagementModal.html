@@ -25,12 +25,22 @@
         <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
       </label>
     </div>
+    
+    <div class="panel panel-default" style="margin-bottom : 0px;">
+      <div class="panel-heading clearfix" style="text-align : left">
+        <a href ng-click="UsersDepotModalCtrl.toggleFilter()">
+          <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : UsersDepotModalCtrl.filterActive}"></span>
+        </a>
+      </div>
 
-    <div ng-repeat="depot in UsersDepotModalCtrl.depotsData">
+      <input ng-model="UsersDepotModalCtrl.filter" ng-show="UsersDepotModalCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
+    </div>
+
+    <div ng-repeat="depot in UsersDepotModalCtrl.depotsData | filter : { text : UsersDepotModalCtrl.filter }">
       <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
         <div class="checkbox">
           <label data-label="{{child._label}}">
-            <input type="checkbox" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
+            <input type="checkbox" id="depot_{{$index}}" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
             <span translate>{{depot.text}}</span>
           </label>
         </div>
