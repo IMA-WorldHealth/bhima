@@ -2,10 +2,11 @@ angular.module('bhima.controllers')
   .controller('UsersDepotManagementController', UsersDepotManagementController);
 
 UsersDepotManagementController.$inject = [
-  '$state', 'UserService', 'NotifyService', 'appcache', 'params',
+  '$state', 'UserService',
+  'NotifyService', 'appcache', 'DepotService', 'params',
 ];
 
-function UsersDepotManagementController($state, Users, Notify, AppCache, params) {
+function UsersDepotManagementController($state, Users, Notify, AppCache, Depots, params) {
   const vm = this;
   const cache = AppCache('UserDepot');
 
@@ -34,14 +35,30 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, params)
     return Users.updateDepots(vm.user.id, vm.user.depots)
       .then(() => {
         Notify.success('USERS.UPDATED');
-        $state.go('users.list');
+        $state.go('users.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
+  Depots.read()
+    .then(data => {
+      vm.depotsData = data.map(item => {
+        item.id = item.uuid;
+        item.key = item.text;
+
+        if (item.parent === '0') {
+          item.parent = 0;
+        }
+
+        return item;
+      });
+
+    })
+    .catch(Notify.handleError);
+
   Users.depots(vm.stateParams.id)
     .then((depots) => {
-      vm.depots = depots;
+      vm.depotsUser = depots;
     })
     .catch(Notify.handleError);
 
