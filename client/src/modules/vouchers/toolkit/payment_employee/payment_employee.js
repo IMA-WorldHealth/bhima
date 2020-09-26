@@ -9,7 +9,7 @@ PaymentEmployeeKitController.$inject = [
 // Import transaction rows for a Payment Employee
 function PaymentEmployeeKitController(
   Instance, Notify, Session, bhConstants, $translate, ToolKits,
-  MultiplePayroll, moment
+  MultiplePayroll, moment,
 ) {
   const vm = this;
 
@@ -69,7 +69,6 @@ function PaymentEmployeeKitController(
 
   }
 
-
   // generate transaction rows
   function generateTransactionRows(result) {
     const rows = [];
@@ -91,7 +90,7 @@ function PaymentEmployeeKitController(
       const row = ToolKits.getBlankVoucherRow();
 
       row.account_id = paiement.account_id;
-      row.document_uuid = paiement.uuid;
+      row.document_uuid = paiement.paiement_uuid;
       row.debit = paiement.balance;
 
       // this is needed for a nice display in the grid
