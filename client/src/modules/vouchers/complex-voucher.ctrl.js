@@ -81,7 +81,6 @@ function ComplexJournalVoucherController(
     gridManager(Toolkit.openGenericIncomeModal);
   };
 
-
   vm.openGenericExpenseModal = function openGenericExpenseModal() {
     gridManager(Toolkit.openGenericExpenseModal);
   };
@@ -123,6 +122,7 @@ function ComplexJournalVoucherController(
    */
   function processVoucherToolRows(result) {
     if (!result) { return; }
+
     // force updating details
     vm.Voucher.replaceFormRows(result.rows);
 
@@ -152,7 +152,6 @@ function ComplexJournalVoucherController(
       removeNullRows();
     }, 0);
   }
-
 
   /**
    * @function removeNullRows
