@@ -220,6 +220,11 @@
             "PAYMENT": "Cash Payment",
             "PREVIOUS": "Previous",
             "RECORD_SAME":"No changes have been made to the form",
+            "REQUISITION": {
+              "CANCEL": "Cancel the inventory requisition request",
+              "DONE": "The requisition can no longer be completed and will be considered done",
+              "IN_PROGRESS": "Rehabilitated the requisition request"
+            },
             "RESULT_FOUND": "Result found",
             "ROWS": "Rows",
             "SALE_DETAILS": "Sale Details",
@@ -658,6 +663,7 @@
             "REPORT": "General Report",
             "REPORT_SOCIAL_CHARGES": "Social Expenses Report",
             "REQUIRED": "Required",
+            "REQUISITION_REFERENCE": "Requisition reference",
             "RESPONSABILITY" : "Responsability",
             "RESULT_ACCOUNT_SCT": "Result Account section",
             "RESULT": "Results",
@@ -825,12 +831,13 @@
             "ROLES_FOR":"Role(s) for",
             "ROLES" : "Roles",
             "STATUS_TYPE":{
-                "IN_PROGRESS":"In Progress",
-                "COMPLETED":"Completed",
-                "PARTIALLY":"Partially",
-                "DRAFT":"Draft",
-                "CANCELLED":"Cancelled",
-                "DONE":"Done"
+              "CANCELLED":"Cancelled",
+              "COMPLETED":"Completed",
+              "DONE":"Done",
+              "DRAFT":"Draft",
+              "EXCESSIVE_RECEIVED_QUANTITY": "Received but with excessive quantity",
+              "IN_PROGRESS":"In Progress",
+              "PARTIALLY":"Partially"
             }
         },
         "LEGENDS": {
@@ -935,6 +942,7 @@
             "RENDERER" : "Select a Renderer",
             "REFERENCE": "Select a Reference",
             "REFERENCE_GROUP": "Select a Reference Group",
+            "REFERENCE_REQUISITION": "Select the reference of the requisition",
             "REPORT_TYPE": "Select a Report Type",
             "RESULT_ACCOUNT_SCT": "Select a Result Account section",
             "ROOT_ACCOUNT": "Select a Root Account",
