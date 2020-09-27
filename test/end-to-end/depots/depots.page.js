@@ -96,6 +96,21 @@ class DepotPage {
   }
 
   /**
+   * simulate a click on the edit link of a depot
+   */
+  async editDepotClearParent(text) {
+    const row = new GridRow(text);
+    await row.dropdown().click();
+    await row.edit().click();
+
+    const elm = $('[class="fa fa-eraser"]');
+    await elm.click();
+
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
+  }
+
+  /**
    * join a location to a depot
    */
   async joinLocation(depotName, locations) {
@@ -148,16 +163,12 @@ class DepotPage {
    * simulate a click on the delete link of a depot
    */
   async deleteDepot(text) {
-    await element(by.css('.ui-grid-tree-base-row-header-buttons')).click();
-
     const row = new GridRow(text);
     await row.dropdown().click();
     await row.remove().click();
 
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
-
-    await element(by.css('.ui-grid-tree-base-row-header-buttons')).click();
   }
 
   /**
