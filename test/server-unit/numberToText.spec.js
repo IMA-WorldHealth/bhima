@@ -1,8 +1,8 @@
 const { expect } = require('chai');
-const numberToText = require('../../server/lib/NumberToText');
+const numberToText = require('../../bin/server/lib/NumberToText');
 const en = require('../../client/src/i18n/en/numbers.json');
 const fr = require('../../client/src/i18n/fr/numbers.json');
-const util = require('../../server/lib/util');
+const util = require('../../bin/server/lib/util');
 
 const { loadDictionary } = util;
 

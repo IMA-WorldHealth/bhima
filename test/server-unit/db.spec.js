@@ -4,7 +4,7 @@ const { expect } = require('chai');
 function DatabaseUnitTests() {
   let db;
   before(() => {
-    db = require('../../server/lib/db');
+    db = require('../../bin/server/lib/db');
   });
 
 

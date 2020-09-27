@@ -4,6 +4,8 @@
 .idea/*
 *~
 
+.DS_Store
+
 # ignore lock file until it works with npm < version 5
 package-lock.json
 

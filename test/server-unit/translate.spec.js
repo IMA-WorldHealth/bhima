@@ -2,14 +2,13 @@
 const rewire = require('@ima-worldhealth/rewire');
 const { expect } = require('chai');
 
-
 // mock translation dictionaries
 const dictionaries = {
   en : require('../fixtures/translations-en.json'),
   fr : require('../fixtures/translations-fr.json'),
 };
 
-const translate = rewire('../../server/lib/helpers/translate');
+const translate = rewire('../../bin/server/lib/helpers/translate');
 translate.__set__('dictionaries', dictionaries);
 
 function TranslateUnitTests() {

@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const rewire = require('@ima-worldhealth/rewire');
 
-const xlsx = rewire('../../server/lib/renderers/xlsx');
+const xlsx = rewire('../../bin/server/lib/renderers/xlsx');
 
 // mock the translation as a no-op function
 xlsx.__set__('i18n', () => (() => {}));

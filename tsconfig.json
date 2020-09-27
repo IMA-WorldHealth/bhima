@@ -1,0 +1,10 @@
+{
+  "allowJs" : true,
+  "target" : "es6",
+  "lib" : ["es6", "dom"],
+  "module": "commonjs",
+  "esModuleInterop": true,
+  "strict": true,
+  "skipLibCheck": true,
+  "forceConsistentCasingInFileNames": true
+}

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const BhMoment = require('../../server/lib/bhMoment');
+const BhMoment = require('../../bin/server/lib/bhMoment');
 
 const dateString = '2019-08-24';
 const startTime = '00:00:00.000';

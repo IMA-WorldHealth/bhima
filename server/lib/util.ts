@@ -13,15 +13,17 @@
  * @requires child_process @requires util
  */
 
-const _ = require('lodash');
-const q = require('q');
-const path = require('path');
-const moment = require('moment');
-const debug = require('debug')('util');
-const csvtojson = require('csvtojson');
-const { exec } = require('child_process');
-const uuid = require('uuid').v4;
-const fs = require('fs');
+import _ from 'lodash';
+import q from 'q';
+import path from 'path';
+import moment from 'moment';
+import debugOfficial from 'debug';
+import csvtojson from 'csvtojson';
+import { exec } from 'child_process';
+import { v4 as uuid } from 'uuid';
+import fs from 'fs';
+
+const debug = debugOfficial('util');
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
@@ -74,17 +76,17 @@ exports.getRandomColor = getRandomColor;
  * var filter = take('id', 'season');
  * var arrs = _.map(array, filter); // returns [[1, 'summer], [2, 'winter'], [3, 'fall']]
  */
-function take(...keys) {
+function take(...keys:any[]) {
   // get the arguments as an array
   // return the filter function
-  return object => (keys.map(key => object[key]));
+  return (object:{[index:string]:any}) => (keys.map(key => object[key]));
 }
 
 /**
  * @method requireModuleIfExists
  * @description load a module if it exists
  */
-function requireModuleIfExists(moduleName) {
+function requireModuleIfExists(moduleName:string): boolean {
   try {
     require(moduleName);
     debug(`Dynamically loaded ${moduleName}.`);
@@ -101,7 +103,7 @@ function requireModuleIfExists(moduleName) {
  * Accepts an object of key/value pairs. Returns the same object with all values
  * that are dates converted to a standard format.
  */
-function dateFormatter(rows, dateFormat) {
+function dateFormatter(rows:any, dateFormat:string): any {
   const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
 
   _.forEach(rows, element => {
@@ -122,7 +124,7 @@ function dateFormatter(rows, dateFormat) {
  * This method promisifies the child process exec() function.  It is used in
  * lib/backup.js, but will likely be handy in other places as well.
  */
-function execp(cmd) {
+function execp(cmd:string) {
   debug(`#execp(): ${cmd}`);
   const deferred = q.defer();
   const child = exec(cmd);
@@ -141,7 +143,7 @@ function execp(cmd) {
  * @param {Number} number
  * @param {Number} precision
  */
-function roundDecimal(number, precision = 4) {
+function roundDecimal(number:number, precision:number = 4): number {
   const base = Math.pow(10, precision);
   return Math.round(number * base) / base;
 }
@@ -155,8 +157,8 @@ function roundDecimal(number, precision = 4) {
  *
  * @param {String} key - either 'fr' or 'en'
  */
-function loadDictionary(key, dictionaries = {}) {
-  const dictionary = dictionaries[key];
+function loadDictionary(key:string, dictionaries:{[index:string]:any} = {}): any {
+  const dictionary:{[index:string]:any} = dictionaries[key];
   if (dictionary) { return dictionary; }
 
   dictionaries[key] = require(`../../client/i18n/${key}.json`);
@@ -171,7 +173,7 @@ function loadDictionary(key, dictionaries = {}) {
  *
  * @param {string} x
  */
-function stringToNumber(x) {
+function stringToNumber(x:string): any {
   const parsed = Number(x);
   if (Number.isNaN(parsed)) { return x; }
   return parsed;
@@ -185,7 +187,7 @@ function stringToNumber(x) {
  *
  * @param {object} obj An object in which we want to convert value of each property into the correct type
  */
-function convertStringToNumber(obj) {
+function convertStringToNumber(obj:{[index:string]:any}): any {
   _.keys(obj).forEach(property => {
     obj[property] = stringToNumber(obj[property]);
   });
@@ -196,7 +198,7 @@ function convertStringToNumber(obj) {
  * rename an object's keys
  */
 
-function renameKeys(objs, newKeys) {
+function renameKeys(objs:any, newKeys:any): any {
   const formatedKeys = _.isString(newKeys) ? JSON.parse(newKeys) : newKeys;
   if (_.isArray(objs)) {
     _.forEach(objs, (obj, index) => {
@@ -207,9 +209,9 @@ function renameKeys(objs, newKeys) {
   return renameObjectKeys(objs, formatedKeys);
 }
 
-function renameObjectKeys(obj, newKeys) {
-  const keyValues = Object.keys(obj).map(key => {
-    const newKey = newKeys[key] || key;
+function renameObjectKeys(obj:{[index:string]:any}, newKeys:{[index:string]:any}): any {
+  const keyValues:any[] = Object.keys(obj).map(key => {
+    const newKey:any = newKeys[key] || key;
     return { [newKey] : obj[key] };
   });
   return Object.assign({}, ...keyValues);
@@ -225,7 +227,7 @@ function renameObjectKeys(obj, newKeys) {
  *
  * @return {Promise} return a promise
  */
-async function formatCsvToJson(filePath) {
+async function formatCsvToJson(filePath:string): Promise<any> {
   const rows = await csvtojson()
     .fromFile(path.resolve(filePath));
 
@@ -233,19 +235,19 @@ async function formatCsvToJson(filePath) {
 }
 
 // calculate an age from a year
-function calculateAge(dob) {
+function calculateAge(dob:any): any {
   return moment().diff(dob, 'years');
 }
 
 
-function createDirectory(dirPath) {
+function createDirectory(dirPath:string): void {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath);
   }
 }
 
 
-function getRandomColor() {
+function getRandomColor(): string {
   const r = Math.floor(Math.random() * 255);
   const g = Math.floor(Math.random() * 255);
   const b = Math.floor(Math.random() * 255);

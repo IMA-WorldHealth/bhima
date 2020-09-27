@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const path = require('path');
 
-const util = require('../../server/lib/util');
+const util = require('../../bin/server/lib/util');
 
 describe('util.js', () => {
   it('#take() should take values from one key of each object in an array of objects', () => {

@@ -2,7 +2,7 @@
 
 const helpers = require('../helpers');
 const shared = require('./shared');
-const xlsx = require('../../../server/lib/renderers/xlsx.js');
+const xlsx = require('../../../bin/server/lib/renderers/xlsx.js');
 
 describe('(/inventory/metadata) The inventory metadata http API', () => {
   let inventoryList;

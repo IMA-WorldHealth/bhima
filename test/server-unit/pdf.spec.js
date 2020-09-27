@@ -15,7 +15,7 @@ const mockHTMLRenderer = (data, template) => {
 
 const nodeModulesPath = path.resolve(__dirname, '../../', 'node_modules');
 
-const pdf = rewire('../../server/lib/renderers/pdf');
+const pdf = rewire('../../bin/server/lib/renderers/pdf');
 pdf.__set__('html', { render : mockHTMLRenderer });
 
 

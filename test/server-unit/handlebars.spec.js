@@ -1,7 +1,7 @@
 /* eslint global-require: "off" */
 const { expect } = require('chai');
 const moment = require('moment');
-const hbs = require('../../server/lib/template');
+const hbs = require('../../bin/server/lib/template');
 
 // mock handlebars template file
 const template = 'test/fixtures/file.handlebars';

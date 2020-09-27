@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const csv = require('../../server/lib/renderers/csv');
+const csv = require('../../bin/server/lib/renderers/csv');
 
 describe('renderers/csv.js', () => {
 

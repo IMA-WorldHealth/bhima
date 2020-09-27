@@ -2,7 +2,7 @@ const chai = require('chai');
 chai.use(require('chai-datetime'));
 
 const { expect } = chai;
-const logic = require('../../../server/controllers/payroll/multiplePayroll/datelogic');
+const logic = require('../../../bin/server/controllers/payroll/multiplePayroll/datelogic');
 
 describe('payroll/multiplePayroll/datelogic.js', () => {
 

@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const Filter = require('../../server/lib/filter');
+const Filter = require('../../bin/server/lib/filter');
 
 describe('filter.js', () => {
   const object1 = {

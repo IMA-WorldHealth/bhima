@@ -21,12 +21,14 @@
  * @copyright IMA World Health 2016
  */
 
-require('use-strict');
-require('dotenv').config();
+import 'use-strict';
+import 'dotenv/config';
 
-const http = require('http');
-const express = require('express');
-const debug = require('debug')('app');
+import http from 'http';
+import express from 'express';
+import dbg from 'debug';
+
+const debug = dbg('app');
 
 const app = express();
 
@@ -38,8 +40,8 @@ const app = express();
  */
 function configureServer() {
   // destruct the environmental variables
-  const port = process.env.PORT;
-  const mode = process.env.NODE_ENV;
+  const port:string = process.env.PORT || '8080';
+  const mode:string = process.env.NODE_ENV || 'production';
 
   // create the server
   http.createServer(app)
