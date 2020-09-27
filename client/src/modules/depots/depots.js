@@ -88,6 +88,13 @@ function DepotManagementController(
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
+    gridApi.grid.registerDataChangeCallback(expandOnSetData);
+  }
+
+  function expandOnSetData(grid) {
+    if (grid.options.data.length) {
+      grid.api.treeBase.expandAllRows();
+    }
   }
 
   function toggleFilter() {

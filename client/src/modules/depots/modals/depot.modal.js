@@ -7,10 +7,12 @@ DepotModalController.$inject = [
 
 function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
+  let checkChangeParent = false;
 
   vm.depot = params.depot || {};
   vm.isCreateState = params.isCreateState;
   vm.onSelectDepot = onSelectDepot;
+  vm.clear = clear;
 
   // make sure hasLocation is set
   vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
@@ -32,6 +34,11 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.depot.parent_uuid = depot.uuid;
   }
 
+  function clear(item) {
+    checkChangeParent = true;
+    delete vm.depot[item];
+  }
+
   // exposed methods
   vm.submit = submit;
 
@@ -41,7 +48,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
       return 0;
     }
 
-    if (depotForm.$pristine) {
+    if (depotForm.$pristine && !checkChangeParent) {
       cancel();
       return 0;
     }
