@@ -779,7 +779,6 @@ INSERT INTO `actions`(`id`, `description`) VALUES
 ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit';
 
 
-
 /*
 @author : jeremielodi
 @subjet : put indicator report into dashboard folder
@@ -787,3 +786,9 @@ ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit
 */
 
 UPDATE unit SET parent = 233 WHERE id = 238;
+/*
+ * @author: lomamech
+ * @date: 2020-09-22
+ * @desc: Improvement of the depot management interface
+ */
+ ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
