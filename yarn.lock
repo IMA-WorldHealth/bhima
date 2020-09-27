@@ -581,22 +581,17 @@ angular-ui-bootstrap@^2.5.6:
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
   integrity sha512-yzcHpPMLQl0232nDzm5P4iAFTFQ9dMw0QgFLuKYbDj9M0xJ62z0oudYD/Lvh1pWfRsukiytP4Xj6BHOSrSXP8A==
 
-angular-ui-grid@^4.8.5:
-  version "4.8.5"
-  resolved "https://registry.yarnpkg.com/angular-ui-grid/-/angular-ui-grid-4.8.5.tgz#5949bf3b76dcce5317c61937a3592a52535dea5b"
-  integrity sha512-OVvmmjNpH+GP5KcgDCoGn0+yu3sdL3EzJlMj1Syhoz6LZ1XYyIsbZdwAOjKTteneOEZdoMC7cWPjK6iwVkMn+Q==
+angular-ui-grid@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/angular-ui-grid/-/angular-ui-grid-4.9.0.tgz#839a59115fd17360c3f1ea368fb805add9a3c051"
+  integrity sha512-4UVGOkpXzJhTpeKBF3pN3/aQry2u8U2qGRhR026Hi3AUaUbKg6glU2ilLmx1kKQtkfYGAkvHBhRDLq0U7XDiPQ==
   dependencies:
-    angular ">=1.4.0 1.7.x"
+    angular ">=1.4.0 1.8.x"
 
-"angular@>=1.2.22 <2", angular@^1.8.0:
+"angular@>=1.2.22 <2", "angular@>=1.4.0 1.8.x", angular@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.0.tgz#b1ec179887869215cab6dfd0df2e42caa65b1b51"
   integrity sha512-VdaMx+Qk0Skla7B5gw77a8hzlcOakwF8mjlW13DpIWIDlfqwAbSSLfd8N/qZnzEmQF4jC4iofInd3gE7vL8ZZg==
-
-"angular@>=1.4.0 1.7.x":
-  version "1.7.9"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.7.9.tgz#e52616e8701c17724c3c238cfe4f9446fd570bc4"
-  integrity sha512-5se7ZpcOtu0MBFlzGv5dsM1quQDoDeUTwZrWjGtTNA7O88cD8TEk5IEKCTDa3uECV9XnvKREVUr7du1ACiWGFQ==
 
 ansi-align@^3.0.0:
   version "3.0.0"
