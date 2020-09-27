@@ -50,6 +50,10 @@ describe('Depots Management', () => {
     await page.editDepot(depot.text, updateDepot.text);
   });
 
+  it('Edits a depot, set depot without parent', async () => {
+    await page.editDepotClearParent(depotByParent.text);
+  });
+
   it.skip('join a location to a depot', async () => {
     await page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
   });
