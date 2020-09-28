@@ -17,7 +17,7 @@ VoucherService.$inject = [
  */
 function VoucherService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, bhConstants, Transactions, $translate
+  $httpParamSerializer, AppCache, bhConstants, Transactions, $translate,
 ) {
   const service = new Api('/vouchers/');
   const voucherFilters = new Filters();
@@ -57,7 +57,6 @@ function VoucherService(
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
   ]);
-
 
   if (filterCache.filters) {
     voucherFilters.loadCache(filterCache.filters);
@@ -197,9 +196,6 @@ function VoucherService(
     return Modal.open({
       templateUrl : 'modules/vouchers/modals/search.modal.html',
       size : 'md',
-      animation : false,
-      keyboard : false,
-      backdrop : 'static',
       controller : 'VoucherRegistrySearchModalController as $ctrl',
       resolve : {
         filters : () => filters,
@@ -212,13 +208,9 @@ function VoucherService(
       templateUrl : 'modules/vouchers/modals/reverse-voucher.modal.html',
       resolve     : { data : { uuid } },
       size        : 'md',
-      animation   : false,
-      keyboard    : false,
-      backdrop    : 'static',
       controller  : 'ReverseVoucherModalController as ModalCtrl',
     }).result;
   }
-
 
   function groupTransactionByType(item) {
     const type = bhConstants.transactionTypeMap[item.type];
