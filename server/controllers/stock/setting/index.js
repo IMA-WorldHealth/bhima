@@ -38,7 +38,7 @@ exports.create = function create(req, res, next) {
   const sql = 'INSERT INTO stock_setting SET ?;';
   db.exec(sql, [settings])
     .then(row => {
-      res.status(201).json({ enterprise_id : row.insertId });
+      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();
