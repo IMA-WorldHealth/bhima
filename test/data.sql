@@ -2996,6 +2996,10 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
   (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine, HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588'), 0, '2017-02-02 11:09:25'),
   (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A',	10, 0,	3.1800,	DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine, HUID('1908da7a-7892-48d7-a924-be647e5215ef'),	0, '2020-09-04 15:20:22');
 
+-- stock settings (go with defaults)
+-- INSERT INTO `stock_setting` (`enterprise_id`) VALUES (1);
+-- ??? Disabled during testing
+
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES
   (HUID('5b7dd0d6-9273-4955-a703-126fbd504b61'), HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 201702, 1),
