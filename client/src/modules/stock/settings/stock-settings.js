@@ -3,9 +3,6 @@ angular.module('bhima.controllers')
 
 StockSettingsController.$inject = [
   'StockSettingsService', 'EnterpriseService', 'util', 'NotifyService', 'SessionService',
-  // 'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
-  // 'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  // 'BarcodeService', 'LotService', 'LotsRegistryService', 'moment',
 ];
 
 /**
@@ -14,9 +11,6 @@ StockSettingsController.$inject = [
  */
 function StockSettingsController(
   StockSettings, Enterprises, util, Notify, Session,
-  // Stock, uiGridConstants, Modal, Languages,
-  // Grouping, GridState, Columns, $state, $httpParamSerializer,
-  // Barcode, LotService, LotsRegistry, moment,
 ) {
   const vm = this;
 
@@ -44,9 +38,10 @@ function StockSettingsController(
             if (settings.length > 0) {
               [vm.settings] = settings;
             } else {
-              // No rows in stock_setting table, create one with defaults for this enterprise
+              // No rows in stock_setting table, create one
+              // with defaults for this enterprise
               StockSettings.create(vm.enterprise.id)
-                .then(_ok => {
+                .then(() => {
                   // Get the data from the newly created stock_setting row
                   StockSettings.read(null, params)
                     .then(settings2 => {
