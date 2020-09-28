@@ -398,7 +398,6 @@
             "DEFAULT_QUANTITY": "Default Quantity",
             "DEFAULTS": "Default Filters",
             "DEFINE_UNTIL_DATE": "Define a limit date",
-            "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Number of months for calculating the average monthly consumption",
             "DELAY": "Delay",
             "DEPOT": "Depot",
             "DESCRIPTION": "Description",
