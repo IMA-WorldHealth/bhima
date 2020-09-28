@@ -216,7 +216,7 @@ async function loadSessionInformation(user) {
     // If the stock_setting table row does not exist, create one with defaults
     await db.exec('INSERT INTO stock_setting SET ?;',
       { enterprise_id : session.user.enterprise_id });
-    debug(`NOTE: Created default stock_setting for enterprise ${session.user.enterprise_id}!`)
+    debug(`NOTE: Created default stock_setting for enterprise ${session.user.enterprise_id}!`);
     session.stock_settings = await db.one(sql, [session.user.enterprise_id]);
   }
 

@@ -30,7 +30,7 @@ function StockSettingsController(
       .then(enterprises => {
         // Assume the enterprise data has been created already
         [vm.enterprise] = enterprises;
-        const params = { enterprise_id: vm.enterprise.id };
+        const params = { enterprise_id : vm.enterprise.id };
 
         // Now look up the stock settings
         // (assume they have been created already too)
@@ -38,7 +38,7 @@ function StockSettingsController(
           .then(settings => {
             if (settings.length > 0) {
               [vm.settings] = settings;
-            };
+            }
           })
           .catch(Notify.handleError);
       })
