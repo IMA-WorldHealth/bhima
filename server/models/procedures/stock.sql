@@ -65,7 +65,7 @@ BEGIN
   DECLARE v_item_description TEXT;
 
   DECLARE sm_flux_id INT(11);
-  DECLARE es_enable_supplier_credit TINYINT(1) DEFAULT 0;
+  DECLARE ss_enable_supplier_credit TINYINT(1) DEFAULT 0;
   DECLARE FROM_PURCHASE_FLUX_ID INT(11) DEFAULT 1;
 
   -- transaction type
@@ -132,8 +132,8 @@ BEGIN
   SET sm_flux_id = (SELECT flux_id FROM stock_movement WHERE document_uuid = documentUuid AND is_exit = isExit LIMIT 1);
 
   -- check if enable_supplier_credit is set for this enterprise
-  SET es_enable_supplier_credit = (
-    SELECT enable_supplier_credit FROM enterprise_setting AS es
+  SET ss_enable_supplier_credit = (
+    SELECT enable_supplier_credit FROM stock_setting AS es
       JOIN enterprise AS e ON e.id = es.enterprise_id
       JOIN project AS p ON e.id = p.enterprise_id
     WHERE p.id = projectId
@@ -141,7 +141,7 @@ BEGIN
 
   -- if this is from a purchase, grap the supplier's account as the account to credit in the voucher, not
   -- the COGS account
-  IF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND es_enable_supplier_credit = 1) THEN
+  IF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND ss_enable_supplier_credit = 1) THEN
     SET voucher_item_account_credit = (
       SELECT creditor_group.account_id FROM purchase
         JOIN supplier ON purchase.supplier_uuid = supplier.uuid
@@ -180,7 +180,7 @@ BEGIN
     if (v_is_exit = 1) THEN
       SET voucher_item_account_debit = v_cogs_account;
       SET voucher_item_account_credit = v_stock_account;
-    ELSEIF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND es_enable_supplier_credit = 1) THEN
+    ELSEIF (sm_flux_id = FROM_PURCHASE_FLUX_ID AND ss_enable_supplier_credit = 1) THEN
       -- we already set the credit account above for the purchase case
       SET voucher_item_account_debit = v_stock_account;
     ELSE
@@ -531,10 +531,10 @@ CREATE PROCEDURE `getCMM` (
 BEGIN
 
   DECLARE  _last_inventory_mvt_date DATE;
-  DECLARE _sum_consumed_quantity, _sum_stock_day, 
+  DECLARE _sum_consumed_quantity, _sum_stock_day,
     _sum_consumption_day, _sum_stock_out_days, _sum_days, _number_of_month
     DECIMAL(19,4);
-  
+
   SET _last_inventory_mvt_date = NULL;
   --
   SELECT `end_date`
