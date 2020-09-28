@@ -112,8 +112,6 @@ describe('(/enterprises) Enterprises API', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
         // Check if the update is successful
-        console.log("UDE: "+JSON.stringify(updateDefaultEnterprise,null,2));
-        console.log(JSON.stringify(res.body,null,2));
         expect(res.body.settings.enable_barcodes)
           .to.equal(updateDefaultEnterprise.settings.enable_barcodes);
 

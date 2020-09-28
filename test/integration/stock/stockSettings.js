@@ -1,10 +1,5 @@
 /* global expect, agent */
-const fs = require('fs');
-const path = require('path');
 const helpers = require('../helpers');
-
-const fixtures = path.resolve(__dirname, '../../fixtures');
-
 
 /*
  * The /stock/setting API endpoint
@@ -23,10 +18,10 @@ describe('(/stock/setting) Stock Settings API', () => {
     'month_average_consumption', 'default_min_months_security_stock',
     'enable_auto_purchase_order_confirmation', 'enable_auto_stock_accounting',
     'enable_daily_consumption', 'enable_strict_depot_permission',
-    'enable_supplier_credit'
+    'enable_supplier_credit',
   ];
 
-  it('GET /stock/setting/:id returns the stock settings for the default Enterprise and check default value for month_average_consumption', () => {
+  it('GET /stock/setting/:id returns the stock settings for the default Enterprise and checks a value', () => {
     return agent.get(`/stock/setting`)
       .then(res => {
         expect(res).to.have.status(200);
