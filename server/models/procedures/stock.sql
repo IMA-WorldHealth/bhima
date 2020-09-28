@@ -133,7 +133,7 @@ BEGIN
 
   -- check if enable_supplier_credit is set for this enterprise
   SET ss_enable_supplier_credit = (
-    SELECT enable_supplier_credit FROM stocks_setting AS es
+    SELECT enable_supplier_credit FROM stock_setting AS es
       JOIN enterprise AS e ON e.id = es.enterprise_id
       JOIN project AS p ON e.id = p.enterprise_id
     WHERE p.id = projectId

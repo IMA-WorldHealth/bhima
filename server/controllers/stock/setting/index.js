@@ -13,7 +13,12 @@ const NotFound = require('../../../lib/errors/NotFound');
 //    If req.query.enterprise_id is set, it will use that,
 //    otherwise it will look up the entry for Enterprise.id=1
 exports.list = function list(req, res, next) {
-  const enterpriseId = req.session.enterprise.id;
+  let enterpriseId = req.session.enterprise.id;
+  if (req.params.id) {
+    // If the enterprise was passed in as a parameter, use it
+    enterpriseId = req.params.id;
+  }
+
   const sql = `
     SELECT month_average_consumption, default_min_months_security_stock,
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
@@ -25,7 +30,12 @@ exports.list = function list(req, res, next) {
 
   db.exec(sql, [enterpriseId])
     .then(rows => {
-      res.status(200).json(rows);
+      if (rows.length === 1) {
+        res.status(200).json(rows);
+      } else {
+        throw new NotFound(`Could not find stock_setting data with enterprise id ${req.params.id} (get)`);
+      }
+
     })
     .catch(next)
     .done();
@@ -42,7 +52,7 @@ exports.update = function update(req, res, next) {
   db.exec(sql, [settings, req.params.id])
     .then((row) => {
       if (!row.affectedRows) {
-        throw new NotFound(`Could not find a stock_setting with enterprise id ${req.params.id}`);
+        throw new NotFound(`Could not find stock_setting row with enterprise id ${req.params.id} (put)`);
       }
       // Get the updated values
       return db.exec('UPDATE stock_setting SET ? WHERE enterprise_id = ?',
