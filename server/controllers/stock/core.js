@@ -13,7 +13,6 @@
 
 const _ = require('lodash');
 const moment = require('moment');
-// const { param } = require('jquery');  ??? Does not seem necessary and hound complains about it
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
@@ -752,7 +751,7 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
   }
 
   if (filteredRows.length > 0) {
-    const settingsql = `SELECT month_average_consumption FROM enterprise_setting WHERE enterprise_id=?`;
+    const settingsql = `SELECT month_average_consumption FROM stock_setting WHERE enterprise_id=?`;
     const setting = await db.one(settingsql, filteredRows[0].enterprise_id);
     const nbrMonth = setting.month_average_consumption;
 
