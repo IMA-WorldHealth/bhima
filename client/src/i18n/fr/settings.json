@@ -1,7 +1,11 @@
-{"SETTINGS":{"TITLE":"Paramètres",
-"BUG_LINK":"Signaler un Problème",
-"HAVING_DATE_INTERVAL":"Utiliser un intervalle de date",
-"HAVING_DATE_INTERVAL_HELP_TEXT":"Cette option vous permez de definir une date de debut et une date de fin",
-"BUG_REPORT":"Merci d'avoir déposé une erreur! Veuillez lire le message suivant et remplacer le texte entouré de parenthèses ([[]]) avec votre rapport.\r\nD'où vient l'erreur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nQuelle tâche essayiez-vous d'accomplir??\r\n\t\t[[ ENTER TEXT HERE ]]\r\nQuel résultat vous attendiez-vous?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nToute autre information ou commentaire pertinent?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nPuissions-nous vous contacter pour plus d'informations?\r\n\t\t[x] YES [ ] NO",
-"POS_RECEIPT_INFO":"Si cette option est activé, l'impression sera fait avec l'imprimante thermique.",
-"SIMPLIFIED_CARD_INFO":"Les identifiants simples de patients ont une largeur de 75mm, la hauteur de 125mm est en orientation 'Paysage'. Les identités standard sont 'A6'."}}
+{
+  "SETTINGS": {
+    "TITLE": "Paramètres",
+    "BUG_LINK": "Signaler un Problème",
+    "HAVING_DATE_INTERVAL": "Utiliser un intervalle de date",
+    "HAVING_DATE_INTERVAL_HELP_TEXT": "Cette option vous permez de definir une date de debut et une date de fin",
+    "BUG_REPORT": "Merci d'avoir déposé une erreur! Veuillez lire le message suivant et remplacer le texte entouré de parenthèses ([[]]) avec votre rapport.\r\nD'où vient l'erreur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nQuelle tâche essayiez-vous d'accomplir??\r\n\t\t[[ ENTER TEXT HERE ]]\r\nQuel résultat vous attendiez-vous?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nToute autre information ou commentaire pertinent?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nPuissions-nous vous contacter pour plus d'informations?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO": "Si cette option est activé, l'impression sera fait avec l'imprimante thermique.",
+    "SIMPLIFIED_CARD_INFO": "Les identifiants simples de patients ont une largeur de 75mm, la hauteur de 125mm est en orientation 'Paysage'. Les identités standard sont 'A6'."
+  }
+}
