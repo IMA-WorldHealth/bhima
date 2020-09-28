@@ -827,7 +827,6 @@ exports.configure = function configure(app) {
   app.post('/stock/inventory_adjustment', stock.createInventoryAdjustment);
 
   // stock settings API
-  app.post('/stock/setting', stockSetting.create);
   app.get('/stock/setting', stockSetting.list);
   app.put('/stock/setting/:id', stockSetting.update);
 

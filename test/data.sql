@@ -9,8 +9,9 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation) VALUES
-  (1, 0, 1, 1, 1, 0, 0);
+INSERT INTO `enterprise_setting` (
+  enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report) VALUES
+  (1, 0, 1, 1, 1);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -2997,8 +2998,7 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
   (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A',	10, 0,	3.1800,	DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine, HUID('1908da7a-7892-48d7-a924-be647e5215ef'),	0, '2020-09-04 15:20:22');
 
 -- stock settings (go with defaults)
--- INSERT INTO `stock_setting` (`enterprise_id`) VALUES (1);
--- ??? Disabled during testing
+INSERT INTO `stock_setting` (`enterprise_id`) VALUES (1);
 
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES

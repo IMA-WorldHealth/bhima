@@ -170,7 +170,6 @@
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired."
   },
   "SETTINGS" : {
-    "STOCK_SETTING_DATA_CREATED" : "Created default Stock Settings",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Number of months for calculating the average monthly consumption",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Enable automatic confirmation of purchase orders",

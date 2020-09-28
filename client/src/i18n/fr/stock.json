@@ -174,7 +174,6 @@
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Cela ajoutera un filtre sur les lots arrivés à expiration."
   },
   "SETTINGS" : {
-    "STOCK_SETTING_DATA_CREATED" : "Paramètres de stock par défaut créés",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Nombre de mois pour le calcul de la consommation moyenne mensuelle",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Activer la confirmation automatique des commandes d'achat",

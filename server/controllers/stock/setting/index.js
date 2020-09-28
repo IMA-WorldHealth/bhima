@@ -6,7 +6,6 @@
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-// ??? const BadRequest = require('../../../lib/errors/BadRequest');
 
 // GET /stock/setting
 //
@@ -27,18 +26,6 @@ exports.list = function list(req, res, next) {
   db.exec(sql, [enterpriseId])
     .then(rows => {
       res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-};
-
-// POST /stock/setting
-exports.create = function create(req, res, next) {
-  const settings = req.body;
-  const sql = 'INSERT INTO stock_setting SET ?;';
-  db.exec(sql, [settings])
-    .then(row => {
-      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();
