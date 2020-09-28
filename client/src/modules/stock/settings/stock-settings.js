@@ -35,14 +35,14 @@ function StockSettingsController(
     Enterprises.read()
       .then(enterprises => {
         // Assume the the enterprise data has been created already
-        vm.enterprise = enterprises[0];
-        const params = { 'enterprise_id': vm.enterprise.id };
+        [vm.enterprise] = enterprises;
+        const params = { enterprise_id : vm.enterprise.id };
 
         // Now look up (or create) the stock settings
         StockSettings.read(null, params)
           .then(settings => {
             if (settings.length > 0) {
-              vm.settings = settings[0];
+              [vm.settings] = settings;
             } else {
               // No rows in stock_setting table, create one with defaults for this enterprise
               StockSettings.create(vm.enterprise.id)
@@ -51,7 +51,7 @@ function StockSettingsController(
                   StockSettings.read(null, params)
                     .then(settings2 => {
                       Notify.success('SETTINGS.STOCK_SETTING_DATA_CREATED');
-                      vm.settings = settings2[0];
+                      [vm.settings] = settings2;
                     })
                     .catch(Notify.handleError);
                 });

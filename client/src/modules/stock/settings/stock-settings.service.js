@@ -18,7 +18,7 @@ function StockSettingsService($http, util) {
   }
 
   function create(enterpriseId) {
-    return $http.post(baseUrl, { 'enterprise_id' : enterpriseId })
+    return $http.post(baseUrl, { enterprise_id : enterpriseId })
       .then(util.unwrapHttpResponse);
   }
 

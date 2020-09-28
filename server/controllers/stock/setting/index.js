@@ -14,17 +14,17 @@ const NotFound = require('../../../lib/errors/NotFound');
 //    If req.query.enterprise_id is set, it will use that,
 //    otherwise it will look up the entry for Enterprise.id=1
 exports.list = function list(req, res, next) {
-  const enterpriseId = req.query.enterprise_id || '1';
+  const enterpriseId = req.session.enterprise.id;
   const sql = `
     SELECT month_average_consumption, default_min_months_security_stock,
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
       enable_daily_consumption, enable_strict_depot_permission,
       enable_supplier_credit
     FROM stock_setting
-    WHERE enterprise_id = ${enterpriseId} LIMIT 1;
+    WHERE enterprise_id = ? LIMIT 1;
     `;
 
-  db.exec(sql)
+  db.exec(sql, [enterpriseId])
     .then(rows => {
       res.status(200).json(rows);
     })
