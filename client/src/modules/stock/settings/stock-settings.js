@@ -33,7 +33,7 @@ function StockSettingsController(
         const params = { enterprise_id : vm.enterprise.id };
 
         // Now look up the stock settings
-        // (assume they have been created already too)
+        // (assume they have already been created )
         StockSettings.read(null, params)
           .then(settings => {
             if (settings.length > 0) {
