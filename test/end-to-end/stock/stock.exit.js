@@ -14,29 +14,29 @@ function StockExiTests() {
 
   const requisitionService = {
     service : 'Test Service',
-    reference : 'SREQ.1',
+    reference : 'SREQ.TPA.1',
   };
 
   const requisitionDepot = {
     depot : 'Depot Secondaire',
-    reference : 'SREQ.2',
+    reference : 'SREQ.TPA.2',
   };
 
   const preventRequisitionDepot = {
     depot : 'Depot Tertiaire',
-    reference : 'SREQ.3',
+    reference : 'SREQ.TPA.3',
     className : 'label label-danger',
   };
 
   const preventRequisitionDepot2 = {
     depot : 'Depot Tertiaire',
-    reference : 'SREQ.4',
+    reference : 'SREQ.TPA.4',
     className : 'label label-warning',
   };
 
   const preventRequisitionDepot3 = {
     depot : 'Depot Secondaire',
-    reference : 'SREQ.2',
+    reference : 'SREQ.TPA.2',
     className : 'label label-success',
   };
 
