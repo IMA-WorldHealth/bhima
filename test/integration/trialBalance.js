@@ -44,8 +44,8 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /journal/trialbalance returns summary information grouped by account', () => {
+
     return agent.post('/journal/trialbalance')
       .send(formatParams(GOOD_TXNS))
       .then((res) => {
@@ -80,6 +80,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
   });
 
   it('POST /journal/transactions posts the a transaction to general_ledger and removes it from the journal', () => {
+
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
