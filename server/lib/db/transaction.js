@@ -96,7 +96,7 @@ class Transaction {
    *
    * @returns {Promise} - the results of the transaction execution
    */
-  execute() {
+  execute(DEBUG_TEST) {
     debug(`#execute(): Executing ${this.queries.length} queries.`);
     const deferred = q.defer();
 
@@ -142,11 +142,39 @@ class Transaction {
             debug('#execute(): An error occured in the transaction. Rolling back.');
             debug('#execute(): %o', err);
 
-            // individual query did not work - rollback transaction
-            connection.rollback(() => {
-              connection.destroy();
-            });
+            if (DEBUG_TEST === 'yes') {
+              const pj = `
+              SELECT project_id, uuid, fiscal_year_id, period_id, trans_id,
+                trans_id_reference_number, trans_date, posting_journal.record_uuid,
+                description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+                entity_uuid, reference_uuid, comment, transaction_type_id, user_id
+              FROM posting_journal JOIN stage_trial_balance_transaction AS staged
+              ON posting_journal.record_uuid = staged.record_uuid;`;
 
+              debug('fetching errored data...');
+
+              const promise = Promise.all([
+                queryConnection(connection, 'SELECT * FROM stage_trial_balance_transaction;'),
+                queryConnection(connection, pj),
+                queryConnection(connection, 'SELECT COUNT(*) FROM posting_journal;'),
+                queryConnection(connection, 'SELECT COUNT(*) FROM general_ledger;'),
+              ]);
+
+              promise
+                .then(result => {
+                  debug('got results:', 'results');
+                  debug('result:', JSON.stringify(result));
+                  // individual query did not work - rollback transaction
+                  connection.rollback(() => {
+                    connection.destroy();
+                  });
+                });
+
+            } else {
+              connection.rollback(() => {
+                connection.destroy();
+              });
+            }
 
             // increment the number of restarts
             this.restarts += 1;
