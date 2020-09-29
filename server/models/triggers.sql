@@ -122,7 +122,7 @@ FOR EACH ROW
 CREATE TRIGGER stock_requisition_document_map AFTER INSERT ON stock_requisition
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'SREQ', new.reference) ON DUPLICATE KEY UPDATE text=text;
+    SELECT new.uuid, CONCAT_WS('.', 'SREQ', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 DELIMITER ;

@@ -213,7 +213,6 @@ function searchByName(req, res, next) {
       LEFT JOIN sector s ON s.uuid = v.sector_uuid
       LEFT JOIN province p ON p.uuid = s.province_uuid
       LEFT JOIN country c ON c.uuid = p.country_uuid
-      LEFT JOIN user u ON u.id = dp.user_id
   `;
 
   filters.custom(
