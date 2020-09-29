@@ -83,7 +83,7 @@ function importStock(req, res, next) {
       const isExit = 0;
       const postingParams = [documentUuid, isExit, req.session.project.id, req.session.enterprise.currency_id];
 
-      if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+      if (req.session.stock_settings.enable_auto_stock_accounting) {
         transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
       }
 

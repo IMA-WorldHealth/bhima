@@ -11,7 +11,6 @@ const fixtures = path.resolve(__dirname, '../fixtures');
  */
 describe('(/enterprises) Enterprises API', () => {
   const defaultEnterpriseId = 1;
-  const defaultValuemonthAverageConsumption = 6;
 
   const enterprise = {
     name : 'enterprises',
@@ -34,7 +33,7 @@ describe('(/enterprises) Enterprises API', () => {
   };
 
   const updateDefaultEnterprise = {
-    settings : { month_average_consumption : 10 },
+    settings : { enable_barcodes : 0 },
   };
 
   const invalidEnterprise = {
@@ -50,6 +49,9 @@ describe('(/enterprises) Enterprises API', () => {
 
   /*  the number of enterprises registered in the test db */
   const numEnterprises = 2;
+
+  /* Set the default value of enableBarcode (see schema.sql) */
+  const defaultEnableBarcodes = 1;
 
   /* response keys from a detailed query */
   const responseKeys = [
@@ -92,13 +94,13 @@ describe('(/enterprises) Enterprises API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /enterprises/:id returns Default Enterprise and check default value for month_average_consumption', () => {
+  it('GET /enterprises/:id returns Default Enterprise and check default value for enable_barcode', () => {
     return agent.get(`/enterprises/${defaultEnterpriseId}`)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
-        expect(res.body.settings.month_average_consumption)
-          .to.equal(defaultValuemonthAverageConsumption);
+        expect(res.body.settings.enable_barcodes)
+          .to.equal(defaultEnableBarcodes);
       })
       .catch(helpers.handler);
   });
@@ -110,8 +112,8 @@ describe('(/enterprises) Enterprises API', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
         // Check if the update is successful
-        expect(res.body.settings.month_average_consumption)
-          .to.equal(updateDefaultEnterprise.settings.month_average_consumption);
+        expect(res.body.settings.enable_barcodes)
+          .to.equal(updateDefaultEnterprise.settings.enable_barcodes);
 
         expect(res.body).to.have.all.keys(responseKeys);
       })

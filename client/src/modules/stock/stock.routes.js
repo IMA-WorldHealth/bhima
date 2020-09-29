@@ -96,6 +96,14 @@ angular.module('bhima.routes')
         },
         onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockRequisition')],
         onExit : ['$uibModalStack', closeModals],
+      })
+
+      .state('stockSetting', {
+        url         : '/stock/setting',
+        controller  : 'StockSettingsController as StockSettingsCtrl',
+        templateUrl : 'modules/stock/settings/stock-settings.html',
+        params : {
+        },
       });
   }]);
 
