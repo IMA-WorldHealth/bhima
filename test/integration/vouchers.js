@@ -216,7 +216,6 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('GET /vouchers?detailed=1 returns a list of vouchers', () => {
     return agent.get('/vouchers?detailed=1')
       .then((res) => {
-        console.log(JSON.stringify(res,null,2));
         helpers.api.listed(res, numVouchers);
       })
       .catch(helpers.handler);
