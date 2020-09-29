@@ -23,12 +23,10 @@ exports.list = function list(req, res, next) {
     sql = `
       SELECT id, name, abbr, email, po_box, phone, address,
         BUID(location_id) AS location_id, logo, currency_id,
-        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments, enable_supplier_credit,
-        enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt,
-        enable_barcodes, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation,
-        enable_auto_email_report, enable_index_payment_system, enable_daily_consumption,
-        month_average_consumption, default_min_months_security_stock,
-        enable_strict_depot_permission
+        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
+        enable_delete_records, enable_password_validation,
+        enable_balance_on_invoice_receipt, enable_barcodes,
+        enable_auto_email_report, enable_index_payment_system
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -50,15 +48,8 @@ exports.list = function list(req, res, next) {
             'enable_password_validation',
             'enable_balance_on_invoice_receipt',
             'enable_barcodes',
-            'enable_auto_stock_accounting',
-            'enable_auto_purchase_order_confirmation',
             'enable_auto_email_report',
             'enable_index_payment_system',
-            'enable_daily_consumption',
-            'month_average_consumption',
-            'default_min_months_security_stock',
-            'enable_supplier_credit',
-            'enable_strict_depot_permission',
           ];
 
           row.settings = _.pick(row, settings);
