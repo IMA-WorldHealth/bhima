@@ -12,7 +12,7 @@ const REQUISITION_STATUS_EXCESSIVE = 7;
 const SELECT_QUERY = `
   SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
-    sr.requestor_type_id, sr.description, sr.date, sr.user_id,
+    sr.requestor_type_id, sr.description, sr.date, sr.user_id, sr.project_id,
     u.display_name AS user_display_name, d.text AS depot_text,
     s.name service_requestor, dd.text depot_requestor,
     dm.text reference, stat.title_key, stat.status_key
@@ -123,6 +123,7 @@ function getStockRequisition(params) {
   filters.equals('depot_uuid', 'depot_uuid', 'sr');
   filters.equals('requestor_uuid', 'requestor_uuid', 'sr');
   filters.equals('user_id', 'user_id', 'sr');
+  filters.equals('project_id', 'project_id', 'sr');
   filters.equals('reference', 'text', 'dm');
   filters.period('date', 'date', 'sr');
   filters.period('period', 'date', 'sr');
@@ -167,6 +168,8 @@ exports.create = async (req, res, next) => {
 
     requisition.uuid = identifier;
     requisition.user_id = req.session.user.id;
+    requisition.project_id = req.session.project.id;
+
     requisition.date = new Date(requisition.date) || new Date();
 
     transaction.addQuery('INSERT INTO stock_requisition SET ?;', binarize(requisition));
