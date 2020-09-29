@@ -80,6 +80,17 @@ function StockRequisitionPage() {
     await components.notification.hasSuccess();
   };
 
+  page.changeStatus = async (row = 0, status) => {
+    const cell = await GU.getCell(gridId, row, 7);
+    await cell.$('[data-method=action]').click();
+    await $('[data-method=edit]').click();
+
+    const selectStatus = element(by.id(status));
+    await selectStatus.click();
+
+    await FU.buttons.submit();
+  };
+
   /**
    * @method submit
    */
