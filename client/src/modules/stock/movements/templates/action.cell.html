@@ -19,7 +19,7 @@
     </li>
 
     <li ng-if="row.entity.stock_requisition_uuid">
-      <a data-method="view-requisition" href ui-sref="stockRequisition({ filters : [{ key : 'reference', value : row.entity.document_requisition, displayValue: displayValue}]})">
+      <a data-method="view-requisition" href ui-sref="stockRequisition({ filters : [{ key : 'period', value : 'allTime' }, { key : 'stock_requisition_uuid', value : row.entity.stock_requisition_uuid, displayValue: row.entity.document_requisition, cacheable:false}]})">
         <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.VIEW_REQUISITION</span>
       </a>
     </li>
