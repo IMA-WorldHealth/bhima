@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       depotUuid        : '<',
-      user             : '<?',
+      filterByUserPermission  : '@?',
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
@@ -49,7 +49,7 @@ function DepotSelectController(Depots, Notify) {
       exception : $ctrl.exception,
     };
 
-    if ($ctrl.user) {
+    if ($ctrl.filterByUserPermission) {
       options.only_user = true;
     }
 
