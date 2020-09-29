@@ -653,7 +653,7 @@ CREATE TABLE `general_ledger` (
   `trans_id_reference_number` MEDIUMINT UNSIGNED NOT NULL,
   `trans_date`        DATETIME NOT NULL,
   `record_uuid`       BINARY(16) NOT NULL,
-  `description`       TEXT NOT NULL,
+  `description`       TEXT,
   `account_id`        INT(10) UNSIGNED NOT NULL,
   `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `credit`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
