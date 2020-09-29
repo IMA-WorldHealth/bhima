@@ -1940,11 +1940,13 @@ CREATE TABLE `stock_requisition` (
   `status_id`           TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   `updated_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `project_id`          SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `stock_requisition_uuid` (`uuid`),
   KEY `requestor_uuid` (`requestor_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
-  CONSTRAINT `stock_requisition__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+  CONSTRAINT `stock_requisition__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `stock_requisition__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_requisition_item`;
