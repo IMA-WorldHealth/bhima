@@ -15,8 +15,8 @@ async function stockInventoriesReport(req, res, next) {
   let options = {};
   let display = {};
   let filters;
-  const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
-  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
 
   const data = {};
 
@@ -37,7 +37,7 @@ async function stockInventoriesReport(req, res, next) {
 
     delete options.label;
 
-    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    if (req.session.stock_settings.enable_strict_depot_permission) {
       options.check_user_id = req.session.user.id;
     }
 
