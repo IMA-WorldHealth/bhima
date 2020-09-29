@@ -1851,7 +1851,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
 
 DROP TABLE IF EXISTS `stock_setting`;
 CREATE TABLE `stock_setting` (
-  `enterprise_id`  SMALLINT(5) UNSIGNED NOT NULL,
+  `enterprise_id`  SMALLINT(5) UNSIGNED NOT NULL UNIQUE,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
   `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
