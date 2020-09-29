@@ -212,17 +212,15 @@ exports.update = async (req, res, next) => {
       const checkRequisitionBalance = `
       SELECT COUNT(balance.inventory_uuid) AS numberInventoryPartial
         FROM (
-        SELECT req.inventory_uuid, req.code, req.inventoryType,
-        (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
+        SELECT req.inventory_uuid, (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
             FROM (
-              SELECT BUID(i.uuid) inventory_uuid, i.code, it.text as inventoryType, sri.quantity
+              SELECT BUID(i.uuid) inventory_uuid, sri.quantity
               FROM stock_requisition_item sri
               JOIN inventory i ON i.uuid = sri.inventory_uuid
-              JOIN inventory_type it ON i.type_id = it.id
               WHERE sri.requisition_uuid = ?
             ) AS req
             LEFT JOIN (
-              SELECT BUID(inv.uuid) AS inventory_uuid, inv.code, inv.text AS inventoryType, SUM(m.quantity) AS quantity
+              SELECT BUID(inv.uuid) AS inventory_uuid, SUM(m.quantity) AS quantity
               FROM stock_movement AS m
               JOIN lot AS l ON l.uuid = m.lot_uuid
               JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
