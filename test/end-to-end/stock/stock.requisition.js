@@ -20,7 +20,7 @@ function StockRequisitionTests() {
   const DEPOT_TERTIAIRE = 'Depot Tertiaire';
 
   const SERVICE = 'Test Service';
-  const REFERENCES = ['SREQ.5', 'SREQ.6', 'SREQ.7', 'SREQ.8'];
+  const REFERENCES = ['SREQ.TPA.5', 'SREQ.TPA.6', 'SREQ.TPA.7', 'SREQ.TPA.8'];
   const NOT_REFERENCE = 'SREQ.ZERO';
 
   it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
