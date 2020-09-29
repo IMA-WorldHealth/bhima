@@ -98,9 +98,10 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $l
 
   // set the user, enterprise, and project for the session
   // this should happen right after login
-  function create(user, enterprise, project, paths) {
+  function create(user, enterprise, stockSettings, project, paths) {
     $storage.user = user;
     $storage.enterprise = enterprise;
+    $storage.stock_settings = stockSettings;
     $storage.project = project;
     $storage.paths = paths;
 
@@ -112,6 +113,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $l
   function destroy() {
     delete $storage.user;
     delete $storage.enterprise;
+    delete $storage.stock_settings;
     delete $storage.project;
     delete $storage.paths;
 
@@ -135,7 +137,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $l
       .then(session => {
 
         // create the user session in the $storage
-        create(session.user, session.enterprise, session.project, session.paths);
+        create(session.user, session.enterprise, session.stock_settings, session.project, session.paths);
 
         // notify login event
         $rootScope.$emit('session:login');
@@ -168,6 +170,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $l
   function load() {
     service.user = $storage.user;
     service.enterprise = $storage.enterprise;
+    service.stock_settings = $storage.stock_settings;
     service.project = $storage.project;
     service.paths = $storage.paths;
   }
@@ -179,7 +182,7 @@ function SessionService($sessionStorage, $http, $state, util, $rootScope, $q, $l
         .then((session) => {
 
           // re-create the user session in the $storage
-          create(session.user, session.enterprise, session.project, session.paths);
+          create(session.user, session.enterprise, session.stock_settings, session.project, session.paths);
 
           // tell the tree to re-download a user's units
           $rootScope.$emit('session:reload');
