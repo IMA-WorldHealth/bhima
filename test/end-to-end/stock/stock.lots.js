@@ -28,8 +28,8 @@ function StockLotsRegistryTests() {
   // techinically this is 26 in total, but the grid doesn't render that
   // many on small screens
   const LOT_FOR_ALLTIME = 22;
-  const LOT_FOR_TODAY = 14;
-  const LOT_FOR_LAST_YEAR = 21;
+  const LOT_FOR_TODAY = 19;
+  const LOT_FOR_LAST_YEAR = 26;
 
   const inventoryGroup = 'Injectable';
 
@@ -57,7 +57,7 @@ function StockLotsRegistryTests() {
   it('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 17 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 22 + depotGroupingRow);
   });
 
   it('find lots by inventory', async () => {
@@ -81,13 +81,13 @@ function StockLotsRegistryTests() {
   it('find lots by expiration date', async () => {
     await modal.setdateInterval('01/01/2017', '31/12/2017', 'expiration-date');
     await modal.submit();
-    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 2);
   });
 
   it('find inventories by group', async () => {
     await components.inventoryGroupSelect.set(inventoryGroup);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 9);
+    await GU.expectRowCount(gridId, 14);
     await filters.resetFilters();
   });
 }
