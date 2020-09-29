@@ -65,8 +65,8 @@ BEGIN
 
   -- stock_requisition
   INSERT INTO document_map
-    SELECT stock_requisition.uuid, CONCAT_WS('.', 'SREQ', stock_requisition.reference)
-    FROM stock_requisition;
+    SELECT stock_requisition.uuid, CONCAT_WS('.', 'SREQ', project.abbr, stock_requisition.reference)
+    FROM stock_requisition JOIN project where project.id = stock_requisition.project_id;
 
   -- stock movements
   INSERT INTO `document_map`
