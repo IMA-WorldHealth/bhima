@@ -53,10 +53,10 @@
     </div>
 
     <!-- depot -->
-    <div id="depot-supplier" class="form-group">
+    <div id="depot-supplier" class="form-group"> NANAN
       <bh-depot-select
         depot-uuid="$ctrl.model.depot_uuid"
-        user="true"
+        filter-by-user-permission="true"
         required="true"
         exception="$ctrl.model.requestor_uuid"
         on-select-callback="$ctrl.onSelectDepot(depot)">
