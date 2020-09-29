@@ -837,7 +837,7 @@
               "DRAFT":"Draft",
               "EXCESSIVE_RECEIVED_QUANTITY": "Received but with excessive quantity",
               "IN_PROGRESS":"In Progress",
-              "PARTIALLY":"Partially"
+              "PARTIALLY":"Partially delivered"
             }
         },
         "LEGENDS": {
