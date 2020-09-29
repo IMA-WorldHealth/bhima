@@ -1,7 +1,11 @@
-{"SETTINGS":{"TITLE":"Settings",
-"BUG_LINK":"Report an Issue",
-"HAVING_DATE_INTERVAL":"Use a date interval",
-"HAVING_DATE_INTERVAL_HELP_TEXT":"This option allows you to define a starting and ending date",
-"BUG_REPORT":"Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
-"POS_RECEIPT_INFO":"Enabling POS receipts will configure all supported system receipts to the POS (80mm) format",
-"SIMPLIFIED_CARD_INFO":"Simple patient identifiers have a width of 75mm, height of 125mm are in 'Landscape' orientation. Standard identities are 'A6'."}}
+{
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "BUG_LINK": "Report an Issue",
+    "HAVING_DATE_INTERVAL": "Use a date interval",
+    "HAVING_DATE_INTERVAL_HELP_TEXT": "This option allows you to define a starting and ending date",
+    "BUG_REPORT": "Thank you for filing a bug! Please read the following message and replace the text surrounded by brackets ([[]]) with your report.\r\nWhere did the bug occur?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat task were you trying to accomplish?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nWhat result did you expect?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nAny other relevant information or comments?\r\n\t\t[[ ENTER TEXT HERE ]]\r\nMay we contact you for more information?\r\n\t\t[x] YES [ ] NO",
+    "POS_RECEIPT_INFO": "Enabling POS receipts will configure all supported system receipts to the POS (80mm) format",
+    "SIMPLIFIED_CARD_INFO": "Simple patient identifiers have a width of 75mm, height of 125mm are in 'Landscape' orientation. Standard identities are 'A6'."
+  }
+}
