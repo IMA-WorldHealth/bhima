@@ -68,7 +68,7 @@ function StockSettingsController(
 
     return promise
       .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
-      .then(() => Session.reload())
+      .then(() => Session.reload()) // Should we just refresh the stock settings in the Session?
       .catch(Notify.handleError);
   }
 

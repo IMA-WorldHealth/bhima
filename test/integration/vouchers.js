@@ -16,7 +16,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   const vUuid = 'B140C1446CA847B099BA94732CF6EFDE';
   const pUuid = 'C144B1406CA847B099BA6EFDE94732CF';
-  const numVouchers = 13;
+  const numVouchers = 16;
 
   const TO_DELETE_UUID = '3688E9CE85EA4B5C9144688177EDCB63';
 
@@ -216,6 +216,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('GET /vouchers?detailed=1 returns a list of vouchers', () => {
     return agent.get('/vouchers?detailed=1')
       .then((res) => {
+        console.log(JSON.stringify(res,null,2));
         helpers.api.listed(res, numVouchers);
       })
       .catch(helpers.handler);
