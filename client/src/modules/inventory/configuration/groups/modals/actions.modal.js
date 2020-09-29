@@ -14,7 +14,9 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
 
   // session
   vm.session = {};
-  vm.enableAutoStockAccounting = Session.enterprise.settings.enable_auto_stock_accounting;
+  console.log("EASA: ");
+  console.log(JSON.stringify(Session.stock_settings,null,2));
+  vm.enableAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
 
   vm.isCreateState = (Data.action === 'add');
   vm.isUpdateState = (Data.action === 'edit');

@@ -225,36 +225,6 @@
               <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
             </div>
             <div class="panel-body">
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.month_average_consumption.$invalid }">
-                <label class="control-label" translate>
-                  FORM.LABELS.DEFINE_MONTH_AVERAGE_CONSUMPTION
-                </label>
-                <input type="number" class="form-control" autocomplete="off"
-                  name="month_average_consumption" ng-model="EnterpriseCtrl.enterprise.settings.month_average_consumption"
-                  ng-change="EnterpriseCtrl.setMonthAverage(value)" min="1" bh-integer>
-                <div class="help-block" ng-messages="EnterpriseForm.month_average_consumption.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-              <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.default_min_months_security_stock.$invalid }">
-                <label class="control-label" translate>
-                  ENTERPRISE.SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
-                </label>
-                <input type="number" class="form-control" autocomplete="off"
-                  name="default_min_months_security_stock" ng-model="EnterpriseCtrl.enterprise.settings.default_min_months_security_stock"
-                  ng-change="EnterpriseCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
-                <div class="help-block" ng-messages="EnterpriseForm.default_min_months_security_stock.$error" ng-show="EnterpriseForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <bh-yes-no-radios
-                label="ENTERPRISE.SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
-                value="EnterpriseCtrl.enterprise.settings.enable_supplier_credit"
-                name="enable_supplier_credit"
-                help-text="ENTERPRISE.SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
-                on-change-callback="EnterpriseCtrl.enableSupplierCredit(value)">
-              </bh-yes-no-radios>
 
               <bh-yes-no-radios
                 label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
@@ -305,30 +275,6 @@
               </bh-yes-no-radios>
 
               <bh-yes-no-radios
-                label="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
-                value="EnterpriseCtrl.enterprise.settings.enable_auto_stock_accounting"
-                name="enable_auto_stock_accounting"
-                help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
-                on-change-callback="EnterpriseCtrl.enableAutoStockAccountingSetting(value)">
-              </bh-yes-no-radios>
-
-              <bh-yes-no-radios
-                label="ENTERPRISE.SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
-                value="EnterpriseCtrl.enterprise.settings.enable_auto_purchase_order_confirmation"
-                name="enable_auto_purchase_order_confirmation"
-                help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
-                on-change-callback="EnterpriseCtrl.enableAutoPurchaseOrderConfirmationSetting(value)">
-              </bh-yes-no-radios>
-
-              <bh-yes-no-radios
-                label="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
-                value="EnterpriseCtrl.enterprise.settings.enable_daily_consumption"
-                name="enable_daily_consumption"
-                help-text="ENTERPRISE.SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
-                on-change-callback="EnterpriseCtrl.enableDailyConsumptionSetting(value)">
-              </bh-yes-no-radios>
-
-              <bh-yes-no-radios
                 label="ENTERPRISE.SETTINGS.ENABLE_AUTO_EMAIL_REPORT_LABEL"
                 value="EnterpriseCtrl.enterprise.settings.enable_auto_email_report"
                 name="enable_auto_email_report"
@@ -343,13 +289,6 @@
                 on-change-callback="EnterpriseCtrl.enableIndexPaymentSetting(value)">
               </bh-yes-no-radios>
 
-              <bh-yes-no-radios
-                label="ENTERPRISE.SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
-                help-text="ENTERPRISE.SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
-                value="EnterpriseCtrl.enterprise.settings.enable_strict_depot_permission"
-                name="enable_strict_depot_permission"
-                on-change-callback="EnterpriseCtrl.enableStrictDepotPermissionSetting(value)">
-              </bh-yes-no-radios>
             </div>
           </div>
 

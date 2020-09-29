@@ -174,6 +174,18 @@
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Cela ajoutera un filtre sur les lots arrivés à expiration."
   },
   "SETTINGS" : {
+    "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
+    "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Nombre de mois pour le calcul de la consommation moyenne mensuelle",
+    "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Activer la confirmation automatique des commandes d'achat",
+    "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT" : "Activer la confirmation automatique des bons de commande lorsqu'ils sont créés sans nécessiter de confirmation manuelle.",
+    "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Activer la comptabilisation de stock en temps réel",
+    "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "L'activation de cette option va écrire automatiquement et en temps réel dans le journal toutes les transactions liées aux mouvements de stock. Les comptes des inventaires et groupes d'inventaire doivent être bien configurés au préalable",
+    "ENABLE_DAILY_CONSUMPTION_LABEL" : "Activer le calcul du CMM sur base des jours de consommation",
+    "ENABLE_DAILY_CONSUMPTION_HELP_TEXT" : "La Cons mation Moyenne Mensuelle (CMM) est calculée en tenant compte des quantités consommées sur le nombre de jours où il y a eu des consommation",
+    "ENABLE_STRICT_DEPOT_PERMISSION" : "Activer la permission de voir les depots dans les registres",
+    "ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT" : "Limiter la consultation des registres de stock aux utilisateurs selon leurs depots",
+    "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "Activer le crédit automatique du fournisseur lors de l'entrée de stock",
+    "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Ajoute automatiquement les transactions pour créditer le fournisseur de la valeur du stock reçu dans un dépôt lors de l'entrée du stock à partir d'une commande d'achat. Ceci n'est déclenché que si la comptabilité de stock automatique est également définie.",
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système"
   },

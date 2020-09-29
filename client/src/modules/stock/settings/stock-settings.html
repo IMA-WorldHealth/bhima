@@ -1,0 +1,93 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_SETTINGS</li>
+    </ol>
+  </div>
+</div>
+<div class="flex-content">
+  <div class="container-fluid">
+    <form name="StockSettingsForm" bh-submit="StockSettingsCtrl.submit(StockSettingsForm)"
+      ng-model-options="{ updateOn: 'blur' }" novalidate>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-cogs"></i> <span translate>TREE.STOCK_SETTINGS</span>
+        </div>
+        <div class="panel-body">
+
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.month_average_consumption.$invalid }">
+            <label class="control-label" translate>
+              SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION
+            </label>
+            <input type="number" class="form-control" autocomplete="off" name="month_average_consumption"
+              ng-model="StockSettingsCtrl.settings.month_average_consumption"
+              ng-change="StockSettingsCtrl.setMonthAverage(value)" min="1" bh-integer>
+            <div class="help-block" ng-messages="StockSettingsForm.month_average_consumption.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_min_months_security_stock.$invalid }">
+            <label class="control-label" translate>
+              SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
+            </label>
+            <input type="number" class="form-control" autocomplete="off"
+              name="default_min_months_security_stock"
+              ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
+              ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
+            <div class="help-block" ng-messages="StockSettingsForm.default_min_months_security_stock.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <bh-yes-no-radios label="SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
+            value="StockSettingsCtrl.settings.enable_daily_consumption"
+            name="enable_daily_consumption"
+            help-text="SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
+            on-change-callback="StockSettingsCtrl.enableDailyConsumption(value)">
+          </bh-yes-no-radios>
+
+          <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
+            value="StockSettingsCtrl.settings.enable_auto_purchase_order_confirmation"
+            name="enable_auto_purchase_order_confirmation"
+            help-text="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
+            on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
+          </bh-yes-no-radios>
+
+          <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
+            value="StockSettingsCtrl.settings.enable_strict_depot_permission"
+            name="enable_strict_depot_permission"
+            help-text="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
+            on-change-callback="StockSettingsCtrl.enableStrictDepotPermission(value)">
+          </bh-yes-no-radios>
+
+          <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
+            value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
+            name="enable_auto_stock_accounting"
+            help-text="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
+            on-change-callback="StockSettingsCtrl.enableAutoStockAccounting(value)">
+          </bh-yes-no-radios>
+
+          <bh-yes-no-radios label="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
+            value="StockSettingsCtrl.settings.enable_supplier_credit"
+            name="enable_supplier_credit"
+            help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
+            on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
+          </bh-yes-no-radios>
+        </div>
+
+        <div class="panel-footer" id="submission">
+          <bh-loading-button loading-state="EnterpriseForm.$loading">
+            <span translate>FORM.BUTTONS.UPDATE</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
