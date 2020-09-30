@@ -109,7 +109,7 @@ function getLotFilters(parameters) {
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'origin_uuid', 'l');
   filters.equals('tag_uuid', 'tags', 't');
-  filters.equals('stock_requisition_uuid', 'uuid', 'sr');
+  filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
   // depot permission check
   filters.custom(
@@ -348,7 +348,7 @@ async function getMovements(depotUuid, params) {
     BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference,
-    BUID(sr.uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
+    BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
   FROM stock_movement m
   JOIN lot l ON l.uuid = m.lot_uuid
   JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -356,9 +356,7 @@ async function getMovements(depotUuid, params) {
   JOIN flux f ON f.id = m.flux_id
   LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
-  LEFT JOIN stock_requisition_movement smr ON smr.document_uuid = m.document_uuid
-  LEFT JOIN stock_requisition sr ON sr.uuid = smr.stock_requisition_uuid
-  LEFT JOIN document_map sr_m ON sr_m.uuid = sr.uuid
+  LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
   `;
 
   const finalClause = 'GROUP BY document_uuid, is_exit';
