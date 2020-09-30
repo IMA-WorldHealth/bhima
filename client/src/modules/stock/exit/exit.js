@@ -561,6 +561,7 @@ function StockExitController(
       is_exit : 1,
       flux_id : bhConstants.flux.TO_SERVICE,
       user_id : vm.stockForm.details.user_id,
+      stock_requisition_uuid : vm.requisition.uuid,
     };
 
     const lots = vm.stockForm.store.data.map(formatLot);
@@ -608,6 +609,7 @@ function StockExitController(
       description : vm.movement.description,
       isExit : true,
       user_id : vm.stockForm.details.user_id,
+      stock_requisition_uuid : vm.requisition.uuid,
     };
 
     const lots = vm.stockForm.store.data.map(formatLot);
@@ -622,7 +624,6 @@ function StockExitController(
 
         const movementRequisition = {
           stock_requisition_uuid : vm.requisition.uuid,
-          document_uuid : documentUuid,
         };
 
         const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;

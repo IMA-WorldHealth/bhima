@@ -20,6 +20,7 @@ function StockRequisitionController(
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
   const stockRequisitionFilters = Stock.filter.requisition;
+
   vm.status = [];
 
   vm.editStatus = editStatus;

@@ -70,8 +70,8 @@ async function getDetailsBalance(identifier) {
       JOIN lot AS l ON l.uuid = m.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
       JOIN inventory_type it ON inv.type_id = it.id
-      JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
-      WHERE srm.stock_requisition_uuid = ?
+      JOIN stock_requisition AS sr ON sr.uuid = m.stock_requisition_uuid
+      WHERE m.stock_requisition_uuid = ?
       GROUP BY inv.uuid
     ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
     WHERE (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) > 0;
@@ -95,6 +95,7 @@ function binarize(params) {
   return db.convert(params, [
     'uuid',
     'depot_uuid',
+    'stock_requisition_uuid',
     'requisition_uuid',
     'inventory_uuid',
     'requestor_uuid',
@@ -118,6 +119,7 @@ function getStockRequisition(params) {
   filters.equals('service_requestor', 'name', 's');
   filters.equals('depot_requestor', 'text', 'dd');
   filters.equals('uuid', 'uuid', 'sr');
+  filters.equals('stock_requisition_uuid', 'uuid', 'sr');
   filters.equals('type_id', 'requestor_type_id', 'sr');
   filters.equals('status_id', 'status_id', 'sr');
   filters.equals('depot_uuid', 'depot_uuid', 'sr');
@@ -204,13 +206,10 @@ exports.update = async (req, res, next) => {
 
     if (requisition.movementRequisition) {
       const dataMovementRequisition = db.convert(
-        req.body.movementRequisition, ['stock_requisition_uuid', 'document_uuid'],
+        req.body.movementRequisition, ['stock_requisition_uuid'],
       );
 
       delete requisition.movementRequisition;
-
-      // Just to make a link between the stock issues coming from the requisition
-      await db.exec('INSERT INTO stock_requisition_movement SET ?;', dataMovementRequisition);
 
       const checkRequisitionBalance = `
       SELECT COUNT(balance.inventory_uuid) AS numberInventoryPartial
@@ -227,8 +226,8 @@ exports.update = async (req, res, next) => {
               FROM stock_movement AS m
               JOIN lot AS l ON l.uuid = m.lot_uuid
               JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-              JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
-              WHERE srm.stock_requisition_uuid = ?
+              JOIN stock_requisition AS sr ON sr.uuid = m.stock_requisition_uuid
+              WHERE m.stock_requisition_uuid = ?
               GROUP BY inv.uuid
             ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
           ) AS balance
@@ -254,8 +253,8 @@ exports.update = async (req, res, next) => {
               FROM stock_movement AS m
               JOIN lot AS l ON l.uuid = m.lot_uuid
               JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-              JOIN stock_requisition_movement AS srm ON srm.document_uuid = m.document_uuid
-              WHERE srm.stock_requisition_uuid = ?
+              JOIN stock_requisition AS sr ON sr.uuid = m.stock_requisition_uuid
+              WHERE m.stock_requisition_uuid = ?
               GROUP BY inv.uuid
             ) AS mouv ON mouv.inventory_uuid = req.inventory_uuid
           ) AS balance
