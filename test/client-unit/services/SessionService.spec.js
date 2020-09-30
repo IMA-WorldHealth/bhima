@@ -54,7 +54,7 @@ describe('SessionService', () => {
     expect(Session.user).to.be.eql(user);
     expect(Session.project).to.be.eql(project);
     expect(Session.enterprise).to.be.eql(enterprise);
-    expect(Session.stock_settings).to.be.eql(stock_settings);
+    expect(Session.stock_settings).to.be.eql(stockSettings);
   });
 
   it('destroy() destroys the session object', () => {
