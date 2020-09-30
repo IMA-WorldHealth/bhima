@@ -170,6 +170,18 @@
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired."
   },
   "SETTINGS" : {
+    "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
+    "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Number of months for calculating the average monthly consumption",
+    "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Enable automatic confirmation of purchase orders",
+    "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT" : "Enable automatic confirmation of purchase orders when they are created without requiring manual confirmation",
+    "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Enables realtime stock accounting",
+    "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured.",
+    "ENABLE_DAILY_CONSUMPTION_LABEL" : "Enable CMM calculation based on days of consumption",
+    "ENABLE_DAILY_CONSUMPTION_HELP_TEXT" : "The CMM (Average Monthly Consumption) is calculated taking into account the quantities consumed over the number of days on which there was consumption",
+    "ENABLE_STRICT_DEPOT_PERMISSION" : "Enable permission to view depots in stock registries",
+    "ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT" : "Limit the consultation of stock registries to users according to their depots",
+    "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "Enable Automatic Crediting of Supplier on Stock Entry",
+    "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Automatically adds the transactions to credit the supplier for the value of stock received in a depot when entering stock from a purchase order.  This is only triggered if the automatic stock accounting is set as well.",
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system"
   },
