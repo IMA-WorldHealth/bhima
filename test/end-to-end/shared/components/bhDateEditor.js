@@ -17,7 +17,7 @@ module.exports = {
    * @param {String} elementClick - determine a css class that will clicked to
    *   close the selection component Dates.
    */
-  set : async function set(date, id, elementClick) {
+  set : async (date, id, elementClick) => {
     const elementCloseComponent = elementClick || '.header-image';
 
     // fail hard if the user did not pass into

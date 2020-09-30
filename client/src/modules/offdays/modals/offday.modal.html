@@ -22,11 +22,12 @@
       </div>
     </div>
 
-      <bh-date-editor
-        date-value="OffdayModalCtrl.offday.date"
-        on-change="OffdayModalCtrl.onDateChange(date)"
-        allow-future-date="true">
-      </bh-date-editor>
+    <bh-date-editor
+      id="offday-date-editor"
+      date-value="OffdayModalCtrl.offday.date"
+      on-change="OffdayModalCtrl.onDateChange(date)"
+      allow-future-date="true">
+    </bh-date-editor>
 
     <div class="form-group" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.percent_pay.$invalid }">
       <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label> (%)
