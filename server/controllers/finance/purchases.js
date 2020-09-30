@@ -171,7 +171,7 @@ function create(req, res, next) {
   data.project_id = req.session.project.id;
   data.currency_id = req.session.enterprise.currency_id;
 
-  if (req.session.enterprise.settings.enable_auto_purchase_order_confirmation) {
+  if (req.session.stock_settings.enable_auto_purchase_order_confirmation) {
     data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
   }
 
