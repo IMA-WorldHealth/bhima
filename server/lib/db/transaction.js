@@ -96,7 +96,7 @@ class Transaction {
    *
    * @returns {Promise} - the results of the transaction execution
    */
-  execute() {
+  execute(DEBUG_TEST) {
     debug(`#execute(): Executing ${this.queries.length} queries.`);
     const deferred = q.defer();
 
@@ -142,11 +142,50 @@ class Transaction {
             debug('#execute(): An error occured in the transaction. Rolling back.');
             debug('#execute(): %o', err);
 
-            // individual query did not work - rollback transaction
-            connection.rollback(() => {
-              connection.destroy();
-            });
+            let promise;
 
+            if (DEBUG_TEST === 'yes') {
+              const pj = `
+              SELECT project_id, BUID(uuid), fiscal_year_id, period_id, trans_id,
+                trans_id_reference_number, trans_date, BUID(posting_journal.record_uuid),
+                description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+                BUID(entity_uuid), reference_uuid, comment, transaction_type_id, user_id
+              FROM posting_journal JOIN stage_trial_balance_transaction AS staged
+              ON posting_journal.record_uuid = staged.record_uuid;`;
+
+              const pj2 = `
+              SELECT project_id, BUID(uuid), fiscal_year_id, period_id, trans_id,
+                trans_id_reference_number, trans_date, BUID(posting_journal.record_uuid),
+                description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+                BUID(entity_uuid), reference_uuid, comment, transaction_type_id, user_id
+              FROM posting_journal;`;
+
+              debug('fetching errored data...');
+
+              promise = Promise.all([
+                queryConnection(connection, 'SELECT BUID(record_uuid) FROM stage_trial_balance_transaction;'),
+                queryConnection(connection, pj),
+                queryConnection(connection, pj2),
+                queryConnection(connection, 'SELECT COUNT(*) FROM posting_journal;'),
+                queryConnection(connection, 'SELECT COUNT(*) FROM general_ledger;'),
+              ]);
+
+              promise
+                .then(result => {
+                  debug('got results:', 'results');
+                  debug('result:', JSON.stringify(result, null, 4));
+
+                  // individual query did not work - rollback transaction
+                  connection.rollback(() => {
+                    connection.destroy();
+                  });
+                });
+
+            } else {
+              connection.rollback(() => {
+                connection.destroy();
+              });
+            }
 
             // increment the number of restarts
             this.restarts += 1;
@@ -176,6 +215,10 @@ class Transaction {
               debug('#execute(): Unrecoverable deadlock error.');
               debug(`#execute(): Completed ${this.restarts} / ${MAX_TRANSACTION_DEADLOCK_RESTARTS} restarts.`);
               debug('#execute(): Transaction will not be reattempted.');
+            }
+
+            if (DEBUG_TEST === 'yes') {
+              return promise.finally(() => deferred.reject(err));
             }
 
             return deferred.reject(err);
