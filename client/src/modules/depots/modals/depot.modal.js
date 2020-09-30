@@ -16,7 +16,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
-    vm.depot.min_months_security_stock = Session.enterprise.settings.default_min_months_security_stock;
+    vm.depot.min_months_security_stock = Session.stock_settings.default_min_months_security_stock;
   }
 
   // exposed methods
