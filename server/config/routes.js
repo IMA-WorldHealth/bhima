@@ -69,6 +69,7 @@ const depots = require('../controllers/inventory/depots');
 const inventoryReports = require('../controllers/inventory/reports');
 const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
+const stockSetting = require('../controllers/stock/setting');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -779,6 +780,7 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  // API for getting stock status
   app.get('/stock/status', stock.listStatus);
 
   // API routes for /stock/assign end point
@@ -823,6 +825,10 @@ exports.configure = function configure(app) {
   // stock integration
   app.post('/stock/integration', stock.createIntegration);
   app.post('/stock/inventory_adjustment', stock.createInventoryAdjustment);
+
+  // stock settings API
+  app.get('/stock/setting/:id?', stockSetting.list);
+  app.put('/stock/setting/:id', stockSetting.update);
 
   // stock reports API
   app.get('/reports/stock/exit', stockReports.stockExitReport);
