@@ -18,7 +18,7 @@ module.exports = {
    *   close the selection component Dates.
    */
   set : async function set(date, id, elementClick) {
-    const elementCloseComponent = elementClick || '.header-image';
+    const elementCloseComponent = elementClick || '[date-editor-label]';
 
     // fail hard if the user did not pass into
     /* if (!(date instanceof Date)) {
