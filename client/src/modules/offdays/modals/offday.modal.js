@@ -5,6 +5,12 @@ OffdayModalController.$inject = [
   '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment', 'params',
 ];
 
+/**
+ * @function OffdayModalController
+ *
+ * @description
+ * This modal sets the offdays for the payroll module.
+ */
 function OffdayModalController($state, Offdays, Notify, AppCache, moment, params) {
   const vm = this;
   vm.offday = {};
@@ -13,11 +19,9 @@ function OffdayModalController($state, Offdays, Notify, AppCache, moment, params
 
   if (params.isCreateState || params.id) {
     cache.stateParams = params;
-    vm.stateParams = cache.stateParams;
-  } else {
-    vm.stateParams = cache.stateParams;
   }
 
+  vm.stateParams = cache.stateParams;
   vm.isCreateState = vm.stateParams.isCreateState;
 
   // update the date
@@ -41,11 +45,13 @@ function OffdayModalController($state, Offdays, Notify, AppCache, moment, params
   function submit(offdayForm) {
     if (offdayForm.$invalid) { return 0; }
 
-    vm.offday.date = moment(vm.offday.date).format('YYYY-MM-DD');
+    const data = { ...vm.offday };
+
+    data.date = moment(data.date).format('YYYY-MM-DD');
 
     const promise = (vm.isCreateState)
-      ? Offdays.create(vm.offday)
-      : Offdays.update(vm.offday.id, vm.offday);
+      ? Offdays.create(data)
+      : Offdays.update(vm.offday.id, data);
 
     return promise
       .then(() => {
