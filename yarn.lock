@@ -2438,10 +2438,10 @@ decompress-response@^6.0.0:
   dependencies:
     mimic-response "^3.1.0"
 
-deeks@2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/deeks/-/deeks-2.2.6.tgz#7fc4c07c4251e1deb7e919fd14734fea151dc8b2"
-  integrity sha512-KlfWy96oUxxfAEC8q8QVoik++6yWsTYT9Cm5S6nUddLciZaOy7WDfcFbVCyeHKFO44ptWxtz7sQd9Upm4SGf4g==
+deeks@2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/deeks/-/deeks-2.2.7.tgz#91e711cdd434e0f12ddc194836569e2a3db383ad"
+  integrity sha512-pCKFxSqyY2LAQ3qKQ+y+wOG63Bb9uDmDiHUVnrTR10AP75BVo2QMlgm36G+oPpRDPrgAiw5p9d+lAxdsqOwOyA==
 
 deep-eql@^3.0.1:
   version "3.0.1"
@@ -2647,10 +2647,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-doc-path@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-2.0.4.tgz#3b4a4c8a4f70332d13ec195dab4b612fdcc3d7a4"
-  integrity sha512-y/Q1mjxFks4hvNv1KZkkuTZ6lx9zxLtldKf5GsMTdIXF4gNAOaXZ3YxrgHg/uO7JSME1xw/+G7fZ7/Dj/Ss88g==
+doc-path@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-2.1.0.tgz#1356b5cff464c2e4468fd1c1cc4daf472f59cd78"
+  integrity sha512-HNUQb8YmJ40W53C8Ejt2Ymk6Wxn+qxXCy56+VspoIDPOAIbThoZ4dyJLs1e4nzY/D0uWYKEGIbIcXNMEnuJVKA==
 
 doctrine@1.5.0:
   version "1.5.0"
@@ -5256,13 +5256,13 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.7.6:
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.7.6.tgz#2a88b323b8986f31dcd4ef785b3bfb3521d42899"
-  integrity sha512-um9bT7CgI77f/m5G/V5uRKz9UruFQFijD5Fh+EAnr5QowOJpdIk1ya37KSq1MxjBnJgvmpqCnI7ZjsvyTYiW0w==
+json-2-csv@^3.7.7:
+  version "3.7.7"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.7.7.tgz#13c032b397fbe73fc587391f0651c3331fe19881"
+  integrity sha512-RGytg82DcykoEw20tpO2pyt9b4vp6vXZzrvFnz4/esEdIFIAkKODHwE81cO6JgvIp4/F9CkAgmZCGABVlaLd7g==
   dependencies:
-    deeks "2.2.6"
-    doc-path "2.0.4"
+    deeks "2.2.7"
+    doc-path "2.1.0"
 
 json-buffer@3.0.0:
   version "3.0.0"
