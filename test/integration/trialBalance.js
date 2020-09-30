@@ -83,7 +83,6 @@ describe('(/journal/trialbalance) API endpoint', () => {
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {
-        console.log("TEST: ",JSON.stringify(res,null,2));
         expect(res).to.have.status(201);
         return agent.get(`/journal/${POSTING_TXNS[0]}`);
       })
