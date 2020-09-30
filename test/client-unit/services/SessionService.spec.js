@@ -8,6 +8,7 @@ describe('SessionService', () => {
   let user;
   let project;
   let enterprise;
+  let stockSettings;
 
   // load bhima.services
   beforeEach(module(
@@ -28,7 +29,7 @@ describe('SessionService', () => {
     user = _MockDataService_.user();
     project = _MockDataService_.project();
     enterprise = _MockDataService_.enterprise();
-
+    stockSettings = _MockDataService_.stock_settings();
 
     // mocked responses
     httpBackend.when('POST', '/auth/login')
@@ -48,11 +49,12 @@ describe('SessionService', () => {
   });
 
   it('create() creates a session from an object', () => {
-    Session.create(user, enterprise, project);
+    Session.create(user, enterprise, stockSettings, project);
 
     expect(Session.user).to.be.eql(user);
     expect(Session.project).to.be.eql(project);
     expect(Session.enterprise).to.be.eql(enterprise);
+    expect(Session.stock_settings).to.be.eql(stockSettings);
   });
 
   it('destroy() destroys the session object', () => {
@@ -63,6 +65,7 @@ describe('SessionService', () => {
     expect(Session.user).to.be.undefined;
     expect(Session.project).to.be.undefined;
     expect(Session.enterprise).to.be.undefined;
+    expect(Session.stock_settings).to.be.undefined;
   });
 
   it('emits a login event', () => {

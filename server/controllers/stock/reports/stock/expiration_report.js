@@ -24,7 +24,7 @@ async function stockExpirationReport(req, res, next) {
 
     const options = params;
 
-    if (req.session.enterprise.settings.enable_strict_depot_permission) {
+    if (req.session.stock_settings.enable_strict_depot_permission) {
       options.check_user_id = req.session.user.id;
     }
 
