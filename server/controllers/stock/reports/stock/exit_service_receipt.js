@@ -34,7 +34,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
       u.display_name AS user_display_name, s.name AS service_display_name,
       dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name,
-      BUID(sr.uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
+      BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -43,9 +43,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-    LEFT JOIN stock_requisition_movement smr ON smr.document_uuid = m.document_uuid
-    LEFT JOIN stock_requisition sr ON sr.uuid = smr.stock_requisition_uuid
-    LEFT JOIN document_map sr_m ON sr_m.uuid = sr.uuid
+    LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 
