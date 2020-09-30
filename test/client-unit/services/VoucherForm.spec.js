@@ -27,7 +27,7 @@ describe('VoucherForm', () => {
     $timeout = _$timeout_;
 
     // set up the required properties for the session
-    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.stock_settings(), Mocks.project());
 
     httpBackend = $httpBackend;
 
