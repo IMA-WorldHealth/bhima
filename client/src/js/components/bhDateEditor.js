@@ -6,6 +6,7 @@ angular.module('bhima.components')
       dateValue : '<', // one-way binding
       onChange : '&',
       minDate : '<?',
+      required : '<?',
       maxDate : '<?',
       allowFutureDate : '<?',
       disabled : '<?',
