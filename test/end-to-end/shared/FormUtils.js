@@ -221,6 +221,7 @@ module.exports = {
         '.dropdown-menu [role="option"]', searchString,
       ),
     );
+
     await option.click();
   },
 
