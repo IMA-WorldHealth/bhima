@@ -17,8 +17,8 @@ module.exports = {
    * @param {String} elementClick - determine a css class that will clicked to
    *   close the selection component Dates.
    */
-  set : async function set(date, id, elementClick) {
-    const elementCloseComponent = elementClick || '.header-image';
+  set : async (date, id, elementClick) => {
+    const elementCloseComponent = elementClick || '[bh-date-editor-label]';
 
     // fail hard if the user did not pass into
     /* if (!(date instanceof Date)) {

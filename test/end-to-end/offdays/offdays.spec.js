@@ -8,13 +8,13 @@ describe('Offdays Management', () => {
 
   const offday = {
     label         : 'Fete de Parent',
-    date          : '2017-08-01',
+    date          : new Date('2017-08-01'),
     percent_pay   : 100,
   };
 
   const updateOffday = {
     label         : 'Vingt',
-    date          : '2017-11-24',
+    date          : new Date('2017-11-24'),
     percent_pay   : 100,
   };
 
