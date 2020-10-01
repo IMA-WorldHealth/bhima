@@ -3054,6 +3054,7 @@ VALUES
   (22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL, 0),
   (23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, 1, 'is_gross_salary', NULL, 0),
   (24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
+
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
  VALUES (1, 'Configuration des rubriques'),
