@@ -141,9 +141,23 @@ sudo service mysql restart
 ```
 
 To start a MySQL server using docker you can use:
-`docker run --name mysql5.7 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=MyPassword -d mysql:5.7 --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION'`
-this will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.
-Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
+
+```bash
+# in this example, we use mysql8
+
+docker run --name mysql8 -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=MyPassword \
+  -d mysql:8 \
+  --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
+  --default-authentication-plugin=mysql_native_password \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci
+
+# give it a few seconds, and MySQL will be started and listening on port 3306
+```
+
+
+This will start a MySQL server that listens on port 3306 (the default MySQL port) on your localhost.  Additionally, you have to set `DB_HOST` in the `.env` file to `127.0.0.1`, leaving it to `localhost` will make the `mysql` command trying to connect via socket, what is not possible when using docker.
 
 If you have already a MySQL server running on port 3306 of your localhost, start docker without the port-forwarding (`-p 3306:3306`), use `docker inspect mysql5.7` to find the IP of the container and use that IP in the `.env` file as `DB_HOST`.
 

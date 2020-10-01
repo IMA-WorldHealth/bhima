@@ -81,7 +81,8 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
       u.display_name AS user_display_name,
       dm.text AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName
+      l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName,
+      BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
       ${joinToExitAttributes}
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -91,6 +92,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
     JOIN user u ON u.id = m.user_id
     LEFT JOIN depot dd ON dd.uuid = entity_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
     ${joinToExit}
     WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
 
@@ -112,6 +114,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
     date               : line.date,
     document_uuid      : line.document_uuid,
     document_reference : line.document_reference,
+    document_requisition : line.document_requisition,
   };
 
   data.rows = rows;

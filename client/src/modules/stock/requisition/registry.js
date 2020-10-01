@@ -20,7 +20,10 @@ function StockRequisitionController(
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
   const stockRequisitionFilters = Stock.filter.requisition;
+
   vm.status = [];
+
+  vm.editStatus = editStatus;
 
   // grid columns
   const columns = [
@@ -90,6 +93,15 @@ function StockRequisitionController(
   vm.onClearStatusFilter = (col) => {
     delete col.term;
   };
+
+  // edit status
+  function editStatus(requisition) {
+    Modal.requisitionStatus(requisition)
+      .then(() => {
+        return load(stockRequisitionFilters.filters.formatHTTP(true));
+      })
+      .catch(errorHandler);
+  }
 
   // options for the UI grid
   vm.gridOptions = {

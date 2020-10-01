@@ -220,6 +220,11 @@
             "PAYMENT": "Référence du Paiement",
             "PREVIOUS": "Précédent",
             "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
+            "REQUISITION": {
+              "CANCEL": "Annuler la demande de réquisition des stocks",
+              "DONE": "La requisition ne pourra plus être completée et sera consideré comme traitée",
+              "IN_PROGRESS": "Rehabilité la demande de requisition"
+            },
             "RESULT_FOUND": "Résultat trouvé",
             "ROWS": "enregistrements",
             "SALE_DETAILS": "Détaille de la Facture",
@@ -658,6 +663,7 @@
             "REPORT": "Rapport Général",
             "REPORT_SOCIAL_CHARGES": "Rapport des Charges sociales",
             "REQUIRED": "Champ obligatoire",
+            "REQUISITION_REFERENCE": "Référence de la réquisition",
             "RESPONSABILITY" : "Responsabilité",
             "RESULT_ACCOUNT_SCT": "Section Compte de Résultat",
             "RESULT": "Resultats",
@@ -825,12 +831,13 @@
             "ROLES_FOR":"Rôle(s) pour",
             "ROLES" : "Rôles",
             "STATUS_TYPE":{
-                "IN_PROGRESS":"En cours",
-                "COMPLETED":"Terminé",
-                "PARTIALLY":"Partiellement",
+                "CANCELLED":"Annulée",
+                "COMPLETED":"complétée",
                 "DRAFT":"Brouillon",
-                "CANCELLED":"Annulé",
-                "DONE":"Traité"
+                "EXCESSIVE_RECEIVED_QUANTITY": "Reçue mais de façon excessive",
+                "DONE":"Traitée",
+                "IN_PROGRESS": "En cours de livraison",
+                "PARTIALLY": "Partiellement livrée"
             }
         },
         "LEGENDS": {
@@ -934,6 +941,7 @@
             "RENDERER" : "Sélectionner un rendu",
             "REFERENCE": "Sélectionner la Référence",
             "REFERENCE_GROUP": "Sélectionner un groupe de référence",
+            "REFERENCE_REQUISITION": "Sélectionner la référence de la requisition",
             "REPORT_TYPE": "Sélectionner le type de rapport",
             "RESULT_ACCOUNT_SCT": "Sélectionnez une section de compte de résultats",
             "ROOT_ACCOUNT": "Sélectionner le compte titre",

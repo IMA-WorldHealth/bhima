@@ -493,6 +493,9 @@ async function depotMovement(document, params) {
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
+  parameters.stock_requisition_uuid = parameters.stock_requisition_uuid
+    ? db.bid(parameters.stock_requisition_uuid) : null;
+
   const depotUuid = isExit ? db.bid(parameters.from_depot) : db.bid(parameters.to_depot);
   const entityUuid = isExit ? db.bid(parameters.to_depot) : db.bid(parameters.from_depot);
   const fluxId = isExit ? core.flux.TO_OTHER_DEPOT : core.flux.FROM_OTHER_DEPOT;
@@ -512,6 +515,7 @@ async function depotMovement(document, params) {
       description : parameters.description,
       user_id : document.user,
       period_id : parameters.period_id,
+      stock_requisition_uuid : parameters.stock_requisition_uuid,
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
