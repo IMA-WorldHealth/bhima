@@ -81,12 +81,7 @@ describe('Complex Vouchers', () => {
       idx += 1;
     }
 
-    /*
-     * set the transaction type to one which have a specific Id
-     * (e.g. cash payment Id is 1)
-     * @see client/src/js/services/VoucherService.js
-     */
-    await page.transactionType('Autres R');
+    await page.transactionType('Autres Recettes');
 
     // submit the page
     await page.submit();
