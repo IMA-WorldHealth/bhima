@@ -832,12 +832,13 @@
             "ROLES_FOR":"Rôle(s) pour",
             "ROLES" : "Rôles",
             "STATUS_TYPE":{
-                "IN_PROGRESS":"En cours",
-                "COMPLETED":"complétée",
-                "PARTIALLY":"Partiellement",
-                "DRAFT":"Brouillon",
                 "CANCELLED":"Annulée",
-                "DONE":"Traitée"
+                "COMPLETED":"complétée",
+                "DRAFT":"Brouillon",
+                "EXCESSIVE_RECEIVED_QUANTITY": "Reçue mais de façon excessive",
+                "DONE":"Traitée",
+                "IN_PROGRESS": "En cours",
+                "PARTIALLY": "Partiellement"
             }
         },
         "LEGENDS": {

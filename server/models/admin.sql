@@ -63,6 +63,11 @@ BEGIN
     SELECT voucher.uuid, CONCAT_WS('.', 'VO', project.abbr, voucher.reference)
     FROM voucher JOIN project where project.id = voucher.project_id;
 
+  -- stock_requisition
+  INSERT INTO document_map
+    SELECT stock_requisition.uuid, CONCAT_WS('.', 'SREQ', stock_requisition.reference)
+    FROM stock_requisition;
+
   -- stock movements
   INSERT INTO `document_map`
     SELECT sm.document_uuid, CONCAT_WS('.', 'SM', sm.flux_id, sm.reference)
