@@ -56,6 +56,11 @@
       settings :  {},
     });
 
+    service.stock_settings = () => ({
+      enterprise_id : 1,
+      enable_auto_stock_accounting : 0,
+    });
+
     service.project = () => ({
       id : 1,
       name : 'Test Project A',
