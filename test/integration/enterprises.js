@@ -11,7 +11,7 @@ const fixtures = path.resolve(__dirname, '../fixtures');
  */
 describe('(/enterprises) Enterprises API', () => {
   const defaultEnterpriseId = 1;
-  const defaultValuemonthAverageConsumption = 6;
+  const defaultValuemonthAverageConsumption = 12;
 
   const enterprise = {
     name : 'enterprises',
