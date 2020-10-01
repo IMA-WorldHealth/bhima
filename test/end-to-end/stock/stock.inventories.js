@@ -73,11 +73,11 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 7 inventories by state (over maximum)', async () => {
+  it('find 5 inventories by state (over maximum)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 7);
+    await GU.expectRowCount(gridId, 5);
     await filters.resetFilters();
   });
 
@@ -89,10 +89,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 3 inventories who requires a purchase order', async () => {
+  it('find 6 inventories who requires a purchase order', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 3);
+    await GU.expectRowCount(gridId, 6);
     await filters.resetFilters();
   });
 }
