@@ -33,7 +33,8 @@ function stockExitServiceReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, s.name AS service_display_name,
       dm.text AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name
+      l.label, l.expiration_date, d.text AS depot_name,
+      BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -42,6 +43,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
     JOIN service s ON s.uuid = m.entity_uuid
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 
@@ -63,6 +65,7 @@ function stockExitServiceReceipt(documentUuid, session, options) {
         document_uuid        : line.document_uuid,
         document_reference   : line.document_reference,
         barcode : barcode.generate(key, line.document_uuid),
+        document_requisition : line.document_requisition,
       };
 
       data.rows = rows;

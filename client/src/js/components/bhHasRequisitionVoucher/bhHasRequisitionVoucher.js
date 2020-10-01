@@ -4,8 +4,10 @@ angular.module('bhima.components')
     controller  : bhHasRequisitionVoucherController,
     bindings    : {
       message   : '<',
+      classeLabel : '<',
       reference : '<',
       onChange  : '&',
+      requestor : '<?',
     },
   });
 
@@ -18,11 +20,17 @@ function bhHasRequisitionVoucherController() {
     $ctrl.requisitionVoucherExist = 0;
   };
 
+  $ctrl.$onChanges = function onChanges(changes) {
+    if (changes.requestor && changes.requestor.currentValue) {
+      $ctrl.requisitionVoucherExist = 0;
+    }
+  };
+
   $ctrl.onChangeVoucherExist = value => {
     $ctrl.requisitionVoucherExist = value;
   };
 
-  $ctrl.onChangeReference = () => {
-    $ctrl.onChange({ reference : $ctrl.requisitionReference });
+  $ctrl.onSelectRequisition = (requisition) => {
+    $ctrl.onChange({ reference : requisition.reference });
   };
 }

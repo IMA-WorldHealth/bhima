@@ -17,8 +17,10 @@ function StockRequisitionTests() {
 
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
+  const DEPOT_TERTIAIRE = 'Depot Tertiaire';
+
   const SERVICE = 'Test Service';
-  const REFERENCES = ['SREQ.1', 'SREQ.2', 'SREQ.3'];
+  const REFERENCES = ['SREQ.TPA.5', 'SREQ.TPA.6', 'SREQ.TPA.7', 'SREQ.TPA.8'];
   const NOT_REFERENCE = 'SREQ.ZERO';
 
   it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
@@ -47,10 +49,32 @@ function StockRequisitionTests() {
     await page.showCreateModal();
     await page.setRequestor(DEPOT_SECONDAIRE, 'depot');
     await page.setDepot(DEPOT_PRINCIPAL);
+    await page.setRows(2);
+    await page.addItem(0, 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité', 4);
+    await page.addItem(1, 'Prednisolone, 0,5%, Solution, Flacon, Unité', 500);
+    await page.setDescription(`Requisition for ${DEPOT_SECONDAIRE}`);
+    await page.submit();
+  });
+
+  it(`Create a Cancelled requisition`, async () => {
+    await page.showCreateModal();
+    await page.setRequestor(DEPOT_TERTIAIRE, 'depot');
+    await page.setDepot(DEPOT_SECONDAIRE);
     await page.setRows(3);
-    await page.addItem(0, 'Aminophylline, 25mg/ml, 10ml, Amp, Unité', 1000);
-    await page.addItem(1, 'Alcool acide, 1000ml, flacon, Unité', 1000);
-    await page.addItem(2, 'Nicotinamide, 50mg, Tab, 1000, Vrac', 5000);
+    await page.addItem(0, 'Bottes, couleur noire, caoutchouc, taille 44, Paire', 20);
+    await page.addItem(1, 'Atazanavir + Ritonavir 30 mg + 100 mg, 30 comp, unité', 25);
+    await page.addItem(2, 'Chlorhexidine sol concentrée à 5% 100 ml,flacon,unité', 35);
+    await page.setDescription(`Requisition for ${DEPOT_SECONDAIRE}`);
+    await page.submit();
+  });
+
+  it(`Create a requisition for other depot`, async () => {
+    await page.showCreateModal();
+    await page.setRequestor(DEPOT_TERTIAIRE, 'depot');
+    await page.setDepot(DEPOT_SECONDAIRE);
+    await page.setRows(2);
+    await page.addItem(0, 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité', 4);
+    await page.addItem(1, 'Vitamines', 20);
     await page.setDescription(`Requisition for ${DEPOT_SECONDAIRE}`);
     await page.submit();
   });
@@ -60,7 +84,7 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setRequestor(DEPOT_SECONDAIRE, 'depot');
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
 
     await SearchModal.open();
     await modal.reset();
@@ -74,7 +98,7 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setRequestor(SERVICE, 'service');
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
   });
 
   it('Search requisition by depot supplier', async () => {
@@ -82,13 +106,13 @@ function StockRequisitionTests() {
     await modal.reset();
     await modal.setDepot(DEPOT_SECONDAIRE);
     await modal.submit();
-    await page.expectRowCount(2);
+    await page.expectRowCount(7);
 
     await SearchModal.open();
     await modal.reset();
     await modal.setDepot(DEPOT_PRINCIPAL);
     await modal.submit();
-    await page.expectRowCount(1);
+    await page.expectRowCount(2);
   });
 
   it('Search requisition by reference', async () => {
@@ -124,6 +148,14 @@ function StockRequisitionTests() {
     await modal.submit();
     await page.removeRequisition(0);
     await page.expectRowCount(0);
+  });
+
+  it('Change the status of a requisition', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[3]);
+    await modal.submit();
+    await page.changeStatus(0, 'cancelled');
   });
 }
 

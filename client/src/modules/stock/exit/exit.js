@@ -352,7 +352,7 @@ function StockExitController(
 
   // find service
   function findService() {
-    StockModal.openFindService({ entity_uuid : vm.selectedEntityUuid })
+    StockModal.openFindService({ depot : vm.depot, entity_uuid : vm.selectedEntityUuid })
       .then(service => {
         handleSelectedEntity(service, 'service');
       })
@@ -561,6 +561,7 @@ function StockExitController(
       is_exit : 1,
       flux_id : bhConstants.flux.TO_SERVICE,
       user_id : vm.stockForm.details.user_id,
+      stock_requisition_uuid : vm.requisition.uuid,
     };
 
     const lots = vm.stockForm.store.data.map(formatLot);
@@ -576,10 +577,18 @@ function StockExitController(
         documentUuid = document.uuid;
 
         // update requisition status if needed
-        if (!vm.requisition) { return null; }
+        if (!vm.requisition.uuid) { return null; }
 
-        const COMPLETED_STATUS = 2;
-        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+        const movementRequisition = {
+          stock_requisition_uuid : vm.requisition.uuid,
+          document_uuid : documentUuid,
+        };
+
+        const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
+        return Stock.stockRequisition.update(vm.requisition.uuid, {
+          status_id : COMPLETED_STATUS,
+          movementRequisition,
+        });
       })
       .then(() => {
         ReceiptModal.stockExitServiceReceipt(documentUuid, bhConstants.flux.TO_SERVICE);
@@ -600,6 +609,7 @@ function StockExitController(
       description : vm.movement.description,
       isExit : true,
       user_id : vm.stockForm.details.user_id,
+      stock_requisition_uuid : vm.requisition.uuid,
     };
 
     const lots = vm.stockForm.store.data.map(formatLot);
@@ -609,12 +619,18 @@ function StockExitController(
     return Stock.movements.create(movement)
       .then(document => {
         documentUuid = document.uuid;
-
         // update requisition status if needed
-        if (!vm.requisition) { return null; }
+        if (!vm.requisition.uuid) { return null; }
 
-        const COMPLETED_STATUS = 2;
-        return Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+        const movementRequisition = {
+          stock_requisition_uuid : vm.requisition.uuid,
+        };
+
+        const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
+        return Stock.stockRequisition.update(vm.requisition.uuid, {
+          status_id : COMPLETED_STATUS,
+          movementRequisition,
+        });
       })
       .then(() => {
         ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);

@@ -2970,17 +2970,20 @@ INSERT INTO `purchase_item` VALUES
 
 
 -- default depots
-SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
-SET @second_depot_uuid = HUID("d4bb1452-e4fa-4742-a281-814140246877");
+SET @depot_uuid = HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296');
+SET @second_depot_uuid = HUID('d4bb1452-e4fa-4742-a281-814140246877');
+SET @third_deposit_uuid = HUID('bd4b1452-4742-e4fa-a128-246814140877');
 
 INSERT INTO `depot` VALUES
   (@depot_uuid, 'Depot Principal', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2),
-  (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3);
+  (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3),
+  (@third_deposit_uuid, 'Depot Tertiaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3);
 
 -- Set Depot Management By User
 INSERT INTO depot_permission (user_id, depot_uuid) VALUES
   (@superUser, @depot_uuid),
-  (@superUser, @second_depot_uuid);
+  (@superUser, @second_depot_uuid),
+  (@superUser, @third_deposit_uuid);
 
 -- TODO : As soon as the stored Procedure for Stock accounting landed, stock movement records should be posted also
 SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');
@@ -3426,3 +3429,19 @@ INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
 
 INSERT INTO `donation`(`uuid`, `project_id`, `date`, `donor_id`)
 VALUES(HUID('ae735e99-8faf-417b-aa63-9b404fca390d'), 1, NOW(), 1);
+
+-- DATA FOR REQUISITION
+INSERT INTO `stock_requisition` (`uuid`, `requestor_uuid`, `requestor_type_id`, `depot_uuid`, `description`, `date`, `user_id`, `project_id`, `reference`, `status_id`, `updated_at`, `created_at`) VALUES (0x6742E10CE6FC4A0296F3D159A08DA075, 0xAFF85BDCD7C64047AFE71724F8CD369E, 1, 0xD4BB1452E4FA4742A281814140246877, 'Requisition for Test Service', '2020-09-14 12:08:54', 1, 1, 1, 1, '2020-09-14 12:08:58', '2020-09-14 12:08:58');
+INSERT INTO `stock_requisition` (`uuid`, `requestor_uuid`, `requestor_type_id`, `depot_uuid`, `description`, `date`, `user_id`, `project_id`, `reference`, `status_id`, `updated_at`, `created_at`) VALUES (0xDAD1E243FD2048E09612BDBE95925254, 0xD4BB1452E4FA4742A281814140246877, 2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 'Requisition for Depot Secondaire', '2020-09-14 12:09:00', 1, 1, 2, 1, '2020-09-14 12:09:07', '2020-09-14 12:09:07');
+INSERT INTO `stock_requisition` (`uuid`, `requestor_uuid`, `requestor_type_id`, `depot_uuid`, `description`, `date`, `user_id`, `project_id`, `reference`, `status_id`, `updated_at`, `created_at`) VALUES (0x271C0EBEDDC24476BFCDBA9D31231141, 0xBD4B14524742E4FAA128246814140877, 2, 0xD4BB1452E4FA4742A281814140246877, 'Requisition for Depot Secondaire', '2020-09-14 12:09:41', 1, 1, 3, 5, '2020-09-14 12:09:17', '2020-09-14 12:09:17');
+INSERT INTO `stock_requisition` (`uuid`, `requestor_uuid`, `requestor_type_id`, `depot_uuid`, `description`, `date`, `user_id`, `project_id`, `reference`, `status_id`, `updated_at`, `created_at`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0xBD4B14524742E4FAA128246814140877, 2, 0xD4BB1452E4FA4742A281814140246877, 'Requisition for Depot Secondaire', '2020-09-14 12:09:19', 1, 1, 4, 1, '2020-09-14 12:09:25', '2020-09-14 12:09:25');
+
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x6742E10CE6FC4A0296F3D159A08DA075, 0x26051234F67811EAA705507B9DD6DEA5, 20);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x6742E10CE6FC4A0296F3D159A08DA075, 0xF6556E729D0547998CBD0A03B1810185, 20);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0xDAD1E243FD2048E09612BDBE95925254, 0x43F3DECBFCE9426E940ABC2150E62186, 4);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0xDAD1E243FD2048E09612BDBE95925254, 0xC3FD5A026A7549FCB2F376EE4C3FBFB7, 500);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x271C0EBEDDC24476BFCDBA9D31231141, 0x25FA9982F67811EAA705507B9DD6DEA5, 20);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x271C0EBEDDC24476BFCDBA9D31231141, 0x25FAB9D6F67811EAA705507B9DD6DEA5, 25);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x271C0EBEDDC24476BFCDBA9D31231141, 0x25FCAAC9F67811EAA705507B9DD6DEA5, 35);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0x43F3DECBFCE9426E940ABC2150E62186, 4);
+INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0xF6556E729D0547998CBD0A03B1810185, 20);
