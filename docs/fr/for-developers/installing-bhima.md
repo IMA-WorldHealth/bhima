@@ -117,12 +117,30 @@ _NOTE: BHIMA s'exécute dans _`sql_mode = 'STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRAC
 #Pour configurer MySQL avec ce paramètre, exécutez les commandes suivantes:
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
 
-#Under dans la section [mysqld], ajoutez le texte suivant:
-sql-mode = "STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"
+# dans la section [mysqld], ajoutez le texte suivant:
+sql-mode="STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION"
 
-# save and quit, puis redémarrez mysql avec la commande suivante:
+# sauvegarder, puis redémarrez mysql avec la commande suivante:
 sudo service mysql redémarrer
 ```
+
+Tu peux aussi utiliser docker avec mysql.  Le command pour le lancer est:
+```bash
+
+#demarrer docker sur port 3306
+
+docker run --name mysql8 -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=MyPassword \
+  -d mysql:8 \
+  --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
+  --default-authentication-plugin=mysql_native_password \
+  --character-set-server=utf8mb4 \
+  --collation-server=utf8mb4_unicode_ci
+
+```
+
+Il faut changer le fichier `.env` pour mettre `DB_HOST` a `127.0.0.1`.
+
 
 La structure de la base de données est contenue dans les fichiers `server/models/*. Sql`. Vous pouvez les exécuter un par un dans l'ordre ci-dessous ou simplement lancer `yarn build: db`.
 
