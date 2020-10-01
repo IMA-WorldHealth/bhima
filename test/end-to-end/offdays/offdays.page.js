@@ -17,7 +17,7 @@ class OffdayPage {
     await FU.buttons.create();
     await FU.input('OffdayModalCtrl.offday.label', offday.label);
 
-    components.dateEditor.set(new Date(offday.date), null, '[uib-modal] .title');
+    await components.dateEditor.set(offday.date, 'offday-date-editor', '.modal li.title');
 
     await FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
 
@@ -50,7 +50,7 @@ class OffdayPage {
 
     await FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
 
-    components.dateEditor.set(new Date(updateOffday.date), null, '[uib-modal] .title');
+    await components.dateEditor.set(updateOffday.date, 'offday-date-editor', '.modal li.title');
 
     await FU.input('OffdayModalCtrl.offday.percent_pay', updateOffday.percent_pay);
 
