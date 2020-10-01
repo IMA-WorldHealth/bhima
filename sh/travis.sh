@@ -19,7 +19,7 @@ fi
 mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' WITH GRANT OPTION;"
 mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-if [ "$TEST_TYPE" = 'e2e' ]
+if [ "$TEST_TYPE" = 'e2e' && $CHROME_REVISION && ${CHROME_REVISION-x} ]
 then
   echo "Downloading chrome revision: $CHROME_REVISION"
   echo "Download URL: https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/$CHROME_REVISION/chrome-linux.zip"
