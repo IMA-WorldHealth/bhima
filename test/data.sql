@@ -9,8 +9,9 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation) VALUES
-  (1, 0, 1, 1, 1, 0, 0);
+INSERT INTO `enterprise_setting`
+  (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report, enable_auto_stock_accounting, enable_auto_purchase_order_confirmation, month_average_consumption)
+  VALUES (1, 0, 1, 1, 1, 0, 0, 12);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -3050,6 +3051,7 @@ VALUES
   (22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL, 0),
   (23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, 1, 'is_gross_salary', NULL, 0),
   (24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
+
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
  VALUES (1, 'Configuration des rubriques'),
