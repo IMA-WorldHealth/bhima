@@ -1,0 +1,65 @@
+<form name="donorForm" bh-submit="DonorAddCtrl.submit(donorForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.DONOR</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{DonorAddCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.display_name.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.NAME</label>
+        <input type="text" class="form-control col-md-9" name="label" ng-model="DonorAddCtrl.donor.display_name" required>
+        <div class="help-block" ng-messages="donorForm.label.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.phone.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.PHONE</label>
+        <input type="tel" class="form-control col-md-9" name="phone" ng-model="DonorAddCtrl.donor.phone">
+        <div class="help-block" ng-messages="donorForm.phone.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.email.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.EMAIL</label>
+        <input type="email" class="form-control col-md-9" name="email" ng-model="DonorAddCtrl.donor.email">
+        <div class="help-block" ng-messages="donorForm.email.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      
+      <div class="form-group" ng-class="{ 'has-error' : donorForm.address.$invalid && donorForm.$submitted }">
+        <label class="control-label" translate>FORM.LABELS.ADDRESS</label>
+        <input type="text" class="form-control col-md-9" name="address" ng-model="DonorAddCtrl.donor.address">
+        <div class="help-block" ng-messages="donorForm.address.$error" ng-show="donorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="DonorAddCtrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="donorForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

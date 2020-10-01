@@ -112,8 +112,9 @@
             "WARNING": "Warning",
             "CONFIRM_MODAL": "Confirmation Needed",
             "DELETE_ROLE": "Do you really want to delete this role?",
-            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?",
-            "UNPOST_TRANSACTIONS" : "Do you realy want to unpost transactions?"
+            "UNPOST_TRANSACTIONS" : "Do you realy want to unpost transactions?",
+            "DELETE_DONOR": "Do you really want to delete this donor?",
+            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
@@ -911,6 +912,7 @@
             "DATE_INTERVAL": "Select a date interval",
             "DEBTOR_GROUP": "Select a Debtor Group",
             "DEPOT": "Select a Depot",
+            "DONOR": "Select a donor",
             "ENTERPRISE": "Select an Enterprise",
             "FEE_CENTER": "Select a Fee Center",
             "FISCAL_YEAR": "Select a Fiscal Year",

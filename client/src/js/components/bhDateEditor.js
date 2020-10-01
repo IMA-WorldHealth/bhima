@@ -10,6 +10,7 @@ angular.module('bhima.components')
       maxDate : '<?',
       allowFutureDate : '<?',
       disabled : '<?',
+      required : '<',
       dateFormat : '@?',
       label : '@?',
       limitMinFiscal : '@?',

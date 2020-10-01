@@ -12,7 +12,6 @@ const StockRequisitionTests = require('./stock.requisition');
 const StockInventoryAdjustement = require('./stock.z1.inventory-adjustment');
 
 describe('Stock end-to-end test', () => {
-
   describe('Stock Adjustment Test', StockAdjustmentTests);
   describe('Stock Assign Module', StockAssignTests);
   describe('Stock Entry Test', StockEntryTests);
