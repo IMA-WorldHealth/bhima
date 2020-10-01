@@ -444,7 +444,8 @@ INSERT INTO `status` VALUES
   (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY'),
   (4, 'draft', 'FORM.LABELS.STATUS_TYPE.DRAFT'),
   (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED'),
-  (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED');
+  (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED'),
+  (7, 'excessive', 'FORM.LABELS.STATUS_TYPE.EXCESSIVE_RECEIVED_QUANTITY');
 
 -- type of requestors
 INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES

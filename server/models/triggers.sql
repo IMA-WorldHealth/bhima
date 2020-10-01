@@ -117,12 +117,12 @@ END$$
 -- Stock Requisition Triggers
 CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
 FOR EACH ROW
-  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(stock_requisition.reference) + 1, 1)) FROM stock_requisition);$$
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(stock_requisition.reference) + 1, 1)) FROM stock_requisition  WHERE stock_requisition.project_id = new.project_id);$$
 
 CREATE TRIGGER stock_requisition_document_map AFTER INSERT ON stock_requisition
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'SREQ', new.reference) ON DUPLICATE KEY UPDATE text=text;
+    SELECT new.uuid, CONCAT_WS('.', 'SREQ', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 DELIMITER ;
