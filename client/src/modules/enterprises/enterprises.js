@@ -223,19 +223,8 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enablePasswordValidationSetting = proxy('enable_password_validation');
   vm.enableBalanceOnInvoiceReceipSetting = proxy('enable_balance_on_invoice_receipt');
   vm.enableBarcodesSetting = proxy('enable_barcodes');
-  vm.enableAutoStockAccountingSetting = proxy('enable_auto_stock_accounting');
-  vm.enableAutoPurchaseOrderConfirmationSetting = proxy('enable_auto_purchase_order_confirmation');
   vm.enableAutoEmailReportSetting = proxy('enable_auto_email_report');
   vm.enableIndexPaymentSetting = proxy('enable_index_payment_system');
-  vm.enableDailyConsumptionSetting = proxy('enable_daily_consumption');
-  vm.enableSupplierCredit = proxy('enable_supplier_credit');
-  vm.enableStrictDepotPermissionSetting = proxy('enable_strict_depot_permission');
-  vm.setMonthAverage = function setMonthAverage() {
-    $touched = true;
-  };
-  vm.setDefaultMinMonthsSecurityStock = function setDefaultMinMonthsSecurityStock() {
-    $touched = true;
-  };
 
   startup();
 }

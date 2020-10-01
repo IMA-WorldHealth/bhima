@@ -162,7 +162,8 @@ INSERT INTO unit VALUES
   (286,'Fee Center Reports','TREE.REPORTS','reports for the fee center modules',218,'/fee_center/reports'),
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
   (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
-  (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report');
+  (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
+  (290, '[Stock] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

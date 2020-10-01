@@ -123,7 +123,7 @@ async function createStock(req, res, next) {
     const isExit = 0;
     const postingParams = [db.bid(documentUuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
 
-    if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+    if (req.session.stock_settings.enable_auto_stock_accounting) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
     }
 
@@ -235,7 +235,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
     db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
   ];
 
-  if (session.enterprise.settings.enable_auto_stock_accounting) {
+  if (session.stock_settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
   }
 
@@ -336,7 +336,7 @@ async function createInventoryAdjustment(req, res, next) {
       db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
     ];
 
-    if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+    if (req.session.stock_settings.enable_auto_stock_accounting) {
       if (positiveQuantities.length > 0) {
         trx.addQuery('CALL PostStockMovement(?)', [negativeAdjustmentParams]);
       }
@@ -562,7 +562,7 @@ async function listLots(req, res, next) {
 function listLotsMovements(req, res, next) {
   const params = req.query;
 
-  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+  if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
   }
 
@@ -580,7 +580,7 @@ function listLotsMovements(req, res, next) {
 function listMovements(req, res, next) {
   const params = req.query;
 
-  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+  if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
   }
 
@@ -597,10 +597,10 @@ function listMovements(req, res, next) {
  */
 async function listLotsDepot(req, res, next) {
   const params = req.query;
-  params.monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
-  params.enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+  params.monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  params.enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
 
-  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+  if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
   }
 
@@ -646,11 +646,11 @@ async function listLotsDepot(req, res, next) {
  */
 async function listInventoryDepot(req, res, next) {
   const params = req.query;
-  const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
-  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
 
   // expose connected user data
-  if (req.session.enterprise.settings.enable_strict_depot_permission) {
+  if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
   }
 
