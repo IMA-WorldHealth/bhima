@@ -40,6 +40,28 @@ class DepotPage {
   }
 
   /**
+   * simulate the create depot button click to show the dialog of creation
+   * @param {string} item the name of the depot to create and parent {depot and parent}
+   * @param {boolean} hasLocation if true it will enable the option of adding location
+   * @param {array} location an array of location as [country_uuid, province_uuid, sector_uuid, village_uuid]
+   */
+  async createDepotByParent(item, hasLocation, location) {
+    const row = new GridRow(item.parent);
+    await row.dropdown().click();
+    await $('[data-method="add-dependant-depot"]').click();
+
+    await FU.input('DepotModalCtrl.depot.text', item.text);
+
+    if (hasLocation) {
+      await $('[name="has_location"]').click();
+      await components.locationSelect.set(location);
+    }
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  }
+
+  /**
    * block creation without the depot name
    */
   async errorOnCreateDepot() {
@@ -74,6 +96,21 @@ class DepotPage {
   }
 
   /**
+   * simulate a click on the edit link of a depot
+   */
+  async editDepotClearParent(text) {
+    const row = new GridRow(text);
+    await row.dropdown().click();
+    await row.edit().click();
+
+    const elm = $('[class="fa fa-eraser"]');
+    await elm.click();
+
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
+  }
+
+  /**
    * join a location to a depot
    */
   async joinLocation(depotName, locations) {
@@ -87,6 +124,20 @@ class DepotPage {
     expect(await elm.isSelected()).to.equal(true);
 
     await components.locationSelect.set(locations);
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  }
+
+  /**
+   * join a location to a depot
+   */
+  async joinParent(item) {
+    const row = new GridRow(item.depot);
+    await row.dropdown().click();
+    await row.edit().click();
+
+    await components.depotSelect.set(item.parent);
 
     await FU.buttons.submit();
     await components.notification.hasSuccess();
