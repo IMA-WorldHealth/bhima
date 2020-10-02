@@ -56,8 +56,8 @@ function ActionRequisitionModalController(
   vm.addItem = addItem;
   vm.removeItem = removeItem;
   vm.configureItem = configureItem;
-  vm.cancel = Modal.close;
   vm.autoSuggestInventories = autoSuggestInventories;
+  vm.cancel = cancel;
 
   vm.onSelectDepot = depot => {
     vm.model.depot_uuid = depot.uuid;
@@ -168,6 +168,10 @@ function ActionRequisitionModalController(
     item._initialised = true;
     item.inventory_uuid = item.inventory.uuid;
     item.quantity = 0;
+  }
+
+  function cancel() {
+    Modal.dismiss('cancel');
   }
 
   startup();
