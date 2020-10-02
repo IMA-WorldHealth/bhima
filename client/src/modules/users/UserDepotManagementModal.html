@@ -40,7 +40,7 @@
       <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
         <div class="checkbox">
           <label data-label="{{child._label}}">
-            <input type="checkbox" id="depot_{{$index}}" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
+            <input type="checkbox" id="{{depot.uuid}}" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
             <span translate>{{depot.text}}</span>
           </label>
         </div>
