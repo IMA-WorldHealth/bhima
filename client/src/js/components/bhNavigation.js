@@ -39,6 +39,8 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
         expandInitialUnits($ctrl.units);
 
         const currentStateName = $state.$current.name;
+        console.log("Units: ");
+        console.log(JSON.stringify(units[0],null,2));
         const currentStateUrl = $state.href(currentStateName);
         updateSelectionOnPathChange(currentStateUrl);
       })
@@ -149,6 +151,8 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
       unitsIndex.path[unit.path] = unit;
       calculateUnitIndex(unit.children);
     });
+    console.log("UnitsIndex:");
+    console.log(JSON.stringify(unitsIndex,null,2));
   }
 
   /**

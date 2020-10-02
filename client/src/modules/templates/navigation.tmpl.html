@@ -46,7 +46,10 @@ Limitations of current templating structure:
             ng-if="$ctrl.isChildNode(child)"
             data-unit-key="{{ ::child.key }}"
             id="SidebarNavigation_Child_{{::child.key}}">
-            <span class="fa fa-file-o"></span>
+            <span class="fa" ng-class="{
+              'fa-file-o' : 1,
+              'fa-cog' : 0
+            }"></span>
             <span class="tree-title" translate>{{child.key}}</span>
           </a>
 
