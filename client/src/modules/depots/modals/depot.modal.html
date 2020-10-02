@@ -119,6 +119,14 @@
       </div>
     </div>
 
+    <bh-depot-select
+      label="DEPOT.PARENT_DEPOT"
+      depot-uuid="DepotModalCtrl.depot.parent_uuid"
+      on-select-callback="DepotModalCtrl.onSelectDepot(depot)"
+      exception="DepotModalCtrl.depot.uuid">
+      <bh-clear on-clear="DepotModalCtrl.clear('parent_uuid')"></bh-clear>
+    </bh-depot-select>
+
     <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.min_months_security_stock.$invalid }">
       <label class="control-label" translate>
         FORM.LABELS.MIN_MONTHS_SECURITY_STOCK
