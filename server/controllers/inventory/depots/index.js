@@ -36,10 +36,10 @@ function create(req, res, next) {
   const depotUuid = req.body.uuid || uuid();
   req.body.uuid = db.bid(depotUuid);
 
-  if (req.body.parent === 0) {
-    req.body.parent = null;
+  if (req.body.parent_uuid === 0) {
+    req.body.parent_uuid = null;
   } else {
-    req.body.parent = db.bid(req.body.parent);
+    req.body.parent_uuid = db.bid(req.body.parent_uuid);
   }
 
   // convert the location uuid into binary
@@ -84,10 +84,10 @@ function update(req, res, next) {
   const query = 'UPDATE depot SET ? WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
-  if (req.body.parent === 0) {
-    req.body.parent = null;
+  if (req.body.parent_uuid === 0) {
+    req.body.parent_uuid = null;
   } else {
-    req.body.parent = db.bid(req.body.parent);
+    req.body.parent_uuid = db.bid(req.body.parent_uuid);
   }
 
   // prevent updating the uuid by accident
@@ -105,7 +105,7 @@ function update(req, res, next) {
         SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
           allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
           allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-          min_months_security_stock, IF(parent IS NULL, 0, BUID(parent)) as parent
+          min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid
         FROM depot WHERE uuid = ?`;
       return db.exec(sql, [uid]);
     })
@@ -143,7 +143,7 @@ function list(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      d.min_months_security_stock, IF(d.parent IS NULL, 0, BUID(d.parent)) as parent,
+      d.min_months_security_stock, IF(d.parent_uuid IS NULL, 0, BUID(d.parent_uuid)) as parent_uuid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
     LEFT JOIN village v ON v.uuid = d.location_uuid
@@ -222,7 +222,7 @@ function searchByName(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      IF(parent, BUID(parent), 0) as parent,
+      IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
       LEFT JOIN village v ON v.uuid = d.location_uuid
@@ -270,7 +270,7 @@ function detail(req, res, next) {
       BUID(d.uuid) as uuid, d.text, d.is_warehouse,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-      IF(parent, BUID(d.parent), 0) as parent,
+      IF(parent_uuid, BUID(d.parent_uuid), 0) as parent_uuid,
       min_months_security_stock
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;

@@ -42,11 +42,10 @@ class DepotPage {
   /**
    * simulate the create depot button click to show the dialog of creation
    * @param {string} item the name of the depot to create and parent {depot and parent}
-   * @param {boolean} hasWarehouse
    * @param {boolean} hasLocation if true it will enable the option of adding location
    * @param {array} location an array of location as [country_uuid, province_uuid, sector_uuid, village_uuid]
    */
-  async createDepotByParent(item, hasWarehouse, hasLocation, location) {
+  async createDepotByParent(item, hasLocation, location) {
     const row = new GridRow(item.parent);
     await row.dropdown().click();
     await $('[data-method="add-dependant-depot"]').click();

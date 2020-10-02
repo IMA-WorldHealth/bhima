@@ -85,4 +85,4 @@ UPDATE unit SET parent = 233 WHERE id = 238;
  * @date: 2020-09-22
  * @desc: Improvement of the depot management interface
  */
- ALTER TABLE `depot` ADD COLUMN `parent` BINARY(16) NULL;
+ ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
