@@ -2979,6 +2979,7 @@ INSERT INTO `depot` VALUES
   (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL),
   (@third_deposit_uuid, 'Depot Tertiaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL);
 
+
 -- Set Depot Management By User
 INSERT INTO depot_permission (user_id, depot_uuid) VALUES
   (@superUser, @depot_uuid),
