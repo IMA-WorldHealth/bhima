@@ -36,7 +36,7 @@
       <input ng-model="UsersDepotModalCtrl.filter" ng-show="UsersDepotModalCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
     </div>
 
-    <div ng-repeat="depot in UsersDepotModalCtrl.depotsData | filter : { text : UsersDepotModalCtrl.filter }">
+    <div ng-if="!UsersDepotModalCtrl.loading" ng-repeat="depot in UsersDepotModalCtrl.depotsData | filter : { text : UsersDepotModalCtrl.filter }">
       <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
         <div class="checkbox">
           <label data-label="{{child._label}}">
@@ -45,6 +45,10 @@
           </label>
         </div>
       </div>
+    </div>
+    <div ng-if="UsersDepotModalCtrl.loading" class="container text-center">
+      <span class="fa fa-circle-o-notch fa-spin"></span>
+      <span translate>FORM.INFO.LOADING</span>
     </div>
   </div>
 
