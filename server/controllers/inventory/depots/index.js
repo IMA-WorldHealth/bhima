@@ -143,7 +143,7 @@ function list(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      d.min_months_security_stock, IF(d.parent_uuid IS NULL, 0, BUID(d.parent_uuid)) as parent_uuid,
+      d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
     LEFT JOIN village v ON v.uuid = d.location_uuid

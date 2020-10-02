@@ -55,3 +55,4 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  * @desc: Improvement of the depot management interface
  */
  ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
+ ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);

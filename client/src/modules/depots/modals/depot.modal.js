@@ -11,6 +11,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
   vm.depot = params.depot || {};
   vm.isCreateState = params.isCreateState;
+
   vm.onSelectDepot = onSelectDepot;
   vm.clear = clear;
 
@@ -28,15 +29,6 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
     vm.depot.min_months_security_stock = Session.stock_settings.default_min_months_security_stock;
-  }
-
-  function onSelectDepot(depot) {
-    vm.depot.parent_uuid = depot.uuid;
-  }
-
-  function clear(item) {
-    checkChangeParent = true;
-    delete vm.depot[item];
   }
 
   function onSelectDepot(depot) {

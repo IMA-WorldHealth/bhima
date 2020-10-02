@@ -463,7 +463,8 @@ CREATE TABLE `depot` (
   `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `parent_uuid` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `depot_1` (`text`)
+  UNIQUE KEY `depot_1` (`text`),
+  INDEX `parent_uuid` (`parent_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 

@@ -27,7 +27,7 @@
     </div>
     
     <div class="panel panel-default" style="margin-bottom : 0px;">
-      <div class="panel-heading clearfix" style="text-align : left">
+      <div class="panel-heading">
         <a href ng-click="UsersDepotModalCtrl.toggleFilter()">
           <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : UsersDepotModalCtrl.filterActive}"></span>
         </a>
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div ng-if="UsersDepotModalCtrl.loading" class="container text-center">
+    <div ng-if="UsersDepotModalCtrl.loading" class="row text-center">
       <span class="fa fa-circle-o-notch fa-spin"></span>
       <span translate>FORM.INFO.LOADING</span>
     </div>

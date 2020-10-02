@@ -142,6 +142,12 @@ function DepotManagementController(
             item.parent = 0;
           }
 
+          // The forms being in tree form, when you search for a repository
+          // that is not root (without a parent may not be visible)
+          if (filters.text || filters.is_warehouse === 0 || filters.is_warehouse === 1) {
+            item.parent = 0;
+          }
+
           item.location = item.location_uuid
             ? ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
               .concat(`(${item.country_name})`) : '';
