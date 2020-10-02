@@ -12,7 +12,10 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   vm.isCreateState = params.isCreateState;
 
   // make sure hasLocation is set
-  vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+  if (vm.depot) {
+    vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+    vm.mainDepot = vm.depot.parent ? 1 : 0;
+  }
 
   // if creating, insert the default min_months_security_stock
   if (vm.isCreateState) {
@@ -21,6 +24,10 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
   // exposed methods
   vm.submit = submit;
+
+  vm.onSelectDepot = depot => {
+    vm.depot.parent = depot.uuid;
+  };
 
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
