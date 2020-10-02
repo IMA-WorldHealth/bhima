@@ -19,7 +19,6 @@ ALTER TABLE `stock_movement` ADD COLUMN `stock_requisition_uuid` BINARY(16) NULL
 INSERT INTO `status` VALUES
   (7, 'excessive', 'FORM.LABELS.STATUS_TYPE.EXCESSIVE_RECEIVED_QUANTITY');
 
-
 /*
  * @author: jmcameron
  * @date: 2020-09-28
@@ -48,3 +47,42 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_auto_stock_accounting;
 ALTER TABLE enterprise_setting DROP COLUMN enable_daily_consumption;
 ALTER TABLE enterprise_setting DROP COLUMN enable_strict_depot_permission;
 ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
+
+/* @author: jniles
+ * @date: 2020-09-10
+ * @description: add enterprise setting for crediting supplier's invoice on stock
+ * entry from purchase.
+ */
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*
+ * @author: mbayopanda
+ * @date: 2020-09-16
+ * @desc: add enterprise setting for strict depot permission which will restrict stock registries to depot owner
+ */
+ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*
+ * @author: jeremielodi
+ * @date: 2020-09-18
+ * @desc: unpost transactions #4927
+ */
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS');
+
+
+ALTER TABLE `transaction_history`  ADD COLUMN `action` VARCHAR(15) DEFAULT 'edit';
+
+/*
+@author : jeremielodi
+@subjet : put indicator report into dashboard folder
+@date : 2020-09-24
+*/
+
+UPDATE unit SET parent = 233 WHERE id = 238;
+/*
+ * @author: lomamech
+ * @date: 2020-09-22
+ * @desc: Improvement of the depot management interface
+ */
+ ALTER TABLE `depot` ADD COLUMN `parent` BINARY(16) NULL;
