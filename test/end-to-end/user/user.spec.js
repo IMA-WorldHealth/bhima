@@ -1,3 +1,6 @@
+/* eslint  */
+/* global element, by */
+
 const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
@@ -35,6 +38,11 @@ describe('User Management Page', () => {
 
   const cashbox = {
     text : 'Caisse Auxiliaire',
+  };
+
+  const depots = {
+    depot1 : 'Depot Secondaire',
+    depot2 : 'Depot Principal',
   };
 
   before(() => helpers.navigate(path));
@@ -135,4 +143,16 @@ describe('User Management Page', () => {
 
     await userCreateUpdatePage.close();
   });
+
+  it(`sets the depot ${depots.depot1} and ${depots.depot2} management rights for "Regular User"`, async () => {
+    await userPage.updateDepot('Regular User');
+
+    await element(by.id('D4BB1452E4FA4742A281814140246877')).click();
+    await element(by.id('F9CAEB16168443C5A6C447DBAC1DF296')).click();
+
+    // submit the modal
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
+  });
+
 });

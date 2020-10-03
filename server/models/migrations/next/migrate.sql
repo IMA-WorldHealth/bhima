@@ -48,3 +48,11 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_auto_stock_accounting;
 ALTER TABLE enterprise_setting DROP COLUMN enable_daily_consumption;
 ALTER TABLE enterprise_setting DROP COLUMN enable_strict_depot_permission;
 ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
+
+/*
+ * @author: lomamech
+ * @date: 2020-10-02
+ * @desc: Improvement of the depot management interface
+ */
+ ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
+ ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);

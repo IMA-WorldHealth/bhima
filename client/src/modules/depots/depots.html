@@ -11,9 +11,7 @@
           <span class="fa fa-plus"></span> <span translate>DEPOT.ADD_DEPOT</span>
         </button>
       </div>
-
       <bh-search-button on-click="DepotCtrl.search()"></bh-search-button>
-
       <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
     </div>
   </div>
@@ -29,11 +27,13 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="depot-grid"
+    <div
+      id="depot-grid"
       ui-grid="DepotCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-auto-resize
-      ui-grid-resize-columns>
+      ui-grid-resize-columns
+      ui-grid-tree-view>
 
       <bh-grid-loading-indicator
         loading-state="DepotCtrl.loading"
