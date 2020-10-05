@@ -11,7 +11,9 @@
 * @requires lib/errors
 * @requires lib/filter
 */
+
 const _ = require('lodash');
+const router = require('express').Router();
 
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
@@ -26,6 +28,24 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.searchByName = searchByName;
+
+// router base is /depots
+exports.router = router;
+
+// attache the inventories router
+const extra = require('./extra');
+
+router.use('/:uuid', extra.router);
+
+// set up these routes on the router.
+router.get('/', list);
+router.get('/:uuid', detail);
+router.put('/:uuid', update);
+router.post('/', create);
+router.delete('/:uuid', remove);
+
+// special route for searching depot by name
+router.get('/search/name', searchByName);
 
 /**
 * POST /depots
@@ -115,7 +135,7 @@ async function update(req, res, next) {
   // prevent updating the uuid by accident
   if (req.body.uuid) { delete req.body.uuid; }
 
-  // Delete property children
+  // delete property children
   if (req.body.children) { delete req.body.children; }
 
   // convert the location uuid into binary
@@ -160,7 +180,7 @@ async function update(req, res, next) {
     }
 
     const distributionQuery = `
-      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp 
+      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp
       LEFT JOIN depot d ON d.uuid = ddp.distribution_depot_uuid
       WHERE ddp.depot_uuid = ?;
     `;
@@ -199,22 +219,20 @@ function list(req, res, next) {
       d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
-    LEFT JOIN village v ON v.uuid = d.location_uuid
-    LEFT JOIN sector s ON s.uuid = v.sector_uuid
-    LEFT JOIN province p ON p.uuid = s.province_uuid
-    LEFT JOIN country c ON c.uuid = p.country_uuid
-    LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
-    LEFT JOIN user u ON u.id = dp.user_id
+      LEFT JOIN village v ON v.uuid = d.location_uuid
+      LEFT JOIN sector s ON s.uuid = v.sector_uuid
+      LEFT JOIN province p ON p.uuid = s.province_uuid
+      LEFT JOIN country c ON c.uuid = p.country_uuid
+      LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+      LEFT JOIN user u ON u.id = dp.user_id
   `;
 
   filters.custom(
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
   );
-  filters.custom(
-    'exception',
-    'd.uuid NOT IN (?)',
-  );
+
+  filters.custom('exception', 'd.uuid NOT IN (?)');
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
   filters.equals('uuid', 'uuid', 'd');
@@ -253,6 +271,7 @@ function searchByName(req, res, next) {
   const options = {};
   options.text = req.query.text;
 
+  // if only_user is defined, we search only on the user identity.
   if (req.query.only_user) {
     options.user_id = req.session.user.id;
   }
@@ -284,10 +303,7 @@ function searchByName(req, res, next) {
       LEFT JOIN country c ON c.uuid = p.country_uuid
   `;
 
-  filters.custom(
-    'exception',
-    'd.uuid NOT IN (?)',
-  );
+  filters.custom('exception', 'd.uuid NOT IN (?)');
 
   filters.custom(
     'user_id',
@@ -338,7 +354,7 @@ async function detail(req, res, next) {
     const row = await db.one(query, [req.session.enterprise.id, uid, req.session.user.id]);
 
     const distributionQuery = `
-      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp 
+      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp
       LEFT JOIN depot d ON d.uuid = ddp.distribution_depot_uuid
       WHERE ddp.depot_uuid = ?;
     `;
