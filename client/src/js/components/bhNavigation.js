@@ -39,8 +39,6 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
         expandInitialUnits($ctrl.units);
 
         const currentStateName = $state.$current.name;
-        console.log("Units: ");
-        console.log(JSON.stringify(units[0],null,2));
         const currentStateUrl = $state.href(currentStateName);
         updateSelectionOnPathChange(currentStateUrl);
       })
@@ -149,10 +147,12 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
     units.forEach(unit => {
       unitsIndex.id[unit.id] = unit;
       unitsIndex.path[unit.path] = unit;
+
+      // See if it is a settings page and needs a "gear" icon
+      unit.settings = unit.name.indexOf('[SETTINGS]') >= 0;
+
       calculateUnitIndex(unit.children);
     });
-    console.log("UnitsIndex:");
-    console.log(JSON.stringify(unitsIndex,null,2));
   }
 
   /**

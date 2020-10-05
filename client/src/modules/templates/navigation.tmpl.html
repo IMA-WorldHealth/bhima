@@ -40,15 +40,15 @@ Limitations of current templating structure:
             <span class="tree-title" translate>{{child.key}}</span>
           </a>
 
-          <!-- otherwise, it is just a plan link -->
+          <!-- otherwise, it is just a plain link -->
           <a
             ng-click="$ctrl.navigate(child)"
             ng-if="$ctrl.isChildNode(child)"
             data-unit-key="{{ ::child.key }}"
             id="SidebarNavigation_Child_{{::child.key}}">
             <span class="fa" ng-class="{
-              'fa-file-o' : 1,
-              'fa-cog' : 0
+              'fa-file-o' : !child.settings,
+              'fa-cog' : child.settings
             }"></span>
             <span class="tree-title" translate>{{child.key}}</span>
           </a>
