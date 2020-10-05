@@ -28,16 +28,38 @@ describe('Depots Management', () => {
     is_warehouse : 1,
   };
 
+  const setParentUpdateDepot = {
+    depot : 'E2E_updated_depot',
+    parent : 'Depot Principal',
+  };
+
+  const depotByParent = {
+    text : 'Depot Principal 2',
+    parent : 'Depot Principal',
+  };
+
   it('successfully creates a new depot', async () => {
     await page.createDepot(depot.text, false, true, helpers.data.locations);
+  });
+
+  it('successfully creates a new depot by depot Parent', async () => {
+    await page.createDepotByParent(depotByParent, false, true, helpers.data.locations);
   });
 
   it('successfully edits a depot', async () => {
     await page.editDepot(depot.text, updateDepot.text);
   });
 
+  it('Edits a depot, set depot without parent', async () => {
+    await page.editDepotClearParent(depotByParent.text);
+  });
+
   it.skip('join a location to a depot', async () => {
     await page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
+  });
+
+  it('Join depot to depot Parent', async () => {
+    await page.joinParent(setParentUpdateDepot);
   });
 
   it.skip('remove a location to a depot', async () => {
@@ -50,6 +72,10 @@ describe('Depots Management', () => {
 
   it('successfully delete a depot', async () => {
     await page.deleteDepot(updateDepot.text);
+  });
+
+  it('successfully delete a depot create by parent', async () => {
+    await page.deleteDepot(depotByParent.text);
   });
 
   /**

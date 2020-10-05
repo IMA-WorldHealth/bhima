@@ -22,6 +22,13 @@
         <i class="fa fa-th-list"></i> <span translate>INVENTORY.VIEW_ARTICLES_IN_STOCK</span>
       </a>
     </li>
+    <li ng-if="row.entity.is_warehouse">
+      <a href
+        data-method="add-dependant-depot"
+        ui-sref="depots.create({ parentId : row.entity.uuid })" href>
+        <i class="fa fa-cube"></i> <span translate>DEPOT.ADD_SUB_DEPOT</span>
+      </a>
+    </li>
 
     <li class="divider"></li>
     <li>
