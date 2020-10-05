@@ -1,24 +1,19 @@
-<form 
+<form
   name="FindForm"
   ng-submit="$ctrl.submit(FindForm)"
   novalidate>
 
   <div class="modal-header space-between">
     <div class="headercrumb">
-      <i class="fa fa-search"></i> 
-      <span translate>FORM.LABELS.SEARCH</span> 
+      <i class="fa fa-search"></i>
+      <span translate>FORM.LABELS.SEARCH</span>
       <span translate>STOCK.ENTRY_TRANSFER</span>
     </div>
 
     <div class="toolbar text-right">
-      <div class="toolbar-item">
-        <button type="button"
-          ng-click="$ctrl.toggleFilter()"
-          class="btn btn-sm btn-default"
-          ng-class="{ 'btn-info' : $ctrl.filterEnabled }">
-          <span class="fa fa-filter"></span>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="$ctrl.toggleInlineFilter()">
+      </bh-filter-toggle>
 
       <div class="toolbar-item">
         <button type="button"
@@ -56,7 +51,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <button class="btn btn-primary" type="submit" data-method="submit" translate>
+    <button class="btn btn-primary" type="submit" data-method="submit" ng-disabled="$ctrl.loading" translate>
       FORM.BUTTONS.SUBMIT
     </button>
   </div>
