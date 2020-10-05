@@ -147,6 +147,10 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
     units.forEach(unit => {
       unitsIndex.id[unit.id] = unit;
       unitsIndex.path[unit.path] = unit;
+
+      // See if it is a settings page and needs a "gear" icon
+      unit.settings = unit.name.indexOf('[SETTINGS]') >= 0;
+
       calculateUnitIndex(unit.children);
     });
   }
