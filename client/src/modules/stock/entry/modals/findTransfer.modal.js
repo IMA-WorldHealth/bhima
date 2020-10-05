@@ -8,49 +8,39 @@ StockFindTransferModalController.$inject = [
 
 function StockFindTransferModalController(
   Instance, StockService, Notify,
-  uiGridConstants, Filtering, Receipts, data, bhConstants
+  uiGridConstants, Filtering, Receipts, data, bhConstants,
 ) {
-  var vm = this;
-  var filtering;
-  var columns;
+  const vm = this;
 
-  vm.filterEnabled = false;
+  let selectedRow;
+
   vm.filterReceived = false;
-
   vm.gridOptions = { appScopeProvider : vm };
 
-  filtering = new Filtering(vm.gridOptions);
+  const filtering = new Filtering(vm.gridOptions);
 
-  columns = [
-    {
-      field : 'status',
-      displayName : 'FORM.LABELS.STATUS',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html',
-    },
-
-    {
-      field : 'date',
-      cellFilter       : 'date:"'.concat(bhConstants.dates.format, '"'),
-      filter : { condition : filtering.filterByDate },
-      displayName : 'TABLE.COLUMNS.DATE',
-      headerCellFilter : 'translate',
-      sort : { priority : 0, direction : 'desc' },
-    },
-
-    {
-      field : 'document_reference',
-      displayName : 'FORM.LABELS.REFERENCE',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
-    },
-
-    {
-      field : 'depot_name',
-      displayName : 'FORM.LABELS.ORIGIN',
-      headerCellFilter : 'translate',
-    },
-  ];
+  const columns = [{
+    field : 'status',
+    displayName : 'FORM.LABELS.STATUS',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/entry/modals/templates/transfer.status.tmpl.html',
+  }, {
+    field : 'date',
+    cellFilter : `date:"${bhConstants.dates.format}"`,
+    filter : { condition : filtering.filterByDate },
+    displayName : 'TABLE.COLUMNS.DATE',
+    headerCellFilter : 'translate',
+    sort : { priority : 0, direction : 'desc' },
+  }, {
+    field : 'document_reference',
+    displayName : 'FORM.LABELS.REFERENCE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
+  }, {
+    field : 'depot_name',
+    displayName : 'FORM.LABELS.ORIGIN',
+    headerCellFilter : 'translate',
+  }];
 
   vm.gridOptions.columnDefs = columns;
   vm.gridOptions.multiSelect = false;
@@ -64,7 +54,7 @@ function StockFindTransferModalController(
   vm.submit = submit;
   vm.cancel = cancel;
   vm.showReceipt = showReceipt;
-  vm.toggleFilter = toggleFilter;
+  vm.toggleInlineFilter = toggleInlineFilter;
   vm.toggleReceived = toggleReceived;
 
   vm.hasError = false;
@@ -75,13 +65,12 @@ function StockFindTransferModalController(
   }
 
   function rowSelectionCallback(row) {
-    vm.selectedRow = row.entity;
+    selectedRow = row.entity;
   }
 
   /** toggle filter */
-  function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -103,16 +92,16 @@ function StockFindTransferModalController(
     StockService.transfers.read(null, {
       depot_uuid : data.depot_uuid,
     })
-      .then(function fillGrid(transfers) {
+      .then((transfers) => {
         vm.allTransfers = transfers;
         vm.pendingTransfers = transfers.filter(transferNotReceived);
         vm.gridOptions.data = vm.pendingTransfers;
       })
-      .catch(function handleError(err) {
+      .catch((err) => {
         vm.hasError = true;
         Notify.errorHandler(err);
       })
-      .finally(function handleLoading() {
+      .finally(() => {
         vm.loading = false;
       });
   }
@@ -127,12 +116,12 @@ function StockFindTransferModalController(
 
   // submit
   function submit() {
-    if (!vm.selectedRow) { return 0; }
+    if (!selectedRow) { return 0; }
     return StockService.movements.read(null, {
-      document_uuid : vm.selectedRow.document_uuid,
+      document_uuid : selectedRow.document_uuid,
       is_exit : 1,
     })
-      .then(function close(transfers) {
+      .then((transfers) => {
         Instance.close(transfers);
       })
       .catch(Notify.errorHandler);
@@ -144,5 +133,4 @@ function StockFindTransferModalController(
   }
 
   load();
-
 }
