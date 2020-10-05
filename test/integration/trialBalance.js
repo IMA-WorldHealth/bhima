@@ -80,7 +80,6 @@ describe('(/journal/trialbalance) API endpoint', () => {
   });
 
   it('POST /journal/transactions posts the a transaction to general_ledger and removes it from the journal', () => {
-
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {

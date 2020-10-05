@@ -10,6 +10,7 @@
  * @requires BadRequest
  */
 
+const debug = require('debug')('bhima:jouranl');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const role = require('../../admin/roles');
@@ -83,6 +84,10 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
 
   try {
     validateTransactions(transactions);
+
+    const rows = await db.exec('SELECT BUID(uuid) AS uuid, date, amount, description, type_id FROM voucher;');
+
+    debug('rows:', JSON.stringify(rows, null, 2));
 
     const txn = db.transaction();
 
