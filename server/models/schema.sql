@@ -1293,7 +1293,7 @@ CREATE TABLE `posting_journal` (
   `trans_id_reference_number` MEDIUMINT UNSIGNED NOT NULL,
   `trans_date`        DATETIME NOT NULL,
   `record_uuid`       BINARY(16) NOT NULL,
-  `description`       TEXT,
+  `description`       TEXT NOT NULL,
   `account_id`        INT(10) UNSIGNED NOT NULL,
   `debit`             DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `credit`            DECIMAL(19,4) NOT NULL DEFAULT 0.00,
