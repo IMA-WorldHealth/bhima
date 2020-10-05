@@ -278,10 +278,10 @@ END $$
 /*
 PostToGeneralLedger()
 
-This procedure uses the same staging code as the Trial Balance to stage and then post transactions
-from the posting_journal table to the General Ledger table.
-
+This procedure uses the same staging code as the Trial Balance to stage and
+then post transactions from the posting_journal table to the General Ledger table.
 */
+DROP PROCEDURE IF EXISTS PostToGeneralLedger$$
 CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
 
@@ -330,6 +330,8 @@ BEGIN
     UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
   END IF;
 
+  DROP TEMPORARY TABLE stage_trial_balance_transaction;
 END $$
+
 
 DELIMITER ;
