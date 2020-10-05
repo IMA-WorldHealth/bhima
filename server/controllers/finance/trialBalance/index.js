@@ -10,6 +10,7 @@
  * @requires BadRequest
  */
 
+const debug = require('debug')('bhima:jouranl');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const role = require('../../admin/roles');
@@ -78,26 +79,30 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
  * This function can be called only when there is no fatal error
  * It posts data to the general ledger.
  */
-exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
+exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next) {
   const { transactions } = req.body;
 
   try {
     validateTransactions(transactions);
+
+    const rows = await db.exec('SELECT BUID(uuid) AS uuid, date, amount, description, type_id FROM voucher;');
+
+    debug('rows:', JSON.stringify(rows, null, 2));
+
+    const txn = db.transaction();
+
+    // stage all trial balance transactions
+    stageTrialBalanceTransactions(txn, transactions);
+
+    txn.addQuery('CALL PostToGeneralLedger();');
+
+    await txn.execute('yes');
+
+    res.sendStatus(201);
+
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  const txn = db.transaction();
-
-  // stage all trial balance transactions
-  stageTrialBalanceTransactions(txn, transactions);
-
-  txn.addQuery('CALL PostToGeneralLedger();');
-
-  return txn.execute()
-    .then(() => res.sendStatus(201))
-    .catch(next)
-    .done();
 };
 
 exports.unpostTransactions = async (req, res, next) => {
@@ -134,5 +139,4 @@ exports.unpostTransactions = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 };
