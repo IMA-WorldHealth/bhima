@@ -1,4 +1,3 @@
-
 const q = require('q');
 const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
@@ -85,7 +84,7 @@ function reporting(opts, session) {
       SELECT p.id, p.start_date, SUM(pt.debit) AS debit, SUM(pt.credit) AS credit
       FROM period_total AS pt
       JOIN fiscal_year AS f ON f.id = pt.fiscal_year_id
-      JOIN period AS p ON p.id = pt.period_id 
+      JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ? AND pt.period_id = ?
     `;
 
