@@ -1,13 +1,13 @@
 /**
-* Depot Controller
-*
-* This controller is mostly responsible for depot-dependent stock queries.  Most
-* routes require that a depot ID is specified.  Any route without a depot ID
-* might be better positioned in the /inventory/ controller.
-*
-* @todo(jniles) - review this module
-*/
+ * Depot Controller
+ *
+ * @description
+ * This controller is mostly responsible for depot-dependent stock queries.  Most
+ * routes require that a depot ID is specified.  Any route without a depot ID
+ * might be better positioned in the /inventory/ controller.
+ */
 const _ = require('lodash');
+const router = require('express').Router();
 
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
@@ -22,6 +22,24 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.searchByName = searchByName;
+
+// router base is /depots
+exports.router = router;
+
+// attache the inventories router
+const extra = require('./extra');
+
+router.use('/:uuid', extra.router);
+
+// set up these routes on the router.
+router.get('/', list);
+router.get('/:uuid', detail);
+router.put('/:uuid', update);
+router.post('/', create);
+router.delete('/:uuid', remove);
+
+// special route for searching depot by name
+router.get('/search/name', searchByName);
 
 /**
 * POST /depots
@@ -107,6 +125,7 @@ function update(req, res, next) {
           allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
           min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid
         FROM depot WHERE uuid = ?`;
+
       return db.exec(sql, [uid]);
     })
     .then((rows) => {
@@ -146,22 +165,20 @@ function list(req, res, next) {
       d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
-    LEFT JOIN village v ON v.uuid = d.location_uuid
-    LEFT JOIN sector s ON s.uuid = v.sector_uuid
-    LEFT JOIN province p ON p.uuid = s.province_uuid
-    LEFT JOIN country c ON c.uuid = p.country_uuid
-    LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
-    LEFT JOIN user u ON u.id = dp.user_id
+      LEFT JOIN village v ON v.uuid = d.location_uuid
+      LEFT JOIN sector s ON s.uuid = v.sector_uuid
+      LEFT JOIN province p ON p.uuid = s.province_uuid
+      LEFT JOIN country c ON c.uuid = p.country_uuid
+      LEFT JOIN depot_permission dp  ON dp.depot_uuid = d.uuid
+      LEFT JOIN user u ON u.id = dp.user_id
   `;
 
   filters.custom(
     'user_id',
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)',
   );
-  filters.custom(
-    'exception',
-    'd.uuid NOT IN (?)',
-  );
+
+  filters.custom('exception', 'd.uuid NOT IN (?)');
   filters.fullText('text', 'text', 'd');
   filters.equals('is_warehouse', 'is_warehouse', 'd');
   filters.equals('uuid', 'uuid', 'd');
@@ -200,6 +217,7 @@ function searchByName(req, res, next) {
   const options = {};
   options.text = req.query.text;
 
+  // if only_user is defined, we search only on the user identity.
   if (req.query.only_user) {
     options.user_id = req.session.user.id;
   }
@@ -231,10 +249,7 @@ function searchByName(req, res, next) {
       LEFT JOIN country c ON c.uuid = p.country_uuid
   `;
 
-  filters.custom(
-    'exception',
-    'd.uuid NOT IN (?)',
-  );
+  filters.custom('exception', 'd.uuid NOT IN (?)');
 
   filters.custom(
     'user_id',
