@@ -342,9 +342,6 @@ CREATE PROCEDURE `computeStockQuantity` (
   DECLARE _end_date DATE;
   DECLARE _qtt, _in_qtt, _out_qtt DECIMAL(19, 4);
 
-
-
-
   DROP TEMPORARY TABLE IF EXISTS `temp_stock_movement`;
 
     -- every stock movement for a inventory will be stored here in order to facilitate search
