@@ -10,6 +10,7 @@
  * @requires BadRequest
  */
 
+const debug = require('debug')('bhima:journal');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const role = require('../../admin/roles');
@@ -53,13 +54,15 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
   // compute the trial balance summary
   txn.addQuery('CALL TrialBalanceSummary()');
 
+  txn.addQuery('DROP TEMPORARY TABLE stage_trial_balance_transaction;');
+
   return txn.execute()
     .then((results) => {
       // because we do not know the number of stageTrialBalance() calls, we must index back by two
       // to get to the CALL TrialBalanceErrors() query and one for the Call TrialBalanceSummary()
       // query.
-      const errorsIndex = results.length - 2;
-      const summaryIndex = results.length - 1;
+      const errorsIndex = results.length - 3;
+      const summaryIndex = results.length - 2;
 
       const data = {
         errors : results[errorsIndex][0],
@@ -84,6 +87,13 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
   try {
     validateTransactions(transactions);
 
+    const rows = await db.exec(`
+      SELECT trans_id, BUID(record_uuid) AS record_uuid, trans_id, description, transaction_type_id
+      FROM posting_journal ORDER BY trans_date, trans_id;
+    `);
+
+    debug('rows:', JSON.stringify(rows, null, 2));
+
     const txn = db.transaction();
 
     // stage all trial balance transactions
@@ -91,7 +101,7 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
 
     txn.addQuery('CALL PostToGeneralLedger();');
 
-    await txn.execute('yes');
+    await txn.execute();
 
     res.sendStatus(201);
 
@@ -101,7 +111,6 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
 };
 
 exports.unpostTransactions = async (req, res, next) => {
-
   try {
     const { recordUuids } = req.body;
     const transaction = db.transaction();
