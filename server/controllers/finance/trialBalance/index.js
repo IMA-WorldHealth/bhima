@@ -10,6 +10,7 @@
  * @requires BadRequest
  */
 
+const debug = require('debug')('bhima:journal');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const role = require('../../admin/roles');
@@ -84,6 +85,10 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
   try {
     validateTransactions(transactions);
 
+    const rows = await db.exec('SELECT BUID(uuid) AS uuid, date, amount, description, type_id FROM voucher;');
+
+    debug('rows:', JSON.stringify(rows, null, 2));
+
     const txn = db.transaction();
 
     // stage all trial balance transactions
@@ -91,7 +96,7 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
 
     txn.addQuery('CALL PostToGeneralLedger();');
 
-    await txn.execute('yes');
+    await txn.execute();
 
     res.sendStatus(201);
 
@@ -101,7 +106,6 @@ exports.postToGeneralLedger = async function postToGeneralLedger(req, res, next)
 };
 
 exports.unpostTransactions = async (req, res, next) => {
-
   try {
     const { recordUuids } = req.body;
     const transaction = db.transaction();
