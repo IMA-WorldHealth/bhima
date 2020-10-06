@@ -23,7 +23,7 @@ exports.list = function list(req, res, next) {
     SELECT month_average_consumption, default_min_months_security_stock,
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
       enable_daily_consumption, enable_strict_depot_permission,
-      enable_supplier_credit
+      enable_supplier_credit, average_consumption_algo_id
     FROM stock_setting
     WHERE enterprise_id = ? LIMIT 1;
     `;
@@ -60,6 +60,19 @@ exports.update = function update(req, res, next) {
     })
     .then((updatedSettings) => {
       res.status(200).json(updatedSettings);
+    })
+    .catch(next)
+    .done();
+};
+
+// GET '/stock/setting/average_consuption'
+// Get the different algorithms for calculating the average monthly consumption
+exports.averageConsuptionAlgo = function averageConsuptionAlgo(req, res, next) {
+  const sql = `SELECT id, name, label, comment FROM average_consumption_algo;`;
+
+  db.exec(sql)
+    .then((rows) => {
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
