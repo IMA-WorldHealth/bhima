@@ -2,7 +2,7 @@
     <div class="modal-header">
       <strong translate>LOTS.DETAILS</strong>
     </div>
-  
+
     <div class="modal-body">
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.INVENTORY</label>
@@ -31,7 +31,7 @@
         allow-future-date="true"
         required="true">
       </bh-date-editor>
-  
+
       <bh-currency-input
         label="STOCK.UNIT_COST"
         data-lot-currency-input
@@ -41,10 +41,11 @@
 
       <bh-tag-select
         tag-uuids="$ctrl.model.tags"
+        enable-add-tag="true"
         on-select-callback="$ctrl.onSelectTags(tags)">
       </bh-tag-select>
     </div>
-  
+
     <div class="modal-footer">
       <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
         <span translate>FORM.BUTTONS.CLOSE</span>
@@ -55,4 +56,3 @@
       </bh-loading-button>
     </div>
   </form>
-  
