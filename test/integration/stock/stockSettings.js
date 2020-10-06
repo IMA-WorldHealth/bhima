@@ -10,7 +10,10 @@ describe('(/stock/setting) Stock Settings API', () => {
   const defaultValuemonthAverageConsumption = 6;
 
   const update = {
-    settings : { month_average_consumption : 10 },
+    settings : {
+      month_average_consumption : 10,
+      average_consumption_algo_id : 4,
+    },
   };
 
   /* response keys from the list query */
@@ -18,7 +21,7 @@ describe('(/stock/setting) Stock Settings API', () => {
     'month_average_consumption', 'default_min_months_security_stock',
     'enable_auto_purchase_order_confirmation', 'enable_auto_stock_accounting',
     'enable_daily_consumption', 'enable_strict_depot_permission',
-    'enable_supplier_credit',
+    'enable_supplier_credit', 'average_consumption_algo_id',
   ];
 
   it('GET /stock/setting/:id returns the stock settings for the default Enterprise and checks a value', () => {
@@ -45,6 +48,7 @@ describe('(/stock/setting) Stock Settings API', () => {
           .then(res2 => {
             const [settings] = res2.body;
             expect(settings.month_average_consumption, update.settings.month_average_consumption);
+            expect(settings.average_consumption_algo_id, update.settings.average_consumption_algo_id);
             expect(settings).to.have.all.keys(responseKeys);
           });
       })

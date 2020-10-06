@@ -62,6 +62,17 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  * @date: 2020-10-05
  * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
  */
+DROP TABLE IF EXISTS `average_consumption_algo`;
+
+CREATE TABLE `average_consumption_algo` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `comment` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `average_consumption_algo` (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 -- Average Consumption Algorithm
 INSERT INTO `average_consumption_algo` VALUES
