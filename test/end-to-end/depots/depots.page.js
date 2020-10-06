@@ -61,6 +61,15 @@ class DepotPage {
     await components.notification.hasSuccess();
   }
 
+  // create depot with distribution restriction
+  async createDepotWithDistributionRestriction(name) {
+    await FU.buttons.create();
+    await FU.input('DepotModalCtrl.depot.text', name);
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  }
+
   /**
    * block creation without the depot name
    */

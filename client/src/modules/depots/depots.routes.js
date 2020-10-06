@@ -20,7 +20,7 @@ angular.module('bhima.routes')
       .state('depots.edit', {
         url : '/edit',
         params : {
-          depot : { value : {} },
+          uuid : { value : null },
           isCreateState : { value : false },
         },
         onEnter : ['$uibModal', '$transition$', depotModal],

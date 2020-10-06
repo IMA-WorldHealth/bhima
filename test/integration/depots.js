@@ -4,6 +4,8 @@ const helpers = require('./helpers');
 
 // The /depots API endpoint
 describe('(/depots) The depots API ', () => {
+  const principalDepotUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
+  const secondaryDepotUuid = 'D4BB1452E4FA4742A281814140246877';
   // new depot object
   const newDepot = {
     // the reference column is auto increment by a trigger
@@ -37,8 +39,14 @@ describe('(/depots) The depots API ', () => {
     parent_uuid : 0,
   };
 
-  // update depot
-  const secondDepotUuid = 'D4BB1452E4FA4742A281814140246877';
+  // depot with distribution depots
+  const newDepotWithDistribution = {
+    text : 'Depot With Distribution Restriction',
+    enterprise_id : 1,
+    is_warehouse : 1,
+    parent_uuid : 0,
+    allowed_distribution_depots : [principalDepotUuid, secondaryDepotUuid],
+  };
 
   const editDepot = {
     text : 'Edited Depot',
@@ -51,7 +59,7 @@ describe('(/depots) The depots API ', () => {
     allow_exit_service : 1,
     allow_exit_transfer : 1,
     allow_exit_loss : 1,
-    parent_uuid : secondDepotUuid,
+    parent_uuid : secondaryDepotUuid,
   };
 
   it('POST /depots create a new depot in the database', () => {
@@ -80,6 +88,22 @@ describe('(/depots) The depots API ', () => {
       .then((res) => {
         helpers.api.errored(res, 400);
         expect(res.body.code).to.be.equal('ERRORS.ER_NO_DEFAULT_FOR_FIELD');
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /depots create a new depot with distribution restriction ', () => {
+    return agent.post('/depots')
+      .send(newDepotWithDistribution)
+      .then((res) => {
+        helpers.api.created(res);
+        return agent.get(`/depots/${res.body.uuid}`);
+      })
+      .then(res => {
+        // with enable_strict_depot_distribution = 0 by default, we cannot assign
+        // allowed_distribution_depots, and the correct comparison must be
+        // res.body.allowed_distribution_depots = newDepotWithDistribution.allowed_distribution_depots;
+        expect(res.body.allowed_distribution_depots).to.have.length(0);
       })
       .catch(helpers.handler);
   });
@@ -116,7 +140,7 @@ describe('(/depots) The depots API ', () => {
   it('GET /depots should returns the list of depots', () => {
     return agent.get('/depots')
       .then((res) => {
-        helpers.api.listed(res, 5);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });

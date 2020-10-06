@@ -184,7 +184,9 @@
     "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "Enable Automatic Crediting of Supplier on Stock Entry",
     "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Automatically adds the transactions to credit the supplier for the value of stock received in a depot when entering stock from a purchase order.  This is only triggered if the automatic stock accounting is set as well.",
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
-    "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system"
+    "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system",
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activate the restriction of distribution depots",
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limit the list of distribution depots for depots"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "From Purchase Order",
