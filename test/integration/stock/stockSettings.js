@@ -18,7 +18,7 @@ describe('(/stock/setting) Stock Settings API', () => {
     'month_average_consumption', 'default_min_months_security_stock',
     'enable_auto_purchase_order_confirmation', 'enable_auto_stock_accounting',
     'enable_daily_consumption', 'enable_strict_depot_permission',
-    'enable_supplier_credit',
+    'enable_supplier_credit', 'enable_strict_depot_distribution',
   ];
 
   it('GET /stock/setting/:id returns the stock settings for the default Enterprise and checks a value', () => {

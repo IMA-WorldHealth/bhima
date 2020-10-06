@@ -92,6 +92,7 @@ function StockSettingsController(
   vm.enableDailyConsumption = proxy('enable_daily_consumption');
   vm.enableStrictDepotPermission = proxy('enable_strict_depot_permission');
   vm.enableSupplierCredit = proxy('enable_supplier_credit');
+  vm.enableStrictDepotDistribution = proxy('enable_strict_depot_distribution');
   vm.setMonthAverage = function setMonthAverage() {
     $touched = true;
   };

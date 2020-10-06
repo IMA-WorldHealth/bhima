@@ -5,7 +5,11 @@
 * routes require that a depot ID is specified.  Any route without a depot ID
 * might be better positioned in the /inventory/ controller.
 *
-* @todo(jniles) - review this module
+* @requires lodash
+* @requires lib/util
+* @requires lib/db
+* @requires lib/errors
+* @requires lib/filter
 */
 const _ = require('lodash');
 
@@ -29,7 +33,7 @@ exports.searchByName = searchByName;
 *
 * @function create
 */
-function create(req, res, next) {
+async function create(req, res, next) {
   const query = 'INSERT INTO depot SET ?';
 
   // prevent missing uuid by generating a new one
@@ -43,17 +47,32 @@ function create(req, res, next) {
   }
 
   // convert the location uuid into binary
-  req.body = db.convert(req.body, ['location_uuid']);
+  req.body = db.convert(req.body, ['location_uuid', 'allowed_distribution_depots']);
 
   // enterprise for the depot
   req.body.enterprise_id = req.session.enterprise.id;
 
-  db.exec(query, [req.body])
-    .then(() => {
-      res.status(201).json({ uuid : depotUuid });
-    })
-    .catch(next)
-    .done();
+  let allowedDistributionDepots;
+  if (req.body.allowed_distribution_depots) {
+    allowedDistributionDepots = req.body.allowed_distribution_depots;
+    delete req.body.allowed_distribution_depots;
+  }
+
+  try {
+    const tx = db.transaction();
+    tx.addQuery(query, [req.body]);
+    const enabledAndDistributionDepotsDefined = req.session.stock_settings.enable_strict_depot_distribution
+      && allowedDistributionDepots.length;
+    if (enabledAndDistributionDepotsDefined) {
+      allowedDistributionDepots.forEach(item => {
+        tx.addQuery('INSERT INTO depot_distribution_permission VALUES (?, ?);', [req.body.uuid, item]);
+      });
+    }
+    await tx.execute();
+    res.status(201).json({ uuid : depotUuid });
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -62,16 +81,18 @@ function create(req, res, next) {
 *
 * @function remove
 */
-function remove(req, res, next) {
-  const query = 'DELETE FROM depot WHERE uuid = ?';
-  const uid = db.bid(req.params.uuid);
-
-  db.exec(query, [uid])
-    .then(() => {
-      res.status(204).send({});
-    })
-    .catch(next)
-    .done();
+async function remove(req, res, next) {
+  try {
+    const uid = db.bid(req.params.uuid);
+    const tx = db.transaction();
+    tx.addQuery('DELETE FROM depot_distribution_permission WHERE depot_uuid = ?', [uid]);
+    tx.addQuery('DELETE FROM depot_distribution_permission WHERE distribution_depot_uuid = ?', [uid]);
+    tx.addQuery('DELETE FROM depot WHERE uuid = ?', [uid]);
+    await tx.execute();
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -80,8 +101,9 @@ function remove(req, res, next) {
 *
 * @function update
 */
-function update(req, res, next) {
-  const query = 'UPDATE depot SET ? WHERE uuid = ?';
+async function update(req, res, next) {
+  let allowedDistributionDepots;
+  const tx = db.transaction();
   const uid = db.bid(req.params.uuid);
 
   if (req.body.parent_uuid === 0) {
@@ -97,26 +119,57 @@ function update(req, res, next) {
   if (req.body.children) { delete req.body.children; }
 
   // convert the location uuid into binary
-  req.body = db.convert(req.body, ['location_uuid']);
+  req.body = db.convert(req.body, ['location_uuid', 'allowed_distribution_depots']);
 
-  db.exec(query, [req.body, uid])
-    .then(() => {
-      const sql = `
-        SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
-          allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-          allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-          min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid
-        FROM depot WHERE uuid = ?`;
-      return db.exec(sql, [uid]);
-    })
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound(`Could not find a depot with uuid ${req.params.uuid}`);
-      }
-      res.status(200).send(rows);
-    })
-    .catch(next)
-    .done();
+  // get distribution depots and delete the variable from query param
+  if (req.body.allowed_distribution_depots) {
+    allowedDistributionDepots = req.body.allowed_distribution_depots;
+    delete req.body.allowed_distribution_depots;
+  }
+
+  // delete variable from query param
+  if (req.body.distribution_depots) {
+    delete req.body.distribution_depots;
+  }
+
+  try {
+    const enabledAndDistributionDepotsDefined = req.session.stock_settings.enable_strict_depot_distribution
+      && allowedDistributionDepots.length;
+
+    if (enabledAndDistributionDepotsDefined) {
+      tx.addQuery('DELETE FROM depot_distribution_permission WHERE depot_uuid = ?;', [uid]);
+      allowedDistributionDepots.forEach(item => {
+        tx.addQuery('INSERT INTO depot_distribution_permission VALUES (?, ?);', [uid, item]);
+      });
+    }
+
+    tx.addQuery('UPDATE depot SET ? WHERE uuid = ?', [req.body, uid]);
+
+    await tx.execute();
+
+    const sql = `
+      SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
+        allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+        allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
+        min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid
+      FROM depot WHERE uuid = ?`;
+    const rows = await db.exec(sql, [uid]);
+
+    if (!rows.length) {
+      throw new NotFound(`Could not find a depot with uuid ${req.params.uuid}`);
+    }
+
+    const distributionQuery = `
+      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp 
+      LEFT JOIN depot d ON d.uuid = ddp.distribution_depot_uuid
+      WHERE ddp.depot_uuid = ?;
+    `;
+    const distribution = await db.exec(distributionQuery, [uid]);
+    rows[0].allowed_distribution_depots = distribution.map(item => item.uuid);
+    res.status(200).send(rows);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -260,7 +313,7 @@ function searchByName(req, res, next) {
 *
 * @function detail
 */
-function detail(req, res, next) {
+async function detail(req, res, next) {
   const options = req.query;
 
   const uid = db.bid(req.params.uuid);
@@ -270,7 +323,7 @@ function detail(req, res, next) {
       BUID(d.uuid) as uuid, d.text, d.is_warehouse,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-      IF(parent_uuid, BUID(d.parent_uuid), 0) as parent_uuid,
+      BUID(parent_uuid) parent_uuid,
       min_months_security_stock
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
@@ -281,11 +334,20 @@ function detail(req, res, next) {
 
   const query = options.only_user ? sql.concat(requireUserPermissions) : sql;
 
-  db.one(query, [req.session.enterprise.id, uid, req.session.user.id])
-    .then((row) => {
-      // return the json
-      res.status(200).json(row);
-    })
-    .catch(next)
-    .done();
+  try {
+    const row = await db.one(query, [req.session.enterprise.id, uid, req.session.user.id]);
+
+    const distributionQuery = `
+      SELECT BUID(ddp.distribution_depot_uuid) as uuid, d.text FROM depot_distribution_permission ddp 
+      LEFT JOIN depot d ON d.uuid = ddp.distribution_depot_uuid
+      WHERE ddp.depot_uuid = ?;
+    `;
+    const distribution = await db.exec(distributionQuery, [uid]);
+    row.allowed_distribution_depots = distribution.map(item => item.uuid);
+    row.distribution_depots = distribution;
+
+    res.status(200).json(row);
+  } catch (error) {
+    next(error);
+  }
 }

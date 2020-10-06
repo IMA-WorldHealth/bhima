@@ -1,4 +1,3 @@
-
 angular.module('bhima.components')
   .component('bhDepotSearchSelect', {
     templateUrl : 'js/components/bhDepotSelectSearch/bhDepotSelectSearch.html',
@@ -79,7 +78,7 @@ function DepotSearchSelectController(Depots, uuidService) {
   };
 
   function loadSelected(depotsUuids) {
-    if (!(depotsUuids.length > 0)) return;
+    if (!depotsUuids || !(depotsUuids.length > 0)) return;
     Depots.read(null, { uuids : depotsUuids }).then(depots => {
       $ctrl.depotsSected = depots;
     });

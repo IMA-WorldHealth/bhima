@@ -25,6 +25,7 @@ function DepotSelectController(Depots, Notify) {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
 
     if ($ctrl.depotUuid) {
+      if ($ctrl.depotUuid === '0') { return; }
       Depots.read($ctrl.depotUuid)
         .then(depot => {
           $ctrl.depotText = depot.text;

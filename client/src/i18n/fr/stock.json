@@ -188,7 +188,9 @@
     "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY" : "Activer le crédit automatique du fournisseur lors de l'entrée de stock",
     "ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT" : "Ajoute automatiquement les transactions pour créditer le fournisseur de la valeur du stock reçu dans un dépôt lors de l'entrée du stock à partir d'une commande d'achat. Ceci n'est déclenché que si la comptabilité de stock automatique est également définie.",
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
-    "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système"
+    "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système",
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activer la restriction des depots de distribution",
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limiter la liste des depots de distribution pour les depots"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "Commande d'achat",
