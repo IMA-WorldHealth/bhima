@@ -64,3 +64,16 @@ exports.update = function update(req, res, next) {
     .catch(next)
     .done();
 };
+
+// GET '/stock/setting/average_consuption'
+// Get the different algorithms for calculating the average monthly consumption
+exports.averageConsuptionAlgo = function averageConsuptionAlgo(req, res, next) {
+  const sql = `SELECT id, name, label, comment FROM average_consumption_algo;`;
+
+  db.exec(sql)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+};

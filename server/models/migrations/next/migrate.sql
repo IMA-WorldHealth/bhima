@@ -56,3 +56,19 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  */
  ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
  ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);
+
+/*
+ * @author: lomamech
+ * @date: 2020-10-05
+ * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
+ */
+
+-- Average Consumption Algorithm
+INSERT INTO `average_consumption_algo` VALUES
+  (1, 'algo1', 'STOCK.MONTHLY_CONSUMPTION.ALGO_1', 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT'),
+  (2, 'algo2','STOCK.MONTHLY_CONSUMPTION.ALGO_2', 'STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT'),
+  (3, 'algo3', 'STOCK.MONTHLY_CONSUMPTION.ALGO_3', 'STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT'),
+  (4, 'algo_msh', 'STOCK.MONTHLY_CONSUMPTION.ALGO_4', 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT');
+
+ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 3;
+ALTER TABLE `stock_setting` ADD CONSTRAINT `stock_setting__average_consumption_algo` FOREIGN KEY (`average_consumption_algo_id`) REFERENCES `average_consumption_algo` (`id`);
