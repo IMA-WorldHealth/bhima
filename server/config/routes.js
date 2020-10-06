@@ -349,16 +349,7 @@ exports.configure = function configure(app) {
   app.get('/inventory/import/template_file', inventory.importing.downloadTemplate);
 
   /* Depot routes */
-  app.get('/depots', depots.list);
-  app.get('/depots/:uuid', depots.detail);
-
-  app.put('/depots/:uuid', depots.update);
-  app.post('/depots', depots.create);
-  app.delete('/depots/:uuid', depots.remove);
-
-  // special route for searching depot by name
-  app.get('/depots/search/name', depots.searchByName);
-
+  app.use('/depots', depots.router);
   // currencies API
   app.get('/currencies', currencies.list);
   app.get('/currencies/:id', currencies.detail);
