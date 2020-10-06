@@ -4,14 +4,13 @@
     ng-class="{ 'has-error' : TagForm.$submitted && TagForm.tagUuids.$invalid }">
 
     <label class="control-label">
-      <span translate>{{ $ctrl.label }}</span>&nbsp;
-      <a style="cursor: pointer;" ng-click="$ctrl.createUpdateTagsModal()" translate>TAG.ADD</a>
+      <span translate>{{ $ctrl.label }}</span>
     </label>
-    
+
     <ng-transclude></ng-transclude>
 
-    <ui-select 
-      name="tagUuids" 
+    <ui-select
+      name="tagUuids"
       ng-model="$ctrl.tagUuids"
       on-select="$ctrl.onChanges()"
       on-remove="$ctrl.onChanges()"
@@ -27,7 +26,7 @@
       <ui-select-choices repeat="tag as tag in $ctrl.tags | filter: { 'name': $select.search }">
         <span><i class="fa fa-circle" ng-style="$ctrl.getTagColor(tag)"></i> <span translate>{{ tag.name }}</span></span>
       </ui-select-choices>
-    </ui-select>    
+    </ui-select>
 
     <div class="help-block" ng-messages="TagForm.tagUuids.$error" ng-show="TagForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
