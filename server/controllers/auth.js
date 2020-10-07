@@ -7,14 +7,15 @@
  *
  * @requires q
  * @requires lodash
+ * @requires debug
  * @requires lib/db
  * @requires lib/errors/Unauthorized
  */
 
 const _ = require('lodash');
 const q = require('q');
-const db = require('../lib/db');
 const debug = require('debug')('app');
+const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 
 // POST /auth/login
@@ -234,7 +235,6 @@ async function loadSessionInformation(user) {
 
   return session;
 }
-
 
 /**
  * @method reload

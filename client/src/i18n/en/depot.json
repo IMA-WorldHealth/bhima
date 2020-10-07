@@ -25,6 +25,7 @@
     "UPDATED" : "Depot updated successfully",
     "WAREHOUSE" : "Warehouse",
     "WAREHOUSE_INFO" : "This depot can distribute to other depots",
+    "ALLOWED_DESTINATION_DEPOTS":"Allowed destination depots",
     "MODAL" : {
       "SELECTION" : "Depot Selection",
       "TYPE_DEPOT_NAME" : "Type the depot's name",

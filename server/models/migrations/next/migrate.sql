@@ -56,3 +56,21 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  */
  ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
  ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);
+
+ /*
+  * @author: mbayopanda
+  * @date: 2020-10-05
+  * @desc: Adding new column enable_strict_depot_distribution in stock settings
+  */
+ALTER TABLE stock_setting ADD COLUMN `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0;
+
+/*
+  * @author: mbayopanda
+  * @date: 2020-10-05
+  * @desc: Adding a new table depot_distribution_permission
+  */
+DROP TABLE IF EXISTS `depot_distribution_permission`;
+CREATE TABLE `depot_distribution_permission` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `distribution_depot_uuid` BINARY(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
