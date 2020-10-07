@@ -5,6 +5,7 @@
 
     <label class="control-label">
       <span translate>{{ $ctrl.label }}</span>
+      <span ng-if="$ctrl.enableAddTag">&nbsp;&nbsp;<a style="cursor: pointer;" ng-click="$ctrl.createUpdateTagsModal()" translate>TAG.ADD</a></span>
     </label>
 
     <ng-transclude></ng-transclude>
