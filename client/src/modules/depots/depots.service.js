@@ -49,6 +49,7 @@ function DepotService(Api, Modal) {
     delete depot.location;
     delete depot.users;
     delete depot.parent;
+    delete depot.distribution_depots;
   };
 
   return service;

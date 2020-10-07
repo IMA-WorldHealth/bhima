@@ -467,6 +467,12 @@ CREATE TABLE `depot` (
   INDEX `parent_uuid` (`parent_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `depot_distribution_permission`;
+CREATE TABLE `depot_distribution_permission` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `distribution_depot_uuid` BINARY(16) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS discount;
 CREATE TABLE discount (
@@ -1861,6 +1867,7 @@ CREATE TABLE `stock_setting` (
   `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

@@ -155,7 +155,6 @@ function DepotManagementController(
         });
 
         vm.gridOptions.data = FormatTreeData.formatStore(depotsData);
-
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -164,12 +163,12 @@ function DepotManagementController(
   }
 
   // switch to delete warning mode
-  function deleteDepot(depot) {
+  function deleteDepot(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(bool => {
         if (!bool) { return; }
 
-        Depots.delete(depot.uuid)
+        Depots.delete(uuid)
           .then(() => {
             Notify.success('DEPOT.DELETED');
             load();
@@ -179,8 +178,8 @@ function DepotManagementController(
   }
 
   // update an existing depot
-  function editDepot(depotObject) {
-    $state.go('depots.edit', { depot : depotObject });
+  function editDepot(uuid) {
+    $state.go('depots.edit', { uuid });
   }
 
   // create a new depot

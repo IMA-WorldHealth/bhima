@@ -80,6 +80,14 @@
             help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
           </bh-yes-no-radios>
+
+          <bh-yes-no-radios
+            label="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION"
+            help-text="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT"
+            value="StockSettingsCtrl.settings.enable_strict_depot_distribution"
+            name="enable_strict_depot_distribution"
+            on-change-callback="StockSettingsCtrl.enableStrictDepotDistribution(value)">
+          </bh-yes-no-radios>
         </div>
 
         <div class="panel-footer" id="submission">

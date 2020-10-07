@@ -7,23 +7,35 @@ DepotModalController.$inject = [
 
 function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
-  let checkChangeParent = false;
 
-  vm.depot = params.depot || {};
+  vm.depot = {};
+  vm.identifier = params.uuid;
   vm.isCreateState = params.isCreateState;
+  vm.enable_strict_depot_distribution = Session.stock_settings.enable_strict_depot_distribution;
 
   vm.onSelectDepot = onSelectDepot;
+  vm.onDistributionDepotChange = onDistributionDepotChange;
   vm.clear = clear;
-
-  // make sure hasLocation is set
-  vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
-
-  if (vm.depot.parent === 0) {
-    delete vm.depot.parent_uuid;
-  }
+  vm.submit = submit;
 
   if (params.parentId) {
     vm.depot.parent_uuid = params.parentId;
+  }
+
+  if (!vm.isCreateState) {
+    if (!vm.identifier) { return; }
+    Depots.read(vm.identifier)
+      .then(depot => {
+        vm.depot = depot;
+
+        // make sure hasLocation is set
+        vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
+
+        if (vm.depot.parent === 0) {
+          delete vm.depot.parent_uuid;
+        }
+      })
+      .catch(Notify.handleError);
   }
 
   // if creating, insert the default min_months_security_stock
@@ -35,22 +47,22 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.depot.parent_uuid = depot.uuid;
   }
 
+  function onDistributionDepotChange(depots) {
+    vm.depot.allowed_distribution_depots = depots;
+  }
+
   function clear(item) {
-    checkChangeParent = true;
     delete vm.depot[item];
   }
 
-  // exposed methods
-  vm.submit = submit;
-
-  // submit the data to the server from all two forms (update, create)
+  /**
+   * @method submit
+   * @param {object} depotForm the form object
+   * @description submit the data to the server from all two forms (update, create)
+   * @todo check depotForm.$pristine state also for changes in components
+   */
   function submit(depotForm) {
     if (depotForm.$invalid) {
-      return 0;
-    }
-
-    if (depotForm.$pristine && !checkChangeParent) {
-      cancel();
       return 0;
     }
 
@@ -75,9 +87,5 @@ function DepotModalController($state, Depots, Notify, Session, params) {
         $state.go('depots', null, { reload : true });
       })
       .catch(Notify.handleError);
-  }
-
-  function cancel() {
-    $state.go('depots');
   }
 }
