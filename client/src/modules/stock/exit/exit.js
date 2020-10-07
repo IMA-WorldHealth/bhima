@@ -229,7 +229,8 @@ function StockExitController(
   // configure item
   function configureItem(item) {
     item._initialised = true;
-    // get lots
+
+    // get lots for this inventory item
     Stock.lots.read(null, {
       depot_uuid : vm.depot.uuid,
       inventory_uuid : item.inventory.inventory_uuid,
@@ -237,10 +238,13 @@ function StockExitController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
+        const now = new Date();
+        const isExpired = (lot) => lot.expiration_date && lot.expiration_date < now;
+
         if (vm.movement.exit_type === 'loss') {
           item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
         } else {
-          item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid) && lot.lifetime > 0);
+          item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid) && !isExpired(lot));
         }
       })
       .catch(Notify.handleError);
