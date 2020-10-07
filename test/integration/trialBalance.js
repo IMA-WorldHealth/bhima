@@ -44,8 +44,8 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /journal/trialbalance returns summary information grouped by account', () => {
+
     return agent.post('/journal/trialbalance')
       .send(formatParams(GOOD_TXNS))
       .then((res) => {
