@@ -1,5 +1,6 @@
 /* global element, by */
 /* eslint  */
+const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 
@@ -23,6 +24,16 @@ function StockSettingTests() {
     await page.setRadio('yes', 'enable_supplier_credit');
     await element(by.id('algo_msh')).click();
 
+    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(0);
+    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(1);
+    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(2);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(3);
+
+    expect(await checkSelectAlgo1.isSelected()).to.equal(false);
+    expect(await checkSelectAlgo2.isSelected()).to.equal(false);
+    expect(await checkSelectAlgo3.isSelected()).to.equal(false);
+    expect(await checkSelectAlgoMsh.isSelected()).to.equal(true);
+
     // submit
     await FU.buttons.submit();
     await page.checkSuccess();
@@ -38,6 +49,16 @@ function StockSettingTests() {
     await page.setRadio('no', 'enable_auto_stock_accounting');
     await page.setRadio('no', 'enable_supplier_credit');
     await element(by.id('algo3')).click();
+
+    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(0);
+    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(1);
+    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(2);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(3);
+
+    expect(await checkSelectAlgo1.isSelected()).to.equal(false);
+    expect(await checkSelectAlgo2.isSelected()).to.equal(false);
+    expect(await checkSelectAlgo3.isSelected()).to.equal(true);
+    expect(await checkSelectAlgoMsh.isSelected()).to.equal(false);
 
     // submit
     await FU.buttons.submit();
