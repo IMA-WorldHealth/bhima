@@ -78,7 +78,8 @@ function startupConfig(
           if (isInstalled) {
             return stateService.target('login');
           }
-          return false;
+          // continue the routing
+          return true;
         });
     }
 
