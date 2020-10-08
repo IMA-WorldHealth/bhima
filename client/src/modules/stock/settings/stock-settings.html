@@ -31,25 +31,6 @@
             </div>
           </div>
 
-          <!-- average_consumption_algo -->
-          <div id="average_consumption_algo" class="form-group"
-            ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
-            <div ng-repeat="algo in StockSettingsCtrl.algorithmes">
-              <label class="radio-inline">
-                <input type="radio" name="average_consumption_algo" ng-value="algo.id" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
-                <span translate>{{ algo.label }}</span>
-              </label>
-              <span class="help-block" translate>
-                {{algo.comment}}
-              </span>
-            </div>
-            <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
           <div class="form-group"
             ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_min_months_security_stock.$invalid }">
             <label class="control-label" translate>
@@ -68,6 +49,7 @@
           <bh-yes-no-radios label="SETTINGS.ENABLE_DAILY_CONSUMPTION_LABEL"
             value="StockSettingsCtrl.settings.enable_daily_consumption"
             name="enable_daily_consumption"
+            id="enable_daily_consumption"
             help-text="SETTINGS.ENABLE_DAILY_CONSUMPTION_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableDailyConsumption(value)">
           </bh-yes-no-radios>
@@ -75,6 +57,7 @@
           <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
             value="StockSettingsCtrl.settings.enable_auto_purchase_order_confirmation"
             name="enable_auto_purchase_order_confirmation"
+            id="enable_auto_purchase_order_confirmation"
             help-text="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
           </bh-yes-no-radios>
@@ -82,6 +65,7 @@
           <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
             value="StockSettingsCtrl.settings.enable_strict_depot_permission"
             name="enable_strict_depot_permission"
+            id="enable_strict_depot_permission"
             help-text="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableStrictDepotPermission(value)">
           </bh-yes-no-radios>
@@ -89,6 +73,7 @@
           <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
             value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
             name="enable_auto_stock_accounting"
+            id="enable_auto_stock_accounting"
             help-text="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableAutoStockAccounting(value)">
           </bh-yes-no-radios>
@@ -96,6 +81,7 @@
           <bh-yes-no-radios label="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
             value="StockSettingsCtrl.settings.enable_supplier_credit"
             name="enable_supplier_credit"
+            id="enable_supplier_credit"
             help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
             on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
           </bh-yes-no-radios>
@@ -107,6 +93,26 @@
             name="enable_strict_depot_distribution"
             on-change-callback="StockSettingsCtrl.enableStrictDepotDistribution(value)">
           </bh-yes-no-radios>
+
+          <!-- average_consumption_algo -->
+          <div id="average_consumption_algo" class="form-group"
+            ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
+            <div ng-repeat="algo in StockSettingsCtrl.algorithmes">
+              <label class="radio-inline">
+                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.id" ng-model="StockSettingsCtrl.settings.average_consumption_algo_id" required>
+                <span translate>{{ algo.label }}</span>
+              </label>
+              <span class="help-block" translate>
+                {{algo.comment}}
+              </span>
+            </div>
+            <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
         </div>
 
         <div class="panel-footer" id="submission">
