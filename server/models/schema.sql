@@ -1880,7 +1880,6 @@ CREATE TABLE `stock_setting` (
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
   `average_consumption_algo_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 3, -- The average consumption is obtained by dividing the quantity consumed during the period defined by the number of days in the period, and by multiplying the result obtained by 30.5
-  CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   CONSTRAINT `stock_setting__average_consumption_algo` FOREIGN KEY (`average_consumption_algo_id`) REFERENCES `average_consumption_algo` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
