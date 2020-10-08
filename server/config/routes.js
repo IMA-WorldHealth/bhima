@@ -827,6 +827,9 @@ exports.configure = function configure(app) {
   app.post('/stock/integration', stock.createIntegration);
   app.post('/stock/inventory_adjustment', stock.createInventoryAdjustment);
 
+  // API for getting algorithme for Average Consuption
+  app.get('/stock/setting/average_consuption_algo', stockSetting.averageConsuptionAlgo);
+
   // stock settings API
   app.get('/stock/setting/:id?', stockSetting.list);
   app.put('/stock/setting/:id', stockSetting.update);

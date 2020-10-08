@@ -1855,6 +1855,17 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   CONSTRAINT `voucher_item__voucher` FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `average_consumption_algo`;
+
+CREATE TABLE `average_consumption_algo` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `comment` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `average_consumption_algo` (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 -- stock tables
 
 DROP TABLE IF EXISTS `stock_setting`;
@@ -1867,8 +1878,14 @@ CREATE TABLE `stock_setting` (
   `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
+<<<<<<< 5aad688fb55f6167e89fe6191a778e7ce640b044
   `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+=======
+  `average_consumption_algo_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 3, -- The average consumption is obtained by dividing the quantity consumed during the period defined by the number of days in the period, and by multiplying the result obtained by 30.5
+  CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
+  CONSTRAINT `stock_setting__average_consumption_algo` FOREIGN KEY (`average_consumption_algo_id`) REFERENCES `average_consumption_algo` (`id`)
+>>>>>>> refactor(Parameter Setting)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `flux`;

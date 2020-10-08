@@ -273,6 +273,7 @@
             "ADDRESS2": "Additional address",
             "ADDRESS": "Address",
             "AGE":"Age",
+            "ALGO_MONTHLY_CONSUMPTION": "Algorithm for calculating average monthly consumption",
             "ALL": "All",
             "ALL_EMPLOYEES": "All Employees",
             "ALL_GENDER": "All Genders",
