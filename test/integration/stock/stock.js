@@ -40,7 +40,8 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /stock/lots/movements?depot_uuid=...
     returns movements for Depot Principal`,
     async () => {
-      const res = await agent.get(`/stock/lots/movements?depot_uuid=${shared.depotPrincipalUuid}`);
+      const res = await (agent.get('/stock/lots/movements')
+        .query({ depot_uuid : shared.depotPrincipalUuid }));
       helpers.api.listed(res, shared.depotPrincipalMvt);
     },
   );
@@ -59,7 +60,8 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /stock/lots/movements?service_uuid=...
     returns movements for Service Uuid (1 OUT)`,
     async () => {
-      const res = await agent.get(`/stock/lots/movements?service_uuid=${shared.serviceAdministrationUuid}`);
+      const res = await (agent.get(`/stock/lots/movements`)
+        .query({ service_uuid : shared.serviceAdministrationUuid }));
       helpers.api.listed(res, 1);
     },
   );
@@ -69,7 +71,11 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /stock/lots/movements?is_exit=1&depot_uuid=...
     returns list of lot exits for Depot Principal`,
     async () => {
-      const res = await agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${shared.depotPrincipalUuid}`);
+      const res = await (agent.get(`/stock/lots/movements`)
+        .query({
+          is_exit : 1,
+          depot_uuid : shared.depotPrincipalUuid,
+        }));
       helpers.api.listed(res, 9);
     },
   );
@@ -88,7 +94,11 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /reports/stock/lots?renderer=json
     returns render of all lot exits for Depot principal`,
     async () => {
-      const res = await agent.get(`/reports/stock/lots?renderer=json&depot_uuid=${shared.depotPrincipalUuid}`);
+      const res = await (agent.get(`/reports/stock/lots`)
+        .query({
+          renderer : 'json',
+          depot_uuid : shared.depotPrincipalUuid,
+        }));
       expect(res.body.rows.length).to.equal(21);
     },
   );
@@ -97,19 +107,22 @@ describe('(/stock/) The Stock HTTP API', () => {
   it(
     `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal`,
     async () => {
-      const res = await agent.get(`/stock/lots/movements?is_exit=0&depot_uuid=${shared.depotPrincipalUuid}`);
+      const res = await (agent.get('/stock/lots/movements')
+        .query({
+          is_exit : 0,
+          depot_uuid : shared.depotPrincipalUuid,
+        }));
       helpers.api.listed(res, 21);
     },
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial
-      quantity of QUININE-A in Depot Principal (100pcs)`, async () => {
-    const res = await agent.get('/stock/lots')
+  it(`GET /stock/lots returns initial quantity of QUININE-A in Depot Principal (100pcs)`, async () => {
+    const res = await (agent.get('/stock/lots')
       .query({
         lot_uuid : shared.lotQuinineUuid,
         depot_uuid : shared.depotPrincipalUuid,
-      });
+      }));
     helpers.api.listed(res, 1);
     const lotQuinine = res.body[0];
     expect(lotQuinine.initial_quantity).to.equal(100);
@@ -139,17 +152,19 @@ describe('(/stock/) The Stock HTTP API', () => {
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
-  it(
-    `
+  it(`
     GET /stock/lots/depots?lot_uuid=...&depot_uuid=...
     returns remaining quantity of QUININE-A in Depot Principal (80pcs)`,
-    async () => {
-      const res = await agent
-        .get(`/stock/lots/depots?lot_uuid=${shared.lotQuinineUuid}&depot_uuid=${shared.depotPrincipalUuid}`);
-      helpers.api.listed(res, 1);
-      expect(res.body[0].quantity).to.equal(0);
-    },
-  );
+  async () => {
+    const res = await agent.get(`/stock/lots/depots`)
+      .query({
+        lot_uuid : shared.lotQuinineUuid,
+        depot_uuid : shared.depotPrincipalUuid,
+      });
+
+    helpers.api.listed(res, 1);
+    expect(res.body[0].quantity).to.equal(0);
+  });
 
   it(`GET /stock/inventories/depots filters on expired lots`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
@@ -165,24 +180,58 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
-      .query({ depot_uuid : shared.depotPrincipalUuid, limit : 1000, includeEmptyLot : 0 });
+      .query({
+        depot_uuid : shared.depotPrincipalUuid,
+        limit : 1000,
+        includeEmptyLot : 0,
+      });
 
     helpers.api.listed(res, 4);
 
-    expect(res.body[1].quantity).to.equal(140);
-    expect(res.body[1].avg_consumption).to.equal(8);
+    const labels = [
+      'Abaisse langue en bois, 18*140mm, Boîte de 100 unités',
+      'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
+      'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+    ];
 
-    expect(res.body[1].S_SEC).to.equal(8);
-    expect(res.body[1].S_MIN).to.equal(16);
-    expect(res.body[1].S_MAX).to.equal(16);
-    expect(res.body[1].S_MONTH).to.equal(17);
+    const tLabels = res.body.map(i => i.text);
+    expect(tLabels).to.deep.equal(labels);
 
-    expect(res.body[2].quantity).to.equal(180300);
-    expect(res.body[2].avg_consumption).to.equal(49916.67);
-    expect(res.body[2].S_SEC).to.equal(49916.67);
-    expect(res.body[2].S_MIN).to.equal(99833.34);
-    expect(res.body[2].S_MAX).to.equal(99833.34);
-    expect(res.body[2].S_MONTH).to.equal(3);
+    const [
+      tongueDepressor,
+      vitamineB,
+      acid,
+      quinine,
+    ] = res.body;
+
+    expect(tongueDepressor.quantity, 'Tongue Depressor Quantity').to.equal(55400);
+    expect(tongueDepressor.avg_consumption, 'Tongue Depressor Avg Consumption').to.equal(629.17);
+    expect(tongueDepressor.S_SEC, 'Tongue Depressor Security Stock').to.equal(629.17);
+    expect(tongueDepressor.S_MIN, 'Tongue Depressor Min Stock').to.equal(1258.34);
+    expect(tongueDepressor.S_MAX, 'Tongue Depressor Max Stock').to.equal(1258.34);
+    expect(tongueDepressor.S_MONTH, 'Tongue Depressor Months of Stock').to.equal(88);
+
+    expect(vitamineB.quantity, 'Vitamine B Quantity').to.equal(140);
+    expect(vitamineB.avg_consumption, 'Vitamine B Avg Consumption').to.equal(15);
+    expect(vitamineB.S_SEC, 'Vitamine B Security Stock').to.equal(15);
+    expect(vitamineB.S_MIN, 'Vitamine B Min Stock').to.equal(30);
+    expect(vitamineB.S_MAX, 'Vitamine B Max Stock').to.equal(30);
+    expect(vitamineB.S_MONTH, 'Vitamine B Months of Stock').to.equal(9);
+
+    expect(acid.quantity, 'Acide Acetylsalicylique Quantity').to.equal(180300);
+    expect(acid.avg_consumption, 'Acide Acetylsalicylique Average Consumption').to.equal(49916.67);
+    expect(acid.S_SEC, 'Acide Acetylsalicylique Security Stock').to.equal(49916.67);
+    expect(acid.S_MIN, 'Acide Acetylsalicylique Min Stock').to.equal(99833.34);
+    expect(acid.S_MAX, 'Acide Acetylsalicylique Max Stock').to.equal(99833.34);
+    expect(acid.S_MONTH, 'Acide Acetylsalicylique Months of Stock').to.equal(3);
+
+    expect(quinine.quantity, 'Quinine Quantity').to.equal(415);
+    expect(quinine.avg_consumption, 'Quinine Avg Consumption').to.equal(30);
+    expect(quinine.S_SEC, 'Quinine Security Stock').to.equal(30);
+    expect(quinine.S_MIN, 'Quinine Min Stock').to.equal(60);
+    expect(quinine.S_MAX, 'Quinine Max Stock').to.equal(60);
+    expect(quinine.S_MONTH, 'Quinine Months of Stock').to.equal(13);
   });
 
   it('POST /stock/lots create a new stock lots entry from donation', async () => {
