@@ -57,7 +57,6 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
  ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);
 
-<<<<<<< 5aad688fb55f6167e89fe6191a778e7ce640b044
  /*
   * @author: mbayopanda
   * @date: 2020-10-05
@@ -75,7 +74,7 @@ CREATE TABLE `depot_distribution_permission` (
   `depot_uuid` BINARY(16) NOT NULL,
   `distribution_depot_uuid` BINARY(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-=======
+
 /*
  * @author: lomamech
  * @date: 2020-10-05
@@ -102,4 +101,3 @@ INSERT INTO `average_consumption_algo` VALUES
 
 ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 3;
 ALTER TABLE `stock_setting` ADD CONSTRAINT `stock_setting__average_consumption_algo` FOREIGN KEY (`average_consumption_algo_id`) REFERENCES `average_consumption_algo` (`id`);
->>>>>>> refactor(Parameter Setting)
