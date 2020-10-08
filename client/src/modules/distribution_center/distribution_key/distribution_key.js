@@ -12,8 +12,7 @@ DistributionKeyController.$inject = [
  * This controller is about the updating Distribution Center module in the Finance zone
  * It's responsible for editing and updating a Distribution Center
  */
-function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
-  Grouping, uiGridGroupingConstants) {
+function DistributionKeyController(DistributionCenters, Notify, uiGridConstants, Grouping, uiGridGroupingConstants) {
   const vm = this;
 
   // bind methods
@@ -72,7 +71,7 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
     }],
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'auxiliary_label', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'auxiliary_label');
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -86,15 +85,12 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
   // settings distribution keys
   function settings(distributions) {
     const dataSettings = distributions[0].row.entity;
-    const settingsValues = [];
 
-    distributions.forEach(item => {
-      settingsValues.push({
-        auxiliary_fee_center_id : item.row.entity.auxiliary_fee_center_id,
-        principal_fee_center_id : item.row.entity.principal_fee_center_id,
-        rate : item.row.entity.rate,
-      });
-    });
+    const settingsValues = distributions.map(({ row }) => ({
+      auxiliary_fee_center_id : row.entity.auxiliary_fee_center_id,
+      principal_fee_center_id : row.entity.principal_fee_center_id,
+      rate : row.entity.rate,
+    }));
 
     dataSettings.settingsValues = settingsValues;
 
