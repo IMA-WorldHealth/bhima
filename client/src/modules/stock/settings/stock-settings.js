@@ -43,6 +43,14 @@ function StockSettingsController(
           .catch(Notify.handleError);
       })
       .catch(Notify.handleError);
+
+    // load algorithmes for Average Consumption
+    StockSettings.getAverageConsuptionAlgo()
+      .then(algorithmes => {
+        vm.algorithmes = algorithmes;
+      })
+      .catch(Notify.handleError);
+
   }
 
   // form submission
