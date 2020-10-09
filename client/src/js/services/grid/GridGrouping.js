@@ -112,7 +112,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   }
 
   function unfoldAllGroups(api = this.gridApi) {
-    $timeout(api.treeBase.expandAllRows, 0, false);
+    $timeout(() => api.treeBase.expandAllRows(), 0);
   }
 
   function unfoldGroup(row) {
