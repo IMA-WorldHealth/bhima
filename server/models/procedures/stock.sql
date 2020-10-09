@@ -402,8 +402,10 @@ CREATE PROCEDURE `computeStockQuantity` (
     WHERE  `start_date` >= _start_date AND  `end_date` <= _end_date AND  `inventory_uuid` = _inventory_uuid AND `depot_uuid` =  @depot_uuid;
 
     DELETE FROM `temp_stock_movement` WHERE 1;
+    SET @row_number = 0;
     INSERT INTO `temp_stock_movement`
-
+     
+    
     SELECT (@row_number:=@row_number + 1) AS `reference`, x.* FROM (
       SELECT DATE(m.date) AS `date`,  m.depot_uuid, i.uuid,
         SUM( IFNULL(m.quantity * IF(m.is_exit = 1, -1, 1), 0)) AS quantity,
@@ -418,7 +420,7 @@ CREATE PROCEDURE `computeStockQuantity` (
     ) AS x
     ORDER BY x.date;
 
-    SET @row_i = 0;
+    SET @row_i = NULL;
     SET _row_uuid = NULL;
 
     SELECT SUM(quantity) AS quantity INTO _qtt
@@ -461,9 +463,8 @@ CREATE PROCEDURE `computeStockQuantity` (
     SET @mvts_number = (SELECT COUNT(*) from temp_stock_movement  WHERE `date` > _start_date);
     SET  @row_number = @row_i + @mvts_number - 1;
 
-    SET @row_i = IFNULL(@row_i, 0);
-
-    IF @row_i = 0 THEN
+    -- @row_i is null when there is no movement that come ofter the start_date
+    IF @row_i IS NULL THEN
       UPDATE `stock_movement_status` SET `end_date` = _end_date WHERE `uuid` = _row_uuid;
     ELSE
       WHILE (@row_i < @row_number + 1) DO

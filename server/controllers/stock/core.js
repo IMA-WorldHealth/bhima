@@ -812,6 +812,7 @@ function processMultipleLots(inventories) {
         if (!lot.tracking_expiration) {
           lot.expiration_date = '';
         }
+
         if (lot.tracking_consumption) {
           // apply the same CMM to all lots and update monthly consumption
           lot.avg_consumption = cmm;

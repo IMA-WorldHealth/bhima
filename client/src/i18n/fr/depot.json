@@ -25,6 +25,7 @@
     "UPDATED" : "Dépôt mise à jour avec succès",
     "WAREHOUSE" : "Entrepôts",
     "WAREHOUSE_INFO" : "Ce dépôt est en mesure d'approvisionner d'autres dépôts",
+    "ALLOWED_DESTINATION_DEPOTS":"Les dépôts de destination autorisés",
     "MODAL" : {
       "SELECTION" : "Sélection du dépôt",
       "TYPE_DEPOT_NAME" : "Saisir le nom du depot",
