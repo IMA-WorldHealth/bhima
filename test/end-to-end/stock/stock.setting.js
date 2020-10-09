@@ -24,10 +24,10 @@ function StockSettingTests() {
     await page.setRadio('yes', 'enable_supplier_credit');
     await element(by.id('algo_msh')).click();
 
-    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(0);
-    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(1);
-    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(2);
-    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(3);
+    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
+    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
+    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(2);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(3);
 
     expect(await checkSelectAlgo1.isSelected()).to.equal(false);
     expect(await checkSelectAlgo2.isSelected()).to.equal(false);
@@ -50,10 +50,10 @@ function StockSettingTests() {
     await page.setRadio('no', 'enable_supplier_credit');
     await element(by.id('algo3')).click();
 
-    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(0);
-    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(1);
-    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(2);
-    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo_id')).get(3);
+    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
+    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
+    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(2);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(3);
 
     expect(await checkSelectAlgo1.isSelected()).to.equal(false);
     expect(await checkSelectAlgo2.isSelected()).to.equal(false);

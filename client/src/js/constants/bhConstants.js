@@ -177,5 +177,27 @@ function constantConfig() {
       MID : 2,
       HIGH : 3,
     },
+    average_consumption_algo : [
+      {
+        name : 'algo1',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT',
+      },
+      {
+        name : 'algo2',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_2',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT',
+      },
+      {
+        name : 'algo3',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_3',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT',
+      },
+      {
+        name : 'algo_msh',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT',
+      },
+    ],
   };
 }

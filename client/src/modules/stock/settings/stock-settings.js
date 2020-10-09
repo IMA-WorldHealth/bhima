@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('StockSettingsController', StockSettingsController);
 
 StockSettingsController.$inject = [
-  'StockSettingsService', 'EnterpriseService', 'util', 'NotifyService', 'SessionService',
+  'StockSettingsService', 'EnterpriseService', 'util', 'NotifyService', 'SessionService', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ StockSettingsController.$inject = [
  * This module is a for getting/updating the parameters/settings related to Stock
  */
 function StockSettingsController(
-  StockSettings, Enterprises, util, Notify, Session,
+  StockSettings, Enterprises, util, Notify, Session, bhConstants,
 ) {
   const vm = this;
 
@@ -45,12 +45,7 @@ function StockSettingsController(
       .catch(Notify.handleError);
 
     // load algorithmes for Average Consumption
-    StockSettings.getAverageConsuptionAlgo()
-      .then(algorithmes => {
-        vm.algorithmes = algorithmes;
-      })
-      .catch(Notify.handleError);
-
+    vm.algorithmes = bhConstants.average_consumption_algo;
   }
 
   // form submission

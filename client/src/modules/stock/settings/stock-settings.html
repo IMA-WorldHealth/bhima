@@ -97,10 +97,10 @@
           <!-- average_consumption_algo -->
           <div id="average_consumption_algo" class="form-group"
             ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
+            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label> DAF PINK
             <div ng-repeat="algo in StockSettingsCtrl.algorithmes">
               <label class="radio-inline">
-                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.id" ng-model="StockSettingsCtrl.settings.average_consumption_algo_id" required>
+                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
                 <span translate>{{ algo.label }}</span>
               </label>
               <span class="help-block" translate>

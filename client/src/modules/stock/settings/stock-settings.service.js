@@ -10,8 +10,6 @@ function StockSettingsService($http, util) {
   service.read = read;
   service.create = create;
   service.update = update;
-  service.update = update;
-  service.getAverageConsuptionAlgo = getAverageConsuptionAlgo;
 
   function read(id, options) {
     const url = baseUrl.concat(id || '');
@@ -26,12 +24,6 @@ function StockSettingsService($http, util) {
 
   function update(id, settings) {
     return $http.put(baseUrl.concat(id), settings)
-      .then(util.unwrapHttpResponse);
-  }
-
-  function getAverageConsuptionAlgo() {
-    const url = baseUrl.concat('average_consuption_algo');
-    return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 
