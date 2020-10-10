@@ -1,5 +1,5 @@
 { "STOCK" : {
-    "ALERT"           : "Alert",
+    "ALERT" : "Alert",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
     "AMOUNT"          : "Amount",
@@ -101,6 +101,16 @@
     "MONTH"           : "Stock Months",
     "MONTH_OF_STOCK"  : "Stock Months - Months until Stock Out",
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
+    "MONTHLY_CONSUMPTION" : {
+      "ALGO_1"          : "Algorithm 1",
+      "ALGO_1_COMMENT"  : "The average monthly consumption is obtained by dividing the quantity consumed during the period defined by the number of days of stock for said period, and by multiplying the result obtained by 30.5",
+      "ALGO_2"          : "Algorithm 2",
+      "ALGO_2_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period defined by the number of days of consumption for said period, and by multiplying the result obtained by 30.5",
+      "ALGO_3"          : "Algorithm 3",
+      "ALGO_3_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period defined by the number of days in the period, and by multiplying the result obtained by 30.5",
+      "ALGO_4"          : "Algorithm 4 (MSH)",
+      "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period defined by the number of months minus the number of months divided by the total number of days of rupture"
+    },
     "MOTIF"           : "Motif",
     "MOVEMENT"        : "Movement",
     "MOVEMENTS"       : "Movements",
