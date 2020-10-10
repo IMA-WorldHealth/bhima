@@ -7,7 +7,6 @@ angular.module('bhima.components')
     },
   });
 
-
 /**
  * @component bhFilterToggle
  *
