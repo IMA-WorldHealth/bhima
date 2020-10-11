@@ -128,6 +128,7 @@ function AdmissionRegistryController(
     vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
+
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
   const state = new GridState(vm.uiGridOptions, cacheKey);
 
