@@ -29,7 +29,7 @@ const config = {
   capabilities : {
     browserName : 'chrome',
     chromeOptions : {
-      args : ['--disable-gpu', '--window-size=1280,1024'],
+      args : ['--disable-gpu', '--window-size=1280,1024', process.env.CHROME_OPTIONS],
     },
   },
 
@@ -65,14 +65,19 @@ if (process.env.CI) {
     // 'browserName': 'firefox',
     //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     //  'build': process.env.TRAVIS_BUILD_NUMBER,
-  // }, {
-    browserName         : 'chrome',
-    'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
-    build               : process.env.TRAVIS_BUILD_NUMBER,
-    chromeOptions : {
-      args : ['--headless', '--disable-gpu', '--window-size=1920,1080'],
+    // }, {
+    browserName: 'chrome',
+    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    build: process.env.TRAVIS_BUILD_NUMBER,
+    chromeOptions: {
+      args: ['--disable-gpu', '--window-size=1920,1080'],
     },
   }];
+
+  // Add custom Chrome options for local environments
+  if (process.env.CHROME_OPTIONS) {
+    config.capabilities.chromeOptions.args.push(process.env.CHROME_OPTIONS);
+  }
 
   delete config.capabilities;
   delete config.plugins;
