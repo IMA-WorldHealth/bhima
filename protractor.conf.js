@@ -66,11 +66,11 @@ if (process.env.CI) {
     //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     //  'build': process.env.TRAVIS_BUILD_NUMBER,
     // }, {
-    browserName: 'chrome',
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    build: process.env.TRAVIS_BUILD_NUMBER,
-    chromeOptions: {
-      args: ['--disable-gpu', '--window-size=1920,1080'],
+    browserName : 'chrome',
+    'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
+    build : process.env.TRAVIS_BUILD_NUMBER,
+    chromeOptions : {
+      args : ['--disable-gpu', '--window-size=1920,1080'],
     },
   }];
 
