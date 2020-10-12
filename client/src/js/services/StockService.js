@@ -79,6 +79,18 @@ function StockService(Api, StockFilterer) {
     requisition : StockRequisitionFilters,
   };
 
+  function assignNoEmptyLotsDefaultFilter(service) {
+    // add in the default key for the stock lots filter
+    const assignedKeys = Object.keys(service._filters.formatHTTP());
+    // assign default includeEmptyLot filter
+    if (assignedKeys.indexOf('includeEmptyLot') === -1) {
+      service._filters.assignFilter('includeEmptyLot', 0);
+    }
+  }
+
+  // assign non empty lots filter to the stockLots Filterer
+  assignNoEmptyLotsDefaultFilter(stockFilter.lot);
+
   // uniformSelectedEntity function implementation
   // change name, text and display_nam into displayName
   function uniformSelectedEntity(entity) {
