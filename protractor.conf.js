@@ -65,7 +65,7 @@ if (process.env.CI) {
     // 'browserName': 'firefox',
     //  'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     //  'build': process.env.TRAVIS_BUILD_NUMBER,
-  // }, {
+    // }, {
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
@@ -76,6 +76,11 @@ if (process.env.CI) {
 
   delete config.capabilities;
   delete config.plugins;
+}
+
+// Add custom Chrome options for local environments
+if (!process.env.CI && process.env.CHROME_OPTIONS) {
+  config.capabilities.chromeOptions.args.push(process.env.CHROME_OPTIONS);
 }
 
 // expose to the outside world
