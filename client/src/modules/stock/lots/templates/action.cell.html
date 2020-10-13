@@ -12,6 +12,17 @@
       </a>
     </li>
     <li>
+      <a data-method="view-stock-articles" ui-sref= "inventory.list(
+        { filters : [{ 
+          key : 'uuid',
+          value : row.entity.inventory_uuid,
+          displayValue : row.entity.text,
+          cachable : false},
+        ]})">
+        <i class="fa fa-info-circle"></i> <span translate>INVENTORY.VIEW_ITEM_IN_INVENTORY</span>
+      </a>
+    </li>
+    <li>
       <a data-method="view-stock-articles" ui-sref= "stockInventories(
         { filters : [
         { key : 'period', value : 'allTime'},
