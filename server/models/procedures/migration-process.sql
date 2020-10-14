@@ -1,10 +1,10 @@
 -- from https://stackoverflow.com/questions/173814/using-alter-to-drop-a-column-if-it-exists-in-mysql
 
-DELIMITER $$
-DROP FUNCTION IF EXISTS column_exists;
+DROP FUNCTION IF EXISTS bh_column_exists;
 
-CREATE FUNCTION column_exists(
-  tname VARCHAR(64),
+DELIMITER $$
+CREATE FUNCTION bh_column_exists(
+  tname VARCHAR(64) ,
   cname VARCHAR(64)
 )
   RETURNS BOOLEAN
@@ -24,28 +24,47 @@ DROP PROCEDURE IF EXISTS drop_column_if_exists;
 
 DELIMITER $$
 CREATE PROCEDURE drop_column_if_exists(
-  tname VARCHAR(64),
-  cname VARCHAR(64)
+  IN tname VARCHAR(64),
+  IN cname VARCHAR(64)
 )
 BEGIN
-    IF column_exists(tname, cname)
+    IF bh_column_exists(tname, cname)
     THEN
-      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', tname, '` DROP COLUMN `', cname, '`');
+      SET @drop_column_if_exists = CONCAT("ALTER TABLE `", tname, "` DROP COLUMN `", cname, "`");
       PREPARE drop_query FROM @drop_column_if_exists;
       EXECUTE drop_query;
     END IF;
 END $$
+DELIMITER ;
 
+-- add_column_if_missing:
 
+DROP PROCEDURE IF EXISTS add_column_if_missing;
+
+DELIMITER $$
+CREATE PROCEDURE add_column_if_missing(
+  IN tname VARCHAR(64),
+  IN cname VARCHAR(64),
+  IN typeinfo VARCHAR(128)
+)
+BEGIN
+  IF NOT bh_column_exists(tname, cname)
+  THEN
+    SET @add_column_if_missing = CONCAT("ALTER TABLE `", tname, "` ADD COLUMN `", cname, "` ", typeinfo);
+    PREPARE add_query FROM @add_column_if_missing;
+    EXECUTE add_query;
+  END IF;
+END $$
 DELIMITER ;
 
 
 -- From  https://stackoverflow.com/questions/2480148/how-can-i-employ-if-exists-for-creating-or-dropping-an-index-in-mysql
 -- This procedure try to drop a table index if it exists
 
-DELIMITER $$
+
 DROP FUNCTION IF EXISTS index_exists;
 
+DELIMITER $$
 CREATE FUNCTION index_exists(
   theTable VARCHAR(64),
   theIndexName VARCHAR(64)
@@ -58,9 +77,7 @@ theTable AND index_name = theIndexName);
   END $$
 DELIMITER ;
 
-
 DELIMITER $$
-
 DROP PROCEDURE IF EXISTS drop_index_if_exists $$
 CREATE PROCEDURE drop_index_if_exists(in theTable varchar(128), in theIndexName varchar(128) )
 BEGIN
@@ -70,11 +87,10 @@ BEGIN
    EXECUTE stmt;
  END IF;
 END $$
-
 DELIMITER ;
 
 
--- 
+--
 
 DELIMITER $$
 DROP FUNCTION IF EXISTS Constraint_exists;
@@ -87,18 +103,15 @@ CREATE FUNCTION Constraint_exists(
   READS SQL DATA
   BEGIN
     RETURN 0 < (
-		 SELECT COUNT(*) AS nbr
-		 FROM
-	    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
-	   WHERE CONSTRAINT_SCHEMA = DATABASE()
-	   AND TABLE_NAME= theTable
-		AND  CONSTRAINT_NAME = theConstraintName
-	 );
+     SELECT COUNT(*) AS nbr
+     FROM
+      INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+     WHERE CONSTRAINT_SCHEMA = DATABASE()
+     AND TABLE_NAME= theTable
+    AND  CONSTRAINT_NAME = theConstraintName
+   );
   END $$
 DELIMITER ;
-
-
-
 
 DELIMITER $$
 
@@ -109,7 +122,7 @@ DROP PROCEDURE IF EXISTS drop_foreign_key $$
 CREATE PROCEDURE drop_foreign_key(in theTable varchar(128), in theConstraintName varchar(128) )
 BEGIN
  IF(Constraint_exists(theTable, theConstraintName) > 0) THEN
- 
+
    SET @s = CONCAT(' ALTER TABLE ' , theTable , ' DROP FOREIGN KEY  ' , theConstraintName);
    PREPARE stmt FROM @s;
    EXECUTE stmt;
@@ -117,4 +130,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
