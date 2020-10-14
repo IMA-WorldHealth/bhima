@@ -28,6 +28,7 @@ function StockInventoryAdjustmentController(
 
   vm.onDateChange = date => {
     vm.movement.date = date;
+    loadInventories(vm.depot);
   };
 
   vm.onChangeDepot = depot => {
