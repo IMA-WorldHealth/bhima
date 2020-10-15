@@ -30,7 +30,9 @@ CREATE PROCEDURE drop_column_if_exists(
 BEGIN
     IF column_exists(tname, cname)
     THEN
-      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', tname, '` DROP COLUMN `', cname, '`');
+      SET @table_name = tname COLLATE utf8_unicode_ci;
+      SET @column_name = cname COLLATE utf8_unicode_ci;
+      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', @table_name, '` DROP COLUMN `', @column_name, '`');
       PREPARE drop_query FROM @drop_column_if_exists;
       EXECUTE drop_query;
     END IF;
