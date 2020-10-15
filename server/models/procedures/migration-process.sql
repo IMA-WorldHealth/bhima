@@ -30,9 +30,7 @@ CREATE PROCEDURE drop_column_if_exists(
 BEGIN
     IF column_exists(tname, cname)
     THEN
-      SET @table_name = tname COLLATE utf8_general_ci;
-      SET @column_name = cname COLLATE utf8_general_ci;
-      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', @table_name, '` DROP COLUMN `', @column_name, '`') COLLATE utf8_general_ci;
+      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', tname, '` DROP COLUMN `', cname, '`');
       PREPARE drop_query FROM @drop_column_if_exists;
       EXECUTE drop_query;
     END IF;
@@ -52,7 +50,10 @@ CREATE PROCEDURE add_column_if_missing(
 BEGIN
     IF NOT column_exists(tname, cname)
     THEN
-      SET @add_column_if_missing = CONCAT('ALTER TABLE `', tname, '` ADD COLUMN `', cname, '` ', typeinfo);
+      SET @table_name = tname COLLATE utf8_unicode_ci;
+      SET @column_name = cname COLLATE utf8_unicode_ci;
+      set @type_info = typeinfo COLLATE utf8_unicode_ci;
+      SET @add_column_if_missing = CONCAT('ALTER TABLE `', @table_name, '` ADD COLUMN `', @column_name, '` ', @type_info);
       PREPARE add_query FROM @add_column_if_missing;
       EXECUTE add_query;
     END IF;
