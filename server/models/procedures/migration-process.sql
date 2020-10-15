@@ -32,7 +32,7 @@ BEGIN
     THEN
       SET @table_name = tname COLLATE utf8_general_ci;
       SET @column_name = cname COLLATE utf8_general_ci;
-      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', @table_name, '` DROP COLUMN `', @column_name, '`');
+      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', @table_name, '` DROP COLUMN `', @column_name, '`') COLLATE utf8_general_ci;
       PREPARE drop_query FROM @drop_column_if_exists;
       EXECUTE drop_query;
     END IF;
