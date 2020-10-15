@@ -50,8 +50,7 @@ CREATE PROCEDURE add_column_if_missing(
 BEGIN
     IF NOT column_exists(tname, cname)
     THEN
-      -- DECLARE @add_column_if_missing VARCHAR(256);
-      SET @add_column_if_missing = CONCAT('ALTER TABLE `', tname, '` ADD COLUMN `', cname, '` ', typeinfo) COLLATE utf8mb4_general_ci;
+      SET @add_column_if_missing = CONCAT('ALTER TABLE `', tname, '` ADD COLUMN `', cname, '` ', typeinfo) COLLATE utf8mb4_unicode_ci;
       PREPARE add_query FROM @add_column_if_missing;
       EXECUTE add_query;
     END IF;
