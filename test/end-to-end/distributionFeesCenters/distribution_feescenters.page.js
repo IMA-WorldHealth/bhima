@@ -6,7 +6,6 @@
  * behaviour so it is a Distribution page object
  */
 
-const GA = require('../shared/GridAction');
 const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
@@ -111,8 +110,9 @@ class DistributionPage {
 
     await FU.buttons.submit();
 
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, dataset.uuid);
-    await GA.clickOnMethod(rowIndex, this.actionLinkUpdateColumn, 'edit', this.gridId);
+    const row = new GridRow(dataset.trans_id);
+    await row.dropdown().click();
+    await row.edit().click();
 
     await components.currencyInput.set(1000, 'principal_1');
     await components.currencyInput.set(100, 'principal_2');
