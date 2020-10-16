@@ -1,5 +1,3 @@
-SET names 'utf8mb4';
-
 DELIMITER $$
 
 -- Patient Triggers

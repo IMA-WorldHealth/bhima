@@ -24,8 +24,8 @@ DROP PROCEDURE IF EXISTS drop_column_if_exists;
 
 DELIMITER $$
 CREATE PROCEDURE drop_column_if_exists(
-  IN tname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  IN cname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
+  IN tname VARCHAR(64),
+  IN cname VARCHAR(64)
 )
 BEGIN
     IF column_exists(tname, cname)
@@ -43,9 +43,9 @@ DROP PROCEDURE IF EXISTS add_column_if_missing;
 
 DELIMITER $$
 CREATE PROCEDURE add_column_if_missing(
-  IN tname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  IN cname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  IN typeinfo VARCHAR(128) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
+  IN tname VARCHAR(64),
+  IN cname VARCHAR(64),
+  IN typeinfo VARCHAR(128)
 )
 BEGIN
   IF NOT column_exists(tname, cname)
