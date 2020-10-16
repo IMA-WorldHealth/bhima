@@ -429,10 +429,11 @@ CREATE PROCEDURE `computeStockQuantity` (
       SELECT DATE(m.date) AS `date`,  m.depot_uuid, i.uuid,
         SUM( IFNULL(m.quantity * IF(m.is_exit = 1, -1, 1), 0)) AS quantity,
         SUM(IF(m.is_exit = 0, m.quantity, 0)),
-        SUM(IF(m.is_exit = 1, m.quantity, 0)), m.is_exit
+        SUM(IF(m.is_exit = 1  AND (m.flux_id <> 8 OR d.is_warehouse <> 0) AND m.flux_id <> 11, m.quantity, 0)), m.is_exit
       FROM `stock_movement` m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
+        JOIN depot d ON d.uuid = m.depot_uuid
       WHERE i.uuid = _inventory_uuid AND DATE(m.date) <= DATE(_end_date) AND m.depot_uuid =  @depot_uuid
       GROUP BY  DATE(m.date), m.depot_uuid
       ORDER BY  `date`
