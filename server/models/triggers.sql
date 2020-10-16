@@ -1,3 +1,5 @@
+SET names 'utf8mb4';
+
 DELIMITER $$
 
 -- Patient Triggers
@@ -115,7 +117,7 @@ FOR EACH ROW BEGIN
 END$$
 
 -- Stock Requisition Triggers
-CALL add_column_if_missing('stock_requisition', 'project_id', 'SMALLINT(5) UNSIGNED NOT NULL AFTER `user_id`');
+CALL add_column_if_missing("stock_requisition", "project_id", "SMALLINT(5) UNSIGNED NOT NULL AFTER `user_id`");
 
 CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
 FOR EACH ROW

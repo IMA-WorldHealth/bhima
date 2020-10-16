@@ -4,7 +4,7 @@ DROP FUNCTION IF EXISTS column_exists;
 
 DELIMITER $$
 CREATE FUNCTION column_exists(
-  tname VARCHAR(64),
+  tname VARCHAR(64) ,
   cname VARCHAR(64)
 )
   RETURNS BOOLEAN
@@ -24,13 +24,13 @@ DROP PROCEDURE IF EXISTS drop_column_if_exists;
 
 DELIMITER $$
 CREATE PROCEDURE drop_column_if_exists(
-  tname VARCHAR(64),
-  cname VARCHAR(64)
+  IN tname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  IN cname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
 )
 BEGIN
     IF column_exists(tname, cname)
     THEN
-      SET @drop_column_if_exists = CONCAT('ALTER TABLE `', tname, '` DROP COLUMN `', cname, '`');
+      SET @drop_column_if_exists = CONCAT("ALTER TABLE `", tname, "` DROP COLUMN `", cname, "`");
       PREPARE drop_query FROM @drop_column_if_exists;
       EXECUTE drop_query;
     END IF;
@@ -43,17 +43,17 @@ DROP PROCEDURE IF EXISTS add_column_if_missing;
 
 DELIMITER $$
 CREATE PROCEDURE add_column_if_missing(
-  tname VARCHAR(64),
-  cname VARCHAR(64),
-  typeinfo VARCHAR(128)
+  IN tname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  IN cname VARCHAR(64) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  IN typeinfo VARCHAR(128) CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci
 )
 BEGIN
-    IF NOT column_exists(tname, cname)
-    THEN
-      SET @add_column_if_missing = CONCAT('ALTER TABLE `', tname, '` ADD COLUMN `', cname, '` ', typeinfo) COLLATE utf8mb4_unicode_ci;
-      PREPARE add_query FROM @add_column_if_missing;
-      EXECUTE add_query;
-    END IF;
+  IF NOT column_exists(tname, cname)
+  THEN
+    SET @add_column_if_missing = CONCAT("ALTER TABLE `", tname, "` ADD COLUMN `", cname, "` ", typeinfo);
+    PREPARE add_query FROM @add_column_if_missing;
+    EXECUTE add_query;
+  END IF;
 END $$
 DELIMITER ;
 
@@ -103,18 +103,15 @@ CREATE FUNCTION Constraint_exists(
   READS SQL DATA
   BEGIN
     RETURN 0 < (
-		 SELECT COUNT(*) AS nbr
-		 FROM
-	    INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
-	   WHERE CONSTRAINT_SCHEMA = DATABASE()
-	   AND TABLE_NAME= theTable
-		AND  CONSTRAINT_NAME = theConstraintName
-	 );
+     SELECT COUNT(*) AS nbr
+     FROM
+      INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS
+     WHERE CONSTRAINT_SCHEMA = DATABASE()
+     AND TABLE_NAME= theTable
+    AND  CONSTRAINT_NAME = theConstraintName
+   );
   END $$
 DELIMITER ;
-
-
-
 
 DELIMITER $$
 
@@ -133,4 +130,3 @@ BEGIN
 END $$
 
 DELIMITER ;
-
