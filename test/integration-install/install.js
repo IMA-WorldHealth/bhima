@@ -1,11 +1,8 @@
-/* global expect, chai */
+/* global expect, requester */
 
 const helpers = require('../integration/helpers');
 
 describe('(/install) The installation API', () => {
-  const port = process.env.PORT || 8080;
-  const url = `http://localhost:${port}`;
-
   // settings
   const CURRENCY_ID = 2;
   const ENTERPRISE_ID = 1;
@@ -32,8 +29,7 @@ describe('(/install) The installation API', () => {
   };
 
   it(`check previous installation doesn't exist`, () => {
-    return chai.request(url)
-      .get('/install')
+    return requester.get('/install')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.isInstalled).to.equal(false);
@@ -43,14 +39,12 @@ describe('(/install) The installation API', () => {
 
   it('set a new installation', () => {
     const params = { enterprise, project, user };
-    return chai.request(url)
-      .post('/install')
+    return requester.post('/install')
       .send(params)
       .then((res) => {
         // successful redirected to /
-        expect(res).to.have.status(200);
+        expect(res).to.redirect; // eslint-disable-line
       })
       .catch(helpers.handler);
   });
-
 });
