@@ -7,7 +7,7 @@ set -euo pipefail
 
 echo "[test]"
 
-echo "[test] Spawning server process..."
+echo "[test] building the server..."
 # build the server
 ./node_modules/.bin/gulp build
 
