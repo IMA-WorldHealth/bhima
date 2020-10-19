@@ -267,6 +267,28 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   const inventories = await db.exec(query, queryParameters);
   const processParameters = [inventories, params.dateTo, params.monthAverageConsumption, params.enableDailyConsumption];
   const resultFromProcess = await processStockConsumptionAverage(...processParameters);
+
+  if (resultFromProcess.length > 0) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30.5 * params.monthAverageConsumption);
+    const endDate = new Date();
+
+    const cmms = await Promise.all(resultFromProcess.map(inventory => {
+      return db.exec(`CALL getCMM(?,?,?,?) `, [
+        startDate,
+        endDate,
+        db.bid(inventory.inventory_uuid),
+        db.bid(inventory.depot_uuid),
+      ]);
+    }));
+
+    resultFromProcess.forEach((inv, index) => {
+      const cmmResult = cmms[index][0][0];
+      inv.cmms = cmmResult;
+      inv.avg_consumption = cmmResult[params.averageConsumptionAlgo];
+    });
+  }
+
   const inventoriesWithManagementData = await stockManagementProcess(resultFromProcess);
   const inventoriesWithLotsProcessed = await processMultipleLots(inventoriesWithManagementData);
 
@@ -374,7 +396,7 @@ async function getMovements(depotUuid, params) {
  *
  * @param {object} params - A request query object
  */
-function getLotsOrigins(depotUuid, params) {
+function getLotsOrigins(depotUuid, params, averageConsumptionAlgo) {
   if (depotUuid) {
     params.depot_uuid = depotUuid;
   }
@@ -403,7 +425,7 @@ function getLotsOrigins(depotUuid, params) {
     LEFT JOIN odcument_map om ON om.uuid = l.origin_uuid
   `;
 
-  return getLots(sql, params);
+  return getLots(sql, params, averageConsumptionAlgo);
 }
 
 /**
@@ -681,7 +703,8 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
 /**
  * Inventory Quantity and Consumptions
  */
-async function getInventoryQuantityAndConsumption(params, monthAverageConsumption, enableDailyConsumption) {
+async function getInventoryQuantityAndConsumption(params, monthAverageConsumption,
+  enableDailyConsumption, averageConsumptionAlgo) {
   let _status;
   let delay;
   let purchaseInterval;
@@ -742,17 +765,8 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
   const inventories = await getLots(sql, params, clause);
   const processParams = [inventories, params.dateTo, monthAverageConsumption, enableDailyConsumption];
   const inventoriesProcessed = await processStockConsumptionAverage(...processParams);
-  const inventoriesWithManagementData = await stockManagementProcess(inventoriesProcessed, delay, purchaseInterval);
 
-  let filteredRows = inventoriesWithManagementData;
-
-  if (_status) {
-    filteredRows = filteredRows.filter(row => row.status === _status);
-  }
-
-  if (requirePurchaseOrder) {
-    filteredRows = filteredRows.filter(row => row.S_Q > 0);
-  }
+  let filteredRows = inventoriesProcessed;
 
   if (filteredRows.length > 0) {
     const settingsql = `SELECT month_average_consumption FROM stock_setting WHERE enterprise_id=?`;
@@ -772,8 +786,20 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
       ]);
     }));
     filteredRows.forEach((inv, index) => {
-      _.extend(inv, { cmm : cmms[index][0][0] });
+      const cmmResult = cmms[index][0][0];
+      inv.cmms = cmmResult;
+      inv.avg_consumption = cmmResult[averageConsumptionAlgo];
     });
+  }
+
+  filteredRows = await stockManagementProcess(filteredRows, delay, purchaseInterval);
+
+  if (_status) {
+    filteredRows = filteredRows.filter(row => row.status === _status);
+  }
+
+  if (requirePurchaseOrder) {
+    filteredRows = filteredRows.filter(row => row.S_Q > 0);
   }
 
   return filteredRows;

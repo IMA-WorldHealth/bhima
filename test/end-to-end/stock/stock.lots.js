@@ -25,7 +25,7 @@ function StockLotsRegistryTests() {
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
-  // techinically this is 26 in total, but the grid doesn't render that
+  // techinically this is 23 in total, but the grid doesn't render that
   // many on small screens
   const LOT_FOR_ALLTIME = 24;
   const LOT_FOR_TODAY = 13;
