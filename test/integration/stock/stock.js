@@ -219,17 +219,17 @@ describe('(/stock/) The Stock HTTP API', () => {
     expect(tongueDepressor.S_MONTH, 'Tongue Depressor Months of Stock').to.equal(55400);
 
     expect(vitamineB.quantity, 'Vitamine B Quantity').to.equal(140);
-    expect(vitamineB.avg_consumption, 'Vitamine B Avg Consumption').to.equal(84.72);
+    expect(vitamineB.avg_consumption, 'Vitamine B Avg Consumption').to.equal(69.32);
 
-    expect(vitamineB.cmms.algo1, 'Avg Algo 1').to.equal(4.144021739130435);
+    expect(vitamineB.cmms.algo1, 'Avg Algo 1').to.equal(4.18956043956044);
     expect(vitamineB.cmms.algo2, 'Avg Algo 2').to.equal(381.25);
     expect(vitamineB.cmms.algo3, 'Avg Algo 3').to.equal(4.14);
-    expect(vitamineB.cmms.algo_msh, 'Avg Algo MSH').to.equal(84.72);
+    expect(vitamineB.cmms.algo_msh, 'Avg Algo MSH').to.equal(69.32);
 
-    expect(vitamineB.S_SEC, 'Vitamine B Security Stock').to.equal(84.72);
-    expect(vitamineB.S_MIN, 'Vitamine B Min Stock').to.equal(169.44);
-    expect(vitamineB.S_MAX, 'Vitamine B Max Stock').to.equal(169.44);
-    expect(vitamineB.S_MONTH, 'Vitamine B Months of Stock').to.equal(1);
+    expect(vitamineB.S_SEC, 'Vitamine B Security Stock').to.equal(69.32);
+    expect(vitamineB.S_MIN, 'Vitamine B Min Stock').to.equal(138.64);
+    expect(vitamineB.S_MAX, 'Vitamine B Max Stock').to.equal(138.64);
+    expect(vitamineB.S_MONTH, 'Vitamine B Months of Stock').to.equal(2);
 
     expect(acid.quantity, 'Acide Acetylsalicylique Quantity').to.equal(180300);
     expect(acid.avg_consumption, 'Acide Acetylsalicylique Average Consumption').to.equal(0);
@@ -245,16 +245,16 @@ describe('(/stock/) The Stock HTTP API', () => {
     expect(acid.S_MONTH, 'Acide Acetylsalicylique Months of Stock').to.equal(180300);
 
     expect(quinine.quantity, 'Quinine Quantity').to.equal(415);
-    expect(quinine.avg_consumption, 'Quinine Avg Consumption').to.equal(200.15);
+    expect(quinine.avg_consumption, 'Quinine Avg Consumption').to.equal(177.91);
 
-    expect(quinine.cmms.algo1, 'Avg Algo 1').to.equal(17.404891304347824);
+    expect(quinine.cmms.algo1, 'Avg Algo 1').to.equal(17.596153846153847);
     expect(quinine.cmms.algo2, 'Avg Algo 2').to.equal(1601.25);
     expect(quinine.cmms.algo3, 'Avg Algo 3').to.equal(17.4);
-    expect(quinine.cmms.algo_msh, 'Avg Algo MSH').to.equal(200.15);
+    expect(quinine.cmms.algo_msh, 'Avg Algo MSH').to.equal(177.91);
 
-    expect(quinine.S_SEC, 'Quinine Security Stock').to.equal(200.15);
-    expect(quinine.S_MIN, 'Quinine Min Stock').to.equal(400.3);
-    expect(quinine.S_MAX, 'Quinine Max Stock').to.equal(400.3);
+    expect(quinine.S_SEC, 'Quinine Security Stock').to.equal(177.91);
+    expect(quinine.S_MIN, 'Quinine Min Stock').to.equal(355.82);
+    expect(quinine.S_MAX, 'Quinine Max Stock').to.equal(355.82);
     expect(quinine.S_MONTH, 'Quinine Months of Stock').to.equal(2);
   });
 
