@@ -80,4 +80,4 @@ CREATE TABLE `depot_distribution_permission` (
  * @date: 2020-10-05
  * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
  */
-ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo3';
+ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';

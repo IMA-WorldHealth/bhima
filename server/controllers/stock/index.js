@@ -599,6 +599,7 @@ async function listLotsDepot(req, res, next) {
   const params = req.query;
   params.monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   params.enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
+  params.averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
   if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
@@ -648,6 +649,7 @@ async function listInventoryDepot(req, res, next) {
   const params = req.query;
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
+  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
   // expose connected user data
   if (req.session.stock_settings.enable_strict_depot_permission) {
@@ -655,7 +657,7 @@ async function listInventoryDepot(req, res, next) {
   }
 
   try {
-    const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption];
+    const inventoriesParameters = [params, monthAverageConsumption, enableDailyConsumption, averageConsumptionAlgo];
 
     const [inventories, lots] = await Promise.all([
       core.getInventoryQuantityAndConsumption(...inventoriesParameters),
