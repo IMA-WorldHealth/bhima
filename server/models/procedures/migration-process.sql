@@ -1,9 +1,9 @@
 -- from https://stackoverflow.com/questions/173814/using-alter-to-drop-a-column-if-it-exists-in-mysql
 
-DROP FUNCTION IF EXISTS column_exists;
+DROP FUNCTION IF EXISTS bh_column_exists;
 
 DELIMITER $$
-CREATE FUNCTION column_exists(
+CREATE FUNCTION bh_column_exists(
   tname VARCHAR(64) ,
   cname VARCHAR(64)
 )
@@ -28,7 +28,7 @@ CREATE PROCEDURE drop_column_if_exists(
   IN cname VARCHAR(64)
 )
 BEGIN
-    IF column_exists(tname, cname)
+    IF bh_column_exists(tname, cname)
     THEN
       SET @drop_column_if_exists = CONCAT("ALTER TABLE `", tname, "` DROP COLUMN `", cname, "`");
       PREPARE drop_query FROM @drop_column_if_exists;
@@ -48,7 +48,7 @@ CREATE PROCEDURE add_column_if_missing(
   IN typeinfo VARCHAR(128)
 )
 BEGIN
-  IF NOT column_exists(tname, cname)
+  IF NOT bh_column_exists(tname, cname)
   THEN
     SET @add_column_if_missing = CONCAT("ALTER TABLE `", tname, "` ADD COLUMN `", cname, "` ", typeinfo);
     PREPARE add_query FROM @add_column_if_missing;
