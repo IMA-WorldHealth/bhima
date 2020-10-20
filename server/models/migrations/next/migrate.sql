@@ -81,3 +81,11 @@ CREATE TABLE `depot_distribution_permission` (
  * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
  */
 ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
+
+
+/*
+ * @author: jniles
+ * @date: 2020-10-20
+ * @desc: remove the "enable_daily_consumption" option as this is taken care of by our algo choice.
+ */
+ALTER TABLE `stock_setting` DROP COLUMN `enable_daily_consumption`;

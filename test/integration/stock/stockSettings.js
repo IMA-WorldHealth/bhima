@@ -20,8 +20,7 @@ describe('(/stock/setting) Stock Settings API', () => {
   const responseKeys = [
     'month_average_consumption', 'default_min_months_security_stock',
     'enable_auto_purchase_order_confirmation', 'enable_auto_stock_accounting',
-    'enable_daily_consumption', 'enable_strict_depot_permission',
-    'enable_supplier_credit', 'enable_strict_depot_distribution',
+    'enable_strict_depot_permission', 'enable_supplier_credit', 'enable_strict_depot_distribution',
     'average_consumption_algo',
   ];
 
