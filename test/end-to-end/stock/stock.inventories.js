@@ -60,7 +60,7 @@ function StockInventoriesRegistryTests() {
   it('find 4 inventory by state (security reached)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 4);
+    await GU.expectRowCount(gridId, 6);
 
     await filters.resetFilters();
   });
@@ -69,7 +69,7 @@ function StockInventoriesRegistryTests() {
     await FU.radio('$ctrl.searchQueries.status', 3);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 0);
     await filters.resetFilters();
   });
 

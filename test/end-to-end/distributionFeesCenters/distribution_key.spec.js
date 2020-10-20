@@ -23,10 +23,6 @@ describe('Distribution keys Management', () => {
     expect(await Page.getDistributionKeyCount()).to.equal(distributionKeyElements);
   });
 
-  it('displays all distributions keys loaded from the database', async () => {
-    expect(await Page.getDistributionKeyCount()).to.equal(distributionKeyElements);
-  });
-
   it('reset distributions key for an Auxiliary Fee Center', async () => {
     await Page.resetDistributionKey(resetAuxiliary2);
   });

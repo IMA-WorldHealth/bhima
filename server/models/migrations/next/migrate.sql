@@ -83,3 +83,10 @@ CREATE TABLE `depot_distribution_permission` (
   `depot_uuid` BINARY(16) NOT NULL,
   `distribution_depot_uuid` BINARY(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: lomamech
+ * @date: 2020-10-05
+ * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
+ */
+ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';

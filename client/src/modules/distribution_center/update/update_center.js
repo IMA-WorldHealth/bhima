@@ -12,8 +12,10 @@ UpdateCenterController.$inject = [
  * This controller is about the updating Distribution Center module in the Finance zone
  * It's responsible for editing and updating a Distribution Center
  */
-function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, ModalService, Notify, uiGridConstants,
-  $state, Grouping, uiGridGroupingConstants, Session) {
+function UpdateCenterController(
+  DistributionUpdateCenters, DistributionCenters, ModalService, Notify, uiGridConstants,
+  $state, Grouping, uiGridGroupingConstants, Session,
+) {
   const vm = this;
 
   // bind methods
@@ -21,11 +23,14 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
 
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
   vm.setting = setting;
   vm.loading = false;
   vm.updateDistribution = updateDistribution;
   vm.onRemoveFilter = onRemoveFilter;
+
+  const customTreeAggregationFinalizerFn = (aggregation) => {
+    aggregation.rendered = aggregation.value;
+  };
 
   // options for the UI grid
   vm.gridOptions = {
@@ -39,14 +44,17 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     gridFooterTemplate : 'modules/distribution_center/templates/footer.template.html',
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [{
-      field : 'row_uuid',
-      displayName : 'TABLE.COLUMNS.TRANSACTION',
-      headerCellFilter : 'translate',
-    }, {
       field : 'trans_id',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/journal/templates/transaction-id.cell.html',
+    }, {
+      field : 'hrRecord',
+      displayName : 'TABLE.COLUMNS.RECORD',
+      headerCellFilter : 'translate',
+      visible : true,
+      cellTemplate : '/modules/journal/templates/record.cell.html',
+      footerCellTemplate : '<i></i>',
     }, {
       field : 'fee_center_label',
       displayName : 'TABLE.COLUMNS.AUXILIARY_CENTER',
@@ -61,13 +69,6 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
       type : 'date',
-      footerCellTemplate : '<i></i>',
-    }, {
-      field : 'hrRecord',
-      displayName : 'TABLE.COLUMNS.RECORD',
-      headerCellFilter : 'translate',
-      visible : true,
-      cellTemplate : '/modules/journal/templates/record.cell.html',
       footerCellTemplate : '<i></i>',
     }, {
       field : 'account_number',
@@ -85,9 +86,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-      customTreeAggregationFinalizerFn : (aggregation) => {
-        aggregation.rendered = aggregation.value;
-      },
+      customTreeAggregationFinalizerFn,
     }, {
       field : 'credit_equiv',
       type : 'number',
@@ -99,9 +98,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-      customTreeAggregationFinalizerFn : (aggregation) => {
-        aggregation.rendered = aggregation.value;
-      },
+      customTreeAggregationFinalizerFn,
     }, {
       field : 'user_name',
       displayName : 'TABLE.COLUMNS.RESPONSIBLE',
@@ -116,15 +113,14 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }],
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'row_uuid', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'trans_id');
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
