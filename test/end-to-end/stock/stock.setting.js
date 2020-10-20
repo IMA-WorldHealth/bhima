@@ -17,7 +17,6 @@ function StockSettingTests() {
     await page.defineMonthAverageConsumption(5);
     await page.defaultMinMonthsSecurityStock(4);
 
-    await page.setRadio('yes', 'enable_daily_consumption');
     await page.setRadio('yes', 'enable_auto_purchase_order_confirmation');
     await page.setRadio('yes', 'enable_strict_depot_permission');
     await page.setRadio('yes', 'enable_auto_stock_accounting');
@@ -43,7 +42,6 @@ function StockSettingTests() {
     await page.defineMonthAverageConsumption(10);
     await page.defaultMinMonthsSecurityStock(2);
 
-    await page.setRadio('no', 'enable_daily_consumption');
     await page.setRadio('no', 'enable_auto_purchase_order_confirmation');
     await page.setRadio('no', 'enable_strict_depot_permission');
     await page.setRadio('no', 'enable_auto_stock_accounting');
