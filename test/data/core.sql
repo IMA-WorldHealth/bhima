@@ -94,6 +94,9 @@ INSERT INTO `user_role`(uuid, user_id, role_uuid) VALUES (HUID('6050a2bc-b1b3-11
 -- Fiscal Years
 --
 
+SET @fiscalYear2019 = 0;
+CALL CreateFiscalYear(1, NULL, @superUser, 'Fiscal Year 2019', 12, DATE('2019-01-01'), DATE('2019-12-31'), 'Notes for 2019', @fiscalYear2019);
+
 SET @fiscalYear2020 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2019, @superUser, 'Fiscal Year 2020', 12, DATE('2020-01-01'), DATE('2020-12-31'), 'Notes for 2020', @fiscalYear2020);
 
