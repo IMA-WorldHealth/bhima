@@ -625,7 +625,7 @@ BEGIN
 
 
   SET _sum_days = DATEDIFF(_end_date,  _start_date) + 1;
-  SET _number_of_month = (DATEDIFF(_end_date,  _start_date) + 1)/30.5;
+  SET _number_of_month = ROUND(DATEDIFF(_end_date,  _start_date)/30.5);
   SET _days_before_consumption = DATEDIFF(_first_inventory_mvt_date,  _start_date);
 
   SELECT
@@ -635,7 +635,7 @@ BEGIN
   INTO _sum_consumed_quantity, _sum_stock_out_days, _sum_stock_day
   FROM (
       SELECT x.start_date, x.end_date, x.in_quantity, x.out_quantity, x.in_stock_quantity,
-          x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) +1) AS frequency
+          x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) + 1) AS frequency
       FROM (
           SELECT
 
@@ -650,9 +650,9 @@ BEGIN
 
           WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
              AND  (
-              ((m.start_date >= _start_date) AND  (m.end_date <= _end_date)) OR
-              ((m.start_date >= _start_date) AND  (m.end_date >= _end_date)) OR
-              ((m.start_date <= _start_date) AND  (m.end_date <= _end_date))
+              DATE(m.start_date) >= DATE(_start_date) AND DATE(m.end_date) <= DATE(_end_date)
+              -- ((m.start_date >= _start_date) AND  (m.end_date >= _end_date)) OR
+              -- ((m.start_date <= _start_date) AND  (m.end_date <= _end_date))
             )
           ORDER BY d.text
       ) AS `x` HAVING frequency > -1
@@ -665,12 +665,14 @@ BEGIN
 
   SET @algo3 =((_sum_consumed_quantity)/(IF( (_sum_days = NULL) OR _sum_days = 0,1, _sum_days))) * 30.5;
 
-  SET @algo_msh = (_sum_consumed_quantity/(ROUND(_number_of_month) - ((_sum_stock_out_days + _days_before_consumption)/30.5) ));
+  SET @algo_msh = (_sum_consumed_quantity/(_number_of_month - (_sum_stock_out_days/30.5) ));
 
   SELECT ROUND(IFNULL(@algo1, 0), 2) as algo1,
     ROUND(IFNULL(@algo2, 0), 2) as algo2,
     ROUND(IFNULL(@algo3, 0),2) as algo3,
     ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh,
+    _start_date as start_date,
+    _end_date as end_date,
     _sum_days as sum_days,
     _sum_stock_day as sum_stock_day,
     _sum_consumption_day as sum_consumption_day,
