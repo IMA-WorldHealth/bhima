@@ -542,10 +542,10 @@ angular-sanitize@^1.8.0:
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.1.tgz#80e24614669cf3d252d199e199680f4c9dee5505"
   integrity sha512-kDtbAQkN+biyvBMJ8mgFIDZureng5yl6qegFCQ+bUw50n3KOx4FCsZ9S5tNAQ/rjYYTC5tP4hREv7+2ha+8M2w==
 
-angular-touch@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular-touch/-/angular-touch-1.8.1.tgz#57d962ce594b307d60efce6edd5cb2c3e76133e0"
-  integrity sha512-dMuPfjiMUedNxF1byT9ta2aYmYWlGp7J7fXNADZL+2lkzcXrszSUCLmiOtkEVFElhI1b7pv7Caxg7pfzUCW7VQ==
+angular-touch@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular-touch/-/angular-touch-1.8.2.tgz#56c54df3f776246bb36f16bef2720a93ed5b8441"
+  integrity sha512-tGoFNsONm/VHFcBW8gySVZvpCIYAvsAlEuHpJDugGn+3ENLxSDhpZ4ikev4KXfWr8ZNsYGoVSfsvJegkiC+9Ig==
 
 angular-translate-loader-static-files@^2.18.3:
   version "2.18.3"
