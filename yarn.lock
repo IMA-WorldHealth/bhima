@@ -501,10 +501,10 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-angular-animate@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.8.1.tgz#0dc83ea5adba08f798c466985c221719e06e7eeb"
-  integrity sha512-v5J02y47Du7k42wNZK+q4GWclP4Acw0sS6fZu/TI1rE8i/3MRvI/umAvfpm+WBB5+mAg4c35iBfw0qgyIVZl7A==
+angular-animate@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular-animate/-/angular-animate-1.8.2.tgz#a3045e523ffb8d7fcbebd3cb68d1fdd474665ced"
+  integrity sha512-Jbr9+grNMs9Kj57xuBU3Ju3NOPAjS1+g2UAwwDv7su1lt0/PLDy+9zEwDiu8C8xJceoTbmBNKiWGPJGBdCQLlA==
 
 angular-dynamic-locale@^0.1.37:
   version "0.1.37"
