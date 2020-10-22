@@ -32,6 +32,80 @@ describe('(/purchases) Purchases', () => {
     }],
   };
 
+  const purchaseOrder2 = {
+    cost          : 536.0000,
+    date          : new Date('2016-04-19'),
+    currency_id   : 1,
+    supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
+    project_id    : 1,
+    user_id       : 2,
+    status_id     : 2,
+    items         : [{
+      inventory_uuid : helpers.data.PREDNISONE,
+      quantity       : 16000,
+      unit_price     : 0.0335,
+      total          : 536.0000,
+    }],
+  };
+
+  const purchaseOrder3 = {
+    cost          : 10.7520,
+    date          : new Date('2016-08-19'),
+    currency_id   : 1,
+    supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
+    project_id    : 1,
+    user_id       : 2,
+    status_id     : 2,
+    items         : [{
+      inventory_uuid : helpers.data.QUININE,
+      quantity       : 200,
+      unit_price     : 0.0538,
+      total          : 10.7520,
+    }],
+  };
+
+  const purchaseOrder4 = {
+    cost          : 546.7520,
+    date          : new Date('2016-09-19'),
+    currency_id   : 1,
+    supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
+    project_id    : 1,
+    user_id       : 2,
+    status_id     : 2,
+    items         : [{
+      inventory_uuid : helpers.data.QUININE,
+      quantity       : 200,
+      unit_price     : 0.0538,
+      total          : 10.7520,
+    }, {
+      inventory_uuid : helpers.data.PREDNISONE,
+      quantity       : 16000,
+      unit_price     : 0.0335,
+      total          : 536.0000,
+    }],
+  };
+
+  const purchaseOrder5 = {
+    cost          : 546.7520,
+    date          : new Date('2016-12-19'),
+    currency_id   : 1,
+    supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
+    project_id    : 1,
+    user_id       : 2,
+    status_id     : 2,
+    items         : [{
+      inventory_uuid : helpers.data.QUININE,
+      quantity       : 200,
+      unit_price     : 0.0538,
+      total          : 10.7520,
+    }, {
+      inventory_uuid : helpers.data.PREDNISONE,
+      quantity       : 16000,
+      unit_price     : 0.0335,
+      total          : 536.0000,
+    }],
+  };
+
   const responseKeys = [
     'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note',
     'status_id',
@@ -101,7 +175,6 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-
   it('GET /purchases?inventory_uuid=X returns purchases by inventory_uuid', () => {
     return agent.get('/purchases')
       .query({ inventory_uuid : helpers.data.QUININE })
@@ -113,6 +186,72 @@ describe('(/purchases) Purchases', () => {
       })
       .then((res) => {
         helpers.api.listed(res, 3);
+      })
+      .catch(helpers.handler);
+  });
+
+  // Integration test to test the calculation of the average command interval
+  it('POST /purchases create confirmed purchase order 2', () => {
+    return agent.post('/purchases')
+      .send(purchaseOrder2)
+      .catch(helpers.handler);
+  });
+
+  it('POST /purchases create confirmed purchase order 3', () => {
+    return agent.post('/purchases')
+      .send(purchaseOrder3)
+      .then((res) => {
+        purchaseOrder3.uuid = res.body.uuid;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /purchases create confirmed purchase order 4', () => {
+    return agent.post('/purchases')
+      .send(purchaseOrder4)
+      .catch(helpers.handler);
+  });
+
+  it('POST /purchases create confirmed purchase order 5', () => {
+    return agent.post('/purchases')
+      .send(purchaseOrder5)
+      .catch(helpers.handler);
+  });
+
+  it(`GET /inventory/metadata/:uuid downloads
+    Checking the calculation of the order interval for inventory: ${helpers.data.QUININE_TEXT}`, () => {
+    return agent.get(`/inventory/metadata/${helpers.data.QUININE}`)
+      .then(res => {
+        expect(res.body.purchase_interval).to.be.equal(2);
+        expect(res.body.num_purchase).to.be.equal(3);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`GET /inventory/metadata/:uuid downloads
+    Checking the calculation of the order interval for inventory: ${helpers.data.PREDNISONE_TEXT}`, () => {
+    return agent.get(`/inventory/metadata/${helpers.data.PREDNISONE}`)
+      .then(res => {
+        expect(res.body.purchase_interval).to.be.equal(3.7700);
+        expect(res.body.num_purchase).to.be.equal(4);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`PUT /purchases/:uuid Modification of the status of the purchase order
+    in order to verify the modifications on the calculation of the order interval and the number of orders`, () => {
+    return agent.put(`/purchases/${purchaseOrder3.uuid}`)
+      .send({ status_id : 1, date : new Date('2016-08-20') })
+      .catch(helpers.handler);
+  });
+
+  it(`GET /inventory/metadata/:uuid downloads
+    Checking the calculation of the order interval for inventory
+    After Updating status:: ${helpers.data.QUININE_TEXT}`, () => {
+    return agent.get(`/inventory/metadata/${helpers.data.QUININE}`)
+      .then(res => {
+        expect(res.body.purchase_interval).to.be.equal(2.99);
+        expect(res.body.num_purchase).to.be.equal(2);
       })
       .catch(helpers.handler);
   });

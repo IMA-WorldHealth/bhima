@@ -11,7 +11,7 @@ const helpers = require('./helpers');
 module.exports = PurchaseOrderSearch;
 
 function PurchaseOrderSearch() {
-  const NUM_PURCHASE_ORDERS = 3;
+  const NUM_PURCHASE_ORDERS = 7;
 
   // this is a quick querying function to reduce LOC
   const SendHTTPQuery = (parameters, numResults) => {
