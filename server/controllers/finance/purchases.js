@@ -301,7 +301,6 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   req.body.date = new Date(req.body.date);
-
   const sql = 'UPDATE purchase SET ? WHERE uuid = ?;';
 
   const data = db.convert(req.body, ['supplier_uuid']);
@@ -615,12 +614,9 @@ function resetPurchaseIntervall(purchaseUuid) {
 
       items.forEach((item) => {
         /*
-          * For the calculation of the average order interval, the system takes into account
-          * that of confirmed purchase orders, received in stock or partially and even those
-          * that are received in excess quantity, the default order interval is zero, and the
-          * calculation is made in addition the sum of all the order intervals by the sum of
-          * the purchase orders minus one, the results are stored in the inventory table,
-          * in order to facilitate the calculation of the various indicators for stock management
+          * here we trace all the times when the status of a purchase
+          * order is modified, this one allows to recalculate the order
+          * interval as well as the number of valid orders
         */
         const purchaseInterval = item[0].purchase_interval || 0;
         const numPurchase = item[0].num_purchase;
