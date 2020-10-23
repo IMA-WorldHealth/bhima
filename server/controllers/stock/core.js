@@ -269,8 +269,14 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   const resultFromProcess = await processStockConsumptionAverage(...processParameters);
 
   if (resultFromProcess.length > 0) {
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30.5 * params.monthAverageConsumption);
+    let startDate = new Date();
+    let clone = moment(startDate);
+    const months = (params.monthAverageConsumption - 1 > -1 && params.monthAverageConsumption)
+      ? params.monthAverageConsumption - 1 : 0;
+    clone = clone.subtract(months, 'month').toDate();
+    const m = clone.getMonth() + 1;
+    const y = clone.getFullYear();
+    startDate = new Date(`${y}-${m}-01`);
     const endDate = new Date();
 
     const cmms = await Promise.all(resultFromProcess.map(inventory => {
@@ -773,8 +779,13 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
     const setting = await db.one(settingsql, filteredRows[0].enterprise_id);
     const nbrMonth = setting.month_average_consumption;
 
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30.5 * nbrMonth);
+    let startDate = new Date();
+    let clone = moment(startDate);
+    const months = (nbrMonth - 1 > -1 && nbrMonth) ? nbrMonth - 1 : 0;
+    clone = clone.subtract(months, 'month').toDate();
+    const m = clone.getMonth() + 1;
+    const y = clone.getFullYear();
+    startDate = new Date(`${y}-${m}-01`);
     const endDate = new Date();
 
     const cmms = await Promise.all(filteredRows.map(inventory => {
@@ -787,6 +798,7 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
     }));
     filteredRows.forEach((inv, index) => {
       const cmmResult = cmms[index][0][0];
+      console.log(index, ' - CMM : ', cmmResult);
       inv.cmms = cmmResult;
       inv.avg_consumption = cmmResult[averageConsumptionAlgo];
     });
