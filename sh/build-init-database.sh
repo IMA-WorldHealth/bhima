@@ -22,8 +22,8 @@ if [ "$1" == "debug" ]; then
 fi
 
 # build the initial database
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS "$DB_NAME" ;" || { echo "failed to drop DB" ; exit 1; }
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE "$DB_NAME" CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || { echo "failed to create DB" ; exit 1; }
+mysql -u "$DB_USER" -p$DB_PASS -h$DB_HOST -e "DROP DATABASE IF EXISTS $DB_NAME ;" || { echo "failed to drop DB" ; exit 1; }
+mysql -u "$DB_USER" -p$DB_PASS -h$DB_HOST -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || { echo "failed to create DB" ; exit 1; }
 
 echo "[ build ] database schema"
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST "$DB_NAME" < server/models/schema.sql || { echo "failed to build DB scheme" ; exit 1; }
