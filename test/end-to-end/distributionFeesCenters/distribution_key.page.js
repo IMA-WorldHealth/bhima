@@ -12,14 +12,14 @@ const components = require('../shared/components');
 class FeeCenterPage {
   constructor() {
     this.gridId = 'distribution-key-center-grid';
-    this.rubricGrid = element(by.id(this.gridId));
+    this.distributionGrid = element(by.id(this.gridId));
   }
 
   /**
    * The numbers of transactions related to auxiliary centers to be returned to the main expense centers
    */
   getDistributionKeyCount() {
-    return this.rubricGrid
+    return this.distributionGrid
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();

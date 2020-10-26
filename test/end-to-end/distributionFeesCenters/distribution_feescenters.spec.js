@@ -42,11 +42,11 @@ describe('Update Distributed Auxiliary Fee Center', () => {
   const page = new DistributionPage();
 
   const dataset = {
-    uuid : 'E701230AE0DC11E89F4F507B9DD6DEA5 (3)',
     fiscal_id : 4,
     periodFrom_id : 201801,
     periodTo_id : 201812,
     costCenter : 1,
+    trans_id : 'TPA37',
   };
 
   it('Update Distributed Fee Center', async () => {

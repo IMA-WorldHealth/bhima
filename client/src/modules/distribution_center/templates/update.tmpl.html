@@ -1,14 +1,25 @@
-<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="row.groupHeader">
-  <a href>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+<div
+  class="ui-grid-cell-contents text-right"
+  uib-dropdown
+  dropdown-append-to-body
+  ng-if="row.groupHeader"
+  ng-init="item = row.treeNode.children[0].row.entity"
+  data-row="{{ row.treeNode.children[0].row.entity.trans_id }}">
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
-
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="bh-dropdown-header">{{row.entity.label}}</li>
+  <ul data-row-menu="{{item.trans_id}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{item.trans_id}}</li>
     <li>
-      <a data-method="edit" ng-click="grid.appScope.updateDistribution(row.treeNode.children)" href>
+      <a data-method="edit-record" ng-click="grid.appScope.updateDistribution(row.treeNode.children)" href>
         <span class="fa fa-edit"></span> <span translate> FORM.LABELS.EDIT </span>
+      </a>
+    </li>
+    <li>
+      <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key: 'record_uuid', value : item.record_uuid, displayValue: item.hrRecord}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
       </a>
     </li>
   </ul>
