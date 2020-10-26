@@ -50,7 +50,7 @@ mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/enterprise.sql || {
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/accounts.sql || { echo 'failed to import test data into DB 2/5' ; exit 1; }
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/inventories.sql || { echo 'failed to import test data into DB 3/5' ; exit 1; }
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/core.sql || { echo 'failed to import test data into DB 4/5' ; exit 1; }
-mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/stock.sql || { echo 'failed to import test data into DB 5/5' ; exit 1; }
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME < test/data/service-stock.sql || { echo 'failed to import test data into DB 5/5' ; exit 1; }
 
 echo "[build] recomputing mappings"
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecomputeEntityMap();" || { echo 'failed to recompute mappings 1/2' ; exit 1; }
