@@ -26,7 +26,7 @@ function DatabaseUnitTests() {
       uuid_parent BINARY(16),
       uuid_parent2 BINARY(16),
       INDEX \`type\`(\`type\`),
-    CONSTRAINT \`${constraint1}\` FOREIGN KEY (\`uuid_parent\`)  
+    CONSTRAINT \`${constraint1}\` FOREIGN KEY (\`uuid_parent\`)
     REFERENCES \`${tableName2}\` (\`uuid\`) ON DELETE CASCADE,
 
     CONSTRAINT \`${constraint2}\` FOREIGN KEY (\`uuid_parent2\`)
@@ -42,7 +42,7 @@ function DatabaseUnitTests() {
   const dropUnknownForeignKeySql = ` CALL drop_foreign_key("${tableName2}", "unknown");`;
   const dropUnknownColumnSql = ` CALL drop_column_if_exists("${tableName2}", "unknown");`;
   const dropColumnSql = ` CALL drop_column_if_exists("${tableName2}", "uuid_parent2");`;
-  const checkIfColumnExistSql = ` SELECT column_exists("${tableName2}", "uuid_parent2") as exist;`;
+  const checkIfColumnExistSql = ` SELECT bh_column_exists("${tableName2}", "uuid_parent2") as exist;`;
 
   const checkIfIndexExistSql = ` SELECT index_exists("${tableName2}", "type") as exist;`;
   const dropUnknownIndexSql = ` CALL drop_index_if_exists("${tableName2}", "unknown");`;
