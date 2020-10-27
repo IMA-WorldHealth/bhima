@@ -154,7 +154,7 @@ describe('(/depots) The depots API ', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /depots/:uuid/inventories/:uuid/cmm returns the CMM for a depot', () => {
+  it.skip('GET /depots/:uuid/inventories/:uuid/cmm returns the CMM for a depot', () => {
     const { principal } = helpers.data.depots;
     const { QUININE } = helpers.data;
     return agent.get(`/depots/${principal}/inventories/${QUININE}/cmm`)
