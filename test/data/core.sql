@@ -4,7 +4,7 @@ SET collation_database = 'utf8mb4_unicode_ci';
 SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
 /**
- * the core.sql file contains data about : 
+ * the core.sql file contains data about :
  *  - project
  *  - service
  *  - fiscal year
@@ -16,23 +16,23 @@ SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
  *  - creditor group
  *  - creditor
  *  - supplier
- *  
+ *
  * dependencies :
  *  - accounts
  */
 
--- 
+--
 -- Project
--- 
+--
 
 INSERT INTO `project` VALUES
   (1, 'Test Project A', 'TPA', 1, 1, 0),
   (2, 'Test Project B', 'TPB', 1, 2, 0),
   (3, 'Test Project C', 'TPC', 1, 2, 0);
 
--- 
+--
 -- Mock services
--- 
+--
 
 SET @testService = HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e');
 SET @adminService = HUID('b1816006-5558-45f9-93a0-c222b5efa6cb');
@@ -60,9 +60,9 @@ INSERT INTO user (id, username, password, display_name, email, deactivated) VALU
 INSERT INTO permission (unit_id, user_id)
 SELECT unit.id, @superUser FROM unit ON DUPLICATE KEY UPDATE unit_id = unit_id, user_id = user_id;
 
--- 
+--
 -- Mock Roles
--- 
+--
 
 SET @roleUUID = HUID('5b7dd0d6-9273-4955-a703-126fbd504b61');
 SET @regularRoleUUID = HUID('5f7dd0c6-9273-4955-a703-126fbd504b61');
@@ -103,15 +103,15 @@ CALL CreateFiscalYear(1, @fiscalYear2019, @superUser, 'Fiscal Year 2020', 12, DA
 SET @fiscalYear2021 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2020, @superUser, 'Fiscal Year 2021', 12, DATE('2021-01-01'), DATE('2021-12-31'), 'Notes for 2021', @fiscalYear2021);
 
--- 
+--
 -- Project permission
--- 
+--
 
 INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 
--- 
+--
 -- Exchange rate for the current date
--- 
+--
 
 INSERT INTO `exchange_rate` VALUES
   (1, 1, 1, 900.0000, DATE('2016-01-01')),
@@ -179,4 +179,3 @@ INSERT INTO `creditor` VALUES
 
 INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
   (HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), 'SNEL', '12th Avenue', 'New York City, NY 34305', 'supplier@test.org');
-
