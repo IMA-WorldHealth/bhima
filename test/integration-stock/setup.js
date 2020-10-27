@@ -20,7 +20,7 @@ const server = require('../../bin/server/app');
 
 // runs before any tests in the repository
 before(() => {
-  console.log('Setting up test suite...');
+  console.log('Setting up test suite...'); // eslint-disable-line
 
   // attach plugins
   chai.use(chaiHttp);
@@ -41,6 +41,6 @@ before(() => {
 
 // runs after all tests are completed
 after((done) => {
-  console.log('Test suite completed.');
+  console.log('Test suite completed.'); // eslint-disable-line
   global.agent.close((err) => { done(err); });
 });
