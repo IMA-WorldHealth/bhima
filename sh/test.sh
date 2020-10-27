@@ -44,6 +44,12 @@ if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
   endfold "server-unit" ;
 fi
 
+if [ $SUITE = "integration-stock" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running Stock Integration Tests..." "test-stock-integration";
+  ./sh/integration-stock-tests.sh
+  endfold "test-end-to-end" ;
+fi
+
 # run end to end tests
 if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Client End to End Tests..." "test-end-to-end";

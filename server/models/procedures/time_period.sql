@@ -103,7 +103,7 @@ BEGIN
     END IF;
 
     SET periodNumber = periodNumber + 1;
-    
+
     call UpdatePeriodLabels();
   END WHILE;
 END $$
@@ -117,7 +117,7 @@ DECLARE _id mediumint(8) unsigned;
 DECLARE _start_date DATE;
 
 DECLARE done BOOLEAN;
-DECLARE curs1 CURSOR FOR 
+DECLARE curs1 CURSOR FOR
    SELECT id, start_date FROM period;
 
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
@@ -128,7 +128,7 @@ OPEN curs1;
         IF done THEN
             LEAVE read_loop;
         END IF;
-         UPDATE period SET 
+         UPDATE period SET
 			  period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
 			  period.year =  YEAR(_start_date)
 			WHERE period.id = _id;
