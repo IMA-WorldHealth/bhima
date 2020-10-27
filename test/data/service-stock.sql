@@ -1,4 +1,3 @@
-
 SET names 'utf8mb4';
 SET character_set_database = 'utf8mb4';
 SET collation_database = 'utf8mb4_unicode_ci';
@@ -123,4 +122,4 @@ INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
 -- Compute quantities of all inventories and write into stock_movement_status table
 --
 
-CALL zComputeAllInventoryStockQuantities(DATE('2000-01-01'), NULL)
+CALL zComputeAllInventoryStockQuantities(@one_year_ago, NULL)
