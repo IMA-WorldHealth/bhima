@@ -404,8 +404,7 @@ CREATE PROCEDURE `computeStockQuantity` (
 	  ORDER BY sm.date ASC
 	  LIMIT 1;
 
-     SELECT MAX(end_date)
-	  INTO @last_mvt_date
+    SELECT MAX(end_date) INTO @last_mvt_date
 	  FROM stock_movement_status
 	  WHERE `inventory_uuid` = _inventory_uuid AND `depot_uuid` =  @depot_uuid;
 
@@ -591,19 +590,17 @@ BEGIN
   SET _last_inventory_mvt_date = NULL;
   SET _first_inventory_mvt_date = NULL;
   --
-  SELECT `end_date`
+  SELECT MAX(`end_date`)
   INTO  _last_inventory_mvt_date
   FROM stock_movement_status m
   JOIN inventory i ON m.inventory_uuid = i.uuid
-  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
-  ORDER BY `end_date` DESC LIMIT 1;
+  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid;
 
-  SELECT `start_date`
+  SELECT MIN(`start_date`)
   INTO  _first_inventory_mvt_date
   FROM stock_movement_status m
   JOIN inventory i ON m.inventory_uuid = i.uuid
-  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.start_date) >= DATE(_start_date)
-  ORDER BY `start_date` ASC LIMIT 1;
+  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.start_date) >= DATE(_start_date);
 
   SET _sum_consumed_quantity = 0;
   SET _sum_stock_day = 0;
