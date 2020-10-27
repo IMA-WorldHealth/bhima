@@ -65,6 +65,7 @@ blocks:
             - 'yarn test:server-unit'
             - 'yarn test:client-unit'
             - 'yarn test:integration'
+            - 'yarn test:integration:stock'
           matrix:
             - env_var: MYSQL_VERSION
               values:
