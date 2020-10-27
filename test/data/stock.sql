@@ -3,9 +3,9 @@ SET character_set_database = 'utf8mb4';
 SET collation_database = 'utf8mb4_unicode_ci';
 SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
--- 
+--
 -- stock settings
--- 
+--
 
 INSERT INTO `stock_setting` (
   `enterprise_id`,
@@ -19,9 +19,9 @@ SET @depot_uuid = 0x4341F89CD1EB47BD9527DF9E13D2237C;
 SET @second_depot_uuid = HUID('d4bb1452-e4fa-4742-a281-814140246877');
 SET @third_deposit_uuid = HUID('bd4b1452-4742-e4fa-a128-246814140877');
 
--- 
+--
 -- depots
--- 
+--
 
 INSERT INTO `depot` VALUES
   (@depot_uuid, 'Depot Principal', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL),
@@ -30,7 +30,7 @@ INSERT INTO `depot` VALUES
 
 --
 -- Set Depot Management By User
--- 
+--
 
 INSERT INTO depot_permission (user_id, depot_uuid) VALUES
   (@superUser, @depot_uuid),
@@ -39,9 +39,9 @@ INSERT INTO depot_permission (user_id, depot_uuid) VALUES
 
 --
 -- Déchargement des données de la table `document_map`
--- 
+--
 
-INSERT INTO document_map (uuid,`text`) VALUES 
+INSERT INTO document_map (uuid,`text`) VALUES
 (0x07ECF74060C5456096DC3F74DC1CB862,'SM.10.22')
 ,(0x0A9BF0AF1DB24B11B378A63C6106001F,'SM.10.21')
 ,(0x14403E28123540B1B1EF4B40374696E8,'SM.10.26')
@@ -53,7 +53,7 @@ INSERT INTO document_map (uuid,`text`) VALUES
 ,(0x3AB34287A5A24D77A705327DE2D46FCE,'SM.10.28')
 ,(0x3E9F302EBE234FB680804A58763E083C,'SM.10.3')
 ;
-INSERT INTO document_map (uuid,`text`) VALUES 
+INSERT INTO document_map (uuid,`text`) VALUES
 (0x457D5E4EB3C24B96B328FB64FD86528B,'SM.13.17')
 ,(0x45A5D97E84CE4D019400B49B59F21E98,'SM.10.23')
 ,(0x468A21599EB14D77B6F698B15423BB6C,'SM.13.30')
@@ -65,7 +65,7 @@ INSERT INTO document_map (uuid,`text`) VALUES
 ,(0x780D2B1B10E54B66BAB7527264402001,'SM.13.1')
 ,(0x7DF64043023440229A528F84960A39F8,'SM.10.13')
 ;
-INSERT INTO document_map (uuid,`text`) VALUES 
+INSERT INTO document_map (uuid,`text`) VALUES
 (0x8199CED5776746FCADA2635B42AEFA32,'SM.10.20')
 ,(0x835E996AD7374EAA9CC5D6850DD4F644,'SM.10.32')
 ,(0x89210079806D4E91A2EE47A8D691445E,'SM.10.5')
@@ -77,7 +77,7 @@ INSERT INTO document_map (uuid,`text`) VALUES
 ,(0xBAB9A32B068740CCB5D272ABF33C0C27,'SM.10.27')
 ,(0xC869AFBA5A3045BE974C7E70A1C853B5,'SM.10.19')
 ;
-INSERT INTO document_map (uuid,`text`) VALUES 
+INSERT INTO document_map (uuid,`text`) VALUES
 (0xDDB377700D5C11EBB53D54E1AD7439C7,'VO.IMA.2')
 ,(0xE59B7703345F422D8012D2EC8AE308C4,'SM.10.9')
 ,(0xE7FE3A93B24C4BE1A40EF1D005BEC18B,'SM.10.31')
@@ -148,6 +148,6 @@ INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
 
 --
 -- Compute quantities of all inventories and write into stock_movement_status table
--- 
+--
 
 CALL zComputeAllInventoryStockQuantities(DATE('2020-01-01'), 0x4341F89CD1EB47BD9527DF9E13D2237C);
