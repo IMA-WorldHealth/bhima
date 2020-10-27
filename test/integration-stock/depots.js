@@ -57,7 +57,9 @@ describe('(/depots) The depots API ', () => {
     return agent.get(`/depots/${principal}/inventories/${quinine}/cmm`)
       .then(res => {
         expect(res).to.be.json; // eslint-disable-line
-        expect(res.body).to.have.any.keys('algo1', 'algo2', 'algo3', 'algo_msh');
+
+        // eslint-disable-next-line
+        console.log('res.body:', res.body);
 
         const values = {
           algo1 : 53.19,
