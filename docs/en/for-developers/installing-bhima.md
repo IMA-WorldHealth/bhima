@@ -164,12 +164,13 @@ If you have already a MySQL server running on port 3306 of your localhost, start
 The database structure is contained in the `server/models/*.sql` files. You can execute these one by one in the order below, or simply run `yarn build:db`.
 
 1. `server/models/schema.sql`
-2. `server/models/triggers.sql`
-3. `server/models/functions.sql`
-4. `server/models/procedures.sql`
-5. `server/models/admin.sql`
+2. `server/models/functions.sql`
+3. `server/models/procedures.sql`
+4. `server/models/admin.sql`
+5. `server/models/triggers.sql`
 
-This sets up the basic schema, triggers, and routines. The following scripts will build a basic dataset to begin playing around with:
+
+This sets up the basic schema, routines, and triggers. The following scripts will build a basic dataset to begin playing around with:
 
 1. `server/models/icd10.sql`
 2. `server/models/bhima.sql`
