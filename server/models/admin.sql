@@ -214,7 +214,8 @@ CREATE PROCEDURE zComputeAllInventoryStockQuantities (
   DECLARE _inventory_uuid BINARY(16);
   DECLARE done BOOLEAN;
   DECLARE inventory_cursor
-    CURSOR FOR SELECT inventory.uuid  FROM inventory WHERE consumable = 1;
+    CURSOR FOR SELECT inventory.uuid FROM inventory WHERE consumable = 1
+    AND inventory.uuid IN (SELECT DISTINCT inventory_uuid FROM lot);
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
@@ -237,12 +238,10 @@ CREATE PROCEDURE zUnpostRecord(
   IN _record_uuid BINARY(16)
 )
 BEGIN
-
-  INSERT INTO posting_journal 
-  SELECT * FROM general_ledger WHERE record_uuid = _record_uuid;
+  INSERT INTO posting_journal
+    SELECT * FROM general_ledger WHERE record_uuid = _record_uuid;
 
   DELETE FROM general_ledger WHERE record_uuid = _record_uuid;
-
 END$$
 
 DELIMITER ;
