@@ -48,7 +48,9 @@ class DepotPage {
   async createDepotByParent(item, hasLocation, location) {
     const row = new GridRow(item.parent);
     await row.dropdown().click();
-    await $('[data-method="add-dependant-depot"]').click();
+
+    const findul = `ul.dropdown-menu-right.dropdown-menu[data-row-menu="${item.parent}"]`;
+    await $(`${findul} a[data-method="add-dependant-depot"]`).click();
 
     await FU.input('DepotModalCtrl.depot.text', item.text);
 
