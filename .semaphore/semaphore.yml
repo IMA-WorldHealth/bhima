@@ -12,7 +12,7 @@ blocks:
       jobs:
         - name: Update Dependencies
           commands:
-            - sudo apt-get -y update && sudo apt-get install mysql-client redis-tools
+            - sudo apt-get install mysql-client redis-tools
             - sudo apt autoremove -y && sudo apt autoclean -y
   - name: Integration Testing Matrix
     dependencies: ["Update Dependencies"]
@@ -65,6 +65,7 @@ blocks:
             - 'yarn test:server-unit'
             - 'yarn test:client-unit'
             - 'yarn test:integration'
+            - 'yarn test:integration:stock'
           matrix:
             - env_var: MYSQL_VERSION
               values:
