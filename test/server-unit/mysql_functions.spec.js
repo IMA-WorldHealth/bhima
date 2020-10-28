@@ -4,24 +4,7 @@ const { expect } = require('chai');
 function DatabaseUnitTests() {
   let db;
   before(() => {
-    const path = require('path');
-    const fs = require('fs');
-
     db = require('../../server/lib/db');
-
-    console.log('loading sql fns');
-
-    const sqlFns = fs.readFileSync(path.join(__dirname, '../../server/models/procedures/migration-process.sql'))
-      .toString();
-
-    try {
-      db.exec(sqlFns);
-    }
-    catch (err) {
-      console.log(err);
-    }
-
-    console.log('done loading sql fns');
   });
 
   const tableName1 = 'my_test_table1';
