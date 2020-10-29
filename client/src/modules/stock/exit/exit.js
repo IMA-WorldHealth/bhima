@@ -28,6 +28,7 @@ function StockExitController(
   vm.movement = {};
   vm.gridApi = {};
   vm.selectedLots = [];
+  vm.selectableInventories = [];
   vm.reset = reset;
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
@@ -263,7 +264,6 @@ function StockExitController(
 
   function loadInventories(depot, dateTo = new Date()) {
     setupStock();
-
     Stock.inventories.read(null, { depot_uuid : depot.uuid, dateTo })
       .then(inventories => {
         vm.loading = false;
@@ -271,7 +271,6 @@ function StockExitController(
 
         // map of inventories by inventory uuid
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
-
         checkValidity();
       })
       .catch(Notify.handleError);
@@ -282,14 +281,25 @@ function StockExitController(
     if (!row.lot || !row.lot.uuid) { return; }
 
     checkValidity();
-    refreshSelectedLotsList();
+    refreshSelectedLotsList(row);
   }
 
   // update the list of selected lots
-  function refreshSelectedLotsList() {
+  function refreshSelectedLotsList(row) {
     vm.selectedLots = vm.stockForm.store.data
       .filter(item => item.lot && item.lot.uuid)
       .map(item => item.lot.uuid);
+
+    // If we have picked the last lot for this inventory item, we need to
+    // Remove it from the selectableInventories list
+    if (row.lots.length === 1 && row.lots[0].inventory_uuid === row.lot.inventory_uuid) {
+      let i = vm.selectableInventories.length;
+      while (i--) {
+        if (vm.selectableInventories[i].inventory_uuid === row.lot.inventory_uuid) {
+          vm.selectableInventories.splice(i, 1);
+        }
+      }
+    }
   }
 
   // check validity
