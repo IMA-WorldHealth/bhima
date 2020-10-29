@@ -160,6 +160,7 @@
     "RECEPTION_DONATION" : "Entrée de stock en provenance d'une donation",
     "REQUIRES_PO"     : "Nécessitant une commande d'achat",
     "RESPONSIBLE"     : "Gestionnaire du stock",
+    "RISK_OF_EXPIRATION" : "Risque de péremption",
     "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
@@ -182,7 +183,9 @@
     "STOCK_COST_DESCRIPTION" : "Les valeurs monetaires sont basées sur le coût d'achat de stock et non sur le prix de vente",
     "STOCK_UNIT_COST_ROUNDED" : "Le cout unitaire est arrondi avec deux decimales",
     "TOGGLE_EXPIRED_STOCK" : "Afficher le stock expiré?",
-    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Cela ajoutera un filtre sur les lots arrivés à expiration."
+    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Ceci ajoutera un filtre sur les lots arrivés à expiration.",
+    "TOGGLE_EXPIRY_RISKS" : "Afficher les lots présentant des risques d'expiration?",
+    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption"
   },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
