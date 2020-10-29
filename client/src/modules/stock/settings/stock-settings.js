@@ -92,7 +92,6 @@ function StockSettingsController(
 
   vm.enableAutoStockAccounting = proxy('enable_auto_stock_accounting');
   vm.enableAutoPurchaseOrderConfirmation = proxy('enable_auto_purchase_order_confirmation');
-  vm.enableDailyConsumption = proxy('enable_daily_consumption');
   vm.enableStrictDepotPermission = proxy('enable_strict_depot_permission');
   vm.enableSupplierCredit = proxy('enable_supplier_credit');
   vm.enableStrictDepotDistribution = proxy('enable_strict_depot_distribution');

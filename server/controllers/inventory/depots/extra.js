@@ -32,11 +32,9 @@ router.get('/inventories/:inventoryUuid/lots', getInventoryLots);
 async function getInventory(req, res, next) {
   try {
     const monthAvgConsumption = req.session.stock_settings.month_average_consumption;
-    const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
     const inventory = await core.getInventoryQuantityAndConsumption(
       { depot_uuid : req.params.uuid },
       monthAvgConsumption,
-      enableDailyConsumption,
     );
 
     res.status(200).json(inventory);
