@@ -255,10 +255,10 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
-"@types/angular@^1.6.25", "@types/angular@^1.7.3":
-  version "1.7.3"
-  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.7.3.tgz#138c2f2f688e9dcb413c6052d9483d773ce7f627"
-  integrity sha512-rr40P9yHTlLuY6y+PUfwHeoBWO8uEJTazcs89o83fheyH/b9OZW7p7EsvFMriCPam3p6VSD57zkgn+nAQCvfUw==
+"@types/angular@^1.6.25", "@types/angular@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.7.4.tgz#f50ed06e2ddb3437ec8c730e6a3189fbd59125e5"
+  integrity sha512-ZcBdve7BszuzwtgDiaYuHhEGPkA0gKhBRMckGZVfZ6M4L8Jt/rqQTV4I3koQg8ZPf9sdDExs3xx9GpZIkAyyjg==
 
 "@types/cacheable-request@^6.0.1":
   version "6.0.1"
@@ -525,10 +525,10 @@ angular-messages@^1.8.0:
   resolved "https://registry.yarnpkg.com/angular-messages/-/angular-messages-1.8.1.tgz#264753d2bf2669ef1ddd5be350f0740dd56843b6"
   integrity sha512-09+sV4b51/y6oE9DRVcc6+zs2jN5a1Hf0LWO18tv9dgjit2qVR99eYlzLM5HQAaCBUN5gfzJEk2cgVrXWzkijA==
 
-angular-mocks@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.8.1.tgz#eff17e6b3b95e7c4fe7fdd0fda4314e6f492b164"
-  integrity sha512-lynQMo81pq/viSXjeBdSI2Noo/DPkHWzTiECKqxBrEVTxyl/y1LHZvm3u1I21oPjwXaMm8wIGXi1srbBr+Jerw==
+angular-mocks@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.8.2.tgz#dc022420b86978cf317a8447c116c0be73a853bf"
+  integrity sha512-I5L3P0l21HPdVsP4A4qWmENt4ePjjbkDFdAzOaM7QiibFySbt14DptPbt2IjeG4vFBr4vSLbhIz8Fk03DISl8Q==
 
 angular-moment@^1.3.0:
   version "1.3.0"
@@ -537,10 +537,10 @@ angular-moment@^1.3.0:
   dependencies:
     moment ">=2.8.0 <3.0.0"
 
-angular-sanitize@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.1.tgz#80e24614669cf3d252d199e199680f4c9dee5505"
-  integrity sha512-kDtbAQkN+biyvBMJ8mgFIDZureng5yl6qegFCQ+bUw50n3KOx4FCsZ9S5tNAQ/rjYYTC5tP4hREv7+2ha+8M2w==
+angular-sanitize@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.2.tgz#ae78040f00c5e2ce1c63780bcc47fa14a1698296"
+  integrity sha512-OB6Goa+QN3byf5asQ7XRl7DKZejm/F/ZOqa9z1skqYVOWA2hoBxoCmt9E7+i7T/TbxZP5zYzKxNZVVJNu860Hg==
 
 angular-touch@^1.8.0:
   version "1.8.1"
