@@ -542,10 +542,10 @@ angular-sanitize@^1.8.2:
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.2.tgz#ae78040f00c5e2ce1c63780bcc47fa14a1698296"
   integrity sha512-OB6Goa+QN3byf5asQ7XRl7DKZejm/F/ZOqa9z1skqYVOWA2hoBxoCmt9E7+i7T/TbxZP5zYzKxNZVVJNu860Hg==
 
-angular-touch@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular-touch/-/angular-touch-1.8.1.tgz#57d962ce594b307d60efce6edd5cb2c3e76133e0"
-  integrity sha512-dMuPfjiMUedNxF1byT9ta2aYmYWlGp7J7fXNADZL+2lkzcXrszSUCLmiOtkEVFElhI1b7pv7Caxg7pfzUCW7VQ==
+angular-touch@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular-touch/-/angular-touch-1.8.2.tgz#56c54df3f776246bb36f16bef2720a93ed5b8441"
+  integrity sha512-tGoFNsONm/VHFcBW8gySVZvpCIYAvsAlEuHpJDugGn+3ENLxSDhpZ4ikev4KXfWr8ZNsYGoVSfsvJegkiC+9Ig==
 
 angular-translate-loader-static-files@^2.18.3:
   version "2.18.3"
@@ -580,15 +580,10 @@ angular-ui-grid@^4.9.0:
   dependencies:
     angular ">=1.4.0 1.8.x"
 
-"angular@>=1.2.22 <2", "angular@>=1.4.0 1.8.x":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.0.tgz#b1ec179887869215cab6dfd0df2e42caa65b1b51"
-  integrity sha512-VdaMx+Qk0Skla7B5gw77a8hzlcOakwF8mjlW13DpIWIDlfqwAbSSLfd8N/qZnzEmQF4jC4iofInd3gE7vL8ZZg==
-
-angular@^1.8.0:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.1.tgz#5a9cd4a99a0a1c4aeeb913d9f4699e2458daf5c1"
-  integrity sha512-eiasF4uFXsmKD8qYpkKEi9rKVxMv0nIDZXsYrwzSbPIbjmTV05bx+18VDbRmMx7p+gL84T9Qw2NCpVe8w1QKHQ==
+"angular@>=1.2.22 <2", "angular@>=1.4.0 1.8.x", angular@^1.8.0, angular@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.2.tgz#5983bbb5a9fa63e213cb7749199e0d352de3a2f1"
+  integrity sha512-IauMOej2xEe7/7Ennahkbb5qd/HFADiNuLSESz9Q27inmi32zB0lnAsFeLEWcox3Gd1F6YhNd1CP7/9IukJ0Gw==
 
 ansi-align@^3.0.0:
   version "3.0.0"

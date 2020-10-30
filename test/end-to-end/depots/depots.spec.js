@@ -44,7 +44,7 @@ describe('Depots Management', () => {
   });
 
   it('successfully creates a new depot by depot Parent', async () => {
-    await page.createDepotByParent(depotByParent, false, true, helpers.data.locations);
+    await page.createDepotByParent(depotByParent, true, helpers.data.locations);
   });
 
   it('successfully edits a depot', async () => {
