@@ -301,6 +301,18 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   if (_status) {
     return inventoriesWithLotsProcessed.filter(row => row.status === _status);
   }
+
+  // Since the status of a product risking expiry is only defined
+  // after the comparison with the CMM, reason why the filtering
+  // is not carried out with an SQL request
+  if (params.is_expiry_risk === '1') {
+    return inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
+  }
+
+  if (params.is_expiry_risk === '0') {
+    return inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
+  }
+
   return inventoriesWithLotsProcessed;
 }
 
