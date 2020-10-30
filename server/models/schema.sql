@@ -558,6 +558,7 @@ CREATE TABLE `enterprise` (
   `logo`            VARCHAR(100) DEFAULT NULL,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   `po_box`          VARCHAR(30) DEFAULT NULL,
+  `helpdesk`        VARCHAR(512) DEFAULT NULL,
   `gain_account_id` INT UNSIGNED NULL,
   `loss_account_id` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
