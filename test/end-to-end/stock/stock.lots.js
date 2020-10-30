@@ -84,6 +84,24 @@ function StockLotsRegistryTests() {
     await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
+  it('Find the lots with a risk of expiry', async () => {
+    await components.yesNoRadios.set('yes', 'isExpiryRisk');
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+
+    await modal.submit();
+    await GU.expectRowCount(gridId, 13);
+  });
+
+  it('Find the lots with no risk of expiry', async () => {
+    await components.yesNoRadios.set('no', 'isExpiryRisk');
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+
+    await modal.submit();
+    await GU.expectRowCount(gridId, 2);
+  });
+
   it('find inventories by group', async () => {
     await components.inventoryGroupSelect.set(inventoryGroup);
     await FU.modal.submit();
