@@ -787,6 +787,7 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
     }));
     filteredRows.forEach((inv, index) => {
       const cmmResult = cmms[index][0][0];
+      console.log(index, ' - CMM : ', cmmResult);
       inv.cmms = cmmResult;
       inv.avg_consumption = cmmResult[averageConsumptionAlgo];
     });

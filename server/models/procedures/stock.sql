@@ -665,12 +665,19 @@ BEGIN
 
   SET @algo3 =((_sum_consumed_quantity)/(IF( (_sum_days = NULL) OR _sum_days = 0,1, _sum_days))) * 30.5;
 
-  SET @algo_msh = (_sum_consumed_quantity/(_number_of_month - ((_sum_stock_out_days + _days_before_consumption)/30.5) ));
+  SET @algo_msh = (_sum_consumed_quantity/(ROUND(_number_of_month) - ((_sum_stock_out_days + _days_before_consumption)/30.5) ));
 
-  SELECT IFNULL(@algo1, 0) as algo1,
+  SELECT ROUND(IFNULL(@algo1, 0), 2) as algo1,
     ROUND(IFNULL(@algo2, 0), 2) as algo2,
     ROUND(IFNULL(@algo3, 0),2) as algo3,
-    ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh;
+    ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh,
+    _sum_days as sum_days,
+    _sum_stock_day as sum_stock_day,
+    _sum_consumption_day as sum_consumption_day,
+    _sum_consumed_quantity as sum_consumed_quantity,
+    _number_of_month as number_of_month,
+    _sum_stock_out_days as sum_stock_out_days,
+    _days_before_consumption as days_before_consumption;
 
 END$$
 
