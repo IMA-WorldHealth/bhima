@@ -5,9 +5,7 @@
  * help desk info in the Enterprise information.
  */
 
-const { isJsxOpeningElement } = require('typescript');
 const db = require('../../lib/db');
-const NotFound = require('../../lib/errors/NotFound');
 
 // expose the read function
 exports.read = helpdeskInfo;
