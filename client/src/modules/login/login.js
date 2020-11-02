@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 LoginController.$inject = [
   'appcache', 'SessionService', 'LanguageService', 'ProjectService',
-  'NotifyService', 'InstallService', '$state',
+  'HelpdeskService', 'NotifyService', 'InstallService', '$state',
 ];
 
 /**
@@ -11,7 +11,7 @@ LoginController.$inject = [
  *
  * The login controller powers the bhima login page.
  */
-function LoginController(AppCache, Session, Languages, Projects, Notify, Install, $state) {
+function LoginController(AppCache, Session, Languages, Projects, Helpdesk, Notify, Install, $state) {
   const vm = this;
 
   // the is the same as the SettingsContoller
@@ -26,6 +26,7 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
   vm.credentials = {};
   vm.login = login;
   vm.languageService = Languages;
+  vm.helpdesk_info = null;
 
   // vm.finishInstallationChecking help to :
   // hide loading indicator after checking
@@ -60,6 +61,15 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
 
   function handleLanguages(languages) {
     vm.languages = languages;
+  }
+
+  Helpdesk.read()
+    .then(setHelpdeskInfo);
+
+  function setHelpdeskInfo(info) {
+    if (info.helpdesk) {
+      vm.helpdesk_info = info.helpdesk;
+    }
   }
 
   // load project dependencies
