@@ -23,6 +23,7 @@ const uploads = require('../lib/uploader');
 
 const publicRoutes = [
   '/auth/login',
+  '/helpdesk_info',
   '/languages',
   '/projects',
   '/projects/',
