@@ -11,7 +11,6 @@ ALTER TABLE `stock_requisition` CHANGE COLUMN `reference` `reference` INT(11) UN
 
 ALTER TABLE `stock_requisition` DROP PRIMARY KEY, ADD PRIMARY KEY (`uuid`);
 
-
 ALTER TABLE `stock_requisition` ADD CONSTRAINT `stock_requisition__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`);
 
 ALTER TABLE `stock_movement` ADD COLUMN `stock_requisition_uuid` BINARY(16) NULL AFTER `invoice_uuid`;
@@ -81,3 +80,11 @@ CREATE TABLE `depot_distribution_permission` (
  * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
  */
 ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
+
+/*
+ * @author: jmcameron
+ * @date: 2020-10-30
+ * @pull-release: TBD
+ * @description:  Add data field for helpdesk info
+ */
+ ALTER TABLE `enterprise` ADD COLUMN `helpdesk` VARCHAR(512) DEFAULT NULL AFTER `po_box`;
