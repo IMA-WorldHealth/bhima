@@ -99,7 +99,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 8);
   });
 
   it('find inventories by group', async () => {
