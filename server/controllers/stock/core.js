@@ -723,6 +723,7 @@ async function getStockConsumptionAverage(periodId, periodDate, monthAverageCons
  */
 async function getInventoryQuantityAndConsumption(params, monthAverageConsumption,
   enableDailyConsumption, averageConsumptionAlgo) {
+
   let _status;
   let delay;
   let purchaseInterval;
