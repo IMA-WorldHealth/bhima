@@ -29,51 +29,48 @@ const DEFAULT_PARAMS = {
   csvKey : 'accounts',
   filename : 'TREE.BALANCE',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 const TITLE_ID = 6;
 
 /**
- * @description this function helps to get html document of the report in server side
+ * @description
+ * this function helps to get html document of the report in server side
  * so that we can use it with others modules on the server side
+ *
  * @param {*} options the report options
  * @param {*} session the session
  */
 async function reporting(options, session) {
-  try {
-    const params = options;
-    const context = {};
+  const params = options;
+  const context = {};
 
-    _.defaults(params, DEFAULT_PARAMS);
+  _.defaults(params, DEFAULT_PARAMS);
 
-    context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
-    context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
-    context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
-    context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
+  context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
+  context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
+  context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
+  context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
 
-    const report = new ReportManager(TEMPLATE, session, params);
-    const currencyId = session.enterprise.currency_id;
+  const report = new ReportManager(TEMPLATE, session, params);
+  const currencyId = session.enterprise.currency_id;
 
-    const period = await getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances);
-    _.merge(context, { period });
+  const period = await getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances);
+  _.merge(context, { period });
 
-    const balance = await getBalanceForFiscalYear(period, currencyId);
-    context.accounts = balance.accounts;
-    context.totals = balance.totals;
+  const balance = await getBalanceForFiscalYear(period, currencyId);
+  context.accounts = balance.accounts;
+  context.totals = balance.totals;
 
-    const tree = await computeBalanceTree(balance.accounts, balance.totals, context, context.shouldPruneEmptyRows);
-    context.accounts = tree.accounts;
-    context.totals = tree.totals;
+  const tree = await computeBalanceTree(balance.accounts, balance.totals, context, context.shouldPruneEmptyRows);
+  context.accounts = tree.accounts;
+  context.totals = tree.totals;
 
-    if (context.shouldHideTitleAccounts) {
-      context.accounts = context.accounts.filter(account => account.isTitleAccount === 0);
-    }
-
-    return report.render(context);
-  } catch (error) {
-    throw error;
+  if (context.shouldHideTitleAccounts) {
+    context.accounts = context.accounts.filter(account => account.isTitleAccount === 0);
   }
+
+  return report.render(context);
 }
 
 /**
@@ -208,9 +205,7 @@ async function getBalanceForFiscalYear(period, currencyId) {
 function computeBalanceTree(accounts, totals, context, shouldPrune) {
   // if the after result is 0, that means no movements occurred
   const isEmptyRow = (row) => (
-    row.before === 0
-    && row.during === 0
-    && row.after === 0
+    (row.before + row.after + row.during) === 0
   );
 
   const tree = new Tree(accounts);
@@ -236,12 +231,13 @@ function computeBalanceTree(accounts, totals, context, shouldPrune) {
   // label depths
   tree.walk(Tree.common.computeNodeDepth);
 
-  // prune empty rows if needed
+  let balances;
+  // prune empty rows if needed (prune() does not work in-place)
   if (shouldPrune) {
-    tree.prune(isEmptyRow);
+    balances = tree.prune(isEmptyRow);
+  } else {
+    balances = tree.toArray();
   }
-
-  const balances = tree.toArray();
 
   // FIXME(@jniles) - figure out how to migrate this to SQL
   totals.during_debit = 0;
