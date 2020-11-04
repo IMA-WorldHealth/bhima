@@ -13,8 +13,6 @@
  */
 
 const q = require('q');
-const moment = require('moment');
-
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
@@ -25,8 +23,16 @@ const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
 
 // See the schema for purchase_status and the value of
-// PURCHASES.STATUS.CONFIRMED in the bhima.sql data
+// PURCHASES.STATUS.CONFIRMED
+// PURCHASES.STATUS.RECEIVED
+// PURCHASES.STATUS.PARTIALLY_RECEIVED
+// PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY
+// in the bhima.sql data
+
 const PURCHASE_STATUS_CONFIRMED_ID = 2;
+const PURCHASES_STATUS_RECEIVED_ID = 3;
+const PURCHASES_STATUS_PARTIALLY_RECEIVED_ID = 4;
+const PURCHASES_STATUS_EXCESSIVE_RECEIVED_QUANTITY_ID = 6;
 
 const entityIdentifier = identifiers.PURCHASE_ORDER.key;
 
@@ -152,6 +158,7 @@ function lookupPurchaseOrder(uid) {
  */
 function create(req, res, next) {
   let data = req.body;
+  let inventories = [];
 
   if (!data.items) {
     return next(new BadRequest('Cannot create a purchase order without purchase items.'));
@@ -173,6 +180,12 @@ function create(req, res, next) {
 
   if (req.session.stock_settings.enable_auto_purchase_order_confirmation) {
     data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
+  }
+
+  const statusPurchase = data.status_id;
+
+  if (data.status_id === PURCHASE_STATUS_CONFIRMED_ID) {
+    inventories = data.items.map(item => item.inventory_uuid);
   }
 
   const sql = 'INSERT INTO purchase SET ?';
@@ -197,48 +210,42 @@ function create(req, res, next) {
 
   return transaction.execute()
     .then(() => {
+      let transactions;
 
-      // Finally, for the inventories ordered, to know the average value of purchase interval,
-      // the number of purchase and the date of the last order
-      const getInventory = `
-        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.purchase_interval,
-          inventory.last_purchase, inventory.num_purchase
-        FROM purchase_item
-        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
-        WHERE purchase_item.purchase_uuid = ?
-      `;
+      if (statusPurchase !== PURCHASE_STATUS_CONFIRMED_ID) {
+        return true;
+      }
 
-      return db.exec(getInventory, [data.uuid]);
+      if (inventories.length) {
+        transactions = purchaceIntervalleSetting(inventories);
+      }
+
+      return transactions.execute();
     })
     .then((rows) => {
+      if (statusPurchase !== PURCHASE_STATUS_CONFIRMED_ID) {
+        return true;
+      }
+
       const datePurchase = new Date(data.date);
-
       const transactionWrapper = db.transaction();
+
       rows.forEach((row) => {
-        /**
-          * Normally purchase interval is calculated by deducting the gap in months of
-          * all purchase orders for a product, this form is also very expensive in terms of resources,
-          * so let's store the date of the last orders and store the results in months in the column Purchase interval,
-          * and in the following we would calculate each time the average value Multiply by number of old orders minus
-          * one Add up by the period between the last purchase Order and the date of the current purchase order
-          * and divide the results by the number of old orders
+        /*
+          * For the calculation of the average order interval, the system takes into account
+          * that of confirmed purchase orders, received in stock or partially and even those
+          * that are received in excess quantity, the default order interval is zero, and the
+          * calculation is made in addition the sum of all the order intervals by the sum of
+          * the purchase orders minus one, the results are stored in the inventory table,
+          * in order to facilitate the calculation of the various indicators for stock management
         */
-
-        let purchaseInterval = row.purchase_interval;
-        const numPurchase = row.num_purchase + 1;
-        if (row.last_purchase) {
-          const diff = moment(datePurchase).diff(moment(row.last_purchase));
-
-          const duration = moment.duration(diff, 'milliseconds');
-          const durationMonth = duration.asMonths();
-
-          purchaseInterval = (((row.purchase_interval * (row.num_purchase - 1)) + durationMonth) / row.num_purchase);
-        }
+        const purchaseInterval = row[0].purchase_interval || 0;
+        const numPurchase = row[0].num_purchase;
 
         // Just to prevent cases where the order interval is less than 0
         transactionWrapper.addQuery(
           'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
-          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)],
+          [purchaseInterval, datePurchase, numPurchase, db.bid(row[0].inventory_uuid)],
         );
 
       });
@@ -293,6 +300,7 @@ function detail(req, res, next) {
  * Updates a purchase order in the database.
  */
 function update(req, res, next) {
+  req.body.date = new Date(req.body.date);
   const sql = 'UPDATE purchase SET ? WHERE uuid = ?;';
 
   const data = db.convert(req.body, ['supplier_uuid']);
@@ -301,6 +309,7 @@ function update(req, res, next) {
   delete data.uuid;
 
   db.exec(sql, [req.body, db.bid(req.params.uuid)])
+    .then(() => resetPurchaseIntervall(req.params.uuid))
     .then(() => lookupPurchaseOrder(req.params.uuid))
     .then(record => res.status(200).json(record))
     .catch(next)
@@ -540,4 +549,84 @@ function purchaseState(req, res, next) {
     .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
+}
+
+function purchaceIntervalleSetting(items) {
+  const trans = db.transaction();
+
+  items.forEach((item) => {
+    const sql = `
+      SELECT ROUND(AVG(orderIntervall.diff),2) AS purchase_interval, (COUNT(orderIntervall.text)) AS num_purchase,
+      BUID(?) AS inventory_uuid
+      FROM (
+        SELECT aggr.refPurchase, aggr.text, aggr.date, aggr.precedent_date,
+          (TIMESTAMPDIFF(DAY, DATE(aggr.precedent_date), DATE(aggr.date)) *12/365.24) AS diff,
+        aggr.inventory_uuid
+        FROM (
+          SELECT purch.refPurchase, purch.text, DATE(purch.date) AS date,
+            @last_purchase AS precedent_date, purch.statusText, (@last_purchase := DATE(purch.date)) AS last_purchase,
+            BUID(purch.inventory_uuid) AS inventory_uuid
+          FROM (
+            SELECT map.text AS refPurchase, inv.text, p.date, sta.text AS statusText, inv.uuid AS inventory_uuid
+            FROM purchase AS p
+            JOIN document_map AS map ON map.uuid = p.uuid
+            JOIN purchase_status AS sta ON sta.id = p.status_id
+            JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
+            JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
+            WHERE inv.uuid = ? AND p.status_id IN ( ?, ?, ?, ?)
+            ORDER BY p.date ASC
+          ) AS purch, (SELECT @last_purchase := DATE(0)) AS z
+        ) AS aggr
+      ) AS orderIntervall
+    `;
+
+    trans.addQuery(sql, [
+      db.bid(item),
+      db.bid(item),
+      PURCHASE_STATUS_CONFIRMED_ID,
+      PURCHASES_STATUS_RECEIVED_ID,
+      PURCHASES_STATUS_PARTIALLY_RECEIVED_ID,
+      PURCHASES_STATUS_EXCESSIVE_RECEIVED_QUANTITY_ID,
+    ]);
+  });
+
+  return trans;
+}
+
+function resetPurchaseIntervall(purchaseUuid) {
+  const sql = `
+    SELECT BUID(it.inventory_uuid) AS inventory_uuid
+    FROM purchase_item AS it
+    WHERE it.purchase_uuid = ?
+  `;
+
+  return db.exec(sql, [db.bid(purchaseUuid)])
+    .then((rows) => {
+      const inventories = rows.map(item => item.inventory_uuid);
+
+      const transactions = purchaceIntervalleSetting(inventories);
+
+      return transactions.execute();
+    })
+    .then((items) => {
+      const transactionWrapper = db.transaction();
+      const updateDate = new Date();
+
+      items.forEach((item) => {
+        /*
+          * here we trace all the times when the status of a purchase
+          * order is modified, this one allows to recalculate the order
+          * interval as well as the number of valid orders
+        */
+        const purchaseInterval = item[0].purchase_interval || 0;
+        const numPurchase = item[0].num_purchase;
+
+        transactionWrapper.addQuery(
+          'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
+          [purchaseInterval, updateDate, numPurchase, db.bid(item[0].inventory_uuid)],
+        );
+      });
+
+      return transactionWrapper.execute();
+    });
 }
