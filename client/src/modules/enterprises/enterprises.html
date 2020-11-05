@@ -173,6 +173,16 @@
                   location-uuid="EnterpriseCtrl.enterprise.location_id">
                 </bh-location-select>
 
+                <div class="form-group">
+                  <label class="control-label" translate>
+                    ENTERPRISE.SETTINGS.HELPDESK_TEXT
+                  </label>
+                  <textarea class="form-control" name="helpdesk" ng-model="EnterpriseCtrl.enterprise.helpdesk"></textarea>
+                  <span class="help-block" translate>
+                    ENTERPRISE.SETTINGS.HELPDESK_TEXT_HELP
+                  </span>
+                </div>
+
                 <p class="text-center text-info">
                   <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
                     <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
