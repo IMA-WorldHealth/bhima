@@ -91,3 +91,10 @@ CREATE TABLE `depot_distribution_permission` (
   `depot_uuid` BINARY(16) NOT NULL,
   `distribution_depot_uuid` BINARY(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: jniles
+ * @date: 2020-10-20
+ * @desc: remove the "enable_daily_consumption" option as this is taken care of by our algo choice.
+ */
+ALTER TABLE `stock_setting` DROP COLUMN `enable_daily_consumption`;
