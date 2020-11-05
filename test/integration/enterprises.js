@@ -55,7 +55,7 @@ describe('(/enterprises) Enterprises API', () => {
 
   /* response keys from a detailed query */
   const responseKeys = [
-    'id', 'name', 'abbr', 'email', 'po_box', 'phone',
+    'id', 'name', 'abbr', 'email', 'po_box', 'helpdesk', 'phone',
     'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id',
     'settings', 'address',
   ];
