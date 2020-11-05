@@ -91,3 +91,20 @@ CREATE TABLE `depot_distribution_permission` (
   `depot_uuid` BINARY(16) NOT NULL,
   `distribution_depot_uuid` BINARY(16) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: jmcameron
+ * @date: 2020-11-05
+ * @pull-release: ?
+ * @description:  Make sure superuser can see the Stock Settings menu by default
+ */
+
+-- INSERT INTO `permission` (unit_id, user_id)  VALUES
+-- (290, 1),     --admin
+-- (290, 1000);  --superuser
+
+INSERT INTO `role_unit` (uuid, role_uuid, unit_id) VALUES
+-- superuser
+(HUID('BA7E12D3D16A4091A78742FF6F841C73'), HUID('7B7DD0D692734955A703126FBD504B61'), 290),
+-- admin
+(HUID('EC3847EED01E4A9096BDBA80F71C2B4A'), HUID('129BFCACD4A311E88196230B165892D5'), 290);
