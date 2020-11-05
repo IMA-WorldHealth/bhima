@@ -169,10 +169,10 @@
       "IN_STOCK"      : "Disponible",
       "LABEL"         : "État",
       "MAXIMUM"       : "Stock Max Atteint",
-      "MINIMUM"       : "Stock Min Atteint",
+      "MINIMUM"       : "Stock faible",
       "OVER_MAX"      : "Stock Max Depassé",
-      "SECURITY"      : "Stock de Securité Atteint",
-      "STOCK_OUT"      : "Rupture de stock",
+      "SECURITY"      : "Stock Critique",
+      "STOCK_OUT"     : "Rupture de stock",
       "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration"
     },
 	"STOCK_MOVEMENTS" : "Les Mouvements de Stock",
