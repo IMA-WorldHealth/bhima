@@ -91,13 +91,13 @@ CREATE TABLE `depot_distribution_permission` (
  *
   ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
 
-  NOTE: No longer need to add this separately.  Folded into the table creation above.
+  NOTE, JMC 2020-11-05: No longer need to add this separately.  It is folded into the table creation above.
  */
 
 /*
  * @author: jmcameron
  * @date: 2020-10-30
- * @pull-release: TBD
+ * @pull-release: 5075
  * @description:  Add data field for helpdesk info
  */
- ALTER TABLE `enterprise` ADD COLUMN `helpdesk` TEXT DEFAULT NULL AFTER `po_box`;
+CALL add_column_if_missing('enterprise', 'helpdesk', 'TEXT DEFAULT NULL AFTER `po_box`');
