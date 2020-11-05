@@ -18,6 +18,14 @@ ALTER TABLE `stock_movement` ADD COLUMN `stock_requisition_uuid` BINARY(16) NULL
 INSERT INTO `status` VALUES
   (7, 'excessive', 'FORM.LABELS.STATUS_TYPE.EXCESSIVE_RECEIVED_QUANTITY');
 
+/*
+@author : lomamech
+@date : 2020-11-05
+@subject : Complete migration file with production databases
+*/
+INSERT INTO unit VALUES
+(290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting');
+
 
 /*
  * @author: jmcameron
