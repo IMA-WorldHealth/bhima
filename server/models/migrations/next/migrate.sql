@@ -95,7 +95,7 @@ CREATE TABLE `depot_distribution_permission` (
 /*
  * @author: jmcameron
  * @date: 2020-11-05
- * @pull-release: ?
+ * @pull-release: 5084
  * @description:  Make sure superuser can see the Stock Settings menu by default
  */
 
