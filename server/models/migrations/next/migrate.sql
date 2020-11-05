@@ -3,7 +3,7 @@
  * @description: Stock Requisition Features To Add # 4849
  */
 
-ALTER TABLE `stock_requisition` ADD COLUMN `project_id` SMALLINT(5) UNSIGNED NOT NULL AFTER `user_id`;
+CALL add_column_if_missing('stock_requisition', 'project_id', 'SMALLINT(5) UNSIGNED NOT NULL AFTER `user_id`');
 
 ALTER TABLE `stock_requisition` ADD UNIQUE KEY `stock_requisition_2` (`project_id`, `reference`);
 
@@ -30,23 +30,40 @@ INSERT INTO `status` VALUES
  *       script, this migration will fail since it will try to add a row
  *       that already exists.
  */
+
+DROP TABLE IF EXISTS `stock_setting`;
+CREATE TABLE `stock_setting` (
+  `enterprise_id`  SMALLINT(5) UNSIGNED NOT NULL UNIQUE,
+  `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
+  `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
+  `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
+  `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh',
+  CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 INSERT INTO stock_setting(enterprise_id, month_average_consumption,
-  default_min_months_security_stock, enable_auto_purchase_order_confirmation,
+  enable_auto_purchase_order_confirmation,
   enable_auto_stock_accounting, enable_daily_consumption,
   enable_strict_depot_permission, enable_supplier_credit)
 SELECT enterprise_id, month_average_consumption,
-  default_min_months_security_stock, enable_auto_purchase_order_confirmation,
+  enable_auto_purchase_order_confirmation,
   enable_auto_stock_accounting, enable_daily_consumption,
   enable_strict_depot_permission, enable_supplier_credit
 FROM enterprise_setting;
 
 ALTER TABLE enterprise_setting DROP COLUMN month_average_consumption;
-ALTER TABLE enterprise_setting DROP COLUMN default_min_months_security_stock;
 ALTER TABLE enterprise_setting DROP COLUMN enable_auto_purchase_order_confirmation;
 ALTER TABLE enterprise_setting DROP COLUMN enable_auto_stock_accounting;
 ALTER TABLE enterprise_setting DROP COLUMN enable_daily_consumption;
 ALTER TABLE enterprise_setting DROP COLUMN enable_strict_depot_permission;
 ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
+
+CALL drop_column_if_exists('enterprise_setting', 'default_min_months_security_stock');
 
 /*
  * @author: lomamech
@@ -55,13 +72,6 @@ ALTER TABLE enterprise_setting DROP COLUMN enable_supplier_credit;
  */
  ALTER TABLE `depot` ADD COLUMN `parent_uuid` BINARY(16) NULL;
  ALTER TABLE `depot` ADD INDEX `parent_uuid` (`parent_uuid`);
-
- /*
-  * @author: mbayopanda
-  * @date: 2020-10-05
-  * @desc: Adding new column enable_strict_depot_distribution in stock settings
-  */
-ALTER TABLE stock_setting ADD COLUMN `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0;
 
 /*
   * @author: mbayopanda
@@ -78,8 +88,11 @@ CREATE TABLE `depot_distribution_permission` (
  * @author: lomamech
  * @date: 2020-10-05
  * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
+ *
+  ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
+
+  NOTE: No longer need to add this separately.  Folded into the table creation above.
  */
-ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
 
 /*
  * @author: jmcameron

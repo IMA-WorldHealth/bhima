@@ -18,7 +18,7 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
     'entry_date_to', 'expiration_date_from', 'expiration_date_to',
-    'is_expired',
+    'is_expired', 'is_expiry_risk',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -65,6 +65,11 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   // toggle expired stock
   vm.onToggleExpired = function onToggleExpired(bool) {
     vm.searchQueries.is_expired = bool;
+  };
+
+  // toggle expiry risks
+  vm.onToggleExpiryRisk = function onToggleExpiryRisk(bool) {
+    vm.searchQueries.is_expiry_risk = bool;
   };
 
   // default filter limit - directly write to changes list

@@ -18,6 +18,22 @@ describe('(/lots/) The lots HTTP API', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /stock/lots/depots/  Obtain lots with risk of peremptions', () => {
+    const conditions = {
+      includeEmptyLot : '0',
+      is_expiry_risk : '1',
+      limit : '1000',
+      period : 'allTime',
+    };
+
+    return agent.get('/stock/lots/depots/')
+      .query(conditions)
+      .then((res) => {
+        helpers.api.listed(res, 9);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /lots/:uuid update lot label or expiration date', () => {
     const update = {
       label : 'Lot Quinine Updated',

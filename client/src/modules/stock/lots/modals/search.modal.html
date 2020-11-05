@@ -85,6 +85,15 @@
             <bh-clear on-clear="$ctrl.clear('is_expired')"></bh-clear>
           </bh-yes-no-radios>
 
+          <bh-yes-no-radios
+            label="STOCK.TOGGLE_EXPIRY_RISKS"
+            value="$ctrl.searchQueries.is_expiry_risk"
+            id="isExpiryRisk"
+            name="is_expiry_risk"
+            help-text="STOCK.TOGGLE_EXPIRY_RISKS_HELP_TEXT"
+            on-change-callback="$ctrl.onToggleExpiryRisk(value)">
+            <bh-clear on-clear="$ctrl.clear('is_expiry_risk')"></bh-clear>
+          </bh-yes-no-radios>
         </div>
       </uib-tab>
 

@@ -17,6 +17,7 @@ async function stockInventoriesReport(req, res, next) {
   let filters;
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
+  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
   const data = {};
 
@@ -41,10 +42,9 @@ async function stockInventoriesReport(req, res, next) {
       options.check_user_id = req.session.user.id;
     }
 
+    const inventoriesParameters = [options, monthAverageConsumption, enableDailyConsumption, averageConsumptionAlgo];
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
-    const rows = await Stock.getInventoryQuantityAndConsumption(
-      options, monthAverageConsumption, enableDailyConsumption,
-    );
+    const rows = await Stock.getInventoryQuantityAndConsumption(...inventoriesParameters);
 
     data.rows = rows;
     data.filters = filters;
