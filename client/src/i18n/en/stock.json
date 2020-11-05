@@ -156,6 +156,7 @@
     "RECEPTION_DONATION" : "Stock Entry from a donation",
     "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
+    "RISK_OF_EXPIRATION" : "Risk of expiration",
     "ROWS"            : "Rows",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
@@ -178,7 +179,9 @@
     "STOCK_COST_DESCRIPTION" : "Monetary values are based on the cost of purchasing inventory, not the selling price",
     "STOCK_UNIT_COST_ROUNDED" : "The unit cost is rounded with two decimals",
     "TOGGLE_EXPIRED_STOCK" : "Show expired lots?",
-    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired."
+    "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired.",
+    "TOGGLE_EXPIRY_RISKS" : "Show the lots with expiry risks?",
+    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date."
   },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
