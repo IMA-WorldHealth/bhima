@@ -25,7 +25,9 @@
       "ENABLE_BARCODES_HELP_TEXT" : "L'activation de cette fonction placera des codes à barres sur la plupart des enregistrements imprimés et activera les options permettant de numériser des codes à barres pour les entrées de document.",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Activer l'envoie des rapports automatiques par email",
       "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "L'activation de cette option permet aux utilisateurs de configurer des planifications pour envoyer automatiquement des rapports à une liste d'adresses électroniques.",
-      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice"
+      "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice",
+      "HELPDESK_TEXT" : "Coordonnées du service d'assistance",
+      "HELPDESK_TEXT_HELP" : "Si défini, affichez ces informations sur la façon de contacter le service d'assistance en bas de la page de connexion"
     }
   }
 }

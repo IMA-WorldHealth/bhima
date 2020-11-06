@@ -21,7 +21,7 @@ exports.list = function list(req, res, next) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT id, name, abbr, email, po_box, phone, address,
+      SELECT id, name, abbr, email, po_box, helpdesk, phone, address,
         BUID(location_id) AS location_id, logo, currency_id,
         gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
         enable_delete_records, enable_password_validation,
@@ -76,7 +76,7 @@ exports.detail = function detail(req, res, next) {
 
 function lookupEnterprise(id) {
   const sql = `
-    SELECT id, name, abbr, email, po_box, phone, address,
+    SELECT id, name, abbr, email, po_box, helpdesk, phone, address,
       BUID(location_id) AS location_id, logo, currency_id,
       gain_account_id, loss_account_id
     FROM enterprise WHERE id = ?;
@@ -113,7 +113,7 @@ function lookupEnterprise(id) {
  */
 function lookupByProjectId(id) {
   const sql = `
-    SELECT e.id, e.name, e.abbr, email, e.po_box, e.phone, e.address,
+    SELECT e.id, e.name, e.abbr, email, e.po_box, e.helpdesk, e.phone, e.address,
       BUID(e.location_id) AS location_id, e.logo, e.currency_id,
       e.gain_account_id, e.loss_account_id,
       CONCAT_WS(' ', village.name, sector.name, province.name) AS location
