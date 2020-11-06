@@ -15,7 +15,6 @@
  * @requires lib/NotFound
  */
 
-
 const db = require('../../../lib/db');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
@@ -69,7 +68,6 @@ function create(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method list
