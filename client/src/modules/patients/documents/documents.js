@@ -16,7 +16,7 @@ function PatientDocumentsController($state, Patients, Notify) {
     .then((patient) => {
       vm.formatedPatientName = patient.first_name.concat(
         ' ', patient.middle_name,
-        ' ', patient.last_name
+        ' ', patient.last_name,
       );
     })
     .catch(Notify.handleError);

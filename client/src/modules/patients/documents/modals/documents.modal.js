@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-.controller('PatientDocumentsModalController', PatientDocumentsModalController);
+  .controller('PatientDocumentsModalController', PatientDocumentsModalController);
 
 PatientDocumentsModalController.$inject = [
-  '$uibModalInstance', 'Upload', 'patientUuid', 'PatientService', 'NotifyService'
+  '$uibModalInstance', 'Upload', 'patientUuid', 'PatientService', 'NotifyService',
 ];
 
 function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientService, Notify) {
-  var vm = this;
+  const vm = this;
 
   // globals defaults
   vm.thumbnail = 'assets/placeholder.gif';
@@ -14,18 +14,18 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
   // expose to the view
   vm.setThumbnail = setThumbnail;
   vm.dismiss = dismiss;
-  vm.submit  = submit;
-  vm.close   = close;
+  vm.submit = submit;
+  vm.close = close;
 
   // init require data
   PatientService.read(patientUuid)
-  .then(function (patient) {
-    vm.patient = patient;
-  })
-  .catch(Notify.handleError);
+    .then((patient) => {
+      vm.patient = patient;
+    })
+    .catch(Notify.handleError);
 
   /** submit data on server */
-  function submit(form) {
+  function submit() {
     // send data only when a file is selected
     if (vm.file) {
       uploadFile(vm.file);
@@ -49,24 +49,24 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
   /** set thumbnail for the selected image */
   function setThumbnail(file) {
     vm.thumbnail = file || 'assets/placeholder.gif';
-    vm.documentError = !file ? true : false;
+    vm.documentError = !file;
     vm.isImage = file.type.includes('image/');
   }
 
   /** upload the file to server */
-  function uploadFile (file) {
+  function uploadFile(file) {
     vm.uploadState = 'uploading';
 
-    var title = vm.title || file.name;
+    const title = vm.title || file.name;
     // rename the file name
     Upload.rename(file, title);
 
     // upload the file to the server
     Upload.upload({
-        url: '/patients/' + patientUuid + '/documents',
-        data: { documents: file }
+      url : `/patients/${patientUuid}/documents`,
+      data : { documents : file },
     })
-    .then(handleSuccess, Notify.handleError, handleProgress);
+      .then(handleSuccess, Notify.handleError, handleProgress);
 
     // success upload handler
     function handleSuccess() {
@@ -77,7 +77,7 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
 
     // progress handler
     function handleProgress(evt) {
-      file.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+      file.progress = Math.min(100, parseInt((100.0 * evt.loaded) / evt.total, 10));
     }
   }
 }
