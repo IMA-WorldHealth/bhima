@@ -47,7 +47,6 @@ function AccountGridService(AccountStore, Accounts, Languages, $httpParamSeriali
       });
   };
 
-
   AccountGrid.prototype.download = function download(type, filters) {
     const filterOpts = filters;
     const defaultOpts = { renderer : type, lang : Languages.key, rowsDataKey : 'accounts' };
@@ -58,7 +57,6 @@ function AccountGridService(AccountStore, Accounts, Languages, $httpParamSeriali
     // return  serialized options
     return $httpParamSerializer(options);
   };
-
 
   AccountGrid.prototype.formatStore = function formatStore() {
     // sort underlying data to ensure it is ordered by number - this is how it
@@ -90,7 +88,6 @@ function AccountGridService(AccountStore, Accounts, Languages, $httpParamSeriali
     this.insertDifference(account, insertedIndex);
   };
 
-
   AccountGrid.prototype.updateViewDelete = function updateViewDelete(event, account) {
     // Update the store for other modules accessing it
     const removeIndex = this._store.index[account.id];
@@ -100,7 +97,6 @@ function AccountGridService(AccountStore, Accounts, Languages, $httpParamSeriali
     // Update this grid
     this.data.splice(removeIndex, 1);
   };
-
 
   /**
    * @method updateViewEdit

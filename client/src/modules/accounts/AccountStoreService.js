@@ -41,7 +41,6 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
     return $q.resolve(accounts);
   }
 
-
   function typeStore() {
     if (initTypeLoad) {
       return typeRequest.then(() => {
