@@ -82,13 +82,13 @@ async function report(req, res, next) {
 
     const patients = `
       SELECT DATE(p.registration_date) AS registration_date, COUNT(*) registrations
-      FROM patient p 
+      FROM patient p
       WHERE DATE(p.registration_date) BETWEEN DATE(?) AND DATE(?)
       GROUP BY DATE(p.registration_date)
     `;
 
     const invoices = `
-      SELECT DATE(gl.trans_date) invoice_date, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS total_invoiced 
+      SELECT DATE(gl.trans_date) invoice_date, SUM(IFNULL(credit_equiv - debit_equiv, 0)) AS total_invoiced
       FROM ${generalTable} gl
       JOIN invoice i ON i.uuid = gl.record_uuid
       JOIN account a ON a.id = gl.account_id
@@ -99,20 +99,21 @@ async function report(req, res, next) {
     `;
 
     const payments = `
-      SELECT DATE(gl.trans_date) trans_date, SUM(IFNULL(debit_equiv - credit_equiv, 0)) AS total_paid 
+      SELECT DATE(gl.trans_date) trans_date, SUM(IFNULL(debit_equiv - credit_equiv, 0)) AS total_paid
       FROM ${generalTable} gl
       JOIN cash c ON c.uuid = gl.record_uuid
       WHERE gl.transaction_type_id IN (${CASH_PAYMENT_TRANSACTION_TYPE}, ${CAUTION_TRANSACTION_TYPE})
         AND (DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?))
-        AND gl.account_id IN (?) AND c.reversed = 0 
+        AND gl.account_id IN (?) AND c.reversed = 0
       GROUP BY DATE(gl.trans_date)
     `;
 
     const query = `
-      SELECT 
+      SELECT
         d.date, IFNULL(pa.registrations, 0) registrations, i.total_invoiced, IFNULL(p.total_paid, 0) total_paid,
         IF(pa.registrations <> 0, (IFNULL(i.total_invoiced, 0) / pa.registrations), 0) avg_cost,
-        IF(i.total_invoiced <> 0, ROUND((IFNULL(p.total_paid, 0) / i.total_invoiced), 2), 0) recovery_capacity
+        IF(i.total_invoiced <> 0, ROUND((IFNULL(p.total_paid, 0) / i.total_invoiced), 2), 0) recovery_capacity,
+        (IFNULL(pa.registrations, 0) + IFNULL(i.total_invoiced, 0) + IFNULL(p.total_paid, 0)) > 0 AS has_data
       FROM (${dateRange}) d
       LEFT JOIN (${invoices}) i ON i.invoice_date = d.date
       LEFT JOIN (${payments}) p ON p.trans_date = d.date
@@ -125,7 +126,7 @@ async function report(req, res, next) {
         IF(w.registrations <> 0, (IFNULL(w.total_invoiced, 0) / w.registrations), 0) avg_cost,
         IF(w.total_invoiced <> 0, ROUND((IFNULL(w.total_paid, 0) / w.total_invoiced), 2), 0) recovery_capacity
       FROM (
-        SELECT 
+        SELECT
           SUM(IFNULL(pa.registrations, 0)) registrations,
           SUM(i.total_invoiced) total_invoiced,
           SUM(IFNULL(p.total_paid, 0)) total_paid,
@@ -140,7 +141,7 @@ async function report(req, res, next) {
   `;
 
     const queryAuxiliaryCashboxes = `
-      SELECT cac.account_id AS id FROM cash_box_account_currency cac 
+      SELECT cac.account_id AS id FROM cash_box_account_currency cac
       JOIN cash_box cb ON cb.id = cac.cash_box_id
       WHERE cb.is_auxiliary = 1;
     `;
