@@ -167,7 +167,7 @@
       "MAXIMUM"       : "Maximum Stock Reached",
       "MINIMUM"       : "Low Stock",
       "OVER_MAX"      : "Over Maximum",
-      "SECURITY"      : "Critial Stock",
+      "SECURITY"      : "Critical Stock",
       "STOCK_OUT"      : "Stock Out",
       "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
     },
