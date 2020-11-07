@@ -37,7 +37,7 @@
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
-            <th>{{translate 'REPORT.RECOVERY_CAPACITY.REGISTRATIONS'}}</th>
+            <th>{{translate 'REPORT.RECOVERY_CAPACITY.PATIENTS'}}</th>
             <th>{{translate 'REPORT.RECOVERY_CAPACITY.INVOICES'}}</th>
             <th>{{translate 'REPORT.RECOVERY_CAPACITY.AVERAGE_COST'}}</th>
             <th>{{translate 'REPORT.RECOVERY_CAPACITY.PAYMENTS'}}</th>
@@ -54,10 +54,14 @@
             <td class="text-right">{{debcred row.total_paid ../metadata.enterprise.currency_id}}</td>
             <td
               style="width: 15em;"
-              {{#gt row.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
-              {{#between row.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
-              {{#lt row.recovery_capacity 0.6}} class="bg-danger text-danger text-right" {{/lt}}>
-              {{percentage row.recovery_capacity}}
+              {{#if row.has_data}}
+                {{#gt row.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
+                {{#between row.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
+                {{#lt row.recovery_capacity 0.6}} class="bg-danger text-danger text-right" {{/lt}}>
+                {{percentage row.recovery_capacity}}
+              {{else}}
+                class="text-right"> <i>{{ translate "REPORT.NULL" }}</i>
+              {{/if}}
             </td>
           </tr>
           {{/each}}
