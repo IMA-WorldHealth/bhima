@@ -27,6 +27,7 @@ const rolesCtrl = require('../controllers/admin/roles');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
+const helpdesk = require('../controllers/admin/helpdesk');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
@@ -609,6 +610,7 @@ exports.configure = function configure(app) {
   app.put('/enterprises/:id', enterprises.update);
   app.get('/enterprises/:id/fiscal_start', fiscal.getEnterpriseFiscalStart);
   app.post('/enterprises/:id/logo', upload.middleware('pics', 'logo'), enterprises.uploadLogo);
+  app.get('/helpdesk_info', helpdesk.read);
 
   // employees
   app.get('/employees', employees.list);
