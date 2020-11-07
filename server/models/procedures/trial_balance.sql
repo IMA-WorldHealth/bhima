@@ -99,8 +99,10 @@ BEGIN
   -- @const the account type for title accounts is 6.
   SET title_account_id = 6;
 
+  DROP TEMPORARY TABLE IF EXISTS stage_trial_balance_errors;
+
   -- this will hold our error cases
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_errors (
+  CREATE TEMPORARY TABLE stage_trial_balance_errors (
     record_uuid BINARY(16),
     trans_id TEXT,
     error_description TEXT,
@@ -236,6 +238,9 @@ BEGIN
 
   -- fiscal year to limit period_total search
   DECLARE fiscalYearId MEDIUMINT;
+
+  DROP TEMPORARY TABLE IF EXISTS staged_account;
+  DROP TEMPORARY TABLE IF EXISTS before_totals;
 
   -- get the fiscal year of the oldest record to limit period_total search
   SET fiscalYearId = (
