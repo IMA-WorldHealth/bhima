@@ -57,9 +57,10 @@ angular.module('bhima.routes')
       const reportKey = $stateParams.key;
       return SavedReports.requestKey(reportKey)
         .then((results) => {
-          return results[0];
+          const data = results[0];
+          data.params = { ...$stateParams };
+          return data;
         });
-
     }
 
     // make sure that the state's transitions refresh the abstract state
@@ -95,8 +96,8 @@ angular.module('bhima.routes')
       $stateProvider.state('reportsBase.'.concat(key), {
         url : '/'.concat(key),
         controller : key.concat('Controller as ReportConfigCtrl'),
-        templateUrl : '/modules/reports/generate/'.concat(key, '/', key, '.html'),
-        params : { key },
+        templateUrl : `/modules/reports/generate/${key}/${key}.html`,
+        params : { key, data : { value : null } },
         resolve : {
           reportData : ['$stateParams', 'BaseReportService', resolveReportData],
         },

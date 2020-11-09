@@ -287,6 +287,22 @@ async function lookupAccountReference(id) {
   return reference;
 }
 
+/**
+ * @function getAccountsForReferenceHTTP
+ *
+ * @description
+ * HTTP interface to compute the accounts associated with a particular reference.
+ */
+async function getAccountsForReferenceHTTP(req, res, next) {
+  const { id } = req.params;
+  try {
+    const accounts = await compute.getAccountsForReference(id);
+    res.status(200).json(accounts);
+  } catch (err) {
+    next(err);
+  }
+}
+
 exports.list = list;
 exports.create = create;
 exports.update = update;
@@ -294,6 +310,7 @@ exports.remove = remove;
 exports.detail = detail;
 exports.getAllValues = getAllValues;
 exports.getValue = getValue;
+exports.getAccountsForReferenceHTTP = getAccountsForReferenceHTTP;
 
 // expose computations for values
 exports.getAccountsForReference = compute.getAccountsForReference;
