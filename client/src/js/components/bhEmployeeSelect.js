@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : EmployeeSelectController,
     transclude  : true,
     bindings    : {
-      employeeUuid     : '<',
+      employeeUuid     : '<?',
       onSelectCallback : '&',
       required         : '<?',
     },
@@ -25,6 +25,11 @@ function EmployeeSelectController(Employees, Notify) {
     // load all Employee
     Employees.read()
       .then(employees => {
+
+        employees.forEach(employee => {
+          employee.hrlabel = `${employee.reference} - ${employee.display_name}`;
+        });
+
         $ctrl.employees = employees;
       })
       .catch(Notify.handleError);
