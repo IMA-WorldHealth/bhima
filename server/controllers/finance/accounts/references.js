@@ -60,10 +60,10 @@ async function list(req, res, next) {
       GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
       ar.reference_type_id, art.label as account_reference_type_label
     FROM account_reference ar
-    LEFT JOIN account_reference arp ON arp.id = ar.parent
-    LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
-    LEFT JOIN account a ON a.id = ari.account_id
-    LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
+      LEFT JOIN account_reference arp ON arp.id = ar.parent
+      LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
+      LEFT JOIN account a ON a.id = ari.account_id
+      LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
   `;
 
     filters.fullText('description');
@@ -84,7 +84,6 @@ async function list(req, res, next) {
     next(err);
   }
 }
-
 
 /**
  * @method create
