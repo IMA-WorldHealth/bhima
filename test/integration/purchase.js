@@ -1,6 +1,6 @@
 /* global expect, agent */
 /* eslint-disable no-unused-expressions */
-
+const moment = require('moment');
 const helpers = require('./helpers');
 const SearchTests = require('./purchase.search.js');
 
@@ -10,10 +10,28 @@ const SearchTests = require('./purchase.search.js');
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
 describe('(/purchases) Purchases', () => {
+  const datePurchase1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days');
+  const datePurchaseFormat1 = moment(datePurchase1).format('YYYY-MM-DD');
+
+  const datePurchase2 = moment(new Date(), 'YYYY-MM-DD').subtract(1655, 'days');
+  const datePurchaseFormat2 = moment(datePurchase2).format('YYYY-MM-DD');
+
+  const datePurchase3 = moment(new Date(), 'YYYY-MM-DD').subtract(1543, 'days');
+  const datePurchaseFormat3 = moment(datePurchase3).format('YYYY-MM-DD');
+
+  const datePurchase4 = moment(new Date(), 'YYYY-MM-DD').subtract(1512, 'days');
+  const datePurchaseFormat4 = moment(datePurchase4).format('YYYY-MM-DD');
+
+  const datePurchase5 = moment(new Date(), 'YYYY-MM-DD').subtract(1421, 'days');
+  const datePurchaseFormat5 = moment(datePurchase5).format('YYYY-MM-DD');
+
+  const datePurchase6 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days');
+  const datePurchaseFormat6 = moment(datePurchase6).format('YYYY-MM-DD');
+
   // purchase order we will add during this test suite
   const purchaseOrder = {
     cost          : 546.7520,
-    date          : new Date('2016-02-19'),
+    date          : new Date(datePurchaseFormat1),
     currency_id   : 1,
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
@@ -34,7 +52,7 @@ describe('(/purchases) Purchases', () => {
 
   const purchaseOrder2 = {
     cost          : 536.0000,
-    date          : new Date('2016-04-19'),
+    date          : new Date(datePurchaseFormat2),
     currency_id   : 1,
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
@@ -50,7 +68,7 @@ describe('(/purchases) Purchases', () => {
 
   const purchaseOrder3 = {
     cost          : 10.7520,
-    date          : new Date('2016-08-19'),
+    date          : new Date(datePurchaseFormat3),
     currency_id   : 1,
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
@@ -66,7 +84,7 @@ describe('(/purchases) Purchases', () => {
 
   const purchaseOrder4 = {
     cost          : 546.7520,
-    date          : new Date('2016-09-19'),
+    date          : new Date(datePurchaseFormat4),
     currency_id   : 1,
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
@@ -87,7 +105,7 @@ describe('(/purchases) Purchases', () => {
 
   const purchaseOrder5 = {
     cost          : 546.7520,
-    date          : new Date('2016-12-19'),
+    date          : new Date(datePurchaseFormat5),
     currency_id   : 1,
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
@@ -241,7 +259,7 @@ describe('(/purchases) Purchases', () => {
   it(`PUT /purchases/:uuid Modification of the status of the purchase order
     in order to verify the modifications on the calculation of the order interval and the number of orders`, () => {
     return agent.put(`/purchases/${purchaseOrder3.uuid}`)
-      .send({ status_id : 1, date : new Date('2016-08-20') })
+      .send({ status_id : 1, date : new Date(datePurchaseFormat6) })
       .catch(helpers.handler);
   });
 
