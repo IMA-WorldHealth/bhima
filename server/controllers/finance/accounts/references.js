@@ -73,6 +73,7 @@ async function list(req, res, next) {
     filters.custom('number', `a.number LIKE '${params.number}%'`);
 
     filters.setGroup('GROUP BY ar.id');
+    filters.setOrder('ORDER BY ar.abbr');
 
     // applies filters and limits to defined sql, get parameters in correct order
     const query = filters.applyQuery(sql);
