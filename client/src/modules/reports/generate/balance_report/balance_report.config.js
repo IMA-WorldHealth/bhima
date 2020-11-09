@@ -25,6 +25,7 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
+
   vm.onChangeLayout = (bool) => {
     vm.reportDetails.useSeparateDebitsAndCredits = bool;
   };

@@ -4,16 +4,16 @@ SET collation_database = 'utf8mb4_unicode_ci';
 SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
 /**
- * the accounts.sql file contains data about : 
+ * the accounts.sql file contains data about :
  *  - account
- *  
+ *
  * dependencies :
  *  - enterprise
  */
 
--- 
+--
 -- Accounts
--- 
+--
 
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `created`, `reference_id`) VALUES
   (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, '2016-10-22 14:37:09', NULL),
@@ -298,8 +298,8 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, '2018-03-14 14:58:55', NULL),
   (358, 5, 1, 61411010, 'Transport personnel', 357, 0, '2018-03-14 14:59:59', NULL);
 
--- 
+--
 -- Attach gain/loss accounts to the enterprise
--- 
+--
 
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
