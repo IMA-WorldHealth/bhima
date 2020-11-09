@@ -1865,7 +1865,6 @@ CREATE TABLE `stock_setting` (
   `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
-  `enable_daily_consumption` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,

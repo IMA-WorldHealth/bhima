@@ -93,19 +93,16 @@ CREATE TABLE `depot_distribution_permission` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 /*
- * @author: lomamech
- * @date: 2020-10-05
- * @desc: Parameter setting of the CMM calculation algorithm to be used #4984
- *
-  ALTER TABLE `stock_setting` ADD COLUMN `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh';
-
-  NOTE, JMC 2020-11-05: No longer need to add this separately.  It is folded into the table creation above.
- */
-
-/*
  * @author: jmcameron
  * @date: 2020-10-30
  * @pull-release: 5075
  * @description:  Add data field for helpdesk info
  */
 CALL add_column_if_missing('enterprise', 'helpdesk', 'TEXT DEFAULT NULL AFTER `po_box`');
+
+/*
+ * @author: jniles
+ * @date: 2020-10-20
+ * @desc: remove the "enable_daily_consumption" option as this is taken care of by our algo choice.
+ */
+ALTER TABLE `stock_setting` DROP COLUMN `enable_daily_consumption`;

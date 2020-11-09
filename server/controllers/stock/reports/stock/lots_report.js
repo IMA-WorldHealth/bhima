@@ -46,7 +46,6 @@ function stockLotsReport(req, res, next) {
   }
 
   options.monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-  options.enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
 
   if (req.session.stock_settings.enable_strict_depot_permission) {
     options.check_user_id = req.session.user.id;
