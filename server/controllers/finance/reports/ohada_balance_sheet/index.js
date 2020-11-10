@@ -198,7 +198,6 @@ function reporting(options, session) {
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
-
         if (item.ref === 'CP') {
           list = ['CA', 'CB', 'CD', 'CE', 'CF', 'CH', 'CI', 'CK', 'CG', 'CL', 'CM'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
