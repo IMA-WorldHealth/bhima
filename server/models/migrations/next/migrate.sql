@@ -2,7 +2,6 @@
  * Migration from the version 1.16.0
  */
 
-
 /*
  * @author: jmcameron
  * @date: 2020-11-05 (updated 2020-11-10)
