@@ -77,7 +77,7 @@ function AccountEditController(
   function handleAccountStore(accounts) {
     accountStore = angular.copy(accounts);
     accountStore.post(vm.rootAccount);
-    vm.accounts = accountStore.data;
+    vm.accounts = accountStore.data.filter(item => item.id !== parseInt(id, 10));
     return AccountStore.types();
   }
 

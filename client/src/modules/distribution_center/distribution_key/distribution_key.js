@@ -114,6 +114,7 @@ function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
     DistributionCenters.getDistributionKey()
       .then((data) => {
         vm.gridOptions.data = data;
+        vm.grouping.unfoldAllGroups();
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
