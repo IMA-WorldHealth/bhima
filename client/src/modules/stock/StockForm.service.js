@@ -126,7 +126,6 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
     return Object.keys(this.cache).length > 0;
   };
 
-
   /**
    * @function errorLineHighlight
    *
@@ -184,6 +183,18 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
     }
 
     return false;
+  };
+
+  /**
+   * @method validate
+   *
+   * @description
+   * Runs the validation function on every row in the stock form's store.
+   *
+   * @returns boolean
+   */
+  StockForm.prototype.validate = function validate() {
+    return this.store.data.every(item => item.validate());
   };
 
   /**
