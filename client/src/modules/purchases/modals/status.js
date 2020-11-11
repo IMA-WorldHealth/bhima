@@ -19,7 +19,7 @@ function PurchaseOrderStatusModalController(Instance, Notify, PurchaseOrder, Dat
 
   // submit the choice
   function submit() {
-    const data = { status_id : vm.status };
+    const data = { status_id : vm.status, date : new Date() };
 
     PurchaseOrder.update(vm.purchase.uuid, data)
       .then(() => {
