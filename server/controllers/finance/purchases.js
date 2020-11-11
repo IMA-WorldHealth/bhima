@@ -559,18 +559,16 @@ function purchaceIntervalleSetting(items) {
       SELECT ROUND(AVG(orderIntervall.diff),2) AS purchase_interval, (COUNT(orderIntervall.text)) AS num_purchase,
       BUID(?) AS inventory_uuid
       FROM (
-        SELECT aggr.refPurchase, aggr.text, aggr.date, aggr.precedent_date,
+        SELECT aggr.text, aggr.date, aggr.precedent_date,
           (TIMESTAMPDIFF(DAY, DATE(aggr.precedent_date), DATE(aggr.date)) *12/365.24) AS diff,
         aggr.inventory_uuid
         FROM (
-          SELECT purch.refPurchase, purch.text, DATE(purch.date) AS date,
-            @last_purchase AS precedent_date, purch.statusText, (@last_purchase := DATE(purch.date)) AS last_purchase,
+          SELECT purch.text, DATE(purch.date) AS date,
+            @last_purchase AS precedent_date, (@last_purchase := DATE(purch.date)) AS last_purchase,
             BUID(purch.inventory_uuid) AS inventory_uuid
           FROM (
-            SELECT map.text AS refPurchase, inv.text, p.date, sta.text AS statusText, inv.uuid AS inventory_uuid
+            SELECT inv.text, p.date, inv.uuid AS inventory_uuid
             FROM purchase AS p
-            JOIN document_map AS map ON map.uuid = p.uuid
-            JOIN purchase_status AS sta ON sta.id = p.status_id
             JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
             JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
             WHERE inv.uuid = ? AND p.status_id IN ( ?, ?, ?, ?)
