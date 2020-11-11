@@ -3,18 +3,21 @@ angular.module('bhima.controllers')
 
 StockFindPurchaseModalController.$inject = [
   '$uibModalInstance', 'PurchaseOrderService', 'NotifyService',
-  'uiGridConstants', 'GridFilteringService', 'ReceiptModal',
-  'bhConstants',
+  'uiGridConstants', 'GridFilteringService', 'bhConstants', 'SessionService',
 ];
 
 function StockFindPurchaseModalController(
-  Instance, Purchase, Notify,
-  uiGridConstants, Filtering, Receipts, bhConstants,
+  Instance, Purchase, Notify, uiGridConstants, Filtering, bhConstants, Session,
 ) {
   const vm = this;
 
   // global
   vm.selectedRow = {};
+
+  const {
+    CONFIRMED,
+    PARTIALLY_RECEIVED,
+  } = bhConstants.purchaseStatus;
 
   /* ======================= Grid configurations ============================ */
   vm.filterEnabled = false;
@@ -22,42 +25,42 @@ function StockFindPurchaseModalController(
 
   const filtering = new Filtering(vm.gridOptions);
 
+  const purchaseReferenceCellTemplate = `
+    <div class="ui-grid-cell-contents">
+      <bh-receipt value="row.entity.uuid" display-value="row.entity.reference" type="purchase">
+    </div>
+    `;
   const columns = [
     {
       field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html',
-    },
-
-    {
+      // cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html',
+      cellTemplate : purchaseReferenceCellTemplate,
+    }, {
       field            : 'date',
-      cellFilter       : 'date:"'.concat(bhConstants.dates.format, '"'),
+      cellFilter       : `date:"${bhConstants.dates.format}"`,
       filter           : { condition : filtering.filterByDate },
       displayName      : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
       sort             : { priority : 0, direction : 'desc' },
-    },
-
-    {
+    }, {
       field            : 'supplier',
       displayName      : 'FORM.LABELS.SUPPLIER',
       headerCellFilter : 'translate',
-    },
-
-    {
+    }, {
       field            : 'cost',
       displayName      : 'STOCK.AMOUNT',
       headerCellFilter : 'translate',
-      cellFilter       : 'currency: grid.appScope.enterprise.currency_id',
+      cellFilter       : `currency:${Session.enterprise.currency_id}`,
       cellClass        : 'text-right',
     },
-
     { field : 'author', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
   ];
 
   vm.gridOptions.columnDefs = columns;
   vm.gridOptions.multiSelect = false;
+  vm.gridOptions.enableColumnMenus = false;
   vm.gridOptions.enableFiltering = vm.filterEnabled;
   vm.gridOptions.onRegisterApi = onRegisterApi;
   vm.toggleFilter = toggleFilter;
@@ -65,7 +68,6 @@ function StockFindPurchaseModalController(
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
-  vm.showReceipt = showReceipt;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -83,15 +85,10 @@ function StockFindPurchaseModalController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  /** get purchase document */
-  function showReceipt(uuid) {
-    Receipts.purchase(uuid);
-  }
-
   /* ======================= End Grid ======================================== */
   function load() {
     vm.loading = true;
-    Purchase.search({ detailed : 1, status_id : [2, 4] })
+    Purchase.search({ status_id : [CONFIRMED, PARTIALLY_RECEIVED] })
       .then(purchases => {
         vm.gridOptions.data = purchases;
       })

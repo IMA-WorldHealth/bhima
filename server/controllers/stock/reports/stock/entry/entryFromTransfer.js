@@ -5,7 +5,7 @@ const ENTRY_FROM_DEPOT_ID = 2;
 
 /**
  * @function fetch
- * @description fetch stock entry from donation
+ * @description fetch stock entry from transfer
  */
 function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   const sql = `
