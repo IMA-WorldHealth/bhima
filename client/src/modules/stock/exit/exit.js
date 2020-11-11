@@ -269,6 +269,9 @@ function StockExitController(
         vm.loading = false;
         vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
+        // Here we check directly if a Depot has inventories in stock available
+        vm.emptyStock = !vm.selectableInventories.length;
+
         // map of inventories by inventory uuid
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
         checkValidity();
