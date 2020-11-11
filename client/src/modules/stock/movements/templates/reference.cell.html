@@ -1,3 +1,7 @@
-<div class="ui-grid-cell-contents">
-  <a href ng-click="grid.appScope.openReceiptModal(row.entity.document_uuid, row.entity.flux_id)">{{row.entity.documentReference}}</a>
+<div class="ui-grid-cell-contents" ng-if="!row.groupHeader">
+  <bh-stock-receipt
+    value="row.entity.document_uuid"
+    flux-id="row.entity.flux_id"
+    display-value="row.entity.documentReference">
+  </bh-stock-receipt>
 </div>
