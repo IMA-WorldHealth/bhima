@@ -15,13 +15,12 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
-          <!-- movements  -->
-          <div class="form-group">
-            <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
-            <br/>
-            <div id="movement_orientation" class="form-group">
+
+          <!-- movement direction  -->
+          <div id="movement_orientation" class="form-group">
             <label class="control-label" translate>STOCK.DIRECTION</label>
-            <div class="col-md-12">
+            <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
+            <div>
               <label class="radio-inline">
                 <input type="radio" name="movement_direction" id="entry" value="0" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.INPUT</span>
@@ -33,8 +32,6 @@
               </label>
             </div>
           </div>
-          </div>
-          <br/>
 
           <!-- reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">
@@ -59,19 +56,19 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
-          <!-- inventory -->	
-          <bh-inventory-select	
-            inventory-uuid="$ctrl.searchQueries.inventory_uuid"	
-            on-select-callback="$ctrl.onSelectInventory(inventory)"	
-            required="false">	
-            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>	
-          </bh-inventory-select>	
+          <!-- inventory -->
+          <bh-inventory-select
+            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
+            on-select-callback="$ctrl.onSelectInventory(inventory)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
+          </bh-inventory-select>
 
-          <!-- lot number  -->	
-          <div class="form-group">	
-            <label class="control-label" translate>STOCK.LOT</label>	
-            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>	
-            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">	
+          <!-- lot number  -->
+          <div class="form-group">
+            <label class="control-label" translate>STOCK.LOT</label>
+            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
+            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
           </div>
 
           <!-- Requisition -->
