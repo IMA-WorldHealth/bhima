@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 StockFindDepotModalController.$inject = [
   '$uibModalInstance', 'DepotService', 'NotifyService', 'data',
-  'StockService', 'SessionService',
+  'StockService', 'SessionService', 'RequisitionHelperService',
 ];
 
-function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Session) {
+function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Session, RequisitionHelpers) {
   const vm = this;
   const enableStrictDepotDistribution = Session.stock_settings.enable_strict_depot_distribution;
 
@@ -43,9 +43,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
   }
 
   function extractDepotFromCollection(depotUuid, collection) {
-    const idx = collection.findIndex(i => (i.uuid === depotUuid));
-    if (idx > -1) { collection.splice(idx, 1); }
-    return collection;
+    return collection.filter(depot => depot.uuid !== depotUuid);
   }
 
   vm.onChangeReference = reference => {
@@ -55,57 +53,33 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
   // submit
   function submit(form) {
     if (vm.reference) {
-      return Stock.stockRequisition.read(null, { reference : vm.reference })
-        .then(requisitionDetails)
+      return RequisitionHelpers.lookupRequisitionByReference(vm.reference)
+        .then(requisition => RequisitionHelpers.isRequisitionForDepot(requisition, Data.depot))
         .then(depotDetails)
         .then(assignDepotRequisition)
-        .catch(Notify.handleError);
+        .catch(err => {
+
+          // bind the error flags as needed
+          vm.requisitionMessage = err.message;
+          vm.requisitionLabel = err.label;
+          Notify.handleError(err);
+        });
     }
 
     if (form.$invalid && !vm.requisition.uuid) { return null; }
     return Instance.close(vm.selected);
   }
 
-  function requisitionDetails([requisition]) {
-    if (!requisition || !requisition.uuid) {
-      vm.requisitionMessage = 'REQUISITION.VOUCHER_NOT_FOUND';
-      vm.requisitionLabel = 'label label-primary';
-      throw new Error('Requisition Not Found');
-    }
-
-    if (requisition.status_key === 'done' || requisition.status_key === 'completed'
-      || requisition.status_key === 'excessive') {
-      vm.requisitionMessage = 'REQUISITION.ALREADY_USED';
-      vm.requisitionLabel = 'label label-success';
-      throw new Error('Requisition Already Used');
-    }
-
-    if (requisition.status_key === 'cancelled') {
-      vm.requisitionMessage = 'REQUISITION.CANCELLED';
-      vm.requisitionLabel = 'label label-danger';
-      throw new Error('Requisition Cancelled');
-    }
-
-    return Stock.stockRequisition.read(requisition.uuid, { balance : true });
-  }
-
   function depotDetails(requisition) {
     vm.requisition = requisition;
-
-    if (vm.requisition.depot_uuid !== Data.depot.uuid) {
-      vm.requisitionMessage = 'REQUISITION.NOT_FOR_DEPOT';
-      vm.requisitionLabel = 'label label-warning';
-      throw new Error('This requisition is not for this depot');
-    }
-
     return Depot.read(null, { uuid : vm.requisition.requestor_uuid });
   }
 
   function assignDepotRequisition([depot]) {
     if (Data.depot.uuid === vm.selected.uuid) {
-      vm.requisitionMessage = 'REQUISITION.NOT_FOR_THE_SAME_DEPOT';
-      vm.requisitionLabel = 'label label-danger';
-      throw new Error('The requisition cannot be for the same depot');
+      const err = new Error('REQUISITION.NOT_FOR_THE_SAME_DEPOT');
+      err.label = 'label label-danger';
+      throw err;
     }
 
     vm.selected = depot;
@@ -117,5 +91,4 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
   function cancel() {
     Instance.close(vm.selected);
   }
-
 }

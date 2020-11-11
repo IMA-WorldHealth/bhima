@@ -42,10 +42,11 @@ function list(req, res, next) {
   }
 
   const params = db.convert(req.query, ['uuid']);
-  const filters = new FilterParser(params);
+  const filters = new FilterParser({ ...params, tableAlias : 's' });
 
-  filters.equals('uuid', 'uuid', 's');
-  filters.equals('name', 'name', 's');
+  filters.equals('uuid');
+  filters.equals('name');
+  filters.equals('hidden');
   filters.setOrder('ORDER BY s.name');
 
   const query = filters.applyQuery(sql);
