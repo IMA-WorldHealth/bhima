@@ -41,9 +41,13 @@ function StockInventoryAdjustmentController(
   vm.maxDate = new Date();
 
   // bind methods
-  vm.configureItem = configureItem;
-  vm.checkValidity = checkValidity;
   vm.submit = submit;
+
+  const expirationDateCellTemplate = `
+    <div class="ui-grid-cell-contents">
+      <span am-time-ago="row.entity.expiration_date"></span>
+    </div>
+  `;
 
   // grid columns
   const columns = [
@@ -58,26 +62,22 @@ function StockInventoryAdjustmentController(
       width : 120,
       displayName : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
     }, {
-      field : 'description',
+      field : 'text',
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
       enableSorting : true,
     }, {
       field : 'label',
       width : 150,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventory-adjustment/templates/lot.tmpl.html',
       enableSorting : true,
     }, {
-      field : 'available_lot',
+      field : 'old_quantity',
       width : 150,
       displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
       enableFiltering : false,
     }, {
       field : 'quantity',
@@ -92,7 +92,7 @@ function StockInventoryAdjustmentController(
       width : 150,
       displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
+      cellTemplate : expirationDateCellTemplate,
       enableFiltering : false,
     },
   ];
@@ -121,23 +121,6 @@ function StockInventoryAdjustmentController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-  // add items
-  function addItems(n) {
-    vm.Stock.addItems(n);
-    checkValidity();
-  }
-
-  // configure item
-  function configureItem(item) {
-    item._initialised = true;
-    // get lots
-    Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
-      .then((lots) => {
-        item.lots = lots;
-      })
-      .catch(Notify.handleError);
-  }
-
   function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
@@ -161,24 +144,31 @@ function StockInventoryAdjustmentController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
-        addItems(lots.length);
-        vm.Stock.store.data.forEach((item, index) => {
-          const lot = lots[index];
-          item.inventory = {
-            inventory_uuid : lot.inventory_uuid,
-            text : lot.text,
-            code : lot.code,
-          };
-          item.lot = lot;
-          item.quantity = lot.quantity;
-          // added for sorting on these columns
-          item.code = lot.code;
-          item.description = lot.text;
-          item.label = lot.label;
-          // set item lots details
-          configureItem(item);
-        });
-        checkValidity();
+
+        const n = lots.length;
+        let i = 0;
+
+        while (i < n) {
+          const lot = lots[i];
+          const row = vm.Stock.addItems(1);
+
+          row.configure(lot);
+
+          Object.assign(row, {
+            old_quantity : row.quantity,
+
+            // overwrite the default validation function as it doesn't make sense in
+            // this case.
+            validate() {
+              return this.quantity >= 0;
+            },
+          });
+
+          i++;
+        }
+
+        // run validation on all rows
+        vm.Stock.validate();
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -186,23 +176,12 @@ function StockInventoryAdjustmentController(
       });
   }
 
-  // check validity
-  function checkValidity() {
-    const lotsExists = vm.Stock.hasValidLots();
-
-    vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
-  }
-
   // ================================= Submit ================================
   function submit(form) {
     // check stock validity
-    checkValidity();
+    const isValid = vm.Stock.validate();
 
-    if (!vm.validForSubmit || form.$invalid) { return 0; }
-
-    if (vm.Stock.hasDuplicatedLots()) {
-      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
-    }
+    if (!isValid || form.$invalid) { return 0; }
 
     const movement = {
       depot_uuid : vm.depot.uuid,
@@ -214,10 +193,8 @@ function StockInventoryAdjustmentController(
     };
 
     const lots = vm.Stock.store.data.map((row) => {
-      const out = row.lot;
-      out.oldQuantity = out.quantity;
-      out.quantity = row.quantity;
-      return out;
+      row.oldQuantity = row.old_quantity;
+      return row;
     });
 
     movement.lots = lots.filter(lot => {
@@ -235,7 +212,8 @@ function StockInventoryAdjustmentController(
         // we will render the "Articles in Stock" report for this depot.
         ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
 
-        vm.Stock.store.clear();
+        startup();
+        setupStock();
       })
       .catch(Notify.handleError);
   }

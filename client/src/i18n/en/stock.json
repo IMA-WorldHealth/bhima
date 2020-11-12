@@ -172,7 +172,7 @@
       "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
     },
     "STOCK_MOVEMENTS" : "View Stock Movements",
-	"SUCCESS"         : "Successfully created a movement",
+  "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date",
@@ -282,9 +282,9 @@
   },
   "INVENTORY_ADJUSTMENT":{
     "TITLE":"Stock Inventory Adjustment",
-    "DESC":"This inventory adjustment module allows you to define article stocks; after this operation all the lots which are not defined here for the selected articles will be emptied",
+    "DESC":"The inventory adjustment module allows you to adjust the quantities in stock of all lots in a depot at once.  Lot quantities will be increased or decreased to match the new quantity specified.",
     "NEW_QUANTITY":"New Quantity",
     "OLD_QUANTITY":"Old Quantity",
-    "NO_CHANGE":"You have made no stock adjustments"
+    "NO_CHANGE":"You have made no stock adjustments."
   }
 }
