@@ -51,10 +51,12 @@ angular.module('bhima.routes')
       'recoveryCapacity',
       'stock_movement_report',
       'stock_expiration_report',
+      'stock_changes',
     ];
 
     function resolveReportData($stateParams, SavedReports) {
       const reportKey = $stateParams.key;
+
       return SavedReports.requestKey(reportKey)
         .then((results) => {
           const data = results[0];
