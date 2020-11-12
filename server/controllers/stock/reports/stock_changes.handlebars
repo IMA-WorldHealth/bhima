@@ -1,0 +1,52 @@
+{{> head title="REPORT.STOCK_CHANGES.TITLE" }}
+
+<body class="container">
+  {{> header}}
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <h2 class="text-center">
+        {{translate 'REPORT.STOCK_CHANGES.TITLE'}}
+      </h2>
+
+      <h3 class="text-center">{{depot.text}}</h3>
+
+      <p class="text-center">{{date period.start_date}} - {{date period.end_date}}</p>
+
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr>
+            <th>{{translate "STOCK.LOT"}}</th>
+            <th>{{translate "STOCK.EXPIRATION_DATE"}}</th>
+            <th>{{translate "STOCK.QUANTITY"}}</th>
+            <th>{{translate "STOCK.QUANTITY_CONSUMED"}}</th>
+            <th>{{translate "STOCK.QUANTITY_LOST"}}</th>
+            <th>{{translate "STOCK.QUANTITY_REMAINING"}}</th>
+          </tr>
+        </thead>
+
+        {{#each data}}
+          <tbody>
+          {{#with @key as |inventory|}}
+            <tr>
+              <th colspan="4">{{inventory}}</th>
+              <th colspan="2"><u>{{translate "STOCK.DAYS_OF_STOCK_OUT"}}: <span style="min-width:300px;">&nbsp;</span></u></th>
+            </tr>
+          {{/with}}
+            {{#each this as |lot|}}
+              <tr>
+                <td>{{lot.label}}</td>
+                <td class="text-right">{{date lot.expiration_date}}</td>
+                <td class="text-right">{{lot.quantity}}</td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+              </tr>
+            {{/each}}
+          </tbody>
+        {{/each}}
+      </table>
+    </div>
+  </div>
+</body>

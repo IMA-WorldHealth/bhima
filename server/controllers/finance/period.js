@@ -4,6 +4,7 @@ const FilterParser = require('../../lib/filter');
 
 exports.list = list;
 exports.details = details;
+exports.lookupPeriodById = lookupPeriodById;
 
 function list(req, res, next) {
   const params = req.query;
@@ -31,14 +32,18 @@ function list(req, res, next) {
     .catch(next);
 }
 
-function details(req, res, next) {
-  const { id } = req.params;
+function lookupPeriodById(id) {
   const query = `
     SELECT p.id, p.fiscal_year_id, p.number, p.start_date, p.end_date, p.locked
     FROM period p WHERE id = ?;
   `;
 
-  db.one(query, [id])
+  return db.one(query, [id]);
+}
+
+function details(req, res, next) {
+  const { id } = req.params;
+  lookupPeriodById(id)
     .then(period => {
       res.status(200).json(period);
     })
