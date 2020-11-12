@@ -479,6 +479,10 @@
       "PAYMENTS" : "Payments",
       "AVERAGE_COST" : "Average Cost",
       "RECOVERY_CAPACITY" : "Recovery Capacity"
+    },
+    "STOCK_CHANGES" : {
+      "TITLE" : "Stock Changes Report",
+      "DESCRIPTION" : "This report allows you to record changes to the stock of a depot by comparing the amount in the system to the amount found on the shelves."
     }
   }
 }
