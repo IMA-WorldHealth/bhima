@@ -3,6 +3,8 @@ const {
   src, dest, series, parallel,
 } = require('gulp');
 
+const { readFileSync } = require('fs');
+
 const template = require('gulp-template');
 const revRewrite = require('gulp-rev-rewrite');
 const mergeJson = require('gulp-merge-json');
@@ -36,7 +38,7 @@ function collectRevisionsIntoManifest(cb) {
 // rewrite source HTML files with build versioned files and assets
 // usually run as the final step linking the build together
 function templateHTMLForProduction() {
-  const manifest = src(`${CLIENT_FOLDER}/rev-manifest.json`);
+  const manifest = readFileSync(`${CLIENT_FOLDER}/rev-manifest.json`);
   return src('client/src/index.html')
     .pipe(template({ isProduction, isDevelopment }))
     .pipe(revRewrite({ manifest }))
@@ -56,7 +58,7 @@ const templateHTML = isProduction
 const client = series(
   parallel(js.compile, css.compile, i18n.compile, vendor, buildStatic.compile, fonts),
   collectRevisionsIntoManifest,
-  templateHTML
+  templateHTML,
 );
 
 const build = parallel(client, server);
