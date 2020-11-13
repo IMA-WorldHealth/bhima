@@ -728,6 +728,10 @@ growl-notification.fading.ng-leave.ng-leave-active {
   color : #ff0000 !important;
 }
 
+.form-indent {
+  margin-left : 1.5em;
+}
+
 /* 'Card' Utility class */
 .text-float-util {
   text-align : right;
