@@ -601,7 +601,6 @@ function listMovements(req, res, next) {
  */
 function dashboard(req, res, next) {
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-  const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
   const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
   const dbPromises = [];
@@ -633,7 +632,6 @@ function dashboard(req, res, next) {
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
             monthAverageConsumption,
-            enableDailyConsumption,
           ));
         } else if (status === 'out_of_stock') {
           const paramsFilter = {
@@ -645,7 +643,6 @@ function dashboard(req, res, next) {
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
             monthAverageConsumption,
-            enableDailyConsumption,
           ));
         } else if (status === 'at_risk_expiration') {
           const paramsGetLots = {
@@ -672,7 +669,6 @@ function dashboard(req, res, next) {
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
             monthAverageConsumption,
-            enableDailyConsumption,
             averageConsumptionAlgo,
           ));
         } else if (status === 'over_max') {
@@ -686,7 +682,32 @@ function dashboard(req, res, next) {
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
             monthAverageConsumption,
-            enableDailyConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'require_po') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '1',
+            require_po : '1',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'minimum_reached') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'minimum_reached',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
             averageConsumptionAlgo,
           ));
         }
