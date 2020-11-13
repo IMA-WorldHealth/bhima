@@ -20,35 +20,35 @@ function StockDashBoardController(Users, Session, Depots, Notify, StockDashBoard
 
   // fired on startup
   function startup() {
-    Depots.read(null)
-      .then(data => {
-        vm.depots = data;
+    // Depots.read(null)
+    //   .then(data => {
+    //     vm.depots = data;
 
-        return Users.depots(userId);
-      })
-      .then(data => {
+    //     return Users.depots(userId);
+    //   })
+    //   .then(data => {
 
-        vm.depots.forEach(depot => {
-          data.forEach(item => {
-            if (depot.uuid === item) {
-              vm.userDepots.push(depot);
-              depotUuids.push(depot.uuid);
-            }
-          });
-        });
+    //     vm.depots.forEach(depot => {
+    //       data.forEach(item => {
+    //         if (depot.uuid === item) {
+    //           vm.userDepots.push(depot);
+    //           depotUuids.push(depot.uuid);
+    //         }
+    //       });
+    //     });
 
-        return StockDashBoard.read({ depots : depotUuids });
-      })
-      .then(dataDashboard => {
-        vm.dataDashboard = dataDashboard;
+    //     return StockDashBoard.read({ depots : depotUuids });
+    //   })
+    //   .then(dataDashboard => {
+    //     vm.dataDashboard = dataDashboard;
 
-        console.log('NEWWWwwwwwwwww');
-        console.log(vm.dataDashboard);
-      })
-      .catch(Notify.handleError)
-      .finally(() => {
-        vm.loading = false;
-      });
+    //     console.log('NEWWWwwwwwwwww');
+    //     console.log(vm.dataDashboard);
+    //   })
+    //   .catch(Notify.handleError)
+    //   .finally(() => {
+    //     vm.loading = false;
+    //   });
 
   }
 

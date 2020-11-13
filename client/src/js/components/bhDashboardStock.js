@@ -4,27 +4,42 @@ angular.module('bhima.components')
     controller  : DashboardStock,
     transclude  : true,
     bindings    : {
-      type        : '<',
-      label : '@?',
+      status  : '@?',
+      label   : '@?',
     },
   });
 
 DashboardStock.$inject = [
-  'GradeService', 'NotifyService',
+  'StockDashBoardService', 'NotifyService',
 ];
 
 /**
  * Dashboard Stock Controller
  *
  */
-function DashboardStock(Grades, Notify) {
+function DashboardStock(StockDashBoard, Notify) {
   const $ctrl = this;
-  $ctrl.label = $ctrl.label || 'FORM.LABELS.GRADE';
+
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
-    Grades.read()
-      .then((grades) => {
-        $ctrl.grades = grades;
+
+    if ($ctrl.status === 'expired') {
+      $ctrl.display = 'fa fa-minus-circle icon-expired';
+    } else if ($ctrl.status === 'out_of_stock') {
+      $ctrl.display = 'fa fa-battery-empty icon-out-of-stock';
+    } else if ($ctrl.status === 'at_risk_expiration') {
+      $ctrl.display = 'fa fa-exclamation-triangle icon-at-risk-of-expiring';
+    }
+
+    StockDashBoard.read({ status : $ctrl.status })
+      .then((data) => {
+        console.log('VOICI LES DONNEEEEeeeeeeeee');
+        console.log(data);
+
+        
+
+
+        $ctrl.data = data;
       })
       .catch(Notify.handleError);
   };

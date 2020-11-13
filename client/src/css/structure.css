@@ -885,7 +885,7 @@ a[disabled] {
 }
 
 .expired {
-  color: #ff000083 !important;
+  background-color: #ff000083 !important;
 }
 
 .icon-expired {
@@ -897,7 +897,7 @@ a[disabled] {
 }
 
 .icon-at-risk {
-  background-color: #ffff6686 !important;
+  color: #ffff6686 !important;
 }
 
 .at-risk-of-expiring {
