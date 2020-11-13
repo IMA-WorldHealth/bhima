@@ -1,3 +1,3 @@
-&raquo; [Home](../index.md) / [Inventory Management](./index.md) / Inventory
+&raquo; [Home](../index.md) / [Inventory Management](./index.md) / Stock Settings
 
 # Stock Settings
