@@ -15,49 +15,50 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
+        <!-- project section -->
+        <div class="panel panel-primary">
+          <div class="panel-heading expired">
+            <b><i class="fa fa-minus-circle"></i> <span translate>STOCK.DASHBOARD.EXPIRED_PRODUCTS</span></b> :
+          </div>
+          <div class="panel-body" style="height : 290px; overflow-y : auto;">
+            <ul ng-if="StockDashBoardCtrl.dataDashboard.expiredData.length">
+              <li ng-repeat="expired in StockDashBoardCtrl.dataDashboard.expiredData">
+                <span>{{ expired.depot_text }}</span> : 
+                <strong>(<span>{{ expired.number_item | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
           <!-- enterprise main info  -->
-          <div class="panel panel-warning">
-            <div class="panel-heading">
+          <div class="panel panel-primary">
+            <div class="panel-heading out-of-stock">
               <b>
-                <i class="fa fa-exclamation-triangle"></i> <span translate>STOCK.RISK_OF_EXPIRY</span> :
-                <span class="text-uppercase" ng-if="StockDashBoardCtrl.enterprise.name">
-                  {{ StockDashBoardCtrl.enterprise.name }}
-                </span>
+                <i class="fa fa-battery-empty"></i> <span translate>STOCK.DASHBOARD.OUT_OF_STOCK</span> :
               </b>
             </div>
 
             <div class="panel-body" style="height : 290px; overflow-y : auto;">
-              PANELAAAA SCROOL
+              <ul ng-if="StockDashBoardCtrl.dataDashboard.expiredData.length">
+                <li ng-repeat="expired in StockDashBoardCtrl.dataDashboard.stockOutData">
+                  <span>{{ expired.depot_text }}</span> : 
+                  <strong>(<span>{{ expired.number_item | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+                </li>
+              </ul>
             </div>
           </div>
 
-      </div>
-
-      <!-- right side section  -->
-      <div class="col-md-6">
-
-        <!-- project section -->
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
-          </div>
-
-          <div class="panel-body" style="height : 290px; overflow-y : auto;">
-            PANELAAAA SCROOL
-          </div>          
-        </div>
       </div>
 
       <!-- enterprise form  -->
       <div class="col-md-6">
         <!-- enterprise main info  -->
         <div class="panel panel-primary">
-          <div class="panel-heading">
+          <div class="panel-heading at-risk-of-expiring">
             <b>
-              <i class="fa fa-building"></i> <span translate>TREE.ENTERPRISE</span> :
-              <span class="text-uppercase" ng-if="StockDashBoardCtrl.enterprise.name">
-                {{ StockDashBoardCtrl.enterprise.name }}
-              </span>
+              <i class="fa fa-exclamation-triangle"></i> <span translate>STOCK.DASHBOARD.PRODUCTS_AT_RISK_EXPIRATION</span> :
             </b>
           </div>
 

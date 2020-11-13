@@ -601,27 +601,32 @@ function listMovements(req, res, next) {
  */
 function dashboard(req, res, next) {
   const { depots } = req.query;
-
-  console.log('DEPOTTTTTTTTz');
-  console.log(depots);
+  const expiredData = [];
+  const stockOutData = [];
 
   const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
   const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
 
   const dbPromises = [];
 
-  depots.forEach(item => {
+  depots.forEach(depot => {
     const expired = {
       dateTo : new Date(),
-      depot_uuid : item,
+      depot_uuid : depot,
       includeEmptyLot : 0,
       is_expired : 1,
     };
 
     const stockOut = {
       dateTo : new Date(),
-      depot_uuid : item,
+      depot_uuid : depot,
       status : 'stock_out',
+    };
+
+    const overMaximum = {
+      dateTo : new Date(),
+      depot_uuid : depot,
+      status : 'over_maximum',
     };
 
     dbPromises.push(core.getInventoryQuantityAndConsumption(expired, monthAverageConsumption, enableDailyConsumption));
@@ -630,39 +635,65 @@ function dashboard(req, res, next) {
 
   Promise.all(dbPromises)
     .then((rows) => {
-      // console.log('ROWWWWwwwwwwww NB LIGNEEEEEEee');
-      // console.log(rows);
+      console.log('LA TAILLEEEEeeeeeeee');
+      console.log(rows.length);
 
-      
+      depots.forEach((depot) => {
+        let countExpired = 0;
+        let countOutStock = 0;
+        let depotText = '';
 
-      res.status(200).json(rows);
+        // console.log('')
+
+        rows.forEach((row, index) => {
+          console.log('NOUVEEEEeeeeeeee: INDEX');
+          console.log(index);
+          console.log('ROWWWWWWWWwwwwwwwwww');
+          console.log(row);
+
+        });
+
+        // // EXIRED
+        // rows[0].forEach(row => {
+        //   if (depot === row.depot_uuid) {
+        //     depotText = row.depot_text;
+        //     countExpired++;
+        //   }
+        // });
+
+        // if (countExpired > 0) {
+        //   expiredData.push({
+        //     depot_uuid : depot,
+        //     depot_text : depotText,
+        //     number_item : countExpired,
+        //   });
+        // }
+
+        // // STOCK OUT DATA
+        // rows[1].forEach(row => {
+        //   if (depot === row.depot_uuid) {
+        //     depotText = row.depot_text;
+        //     countOutStock++;
+        //   }
+        // });
+
+        // if (countOutStock > 0) {
+        //   stockOutData.push({
+        //     depot_uuid : depot,
+        //     depot_text : depotText,
+        //     number_item : countOutStock,
+        //   });
+        // }
+      });
+
+      const dataDashboard = {
+        expiredData, stockOutData,
+      };
+
+      res.status(200).json(dataDashboard);
     })
-    .catch(next)
-    .done();
-
-  //   KKKKkkkkkkkkk
-  // {
-  //   dateTo: '2020-08-29T18:54:42.441Z',
-  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
-  //   includeEmptyLot: '0',
-  //   is_expired: '1'
-  // }
-  // KKKKkkkkkkkkk
-  // {
-  //   dateTo: '2020-08-29T18:54:42.441Z',
-  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
-  //   includeEmptyLot: '0',
-  //   is_expired: '1'
-  // }
-  // KKKKkkkkkkkkk
-  // {
-  //   dateTo: '2020-08-29T18:54:42.441Z',
-  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
-  //   status: 'stock_out'
-  // }
-
+    .catch(next);
 }
-
 /**
  * GET /stock/lots/depots/
  * returns list of each lots in each depots with their quantities
@@ -704,6 +735,9 @@ async function listLotsDepot(req, res, next) {
         lot.tags = tagMap[lot.uuid] || [];
       });
     }
+
+    console.log('DATAAAAAAAAAAAAaaaaaaaaa');
+    console.log(data);
 
     res.status(200).json(data);
   } catch (error) {

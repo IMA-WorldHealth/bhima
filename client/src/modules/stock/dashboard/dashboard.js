@@ -16,7 +16,7 @@ function StockDashBoardController(Users, Session, Depots, Notify, StockDashBoard
 
   const userId = Session.user.id;
   vm.userDepots = [];
-  const depots = [];
+  const depotUuids = [];
 
   // fired on startup
   function startup() {
@@ -32,19 +32,18 @@ function StockDashBoardController(Users, Session, Depots, Notify, StockDashBoard
           data.forEach(item => {
             if (depot.uuid === item) {
               vm.userDepots.push(depot);
-              depots.push(depot.uuid);
+              depotUuids.push(depot.uuid);
             }
           });
         });
 
-        // console.log('PLUSSSSSsssssssssss');
-        // console.log(vm.userDepots);
-
-        return StockDashBoard.read({ depots });
+        return StockDashBoard.read({ depots : depotUuids });
       })
-      .then(results => {
+      .then(dataDashboard => {
+        vm.dataDashboard = dataDashboard;
 
-        // vm.depots = data;
+        console.log('NEWWWwwwwwwwww');
+        console.log(vm.dataDashboard);
       })
       .catch(Notify.handleError)
       .finally(() => {
