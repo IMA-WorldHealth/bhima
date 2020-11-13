@@ -600,6 +600,10 @@ function listMovements(req, res, next) {
  * returns data for stock dashboard
  */
 function dashboard(req, res, next) {
+  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
+  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
+
   const dbPromises = [];
   let depotsByUser = [];
 
@@ -616,10 +620,6 @@ function dashboard(req, res, next) {
   db.exec(getDepotsByUser, [req.session.user.id])
     .then((depots) => {
       depotsByUser = depots;
-
-      const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-      const enableDailyConsumption = req.session.stock_settings.enable_daily_consumption;
-      const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
       depots.forEach(depot => {
         if (status === 'expired') {
@@ -661,13 +661,40 @@ function dashboard(req, res, next) {
             null,
             paramsGetLots,
           ));
+        } else if (status === 'at_risk_out_stock') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'security_reached',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            enableDailyConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'over_max') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'over_maximum',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            enableDailyConsumption,
+            averageConsumptionAlgo,
+          ));
         }
       });
 
       return Promise.all(dbPromises);
     })
     .then((rows) => {
-
       depotsByUser.forEach((depot) => {
         let count = 0;
         depot.count = count;

@@ -8,8 +8,12 @@
 
       <ul ng-if="$ctrl.data.length">
         <li ng-repeat="data in $ctrl.data">
-          <span>{{ data.depot_text }}</span> : 
-          <strong>(<span>{{ data.count | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+          <span>{{ data.depot_text }} </span> :
+
+          <a ui-sref="{{ data.ahref }}">
+            <strong>(<span>{{ data.count | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+          </a>
+
         </li>
       </ul>
     </div>

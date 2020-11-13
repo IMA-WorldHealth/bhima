@@ -16,6 +16,7 @@
       "EXPIRED_PRODUCTS": "Produits périmés",
       "PRODUCTS_AT_RISK_EXPIRATION": "Produits à risque de péremption",
       "OUT_OF_STOCK" : "Produits en rupture de stock",
+      "OVER_MAX"      : "Stock Max Depassé",
       "PRODUCTS_AT_RISK_OUT_STOCK" : "Produits à risque de rupture de stock",
       "PRODUCTS_IN_OVERSTOCK" : "Produits en surstock"
     },    
