@@ -163,7 +163,8 @@ INSERT INTO unit VALUES
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
   (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
   (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
-  (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting');
+  (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
+  (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -232,7 +233,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE'),
   ('invoiceRegistryReport', 'Invoice Registry as report'),
   ('stock_movement_report', 'Stock Movement Report'),
-  ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE');
+  ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
+  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
