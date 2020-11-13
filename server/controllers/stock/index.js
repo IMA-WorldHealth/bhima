@@ -22,7 +22,6 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
-const { date } = require('../../lib/template/helpers/dates');
 
 // expose to the API
 exports.createStock = createStock;
