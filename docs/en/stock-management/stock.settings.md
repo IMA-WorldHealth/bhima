@@ -8,4 +8,4 @@ There a number of settings that affect how the BHIMA software deals with stock m
 
 <img src="images/stock-settings-menu.png"
      alt="Stock Settings Menu"
-     style="float: right; margin-left: 10px;" />
+     style="width: 313px; float: right; margin-left: 10px;" />
