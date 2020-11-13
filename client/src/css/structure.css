@@ -885,10 +885,18 @@ a[disabled] {
 }
 
 .expired {
-  background-color: #ff000083 !important;
+  color: #ff000083 !important;
+}
+
+.icon-expired {
+  color: #ff000083 !important;
 }
 
 .at-risk {
+  background-color: #ffff6686 !important;
+}
+
+.icon-at-risk {
   background-color: #ffff6686 !important;
 }
 
@@ -896,9 +904,17 @@ a[disabled] {
   background-color: #ff880191 !important;
 }
 
+.icon-at-risk-of-expiring {
+  color: #ff880191 !important;
+}
+
 .out-of-stock {
   /* text-decoration : line-through; */
   background-color: #cc00ff8f !important;
+}
+
+.icon-out-of-stock {
+  color: #cc00ff8f !important;
 }
 
 .dropdown-menu {

@@ -630,7 +630,7 @@ function dashboard(req, res, next) {
     };
 
     dbPromises.push(core.getInventoryQuantityAndConsumption(expired, monthAverageConsumption, enableDailyConsumption));
-    dbPromises.push(core.getInventoryQuantityAndConsumption(stockOut, monthAverageConsumption, enableDailyConsumption));
+    // dbPromises.push(core.getInventoryQuantityAndConsumption(stockOut, monthAverageConsumption, enableDailyConsumption));
   });
 
   Promise.all(dbPromises)
@@ -653,37 +653,37 @@ function dashboard(req, res, next) {
 
         });
 
-        // // EXIRED
-        // rows[0].forEach(row => {
-        //   if (depot === row.depot_uuid) {
-        //     depotText = row.depot_text;
-        //     countExpired++;
-        //   }
-        // });
+        // EXIRED
+        rows[0].forEach(row => {
+          if (depot === row.depot_uuid) {
+            depotText = row.depot_text;
+            countExpired++;
+          }
+        });
 
-        // if (countExpired > 0) {
-        //   expiredData.push({
-        //     depot_uuid : depot,
-        //     depot_text : depotText,
-        //     number_item : countExpired,
-        //   });
-        // }
+        if (countExpired > 0) {
+          expiredData.push({
+            depot_uuid : depot,
+            depot_text : depotText,
+            number_item : countExpired,
+          });
+        }
 
-        // // STOCK OUT DATA
-        // rows[1].forEach(row => {
-        //   if (depot === row.depot_uuid) {
-        //     depotText = row.depot_text;
-        //     countOutStock++;
-        //   }
-        // });
+        // STOCK OUT DATA
+        rows[1].forEach(row => {
+          if (depot === row.depot_uuid) {
+            depotText = row.depot_text;
+            countOutStock++;
+          }
+        });
 
-        // if (countOutStock > 0) {
-        //   stockOutData.push({
-        //     depot_uuid : depot,
-        //     depot_text : depotText,
-        //     number_item : countOutStock,
-        //   });
-        // }
+        if (countOutStock > 0) {
+          stockOutData.push({
+            depot_uuid : depot,
+            depot_text : depotText,
+            number_item : countOutStock,
+          });
+        }
       });
 
       const dataDashboard = {

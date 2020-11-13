@@ -1,0 +1,19 @@
+<div bh-dashboard-stock ng-model-options="{ updateOn: 'default' }">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <b><i class="fa fa-minus-circle icon-expired"></i> <span translate> {{$ctrl.label}} </span></b> :
+    </div>
+
+    <div class="panel-body" style="height : 290px; overflow-y : auto;">
+      - Pharmacie n' 1 Aspirine 400 dl <br>
+      - Pharmacie n' 2 Quinine 300 Mg  <br>
+
+      <ul ng-if="StockDashBoardCtrl.dataDashboard.expiredData.length">
+        <li ng-repeat="expired in StockDashBoardCtrl.dataDashboard.expiredData">
+          <span>{{ expired.depot_text }}</span> : 
+          <strong>(<span>{{ expired.number_item | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
