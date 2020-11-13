@@ -142,6 +142,7 @@
     "SERVICE" : "Services",
     "SIMPLE_VOUCHER" : "Simple Voucher",
     "STAFFING_INDICES_MANAGEMENT" : "Staffing indices management",
+    "STOCK_DASHBOARD": "Dashboard",
     "STOCK_CONSUMPTION_GRAPH_REPORT": "Stock Consumption's graph report",
     "STOCK_MOVEMENT_REPORT": "[Stock] Graphical Movements Report",
     "STOCK_ENTRY_REPORT":"[Stock] Entries Report",
