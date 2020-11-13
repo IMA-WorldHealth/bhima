@@ -134,6 +134,9 @@ function StockLotsController(
       .then((lots) => {
         const current = new Date();
 
+        console.log('SIDDDDDDddddddd');
+        console.log(lots);
+
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
