@@ -21,7 +21,7 @@ function DashboardStock(StockDashBoard, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    $ctrl.required = $ctrl.required || false;
+    $ctrl.loading = true;
 
     if ($ctrl.status === 'expired') {
       $ctrl.display = 'fa fa-minus-circle icon-expired';
@@ -46,10 +46,22 @@ function DashboardStock(StockDashBoard, Notify) {
       $ctrl.keyInventoryFilter = 'over_maximum';
       $ctrl.label = 'STOCK.STATUS.OVER_MAX';
 
+    } else if ($ctrl.status === 'require_po') {
+      $ctrl.display = 'fa fa-shopping-cart text-success';
+      $ctrl.keyInventoryFilter = 'require_po';
+      $ctrl.label = 'STOCK.REQUIRES_PO';
+    } else if ($ctrl.status === 'minimum_reached') {
+      $ctrl.display = 'fa fa-battery-quarter text-info';
+      $ctrl.keyInventoryFilter = 'minimum_reached';
+      $ctrl.label = 'STOCK.STATUS.MINIMUM';
+
     }
 
     StockDashBoard.read({ status : $ctrl.status })
       .then((data) => {
+        $ctrl.loading = false;
+        $ctrl.stockNotFound = !data.length;
+
         data.forEach(element => {
           if (($ctrl.status === 'expired') || ($ctrl.status === 'at_risk_expiration')) {
             element.ahref = `stockLots({ filters : [
@@ -59,6 +71,19 @@ function DashboardStock(StockDashBoard, Notify) {
                 cacheable:false },
               { key : 'includeEmptyLot', value : 0 },
               { key : '${$ctrl.keyLotFilter}', value : 1, cacheable:false }
+            ]})`;
+          } else if ($ctrl.status === 'require_po') {
+            element.ahref = `stockInventories({ filters : [
+              { key : 'period', value : 'allTime'},
+              { key : 'includeEmptyLot', value : 1 },
+              { key           : 'depot_uuid',
+                value         : '${element.depot_uuid}',
+                displayValue  : '${element.depot_text}',
+                cacheable     : false },
+              {
+                key : 'require_po', value : 1,
+                cacheable : false
+              }
             ]})`;
           } else {
             element.ahref = `stockInventories({ filters : [
@@ -73,8 +98,7 @@ function DashboardStock(StockDashBoard, Notify) {
                 displayValue : '${$ctrl.label}',
                 cacheable : false
               }
-            ]})
-            `;
+            ]})`;
           }
         });
 

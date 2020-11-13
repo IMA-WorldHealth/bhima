@@ -11,7 +11,6 @@ StockDashBoardController.$inject = [
  * This controller binds the basic CRUD operations on the enterprise.
  */
 function StockDashBoardController() {
-
   // fired on startup
   function startup() {
 
