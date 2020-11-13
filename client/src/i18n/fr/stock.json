@@ -160,7 +160,7 @@
     "RECEPTION_DONATION" : "Entrée de stock en provenance d'une donation",
     "REQUIRES_PO"     : "Nécessitant une commande d'achat",
     "RESPONSIBLE"     : "Gestionnaire du stock",
-    "RISK_OF_EXPIRATION" : "Risque de péremption",
+    "RISK_OF_EXPIRY"  : "Risque de péremptions",
     "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",

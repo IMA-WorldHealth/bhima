@@ -22,6 +22,7 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
+const { date } = require('../../lib/template/helpers/dates');
 
 // expose to the API
 exports.createStock = createStock;
@@ -47,6 +48,9 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
 
 // stock transfers
 exports.getStockTransfers = getStockTransfers;
+
+// stock dashboard
+exports.dashboard = dashboard;
 
 /**
  * POST /stock/lots
@@ -589,6 +593,74 @@ function listMovements(req, res, next) {
       res.status(200).json(rows);
     })
     .catch(next);
+}
+
+/**
+ * GET /stock/dashboard
+ * returns data for stock dashboard
+ */
+function dashboard(req, res, next) {
+  const { depots } = req.query;
+
+  console.log('DEPOTTTTTTTTz');
+  console.log(depots);
+
+  const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
+  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+
+  const dbPromises = [];
+
+  depots.forEach(item => {
+    const expired = {
+      dateTo : new Date(),
+      depot_uuid : item,
+      includeEmptyLot : 0,
+      is_expired : 1,
+    };
+
+    const stockOut = {
+      dateTo : new Date(),
+      depot_uuid : item,
+      status : 'stock_out',
+    };
+
+    dbPromises.push(core.getInventoryQuantityAndConsumption(expired, monthAverageConsumption, enableDailyConsumption));
+    dbPromises.push(core.getInventoryQuantityAndConsumption(stockOut, monthAverageConsumption, enableDailyConsumption));
+  });
+
+  Promise.all(dbPromises)
+    .then((rows) => {
+      // console.log('ROWWWWwwwwwwww NB LIGNEEEEEEee');
+      // console.log(rows);
+
+      
+
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+
+  //   KKKKkkkkkkkkk
+  // {
+  //   dateTo: '2020-08-29T18:54:42.441Z',
+  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
+  //   includeEmptyLot: '0',
+  //   is_expired: '1'
+  // }
+  // KKKKkkkkkkkkk
+  // {
+  //   dateTo: '2020-08-29T18:54:42.441Z',
+  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
+  //   includeEmptyLot: '0',
+  //   is_expired: '1'
+  // }
+  // KKKKkkkkkkkkk
+  // {
+  //   dateTo: '2020-08-29T18:54:42.441Z',
+  //   depot_uuid: '42BAA5922EED4C62A3968A851CFC6A2B',
+  //   status: 'stock_out'
+  // }
+
 }
 
 /**
