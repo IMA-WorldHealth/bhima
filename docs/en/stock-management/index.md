@@ -7,7 +7,7 @@ Inventory and stock management modules enable you to make stock movements as wel
 1. [Overview](./overview.md)
 2. [Inventories](./inventory.md)
 3. [Depots](./depot.md)
-4. [Stock Settings](./stock.setting.md)
+4. [Stock Settings](./stock.settings.md)
 4. [Stocks Movements](./movement.md)
     1. [Stocks Entries](./movement.entry.md)
     2. [Stocks Exits](./movement.exit.md)
