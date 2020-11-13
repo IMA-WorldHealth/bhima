@@ -22,6 +22,7 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
+const { date } = require('../../lib/template/helpers/dates');
 
 // expose to the API
 exports.createStock = createStock;
@@ -47,6 +48,9 @@ exports.getStockConsumptionAverage = getStockConsumptionAverage;
 
 // stock transfers
 exports.getStockTransfers = getStockTransfers;
+
+// stock dashboard
+exports.dashboard = dashboard;
 
 /**
  * POST /stock/lots
@@ -589,6 +593,167 @@ function listMovements(req, res, next) {
       res.status(200).json(rows);
     })
     .catch(next);
+}
+
+/**
+ * GET /stock/dashboard
+ * returns data for stock dashboard
+ */
+function dashboard(req, res, next) {
+  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
+
+  const dbPromises = [];
+  let depotsByUser = [];
+
+  const { status } = req.query;
+
+  const getDepotsByUser = `
+    SELECT BUID(p.depot_uuid) AS depot_uuid, d.text AS depot_text
+    FROM depot_permission p
+      JOIN depot AS d
+      ON d.uuid = p.depot_uuid
+    WHERE p.user_id = ?
+    ORDER BY d.text ASC`;
+
+  db.exec(getDepotsByUser, [req.session.user.id])
+    .then((depots) => {
+      depotsByUser = depots;
+
+      depots.forEach(depot => {
+        if (status === 'expired') {
+          const paramsFilter = {
+            dateTo : new Date(),
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : 0,
+            is_expired : 1,
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+          ));
+        } else if (status === 'out_of_stock') {
+          const paramsFilter = {
+            dateTo : new Date(),
+            depot_uuid : depot.depot_uuid,
+            status : 'stock_out',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+          ));
+        } else if (status === 'at_risk_expiration') {
+          const paramsGetLots = {
+            depot_uuid : depot.depot_uuid,
+            period : 'allTime',
+            includeEmptyLot : '0',
+            is_expiry_risk : '1',
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          };
+
+          dbPromises.push(core.getLotsDepot(
+            null,
+            paramsGetLots,
+          ));
+        } else if (status === 'at_risk_out_stock') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'security_reached',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'over_max') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'over_maximum',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'require_po') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '1',
+            require_po : '1',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'minimum_reached') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'minimum_reached',
+          };
+
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        }
+      });
+
+      return Promise.all(dbPromises);
+    })
+    .then((rows) => {
+      depotsByUser.forEach((depot) => {
+        let count = 0;
+        depot.count = count;
+
+        rows.forEach(row => {
+          if (row.length) {
+            if (status !== 'at_risk_expiration') {
+              row.forEach(item => {
+                if (depot.depot_uuid === item.depot_uuid) {
+                  count++;
+                }
+              });
+            } else {
+              const filteredData = row.filter(i => i.depot_uuid === depot.depot_uuid);
+
+              if (filteredData.length) {
+                const inventoriesAtRisk = filteredData.map(i => i.inventory_uuid);
+
+                // Remove duplicate values from Inventory at risk expiration
+                const uniqInventory = inventoriesAtRisk.reduce((a, b) => {
+                  if (a.indexOf(b) < 0) a.push(b);
+                  return a;
+                }, []);
+                count = uniqInventory.length;
+              }
+            }
+          }
+        });
+
+        depot.count = count;
+      });
+
+      const filteredData = depotsByUser.filter(item => item.count > 0);
+
+      res.status(200).json(filteredData);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
