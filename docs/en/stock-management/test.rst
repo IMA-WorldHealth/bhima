@@ -16,5 +16,6 @@ asdfadfa asdfa fa dfad
 
 .. math::
 
-   \alpha = 2*\beta
+   \alpha_1 = 2*\beta_{23}
+   
    
