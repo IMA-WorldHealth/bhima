@@ -37,7 +37,7 @@ The Stock Settings Page allows access to the following items:
 	posting journal in real time. It requires all inventory accounts to be
 	correctly configured.
 
-  - **Enable Automatic Crediting of Supplier on Stock Entry** (yes/no).
+  - **Enable Automatic Crediting of Supplier on Stock Entry** (yes/no).  
 	Automatically adds the transactions to credit the supplier for the value of
 	stock received in a depot when entering stock from a purchase order. This is
 	only triggered if the automatic stock accounting is set as well.
