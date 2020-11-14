@@ -70,10 +70,10 @@ function importStock(req, res, next) {
           item.inventory_text,
           item.inventory_type,
           item.inventory_unit,
-          item.inventory_unit_price,
-          item.inventory_cmm || 0,
+          formatDecimal(item.inventory_unit_price),
+          formatDecimal(item.inventory_cmm),
           item.stock_lot_label,
-          item.stock_lot_quantity,
+          formatInt(item.stock_lot_quantity),
           moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
           periodId,
         ];
@@ -92,6 +92,28 @@ function importStock(req, res, next) {
     .then(() => res.sendStatus(201))
     .catch(next)
     .done();
+}
+
+/**
+ * @function formatInt
+ * @param {string} quantity
+ * @description
+ * remove number formatting commas and convert into integer
+ * the decimal separator accepted is . not ,
+ */
+function formatInt(quantity) {
+  return typeof (quantity) === 'string' ? parseInt(quantity.replace(/,/g, ''), 10) : quantity;
+}
+
+/**
+ * @function formatDecimal
+ * @param {string} quantity
+ * @description
+ * remove number formatting commas and convert into a decimal (float)
+ * the decimal separator accepted is . not ,
+ */
+function formatDecimal(quantity) {
+  return typeof (quantity) === 'string' ? parseFloat(quantity.replace(/,/g, '')) : quantity;
 }
 
 /**

@@ -13,7 +13,7 @@ StockImportController.$inject = [
  * This module helps to import stock from a file
  */
 function StockImportController(
-  Notify, Stock, Upload, $state
+  Notify, Stock, Upload, $state,
 ) {
   const vm = this;
 
