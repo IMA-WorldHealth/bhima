@@ -10,7 +10,7 @@ asdfadfa asdfa fa dfad
 
 
 .. image:: images/stock-settings-menu.png
-   :scale: 50 %
+   :width: 313px
+   :scale: 50%
    :alt: alternate text
    :align: right
-	  
