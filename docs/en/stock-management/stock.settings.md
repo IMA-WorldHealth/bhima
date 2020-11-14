@@ -6,6 +6,10 @@ There a number of settings that affect how the BHIMA software deals with stock m
 
 ![Stock Settings Menu](./images/stock-settings-menu.png)
 
-<img src="images/stock-settings-menu.png"
-     alt="Stock Settings Menu"
-     style="width: 240px; float: right; margin-left: 10px;" />
+If you do not see the "Stock Settings" menu item, consult your system adminstrator.  You need to be given permission to access that page [^1].
+
+
+
+
+
+[^1]: Under `Administration > Role Management`, click on the action menu on the right end of the desired user.  In the action menu, click on `Permission`.  Scroll down to "Stock Settings" (at the end of the Stock items), click the check box and the [Save] button.  The Stock Settings page should now be accessible for that user.
