@@ -25,7 +25,6 @@ The Stock Settings Page allows access to the following items:
 - **Default minimum number of months of security stock for depots** (integer)
 
   - **Enable automatic confirmation of purchase orders** (yes/no).  
-
 	Enable automatic confirmation of purchase orders when they are created
 	without requiring manual confirmation
 
