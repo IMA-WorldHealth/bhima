@@ -20,32 +20,35 @@ adminstrator.  You need to be given permission to access that page.
 
 The Stock Settings Page allows access to the following items:
 
-- Number of months for calculating the average monthly consumption (integer)
+- **Number of months for calculating the average monthly consumption** (integer)
 
-- Default minimum number of months of security stock for depots (integer)
+- **Default minimum number of months of security stock for depots** (integer)
 
-- Enable automatic confirmation of purchase orders (boolean).  Enable
-  automatic confirmation of purchase orders when they are created without
-  requiring manual confirmation
+  - **Enable automatic confirmation of purchase orders** (yes/no).  
 
-- Enable permission to view depots in stock registries (boolean).  Limit the
-  consultation of stock registries to users according to their depots
+	Enable automatic confirmation of purchase orders when they are created
+	without requiring manual confirmation
 
-- Enable realtime stock accounting (boolean).  Enabling this feature will
-  write stock movement transactions into the posting journal in real time. It
-  requires all inventory accounts to be correctly configured.
+  - **Enable permission to view depots in stock registries** (yes/no).  
+	Limit the consultation of stock registries to users according to their
+	depots
 
-- Enable Automatic Crediting of Supplier on Stock Entry (boolean).
-  Automatically adds the transactions to credit the supplier for the value of
-  stock received in a depot when entering stock from a purchase order. This is
-  only triggered if the automatic stock accounting is set as well.
+  - **Enable realtime stock accounting** (yes/no).  
+	Enabling this feature will write stock movement transactions into the
+	posting journal in real time. It requires all inventory accounts to be
+	correctly configured.
 
-- Activate the restriction of distribution depots (boolean).  Limit the list
-  of distribution depots for depots
+  - **Enable Automatic Crediting of Supplier on Stock Entry** (yes/no).
+	Automatically adds the transactions to credit the supplier for the value of
+	stock received in a depot when entering stock from a purchase order. This is
+	only triggered if the automatic stock accounting is set as well.
 
-- Algorithm for calculating average monthly consumption.  Possible choices:
+  - **Activate the restriction of distribution depots** (yes/no).  
+	Limit the list of distribution depots for depots
 
-  - **Algorithm 1**: The average monthly consumption is obtained by dividing
+- **Algorithm for calculating average monthly consumption**.  Possible choices:
+
+  - **Algorithm 1**: The average monthly consumption is obtained by dividing1
     the quantity consumed during the period defined by the number of days of
     stock for said period, and by multiplying the result obtained by 30.5.
 
