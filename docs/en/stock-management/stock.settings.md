@@ -28,15 +28,15 @@ AMC is an important value that used to estimate when to order more stock.
 ## Individual Stock Settings
 The Stock Settings page allows access to the following items:
 
-- **Number of months for calculating the average monthly consumption** (integer)  
-  This determines the number of months in the past to use to calculate
+- **Number of months for calculating the average monthly consumption** (integer, default 6)  
+  This determines the number of months (**N**) in the past to use to calculate
   the average monthly consumption. The AMC is a "moving" average, since
   it uses a window of only the previous **N** months to determine the
-  average. This setting will set the value of **N**.  (Default: 6)
+  average. This setting will set the value of **N**.
 
-- **Default minimum number of months of security stock for depots** (integer)  
+- **Default minimum number of months of security stock for depots** (integer, default 2)  
   The stock supply should provide at least this many months of stock at
-  all times for the depot involved. (Default: 2)
+  all times for the depot involved.
 
 - **Enable automatic confirmation of purchase orders** (yes/NO)  
   Enable automatic confirmation of purchase orders when they are created
