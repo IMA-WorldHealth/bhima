@@ -10,6 +10,7 @@
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini pour aujourd'hui!",
     "NOT_ALLOWED" : "Vous n'etes pas authorisé à faire cette action",
     "NOT_FOUND" : "Cet enregistrement n'a pas pu être trouvé",
+    "NOT_A_NUMBER" : "Vous n'avez pas fourni un nombre à un champs destiné à un nombre",
     "NO_PERMISSIONS" : "La connexion a réussi, mais vous n'avez aucune autorisation. Veuillez contacter un administrateur système.",
     "NO_PROJECT" : "Aucune autorisation pour ce projet, Veuillez contacter un administrateur système",
     "NO_FISCAL_YEAR" : "Aucune année fiscale pour cette date!",
