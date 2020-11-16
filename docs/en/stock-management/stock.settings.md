@@ -29,7 +29,7 @@ AMC is an important value that used to estimate when to order more stock.
 The Stock Settings page allows access to the following items:
 
 - **Number of months for calculating the average monthly consumption** (integer, default 6)  
-  This determines the number of months (**N**) in the past to use to calculate
+  This determines the number of months (**N**) in the past to use to estimate
   the average monthly consumption. The AMC is a "moving" average, since
   it uses a window of only the previous **N** months to determine the
   average. This setting will set the value of **N**.
@@ -59,7 +59,8 @@ The Stock Settings page allows access to the following items:
 - **Activate the restriction of distribution depots** (yes/NO)  
   Limit the list of distribution depots for depots
 
-- **Algorithm for calculating Average Monthly Consumption (AMC)**.  Possible choices:
+- **Algorithm for calculating Average Monthly Consumption (AMC)**.  
+  Possible choices:
 
   - **Algorithm 1**: The average monthly consumption is obtained by
     dividing the quantity consumed during the period by the number of
