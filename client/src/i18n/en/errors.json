@@ -10,6 +10,7 @@
     "NO_EXCHANGE_RATE" : "No Exchange rate defined",
     "NO_FISCAL_YEAR" : "You are missing a fiscal year for that date!",
     "NOT_ALLOWED" : "You are not allowed to perform this action",
+    "NOT_A_NUMBER" : "You did not provide a number to a field intended for a number",
     "NOT_FOUND" : "This record could not be found",
     "NO_PERMISSIONS" : "The login succeeded, but you have no permissions. Please see a system administrator.",
     "NO_PROJECT" : "No permissions for that project.  Please see a system administrator",
