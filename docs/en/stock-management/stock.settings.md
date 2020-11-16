@@ -18,11 +18,14 @@ adminstrator.  You need to be given permission to access that page.
   box and the [Save] button.  The Stock Settings page should now be accessible
   for the user.
 
+## AMC - Average Monthly Consumption
+
 For the following Stock Setting options, the term "AMC" is used.  It
 represents "Average Monthy Consumption" of stock.  AMC is the total number of
 stock items dispensed on average to **patients** for the facility involved.
-AMC is used to estimate when to order more stock.
+AMC is an important value that used to estimate when to order more stock.
 
+** Individual Stock Settings
 The Stock Settings page allows access to the following items:
 
 - **Number of months for calculating the average monthly consumption** (integer)
