@@ -18,18 +18,22 @@ adminstrator.  You need to be given permission to access that page.
   box and the [Save] button.  The Stock Settings page should now be accessible
   for the user.
 
+For the following Stock Setting options, the term "AMC" is used.  It
+represents "Average Monthy Consumption" of stock.  AMC is the total number of
+stock items dispensed on average to **patients** for the facility involved.
+AMC is used to estimate when to order more stock.
+
 The Stock Settings page allows access to the following items:
 
 - **Number of months for calculating the average monthly consumption** (integer)
-
   This determines the number of months in the past to use to calculate the
   average monthly consumption. The AMC is a "moving" average, since it uses a
   window of only the previous X months to determine the average. This setting
   will set the X.  (Default: 6)
 
 - **Default minimum number of months of security stock for depots** (integer)
-
-  ?  (Default: 2)
+  The stock supply should provide at least this many months of stock for the
+  depot involved. (Default: 2)
 
 - **Enable automatic confirmation of purchase orders** (yes/NO).  
   Enable automatic confirmation of purchase orders when they are created
