@@ -65,14 +65,20 @@ The Stock Settings page allows access to the following items:
     the quantity consumed during the period defined by the number of days of
     stock for the period, and by multiplying the result obtained by 30.5.
 
+    ![Algorithm 1](./images/algorithm1.png)
+
   - **Algorithm 2**: The average consumption is obtained by dividing the
     quantity consumed during the period defined by the number of days of
     consumption for the period, and by multiplying the result obtained
     by 30.5.
 
+    ![Algorithm 2](./images/algorithm2.png)
+
   - **Algorithm 3**: The average consumption is obtained by dividing the
     quantity consumed during the period defined by the number of days in the
     period, and by multiplying the result obtained by 30.5.
+
+    ![Algorithm 3](./images/algorithm3.png)
 
   - **Algorithm 4 (MSH)** (default): The average consumption is obtained by
     dividing the quantity consumed during the period defined by the number of
@@ -80,3 +86,4 @@ The Stock Settings page allows access to the following items:
     stock out.  The MSH algorithm is recommended by the **M**anagement **S**ciences
     for **H**ealth organization (https://www.msh.org).
 
+    ![Algorithm 4 (MSH)](./images/algorithm4.png)
