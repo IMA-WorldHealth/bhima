@@ -77,6 +77,6 @@ The Stock Settings page allows access to the following items:
   - **Algorithm 4 (MSH)** (default): The average consumption is obtained by
     dividing the quantity consumed during the period defined by the number of
     months minus the number of months divided by the total number of days of
-    stock out.  The MSH algorithm is recommended by the _M_anagement Sciences
+    stock out.  The MSH algorithm is recommended by the <u>M</u>anagement Sciences
     for Health organization (https://www.msh.org).
 
