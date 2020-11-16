@@ -59,15 +59,15 @@ The Stock Settings page allows access to the following items:
 - **Activate the restriction of distribution depots** (yes/NO)  
   Limit the list of distribution depots for depots
 
-- **Algorithm for calculating average monthly consumption**.  Possible choices:
+- **Algorithm for calculating Average Monthly Consumption (AMC)**.  Possible choices:
 
   - **Algorithm 1**: The average monthly consumption is obtained by dividing
     the quantity consumed during the period defined by the number of days of
-    stock for said period, and by multiplying the result obtained by 30.5.
+    stock for the period, and by multiplying the result obtained by 30.5.
 
   - **Algorithm 2**: The average consumption is obtained by dividing the
     quantity consumed during the period defined by the number of days of
-    consumption for said period, and by multiplying the result obtained
+    consumption for the period, and by multiplying the result obtained
     by 30.5.
 
   - **Algorithm 3**: The average consumption is obtained by dividing the
@@ -77,5 +77,6 @@ The Stock Settings page allows access to the following items:
   - **Algorithm 4 (MSH)** (default): The average consumption is obtained by
     dividing the quantity consumed during the period defined by the number of
     months minus the number of months divided by the total number of days of
-    stock out.
+    stock out.  The MSH algorithm is recommended by the _M_anagement Sciences
+    for Health organization (https://www.msh.org).
 
