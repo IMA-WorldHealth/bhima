@@ -29,34 +29,36 @@ AMC is an important value that used to estimate when to order more stock.
 The Stock Settings page allows access to the following items:
 
 - **Number of months for calculating the average monthly consumption** (integer)
+
   This determines the number of months in the past to use to calculate the
   average monthly consumption. The AMC is a "moving" average, since it uses a
   window of only the previous X months to determine the average. This setting
   will set the X.  (Default: 6)
 
 - **Default minimum number of months of security stock for depots** (integer)
+
   The stock supply should provide at least this many months of stock for the
   depot involved. (Default: 2)
 
-- **Enable automatic confirmation of purchase orders** (yes/NO).  
+- **Enable automatic confirmation of purchase orders** (yes/NO)  
   Enable automatic confirmation of purchase orders when they are created
   without requiring manual confirmation
 
-- **Enable permission to view depots in stock registries** (yes/NO).  
+- **Enable permission to view depots in stock registries** (yes/NO)  
   Limit the consultation of stock registries to users according to their
   depots
 
-- **Enable automatic stock accounting** (YES/no).  
+- **Enable automatic stock accounting** (YES/no)  
   Enabling this feature will write stock movement transactions into the
   posting journal in automatically, in real time. It requires all inventory
   accounts to be correctly configured.
 
-- **Enable automatic crediting of supplier on stock entry** (yes/NO).  
+- **Enable automatic crediting of supplier on stock entry** (yes/NO)  
   Automatically adds the transactions to credit the supplier for the value of
   stock received in a depot when entering stock from a purchase order. This is
   only triggered if the automatic stock accounting is set as well.
 
-- **Activate the restriction of distribution depots** (yes/NO).  
+- **Activate the restriction of distribution depots** (yes/NO)  
   Limit the list of distribution depots for depots
 
 - **Algorithm for calculating average monthly consumption**.  Possible choices:
