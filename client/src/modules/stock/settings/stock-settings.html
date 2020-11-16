@@ -25,7 +25,10 @@
             <input type="number" class="form-control" autocomplete="off" name="month_average_consumption"
               ng-model="StockSettingsCtrl.settings.month_average_consumption"
               ng-change="StockSettingsCtrl.setMonthAverage(value)" min="1" bh-integer>
-            <div class="help-block" ng-messages="StockSettingsForm.month_average_consumption.$error"
+              <span class="help-block" translate>
+                SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT
+              </span>
+              <div class="help-block" ng-messages="StockSettingsForm.month_average_consumption.$error"
               ng-show="StockSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
@@ -40,6 +43,9 @@
               name="default_min_months_security_stock"
               ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
               ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
+            <span class="help-block" translate>
+              SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT
+            </span>
             <div class="help-block" ng-messages="StockSettingsForm.default_min_months_security_stock.$error"
               ng-show="StockSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -90,10 +96,10 @@
           <div id="average_consumption_algo" class="form-group"
             ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
             <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
-            <div ng-repeat="algo in StockSettingsCtrl.algorithmes">
+            <div ng-repeat="algo in StockSettingsCtrl.algorithmes" class="form-indent">
               <label class="radio-inline">
                 <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
-                <span translate>{{ algo.label }}</span>
+                <span class="text-bold" translate>{{ algo.label }}</span>
               </label>
               <span class="help-block" translate>
                 {{algo.comment}}
