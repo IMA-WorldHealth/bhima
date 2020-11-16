@@ -61,29 +61,30 @@ The Stock Settings page allows access to the following items:
 
 - **Algorithm for calculating Average Monthly Consumption (AMC)**.  Possible choices:
 
-  - **Algorithm 1**: The average monthly consumption is obtained by dividing
-    the quantity consumed during the period defined by the number of days of
-    stock for the period, and by multiplying the result obtained by 30.5.
+  - **Algorithm 1**: The average monthly consumption is obtained by
+    dividing the quantity consumed during the period by the number of
+    days having stock for the period, and by multiplying the result
+    by 30.5.
 
     ![Algorithm 1](./images/algorithm1.png)
 
   - **Algorithm 2**: The average consumption is obtained by dividing the
-    quantity consumed during the period defined by the number of days of
-    consumption for the period, and by multiplying the result obtained
-    by 30.5.
+    quantity consumed during the period by the number of days of
+    consumption for the period, and by multiplying the result by 30.5.
 
     ![Algorithm 2](./images/algorithm2.png)
 
   - **Algorithm 3**: The average consumption is obtained by dividing the
-    quantity consumed during the period defined by the number of days in the
+    quantity consumed during the period by the number of days in the
     period, and by multiplying the result obtained by 30.5.
 
     ![Algorithm 3](./images/algorithm3.png)
 
-  - **Algorithm 4 (MSH)** (default): The average consumption is obtained by
-    dividing the quantity consumed during the period defined by the number of
-    months minus the number of months divided by the total number of days of
-    stock out.  The MSH algorithm is recommended by the **M**anagement **S**ciences
-    for **H**ealth organization (https://www.msh.org).
+  - **Algorithm 4 (MSH)** (default): The average consumption is obtained
+    by dividing the quantity consumed during the period by the
+    difference of number of months in the period minus the total number
+    of days of stock out in the period.  The MSH algorithm is
+    recommended by the **M**anagement **S**ciences for **H**ealth
+    organization (https://www.msh.org).
 
     ![Algorithm 4 (MSH)](./images/algorithm4.png)
