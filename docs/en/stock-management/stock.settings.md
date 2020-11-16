@@ -25,7 +25,7 @@ represents "Average Monthy Consumption" of stock.  AMC is the total number of
 stock items dispensed on average to **patients** for the facility involved.
 AMC is an important value that used to estimate when to order more stock.
 
-** Individual Stock Settings
+## Individual Stock Settings
 The Stock Settings page allows access to the following items:
 
 - **Number of months for calculating the average monthly consumption** (integer)
