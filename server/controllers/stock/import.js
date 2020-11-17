@@ -34,79 +34,152 @@ function downloadTemplate(req, res, next) {
  *
  * @description this method allow to do an import of stock and their lots
  */
-function importStock(req, res, next) {
+async function importStock(req, res, next) {
   let queryParams;
 
   const filePath = req.files[0].path;
   const depotUuid = db.bid(req.body.depot_uuid);
   const documentUuid = db.bid(util.uuid());
-  let periodId = null;
 
-  Fiscal.lookupFiscalYearByDate(new Date())
-    .then(result => {
-      periodId = result.id;
+  try {
+    // check if a depot exists for the given uuid
+    await db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid);
 
-      // be sure that the depot exist
-      return db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid);
-    })
-    .then(() => util.formatCsvToJson(filePath))
-    .then(data => {
-      if (!hasValidDataFormat(data)) {
-        throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
-      }
+    // get the fiscal year period information
+    const period = await Fiscal.lookupFiscalYearByDate(new Date());
 
-      const transaction = db.transaction();
-      const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    // read the csv file
+    const data = await util.formatCsvToJson(filePath);
 
-      data.forEach(item => {
-        queryParams = [
-          req.session.enterprise.id,
-          req.session.project.id,
-          req.session.user.id,
-          depotUuid,
-          documentUuid,
-          item.inventory_group_name,
-          item.inventory_code || '',
-          item.inventory_text,
-          item.inventory_type,
-          item.inventory_unit,
-          item.inventory_unit_price,
-          item.inventory_cmm || 0,
-          item.stock_lot_label,
-          item.stock_lot_quantity,
-          moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
-          periodId,
-        ];
-        transaction.addQuery(query, queryParams);
-      });
+    // check validity of all data from the csv file
+    checkDataFormat(data);
 
-      const isExit = 0;
-      const postingParams = [documentUuid, isExit, req.session.project.id, req.session.enterprise.currency_id];
+    const transaction = db.transaction();
+    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
-      if (req.session.stock_settings.enable_auto_stock_accounting) {
-        transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
-      }
+    data.forEach(item => {
+      queryParams = [
+        req.session.enterprise.id,
+        req.session.project.id,
+        req.session.user.id,
+        depotUuid,
+        documentUuid,
+        item.inventory_group_name,
+        item.inventory_code || '',
+        item.inventory_text,
+        item.inventory_type,
+        item.inventory_unit,
+        item.inventory_unit_price,
+        item.inventory_cmm,
+        item.stock_lot_label,
+        item.stock_lot_quantity,
+        moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
+        period.id,
+      ];
+      transaction.addQuery(query, queryParams);
+    });
 
-      return transaction.execute();
-    })
-    .then(() => res.sendStatus(201))
-    .catch(next)
-    .done();
+    const isExit = 0;
+    const postingParams = [documentUuid, isExit, req.session.project.id, req.session.enterprise.currency_id];
+
+    if (req.session.stock_settings.enable_auto_stock_accounting) {
+      transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+    }
+
+    await transaction.execute();
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
- * hasValidDataFormat
+ * checkDataFormat
  *
  * @description check if data has a valid format for stock
  *
  * @param {object} data
  */
-function hasValidDataFormat(data = []) {
-  return data.every(item => {
-    const isUnitPriceDefined = typeof (item.inventory_unit_price) !== 'undefined';
-    return item.inventory_group_name
-      && item.inventory_text && item.inventory_type && item.inventory_unit
-      && isUnitPriceDefined && item.stock_lot_label
-      && item.stock_lot_quantity && item.stock_lot_expiration;
-  });
+function checkDataFormat(data = []) {
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    const isInventoryGroupDefined = typeof (item.inventory_group_name) === 'string'
+      && item.inventory_group_name.length > 0;
+    const isInventoryTextDefined = typeof (item.inventory_text) === 'string' && item.inventory_text.length > 0;
+    const isInventoryTypeDefined = typeof (item.inventory_type) === 'string' && item.inventory_type.length > 0;
+    const isInventoryUnitDefined = typeof (item.inventory_unit) === 'string' && item.inventory_unit.length > 0;
+    const isStockLotLabelDefined = typeof (item.stock_lot_label) === 'string' && item.stock_lot_label.length > 0;
+    const isExpirationDefined = typeof (item.stock_lot_expiration) === 'string' && item.stock_lot_expiration.length > 0;
+
+    const isUnitPriceNumber = !Number.isNaN(Number(item.inventory_unit_price));
+    const isLotQuantityNumber = !Number.isNaN(Number(item.stock_lot_quantity));
+
+    /**
+     * The key parameter of BadRequest must be properly translated for the user
+     */
+
+    if (!isInventoryGroupDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory group ${item.inventory_group_name} must be a valid text`,
+        `[line : ${i + 2}] The inventory group ${item.inventory_group_name} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryTextDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory text ${item.inventory_text} must be a valid text`,
+        `[line : ${i + 2}] The inventory text ${item.inventory_text} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryTypeDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory type ${item.inventory_type} must be a valid text`,
+        `[line : ${i + 2}] The inventory type ${item.inventory_type} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryUnitDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory unit ${item.inventory_unit} must be a valid text`,
+        `[line : ${i + 2}] The inventory unit ${item.inventory_unit} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isStockLotLabelDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_label} must be a valid text`,
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_label} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isExpirationDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_expiration} must be in this format "YYYY-MM-DD"`,
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_expiration} must be in this format "YYYY-MM-DD"`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isUnitPriceNumber) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The unit price value ${item.inventory_unit_price} is not a valid number`,
+        `[line : ${i + 2}] The unit price value ${item.inventory_unit_price} is not a valid number`,
+        // 'ERRORS.NOT_A_NUMBER',
+      );
+    }
+
+    if (!isLotQuantityNumber) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The lot quantity value ${item.stock_lot_quantity} is not a valid number`,
+        `[line : ${i + 2}] The lot quantity value ${item.stock_lot_quantity} is not a valid number`,
+        // 'ERRORS.NOT_A_NUMBER',
+      );
+    }
+  }
 }
