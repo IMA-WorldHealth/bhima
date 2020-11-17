@@ -22,19 +22,20 @@ adminstrator.  You need to be given permission to access that page.
 
 For the following Stock Setting options, the term "AMC" is used.  It
 represents "Average Monthy Consumption" of stock.  AMC is the total number of
-stock items dispensed on average to **patients** for the facility involved.
-AMC is an important value that used to estimate when to order more stock.
+stock items dispensed on average to **patients and services** for the
+facility involved.  AMC is an important value that used to estimate when to
+order more stock.
 
 ## Individual Stock Settings
 The Stock Settings page allows access to the following items:
 
-- **Number of months for calculating the average monthly consumption** (integer, default 6)  
+- **Number of months for calculating the average monthly consumption** (integer, default 6 months)  
   This determines the number of months (**N**) in the past to use to estimate
   the average monthly consumption. The AMC is a "moving" average, since
   it uses a window of only the previous **N** months to determine the
   average. This setting will set the value of **N**.
 
-- **Default minimum number of months of security stock for depots** (integer, default 2)  
+- **Default minimum number of months of security stock for depots** (integer, default 2 months)  
   The stock supply should provide at least this many months of stock at
   all times for the depot involved.
 
@@ -57,7 +58,9 @@ The Stock Settings page allows access to the following items:
   only triggered if the automatic stock accounting is set as well.
 
 - **Activate the restriction of distribution depots** (yes/NO)  
-  Limit the list of distribution depots for depots
+  Limits the depots a user can interact with to the depots that the user has
+  access to. Thus, if a user cannot distribute stock from a depot, they also
+  cannot transfer stock to that depot.
 
 - **Algorithm for calculating Average Monthly Consumption (AMC)**.  
   Possible choices:

@@ -103,13 +103,13 @@
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
     "MONTHLY_CONSUMPTION" : {
       "ALGO_1"          : "Algorithm 1",
-      "ALGO_1_COMMENT"  : "The average monthly consumption is obtained by dividing the quantity consumed during the period by the number of days having stock for the period, and by multiplying the result by 30.5.",
+      "ALGO_1_COMMENT"  : "The average monthly consumption is obtained by dividing the quantity consumed during the period by the number of days with stock for the period, and by multiplying the result by 30.5.",
       "ALGO_2"          : "Algorithm 2",
       "ALGO_2_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the number of days of consumption for the period, and by multiplying the result by 30.5.",
       "ALGO_3"          : "Algorithm 3",
       "ALGO_3_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the number of days in the period, and by multiplying the result obtained by 30.5.",
       "ALGO_4"          : "Algorithm 4 (MSH)",
-      "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the difference of number of months in the period minus the total number of days of stock out in the period. The MSH algorithm is recommended by the Management Sciences for Health organization (https://www.msh.org)."
+      "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the difference of the number of months in the period minus the total number of days of stock out in the period. The MSH algorithm is recommended by the Management Sciences for Health organization (https://www.msh.org)."
     },
     "MOTIF"           : "Motif",
     "MOVEMENT"        : "Movement",
@@ -199,7 +199,7 @@
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system",
     "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activate the restriction of distribution depots",
-    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limit the list of distribution depots for depots"
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limits the depots a user can interact with to the depots that the user has access to. Thus, if a user cannot distribute stock from a depot, they also cannot transfer stock to that depot."
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "From Purchase Order",
