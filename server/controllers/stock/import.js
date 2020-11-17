@@ -103,29 +103,83 @@ async function importStock(req, res, next) {
 function checkDataFormat(data = []) {
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
-    const isUnitPriceDefined = typeof (item.inventory_unit_price) !== 'undefined';
+    const isInventoryGroupDefined = typeof (item.inventory_group_name) === 'string'
+      && item.inventory_group_name.length > 0;
+    const isInventoryTextDefined = typeof (item.inventory_text) === 'string' && item.inventory_text.length > 0;
+    const isInventoryTypeDefined = typeof (item.inventory_type) === 'string' && item.inventory_type.length > 0;
+    const isInventoryUnitDefined = typeof (item.inventory_unit) === 'string' && item.inventory_unit.length > 0;
+    const isStockLotLabelDefined = typeof (item.stock_lot_label) === 'string' && item.stock_lot_label.length > 0;
+    const isExpirationDefined = typeof (item.stock_lot_expiration) === 'string' && item.stock_lot_expiration.length > 0;
+
     const isUnitPriceNumber = !Number.isNaN(Number(item.inventory_unit_price));
     const isLotQuantityNumber = !Number.isNaN(Number(item.stock_lot_quantity));
-    const validity = item.inventory_group_name
-      && item.inventory_text && item.inventory_type && item.inventory_unit
-      && isUnitPriceDefined && item.stock_lot_label
-      && item.stock_lot_quantity && item.stock_lot_expiration
-      && isUnitPriceNumber && isLotQuantityNumber;
+
+    /**
+     * The key parameter of BadRequest must be properly translated for the user
+     */
+
+    if (!isInventoryGroupDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory group ${item.inventory_group_name} must be a valid text`,
+        `[line : ${i + 2}] The inventory group ${item.inventory_group_name} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryTextDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory text ${item.inventory_text} must be a valid text`,
+        `[line : ${i + 2}] The inventory text ${item.inventory_text} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryTypeDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory type ${item.inventory_type} must be a valid text`,
+        `[line : ${i + 2}] The inventory type ${item.inventory_type} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isInventoryUnitDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The inventory unit ${item.inventory_unit} must be a valid text`,
+        `[line : ${i + 2}] The inventory unit ${item.inventory_unit} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isStockLotLabelDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_label} must be a valid text`,
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_label} must be a valid text`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
+
+    if (!isExpirationDefined) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_expiration} must be in this format "YYYY-MM-DD"`,
+        `[line : ${i + 2}] The stock lot ${item.stock_lot_expiration} must be in this format "YYYY-MM-DD"`,
+        // 'ERRORS.NOT_A_TEXT',
+      );
+    }
 
     if (!isUnitPriceNumber) {
       throw new BadRequest(
-        `[line : ${i + 2}] The value ${item.inventory_unit_price} is not a valid number`, 'ERRORS.NOT_A_NUMBER',
+        `[line : ${i + 2}] The unit price value ${item.inventory_unit_price} is not a valid number`,
+        `[line : ${i + 2}] The unit price value ${item.inventory_unit_price} is not a valid number`,
+        // 'ERRORS.NOT_A_NUMBER',
       );
     }
 
     if (!isLotQuantityNumber) {
       throw new BadRequest(
-        `[line : ${i + 2}] The value ${item.stock_lot_quantity} is not a valid number`, 'ERRORS.NOT_A_NUMBER',
+        `[line : ${i + 2}] The lot quantity value ${item.stock_lot_quantity} is not a valid number`,
+        `[line : ${i + 2}] The lot quantity value ${item.stock_lot_quantity} is not a valid number`,
+        // 'ERRORS.NOT_A_NUMBER',
       );
-    }
-
-    if (!validity) {
-      throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
     }
   }
 }
