@@ -18,6 +18,9 @@ function UsersRolesController(data, $uibModal, $uibModalInstance, RolesService, 
     RolesService.userRoles(vm.user.id)
       .then(roles => {
         vm.roles = roles;
+        vm.selected = roles
+          .filter(role => role.affected === 1)
+          .map(role => role.uuid);
       })
       .catch(Notify.handleError);
   }
