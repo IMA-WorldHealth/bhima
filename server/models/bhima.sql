@@ -131,7 +131,7 @@ INSERT INTO unit VALUES
   (247,'Client Support Report','TREE.CLIENT_SUPPORT_REPORT','Client support report',281,'/reports/clientSupport'),
   (248,'Analysis of Cashboxes','REPORT.ANALYSIS_AUX_CASHBOXES.TITLE','Analysis of auxiliary cashboxes',281,'/reports/analysisAuxiliaryCash'),
   (249,'Realized Profit Report','TREE.REALIZED_PROFIT_REPORT','Realized profit report',281,'/reports/realizedProfit'),
-  (250,'System Usage Statistic','REPORT.SYSTEM_USAGE_STAT.TITLE','Sytem usage statistic',280,'/reports/systemUsageStat'),
+  (250,'System Usage Statistics','REPORT.SYSTEM_USAGE_STAT.TITLE','System usage statistics',280,'/reports/systemUsageStat'),
   (251,'Indexes','TREE.INDEXES','The payroll index',57,'/PAYROLL_INDEX_FOLDER'),
   (252,'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251,'/staffing_indices'),
   (253,'Multiple Payroll by Indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)',251,'/multiple_payroll_indice'),
