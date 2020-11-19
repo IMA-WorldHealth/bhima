@@ -93,7 +93,7 @@ async function stockExpirationReport(req, res, next) {
     });
 
     const reportResult = await report.render({
-      depot, result : values, totals,
+      depot, result : values, totals, today,
     });
 
     res.set(reportResult.headers).send(reportResult.report);
