@@ -203,7 +203,7 @@
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système",
     "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activer la restriction des depots de distribution",
-    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts avec lesquels un utilisateur peut interagir aux dépôts auxquels l'utilisateur a accès. Ainsi, si un utilisateur ne peut pas distribuer le stock à partir d'un dépôt, il ne peut pas non plus transférer le stock vers ce dépôt."
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts qui peuvent recevoir du stock à partir d'un dépôt donné; lors de la sortie de stock vers un dépôt, seul les dépôts autorisés peuvent s'afficher pour le dépôt donné afin de recevoir du stock"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "Commande d'achat",
