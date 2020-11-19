@@ -189,7 +189,9 @@
   },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
+    "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Nombre de mois pour le calcul de la consommation moyenne mensuelle",
+    "DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT": "Cela détermine le nombre de mois (N) passés à utiliser pour calculer la consommation mensuelle moyenne. L'AMC est une moyenne 'mobile', puisqu'elle utilise une fenêtre de seulement les N mois précédents pour déterminer la moyenne. Ce paramètre fixera la valeur de N.",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Activer la confirmation automatique des commandes d'achat",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT" : "Activer la confirmation automatique des bons de commande lorsqu'ils sont créés sans nécessiter de confirmation manuelle.",
     "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Activer la comptabilisation de stock en temps réel",
@@ -201,7 +203,7 @@
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système",
     "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activer la restriction des depots de distribution",
-    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limiter la liste des depots de distribution pour les depots"
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts qui peuvent recevoir du stock à partir d'un dépôt donné; lors de la sortie de stock vers un dépôt, seul les dépôts autorisés peuvent s'afficher pour le dépôt donné afin de recevoir du stock"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "Commande d'achat",
