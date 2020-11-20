@@ -29,8 +29,6 @@
     "ENTRY_DONATION"  : "Donation",
     "ENTRY_INTEGRATION" : "Intégration",
     "ENTRY_TRANSFER"  : "Transfert",
-    "EXCLUDE_ALL_EXAUSTED_STOCK": "Exclure tous les stocks épuisés",
-    "INCLUDE_ONLY_EXHAUSTED_STOCK": "Inclure uniquement le stock épuisé",
     "TYPE_VALUE" : "Valeur de stock",
     "TYPE_QUANTITY" : "Quantité de stock",
     "STOCK_OUT_WARNING" : "Alert : il y a {{total}} produits en rupture de stock",
@@ -148,7 +146,6 @@
       "EXIT_PATIENT"   : "Distribution au patient",
       "EXIT_PATIENTS"   : "Distributions aux patients",
       "EXIT_DEPOT"     : "Transfer vers un dépot",
-      "EXIT_DEPOTS"     : "Transfers vers d'autres dépots",
       "EXIT_SERVICE"   : "Distribution à un service",
       "EXIT_SERVICES"   : "Distributions aux services",
       "EXIT_LOSS"      : "Perte de stock"
