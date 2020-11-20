@@ -69,11 +69,10 @@ echo "[migrate] Adding manual migrations from next/migrate.sql"
 cat $BHIMA_PATH/server/models/migrations/next/migrate.sql >> $MIGRATION_FILE
 
 # Add migration files specific to this production server
-for sitefile in `ls $BHIMA_PATH/server/models/migrations/next/*$DATABASE*.sql`;
+for sitefile in `\ls $BHIMA_PATH/server/models/migrations/next/*$DATABASE*.sql 2>/dev/null`;
 do
-    echo "[migrate] Adding site-specific migration file \"$sitefile\""
+    echo "[migrate] Adding site-specific migration file: $sitefile"
     cat $sitefile >> $MIGRATION_FILE
 done
-
 echo "[migrate] Finished constructing migration script."
 echo "[migrate] Execute \"mysql $DATABASE < $MIGRATION_FILE\" with appropriate permissions to migrate"
