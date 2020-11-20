@@ -92,6 +92,7 @@
     "CURRENT_QUANTITY" : "Current Quantity",
     "RISK"            : "Risk",
     "RISK_QUANTITY"   : "Risk Quantity",
+    "RISK_VALUE"      : "Risk Value",
     "CMM"             : "CMM",
     "MSD"             : "MSD",
     "LOSS"            : "Stock Loss",

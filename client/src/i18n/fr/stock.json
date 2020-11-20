@@ -95,6 +95,7 @@
     "RISK"            : "Risque",
     "CURRENT_QUANTITY" : "Quantité actuelle",
     "RISK_QUANTITY"   : "Quantité à risque",
+    "RISK_VALUE"      : "Valeur à risque",
     "CMM"             : "CMM",
     "MSD"             : "MSD",
     "LOSS"            : "Perte de stock",
