@@ -25,16 +25,16 @@ function StockInventoryAdjustmentTests() {
     await page.setDescription(DESCRIPTION);
 
     // set all other to zero
-    for (let i = 0; i < 16; i++) {
+    for (let i = 0; i < 5; i++) {
       // eslint-disable-next-line
       await page.setQuantity(i, 5, 0);
     }
 
-    // set the VITAMINE-A to 23
-    await page.setQuantity(3, 5, 23);
+    // set the Vitamines B1+B6+B12 to 23
+    await page.setQuantity(2, 5, 23);
 
-    // set the QUININE-C to 17
-    await page.setQuantity(9, 5, 17);
+    // set the Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité to 17
+    await page.setQuantity(5, 5, 17);
 
     // submit
     await page.submit();
