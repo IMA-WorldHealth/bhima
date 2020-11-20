@@ -10,9 +10,7 @@
     "LINK_TO_CASHFLOW":"Lien vers le rapport de trésorerie",
     "PAYMENT_DESCRIPTION":"Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
     "PREPAYMENT_DESCRIPTION":"Paiement caution par {{patientName}} ({{patientReference}}).",
-    "DEBTOR_INVOICES":{
-      "TITLE":"Factures des Débiteurs"
-    },
+    "DEBTOR_INVOICES":"Factures des Débiteurs",
     "REGISTRY":{"INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les paiements inversées",
     "EXCLUDE_REVERSED_RECORDS":"Exclure toutes les paiements inversées",
     "REVERSED_RECORDS":"Paiements Inversées"},
