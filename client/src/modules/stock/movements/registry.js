@@ -28,22 +28,6 @@ function StockMovementsController(
   // add in FLUX identifiers
   vm.flux = bhConstants.flux;
 
-  // bind flux id with receipt
-  const mapFlux = {
-    1 : { receipt : ReceiptModal.stockEntryPurchaseReceipt },
-    2 : { receipt : ReceiptModal.stockEntryDepotReceipt },
-    3 : { receipt : ReceiptModal.stockAdjustmentReceipt },
-    6 : { receipt : ReceiptModal.stockEntryDonationReceipt },
-    8 : { receipt : ReceiptModal.stockExitDepotReceipt },
-    9 : { receipt : ReceiptModal.stockExitPatientReceipt },
-    10 : { receipt : ReceiptModal.stockExitServiceReceipt },
-    11 : { receipt : ReceiptModal.stockExitLossReceipt },
-    12 : { receipt : ReceiptModal.stockAdjustmentReceipt },
-    13 : { receipt : ReceiptModal.stockEntryIntegrationReceipt },
-    14 : { receipt : ReceiptModal.stockAdjustmentReceipt },
-    15 : { receipt : ReceiptModal.stockAdjustmentReceipt },
-  };
-
   // grouping box
   vm.groupingBox = [
     { label : 'STOCK.IO', value : 'io' },
@@ -118,7 +102,7 @@ function StockMovementsController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.onRemoveFilter = onRemoveFilter;
   vm.getFluxName = getFluxName;
-  vm.openReceiptModal = openReceiptModal;
+  vm.openReceiptModal = (uuid, fluxId) => ReceiptModal.getReceiptFnByFluxId(fluxId)(uuid);
   vm.toggleGroup = toggleGroup;
   vm.selectGroup = selectGroup;
   vm.getQueryString = getQueryString;
@@ -152,12 +136,6 @@ function StockMovementsController(
       vm.grouping.changeGrouping(column);
       vm.grouped = true;
     }
-  }
-
-  // generate document by type of flux
-  function openReceiptModal(documentUuid, fluxId) {
-    if (!mapFlux[fluxId]) { return; }
-    mapFlux[fluxId].receipt(documentUuid);
   }
 
   // on remove one filter

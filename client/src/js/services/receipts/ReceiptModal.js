@@ -12,9 +12,7 @@ ReceiptModal.$inject = [
  * This service is responsible for combining receipt service data with the
  * receipts modal controller and providing a clean interface to be used within
  * module controllers.
- *
- * @module services/receipts/ReceiptModal
- */
+ * @module services/receipts/ReceiptModal */
 function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   const service = this;
 
@@ -335,6 +333,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAssignReceipt = stockAssignReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
+  service.getReceiptFnByFluxId = getReceiptFnByFluxId;
 
   /**
    * @method stockRequisitionReceipt
@@ -500,6 +499,26 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockAdjustmentReport(depotUuid, date, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
+  }
+
+  const mapFlux = {
+    1 : stockEntryPurchaseReceipt,
+    2 : stockEntryDepotReceipt,
+    3 : stockAdjustmentReceipt,
+    6 : stockEntryDonationReceipt,
+    8 : stockExitDepotReceipt,
+    9 : stockExitPatientReceipt,
+    10 : stockExitServiceReceipt,
+    11 : stockExitLossReceipt,
+    12 : stockAdjustmentReceipt,
+    13 : stockEntryIntegrationReceipt,
+    14 : stockAdjustmentReceipt,
+    15 : stockAdjustmentReceipt,
+  };
+
+  //
+  function getReceiptFnByFluxId(fluxId) {
+    return mapFlux[fluxId];
   }
 
   /**
