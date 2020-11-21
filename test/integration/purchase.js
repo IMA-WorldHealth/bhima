@@ -10,23 +10,17 @@ const SearchTests = require('./purchase.search.js');
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
 describe('(/purchases) Purchases', () => {
-  const datePurchase1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days');
-  const datePurchaseFormat1 = moment(datePurchase1).format('YYYY-MM-DD');
+  const datePurchaseFormat1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days').toDate();
 
-  const datePurchase2 = moment(new Date(), 'YYYY-MM-DD').subtract(1665, 'days');
-  const datePurchaseFormat2 = moment(datePurchase2).format('YYYY-MM-DD');
+  const datePurchaseFormat2 = moment(new Date(), 'YYYY-MM-DD').subtract(1665, 'days').toDate();
 
-  const datePurchase3 = moment(new Date(), 'YYYY-MM-DD').subtract(1543, 'days');
-  const datePurchaseFormat3 = moment(datePurchase3).format('YYYY-MM-DD');
+  const datePurchaseFormat3 = moment(new Date(), 'YYYY-MM-DD').subtract(1543, 'days').toDate();
 
-  const datePurchase4 = moment(new Date(), 'YYYY-MM-DD').subtract(1512, 'days');
-  const datePurchaseFormat4 = moment(datePurchase4).format('YYYY-MM-DD');
+  const datePurchaseFormat4 = moment(new Date(), 'YYYY-MM-DD').subtract(1512, 'days').toDate();
 
-  const datePurchase5 = moment(new Date(), 'YYYY-MM-DD').subtract(1421, 'days');
-  const datePurchaseFormat5 = moment(datePurchase5).format('YYYY-MM-DD');
+  const datePurchaseFormat5 = moment(new Date(), 'YYYY-MM-DD').subtract(1421, 'days').toDate();
 
-  const datePurchase6 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days');
-  const datePurchaseFormat6 = moment(datePurchase6).format('YYYY-MM-DD');
+  const datePurchaseFormat6 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days').toDate();
 
   // purchase order we will add during this test suite
   const purchaseOrder = {

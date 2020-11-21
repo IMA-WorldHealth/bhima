@@ -20,12 +20,12 @@ describe('Purchase Orders', () => {
 
   it('supports single item purchase orders', async () => {
     const page = new PurchaseOrderPage();
-    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1712, 'days');
+    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1712, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
     await FU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
-    await components.dateEditor.set(new Date(datePurchase));
+    await components.dateEditor.set(datePurchase);
 
     // set the 'other' delivery method parameter
     await $('#other').click();
@@ -51,12 +51,12 @@ describe('Purchase Orders', () => {
 
   it('supports multi-item purchase orders', async () => {
     const page = new PurchaseOrderPage();
-    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days');
+    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
     await FU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
-    await components.dateEditor.set(new Date(datePurchase));
+    await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
     await $('#on-purchase').click();
@@ -98,12 +98,12 @@ describe('Purchase Orders', () => {
 
   it.skip('supports An optimal purchase orders', async () => {
     const page = new PurchaseOrderPage();
-    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days');
+    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1710, 'days').toDate();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
     await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase Order');
-    await components.dateEditor.set(new Date(datePurchase));
+    await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
     await $('#on-purchase').click();
@@ -142,14 +142,14 @@ describe('Purchase Orders', () => {
 
   it('blocks submission for an invalid grid', async () => {
     const page = new PurchaseOrderPage();
-    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1714, 'days');
+    const datePurchase = moment(new Date(), 'YYYY-MM-DD').subtract(1714, 'days').toDate();
 
     await page.btns.clear.click();
 
     // prepare the page with default supplier, description, etc
     await components.supplierSelect.set('SNEL');
     await FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
-    await components.dateEditor.set(new Date(datePurchase));
+    await components.dateEditor.set(datePurchase);
 
     // set the 'on-purchase' delivery method parameter
     await $('#on-purchase').click();
