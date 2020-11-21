@@ -35,7 +35,7 @@ function StockInventoriesRegistryTests() {
       quantity : '17',
     };
     const vitamine = {
-      label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
       quantity : '23',
     };
     await modal.setDepot('Depot Principal');
