@@ -9,7 +9,7 @@ const SearchTests = require('./purchase.search.js');
  *
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
-describe.only('(/purchases) Purchases', () => {
+describe('(/purchases) Purchases', () => {
   const datePurchase1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days');
   const datePurchaseFormat1 = moment(datePurchase1).format('YYYY-MM-DD');
 
