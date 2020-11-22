@@ -481,6 +481,10 @@
       "PAYMENTS" : "Paiements",
       "AVERAGE_COST" : "Coût moyen",
       "RECOVERY_CAPACITY" : "Capacite de recouvrement"
+    },
+    "STOCK_CHANGES" : {
+      "TITLE" : "Rapport sur les variations de stock",
+      "DESCRIPTION": "Ce rapport vous permet d'enregistrer les modifications du stock d'un dépôt en comparant la quantité dans le système à la quantité trouvée sur les étagères."
     }
   }
 }

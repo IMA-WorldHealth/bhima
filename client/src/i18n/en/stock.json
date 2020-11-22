@@ -15,6 +15,7 @@
     "DECREASE_HELP"   : "Adjust stock by decreasing the quantity of lots of products in stock",
     "DEPOT"           : "Depot",
     "DEPOT_RESPONSIBLE" : "Depot Manager",
+    "DAYS_OF_STOCK_OUT" : "# Days of Stock Out",
     "DESTINATION"     : "Destination",
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
@@ -136,6 +137,9 @@
     "QUANTITY_SENT"       : "Sent Quantity",
     "QUANTITY_RECEIVED"   : "Received Quantity",
     "QUANTITY_DIFFERENCE" : "Difference",
+    "QUANTITY_CONSUMED" : "Quantity Consumed",
+    "QUANTITY_LOST" : "Quantity Lost",
+    "QUANTITY_REMAINING" : "Quantity Remaining",
     "TRANSFER_RECEIVED" : "Received",
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
