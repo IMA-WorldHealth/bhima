@@ -14,6 +14,7 @@
     "COST"            : "Coût",
     "DECREASE"        : "Diminution",
     "DECREASE_HELP"   : "Ajustement de stock en reduisant la quantité des lots des produits en stock",
+    "DAYS_OF_STOCK_OUT" : "N. jours de rupture de stock",
     "DEPOT"           : "Dépôt",
     "DEPOT_RESPONSIBLE" : "Gestionnaire du dépôt",
     "DETAILS"         : "Details",
@@ -139,6 +140,9 @@
     "QUANTITY_SENT"       : "Quantité envoyée",
     "QUANTITY_RECEIVED"   : "Quantité reçue",
     "QUANTITY_DIFFERENCE" : "Ecart",
+    "QUANTITY_CONSUMED" : "Quantité consommée",
+    "QUANTITY_LOST" : "Quantité perdue",
+    "QUANTITY_REMAINING" : "Quantité restante",
     "TRANSFER_RECEIVED" : "Reçu",
     "TRANSFER_AVAILABLE" : "Disponible",
     "RECEIPT"         : {
