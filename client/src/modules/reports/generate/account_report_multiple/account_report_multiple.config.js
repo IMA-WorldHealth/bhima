@@ -20,6 +20,14 @@ function AccountReportMultipleConfigController(
     accountIds : [],
   };
 
+  function handleStateParameters() {
+    const { data } = reportData.params;
+
+    if (data && data.accountIds) {
+      vm.reportDetails.accountIds = data.accountIds;
+    }
+  }
+
   vm.dateInterval = 1;
 
   checkCachedConfiguration();
@@ -102,4 +110,6 @@ function AccountReportMultipleConfigController(
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
   }
+
+  handleStateParameters();
 }

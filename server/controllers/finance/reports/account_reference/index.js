@@ -12,7 +12,6 @@
  */
 
 const _ = require('lodash');
-const Q = require('q');
 const AccountReference = require('../../accounts').references;
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -25,10 +24,9 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'account_reference',
+  csvKey : 'data',
   filename : 'TREE.ACCOUNT_REFERENCE_REPORT',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -38,42 +36,33 @@ const DEFAULT_PARAMS = {
  * This function renders the balance of accounts references as report.  The account_reference report provides a view
  * of the balance of account_references for a given period of fiscal year.
  */
-function report(req, res, next) {
+async function report(req, res, next) {
   const params = req.query;
   const context = {};
-  let reporting;
-
   _.defaults(params, DEFAULT_PARAMS);
 
   try {
-    reporting = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
-  }
+    const reporting = new ReportManager(TEMPLATE, req.session, params);
 
-  const getFiscalYearSQL = `
+    const getFiscalYearSQL = `
     SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
       fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
     FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
     WHERE p.id = ?;
   `;
 
-  const dbPromises = [
-    db.one(getFiscalYearSQL, [params.period_id]),
-    AccountReference.computeAllAccountReference(params.period_id, params.reference_type_id),
-  ];
+    const dbPromises = [
+      db.one(getFiscalYearSQL, [params.period_id]),
+      AccountReference.computeAllAccountReference(params.period_id, params.reference_type_id),
+    ];
 
-  Q.all(dbPromises)
-    .spread((period, data) => {
-      _.merge(context, { period, data });
-      context.referenceTypeLabel = params.reference_type_id ? params.reference_type_label : '';
+    const [period, data] = await Promise.all(dbPromises);
+    _.merge(context, { period, data });
+    context.referenceTypeLabel = params.reference_type_id ? params.reference_type_label : '';
 
-      return reporting.render(context);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    const result = await reporting.render(context);
+    res.set(result.headers).send(result.report);
+  } catch (err) {
+    next(err);
+  }
 }

@@ -229,6 +229,7 @@ exports.configure = function configure(app) {
   app.post('/accounts/references', accounts.references.create);
   app.put('/accounts/references/:id', accounts.references.update);
   app.delete('/accounts/references/:id', accounts.references.remove);
+  app.get('/accounts/references/:id/accounts', accounts.references.getAccountsForReferenceHTTP);
 
   // API for account importation
   app.get('/accounts/template', accounts.importing.downloadTemplate);

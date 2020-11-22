@@ -17,6 +17,17 @@ function AccountReferenceService(Api, Filters, $uibModal, AppCache) {
   service.filters = referencesFilters;
   service.openSearchModal = openSearchModal;
 
+  /**
+   * @method getAccountsForReference
+   *
+   * @description
+   * Returns the list of accounts associated with a reference.
+   */
+  service.getAccountsForReference = function getAccountsForReference(abbr) {
+    return service.$http.get(`/accounts/references/${abbr}/accounts`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   referencesFilters.registerCustomFilters([
     { key : 'abbr', label : 'ACCOUNT.REFERENCE.REFERENCE' },
     { key : 'number', label : 'FORM.LABELS.ACCOUNT' },
