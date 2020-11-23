@@ -156,9 +156,11 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
    * @link http://www.mysqltutorial.org/mysql-minus/
    */
   const queryAccounts = `
-    SELECT includeTable.account_id, includeTable.account_number FROM (
+    SELECT includeTable.account_id, includeTable.account_number, includeTable.account_type_id,
+    includeTable.hidden, includeTable.locked FROM (
       SELECT DISTINCT
-        account.id AS account_id, account.number AS account_number FROM account
+        account.id AS account_id, account.number AS account_number, account.type_id AS account_type_id,
+          hidden, locked FROM account
         JOIN (
           SELECT a.id, a.number FROM account a
           JOIN account_reference_item ari ON ari.account_id = a.id
@@ -168,7 +170,8 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
     ) AS includeTable
     LEFT JOIN (
       SELECT DISTINCT
-        account.id AS account_id, account.number AS account_number FROM account
+        account.id AS account_id, account.number AS account_number, account.type_id as account_type_id,
+          hidden, locked FROM account
         JOIN (
           SELECT a.id, a.number FROM account a
           JOIN account_reference_item ari ON ari.account_id = a.id

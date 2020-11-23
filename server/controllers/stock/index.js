@@ -761,6 +761,7 @@ function getStockConsumptionAverage(req, res, next) {
   const { query, params } = req;
   core.getStockConsumptionAverage(params.periodId, query.number_of_months)
     .then((rows) => {
+
       res.status(200).send(rows);
     })
     .catch(next);

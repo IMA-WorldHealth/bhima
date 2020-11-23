@@ -99,7 +99,7 @@
       "TITLE": "Monthly Balance"
     },
     "SYSTEM_USAGE_STAT" : {
-      "TITLE" : "Sytem usage statistic",
+      "TITLE" : "System Usage Statistics",
       "DESCRIPTION" : " This report  produce, for a given period, stats of, Total of patients recorded by hour of the day, Total of invoices made by hour of the day and total of cash payments made by hour of the day"
     },
     "OPEN_DEBTORS": {
@@ -479,6 +479,10 @@
       "PAYMENTS" : "Payments",
       "AVERAGE_COST" : "Average Cost",
       "RECOVERY_CAPACITY" : "Recovery Capacity"
+    },
+    "STOCK_CHANGES" : {
+      "TITLE" : "Stock Changes Report",
+      "DESCRIPTION" : "This report allows you to record changes to the stock of a depot by comparing the amount in the system to the amount found on the shelves."
     }
   }
 }

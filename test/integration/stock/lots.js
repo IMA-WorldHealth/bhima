@@ -29,15 +29,17 @@ describe('(/lots/) The lots HTTP API', () => {
     return agent.get('/stock/lots/depots/')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 9);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
 
   it('PUT /lots/:uuid update lot label or expiration date', () => {
+    const dateExp = moment(new Date(), 'YYYY-MM-DD').add(36, 'days');
+
     const update = {
       label : 'Lot Quinine Updated',
-      expiration_date : '2020-12-15',
+      expiration_date : formatDate(dateExp),
       unit_cost : 1.7,
     };
 

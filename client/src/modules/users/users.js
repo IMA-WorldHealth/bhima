@@ -161,7 +161,10 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
           return user;
         },
       },
+    }).result.then(() => {
+      loadGrid();
     });
+
   }
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;

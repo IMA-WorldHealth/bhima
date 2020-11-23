@@ -34,6 +34,7 @@ const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
+const stockChangesReport = require('./stock_changes');
 
 /**
  * @function determineReceiptType
@@ -144,5 +145,6 @@ exports.stockAssignReceipt = stockAssignReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchaseOrderAnalysis');
 
+exports.stockChangesReport = stockChangesReport;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.monthlyConsumption = require('./stock/monthly_consumption');

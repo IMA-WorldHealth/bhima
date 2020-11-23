@@ -229,6 +229,7 @@ exports.configure = function configure(app) {
   app.post('/accounts/references', accounts.references.create);
   app.put('/accounts/references/:id', accounts.references.update);
   app.delete('/accounts/references/:id', accounts.references.remove);
+  app.get('/accounts/references/:id/accounts', accounts.references.getAccountsForReferenceHTTP);
 
   // API for account importation
   app.get('/accounts/template', accounts.importing.downloadTemplate);
@@ -830,6 +831,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/consumption_graph', stockReports.consumptionGraph);
   app.get('/reports/stock/movement_report', stockReports.movementReport);
   app.get('/reports/stock/expiration_report', stockReports.expirationReport);
+  app.get('/reports/stock/changes', stockReports.stockChangesReport);
 
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);

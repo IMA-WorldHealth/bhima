@@ -274,9 +274,8 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     const months = (params.monthAverageConsumption - 1 > -1 && params.monthAverageConsumption)
       ? params.monthAverageConsumption - 1 : 0;
     clone = clone.subtract(months, 'month').toDate();
-    const m = clone.getMonth() + 1;
-    const y = clone.getFullYear();
-    startDate = new Date(`${y}-${m}-01`);
+
+    startDate = new Date(clone);
     const endDate = new Date();
 
     const cmms = await Promise.all(resultFromProcess.map(inventory => {
@@ -296,21 +295,21 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const inventoriesWithManagementData = await stockManagementProcess(resultFromProcess);
-  const inventoriesWithLotsProcessed = await processMultipleLots(inventoriesWithManagementData);
+  let inventoriesWithLotsProcessed = await processMultipleLots(inventoriesWithManagementData);
 
   if (_status) {
-    return inventoriesWithLotsProcessed.filter(row => row.status === _status);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(row => row.status === _status);
   }
 
   // Since the status of a product risking expiry is only defined
   // after the comparison with the CMM, reason why the filtering
   // is not carried out with an SQL request
-  if (params.is_expiry_risk === '1') {
-    return inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
+  if (parseInt(params.is_expiry_risk, 10) === 1) {
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
   }
 
-  if (params.is_expiry_risk === '0') {
-    return inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
+  if (parseInt(params.is_expiry_risk, 10) === 0) {
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
   }
 
   return inventoriesWithLotsProcessed;
@@ -755,9 +754,8 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
     let clone = moment(startDate);
     const months = (nbrMonth - 1 > -1 && nbrMonth) ? nbrMonth - 1 : 0;
     clone = clone.subtract(months, 'month').toDate();
-    const m = clone.getMonth() + 1;
-    const y = clone.getFullYear();
-    startDate = new Date(`${y}-${m}-01`);
+
+    startDate = new Date(clone);
     const endDate = new Date();
 
     const cmms = await Promise.all(filteredRows.map(inventory => {
