@@ -131,7 +131,7 @@ INSERT INTO unit VALUES
   (247,'Client Support Report','TREE.CLIENT_SUPPORT_REPORT','Client support report',281,'/reports/clientSupport'),
   (248,'Analysis of Cashboxes','REPORT.ANALYSIS_AUX_CASHBOXES.TITLE','Analysis of auxiliary cashboxes',281,'/reports/analysisAuxiliaryCash'),
   (249,'Realized Profit Report','TREE.REALIZED_PROFIT_REPORT','Realized profit report',281,'/reports/realizedProfit'),
-  (250,'System Usage Statistic','REPORT.SYSTEM_USAGE_STAT.TITLE','Sytem usage statistic',280,'/reports/systemUsageStat'),
+  (250,'System Usage Statistics','REPORT.SYSTEM_USAGE_STAT.TITLE','System usage statistics',280,'/reports/systemUsageStat'),
   (251,'Indexes','TREE.INDEXES','The payroll index',57,'/PAYROLL_INDEX_FOLDER'),
   (252,'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251,'/staffing_indices'),
   (253,'Multiple Payroll by Indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)',251,'/multiple_payroll_indice'),
@@ -163,7 +163,8 @@ INSERT INTO unit VALUES
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
   (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
   (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
-  (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting');
+  (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
+  (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -232,7 +233,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('invoicedReceivedStock', 'REPORT.COMPARE_INVOICED_RECEIVED.TITLE'),
   ('invoiceRegistryReport', 'Invoice Registry as report'),
   ('stock_movement_report', 'Stock Movement Report'),
-  ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE');
+  ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
+  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

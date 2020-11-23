@@ -5,6 +5,12 @@ BalanceReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
+/**
+ * @function BalanceReportConfigController
+ *
+ * @description
+ * This function renders the balance report.
+ */
 function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('BalanceReport');
@@ -25,6 +31,7 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
+
   vm.onChangeLayout = (bool) => {
     vm.reportDetails.useSeparateDebitsAndCredits = bool;
   };

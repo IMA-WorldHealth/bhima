@@ -60,10 +60,10 @@ async function list(req, res, next) {
       GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
       ar.reference_type_id, art.label as account_reference_type_label
     FROM account_reference ar
-    LEFT JOIN account_reference arp ON arp.id = ar.parent
-    LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
-    LEFT JOIN account a ON a.id = ari.account_id
-    LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
+      LEFT JOIN account_reference arp ON arp.id = ar.parent
+      LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
+      LEFT JOIN account a ON a.id = ari.account_id
+      LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
   `;
 
     filters.fullText('description');
@@ -84,7 +84,6 @@ async function list(req, res, next) {
     next(err);
   }
 }
-
 
 /**
  * @method create
@@ -288,6 +287,22 @@ async function lookupAccountReference(id) {
   return reference;
 }
 
+/**
+ * @function getAccountsForReferenceHTTP
+ *
+ * @description
+ * HTTP interface to compute the accounts associated with a particular reference.
+ */
+async function getAccountsForReferenceHTTP(req, res, next) {
+  const { id } = req.params;
+  try {
+    const accounts = await compute.getAccountsForReference(id);
+    res.status(200).json(accounts);
+  } catch (err) {
+    next(err);
+  }
+}
+
 exports.list = list;
 exports.create = create;
 exports.update = update;
@@ -295,6 +310,7 @@ exports.remove = remove;
 exports.detail = detail;
 exports.getAllValues = getAllValues;
 exports.getValue = getValue;
+exports.getAccountsForReferenceHTTP = getAccountsForReferenceHTTP;
 
 // expose computations for values
 exports.getAccountsForReference = compute.getAccountsForReference;

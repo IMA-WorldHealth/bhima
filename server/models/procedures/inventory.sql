@@ -16,7 +16,7 @@ CREATE PROCEDURE ImportInventory (
   IN inventoryText VARCHAR(100),
   IN inventoryType VARCHAR(30),
   IN inventoryUnit VARCHAR(30),
-  IN inventoryUnitPrice DECIMAL(10, 4)
+  IN inventoryUnitPrice DECIMAL(18, 4)
 )
 BEGIN
   DECLARE existInventoryGroup TINYINT(1);
@@ -29,10 +29,10 @@ BEGIN
   DECLARE inventoryTypeId TINYINT(3);
   DECLARE inventoryUnitId SMALLINT(5);
 
-  SET existInventoryGroup = (SELECT IF((SELECT COUNT(`name`) AS total FROM `inventory_group` WHERE `name` = inventoryGroupName) > 0, 1, 0));
+  SET existInventoryGroup = (SELECT IF((SELECT COUNT(`name`) AS total FROM `inventory_group` WHERE `code` = inventoryGroupName OR `name` = inventoryGroupName) > 0, 1, 0));
   SET existInventory = (SELECT IF((SELECT COUNT(`text`) AS total FROM `inventory` WHERE `code` = inventoryCode OR `text` = inventoryText) > 0, 1, 0));
   SET existInventoryType = (SELECT IF((SELECT COUNT(*) AS total FROM `inventory_type` WHERE `text` = inventoryType) > 0, 1, 0));
-  SET existInventoryUnit = (SELECT IF((SELECT COUNT(*) AS total FROM `inventory_unit` WHERE `text` = inventoryUnit) > 0, 1, 0));
+  SET existInventoryUnit = (SELECT IF((SELECT COUNT(*) AS total FROM `inventory_unit` WHERE `text` = inventoryUnit OR `abbr` = inventoryUnit) > 0, 1, 0));
 
   /* Create group if doesn't exist */
   IF (existInventoryGroup = 0) THEN
@@ -40,7 +40,7 @@ BEGIN
     SET inventoryGroupUuid = HUID(UUID());
     INSERT INTO `inventory_group` (`uuid`, `name`, `code`) VALUES (inventoryGroupUuid, inventoryGroupName, randomCode);
   ELSE
-    SET inventoryGroupUuid = (SELECT `uuid` FROM `inventory_group` WHERE `name` = inventoryGroupName LIMIT 1);
+    SET inventoryGroupUuid = (SELECT `uuid` FROM `inventory_group` WHERE `code` = inventoryGroupName OR `name` = inventoryGroupName LIMIT 1);
   END IF;
 
   /* Create type if doesn't exist */
@@ -56,7 +56,7 @@ BEGIN
     SET inventoryUnitId = (SELECT MAX(`id`) + 1 FROM `inventory_unit`);
     INSERT INTO `inventory_unit` (`id`, `abbr`, `text`) VALUES (inventoryUnitId, inventoryUnit, inventoryUnit);
   ELSE
-    SET inventoryUnitId = (SELECT `id` FROM `inventory_unit` WHERE LOWER(`text`) = LOWER(inventoryUnit) LIMIT 1);
+    SET inventoryUnitId = (SELECT `id` FROM `inventory_unit` WHERE LOWER(`text`) = LOWER(inventoryUnit) OR LOWER(`abbr`) = LOWER(inventoryUnit) LIMIT 1);
   END IF;
 
   /*

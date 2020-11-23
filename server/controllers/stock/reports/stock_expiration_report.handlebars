@@ -67,7 +67,7 @@
           <th>{{translate 'STOCK.RISK_QUANTITY'}}</th>
           <th>{{translate 'TABLE.COLUMNS.UNIT'}}</th>
           <th>{{translate 'REPORT.STOCK.UNIT_COST'}}</th>
-          <th>{{translate 'FORM.LABELS.VALUE'}}</th>
+          <th>{{translate 'STOCK.RISK_VALUE'}}</th>
           <th>{{translate 'STOCK.STATUS.LABEL'}}</th>
         </tr>
       </thead>
@@ -78,7 +78,7 @@
             <td>{{lot.text}}</td>
             <td>{{lot.label}}</td>
             <td>{{date lot.expiration_date}}</td>
-            <td class="text-right">{{lot.cmms.algo_msh}}</td>
+            <td class="text-right">{{lot.avg_consumption}}</td>
             <td class="text-right">{{lot.quantity}}</td>
             <td class="text-right">{{lot.quantity_at_risk}}</td>
             <td>{{lot.unit_type}}</td>

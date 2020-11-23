@@ -2,20 +2,21 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceController', AccountReferenceController);
 
 AccountReferenceController.$inject = [
-  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants', '$translate',
+  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants', '$translate', 'bhConstants',
 ];
 
 /**
  * AccountReference Controller
  * This module is responsible for handling the CRUD operation on the account references
  */
-function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants, $translate) {
+function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants, $translate, bhConstants) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
+  vm.viewInAccountStatement = viewInAccountStatement;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -91,7 +92,6 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
     return loadGrid(AccountReferences.filters.formatHTTP(true));
   }
 
-
   // bind methods
   vm.edit = edit;
   vm.remove = remove;
@@ -155,6 +155,20 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  const isNotTitleAccount = account => account.account_type_id !== bhConstants.accounts.TITLE;
+
+  function viewInAccountStatement(abbr) {
+    return AccountReferences.getAccountsForReference(abbr)
+      .then(list => {
+        const accountIds = list
+          .filter(account => (isNotTitleAccount(account) && !account.hidden))
+          .map(account => account.account_id);
+
+        return $state.go('reportsBase.account_report_multiple', { data : { accountIds } });
+      })
+      .catch(Notify.handleError);
   }
 
   loadGrid();

@@ -85,7 +85,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /reports/stock/lots?renderer=json returns exits for all depots`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json`);
-      expect(res.body.rows.length).to.equal(23);
+      expect(res.body.rows.length).to.equal(13);
     },
   );
 
@@ -99,7 +99,7 @@ describe('(/stock/) The Stock HTTP API', () => {
           renderer : 'json',
           depot_uuid : shared.depotPrincipalUuid,
         }));
-      expect(res.body.rows.length).to.equal(21);
+      expect(res.body.rows.length).to.equal(11);
     },
   );
 
@@ -112,7 +112,7 @@ describe('(/stock/) The Stock HTTP API', () => {
           is_exit : 0,
           depot_uuid : shared.depotPrincipalUuid,
         }));
-      helpers.api.listed(res, 21);
+      helpers.api.listed(res, 11);
     },
   );
 
@@ -148,7 +148,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/lots/movements filters on user`, async () => {
     const res = await agent.get('/stock/lots/movements').query({ user_id : 1 });
-    helpers.api.listed(res, 32);
+    helpers.api.listed(res, 22);
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
@@ -169,13 +169,13 @@ describe('(/stock/) The Stock HTTP API', () => {
   it(`GET /stock/inventories/depots filters on expired lots`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 1 });
-    helpers.api.listed(res, 3);
+    helpers.api.listed(res, 2);
   });
 
   it(`GET /stock/inventories/depots filters on non-expired lots`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 });
-    helpers.api.listed(res, 5);
+    helpers.api.listed(res, 4);
   });
 
   it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, async () => {
@@ -186,12 +186,10 @@ describe('(/stock/) The Stock HTTP API', () => {
         includeEmptyLot : 0,
       });
 
-    helpers.api.listed(res, 4);
+    helpers.api.listed(res, 2);
 
     const labels = [
-      'Abaisse langue en bois, 18*140mm, Boîte de 100 unités',
       'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
       'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
     ];
 
