@@ -24,7 +24,7 @@ module.exports = {
   EMPLOYEE : {
     key   : 'EM',
     table : 'employee',
-    documentPath : '/reports/finance/employeeStanding/',
+    documentPath : '/reports/finance/employee_standing/',
   },
   INVOICE : {
     key   : 'IV',
@@ -39,7 +39,7 @@ module.exports = {
   PATIENT : {
     key          : 'PA',
     table        : 'patient',
-    documentPath : '/reports/finance/financialPatient/',
+    documentPath : '/reports/finance/financial_patient/',
     redirectPath : '/#!/patients/?',
   },
   DOCUMENT : {

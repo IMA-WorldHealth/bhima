@@ -27,7 +27,7 @@ const PDF_OPTIONS = {
  * @description
  * This method builds the report of financial activities of an Employee.
  *
- * GET /reports/finance/employeeStanding/:uuid
+ * GET /reports/finance/employee_standing/:uuid
  */
 async function build(req, res, next) {
   const options = req.query;
