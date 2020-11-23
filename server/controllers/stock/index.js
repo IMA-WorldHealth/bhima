@@ -600,100 +600,162 @@ function listMovements(req, res, next) {
  * returns data for stock dashboard
  */
 function dashboard(req, res, next) {
-  const { depots } = req.query;
-  const expiredData = [];
-  const stockOutData = [];
-
-  const monthAverageConsumption = req.session.enterprise.settings.month_average_consumption;
-  const enableDailyConsumption = req.session.enterprise.settings.enable_daily_consumption;
+  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
+  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
   const dbPromises = [];
+  let depotsByUser = [];
 
-  depots.forEach(depot => {
-    const expired = {
-      dateTo : new Date(),
-      depot_uuid : depot,
-      includeEmptyLot : 0,
-      is_expired : 1,
-    };
+  const { status } = req.query;
 
-    const stockOut = {
-      dateTo : new Date(),
-      depot_uuid : depot,
-      status : 'stock_out',
-    };
+  const getDepotsByUser = `
+    SELECT BUID(p.depot_uuid) AS depot_uuid, d.text AS depot_text
+    FROM depot_permission p
+      JOIN depot AS d
+      ON d.uuid = p.depot_uuid
+    WHERE p.user_id = ?
+    ORDER BY d.text ASC`;
 
-    const overMaximum = {
-      dateTo : new Date(),
-      depot_uuid : depot,
-      status : 'over_maximum',
-    };
+  db.exec(getDepotsByUser, [req.session.user.id])
+    .then((depots) => {
+      depotsByUser = depots;
 
-    dbPromises.push(core.getInventoryQuantityAndConsumption(expired, monthAverageConsumption, enableDailyConsumption));
-    // dbPromises.push(core.getInventoryQuantityAndConsumption(stockOut, monthAverageConsumption, enableDailyConsumption));
-  });
+      depots.forEach(depot => {
+        if (status === 'expired') {
+          const paramsFilter = {
+            dateTo : new Date(),
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : 0,
+            is_expired : 1,
+          };
 
-  Promise.all(dbPromises)
-    .then((rows) => {
-      console.log('LA TAILLEEEEeeeeeeee');
-      console.log(rows.length);
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+          ));
+        } else if (status === 'out_of_stock') {
+          const paramsFilter = {
+            dateTo : new Date(),
+            depot_uuid : depot.depot_uuid,
+            status : 'stock_out',
+          };
 
-      depots.forEach((depot) => {
-        let countExpired = 0;
-        let countOutStock = 0;
-        let depotText = '';
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+          ));
+        } else if (status === 'at_risk_expiration') {
+          const paramsGetLots = {
+            depot_uuid : depot.depot_uuid,
+            period : 'allTime',
+            includeEmptyLot : '0',
+            is_expiry_risk : '1',
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          };
 
-        // console.log('')
+          dbPromises.push(core.getLotsDepot(
+            null,
+            paramsGetLots,
+          ));
+        } else if (status === 'at_risk_out_stock') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'security_reached',
+          };
 
-        rows.forEach((row, index) => {
-          console.log('NOUVEEEEeeeeeeee: INDEX');
-          console.log(index);
-          console.log('ROWWWWWWWWwwwwwwwwww');
-          console.log(row);
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'over_max') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'over_maximum',
+          };
 
-        });
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'require_po') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '1',
+            require_po : '1',
+          };
 
-        // EXIRED
-        rows[0].forEach(row => {
-          if (depot === row.depot_uuid) {
-            depotText = row.depot_text;
-            countExpired++;
-          }
-        });
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
+        } else if (status === 'minimum_reached') {
+          const paramsFilter = {
+            period : 'allTime',
+            depot_uuid : depot.depot_uuid,
+            includeEmptyLot : '0',
+            status : 'minimum_reached',
+          };
 
-        if (countExpired > 0) {
-          expiredData.push({
-            depot_uuid : depot,
-            depot_text : depotText,
-            number_item : countExpired,
-          });
-        }
-
-        // STOCK OUT DATA
-        rows[1].forEach(row => {
-          if (depot === row.depot_uuid) {
-            depotText = row.depot_text;
-            countOutStock++;
-          }
-        });
-
-        if (countOutStock > 0) {
-          stockOutData.push({
-            depot_uuid : depot,
-            depot_text : depotText,
-            number_item : countOutStock,
-          });
+          dbPromises.push(core.getInventoryQuantityAndConsumption(
+            paramsFilter,
+            monthAverageConsumption,
+            averageConsumptionAlgo,
+          ));
         }
       });
 
-      const dataDashboard = {
-        expiredData, stockOutData,
-      };
-
-      res.status(200).json(dataDashboard);
+      return Promise.all(dbPromises);
     })
-    .catch(next);
+    .then((rows) => {
+      depotsByUser.forEach((depot) => {
+        let count = 0;
+        depot.count = count;
+
+        rows.forEach(row => {
+          if (row.length) {
+            if (status !== 'at_risk_expiration') {
+              row.forEach(item => {
+                if (depot.depot_uuid === item.depot_uuid) {
+                  count++;
+                }
+              });
+            } else {
+              const filteredData = row.filter(i => i.depot_uuid === depot.depot_uuid);
+
+              if (filteredData.length) {
+                const inventoriesAtRisk = filteredData.map(i => i.inventory_uuid);
+
+                // Remove duplicate values from Inventory at risk expiration
+                const uniqInventory = inventoriesAtRisk.reduce((a, b) => {
+                  if (a.indexOf(b) < 0) a.push(b);
+                  return a;
+                }, []);
+                count = uniqInventory.length;
+              }
+            }
+          }
+        });
+
+        depot.count = count;
+      });
+
+      const filteredData = depotsByUser.filter(item => item.count > 0);
+
+      res.status(200).json(filteredData);
+    })
+    .catch(next)
+    .done();
 }
+
 /**
  * GET /stock/lots/depots/
  * returns list of each lots in each depots with their quantities

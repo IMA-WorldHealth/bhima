@@ -15,6 +15,7 @@
       "EXPIRED_PRODUCTS": "Expired products",
       "PRODUCTS_AT_RISK_EXPIRATION": "Products at risk of expiration",
       "OUT_OF_STOCK" : "Out of stock products",
+      "OVER_MAX"      : "Over Maximum",
       "PRODUCTS_AT_RISK_OUT_STOCK" : "Products at risk of out of stock",
       "PRODUCTS_IN_OVERSTOCK" : "Products in overstock"
     },

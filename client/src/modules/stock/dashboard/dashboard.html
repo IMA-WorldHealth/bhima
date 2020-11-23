@@ -14,76 +14,60 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-6">
-        <!-- project section -->
+      <div class="col-md-4">
         <bh-dashboard-stock
           label="STOCK.DASHBOARD.EXPIRED_PRODUCTS"
-          type="expired"
-        >
+          status="expired">
         </bh-dashboard-stock>
-        <!-- <div class="panel panel-default">
-          <div class="panel-heading">
-            <b><i class="fa fa-minus-circle icon-expired"></i> <span translate>STOCK.DASHBOARD.EXPIRED_PRODUCTS</span></b> :
-          </div>
-          <div class="panel-body" style="height : 290px; overflow-y : auto;">
-            <ul ng-if="StockDashBoardCtrl.dataDashboard.expiredData.length">
-              <li ng-repeat="expired in StockDashBoardCtrl.dataDashboard.expiredData">
-                <span>{{ expired.depot_text }}</span> : 
-                <strong>(<span>{{ expired.number_item | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
-              </li>
-            </ul>
-          </div>
-        </div> -->
       </div>
 
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <b>
-              <i class="fa fa-battery-empty"></i> <span translate>STOCK.DASHBOARD.OUT_OF_STOCK</span> :
-            </b>
-          </div>
-
-          <div class="panel-body" style="height : 290px; overflow-y : auto;">
-            <ul ng-if="StockDashBoardCtrl.dataDashboard.expiredData.length">
-              <li ng-repeat="expired in StockDashBoardCtrl.dataDashboard.stockOutData">
-                <span>{{ expired.depot_text }}</span> : 
-                <strong>(<span>{{ expired.number_item | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
-              </li>
-            </ul>
-          </div>
-        </div>
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.DASHBOARD.PRODUCTS_AT_RISK_EXPIRATION"
+          status="at_risk_expiration">
+        </bh-dashboard-stock>
       </div>
 
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <b>
-              <i class="fa fa-exclamation-triangle"></i> <span translate>STOCK.DASHBOARD.PRODUCTS_AT_RISK_EXPIRATION</span> :
-            </b>
-          </div>
-
-          <div class="panel-body" style="height : 290px; overflow-y : auto;">
-            MONEY MONEY  EVERY BODY GOT PRICE 190
-          </div>
-        </div>
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.DASHBOARD.OUT_OF_STOCK"
+          status="out_of_stock">
+        </bh-dashboard-stock>
+      </div>
 
     </div>
 
-    <div class="col-md-6">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
-        </div>
+    <div class="row">
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.DASHBOARD.OVER_MAX"
+          status="over_max">
+        </bh-dashboard-stock>
+      </div>
 
-        <div class="panel-body" style="height : 290px; overflow-y : auto;">
-          BOULOOOOOOOoooooooooooooooooo
-        </div>
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.DASHBOARD.PRODUCTS_AT_RISK_OUT_STOCK"
+          status="at_risk_out_stock">
+        </bh-dashboard-stock>
+      </div>
+
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.REQUIRES_PO"
+          status="require_po">
+        </bh-dashboard-stock>
       </div>
     </div>
 
-
-
+    <div class="row">
+      <div class="col-md-4">
+        <bh-dashboard-stock
+          label="STOCK.STATUS.MINIMUM"
+          status="minimum_reached">
+        </bh-dashboard-stock>
+      </div>
     </div>
+
   </div>
 </div>
