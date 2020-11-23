@@ -2,7 +2,7 @@ const helpers = require('../../shared/helpers');
 const PatientStandingPage = require('./patient_standing.page');
 
 describe('Patient Standing Report', () => {
-  const key = 'patientStanding';
+  const key = 'patient_standing';
 
   const dataset = {
     patient_name : 'Test 2 Patient',
