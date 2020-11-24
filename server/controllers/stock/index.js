@@ -797,9 +797,6 @@ async function listLotsDepot(req, res, next) {
       });
     }
 
-    console.log('DATAAAAAAAAAAAAaaaaaaaaa');
-    console.log(data);
-
     res.status(200).json(data);
   } catch (error) {
     next(error);
