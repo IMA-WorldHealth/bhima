@@ -25,15 +25,15 @@ function DepotService(Api, Modal, HttpCache) {
    * the $http promise is resolved with a single JSON object, otherwise an array
    * of objects should be expected.
    *
-   * @param {Number} id - the id of the account to fetch (optional).
+   * @param {String} uuid - the uuid of the depot to fetch (optional).
    * @param {Object} options - options to be passed as query strings (optional).
    * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
    *   to the server.
    * @return {Promise} promise - resolves to either a JSON (if id provided) or
    *   an array of JSONs.
    */
-  function read(id, options, cacheBust = false) {
-    return fetcher(id, options, cacheBust);
+  function read(uuid, options, cacheBust = false) {
+    return fetcher(uuid, options, cacheBust);
   }
 
   /**
