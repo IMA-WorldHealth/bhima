@@ -1,5 +1,4 @@
 status = [
-  "continuous-integration/travis-ci/push",
   "ci/semaphoreci/%"
 ]
 
