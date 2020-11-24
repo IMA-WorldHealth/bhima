@@ -83,7 +83,7 @@ const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceLists');
 const priceListPreport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
-const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid-invoice-payments');
+const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid_invoice_payments');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
@@ -114,7 +114,7 @@ const room = require('../controllers/medical/ward/room');
 const bed = require('../controllers/medical/ward/bed');
 const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
-const feeCenter = require('../controllers/finance/feeCenter');
+const feeCenter = require('../controllers/finance/fee_center');
 
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
@@ -405,7 +405,7 @@ exports.configure = function configure(app) {
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
-  app.get('/reports/purchases/purchases_analysis', stockReports.purchaseOrderAnalysis.report);
+  app.get('/reports/purchase_order_analysis', stockReports.purchaseOrderAnalysis.report);
   app.get('/reports/inventory/changes', inventoryReports.reports.changes);
 
   app.get('/reports/finance/invoices', financeReports.invoices.report);
@@ -420,11 +420,11 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
   app.get('/reports/finance/cashflow/', financeReports.cashflow.report);
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
-  app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
+  app.get('/reports/finance/financial_patient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
-  app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
-  app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
-  app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
+  app.get('/reports/finance/unpaid_invoice_payments', unpaidInvoicePayments.document);
+  app.get('/reports/finance/income_expense_by_month', financeReports.incomeExpenseByMonth.document);
+  app.get('/reports/finance/income_expense_by_year', financeReports.incomeExpenseByYear.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/monthly_balance', financeReports.monthlyBalance.document);
@@ -439,21 +439,21 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
-  app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
-  app.get('/reports/finance/employeeStanding/', financeReports.employee);
+  app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
+  app.get('/reports/finance/employee_standing/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
   app.get('/reports/finance/operating', financeReports.operating.document);
-  app.get('/reports/finance/debtorSummary', debtorSummaryReport.summaryReport);
-  app.get('/reports/finance/clientDebts', clientDebts.report);
-  app.get('/reports/finance/clientSupport', clientSupport.report);
-  app.get('/reports/finance/realizedProfit', realizedProfit.report);
-  app.get('/reports/finance/recoveryCapacity', recoveryCapacity.report);
-  app.get('/reports/finance/invoicedReceivedStock/:uuid', financeReports.invoicedReceivedStock.report);
+  app.get('/reports/finance/debtor_summary', debtorSummaryReport.summaryReport);
+  app.get('/reports/finance/client_debts', clientDebts.report);
+  app.get('/reports/finance/client_support', clientSupport.report);
+  app.get('/reports/finance/realized_profit', realizedProfit.report);
+  app.get('/reports/finance/recovery_capacity', recoveryCapacity.report);
+  app.get('/reports/finance/invoiced_received_stock/:uuid', financeReports.invoicedReceivedStock.report);
 
-  app.get('/reports/finance/systemUsageStat', systemUsage.document);
+  app.get('/reports/finance/system_usage_stat', systemUsage.document);
 
-  app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
+  app.get('/reports/finance/analysis_auxiliary_cashboxes', financeReports.analysisAuxiliaryCashboxes.report);
   app.get('/reports/finance/configurable_analysis_report', financeReports.configurableAnalysisReport.report);
 
   // visits reports
@@ -986,7 +986,7 @@ exports.configure = function configure(app) {
 
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
-  app.get('/reports/indicatorsReport', indicatorRerpor.report);
+  app.get('/reports/indicators_report', indicatorRerpor.report);
 
   // API cron
   app.get('/crons', cron.list);

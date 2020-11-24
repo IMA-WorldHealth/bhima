@@ -1,0 +1,69 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+
+            <!-- Date interval  -->
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              limit-min-fiscal>
+            </bh-date-interval>
+
+
+            <!-- Optional Debtor Select -->
+            <bh-debtor-group-select
+              debtor-group-uuid = "ReportConfigCtrl.reportDetails.debtorGroupUuid"
+              on-select-callback = "ReportConfigCtrl.onSelectDebtorGroup(debtorGroup)"
+              required="false">
+              <bh-clear on-clear="ReportConfigCtrl.onClear()"></bh-clear>
+            </bh-debtor-group-select>
+
+
+            <!-- service -->
+            <bh-service-select
+              service-uuid="ReportConfigCtrl.reportDetails.serviceUuid"
+              on-select-callback="ReportConfigCtrl.onSelectService(service)">
+              <bh-clear on-clear="ReportConfigCtrl.clear('serviceUuid')"></bh-clear>
+            </bh-service-select>
+
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <bh-cron-email-report
+        report-key="unpaid_invoice_payments"
+        report-form="ConfigForm"
+        report-details="ReportConfigCtrl.reportDetails"
+        on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
+      </bh-cron-email-report>
+    </div>
+  </div>
+  </div>
+</div>
