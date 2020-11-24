@@ -282,10 +282,10 @@ BEGIN
   END IF;
 
   /* continue only if inventoryUuid is defined */
-  IF (inventoryUuid IS NOT NULL) THEN 
+  IF (inventoryUuid IS NOT NULL) THEN
 
     /* update the consumption (avg_consumption) */
-    IF (inventoryCmm IS NOT NULL OR inventoryCmm <> '' OR inventoryCmm <> 'NULL') THEN 
+    IF (inventoryCmm IS NOT NULL OR inventoryCmm <> '' OR inventoryCmm <> 'NULL') THEN
       UPDATE inventory SET avg_consumption = inventoryCmm WHERE `uuid` = inventoryUuid;
     END IF;
 
@@ -586,7 +586,7 @@ CREATE PROCEDURE `getCMM` (
   IN _depot_uuid BINARY(16)
 ) BEGIN
 
-  DECLARE  _last_inventory_mvt_date, _first_inventory_mvt_date DATE;
+  DECLARE _last_inventory_mvt_date, _first_inventory_mvt_date DATE;
   DECLARE _sum_consumed_quantity, _sum_stock_day,
     _sum_consumption_day, _sum_stock_out_days, _sum_days, _number_of_month,
     _days_before_consumption
@@ -621,7 +621,6 @@ CREATE PROCEDURE `getCMM` (
     ORDER BY sm.date ASC
   ) AS aggr;
 
-
   SET _sum_days = DATEDIFF(_end_date,  _start_date) + 1;
   SET _number_of_month = ROUND(DATEDIFF(_end_date,  _start_date)/30.5);
   SET _days_before_consumption = DATEDIFF(_first_inventory_mvt_date,  _start_date);
@@ -636,7 +635,6 @@ CREATE PROCEDURE `getCMM` (
           x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) + 1) AS frequency
       FROM (
           SELECT
-
           IF(m.start_date < _start_date, _start_date, m.start_date) AS start_date ,
           IF(m.end_date > _end_date, _end_date,  IF(m.end_date = _last_inventory_mvt_date AND
                   _last_inventory_mvt_date < _end_date, _end_date, m.end_date )) AS end_date,
@@ -669,6 +667,7 @@ CREATE PROCEDURE `getCMM` (
     ROUND(IFNULL(@algo2, 0), 2) as algo2,
     ROUND(IFNULL(@algo3, 0),2) as algo3,
     ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh,
+    BUID(_inventory_uuid) as inventory_uuid,
     _start_date as start_date,
     _end_date as end_date,
     _first_inventory_mvt_date as first_inventory_movement_date,
@@ -680,7 +679,6 @@ CREATE PROCEDURE `getCMM` (
     _number_of_month as number_of_month,
     _sum_stock_out_days as sum_stock_out_days,
     _days_before_consumption as days_before_consumption;
-
 END$$
 
 DELIMITER ;
