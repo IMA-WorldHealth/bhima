@@ -21,7 +21,7 @@
         <th translate>FORM.LABELS.LOT</th>
       </tr>
       <tr ng-repeat="inventory in $ctrl.expiredInventories | limitTo : 5">
-        <td>{{inventory.text}} (<u translate-attr="{'title' : inventory.expiration_date_raw}">{{inventory.expiration_date}}</u>)</td>
+        <td>{{inventory.text}} (<u translate-attr="{'title' : inventory.expiration_date_raw}">{{inventory.expiration_date_parsed}}</u>)</td>
         <td class="lot-width">{{inventory.label}}</td>
       </tr>
 

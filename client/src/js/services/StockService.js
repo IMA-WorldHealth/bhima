@@ -2,10 +2,10 @@ angular.module('bhima.services')
   .service('StockService', StockService);
 
 StockService.$inject = [
-  'PrototypeApiService', 'StockFilterer',
+  'PrototypeApiService', 'StockFilterer', 'HttpCacheService',
 ];
 
-function StockService(Api, StockFilterer) {
+function StockService(Api, StockFilterer, HttpCache) {
   // API for stock lots
   const stocks = new Api('/stock/lots');
 
@@ -22,6 +22,28 @@ function StockService(Api, StockFilterer) {
 
   // API for stock inventory in depots
   const inventories = new Api('/stock/inventories/depots');
+
+  // the stock inventories route gets hit a lot.  Cache the results on the client.
+  inventories.read = cacheInventoriesRead;
+
+  const callback = (id, options) => Api.read.call(inventories, id, options);
+  const fetcher = HttpCache(callback, 5000);
+
+  /**
+   * The read() method loads data from the api endpoint. If an id is provided,
+   * the $http promise is resolved with a single JSON object, otherwise an array
+   * of objects should be expected.
+   *
+   * @param {Number} id - the id of the account to fetch (optional).
+   * @param {Object} options - options to be passed as query strings (optional).
+   * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
+   *   to the server.
+   * @return {Promise} promise - resolves to either a JSON (if id provided) or
+   *   an array of JSONs.
+   */
+  function cacheInventoriesRead(id, options, cacheBust = false) {
+    return fetcher(id, options, cacheBust);
+  }
 
   // API for stock inventory adjustment
   const inventoryAdjustment = new Api('/stock/inventory_adjustment');
