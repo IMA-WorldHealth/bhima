@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('DepotService', DepotService);
 
-DepotService.$inject = ['PrototypeApiService', '$uibModal'];
+DepotService.$inject = ['PrototypeApiService', '$uibModal', 'HttpCacheService'];
 
 /**
  * @class DepotService
@@ -10,9 +10,31 @@ DepotService.$inject = ['PrototypeApiService', '$uibModal'];
  * @description
  * Encapsulates common requests to the /depots/ URL.
  */
-function DepotService(Api, Modal) {
+function DepotService(Api, Modal, HttpCache) {
   const baseUrl = '/depots/';
   const service = new Api(baseUrl);
+
+  // debounce the read() call for depots
+  service.read = read;
+
+  const callback = (id, options) => Api.read.call(service, id, options);
+  const fetcher = HttpCache(callback, 250);
+
+  /**
+   * The read() method loads data from the api endpoint. If an id is provided,
+   * the $http promise is resolved with a single JSON object, otherwise an array
+   * of objects should be expected.
+   *
+   * @param {Number} id - the id of the account to fetch (optional).
+   * @param {Object} options - options to be passed as query strings (optional).
+   * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
+   *   to the server.
+   * @return {Promise} promise - resolves to either a JSON (if id provided) or
+   *   an array of JSONs.
+   */
+  function read(id, options, cacheBust = false) {
+    return fetcher(id, options, cacheBust);
+  }
 
   /**
    * @method openSelectionModal
@@ -29,9 +51,7 @@ function DepotService(Api, Modal) {
     return Modal.open({
       controller : 'SelectDepotModalController as $ctrl',
       templateUrl : 'modules/stock/depot-selection.modal.html',
-      resolve : {
-        depot : () => depot,
-      },
+      resolve : { depot : () => depot },
     }).result;
   };
 
