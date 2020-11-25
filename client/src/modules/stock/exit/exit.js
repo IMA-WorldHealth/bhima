@@ -471,6 +471,9 @@ function StockExitController(
   }
 
   function reinit(form) {
+    // Load inventories
+    loadInventories(vm.depot);
+
     vm.reset(form);
     vm.selectedLots = [];
     resetSelectedEntity();
