@@ -2,7 +2,7 @@ const helpers = require('../../shared/helpers');
 const AnnualClientsReportReportPage = require('./balance.page');
 
 describe.skip('Annual Clients Report', () => {
-  const key = 'annual-clients-report';
+  const key = 'annual_clients_report';
   let Page;
 
   const dataset = {

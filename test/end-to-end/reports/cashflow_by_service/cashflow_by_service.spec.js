@@ -3,7 +3,7 @@ const ReportCashflowPage = require('./cashflow_by_service.page');
 
 describe('Cashflow By Service Report', () => {
   let Page;
-  const key = 'cashflowByService';
+  const key = 'cashflow_by_service';
 
   const dataset = {
     cashbox : 'Caisse Aux',
