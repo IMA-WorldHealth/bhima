@@ -68,6 +68,20 @@
           <bh-filter-toggle on-toggle="StockCtrl.toggleInlineFilter()">
             <span translate>FORM.LABELS.FILTER</span>
           </bh-filter-toggle>
+          <div class="toolbar-item">
+            <div class="checkbox">
+              <label>
+                <input
+                  type="checkbox"
+                  name="includeEmptyLot"
+                  ng-true-value="1"
+                  ng-false-value="0"
+                  ng-model="StockCtrl.includeEmptyLot"
+                  ng-change="StockCtrl.reloadInventories()">
+                <span translate>STOCK.INCLUDE_EMPTY_OR_NEGATIVE_LOTS</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
