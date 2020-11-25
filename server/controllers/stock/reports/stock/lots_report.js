@@ -45,11 +45,12 @@ function stockLotsReport(req, res, next) {
     delete options.defaultPeriod;
   }
 
-  options.monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-
   if (req.session.stock_settings.enable_strict_depot_permission) {
     options.check_user_id = req.session.user.id;
   }
+
+  options.month_average_consumption = req.session.stock_settings.month_average_consumption;
+  options.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
 
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
