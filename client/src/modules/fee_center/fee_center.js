@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-  .controller('fee_centerController', fee_centerController);
+  .controller('fee_centerController', feeCenterController);
 
-fee_centerController.$inject = [
+feeCenterController.$inject = [
   'FeeCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
 ];
 
@@ -11,7 +11,7 @@ fee_centerController.$inject = [
  * This controller is about the Fee Center module in the admin zone
  * It's responsible for creating, editing and updating a Fee Center
  */
-function fee_centerController(FeeCenters, ModalService, Notify, uiGridConstants) {
+function feeCenterController(FeeCenters, ModalService, Notify, uiGridConstants) {
   const vm = this;
 
   // bind methods

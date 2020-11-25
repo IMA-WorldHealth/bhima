@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('break_evenController', break_evenConfigController);
+  .controller('break_evenController', breakEvenController);
 
-break_evenConfigController.$inject = [
+breakEvenController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
 
-function break_evenConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function breakEvenController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('configure_break_even');
   const reportUrl = 'reports/finance/break_even';

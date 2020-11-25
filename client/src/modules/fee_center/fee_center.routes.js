@@ -3,7 +3,7 @@ angular.module('bhima.routes')
     $stateProvider
       .state('fee_center', {
         url         : '/fee_center',
-        controller  : 'fee_centerController as FeeCenterCtrl',
+        controller  : 'feeCenterController as FeeCenterCtrl',
         templateUrl : 'modules/fee_center/fee_center.html',
       })
       .state('fee_center.create', {
