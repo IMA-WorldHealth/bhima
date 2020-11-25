@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('break_even_fee_centerController', break_even_fee_centerConfigController);
+  .controller('break_even_fee_centerController', breakEvenFeeCenterController);
 
-break_even_fee_centerConfigController.$inject = [
+breakEvenFeeCenterController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'FeeCenterService',
 ];
 
 
-function break_even_fee_centerConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, FeeCenters) {
+function breakEvenFeeCenterController($sce, Notify, SavedReports, AppCache, reportData, $state, FeeCenters) {
   const vm = this;
   const cache = new AppCache('configure_break_even_fee_center');
   const reportUrl = 'reports/finance/break_even_fee_center';

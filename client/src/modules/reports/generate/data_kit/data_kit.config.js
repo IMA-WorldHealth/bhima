@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
-  .controller('data_kitController', data_kitConfigController);
+  .controller('data_kitController', dataKitController);
 
-data_kitConfigController.$inject = [
+dataKitController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'SurveyFormService',
   'ChoicesListManagementService',
 ];
 
 
-function data_kitConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, SurveyForm,
+function dataKitController($sce, Notify, SavedReports, AppCache, reportData, $state, SurveyForm,
   ChoicesList) {
   const vm = this;
   const cache = new AppCache('data_kit');

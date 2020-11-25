@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
-  .controller('cashflow_by_serviceController', cashflow_by_serviceConfigController);
+  .controller('cashflow_by_serviceController', cashflowByServiceController);
 
-cashflow_by_serviceConfigController.$inject = [
+cashflowByServiceController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-function cashflow_by_serviceConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function cashflowByServiceController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('configure_cashflow_by_service');
   const reportUrl = 'reports/finance/cashflow/services';

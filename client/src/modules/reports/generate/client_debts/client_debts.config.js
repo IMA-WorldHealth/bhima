@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('client_debtsController', client_debtsController);
+  .controller('client_debtsController', clientDebtsController);
 
-client_debtsController.$inject = [
+clientDebtsController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
 ];
 
-function client_debtsController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function clientDebtsController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('client_debts');
   const reportUrl = 'reports/finance/client_debts';

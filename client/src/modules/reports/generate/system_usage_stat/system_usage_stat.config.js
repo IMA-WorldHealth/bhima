@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('system_usage_statController', system_usage_statController);
+  .controller('system_usage_statController', systemUsageStatController);
 
-system_usage_statController.$inject = [
+systemUsageStatController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
 ];
 
-function system_usage_statController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function systemUsageStatController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('system_usage_stat');
   const reportUrl = 'reports/finance/system_usage_stat';

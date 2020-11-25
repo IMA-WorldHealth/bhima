@@ -1,17 +1,17 @@
 angular.module('bhima.controllers')
-  .controller('patient_standingController', patient_standingController);
+  .controller('patient_standingController', patientStandingController);
 
-patient_standingController.$inject = [
+patientStandingController.$inject = [
   '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
   'BaseReportService', 'reportData',
 ];
 
 /**
- * @function patient_standingController
+ * @function patientStandingController
  *
  * @description
  */
-function patient_standingController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
+function patientStandingController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
 
   const vm = this;
   const cache = new AppCache('configure_patient_standing');
