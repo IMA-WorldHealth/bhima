@@ -16,3 +16,11 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE');
+
+/*
+ * @author: lomamech
+ * @date: 2020-11-23
+ * @subject : Stock Dashboard
+ */
+INSERT INTO unit VALUES
+  (291, '[Stock] Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard');
