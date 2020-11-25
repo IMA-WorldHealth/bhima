@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('inventory_changesController', inventory_changesController);
+  .controller('inventory_changesController', inventoryChangesController);
 
-inventory_changesController.$inject = [
+inventoryChangesController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
 ];
 
-function inventory_changesController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function inventoryChangesController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('inventory_changes_report');
   const reportUrl = 'reports/inventory/changes/';

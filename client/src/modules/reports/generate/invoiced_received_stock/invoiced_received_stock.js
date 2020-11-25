@@ -1,17 +1,17 @@
 angular.module('bhima.controllers')
-  .controller('invoiced_received_stockController', invoiced_received_stockController);
+  .controller('invoiced_received_stockController', invoicedeceivedStockController);
 
-invoiced_received_stockController.$inject = [
+invoicedeceivedStockController.$inject = [
   '$state', '$sce', 'NotifyService', 'AppCache',
   'BaseReportService', 'reportData',
 ];
 
 /**
- * @function invoiced_received_stockController
+ * @function invoicedeceivedStockController
  *
  * @description
  */
-function invoiced_received_stockController($state, $sce, Notify, AppCache, SavedReports, reportData) {
+function invoicedeceivedStockController($state, $sce, Notify, AppCache, SavedReports, reportData) {
 
   const vm = this;
   const cache = new AppCache('configure_invoiced_received_stock');

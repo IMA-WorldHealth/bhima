@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('monthly_balanceController', monthly_balanceController);
+  .controller('monthly_balanceController', monthlyBalanceController);
 
-monthly_balanceController.$inject = [
+monthlyBalanceController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'AccountService',
   'FormatTreeDataService',
 ];
 
-function monthly_balanceController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts, FormatTreeData) {
+function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts, FormatTreeData) {
   const vm = this;
   const cache = new AppCache('monthly_balance');
   const reportUrl = 'reports/finance/monthly_balance';

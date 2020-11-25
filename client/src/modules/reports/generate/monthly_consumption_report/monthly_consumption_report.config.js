@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('monthly_consumption_reportController', monthly_consumption_reportConfigController);
+  .controller('monthly_consumption_reportController', monthlyConsumptionReportController);
 
-monthly_consumption_reportConfigController.$inject = [
+monthlyConsumptionReportController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
   'LanguageService',
 ];
 
-function monthly_consumption_reportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
+function monthlyConsumptionReportController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
   const vm = this;
   const cache = new AppCache('monthly_consumption');
   const reportUrl = 'reports/stock/monthly_consumption';
