@@ -889,20 +889,36 @@ a[disabled] {
 }
 
 .expired {
-  background-color: #ff000083 !important;
+  background-color: #FF7B7B !important;
+}
+
+.icon-expired {
+  color: #FF7B7B !important;
 }
 
 .at-risk {
-  background-color: #ffff6686 !important;
+  background-color: #FFFFA9 !important;
+}
+
+.icon-at-risk {
+  background-color:#FFFFA9 !important;
 }
 
 .at-risk-of-expiring {
-  background-color: #ff880191 !important;
+  background-color: #FFB766 !important;
+}
+
+.icon-at-risk-of-expiring {
+  color: #FFB766 !important;
 }
 
 .out-of-stock {
   /* text-decoration : line-through; */
-  background-color: #cc00ff8f !important;
+  background-color: #E067FF !important;
+}
+
+.icon-out-of-stock {
+  color: #E067FF !important;
 }
 
 .dropdown-menu {

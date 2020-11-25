@@ -141,6 +141,7 @@
     "SIMPLE_VOUCHER" : "Simple Voucher",
     "STAFFING_INDICES_MANAGEMENT" : "Staffing indices management",
     "STOCK" : "Stock",
+    "STOCK_DASHBOARD": "Dashboard",
     "STOCK_CONSUMPTION_GRAPH_REPORT": "Stock Consumption's graph report",
     "STOCK_ENTRY_REPORT":"[Stock] Entries Report",
     "STOCK_EXIT_REPORT" : "[Stock] Exit Report",

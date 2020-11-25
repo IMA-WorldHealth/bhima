@@ -1,0 +1,65 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK</li>
+      <li class="title" translate>TREE.STOCK_DASHBOARD</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item"></div>
+    </div>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4">
+        <bh-stock-panel-expired
+          label="STOCK.DASHBOARD.EXPIRED_PRODUCTS">
+        </bh-stock-panel-expired>
+      </div>
+
+      <div class="col-md-4">
+        <bh-stock-panel-at-risk-expiration
+          label="STOCK.DASHBOARD.PRODUCTS_AT_RISK_EXPIRATION">
+        </bh-stock-panel-at-risk-expiration>
+      </div>
+
+      <div class="col-md-4">
+        <bh-stock-panel-out-of-stock
+          label="STOCK.DASHBOARD.OUT_OF_STOCK">
+        </bh-stock-panel-out-of-stock>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <bh-stock-panel-over-max
+          label="STOCK.DASHBOARD.OVER_MAX">
+        </bh-stock-panel-over-max>
+      </div>
+
+      <div class="col-md-4">
+        <bh-stock-panel-at-risk-out-stock
+          label="STOCK.DASHBOARD.PRODUCTS_AT_RISK_OUT_STOCK">
+        </bh-stock-panel-at-risk-out-stock>
+      </div>
+
+      <div class="col-md-4">
+        <bh-stock-panel-require-purchase-order
+          label="STOCK.REQUIRES_PO">
+        </bh-stock-panel-require-purchase-order>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <bh-stock-panel-minimum-reached
+          label="STOCK.STATUS.MINIMUM">
+        </bh-stock-panel-minimum-reached>
+      </div>
+    </div>
+
+  </div>
+</div>
