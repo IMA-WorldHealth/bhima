@@ -35,8 +35,6 @@ const flux = {
   INVENTORY_ADJUSTMENT : 15,
 };
 
-const DATE_FORMAT = 'YYYY-MM-DD';
-
 // exports
 module.exports = {
   flux,
@@ -45,11 +43,8 @@ module.exports = {
   getLotsDepot,
   getLotsMovements,
   getLotsOrigins,
-  stockManagementProcess,
   listStatus,
   // stock consumption
-  getStockConsumption,
-  getStockConsumptionAverage,
   getInventoryQuantityAndConsumption,
   getInventoryMovements,
   getDailyStockConsumption,
@@ -239,21 +234,19 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      m.date AS entry_date,
-      i.avg_consumption, i.purchase_interval, i.delay,
+      m.date AS entry_date, i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference,
-      t.name AS tag_name, t.color
+      dm.text AS documentReference, t.name AS tag_name, t.color
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN inventory_group ig ON ig.uuid = i.group_uuid
-    JOIN depot d ON d.uuid = m.depot_uuid
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-    LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
-    LEFT JOIN tags t ON t.uuid = lt.tag_uuid
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
+      JOIN inventory_group ig ON ig.uuid = i.group_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+      LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
+      LEFT JOIN tags t ON t.uuid = lt.tag_uuid
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;
@@ -264,38 +257,18 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
 
-  const inventories = await db.exec(query, queryParameters);
-  const processParameters = [inventories, params.dateTo, params.monthAverageConsumption];
-  const resultFromProcess = await processStockConsumptionAverage(...processParameters);
+  const resultFromProcess = await db.exec(query, queryParameters);
 
-  if (resultFromProcess.length > 0) {
-    let startDate = new Date();
-    let clone = moment(startDate);
-    const months = (params.monthAverageConsumption - 1 > -1 && params.monthAverageConsumption)
-      ? params.monthAverageConsumption - 1 : 0;
-    clone = clone.subtract(months, 'month').toDate();
+  // calulate the CMM and add inventory flags.
+  const inventoriesWithManagementData = await getBulkInventoryCMM(
+    resultFromProcess,
+    params.month_average_consumption,
+    params.average_consumption_algo,
+  );
 
-    startDate = new Date(clone);
-    const endDate = new Date();
-
-    const cmms = await Promise.all(resultFromProcess.map(inventory => {
-      return db.exec(`CALL getCMM(?,?,?,?) `, [
-        startDate,
-        endDate,
-        db.bid(inventory.inventory_uuid),
-        db.bid(inventory.depot_uuid),
-      ]);
-    }));
-
-    resultFromProcess.forEach((inv, index) => {
-      const cmmResult = cmms[index][0][0];
-      inv.cmms = cmmResult;
-      inv.avg_consumption = cmmResult[params.averageConsumptionAlgo];
-    });
-  }
-
-  const inventoriesWithManagementData = await stockManagementProcess(resultFromProcess);
-  let inventoriesWithLotsProcessed = await processMultipleLots(inventoriesWithManagementData);
+  // FIXME(@jniles) - this step seems to mostly just change the ordering of lots.  Can we combine
+  // it with the getBulkInventoryCMM?
+  let inventoriesWithLotsProcessed = computeLotIndicators(inventoriesWithManagementData);
 
   if (_status) {
     inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(row => row.status === _status);
@@ -313,6 +286,58 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   return inventoriesWithLotsProcessed;
+}
+
+/**
+ * @function getBulkInventoryCMM
+ *
+ * @description
+ * This function takes in an array of lots or inventory items and computes the CMM for all unique
+ * inventory/depot pairings in the array.  It then creates a mapping for the CMMs in memory and uses
+ * those to compute the relevant indicators.
+ */
+async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo) {
+  if (!lots.length) return [];
+
+  // NOTE(@jniles) - this is a developer sanity check. Fail _hard_ if the query is underspecified
+  // Throw an error if we don't have the monthAverageConsumption or averageConsumptionAlgo passed in.
+  if (!monthAverageConsumption || !averageConsumptionAlgo) {
+    throw new Error('Cannot calculate the AMC without consumption parameters!');
+  }
+
+  // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
+  // times for the same inventory item.
+  const params = _.chain(lots)
+    .map(row => ([monthAverageConsumption, row.inventory_uuid, row.depot_uuid]))
+    .uniqBy(row => row.toString())
+    .value();
+
+  // query the server
+  const cmms = await Promise.all(
+    params.map(row => db.exec(`CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), HUID(?), HUID(?))`, row)
+      .then(values => values[0][0])),
+  );
+
+  // create a map of the CMM values keys on the depot/inventory pairing.
+  const cmmMap = new Map(cmms.map(row => ([`${row.depot_uuid}-${row.inventory_uuid}`, row])));
+
+  // quick function to query the above map.
+  const getCMMForLot = (depotUuid, inventoryUuid) => cmmMap.get(`${depotUuid}-${inventoryUuid}`);
+
+  lots.forEach(lot => {
+    const lotCMM = getCMMForLot(lot.depot_uuid, lot.inventory_uuid);
+    if (lotCMM) {
+      lot.cmms = lotCMM;
+      lot.avg_consumption = lot.cmms[averageConsumptionAlgo];
+    } else {
+      lot.cmms = {};
+      lot.avg_consumption = 0;
+    }
+  });
+
+  // now that we have the CMMs correctly mapped, we can compute the inventory indicators
+  const result = computeInventoryIndicators(lots);
+  return result;
 }
 
 /**
@@ -446,63 +471,63 @@ function getLotsOrigins(depotUuid, params, averageConsumptionAlgo) {
 }
 
 /**
- * @function stockManagementProcess
+ * @function computeInventoryIndicators
  *
  * @description
- * Stock Management Processing
+ * This function acts on information coming from the getBulkInventoryCMM() function.  It's
+ * separated for clarity.
+ *
+ * This could be either lots or inventory items passed in.
+ *
+ * Here is the order you should be executing these:
+ *   getBulkInventoryCMM()
+ *   computeInventoryIndicators()
+ *   computeLotIndicators()
  *
  * DEFINITIONS:
  *   S_SEC: Security Stock - one month of stock on hand based on the average consumption.
  *   S_MIN: Minimum stock - typically the security stock (depends on the depot)
- *   S_RP: Risk of Expiration.
  */
-function stockManagementProcess(inventories) {
-  let CM;
-  let Q;
-  let CM_NOT_ZERO;
-
+function computeInventoryIndicators(inventories) {
   for (let i = 0; i < inventories.length; i++) {
     const inventory = inventories[i];
 
     // the quantity of stock available in the given depot
-    Q = inventory.quantity; // the quantity
+    const Q = inventory.quantity; // the quantity
 
     // Average Monthly Consumption (CMM/AMC)
-    // This is calculuated during the stock exit to a patient or a service
-    // It is _not_ the average of stock exits, as both movements to other depots
-    // and stock loss are not included in this.
-    CM = inventory.avg_consumption; // consommation mensuelle
-    CM_NOT_ZERO = !CM ? 1 : CM;
+    // This value is computed in the getBulkInventoryCMM() function.
+    // It provides the average monthly consumption for the particular product.
+    const CMM = inventory.avg_consumption;
+
+    // Signal that no consumption has occurred of the inventory items
+    inventory.NO_CONSUMPTION = (CMM === 0);
 
     // Compute the Security Stock
     // Security stock is defined by taking the average monthly consumption (AMC or CMM)
     // and multiplying it by the Lead Time (inventory.delay).  The Lead Time is by default 1 month.
     // This gives you a security stock quantity.
-    inventory.S_SEC = CM * inventory.delay; // stock de securite
+    inventory.S_SEC = CMM * inventory.delay; // stock de securite
 
     // Compute Minimum Stock
     // The minumum of stock required is double the security stock.
+    // NOTE(@jniles): this is defined per depot.
     inventory.S_MIN = inventory.S_SEC * inventory.min_months_security_stock;
 
     // Compute Maximum Stock
     // The maximum stock is the minumum stock plus the amount able to be consumed in a
     // single purchase interval.
-    inventory.S_MAX = (CM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
+    inventory.S_MAX = (CMM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
 
     // Compute Months of Stock Remaining
     // The months of stock remaining is the quantity in stock divided by the Average
-    // monthly consumption.
-    inventory.S_MONTH = Math.floor(inventory.quantity / CM_NOT_ZERO); // mois de stock
+    // monthly consumption. Skip division by zero if the CMM is 0.
+    inventory.S_MONTH = inventory.NO_CONSUMPTION ? null : Math.floor(inventory.quantity / CMM); // mois de stock
 
     // Compute the Refill Quantity
     // The refill quantity is the amount of stock needed to order to reach your maximum stock.
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
-
-    // Compute the Risk of Stock Expiry
-    // The risk of stock expiry is the quantity of drugs that will expire before you
-    // can use them.
-    inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
     // compute the inventory status code
     if (Q <= 0) {
@@ -530,26 +555,6 @@ function stockManagementProcess(inventories) {
 }
 
 /**
- * @function getStockConsumption
- *
- * @description returns the monthly (periodic) stock consumption (CM)
- *
- * @param {array} periodIds
- */
-function getStockConsumption(periodIds) {
-  const sql = `
-    SELECT SUM(s.quantity) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, d.text
-    FROM stock_consumption s
-    JOIN inventory i ON i.uuid = s.inventory_uuid
-    JOIN depot d ON d.uuid = s.depot_uuid
-    JOIN period p ON p.id = s.period_id
-    WHERE p.id IN (?)
-    GROUP BY i.uuid, d.uuid
-  `;
-  return db.exec(sql, [periodIds]);
-}
-
-/**
  * @function getDailyStockConsumption
  *
  * @description returns the daily (periodic) stock consumption (CM)
@@ -559,11 +564,11 @@ function getStockConsumption(periodIds) {
 async function getDailyStockConsumption(params) {
 
   const consumptionValue = `
-    ((
+    (i.consumable = 1 AND (
       (m.flux_id IN (${flux.TO_PATIENT}, ${flux.TO_SERVICE}))
       OR
-      (m.flux_id=${flux.TO_OTHER_DEPOT} AND d.is_warehouse=1)
-    ) AND i.consumable=1)
+      (m.flux_id = ${flux.TO_OTHER_DEPOT} AND d.is_warehouse = 1)
+    ))
   `;
 
   db.convert(params, ['depot_uuid', 'inventory_uuid']);
@@ -612,95 +617,16 @@ async function getDailyStockConsumption(params) {
 }
 
 /**
- * @function getStockConsumptionAverage
- *
- * @description
- * Algorithm to calculate the CMM (consommation moyenne mensuelle) or average stock consumption
- * over a period for each stock item that has been consumed.
- *
- * NOTE: A FISCAL YEAR MUST BE DEFINED FOR THE FEATURE WORK PROPERLY
- *
- * @param {number} periodId - the base period
- * @param {Date} periodDate - a date for finding the correspondant period
- * @param {number} monthAverageConsumption - the number of months for calculating the average (optional)
- */
-async function getStockConsumptionAverage(periodId, periodDate, monthAverageConsumption) {
-  const numberOfMonths = monthAverageConsumption - 1;
-  let ids = [];
-
-  const baseDate = periodDate
-    ? moment(periodDate).format(DATE_FORMAT)
-    : moment().format(DATE_FORMAT);
-
-  const beginningDate = moment(baseDate)
-    .subtract(numberOfMonths, 'months')
-    .format(DATE_FORMAT);
-
-  const queryPeriodRange = `
-    SELECT id FROM period WHERE (id BETWEEN ? AND ?) AND period.number NOT IN (0, 13);
-  `;
-
-  const queryPeriodId = periodId
-    ? 'SELECT id FROM period WHERE id = ? LIMIT 1;'
-    : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
-
-  const queryStockConsumption = `
-    SELECT IF(i.avg_consumption = 0, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
-      BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
-      d.text AS depot_text
-    FROM stock_consumption s
-      JOIN inventory i ON i.uuid = s.inventory_uuid
-      JOIN depot d ON d.uuid = s.depot_uuid
-      JOIN period p ON p.id = s.period_id
-    WHERE p.id IN (?)
-    GROUP BY i.uuid, d.uuid;
-  `;
-
-  const checkPeriod = 'SELECT id FROM period;';
-
-  const getBeginningPeriod = `
-    SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
-  `;
-
-  const periods = await db.exec(checkPeriod);
-
-  // Just to avoid that db.one requests can query empty tables, and generate errors
-  if (periods.length) {
-    const period = await db.one(queryPeriodId, [periodId || baseDate]);
-    const beginningPeriod = await db.one(getBeginningPeriod, [beginningDate]);
-    const paramPeriodRange = beginningPeriod.id ? [beginningPeriod.id, period.id] : [1, period.id];
-    const rows = await db.exec(queryPeriodRange, paramPeriodRange);
-    ids = rows.map(row => row.id);
-  }
-
-  const execStockConsumption = periods.length ? db.exec(queryStockConsumption, [ids]) : [];
-
-  return execStockConsumption;
-}
-
-/**
  * Inventory Quantity and Consumptions
  */
-async function getInventoryQuantityAndConsumption(params, monthAverageConsumption, averageConsumptionAlgo) {
+async function getInventoryQuantityAndConsumption(params) {
   let _status;
-  let delay;
-  let purchaseInterval;
   let requirePurchaseOrder;
   let emptyLotToken = ''; // query token to include/exclude empty lots
 
   if (params.status) {
     _status = params.status;
     delete params.status;
-  }
-
-  if (params.inventory_delay) {
-    delay = params.inventory_delay;
-    delete params.inventory_delay;
-  }
-
-  if (params.purchase_interval) {
-    purchaseInterval = params.purchase_interval;
-    delete params.purchase_interval;
   }
 
   if (params.require_po) {
@@ -725,7 +651,7 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
-      iu.text AS unit_type,
+      iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
       dm.text AS documentReference, d.enterprise_id
     FROM stock_movement m
@@ -739,41 +665,16 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
 
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;
 
-  const inventories = await getLots(sql, params, clause);
-  const processParams = [inventories, params.dateTo, monthAverageConsumption];
-  const inventoriesProcessed = await processStockConsumptionAverage(...processParams);
+  let filteredRows = await getLots(sql, params, clause);
+  if (filteredRows.length === 0) { return []; }
 
-  let filteredRows = inventoriesProcessed;
+  const settingsql = `
+    SELECT month_average_consumption, average_consumption_algo FROM stock_setting WHERE enterprise_id = ?
+  `;
+  const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
 
-  if (filteredRows.length > 0) {
-    const settingsql = `SELECT month_average_consumption FROM stock_setting WHERE enterprise_id=?`;
-    const setting = await db.one(settingsql, filteredRows[0].enterprise_id);
-    const nbrMonth = setting.month_average_consumption;
-
-    let startDate = new Date();
-    let clone = moment(startDate);
-    const months = (nbrMonth - 1 > -1 && nbrMonth) ? nbrMonth - 1 : 0;
-    clone = clone.subtract(months, 'month').toDate();
-
-    startDate = new Date(clone);
-    const endDate = new Date();
-
-    const cmms = await Promise.all(filteredRows.map(inventory => {
-      return db.exec(`CALL getCMM(?,?,?,?) `, [
-        startDate,
-        endDate,
-        db.bid(inventory.inventory_uuid),
-        db.bid(inventory.depot_uuid),
-      ]);
-    }));
-    filteredRows.forEach((inv, index) => {
-      const cmmResult = cmms[index][0][0];
-      inv.cmms = cmmResult;
-      inv.avg_consumption = cmmResult[averageConsumptionAlgo];
-    });
-  }
-
-  filteredRows = await stockManagementProcess(filteredRows, delay, purchaseInterval);
+  // add the CMM
+  filteredRows = await getBulkInventoryCMM(filteredRows, opts.month_average_consumption, opts.average_consumption_algo);
 
   if (_status) {
     filteredRows = filteredRows.filter(row => row.status === _status);
@@ -787,13 +688,12 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
 }
 
 /**
+ * @function computeLotIndicators
  * process multiple stock lots
  *
  * @description
- * the goals of this function is to give the risk of expiration for each lots for
- * a given inventory
  */
-function processMultipleLots(inventories) {
+function computeLotIndicators(inventories) {
   const flattenLots = [];
   const inventoryByDepots = _.groupBy(inventories, 'depot_uuid');
 
@@ -843,38 +743,9 @@ function processMultipleLots(inventories) {
         flattenLots.push(lot);
       });
     });
-
   });
 
   return flattenLots;
-}
-
-/**
- * @function processStockConsumptionAverage
- *
- * @description
- * This function reads the average stock consumption for each inventory item
- * in a depot.
- */
-async function processStockConsumptionAverage(
-  inventories, dateTo, monthAverageConsumption,
-) {
-  const consumptions = await getStockConsumptionAverage(
-    null, dateTo, monthAverageConsumption,
-  );
-
-  for (let i = 0; i < consumptions.length; i++) {
-    for (let j = 0; j < inventories.length; j++) {
-      const isSameInventory = consumptions[i].uuid === inventories[j].inventory_uuid;
-      const isSameDepot = consumptions[i].depot_uuid === inventories[j].depot_uuid;
-      if (isSameInventory && isSameDepot) {
-        inventories[j].avg_consumption = consumptions[i].quantity;
-        break;
-      }
-    }
-  }
-
-  return inventories;
 }
 
 /**
