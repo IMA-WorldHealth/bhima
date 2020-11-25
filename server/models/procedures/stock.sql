@@ -668,6 +668,7 @@ CREATE PROCEDURE `getCMM` (
     ROUND(IFNULL(@algo3, 0),2) as algo3,
     ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh,
     BUID(_inventory_uuid) as inventory_uuid,
+    BUID(_depot_uuid) as depot_uuid,
     _start_date as start_date,
     _end_date as end_date,
     _first_inventory_mvt_date as first_inventory_movement_date,
