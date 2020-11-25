@@ -14,7 +14,7 @@
       "DESCRIPTION": "This report show all the debts of the clients, while specifying the debts per period"
     },
     "ANALYSIS_AUX_CASHBOXES": {
-      "TITLE": "Analysis of auxiliary cashboxes",
+      "TITLE": "Analysis of Auxiliary Cashboxes",
       "AUXILIARY_TRANSFERT": "Auxiliary Cashbox to transfer account",
       "DESCRIPTION": "This report makes it possible to track the monthly payments and disbursements of the auxiliary cashboxes",
       "STATUS": {
