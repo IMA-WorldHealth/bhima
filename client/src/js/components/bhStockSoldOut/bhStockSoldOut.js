@@ -16,7 +16,7 @@ bhStockSoldOutController.$inject = ['StockService', 'moment', 'NotifyService', '
 function bhStockSoldOutController(Stock, moment, Notify, $filter) {
   const $ctrl = this;
   $ctrl.loading = false;
-  $ctrl.soldOutInventories = [];
+  $ctrl.stockOutInventories = [];
 
   const $date = $filter('date');
 
@@ -34,6 +34,7 @@ function bhStockSoldOutController(Stock, moment, Notify, $filter) {
    */
   function fetchStockOuts() {
     if (!$ctrl.depotUuid) return;
+
     const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
 
@@ -45,10 +46,10 @@ function bhStockSoldOutController(Stock, moment, Notify, $filter) {
       .then(inventories => {
         inventories.forEach(inventory => {
           inventory.stock_out_date_raw = $date(inventory.stock_out_date);
-          inventory.stock_out_date = moment(inventory.stock_out_date).fromNow();
+          inventory.stock_out_date_parsed = moment(inventory.stock_out_date).fromNow();
         });
 
-        $ctrl.soldOutInventories = inventories;
+        $ctrl.stockOutInventories = inventories;
       })
       .catch(Notify.handleError)
       .finally(() => {
