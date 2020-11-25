@@ -1,28 +1,28 @@
 angular.module('bhima.components')
-  .component('bhStockPanelExpired', {
-    templateUrl : 'modules/templates/bhStockPanelExpired.tmpl.html',
-    controller  : StockPanelExpiredController,
+  .component('bhStockPanelAtRiskExpiration', {
+    templateUrl : 'modules/templates/bhStockPanelAtRiskExpiration.tmpl.html',
+    controller  : StockPanelAtRiskExpirationController,
     bindings    : {
       label   : '@?',
     },
   });
 
-StockPanelExpiredController.$inject = [
+StockPanelAtRiskExpirationController.$inject = [
   'StockDashboardService', 'NotifyService',
 ];
 
 /**
- * Stock Panel Expired Controller
+ * Stock Panel At Risk Expiration
  *
  */
-function StockPanelExpiredController(StockDashboard, Notify) {
+function StockPanelAtRiskExpirationController(StockDashboard, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.loading = true;
-    $ctrl.display = 'fa fa-minus-circle icon-expired';
+    $ctrl.display = 'fa fa-exclamation-triangle icon-at-risk-of-expiring';
 
-    StockDashboard.read({ status : 'expired' })
+    StockDashboard.read({ status : 'at_risk_expiration' })
       .then((data) => {
         $ctrl.loading = false;
         $ctrl.stockNotFound = !data.length;
@@ -34,7 +34,7 @@ function StockPanelExpiredController(StockDashboard, Notify) {
               displayValue: '${element.depot_text}',
               cacheable:false },
             { key : 'includeEmptyLot', value : 0 },
-            { key : 'is_expired', value : 1, cacheable : false }
+            { key : 'is_expiry_risk', value : 1, cacheable : false }
           ]})`;
         });
 

@@ -1,9 +1,9 @@
 angular.module('bhima.services')
-  .factory('StockDashBoardService', StockDashBoardService);
+  .factory('StockDashboardService', StockDashboardService);
 
-StockDashBoardService.$inject = ['$http', 'util'];
+StockDashboardService.$inject = ['$http', 'util'];
 
-function StockDashBoardService($http, util) {
+function StockDashboardService($http, util) {
   const service = {};
   const baseUrl = '/stock/dashboard';
 
