@@ -910,6 +910,13 @@ a[disabled] {
 
 .icon-at-risk {
   color: #FFFFA9 !important;
+  background-color: #FFFFA9;
+  border:1px solid black;
+  height:2.1ex;
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+  width:2.1ex;
 }
 
 .at-risk-of-expiring {
