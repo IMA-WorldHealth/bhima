@@ -2,7 +2,7 @@
   "PATIENT_REG": {
     "CARD": "Patient Card",
     "ENTITY" : "Patient",
-    "FICHE" : "Patient Fiche",
+    "FICHE" : "Patient Information",
     "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.  The first one was chosen automatically.",
     "IDENTITY": "Patient Identity",
     "LOOKUP_RETURNING_PATIENT" : "Lookup Returning Patient",
