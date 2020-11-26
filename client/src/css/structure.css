@@ -897,7 +897,7 @@ a[disabled] {
 }
 
 .icon-expired {
-  color: #ff000083 !important;
+  color: #FF7B7B !important;
 }
 
 .at-risk {
@@ -909,7 +909,7 @@ a[disabled] {
 }
 
 .icon-at-risk {
-  color: #ffff6686 !important;
+  color: #FFFFA9 !important;
 }
 
 .at-risk-of-expiring {
@@ -921,7 +921,7 @@ a[disabled] {
 }
 
 .icon-at-risk-of-expiring {
-  color: #ff880191 !important;
+  color: #FFB766 !important;
 }
 
 .out-of-stock {
@@ -934,7 +934,7 @@ a[disabled] {
 }
 
 .icon-out-of-stock {
-  color: #cc00ff8f !important;
+  color: #E067FF !important;
 }
 
 .dropdown-menu {
