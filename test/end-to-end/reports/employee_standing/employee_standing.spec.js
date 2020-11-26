@@ -3,7 +3,7 @@ const EmployeeStandingPage = require('./employee_standing.page');
 
 describe('Employee Standing Report', () => {
   let page;
-  const key = 'employeeStanding';
+  const key = 'employee_standing';
 
   const dataset = {
     employee_name : 'Test 2 Patient',
