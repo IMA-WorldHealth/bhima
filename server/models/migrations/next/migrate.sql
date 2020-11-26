@@ -2,7 +2,6 @@
  * Migration from the version 1.16.1
  */
 
-
 /*
  * @author: jmcameron
  * @date: 2020-11-18
@@ -16,7 +15,6 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE');
-
 
 /*
  * @author: jmcameron
@@ -47,3 +45,11 @@ UPDATE `report` set report_key='data_kit' WHERE report_key='dataKit';
 UPDATE `report` set report_key='purchase_order_analysis' WHERE report_key='purchaseOrderAnalysis';
 UPDATE `report` set report_key='inventory_changes' WHERE report_key='inventoryChanges';
 UPDATE `report` set report_key='monthly_consumption_report' WHERE report_key='monthlyConsumptionReport';
+
+/*
+ * @author: lomamech
+ * @date: 2020-11-23
+ * @subject : Stock Dashboard
+ */
+INSERT INTO unit VALUES
+  (291, '[Stock] Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard');

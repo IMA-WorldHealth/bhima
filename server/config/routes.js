@@ -804,6 +804,9 @@ exports.configure = function configure(app) {
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);
 
+  // stock dashboard
+  app.get('/stock/dashboard', stock.dashboard);
+
   // stock management API
   app.get('/stock/movements', stock.listMovements);
 

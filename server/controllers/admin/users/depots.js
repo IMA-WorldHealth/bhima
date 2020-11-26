@@ -34,7 +34,6 @@ function list(req, res, next) {
     .done();
 }
 
-
 /**
  * POST /users/:id/depots
  *

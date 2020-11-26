@@ -1,0 +1,30 @@
+<div bh-stock-panel-expired ng-model-options="{ updateOn: 'default' }">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <b><i class="{{ $ctrl.display }}"></i> <span translate> {{$ctrl.label}} </span></b>:
+    </div>
+
+    <div class="panel-body" style="height : 165px; overflow-y : auto;">
+      <div class="text-center" ng-if="$ctrl.loading">
+        <span><span class="fa fa-circle-o-notch fa-spin"></span>
+          <span translate>FORM.INFO.LOADING</span>
+        </span>
+      </div>
+
+      <div class="text-center" ng-if="!$ctrl.loading && $ctrl.stockNotFound">
+        <span translate>INVENTORY.NO_INVENTORY_FOUND</span>
+      </div>
+
+      <ul ng-if="$ctrl.data.length && !$ctrl.loading">
+        <li ng-repeat="data in $ctrl.data">
+          <span>{{ data.depot_text }} </span> :
+
+          <a ui-sref="{{ data.ahref }}">
+            <strong>(<span>{{ data.count | number }}</span> <span translate> STOCK.PRODUCTS </span>)</strong>
+          </a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>
