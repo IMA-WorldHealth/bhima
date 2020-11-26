@@ -15,7 +15,7 @@ CashPaymentRegistryController.$inject = [
  */
 function CashPaymentRegistryController(
   Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
-  Filters, Columns, GridState, util, Receipts, Barcode
+  Filters, Columns, GridState, util, Receipts, Barcode,
 ) {
   const vm = this;
 

@@ -9,7 +9,7 @@ ModalCreditNoteController.$inject = [
 
 function ModalCreditNoteController(
   Instance, Invoices, data, Vouchers, Notify, $translate, CurrencyService,
-  bhConstants, $state, $filter, Cash
+  bhConstants, $state, $filter, Cash,
 ) {
   const vm = this;
   vm.Constants = bhConstants;
@@ -39,8 +39,10 @@ function ModalCreditNoteController(
       vm.invoiceItems = response.items;
       vm.currencySymbol = CurrencyService.symbol(response.currency_id);
 
-      vm.billingAmount = response.billing.reduce((a, b) => a + b.value, 0);
-      vm.subsidyAmount = response.subsidy.reduce((a, b) => a + b.value, 0);
+      const sumFn = (a, b) => a + b.value;
+
+      vm.billingAmount = response.billing.reduce(sumFn, 0);
+      vm.subsidyAmount = response.subsidy.reduce(sumFn, 0);
 
       vm.hasBillingServices = vm.billingAmount > 0;
       vm.hasSubsidies = vm.subsidyAmount > 0;
