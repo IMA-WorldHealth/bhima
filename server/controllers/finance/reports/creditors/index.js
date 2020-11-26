@@ -8,7 +8,6 @@
  * days.
  */
 
-
 const _ = require('lodash');
 const moment = require('moment');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -17,12 +16,9 @@ const db = require('../../../../lib/db');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars';
 
-
 const DEFAULT_OPTIONS = {
   csvKey : 'creditors',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
 };
 
 /**

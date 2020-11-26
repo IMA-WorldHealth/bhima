@@ -48,8 +48,6 @@ async function reportByService(req, res, next) {
     filename : 'TREE.CASHFLOW_BY_SERVICE',
     csvKey : 'matrix',
     orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   try {
