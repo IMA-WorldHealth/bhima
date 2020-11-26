@@ -151,21 +151,21 @@ function LotsRegistryService(uiGridConstants, Session) {
     }];
 
   service.gridFooterTemplate = `
-    <div>
+    <div class="ui-grid-cell-contents">
       <b>{{ grid.appScope.countGridRows() }}</b>
       <span translate>TABLE.AGGREGATES.ROWS</span>
 
-      <span class="fa fa-circle icon-expired"></span>
+      <span class="fa fa-circle icon-expired legend"></span>
       <strong>
         <span translate>STOCK.EXPIRATION</span>:
       </strong>
 
-      <span class="fa fa-circle icon-at-risk"></span>
+      <span class="fa fa-circle icon-at-risk legend"></span>
       <strong>
         <span translate>STOCK.RISK_OF_EXPIRATION</span>:
       </strong>
 
-      <span class="fa fa-circle icon-out-of-stock"></span>
+      <span class="fa fa-circle icon-out-of-stock legend"></span>
       <strong>
         <span translate>STOCK.STATUS.STOCK_OUT</span>:
       </strong>

@@ -889,11 +889,7 @@ a[disabled] {
 }
 
 .expired {
-  background-color: #FF7B7B !important;
-}
-
-.icon-expired {
-  color: #FF7B7B !important;
+  background-color: #ff000083 !important;
 }
 
 .icon-expired {
@@ -901,30 +897,15 @@ a[disabled] {
 }
 
 .at-risk {
-  background-color: #FFFFA9 !important;
-}
-
-.icon-at-risk {
-  background-color:#FFFFA9 !important;
+  background-color: #ffff6686 !important;
 }
 
 .icon-at-risk {
   color: #FFFFA9 !important;
-  background-color: #FFFFA9;
-  border:1px solid black;
-  height:2.1ex;
-  border-radius:50%;
-  -moz-border-radius:50%;
-  -webkit-border-radius:50%;
-  width:2.1ex;
 }
 
 .at-risk-of-expiring {
-  background-color: #FFB766 !important;
-}
-
-.icon-at-risk-of-expiring {
-  color: #FFB766 !important;
+  background-color: #ff880191 !important;
 }
 
 .icon-at-risk-of-expiring {
@@ -933,15 +914,20 @@ a[disabled] {
 
 .out-of-stock {
   /* text-decoration : line-through; */
-  background-color: #E067FF !important;
+  background-color: #cc00ff8f !important;
 }
 
 .icon-out-of-stock {
   color: #E067FF !important;
 }
 
-.icon-out-of-stock {
-  color: #E067FF !important;
+.legend {
+  border:1px solid black;
+  height:2.1ex;
+  border-radius:50%;
+  -moz-border-radius:50%;
+  -webkit-border-radius:50%;
+  width:2.1ex;
 }
 
 .dropdown-menu {
