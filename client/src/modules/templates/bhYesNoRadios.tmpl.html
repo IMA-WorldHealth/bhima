@@ -1,7 +1,8 @@
-<div class="form-group" data-bh-yes-no-radios>
-  <label class="control-label" translate>
-    {{$ctrl.label}}
-  </label>
+<div class="form-group" ng-form="bhYesNoForm"
+  data-bh-yes-no-radios
+  ng-class="{ 'has-error' : bhYesNoForm.$submitted && bhYesNoForm.$invalid }">
+
+  <label class="control-label" translate>{{$ctrl.label}}</label>
 
   <ng-transclude></ng-transclude>
 
