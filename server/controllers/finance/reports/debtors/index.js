@@ -26,8 +26,6 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 const DEFAULT_OPTIONS = {
   csvKey : 'debtors',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
 };
 
 /**
@@ -68,7 +66,6 @@ function agedDebtorReport(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method queryContext
@@ -150,7 +147,6 @@ async function queryContext(params = {}) {
       AND gl.fiscal_year_id = ?
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
-
 
   const debtors = await db.exec(debtorSql, [...dates, params.fiscal_id]);
 

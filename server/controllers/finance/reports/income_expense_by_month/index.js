@@ -12,7 +12,6 @@
  * @requires controllers/fiscal
  */
 
-
 const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
 
@@ -33,7 +32,6 @@ const DEFAULT_PARAMS = {
   csvKey : 'rows',
   filename : 'TREE.INCOME_EXPENSE_BY_MONTH',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 // expose to the API
@@ -56,7 +54,6 @@ function document(req, res, next) {
   const { periodId, periodNumber, fiscalYearId } = options;
   const data = {};
 
-
   const periodNum = parseInt(periodNumber, 10);
   const isOutOfRange = (periodNum - 2 <= 0);
 
@@ -66,7 +63,7 @@ function document(req, res, next) {
   if (isOutOfRange) {
     next(new BadRequest(
       'Period selection is out of range.  Choose a period at least two months past the start of the fiscal year.',
-      'ERRORS.BAD_DATE_INTERVAL'
+      'ERRORS.BAD_DATE_INTERVAL',
     ));
     return;
   }
@@ -85,7 +82,6 @@ function document(req, res, next) {
       _.extend(data, {
         firstPeriod, secondPeriod, thirdPeriod, fiscalYear,
       });
-
 
       return Promise.all([
         getAccountBalances(fiscalYear.id, firstPeriod.id),

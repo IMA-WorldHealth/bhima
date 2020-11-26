@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Journal Reports
@@ -28,8 +27,6 @@ function multipayIndiceExport(req, res, next) {
     csvKey                   : 'rows',
     suppressDefaultFiltering : true,
     suppressDefaultFormating : false,
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   let report;

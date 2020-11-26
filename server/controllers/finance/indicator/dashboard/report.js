@@ -35,8 +35,6 @@ function report(req, res, next) {
   _.extend(query, {
     filename : 'INVOICE_REGISTRY.TITLE',
     csvKey : 'rows',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '8',
   });
 
   const indicatorTypes = ['finances', 'hospitalization', 'staff'];

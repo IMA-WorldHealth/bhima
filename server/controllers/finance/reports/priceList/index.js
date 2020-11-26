@@ -103,7 +103,6 @@ function lookupPriceList(uuid) {
   ]);
 }
 
-
 exports.downloadRegistry = (req, res, next) => {
 
   const REPORT_TEMPLATE = './server/controllers/finance/reports/priceList/registry.handlebars';
@@ -114,10 +113,7 @@ exports.downloadRegistry = (req, res, next) => {
     csvKey                   : 'rows',
     suppressDefaultFiltering : true,
     suppressDefaultFormatting : false,
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
-
 
   let report;
 

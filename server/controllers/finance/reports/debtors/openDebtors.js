@@ -53,8 +53,6 @@ function convertToBoolean(numberString) {
 function build(req, res, next) {
   const qs = _.extend(req.query, {
     csvKey : 'debtors',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   const metadata = _.clone(req.session);

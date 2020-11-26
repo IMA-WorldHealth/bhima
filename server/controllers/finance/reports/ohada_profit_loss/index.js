@@ -30,7 +30,6 @@ const DEFAULT_PARAMS = {
   csvKey : 'accounts',
   filename : 'TREE.BALANCE',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 // RB, RD, RF
@@ -178,15 +177,10 @@ profitLossTable.forEach(item => {
 function reporting(options, session) {
   const params = options;
   const context = {};
-  let report;
 
   _.defaults(params, DEFAULT_PARAMS);
 
-  try {
-    report = new ReportManager(TEMPLATE, session, params);
-  } catch (e) {
-    throw e;
-  }
+  const report = new ReportManager(TEMPLATE, session, params);
 
   return getFiscalYearDetails(params.fiscal_id)
     .then(fiscalYear => {
@@ -316,7 +310,6 @@ function document(req, res, next) {
     .catch(next);
 }
 
-
 function setSign(item) {
   if (item.sign === '+') {
     item.currentNet = (item.currentNet || 0) * -1;
@@ -375,7 +368,6 @@ function getFiscalYearDetails(fiscalYearId) {
       return bundle;
     });
 }
-
 
 function aggregateReferences(references, currentDb, previousDb, mapRef) {
   const item = {

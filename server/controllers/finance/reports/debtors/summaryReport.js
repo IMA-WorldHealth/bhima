@@ -16,8 +16,6 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/summaryReport.han
 const DEFAULT_OPTIONS = {
   csvKey : 'debtors',
   orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
 };
 
 /**
