@@ -206,7 +206,7 @@ function InvoiceRegistryController(
       .then(success => {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          load(vm.filters);
+          load(Invoices.filters.formatHTTP(true));
         }
       })
       .catch(Notify.handleError);
