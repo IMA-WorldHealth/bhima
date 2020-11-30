@@ -1,11 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('feeCenterController', FeeCenterConfigController);
+  .controller('fee_centerController', FeeCenterConfigController);
 
 FeeCenterConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-
+// TODO(@jniles) - this name is remarkably close to the fee center controller.  Let's name
+// it something else that is more distant.
 function FeeCenterConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('configure_fee_center');
