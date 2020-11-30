@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-  .controller('fee_centerController', feeCenterController);
+  .controller('feeCenterController', feeCenterController);
 
 feeCenterController.$inject = [
   'FeeCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
