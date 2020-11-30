@@ -3,6 +3,7 @@
 The finance modules in BHIMA provide the core of the application.
 
 1. [Overview](./overview.md)
+2. [Core Concepts](core-concepts/index.md)
 2. [Accounts](./accounts.md)
 3. [Fiscal Years](./fiscal-year.md)
 4. [Bookkeeping]()
