@@ -37,7 +37,6 @@ function clientSupportController($sce, Notify, SavedReports, AppCache, reportDat
       return 0;
     }
 
-
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
