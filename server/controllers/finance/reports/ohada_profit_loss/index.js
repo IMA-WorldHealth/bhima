@@ -193,6 +193,7 @@ function reporting(options, session) {
       _.merge(context, { fiscalYear });
 
       const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
+
       const firstChoice = AccountReference.computeAllAccountReference(fiscalYear.previous.period_id);
       const previousPeriodReferences = fiscalYear.previous.period_id ? firstChoice : [];
       return Q.all([currentPeriodReferences, previousPeriodReferences]);
@@ -316,7 +317,6 @@ function document(req, res, next) {
     .catch(next);
 }
 
-
 function setSign(item) {
   if (item.sign === '+') {
     item.currentNet = (item.currentNet || 0) * -1;
@@ -356,11 +356,14 @@ function getFiscalYearDetails(fiscalYearId) {
   // get fiscal year details and the last period id of the fiscal year
   const query = `
     SELECT
-      p.id AS period_id, p.end_date,
+      p.id AS period_id, fy.end_date,
       fy.id, fy.label, fy.previous_fiscal_year_id
     FROM fiscal_year fy
     JOIN period p ON p.fiscal_year_id = fy.id
-      AND p.number = (SELECT MAX(period.number) FROM period WHERE period.fiscal_year_id = ?)
+      AND p.number = (
+        SELECT MAX(period.number)
+        FROM period
+        WHERE period.fiscal_year_id = ? AND period.number < 13)
     WHERE fy.id = ?;
   `;
   return db.one(query, [fiscalYearId, fiscalYearId])
@@ -375,7 +378,6 @@ function getFiscalYearDetails(fiscalYearId) {
       return bundle;
     });
 }
-
 
 function aggregateReferences(references, currentDb, previousDb, mapRef) {
   const item = {
