@@ -85,16 +85,17 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
       ${joinToExitAttributes}
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
-    LEFT JOIN depot dd ON dd.uuid = entity_uuid
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-    LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
-    ${joinToExit}
-    WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?`;
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
+      JOIN depot d ON d.uuid = m.depot_uuid
+      JOIN user u ON u.id = m.user_id
+      LEFT JOIN depot dd ON dd.uuid = entity_uuid
+      LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
+      ${joinToExit}
+    WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
+    ORDER BY i.text, l.label, l.expiration_date DESC`;
 
   const rows = await db.exec(sql, parameters);
 
@@ -118,6 +119,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
   };
 
   data.rows = rows;
+
   return data;
 }
 
@@ -130,8 +132,8 @@ async function getVoucherReferenceForStockMovement(documentUuid) {
   const sql = `
     SELECT v.uuid, dm.text AS voucher_reference
     FROM voucher AS v
-    JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
-    JOIN document_map AS dm ON dm.uuid = v.uuid
+      JOIN voucher_item AS vi ON vi.voucher_uuid = v.uuid
+      JOIN document_map AS dm ON dm.uuid = v.uuid
     WHERE vi.document_uuid = ?
     LIMIT 1;
   `;

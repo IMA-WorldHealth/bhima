@@ -28,15 +28,15 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       dm.text as document_reference, ig.tracking_expiration,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_group ig ON ig.uuid = i.group_uuid
-    JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
-    JOIN purchase p ON p.uuid = l.origin_uuid
-    JOIN supplier s ON s.uuid = p.supplier_uuid
-    JOIN project proj ON proj.id = p.project_id
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_group ig ON ig.uuid = i.group_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+      JOIN user u ON u.id = m.user_id
+      JOIN purchase p ON p.uuid = l.origin_uuid
+      JOIN supplier s ON s.uuid = p.supplier_uuid
+      JOIN project proj ON proj.id = p.project_id
+      LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
