@@ -23,9 +23,9 @@
           <tr style="background-color:#ddd;">
             <th>&nbsp;</th>
             <th colspan="3">&nbsp;</th>
-            <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.current.end_date}}</th>
+            <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.current.end_date "YYYY"}}</th>
             {{#if fiscalYear.previous.end_date}}
-              <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.previous.end_date}}</th>
+              <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.previous.end_date "YYYY"}}</th>
             {{/if}}
           </tr>
           <tr style="background-color:#ddd;">
