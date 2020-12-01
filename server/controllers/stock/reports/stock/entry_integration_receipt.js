@@ -53,6 +53,7 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
   if (!rows.length) {
     throw new NotFound('document not found');
   }
+
   const line = rows[0];
   const { key } = identifiers.STOCK_ENTRY;
 

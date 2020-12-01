@@ -5,8 +5,8 @@
 
   <header>
     <!-- headings  -->
-    {{> stockReceiptHeader 
-      title="STOCK.RECEIPT.ENTRY_DEPOT" 
+    {{> stockReceiptHeader
+      title="STOCK.RECEIPT.ENTRY_DEPOT"
       entity=entry.details.depot_name
       reference=entry.details.document_reference
       barcode=entry.details.barcode
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="row receipt-summary"> 
+    <div class="row receipt-summary">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date entry.details.date}} <br>
         <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{entry.details.user_display_name}} <br>
