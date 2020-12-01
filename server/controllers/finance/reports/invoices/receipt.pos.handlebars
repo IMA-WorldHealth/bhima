@@ -21,6 +21,7 @@
 <hr />
 {{translate 'PATIENT_INVOICE.INVOICED_FOR'}} {{serviceName}} {{translate 'TABLE.COLUMNS.SERVICE'}}
 <hr />
+
 <table style="width : 100%" class="table-report">
   <thead>
     <tr>
@@ -39,7 +40,41 @@
     {{/each}}
   </tbody>
 </table>
+
 <hr />
+
+<!-- billing service  -->
+{{#if billing.length}}
+<u class="text-capitalize">{{translate 'FORM.LABELS.INVOICING_FEES'}}</u> :
+
+<table style="width : 100%" class="table-report">
+  {{#each billing}}
+    <tr>
+      <td class="text-right" style="border:0px">
+        ({{this.label}} {{this.billing_value}}%)
+      </td>
+      <td class="text-right" style="border:0px">
+        +{{currency this.value ../metadata.enterprise.currency_id}}
+      </td>
+    </tr>
+  {{/each}}
+</table>
+<hr />
+{{/if}}
+
+<!-- subsidies  -->
+{{#if subsidy.length}}
+<u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :
+<table style="width: 100%;" class="table-report">
+  <tr style="border:0px">
+    <td class="text-right" style="border:0px">
+      <b>-{{currency (sum subsidy 'value') metadata.enterprise.currency_id}}</b>
+    </td>
+  </tr>
+</table>
+<hr />
+{{/if}}
+
 <h2 class="text-right">{{translate 'FORM.LABELS.TOTAL'}}: <b>{{currency cost metadata.enterprise.currency_id}}</b></h2>
 <h4 class="text-right"> <b>{{numberToText cost lang metadata.enterprise.currencyName}}</b></h>
 
