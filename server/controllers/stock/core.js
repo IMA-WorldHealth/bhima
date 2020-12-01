@@ -891,13 +891,14 @@ function getInventoryMovements(params) {
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
-      dm.text AS documentReference
+      dm.text AS documentReference, flux.label as flux
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN depot d ON d.uuid = m.depot_uuid
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
+      JOIN depot d ON d.uuid = m.depot_uuid
+      JOIN flux ON m.flux_id = flux.id
+      JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
   const orderBy = params.orderByCreatedAt ? 'm.created_at' : 'm.date';
@@ -916,6 +917,8 @@ function getInventoryMovements(params) {
         const movement = {
           reference : line.documentReference,
           date : line.date,
+          label: line.label,
+          flux : line.flux,
           entry : { quantity : 0, unit_cost : 0, value : 0 },
           exit : { quantity : 0, unit_cost : 0, value : 0 },
           stock : { quantity : 0, unit_cost : 0, value : 0 },

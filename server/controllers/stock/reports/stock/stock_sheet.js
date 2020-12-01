@@ -32,7 +32,9 @@ async function stockSheetReport(req, res, next) {
 
     const data = { inventory, depot };
 
-    data.rows = rows.movements.sort((x, y) => x.date - y.date);
+    // data.rows = rows.movements.sort((x, y) => x.date - y.date);
+    data.rows = rows.movements;
+
     data.totals = rows.totals;
     data.result = rows.result;
     data.dateFrom = options.dateFrom;
