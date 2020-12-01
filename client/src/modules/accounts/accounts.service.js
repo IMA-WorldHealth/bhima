@@ -6,8 +6,10 @@ AccountService.$inject = [
 ];
 
 /**
- * Account Service
+ * @class AccountService
+ * @extends PrototypeApiService
  *
+ * @description
  * A service wrapper for the /accounts HTTP endpoint.
  */
 function AccountService(Api, bhConstants, HttpCache) {
