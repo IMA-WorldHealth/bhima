@@ -94,16 +94,16 @@ describe('(/depots) The depots API ', () => {
 
       res = await agent.get(`/depots/${principal}/inventories/${ampicilline}/cmm`);
       values = {
-        algo1 : 33.39,
+        algo1 : 33.27,
         algo2 : 1143.75,
         algo3 : 24.93,
-        algo_msh : 33.52,
+        algo_msh : 33.39,
         sum_days : 367,
-        sum_stock_day : 274,
+        sum_stock_day : 275,
         sum_consumption_day : 8,
         sum_consumed_quantity : 300,
         number_of_month : 12,
-        sum_stock_out_days : 93,
+        sum_stock_out_days : 92,
         days_before_consumption : 0,
       };
 

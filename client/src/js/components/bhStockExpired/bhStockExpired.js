@@ -61,7 +61,7 @@ function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
       .then(inventories => {
         inventories.forEach(inventory => {
           inventory.expiration_date_raw = $date(inventory.expiration_date);
-          inventory.expiration_date = moment(inventory.expiration_date).fromNow();
+          inventory.expiration_date_parsed = moment(inventory.expiration_date).fromNow();
         });
 
         $ctrl.expiredInventories = inventories;
