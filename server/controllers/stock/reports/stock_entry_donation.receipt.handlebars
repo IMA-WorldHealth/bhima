@@ -5,8 +5,8 @@
 
   <header>
     <!-- headings  -->
-    {{> stockReceiptHeader 
-      title="STOCK.RECEIPT.ENTRY_DONATION" 
+    {{> stockReceiptHeader
+      title="STOCK.RECEIPT.ENTRY_DONATION"
       entity=details.depot_name
       reference=details.document_reference
       barcode=details.barcode
@@ -59,7 +59,7 @@
           <td>{{code}}</td>
           <td>{{text}}</td>
           <td>{{label}}</td>
-          {{#if expires}} 
+          {{#if expires}}
             <td>{{date expiration_date}}</td>
           {{else}}
             <td></td>
