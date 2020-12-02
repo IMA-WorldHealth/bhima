@@ -38,7 +38,6 @@ const typescriptConfig = {
   outFile : 'js/bhima/bhima.min.js',
 };
 
-
 /**
  * @function compileTypescript
  *
