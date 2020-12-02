@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -29,14 +29,22 @@
     "git": {
       "changelog": "git log --invert-grep --grep=\"^chore\\|^Merge\" --pretty=format:\"* %s (%h)\" ${from}...${to}"
     },
-    "github" :{
-      "release" : true,
-      "assets": ["*.tar.gz"]
+    "github": {
+      "release": true,
+      "assets": [
+        "*.tar.gz"
+      ]
     },
-    "hooks" : {
-      "before:init" : "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
-      "after:bump" : ["NODE_ENV=production yarn build", "GZIP=-9 tar -czvf ${version}.tar.gz bin/"],
-      "after:release": ["rm ${version}.tar.gz", "echo Successfully released ${name} v${version} to ${repo.repository}."]
+    "hooks": {
+      "before:init": "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
+      "after:bump": [
+        "NODE_ENV=production yarn build",
+        "GZIP=-9 tar -czvf ${version}.tar.gz bin/"
+      ],
+      "after:release": [
+        "rm ${version}.tar.gz",
+        "echo Successfully released ${name} v${version} to ${repo.repository}."
+      ]
     },
     "npm": {
       "publish": false,
