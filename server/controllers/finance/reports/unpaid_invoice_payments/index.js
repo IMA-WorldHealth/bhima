@@ -44,7 +44,6 @@ async function build(req, res, next) {
   res.set(compiled.headers).send(compiled.report);
 }
 
-
 async function reporting(options, session) {
   const qs = _.extend(options, DEFAULT_OPTIONS);
   let results;
@@ -69,10 +68,13 @@ async function getUnbalancedInvoices(options) {
     new Date(options.dateTo),
   ];
 
-  const { debtorGroupName, serviceId } = options;
+  const { debtorGroupName, serviceUuid } = options;
+
   let wherePart = debtorGroupName ? `WHERE debtorGroupName = ${db.escape(debtorGroupName)}` : '';
-  if (serviceId) {
-    wherePart = (wherePart.length < 2) ? `WHERE serviceID=${serviceId}` : `${wherePart} AND serviceId=${serviceId}`;
+  if (serviceUuid) {
+    wherePart = (wherePart.length < 2)
+      ? `WHERE serviceUuid = HUID('${serviceUuid}')`
+      : `${wherePart} AND serviceUuid = HUID('${serviceUuid}')`;
   }
 
   const rows = await db.transaction()
