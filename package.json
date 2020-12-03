@@ -39,6 +39,7 @@
       "before:init": "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
       "after:bump": [
         "NODE_ENV=production yarn build",
+        "rm bin/.env",
         "GZIP=-9 tar -czvf ${version}.tar.gz bin/"
       ],
       "after:release": [
