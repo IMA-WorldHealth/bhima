@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, STOCK_INVENTORIES_REPORT_TEMPLATE,
+  _, ReportManager, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -12,9 +12,9 @@ const {
  * GET /reports/stock/inventories
  */
 async function stockInventoriesReport(req, res, next) {
-  let options = {};
-  let display = {};
+  const display = {};
   let filters;
+
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
@@ -26,14 +26,7 @@ async function stockInventoriesReport(req, res, next) {
   });
 
   try {
-    if (req.query.identifiers && req.query.display) {
-      options = JSON.parse(req.query.identifiers);
-      display = JSON.parse(req.query.display);
-      filters = formatFilters(display);
-    } else {
-      options = req.query;
-    }
-
+    const options = req.query;
     delete options.label;
 
     if (req.session.stock_settings.enable_strict_depot_permission) {
@@ -43,6 +36,11 @@ async function stockInventoriesReport(req, res, next) {
     const inventoriesParameters = [options, monthAverageConsumption, averageConsumptionAlgo];
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
     const rows = await Stock.getInventoryQuantityAndConsumption(...inventoriesParameters);
+
+    rows.forEach(row => {
+      // remove the CMM object to prevent MS Excel from complaining
+      delete row.cmms;
+    });
 
     data.rows = rows;
     data.filters = filters;
