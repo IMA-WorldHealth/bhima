@@ -11,7 +11,9 @@ const { exit } = require('process');
 
 // Make sure we have two paths
 if (process.argv.length < 4) {
-  console.error('Usage:  node tfcomp.js path1English path2French');
+  /* eslint-disable no-console */
+  console.log('Usage:  node tfcomp.js path1English path2French');
+  /* eslint-enable no-console */
   exit();
 }
 
@@ -86,7 +88,9 @@ if (frFileMissList.length > 0) {
 }
 
 if (errMsg) {
+  /* eslint-disable no-console */
   console.error(errMsg);
+  /* eslint-enable no-console */
   exit();
 }
 
