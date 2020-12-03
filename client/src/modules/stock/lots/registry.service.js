@@ -157,7 +157,7 @@ function LotsRegistryService(uiGridConstants, Session) {
 
       <span class="fa fa-circle icon-expired legend"></span>
       <strong>
-        <span translate>STOCK.EXPIRATION</span>:
+        <span translate>STOCK.EXPIRED</span>:
       </strong>
 
       <span class="fa fa-circle icon-at-risk legend"></span>
