@@ -139,15 +139,6 @@ function LotsRegistryService(uiGridConstants, Session) {
       },
     },
     {
-      field : 'IS_IN_RISK_EXPIRATION',
-      displayName : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
-      headerTooltip : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/in_risk_of_expiration.html',
-      cellClass : 'text-right',
-      type : 'number',
-    },
-    {
       field : 'S_RISK_QUANTITY',
       displayName : 'STOCK.RISK_QUANTITY',
       headerTooltip : 'STOCK.RISK_QUANTITY',
@@ -176,18 +167,24 @@ function LotsRegistryService(uiGridConstants, Session) {
 
       <span class="fa fa-circle icon-expired legend"></span>
       <strong>
-        <span translate>STOCK.EXPIRED</span>:
+        <span translate>STOCK.EXPIRED</span>: {{grid.appScope.totals.expired}}
+      </strong>
+
+      <span class="fa fa-circle icon-at-risk-of-expiring legend"></span>
+      <strong>
+        <span translate>STOCK.RISK_OF_EXPIRATION</span>: {{grid.appScope.totals['at-risk-of-expiring']}}
       </strong>
 
       <span class="fa fa-circle icon-at-risk legend"></span>
       <strong>
-        <span translate>STOCK.RISK_OF_EXPIRATION</span>:
+        <span translate>STOCK.RISK_OF_STOCK_OUT</span>: {{grid.appScope.totals['at-risk']}}
       </strong>
 
       <span class="fa fa-circle icon-out-of-stock legend"></span>
       <strong>
-        <span translate>STOCK.STATUS.STOCK_OUT</span>:
+        <span translate>STOCK.STATUS.STOCK_OUT</span>: {{grid.appScope.totals['out-of-stock']}}
       </strong>
+
     </div>
   `;
 

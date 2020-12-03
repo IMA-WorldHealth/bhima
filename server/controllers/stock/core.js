@@ -733,7 +733,7 @@ function computeLotIndicators(inventories) {
           lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
 
           lot.S_LOT_LIFETIME = Math.max(0, lot.lifetime - lotLifetime);
-          lot.S_RISK = Math.max(0, lot.S_LOT_LIFETIME - lot.S_MONTH);
+          lot.S_RISK = Math.max(0, lot.S_LOT_LIFETIME - (lot.S_MONTH * 30.5));
           lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
           lotLifetime += lot.S_LOT_LIFETIME;
         }
