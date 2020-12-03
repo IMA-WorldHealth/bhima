@@ -10,7 +10,7 @@ angular.module('bhima.routes')
       .state('depots.create', {
         url : '/create',
         params : {
-          parentId : { squash : true, value : null },
+          parentUuid : { squash : true, value : null },
           isCreateState : { value : true },
         },
         onEnter : ['$uibModal', '$transition$', depotModal],
@@ -18,9 +18,9 @@ angular.module('bhima.routes')
       })
 
       .state('depots.edit', {
-        url : '/edit',
+        url : '/:uuid/edit',
         params : {
-          uuid : { value : null },
+          uuid : { value : null, squash : true },
           isCreateState : { value : false },
         },
         onEnter : ['$uibModal', '$transition$', depotModal],
