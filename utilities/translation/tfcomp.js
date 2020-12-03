@@ -1,25 +1,31 @@
 // Detect missing translation items between translation files
-// USAGE:  node tfcomp.js path1 path2
-// Where path1 and path2 : path to a folder containing json files of translation
+// USAGE:  node tfcomp.js ath1Eng path2Fr
+// Where path1Eng and path2Fr : paths to folders containing json files of translation
 
 'use strict';
 
 const path = require('path');
 const fs = require('fs');
+const process = require('process');
+const { exit } = require('process');
+
+// Make sure we have two paths
+if (process.argv.length < 4) {
+  /* eslint-disable no-console */
+  console.log('Usage:  node tfcomp.js path1English path2French');
+  /* eslint-enable no-console */
+  exit();
+}
 
 // get the files directory
 const pathEn = process.argv[2];
 const pathFr = process.argv[3];
-
 
 const EN_PATH = path.resolve(process.cwd(), pathEn);
 const FR_PATH = path.resolve(process.cwd(), pathFr);
 
 const enJsonNames = fs.readdirSync(EN_PATH);
 const frJsonNames = fs.readdirSync(FR_PATH);
-
-// cache the object type
-const object = typeof ({});
 
 let errMsg = '';
 
@@ -30,8 +36,6 @@ let enFileMissList = [];
 let frFileMissList = [];
 
 const jsonFiles = buildJsonFileArray();
-
-const notSwapFile = (fname) => !fname.includes('.swp');
 
 jsonFiles.forEach(function (jsonFile) {
 
@@ -84,7 +88,10 @@ if (frFileMissList.length > 0) {
 }
 
 if (errMsg) {
+  /* eslint-disable no-console */
   console.error(errMsg);
+  /* eslint-enable no-console */
+  exit();
 }
 
 function buildJsonFileArray() {
@@ -93,8 +100,8 @@ function buildJsonFileArray() {
   enJsonNames.forEach(function (enJsonName) {
     const ind = frJsonNames.indexOf(enJsonName);
     let item = {
-      en: path.resolve(EN_PATH, enJsonName),
-      fr: null
+      en : path.resolve(EN_PATH, enJsonName),
+      fr : null
     };
 
     if (ind >= 0) {
@@ -110,8 +117,8 @@ function buildJsonFileArray() {
 
   missedFromEnJsonNames.forEach(function (missedFromEnJsonName) {
     jsonList.push({
-      en: null,
-      fr: path.resolve(FR_PATH, missedFromEnJsonName)
+      en : null,
+      fr : path.resolve(FR_PATH, missedFromEnJsonName)
     });
   });
 
@@ -121,11 +128,24 @@ function buildJsonFileArray() {
 function checkSubDict(enTranslateObject, frTranslateObject, path) {
 
   // Compare the dictionaries recursively
-  let i, key, val;
-  //
+  let i;
+  let key;
+
+  // Make sure the items are both arrays (may come in as a string)
+  // If it comes in as a string, that means it is a single value,
+  // not a dictionary so it has no children to compare
+  let enTranslateObjectDict = enTranslateObject;
+  if (typeof enTranslateObject === 'string') {
+    enTranslateObjectDict = {};
+  }
+  let frTranslateObjectDict = frTranslateObject;
+  if (typeof frTranslateObject === 'string') {
+    frTranslateObjectDict = {};
+  }
+
   // Figure out which keys are missing from english translate json file and french
-  let enKeys = Object.keys(enTranslateObject).sort();
-  let frKeys = Object.keys(frTranslateObject).sort();
+  const enKeys = Object.keys(enTranslateObjectDict).sort();
+  const frKeys = Object.keys(frTranslateObjectDict).sort();
 
   let missingListFromEn = frKeys.filter(function (val) { return enKeys.indexOf(val) < 0; });
   let missingListFromFr = enKeys.filter(function (val) { return frKeys.indexOf(val) < 0; });
@@ -133,7 +153,7 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   // figure out the common keys
   let common = enKeys.filter(function (val) { return frKeys.indexOf(val) >= 0; });
 
-  //see also at the french file if there is some common keys omitted
+  // See also at the french file if there is some common keys omitted
   for (i = 0; i < frKeys.length; i++) {
     key = frKeys[i];
     if (enKeys.indexOf(key) >= 0 && common.indexOf(key) < 0) {
@@ -147,9 +167,9 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   if (missingListFromEn.length > 0) {
     for (i = 0; i < missingListFromEn.length; i++) {
       if (path.length > 0) {
-        enMissList.push('  ' + path + '.' + missingListFromEn[i]);
+        enMissList.push(`  ${path}.${missingListFromEn[i]}`);
       } else {
-        enMissList.push('  ' + missingListFromEn[i]);
+        enMissList.push(`  ${missingListFromEn[i]}`);
       }
     }
   }
@@ -158,9 +178,9 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   if (missingListFromFr.length > 0) {
     for (i = 0; i < missingListFromFr.length; i++) {
       if (path.length > 0) {
-        frMissList.push('  ' + path + '.' + missingListFromFr[i]);
+        frMissList.push(`  ${path}.${missingListFromFr[i]}`);
       } else {
-        frMissList.push('  ' + missingListFromFr[i]);
+        frMissList.push(`  ${missingListFromFr[i]}`);
       }
     }
   }
@@ -168,12 +188,13 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   // Handle common values that are dictionaries (recursively)
   for (i = 0; i < common.length; i++) {
     key = common[i];
-    val = enTranslateObject[key];
-    if (typeof (val) === object) {
+    const enVal = enTranslateObjectDict[key];
+    const frVal = frTranslateObjectDict[key];
+    if (typeof enVal === 'object' || typeof frVal === 'object') {
       if (path.length > 0) {
-        checkSubDict(enTranslateObject[key], frTranslateObject[key], path + '.' + key);
+        checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], `${path}.${key}`);
       } else {
-        checkSubDict(enTranslateObject[key], frTranslateObject[key], key);
+        checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], key);
       }
     }
   }
