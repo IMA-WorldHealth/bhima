@@ -231,7 +231,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       d.min_months_security_stock,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       m.date AS entry_date, i.avg_consumption, i.purchase_interval, i.delay,
@@ -647,7 +647,7 @@ async function getInventoryQuantityAndConsumption(params) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
@@ -726,21 +726,18 @@ function computeLotIndicators(inventories) {
           lot.avg_consumption = cmm;
           lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
 
-          const zeroMSD = Math.round(lot.S_MONTH) === 0;
-
-          const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
-          const today = new Date();
-          // if we have more months of stock than the expiration date,
-          // then we'll need to label these are in risk of expiration
-          const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-          const isInRiskOfExpiration = lot.expiration_date <= moment(today).add(numDaysOfStockLeft, 'days').toDate();
+          // check if the lot will expire before being usedup
+          const numDaysOfStockLeft = (lot.quantity / lot.avg_consumption) * 30.5;
+          const stockOutDate = moment(new Date()).add(numDaysOfStockLeft, 'days').toDate();
+          const isInRiskOfExpiration = lot.expiration_date <= stockOutDate;
           lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
 
-          lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
-          lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
+          lot.S_LOT_LIFETIME = Math.max(0, lot.lifetime - lotLifetime);
+          lot.S_RISK = Math.max(0, lot.S_LOT_LIFETIME - lot.S_MONTH);
           lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
           lotLifetime += lot.S_LOT_LIFETIME;
         }
+
         flattenLots.push(lot);
       });
     });
