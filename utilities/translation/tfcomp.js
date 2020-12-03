@@ -24,9 +24,6 @@ const FR_PATH = path.resolve(process.cwd(), pathFr);
 const enJsonNames = fs.readdirSync(EN_PATH);
 const frJsonNames = fs.readdirSync(FR_PATH);
 
-// cache the object type
-const object = typeof ({});
-
 let errMsg = '';
 
 // Arrays to save differences in
@@ -89,6 +86,7 @@ if (frFileMissList.length > 0) {
 
 if (errMsg) {
   console.error(errMsg);
+  exit();
 }
 
 function buildJsonFileArray() {
