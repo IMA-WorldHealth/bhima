@@ -21,10 +21,8 @@ const configurationData = require('../multiplePayroll/find');
 
 const DEFAULT_OPTS = {
   orientation     : 'landscape',
-  footerRight     : '[page] / [toPage]',
   filename        : 'FORM.LABELS.PAYSLIP',
   csvKey          : 'payslipGenerator',
-  footerFontSize  : '7',
 };
 
 function build(req, res, next) {
@@ -52,7 +50,6 @@ function build(req, res, next) {
     options.filename = 'FORM.LABELS.REPORT';
   } else {
     template = templatePayslip;
-    delete options.footerRight;
   }
 
   const data = {};

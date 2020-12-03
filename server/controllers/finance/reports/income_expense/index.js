@@ -13,7 +13,6 @@
  * @requires constrollers/fiscal
  */
 
-
 const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
 
@@ -31,8 +30,6 @@ const TITLE_ID = 6;
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
   filename : 'TREE.INCOME_EXPENSE',
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 // expose to the API
@@ -81,7 +78,7 @@ function document(req, res, next) {
       if (!Array.isArray(root.children) || root.children.length < 2) {
         throw new BadRequest(
           'Could not find both income and expense accounts for the time period',
-          'ERRORS.NO_DATA_FOUND'
+          'ERRORS.NO_DATA_FOUND',
         );
       }
 
@@ -222,7 +219,6 @@ function combineIntoSingleDataset(currentBalances, previousBalances) {
     return record;
   });
 }
-
 
 /**
  * @function constructAndPruneTree

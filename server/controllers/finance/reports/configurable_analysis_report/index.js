@@ -5,7 +5,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 const NotFound = require('../../../../lib/errors/NotFound');
 
 const TEMPLATE = './server/controllers/finance/reports/configurable_analysis_report/report.handlebars';
-const cashboxes = require('../../../finance/cashboxes');
+const cashboxes = require('../../cashboxes');
 const AccountExtras = require('../../accounts/extra');
 
 // expose to the API
@@ -15,8 +15,6 @@ exports.report = report;
 const DEFAULT_PARAMS = {
   csvKey : 'configurable_analysis_report',
   filename : 'TREE.BREAK_EVEN_REPORT',
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -229,7 +227,6 @@ function report(req, res, next) {
         GROUP BY gl.account_id
         ORDER BY a.number ASC, a.label
       `;
-
 
       const sqlCombinedLedger = `
         SELECT a.number, a.label, cl.account_id, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,

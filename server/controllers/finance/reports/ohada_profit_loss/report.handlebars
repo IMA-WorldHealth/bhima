@@ -15,7 +15,7 @@
       </h2>
 
       <h5 class="text-center text-uppercase">{{ ./fiscalYear.current.label }}</h5>
-      
+
 
       {{!-- assets --}}
       <table class="table table-condensed table-report" style="margin-bottom: 15px;">
@@ -39,7 +39,7 @@
             {{/if}}
           </tr>
         </thead>
-        
+
         <tbody>
           {{#each assetTable as | poste |}}
             <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
@@ -55,17 +55,9 @@
             </tr>
           {{/each}}
 
-          <!--
-          <tr>
-            <td colspan="4" class="text-right"><b>{{ translate 'FORM.LABELS.TOTAL'}}</b></td>
-            <td  class="text-right">{{ debcred totals.currentNet metadata.enterprise.currency_id }}</td>
-            <td  class="text-right">{{ debcred totals.previousNet metadata.enterprise.currency_id }}</td>
-          </tr>
-          -->
         </tbody>
       </table>
     </div>
   </div>
-
 </div>
 </body>

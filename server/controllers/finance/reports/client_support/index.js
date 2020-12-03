@@ -12,10 +12,7 @@ module.exports.report = report;
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/client_support/report.handlebars';
 
-const DEFAULT_OPTIONS = {
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
-};
+const DEFAULT_OPTIONS = { };
 
 /**
  * @method report
@@ -37,12 +34,12 @@ async function report(req, res, next) {
     const SUPPORT_TRANSACTION_TYPE = 4;
 
     const employeeSupportQuery = `
-      SELECT 
-        em.text AS reference, a.label, dg.name, p.display_name, 
-        SUM(i.credit_equiv - i.debit_equiv) AS balance, 
+      SELECT
+        em.text AS reference, a.label, dg.name, p.display_name,
+        SUM(i.credit_equiv - i.debit_equiv) AS balance,
         CONCAT(z.display_name, ' (', z.reference, ')') AS employee_name,
         z.balance AS employee_support, z.label AS employee_account
-      FROM general_ledger i 
+      FROM general_ledger i
       JOIN account a ON a.id = i.account_id
       JOIN debtor d ON d.uuid = i.entity_uuid
       JOIN debtor_group dg ON dg.uuid = d.group_uuid
@@ -50,34 +47,34 @@ async function report(req, res, next) {
       JOIN entity_map em ON em.uuid = p.uuid
       JOIN (
         SELECT
-          gl.record_uuid, a.label, p.display_name, 
+          gl.record_uuid, a.label, p.display_name,
           (gl.debit_equiv - gl.credit_equiv) AS balance, em.text AS reference
-        FROM general_ledger gl 
+        FROM general_ledger gl
         JOIN account a ON a.id = gl.account_id
         JOIN creditor c ON c.uuid = gl.entity_uuid
         JOIN employee e ON e.creditor_uuid = c.uuid
         JOIN patient p ON p.uuid = e.patient_uuid
         JOIN entity_map em ON em.uuid = e.creditor_uuid
         WHERE (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
-      ) z ON z.record_uuid = i.record_uuid  
+      ) z ON z.record_uuid = i.record_uuid
     `;
 
     const otherSupportQuery = `
-      SELECT 
+      SELECT
         a.label, dg.name, p.display_name,
         SUM(i.credit_equiv - i.debit_equiv) AS balance, z.label AS recipient_account
-      FROM general_ledger i 
+      FROM general_ledger i
       JOIN account a ON a.id = i.account_id
       JOIN debtor d ON d.uuid = i.entity_uuid
       JOIN debtor_group dg ON dg.uuid = d.group_uuid
       JOIN patient p ON p.debtor_uuid = d.uuid
       JOIN (
         SELECT gl.record_uuid, a.label, (gl.debit_equiv - gl.credit_equiv) AS balance, gl.entity_uuid
-        FROM general_ledger gl 
+        FROM general_ledger gl
         JOIN account a ON a.id = gl.account_id
-        WHERE (gl.trans_date BETWEEN ? AND ?) 
+        WHERE (gl.trans_date BETWEEN ? AND ?)
           AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} AND gl.entity_uuid IS NULL
-      ) z ON z.record_uuid = i.record_uuid 
+      ) z ON z.record_uuid = i.record_uuid
     `;
 
     const groupByDebtor = ' GROUP BY d.uuid ORDER BY p.display_name; ';

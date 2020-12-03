@@ -12,10 +12,8 @@ const templateReport = './server/controllers/admin/metadataReport/metadataReport
 
 const DEFAULT_OPTS = {
   orientation     : 'landscape',
-  footerRight     : '[page] / [toPage]',
   filename        : 'TREE.DISPLAY_METADATA',
   csvKey          : 'metadata',
-  footerFontSize  : '7',
 };
 
 function metadataCard(req, res, next) {
@@ -51,7 +49,7 @@ function metadataCard(req, res, next) {
   `;
 
   const sqlData = `
-    SELECT BUID(sd.uuid) AS uuid, sd.date AS dateSurvey, sd.data_collector_management_id, sd.user_id, 
+    SELECT BUID(sd.uuid) AS uuid, sd.date AS dateSurvey, sd.data_collector_management_id, sd.user_id,
     BUID(sdi.uuid) AS survey_data_item_uuid, sdi.value,
     GROUP_CONCAT(IF (clm.label IS NULL, sdi.value, clm.label) SEPARATOR ', ') AS datavalue,
     sf.id AS survey_form_id, sf.name AS columnName, sf.label AS columnLabel, ms.patient_uuid
@@ -177,7 +175,6 @@ function reportMetadata(req, res, next) {
 
   const options = {
     orientation   : 'landscape',
-    footerRight   : '[page] / [toPage]',
     lang          : req.query.lang,
     renderer      : req.query.renderer,
     filename      : 'TREE.DATA_KIT_REPORT',

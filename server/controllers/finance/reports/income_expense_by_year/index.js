@@ -12,7 +12,6 @@
  * @requires controllers/fiscal
  */
 
-
 const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
 
@@ -31,8 +30,6 @@ const TITLE_ID = 6;
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
   filename : 'TREE.INCOME_EXPENSE_BY_MONTH',
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
 };
 
 // expose to the API
@@ -59,7 +56,6 @@ async function document(req, res, next) {
   const secondYear = await Fiscal.lookupFiscalYear(thirdYear.previous_fiscal_year_id);
   const firstYear = await Fiscal.lookupFiscalYear(secondYear.previous_fiscal_year_id);
 
-
   if (!firstYear || !secondYear || !thirdYear) {
     res.status(500).json({ msg : `bad fiscal year's range` });
     return;
@@ -69,7 +65,6 @@ async function document(req, res, next) {
     secondYear,
     thirdYear,
   });
-
 
   const [firstBalances, secondBalances, thirdBalances] = await Promise.all([
     getAccountBalances(firstYear.id),

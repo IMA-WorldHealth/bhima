@@ -1,4 +1,3 @@
-
 /**
  * @overview reports/registrations
  *
@@ -40,8 +39,6 @@ function build(req, res, next) {
     filename : 'EMPLOYEE.TITLE',
     csvKey : 'employees',
     orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
   });
 
   let report;
