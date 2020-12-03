@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE,
+  _, ReportManager, formatFilters, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -12,9 +12,6 @@ const {
  * GET /reports/stock/inventories
  */
 async function stockInventoriesReport(req, res, next) {
-  const display = {};
-  let filters;
-
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
@@ -29,6 +26,8 @@ async function stockInventoriesReport(req, res, next) {
     const options = req.query;
     delete options.label;
 
+    const filters = formatFilters(options);
+
     if (req.session.stock_settings.enable_strict_depot_permission) {
       options.check_user_id = req.session.user.id;
     }
@@ -40,12 +39,12 @@ async function stockInventoriesReport(req, res, next) {
     rows.forEach(row => {
       // remove the CMM object to prevent MS Excel from complaining
       delete row.cmms;
+      delete row.NO_CONSUMPTION;
     });
 
     data.rows = rows;
     data.filters = filters;
     data.csv = rows;
-    data.display = display;
 
     data.dateTo = options.dateTo;
 

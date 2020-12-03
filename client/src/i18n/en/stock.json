@@ -122,9 +122,10 @@
       "ALGO_4"          : "Algorithm 4 (MSH)",
       "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the difference of the number of months in the period minus the total number of days of stock out in the period. The MSH algorithm is recommended by the Management Sciences for Health organization (https://www.msh.org)."
     },
-    "MOTIF"           : "Motif",
+    "MOTIF"           : "Motive",
     "MOVEMENT"        : "Movement",
     "MOVEMENTS"       : "Movements",
+    "MIN_MONTHS_SECURITY_STOCK" : "Min Months Security Stock",
     "NO_ORDER"        : "No Orders",
     "NO_DATA"         : "No Data",
     "NO_ENTRY_TYPES"  : "There are no entry types defined for {{text}}.  Add at least one entry type in the Depot Management module.",
@@ -149,6 +150,7 @@
     "QUANTITY_CONSUMED" : "Quantity Consumed",
     "QUANTITY_LOST" : "Quantity Lost",
     "QUANTITY_REMAINING" : "Quantity Remaining",
+    "INTIAL_QUANTITY" : "Initial Quantity",
     "TRANSFER_RECEIVED" : "Received",
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {

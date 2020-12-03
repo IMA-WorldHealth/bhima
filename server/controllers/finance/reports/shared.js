@@ -21,6 +21,15 @@ const filters = [{
   field : 'cash_uuid',
   displayName : 'FORM.INFO.PAYMENT',
 }, {
+  field : 'min_months_security_stock',
+  displayName : 'STOCK.MIN_MONTHS_SECURITY_STOCK',
+}, {
+  field : 'inital_quantity',
+  displayName : 'STOCK.INITIAL_QUANTITY',
+}, {
+  field : 'unit_cost',
+  displayName : 'FORM.LABELS.COST',
+}, {
   field : 'currency_id',
   displayName : 'FORM.LABELS.CURRENCY',
 }, {
@@ -79,6 +88,11 @@ const filters = [{
   field : 'patient_group_uuid',
   displayName : 'PATIENT_GROUP.PATIENT_GROUP',
 }, {
+  field : 'entry_date',
+  displayName : 'STOCK.ENTRY_DATE',
+  comparitor : '>',
+  isDate : true,
+}, {
   field : 'entry_date_from',
   displayName : 'STOCK.ENTRY_DATE',
   comparitor : '>',
@@ -90,6 +104,11 @@ const filters = [{
   isDate : true,
 }, {
   field : 'expiration_date_from',
+  displayName : 'STOCK.EXPIRATION_DATE',
+  comparitor : '>',
+  isDate : true,
+}, {
+  field : 'expiration_date',
   displayName : 'STOCK.EXPIRATION_DATE',
   comparitor : '>',
   isDate : true,
