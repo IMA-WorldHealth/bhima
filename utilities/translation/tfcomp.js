@@ -39,14 +39,14 @@ jsonFiles.forEach(function (jsonFile) {
   enMissList = [];
   frMissList = [];
 
-  if(jsonFile.en && jsonFile.fr){
+  if (jsonFile.en && jsonFile.fr) {
 
     // load JSON files
     let enTranslateObject = require(jsonFile.en);
     let frTranslateObject = require(jsonFile.fr);
 
     checkSubDict(enTranslateObject, frTranslateObject, '');
-  }else{
+  } else {
     //add to the missed files list
     !jsonFile.en ? enFileMissList.push(jsonFile.fr) : frFileMissList.push(jsonFile.en);
   }
@@ -69,14 +69,14 @@ jsonFiles.forEach(function (jsonFile) {
   }
 });
 
-if(enFileMissList.length > 0){
+if (enFileMissList.length > 0) {
   errMsg += '\n Missing english correspondent file for : \n';
   enFileMissList.sort();
   errMsg += enFileMissList.join('\n');
   errMsg += '\n\n';
 }
 
-if(frFileMissList.length > 0){
+if (frFileMissList.length > 0) {
   errMsg += '\n Missing french correspondent file for : \n';
   frFileMissList.sort();
   errMsg += frFileMissList.join('\n');
@@ -87,17 +87,17 @@ if (errMsg) {
   console.error(errMsg);
 }
 
-function buildJsonFileArray (){
+function buildJsonFileArray() {
   let jsonList = [];
 
   enJsonNames.forEach(function (enJsonName) {
     const ind = frJsonNames.indexOf(enJsonName);
     let item = {
-      en : path.resolve(EN_PATH, enJsonName),
-      fr : null
+      en: path.resolve(EN_PATH, enJsonName),
+      fr: null
     };
 
-    if(ind >= 0) {
+    if (ind >= 0) {
       item.fr = path.resolve(FR_PATH, frJsonNames[ind]);
     }
 
@@ -110,13 +110,14 @@ function buildJsonFileArray (){
 
   missedFromEnJsonNames.forEach(function (missedFromEnJsonName) {
     jsonList.push({
-      en : null,
-      fr : path.resolve(FR_PATH, missedFromEnJsonName)
+      en: null,
+      fr: path.resolve(FR_PATH, missedFromEnJsonName)
     });
   });
 
   return jsonList;
 }
+
 function checkSubDict(enTranslateObject, frTranslateObject, path) {
 
   // Compare the dictionaries recursively
@@ -136,32 +137,30 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   for (i = 0; i < frKeys.length; i++) {
     key = frKeys[i];
     if (enKeys.indexOf(key) >= 0 && common.indexOf(key) < 0) {
-    common.push(key);
+      common.push(key);
     }
   }
-
 
   common = common.sort();
 
   // Process the keys missing from d1
   if (missingListFromEn.length > 0) {
     for (i = 0; i < missingListFromEn.length; i++) {
-    if (path.length > 0) {
-      enMissList.push('  ' + path + '.' + missingListFromEn[i]);
-    } else {
-      enMissList.push('  ' + missingListFromEn[i]);
-    }
+      if (path.length > 0) {
+        enMissList.push('  ' + path + '.' + missingListFromEn[i]);
+      } else {
+        enMissList.push('  ' + missingListFromEn[i]);
+      }
     }
   }
-
 
   // Process the keys missing from d2
   if (missingListFromFr.length > 0) {
     for (i = 0; i < missingListFromFr.length; i++) {
       if (path.length > 0) {
-      frMissList.push('  ' + path + '.' + missingListFromFr[i]);
+        frMissList.push('  ' + path + '.' + missingListFromFr[i]);
       } else {
-      frMissList.push('  ' + missingListFromFr[i]);
+        frMissList.push('  ' + missingListFromFr[i]);
       }
     }
   }
@@ -174,11 +173,10 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
       if (path.length > 0) {
         checkSubDict(enTranslateObject[key], frTranslateObject[key], path + '.' + key);
       } else {
-      checkSubDict(enTranslateObject[key], frTranslateObject[key], key);
+        checkSubDict(enTranslateObject[key], frTranslateObject[key], key);
       }
     }
   }
-
 
 }
 
