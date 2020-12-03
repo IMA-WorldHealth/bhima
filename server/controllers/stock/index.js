@@ -599,8 +599,8 @@ function listMovements(req, res, next) {
  * returns data for stock dashboard
  */
 function dashboard(req, res, next) {
-  const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-  const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
+  // eslint-disable-next-line
+  const { month_average_consumption, average_consumption_algo } = req.session.stock_settings;
 
   const dbPromises = [];
   let depotsByUser = [];
@@ -630,7 +630,7 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
+            month_average_consumption,
           ));
         } else if (status === 'out_of_stock') {
           const paramsFilter = {
@@ -641,7 +641,7 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
+            month_average_consumption,
           ));
         } else if (status === 'at_risk_expiration') {
           const paramsGetLots = {
@@ -649,8 +649,8 @@ function dashboard(req, res, next) {
             period : 'allTime',
             includeEmptyLot : '0',
             is_expiry_risk : '1',
-            monthAverageConsumption,
-            averageConsumptionAlgo,
+            month_average_consumption,
+            average_consumption_algo,
           };
 
           dbPromises.push(core.getLotsDepot(
@@ -667,8 +667,8 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
-            averageConsumptionAlgo,
+            month_average_consumption,
+            average_consumption_algo,
           ));
         } else if (status === 'over_max') {
           const paramsFilter = {
@@ -680,8 +680,8 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
-            averageConsumptionAlgo,
+            month_average_consumption,
+            average_consumption_algo,
           ));
         } else if (status === 'require_po') {
           const paramsFilter = {
@@ -693,8 +693,8 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
-            averageConsumptionAlgo,
+            month_average_consumption,
+            average_consumption_algo,
           ));
         } else if (status === 'minimum_reached') {
           const paramsFilter = {
@@ -706,8 +706,8 @@ function dashboard(req, res, next) {
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
             paramsFilter,
-            monthAverageConsumption,
-            averageConsumptionAlgo,
+            month_average_consumption,
+            average_consumption_algo,
           ));
         }
       });
