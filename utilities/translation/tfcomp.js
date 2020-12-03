@@ -140,8 +140,8 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   }
 
   // Figure out which keys are missing from english translate json file and french
-  let enKeys = Object.keys(enTranslateObjectDict).sort();
-  let frKeys = Object.keys(frTranslateObjectDict).sort();
+  const enKeys = Object.keys(enTranslateObjectDict).sort();
+  const frKeys = Object.keys(frTranslateObjectDict).sort();
 
   let missingListFromEn = frKeys.filter(function (val) { return enKeys.indexOf(val) < 0; });
   let missingListFromFr = enKeys.filter(function (val) { return frKeys.indexOf(val) < 0; });
@@ -188,7 +188,7 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
     const frVal = frTranslateObjectDict[key];
     if (typeof enVal === 'object' || typeof frVal === 'object') {
       if (path.length > 0) {
-        checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], path + '.' + key);
+        checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], `${path}.${key}`);
       } else {
         checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], key);
       }
