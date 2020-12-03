@@ -137,7 +137,12 @@ function StockLotsController(
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
+
           LotService.computeLotWarningFlags(lot);
+
+          // serialize tag names for filters
+          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
+          lot.tags.forEach(addColorStyle);
         });
 
         lots.forEach(LotsRegistry.formatLotsWithoutExpirationDate);
@@ -145,12 +150,7 @@ function StockLotsController(
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
 
-        // serialize tag names for filters
-        vm.gridOptions.data = lots.map(lot => {
-          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
-          lot.tags.forEach(addColorStyle);
-          return lot;
-        });
+        vm.gridOptions.data = lots;
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
