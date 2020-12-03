@@ -18,8 +18,8 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   vm.clear = clear;
   vm.submit = submit;
 
-  if (params.parentId) {
-    vm.depot.parent_uuid = params.parentId;
+  if (params.parentUuid) {
+    vm.depot.parent_uuid = params.parentUuid;
   }
 
   if (!vm.isCreateState) {
