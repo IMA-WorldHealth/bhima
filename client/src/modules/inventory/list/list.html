@@ -56,9 +56,6 @@
         </div>
       </div>
 
-      <bh-filter-toggle on-toggle="InventoryCtrl.toggleFilter()">
-      </bh-filter-toggle>
-
       <div class="toolbar-item">
         <a class="btn btn-default text-capitalize" ui-sref="inventory.create" data-method="create">
           <i class="fa fa-plus"></i> <span class="hidden-xs" translate>INVENTORY.ADD_METADATA</span>
@@ -66,6 +63,10 @@
       </div>
 
       <bh-search-button on-click="InventoryCtrl.research()"></bh-search-button>
+
+      <bh-filter-toggle on-toggle="InventoryCtrl.toggleFilter()">
+      </bh-filter-toggle>
+
     </div>
   </div>
 </div>
