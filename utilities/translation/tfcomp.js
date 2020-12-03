@@ -6,11 +6,12 @@
 
 const path = require('path');
 const fs = require('fs');
+const process = require('process');
 const { exit } = require('process');
 
 // Make sure we have two paths
 if (process.argv.length < 4) {
-  console.log('Usage:  node tfcomp.js path1English path2French');
+  console.error('Usage:  node tfcomp.js path1English path2French');
   exit();
 }
 
