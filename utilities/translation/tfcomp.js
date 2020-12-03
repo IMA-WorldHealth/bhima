@@ -10,7 +10,7 @@ const { exit } = require('process');
 
 // Make sure we have two paths
 if (process.argv.length < 4) {
-  console.log("Usage:  node tfcomp.js path1English path2French");
+  console.log('Usage:  node tfcomp.js path1English path2French');
   exit();
 }
 
@@ -97,8 +97,8 @@ function buildJsonFileArray() {
   enJsonNames.forEach(function (enJsonName) {
     const ind = frJsonNames.indexOf(enJsonName);
     let item = {
-      en: path.resolve(EN_PATH, enJsonName),
-      fr: null
+      en : path.resolve(EN_PATH, enJsonName),
+      fr : null
     };
 
     if (ind >= 0) {
@@ -114,8 +114,8 @@ function buildJsonFileArray() {
 
   missedFromEnJsonNames.forEach(function (missedFromEnJsonName) {
     jsonList.push({
-      en: null,
-      fr: path.resolve(FR_PATH, missedFromEnJsonName)
+      en : null,
+      fr : path.resolve(FR_PATH, missedFromEnJsonName)
     });
   });
 
@@ -163,9 +163,9 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   if (missingListFromEn.length > 0) {
     for (i = 0; i < missingListFromEn.length; i++) {
       if (path.length > 0) {
-        enMissList.push('  ' + path + '.' + missingListFromEn[i]);
+        enMissList.push(`  ${path}.${missingListFromEn[i]}`);
       } else {
-        enMissList.push('  ' + missingListFromEn[i]);
+        enMissList.push(`  ${missingListFromEn[i]}`);
       }
     }
   }
@@ -174,9 +174,9 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
   if (missingListFromFr.length > 0) {
     for (i = 0; i < missingListFromFr.length; i++) {
       if (path.length > 0) {
-        frMissList.push('  ' + path + '.' + missingListFromFr[i]);
+        frMissList.push(`  ${path}.${missingListFromFr[i]}`);
       } else {
-        frMissList.push('  ' + missingListFromFr[i]);
+        frMissList.push(`  ${missingListFromFr[i]}`);
       }
     }
   }
@@ -186,7 +186,7 @@ function checkSubDict(enTranslateObject, frTranslateObject, path) {
     key = common[i];
     const enVal = enTranslateObjectDict[key];
     const frVal = frTranslateObjectDict[key];
-    if (typeof enVal === object || typeof frVal === object) {
+    if (typeof enVal === 'object' || typeof frVal === 'object') {
       if (path.length > 0) {
         checkSubDict(enTranslateObjectDict[key], frTranslateObjectDict[key], path + '.' + key);
       } else {
