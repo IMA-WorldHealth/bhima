@@ -125,7 +125,8 @@ function buildJsonFileArray() {
 function checkSubDict(enTranslateObject, frTranslateObject, path) {
 
   // Compare the dictionaries recursively
-  let i, key;
+  let i;
+  let key;
 
   // Make sure the items are both arrays (may come in as a string)
   // If it comes in as a string, that means it is a single value,
