@@ -40,7 +40,7 @@
       "after:bump": [
         "cross-env NODE_ENV=production yarn build",
         "rm bin/.env",
-        "tar -czvf ${version}.tar.gz bin/"
+        "cross-env tar -czvf ${version}.tar.gz bin"
       ],
       "after:release": [
         "rm ${version}.tar.gz",
