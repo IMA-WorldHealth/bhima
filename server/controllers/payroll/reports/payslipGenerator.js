@@ -235,13 +235,13 @@ function build(req, res, next) {
         });
         TotalChargeEnterprise += somChargeEnterprise;
         holidays.forEach(holiday => {
-          if (employee.uuid === holiday.paiement_uuid) {
+          if (employee.paiement_uuid === holiday.paiement_uuid) {
             holiday.dailyRate = holiday.value / holiday.holiday_nbdays;
             employee.holidaysPaid.push(holiday);
           }
         });
         offDays.forEach(offDay => {
-          if (employee.uuid === offDay.paiement_uuid) {
+          if (employee.paiement_uuid === offDay.paiement_uuid) {
             employee.offDaysPaid.push(offDay);
           }
         });
