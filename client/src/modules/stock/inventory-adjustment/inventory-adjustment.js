@@ -134,13 +134,17 @@ function StockInventoryAdjustmentController(
   }
 
   // ============================ Inventories ==========================
+  vm.reloadInventories = () => {
+    loadInventories(vm.depot);
+  };
+
   function loadInventories(depot) {
     vm.loading = true;
     setupStock();
 
     Stock.lots.read(null, {
       depot_uuid : depot.uuid,
-      includeEmptyLot : 0,
+      includeEmptyLot : vm.includeEmptyLot || 0,
       dateTo : vm.movement.date,
     })
       .then(lots => {

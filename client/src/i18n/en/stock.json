@@ -246,6 +246,7 @@
     "ASSIGNMENT_CURRENT":"Current",
     "NO_ASSIGNMENT":"No Assignment",
     "INCLUDE_EXHAUSTED_LOTS":"Include exhausted lots",
+    "INCLUDE_EMPTY_OR_NEGATIVE_LOTS" : "Include exhausted or negative lots",
     "INCLUDE_ONLY_EXHAUSTED_LOTS": "Include only exhausted lots",
     "CLICK_TO_SEE":"Click here to see lots",
     "SHOW_WARNINGS":"Click to show Warnings",

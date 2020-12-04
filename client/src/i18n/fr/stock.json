@@ -75,6 +75,7 @@
     "GROUPING"        : "Groupage",
     "JOIN_INVOICE"    : "Joindre une facture",
     "INCLUDE_EMPTY_LOTS" : "Inclure les lots épuisés",
+    "INCLUDE_EMPTY_OR_NEGATIVE_LOTS" : "Inclure les lots épuisés ou négatives",
     "INCLUDE_EMPTY_LOTS_HELP" : "Afficher les articles dont la quantité est zero",
     "INCREASE"        : "Augmentation",
     "INCREASE_HELP"   : "Ajustement de stock en augmentant la quantité des lots des produits en stock",

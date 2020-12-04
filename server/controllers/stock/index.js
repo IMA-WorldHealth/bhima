@@ -318,7 +318,7 @@ async function createInventoryAdjustment(req, res, next) {
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
         document_uuid : db.bid(positiveAdjustmentUuid),
-        quantity : lot.oldQuantity,
+        quantity : lot.oldQuantity * -1,
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
