@@ -29,8 +29,7 @@
       <table class="table table-condensed table-report">
         <thead>
           <tr style="background-color:#ddd;">
-            <th></th>
-            <th></th>
+            <th colspan=4></th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.ENTRIES'}}</th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.EXITS'}}</th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.STOCKS'}}</th>
@@ -38,6 +37,8 @@
           <tr style="background-color:#ddd;">
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'STOCK.FLUX'}}</th>
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'STOCK.LOT'}}</th>
 
             <th class="text-center">{{translate 'STOCK.QUANTITY'}}</th>
             <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
@@ -57,6 +58,9 @@
             <tr>
               <td style="border-left: 1px solid #000;">{{reference}}</td>
               <td style="border-right: 1px solid #000;">{{timestamp date}}</td>
+              <td style="border-left: 1px solid #000;">{{translate flux}}</td>
+              <td style="border-left: 1px solid #000;">{{label}}</td>
+
               {{!-- entry --}}
               <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td> <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
               <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
@@ -75,7 +79,7 @@
         </tbody>
         <tfoot style="border-top: 1px solid #000;">
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th colspan="2"></th>
+            <th colspan="4"></th>
             <th class="text-right">{{totals.entry}}</th> <th></th>
             <th class="text-right">{{currency totals.entryValue metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{totals.exit}}</th> <th></th>
