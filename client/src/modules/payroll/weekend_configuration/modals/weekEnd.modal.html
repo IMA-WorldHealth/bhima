@@ -20,14 +20,12 @@
 
     <div class="help-block" translate>FORM.SELECT.WEEKEND_DAYS</div>
 
-    <div ng-repeat="days in WeekendModalCtrl.weekDays" class="form-group">
-      <div style="margin:0" class="checkbox">
-        <label style="padding-left: 12%">
-          <input type="checkbox" name="days" ng-model="days.checked">
-          <span translate>{{ days.label }}</span>
-        </label>
-      </div>
-    </div>
+    <bh-checkbox-tree
+      data="WeekendModalCtrl.weekDays"
+      checked-ids="WeekendModalCtrl.checkedIds"
+      on-change="WeekendModalCtrl.onChangeCallback(data)"
+      is-flat-tree="true">
+    </bh-checkbox-tree>
   </div>
 
   <div class="modal-footer">
