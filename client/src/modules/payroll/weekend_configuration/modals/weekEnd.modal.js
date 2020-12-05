@@ -14,23 +14,22 @@ function WeekendModalController($state, Config, Notify, AppCache, bhConstants, p
 
   if (params.isCreateState || params.id) {
     cache.stateParams = params;
-    vm.stateParams = cache.stateParams;
-  } else {
-    vm.stateParams = cache.stateParams;
   }
 
+  vm.stateParams = cache.stateParams;
   vm.isCreateState = params.isCreateState;
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
-  vm.weekDays = bhConstants.weekDays;
+
+  // this array is 0-indexed which clashes with bhCheckboxTree
+  // increment by one temporarily
+  vm.weekDays = bhConstants.weekDays.map(day => ({ ...day, id : day.id + 1 }));
+
+  vm.onChangeCallback = onChangeCallback;
 
   if (!vm.isCreateState) {
-    vm.weekDays.forEach(days => {
-      days.checked = false;
-    });
-
     Config.read(vm.stateParams.id)
       .then((weekend) => {
         vm.weekend = weekend;
@@ -39,23 +38,22 @@ function WeekendModalController($state, Config, Notify, AppCache, bhConstants, p
 
     Config.getWeekDays(vm.stateParams.id)
       .then((daysConfig) => {
-        daysConfig.forEach(object => {
-          vm.weekDays.forEach(days => {
-            if (days.id === object.indice) { days.checked = true; }
-          });
-        });
+        // increment indexes to make vm.weekDays
+        vm.checkedIds = daysConfig.map(o => o.indice + 1);
       })
       .catch(Notify.handleError);
+  }
 
+  function onChangeCallback(changes) {
+    vm.checkedIds = changes;
   }
 
   // submit the data to the server from all two forms (update, create)
   function submit(WeekendForm) {
     if (WeekendForm.$invalid || WeekendForm.$pristine) { return 0; }
 
-    vm.weekend.daysChecked = vm.weekDays
-      .filter(days => days.checked)
-      .map(days => days.id);
+    // decriment ids for submission to server.
+    vm.weekend.daysChecked = vm.checkedIds.map(id => (id - 1));
 
     const promise = (vm.isCreateState)
       ? Config.create(vm.weekend)
