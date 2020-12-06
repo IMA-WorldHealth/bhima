@@ -39,8 +39,9 @@ async function stockExpirationReport(req, res, next) {
     delete options.label;
 
     // define month average and the algo to use
-    options.monthAverageConsumption = req.session.stock_settings.month_average_consumption;
-    options.averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
+    // eslint-disable-next-line
+    const { month_average_consumption, average_consumption_algo } = req.session.stock_settings;
+    _.extend(options, { month_average_consumption, average_consumption_algo });
 
     // get the lots for this depot
     const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
