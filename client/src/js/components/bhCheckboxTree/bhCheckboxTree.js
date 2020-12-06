@@ -5,6 +5,7 @@ angular.module('bhima.components')
     bindings    : {
       data : '<',
       checkedIds : '<?',
+      disabledIds : '<?',
       onChange : '&',
       idKey : '@?',
       labelKey : '@?',
@@ -27,6 +28,8 @@ function bhCheckboxTreeController(Tree) {
     $ctrl.labelKey = $ctrl.labelKey || DEFAULT_LABEL_KEY;
     $ctrl.parentKey = $ctrl.parentKey || DEFAULT_PARENT_KEY;
 
+    $ctrl.disabledIds = $ctrl.disabledIds || [];
+
     if ($ctrl.data) {
       buildTree($ctrl.data);
     }
@@ -37,10 +40,35 @@ function bhCheckboxTreeController(Tree) {
       buildTree(changes.data.currentValue);
     }
 
+    if (changes.disabledIds && changes.disabledIds.currentValue) {
+      processDisabledIds();
+      getCheckedNodes();
+    }
+
     if (changes.checkedIds && changes.checkedIds.currentValue) {
       processCheckedIds();
+      getCheckedNodes();
     }
   };
+
+  function processDisabledIds() {
+    // ensure that disabled ids are an array
+    if (!Array.isArray($ctrl.disabledIds) || $ctrl.data.length === 0) {
+      return;
+    }
+
+    // ensure that the mask is a cloned array
+    const mask = [...$ctrl.disabledIds];
+
+    // loop through and set the disabled property on the checkbox
+    mask
+      .filter(id => id !== $ctrl.tree.id($ctrl.root))
+      .forEach(id => {
+        const node = $ctrl.tree.find(id);
+        if (!node) { return; }
+        node._disabled = true;
+      });
+  }
 
   function processCheckedIds() {
     // ensure that checked ids are an array
@@ -58,6 +86,7 @@ function bhCheckboxTreeController(Tree) {
       .forEach(id => {
         const node = $ctrl.tree.find(id);
         if (!node) { return; }
+        if (node._disabled) { return; }
         node._checked = true;
       });
   }
@@ -69,6 +98,7 @@ function bhCheckboxTreeController(Tree) {
     data.forEach(node => {
       node._label = node[$ctrl.labelKey];
       node._checked = false;
+      node._disabled = false;
 
       // work on flat arrays by faking a tree
       if ($ctrl.isFlatTree) { node[$ctrl.parentKey] = 0; }
@@ -94,10 +124,15 @@ function bhCheckboxTreeController(Tree) {
    */
   function getCheckedNodes() {
     const checked = [];
+
     $ctrl.tree.walk(node => { if (node._checked) { checked.push($ctrl.tree.id(node)); } });
 
+    // since disabled nodes cannot be checked, remove them from the count
+    // this allows the toggle on the root node to function correctly.
+    const numCheckableNodes = ($ctrl.data.length - $ctrl.disabledIds.length);
+
     // toggle the root node if all child nodes are checked
-    $ctrl.root._checked = checked.length === $ctrl.data.length;
+    $ctrl.root._checked = checked.length === numCheckableNodes;
 
     // fire the callback.
     $ctrl.onChange({ data : checked });
@@ -122,8 +157,12 @@ function bhCheckboxTreeController(Tree) {
   $ctrl.setNodeValue = setNodeValue;
   function setNodeValue(node, isChecked) {
 
+    const isRootNode = $ctrl.tree.isRootNode(node);
+
     // set the value of the node to isChecked
-    node._checked = isChecked;
+    if (!node._disabled || isRootNode) {
+      node._checked = isChecked;
+    }
 
     // recursively update all child nodes.
     if (isParentNode(node)) {
@@ -131,7 +170,7 @@ function bhCheckboxTreeController(Tree) {
     }
 
     // make sure the parent is toggled if all children are toggled
-    if (!$ctrl.tree.isRootNode(node)) {
+    if (!isRootNode) {
       updateParentNodeCheckedState(node.parent);
     }
 
@@ -155,9 +194,12 @@ function bhCheckboxTreeController(Tree) {
     // in the getCheckedNodes() function.
     if ($ctrl.tree.isRootNode(node)) { return; }
 
-    // check if every child node is checked
+    // check if a child node is checked
     const isChecked = node.children.some(child => child._checked);
-    node._checked = isChecked;
+
+    if (!node._disabled) {
+      node._checked = isChecked;
+    }
 
     // recurse up to root
     updateParentNodeCheckedState(node.parent);
