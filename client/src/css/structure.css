@@ -1044,3 +1044,19 @@ a[disabled] {
 .lot-width {
   width: 30%;
 }
+
+/* lock certain items of the checkbox tree when disabled */
+[data-bh-checkbox-tree] input[type="checkbox"][disabled],
+[data-bh-checkbox-tree] input[type="checkbox"][disabled] + span {
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+[data-bh-checkbox-tree] input[type="checkbox"][disabled] + span:before {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  content : "\f023";
+  padding-right: 5px;
+  text-rendering: auto;
+}
