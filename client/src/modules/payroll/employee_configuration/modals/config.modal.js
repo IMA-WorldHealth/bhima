@@ -12,12 +12,10 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
   const cache = AppCache('EmployeeModal');
 
   if (params.isCreateState || params.id) {
-    vm.stateParams = params;
     cache.stateParams = params;
-  } else {
-    vm.stateParams = cache.stateParams;
   }
 
+  vm.stateParams = cache.stateParams;
   vm.isCreateState = vm.stateParams.isCreateState;
 
   vm.onChangeRoleSelection = onChangeRoleSelection;
@@ -44,7 +42,12 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
       return Config.getEmployeeConfiguration(vm.stateParams.id);
     })
     .then((employeeConfig) => {
+
       vm.checkedUuids = employeeConfig.map(row => row.employee_uuid);
+
+      vm.disabledUuids = vm.employees
+        .filter(row => row.locked)
+        .map(row => row.uuid);
 
       // clone the original values as the new values.
       vm.checked = [...vm.checkedUuids];

@@ -9,7 +9,7 @@
   <div ng-repeat="node in $ctrl.root.children track by $ctrl.tree.id(node)">
     <div class="checkbox">
       <label data-label="{{node._label}}">
-        <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node, node._checked)" />
+        <input type="checkbox" ng-model="node._checked" ng-change="$ctrl.setNodeValue(node, node._checked)" ng-disabled="node._disabled" />
         <span ng-class="{ 'text-bold' : node.children.length }" translate>{{node._label}}</span>
       </label>
     </div>
@@ -18,7 +18,7 @@
       <li ng-repeat="child in node.children track by $ctrl.tree.id(child)">
         <div class="checkbox">
           <label data-label="{{child._label}}">
-            <input type="checkbox" ng-model="child._checked" ng-change="$ctrl.setNodeValue(child, child._checked)" />
+            <input type="checkbox" ng-model="child._checked" ng-change="$ctrl.setNodeValue(child, child._checked)" ng-disabled="child._disabled" />
             <span translate>{{child._label}}</span>
           </label>
         </div>
@@ -27,7 +27,7 @@
           <li ng-repeat="grandchild in child.children track by $ctrl.tree.id(grandchild)">
             <div class="checkbox">
               <label data-label="{{grandchild._label}}">
-                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild, grandchild._checked)" />
+                <input type="checkbox" ng-model="grandchild._checked" ng-change="$ctrl.setNodeValue(grandchild, grandchild._checked)" ng-disabled="grandchild._disabled"  />
                 <span translate>{{grandchild._label}}</span>
               </label>
             </div>
