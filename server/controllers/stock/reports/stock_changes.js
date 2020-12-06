@@ -33,7 +33,12 @@ async function generate(req, res, next) {
     ]);
 
     // get the stock in the depot as of the end of the period
-    const lots = await Stock.getLotsDepot(depot.uuid, { dateTo : period.end_date, includeEmptyLot : 0 });
+    const lots = await Stock.getLotsDepot(depot.uuid, {
+      dateTo : period.end_date,
+      includeEmptyLot : 0,
+      month_average_consumption : req.session.stock_settings.month_average_consumption,
+      average_consumption_algo : req.session.stock_settings.average_consumption_algo,
+    });
     const data = _.groupBy(lots, 'text');
 
     const totals = { lots : lots.length, items : Object.keys(data).length };
