@@ -23,7 +23,6 @@ async function stockInventoriesReport(req, res, next) {
   const optionReport = _.extend({}, req.query, {
     filename : 'TREE.STOCK_INVENTORY',
     title : 'TREE.STOCK_INVENTORY',
-    orientation : 'landscape',
   });
 
   try {

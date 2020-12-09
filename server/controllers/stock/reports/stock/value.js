@@ -1,7 +1,7 @@
 const Exchange = require('../../../finance/exchange');
 
 const {
-  _, db, ReportManager, pdfOptions, STOCK_VALUE_REPORT_TEMPLATE,
+  _, db, ReportManager, STOCK_VALUE_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -23,7 +23,7 @@ async function reporting(_options, session) {
   const data = {};
   const enterpriseId = session.enterprise.id;
 
-  const optionReport = _.extend(_options, pdfOptions, {
+  const optionReport = _.extend(_options, {
     filename : 'TREE.STOCK_VALUE',
   });
 

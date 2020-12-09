@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE,
+  _, ReportManager, Stock, formatFilters, STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -12,7 +12,7 @@ const {
  * GET /reports/stock/inline-movements
  */
 async function stockInlineMovementsReport(req, res, next) {
-  const optionReport = _.extend(req.query, pdfOptions, {
+  const optionReport = _.extend(req.query, {
     filename : 'TREE.STOCK_INLINE_MOVEMENTS',
     csvKey : 'rows',
     renameKeys : false,
