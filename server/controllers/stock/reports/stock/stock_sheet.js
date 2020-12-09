@@ -1,5 +1,5 @@
 const {
-  _, db, ReportManager, Stock, pdfOptions, STOCK_SHEET_REPORT_TEMPLATE,
+  _, db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -12,7 +12,7 @@ const {
  * GET /reports/stock/inventory
  */
 async function stockSheetReport(req, res, next) {
-  const optionReport = _.extend(req.query, pdfOptions, {
+  const optionReport = _.extend(req.query, {
     filename : 'REPORT.STOCK.INVENTORY_REPORT',
     csvKey : 'rows',
   });

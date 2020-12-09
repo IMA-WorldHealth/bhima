@@ -8,7 +8,6 @@ angular.module('bhima.components')
     },
   });
 
-
 /**
  * bhRenderOption Component
  *
@@ -25,7 +24,9 @@ function RenderOptionController() {
   const ctrl = this;
   this.$onInit = function $onInit() {
     ctrl.orientation = ctrl.orientation || 'portrait';
-    ctrl.onChange = ctrl.onChange || angular.noop();
-    ctrl.setOrientation = () => ctrl.onChange({ orientation : ctrl.orientation });
+  };
+
+  this.setOrientation = ($item) => {
+    ctrl.onChange({ orientation : $item });
   };
 }

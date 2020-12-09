@@ -1,5 +1,5 @@
 const {
-  _, db, ReportManager, pdfOptions, STOCK_EXPIRATION_REPORT_TEMPLATE,
+  _, db, ReportManager, STOCK_EXPIRATION_REPORT_TEMPLATE,
 } = require('../common');
 
 const stockCore = require('../../core');
@@ -16,7 +16,7 @@ async function stockExpirationReport(req, res, next) {
   try {
     const params = { includeEmptyLot : 0, ...req.query };
 
-    const optionReport = _.extend(params, pdfOptions, {
+    const optionReport = _.extend(params, {
       filename : 'REPORT.STOCK_EXPIRATION_REPORT.TITLE',
     });
 

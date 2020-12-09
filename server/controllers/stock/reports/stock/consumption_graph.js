@@ -1,5 +1,5 @@
 const {
-  _, db, util, ReportManager, pdfOptions, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
+  _, db, util, ReportManager, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
@@ -18,7 +18,7 @@ async function stockConsumptionGrathReport(req, res, next) {
 
     const params = _.clone(req.query);
 
-    const optionReport = _.extend(params, pdfOptions, {
+    const optionReport = _.extend(params, {
       filename : 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE',
     });
 

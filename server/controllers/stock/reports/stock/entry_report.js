@@ -1,5 +1,5 @@
 const {
-  _, db, util, ReportManager, pdfOptions, STOCK_ENTRY_REPORT_TEMPLATE,
+  _, db, util, ReportManager, STOCK_ENTRY_REPORT_TEMPLATE,
 } = require('../common');
 
 const StockEntryFromPurchase = require('./entry/entryFromPurchase');
@@ -21,7 +21,7 @@ function stockEntryReport(req, res, next) {
 
   const params = util.convertStringToNumber(req.query);
 
-  const optionReport = _.extend(params, pdfOptions, {
+  const optionReport = _.extend(params, {
     filename : 'REPORT.STOCK.ENTRY_REPORT',
   });
 

@@ -1,6 +1,6 @@
 const util = require('../../../../lib/util');
 const {
-  _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE,
+  _, ReportManager, Stock, formatFilters, STOCK_MOVEMENTS_REPORT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -14,7 +14,7 @@ const {
  */
 async function stockMovementsReport(req, res, next) {
   let display = {};
-  const optionReport = _.extend(req.query, pdfOptions, {
+  const optionReport = _.extend(req.query, {
     filename : 'TREE.STOCK_MOVEMENTS',
     csvKey : 'rows',
     renameKeys : false,
