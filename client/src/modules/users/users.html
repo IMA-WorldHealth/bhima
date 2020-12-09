@@ -16,26 +16,26 @@
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="UsersCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : UsersCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
-
+      <bh-filter-toggle
+        on-toggle="UsersCtrl.toggleFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    style="max-width:90%"
+    filters="UsersCtrl.latestViewFilters"
+    on-remove-filter="UsersCtrl.onRemoveFilter(filter)">
+  </bh-filters>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
     <div id="users-grid"
+      class="grid-full-height-with-filters"
       ui-grid="UsersCtrl.gridOptions"
-      class="grid-full-height"
       ui-grid-resize-columns
       ui-grid-move-columns
       ui-grid-auto-resize>

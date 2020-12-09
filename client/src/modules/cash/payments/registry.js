@@ -190,8 +190,6 @@ function CashPaymentRegistryController(
       Cash.cacheFilters();
     }
 
-    vm.latestViewFilters = Cash.filters.formatView();
-
     load(Cash.filters.formatHTTP(true));
     vm.latestViewFilters = Cash.filters.formatView();
   }
