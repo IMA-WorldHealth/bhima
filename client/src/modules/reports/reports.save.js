@@ -28,6 +28,7 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
 
     // vm.documentOptions.renderer = vm.supportedRenderTypes[0].key;
     vm.documentOptions.lang = Languages.key;
+    vm.documentOptions.orientation = vm.documentOptions.orientation || 'portrait';
 
     // @TODO this can directly be loaded from the form
     const reportOptions = angular.merge(vm.documentOptions, options.reportOptions);

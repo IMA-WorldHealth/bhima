@@ -85,7 +85,6 @@ async function report(req, res, next) {
       // with zero balances, this is the line to skip.
       if (!entity.balance) { return; }
 
-
       // classify debtors as patients or employees
       if (entity.is_employee !== null) {
         employees.push(entity);
