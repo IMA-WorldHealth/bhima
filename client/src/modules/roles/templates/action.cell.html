@@ -28,6 +28,12 @@
     </li>
     <li class="divider"></li>
     <li>
+      <a data-method="link-users" ui-sref="users.list({filters : [{ key : 'role_uuid', displayValue: row.entity.label, value : row.entity.uuid }] })" href>
+        <i class="fa fa-user"></i> <span translate>USERS.VIEW_USERS</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
       <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>

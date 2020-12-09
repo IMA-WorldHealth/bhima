@@ -1,15 +1,15 @@
 angular.module('bhima.services')
   .service('UserService', UserService);
 
-UserService.$inject = ['PrototypeApiService'];
+UserService.$inject = ['PrototypeApiService', 'FilterService', 'bhConstants', 'AppCache', 'PeriodService'];
 
 /**
-* User Service
-*
-* @description
-* This service implements CRUD on the /users endpoint on the client.
-*/
-function UserService(Api) {
+ * User Service
+ *
+ * @description
+ * This service implements CRUD on the /users endpoint on the client.
+ */
+function UserService(Api, Filters, bhConstants, AppCache, Periods) {
   const service = new Api('/users/');
 
   service.update = update;
@@ -22,6 +22,60 @@ function UserService(Api) {
   service.updateDepots = updateDepots;
   service.cashBoxManagement = cashBoxManagement;
 
+  const filters = new Filters();
+  const filterCache = new AppCache('users-filters');
+
+  filters.registerDefaultFilters(bhConstants.defaultFilters);
+
+  filters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.NAME' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'role_uuid', label : 'FORM.LABELS.ROLES' },
+    { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
+    { key : 'depot_uuid', label : 'FORM.LABELS.DEPOT' },
+  ]);
+
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    filters.loadCache(filterCache.filters);
+  }
+
+  service.filters = filters;
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    const assignedKeys = Object.keys(filters.formatHTTP());
+
+    // assign default period filter
+    const periodDefined = service.util.arrayIncludes(assignedKeys, [
+      'period', 'custom_period_start', 'custom_period_end',
+    ]);
+
+    if (!periodDefined) {
+      filters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      filters.assignFilter('limit', 1000);
+    }
+  }
+
+  service.removeFilter = function removeFilter(key) {
+    filters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = filters.formatCache();
+  };
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    filters.loadCache(filterCache.filters || {});
+  };
 
   /* ------------------------------------------------------------------------ */
 

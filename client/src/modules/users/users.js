@@ -10,7 +10,6 @@ UsersController.$inject = ['$state', '$uibModal', 'UserService', 'NotifyService'
 function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants) {
   const vm = this;
   vm.gridApi = {};
-  vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
   vm.editRoles = editRoles;
 
@@ -79,40 +78,16 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.gridApi = gridApi;
   }
 
-  // the user object that is either edited or created
-  vm.user = {};
-
   function toggleFilter() {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // bind methods
-  vm.edit = edit;
-  vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
 
-  vm.updateDepots = updateDepots;
-  vm.cashBoxManagement = cashBoxManagement;
-
-  function edit(user) {
-    $state.go('users.edit', { id : user.id, creating : false });
-  }
-
-  function editPermissions(user) {
-    $state.go('users.editPermission', { id : user.id });
-  }
-
-  function updateDepots(user) {
-    $state.go('users.depotManagement', { id : user.id });
-  }
-
-  function cashBoxManagement(user) {
-    $state.go('users.cashBoxManagement', { id : user.id });
-  }
-
   function activatePermissions(user, value, message) {
-    vm.user.deactivated = value;
+    user.deactivated = value;
 
     Modal.confirm(message)
       .then((confirmResponse) => {
@@ -121,7 +96,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         }
 
         // user has confirmed activation or deactivation of debtor group
-        return Users.update(user.id, vm.user)
+        return Users.update(user.id, user)
           .then(() => {
             Notify.success('USERS.UPDATED');
             $state.go('users.list', null, { reload : true });
@@ -136,11 +111,11 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   }
 
   // load user grid
-  function loadGrid() {
+  function load(filters) {
     toggleLoadingIndicator();
     vm.hasError = false;
 
-    Users.read()
+    Users.read(null, filters)
       .then((users) => {
         vm.gridOptions.data = users;
       })
@@ -150,25 +125,39 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
       });
   }
 
+  vm.onRemoveFilter = onRemoveFilter;
+
+  function onRemoveFilter(key) {
+    Users.removeFilter(key);
+    Users.cacheFilters();
+    vm.latestViewFilters = Users.filters.formatView();
+    return load(Users.filters.formatHTTP(true));
+  }
+
+  function startup() {
+    if ($state.params.filters.length) {
+      Users.filters.replaceFiltersFromState($state.params.filters);
+      Users.cacheFilters();
+    }
+
+    load(Users.filters.formatHTTP(true));
+    vm.latestViewFilters = Users.filters.formatView();
+  }
+
   function editRoles(user) {
     $uibModal.open({
-      keyboard : false,
-      backdrop : 'static',
       templateUrl : 'modules/roles/modal/userRole.html',
       controller : 'UsersRolesController as UsersRolesCtrl',
-      resolve : {
-        data : function dataProvider() {
-          return user;
-        },
-      },
+      resolve : { data() { return user; } },
     }).result.then(() => {
-      loadGrid();
+      load(Users.filters.formatHTTP(true));
     });
 
   }
+
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
 
-  loadGrid();
+  startup();
 }
