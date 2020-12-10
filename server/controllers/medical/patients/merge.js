@@ -89,9 +89,6 @@ router.post('/', async (req, res, next) => {
   const replaceDebtorInStockAssign = `
     UPDATE stock_assign SET entity_uuid = ? WHERE entity_uuid IN (?);
   `;
-  const replaceDebtorInEntityGroupEntity = `
-    UPDATE entity_group_entity SET entity_uuid = ? WHERE entity_uuid IN (?);
-  `;
   const replaceDebtorInVoucherItem = `
     UPDATE voucher_item SET entity_uuid = ? WHERE entity_uuid IN (?);
   `;
@@ -127,9 +124,6 @@ router.post('/', async (req, res, next) => {
   const removeOtherPatients = `
     DELETE FROM patient WHERE uuid IN (?);
   `;
-  const removeOtherEntities = `
-    DELETE FROM entity WHERE uuid IN (?);
-  `;
   const removeOtherEntityMap = `
     DELETE FROM entity_map WHERE uuid IN (?);
   `;
@@ -151,7 +145,6 @@ router.post('/', async (req, res, next) => {
     const transaction = db.transaction()
       .addQuery(replaceDebtorInCash, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInDebtorGroupHistory, [debtorUuid, [otherDebtorUuids]])
-      .addQuery(replaceDebtorInEntityGroupEntity, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInInvoice, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInPostingJournal, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInGeneralLedger, [debtorUuid, [otherDebtorUuids]])
@@ -168,7 +161,6 @@ router.post('/', async (req, res, next) => {
       .addQuery(replacePatientInStockMovement, [debtorUuid, [otherDebtorUuids]])
 
       .addQuery(removeOtherDebtors, [otherDebtorUuids])
-      .addQuery(removeOtherEntities, [otherDebtorUuids])
       .addQuery(removeOtherEntityMap, [otherDebtorUuids])
       .addQuery(removeOtherPatients, [otherPatientUuids]);
 
