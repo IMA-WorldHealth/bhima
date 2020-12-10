@@ -1,18 +1,22 @@
-{"USERS":{"ADDING_USER":"Ajout utilisateur",
-"ADD_USER":"Ajouter utilisateur",
-"DESCRIPTION":"Module de gestion des utilisateur et leurs droits",
-"PERMISSIONS":"Permissions",
-"SET_DEPOT":"Assignation des gestionnaires des dépôts",
-"SET_CASHBOX":"Assignation des gestionnaires des Caisses",
-"SET_PASSWORD":"Définir le mot de passe",
-"SET_PASSWORD_AGAIN":"Saisissez à nouveau le mot de passe",
-"SUPER":"Super utilisateur",
-"TITLE":"Gestion des utilisateurs et des autorisations",
-"UPDATING_USER":"Mise à jour utilisateur",
-"UPDATED":"Modifie avec succes",
-"CREATE":"Créer",
-"UPDATE":"Éditer",
-"CREATED":"Crée avec succés",
-"PASSWORDPOLICY":"Pour se conformer à notre politique de mot de passe fort, le mot de passe doit avoir plus de 7 caractères contentant au moins un caractère spécial (ex.: @, #) , un ou plusiers chiffres ansi que les lettres majuscules et miniscules",
-"PASSWORD_MISMATCH":"Les mots de passe fournis ne sont pas identiques"
-}}
+{
+  "USERS" : {
+    "ADDING_USER" : "Ajout utilisateur",
+    "ADD_USER" : "Ajouter utilisateur",
+    "CREATE" : "Créer",
+    "CREATED" : "Crée avec succés",
+    "DESCRIPTION" : "Module de gestion des utilisateur et leurs droits",
+    "PASSWORD_MISMATCH" : "Les mots de passe fournis ne sont pas identiques",
+    "PASSWORDPOLICY" : "Pour se conformer à notre politique de mot de passe fort, le mot de passe doit avoir plus de 7 caractères contentant au moins un caractère spécial (ex.: @, #) , un ou plusiers chiffres ansi que les lettres majuscules et miniscules",
+    "PERMISSIONS" : "Permissions",
+    "SET_CASHBOX" : "Assignation des gestionnaires des Caisses",
+    "SET_DEPOT" : "Assignation des gestionnaires des dépôts",
+    "SET_PASSWORD_AGAIN" : "Saisissez à nouveau le mot de passe",
+    "SET_PASSWORD" : "Définir le mot de passe",
+    "SUPER" : "Super utilisateur",
+    "TITLE" : "Gestion des utilisateurs et des autorisations",
+    "UPDATED" : "Modifie avec succes",
+    "UPDATE" : "Éditer",
+    "UPDATING_USER" : "Mise à jour utilisateur",
+    "VIEW_USERS" : "View Users"
+  }
+}

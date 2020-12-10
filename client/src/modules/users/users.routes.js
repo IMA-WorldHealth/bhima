@@ -21,6 +21,7 @@ angular.module('bhima.routes')
         url : '/:id',
         params : {
           id : { squash : true, value : null },
+          filters : { value : [] },
         },
       })
       .state('users.edit', {

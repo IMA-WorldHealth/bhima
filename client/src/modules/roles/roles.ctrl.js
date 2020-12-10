@@ -96,7 +96,6 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
     cellTemplate : 'modules/roles/templates/action.cell.html',
   }];
 
-  // ng-click="
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
