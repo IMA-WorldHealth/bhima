@@ -199,7 +199,7 @@ describe('(/patients) Patients', () => {
           .query({ sensitivity : 0 });
       })
       .then((res) => {
-        helpers.api.listed(res, 0);
+        helpers.api.listed(res, 5);
       })
       .catch(helpers.handler);
   });
