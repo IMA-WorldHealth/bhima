@@ -172,6 +172,7 @@
     "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
     "RISK_OF_EXPIRATION" : "Risk of expiration",
+    "RISK_OF_STOCK_OUT" : "Risk of stock out",
     "ROWS"            : "Rows",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
