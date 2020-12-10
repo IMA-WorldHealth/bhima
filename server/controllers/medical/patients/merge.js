@@ -71,10 +71,10 @@ router.post('/', async (req, res, next) => {
   const getSelectedDebtorUuid = `SELECT debtor_uuid FROM patient WHERE uuid = ?`;
   const getOtherDebtorUuids = `SELECT debtor_uuid FROM patient WHERE uuid IN (?)`;
 
-  const replaceDebtorInJournal = `
+  const replaceDebtorInPostingJournal = `
     UPDATE posting_journal SET entity_uuid = ? WHERE entity_uuid IN (?);
   `;
-  const replaceDebtorInLedger = `
+  const replaceDebtorInGeneralLedger = `
     UPDATE general_ledger SET entity_uuid = ? WHERE entity_uuid IN (?);
   `;
   const replaceDebtorInCash = `
@@ -86,6 +86,16 @@ router.post('/', async (req, res, next) => {
   const replaceDebtorInInvoice = `
     UPDATE invoice SET debtor_uuid = ? WHERE debtor_uuid IN (?);
   `;
+  const replaceDebtorInStockAssign = `
+    UPDATE stock_assign SET entity_uuid = ? WHERE entity_uuid IN (?);
+  `;
+  const replaceDebtorInEntityGroupEntity = `
+    UPDATE entity_group_entity SET entity_uuid = ? WHERE entity_uuid IN (?);
+  `;
+  const replaceDebtorInVoucherItem = `
+    UPDATE voucher_item SET entity_uuid = ? WHERE entity_uuid IN (?);
+  `;
+
   const replaceDebtorInPatient = `
     UPDATE patient SET debtor_uuid = ? WHERE debtor_uuid IN (?);
   `;
@@ -104,12 +114,24 @@ router.post('/', async (req, res, next) => {
   const replacePatientInPatientVisit = `
     UPDATE patient_visit SET patient_uuid = ? WHERE patient_uuid IN (?);
   `;
+  const replacePatientInMedicalSheet = `
+    UPDATE medical_sheet SET patient_uuid = ? WHERE patient_uuid IN (?);
+  `;
+  const replacePatientInStockMovement = `
+    UPDATE stock_movement SET entity_uuid = ? WHERE entity_uuid IN (?);
+  `;
 
   const removeOtherDebtors = `
     DELETE FROM debtor WHERE uuid IN (?);
   `;
   const removeOtherPatients = `
     DELETE FROM patient WHERE uuid IN (?);
+  `;
+  const removeOtherEntities = `
+    DELETE FROM entity WHERE uuid IN (?);
+  `;
+  const removeOtherEntityMap = `
+    DELETE FROM entity_map WHERE uuid IN (?);
   `;
 
   try {
@@ -127,22 +149,28 @@ router.post('/', async (req, res, next) => {
     debug(`#mergePatient(): removing ${otherDebtorNames}.`);
 
     const transaction = db.transaction()
-      .addQuery(replaceDebtorInJournal, [debtorUuid, [otherDebtorUuids]])
-      .addQuery(replaceDebtorInLedger, [debtorUuid, [otherDebtorUuids]])
-
       .addQuery(replaceDebtorInCash, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInDebtorGroupHistory, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInEntityGroupEntity, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInInvoice, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInPostingJournal, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInGeneralLedger, [debtorUuid, [otherDebtorUuids]])
       .addQuery(replaceDebtorInPatient, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInStockAssign, [debtorUuid, [otherDebtorUuids]])
+      .addQuery(replaceDebtorInVoucherItem, [debtorUuid, [otherDebtorUuids]])
 
       .addQuery(replacePatientInEmployee, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInMedicalSheet, [selectedPatientUuid, [otherPatientUuids]])
       .addQuery(replacePatientInPatientAssignment, [selectedPatientUuid, [otherPatientUuids]])
       .addQuery(replacePatientInPatientDocument, [selectedPatientUuid, [otherPatientUuids]])
       .addQuery(replacePatientInPatientHospitalization, [selectedPatientUuid, [otherPatientUuids]])
       .addQuery(replacePatientInPatientVisit, [selectedPatientUuid, [otherPatientUuids]])
+      .addQuery(replacePatientInStockMovement, [debtorUuid, [otherDebtorUuids]])
 
-      .addQuery(removeOtherPatients, [otherPatientUuids])
-      .addQuery(removeOtherDebtors, [otherDebtorUuids]);
+      .addQuery(removeOtherDebtors, [otherDebtorUuids])
+      .addQuery(removeOtherEntities, [otherDebtorUuids])
+      .addQuery(removeOtherEntityMap, [otherDebtorUuids])
+      .addQuery(removeOtherPatients, [otherPatientUuids]);
 
     await transaction.execute();
     debug(`#mergePatient(): Merged patients successfully.`);
