@@ -22,6 +22,7 @@ function StockLotsController(
 
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
+
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
 
@@ -155,8 +156,6 @@ function StockLotsController(
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
-
-          LotService.computeLotWarningFlags(lot);
 
           if (lot.expired) {
             totals.expired += 1;
