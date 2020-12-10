@@ -127,9 +127,6 @@ router.post('/', async (req, res, next) => {
   const removeOtherPatients = `
     DELETE FROM patient WHERE uuid IN (?);
   `;
-  const removeOtherEntities = `
-    DELETE FROM entity WHERE uuid IN (?);
-  `;
   const removeOtherEntityMap = `
     DELETE FROM entity_map WHERE uuid IN (?);
   `;
@@ -168,7 +165,6 @@ router.post('/', async (req, res, next) => {
       .addQuery(replacePatientInStockMovement, [debtorUuid, [otherDebtorUuids]])
 
       .addQuery(removeOtherDebtors, [otherDebtorUuids])
-      .addQuery(removeOtherEntities, [otherDebtorUuids])
       .addQuery(removeOtherEntityMap, [otherDebtorUuids])
       .addQuery(removeOtherPatients, [otherPatientUuids]);
 
