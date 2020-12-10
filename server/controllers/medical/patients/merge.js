@@ -34,17 +34,19 @@ router.get('/count_employees', async (req, res, next) => {
 });
 
 router.get('/duplicates', async (req, res, next) => {
-  const sensitivity = req.params.sensitivity || 2;
+  const sensitivity = req.query.sensitivity || 2;
+  const limit = parseInt(req.query.limit) || 25;
   const duplicateSQL = `
-    SELECT COUNT(p.uuid) AS num_patients, p.display_name, GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others
+    SELECT COUNT(p.uuid) AS num_patients, p.display_name,
+    GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others
     FROM patient p LEFT JOIN entity_map em ON p.uuid = em.uuid
     GROUP BY LOWER(p.display_name) HAVING COUNT(p.uuid) > ?
     ORDER BY COUNT(p.uuid) DESC
-    LIMIT 25;
+    LIMIT ?;
   `;
 
   try {
-    const patients = await db.exec(duplicateSQL, [sensitivity]);
+    const patients = await db.exec(duplicateSQL, [sensitivity, limit]);
     res.status(200).json(patients);
   } catch (e) {
     next(e);
