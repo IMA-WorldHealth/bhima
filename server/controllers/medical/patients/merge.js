@@ -35,7 +35,7 @@ router.get('/count_employees', async (req, res, next) => {
 
 router.get('/duplicates', async (req, res, next) => {
   const sensitivity = req.query.sensitivity || 2;
-  const limit = parseInt(req.query.limit) || 25;
+  const limit = parseInt(req.query.limit, 10) || 25;
   const duplicateSQL = `
     SELECT COUNT(p.uuid) AS num_patients, p.display_name,
     GROUP_CONCAT(CONCAT(BUID(p.uuid), ':', em.text)) AS others
