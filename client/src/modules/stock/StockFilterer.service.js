@@ -34,7 +34,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'is_expiry_risk', label : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION' },
     { key : 'tag_uuid', label : 'TAG.LABEL' },
     { key : 'tags', label : 'TAG.LABEL' },
-    { key : 'show_only_risky', label : 'LOTS.SHOW_ONLY_RISKY' },
+    { key : 'show_only_risky', label : 'STOCK.LOTS.SHOW_ONLY_RISKY' },
     { key : 'stock_requisition_uuid', label : 'FORM.LABELS.REQUISITION_REFERENCE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
