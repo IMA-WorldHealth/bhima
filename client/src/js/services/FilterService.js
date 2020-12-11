@@ -74,7 +74,6 @@ function FilterService() {
     this._customFilters = this._customFilters.concat(formattedFilters);
   };
 
-
   // assigns the value of a filter, a filter with a value will be actively used
   // during the HTTP/ UI export process
   FilterList.prototype.assignFilter = function assignFilter(key, value, displayValue) {

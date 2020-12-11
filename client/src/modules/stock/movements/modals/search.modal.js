@@ -19,7 +19,6 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   ];
 
   vm.filters = data;
-
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
@@ -38,7 +37,7 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   };
 
   // map key to last display value for lookup in loggedChange
-  const lastDisplayValues = Stock.filter.movement.getDisplayValueMap();
+  const lastDisplayValues = Stock.filter.inlineMovement.getDisplayValueMap();
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
