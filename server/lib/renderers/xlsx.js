@@ -28,7 +28,6 @@ exports.render = render;
 exports.find = find;
 exports.extension = '.xlsx';
 exports.headers = headers;
-exports.find = find;
 exports.setValue = setValue;
 exports.IGNORED_COLUMNS = IGNORED_COLUMNS;
 
@@ -116,7 +115,6 @@ function render(data, template, options) {
   return wb.writeToBuffer();
 }
 
-
 /**
  * @function find
  * @description
@@ -133,7 +131,6 @@ function find(data, options = {}) {
   // mask the dataset using lodash and return it
   return dataset.map(row => _.omit(row, mask));
 }
-
 
 // set value to a paticular cell
 function setValue(ws, x, y, value) {
