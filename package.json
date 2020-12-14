@@ -109,7 +109,7 @@
     "font-awesome": "^4.7.0",
     "helmet": "^4.1.1",
     "inline-source": "^7.1.0",
-    "ioredis": "^4.19.1",
+    "ioredis": "^4.19.4",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
     "json-2-csv": "^3.8.0",
