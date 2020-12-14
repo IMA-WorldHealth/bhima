@@ -1,99 +1,304 @@
-<form name="ReturningPatientForm" bh-submit="ModalCtrl.submit(ReturningPatientForm)" novalidate>
+<form name="ReturningPatientForm" bh-submit="ModalCtrl.submit(ReturningPatientForm)">
 
-<div class="modal-header">
-  <ol class="headercrumb">
-    <li class="static" translate>PATIENT_REG.PAGE_TITLE</li>
-    <li class="title" translate>PATIENT_REG.LOOKUP_RETURNING_PATIENT</li>
-  </ol>
-</div>
-
-<div class="modal-body">
-
-  <div ng-if="!ModalCtrl.isPatientFound">
-    <div class="form-group"  ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ReturningPatientForm.reference.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-      <input name="reference" autocomplete="off" ng-model="ModalCtrl.params.reference" class="form-control">
-    </div>
-
-    <div class="form-group"  ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ReturningPatientForm.hospital_no.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.HOSPITAL_NO</label>
-      <input name="hospital_no" autocomplete="off" ng-model="ModalCtrl.params.hospital_no" class="form-control">
-    </div>
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>PATIENT_REG.PAGE_TITLE</li>
+      <li class="title" translate>PATIENT_REG.LOOKUP_RETURNING_PATIENT</li>
+    </ol>
   </div>
 
-  <div ng-if="ModalCtrl.isPatientFound">
+  <div class="modal-body search-modal">
+    <uib-tabset>
 
-    <!-- basic patient information panel -->
-    <div class="row">
-      <div class="col-xs-6">
-        <dl>
-          <dt translate>FORM.LABELS.NAME</dt>
-          <dd>{{ModalCtrl.patient.display_name}}</dd>
+      <uib-tab index="0" select="ModalCtrl.selectTab(0)"
+        heading="{{ 'FORM.LABELS.LOOKUP_BY_NAME' | translate}}">
+        <div class="tab-body">
+          <div ng-if="!ModalCtrl.isPatientFound">
 
-          <dt translate>FORM.LABELS.PATIENT_ID</dt>
-          <dd>{{ModalCtrl.patient.reference}}</dd>
+            <!--patient name-->
+            <div class="form-group"
+                 ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ModalCtrl.hasNoName}">
+              <label class="control-label" translate>FORM.LABELS.NAME</label>
+              <input type="text" class="form-control" name="search_name"
+                ng-model="ModalCtrl.params.search_name">
+            </div>
 
-          <dt translate>FORM.LABELS.HOSPITAL_FILE_NR</dt>
-          <dd>{{ModalCtrl.patient.hospital_no}}</dd>
+            <!-- Gender -->
+            <div id="gender" class="form-group">
+              <label class="control-label" translate>FORM.LABELS.GENDER</label>&nbsp;&nbsp;
+              <label class="radio-inline">
+                <input type="radio" name="genderOptions" id="male" value="M"
+                  ng-model="ModalCtrl.params.sex">
+                <span translate>FORM.LABELS.MALE</span>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="genderOptions" id="female" value="F"
+                  ng-model="ModalCtrl.params.sex">
+                <span translate>FORM.LABELS.FEMALE</span>
+              </label>
+            </div>
 
-          <dt translate>FORM.LABELS.DEBTOR_GROUP</dt>
-          <dd>{{ModalCtrl.patient.debtorGroupName}}</dd>
+            <!-- Date of birth -->
+            <div class="form-group">
+              <label class="control-label" translate>{{ModalCtrl.dateComponentLabel}}</label>
+              <div class="input-group">
+                <input name="dob" type="text" class="form-control"
+                  ng-model="ModalCtrl.params.dob"
+                  uib-datepicker-popup="{{ModalCtrl.datepickerOptions.format}}"
+                  datepicker-options="ModalCtrl.datepickerOptions"
+                  is-open="ReturningPatientForm.datePopupIsOpen" show-button-bar="false"
+                  bh-date-validator="ModalCtrl.datepickerOptions" autocomplete="off">
+                <span class="input-group-btn">
+                  <button type="button" class="btn btn-default"
+                    ng-click="ReturningPatientForm.datePopupIsOpen = !ReturningPatientForm.datePopupIsOpen">
+                    <i class="fa fa-calendar-plus-o"></i>
+                  </button>
+                </span>
+              </div>
 
-          <dt translate>TABLE.COLUMNS.DATE_REGISTERED</dt>
-          <dd><span am-time-ago="ModalCtrl.patient.registration_date"></span></dd>
-        </dl>
-      </div>
+              <div class="help-block text-right">
+                <p>
+                  <a ng-click="ModalCtrl.toggleFullDate()" href>
+                    <i class="fa fa-circle-o" ng-class="ModalCtrl.dateIndicatorIcon"></i>
+                    <span translate>{{ModalCtrl.dateIndicatorLabel}}</span>
+                  </a>
+                </p>
+              </div>
+            </div>
 
-      <div class="col-xs-6">
-        <dl>
-          <dt translate>TABLE.COLUMNS.AGE</dt>
-          <dd>{{ModalCtrl.patient.age}}</dd>
+            <div ng-if="ModalCtrl.hasChoices">
+              <hr>
+              <h4>{{ModalCtrl.choices.length}} <span translate>PATIENT_REG.CHOOSE_MATCH</span>:</h4>
+              <div>
+                <table class="table table-striped table-condensed">
+                  <thead>
+                    <th translate>FORM.LABELS.NAME</th>
+                    <th>%<span translate>PATIENT_REG.MATCH</span></th>
+                    <th translate>FORM.LABELS.GENDER</th>
+                    <th translate>FORM.LABELS.DOB_ABBREV</th>
+                    <th translate>FORM.LABELS.AGE</th>
+                    <th translate>FORM.LABELS.ORIGIN</th>
+                    <th translate>FORM.LABELS.PATIENT_ID</th>
+                    <th translate>FORM.LABELS.HOSPITAL_FILE_NR</th>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="pat in ModalCtrl.choices">
+                      <td><button ng-click="ModalCtrl.useChoice(pat.uuid);">{{pat.display_name}}</button></td>
+                      <td>{{pat.matchScore * 100 | number: 1}}</td>
+                      <td translate>{{pat.sex}}</td>
+                      <td><span ng-if="pat.dob_unknown_date">{{pat.dob | date: 'yyyy'}}</span><span ng-if="!pat.dob_unknown_date">{{pat.dob | date: 'MM/dd/yyyy'}}</span></td>
+                      <td>{{pat.age}}</td>
+                      <td>{{pat.originProvinceName}}, {{pat.originSectorName}}, {{pat.originVillageName}}</td>
+                      <td>{{pat.reference}}</td>
+                      <td>{{pat.hospital_no}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-          <dt translate>TABLE.COLUMNS.DOB</dt>
-          <dd>{{ModalCtrl.patient.dobFormatted}}</dd>
-          <p ng-if="ModalCtrl.patient.dob_unknown_date" class="text-info">
-            <i class="fa fa-info-circle"></i>
-            <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
-          </p>
+            <div class="row" ng-if="ModalCtrl.hasWarning">
+              <div class="col-xs-12">
+                <div class="alert alert-danger" ng-if="ModalCtrl.hasNoName">
+                  <i class="fa fa-warning"></i>
+                  <span translate>PATIENT_REG.NAME_REQUIRED</span>
+                </div>
 
-          <dt translate>TABLE.COLUMNS.GENDER</dt>
-          <dd>{{ModalCtrl.patient.sex}}</dd>
-        </dl>
-      </div>
-    </div>
+                <div class="alert alert-danger" ng-if="ModalCtrl.noPatientsFound">
+                  <i class="fa fa-warning"></i>
+                  <span translate>PATIENT_REG.NO_PATIENTS_FOUND</span>
+                </div>
 
-    <!-- embedded patient visits toggle -->
-    <div class="row">
-      <div class="col-xs-12">
-        <bh-patient-visit patient-uuid="ModalCtrl.patient.uuid">
-        </bh-patient-visit>
-      </div>
-    </div>
+                <div class="alert alert-warning" ng-if="ModalCtrl.hasMultiplePatients">
+                  <i class="fa fa-warning"></i>
+                  <span translate>PATIENT_REG.HAS_MULTIPLE_PATIENTS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-if="ModalCtrl.isPatientFound">
+
+            <!-- basic patient information panel -->
+            <div class="row">
+              <div class="col-xs-6">
+                <dl>
+                  <dt translate>FORM.LABELS.NAME</dt>
+                  <dd>{{ModalCtrl.patient.display_name}}</dd>
+
+                  <dt translate>FORM.LABELS.PATIENT_ID</dt>
+                  <dd>{{ModalCtrl.patient.reference}}</dd>
+
+                  <dt translate>FORM.LABELS.HOSPITAL_FILE_NR</dt>
+                  <dd>{{ModalCtrl.patient.hospital_no}}</dd>
+
+                  <dt translate>FORM.LABELS.DEBTOR_GROUP</dt>
+                  <dd>{{ModalCtrl.patient.debtorGroupName}}</dd>
+
+                  <dt translate>TABLE.COLUMNS.DATE_REGISTERED</dt>
+                  <dd><span am-time-ago="ModalCtrl.patient.registration_date"></span></dd>
+                </dl>
+              </div>
+
+              <div class="col-xs-6">
+                <dl>
+                  <dt translate>TABLE.COLUMNS.AGE</dt>
+                  <dd>{{ModalCtrl.patient.age}}</dd>
+
+                  <dt translate>TABLE.COLUMNS.DOB</dt>
+                  <dd>{{ModalCtrl.patient.dobFormatted}}</dd>
+                  <p ng-if="ModalCtrl.patient.dob_unknown_date" class="text-info">
+                    <i class="fa fa-info-circle"></i>
+                    <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
+                  </p>
+
+                  <dt translate>TABLE.COLUMNS.GENDER</dt>
+                  <dd>{{ModalCtrl.patient.sex}}</dd>
+
+                  <dt translate>FORM.LABELS.ORIGIN</dt>
+                  <dd>{{ModalCtrl.patient.originProvinceName}},
+                      {{ModalCtrl.patient.originSectorName}},
+                      {{ModalCtrl.patient.originVillageName}}</dd>
+                </dl>
+              </div>
+            </div>
+
+            <div class="row" ng-if="ModalCtrl.hasWarning">
+              <div class="col-xs-12">
+                <div class="alert alert-warning" ng-if="ModalCtrl.marginalMatch">
+                  <i class="fa fa-warning"></i>
+                  <span translate translate-values="ModalCtrl.matchScore">PATIENT_REG.MARGINAL_MATCH</span><br/>
+                  <i class="fa fa-warning"></i>
+                  <span translate>PATIENT_REG.VERIFY_IDENTITY</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- embedded patient visits toggle -->
+            <div class="row">
+              <div class="col-xs-12">
+                <bh-patient-visit patient-uuid="ModalCtrl.patient.uuid">
+                </bh-patient-visit>
+              </div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" select="ModalCtrl.selectTab(1)"
+        heading="{{ 'FORM.LABELS.LOOKUP_BY_ID' | translate}}">
+        <div class="tab-body">
+
+          <div ng-if="!ModalCtrl.isPatientFound">
+            <div class="form-group"
+              ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ModalCtrl.hasNoID }">
+              <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+              <input name="reference" autocomplete="off" ng-model="ModalCtrl.params.reference" class="form-control">
+            </div>
+
+            <div class="form-group"
+              ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ModalCtrl.hasNoID }">
+              <label class="control-label" translate>FORM.LABELS.HOSPITAL_NO</label>
+              <input name="hospital_no" autocomplete="off" ng-model="ModalCtrl.params.hospital_no" class="form-control">
+            </div>
+          </div>
+
+          <div class="row" ng-if="ModalCtrl.hasWarning">
+            <div class="col-xs-12">
+              <div class="alert alert-danger" ng-if="ModalCtrl.noPatientsFound">
+                <i class="fa fa-warning"></i>
+                <span translate>PATIENT_REG.NO_PATIENTS_FOUND</span>
+              </div>
+
+              <div class="alert alert-warning" ng-if="ModalCtrl.hasMultiplePatients">
+                <i class="fa fa-warning"></i>
+                <span translate>PATIENT_REG.HAS_MULTIPLE_PATIENTS</span>
+              </div>
+
+              <div class="alert alert-danger" ng-if="ModalCtrl.hasNoID">
+                <i class="fa fa-warning"></i>
+                <span translate>PATIENT_REG.ID_REQUIRED</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div ng-if="ModalCtrl.isPatientFound">
+            <!-- basic patient information panel -->
+            <div class="row">
+              <div class="col-xs-6">
+                <dl>
+                  <dt translate>FORM.LABELS.NAME</dt>
+                  <dd>{{ModalCtrl.patient.display_name}}</dd>
+
+                  <dt translate>FORM.LABELS.PATIENT_ID</dt>
+                  <dd>{{ModalCtrl.patient.reference}}</dd>
+
+                  <dt translate>FORM.LABELS.HOSPITAL_FILE_NR</dt>
+                  <dd>{{ModalCtrl.patient.hospital_no}}</dd>
+
+                  <dt translate>FORM.LABELS.DEBTOR_GROUP</dt>
+                  <dd>{{ModalCtrl.patient.debtorGroupName}}</dd>
+
+                  <dt translate>TABLE.COLUMNS.DATE_REGISTERED</dt>
+                  <dd><span am-time-ago="ModalCtrl.patient.registration_date"></span></dd>
+                </dl>
+              </div>
+
+              <div class="col-xs-6">
+                <dl>
+                  <dt translate>TABLE.COLUMNS.AGE</dt>
+                  <dd>{{ModalCtrl.patient.age}}</dd>
+
+                  <dt translate>TABLE.COLUMNS.DOB</dt>
+                  <dd>{{ModalCtrl.patient.dobFormatted}}</dd>
+                  <p ng-if="ModalCtrl.patient.dob_unknown_date" class="text-info">
+                    <i class="fa fa-info-circle"></i>
+                    <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
+                  </p>
+
+                  <dt translate>TABLE.COLUMNS.GENDER</dt>
+                  <dd>{{ModalCtrl.patient.sex}}</dd>
+
+                  <dt translate>FORM.LABELS.ORIGIN</dt>
+                  <dd>{{ModalCtrl.patient.originProvinceName}},
+                      {{ModalCtrl.patient.originSectorName}},
+                      {{ModalCtrl.patient.originVillageName}}</dd>
+                </dl>
+              </div>
+            </div>
+
+            <!-- embedded patient visits toggle -->
+            <div class="row">
+              <div class="col-xs-12">
+                <bh-patient-visit patient-uuid="ModalCtrl.patient.uuid">
+                </bh-patient-visit>
+              </div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+
+
+    </uib-tabset>
   </div>
 
-  <div class="row" ng-if="ModalCtrl.hasWarning">
-    <div class="col-xs-12">
-      <div class="alert alert-danger" ng-if="ModalCtrl.noPatientsFound">
-        <i class="fa fa-warning"></i>
-        <span translate>PATIENT_REG.NO_PATIENTS_FOUND</span>
-      </div>
+  <div class="modal-footer">
+    <button class="btn btn-default" type="button"
+      ng-click="ModalCtrl.clearData()"
+      ng-if="!ModalCtrl.isPatientFound">
+      <span translate>FORM.BUTTONS.CLEAR</span>
+    </button>
 
-      <div class="alert alert-warning" ng-if="ModalCtrl.hasMultiplePatients">
-        <i class="fa fa-warning"></i>
-        <span translate>PATIENT_REG.HAS_MULTIPLE_PATIENTS</span>
-      </div>
-    </div>
+    <button class="btn btn-default" type="button"
+      ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ReturningPatientForm.$loading"
+    ng-if="!ModalCtrl.isPatientFound">
+      <span translate>FORM.BUTTONS.SEARCH</span>
+    </bh-loading-button>
   </div>
-</div>
-
-<div class="modal-footer">
-  <button class="btn btn-default" type="button" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
-    FORM.BUTTONS.CLOSE
-  </button>
-
-  <bh-loading-button loading-state="ReturningPatientForm.$loading" ng-if="!ModalCtrl.isPatientFound">
-    <span translate>FORM.BUTTONS.SEARCH</span>
-  </bh-loading-button>
-</div>
 
 </form>
