@@ -33,8 +33,7 @@ exports.document = document;
  * @function getCashboxByAccountId
  *
  * @description
- * Locates a cashbox infomration by
- *
+ * Locates a cashbox information by account id.
  */
 function getCashboxByAccountId(accountId) {
   const sql = `
@@ -52,7 +51,6 @@ const templates = {
   NORMAL : TEMPLATE_COMBINED,
   SPLIT : TEMPLATE_SEPARATED,
 };
-
 
 /**
  * @function document
