@@ -80,10 +80,12 @@ BEGIN
     reference_uuid, comment, transaction_type_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, transIdNumberPart, v.date,
-    v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
-    vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
+    v.uuid, IF(p.display_name IS NOT NULL, CONCAT(v.description,' / ', p.display_name), v.description) description,
+    vi.account_id, vi.debit, vi.credit, vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
     vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
+  LEFT JOIN employee AS emp ON emp.creditor_uuid = vi.entity_uuid
+  LEFT JOIN patient AS p ON p.uuid = emp.patient_uuid
   WHERE v.uuid = uuid;
 
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
