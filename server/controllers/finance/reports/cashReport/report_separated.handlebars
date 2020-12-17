@@ -106,12 +106,12 @@
       {{#if hasBoth}}
         <p class="text-right">
           <strong>{{translate "FORM.LABELS.INCOME"}} - {{translate "FORM.LABELS.EXPENSE"}}:</strong>
-          <span>{{debcred footer.totals.balance txn.currency_id}}</span>
+          <span>{{debcred footer.totals.balance metadata.enterprise.currency_id}}</span>
         </p>
 
         <p class="text-right">
           <strong>{{translate "TABLE.COLUMNS.BALANCE"}}:</strong>
-          <span>{{debcred footer.exchangedCumSum txn.currency_id}}</span>
+          <span>{{debcred footer.exchangedCumSum metadata.enterprise.currency_id}}</span>
         </p>
       {{/if}}
 
