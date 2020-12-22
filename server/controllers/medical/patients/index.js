@@ -488,6 +488,7 @@ function findMatchingPatients(matchNameParts, patientNames) {
         matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
       }
     }
+    return [];
   });
 
   // Return the sorted matches (best first)
