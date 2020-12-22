@@ -18,7 +18,8 @@ const locationUuid = '1F162A109F6747889EFFC1FEA42FCC9B';
 const projectId = 1;
 
 function addDebtorSQL(debtorUuid, text) {
-  return `INSERT INTO debtor (uuid, group_uuid, text) VALUES (0x${debtorUuid}, 0x${groupUuid}, '${text}');`;
+  return 'INSERT INTO debtor (uuid, group_uuid, text) '
+    + `VALUES (0x${debtorUuid}, 0x${groupUuid}, '${text}');`;
 }
 
 function addPatientSQL(pinfo) {
