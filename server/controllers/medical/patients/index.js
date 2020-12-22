@@ -648,7 +648,7 @@ function findBestNameMatches(req, res, next) {
         .catch(next)
         .done();
 
-      return res.status(200).json([]); // Keep Hound from complaining
+      return []; // Keep Hound from complaining
     })
     .catch(next)
     .done();
