@@ -444,7 +444,7 @@ function findMatchingPatients(matchNameParts, patientNames) {
     }
 
     if (matchNameParts.length === patientNameParts.length) {
-      // This is the easy case, do one-to-one comparisions
+      // This is the easy case, do one-to-one comparisons
       let distSum = 0;
       const matchCriterion = matchCutoff * matchNameParts.length;
       matchNameParts.sort().forEach((part, i) => {
@@ -505,8 +505,53 @@ function findMatchingPatients(matchNameParts, patientNames) {
  * that have their name parts in different order and is tolerant of
  * minor misspellings.
  *
- * @returns array of matching patient objects.
- *          Each row has a 'matchScore' value that
+ * This function supports these query parameters:
+ *    - search_name      string [required]
+ *    - sex              string [optional] ('F' / 'M')
+ *    - dob              string [optional] (SQL format date string)
+ *    - dob_unknown_date string [optional] ('true'/'false')
+ *
+ * The goal here is to make the approximate name search work as robustly
+ * as possible.
+ *
+ * The first step is to find potential patient name matches:
+ *   - The search_name and potential matching patient names are split
+ *     into name parts (eg, first  name, last name, etc) and
+ *     alphabetized.
+ *   - Then the names are compared in the alphabetical order and the
+ *     'distance' (0-1) between them is determined using the
+ *     jaro-winkler function.  This function gives exact matches
+ *     if the names are the same (ignoring capitalization) and is
+ *     tolerant of the order of the name parts.
+ *   - The total score for the name is based sum of the distances
+ *     between each pair of name parts divided by the number of parts
+ *     in the search name.   The result is always between 0 and 1.
+ *   - Matches that are off single or double misspellings generally
+ *     score very close to 1.
+ *   - The function findMatchingPatients() does the name part
+ *     comparisons to construct a list of potential name matches,
+ *     along with the score of each match.  Matches with scores above
+ *     a cut off value are kept as a potential match is 'matchCutoff'
+ *     (which is defined above in findMatchingPatients()).
+ *
+ * Once the potential name matches are determined, then the optional
+ * gender and date of birth fields come into play.
+ *   - If the 'sex' field is present, it is matched and the score is
+ *     augmented by 50% (see sexWeight) below.
+ *   - If the 'dob' field is present, it is also matched and the score
+ *     is augmented by a maximum of 30% (see dobWeight below).  DOB
+ *     matches that are exact count the maximum. Matches that are
+ *     approximate are discounted the further off they are.  Currently
+ *     dob the match needs to be within a few year for a reasonable
+ *     increment.  There is extra logic below that deals with year
+ *     year matches vs exact date matches.
+ *   - In any case, the total score for each potential match is
+ *     scaled to be between 0 and 1.
+ *   - Specifying the sex and DOB can help to improve the ranking
+ *     of potential matches.
+ *
+ * @returns array of potential matching patient objects.
+ *          Each row has a additional 'matchScore' value that
  *          indicates the quality of the match (0-1).
  */
 function findBestNameMatches(req, res, next) {
@@ -520,7 +565,7 @@ function findBestNameMatches(req, res, next) {
   // Canonize the parts of the specified approximate name
   // Split by spaces, lowercase, sort alphabetically, and eliminate any single-letter names
   const searchNameParts = options.search_name.toLowerCase()
-    .split(' ').map(nm => nm.replace('.', ''))
+    .split(/[ ,]/).map(nm => nm.replace('.', ''))
     .filter(str => str.trim().length > 1)
     .sort();
 
@@ -537,7 +582,7 @@ function findBestNameMatches(req, res, next) {
       const patientNames = {};
       patients.forEach((p) => {
         patientNames[p.pid] = p.pname.toLowerCase()
-          .split(' ').map(nm => nm.replace('.', ''))
+          .split(/[ ,]/).map(nm => nm.replace('.', ''))
           .filter(str => str.trim().length > 1)
           .sort();
       });
@@ -760,6 +805,11 @@ function patientEntityQuery(detailed) {
  * @description
  * A multi-parameter function that uses find() to query the database for
  * patient records.  It is the HTTP interface to find().
+ *
+ * NOTE:  If 'search_name' is given in the query, the approximate search in
+ *        findBestNameMatches() is used instead of the normal find().
+ *        See the documentation for findBestNameMatches() above for more
+ *        information on name approximate search capability.
  *
  * @example
  * // GET /patient/?name={string}&detail={boolean}&limit={number}
