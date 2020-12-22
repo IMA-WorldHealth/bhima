@@ -9,6 +9,7 @@
  * and define all patient API functions.
  *
  * @requires lodash
+ * @requires jaro-winkler
  * @requires lib/db
  * @requires lib/util
  * @requires lib/errors/BadRequest
@@ -26,6 +27,8 @@
 
 const _ = require('lodash');
 
+const distance = require('jaro-winkler');
+
 const identifiers = require('../../../config/identifiers');
 
 const { uuid } = require('../../../lib/util');
@@ -40,6 +43,7 @@ const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
 const merge = require('./merge');
+
 
 // bind submodules
 exports.groups = groups;
@@ -423,6 +427,231 @@ function searchByName(req, res, next) {
     .done();
 }
 
+function findMatchingPatients(matchNameParts, patientNames) {
+  // matchNameParts is an array of a proposed patient name parts (lower case, sorted)
+  // patientNames is an associative array of
+  //     patient_id => [patientNameParts]
+
+  const matchCutoff = 0.92; // Based on experiments with jaro-winkler function
+
+  const matches = []; // Array of matches:  [[pid, matchNameParts, distSum], etc]
+
+  _.forEach(patientNames, (patientNameParts, pid) => {
+    if (patientNameParts.length === 0) {
+      // Ignore patient records with empty names
+      // (These need to be purged or fixed!)
+      return [];
+    }
+
+    if (matchNameParts.length === patientNameParts.length) {
+      // This is the easy case, do one-to-one comparisions
+      let distSum = 0;
+      const matchCriterion = matchCutoff * matchNameParts.length;
+      matchNameParts.sort().forEach((part, i) => {
+        distSum += distance(part, patientNameParts[i]);
+      });
+      if (distSum > matchCriterion) {
+        matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
+      }
+    } else {
+      // Not equal length
+      // Compare each name part with all the patient name parts to find the best match
+      // NOTE: This branch could be improved by doing enumerated search pairs based on
+      //       permutations and taking advantage of the sorted order of both search and
+      //       patient name  parts.
+
+      const matchCriterion = matchCutoff * matchNameParts.length;
+      const alreadyTried = new Set();
+      let distSum = 0;
+      matchNameParts.forEach((mname) => {
+        let bestDist = 0;
+        let bestName = null;
+        patientNameParts.forEach((pname) => {
+          if (alreadyTried.has(pname)) {
+            // If we have already tried a match with this pname, move on
+            // (Trying to prevent problems with repeated names skewing results)
+            return;
+          }
+          const newDist = distance(mname, pname);
+          // console.log("CMP: ", mname, pname, newDist);
+          if (newDist > bestDist) {
+            bestDist = newDist;
+            bestName = pname;
+          }
+        });
+        alreadyTried.add(bestName);
+        distSum += bestDist;
+      });
+
+      // console.log("---> ", matchNameParts, patientNames[pid], distSum, matchCriterion);
+      if (distSum > matchCriterion) {
+        matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
+      }
+    }
+  });
+
+  // Return the sorted matches (best first)
+  return matches.sort((a, b) => { return b[2] - a[2]; });
+}
+
+/*
+ * @method findBestNameMatches
+ *
+ * @description
+ * This method implements a patient search based on name and optionally
+ * gender and date of birth.  Note that parts of names that are a single
+ * letter are ignored. It tries to do 'fuzzy' search and can find names
+ * that have their name parts in different order and is tolerant of
+ * minor misspellings.
+ *
+ * @returns array of matching patient objects.
+ *          Each row has a 'matchScore' value that
+ *          indicates the quality of the match (0-1).
+ */
+function findBestNameMatches(req, res, next) {
+
+  const sexWeight = 0.5;
+  const dobWeight = 0.3;
+
+  const options = req.query;
+  // console.log('Params: ', options);
+
+  // Canonize the parts of the specified approximate name
+  // Split by spaces, lowercase, sort alphabetically, and eliminate any single-letter names
+  const searchNameParts = options.search_name.toLowerCase()
+    .split(' ').map(nm => nm.replace('.', ''))
+    .filter(str => str.trim().length > 1)
+    .sort();
+
+  // Get the complete list of patient names, sex, dob, and patient uuids
+  const sql = `
+    SELECT
+      HEX(uuid) as pid, display_name as pname, sex, dob, dob_unknown_date
+    FROM patient;`;
+
+  db.exec(sql, [])
+    .then((patients) => {
+
+      // Construct an dictionary of patient name parts
+      const patientNames = {};
+      patients.forEach((p) => {
+        patientNames[p.pid] = p.pname.toLowerCase()
+          .split(' ').map(nm => nm.replace('.', ''))
+          .filter(str => str.trim().length > 1)
+          .sort();
+      });
+
+      // Find patients with matching names (or nearly matching names)
+      const nameMatches = findMatchingPatients(searchNameParts, patientNames);
+      let matches = [];
+
+      // Determine the maximum name match score (for later scaling)
+      let maxScore = 1.0;
+      if ('sex' in options) {
+        maxScore += sexWeight;
+      }
+      if ('dob' in options) {
+        maxScore += dobWeight;
+      }
+
+      nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
+        // console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore);
+        let score = nameScore;
+
+        if ('sex' in options || 'dob' in options) {
+          // Find the corresponding patient info
+          const patientInfo = {};
+          patientInfo[pid] = patients.find(row => row.pid === pid);
+
+          // Check the gender
+          if ('sex' in options) {
+            if (options.sex === patientInfo[pid].sex) {
+              // Full delta score for gender match, 0 if not
+              score += sexWeight * 1.0;
+            }
+          }
+
+          // Check the dob
+          if ('dob' in options) {
+            const dob = new Date(options.dob);
+            const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
+            const patientDob = new Date(patientInfo[pid].dob);
+            const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
+            // console.log('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
+
+            if (dobYearOnly || patientDobYearOnly) {
+              // If either specified only with the year
+              // NOTE: Treating either as year-only the same way
+              const dobYear = dob.getYear();
+              const patientDobYear = patientDob.getYear();
+              if (dobYear === patientDobYear) {
+                // Full score if both years match and both are year-only
+                score += dobWeight * 1.0;
+                // console.log("Year match", dobYear, score);
+              } else {
+                // Downgrade the score by the number of years off
+                const maxYearsDiff = 5;
+                let yearsDiff = Math.abs(dobYear - patientDobYear);
+                if (yearsDiff <= maxYearsDiff) {
+                  // Discount year near matches proportionately
+                  score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
+                  // console.log("Near year match", yearsDiff, score);
+                }
+              }
+            } else {
+              // We have exact dates for both
+              const daysDiff = Math.round(Math.abs(dob - patientDob) / (1000 * 24 * 3600));
+              // console.log("DaysDiff: ",daysDiff);
+              if (daysDiff === 0) {
+                // Count the same day as best dob match
+                score += dobWeight * 1.0;
+                // console.log("Day match: ", score)
+              } else {
+                // Discount appropriately
+                const maxDaysDiff = 730; // 2 years
+                if (daysDiff <= maxDaysDiff) {
+                  score += dobWeight * 0.8 * (1.0 - daysDiff / maxDaysDiff);
+                  // console.log("Near day match: ", daysDiff, score);
+                }
+              }
+            }
+          }
+        }
+        // console.log("Score: ", score, maxScore);
+        matches.push([pid, score / maxScore]);
+      });
+
+      // If there are no matches, return now
+      if (matches.length === 0) {
+        return res.status(200).json([]);
+      }
+
+      // Resort the matches
+      matches = matches.sort((a, b) => { return b[1] - a[1]; });
+
+      // console.log("NameMatches: ");
+      // nameMatches.forEach(([pid, sname, score]) => {
+      //   console.log(pid, sname, patientNames[pid], score);
+      // });
+
+      // Now get the info for these patients
+      find({ uuids : matches.map(x => x[0]) })
+        .then((data) => {
+          // Insert the match score into each record
+          data.forEach((row) => {
+            const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
+            row.matchScore = mscore;
+          });
+          return res.status(200).json(data);
+        })
+        .catch(next)
+        .done();
+
+    })
+    .catch(next)
+    .done();
+}
+
 /**
  * @method find
  *
@@ -434,7 +663,8 @@ function searchByName(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-  // ensure epected options are parsed appropriately as binary
+
+  // ensure expected options are parsed appropriately as binary
   db.convert(options, [
     'patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid', 'uuids',
   ]);
@@ -504,7 +734,7 @@ function patientEntityQuery(detailed) {
   const sql = `
     SELECT
       BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
-      p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
+      p.sex, p.dob, p.dob_unknown_date, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
       originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
       originProvince.name as originProvinceName ${detailedColumns}
@@ -536,6 +766,12 @@ function patientEntityQuery(detailed) {
  * // GET /patient
  */
 function read(req, res, next) {
+
+  if ('search_name' in req.query) {
+    // Handle the best match name queries separately
+    return findBestNameMatches(req, res, next);
+  }
+
   find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
