@@ -395,6 +395,7 @@ function PatientService(
       controller : 'ReturningPatientModalController as ModalCtrl',
       keyboard : true,
       animation : false,
+      size : 'lg',
     }).result;
   }
 
