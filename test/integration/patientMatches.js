@@ -12,6 +12,11 @@ function uuid() {
   return UUID().toUpperCase().replace(/-/g, '');
 }
 
+// Reuse the same location/project uuids for all mock patients
+const groupUuid = '4DE0FE47177F4D30B95FCFF8166400B4';
+const locationUuid = '1F162A109F6747889EFFC1FEA42FCC9B';
+const projectId = 1;
+
 function addDebtorSQL(debtorUuid, text) {
   return `INSERT INTO debtor (uuid, group_uuid, text) VALUES (0x${debtorUuid}, 0x${groupUuid}, '${text}');`;
 }
@@ -24,11 +29,6 @@ function addPatientSQL(pinfo) {
    + `'${pinfo[3]}', ${pinfo[4]}, 0x${locationUuid}, 0x${locationUuid}, 1`
    + ');';
 }
-
-// Reuse the same location/project uuids for all mock patients
-const groupUuid = '4DE0FE47177F4D30B95FCFF8166400B4';
-const locationUuid = '1F162A109F6747889EFFC1FEA42FCC9B';
-const projectId = 1;
 
 const mockPatients = [
   // uuid, display_name, sex, dob, dob_unknown_date, debtorUuid
@@ -163,7 +163,6 @@ describe('(/patients) Find matching patients', () => {
   // -------------------------------------------------------------------------------------
   // Make sure the specifying gender helps
   it('Get matches for "Lynn Black"', () => {
-    const testName = 'Lynn Black';
     const conditions = { search_name : 'Lynn Black' };
     return agent.get('/patients')
       .query(conditions)

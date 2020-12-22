@@ -591,7 +591,7 @@ function findBestNameMatches(req, res, next) {
               } else {
                 // Downgrade the score by the number of years off
                 const maxYearsDiff = 5;
-                let yearsDiff = Math.abs(dobYear - patientDobYear);
+                const yearsDiff = Math.abs(dobYear - patientDobYear);
                 if (yearsDiff <= maxYearsDiff) {
                   // Discount year near matches proportionately
                   score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
@@ -647,6 +647,7 @@ function findBestNameMatches(req, res, next) {
         .catch(next)
         .done();
 
+      return res.status(200).json([]); // Keep Hound from complaining
     })
     .catch(next)
     .done();
