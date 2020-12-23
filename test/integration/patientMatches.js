@@ -37,7 +37,7 @@ const mockPatients = [
   [uuid(), 'Jon Smith', 'M', '1995-01-01', 'TRUE', uuid()],
 
   [uuid(), 'John Jones Mitchum', 'M', '1980-01-01', 'TRUE', uuid()],
-  [uuid(), 'John Janes Mitchum', 'M', '1981-04-21', 'FALSE', uuid()],
+  [uuid(), 'John Janes Mitchum', 'M', '1981-04-21', 0, uuid()],
   [uuid(), 'John Jenes Matchim', 'M', '1984-01-01', 'TRUE', uuid()],
 
   [uuid(), 'Lynn H. Black', 'M', '1970-08-01', 'FALSE', uuid()],
@@ -50,6 +50,9 @@ describe('(/patients) Find matching patients', () => {
   // prior to tests, create default patients.
   before('add mock patients', () => {
     return mockPatients.reduce((chain, p) => {
+      if (p[1].includes('Janes')) {
+        console.log(addPatientSQL(p));
+      }
       return chain
         .then(() => db.exec(addDebtorSQL(p[5], p[1])))
         .then(() => db.exec(addPatientSQL(p)));
