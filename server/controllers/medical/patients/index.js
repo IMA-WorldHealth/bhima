@@ -602,7 +602,7 @@ function findBestNameMatches(req, res, next) {
       }
 
       nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
-        // console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore);
+        console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore);
         let score = nameScore;
 
         if ('sex' in options || 'dob' in options) {
