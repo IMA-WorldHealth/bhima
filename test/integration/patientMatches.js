@@ -188,6 +188,7 @@ describe('(/patients) Find matching patients', () => {
       .then((res) => {
         helpers.api.listed(res, 2);
         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
+        console.log(matches);
         expect(matches[0].display_name).to.be.equals(testName);
         expect(matches[0].matchScore).to.be.equals(1);
         expect(matches[1].display_name).to.be.not.equals(testName);
