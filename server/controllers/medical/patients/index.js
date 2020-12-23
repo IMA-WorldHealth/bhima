@@ -631,7 +631,7 @@ function findBestNameMatches(req, res, next) {
               // NOTE: Treating either as year-only the same way
               const dobYear = dob.getYear();
               const patientDobYear = patientDob.getYear();
-              console.log("DOBS years: ", dobYear, patientDobYear);
+              console.log("DOBS years: ", dobYear, dob.getFullYear(), patientDobYear, patientDob.getFullYear());
               if (dobYear === patientDobYear) {
                 // Full score if both years match and both are year-only
                 score += dobWeight * 1.0;
