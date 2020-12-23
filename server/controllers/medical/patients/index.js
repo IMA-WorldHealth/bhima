@@ -575,6 +575,8 @@ function findBestNameMatches(req, res, next) {
       HEX(uuid) as pid, display_name as pname, sex, dob, dob_unknown_date
     FROM patient;`;
 
+  let matches = [];
+
   db.exec(sql, [])
     .then((patients) => {
 
@@ -589,7 +591,6 @@ function findBestNameMatches(req, res, next) {
 
       // Find patients with matching names (or nearly matching names)
       const nameMatches = findMatchingPatients(searchNameParts, patientNames);
-      let matches = [];
 
       // Determine the maximum name match score (for later scaling)
       let maxScore = 1.0;
@@ -681,19 +682,15 @@ function findBestNameMatches(req, res, next) {
       // });
 
       // Now get the info for these patients
-      find({ uuids : matches.map(x => x[0]) })
-        .then((data) => {
-          // Insert the match score into each record
-          data.forEach((row) => {
-            const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
-            row.matchScore = mscore;
-          });
-          return res.status(200).json(data);
-        })
-        .catch(next)
-        .done();
-
-      return []; // Keep Hound from complaining
+      return find({ uuids : matches.map(x => x[0]) });
+    })
+    .then((data) => {
+      // Insert the match score into each record
+      data.forEach((row) => {
+        const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
+        row.matchScore = mscore;
+      });
+      return res.status(200).json(data);
     })
     .catch(next)
     .done();
