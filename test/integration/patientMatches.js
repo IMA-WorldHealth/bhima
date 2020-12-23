@@ -201,7 +201,7 @@ describe('(/patients) Find matching patients', () => {
   });
   it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
     const testName = 'John Janes Mitchum';
-    const conditions = { search_name: 'John Mitchum', dob: '1981-04-21', dob_unknown_date: 'false' };
+    const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
     return agent.get('/patients')
       .query(conditions)
       .then((res) => {
@@ -217,7 +217,7 @@ describe('(/patients) Find matching patients', () => {
   });
   it('Get matches for name "John Jones Mitchum" with DOB approximate date', () => {
     const testName = 'John Janes Mitchum';
-    const conditions = { search_name: 'John Mitchum', dob: '1981-02-22', dob_unknown_date: 'false' };
+    const conditions = { search_name : 'John Mitchum', dob : '1981-02-22', dob_unknown_date : 'false' };
     return agent.get('/patients')
       .query(conditions)
       .then((res) => {
