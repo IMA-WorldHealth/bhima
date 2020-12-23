@@ -44,7 +44,6 @@ const mockPatients = [
   [uuid(), 'Lynn Black', 'F', '1981-01-01', 'TRUE', uuid()],
 ];
 
-let initialNumPatients = null;
 
 describe('(/patients) Find matching patients', () => {
 
@@ -57,13 +56,9 @@ describe('(/patients) Find matching patients', () => {
     }, Promise.resolve());
   });
 
-  // Note how many patients we had to start with
-  it.skip('Save starting number of patients', () => {
-    return agent.get('/patients')
-      .then((res) => {
-        initialNumPatients = res.body.length;
-      })
-      .catch(helpers.handler);
+  it(`Temporarily added ${mockPatients.length} mock patients`, () => {
+    // Alert the user that mock patients were added
+    expect(true).to.be.equals(true);
   });
 
   // NOW do the tests
@@ -243,11 +238,4 @@ describe('(/patients) Find matching patients', () => {
     }, Promise.resolve());
   });
 
-  it.skip('Make sure we removed all temporary patients', () => {
-    return agent.get('/patients')
-      .then((res) => {
-        helpers.api.listed(res, initialNumPatients);
-      })
-      .catch(helpers.handler);
-  });
 });
