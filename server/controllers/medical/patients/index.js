@@ -602,7 +602,7 @@ function findBestNameMatches(req, res, next) {
       }
 
       nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
-        console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore);
+        console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore, nameMatches.length);
         let score = nameScore;
 
         if ('sex' in options || 'dob' in options) {
@@ -645,6 +645,7 @@ function findBestNameMatches(req, res, next) {
                   score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
                   console.log("Near year match", yearsDiff, score);
                 }
+                console.log("No year match!", score);
               }
             } else {
               // We have exact dates for both
