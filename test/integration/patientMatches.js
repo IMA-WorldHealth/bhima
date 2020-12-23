@@ -34,14 +34,14 @@ function addPatientSQL(pinfo) {
 const mockPatients = [
   // uuid, display_name, sex, dob, dob_unknown_date, debtorUuid
   [uuid(), 'John Smith', 'M', '1993-08-01', 'FALSE', uuid()],
-  [uuid(), 'Jon Smith', 'M', '1995-01-01', 'TRUE', uuid()],
+  [uuid(), 'Jon Smith', 'M', '1995-06-01', 'TRUE', uuid()],
 
-  [uuid(), 'John Jones Mitchum', 'M', '1980-01-01', 'TRUE', uuid()],
+  [uuid(), 'John Jones Mitchum', 'M', '1980-06-01', 'TRUE', uuid()],
   [uuid(), 'John Janes Mitchum', 'M', '1981-04-21', 'FALSE', uuid()],
-  [uuid(), 'John Jenes Matchim', 'M', '1984-01-01', 'TRUE', uuid()],
+  [uuid(), 'John Jenes Matchim', 'M', '1984-06-01', 'TRUE', uuid()],
 
   [uuid(), 'Lynn H. Black', 'M', '1970-08-01', 'FALSE', uuid()],
-  [uuid(), 'Lynn Black', 'F', '1981-01-01', 'TRUE', uuid()],
+  [uuid(), 'Lynn Black', 'F', '1981-06-01', 'TRUE', uuid()],
 ];
 
 
@@ -201,37 +201,37 @@ describe('(/patients) Find matching patients', () => {
       })
       .catch(helpers.handler);
   });
-  // it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
-  //   const testName = 'John Janes Mitchum';
-  //   const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
-  //   return agent.get('/patients')
-  //     .query(conditions)
-  //     .then((res) => {
-  //       helpers.api.listed(res, 2);
-  //       const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-  //       expect(matches[0].display_name).to.be.equals(testName);
-  //       expect(matches[0].matchScore).to.be.equals(1);
-  //       expect(matches[1].display_name).to.be.not.equals(testName);
-  //       expect(matches[1].matchScore).to.be.lt(0.95);
-  //       // Notice discounted score by being about 15 months off
-  //     })
-  //     .catch(helpers.handler);
-  // });
-  // it('Get matches for name "John Jones Mitchum" with DOB approximate date', () => {
-  //   const testName = 'John Janes Mitchum';
-  //   const conditions = { search_name : 'John Mitchum', dob : '1981-02-22', dob_unknown_date : 'false' };
-  //   return agent.get('/patients')
-  //     .query(conditions)
-  //     .then((res) => {
-  //       helpers.api.listed(res, 2);
-  //       const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-  //       expect(matches[0].display_name).to.be.equals(testName);
-  //       expect(matches[0].matchScore).to.be.lt(1);
-  //       expect(matches[1].display_name).to.be.not.equals(testName);
-  //       expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
-  //     })
-  //     .catch(helpers.handler);
-  // });
+    // it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
+    //   const testName = 'John Janes Mitchum';
+    //   const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
+    //   return agent.get('/patients')
+    //     .query(conditions)
+    //     .then((res) => {
+    //       helpers.api.listed(res, 2);
+    //       const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
+    //       expect(matches[0].display_name).to.be.equals(testName);
+    //       expect(matches[0].matchScore).to.be.equals(1);
+    //       expect(matches[1].display_name).to.be.not.equals(testName);
+    //       expect(matches[1].matchScore).to.be.lt(0.95);
+    //       // Notice discounted score by being about 15 months off
+    //     })
+    //     .catch(helpers.handler);
+    // });
+    // it('Get matches for name "John Jones Mitchum" with DOB approximate date', () => {
+    //   const testName = 'John Janes Mitchum';
+    //   const conditions = { search_name : 'John Mitchum', dob : '1981-02-22', dob_unknown_date : 'false' };
+    //   return agent.get('/patients')
+    //     .query(conditions)
+    //     .then((res) => {
+    //       helpers.api.listed(res, 2);
+    //       const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
+    //       expect(matches[0].display_name).to.be.equals(testName);
+    //       expect(matches[0].matchScore).to.be.lt(1);
+    //       expect(matches[1].display_name).to.be.not.equals(testName);
+    //       expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
+    //     })
+    //     .catch(helpers.handler);
+    // });
 
   // -------------------------------------------------------------------------------------
 
