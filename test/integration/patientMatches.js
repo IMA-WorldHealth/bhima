@@ -185,8 +185,8 @@ describe('(/patients) Find matching patients', () => {
   // -------------------------------------------------------------------------------------
   // Check DOB searches
   it('Get matches for name "John Jones Mitchum" with DOB / Year', () => {
-    const testName = 'John Jones Mitchum';
-    const conditions = { search_name : 'John Mitchum', dob : 1981, dob_unknown_date : 'true' };
+    const testName = 'John Janes Mitchum';
+    const conditions = { search_name : 'John Mitchum', dob : '1981', dob_unknown_date : 'true' };
     return agent.get('/patients')
       .query(conditions)
       .then((res) => {

@@ -620,7 +620,11 @@ function findBestNameMatches(req, res, next) {
 
           // Check the dob
           if ('dob' in options) {
-            const dob = new Date(options.dob);
+            let dob = new Date(options.dob);
+            if (options.dob.length === 4) {
+              dob = new Date(options.dob + '-06-01');
+            }
+            // ??? const dob = new Date(options.dob);
             const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
             const patientDob = new Date(patientInfo[pid].dob);
             const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
