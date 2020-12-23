@@ -624,7 +624,7 @@ function findBestNameMatches(req, res, next) {
             const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
             const patientDob = new Date(patientInfo[pid].dob);
             const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
-            // console.log('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
+            console.log('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
 
             if (dobYearOnly || patientDobYearOnly) {
               // If either specified only with the year
@@ -634,7 +634,7 @@ function findBestNameMatches(req, res, next) {
               if (dobYear === patientDobYear) {
                 // Full score if both years match and both are year-only
                 score += dobWeight * 1.0;
-                // console.log("Year match", dobYear, score);
+                console.log("Year match", dobYear, score);
               } else {
                 // Downgrade the score by the number of years off
                 const maxYearsDiff = 5;
@@ -642,7 +642,7 @@ function findBestNameMatches(req, res, next) {
                 if (yearsDiff <= maxYearsDiff) {
                   // Discount year near matches proportionately
                   score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
-                  // console.log("Near year match", yearsDiff, score);
+                  console.log("Near year match", yearsDiff, score);
                 }
               }
             } else {
