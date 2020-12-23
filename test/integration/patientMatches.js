@@ -48,26 +48,22 @@ let initialNumPatients = null;
 
 describe('(/patients) Find matching patients', () => {
 
+  // prior to tests, create default patients.
+  before('add mock patients', () => {
+    return mockPatients.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(addDebtorSQL(p[5], p[1])))
+        .then(() => db.exec(addPatientSQL(p)));
+    }, Promise.resolve());
+  });
+
   // Note how many patients we had to start with
-  it('Save starting number of patients', () => {
+  it.skip('Save starting number of patients', () => {
     return agent.get('/patients')
       .then((res) => {
         initialNumPatients = res.body.length;
       })
       .catch(helpers.handler);
-  });
-
-  // Add all the mock patients for this test
-  mockPatients.forEach(p => {
-    it(`--> Add mock patient ${p[1]}`, async () => {
-      // Add the debtor first
-      const res1 = await db.exec(addDebtorSQL(p[5], p[1]));
-      expect(!!res1).to.equal(true);
-
-      // Then add the patient
-      const res2 = await db.exec(addPatientSQL(p));
-      expect(!!res2).to.equal(true);
-    });
   });
 
   // NOW do the tests
@@ -160,7 +156,6 @@ describe('(/patients) Find matching patients', () => {
       .catch(helpers.handler);
   });
 
-
   // -------------------------------------------------------------------------------------
   // Make sure the specifying gender helps
   it('Get matches for "Lynn Black"', () => {
@@ -187,7 +182,6 @@ describe('(/patients) Find matching patients', () => {
       })
       .catch(helpers.handler);
   });
-
 
   // -------------------------------------------------------------------------------------
   // Check DOB searches
@@ -238,22 +232,22 @@ describe('(/patients) Find matching patients', () => {
       })
       .catch(helpers.handler);
   });
+
   // -------------------------------------------------------------------------------------
+
   // Delete the mock patients
-  mockPatients.forEach(p => {
-    it(`--> Delete mock patient ${p[1]}`, async () => {
-      const sql = `DELETE FROM patient WHERE uuid=0x${p[0]};`;
-      const res = await db.exec(sql);
-      expect(!!res).to.equal(true);
-    });
+  after('clean up temporary patients', () => {
+    return mockPatients.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(`DELETE FROM patient WHERE uuid=0x${p[0]};`));
+    }, Promise.resolve());
   });
 
-  it('Make sure we removed all temporary patients', () => {
+  it.skip('Make sure we removed all temporary patients', () => {
     return agent.get('/patients')
       .then((res) => {
         helpers.api.listed(res, initialNumPatients);
       })
       .catch(helpers.handler);
   });
-
 });
