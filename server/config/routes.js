@@ -469,7 +469,6 @@ exports.configure = function configure(app) {
   app.post('/reports/archive/:uuid/email', report.emailArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
-  app.get('/dashboard/debtors', dashboardDebtors.getReport);
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
   app.get('/patients/groups/:uuid', patientGroups.detail);
@@ -534,6 +533,8 @@ exports.configure = function configure(app) {
   app.put('/debtors/:uuid', debtors.update);
   app.get('/debtors/:uuid', debtors.detail);
   app.get('/debtors', debtors.list);
+
+  app.get('/dashboard/debtors', dashboardDebtors.getReport);
 
   // Debtor Groups API
   app.get('/debtor_groups', debtorGroups.list);
