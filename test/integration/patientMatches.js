@@ -180,23 +180,23 @@ describe('(/patients) Find matching patients', () => {
 
   // -------------------------------------------------------------------------------------
   // Check DOB searches
-  it('Get matches for name "John Jones Mitchum" with DOB / Year', () => {
-    const testName = 'John Jones Mitchum';
-    const conditions = { search_name : 'John Mitchum', dob : 1981, dob_unknown_date : 'true' };
-    return agent.get('/patients')
-      .query(conditions)
-      .then((res) => {
-        helpers.api.listed(res, 2);
-        const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-        console.log(matches);
-        expect(matches[0].display_name).to.be.equals(testName);
-        expect(matches[0].matchScore).to.be.equals(1);
-        expect(matches[1].display_name).to.be.not.equals(testName);
-        expect(matches[1].matchScore).to.be.lt(0.95);
-        // Notice discounted score by being one year off
-      })
-      .catch(helpers.handler);
-  });
+  // it('Get matches for name "John Jones Mitchum" with DOB / Year', () => {
+  //   const testName = 'John Jones Mitchum';
+  //   const conditions = { search_name : 'John Mitchum', dob : 1981, dob_unknown_date : 'true' };
+  //   return agent.get('/patients')
+  //     .query(conditions)
+  //     .then((res) => {
+  //       helpers.api.listed(res, 2);
+  //       const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
+  //       console.log(matches);
+  //       expect(matches[0].display_name).to.be.equals(testName);
+  //       expect(matches[0].matchScore).to.be.equals(1);
+  //       expect(matches[1].display_name).to.be.not.equals(testName);
+  //       expect(matches[1].matchScore).to.be.lt(0.95);
+  //       // Notice discounted score by being one year off
+  //     })
+  //     .catch(helpers.handler);
+  // });
   it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
     const testName = 'John Janes Mitchum';
     const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
