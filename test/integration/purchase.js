@@ -9,14 +9,14 @@ const SearchTests = require('./purchase.search.js');
  *
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
-describe('(/purchases) Purchases', () => {
+describe.only('(/purchases) Purchases', () => {
   const datePurchase1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days');
   const datePurchaseFormat1 = moment(datePurchase1).format('YYYY-MM-DD');
 
   const datePurchase2 = moment(new Date(), 'YYYY-MM-DD').subtract(1665, 'days');
   const datePurchaseFormat2 = moment(datePurchase2).format('YYYY-MM-DD');
 
-  const datePurchase3 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days');
+  const datePurchase3 = moment(new Date(), 'YYYY-MM-DD').subtract(1543, 'days');
   const datePurchaseFormat3 = moment(datePurchase3).format('YYYY-MM-DD');
 
   const datePurchase4 = moment(new Date(), 'YYYY-MM-DD').subtract(1512, 'days');
@@ -24,6 +24,9 @@ describe('(/purchases) Purchases', () => {
 
   const datePurchase5 = moment(new Date(), 'YYYY-MM-DD').subtract(1421, 'days');
   const datePurchaseFormat5 = moment(datePurchase5).format('YYYY-MM-DD');
+
+  const datePurchase6 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days');
+  const datePurchaseFormat6 = moment(datePurchase6).format('YYYY-MM-DD');
 
   // purchase order we will add during this test suite
   const purchaseOrder = {
@@ -256,7 +259,7 @@ describe('(/purchases) Purchases', () => {
   it(`PUT /purchases/:uuid Modification of the status of the purchase order
     in order to verify the modifications on the calculation of the order interval and the number of orders`, () => {
     return agent.put(`/purchases/${purchaseOrder3.uuid}`)
-      .send({ status_id : 1, date : new Date(datePurchaseFormat3) })
+      .send({ status_id : 1, date : new Date(datePurchaseFormat6) })
       .catch(helpers.handler);
   });
 

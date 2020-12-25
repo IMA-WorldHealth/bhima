@@ -274,9 +274,8 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     const months = (params.monthAverageConsumption - 1 > -1 && params.monthAverageConsumption)
       ? params.monthAverageConsumption - 1 : 0;
     clone = clone.subtract(months, 'month').toDate();
-    const m = clone.getMonth() + 1;
-    const y = clone.getFullYear();
-    startDate = new Date(`${y}-${m}-01`);
+
+    startDate = new Date(clone);
     const endDate = new Date();
 
     const cmms = await Promise.all(resultFromProcess.map(inventory => {
@@ -755,9 +754,8 @@ async function getInventoryQuantityAndConsumption(params, monthAverageConsumptio
     let clone = moment(startDate);
     const months = (nbrMonth - 1 > -1 && nbrMonth) ? nbrMonth - 1 : 0;
     clone = clone.subtract(months, 'month').toDate();
-    const m = clone.getMonth() + 1;
-    const y = clone.getFullYear();
-    startDate = new Date(`${y}-${m}-01`);
+
+    startDate = new Date(clone);
     const endDate = new Date();
 
     const cmms = await Promise.all(filteredRows.map(inventory => {
