@@ -38,7 +38,7 @@
     "hooks": {
       "before:init": "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
       "after:bump": [
-        "rm bin",
+        "rm -rf bin",
         "cross-env NODE_ENV=production yarn build",
         "rm bin/.env",
         "cross-env tar -czvf ${version}.tar.gz bin"
