@@ -79,7 +79,7 @@ async function login(username, password, projectId) {
     WHERE user.username = ? AND user.password = MYSQL5_PASSWORD(?)
   `;
 
-  const [connect, user, permission] = await q.all([
+  const [connect, user, permission] = await Promise.all([
     db.exec(sql, [username, password, projectId]),
     db.exec(sqlUser, [username, password]),
     db.exec(sqlPermission, [username, password]),
@@ -103,8 +103,10 @@ async function login(username, password, projectId) {
     throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
   }
 
-  const session = await loadSessionInformation(connect[0]);
-  return session;
+  // user is authorised at this point, touch their login information
+  await db.exec('UPDATE user SET last_login = NOW() WHERE user.id = ?', user[0].id);
+
+  return loadSessionInformation(connect[0]);
 }
 
 /**
