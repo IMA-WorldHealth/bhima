@@ -129,8 +129,9 @@ function StockInventoryAdjustmentController(
   function startup() {
     vm.movement = {
       date : new Date(),
-      entity : {},
     };
+
+    setupStock();
   }
 
   // ============================ Inventories ==========================
@@ -217,7 +218,7 @@ function StockInventoryAdjustmentController(
         ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
 
         startup();
-        setupStock();
+        return loadInventories(vm.depot);
       })
       .catch(Notify.handleError);
   }
