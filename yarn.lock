@@ -5309,10 +5309,10 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.10.0.tgz#3b9f6be67785c5a56a6ff68f193bdd1c47430927"
-  integrity sha512-9kCTegRIF3dHxbKewSWDRBgHqP392lOZnazUKN4KYjxFAuY/mK+dN0XML12++5luHthBG2C/bM/IjYONvpzMSQ==
+json-2-csv@^3.10.1:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.10.1.tgz#ab9433278b3b13a060650610abfaf1ecb6818df4"
+  integrity sha512-umwsH3/wVcgJ92j3sN9a3u/5uT66IB3agP0iKUvEkP/AtP09QqMy1qy044ftjlPXgxYKc4/YMHrp4fJ6y0PAdQ==
   dependencies:
     deeks "2.3.0"
     doc-path "2.2.0"
