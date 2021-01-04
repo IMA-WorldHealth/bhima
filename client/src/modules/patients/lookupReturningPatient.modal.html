@@ -11,7 +11,6 @@
     <uib-tabset>
 
       <uib-tab index="0" select="ModalCtrl.selectTab(0)"
-        data-default-filter-tab
         heading="{{ 'FORM.LABELS.LOOKUP_BY_NAME' | translate}}">
         <div class="tab-body">
           <div ng-if="!ModalCtrl.isPatientFound">
@@ -187,7 +186,6 @@
       </uib-tab>
 
       <uib-tab index="1" select="ModalCtrl.selectTab(1)"
-        data-custom-filter-tab
         heading="{{ 'FORM.LABELS.LOOKUP_BY_ID' | translate}}">
         <div class="tab-body">
 
