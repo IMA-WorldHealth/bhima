@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.17.2",
+  "version": "1.17.3",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -38,7 +38,7 @@
     "hooks": {
       "before:init": "node utilities/translation/tfcomp.js client/src/i18n/en client/src/i18n/fr",
       "after:bump": [
-        "rm bin",
+        "rm -rf bin",
         "cross-env NODE_ENV=production yarn build",
         "rm bin/.env",
         "cross-env tar -czvf ${version}.tar.gz bin"
@@ -107,13 +107,13 @@
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
     "font-awesome": "^4.7.0",
-    "helmet": "^4.1.1",
+    "helmet": "^4.3.1",
     "inline-source": "^7.1.0",
     "ioredis": "^4.19.4",
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
-    "json-2-csv": "^3.10.0",
+    "json-2-csv": "^3.10.1",
     "lodash": "^4.17.20",
     "mailgun-js": "^0.22.0",
     "moment": "^2.29.1",
@@ -146,7 +146,7 @@
     "chai-spies-next": "^0.9.3",
     "cssnano": "^4.1.10",
     "del": "^6.0.0",
-    "eslint": "^7.16.0",
+    "eslint": "^7.17.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "gulp": "^4.0.0",
@@ -175,7 +175,7 @@
     "qs": "^6.9.4",
     "release-it": "^14.2.2",
     "sinon": "^9.2.2",
-    "standard-version": "^9.0.0",
+    "standard-version": "^9.1.0",
     "typescript": "^4.1.3"
   },
   "homepage": "https://docs.bhi.ma",
