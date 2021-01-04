@@ -27,7 +27,7 @@ function MergePatientsModalController(Patients, $state, Notify, Instance, parame
   function submit() {
     if (vm.allAreEmployees) { return null; }
 
-    // Quick fix prevent fatar error : 2020-07-07 By: lomamech
+    // Quick fix prevent fatal error : 2020-07-07 By: lomamech
     if (!vm.selected) {
       return Notify.danger('FORM.WARNINGS.EMPTY_SELECTION');
     }

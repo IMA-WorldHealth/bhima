@@ -9,6 +9,7 @@
  * and define all patient API functions.
  *
  * @requires lodash
+ * @requires jaro-winkler
  * @requires lib/db
  * @requires lib/util
  * @requires lib/errors/BadRequest
@@ -25,6 +26,9 @@
  */
 
 const _ = require('lodash');
+const debug = require('debug')('bhima:patient:find');
+
+const distance = require('jaro-winkler');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -40,6 +44,7 @@ const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
 const merge = require('./merge');
+
 
 // bind submodules
 exports.groups = groups;
@@ -423,6 +428,286 @@ function searchByName(req, res, next) {
     .done();
 }
 
+function findMatchingPatients(matchNameParts, patientNames) {
+  // matchNameParts is an array of a proposed patient name parts (lower case, sorted)
+  // patientNames is an associative array of
+  //     patient_id => [patientNameParts]
+
+  const matchCutoff = 0.92; // Based on experiments with jaro-winkler function
+
+  const matches = []; // Array of matches:  [[pid, matchNameParts, distSum], etc]
+
+  _.forEach(patientNames, (patientNameParts, pid) => {
+    if (patientNameParts.length === 0) {
+      // Ignore patient records with empty names
+      // (These need to be purged or fixed!)
+      return [];
+    }
+
+    if (matchNameParts.length === patientNameParts.length) {
+      // This is the easy case, do one-to-one comparisons
+      let distSum = 0;
+      const matchCriterion = matchCutoff * matchNameParts.length;
+      matchNameParts.sort().forEach((part, i) => {
+        distSum += distance(part, patientNameParts[i]);
+      });
+      if (distSum > matchCriterion) {
+        matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
+      }
+    } else {
+      // Not equal length
+      // Compare each name part with all the patient name parts to find the best match
+      // NOTE: This branch could be improved by doing enumerated search pairs based on
+      //       permutations and taking advantage of the sorted order of both search and
+      //       patient name  parts.
+
+      const matchCriterion = matchCutoff * matchNameParts.length;
+      const alreadyTried = new Set();
+      let distSum = 0;
+      matchNameParts.forEach((mname) => {
+        let bestDist = 0;
+        let bestName = null;
+        patientNameParts.forEach((pname) => {
+          if (alreadyTried.has(pname)) {
+            // If we have already tried a match with this pname, move on
+            // (Trying to prevent problems with repeated names skewing results)
+            return;
+          }
+          const newDist = distance(mname, pname);
+          if (newDist > bestDist) {
+            bestDist = newDist;
+            bestName = pname;
+          }
+        });
+        alreadyTried.add(bestName);
+        distSum += bestDist;
+      });
+
+      if (distSum > matchCriterion) {
+        matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
+      }
+    }
+    return [];
+  });
+
+  // Return the sorted matches (best first)
+  return matches.sort((a, b) => { return b[2] - a[2]; });
+}
+
+/*
+ * @method findBestNameMatches
+ *
+ * @description
+ * This method implements a patient search based on name and optionally
+ * gender and date of birth.  Note that parts of names that are a single
+ * letter are ignored. It tries to do 'fuzzy' search and can find names
+ * that have their name parts in different order and is tolerant of
+ * minor misspellings.
+ *
+ * This function supports these query parameters:
+ *    - search_name      string [required]
+ *    - sex              string [optional] ('F' / 'M')
+ *    - dob              string [optional] (see note below)
+ *    - dob_unknown_date string [optional] ('true'/'false')
+ *
+ * Note that dob can be an SQL date format string, a four-digit string
+ * for the year (if dob_unknown_date is true), or a 4-digit number for
+ * the year.
+ *
+ * The goal is to make the approximate name search work as robustly
+ * as possible.
+ *
+ * The first step is to find potential patient name matches:
+ *   - The search_name and potential matching patient names are split
+ *     into name parts (eg, first  name, last name, etc) and
+ *     alphabetized.
+ *   - Then the names are compared in the alphabetical order and the
+ *     'distance' (0-1) between them is determined using the
+ *     jaro-winkler function.  This function gives exact matches
+ *     if the names are the same (ignoring capitalization) and is
+ *     tolerant of the order of the name parts.  Note that a
+ *     variation of this approach is used if there are different
+ *     numbers of name parts for the search and patient names.
+ *   - The total score for the name is based sum of the distances
+ *     between each pair of name parts divided by the number of parts
+ *     in the search name.   The result is always between 0 and 1.
+ *   - Matches that are off single or double misspellings generally
+ *     score very close to 1.
+ *   - The function findMatchingPatients() does the name part
+ *     comparisons to construct a list of potential name matches,
+ *     along with the score of each match.  Matches with scores above
+ *     a cut off value are kept as a potential match is 'matchCutoff'
+ *     (which is defined above in findMatchingPatients()).
+ *
+ * Once the potential name matches are determined, then the optional
+ * gender and date of birth fields come into play.
+ *   - If the 'sex' field is present, it is matched and the score is
+ *     augmented by 50% (see sexWeight) below.
+ *   - If the 'dob' field is present, it is also matched and the score
+ *     is augmented by a maximum of 30% (see dobWeight below).  DOB
+ *     matches that are exact count the maximum. Matches that are
+ *     approximate are discounted the further off they are.  Currently
+ *     dob the match needs to be within a few year for a reasonable
+ *     increment.  There is extra logic below that deals with year
+ *     year matches vs exact date matches.
+ *   - In any case, the total score for each potential match is
+ *     scaled to be between 0 and 1.
+ *   - Specifying the sex and DOB can help to improve the ranking
+ *     of potential matches.
+ *
+ * @returns array of potential matching patient objects.
+ *          Each row has a additional 'matchScore' value that
+ *          indicates the quality of the match (0-1).
+ */
+function findBestNameMatches(req, res, next) {
+
+  const sexWeight = 0.5;
+  const dobWeight = 0.3;
+
+  const options = req.query;
+
+  // Canonize the parts of the specified approximate name
+  // Split by spaces, lowercase, sort alphabetically, and eliminate any single-letter names
+  const searchNameParts = options.search_name.toLowerCase()
+    .split(/[ ,]/).map(nm => nm.replace('.', ''))
+    .filter(str => str.trim().length > 1)
+    .sort();
+
+  // Get the complete list of patient names, sex, dob, and patient uuids
+  const sql = `
+    SELECT
+      HEX(uuid) as pid, display_name as pname, sex, dob, dob_unknown_date
+    FROM patient;`;
+
+  let matches = [];
+
+  db.exec(sql, [])
+    .then((patients) => {
+
+      // Construct an dictionary of patient name parts
+      const patientNames = {};
+      patients.forEach((p) => {
+        patientNames[p.pid] = p.pname.toLowerCase()
+          .split(/[ ,]/).map(nm => nm.replace('.', ''))
+          .filter(str => str.trim().length > 1)
+          .sort();
+      });
+
+      // Find patients with matching names (or nearly matching names)
+      const nameMatches = findMatchingPatients(searchNameParts, patientNames);
+
+      // Determine the maximum name match score (for later scaling)
+      let maxScore = 1.0;
+      if ('sex' in options) {
+        maxScore += sexWeight;
+      }
+      if ('dob' in options) {
+        maxScore += dobWeight;
+      }
+
+      nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
+        debug("Name check: ", searchNameParts, patientNames[pid], nameScore, nameMatches.length);
+        let score = nameScore;
+
+        if ('sex' in options || 'dob' in options) {
+          // Find the corresponding patient info
+          const patientInfo = {};
+          patientInfo[pid] = patients.find(row => row.pid === pid);
+
+          // Check the gender
+          if ('sex' in options) {
+            if (options.sex === patientInfo[pid].sex) {
+              // Full delta score for gender match, 0 if not
+              score += sexWeight * 1.0;
+            }
+          }
+
+          // Check the dob
+          if ('dob' in options) {
+            let dob = new Date(options.dob);
+            if (options.dob.length === 4) {
+              // Arbitrarily choose the middle of the year to
+              // avoid problems with the time zone offsets causing
+              // the wrong year to be used later.
+              dob = new Date(`${options.dob}-06-01`);
+            }
+            const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
+            const patientDob = new Date(patientInfo[pid].dob);
+            const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
+            debug('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
+
+            if (dobYearOnly || patientDobYearOnly) {
+              // If either specified only with the year
+              // NOTE: Treating either as year-only the same way
+              const dobYear = dob.getFullYear();
+              const patientDobYear = patientDob.getFullYear();
+              debug("DOBS years: ", dobYear, patientDobYear);
+              if (dobYear === patientDobYear) {
+                // Full score if both years match and both are year-only
+                score += dobWeight * 1.0;
+                debug("Year match", dobYear, score);
+              } else {
+                // Downgrade the score by the number of years off
+                const maxYearsDiff = 5;
+                const yearsDiff = Math.abs(dobYear - patientDobYear);
+                if (yearsDiff <= maxYearsDiff) {
+                  // Discount year near matches proportionately
+                  score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
+                  debug("Near year match", yearsDiff, score);
+                }
+                debug("No year match!", score);
+              }
+            } else {
+              // We have exact dates for both
+              const daysDiff = Math.round(Math.abs(dob - patientDob) / (1000 * 24 * 3600));
+              debug("DaysDiff: ",daysDiff);
+              if (daysDiff === 0) {
+                // Count the same day as best dob match
+                score += dobWeight * 1.0;
+                debug("Day match: ", score)
+              } else {
+                // Discount appropriately
+                const maxDaysDiff = 730; // 2 years
+                if (daysDiff <= maxDaysDiff) {
+                  score += dobWeight * 0.8 * (1.0 - daysDiff / maxDaysDiff);
+                  debug("Near day match: ", daysDiff, score);
+                }
+              }
+            }
+          }
+        }
+        debug("score, maxScore: ", score, maxScore);
+        matches.push([pid, score / maxScore]);
+      });
+
+      // If there are no matches, return now
+      if (matches.length === 0) {
+        return res.status(200).json([]);
+      }
+
+      // Resort the matches
+      matches = matches.sort((a, b) => { return b[1] - a[1]; });
+
+      // debug("NameMatches: ");
+      // nameMatches.forEach(([pid, sname, score]) => {
+      //   debug(pid, sname, patientNames[pid], score);
+      // });
+
+      // Now get the info for these patients
+      return find({ uuids : matches.map(x => x[0]) });
+    })
+    .then((data) => {
+      // Insert the match score into each record
+      data.forEach((row) => {
+        const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
+        row.matchScore = mscore;
+      });
+      return res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
+}
+
 /**
  * @method find
  *
@@ -434,7 +719,8 @@ function searchByName(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-  // ensure epected options are parsed appropriately as binary
+
+  // ensure expected options are parsed appropriately as binary
   db.convert(options, [
     'patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid', 'uuids',
   ]);
@@ -504,7 +790,7 @@ function patientEntityQuery(detailed) {
   const sql = `
     SELECT
       BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
-      p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
+      p.sex, p.dob, p.dob_unknown_date, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
       originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
       originProvince.name as originProvinceName ${detailedColumns}
@@ -529,6 +815,11 @@ function patientEntityQuery(detailed) {
  * A multi-parameter function that uses find() to query the database for
  * patient records.  It is the HTTP interface to find().
  *
+ * NOTE:  If 'search_name' is given in the query, the approximate search in
+ *        findBestNameMatches() is used instead of the normal find().
+ *        See the documentation for findBestNameMatches() above for more
+ *        information on name approximate search capability.
+ *
  * @example
  * // GET /patient/?name={string}&detail={boolean}&limit={number}
  * // GET /patient/?reference={string}&detail={boolean}&limit={number}
@@ -536,6 +827,12 @@ function patientEntityQuery(detailed) {
  * // GET /patient
  */
 function read(req, res, next) {
+
+  if ('search_name' in req.query) {
+    // Handle the best match name queries separately
+    return findBestNameMatches(req, res, next);
+  }
+
   find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
