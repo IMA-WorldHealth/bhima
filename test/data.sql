@@ -365,6 +365,9 @@ CALL CreateFiscalYear(1, @fiscalYear2018, @superUser, 'Fiscal Year 2019', 12, DA
 SET @fiscalYear2020 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2019, @superUser, 'Fiscal Year 2020', 12, DATE('2020-01-01'), DATE('2020-12-31'), 'Notes for 2020', @fiscalYear2020);
 
+SET @fiscalYear2021 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2020, @superUser, 'Fiscal Year 2021', 12, DATE('2021-01-01'), DATE('2021-12-31'), 'Notes for 2021', @fiscalYear2021);
+
 -- give test permission to all projects
 INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 
