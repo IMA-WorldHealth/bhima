@@ -555,6 +555,12 @@ function findMatchingPatients(matchNameParts, patientNames) {
  *   - Specifying the sex and DOB can help to improve the ranking
  *     of potential matches.
  *
+ * Finally, an additional score increment is added based on how many
+ * name parts are involved.  If the number of name parts are the same
+ * in both the query and the patient name matches, the name matching
+ * score is unaffected.  If total score is reduced based on different
+ * numbers of query and patient name parts.
+ *
  * @returns array of potential matching patient objects.
  *          Each row has a additional 'matchScore' value that
  *          indicates the quality of the match (0-1).
@@ -563,6 +569,7 @@ function findBestNameMatches(req, res, next) {
 
   const sexWeight = 0.5;
   const dobWeight = 0.3;
+  const lenWeight = 0.1;
 
   const options = req.query;
 
@@ -597,7 +604,7 @@ function findBestNameMatches(req, res, next) {
       const nameMatches = findMatchingPatients(searchNameParts, patientNames);
 
       // Determine the maximum name match score (for later scaling)
-      let maxScore = 1.0;
+      let maxScore = 1.0 + lenWeight;
       if ('sex' in options) {
         maxScore += sexWeight;
       }
@@ -677,7 +684,20 @@ function findBestNameMatches(req, res, next) {
             }
           }
         }
-        debug('-->score, maxScore: ', score, maxScore);
+
+        // Handle the name length increment
+        const pnameLen = patientNames[pid].length;
+        if (searchNameParts.length === pnameLen) {
+          score += lenWeight * 1.0;
+        } else {
+          const lenDiff = Math.abs(searchNameParts.length - pnameLen);
+          // NOTE: We want smaller differences in the number of name parts
+          //       between the query and the patient names to produce
+          //       higher scores.
+          score += lenWeight * (1.0 - lenDiff / Math.max(searchNameParts.length, pnameLen));
+        }
+
+        debug('-->totalScore, (score / maxScore): ', score / maxScore, '(', score, '/', maxScore, ')');
         matches.push([pid, score / maxScore]);
       });
 
