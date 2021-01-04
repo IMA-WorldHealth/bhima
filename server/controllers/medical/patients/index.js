@@ -606,7 +606,8 @@ function findBestNameMatches(req, res, next) {
       }
 
       nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
-        debug("Name check: ", searchNameParts, patientNames[pid], nameScore, nameMatches.length);
+        debug('Name check (search,patient,nameScore,len): ',
+          searchNameParts, patientNames[pid], nameScore, nameMatches.length);
         let score = nameScore;
 
         if ('sex' in options || 'dob' in options) {
@@ -634,18 +635,18 @@ function findBestNameMatches(req, res, next) {
             const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
             const patientDob = new Date(patientInfo[pid].dob);
             const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
-            debug('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
+            debug(' - DOBS (query,qYear,patient,pYear): ', dob, dobYearOnly, patientDob, patientDobYearOnly);
 
             if (dobYearOnly || patientDobYearOnly) {
               // If either specified only with the year
               // NOTE: Treating either as year-only the same way
               const dobYear = dob.getFullYear();
               const patientDobYear = patientDob.getFullYear();
-              debug("DOBS years: ", dobYear, patientDobYear);
+              debug(' - DOBS years (query,patient): ', dobYear, patientDobYear);
               if (dobYear === patientDobYear) {
                 // Full score if both years match and both are year-only
                 score += dobWeight * 1.0;
-                debug("Year match", dobYear, score);
+                debug(' - Year match (year,score): ', dobYear, score);
               } else {
                 // Downgrade the score by the number of years off
                 const maxYearsDiff = 5;
@@ -653,30 +654,30 @@ function findBestNameMatches(req, res, next) {
                 if (yearsDiff <= maxYearsDiff) {
                   // Discount year near matches proportionately
                   score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
-                  debug("Near year match", yearsDiff, score);
+                  debug(' - Near year match (diff,score): ', yearsDiff, score);
                 }
-                debug("No year match!", score);
+                debug(' - No year match!', score);
               }
             } else {
               // We have exact dates for both
               const daysDiff = Math.round(Math.abs(dob - patientDob) / (1000 * 24 * 3600));
-              debug("DaysDiff: ",daysDiff);
+              debug(' - DaysDiff: ',daysDiff);
               if (daysDiff === 0) {
                 // Count the same day as best dob match
                 score += dobWeight * 1.0;
-                debug("Day match: ", score)
+                debug(' - Day match score: ', score)
               } else {
                 // Discount appropriately
                 const maxDaysDiff = 730; // 2 years
                 if (daysDiff <= maxDaysDiff) {
                   score += dobWeight * 0.8 * (1.0 - daysDiff / maxDaysDiff);
-                  debug("Near day match: ", daysDiff, score);
+                  debug(' - Near day match (diff,score): ', daysDiff, score);
                 }
               }
             }
           }
         }
-        debug("score, maxScore: ", score, maxScore);
+        debug('-->score, maxScore: ', score, maxScore);
         matches.push([pid, score / maxScore]);
       });
 
