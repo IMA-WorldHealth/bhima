@@ -179,6 +179,31 @@ describe('(/patients) Find matching patients', () => {
   });
 
   // -------------------------------------------------------------------------------------
+  // Check searches with different numbers of name parts
+  it('Get matches for single name "John"', () => {
+    const testName = 'John Smith';
+    // Note that the best match is 'John Smith' since there is an exact name
+    // part match and the difference in number of name parts between the query (1)
+    // and the patient (2) is less than for any other exact name part match
+    // (eg, for "John Jones Mitchum").  The match for 'Jon Smith' is worse because
+    // there is no exact name part match.
+    const conditions = { search_name : 'John' };
+    return agent.get('/patients')
+      .query(conditions)
+      .then((res) => {
+        helpers.api.listed(res, 5);
+        const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
+        expect(matches[0].display_name).to.be.equals(testName); // John Smith
+        expect(matches[0].matchScore).to.be.gt(0.95);
+        expect(matches[1].display_name).to.be.not.equals(testName); // John Jones Mitchum
+        expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
+        expect(matches[matches.length - 1].display_name).to.be.not.equals(testName); // Jon Smith
+        expect(matches[matches.length - 1].matchScore).to.be.lt(matches[1].matchScore);
+      })
+      .catch(helpers.handler);
+  });
+
+  // -------------------------------------------------------------------------------------
   // Check DOB searches
   it('Get matches for name "John Jones Mitchum" with DOB / Year', () => {
     const testName = 'John Janes Mitchum';
@@ -192,10 +217,11 @@ describe('(/patients) Find matching patients', () => {
         helpers.api.listed(res, 2);
         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
         expect(matches[0].display_name).to.be.equals(testName);
-        expect(matches[0].matchScore).to.be.equals(1);
+        expect(matches[0].matchScore).to.be.gt(0.95);
+        // Notice discounted score since num parts is different
         expect(matches[1].display_name).to.be.not.equals(testName);
-        expect(matches[1].matchScore).to.be.lt(0.95);
-        // Notice discounted score by being one year off
+        expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
+        // Notice discounted score by being one year off and different num parts
       })
       .catch(helpers.handler);
   });
@@ -208,10 +234,11 @@ describe('(/patients) Find matching patients', () => {
         helpers.api.listed(res, 2);
         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
         expect(matches[0].display_name).to.be.equals(testName);
-        expect(matches[0].matchScore).to.be.equals(1);
+        expect(matches[0].matchScore).to.be.gt(0.95);
+        // Notice discounted score since num parts is different
         expect(matches[1].display_name).to.be.not.equals(testName);
-        expect(matches[1].matchScore).to.be.lt(0.95);
-        // Notice discounted score by being about 15 months off
+        expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
+        // Notice discounted score by being about 15 months off and different number of parts
       })
       .catch(helpers.handler);
   });
