@@ -26,6 +26,7 @@
  */
 
 const _ = require('lodash');
+const debug = require('debug')('bhima:patient:find');
 
 const distance = require('jaro-winkler');
 
@@ -473,7 +474,6 @@ function findMatchingPatients(matchNameParts, patientNames) {
             return;
           }
           const newDist = distance(mname, pname);
-          // console.log("CMP: ", mname, pname, newDist);
           if (newDist > bestDist) {
             bestDist = newDist;
             bestName = pname;
@@ -483,7 +483,6 @@ function findMatchingPatients(matchNameParts, patientNames) {
         distSum += bestDist;
       });
 
-      // console.log("---> ", matchNameParts, patientNames[pid], distSum, matchCriterion);
       if (distSum > matchCriterion) {
         matches.push([pid, matchNameParts, distSum / matchNameParts.length]);
       }
@@ -566,7 +565,6 @@ function findBestNameMatches(req, res, next) {
   const dobWeight = 0.3;
 
   const options = req.query;
-  // console.log('Params: ', options);
 
   // Canonize the parts of the specified approximate name
   // Split by spaces, lowercase, sort alphabetically, and eliminate any single-letter names
@@ -608,7 +606,7 @@ function findBestNameMatches(req, res, next) {
       }
 
       nameMatches.forEach(([pid, /* nameParts */, nameScore]) => {
-        // console.log("CHECK: ", searchNameParts, patientNames[pid], nameScore, nameMatches.length);
+        debug("Name check: ", searchNameParts, patientNames[pid], nameScore, nameMatches.length);
         let score = nameScore;
 
         if ('sex' in options || 'dob' in options) {
@@ -636,18 +634,18 @@ function findBestNameMatches(req, res, next) {
             const dobYearOnly = options.dob_unknown_date ? options.dob_unknown_date === 'true' : false;
             const patientDob = new Date(patientInfo[pid].dob);
             const patientDobYearOnly = patientInfo[pid].dob_unknown_date === 1;
-            // console.log('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
+            debug('DOBS: ', dob, dobYearOnly, patientDob, patientDobYearOnly);
 
             if (dobYearOnly || patientDobYearOnly) {
               // If either specified only with the year
               // NOTE: Treating either as year-only the same way
               const dobYear = dob.getFullYear();
               const patientDobYear = patientDob.getFullYear();
-              // console.log("DOBS years: ", dobYear, patientDobYear);
+              debug("DOBS years: ", dobYear, patientDobYear);
               if (dobYear === patientDobYear) {
                 // Full score if both years match and both are year-only
                 score += dobWeight * 1.0;
-                // console.log("Year match", dobYear, score);
+                debug("Year match", dobYear, score);
               } else {
                 // Downgrade the score by the number of years off
                 const maxYearsDiff = 5;
@@ -655,30 +653,30 @@ function findBestNameMatches(req, res, next) {
                 if (yearsDiff <= maxYearsDiff) {
                   // Discount year near matches proportionately
                   score += dobWeight * 0.8 * (1.0 - yearsDiff / maxYearsDiff);
-                  // console.log("Near year match", yearsDiff, score);
+                  debug("Near year match", yearsDiff, score);
                 }
-                // console.log("No year match!", score);
+                debug("No year match!", score);
               }
             } else {
               // We have exact dates for both
               const daysDiff = Math.round(Math.abs(dob - patientDob) / (1000 * 24 * 3600));
-              // console.log("DaysDiff: ",daysDiff);
+              debug("DaysDiff: ",daysDiff);
               if (daysDiff === 0) {
                 // Count the same day as best dob match
                 score += dobWeight * 1.0;
-                // console.log("Day match: ", score)
+                debug("Day match: ", score)
               } else {
                 // Discount appropriately
                 const maxDaysDiff = 730; // 2 years
                 if (daysDiff <= maxDaysDiff) {
                   score += dobWeight * 0.8 * (1.0 - daysDiff / maxDaysDiff);
-                  // console.log("Near day match: ", daysDiff, score);
+                  debug("Near day match: ", daysDiff, score);
                 }
               }
             }
           }
         }
-        // console.log("Score: ", score, maxScore);
+        debug("score, maxScore: ", score, maxScore);
         matches.push([pid, score / maxScore]);
       });
 
@@ -690,9 +688,9 @@ function findBestNameMatches(req, res, next) {
       // Resort the matches
       matches = matches.sort((a, b) => { return b[1] - a[1]; });
 
-      // console.log("NameMatches: ");
+      // debug("NameMatches: ");
       // nameMatches.forEach(([pid, sname, score]) => {
-      //   console.log(pid, sname, patientNames[pid], score);
+      //   debug(pid, sname, patientNames[pid], score);
       // });
 
       // Now get the info for these patients
