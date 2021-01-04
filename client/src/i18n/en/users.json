@@ -16,6 +16,7 @@
     "TITLE" : "Users and Permissions Management",
     "UPDATED" : "Updated",
     "UPDATE" : "Update",
+    "LAST_LOGIN" : "Last Login",
     "UPDATING_USER" : "Edit User",
     "VIEW_USERS" : "View Users"
   }

@@ -16,6 +16,7 @@
     "TITLE" : "Gestion des utilisateurs et des autorisations",
     "UPDATED" : "Modifie avec succes",
     "UPDATE" : "Éditer",
+    "LAST_LOGIN" : "Dernière connexion",
     "UPDATING_USER" : "Mise à jour utilisateur",
     "VIEW_USERS" : "View Users"
   }

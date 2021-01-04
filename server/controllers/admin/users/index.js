@@ -96,7 +96,7 @@ async function list(req, res, next) {
 
   try {
     const sql = `
-      SELECT user.id, user.display_name, user.username, user.deactivated,
+      SELECT user.id, user.display_name, user.username, user.deactivated, user.last_login as lastLogin,
         GROUP_CONCAT(DISTINCT role.label ORDER BY role.label DESC SEPARATOR ', ') AS roles,
         GROUP_CONCAT(DISTINCT depot.text ORDER BY depot.text DESC SEPARATOR ', ') AS depots,
         GROUP_CONCAT(DISTINCT cb.label ORDER BY cb.label DESC SEPARATOR ', ') AS cashboxes

@@ -1735,16 +1735,17 @@ CREATE TABLE `unit` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `user`;
-
 CREATE TABLE `user` (
   `id`            SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username`      VARCHAR(80) NOT NULL,
   `password`      VARCHAR(100) NOT NULL,
   `display_name`  TEXT NOT NULL,
-  `email`         VARCHAR(100) DEFAULT NULL,
+  `email`         VARCHAR(99) DEFAULT NULL,
   `active`        TINYINT(4) NOT NULL DEFAULT 0,
   `deactivated`   TINYINT(1) NOT NULL DEFAULT 0,
-  `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `last_login`    TIMESTAMP NULL,
+  `created_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
