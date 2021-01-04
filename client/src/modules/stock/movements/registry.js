@@ -20,7 +20,7 @@ function StockMovementsController(
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
-  const stockMovementsFilters = Stock.filter.inlineMovement;
+  const stockMovementsFilters = Stock.filter.movements;
 
   // grid columns
   const columns = getGridColumns();

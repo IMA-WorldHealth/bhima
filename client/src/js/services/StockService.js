@@ -2,10 +2,10 @@ angular.module('bhima.services')
   .service('StockService', StockService);
 
 StockService.$inject = [
-  'PrototypeApiService', 'StockFilterer', 'HttpCacheService',
+  'PrototypeApiService', 'StockFilterer', 'HttpCacheService', 'util', 'PeriodService',
 ];
 
-function StockService(Api, StockFilterer, HttpCache) {
+function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // API for stock lots
   const stocks = new Api('/stock/lots');
 
@@ -85,8 +85,7 @@ function StockService(Api, StockFilterer, HttpCache) {
   const StockLotFilters = new StockFilterer('stock-lot-filters');
   const StockAssignFilters = new StockFilterer('stock-assign-filters');
   const StockRequisitionFilters = new StockFilterer('stock-requisition-filters');
-  const StockMovementFilters = new StockFilterer('stock-movement-filters');
-  const StockInlineMovementFilters = new StockFilterer('stock-inline-movement-filters');
+  const StockMovementFilters = new StockFilterer('stock-inline-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
   const StockDepotFilters = new StockFilterer('stock-depot-filters');
 
@@ -94,12 +93,28 @@ function StockService(Api, StockFilterer, HttpCache) {
   const stockFilter = {
     lot : StockLotFilters,
     stockAssign : StockAssignFilters,
-    movement : StockMovementFilters,
-    inlineMovement : StockInlineMovementFilters,
+    movements : StockMovementFilters,
     inventory : StockInventoryFilters,
     depot : StockDepotFilters,
     requisition : StockRequisitionFilters,
   };
+
+  function assignDefaultPeriodFilters(filterService) {
+    // get the keys of filters already assigned - on initial load this will be empty
+    const assignedKeys = Object.keys(filterService._filters.formatHTTP());
+
+    // assign default period filter
+    const periodDefined = util.arrayIncludes(assignedKeys, [
+      'period', 'custom_period_start', 'custom_period_end',
+    ]);
+
+    if (!periodDefined) {
+      filterService._filters.assignFilters(Periods.defaultFilters());
+    }
+  }
+
+  // assign default period filter to inlineStockMovements
+  assignDefaultPeriodFilters(stockFilter.movements);
 
   function assignNoEmptyLotsDefaultFilter(service) {
     // add in the default key for the stock lots filter
