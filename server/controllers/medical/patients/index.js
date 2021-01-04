@@ -661,11 +661,11 @@ function findBestNameMatches(req, res, next) {
             } else {
               // We have exact dates for both
               const daysDiff = Math.round(Math.abs(dob - patientDob) / (1000 * 24 * 3600));
-              debug(' - DaysDiff: ',daysDiff);
+              debug(' - DaysDiff: ', daysDiff);
               if (daysDiff === 0) {
                 // Count the same day as best dob match
                 score += dobWeight * 1.0;
-                debug(' - Day match score: ', score)
+                debug(' - Day match score: ', score);
               } else {
                 // Discount appropriately
                 const maxDaysDiff = 730; // 2 years
