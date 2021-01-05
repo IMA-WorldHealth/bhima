@@ -35,17 +35,24 @@ const { uuid } = require('./util');
 const BadRequest = require('./errors/BadRequest');
 
 // configure the uploads directory based on global process variables
-const defaultDir = 'uploads'; // NOTE: this must be a relative path
-const dir = process.env.UPLOAD_DIR || defaultDir; // relative path
-const fsdir = path.join(process.cwd(), dir); // global path
+const defaultDir = 'uploads';
+const dir = process.env.UPLOAD_DIR || defaultDir;
+// NOTE: 'dir' must be a relative path (for http requests to work)
+if (path.isAbsolute(dir) || dir.startsWith('..')) {
+  throw new Error(`UPLOAD_DIR (${dir}) must be a relative path within the BHIMA software installation!`);
+}
+const rootDir = path.resolve(`__dirname/../..`);
+const fsdir = path.join(rootDir, dir); // global path
+debug('UPLOAD_DIR: ', dir);
+debug('UPLOAD_DIR Abs dir: ', fsdir);
 
 if (!process.env.UPLOAD_DIR) {
   debug(
-    `The environmental variable $UPLOAD_DIR is undefined.  The application will use ${fsdir} as the upload directory.`,
+    `The environmental variable $UPLOAD_DIR is undefined.  The application will use ${dir} as the upload directory.`,
   );
 }
 
-// attach the upload directory path for outside consumption
+// attach the relative upload directory path for outside consumption
 exports.directory = dir;
 
 // export the uploader
@@ -72,14 +79,14 @@ function Uploader(prefix, fields) {
   // configure the storage space using multer's diskStorage.  This will allow
   const storage = multer.diskStorage({
     destination : async (req, file, cb) => {
-      // note: need absolute path here for mkdirp
-      const folder = path.join(process.cwd(), directory);
-      debug(`upload dirctory ${folder} does not exist.`);
+      const folder = path.join(dir, directory);
       debug(`creating upload directory ${folder}.`);
 
       try {
-        await mkdirp(folder);
-        cb(null, folder);
+        // NOTE: need absolute path here for mkdirp
+        const fullFolderPath = path.join(rootDir, directory);
+        await mkdirp(fullFolderPath);
+        cb(null, directory);
       } catch (err) {
         cb(err);
       }
