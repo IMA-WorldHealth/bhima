@@ -41,7 +41,7 @@ const dir = process.env.UPLOAD_DIR || defaultDir;
 if (path.isAbsolute(dir) || dir.startsWith('..')) {
   throw new Error(`UPLOAD_DIR (${dir}) must be a relative path within the BHIMA software installation!`);
 }
-const rootDir = path.resolve(`__dirname/../..`);
+const rootDir = path.resolve(`${__dirname}/../..`);
 const fsdir = path.join(rootDir, dir); // global path
 debug('UPLOAD_DIR: ', dir);
 debug('UPLOAD_DIR Abs dir: ', fsdir);
