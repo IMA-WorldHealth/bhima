@@ -112,7 +112,7 @@
     "ioredis": "^4.19.4",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.3",
-    "json-2-csv": "^3.10.1",
+    "json-2-csv": "^3.10.2",
     "lodash": "^4.17.20",
     "mailgun-js": "^0.22.0",
     "moment": "^2.29.1",
