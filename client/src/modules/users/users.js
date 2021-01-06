@@ -65,6 +65,14 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
         cellClass : muteDisabledCells,
       },
       {
+        field : 'lastLogin',
+        type : 'date',
+        displayName : 'USERS.LAST_LOGIN',
+        cellFilter : 'date:"dd/MM/yyyy HH:mm:ss"',
+        headerCellFilter : 'translate',
+        cellClass : muteDisabledCells,
+      },
+      {
         field : 'action',
         displayName : '',
         cellTemplate : '/modules/users/templates/grid/action.cell.html',
