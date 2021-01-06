@@ -79,12 +79,11 @@ function Uploader(prefix, fields) {
   // configure the storage space using multer's diskStorage.  This will allow
   const storage = multer.diskStorage({
     destination : async (req, file, cb) => {
-      const folder = path.join(dir, directory);
-      debug(`creating upload directory ${folder}.`);
 
       try {
         // NOTE: need absolute path here for mkdirp
-        const fullFolderPath = path.join(rootDir, directory);
+        const fullFolderPath = path.join(fsdir, directory);
+        debug(`creating upload directory ${fullFolderPath}.`);
         await mkdirp(fullFolderPath);
         cb(null, directory);
       } catch (err) {
