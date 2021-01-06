@@ -85,7 +85,7 @@ function Uploader(prefix, fields) {
         const fullFolderPath = path.join(fsdir, directory);
         debug(`creating upload directory ${fullFolderPath}.`);
         await mkdirp(fullFolderPath);
-        cb(null, directory);
+        cb(null, fullFolderPath);
       } catch (err) {
         cb(err);
       }
