@@ -72,25 +72,31 @@
               <div>
                 <table class="table table-striped table-condensed">
                   <thead>
+                    <th translate>FORM.LABELS.PATIENT_ID</th>
                     <th translate>FORM.LABELS.NAME</th>
                     <th>%<span translate>PATIENT_REG.MATCH</span></th>
                     <th translate>FORM.LABELS.GENDER</th>
                     <th translate>FORM.LABELS.DOB_ABBREV</th>
                     <th translate>FORM.LABELS.AGE</th>
                     <th translate>FORM.LABELS.ORIGIN</th>
-                    <th translate>FORM.LABELS.PATIENT_ID</th>
                     <th translate>FORM.LABELS.HOSPITAL_FILE_NR</th>
+                    <th></th>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="pat in ModalCtrl.choices">
-                      <td><button ng-click="ModalCtrl.useChoice(pat.uuid);">{{pat.display_name}}</button></td>
+                    <tr ng-repeat="pat in ModalCtrl.choices track by pat.uuid">
+                      <td>
+                        <a href ng-click="ModalCtrl.viewPatientCard(pat.uuid)"> {{pat.reference}}</a>
+                      </td>
+                      <td>{{pat.display_name}}</td>
                       <td>{{pat.matchScore * 100 | number: 1}}</td>
-                      <td translate>{{pat.sex}}</td>
+                      <td translate>{{pat.hrsex}}</td>
                       <td><span ng-if="pat.dob_unknown_date">{{pat.dob | date: 'yyyy'}}</span><span ng-if="!pat.dob_unknown_date">{{pat.dob | date: 'MM/dd/yyyy'}}</span></td>
                       <td>{{pat.age}}</td>
                       <td>{{pat.originProvinceName}}, {{pat.originSectorName}}, {{pat.originVillageName}}</td>
-                      <td>{{pat.reference}}</td>
                       <td>{{pat.hospital_no}}</td>
+                      <td>
+                        <a href ng-click="ModalCtrl.useChoice(pat.uuid);" translate>FORM.LABELS.SELECT</a>
+                      </td>
                     </tr>
                   </tbody>
                 </table>

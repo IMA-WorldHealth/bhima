@@ -45,7 +45,6 @@ const visits = require('./visits');
 const pictures = require('./pictures');
 const merge = require('./merge');
 
-
 // bind submodules
 exports.groups = groups;
 exports.documents = documents;
@@ -490,8 +489,9 @@ function findMatchingPatients(matchNameParts, patientNames) {
     return [];
   });
 
-  // Return the sorted matches (best first)
-  return matches.sort((a, b) => { return b[2] - a[2]; });
+  matches.sort((a, b) => { return b[2] - a[2]; });
+
+  return matches;
 }
 
 /*
@@ -709,11 +709,6 @@ function findBestNameMatches(req, res, next) {
       // Resort the matches
       matches = matches.sort((a, b) => { return b[1] - a[1]; });
 
-      // debug("NameMatches: ");
-      // nameMatches.forEach(([pid, sname, score]) => {
-      //   debug(pid, sname, patientNames[pid], score);
-      // });
-
       // Now get the info for these patients
       return find({ uuids : matches.map(x => x[0]) });
     })
@@ -723,6 +718,7 @@ function findBestNameMatches(req, res, next) {
         const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
         row.matchScore = mscore;
       });
+
       return res.status(200).json(data);
     })
     .catch(next)
@@ -854,7 +850,7 @@ function read(req, res, next) {
     return findBestNameMatches(req, res, next);
   }
 
-  find(req.query)
+  return find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
     })

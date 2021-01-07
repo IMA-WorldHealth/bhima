@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('ReturningPatientModalController', ReturningPatientModalCtrl);
 
 ReturningPatientModalCtrl.$inject = [
-  '$uibModalInstance', 'PatientService', 'util', 'moment', 'bhConstants',
+  '$uibModalInstance', 'PatientService', 'util', 'moment', 'bhConstants', 'ReceiptModal',
 ];
 
-function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhConstants) {
+function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhConstants, Receipts) {
   const vm = this;
 
   const matchCutoff = 0.85;
@@ -18,6 +18,7 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
   vm.calculateYOB = calculateYOB;
   vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_YEAR';
   vm.dateComponentLabel = 'FORM.LABELS.DOB';
+  vm.viewPatientCard = viewPatientCard;
 
   // define limits for DOB
   vm.datepickerOptions = {
@@ -85,17 +86,27 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
     };
   }
 
+  function viewPatientCard(uuid) {
+    Receipts.patient(uuid);
+  }
+
   function chooseMatch(matches) {
     vm.hasChoices = true;
     vm.choices = matches;
+
+    // NOTE(@jniles) - these do not come back from the server sorted.  Should they?
+    vm.choices.sort((a, b) => b.matchScore - a.matchScore);
+
     // Cleanups for the frontend
     vm.choices.forEach((row) => {
-      // Gender
+
+      // make sex human readable
       if (row.sex && row.sex === 'F') {
-        row.sex = 'FORM.LABELS.FEMALE';
+        row.hrsex = 'FORM.LABELS.FEMALE';
       } else if (row.sex && row.sex === 'M') {
-        row.sex = 'FORM.LABELS.MALE';
+        row.hrsex = 'FORM.LABELS.MALE';
       }
+
       // age
       row.age = moment().diff(row.dob, 'years');
     });
@@ -194,6 +205,9 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
           if (vm.tab === 0) {
             // Tab 0 - Searching by name
             const patientMatches = patients.filter(row => row.matchScore > matchCutoff);
+
+            patients;
+
             switch (patientMatches.length) {
             case 0:
               warnNoPatients();
