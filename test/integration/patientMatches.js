@@ -44,7 +44,6 @@ const mockPatients = [
   [uuid(), 'Lynn Black', 'F', '1981-06-01', 'TRUE', uuid()],
 ];
 
-
 describe('(/patients) Find matching patients', () => {
 
   // prior to tests, create default patients.
@@ -225,6 +224,7 @@ describe('(/patients) Find matching patients', () => {
       })
       .catch(helpers.handler);
   });
+
   it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
     const testName = 'John Janes Mitchum';
     const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
@@ -242,6 +242,7 @@ describe('(/patients) Find matching patients', () => {
       })
       .catch(helpers.handler);
   });
+
   it('Get matches for name "John Jones Mitchum" with DOB approximate date', () => {
     const testName = 'John Janes Mitchum';
     const conditions = { search_name : 'John Mitchum', dob : '1981-02-22', dob_unknown_date : 'false' };
@@ -254,6 +255,17 @@ describe('(/patients) Find matching patients', () => {
         expect(matches[0].matchScore).to.be.lt(1);
         expect(matches[1].display_name).to.be.not.equals(testName);
         expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('passes when there isn\'t a possible match', () => {
+    const testName = 'Ivan Working On The RailRoad';
+    const conditions = { search_name : testName };
+    return agent.get('/patients')
+      .query(conditions)
+      .then((res) => {
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
