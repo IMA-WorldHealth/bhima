@@ -7,3 +7,28 @@ ALTER TABLE `user` ADD COLUMN `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TI
 
 -- reset all last_login information
 UPDATE `user` SET `last_login` = NULL;
+
+/*
+ * @author: jmcameron
+ * @date: 2021-01-07
+ * @description: Install default discharge_type's in all sites
+ */
+DROP TABLE IF EXISTS `discharge_type`;
+CREATE TABLE `discharge_type` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discharge_type_1` (`id`, `label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- Default Discharge types
+INSERT INTO `discharge_type` (`id`, `label`) VALUES
+  (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
+  (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
+  (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
+  (4, 'PATIENT_RECORDS.DISCHARGE.SERVICE_CHANGE'),
+  (5, 'PATIENT_RECORDS.DISCHARGE.DEATH'),
+  (6, 'PATIENT_RECORDS.DISCHARGE.EVASION'),
+  (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
+  (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
+  (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
