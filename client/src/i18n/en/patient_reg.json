@@ -9,7 +9,7 @@
     "IDENTITY": "Patient Identity",
     "ID_REQUIRED": "A patient reference or hospital file number is required",
     "LOOKUP_RETURNING_PATIENT" : "Lookup Returning Patient",
-    "MARGINAL_MATCH" : "Marginal match for name = '{{ name }}' ({{ score | number : 1}}%)!",
+    "MARGINAL_MATCH" : "Marginal match for name = '{{ name }}' <b>({{ score | number : 1}}%)</b>!",
     "MATCH": "Match",
     "NAME_REQUIRED": "Name required",
     "NO_DUPLICATES_DETECTED" : "No duplicates detected in the database.",

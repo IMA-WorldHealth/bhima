@@ -125,6 +125,17 @@
 
           <div ng-if="ModalCtrl.isPatientFound">
 
+            <div class="row" ng-if="ModalCtrl.hasWarning">
+              <div class="col-xs-12">
+                <div class="alert alert-danger" ng-if="ModalCtrl.marginalMatch">
+                  <i class="fa fa-warning"></i>
+                  <span translate translate-values="ModalCtrl.matchScore">PATIENT_REG.MARGINAL_MATCH</span><br/>
+                  <i class="fa fa-warning"></i>
+                  <span translate>PATIENT_REG.VERIFY_IDENTITY</span>
+                </div>
+              </div>
+            </div>
+
             <!-- basic patient information panel -->
             <div class="row">
               <div class="col-xs-6">
@@ -166,17 +177,6 @@
                       {{ModalCtrl.patient.originSectorName}},
                       {{ModalCtrl.patient.originVillageName}}</dd>
                 </dl>
-              </div>
-            </div>
-
-            <div class="row" ng-if="ModalCtrl.hasWarning">
-              <div class="col-xs-12">
-                <div class="alert alert-warning" ng-if="ModalCtrl.marginalMatch">
-                  <i class="fa fa-warning"></i>
-                  <span translate translate-values="ModalCtrl.matchScore">PATIENT_REG.MARGINAL_MATCH</span><br/>
-                  <i class="fa fa-warning"></i>
-                  <span translate>PATIENT_REG.VERIFY_IDENTITY</span>
-                </div>
               </div>
             </div>
 
@@ -284,17 +284,18 @@
           </div>
         </div>
       </uib-tab>
-
-
     </uib-tabset>
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-default" type="button"
-      ng-click="ModalCtrl.clearData()"
-      ng-if="!ModalCtrl.isPatientFound">
+    <button class="btn btn-default" type="button" ng-click="ModalCtrl.clearData()" ng-if="!ModalCtrl.isPatientFound">
       <span translate>FORM.BUTTONS.CLEAR</span>
     </button>
+
+    <button class="btn btn-default" type="button" ng-click="ModalCtrl.clearPatientSelection()" ng-if="ModalCtrl.isPatientFound">
+      <span translate>FORM.BUTTONS.BACK</span>
+    </button>
+
 
     <button class="btn btn-default" type="button"
       ng-click="ModalCtrl.cancel()" data-method="cancel" translate>

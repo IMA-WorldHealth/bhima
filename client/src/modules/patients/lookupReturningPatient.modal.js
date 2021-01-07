@@ -5,6 +5,12 @@ ReturningPatientModalCtrl.$inject = [
   '$uibModalInstance', 'PatientService', 'util', 'moment', 'bhConstants', 'ReceiptModal',
 ];
 
+/**
+ * @function ReturningPatientModalCtrl
+ *
+ * @description
+ * Provides client-side functionality to locate patients based on a match score.
+ */
 function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhConstants, Receipts) {
   const vm = this;
 
@@ -114,8 +120,8 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
 
   vm.useChoice = function useChoice(uuid) {
     usePatient(vm.choices.find(p => p.uuid === uuid));
-    vm.hasChoices = false;
-    vm.choices = null;
+    // vm.hasChoices = false;
+    // vm.choices = null;
   };
 
   // Date and location utility methods
@@ -153,6 +159,11 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
   vm.clearData = function clearData() {
     vm.params = {};
     resetWarnings();
+  };
+
+  vm.clearPatientSelection = function clearPatientSelection() {
+    vm.patient = {};
+    vm.isPatientFound = false;
   };
 
   vm.cancel = ModalInstance.close;
