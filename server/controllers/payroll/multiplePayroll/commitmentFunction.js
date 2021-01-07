@@ -18,7 +18,12 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
   let totalCommitments = 0;
   let totalBasicSalaries = 0;
 
-  const { voucherCommitmentUuid, voucherWithholdingUuid } = identificationCommitment;
+  const {
+    voucherCommitmentUuid,
+    voucherWithholdingUuid,
+    descriptionCommitment,
+    descriptionWithholding,
+  } = identificationCommitment;
 
   const employeesBenefitsItem = [];
   const employeesWithholdingItem = [];
@@ -57,6 +62,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
       conversionGrossSalary,
       voucherCommitmentUuid,
       db.bid(employee.creditor_uuid),
+      `${descriptionCommitment} (${employee.display_name})`,
     ]);
 
     rubrics.forEach(rubric => {
@@ -82,6 +88,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
         0,
         voucherWithholdingUuid,
         db.bid(employee.creditor_uuid),
+        `${descriptionWithholding} (${employee.display_name})`,
       ]);
 
       if (employeeWithholdings.length) {
@@ -94,6 +101,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
               util.roundDecimal(withholding.value, 2),
               voucherWithholdingUuid,
               db.bid(employee.creditor_uuid),
+              `${descriptionWithholding} (${employee.display_name})`,
             ]);
           }
         });

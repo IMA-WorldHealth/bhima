@@ -26,6 +26,10 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   const datePeriodTo = moment(account[0].dateTo).format('YYYY-MM-DD');
   const labelPayroll = account[0].label;
   const commitmentUuid = util.uuid();
+
+  const descriptionCommitment = `ENGAGEMENT DE PAIE [${periodPayroll}]/ ${labelPayroll}`;
+  const descriptionWithholding = `RETENUE DU PAIEMENT [${periodPayroll}]/ ${labelPayroll}`;
+
   const voucherCommitmentUuid = db.bid(commitmentUuid);
   const withholdingUuid = util.uuid();
   const voucherWithholdingUuid = db.bid(withholdingUuid);
@@ -35,6 +39,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     voucherCommitmentUuid,
     voucherWithholdingUuid,
     voucherChargeRemunerationUuid,
+    descriptionCommitment,
+    descriptionWithholding,
   };
   const enterpriseChargeRemunerations = [];
 
@@ -113,7 +119,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     currency_id : currencyId,
     user_id : userId,
     type_id : COMMITMENT_TYPE_ID,
-    description : `ENGAGEMENT DE PAIE [${periodPayroll}]/ ${labelPayroll}`,
+    description : descriptionCommitment,
     amount : totalCommitments,
   };
 
@@ -124,6 +130,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     0,
     voucherCommitmentUuid,
     null,
+    voucherCommitment.description,
   ]);
 
   if (rubricsBenefits.length) {
@@ -135,6 +142,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         0,
         voucherCommitmentUuid,
         null,
+        voucherCommitment.description,
       ]);
     });
   }
@@ -179,7 +187,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       currency_id : currencyId,
       user_id : userId,
       type_id : WITHHOLDING_TYPE_ID,
-      description : `RETENUE DU PAIEMENT [${periodPayroll}]/ ${labelPayroll}`,
+      description : descriptionWithholding,
       amount : util.roundDecimal(totalWithholdings, 2),
     };
 
@@ -191,6 +199,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         util.roundDecimal(withholding.totals, 2),
         voucherWithholdingUuid,
         null,
+        voucherWithholding.description,
       ]);
     });
   }
@@ -200,7 +209,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     query : 'INSERT INTO voucher SET ?',
     params : [voucherCommitment],
   }, {
-    query : 'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?',
+    query : `INSERT INTO voucher_item
+      (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description) VALUES ?`,
     params : [employeesBenefitsItem],
   }, {
     query : 'CALL PostVoucher(?);',
@@ -227,7 +237,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       params : [voucherWithholding],
     }, {
       query : `INSERT INTO voucher_item
-        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?`,
+        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description) VALUES ?`,
       params : [employeesWithholdingItem],
     }, {
       query : 'CALL PostVoucher(?);',
