@@ -88,7 +88,21 @@ function formatAndCombine(data, GROUP_BY_SERVICE) {
   const aggregate = _.chain(data)
     .groupBy(GROUP_BY_SERVICE ? 'service_display_name' : 'text')
     .map(formatExit)
+    .map(newData => {
+      if (!GROUP_BY_SERVICE) { return newData; }
+
+      const newAggregate = _.chain(newData.inventory_stock_exit_data)
+        .groupBy('text')
+        .map(formatExit)
+        .value();
+
+      const cost = _.sumBy(newAggregate, 'inventory_stock_exit_cost');
+      newData.subset = { data : newAggregate, isEmpty : _.size(newAggregate) === 0, cost };
+
+      return newData;
+    })
     .value();
+
   const cost = _.sumBy(aggregate, 'inventory_stock_exit_cost');
   return { data : aggregate, isEmpty : _.size(aggregate) === 0, cost };
 }
