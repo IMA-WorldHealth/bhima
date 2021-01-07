@@ -703,7 +703,8 @@ function findBestNameMatches(req, res, next) {
 
       // If there are no matches, return now
       if (matches.length === 0) {
-        return res.status(200).json([]);
+        return [];
+        // WAS: return res.status(200).json([]);
       }
 
       // Resort the matches
@@ -713,12 +714,16 @@ function findBestNameMatches(req, res, next) {
       return find({ uuids : matches.map(x => x[0]) });
     })
     .then((data) => {
+
+      if (typeof data === 'undefined') {
+        return res.status(200).json([]);
+      }
+
       // Insert the match score into each record
       data.forEach((row) => {
         const [/* name */, mscore] = matches.find(mrow => { return mrow[0] === row.uuid; });
         row.matchScore = mscore;
       });
-
       return res.status(200).json(data);
     })
     .catch(next)
