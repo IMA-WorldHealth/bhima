@@ -95,10 +95,10 @@ function formatAndCombine(data, GROUP_BY_SERVICE) {
         .groupBy('text')
         .map(formatExit)
         .value();
-      
+
       const cost = _.sumBy(newAggregate, 'inventory_stock_exit_cost');
       newData.subset = { data : newAggregate, isEmpty : _.size(newAggregate) === 0, cost };
-      
+
       return newData;
     })
     .value();
