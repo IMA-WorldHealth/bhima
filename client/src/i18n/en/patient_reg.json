@@ -1,17 +1,23 @@
 {
   "PATIENT_REG": {
     "CARD": "Patient Card",
+    "CHOOSE_MATCH": "Possible Matches (choose one or modify the search)",
     "ENTITY" : "Patient",
     "FICHE" : "Patient Information",
-    "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.  The first one was chosen automatically.",
+    "FIND_DUPLICATE_PATIENTS" : "Find Duplicate Patients",
+    "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.",
     "IDENTITY": "Patient Identity",
+    "ID_REQUIRED": "A patient reference or hospital file number is required",
     "LOOKUP_RETURNING_PATIENT" : "Lookup Returning Patient",
+    "MARGINAL_MATCH" : "Marginal match for name = '{{ name }}' <b>({{ score | number : 1}}%)</b>!",
+    "MATCH": "Match",
+    "NAME_REQUIRED": "Name required",
+    "NO_DUPLICATES_DETECTED" : "No duplicates detected in the database.",
     "NO_PATIENTS_FOUND" : "No patients found matching that criteria.  Did you enter the values correctly?",
     "PAGE_TITLE": "Patient Registration",
     "PATIENT_DETAILS": "Patient Details",
     "REMOVE_PREVIOUS_ASSIGNMENT" : "Remove all patient groups already assigned to these patients.",
     "SUCCESS": "Patient Registered Successfully",
-    "FIND_DUPLICATE_PATIENTS" : "Find Duplicate Patients",
-    "NO_DUPLICATES_DETECTED" : "No duplicates detected in the database."
+    "VERIFY_IDENTITY" : "Double-check the identity before using!"
   }
 }
