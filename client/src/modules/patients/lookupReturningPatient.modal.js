@@ -217,8 +217,6 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, util, moment, bhCons
             // Tab 0 - Searching by name
             const patientMatches = patients.filter(row => row.matchScore > matchCutoff);
 
-            patients;
-
             switch (patientMatches.length) {
             case 0:
               warnNoPatients();
