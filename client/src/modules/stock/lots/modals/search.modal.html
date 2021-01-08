@@ -24,7 +24,7 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
-          <!-- Inventaire -->
+          <!-- Inventory -->
           <bh-inventory-select
             inventory-uuid="$ctrl.searchQueries.inventory_uuid"
             on-select-callback="$ctrl.onSelectInventory(inventory)"
@@ -51,20 +51,13 @@
             </div>
           </div>
 
-          <!-- tags -->
-          <bh-tag-select
-            tag-uuids="$ctrl.searchQueries.tags"
-            on-select-callback="$ctrl.onSelectTags(tags)">
-            <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
-          </bh-tag-select>
-
           <!--entry date -->
           <bh-date-interval
             label="STOCK.ENTRY_DATE"
             date-id="entry-date"
             date-from="$ctrl.searchQueries.entry_date_from"
             date-to="$ctrl.searchQueries.entry_date_to"
-            mode="clean">
+            on-change="$ctrl.onEntryDate(dateFrom, dateTo)">
           </bh-date-interval>
 
           <!-- expiration date -->
@@ -73,7 +66,7 @@
             date-id="expiration-date"
             date-from="$ctrl.searchQueries.expiration_date_from"
             date-to="$ctrl.searchQueries.expiration_date_to"
-            mode="clean">
+            on-change="$ctrl.onExpirationDate(dateFrom, dateTo)">
           </bh-date-interval>
 
           <bh-yes-no-radios
@@ -94,6 +87,14 @@
             on-change-callback="$ctrl.onToggleExpiryRisk(value)">
             <bh-clear on-clear="$ctrl.clear('is_expiry_risk')"></bh-clear>
           </bh-yes-no-radios>
+
+          <!-- tags -->
+          <bh-tag-select
+            tag-uuids="$ctrl.searchQueries.tags"
+            on-select-callback="$ctrl.onSelectTags(tags)">
+            <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
+          </bh-tag-select>
+
         </div>
       </uib-tab>
 

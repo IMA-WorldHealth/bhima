@@ -18,7 +18,7 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
     'entry_date_to', 'expiration_date_from', 'expiration_date_to',
-    'is_expired', 'is_expiry_risk',
+    'is_expired', 'is_expiry_risk', 'tags',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -35,11 +35,6 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
-  };
-
-  vm.onSelectTags = tags => {
-    vm.searchQueries.tags = tags;
-    displayValues.tags = tags.map(t => t.name).join(',');
   };
 
   // custom filter depot_uuid - assign the value to the params object
@@ -86,6 +81,28 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     displayValues.group_uuid = group.name;
   };
 
+  // Save the entry dates
+  vm.onEntryDate = (dateFrom, dateTo) => {
+    vm.searchQueries.entry_date_from = dateFrom;
+    displayValues.entry_date_from = dateFrom;
+    vm.searchQueries.entry_date_to = dateTo;
+    displayValues.entry_date_to = dateTo;
+  };
+
+  // Save the expiration dates
+  vm.onExpirationDate = (dateFrom, dateTo) => {
+    vm.searchQueries.expiration_date_from = dateFrom;
+    displayValues.expiration_date_from = dateFrom;
+    vm.searchQueries.expiration_date_to = dateTo;
+    displayValues.expiration_date_to = dateTo;
+  };
+
+  // Save the Tags
+  vm.onSelectTags = tags => {
+    vm.searchQueries.tags = tags;
+    displayValues.tags = tags.map(t => t.name).join(',');
+  };
+
   // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
@@ -102,10 +119,44 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     vm.defaultQueries.limit = data.limit;
   }
 
+  if (data.entry_date_from) {
+    vm.defaultQueries.entry_date_from = data.entry_date_from;
+  }
+  if (data.entry_date_to) {
+    vm.defaultQueries.entry_date_to = data.entry_date_to;
+  }
+
+  if (data.expiration_date_from) {
+    vm.defaultQueries.expiration_date_from = data.expiration_date_from;
+  }
+  if (data.expiration_date_to) {
+    vm.defaultQueries.expiration_date_to = data.expiration_date_to;
+  }
+
+  if (data.tags) {
+    vm.defaultQueries.tags = data.tags.map(t => t.name).join(',');
+  }
+
   vm.cancel = () => Instance.dismiss();
 
   vm.submit = () => {
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+
+    // The following work-around is necessary to deal with the case where you
+    // select a tag but then delete it before clicking [Submit]; the element
+    // has an empty array so it needs to be deleted. There probably is a
+    // cleaner way to do this.
+    // There may be a bug in bhTagSelect that is causing this problem.
+    // @jmcameron 2021-01-08
+    loggedChanges.some((elt, i) => {
+      if (elt.key === 'tags') {
+        if (elt.value.length === 0) {
+          delete loggedChanges[i];
+        }
+      }
+      return elt.key === 'tags';
+    });
+
     return Instance.close(loggedChanges);
   };
 }
