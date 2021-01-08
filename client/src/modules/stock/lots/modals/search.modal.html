@@ -51,13 +51,6 @@
             </div>
           </div>
 
-          <!-- tags -->
-          <bh-tag-select
-            tag-uuids="$ctrl.searchQueries.tags"
-            on-select-callback="$ctrl.onSelectTags(tags)">
-            <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
-          </bh-tag-select>
-
           <!--entry date -->
           <bh-date-interval
             label="STOCK.ENTRY_DATE"
@@ -94,6 +87,14 @@
             on-change-callback="$ctrl.onToggleExpiryRisk(value)">
             <bh-clear on-clear="$ctrl.clear('is_expiry_risk')"></bh-clear>
           </bh-yes-no-radios>
+
+          <!-- tags -->
+          <bh-tag-select
+            tag-uuids="$ctrl.searchQueries.tags"
+            on-select-callback="$ctrl.onSelectTags(tags)">
+            <bh-clear on-clear="$ctrl.clear('tags')"></bh-clear>
+          </bh-tag-select>
+
         </div>
       </uib-tab>
 
