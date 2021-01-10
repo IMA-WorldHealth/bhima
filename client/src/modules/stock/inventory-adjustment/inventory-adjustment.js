@@ -88,6 +88,15 @@ function StockInventoryAdjustmentController(
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
+      field : 'difference',
+      width : 150,
+      cellTemplate : 'modules/stock/inventory-adjustment/templates/difference.tmpl.html',
+      displayName : 'INVENTORY_ADJUSTMENT.DIFFERENCE',
+      headerCellFilter : 'translate',
+      enableFiltering : false,
+      enableSorting : true,
+    },
+    {
       field : 'expiration_date',
       width : 150,
       displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
