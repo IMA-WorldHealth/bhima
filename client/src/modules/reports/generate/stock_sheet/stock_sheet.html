@@ -28,7 +28,7 @@
           <bh-depot-select
             depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
-            required="true">
+            required="false">
             <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
@@ -52,7 +52,7 @@
 
           <bh-date-interval
             ng-if="ReportConfigCtrl.hasDateInterval"
-            date-from="ReportConfigCtrl.reportDetails.dateFrom" 
+            date-from="ReportConfigCtrl.reportDetails.dateFrom"
             date-to="ReportConfigCtrl.reportDetails.dateTo">
           </bh-date-interval>
 
