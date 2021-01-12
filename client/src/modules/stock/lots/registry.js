@@ -22,6 +22,7 @@ function StockLotsController(
 
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
+
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
 
@@ -134,23 +135,46 @@ function StockLotsController(
       .then((lots) => {
         const current = new Date();
 
+        const totals = {
+          expired : 0,
+          'at-risk-of-expiring' : 0,
+          'at-risk' : 0,
+          'out-of-stock' : 0,
+        };
+
         lots.forEach((lot) => {
           const delay = moment(new Date(lot.expiration_date)).diff(current);
           lot.delay_expiration = moment.duration(delay).humanize(true);
-          LotService.computeLotWarningFlags(lot);
+
+          if (lot.expired) {
+            totals.expired += 1;
+          }
+
+          if (lot.at_risk) {
+            totals['at-risk'] += 1;
+          }
+
+          if (lot.near_expiration) {
+            totals['at-risk-of-expiring'] += 1;
+          }
+
+          if (lot.exhausted) {
+            totals['out-of-stock'] += 1;
+          }
+
+          // serialize tag names for filters
+          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
+          lot.tags.forEach(addColorStyle);
         });
+
+        vm.totals = totals;
 
         lots.forEach(LotsRegistry.formatLotsWithoutExpirationDate);
 
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(LotsRegistry.orderByDepot);
 
-        // serialize tag names for filters
-        vm.gridOptions.data = lots.map(lot => {
-          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
-          lot.tags.forEach(addColorStyle);
-          return lot;
-        });
+        vm.gridOptions.data = lots;
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
