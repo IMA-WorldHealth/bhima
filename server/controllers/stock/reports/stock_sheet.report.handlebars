@@ -14,7 +14,7 @@
       </h2>
 
       <h3 class="text-center">
-        {{#if depot.text}}{{depot.text}}{{/if}}<br>
+        {{#if depot.text}}{{depot.text}}<br>{{/if}}
         {{#if inventory.code}}<strong>{{inventory.code}} - {{inventory.text}}</strong>{{/if}}
       </h3>
 
@@ -29,7 +29,7 @@
       <table class="table table-condensed table-report">
         <thead>
           <tr style="background-color:#ddd;">
-            <th colspan=4></th>
+            <th colspan={{#if depot.text}}"4"{{else}}"5"{{/if}}></th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.ENTRIES'}}</th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.EXITS'}}</th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.STOCKS'}}</th>
@@ -37,6 +37,9 @@
           <tr style="background-color:#ddd;">
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            {{#unless depot.text}}
+            <th class="text-center" style="border-right: 1px solid #000;">{{translate 'STOCK.DEPOT'}}</th>
+            {{/unless}}
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'STOCK.FLUX'}}</th>
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'STOCK.LOT'}}</th>
 
@@ -58,6 +61,9 @@
             <tr>
               <td style="border-left: 1px solid #000;">{{reference}}</td>
               <td style="border-right: 1px solid #000;">{{timestamp date}}</td>
+              {{#unless ../depot.text}}
+              <td style="border-right: 1px solid #000;">{{depot_text}}</td>
+              {{/unless}}
               <td style="border-left: 1px solid #000;">{{translate flux}}</td>
               <td style="border-left: 1px solid #000;">{{label}}</td>
 
@@ -79,7 +85,7 @@
         </tbody>
         <tfoot style="border-top: 1px solid #000;">
           <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
-            <th colspan="4"></th>
+            <th colspan={{#if depot.text}}"4"{{else}}"5"{{/if}}></th>
             <th class="text-right">{{totals.entry}}</th> <th></th>
             <th class="text-right">{{currency totals.entryValue metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{totals.exit}}</th> <th></th>

@@ -26,7 +26,9 @@ async function stockSheetReport(req, res, next) {
 
     const [inventory, depot, rows] = await Promise.all([
       await db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),
-      await db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)]),
+      options.depot_uuid
+        ? await db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)])
+        : null,
       await Stock.getInventoryMovements(options),
     ]);
 
