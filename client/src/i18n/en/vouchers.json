@@ -46,6 +46,9 @@
       "CASH_TRANSFER":"Cash Transfer",
       "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
+      "INCLUDE_ONLY_REVERSED_RECORDS" : "Include only reversed vouchers",
+      "EXCLUDE_REVERSED_RECORDS" : "Exclude all reversed vouchers",
+      "REVERSED_RECORDS" : "Reversed Records",
       "TRANSACTION_TYPE_INFO": "Transaction type, depending on whether you have an income or an expense",
       "USE_FINANCIAL_ACCOUNT": "This transaction uses a cash or bank account.  Be sure to set a transaction type.",
       "RECEIPT":{
