@@ -147,6 +147,7 @@ function find(options) {
   filters.equals('user_id');
   filters.equals('project_id');
   filters.equals('edited');
+  filters.equals('reversed');
   filters.equals('currency_id');
 
   filters.equals('reference', 'text', 'dm');
@@ -267,7 +268,6 @@ function createVoucher(voucherDetails, userId, projectId) {
   voucherDetails.uuid = db.bid(vuid);
 
   const SALARY_PAYMENT_VOUCHER_TYPE_ID = 7;
-
 
   // preprocess the items so they have uuids as required
   items.forEach(value => {
