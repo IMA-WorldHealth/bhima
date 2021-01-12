@@ -788,6 +788,7 @@ function getInventoryMovements(params) {
         const movement = {
           reference : line.documentReference,
           date : line.date,
+          depot_text : line.depot_text,
           label : line.label,
           flux : line.flux,
           entry : { quantity : 0, unit_cost : 0, value : 0 },
