@@ -168,10 +168,11 @@ async function update(req, res, next) {
     await tx.execute();
 
     const sql = `
-      SELECT BUID(uuid) as uuid, text, enterprise_id, is_warehouse,
+      SELECT BUID(uuid) as uuid, text, description, enterprise_id, is_warehouse,
         allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
         allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-        min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid
+        min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid,
+        dhis2_uid
       FROM depot WHERE uuid = ?`;
     const rows = await db.exec(sql, [uid]);
 
@@ -211,12 +212,12 @@ function list(req, res, next) {
 
   const sql = `
     SELECT
-      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       GROUP_CONCAT(DISTINCT u.display_name ORDER BY u.display_name DESC SEPARATOR ', ') AS users,
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid,
+      d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid, d.dhis2_uid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
       LEFT JOIN village v ON v.uuid = d.location_uuid
@@ -290,11 +291,11 @@ function searchByName(req, res, next) {
 
   const sql = `
     SELECT
-      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid,
+      IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid, d.dhis2_uid,
       v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
       LEFT JOIN village v ON v.uuid = d.location_uuid
@@ -336,10 +337,10 @@ async function detail(req, res, next) {
 
   const sql = `
     SELECT
-      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
-      BUID(parent_uuid) parent_uuid,
+      BUID(parent_uuid) parent_uuid, dhis2_uid,
       min_months_security_stock
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
