@@ -97,7 +97,7 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
       if (typeof vm.reportDetails.dateTo === 'string') {
         vm.reportDetails.dateTo = new Date(vm.reportDetails.dateTo);
       }
-      if ( vm.reportDetails.dateFrom && typeof vm.reportDetails.dateFrom === 'string') {
+      if (vm.reportDetails.dateFrom && typeof vm.reportDetails.dateFrom === 'string') {
         vm.reportDetails.dateFrom = new Date(vm.reportDetails.dateFrom);
       }
     }
