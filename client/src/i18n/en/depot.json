@@ -27,6 +27,7 @@
     "WAREHOUSE" : "Warehouse",
     "WAREHOUSE_INFO" : "This depot can distribute to other depots",
     "ALLOWED_DESTINATION_DEPOTS":"Allowed destination depots",
+    "DHIS2_UID": "DHIS2 UID",
     "MODAL" : {
       "SELECTION" : "Depot Selection",
       "TYPE_DEPOT_NAME" : "Type the depot's name",
