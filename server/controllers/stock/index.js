@@ -238,7 +238,9 @@ async function insertNewStock(session, params, originTable = 'integration') {
     db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
   ];
 
+  console.log('session.stock_settings:', session.stock_settings);
   if (session.stock_settings.enable_auto_stock_accounting) {
+    console.log('posting stock');
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
   }
 
@@ -469,7 +471,7 @@ async function normalMovement(document, params, metadata) {
   const currencyId = metadata.enterprise.currency_id;
   const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
 
-  if (metadata.enterprise.settings.enable_auto_stock_accounting) {
+  if (metadata.stock_settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
   }
 
