@@ -51,6 +51,9 @@
       "REPORT": "Rapport des Quittances",
       "SUPPORT_PAYMENT_DESCRIPTION":"Prise en charge de {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
       "TITLE": "Quittance",
+      "INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les bordereaux inversés",
+      "EXCLUDE_REVERSED_RECORDS":"Exclure tous les bordereaux inversés",
+      "REVERSED_RECORDS":"Bordereaux Inversés",
       "TRANSACTION_TYPE_INFO": "Le type de transaction dépend du revenu ou bien d'une dépense",
       "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"
     },
