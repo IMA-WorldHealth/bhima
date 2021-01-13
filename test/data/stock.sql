@@ -24,9 +24,9 @@ SET @third_deposit_uuid = HUID('bd4b1452-4742-e4fa-a128-246814140877');
 --
 
 INSERT INTO `depot` VALUES
-  (@depot_uuid, 'Depot Principal', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL),
-  (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL),
-  (@third_deposit_uuid, 'Depot Tertiaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL);
+  (@depot_uuid, 'Depot Principal', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL, NULL),
+  (@second_depot_uuid, 'Depot Secondaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL),
+  (@third_deposit_uuid, 'Depot Tertiaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL);
 
 --
 -- Set Depot Management By User
