@@ -28,6 +28,7 @@
     "WAREHOUSE" : "Entrepôts",
     "WAREHOUSE_INFO" : "Ce dépôt est en mesure d'approvisionner d'autres dépôts",
     "ALLOWED_DESTINATION_DEPOTS":"Les dépôts de destination autorisés",
+    "DHIS2_UID": "DHIS2 UID",
     "MODAL" : {
       "SELECTION" : "Sélection du dépôt",
       "TYPE_DEPOT_NAME" : "Saisir le nom du depot",
