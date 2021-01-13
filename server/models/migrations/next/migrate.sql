@@ -3,8 +3,6 @@
 -- author: @jniles  (updated by jmcameron 2021-01-12)
 ALTER TABLE `user` MODIFY COLUMN `last_login` TIMESTAMP NULL;
 
--- ALTER TABLE `user` ADD COLUMN `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
--- ALTER TABLE `user` ADD COLUMN `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
 CALL add_column_if_missing('user', 'created_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `last_login`');
 CALL add_column_if_missing('user', 'updated_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`');
 
