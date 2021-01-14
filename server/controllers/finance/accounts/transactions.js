@@ -110,7 +110,6 @@ function getTableSubquery(options, table) {
   return { query, parameters };
 }
 
-
 /**
  * @function getSubquery
  *
@@ -155,7 +154,6 @@ function getTotalsSQL(options) {
 
   return { totalsQuery, totalsParameters };
 }
-
 
 /**
  * @function getAccountTransactions
