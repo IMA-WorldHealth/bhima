@@ -21,10 +21,12 @@ function LotsRegistryService(uiGridConstants, Session) {
     {
       field : 'depot_text',
       displayName : 'STOCK.DEPOT',
+      headerTooltip : 'STOCK.DEPOT',
       headerCellFilter : 'translate',
     }, {
       field : 'code',
       displayName : 'STOCK.CODE',
+      headerTooltip : 'STOCK.CODE',
       headerCellFilter : 'translate',
       sort : {
         direction : uiGridConstants.ASC,
@@ -33,6 +35,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'text',
       displayName : 'STOCK.INVENTORY',
+      headerTooltip : 'STOCK.INVENTORY',
       headerCellFilter : 'translate',
       sort : {
         direction : uiGridConstants.ASC,
@@ -41,20 +44,24 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'group_name',
       displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
+      headerTooltip : 'TABLE.COLUMNS.INVENTORY_GROUP',
       headerCellFilter : 'translate',
     }, {
       field : 'label',
       displayName : 'STOCK.LOT',
+      headerTooltip : 'STOCK.LOT',
       headerCellFilter : 'translate',
     }, {
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
+      headerTooltip : 'STOCK.QUANTITY',
       cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
     }, {
       field : 'unit_cost',
       displayName : 'STOCK.UNIT_COST',
+      headerTooltip : 'STOCK.UNIT_COST',
       cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
@@ -63,38 +70,45 @@ function LotsRegistryService(uiGridConstants, Session) {
       field : 'unit_type',
       width : 75,
       displayName : 'TABLE.COLUMNS.UNIT',
+      headerTooltip : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
     }, {
       field : 'entry_date',
       displayName : 'STOCK.ENTRY_DATE',
+      headerTooltip : 'STOCK.ENTRY_DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
     }, {
       field : 'expiration_date',
       displayName : 'STOCK.EXPIRATION_DATE',
+      headerTooltip : 'STOCK.EXPIRATION_DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
     }, {
       field : 'delay_expiration',
       displayName : 'STOCK.EXPIRATION',
+      headerTooltip : 'STOCK.EXPIRATION',
       cellClass : 'text-right',
       headerCellFilter : 'translate',
     }, {
       field : 'avg_consumption',
       displayName : 'STOCK.CMM',
+      headerTooltip : 'STOCK.CMM',
       cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
     }, {
       field : 'S_MONTH',
       displayName : 'STOCK.MSD',
+      headerTooltip : 'STOCK.MSD',
       cellClass : 'text-right',
       headerCellFilter : 'translate',
       type : 'number',
     }, {
       field : 'lifetime',
       displayName : 'STOCK.LIFETIME',
+      headerTooltip : 'STOCK.LIFETIME',
       headerCellFilter : 'translate',
       cellClass : 'text-right',
       cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
@@ -106,6 +120,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'S_LOT_LIFETIME',
       displayName : 'STOCK.LOT_LIFETIME',
+      headerTooltip : 'STOCK.LOT_LIFETIME',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
       cellClass : 'text-right',
@@ -113,6 +128,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'S_RISK',
       displayName : 'STOCK.RISK',
+      headerTooltip : 'STOCK.RISK',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
       cellClass : 'text-right',
@@ -125,6 +141,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     {
       field : 'IS_IN_RISK_EXPIRATION',
       displayName : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
+      headerTooltip : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/in_risk_of_expiration.html',
       cellClass : 'text-right',
@@ -133,6 +150,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     {
       field : 'S_RISK_QUANTITY',
       displayName : 'STOCK.RISK_QUANTITY',
+      headerTooltip : 'STOCK.RISK_QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
       type : 'number',
@@ -140,6 +158,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     {
       field : 'tagNames',
       displayName : 'TAG.LABEL',
+      headerTooltip : 'TAG.LABEL',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/tags.cell.html',
     }, {
