@@ -184,6 +184,8 @@ function LotsRegistryService(uiGridConstants, Session) {
       delete lot.expiration_date;
       delete lot.lifetime;
       delete lot.S_LOT_LIFETIME;
+      delete lot.S_RISK;
+      delete lot.S_RISK_QUANTITY;
     }
   };
 
