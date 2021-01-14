@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockAggregatedConsumptionController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants',
+  'uiGridConstants', 'GridGroupingService',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockAggregatedConsumptionController.$inject = [
  */
 function StockAggregatedConsumptionController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants,
+  Stock, uiGridConstants, Grouping,
 ) {
   const vm = this;
 
@@ -52,47 +52,58 @@ function StockAggregatedConsumptionController(
   // grid columns
   const columns = [
     {
-      field : 'status',
-      width : 25,
-      displayName : '',
-      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
-      enableFiltering : false,
-    }, {
-      field : 'code',
-      width : 120,
-      displayName : 'TABLE.COLUMNS.CODE',
-      headerCellFilter : 'translate',
-    }, {
       field : 'text',
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
+      field : 'code',
+      width : 90,      
+      displayName : 'TABLE.COLUMNS.CODE',
+      headerCellFilter : 'translate',
+    }, {
       field : 'label',
-      width : 150,
+      width : 90,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
       field : 'old_quantity',
-      width : 150,
-      displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
+      width : 90,
+      displayName : 'STOCK.QUANTITY_IN_STOCK',
       headerCellFilter : 'translate',
       enableFiltering : false,
     }, {
-      field : 'quantity',
-      width : 180,
-      displayName : 'INVENTORY_ADJUSTMENT.NEW_QUANTITY',
+      field : 'quantity_consumed',
+      width : 150,
+      displayName : 'STOCK.QUANTITY_CONSUMED',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_consumed.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      enableFiltering : false,
+    }, {      
+      field : 'quantity_lost',
+      width : 150,
+      displayName : 'STOCK.QUANTITY_LOST',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_lost.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
-      field : 'expiration_date',
+      field : 'quantity_remaining',
       width : 150,
-      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+      displayName : 'STOCK.QUANTITY_REMAINING',
       headerCellFilter : 'translate',
-      cellTemplate : expirationDateCellTemplate,
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_remaining.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      enableFiltering : false,
+    }, {
+      field : 'days_stock_out',
+      width : 150,
+      displayName : 'STOCK.DAYS_OF_STOCK_OUT',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     },
   ];
@@ -109,6 +120,9 @@ function StockAggregatedConsumptionController(
     rowTemplate : 'modules/templates/grid/error.row.html',
     onRegisterApi : onRegisterApiFn,
   };
+
+  vm.grouping = new Grouping(vm.gridOptions, true, 'text', true, true);
+
 
   // register api
   function onRegisterApiFn(gridApi) {
