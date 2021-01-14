@@ -150,6 +150,7 @@
     "QUANTITY_RECEIVED"   : "Quantité reçue",
     "QUANTITY_DIFFERENCE" : "Ecart",
     "QUANTITY_CONSUMED" : "Quantité consommée",
+    "QUANTITY_IN_STOCK" : "Quantité en stock",
     "QUANTITY_LOST" : "Quantité perdue",
     "QUANTITY_REMAINING" : "Quantité restante",
     "INITIAL_QUANTITY" : "Quantité initiale",
