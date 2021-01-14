@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents text-right">
-  <span ng-if="row.entity.hasExpirationDate">
+  <span ng-if="row.entity.hasExpirationDate && !row.entity.flags.expired">
     {{ row.entity.lifetime }} <span translate>FORM.LABELS.DAYS</span>
   </span>
 </div>

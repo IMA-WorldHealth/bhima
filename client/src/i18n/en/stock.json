@@ -101,7 +101,7 @@
     "ITEMS"           : "Items",
     "LEGEND"          : "Legend",
     "LIFETIME"        : "Lifetime",
-    "LOT_LIFETIME"    : "Lifetime By Lot",
+    "LOT_LIFETIME"    : "Lifetime by Usage",
     "CURRENT_QUANTITY" : "Current Quantity",
     "RISK"            : "Risk",
     "RISK_QUANTITY"   : "Risk Quantity",
