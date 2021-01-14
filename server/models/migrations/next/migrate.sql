@@ -103,4 +103,3 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
  */
 CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
 CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');
-
