@@ -266,23 +266,22 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     params.average_consumption_algo,
   );
 
-  // FIXME(@jniles) - this step seems to mostly just change the ordering of lots.  Can we combine
-  // it with the getBulkInventoryCMM?
+  // add lot indicators to the inventory list.
   let inventoriesWithLotsProcessed = computeLotIndicators(inventoriesWithManagementData);
 
   if (_status) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(row => row.status === _status);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.status === _status);
   }
 
   // Since the status of a product risking expiry is only defined
   // after the comparison with the CMM, reason why the filtering
   // is not carried out with an SQL request
   if (parseInt(params.is_expiry_risk, 10) === 1) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.flags.near_expiration);
   }
 
   if (parseInt(params.is_expiry_risk, 10) === 0) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.flags.near_expiration);
   }
 
   return inventoriesWithLotsProcessed;
@@ -700,16 +699,9 @@ async function getInventoryQuantityAndConsumption(params) {
  *   4) at_risk - if the lot is part of an _inventory_ that is at risk of running out.
  *
  * Further, we add the following properties:
- *   1) num_months_remaining
- *   2) num_days_remaining
- *   3) quantity_usable
- *   4) quantity_at_risk
- *   5) avg_daily_consumption
- *   6) last_usable_date
- *   7) previous_lot_used
- *   8) next_lot_used
- *   9) lot_lifetime
- *   10) S_MONTH - number of months of stock left
+ *   1) lot_lifetime - the number of days left before the stock runs out.
+ *   2) max_stock_date - the last day stock will be usable.
+ *   3) usable_quantity_remaining - the total quantity that will be usable of the lot.
  *
  * Note that these indicators are only tracked if we are tracking_consumption
  * or tracking_expiration.
@@ -761,7 +753,7 @@ function computeLotIndicators(inventories) {
           const consumptionPerDay = lot.avg_consumption / 30.5;
 
           // check if the lot will expire before being used up
-          const numDaysOfStockBeforeConsumed = runningLotLifetimes + Math.floor(lot.quantity / consumptionPerDay);
+          const numDaysOfStockBeforeConsumed = runningLotLifetimes + Math.ceil(lot.quantity / consumptionPerDay);
           const stockOutDate = moment(new Date()).add(numDaysOfStockBeforeConsumed, 'days').toDate();
 
           lot.near_expiration = lot.expiration_date <= stockOutDate;
@@ -779,6 +771,7 @@ function computeLotIndicators(inventories) {
           // calculate finally the remaining days of stock, assuming we use this stock in order
           // maybe we will not ever get a chance to use it ... then it is 0.
           lot.lifetime_lot = Math.max(0, numDaysOfStockLeft - runningLotLifetimes);
+          lot.max_stock_date = maxStockDate;
 
           // add to the running LotLifetimes so that the next product will be used after it.
           runningLotLifetimes += lot.lifetime_lot;
@@ -786,10 +779,22 @@ function computeLotIndicators(inventories) {
           // the usuable quantity remaining is the minimum of the stock actually available
           // and the amount able to be consumed in the time remaining
           const usableStockQuantityRemaining = Math.min(lot.lifetime_lot * consumptionPerDay, lot.quantity);
+          lot.usable_quantity_remaining = usableStockQuantityRemaining;
 
+          // compute the "risk" quantities and duration.  This is the amount of stock in this lot that
+          // the enterprise will lose at the current rate of consumption.  We express this in
+          // both quantity and in time, despite this not corresponding to a definite time period. The
+          // time period should be understood as a _quantity_ measurement - how long the pharmacy could
+          // have run if this stock wasn't expiring.
           lot.S_RISK_QUANTITY = Math.round(lot.quantity - usableStockQuantityRemaining);
+          // if S_RISK_QUANTITY is less than a day's stock, it is likely a rounding error.  Set it to 0.
+          if (lot.S_RISK_QUANTITY < consumptionPerDay) { lot.S_RISK_QUANTITY = 0; }
+          lot.S_RISK = Math.round(lot.S_RISK_QUANTITY / consumptionPerDay);
         }
 
+        // if the inventory item is at risk of stock out, mark the stock lot "at risk".  It may be that a single
+        // lot is not at risk of expiring, but the inventory is at risk of expiring
+        // TODO(@jniles): does this make sense?
         lot.at_risk = !lot.expired && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
 
         // attach flags after computation for use on client
