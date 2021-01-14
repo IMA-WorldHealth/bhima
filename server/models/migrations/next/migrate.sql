@@ -1,9 +1,10 @@
 
 -- 2021-01-04
--- author: @jniles
+-- author: @jniles  (updated by jmcameron 2021-01-12)
 ALTER TABLE `user` MODIFY COLUMN `last_login` TIMESTAMP NULL;
-ALTER TABLE `user` ADD COLUMN `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE `user` ADD COLUMN `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+CALL add_column_if_missing('user', 'created_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `last_login`');
+CALL add_column_if_missing('user', 'updated_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`');
 
 -- reset all last_login information
 UPDATE `user` SET `last_login` = NULL;
@@ -94,3 +95,12 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
   (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
   (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
+
+/*
+ * @author: jmcameron
+ * @date: 2021-01-12
+ * @subject : Add description and dhis2_uid fields to the depot table
+ */
+CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
+CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');
+

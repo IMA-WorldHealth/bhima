@@ -1,16 +1,16 @@
 <form name="DepotForm" bh-submit="DepotModalCtrl.submit(DepotForm)" novalidate>
   <div class="modal-header">
-  <ol class="headercrumb">
-    <li ng-if="DepotModalCtrl.isCreateState" class="title">
-      <span translate>DEPOT.ADD_DEPOT</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-    </li>
-    <li ng-if="!DepotModalCtrl.isCreateState" class="title">
-      <span translate>DEPOT.EDIT_DEPOT</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
-    </li>
-  </ol>
-</div>
+    <ol class="headercrumb">
+      <li ng-if="DepotModalCtrl.isCreateState" class="title">
+        <span translate>DEPOT.ADD_DEPOT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!DepotModalCtrl.isCreateState" class="title">
+        <span translate>DEPOT.EDIT_DEPOT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
 
   <div class="modal-body">
 
@@ -28,25 +28,29 @@
         <label translate>STOCK.ENTRY</label>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_entry_purchase" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_purchase">
+            <input type="checkbox" name="allow_entry_purchase" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_entry_purchase">
             <span translate>STOCK.ENTRY_PURCHASE</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_entry_donation" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_donation">
+            <input type="checkbox" name="allow_entry_donation" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_entry_donation">
             <span translate>STOCK.ENTRY_DONATION</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_entry_integration" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_integration">
+            <input type="checkbox" name="allow_entry_integration" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_entry_integration">
             <span translate>STOCK.ENTRY_INTEGRATION</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_entry_transfer" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_transfer">
+            <input type="checkbox" name="allow_entry_transfer" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_entry_transfer">
             <span translate>STOCK.ENTRY_TRANSFER</span>
           </label>
         </div>
@@ -57,25 +61,29 @@
         <label translate>STOCK.EXIT</label>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_exit_debtor" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_debtor">
+            <input type="checkbox" name="allow_exit_debtor" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_exit_debtor">
             <span translate>STOCK.EXIT_INDIVIDUAL</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_exit_service" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_service">
+            <input type="checkbox" name="allow_exit_service" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_exit_service">
             <span translate>STOCK.EXIT_SERVICE</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_exit_transfer" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_transfer">
+            <input type="checkbox" name="allow_exit_transfer" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_exit_transfer">
             <span translate>STOCK.EXIT_DEPOT</span>
           </label>
         </div>
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="allow_exit_loss" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_loss">
+            <input type="checkbox" name="allow_exit_loss" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_exit_loss">
             <span translate>STOCK.EXIT_LOSS</span>
           </label>
         </div>
@@ -88,11 +96,7 @@
       <label translate>DEPOT.WAREHOUSE_INFO</label>
       <div class="checkbox">
         <label>
-          <input
-            type="checkbox"
-            name="is_warehouse"
-            ng-true-value="1"
-            ng-false-value="0"
+          <input type="checkbox" name="is_warehouse" ng-true-value="1" ng-false-value="0"
             ng-model="DepotModalCtrl.depot.is_warehouse">
           <span translate>DEPOT.WAREHOUSE</span>
         </label>
@@ -102,39 +106,32 @@
     <div class="form-group">
       <div class="checkbox">
         <label>
-          <input
-            type="checkbox"
-            name="has_location"
-            ng-true-value="1"
-            ng-false-value="0"
+          <input type="checkbox" name="has_location" ng-true-value="1" ng-false-value="0"
             ng-model="DepotModalCtrl.hasLocation">
           <span translate>DEPOT.JOIN_LOCATION</span>
         </label>
       </div>
 
       <div ng-if="DepotModalCtrl.hasLocation">
-        <bh-location-select
-          location-uuid="DepotModalCtrl.depot.location_uuid">
+        <bh-location-select location-uuid="DepotModalCtrl.depot.location_uuid">
         </bh-location-select>
       </div>
     </div>
 
-    <bh-depot-select
-      label="DEPOT.PARENT_DEPOT"
-      depot-uuid="DepotModalCtrl.depot.parent_uuid"
-      on-select-callback="DepotModalCtrl.onSelectDepot(depot)"
-      exception="DepotModalCtrl.depot.uuid">
+    <bh-depot-select label="DEPOT.PARENT_DEPOT" depot-uuid="DepotModalCtrl.depot.parent_uuid"
+      on-select-callback="DepotModalCtrl.onSelectDepot(depot)" exception="DepotModalCtrl.depot.uuid">
       <bh-clear on-clear="DepotModalCtrl.clear('parent_uuid')"></bh-clear>
     </bh-depot-select>
 
-    <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.min_months_security_stock.$invalid }">
+    <div class="form-group"
+      ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.min_months_security_stock.$invalid }">
       <label class="control-label" translate>
         FORM.LABELS.MIN_MONTHS_SECURITY_STOCK
       </label>
-      <input name="min_months_security_stock" class="form-control" ng-model="DepotModalCtrl.depot.min_months_security_stock"
-        type="number" min="1" autocomplete="off" required bh-integer>
-      <div class="help-block" ng-show="DepotForm.$submitted"
-           ng-messages="DepotForm.min_months_security_stock.$error">
+      <input name="min_months_security_stock" class="form-control"
+        ng-model="DepotModalCtrl.depot.min_months_security_stock" type="number" min="1" autocomplete="off" required
+        bh-integer>
+      <div class="help-block" ng-show="DepotForm.$submitted" ng-messages="DepotForm.min_months_security_stock.$error">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
@@ -142,14 +139,30 @@
     <div ng-if="DepotModalCtrl.enable_strict_depot_distribution">
       <label class="control-label" translate>DEPOT.ALLOWED_DESTINATION_DEPOTS</label>
       <p ng-if="!DepotModalCtrl.depot.allowed_distribution_depots.length"><i translate>DEPOT.NO_DEPOT</i></p>
-      <bh-depot-search-select
-        label="STOCK.DEPOT"
-        id="distribution_depots"
-        depots-uuids = "DepotModalCtrl.depot.allowed_distribution_depots"
-        on-change="DepotModalCtrl.onDistributionDepotChange(depots)"
-        form-name="DepotForm">
+      <bh-depot-search-select label="STOCK.DEPOT" id="distribution_depots"
+        depots-uuids="DepotModalCtrl.depot.allowed_distribution_depots"
+        on-change="DepotModalCtrl.onDistributionDepotChange(depots)" form-name="DepotForm">
       </bh-depot-search-select>
     </div>
+
+    <div class="form-group" ng-class="{'has-error' : DepotForm.description.$invalid && DepotForm.$submitted}">
+      <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+      <textarea
+        class="form-control"
+        name="description"
+        ng-model="DepotModalCtrl.depot.description"
+        rows="4">
+      </textarea>
+      <div class="help-block" ng-messages="DepotForm.description.$error" ng-show="DepotForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-input-text
+      label="DEPOT.DHIS2_UID"
+      key="dhis2_uid"
+      text-value="DepotModalCtrl.depot.dhis2_uid">
+    </bh-input-text>
 
   </div>
 
