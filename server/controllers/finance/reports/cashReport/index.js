@@ -53,7 +53,6 @@ const templates = {
   SPLIT : TEMPLATE_SEPARATED,
 };
 
-
 /**
  * @function document
  * @description process and render the cash report document
@@ -96,10 +95,15 @@ async function document(req, res, next) {
     _.merge(context, { cashbox });
 
     // determine the currency rendering
+    params.currency_id = cashbox.currency_id;
+
     // Update By @lomamech
     // As the report of the boxes can only be viewed in the company currency,
     // we set the variable isEnterpriseCurrency to true
-    params.currency_id = cashbox.currency_id;
+    // NOTE(@jniles): @lomamech is right.  'isEnterpriseCurrency' is used to change the target
+    // that this report rendered _to_.  Since we don't have a currency select on the client side
+    // we always are rendering to the enterprise currency.
+    params.isEnterpriseCurrency = true;
 
     // get the opening balance for the acount
     const header = await AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
