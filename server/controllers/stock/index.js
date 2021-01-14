@@ -397,6 +397,7 @@ async function createMovement(req, res, next) {
   const metadata = {
     project : req.session.project,
     enterprise : req.session.enterprise,
+    stock_settings : req.session.stock_settings,
   };
 
   try {
@@ -469,7 +470,7 @@ async function normalMovement(document, params, metadata) {
   const currencyId = metadata.enterprise.currency_id;
   const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
 
-  if (metadata.enterprise.settings.enable_auto_stock_accounting) {
+  if (metadata.stock_settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
   }
 

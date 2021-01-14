@@ -1,13 +1,13 @@
 
 -- 2021-01-04
--- author: @jniles
+-- author: @jniles  (updated by jmcameron 2021-01-12)
 ALTER TABLE `user` MODIFY COLUMN `last_login` TIMESTAMP NULL;
-ALTER TABLE `user` ADD COLUMN `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE `user` ADD COLUMN `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+CALL add_column_if_missing('user', 'created_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `last_login`');
+CALL add_column_if_missing('user', 'updated_at', ' TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `created_at`');
 
 -- reset all last_login information
 UPDATE `user` SET `last_login` = NULL;
-
 
 /*
  * @author: lomamech
@@ -69,3 +69,37 @@ BEGIN
 
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
+
+
+/*
+ * @author: jmcameron
+ * @date: 2021-01-07
+ * @description: Install default discharge_type's in all sites
+ */
+DROP TABLE IF EXISTS `discharge_type`;
+CREATE TABLE `discharge_type` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discharge_type_1` (`id`, `label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- Default Discharge types
+INSERT INTO `discharge_type` (`id`, `label`) VALUES
+  (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
+  (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
+  (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
+  (4, 'PATIENT_RECORDS.DISCHARGE.SERVICE_CHANGE'),
+  (5, 'PATIENT_RECORDS.DISCHARGE.DEATH'),
+  (6, 'PATIENT_RECORDS.DISCHARGE.EVASION'),
+  (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
+  (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
+  (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
+
+/*
+ * @author: jmcameron
+ * @date: 2021-01-12
+ * @subject : Add description and dhis2_uid fields to the depot table
+ */
+CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
+CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');

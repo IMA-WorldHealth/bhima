@@ -449,6 +449,7 @@ DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(191) NOT NULL,
+  `description` TEXT DEFAULT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `is_warehouse` SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -462,6 +463,7 @@ CREATE TABLE `depot` (
   `location_uuid` BINARY(16) NULL,
   `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `parent_uuid` BINARY(16) NULL,
+  `dhis2_uid` VARCHAR(150) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
