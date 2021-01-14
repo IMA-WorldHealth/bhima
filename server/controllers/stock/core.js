@@ -701,7 +701,8 @@ async function getInventoryQuantityAndConsumption(params) {
  * Further, we add the following properties:
  *   1) lot_lifetime - the number of days left before the stock runs out.
  *   2) max_stock_date - the last day stock will be usable.
- *   3) usable_quantity_remaining - the total quantity that will be usable of the lot.
+ *   3) min_stock_date - the first day the stock will be consumed
+ *   4) usable_quantity_remaining - the total quantity that will be usable of the lot.
  *
  * Note that these indicators are only tracked if we are tracking_consumption
  * or tracking_expiration.
@@ -771,6 +772,7 @@ function computeLotIndicators(inventories) {
           // calculate finally the remaining days of stock, assuming we use this stock in order
           // maybe we will not ever get a chance to use it ... then it is 0.
           lot.lifetime_lot = Math.max(0, numDaysOfStockLeft - runningLotLifetimes);
+          lot.min_stock_date = moment(new Date()).add(runningLotLifetimes).toDate();
           lot.max_stock_date = maxStockDate;
 
           // add to the running LotLifetimes so that the next product will be used after it.
