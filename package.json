@@ -87,7 +87,7 @@
     "angular-touch": "^1.8.2",
     "angular-translate": "^2.18.3",
     "angular-translate-loader-static-files": "^2.18.3",
-    "angular-translate-loader-url": "^2.18.3",
+    "angular-translate-loader-url": "^2.18.4",
     "angular-ui-bootstrap": "^2.5.6",
     "angular-ui-grid": "^4.9.0",
     "body-parser": "^1.18.3",
