@@ -41,10 +41,16 @@
         "rm -rf bin",
         "cross-env NODE_ENV=production yarn build",
         "rm bin/.env",
-        "cross-env tar -czvf ${version}.tar.gz bin"
+        "cp package.json bin/",
+        "cp yarn.lock bin/",
+        "cp .env.sample bin/.env",
+        "mkdir bhima-${version}",
+        "mv bin bhima-${version}/",
+        "cross-env tar -czvf ${version}.tar.gz bhima-${version}"
       ],
       "after:release": [
         "rm ${version}.tar.gz",
+        "rm -rf bhima-${version}",
         "echo Successfully released ${name} v${version} to ${repo.repository}."
       ]
     },
