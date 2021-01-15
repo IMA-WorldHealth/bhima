@@ -695,7 +695,7 @@ async function getInventoryQuantityAndConsumption(params) {
  * Computes the indicators on stock lots.  Sets the following flags:
  *   1) expired - if the expiration date is in the past
  *   2) exhausted - if the quantity is 0.
- *   3) near_expiration - if the expiration is before
+ *   3) near_expiration - if the expiration date is sooner than the lot's stock out date
  *   4) at_risk - if the lot is part of an _inventory_ that is at risk of running out.
  *
  * Further, we add the following properties:
@@ -729,10 +729,10 @@ function computeLotIndicators(inventories) {
       // assuming the lot with lowest quantity is consumed first
       let orderedInventoryLots = _.orderBy(lots, 'quantity', 'asc');
 
-      // order lots by ascending lifetime has a hight priority than quantity
+      // order lots by ascending lifetime has a higher priority than quantity
       orderedInventoryLots = _.orderBy(orderedInventoryLots, 'lifetime', 'asc');
 
-      // compute the lot coefficient
+      // compute the lot coefficients
       let runningLotLifetimes = 0;
       const today = moment().endOf('day').toDate();
 
@@ -778,7 +778,7 @@ function computeLotIndicators(inventories) {
           // add to the running LotLifetimes so that the next product will be used after it.
           runningLotLifetimes += lot.lifetime_lot;
 
-          // the usuable quantity remaining is the minimum of the stock actually available
+          // the usable quantity remaining is the minimum of the stock actually available
           // and the amount able to be consumed in the time remaining
           const usableStockQuantityRemaining = Math.min(lot.lifetime_lot * consumptionPerDay, lot.quantity);
           lot.usable_quantity_remaining = usableStockQuantityRemaining;
