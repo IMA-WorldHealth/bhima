@@ -303,6 +303,7 @@
   "INVENTORY_ADJUSTMENT":{
     "TITLE":"Stock Inventory Adjustment",
     "DESC":"The inventory adjustment module allows you to adjust the quantities in stock of all lots in a depot at once.  Lot quantities will be increased or decreased to match the new quantity specified.",
+    "DIFFERENCE":"Difference",
     "NEW_QUANTITY":"New Quantity",
     "OLD_QUANTITY":"Old Quantity",
     "NO_CHANGE":"You have made no stock adjustments."

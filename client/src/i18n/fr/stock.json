@@ -302,6 +302,7 @@
   "INVENTORY_ADJUSTMENT":{
     "TITLE":"Ajustement des inventaires des stocks",
     "DESC":"Ce module d'ajustement de stock permet de definir le stock des articles.  Les quantités seront augmentées ou diminuées pour attendre les nouvelles quantités.",
+    "DIFFERENCE":"Différence",
     "NEW_QUANTITY":"Quantité (Nouvelle)",
     "OLD_QUANTITY":"Quantité (Ancienne)",
     "NO_CHANGE":"Vous n'avez fait aucun ajustement de stock"
