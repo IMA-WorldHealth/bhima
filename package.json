@@ -113,7 +113,7 @@
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
     "font-awesome": "^4.7.0",
-    "helmet": "^4.4.0",
+    "helmet": "^4.4.1",
     "inline-source": "^7.1.0",
     "ioredis": "^4.19.4",
     "jaro-winkler": "^0.2.8",
