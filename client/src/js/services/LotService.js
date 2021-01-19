@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('LotService', LotService);
 
-LotService.$inject = ['PrototypeApiService', '$http', 'util'];
+LotService.$inject = ['PrototypeApiService', '$http', '$httpParamSerializer', 'util'];
 
-function LotService(Api, $http, util) {
+function LotService(Api, $http, $httpParamSerializer, util) {
   const lots = new Api('/lots/');
 
   lots.read = (uuid) => {
@@ -12,6 +12,23 @@ function LotService(Api, $http, util) {
         res.expiration_date = new Date(res.expiration_date);
         return res;
       });
+  };
+
+  lots.dupes = (params) => {
+    return $http.get('/lot/dupes', { params })
+      .then(res => {
+        res.data.forEach((row) => {
+          row.entry_date = new Date(row.entry_date);
+          row.expiration_date = new Date(row.expiration_date);
+        });
+        return res;
+      })
+      .then(util.unwrapHttpResponse);
+  };
+
+  lots.merge = (uuid, lotsToMerge) => {
+    return $http.post(`/lots/merge/${uuid}/${lotsToMerge}`)
+      .then(util.unwrapHttpResponse);
   };
 
   lots.assignments = (uuid, depotUuid) => {
