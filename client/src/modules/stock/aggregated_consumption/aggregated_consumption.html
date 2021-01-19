@@ -3,7 +3,7 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
       <li ng-class="{ 'title' : !StockCtrl.depot.uuid, 'static' : StockCtrl.depot.uuid }">
-        <span translate>INVENTORY_ADJUSTMENT.TITLE</span>
+        <span translate>STOCK.AGGREGATED_STOCK_CONSUMPTION.TITLE</span>
       </li>
       <li class="title" ng-if="StockCtrl.depot.uuid">
         <span>{{ StockCtrl.depot.text }}</span>
@@ -31,11 +31,16 @@
       <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4">
 
-          <!-- date -->
-          <bh-date-editor
-            date-value="StockCtrl.movement.date"
-            on-change="StockCtrl.onDateChange(date)">
-          </bh-date-editor>
+          <bh-fiscal-year-select
+            fiscal-id="StockCtrl.movement.fiscal_id"
+            on-select-fiscal-callback="StockCtrl.onSelectFiscalYear(fiscalYear)">
+          </bh-fiscal-year-select>
+
+          <bh-period-selection
+            fiscal-year-id="StockCtrl.movement.fiscal_id"
+            period-id="StockCtrl.movement.period_id"
+            on-select-callback="StockCtrl.onSelectPeriod(period)">
+          </bh-period-selection>
 
           <!-- note -->
           <div class="form-group"
@@ -57,8 +62,8 @@
           </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6">
-          <h3 translate>INVENTORY_ADJUSTMENT.TITLE</h3>
-          <p translate>INVENTORY_ADJUSTMENT.DESC</p>
+          <h3 translate>STOCK.AGGREGATED_STOCK_CONSUMPTION.TITLE</h3>
+          <p translate>STOCK.AGGREGATED_STOCK_CONSUMPTION.DESCRIPTION</p>
         </div>
       </div>
 
@@ -88,7 +93,7 @@
       <!-- grid -->
       <div id="stock-adjustment-grid"
         ui-grid="StockCtrl.gridOptions"
-        style="height: 600px; width: 100%;"
+        style="height: 400px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns
         ui-grid-grouping>

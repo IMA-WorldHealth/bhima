@@ -25,6 +25,7 @@ function StockInventoryAdjustmentController(
   // global variables
   vm.Stock = new StockForm('StockInventoryAdjustment');
   vm.movement = {};
+  vm.stockOut = {};
 
   vm.onDateChange = date => {
     vm.movement.date = date;
