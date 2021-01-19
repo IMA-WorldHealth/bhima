@@ -3,6 +3,10 @@
     "ALERT"  : "Alert",
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
+    "AGGREGATED_STOCK_CONSUMPTION": {
+      "DESCRIPTION": "Ce module de consommation de stock aggregée permet de definir pour un dépôt et pour une période la quantité de stock consommée par produits mais surtout par lot, tout en précisant pour chaque produit le nombre de jour de rupture de stock",
+      "TITLE": "Consommation de stock aggregée"
+    },    
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
     "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
@@ -222,6 +226,7 @@
     "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts qui peuvent recevoir du stock à partir d'un dépôt donné; lors de la sortie de stock vers un dépôt, seul les dépôts autorisés peuvent s'afficher pour le dépôt donné afin de recevoir du stock"
   },
   "STOCK_FLUX" : {
+    "AGGREGATE_CONSUMPTION" : "Consommation aggregée",
     "FROM_PURCHASE"    : "Commande d'achat",
     "FROM_OTHER_DEPOT" : "En provenance d'un dépôt",
     "FROM_ADJUSTMENT"  : "Ajustement (Positif)",
