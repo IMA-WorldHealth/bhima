@@ -25,9 +25,16 @@ function StockAggregatedConsumptionController(
   // global variables
   vm.Stock = new StockForm('StockInventoryAdjustment');
   vm.movement = {};
+  vm.stockOut = {};
 
-  vm.onDateChange = date => {
-    vm.movement.date = date;
+  vm.onSelectFiscalYear = (fiscalYear) => {
+    setupStock();
+    vm.movement.fiscal_id = fiscalYear.id;
+  };
+
+  vm.onSelectPeriod = (period) => {
+    vm.movement.date = period.end_date;
+    vm.movement.period_id = period.id;
     loadInventories(vm.depot);
   };
 
@@ -63,13 +70,13 @@ function StockAggregatedConsumptionController(
       headerCellFilter : 'translate',
     }, {
       field : 'label',
-      width : 90,
+      width : 120,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
       field : 'old_quantity',
-      width : 90,
+      width : 120,
       displayName : 'STOCK.QUANTITY_IN_STOCK',
       headerCellFilter : 'translate',
       enableFiltering : false,
@@ -87,14 +94,6 @@ function StockAggregatedConsumptionController(
       displayName : 'STOCK.QUANTITY_LOST',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_lost.tmpl.html',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
-      enableFiltering : false,
-    }, {
-      field : 'quantity_remaining',
-      width : 150,
-      displayName : 'STOCK.QUANTITY_REMAINING',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_remaining.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
@@ -123,7 +122,6 @@ function StockAggregatedConsumptionController(
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'text', true, true);
 
-
   // register api
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -141,10 +139,6 @@ function StockAggregatedConsumptionController(
   }
 
   function startup() {
-    vm.movement = {
-      date : new Date(),
-    };
-
     setupStock();
   }
 
@@ -154,6 +148,8 @@ function StockAggregatedConsumptionController(
   };
 
   function loadInventories(depot) {
+    if (!vm.movement.date) { return 0; }
+
     vm.loading = true;
     setupStock();
 
@@ -209,6 +205,9 @@ function StockAggregatedConsumptionController(
       is_exit : 0,
       flux_id : INVENTORY_ADJUSTMENT,
       user_id : Session.user.id,
+      stock_out : vm.stockOut,
+      fiscal_id : vm.movement.fiscal_id,
+      period_id : vm.movement.period_id,
     };
 
     const lots = vm.Stock.store.data.map((row) => {
@@ -217,15 +216,10 @@ function StockAggregatedConsumptionController(
     });
 
     movement.lots = lots.filter(lot => {
-      return lot.quantity !== lot.oldQuantity;
+      return (lot.quantity_consumed > 0 || lot.quantity_lost > 0);
     });
 
-    if (!movement.lots.length) {
-      Notify.warn('INVENTORY_ADJUSTMENT.NO_CHANGE');
-      return 0;
-    }
-
-    return Stock.inventoryAdjustment.create(movement)
+    return Stock.aggregatedConsumption.create(movement)
       .then(() => {
         // since we have effectively performed an inventory, instead of rendering a receipt,
         // we will render the "Articles in Stock" report for this depot.
