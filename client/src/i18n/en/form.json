@@ -422,6 +422,7 @@
             "DOB_ABBREV": "DOB",
             "DOCUMENT": "Document",
             "DUE": "Payment Due",
+            "DUPLICATE_LOTS": "Duplicate Lots",
             "EDIT": "Edit",
             "EDIT_STATUS": "Edit Status",
             "EMAIL": "Email",

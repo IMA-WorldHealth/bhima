@@ -426,6 +426,7 @@
             "DOB_ABBREV": "DDN",
             "DOCUMENT": "Document",
             "DUE": "Paiement dû",
+            "DUPLICATE_LOTS": "Lots en double",
             "EDIT": "Éditer",
             "EDIT_STATUS": "Modifier le statut",
             "EMAIL": "Email",

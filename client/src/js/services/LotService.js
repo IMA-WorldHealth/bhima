@@ -5,10 +5,21 @@ LotService.$inject = ['PrototypeApiService', '$http', 'util'];
 
 function LotService(Api, $http, util) {
   const lots = new Api('/lots/');
+  const dupes = new Api('/lots/dupes');
 
   lots.read = (uuid) => {
     return Api.read.call(lots, uuid)
       .then(res => {
+        res.expiration_date = new Date(res.expiration_date);
+        return res;
+      });
+  };
+
+  lots.dupes = (params) => {
+    console.log("DUPES: ", params);
+    return Api.dupes.call(params)
+      .then(res => {
+        res.entry_date = new Date(res.entry_date);
         res.expiration_date = new Date(res.expiration_date);
         return res;
       });

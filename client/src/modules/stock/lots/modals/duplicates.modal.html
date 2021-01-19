@@ -1,0 +1,27 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-lots-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="title" translate>FORM.LABELS.DUPLICATE_LOTS</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
+    Hello!
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

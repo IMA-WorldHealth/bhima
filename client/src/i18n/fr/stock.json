@@ -242,6 +242,7 @@
     "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
     "EXCLUDE_EXHAUSTED_LOTS": "Exclure les lots de stocks épuisés",
     "DETAILS":"Information sur le lot",
+    "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
     "LOT_LABEL":"Designation du lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",

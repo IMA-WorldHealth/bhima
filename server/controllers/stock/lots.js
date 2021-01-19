@@ -17,6 +17,7 @@ exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
+exports.dupes = dupes;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -30,7 +31,7 @@ function getLotTags(bid) {
 
 /**
  * GET /stock/lots/:uuid
- * Get details of a lots
+ * Get details of a lot
  */
 function details(req, res, next) {
   const bid = db.bid(req.params.uuid);
@@ -90,6 +91,46 @@ async function update(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+/**
+ * GET /lots/dupes
+ *
+ * @description
+ * Returns all lots with the given label or matching field(s)
+ * inventory_uuid, initial_quantity, entry_date, expiration_date
+ *
+ */
+function dupes(req, res, next) {
+  console.log("dupes params: ", req.params);
+  const lotLabel = req.params.label;
+  const inventoryUuid = db.bid(req.params.inventory_uuid);
+  const initialQuantity = req.params.initial_quantity;
+  const entryDate = req.params.entry_date;
+  const expirationDate = req.params.expiration_date;
+  const where1 = lotLabel ? `l.label = "${lotLabel}"` : '';
+  const where2 = inventoryUuid ? `l.inventory_uuid = ${inventoryUuid}` : '';
+  const where3 = initialQuantity ? `l.initial_quantity = ${initialQuantity}` : '';
+  const where4 = entryDate ? `l.label = ${entryDate}` : '';
+  const where5 = expirationDate ? `l.label = ${expirationDate}` : '';
+  const wheres = [where1, where2, where3, where4, where5].join(' AND ');
+
+  const query = `
+    SELECT
+      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
+      l.unit_cost, l.description, l.entry_date, l.expiration_date,
+      BUID(i.uuid) AS inventory_uuid, i.text AS inventory_name
+    FROM lot l
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    WHERE ${wheres};
+  `;
+
+  db.exec(query)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
