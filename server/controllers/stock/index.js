@@ -13,6 +13,7 @@
  * @requires stock/core
  */
 const _ = require('lodash');
+const moment = require('moment');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
@@ -986,9 +987,6 @@ async function createAggregatedConsumption(req, res, next) {
   try {
     const movement = req.body;
 
-    console.log('NEWWWWWW');
-    console.log(movement);
-
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
     }
@@ -1012,6 +1010,12 @@ async function createAggregatedConsumption(req, res, next) {
     const stockLossQuantities = lots.filter(lot => lot.quantity_lost > 0);
 
     stockConsumptionQuantities.forEach(lot => {
+      // 
+      const daysStockOut = movement.stock_out[lot.inventory_uuid];
+      if (daysStockOut > 0) {
+        movement.date = moment(movement.date).subtract(daysStockOut, 'day');
+      }
+
       const consumptionMovementObject = {
         uuid : db.bid(uuid()),
         lot_uuid : db.bid(lot.uuid),
@@ -1027,15 +1031,24 @@ async function createAggregatedConsumption(req, res, next) {
         user_id : req.session.user.id,
         period_id : periodId,
       };
+      
       trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
+
+      const consumptionParams = [
+        db.bid(lot.inventory_uuid), db.bid(movement.depot_uuid), new Date(movement.date), lot.quantity_consumed,
+      ];
+
+      trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
     });
+
+    const inventoryUuids = stockConsumptionQuantities.map(lot => lot.inventory_uuid);
 
     stockLossQuantities.forEach(lot => {
       const lossMovementObject = {
         uuid : db.bid(uuid()),
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(consumptionUuid),
+        document_uuid : db.bid(lossUuid),
         quantity : lot.quantity_lost,
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
@@ -1067,13 +1080,15 @@ async function createAggregatedConsumption(req, res, next) {
       }
     }
 
-    console.log('ICI NOUS SOMMMES : NA ZO MEKA MAIS NA ZO KOMA TE');
-
     await trx.execute();
+
+    // gather inventory uuids for later quantity in stock calculation updates
+    if (stockConsumptionQuantities.length > 0) {
+      await updateQuantityInStockAfterMovement(inventoryUuids, new Date(movement.date), db.bid(movement.depot_uuid));
+    }
 
     res.status(201).json({});
   } catch (err) {
     next(err);
   }
 }
-
