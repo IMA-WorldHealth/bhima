@@ -20,10 +20,10 @@ function StockAggregatedConsumptionController(
 ) {
   const vm = this;
 
-  const { INVENTORY_ADJUSTMENT } = bhConstants.flux;
+  const { AGGREGATED_CONSUMPTION } = bhConstants.flux;
 
   // global variables
-  vm.Stock = new StockForm('StockInventoryAdjustment');
+  vm.Stock = new StockForm('StockAggregatedConsumption');
   vm.movement = {};
   vm.stockOut = {};
 
@@ -34,6 +34,14 @@ function StockAggregatedConsumptionController(
 
   vm.onSelectPeriod = (period) => {
     vm.movement.date = period.end_date;
+    vm.currentDate = new Date();
+
+    if (vm.currentDate < vm.movement.date) {
+      Notify.warn('FORM.WARNINGS.AGGREGATED_STOCK_MODULE');
+      setupStock();
+      return;
+    }
+
     vm.movement.period_id = period.id;
     loadInventories(vm.depot);
   };
@@ -63,6 +71,12 @@ function StockAggregatedConsumptionController(
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       enableSorting : true,
+    }, {
+        field : 'status',
+        width : 25,
+        displayName : '',
+        cellTemplate : 'modules/stock/aggregated_consumption/templates/status.tmpl.html',
+        enableFiltering : false,
     }, {
       field : 'code',
       width : 90,      
@@ -120,7 +134,7 @@ function StockAggregatedConsumptionController(
     onRegisterApi : onRegisterApiFn,
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'text', true, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'text', vm.grouped, true);
 
   // register api
   function onRegisterApiFn(gridApi) {
@@ -136,6 +150,8 @@ function StockAggregatedConsumptionController(
   function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
+    vm.stockOut = {};
+    vm.movement.description = '';
   }
 
   function startup() {
@@ -159,7 +175,6 @@ function StockAggregatedConsumptionController(
       dateTo : vm.movement.date,
     })
       .then(lots => {
-
         const n = lots.length;
         let i = 0;
 
@@ -184,6 +199,7 @@ function StockAggregatedConsumptionController(
 
         // run validation on all rows
         vm.Stock.validate();
+        vm.grouping.unfoldAllGroups();
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -203,7 +219,7 @@ function StockAggregatedConsumptionController(
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 0,
-      flux_id : INVENTORY_ADJUSTMENT,
+      flux_id : AGGREGATED_CONSUMPTION,
       user_id : Session.user.id,
       stock_out : vm.stockOut,
       fiscal_id : vm.movement.fiscal_id,
@@ -223,7 +239,7 @@ function StockAggregatedConsumptionController(
       .then(() => {
         // since we have effectively performed an inventory, instead of rendering a receipt,
         // we will render the "Articles in Stock" report for this depot.
-        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
+        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, AGGREGATED_CONSUMPTION);
 
         startup();
         return loadInventories(vm.depot);
