@@ -20,7 +20,8 @@ async function DuplicateLotsModalController(data, Instance, Lots
   const lot = await Lots.read(lotUuid);
   console.log("LOT: ", lot);
 
-  const results = Lots.dupes({'label' : 'ARP'});
+  const results = await Lots.dupes({ label : 'ARP' });
+  console.log(results);
   // const changes = new Store({ identifier : 'key' });
 
   // vm.filters = data;

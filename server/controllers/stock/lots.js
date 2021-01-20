@@ -12,6 +12,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 exports.update = update;
 exports.details = details;
@@ -94,26 +95,36 @@ async function update(req, res, next) {
 }
 
 /**
- * GET /lots/dupes
+ * GET /lot_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
  *
  * @description
  * Returns all lots with the given label or matching field(s)
  * inventory_uuid, initial_quantity, entry_date, expiration_date
  *
+ * TODO: After getting this working purge unneeded params
+ *
  */
 function dupes(req, res, next) {
-  console.log("dupes params: ", req.params);
-  const lotLabel = req.params.label;
-  const inventoryUuid = db.bid(req.params.inventory_uuid);
-  const initialQuantity = req.params.initial_quantity;
-  const entryDate = req.params.entry_date;
-  const expirationDate = req.params.expiration_date;
-  const where1 = lotLabel ? `l.label = "${lotLabel}"` : '';
-  const where2 = inventoryUuid ? `l.inventory_uuid = ${inventoryUuid}` : '';
-  const where3 = initialQuantity ? `l.initial_quantity = ${initialQuantity}` : '';
-  const where4 = entryDate ? `l.label = ${entryDate}` : '';
-  const where5 = expirationDate ? `l.label = ${expirationDate}` : '';
-  const wheres = [where1, where2, where3, where4, where5].join(' AND ');
+  const wheres = [];
+  if (req.query.label) {
+    wheres.push(`l.label = "${req.query.label}"`);
+  }
+  if (req.query.inventory_uuid) {
+    wheres.push(`l.inventory_uuid = ${db.bid(req.query.inventory_uuid)}`);
+  }
+  if (req.query.initial_quantity) {
+    wheres.push(`l.initial_quantity = ${req.query.initial_quantity}`);
+  }
+  if (req.query.entry_date) {
+    wheres.push(`l.entry_date = ${req.query.expiration_date}`);
+  }
+  if (req.query.expiration_date) {
+    wheres.push(`l.expiration_date = ${req.query.expiration_date}`);
+  }
+  if (wheres.length === 0) {
+    throw new NotFound(`Search for duplicate lots failed.`);
+  }
+  const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
   const query = `
     SELECT
@@ -122,7 +133,7 @@ function dupes(req, res, next) {
       BUID(i.uuid) AS inventory_uuid, i.text AS inventory_name
     FROM lot l
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    WHERE ${wheres};
+    ${wheresQuery};
   `;
 
   db.exec(query)
