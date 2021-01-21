@@ -32,14 +32,10 @@
           <tr ng-repeat="lot in $ctrl.lots track by lot.uuid"
               ng-class="{ 'selected-lot' : lot.selected }">
             <td class="center">
-              <input type="radio" name="selected" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
+              <input type="radio" name="selected"
                 ng-click="$ctrl.selectLot(lot)"
-                checked="true"
+                [attr.checked]="lot.uuid === $ctrl.selectedLot.uuid : true : null"
                 required>
-              <input type="radio" name="selected" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
-                ng-click="$ctrl.selectLot(lot)"
-                required>
-            </td>
             <td class="center">
               <input type="checkbox" name="merge" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
                 ng-model="lot.merge">
