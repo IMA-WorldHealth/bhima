@@ -32,8 +32,11 @@
           <tr ng-repeat="lot in $ctrl.lots track by lot.uuid"
               ng-class="{ 'selected-lot' : lot.selected }">
             <td class="center">
-              <input type="radio" name="selected"
-                checked="lot.selected"
+              <input type="radio" name="selected" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
+                ng-click="$ctrl.selectLot(lot)"
+                checked="true"
+                required>
+              <input type="radio" name="selected" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
                 ng-click="$ctrl.selectLot(lot)"
                 required>
             </td>
