@@ -95,7 +95,6 @@ class FilterParser {
     }
   }
 
-
   /**
    * @method dateFrom
    *
@@ -204,10 +203,10 @@ class FilterParser {
     this._group = groupString;
   }
 
-  applyQuery(sql) {
+  applyQuery(sql, ignoreLimit = false) {
     // optionally call utility method to parse all remaining options as simple
     // equality filters into `_statements`
-    const limitCondition = this._parseLimit();
+    const limitCondition = ignoreLimit ? '' : this._parseLimit();
 
     if (this._autoParseStatements) {
       this._parseDefaultFilters();
