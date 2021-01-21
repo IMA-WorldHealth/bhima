@@ -38,6 +38,9 @@ exports.find = find;
 exports.lookupVoucher = lookupVoucher;
 exports.safelyDeleteVoucher = safelyDeleteVoucher;
 exports.totalAmountByCurrency = totalAmountByCurrency;
+
+const REVERSAL_TYPE_ID = 10;
+
 /**
  * GET /vouchers
  *
@@ -65,13 +68,16 @@ function list(req, res, next) {
 function detail(req, res, next) {
   lookupVoucher(req.params.uuid)
     .then(voucher => res.status(200).json(voucher))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function lookupVoucher(vUuid) {
-  let voucher;
-
+/**
+ * @function lookupVoucher
+ *
+ * @description
+ * Gets a single voucher (and associated details) by its uuid.
+ */
+async function lookupVoucher(vUuid) {
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.created_at, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
@@ -96,15 +102,14 @@ function lookupVoucher(vUuid) {
     ORDER BY vi.account_id DESC, vi.debit DESC, vi.credit ASC, entity_reference;
   `;
 
-  return db.one(sql, [db.bid(vUuid)])
-    .then((record) => {
-      voucher = record;
-      return db.exec(itemSql, [db.bid(vUuid)]);
-    })
-    .then((items) => {
-      voucher.items = items;
-      return voucher;
-    });
+  const [voucher, items] = await Promise.all([
+    db.one(sql, [db.bid(vUuid)]),
+    db.exec(itemSql, [db.bid(vUuid)]),
+  ]);
+
+  voucher.items = items;
+
+  return voucher;
 }
 
 // NOTE(@jniles) - this is used to find references for both vouchers and credit notes.
@@ -148,6 +153,13 @@ function find(options) {
   filters.equals('project_id');
   filters.equals('edited');
   filters.equals('currency_id');
+
+  if (options.reversed === '2') {
+    filters.custom('reversed',
+      `(v.reversed = 0 OR (v.type_id <> ${REVERSAL_TYPE_ID} AND v.reference_uuid NOT IN (SELECT uuid FROM voucher)))`);
+  } else {
+    filters.equals('reversed');
+  }
 
   filters.equals('reference', 'text', 'dm');
 
@@ -267,7 +279,6 @@ function createVoucher(voucherDetails, userId, projectId) {
   voucherDetails.uuid = db.bid(vuid);
 
   const SALARY_PAYMENT_VOUCHER_TYPE_ID = 7;
-
 
   // preprocess the items so they have uuids as required
   items.forEach(value => {
