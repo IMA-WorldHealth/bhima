@@ -53,6 +53,7 @@
       "TITLE": "Quittance",
       "INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les bordereaux inversés",
       "EXCLUDE_REVERSED_RECORDS":"Exclure tous les bordereaux inversés",
+      "EXCLUDE_REVERSED_AND_REVERSAL_RECORDS" : "Exclure tous les bordereaux inversés et les bordereaux qui fait l'inversion",
       "REVERSED_RECORDS":"Bordereaux Inversés",
       "TRANSACTION_TYPE_INFO": "Le type de transaction dépend du revenu ou bien d'une dépense",
       "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"

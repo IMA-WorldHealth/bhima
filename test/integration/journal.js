@@ -157,7 +157,7 @@ function CorrectionTests() {
     trans_id : 'TPA8',
     transaction_type_id : 5,
     description : 'Transaction reversed using Administrative Voucher Tools TPA8',
-    correctionDescription : 'VOUCHERS.TOOLS.CORRECT.DESCRIPTION',
+    correctionDescription : '(CORRECTION) Transaction reversed using Administrative Voucher Tools TPA8',
   };
 
   const correction = [{
