@@ -107,7 +107,7 @@ async function update(req, res, next) {
 function dupes(req, res, next) {
   const wheres = [];
   if (req.query.label) {
-    wheres.push(`l.label = "${req.query.label}"`);
+    wheres.push(`l.label LIKE "${req.query.label}"`);
   }
   if (req.query.inventory_uuid) {
     wheres.push(`l.inventory_uuid = ${db.bid(req.query.inventory_uuid)}`);
@@ -126,7 +126,7 @@ function dupes(req, res, next) {
   }
   const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
-  const query = `
+  const sql = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
       l.unit_cost, l.description, l.entry_date, l.expiration_date,
@@ -136,7 +136,7 @@ function dupes(req, res, next) {
     ${wheresQuery};
   `;
 
-  db.exec(query)
+  db.exec(sql)
     .then(rows => {
       res.status(200).json(rows);
     })

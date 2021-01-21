@@ -3,174 +3,64 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 DuplicateLotsModalController.$inject = [
-  'data', '$uibModalInstance', 'LotService',
+  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService',
   // 'util', 'Store', 'PeriodService', 'StockService',
   // 'SearchModalUtilService',
 ];
 
-async function DuplicateLotsModalController(data, Instance, Lots
+function DuplicateLotsModalController(data, $state, Instance, Lots, Notify) {
   // util, Store, Periods, Stock, SearchModal
-  ) {
   const vm = this;
-  const lotUuid = data.uuid;
-  // ??? const depotUuid = data.depotUuid;
-  console.log(lotUuid);
+  vm.selectedLot = null;
+  vm.lots = [];
+  vm.selectLot = selectLot;
+  vm.cancel = cancel;
+  vm.submit = submit;
+  vm.selectedLot = null;
 
-  // Get the details for the lot
-  const lot = await Lots.read(lotUuid);
-  console.log("LOT: ", lot);
+  function startup() {
+    Lots.read(data.uuid)
+      .then(selectedLot => {
+        vm.selectedLot = selectedLot;
+        // Search for duplicate lots
+        Lots.dupes({ label : vm.selectedLot.label })
+          .then(lots => {
+            lots.forEach(lot2 => {
+              lot2.selected = lot2.uuid === vm.selectedLot.uuid;
+              lot2.merge = false;
+            });
+            vm.lots = lots;
+            console.log("UUID: ", data.uuid);
+            console.log('LOTS0: ', vm.lots);
+          });
+      })
+      .catch(Notify.handleError);
+  }
 
-  const results = await Lots.dupes({ label : 'ARP' });
-  console.log(results);
-  // const changes = new Store({ identifier : 'key' });
+  function selectLot(sLot) {
+    vm.selectedLot = sLot;
+    vm.lots.forEach(lot => {
+      lot.selected = lot.uuid === sLot.uuid;
+      if (lot.uuid === sLot.uuid) {
+        lot.merge = false;
+      }
+    });
+  }
 
-  // vm.filters = data;
-  // vm.searchQueries = {};
-  // vm.defaultQueries = {};
+  function cancel() {
+    Instance.close('cancel');
+  }
 
-  // const searchQueryOptions = [
-  //   'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-  //   'entry_date_to', 'expiration_date_from', 'expiration_date_to',
-  //   'is_expired', 'is_expiry_risk', 'tags',
-  // ];
+  function submit(form) {
+    // ??? console.log('SUBMIT');
+    if (form.$invalid) { return; }
 
-  // // displayValues will be an id:displayValue pair
-  // const displayValues = {};
-  // const lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
+    //   ???
+    console.log('LOTS: ', vm.lots);
+    Notify.success('LOTS.SUCCESSFULLY_MERGED_N_LOTS');
 
-  // // assign already defined custom filters to searchQueries object
-  // vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
+    Instance.close();
+  }
 
-  // // default filter period - directly write to changes list
-  // vm.onSelectPeriod = function onSelectPeriod(period) {
-  //   const periodFilters = Periods.processFilterChanges(period);
-
-  //   periodFilters.forEach(filterChange => {
-  //     changes.post(filterChange);
-  //   });
-  // };
-
-  // // custom filter depot_uuid - assign the value to the params object
-  // vm.onSelectDepot = function onSelectDepot(depot) {
-  //   vm.searchQueries.depot_uuid = depot.uuid;
-  //   displayValues.depot_uuid = depot.text;
-  // };
-
-  // // custom filter inventory_uuid - assign the value to the params object
-  // vm.onSelectInventory = function onSelectInventory(inventory) {
-  //   vm.searchQueries.inventory_uuid = inventory.uuid;
-  //   displayValues.inventory_uuid = inventory.label;
-  // };
-
-  // // include/exclude empty lots
-  // vm.setIncludeEmptyLot = (value) => {
-  //   vm.defaultQueries.includeEmptyLot = value;
-  //   if (angular.isDefined(value)) {
-  //     changes.post({ key : 'includeEmptyLot', value });
-  //   }
-  // };
-
-  // // toggle expired stock
-  // vm.onToggleExpired = function onToggleExpired(bool) {
-  //   vm.searchQueries.is_expired = bool;
-  // };
-
-  // // toggle expiry risks
-  // vm.onToggleExpiryRisk = function onToggleExpiryRisk(bool) {
-  //   vm.searchQueries.is_expiry_risk = bool;
-  // };
-
-  // // default filter limit - directly write to changes list
-  // vm.onSelectLimit = function onSelectLimit(value) {
-  //   // input is type value, this will only be defined for a valid number
-  //   if (angular.isDefined(value)) {
-  //     changes.post({ key : 'limit', value });
-  //   }
-  // };
-
-  // // custom filter group_uuid - assign the value to the params object
-  // vm.onSelectGroup = (group) => {
-  //   vm.searchQueries.group_uuid = group.uuid;
-  //   displayValues.group_uuid = group.name;
-  // };
-
-  // // Save the entry dates
-  // vm.onEntryDate = (dateFrom, dateTo) => {
-  //   vm.searchQueries.entry_date_from = dateFrom;
-  //   displayValues.entry_date_from = dateFrom;
-  //   vm.searchQueries.entry_date_to = dateTo;
-  //   displayValues.entry_date_to = dateTo;
-  // };
-
-  // // Save the expiration dates
-  // vm.onExpirationDate = (dateFrom, dateTo) => {
-  //   vm.searchQueries.expiration_date_from = dateFrom;
-  //   displayValues.expiration_date_from = dateFrom;
-  //   vm.searchQueries.expiration_date_to = dateTo;
-  //   displayValues.expiration_date_to = dateTo;
-  // };
-
-  // // Save the Tags
-  // vm.onSelectTags = tags => {
-  //   vm.searchQueries.tags = tags;
-  //   displayValues.tags = tags.map(t => t.name).join(',');
-  // };
-
-  // // deletes a filter from the custom filter object,
-  // // this key will no longer be written to changes on exit
-  // vm.clear = function clear(key) {
-  //   delete vm.searchQueries[key];
-  // };
-
-  // if (data.includeEmptyLot) {
-  //   vm.defaultQueries.includeEmptyLot = data.includeEmptyLot;
-  // } else {
-  //   vm.defaultQueries.includeEmptyLot = 0;
-  // }
-
-  // if (data.limit) {
-  //   vm.defaultQueries.limit = data.limit;
-  // }
-
-  // if (data.entry_date_from) {
-  //   vm.defaultQueries.entry_date_from = data.entry_date_from;
-  // }
-  // if (data.entry_date_to) {
-  //   vm.defaultQueries.entry_date_to = data.entry_date_to;
-  // }
-
-  // if (data.expiration_date_from) {
-  //   vm.defaultQueries.expiration_date_from = data.expiration_date_from;
-  // }
-  // if (data.expiration_date_to) {
-  //   vm.defaultQueries.expiration_date_to = data.expiration_date_to;
-  // }
-
-  // if (data.tags) {
-  //   vm.defaultQueries.tags = data.tags.map(t => t.name).join(',');
-  // }
-
-  vm.cancel = () => Instance.dismiss();
-
-  vm.submit = () => {
-    const loggedChanges = '';
-  //   const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
-
-  //   // The following work-around is necessary to deal with the case where you
-  //   // select a tag but then delete it before clicking [Submit]; the element
-  //   // has an empty array so it needs to be deleted. There probably is a
-  //   // cleaner way to do this.
-  //   // There may be a bug in bhTagSelect that is causing this problem.
-  //   // @jmcameron 2021-01-08
-  //   loggedChanges.some((elt, i) => {
-  //     if (elt.key === 'tags') {
-  //       if (elt.value.length === 0) {
-  //         delete loggedChanges[i];
-  //       }
-  //     }
-  //     return elt.key === 'tags';
-  //   });
-
-    return Instance.close(loggedChanges);
-  };
+  startup();
 }
