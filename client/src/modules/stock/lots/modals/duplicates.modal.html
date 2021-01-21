@@ -33,6 +33,7 @@
               ng-class="{ 'selected-lot' : lot.selected }">
             <td class="center">
               <input type="radio" name="selected"
+                checked="lot.selected"
                 ng-click="$ctrl.selectLot(lot)"
                 required>
             </td>
