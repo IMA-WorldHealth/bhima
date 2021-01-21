@@ -273,6 +273,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       })
       .then((res) => {
         helpers.api.listed(res, 11);
+        return agent.get('/vouchers').query({ reversed : '2' });
+      })
+      .then(res => {
+        helpers.api.listed(res, 9);
       })
       .catch(helpers.handler);
   });

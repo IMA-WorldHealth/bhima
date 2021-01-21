@@ -237,6 +237,16 @@ class DatabaseConnector {
     return mysql.escape(key);
   }
 
+  /**
+   * @method format
+   *
+   * @description
+   * This is just an alias for mysql.format()
+   */
+  format(sql, params) {
+    return mysql.format(sql.trim(), params);
+  }
+
   delete(table, idKey, idValue, res, next, notFoundErrorMessage) {
     const sql = `DELETE FROM ${table} WHERE ${idKey} = ?;`;
     return this.exec(sql, [idValue])
