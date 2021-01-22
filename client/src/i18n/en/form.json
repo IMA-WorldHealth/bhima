@@ -50,6 +50,7 @@
             "LOGOUT": "Logout",
             "LOCK" : "Lock",
             "UNLOCK" : "Unlock",
+            "MERGE": "Merge",
             "NEXT": "Next",
             "NEW": "New",
             "NEW_REPORT": "Create new report",
