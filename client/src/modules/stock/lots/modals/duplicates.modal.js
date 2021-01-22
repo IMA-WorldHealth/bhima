@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 DuplicateLotsModalController.$inject = [
-  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService', '$translate'
+  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService', '$translate',
   // 'util', 'Store', 'PeriodService', 'StockService',
   // 'SearchModalUtilService',
 ];
@@ -62,7 +62,7 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $tra
       Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
     } else {
       Lots.merge(vm.selectedLot.uuid, lotsToMerge);
-      Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N: lotsToMerge.length }));
+      Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
     }
     Instance.close();
   }
