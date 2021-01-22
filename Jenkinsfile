@@ -1,6 +1,7 @@
 pipeline {
-  agent any
-  tools {nodejs "latest"}
+  agent {
+    docker { image 'node:latest' }
+  }
 
   environment {
     CHROME_OPTIONS = '--disable-dev-shm-usage --disable-extensions --no-sandbox'
@@ -33,6 +34,7 @@ pipeline {
     stage('build') {
       steps {
         sh 'yarn build'
+        sh 'yarn webdriver-manager update --gecko false'
       }
     }
 
