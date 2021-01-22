@@ -258,8 +258,10 @@
     "EXPIRED":"There are {{quantity}} {{unit}} expired",
     "NEAR_EXPIRE":"There are {{quantity}} {{unit}} expiring soon",
     "SHOW_ONLY_RISKY_LOTS":"Show only inventories with risky lots",
+    "NO_LOTS_FOUND": "No matching lots found",
+    "FOUND_N_LOTS": "Found {{N}} matching lots",
     "NO_LOTS_MERGED": "No lots were selected to be merged!",
-    "SUCCESSFULLY_MERGED_N_LOTS": "Merged {{N}} lots"
+    "MERGED_N_LOTS": "Merged {{N}} lots"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"

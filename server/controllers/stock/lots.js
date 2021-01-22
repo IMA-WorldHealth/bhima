@@ -110,7 +110,7 @@ function dupes(req, res, next) {
     wheres.push(`l.label LIKE "${req.query.label}"`);
   }
   if (req.query.inventory_uuid) {
-    wheres.push(`l.inventory_uuid = ${db.bid(req.query.inventory_uuid)}`);
+    wheres.push(`l.inventory_uuid = 0x${req.query.inventory_uuid}`);
   }
   if (req.query.initial_quantity) {
     wheres.push(`l.initial_quantity = ${req.query.initial_quantity}`);
@@ -149,12 +149,9 @@ function dupes(req, res, next) {
  * stock_movement :
  */
 async function merge(req, res, next) {
-  console.log("Merge");
   const uuid = db.bid(req.params.uuid);
-  let keep = {};
   const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
 
-  console.log("LTM: ", lotsToMerge);
   const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
   const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
   const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';

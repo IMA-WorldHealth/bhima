@@ -22,8 +22,7 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $tra
     Lots.read(data.uuid)
       .then(selectedLot => {
         vm.selectedLot = selectedLot;
-        // Search for duplicate lots
-        Lots.dupes({ label : vm.selectedLot.label })
+        Lots.dupes({ label : vm.selectedLot.label, inventory_uuid : vm.selectedLot.inventory_uuid })
           .then(lots => {
             lots.forEach(lot2 => {
               lot2.selected = lot2.uuid === vm.selectedLot.uuid;
@@ -50,7 +49,6 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $tra
   }
 
   function submit(form) {
-    // ??? console.log('SUBMIT');
     if (form.$invalid) { return; }
 
     // Collect the lots to be merged
@@ -63,12 +61,8 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $tra
     if (lotsToMerge.length === 0) {
       Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
     } else {
-      Lots.merge(vm.selectedLot.uuid, lotsToMerge)
-        .then(result => {
-
-        });
-
-      Notify.success($translate.instant('LOTS.SUCCESSFULLY_MERGED_N_LOTS', { N: lotsToMerge.length }));
+      Lots.merge(vm.selectedLot.uuid, lotsToMerge);
+      Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N: lotsToMerge.length }));
     }
     Instance.close();
   }

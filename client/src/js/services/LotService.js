@@ -27,7 +27,6 @@ function LotService(Api, $http, $httpParamSerializer, util) {
   };
 
   lots.merge = (uuid, lotsToMerge) => {
-    console.log('LotsService.merge: ', uuid, lotsToMerge);
     return $http.post(`/lots/merge/${uuid}/${lotsToMerge}`)
       .then(util.unwrapHttpResponse);
   };
