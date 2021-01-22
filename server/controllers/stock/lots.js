@@ -12,11 +12,23 @@
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
+
+const detailsQuery = `
+  SELECT
+    BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
+    l.description, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text
+  FROM lot l
+  JOIN inventory i ON i.uuid = l.inventory_uuid
+  `;
 
 exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
+exports.dupes = dupes;
+exports.merge = merge;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -30,22 +42,12 @@ function getLotTags(bid) {
 
 /**
  * GET /stock/lots/:uuid
- * Get details of a lots
+ * Get details of a lot
  */
 function details(req, res, next) {
   const bid = db.bid(req.params.uuid);
   let info = {};
-  const query = `
-    SELECT
-      BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
-      l.description, l.expiration_date,
-      BUID(i.uuid) AS inventory_uuid, i.text
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    WHERE l.uuid = ?;
-  `;
-
-  db.one(query, [bid])
+  db.one(`${detailsQuery} WHERE l.uuid = ?`, [bid])
     .then(row => {
       info = row;
       return getLotTags(bid);
@@ -86,6 +88,85 @@ async function update(req, res, next) {
       await transaction.execute();
     }
 
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /lot_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
+ *
+ * @description
+ * Returns all lots with the given label or matching field(s)
+ * inventory_uuid, initial_quantity, entry_date, expiration_date
+ *
+ * TODO: After getting this working purge unneeded params
+ *
+ */
+function dupes(req, res, next) {
+  const wheres = [];
+  if (req.query.label) {
+    wheres.push(`l.label LIKE "${req.query.label}"`);
+  }
+  if (req.query.inventory_uuid) {
+    wheres.push(`l.inventory_uuid = 0x${req.query.inventory_uuid}`);
+  }
+  if (req.query.initial_quantity) {
+    wheres.push(`l.initial_quantity = ${req.query.initial_quantity}`);
+  }
+  if (req.query.entry_date) {
+    wheres.push(`l.entry_date = ${req.query.expiration_date}`);
+  }
+  if (req.query.expiration_date) {
+    wheres.push(`l.expiration_date = ${req.query.expiration_date}`);
+  }
+  if (wheres.length === 0) {
+    throw new NotFound(`Search for duplicate lots failed.`);
+  }
+  const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
+
+  db.exec(`${detailsQuery} ${wheresQuery}`)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /lots/merge/:uuid/:lots_to_merge
+ *
+ * @description
+ * Merge the lots_to_merge into the lot to keep (given by uuid).
+ * This is a accomplished in two steps for each lot to merge:
+ *   1. Replace all references to the lot to be merged with
+ *      references to the lot to keep.
+ *   2. Delete the lot to be merged
+ *
+ * lot_tag : lot_uuid
+ * stock_assign : lot_uuid
+ * stock_movement :
+ */
+async function merge(req, res, next) {
+  const uuid = db.bid(req.params.uuid);
+  const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
+
+  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
+
+  try {
+    const transaction = db.transaction();
+    lotsToMerge.forEach(rawUuid => {
+      const mergeLotUuid = db.bid(rawUuid);
+      transaction.addQuery(updateLotTags, [uuid, mergeLotUuid]);
+      transaction.addQuery(updateStockAssign, [uuid, mergeLotUuid]);
+      transaction.addQuery(updateStockMovement, [uuid, mergeLotUuid]);
+      transaction.addQuery(deleteLot, [mergeLotUuid]);
+    });
+    await transaction.execute();
     res.sendStatus(200);
   } catch (error) {
     next(error);
