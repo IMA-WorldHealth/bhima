@@ -28,6 +28,7 @@
         "UNIQUE_ITEM" : "Unique item",
         "IS_BROKEN" : "is broken",
         "DOWNLOAD_IMPORT_MODEL" : "Download Template",
+        "FIND DUPLICATES" : "Find duplicates",
         "IMPORT" : "Import",
         "IMPORT_DESCRIPTION" : "You are about to import the inventories from a CSV file",
         "DOWNLOAD_TEMPLATE_HERE" : "Click here to download the inventory template file",
