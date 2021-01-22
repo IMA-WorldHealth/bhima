@@ -19,6 +19,7 @@ exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
 exports.dupes = dupes;
+exports.merge = merge;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -126,7 +127,7 @@ function dupes(req, res, next) {
   }
   const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
-  const sql = `
+  const query = `
     SELECT
       BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
       l.unit_cost, l.description, l.entry_date, l.expiration_date,
@@ -136,9 +137,45 @@ function dupes(req, res, next) {
     ${wheresQuery};
   `;
 
-  db.exec(sql)
+  db.exec(query)
     .then(rows => {
       res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /lots/merge/:uuid/:lots_to_merge
+ *
+ * @description
+ * Merge the lots_to_merge into the lot to keep (given by uuid).
+ * This is a accomplished in two steps for each lot to merge:
+ *   1. Replace all references to the lot to be merged with
+ *      references to the lot to keep.
+ *   2. Delete the lot to be merged
+ */
+function merge(req, res, next) {
+  console.log("Merge");
+  const bid = db.bid(req.params.uuid);
+  let keep = {};
+  const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
+
+  console.log("LTM: ", lotsToMerge);
+  const query = `
+    SELECT
+      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
+      l.unit_cost, l.description, l.entry_date, l.expiration_date,
+      BUID(i.uuid) AS inventory_uuid, i.text AS inventory_name
+    FROM lot l
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    WHERE l.uuid = ?;
+  `;
+  db.one(query, [bid])
+    .then(row => {
+      keep = row;
+      console.log("KEEP: ", keep);
+      res.status(200).json(keep);
     })
     .catch(next)
     .done();

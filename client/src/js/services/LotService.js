@@ -15,7 +15,7 @@ function LotService(Api, $http, $httpParamSerializer, util) {
   };
 
   lots.dupes = (params) => {
-    return $http.get('/lot_dupes', { params })
+    return $http.get('/lot/dupes', { params })
       .then(res => {
         res.data.forEach((row) => {
           row.entry_date = new Date(row.entry_date);
@@ -23,6 +23,12 @@ function LotService(Api, $http, $httpParamSerializer, util) {
         });
         return res;
       })
+      .then(util.unwrapHttpResponse);
+  };
+
+  lots.merge = (uuid, lotsToMerge) => {
+    console.log('LotsService.merge: ', uuid, lotsToMerge);
+    return $http.post(`/lots/merge/${uuid}/${lotsToMerge}`)
       .then(util.unwrapHttpResponse);
   };
 

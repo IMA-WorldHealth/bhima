@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 DuplicateLotsModalController.$inject = [
-  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService',
+  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService', '$translate'
   // 'util', 'Store', 'PeriodService', 'StockService',
   // 'SearchModalUtilService',
 ];
 
-function DuplicateLotsModalController(data, $state, Instance, Lots, Notify) {
+function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $translate) {
   // util, Store, Periods, Stock, SearchModal
   const vm = this;
   vm.selectedLot = null;
@@ -30,8 +30,6 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify) {
               lot2.merge = false;
             });
             vm.lots = lots;
-            console.log("UUID: ", data.uuid);
-            console.log('LOTS0: ', vm.lots);
           });
       })
       .catch(Notify.handleError);
@@ -55,10 +53,23 @@ function DuplicateLotsModalController(data, $state, Instance, Lots, Notify) {
     // ??? console.log('SUBMIT');
     if (form.$invalid) { return; }
 
-    //   ???
-    console.log('LOTS: ', vm.lots);
-    Notify.success('LOTS.SUCCESSFULLY_MERGED_N_LOTS');
+    // Collect the lots to be merged
+    const lotsToMerge = [];
+    vm.lots.forEach(lot => {
+      if (lot.merge) {
+        lotsToMerge.push(lot.uuid);
+      }
+    });
+    if (lotsToMerge.length === 0) {
+      Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
+    } else {
+      Lots.merge(vm.selectedLot.uuid, lotsToMerge)
+        .then(result => {
 
+        });
+
+      Notify.success($translate.instant('LOTS.SUCCESSFULLY_MERGED_N_LOTS', { N: lotsToMerge.length }));
+    }
     Instance.close();
   }
 

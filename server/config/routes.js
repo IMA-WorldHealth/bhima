@@ -950,7 +950,8 @@ exports.configure = function configure(app) {
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);
   app.get('/lots/:uuid/assignments/:depot_uuid', lots.assignments);
-  app.get('/lot_dupes/:label?/:entry_date?/:expiration_date?/:initial_quantity?/:inventory_uuid?', lots.dupes);
+  app.get('/lot/dupes/:label?/:entry_date?/:expiration_date?/:initial_quantity?/:inventory_uuid?', lots.dupes);
+  app.post('/lots/merge/:uuid/:lots_to_merge', lots.merge);
 
   // API for Account Reference Type routes crud
   app.get('/account_reference_type', accountReferenceType.list);
