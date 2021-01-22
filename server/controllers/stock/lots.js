@@ -154,11 +154,15 @@ function dupes(req, res, next) {
  *   1. Replace all references to the lot to be merged with
  *      references to the lot to keep.
  *   2. Delete the lot to be merged
+ *
+ * lot_tag : lot_uuid
+ * stock_assign : lot_uuid
+ * stock_movement :
  */
 function merge(req, res, next) {
   console.log("Merge");
-  const bid = db.bid(req.params.uuid);
-  let keep = {};
+  const uuid = db.bid(req.params.uuid);
+  let keep = details(req.params.uuid);
   const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
 
   console.log("LTM: ", lotsToMerge);
@@ -171,7 +175,7 @@ function merge(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     WHERE l.uuid = ?;
   `;
-  db.one(query, [bid])
+  db.one(query, [uuid])
     .then(row => {
       keep = row;
       console.log("KEEP: ", keep);
