@@ -14,6 +14,15 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
+const detailsQuery = `
+  SELECT
+    BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
+    l.description, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text
+  FROM lot l
+  JOIN inventory i ON i.uuid = l.inventory_uuid
+  `;
+
 exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
@@ -38,17 +47,7 @@ function getLotTags(bid) {
 function details(req, res, next) {
   const bid = db.bid(req.params.uuid);
   let info = {};
-  const query = `
-    SELECT
-      BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
-      l.description, l.expiration_date,
-      BUID(i.uuid) AS inventory_uuid, i.text
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    WHERE l.uuid = ?;
-  `;
-
-  db.one(query, [bid])
+  db.one(`${detailsQuery} WHERE l.uuid = ?`, [bid])
     .then(row => {
       info = row;
       return getLotTags(bid);
@@ -127,17 +126,7 @@ function dupes(req, res, next) {
   }
   const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
-  const query = `
-    SELECT
-      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
-      l.unit_cost, l.description, l.entry_date, l.expiration_date,
-      BUID(i.uuid) AS inventory_uuid, i.text AS inventory_name
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    ${wheresQuery};
-  `;
-
-  db.exec(query)
+  db.exec(`${detailsQuery} ${wheresQuery}`)
     .then(rows => {
       res.status(200).json(rows);
     })
@@ -159,30 +148,32 @@ function dupes(req, res, next) {
  * stock_assign : lot_uuid
  * stock_movement :
  */
-function merge(req, res, next) {
+async function merge(req, res, next) {
   console.log("Merge");
   const uuid = db.bid(req.params.uuid);
-  let keep = details(req.params.uuid);
+  let keep = {};
   const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
 
   console.log("LTM: ", lotsToMerge);
-  const query = `
-    SELECT
-      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity,
-      l.unit_cost, l.description, l.entry_date, l.expiration_date,
-      BUID(i.uuid) AS inventory_uuid, i.text AS inventory_name
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    WHERE l.uuid = ?;
-  `;
-  db.one(query, [uuid])
-    .then(row => {
-      keep = row;
-      console.log("KEEP: ", keep);
-      res.status(200).json(keep);
-    })
-    .catch(next)
-    .done();
+  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
+
+  try {
+    const transaction = db.transaction();
+    lotsToMerge.forEach(rawUuid => {
+      const mergeLotUuid = db.bid(rawUuid);
+      transaction.addQuery(updateLotTags, [uuid, mergeLotUuid]);
+      transaction.addQuery(updateStockAssign, [uuid, mergeLotUuid]);
+      transaction.addQuery(updateStockMovement, [uuid, mergeLotUuid]);
+      transaction.addQuery(deleteLot, [mergeLotUuid]);
+    });
+    await transaction.execute();
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
