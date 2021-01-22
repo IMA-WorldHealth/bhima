@@ -21,7 +21,7 @@ function VoucherRegistrySearchModalController(
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
-    'reference', 'description', 'user_id', 'type_ids', 'account_id', 'project_id', 'currency_id',
+    'reference', 'description', 'user_id', 'type_ids', 'account_id', 'project_id', 'currency_id', 'reversed',
   ];
 
   // displayValues will be an id:displayValue pair
