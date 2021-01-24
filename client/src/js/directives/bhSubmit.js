@@ -42,9 +42,9 @@ function bhSubmitDirective() {
         // the response is a promise, toggle the loading state on
         // fulfillment/rejection
         if (isPromise(response)) {
-          response.finally(function () {
-            FormController.$toggleLoading();
-          });
+          response
+            .then(FormController.$toggleLoading)
+            .catch(FormController.$toggleLoading);
 
         // otherwise, toggle the loading state off right away.
         } else {
