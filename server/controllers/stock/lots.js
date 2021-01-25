@@ -12,6 +12,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
+const FilterParser = require('../../lib/filter');
 const NotFound = require('../../lib/errors/NotFound');
 
 const detailsQuery = `
@@ -105,28 +106,19 @@ async function update(req, res, next) {
  *
  */
 function getDupes(req, res, next) {
-  const wheres = [];
-  if (req.query.label) {
-    wheres.push(`l.label LIKE "${req.query.label}"`);
-  }
-  if (req.query.inventory_uuid) {
-    wheres.push(`l.inventory_uuid = 0x${req.query.inventory_uuid}`);
-  }
-  if (req.query.initial_quantity) {
-    wheres.push(`l.initial_quantity = ${req.query.initial_quantity}`);
-  }
-  if (req.query.entry_date) {
-    wheres.push(`l.entry_date = ${req.query.expiration_date}`);
-  }
-  if (req.query.expiration_date) {
-    wheres.push(`l.expiration_date = ${req.query.expiration_date}`);
-  }
-  if (wheres.length === 0) {
-    return next(new NotFound(`Search for duplicate lots failed.`));
-  }
-  const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
+  const options = db.convert(req.query, ['inventory_uuid']);
+  const filters = new FilterParser(options, { tableAlias : 'l' });
+  filters.fullText('label');
+  filters.equals('inventory_uuid');
+  filters.equals('initial_quantity');
+  filters.equals('initial_quantity');
+  filters.equals('entry_date');
+  filters.equals('expiration_date');
 
-  return db.exec(`${detailsQuery} ${wheresQuery}`)
+  const query = filters.applyQuery(detailsQuery);
+  const params = filters.parameters();
+
+  return db.exec(query, params)
     .then(rows => {
       res.status(200).json(rows);
     })
