@@ -13,7 +13,7 @@
     </li>
     <li>
       <a data-method="view-stock-articles" ui-sref= "inventory.list(
-        { filters : [{ 
+        { filters : [{
           key : 'uuid',
           value : row.entity.inventory_uuid,
           displayValue : row.entity.text,
@@ -36,6 +36,11 @@
     <li>
       <a data-method="view-stock-history" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-clock-o"></i> <span translate>LOTS.ASSIGNMENT_HISTORIC</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="find-duplicates" ng-click="grid.appScope.openDuplicatesModal(row.entity.uuid, row.entity.depot_uuid)" href>
+        <i class="fa fa-search"></i> <span translate>LOTS.FIND_DUPLICATE_LOTS</span>
       </a>
     </li>
   </ul>

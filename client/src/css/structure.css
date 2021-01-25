@@ -921,6 +921,15 @@ a[disabled] {
   color: #E067FF !important;
 }
 
+tr.selected-lot,
+tr.selected-lot.td {
+  background-color: #9cd195 !important;
+}
+
+td.center {
+  text-align: center;
+}
+
 .legend {
   border:1px solid black;
   height:2.1ex;
