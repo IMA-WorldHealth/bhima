@@ -27,7 +27,7 @@ exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
-exports.dupes = dupes;
+exports.getDupes = getDupes;
 exports.merge = merge;
 
 function getLotTags(bid) {
@@ -104,7 +104,7 @@ async function update(req, res, next) {
  * TODO: After getting this working purge unneeded params
  *
  */
-function dupes(req, res, next) {
+function getDupes(req, res, next) {
   const wheres = [];
   if (req.query.label) {
     wheres.push(`l.label LIKE "${req.query.label}"`);

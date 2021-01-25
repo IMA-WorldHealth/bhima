@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('LotService', LotService);
 
-LotService.$inject = ['PrototypeApiService', '$http', '$httpParamSerializer', 'util'];
+LotService.$inject = ['PrototypeApiService', '$http', 'util'];
 
-function LotService(Api, $http, $httpParamSerializer, util) {
+function LotService(Api, $http, util) {
   const lots = new Api('/lots/');
 
   lots.read = (uuid) => {
