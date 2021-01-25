@@ -13,7 +13,6 @@ const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
-const NotFound = require('../../lib/errors/NotFound');
 
 const detailsQuery = `
   SELECT
