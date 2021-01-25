@@ -27,7 +27,7 @@ function LotService(Api, $http, util) {
   };
 
   lots.merge = (uuid, lotsToMerge) => {
-    return $http.post(`/lots/merge/${uuid}/${lotsToMerge}`)
+    return $http.post(`/lots/${uuid}/merge/`, { lotsToMerge })
       .then(util.unwrapHttpResponse);
   };
 

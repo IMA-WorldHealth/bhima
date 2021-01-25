@@ -122,7 +122,7 @@ function getDupes(req, res, next) {
     wheres.push(`l.expiration_date = ${req.query.expiration_date}`);
   }
   if (wheres.length === 0) {
-    throw new NotFound(`Search for duplicate lots failed.`);
+    return next(new NotFound(`Search for duplicate lots failed.`));
   }
   const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
@@ -135,10 +135,10 @@ function getDupes(req, res, next) {
 }
 
 /**
- * GET /lots/merge/:uuid/:lots_to_merge
+ * GET /lots/:uuid/merge
  *
  * @description
- * Merge the lots_to_merge into the lot to keep (given by uuid).
+ * Merge the lots_to_merge (in the body) into the lot to keep (given by uuid).
  * This is a accomplished in two steps for each lot to merge:
  *   1. Replace all references to the lot to be merged with
  *      references to the lot to keep.
@@ -146,11 +146,11 @@ function getDupes(req, res, next) {
  *
  * lot_tag : lot_uuid
  * stock_assign : lot_uuid
- * stock_movement :
+ * stock_movement : lot_uuid
  */
 async function merge(req, res, next) {
   const uuid = db.bid(req.params.uuid);
-  const lotsToMerge = req.params.lots_to_merge.split(',').map(db.bid);
+  const lotsToMerge = req.body.lotsToMerge.map(db.bid);
 
   const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
   const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
