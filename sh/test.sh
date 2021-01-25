@@ -26,7 +26,7 @@ SUITE=${SUITE:-"ALL"}
 # run karma (client unit) tests
 if [ $SUITE = "client-unit" ] || [ $SUITE = "ALL" ] ; then
   startfold "Running Client Unit Tests..." "test-client-unit";
-  ./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
+  ./node_modules/.bin/karma start --single-run --no-auto-watch karma.conf.js
   endfold "test-client-unit" ;
 fi
 
