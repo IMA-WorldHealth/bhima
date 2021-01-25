@@ -16,33 +16,4 @@ pipeline {
         sh 'printenv'
       }
     }
-
-    stage('pull') {
-      steps {
-        sh 'yarn --version'
-        sh 'git log --reverse -1'
-      }
-    }
-
-    stage('deps') {
-      steps {
-        sh 'yarn'
-        sh 'cp .env.sample .env'
-      }
-    }
-
-    stage('build') {
-      steps {
-        sh 'yarn build'
-        sh 'yarn webdriver-manager update --gecko false'
-      }
-    }
-
-    stage('test') {
-      steps {
-        sh 'echo "Running tests...."'
-        sh 'yarn test'
-      }
-    }
-  }
 }
