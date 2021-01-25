@@ -126,7 +126,7 @@ function getDupes(req, res, next) {
   }
   const wheresQuery = `WHERE ${wheres.join(' AND ')}`;
 
-  db.exec(`${detailsQuery} ${wheresQuery}`)
+  return db.exec(`${detailsQuery} ${wheresQuery}`)
     .then(rows => {
       res.status(200).json(rows);
     })
