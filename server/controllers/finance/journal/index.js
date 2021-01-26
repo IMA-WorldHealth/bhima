@@ -33,8 +33,8 @@ _.forEach(identifiers, v => {
 });
 
 // services
-const FiscalService = require('../../finance/fiscal');
-const VoucherService = require('../../finance/vouchers');
+const FiscalService = require('../fiscal');
+const VoucherService = require('../vouchers');
 
 // expose to the api
 exports.list = list;
@@ -578,7 +578,6 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
   return q.all(promises)
     .then(() => rows);
 }
-
 
 /**
  * @method reverse

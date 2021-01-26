@@ -79,7 +79,6 @@ function deleteTransaction(uuid) {
     });
 }
 
-
 /**
  * PUT /transactions/comments
  *

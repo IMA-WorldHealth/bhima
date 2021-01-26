@@ -20,8 +20,9 @@ function VoucherRegistrySearchModalController(
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
+
   const searchQueryOptions = [
-    'reference', 'description', 'user_id', 'type_ids', 'account_id', 'project_id', 'currency_id',
+    'reference', 'description', 'user_id', 'type_ids', 'account_id', 'project_id', 'currency_id', 'reversed',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -106,7 +107,7 @@ function VoucherRegistrySearchModalController(
     delete vm.searchQueries[key];
   };
 
-  vm.cancel = function cancel() { ModalInstance.close(); };
+  vm.cancel = function cancel() { ModalInstance.dismiss(); };
 
   // submit the filter object to the parent controller.
   vm.submit = function submit() {
@@ -115,7 +116,13 @@ function VoucherRegistrySearchModalController(
       vm.clear('type_ids');
     }
 
+    // update the 'reversed' flag to update the view value correctly
+    if (angular.isDefined(vm.searchQueries.reversed)) {
+      displayValues.reversed = vm.searchQueries.reversed;
+    }
+
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+
     return ModalInstance.close(loggedChanges);
   };
 
