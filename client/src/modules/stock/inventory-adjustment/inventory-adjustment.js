@@ -44,7 +44,7 @@ function StockInventoryAdjustmentController(
   vm.submit = submit;
 
   const expirationDateCellTemplate = `
-    <div class="ui-grid-cell-contents">
+    <div class="ui-grid-cell-contents" ng-class="{ 'bg-danger text-danger' : row.entity.isExpired }" title="{{row.entity.expiration_date | date }}">
       <span am-time-ago="row.entity.expiration_date"></span>
     </div>
   `;
@@ -152,6 +152,8 @@ function StockInventoryAdjustmentController(
     vm.loading = true;
     setupStock();
 
+    const today = new Date();
+
     Stock.lots.read(null, {
       depot_uuid : depot.uuid,
       includeEmptyLot : vm.includeEmptyLot || 0,
@@ -170,6 +172,8 @@ function StockInventoryAdjustmentController(
 
           Object.assign(row, {
             old_quantity : row.quantity,
+
+            isExpired : (new Date(lot.expiration_date) < today),
 
             // overwrite the default validation function as it doesn't make sense in
             // this case.
