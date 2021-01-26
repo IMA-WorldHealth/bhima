@@ -264,6 +264,22 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /vouchers filters on reversed vouchers', () => {
+    return agent.get('/vouchers')
+      .query({ reversed : 1 })
+      .then((res) => {
+        helpers.api.listed(res, 2);
+        return agent.get('/vouchers').query({ reversed : 0 });
+      })
+      .then((res) => {
+        helpers.api.listed(res, 11);
+        return agent.get('/vouchers').query({ reversed : '2' });
+      })
+      .then(res => {
+        helpers.api.listed(res, 11);
+      })
+      .catch(helpers.handler);
+  });
 
   it('DELETE /transactions/:uuid deletes a voucher', () => {
     return agent.delete(`/transactions/${TO_DELETE_UUID}`)

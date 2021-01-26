@@ -135,7 +135,8 @@ function VoucherController(
         vm.latestViewFilters = Vouchers.filters.formatView();
 
         return load(Vouchers.filters.formatHTTP(true));
-      });
+      })
+      .catch(angular.noop);
   }
 
   function load(filters) {
@@ -237,7 +238,6 @@ function VoucherController(
     // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
   }
-
 
   vm.saveGridState = state.saveGridState;
   // saves the grid's current configuration
