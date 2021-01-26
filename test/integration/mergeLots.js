@@ -2,65 +2,146 @@
 
 // eslint-disable no-unused-expressions
 
+const moment = require('moment');
 const UUID = require('uuid').v4;
-
 const helpers = require('./helpers');
-
 const db = require('../../server/lib/db');
 
 function uuid() {
   return UUID().toUpperCase().replace(/-/g, '');
 }
 
-// // Reuse the same location/project uuids for all mock patients
-// const groupUuid = '4DE0FE47177F4D30B95FCFF8166400B4';
-// const locationUuid = '1F162A109F6747889EFFC1FEA42FCC9B';
-// const projectId = 1;
+const preTestInfo = [
+  { table: 'lot', count: 0 },
+  { table: 'tags', count: 0 },
+  { table: 'lot_tag', count: 0 },
+];
+// const lotPreTest = preTestInfo[0];
+const tagsPreTest = preTestInfo[1];
+const lotTagsPreTest = preTestInfo[2];
 
-// function addDebtorSQL(debtorUuid, text) {
-//   return 'INSERT INTO debtor (uuid, group_uuid, text) '
-//     + `VALUES (0x${debtorUuid}, 0x${groupUuid}, '${text}');`;
-// }
+// Define needed UUIDs
+const lot1Uuid = uuid();
+const lot2Uuid = uuid();
+const lot3Uuid = uuid();
 
-// function addPatientSQL(pinfo) {
-//   return 'INSERT INTO patient ('
-//    + 'uuid, project_id, debtor_uuid, display_name, sex, dob, dob_unknown_date, '
-//    + 'origin_location_id, current_location_id, user_id) '
-//    + `VALUES (0x${pinfo[0]}, ${projectId}, 0x${pinfo[5]},'${pinfo[1]}', '${pinfo[2]}', `
-//    + `'${pinfo[3]}', ${pinfo[4]}, 0x${locationUuid}, 0x${locationUuid}, 1`
-//    + ');';
-// }
+// Inventory UUID for: Vitamines B1+B6+B12, 100+50+0.5mg/2ml
+const vitamineUuid = 'F6556E729D0547998CBD0A03B1810185';
 
-// const mockPatients = [
-//   // uuid, display_name, sex, dob, dob_unknown_date, debtorUuid
-//   [uuid(), 'John Smith', 'M', '1993-08-01', 'FALSE', uuid()],
-//   [uuid(), 'Jon Smith', 'M', '1995-06-01', 'TRUE', uuid()],
+function addLotSQL(params) {
+  const [lotUuid, label, inventoryUuid] = params;
+  const expDate = moment().add(1, 'year').format('YYYY-MM-DD');
+  return 'INSERT INTO lot (uuid, label, inventory_uuid, quantity, '
+    + '  initial_quantity, unit_cost, expiration_date, origin_uuid) '
+    + `VALUES (0x${lotUuid}, '${label}', 0x${inventoryUuid}, 321, `
+    + `  500, 1.2, '${expDate}', 0x${uuid()});`;
+}
 
-//   [uuid(), 'John Jones Mitchum', 'M', '1980-06-01', 'TRUE', uuid()],
-//   [uuid(), 'John Janes Mitchum', 'M', '1981-04-21', 'FALSE', uuid()],
-//   [uuid(), 'John Jenes Matchim', 'M', '1984-06-01', 'TRUE', uuid()],
+function addTagSQL(params) {
+  const [tagUuid, /* lotUuid */, tagLabel] = params;
+  return 'INSERT INTO tags (uuid, name) '
+    + `VALUES (0x${tagUuid}, '${tagLabel}');`;
+}
 
-//   [uuid(), 'Lynn H. Black', 'M', '1970-08-01', 'FALSE', uuid()],
-//   [uuid(), 'Lynn Black', 'F', '1981-06-01', 'TRUE', uuid()],
-// ];
+function addLotTagSQL(params) {
+  const [tagUuid, lotUuid, /* tagLabel */] = params;
+  return 'INSERT INTO lot_tag (lot_uuid, tag_uuid) '
+    + `VALUES (0x${lotUuid}, 0x${tagUuid});`;
+}
+
+const lot1Label = 'Test lot 1';
+const lot2Label = 'Test lot 2';
+const lot3Label = 'Test Lot 1';
+
+const mockLots = [
+  // uuid, label
+  [lot1Uuid, lot1Label, vitamineUuid],
+  [lot2Uuid, lot2Label, vitamineUuid],
+  [lot3Uuid, lot3Label, vitamineUuid], // This is a dupe of the first lot
+];
+
+const mockTags = [
+  [uuid(), lot1Uuid, 'XYZ Brand'],
+  [uuid(), lot1Uuid, 'Vitamin'],
+  [uuid(), lot2Uuid, 'Partial'],
+  [uuid(), lot3Uuid, 'Vitamin2'],
+];
 
 describe('(/lot/:uuid/merge) Merge lots', () => {
 
-//   // prior to tests, create default patients.
-//   before('add mock patients', () => {
-//     return mockPatients.reduce((chain, p) => {
-//       return chain
-//         .then(() => db.exec(addDebtorSQL(p[5], p[1])))
-//         .then(() => db.exec(addPatientSQL(p)));
-//     }, Promise.resolve());
-//   });
+  before('Note original numbers of lots, tags, etc', () => {
+    return preTestInfo.reduce((chain, item) => {
+      return chain
+        .then(() => db.exec(`SELECT * FROM ${item.table}`)
+          .then(res => {
+            item.count = res.length;
+          }));
+    }, Promise.resolve());
+  });
 
-//   it(`Temporarily added ${mockPatients.length} mock patients`, () => {
-//     // Alert the user that mock patients were added
-//     expect(true).to.be.equals(true);
-//   });
+  // before('Test', () => {
+  //   console.log("db: ", preTestInfo);
+  // });
 
-//   // NOW do the tests
+  before('add mock lots', () => {
+    return mockLots.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(addLotSQL(p)));
+    }, Promise.resolve());
+  });
+
+  before('add mock lot tags', () => {
+    return mockTags.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(addTagSQL(p)))
+        .then(() => db.exec(addLotTagSQL(p)));
+    }, Promise.resolve());
+  });
+
+  it(`Temporarily added ${mockLots.length} mock lots`, () => {
+    expect(true).to.be.equals(true);
+  });
+  it(`Temporarily added ${mockTags.length} mock lot tags`, () => {
+    expect(true).to.be.equals(true);
+  });
+
+  // ===========================================================================
+  // Verify we have created the lots, tags, etc
+  it('Verify we created lot1 and its dupe (lot3)', () => {
+    return agent.get('/lot/dupes')
+      .query({ label: lot1Label, inventory_uuid: vitamineUuid })
+      .then((res) => {
+        helpers.api.listed(res, 2);
+      })
+      .catch(helpers.handler);
+  });
+  it('Verify we created lot2', () => {
+    return agent.get('/lot/dupes')
+      .query({ label: lot2Label, inventory_uuid: vitamineUuid })
+      .then((res) => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+  it(`Verify we created ${mockTags.length - tagsPreTest.count} tags`, () => {
+    return agent.get('/tags')
+      .then((res) => {
+        helpers.api.listed(res, mockTags.length + tagsPreTest.count);
+      })
+      .catch(helpers.handler);
+  });
+  it(`Verify we created ${mockTags.length - lotTagsPreTest.count} lot tags`, () => {
+    return db.exec('SELECT * from lot_tag')
+      .then((res) => {
+        expect(res.length).to.be.equals(mockTags.length + lotTagsPreTest.count);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  // ===========================================================================
+  // NOW do the tests
+
 
 //   // -------------------------------------------------------------------------------------
 //   // Various name checks
@@ -81,203 +162,33 @@ describe('(/lot/:uuid/merge) Merge lots', () => {
 //       .catch(helpers.handler);
 //   });
 
-//   it('Get matches for 2-part transposed name "Smith John"', () => {
-//     const testName = 'John Smith';
-//     const conditions = { search_name : 'Smith John' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         // Sort the list, best match first
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.equals(1);
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
+  // ===========================================================================
+  // Cleanup
 
-//   it('Get matches for 3-part name "John Jones Mitchum"', () => {
-//     const testName = 'John Jones Mitchum';
-//     const conditions = { search_name : 'John Jones Mitchum' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 1);
-//         expect(res.body[0].display_name).to.be.equals(testName);
-//         expect(res.body[0].matchScore).to.be.equals(1);
-//       })
-//       .catch(helpers.handler);
-//   });
+  // Delete the mock lot tags
+  after('Clean up temporary tags and lot tags', () => {
+    return mockTags.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(`DELETE FROM lot_tag WHERE lot_uuid=0x${p[1]};`))
+        .then(() => db.exec(`DELETE FROM tags WHERE uuid=0x${p[0]};`));
+    }, Promise.resolve());
+  });
 
-//   it('Get matches for 3-part name "John Jones Mitchum" with 2 names', () => {
-//     const testName = 'John Jones Mitchum';
-//     const conditions = { search_name : 'Jon Jones' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 1);
-//         expect(res.body[0].display_name).to.be.equals(testName);
-//         expect(res.body[0].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
+  after('Clean up temporary lots', () => {
+    return mockLots.reduce((chain, p) => {
+      return chain
+        .then(() => db.exec(`DELETE FROM lot WHERE uuid=0x${p[0]};`));
+    }, Promise.resolve());
+  });
 
-//   it('Get matches for 3-part name "John Jones Mitchum" with 1 misspelling', () => {
-//     const testName = 'John Jones Mitchum';
-//     const conditions = { search_name : 'John Jones Motchum' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 1);
-//         expect(res.body[0].display_name).to.be.equals(testName);
-//         expect(res.body[0].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   it('Get matches for 3-part name "John Jones Mitchum" with 2 misspellings', () => {
-//     const testName = 'John Jones Mitchum';
-//     const conditions = { search_name : 'Jahn Jones Motchum' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 1);
-//         expect(res.body[0].display_name).to.be.equals(testName);
-//         expect(res.body[0].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   // -------------------------------------------------------------------------------------
-//   // Make sure the specifying gender helps
-//   it('Get matches for "Lynn Black"', () => {
-//     const conditions = { search_name : 'Lynn Black' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//       })
-//       .catch(helpers.handler);
-//   });
-//   it('Get matches for "Lynn Black" with gender', () => {
-//     const testName = 'Lynn Black';
-//     const conditions = { search_name : 'Lynn Black', sex : 'F' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.equals(1);
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   // -------------------------------------------------------------------------------------
-//   // Check searches with different numbers of name parts
-//   it('Get matches for single name "John"', () => {
-//     const testName = 'John Smith';
-//     // Note that the best match is 'John Smith' since there is an exact name
-//     // part match and the difference in number of name parts between the query (1)
-//     // and the patient (2) is less than for any other exact name part match
-//     // (eg, for "John Jones Mitchum").  The match for 'Jon Smith' is worse because
-//     // there is no exact name part match.
-//     const conditions = { search_name : 'John' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 5);
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName); // John Smith
-//         expect(matches[0].matchScore).to.be.gt(0.95);
-//         expect(matches[1].display_name).to.be.not.equals(testName); // John Jones Mitchum
-//         expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
-//         expect(matches[matches.length - 1].display_name).to.be.not.equals(testName); // Jon Smith
-//         expect(matches[matches.length - 1].matchScore).to.be.lt(matches[1].matchScore);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   // -------------------------------------------------------------------------------------
-//   // Check DOB searches
-//   it('Get matches for name "John Jones Mitchum" with DOB / Year', () => {
-//     const testName = 'John Janes Mitchum';
-//     // Note that the correct match is the 'Janes' one since it matches both
-//     // the 2-part name and the year of birth.  The 'Jones' one matches the name,
-//     // but does not match the year so it gets a lower score.
-//     const conditions = { search_name : 'John Mitchum', dob : 1981, dob_unknown_date : 'true' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.gt(0.95);
-//         // Notice discounted score since num parts is different
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
-//         // Notice discounted score by being one year off and different num parts
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   it('Get matches for name "John Jones Mitchum" with DOB with exact date', () => {
-//     const testName = 'John Janes Mitchum';
-//     const conditions = { search_name : 'John Mitchum', dob : '1981-04-21', dob_unknown_date : 'false' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.gt(0.95);
-//         // Notice discounted score since num parts is different
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
-//         // Notice discounted score by being about 15 months off and different number of parts
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   it('Get matches for name "John Jones Mitchum" with DOB approximate date', () => {
-//     const testName = 'John Janes Mitchum';
-//     const conditions = { search_name : 'John Mitchum', dob : '1981-02-22', dob_unknown_date : 'false' };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.lt(1);
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(matches[0].matchScore);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   it('passes when there isn\'t a possible match', () => {
-//     const testName = 'Ivan Working On The RailRoad';
-//     const conditions = { search_name : testName };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 0);
-//       })
-//       .catch(helpers.handler);
-//   });
-
-//   // -------------------------------------------------------------------------------------
-
-//   // Delete the mock patients
-//   after('clean up temporary patients', () => {
-//     return mockPatients.reduce((chain, p) => {
-//       return chain
-//         .then(() => db.exec(`DELETE FROM patient WHERE uuid=0x${p[0]};`));
-//     }, Promise.resolve());
-//   });
+  after('Verify that we have deleted all temporary lots, tags, etc', () => {
+    return preTestInfo.reduce((chain, item) => {
+      return chain
+        .then(() => db.exec(`SELECT * FROM ${item.table}`)
+          .then(res => {
+            expect(res.length).to.be.equals(item.count, `Verify deletion of temporary '${item.table}'`);
+          }));
+    }, Promise.resolve());
+  });
 
 });
