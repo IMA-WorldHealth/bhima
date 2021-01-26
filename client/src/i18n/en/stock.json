@@ -162,6 +162,7 @@
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
+      "AGGREGATE_CONSUMPTION" : "Stock exit - Aggregate consumption",
       "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",

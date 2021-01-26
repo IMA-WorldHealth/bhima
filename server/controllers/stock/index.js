@@ -999,94 +999,109 @@ async function createAggregatedConsumption(req, res, next) {
 
     // pass reverse operations
     const trx = db.transaction();
+    const transact = db.transaction();
 
-    const consumptionUuid = uuid();
-    const lossUuid = uuid();
+    const inventoryMapUuids = lots.map(lot => lot.inventory_uuid);
 
-    // get all lots with positive quantity_consumed
-    const stockConsumptionQuantities = lots.filter(lot => lot.quantity_consumed > 0);
+    const inventoryUuids = inventoryMapUuids.reduce((a, b) => {
+      if (a.indexOf(b) < 0) a.push(b);
+      return a;
+    }, []);
 
-    // get all lots with negative quantity_lost
-    const stockLossQuantities = lots.filter(lot => lot.quantity_lost > 0);
+    inventoryUuids.forEach(inventoryUuid => {
+      const daysStockOut = movement.stock_out[inventoryUuid];
+      const movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
 
-    stockConsumptionQuantities.forEach(lot => {
-      // 
-      const daysStockOut = movement.stock_out[lot.inventory_uuid];
-      if (daysStockOut > 0) {
-        movement.date = moment(movement.date).subtract(daysStockOut, 'day');
-      }
+      const consumptionUuid = uuid();
+      const lossUuid = uuid();
 
-      const consumptionMovementObject = {
-        uuid : db.bid(uuid()),
-        lot_uuid : db.bid(lot.uuid),
-        depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(consumptionUuid),
-        quantity : lot.quantity_consumed,
-        unit_cost : lot.unit_cost,
-        date : new Date(movement.date),
-        entity_uuid : movement.entity_uuid,
-        is_exit : 1,
-        flux_id : core.flux.AGGREGATE_CONSUMPTION,
-        description : movement.description,
-        user_id : req.session.user.id,
-        period_id : periodId,
-      };
-      
-      trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
+      // get all lots with positive quantity_consumed
+      const stockConsumptionQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_consumed > 0));
 
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(movement.depot_uuid), new Date(movement.date), lot.quantity_consumed,
+      // get all lots with negative quantity_lost
+      const stockLossQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid &&lot.quantity_lost > 0));
+
+      stockConsumptionQuantities.forEach(lot => {
+        const consumptionMovementObject = {
+          uuid : db.bid(uuid()),
+          lot_uuid : db.bid(lot.uuid),
+          depot_uuid : db.bid(movement.depot_uuid),
+          document_uuid : db.bid(consumptionUuid),
+          quantity : lot.quantity_consumed,
+          unit_cost : lot.unit_cost,
+          date : new Date(movementDate),
+          entity_uuid : movement.entity_uuid,
+          is_exit : 1,
+          flux_id : core.flux.AGGREGATE_CONSUMPTION,
+          description : movement.description,
+          user_id : req.session.user.id,
+          period_id : periodId,
+        };
+        
+        trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
+
+        const consumptionParams = [
+          db.bid(lot.inventory_uuid), db.bid(movement.depot_uuid), new Date(movementDate), lot.quantity_consumed,
+        ];
+
+        trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+      });
+
+      stockLossQuantities.forEach(lot => {
+        const lossMovementObject = {
+          uuid : db.bid(uuid()),
+          lot_uuid : db.bid(lot.uuid),
+          depot_uuid : db.bid(movement.depot_uuid),
+          document_uuid : db.bid(lossUuid),
+          quantity : lot.quantity_lost,
+          unit_cost : lot.unit_cost,
+          date : new Date(movementDate),
+          entity_uuid : movement.entity_uuid,
+          is_exit : 1,
+          flux_id : core.flux.TO_LOSS,
+          description : movement.description,
+          user_id : req.session.user.id,
+          period_id : periodId,
+        };
+        trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
+      });
+
+      const stockConsumptionParams = [
+        db.bid(consumptionUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
       ];
-
-      trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    });
-
-    const inventoryUuids = stockConsumptionQuantities.map(lot => lot.inventory_uuid);
-
-    stockLossQuantities.forEach(lot => {
-      const lossMovementObject = {
-        uuid : db.bid(uuid()),
-        lot_uuid : db.bid(lot.uuid),
-        depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(lossUuid),
-        quantity : lot.quantity_lost,
-        unit_cost : lot.unit_cost,
-        date : new Date(movement.date),
-        entity_uuid : movement.entity_uuid,
-        is_exit : 1,
-        flux_id : core.flux.TO_LOSS,
-        description : movement.description,
-        user_id : req.session.user.id,
-        period_id : periodId,
-      };
-      trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
-    });
-
-    const stockConsumptionParams = [
-      db.bid(consumptionUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
-    ];
-
-    const stockLossParams = [
-      db.bid(lossUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
-    ];
-
-    if (req.session.stock_settings.enable_auto_stock_accounting) {
-      if (stockConsumptionQuantities.length > 0) {
-        trx.addQuery('CALL PostStockMovement(?)', [stockConsumptionParams]);
+  
+      const stockLossParams = [
+        db.bid(lossUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+      ];
+  
+      if (req.session.stock_settings.enable_auto_stock_accounting) {
+        if (stockConsumptionQuantities.length > 0) {
+          trx.addQuery('CALL PostStockMovement(?)', [stockConsumptionParams]);
+        }
+  
+        if (stockLossQuantities.length > 0) {
+          trx.addQuery('CALL PostStockMovement(?)', [stockLossParams]);
+        }
       }
-
-      if (stockLossQuantities.length > 0) {
-        trx.addQuery('CALL PostStockMovement(?)', [stockLossParams]);
-      }
-    }
+    });
 
     await trx.execute();
 
     // gather inventory uuids for later quantity in stock calculation updates
-    if (stockConsumptionQuantities.length > 0) {
-      await updateQuantityInStockAfterMovement(inventoryUuids, new Date(movement.date), db.bid(movement.depot_uuid));
-    }
+    inventoryUuids.forEach(inventoryUuid => {
 
+      const daysStockOut = movement.stock_out[inventoryUuid];
+      const movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
+
+      transact.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
+        new Date(movementDate),
+        db.bid(inventoryUuid),
+        db.bid(movement.depot_uuid),
+      ]);
+    });
+
+    await transact.execute();
+   
     res.status(201).json({});
   } catch (err) {
     next(err);
