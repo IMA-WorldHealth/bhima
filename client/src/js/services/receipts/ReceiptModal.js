@@ -385,6 +385,17 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   }
 
   /**
+   * @method stockAggregateConsumptionReceipt
+   * @param {string} documentUuid
+   * @param {boolean} notifyCreated
+   */
+  function stockAggregateConsumptionReceipt(documentUuid, notifyCreated) {
+    const opts = { title : 'STOCK.FLUX.AGGREGATE_CONSUMPTION', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockAggregateConsumptionReceipt(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
    * @method stockExitServiceReceipt
    * @param {string} documentUuid
    * @param {boolean} notifyCreated
@@ -514,6 +525,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     13 : stockEntryIntegrationReceipt,
     14 : stockAdjustmentReceipt,
     15 : stockAdjustmentReceipt,
+    16 : stockAggregateConsumptionReceipt,
   };
 
   //
