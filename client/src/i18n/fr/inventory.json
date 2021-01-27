@@ -1,6 +1,7 @@
 {
     "INVENTORY": {
         "ADD_GROUP": "Ajouter un groupe d'inventaire",
+        "OPEN_AMC_CALCULATION" : "Voire CMM calcules",
         "ADD_METADATA": "Ajouter un inventaire",
         "ADD_TYPE": "Ajouter un type d'inventaire",
         "ADD_UNIT": "Ajouter une forme d'Inventaire",
