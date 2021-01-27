@@ -1,7 +1,5 @@
 /* global expect, agent */
 
-// eslint-disable no-unused-expressions
-
 const moment = require('moment');
 const UUID = require('uuid').v4;
 const helpers = require('./helpers');
@@ -136,9 +134,8 @@ describe('Test merging lots', () => {
     }, Promise.resolve());
   });
 
-  it(`Adding temporary mock lots, tags, and lot tags`, () => {
-    expect(true).to.be.equals(true);
-  });
+  // it(`Adding temporary mock lots, tags, and lot tags`, () => {});
+  it(`Adding temporary mock lots, tags, and lot tags`);
 
   // ===========================================================================
   // Verify we have created the lots, tags, etc
@@ -146,7 +143,7 @@ describe('Test merging lots', () => {
     return agent.get('/lot/dupes')
       .query({ label : lot1Label, inventory_uuid : vitamineUuid })
       .then((res) => {
-        helpers.api.listed(res, 4); // The lot itself and 3 dupes
+        helpers.api.listed(res, 4); // 4 = he lot itself and 3 dupes
       })
       .catch(helpers.handler);
   });
@@ -168,14 +165,14 @@ describe('Test merging lots', () => {
   it(`Verify we created ${mockTags.length - lotTagsPreTest.count} lot tags`, () => {
     return db.exec('SELECT * from lot_tag')
       .then((res) => {
-        expect(res.length).to.be.equals(mockTags.length + lotTagsPreTest.count);
+        expect(res.length).to.equal(mockTags.length + lotTagsPreTest.count);
       })
       .catch(helpers.handler);
   });
   it(`Verify we created ${mockStockMovements.length - stockMovementsPreTest.count} stock movements`, () => {
     return db.exec('SELECT * from stock_movement')
       .then((res) => {
-        expect(res.length).to.be.equals(mockStockMovements.length + stockMovementsPreTest.count);
+        expect(res.length).to.equal(mockStockMovements.length + stockMovementsPreTest.count);
       })
       .catch(helpers.handler);
   });
@@ -191,29 +188,31 @@ describe('Test merging lots', () => {
         expect(res).to.have.status(200);
       })
       .then(() => {
-        // Verify lot3 no longer exists
         db.exec(`SELECT * from lot WHERE uuid = 0x${lot3Uuid}`)
           .then((res) => {
-            expect(res.length).to.be.equals(0);
+            expect(res.length).to.equal(0,
+              'Verify lot3 no longer exists');
           });
       })
       .then(() => {
-        // Verify that tag3 now refers to lot1
         db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag3Uuid}`)
           .then((res) => {
-            expect(res.length).to.be.equals(1);
-            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+            expect(res.length).to.equal(1);
+            expect(res[0].lot_uuid).to.equal(lot1Uuid,
+              'Verify that tag3 now refers to lot1');
           });
       })
       .then(() => {
-        // Verify that the stock movement now refers to lot1
         db.exec(`SELECT HEX(lot_uuid) as lot_uuid from stock_movement WHERE uuid = 0x${stockMovement1Uuid}`)
           .then((res) => {
-            expect(res.length).to.be.equals(1);
-            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+            expect(res.length).to.equal(1);
+            expect(res[0].lot_uuid).to.equal(lot1Uuid,
+              'Verify that the stock movement now refers to lot1');
           });
       });
   });
+
+  // ---------------------------------------------------------------------------
 
   it('Merge lots 4 and 5 with lot 1 (multiple lots)', () => {
     return agent.post(`/lots/${lot1Uuid}/merge`)
@@ -223,26 +222,26 @@ describe('Test merging lots', () => {
         expect(res).to.have.status(200);
       })
       .then(() => {
-        // Verify lots 4 and 5 no longer exist
         db.exec(`SELECT * from lot WHERE uuid IN (0x${lot4Uuid}, 0x${lot5Uuid})`)
           .then((res) => {
-            expect(res.length).to.be.equals(0);
+            expect(res.length).to.equal(0,
+              'Verify lots 4 and 5 no longer exist');
           });
       })
       .then(() => {
-        // Verify that tag4 now points to lot1
         db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag4Uuid}`)
           .then((res) => {
-            expect(res.length).to.be.equals(1);
-            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+            expect(res.length).to.equal(1);
+            expect(res[0].lot_uuid).to.equal(lot1Uuid,
+              'Verify that tag4 now points to lot1');
           });
       })
       .then(() => {
-        // Verify that tag5 now points to lot1
         db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag5Uuid}`)
           .then((res) => {
-            expect(res.length).to.be.equals(1);
-            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+            expect(res.length).to.equal(1);
+            expect(res[0].lot_uuid).to.equal(lot1Uuid,
+              'Verify that tag5 now points to lot1');
           });
       });
   });
@@ -250,9 +249,7 @@ describe('Test merging lots', () => {
   // ===========================================================================
   // Cleanup
 
-  it(`Deleting all temporary mock lots, tags, and lot tags`, () => {
-    expect(true).to.be.equals(true);
-  });
+  it(`Deleting all temporary mock lots, tags, and lot tags`, () => {});
 
   after('Delete temporary tags and lot tags', () => {
     return mockTags.reduce((chain, p) => {
@@ -281,7 +278,8 @@ describe('Test merging lots', () => {
       return chain
         .then(() => db.exec(`SELECT * FROM ${item.table}`)
           .then(res => {
-            expect(res.length).to.be.equals(item.count, `Verify deletion of temporary '${item.table}'`);
+            expect(res.length).to.equal(item.count,
+              `Verify deletion of temporary '${item.table}'`);
           }));
     }, Promise.resolve());
   });
