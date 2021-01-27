@@ -134,8 +134,7 @@ describe('Test merging lots', () => {
     }, Promise.resolve());
   });
 
-  // it(`Adding temporary mock lots, tags, and lot tags`, () => {});
-  it(`Adding temporary mock lots, tags, and lot tags`);
+  it(`Added temporary mock lots, tags, lot tags, and stock movements`, () => {});
 
   // ===========================================================================
   // Verify we have created the lots, tags, etc
@@ -249,7 +248,7 @@ describe('Test merging lots', () => {
   // ===========================================================================
   // Cleanup
 
-  it(`Deleting all temporary mock lots, tags, and lot tags`, () => {});
+  it(`Deleting all temporary mock lots, tags, lot tags, and stock movements`, () => {});
 
   after('Delete temporary tags and lot tags', () => {
     return mockTags.reduce((chain, p) => {
