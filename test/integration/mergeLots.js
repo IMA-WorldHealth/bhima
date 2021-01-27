@@ -75,7 +75,7 @@ function addTagSQL(params) {
 }
 
 function addLotTagSQL(params) {
-  const [tagUuid, lotUuid,/* tagLabel */] = params;
+  const [tagUuid, lotUuid] = params;
   return 'INSERT INTO lot_tag (lot_uuid, tag_uuid) '
     + `VALUES (0x${lotUuid}, 0x${tagUuid});`;
 }
@@ -174,7 +174,7 @@ describe('Test merging lots', () => {
 
   it('Merge lots 4 and 5 with lot 1 (multiple lots)', () => {
     return agent.post(`/lots/${lot1Uuid}/merge`)
-      .send({ lotsToMerge : [lot4Uuid, lot5Uuid]})
+      .send({ lotsToMerge : [lot4Uuid, lot5Uuid] })
       .then(res => {
         // Verify the operation was successful
         expect(res).to.have.status(200);
