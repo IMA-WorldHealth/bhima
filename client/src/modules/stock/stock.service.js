@@ -29,6 +29,7 @@ function StockModalService(Modal) {
   service.openActionStockRequisition = openActionStockRequisition;
   service.openSearchStockRequisition = openSearchStockRequisition;
   service.openAssignmentHistoric = openAssignmentHistoric;
+  service.openDuplicateLotsModal = openDuplicateLotsModal;
 
   /** create stock assign */
   function openActionStockAssign(request) {
@@ -74,6 +75,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** duplicate lots */
+  function openDuplicateLotsModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/duplicates.modal.html',
+      controller   : 'DuplicateLotsModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

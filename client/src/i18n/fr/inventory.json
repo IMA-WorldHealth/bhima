@@ -28,6 +28,7 @@
         "UNIQUE_ITEM" : "Un seul item",
         "IS_BROKEN" : "est endommagé",
         "DOWNLOAD_IMPORT_MODEL" : "Télécharger Modèle",
+        "FIND DUPLICATES" : "Trouver les doublons",
         "IMPORT" : "Importation",
         "IMPORT_DESCRIPTION" : "Vous êtes sur le point d'importer les inventaires à partir d'un fichier CSV",
         "DOWNLOAD_TEMPLATE_HERE" : "Cliquez ici pour télécharger le fichier modèle pour l'importation d'inventaire",
