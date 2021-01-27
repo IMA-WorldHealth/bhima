@@ -20,13 +20,44 @@ const preTestInfo = [
 const tagsPreTest = preTestInfo[1];
 const lotTagsPreTest = preTestInfo[2];
 
-// Define needed UUIDs
+// Inventory UUID for: Vitamines B1+B6+B12, 100+50+0.5mg/2ml
+const vitamineUuid = 'F6556E729D0547998CBD0A03B1810185';
+
+// Define needed UUIDs and labels
 const lot1Uuid = uuid();
 const lot2Uuid = uuid();
 const lot3Uuid = uuid();
+const lot4Uuid = uuid();
+const lot5Uuid = uuid();
 
-// Inventory UUID for: Vitamines B1+B6+B12, 100+50+0.5mg/2ml
-const vitamineUuid = 'F6556E729D0547998CBD0A03B1810185';
+const lot1Label = 'Test lot 1';
+const lot2Label = 'Test lot 2';
+const lot3Label = 'Test Lot 1';
+const lot4Label = 'Test Lot 1';
+const lot5Label = 'Test Lot 1';
+
+const mockLots = [
+  // uuid, label, inventory_uuid
+  [lot1Uuid, lot1Label, vitamineUuid],
+  [lot2Uuid, lot2Label, vitamineUuid],
+  [lot3Uuid, lot3Label, vitamineUuid], // This is a dupe of the first lot
+  [lot4Uuid, lot4Label, vitamineUuid], // This is another dupe of the first lot
+  [lot5Uuid, lot5Label, vitamineUuid], // This is another dupe of the first lot
+];
+
+const tag3Uuid = uuid();
+const tag4Uuid = uuid();
+const tag5Uuid = uuid();
+
+const mockTags = [
+  // uuid, lot uuid, tag text
+  [uuid(), lot1Uuid, 'XYZ Brand'],
+  [uuid(), lot1Uuid, 'Vitamin'],
+  [uuid(), lot2Uuid, 'Partial'],
+  [tag3Uuid, lot3Uuid, 'Vitamin2'],
+  [tag4Uuid, lot4Uuid, 'Vitamin3'],
+  [tag5Uuid, lot5Uuid, 'Vitamin4'],
+];
 
 function addLotSQL(params) {
   const [lotUuid, label, inventoryUuid] = params;
@@ -49,25 +80,8 @@ function addLotTagSQL(params) {
     + `VALUES (0x${lotUuid}, 0x${tagUuid});`;
 }
 
-const lot1Label = 'Test lot 1';
-const lot2Label = 'Test lot 2';
-const lot3Label = 'Test Lot 1';
 
-const mockLots = [
-  // uuid, label
-  [lot1Uuid, lot1Label, vitamineUuid],
-  [lot2Uuid, lot2Label, vitamineUuid],
-  [lot3Uuid, lot3Label, vitamineUuid], // This is a dupe of the first lot
-];
-
-const mockTags = [
-  [uuid(), lot1Uuid, 'XYZ Brand'],
-  [uuid(), lot1Uuid, 'Vitamin'],
-  [uuid(), lot2Uuid, 'Partial'],
-  [uuid(), lot3Uuid, 'Vitamin2'],
-];
-
-describe('(/lot/:uuid/merge) Merge lots', () => {
+describe('Test merging lots', () => {
 
   before('Note original numbers of lots, tags, etc', () => {
     return preTestInfo.reduce((chain, item) => {
@@ -98,20 +112,17 @@ describe('(/lot/:uuid/merge) Merge lots', () => {
     }, Promise.resolve());
   });
 
-  it(`Temporarily added ${mockLots.length} mock lots`, () => {
-    expect(true).to.be.equals(true);
-  });
-  it(`Temporarily added ${mockTags.length} mock lot tags`, () => {
+  it(`Adding temporary mock lots, tags, and lot tags`, () => {
     expect(true).to.be.equals(true);
   });
 
   // ===========================================================================
   // Verify we have created the lots, tags, etc
-  it('Verify we created lot1 and its dupe (lot3)', () => {
+  it('Verify we created lot1 and its dupes (lot3, lot4, lot5)', () => {
     return agent.get('/lot/dupes')
       .query({ label: lot1Label, inventory_uuid: vitamineUuid })
       .then((res) => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 4); // The lot itself and 3 dupes
       })
       .catch(helpers.handler);
   });
@@ -138,32 +149,71 @@ describe('(/lot/:uuid/merge) Merge lots', () => {
       .catch(helpers.handler);
   });
 
-
   // ===========================================================================
-  // NOW do the tests
+  // NOW do the merge tests
 
+  it('Merge lot 3 with lot 1 (single lot)', () => {
+    return agent.post(`/lots/${lot1Uuid}/merge`)
+      .send({ lotsToMerge : [lot3Uuid]})
+      .then(res => {
+        // Verify the operation was successful
+        expect(res).to.have.status(200);
+      })
+      .then(() => {
+        // Verify lot3 no longer exists
+        db.exec(`SELECT * from lot WHERE uuid = 0x${lot3Uuid}`)
+          .then((res) => {
+            expect(res.length).to.be.equals(0);
+          });
+      })
+      .then(() => {
+        // Verify that tag3 now points to lot1
+        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag3Uuid}`)
+          .then((res) => {
+            expect(res.length).to.be.equals(1);
+            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+          });
+      });
+  });
 
-//   // -------------------------------------------------------------------------------------
-//   // Various name checks
-//   it('Get matches for 2-part names like "John Smith"', () => {
-//     const testName = 'John Smith';
-//     const conditions = { search_name : testName };
-//     return agent.get('/patients')
-//       .query(conditions)
-//       .then((res) => {
-//         helpers.api.listed(res, 2);
-//         // Sort the list, best match first
-//         const matches = res.body.sort((a, b) => { return (b.matchScore - a.matchScore); });
-//         expect(matches[0].display_name).to.be.equals(testName);
-//         expect(matches[0].matchScore).to.be.equals(1);
-//         expect(matches[1].display_name).to.be.not.equals(testName);
-//         expect(matches[1].matchScore).to.be.lt(1);
-//       })
-//       .catch(helpers.handler);
-//   });
+  it('Merge lots 4 and 5 with lot 1 (multiple lots)', () => {
+    return agent.post(`/lots/${lot1Uuid}/merge`)
+      .send({ lotsToMerge : [lot4Uuid, lot5Uuid]})
+      .then(res => {
+        // Verify the operation was successful
+        expect(res).to.have.status(200);
+      })
+      .then(() => {
+        // Verify lots 4 and 5 no longer exist
+        db.exec(`SELECT * from lot WHERE uuid IN (0x${lot4Uuid}, 0x${lot5Uuid})`)
+          .then((res) => {
+            expect(res.length).to.be.equals(0);
+          });
+      })
+      .then(() => {
+        // Verify that tag4 now points to lot1
+        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag4Uuid}`)
+          .then((res) => {
+            expect(res.length).to.be.equals(1);
+            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+          });
+      })
+      .then(() => {
+        // Verify that tag5 now points to lot1
+        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag5Uuid}`)
+          .then((res) => {
+            expect(res.length).to.be.equals(1);
+            expect(res[0].lot_uuid).to.be.equals(lot1Uuid);
+          });
+      });
+  });
 
   // ===========================================================================
   // Cleanup
+
+  it(`Removing all temporary mock lots, tags, and lot tags`, () => {
+    expect(true).to.be.equals(true);
+  });
 
   // Delete the mock lot tags
   after('Clean up temporary tags and lot tags', () => {
