@@ -91,6 +91,11 @@ function StockLotsController(
     Modal.openAssignmentHistoric({ uuid, depotUuid });
   };
 
+  // lot duplicates modal
+  vm.openDuplicatesModal = (uuid, depotUuid) => {
+    Modal.openDuplicateLotsModal({ uuid, depotUuid });
+  };
+
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
