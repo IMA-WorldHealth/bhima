@@ -1,0 +1,71 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-lots-duplicates"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="title" translate>FORM.LABELS.DUPLICATE_LOTS</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div ng-if="$ctrl.lots.length === 1">
+      <span translate>LOTS.NO_LOTS_FOUND</span>
+    </div>
+    <div ng-if="$ctrl.lots.length > 1">
+      <span translate translate-values="{'N':$ctrl.lots.length - 1}">LOTS.FOUND_N_LOTS</span>
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <th>Keep</th>
+          <th>Merge</th>
+          <th>Label</th>
+          <th>Quantity</th>
+          <th>Initial Quantity</th>
+          <th>Unit Price</th>
+          <th>Entry Date</th>
+          <th>Expiration Date</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="lot in $ctrl.lots track by lot.uuid"
+              ng-class="{ 'selected-lot' : lot.selected }">
+            <td class="center">
+              <input type="radio" name="selected" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
+                ng-click="$ctrl.selectLot(lot)"
+                checked="true"
+                required>
+              <input type="radio" name="selected" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
+                ng-click="$ctrl.selectLot(lot)"
+                required>
+            </td>
+            <td class="center">
+              <input type="checkbox" name="merge" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
+                ng-model="lot.merge">
+              <input type="checkbox" name="merge" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
+                disabled="true"
+                ng-model="lot.merge">
+            </td>
+            <td>{{lot.label}}</td>
+            <td>{{lot.quantity}}</td>
+            <td>{{lot.initial_quantity}}</td>
+            <td>{{lot.unit_price}}</td>
+            <td>{{lot.entry_date | date}}</td>
+            <td>{{lot.expiration_date | date}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" ng-if="$ctrl.lots.length > 1">
+      <span translate>FORM.BUTTONS.MERGE</span>
+    </bh-loading-button>
+  </div>
+</form>
