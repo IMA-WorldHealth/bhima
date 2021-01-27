@@ -93,10 +93,6 @@ describe('Test merging lots', () => {
     }, Promise.resolve());
   });
 
-  // before('Test', () => {
-  //   console.log("db: ", preTestInfo);
-  // });
-
   before('add mock lots', () => {
     return mockLots.reduce((chain, p) => {
       return chain
