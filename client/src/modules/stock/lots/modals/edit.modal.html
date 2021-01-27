@@ -1,6 +1,9 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
     <div class="modal-header">
-      <strong translate>LOTS.DETAILS</strong>
+      <ol class="headercrumb">
+        <li class="static" translate>LOTS.DETAILS</li>
+        <li class="title" translate>{{$ctrl.model.text}}</li>
+      </ol>
     </div>
 
     <div class="modal-body">

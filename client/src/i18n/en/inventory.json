@@ -1,6 +1,7 @@
 {
     "INVENTORY": {
         "ADD_GROUP": "Add Inventory Group",
+        "OPEN_AMC_CALCULATION" : "View AMC Calculations",
         "ADD_METADATA": "Add Inventory Item",
         "ADD_TYPE": "Add Inventory Type",
         "ADD_UNIT": "Add Inventory unit form",

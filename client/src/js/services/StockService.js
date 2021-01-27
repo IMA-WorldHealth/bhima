@@ -190,6 +190,11 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
       });
   }
 
+  inventories.loadAMCForInventory = function loadAMCForInventory(inventoryUuid, depotUuid) {
+    return inventories.$http.get(`/depots/${depotUuid}/inventories/${inventoryUuid}/cmm`)
+      .then(util.unwrapHttpResponse);
+  };
+
   return {
     stocks,
     stockAssign,
