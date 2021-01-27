@@ -83,7 +83,7 @@ function addLotTagSQL(params) {
 
 describe('Test merging lots', () => {
 
-  before('Note original numbers of lots, tags, etc', () => {
+  before('Note original counts of lots, tags, etc', () => {
     return preTestInfo.reduce((chain, item) => {
       return chain
         .then(() => db.exec(`SELECT * FROM ${item.table}`)
@@ -116,7 +116,7 @@ describe('Test merging lots', () => {
   // Verify we have created the lots, tags, etc
   it('Verify we created lot1 and its dupes (lot3, lot4, lot5)', () => {
     return agent.get('/lot/dupes')
-      .query({ label: lot1Label, inventory_uuid: vitamineUuid })
+      .query({ label: lot1Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 4); // The lot itself and 3 dupes
       })
@@ -124,7 +124,7 @@ describe('Test merging lots', () => {
   });
   it('Verify we created lot2', () => {
     return agent.get('/lot/dupes')
-      .query({ label: lot2Label, inventory_uuid: vitamineUuid })
+      .query({ label: lot2Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 1);
       })
@@ -150,7 +150,7 @@ describe('Test merging lots', () => {
 
   it('Merge lot 3 with lot 1 (single lot)', () => {
     return agent.post(`/lots/${lot1Uuid}/merge`)
-      .send({ lotsToMerge : [lot3Uuid]})
+      .send({ lotsToMerge : [lot3Uuid] })
       .then(res => {
         // Verify the operation was successful
         expect(res).to.have.status(200);
@@ -207,12 +207,12 @@ describe('Test merging lots', () => {
   // ===========================================================================
   // Cleanup
 
-  it(`Removing all temporary mock lots, tags, and lot tags`, () => {
+  it(`Deleting all temporary mock lots, tags, and lot tags`, () => {
     expect(true).to.be.equals(true);
   });
 
   // Delete the mock lot tags
-  after('Clean up temporary tags and lot tags', () => {
+  after('Delete temporary tags and lot tags', () => {
     return mockTags.reduce((chain, p) => {
       return chain
         .then(() => db.exec(`DELETE FROM lot_tag WHERE lot_uuid=0x${p[1]};`))
@@ -220,14 +220,14 @@ describe('Test merging lots', () => {
     }, Promise.resolve());
   });
 
-  after('Clean up temporary lots', () => {
+  after('Delete temporary lots', () => {
     return mockLots.reduce((chain, p) => {
       return chain
         .then(() => db.exec(`DELETE FROM lot WHERE uuid=0x${p[0]};`));
     }, Promise.resolve());
   });
 
-  after('Verify that we have deleted all temporary lots, tags, etc', () => {
+  after('Verify we have deleted all temporary lots, tags, etc', () => {
     return preTestInfo.reduce((chain, item) => {
       return chain
         .then(() => db.exec(`SELECT * FROM ${item.table}`)
