@@ -12,9 +12,9 @@ function uuid() {
 }
 
 const preTestInfo = [
-  { table: 'lot', count: 0 },
-  { table: 'tags', count: 0 },
-  { table: 'lot_tag', count: 0 },
+  { table : 'lot', count : 0 },
+  { table : 'tags', count : 0 },
+  { table : 'lot_tag', count : 0 },
 ];
 // const lotPreTest = preTestInfo[0];
 const tagsPreTest = preTestInfo[1];
@@ -75,7 +75,7 @@ function addTagSQL(params) {
 }
 
 function addLotTagSQL(params) {
-  const [tagUuid, lotUuid, /* tagLabel */] = params;
+  const [tagUuid, lotUuid,/* tagLabel */] = params;
   return 'INSERT INTO lot_tag (lot_uuid, tag_uuid) '
     + `VALUES (0x${lotUuid}, 0x${tagUuid});`;
 }
@@ -116,7 +116,7 @@ describe('Test merging lots', () => {
   // Verify we have created the lots, tags, etc
   it('Verify we created lot1 and its dupes (lot3, lot4, lot5)', () => {
     return agent.get('/lot/dupes')
-      .query({ label: lot1Label, inventory_uuid : vitamineUuid })
+      .query({ label : lot1Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 4); // The lot itself and 3 dupes
       })
@@ -124,7 +124,7 @@ describe('Test merging lots', () => {
   });
   it('Verify we created lot2', () => {
     return agent.get('/lot/dupes')
-      .query({ label: lot2Label, inventory_uuid : vitamineUuid })
+      .query({ label : lot2Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 1);
       })
