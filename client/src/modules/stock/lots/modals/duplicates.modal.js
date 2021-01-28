@@ -56,12 +56,14 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
       }
     });
     if (lotsToMerge.length === 0) {
-      Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
       Instance.close();
+      Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
     } else {
-      Lots.merge(vm.selectedLot.uuid, lotsToMerge);
+      Lots.merge(vm.selectedLot.uuid, lotsToMerge)
+        .then(() => {
+          Instance.close('success');
+        });
       Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
-      Instance.close('success');
     }
   }
 

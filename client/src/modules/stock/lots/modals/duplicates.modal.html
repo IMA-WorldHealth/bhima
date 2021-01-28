@@ -24,7 +24,7 @@
           <th translate>TABLE.COLUMNS.LABEL</th>
           <th translate>TABLE.COLUMNS.QUANTITY</th>
           <th translate>STOCK.INITIAL_QUANTITY</th>
-          <th translate>TABLE.COLUMNS.UNIT_PRICE</th>
+          <th class="text-right" translate>TABLE.COLUMNS.UNIT_PRICE</th>
           <th translate>STOCK.ENTRY_DATE</th>
           <th translate>STOCK.EXPIRATION_DATE</th>
         </thead>
@@ -48,7 +48,7 @@
             <td>{{lot.label}}</td>
             <td>{{lot.quantity}}</td>
             <td>{{lot.initial_quantity}}</td>
-            <td>{{lot.unit_cost | currency:$ctrl.enterprise.currency_id}}</td>
+            <td class="text-right">{{lot.unit_cost | currency:$ctrl.enterprise.currency_id}}</td>
             <td>{{lot.entry_date | date}}</td>
             <td>{{lot.expiration_date | date}}</td>
           </tr>
