@@ -32,25 +32,23 @@
           <tr ng-repeat="lot in $ctrl.lots track by lot.uuid"
               ng-class="{ 'selected-lot' : lot.selected }">
             <td class="center">
-              <input type="radio" name="selected" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
-                ng-click="$ctrl.selectLot(lot)"
-                checked="true"
-                required>
-              <input type="radio" name="selected" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
-                ng-click="$ctrl.selectLot(lot)"
-                required>
+              <input type="radio" name="selected" style="cursor:pointer;"
+                ng-model="$ctrl.selectedLot.uuid"
+                ng-change="$ctrl.selectLot(lot)"
+                ng-checked="lot.uuid === $ctrl.selectedLot.uuid"
+                required
+                >
             </td>
             <td class="center">
-              <input type="checkbox" name="merge" ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
-                ng-model="lot.merge">
-              <input type="checkbox" name="merge" ng-if="lot.uuid === $ctrl.selectedLot.uuid"
-                disabled="true"
-                ng-model="lot.merge">
+              <input type="checkbox" name="merge"
+                ng-model="lot.merge"
+                ng-disabled="lot.uuid === $ctrl.selectedLot.uuid"
+                >
             </td>
             <td>{{lot.label}}</td>
             <td>{{lot.quantity}}</td>
             <td>{{lot.initial_quantity}}</td>
-            <td>{{lot.unit_cost}}</td>
+            <td>{{lot.unit_cost | currency:$ctrl.enterprise.currency_id}}</td>
             <td>{{lot.entry_date | date}}</td>
             <td>{{lot.expiration_date | date}}</td>
           </tr>

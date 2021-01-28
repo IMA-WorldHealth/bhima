@@ -110,7 +110,6 @@ function getDupes(req, res, next) {
   filters.fullText('label');
   filters.equals('inventory_uuid');
   filters.equals('initial_quantity');
-  filters.equals('initial_quantity');
   filters.equals('entry_date');
   filters.equals('expiration_date');
 

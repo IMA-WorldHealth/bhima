@@ -3,13 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 DuplicateLotsModalController.$inject = [
-  'data', '$state', '$uibModalInstance', 'LotService', 'NotifyService', '$translate',
-  // 'util', 'Store', 'PeriodService', 'StockService',
-  // 'SearchModalUtilService',
+  'data', '$uibModalInstance', 'LotService', 'NotifyService', '$translate',
 ];
 
-function DuplicateLotsModalController(data, $state, Instance, Lots, Notify, $translate) {
-  // util, Store, Periods, Stock, SearchModal
+function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) {
   const vm = this;
   vm.selectedLot = null;
   vm.lots = [];
