@@ -16,8 +16,8 @@ const FilterParser = require('../../lib/filter');
 
 const detailsQuery = `
   SELECT
-    BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
-    l.description, l.expiration_date,
+    BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
+    l.unit_cost, l.description, l.expiration_date, l.entry_date,
     BUID(i.uuid) AS inventory_uuid, i.text
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
