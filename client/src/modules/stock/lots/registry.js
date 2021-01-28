@@ -93,7 +93,13 @@ function StockLotsController(
 
   // lot duplicates modal
   vm.openDuplicatesModal = (uuid, depotUuid) => {
-    Modal.openDuplicateLotsModal({ uuid, depotUuid });
+    Modal.openDuplicateLotsModal({ uuid, depotUuid })
+      .then((res) => {
+        if (res === 'success') {
+          // Reload the lot registry since some lots were merged
+          load(stockLotFilters.formatHTTP(true));
+        }
+      });
   };
 
   // initialize module

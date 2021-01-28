@@ -57,11 +57,12 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
     });
     if (lotsToMerge.length === 0) {
       Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
+      Instance.close();
     } else {
       Lots.merge(vm.selectedLot.uuid, lotsToMerge);
       Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
+      Instance.close('success');
     }
-    Instance.close();
   }
 
   startup();
