@@ -187,7 +187,7 @@ describe('Test merging lots', () => {
         expect(res).to.have.status(200);
       })
       .then(() => {
-        db.exec(`SELECT * from lot WHERE uuid = 0x${lot3Uuid}`)
+        db.exec(`SELECT uuid from lot WHERE uuid = 0x${lot3Uuid}`)
           .then((res) => {
             expect(res.length).to.equal(0,
               'Verify lot3 no longer exists');
@@ -251,25 +251,22 @@ describe('Test merging lots', () => {
   it(`Deleting all temporary mock lots, tags, lot tags, and stock movements`, () => {});
 
   after('Delete temporary tags and lot tags', () => {
-    return mockTags.reduce((chain, p) => {
-      return chain
-        .then(() => db.exec(`DELETE FROM lot_tag WHERE lot_uuid=0x${p[1]};`))
-        .then(() => db.exec(`DELETE FROM tags WHERE uuid=0x${p[0]};`));
-    }, Promise.resolve());
+    const tagUuids = mockTags.map(tag => db.bid(tag[0]));
+    const lotUuids = mockTags.map(tag => db.bid(tag[1]));
+    return db.exec('DELETE FROM lot_tag WHERE lot_uuid IN (?)', [lotUuids])
+      .then(() => {
+        return db.exec('DELETE FROM tags WHERE uuid IN (?)', [tagUuids]);
+      });
   });
 
   after('Delete temporary stock movements', () => {
-    return mockStockMovements.reduce((chain, p) => {
-      return chain
-        .then(() => db.exec(`DELETE FROM stock_movement WHERE uuid=0x${p[0]};`));
-    }, Promise.resolve());
+    const smUuids = mockStockMovements.map(smov => db.bid(smov[0]));
+    return db.exec('DELETE FROM stock_movement WHERE uuid IN (?)', [smUuids]);
   });
 
   after('Delete temporary lots', () => {
-    return mockLots.reduce((chain, p) => {
-      return chain
-        .then(() => db.exec(`DELETE FROM lot WHERE uuid=0x${p[0]};`));
-    }, Promise.resolve());
+    const lotUuids = mockLots.map(lot => db.bid(lot[0]));
+    return db.exec(`DELETE FROM lot WHERE uuid IN (?);`, [lotUuids]);
   });
 
   after('Verify we have deleted all temporary lots, tags, etc', () => {
@@ -278,7 +275,7 @@ describe('Test merging lots', () => {
         .then(() => db.exec(`SELECT * FROM ${item.table}`)
           .then(res => {
             expect(res.length).to.equal(item.count,
-              `Verify deletion of temporary '${item.table}'`);
+              `Verify deletion of temporary '${item.table}' rows`);
           }));
     }, Promise.resolve());
   });
