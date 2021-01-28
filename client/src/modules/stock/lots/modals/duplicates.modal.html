@@ -42,7 +42,7 @@
             <td class="center">
               <input type="checkbox" name="merge" style="cursor:pointer;"
                 ng-model="lot.merge"
-                ng-disabled="lot.uuid === $ctrl.selectedLot.uuid"
+                ng-if="lot.uuid !== $ctrl.selectedLot.uuid"
                 >
             </td>
             <td>{{lot.label}}</td>
