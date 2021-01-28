@@ -14,6 +14,23 @@ function LotService(Api, $http, util) {
       });
   };
 
+  lots.dupes = (params) => {
+    return $http.get('/lot/dupes', { params })
+      .then(res => {
+        res.data.forEach((row) => {
+          row.entry_date = new Date(row.entry_date);
+          row.expiration_date = new Date(row.expiration_date);
+        });
+        return res;
+      })
+      .then(util.unwrapHttpResponse);
+  };
+
+  lots.merge = (uuid, lotsToMerge) => {
+    return $http.post(`/lots/${uuid}/merge/`, { lotsToMerge })
+      .then(util.unwrapHttpResponse);
+  };
+
   lots.assignments = (uuid, depotUuid) => {
     return $http.get(`/lots/${uuid}/assignments/${depotUuid}`)
       .then(util.unwrapHttpResponse);
