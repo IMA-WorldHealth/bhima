@@ -1,5 +1,7 @@
 <div class="ui-grid-cell-contents">
-  <span class="text-right">
+  <span
+    class="text-right"
+    ng-dblclick="grid.appScope.viewAMCCalculations(row.entity)">
     {{row.entity.avg_consumption}}
   </span>
 </div>
