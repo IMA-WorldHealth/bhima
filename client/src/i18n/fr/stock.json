@@ -151,6 +151,7 @@
     "QUANTITY_CONSUMED" : "Quantité consommée",
     "QUANTITY_LOST" : "Quantité perdue",
     "QUANTITY_REMAINING" : "Quantité restante",
+    "INITIAL_QUANTITY" : "Quantité initiale",
     "TRANSFER_RECEIVED" : "Reçu",
     "TRANSFER_AVAILABLE" : "Disponible",
     "RECEIPT"         : {
@@ -242,6 +243,7 @@
     "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
     "EXCLUDE_EXHAUSTED_LOTS": "Exclure les lots de stocks épuisés",
     "DETAILS":"Information sur le lot",
+    "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
     "LOT_LABEL":"Designation du lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
@@ -255,7 +257,11 @@
     "RISK_OF_EXPIRATION":"Il y a {{quantity}} {{unit}} à risque d'expiration",
     "EXPIRED":"Il y a {{quantity}} {{unit}} expirés",
     "NEAR_EXPIRE":"Il y a {{quantity}} {{unit}} près d'expiration",
-    "SHOW_ONLY_RISKY_LOTS":"Afficher uniquement les articles ayant des lots à risque"
+    "SHOW_ONLY_RISKY_LOTS":"Afficher uniquement les articles ayant des lots à risque",
+    "NO_LOTS_FOUND": "Aucun lot correspondant trouvé",
+    "FOUND_N_LOTS": "Trouvé {{N}} lots correspondants",
+    "NO_LOTS_MERGED": "Aucun lot n'a été sélectionné pour être fusionné",
+    "MERGED_N_LOTS": "{{N}} Lots ont été fusionnés"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"
