@@ -601,7 +601,7 @@ CREATE PROCEDURE `getCMM` (
     JOIN inventory i ON m.inventory_uuid = i.uuid
   WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid;
 
-  SELECT MIN(m.start_date) INTO  _first_inventory_mvt_date
+  SELECT MIN(m.start_date) INTO _first_inventory_mvt_date
   FROM stock_movement_status m
     JOIN inventory i ON m.inventory_uuid = i.uuid
   WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.start_date) >= DATE(_start_date);
@@ -656,18 +656,23 @@ CREATE PROCEDURE `getCMM` (
   ) AS `cmm_data`;
 
 
+  -- get the current amount in stock
+  SET @quantityInStock = (
+    SELECT quantity FROM stock_movement_status AS sms
+      WHERE sms.inventory_uuid = _inventory_uuid
+        AND sms.depot_uuid = _depot_uuid ORDER BY start_date LIMIT 1
+  );
+
   SET @algo1 = ( _sum_consumed_quantity/(IF((_sum_stock_day = NULL) OR (_sum_stock_day = 0),1, _sum_stock_day)))*30.5;
-
   SET @algo2 = ((_sum_consumed_quantity)/(IF( (_sum_consumption_day = NULL) OR _sum_consumption_day = 0,1, _sum_consumption_day))) * 30.5;
-
   SET @algo3 =((_sum_consumed_quantity)/(IF( (_sum_days = NULL) OR _sum_days = 0,1, _sum_days))) * 30.5;
-
   SET @algo_msh = (_sum_consumed_quantity/(_number_of_month - (_sum_stock_out_days/30.5) ));
 
   SELECT ROUND(IFNULL(@algo1, 0), 2) as algo1,
     ROUND(IFNULL(@algo2, 0), 2) as algo2,
     ROUND(IFNULL(@algo3, 0),2) as algo3,
-    ROUND(IFNULL(@algo_msh, 0), 2) as  algo_msh,
+    ROUND(IFNULL(@algo_msh, 0), 2) as algo_msh,
+    IFNULL(@quantityInStock, 0) AS quantity_in_stock, -- FIXME(@jniles): this returns incorrect results.  DO NOT USE
     BUID(_inventory_uuid) as inventory_uuid,
     BUID(_depot_uuid) as depot_uuid,
     _start_date as start_date,
