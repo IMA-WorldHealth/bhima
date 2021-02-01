@@ -21,7 +21,7 @@
         "LIST_TYPE": "Inventory Types",
         "LIST_UNIT": "Inventory Unit form",
         "DEFAULT_QUANTITY_DEFINITION": "The default quantity allows you to customize the default quantity invoiced.  The invoicing module can change this quantity at invoice time.",
-        "NO_INVENTORY_FOUND": "No inventory found",
+        "NO_INVENTORY_FOUND": "None found!",
         "NO_INVENTORY_REGISTERED": "There is no inventory registered yet",
         "REGISTRY": "Inventories Registry",
         "EXPIRES" : "Expires",
