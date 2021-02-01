@@ -10,7 +10,8 @@
       <a data-method="stock-movement" ui-sref="stockMovements({
         filters : [
           { key : 'period', value : 'allTime' },
-          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text }
+          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text },
+          { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text},
         ]})" href>
         <span class="fa fa-file-text-o"></span> <span translate>TREE.STOCK_MOVEMENTS</span>
       </a>
