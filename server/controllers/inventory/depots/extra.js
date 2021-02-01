@@ -9,6 +9,7 @@
 const router = require('express').Router({ mergeParams : true });
 const db = require('../../../lib/db');
 const core = require('../../stock/core');
+const inv = require('../inventory/core');
 
 exports.router = router;
 
@@ -85,13 +86,32 @@ async function getUsers(req, res, next) {
 async function getInventoryAverageMonthlyConsumption(req, res, next) {
   const { uuid, inventoryUuid } = req.params;
   try {
+
     const monthAvgConsumption = req.session.stock_settings.month_average_consumption;
     const [[averageMonthlyConsumption]] = await db.exec(
       'CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), ?, ?);',
       [monthAvgConsumption, db.bid(inventoryUuid), db.bid(uuid)],
     );
 
-    res.status(200).json(averageMonthlyConsumption);
+    const sql = `SELECT
+      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
+      allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
+      allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
+      BUID(parent_uuid) parent_uuid, dhis2_uid,
+      min_months_security_stock
+    FROM depot AS d
+    WHERE d.enterprise_id = ? AND d.uuid = ?;`;
+
+    const [[inventory], [depot]] = await Promise.all([
+      inv.getItemsMetadata({ uuid : inventoryUuid }),
+      db.exec(sql, [req.session.enterprise.id, db.bid(uuid)]),
+    ]);
+
+    const settings = req.session.stock_settings;
+
+    res.status(200).json({
+      ...averageMonthlyConsumption, inventory, depot, settings,
+    });
   } catch (err) {
     next(err);
   }
