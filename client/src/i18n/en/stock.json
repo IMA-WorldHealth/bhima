@@ -132,6 +132,7 @@
       "SUM_DAYS" : "Total Days",
       "SUM_STOCK_DAY" : "Stock Available in Depot",
       "SUM_STOCK_OUT_DAYS" : "Stock Outs",
+      "NEXT_STOCK_OUT" : "Next Stock Out",
       "TITLE" : "Average Monthly Consumption",
       "DAYS" : "Days",
       "MONTHS" : "Months"
