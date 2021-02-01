@@ -23,7 +23,7 @@
         "LIST_TYPE": "Types d'inventaires",
         "LIST_UNIT": "Formes d'inventaires",
         "REGISTRY": "Registre des inventaires",
-		"NO_INVENTORY_FOUND": "Aucun inventaire trouvé",
+        "NO_INVENTORY_FOUND": "Aucun trouvé !",
         "NO_INVENTORY_REGISTERED": "Il n'y aucun inventaire enregistré jusque là",
         "EXPIRES" : "Expire",
         "UNIQUE_ITEM" : "Un seul item",
