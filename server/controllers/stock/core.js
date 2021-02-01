@@ -671,6 +671,7 @@ async function getInventoryQuantityAndConsumption(params) {
   const settingsql = `
     SELECT month_average_consumption, average_consumption_algo FROM stock_setting WHERE enterprise_id = ?
   `;
+
   const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
 
   // add the CMM
