@@ -30,6 +30,7 @@ function StockModalService(Modal) {
   service.openSearchStockRequisition = openSearchStockRequisition;
   service.openAssignmentHistoric = openAssignmentHistoric;
   service.openDuplicateLotsModal = openDuplicateLotsModal;
+  service.openAMCCalculationModal = openAMCCalculationModal;
 
   /** create stock assign */
   function openActionStockAssign(request) {
@@ -235,6 +236,20 @@ function StockModalService(Modal) {
       resolve      : {
         data : () => request,
       },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  function openAMCCalculationModal(request) {
+    const templateUrl = 'modules/stock/inventories/modals/amc.modal.html';
+    const controller = 'StockAMCModalController as ModalCtrl';
+    const params = angular.extend(modalParameters, {
+      templateUrl,
+      controller,
+      size         : 'lg',
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
