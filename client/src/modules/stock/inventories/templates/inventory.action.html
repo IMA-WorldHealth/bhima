@@ -10,7 +10,8 @@
       <a data-method="stock-movement" ui-sref="stockMovements({
         filters : [
           { key : 'period', value : 'allTime' },
-          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text }
+          { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text },
+          { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text},
         ]})" href>
         <span class="fa fa-file-text-o"></span> <span translate>TREE.STOCK_MOVEMENTS</span>
       </a>
@@ -33,6 +34,14 @@
             { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue: row.entity.text, cacheable: false }
         ]})">
         <i class="fa fa-cubes"></i> <span translate>INVENTORY.VIEW_LOTS_IN_STOCK</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <li>
+      <a data-method="view-amc-calculations" href ng-click="grid.appScope.viewAMCCalculations(row.entity)">
+        <i class="fa fa-newspaper-o"></i> <span translate>INVENTORY.OPEN_AMC_CALCULATION</span>
       </a>
     </li>
   </ul>
