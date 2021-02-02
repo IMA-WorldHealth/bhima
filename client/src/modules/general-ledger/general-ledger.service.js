@@ -50,8 +50,7 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   service.aggregates = (params) => service.read.call({ url : service.url.concat('aggregates') }, null, params);
 
   // GET /general_ledger/transactions
-  service.transactions = (params) =>
-    service.read.call({ url : service.url.concat('transactions') }, null, params);
+  service.transactions = (params) => service.read.call({ url : service.url.concat('transactions') }, null, params);
 
   return service;
 }

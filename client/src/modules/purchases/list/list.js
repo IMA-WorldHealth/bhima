@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
-  'ReceiptModal', 'bhConstants', 'BarcodeService',
+  'ReceiptModal', 'bhConstants', 'BarcodeService', '$httpParamSerializer',
 ];
 
 /**
@@ -29,6 +29,12 @@ function PurchaseListController(
 
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
+
+  vm.openPurchaseOrderAnalysisReport = (uuid) => {
+    const params = PurchaseOrder.openPurchaseOrderAnalysisReport(uuid);
+    const link = `/reports/purchase_order_analysis?${params}`;
+    return link;
+  };
 
   vm.editStatus = editStatus;
 
