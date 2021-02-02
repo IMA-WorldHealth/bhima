@@ -177,6 +177,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
       LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
   `;
+
   const filters = getLotFilters(parameters);
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
