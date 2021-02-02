@@ -1,0 +1,9 @@
+<!-- this partial requires binding the variable 'metadata' -->
+<header class="row">
+  <div class="col-xs-12 text-right">
+    <div>
+      {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+      {{translate "REPORT.BY"}} {{metadata.user.display_name}}
+    </div>
+  </div>
+</header>
