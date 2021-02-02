@@ -231,7 +231,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       d.min_months_security_stock,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       m.date AS entry_date, i.avg_consumption, i.purchase_interval, i.delay,
@@ -266,23 +266,22 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     params.average_consumption_algo,
   );
 
-  // FIXME(@jniles) - this step seems to mostly just change the ordering of lots.  Can we combine
-  // it with the getBulkInventoryCMM?
+  // add lot indicators to the inventory list.
   let inventoriesWithLotsProcessed = computeLotIndicators(inventoriesWithManagementData);
 
   if (_status) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(row => row.status === _status);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.status === _status);
   }
 
   // Since the status of a product risking expiry is only defined
   // after the comparison with the CMM, reason why the filtering
   // is not carried out with an SQL request
   if (parseInt(params.is_expiry_risk, 10) === 1) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.flags.near_expiration);
   }
 
   if (parseInt(params.is_expiry_risk, 10) === 0) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.flags.near_expiration);
   }
 
   return inventoriesWithLotsProcessed;
@@ -647,7 +646,7 @@ async function getInventoryQuantityAndConsumption(params) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
@@ -671,6 +670,7 @@ async function getInventoryQuantityAndConsumption(params) {
   const settingsql = `
     SELECT month_average_consumption, average_consumption_algo FROM stock_setting WHERE enterprise_id = ?
   `;
+
   const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
 
   // add the CMM
@@ -692,16 +692,35 @@ async function getInventoryQuantityAndConsumption(params) {
  * process multiple stock lots
  *
  * @description
+ * Computes the indicators on stock lots.  Sets the following flags:
+ *   1) expired - if the expiration date is in the past
+ *   2) exhausted - if the quantity is 0.
+ *   3) near_expiration - if the expiration date is sooner than the lot's stock out date
+ *   4) at_risk - if the lot is part of an _inventory_ that is at risk of running out.
+ *
+ * Further, we add the following properties:
+ *   1) lot_lifetime - the number of days left before the stock runs out.
+ *   2) max_stock_date - the last day stock will be usable.
+ *   3) min_stock_date - the first day the stock will be consumed
+ *   4) usable_quantity_remaining - the total quantity that will be usable of the lot.
+ *
+ * Note that these indicators are only tracked if we are tracking_consumption
+ * or tracking_expiration.
+ *
+ * The algorithm for calculation at risk of expiry and at risk of stock out is
+ * FIFO by expiration.  Basically, we assume that lots will be used in order of
+ * their expiration dates.
  */
 function computeLotIndicators(inventories) {
   const flattenLots = [];
+
   const inventoryByDepots = _.groupBy(inventories, 'depot_uuid');
 
-  _.map(inventoryByDepots, (depotInventories) => {
-
+  _.forEach(inventoryByDepots, (depotInventories) => {
     const inventoryLots = _.groupBy(depotInventories, 'inventory_uuid');
 
-    _.map(inventoryLots, (lots) => {
+    _.forEach(inventoryLots, (lots) => {
+
       // if we don't have the default CMM (avg_consumption) use the
       // defined or computed CMM for each lots
       const cmm = _.max(lots.map(lot => lot.avg_consumption));
@@ -710,36 +729,84 @@ function computeLotIndicators(inventories) {
       // assuming the lot with lowest quantity is consumed first
       let orderedInventoryLots = _.orderBy(lots, 'quantity', 'asc');
 
-      // order lots by ascending lifetime has a hight priority than quantity
+      // order lots by ascending lifetime has a higher priority than quantity
       orderedInventoryLots = _.orderBy(orderedInventoryLots, 'lifetime', 'asc');
 
-      // compute the lot coefficient
-      let lotLifetime = 0;
-      _.each(orderedInventoryLots, lot => {
+      // compute the lot coefficients
+      let runningLotLifetimes = 0;
+      const today = moment().endOf('day').toDate();
+
+      _.forEach(orderedInventoryLots, (lot) => {
         if (!lot.tracking_expiration) {
           lot.expiration_date = '';
         }
 
-        if (lot.tracking_consumption) {
+        lot.exhausted = lot.quantity === 0;
+        lot.expired = !lot.exhausted && (lot.expiration_date < today);
+
+        // algorithm for tracking the stock consumption by day
+        if (lot.tracking_consumption && !lot.exhausted && !lot.expired) {
           // apply the same CMM to all lots and update monthly consumption
           lot.avg_consumption = cmm;
           lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
 
-          const zeroMSD = Math.round(lot.S_MONTH) === 0;
+          // get daily average consumption
+          const consumptionPerDay = lot.avg_consumption / 30.5;
 
-          const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
-          const today = new Date();
-          // if we have more months of stock than the expiration date,
-          // then we'll need to label these are in risk of expiration
-          const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-          const isInRiskOfExpiration = lot.expiration_date <= moment(today).add(numDaysOfStockLeft, 'days').toDate();
-          lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
+          // check if the lot will expire before being used up
+          const numDaysOfStockBeforeConsumed = runningLotLifetimes + Math.ceil(lot.quantity / consumptionPerDay);
+          const stockOutDate = moment(new Date()).add(numDaysOfStockBeforeConsumed, 'days').toDate();
 
-          lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
-          lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
-          lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
-          lotLifetime += lot.S_LOT_LIFETIME;
+          lot.near_expiration = lot.expiration_date <= stockOutDate;
+
+          // here, we are attempting to calculate if this quantity will be at risk of expiry
+          // given that all inventory is consummed in order of their expiration dates.
+
+          // Get the real quantity of usable stock remaining
+          // If the lot will expire before being used, use the expiration date as the max date.
+          // If the lot will be consumed by CMM before expiry, use the CMM date as the max date.
+          // We've already calculated this above - it is the near_expiration variable
+          const maxStockDate = lot.near_expiration ? lot.expiration_date : stockOutDate;
+          const numDaysOfStockLeft = moment(maxStockDate).diff(new Date(), 'day');
+
+          // calculate finally the remaining days of stock, assuming we use this stock in order
+          // maybe we will not ever get a chance to use it ... then it is 0.
+          lot.lifetime_lot = Math.max(0, numDaysOfStockLeft - runningLotLifetimes);
+          lot.min_stock_date = moment(new Date()).add(runningLotLifetimes).toDate();
+          lot.max_stock_date = maxStockDate;
+
+          // add to the running LotLifetimes so that the next product will be used after it.
+          runningLotLifetimes += lot.lifetime_lot;
+
+          // the usable quantity remaining is the minimum of the stock actually available
+          // and the amount able to be consumed in the time remaining
+          const usableStockQuantityRemaining = Math.min(lot.lifetime_lot * consumptionPerDay, lot.quantity);
+          lot.usable_quantity_remaining = usableStockQuantityRemaining;
+
+          // compute the "risk" quantities and duration.  This is the amount of stock in this lot that
+          // the enterprise will lose at the current rate of consumption.  We express this in
+          // both quantity and in time, despite this not corresponding to a definite time period. The
+          // time period should be understood as a _quantity_ measurement - how long the pharmacy could
+          // have run if this stock wasn't expiring.
+          lot.S_RISK_QUANTITY = Math.round(lot.quantity - usableStockQuantityRemaining);
+          // if S_RISK_QUANTITY is less than a day's stock, it is likely a rounding error.  Set it to 0.
+          if (lot.S_RISK_QUANTITY < consumptionPerDay) { lot.S_RISK_QUANTITY = 0; }
+          lot.S_RISK = Math.round(lot.S_RISK_QUANTITY / consumptionPerDay);
         }
+
+        // if the inventory item is at risk of stock out, mark the stock lot "at risk".  It may be that a single
+        // lot is not at risk of expiring, but the inventory is at risk of expiring
+        // TODO(@jniles): does this make sense?
+        lot.at_risk = !lot.expired && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
+
+        // attach flags after computation for use on client
+        lot.flags = {
+          expired : lot.expired,
+          near_expiration : lot.near_expiration,
+          exhausted : lot.exhausted,
+          at_risk : lot.at_risk,
+        };
+
         flattenLots.push(lot);
       });
     });
@@ -853,9 +920,12 @@ function getInventoryMovements(params) {
     });
 }
 
-function listStatus(req, res, next) {
+async function listStatus(req, res, next) {
   const sql = `SELECT id, status_key, title_key FROM status`;
-  db.exec(sql).then(status => {
+  try {
+    const status = await db.exec(sql);
     res.status(200).json(status);
-  }).catch(next);
+  } catch (e) {
+    next(e);
+  }
 }
