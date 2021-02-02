@@ -42,7 +42,7 @@
         "COLUMNS_INFO" : "Note sur certaines colonnes",
         "SELLABLE" : "A vendre",
         "VIEW_ARTICLES_IN_STOCK" : "Voir les articles en stock",
-        "VIEW_ITEM_IN_INVENTORY" : "Voir l'article dans l'inventaire",
+        "VIEW_ARTICLE_IN_INVENTORY" : "Voir l'article dans l'inventaire",
         "VIEW_LOTS_IN_STOCK" : "Voir les lots en stock",
         "PREVIOUS_VALUE" : "Valeur Précédente",
         "UPDATED_VALUE" : "Nouvelle Valeur",
