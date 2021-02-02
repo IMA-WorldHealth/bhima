@@ -1,26 +1,14 @@
 {{> head title="REPORT.STOCK.EXIT_REPORT" }}
 
 <body class="container-fluid">
-  {{> header}}
+  <header class="row" style="margin-bottom: 1em;">
+    {{> enterpriseDetails }}
+    {{> title }}
+  </header>
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center">
-        {{translate 'REPORT.STOCK.EXIT_REPORT'}}
-      </h2>
-
-      <h1 class="text-center">
-        {{ depotName }}
-      </h1>
-
-      <h4 class="text-center">
-        {{date dateFrom}} - {{date dateTo}}
-      </h4>
-
-      <br/>
 
       <!-- stock exit to patient -->
       {{#if includePatientExit}}
@@ -67,9 +55,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
-      {{/if}}
-
       <br/>
+      {{/if}}
 
       <!-- stock exit to service -->
       {{#if includeServiceExit}}
@@ -112,9 +99,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
-      {{/if}}
-
       <br/>
+      {{/if}}
 
       <!-- stock exit to service grouped by service -->
       {{#if includeGroupedServiceExit}}
@@ -166,9 +152,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
-      {{/if}}
-
       <br/>
+      {{/if}}
 
       <!-- stock exit to other depot -->
       {{#if includeDepotExit}}
@@ -211,9 +196,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
-      {{/if}}
-
       <br/>
+      {{/if}}
 
       <!-- stock exit as loss -->
       {{#if includeLossExit}}
@@ -256,12 +240,12 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
-      {{/if}}
-
       <br>
+      {{/if}}
 
       <p>*<em>{{translate 'STOCK.STOCK_COST_DESCRIPTION'}}</em></p>
       <p>*<em>{{translate 'STOCK.STOCK_UNIT_COST_ROUNDED'}}</em></p>
     </div>
   </div>
+  {{> footer}}
 </body>
