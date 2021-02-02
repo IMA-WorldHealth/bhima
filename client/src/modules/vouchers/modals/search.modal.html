@@ -64,6 +64,33 @@
             on-change="$ctrl.onTransactionTypesChange(transactionTypes)"
             transaction-type-ids="$ctrl.searchQueries.type_ids">
           </bh-transaction-type-select>
+
+          <div class="form-group">
+            <div class="radio">
+              <bh-clear on-clear="$ctrl.clear('reversed')"></bh-clear>
+              <p class="control-label" style="margin-bottom:5px;">
+                <strong translate>VOUCHERS.GLOBAL.REVERSED_RECORDS</strong>
+              </p>
+              <label>
+                <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>VOUCHERS.GLOBAL.INCLUDE_ONLY_REVERSED_RECORDS</span>
+              </label>
+            </div>
+
+            <div class="radio">
+              <label>
+                <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>VOUCHERS.GLOBAL.EXCLUDE_REVERSED_RECORDS</span>
+              </label>
+            </div>
+
+            <div class="radio">
+              <label>
+                <input type="radio" name="reversed" ng-value="2" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>VOUCHERS.GLOBAL.EXCLUDE_REVERSED_AND_REVERSAL_RECORDS</span>
+              </label>
+            </div>
+          </div>
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
