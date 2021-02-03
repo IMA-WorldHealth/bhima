@@ -28,7 +28,7 @@ function StockInventoriesRegistryTests() {
     await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
-  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
+  it('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
     await GU.expectRowCount(gridId, 5 + depotGroupingRow);
