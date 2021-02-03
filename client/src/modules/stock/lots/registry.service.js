@@ -92,70 +92,6 @@ function LotsRegistryService(uiGridConstants, Session) {
       cellClass : 'text-right',
       headerCellFilter : 'translate',
     }, {
-      field : 'avg_consumption',
-      displayName : 'STOCK.CMM',
-      headerTooltip : 'STOCK.CMM',
-      cellClass : 'text-right',
-      headerCellFilter : 'translate',
-      type : 'number',
-    }, {
-      field : 'S_MONTH',
-      displayName : 'STOCK.MSD',
-      headerTooltip : 'STOCK.MSD',
-      cellClass : 'text-right',
-      headerCellFilter : 'translate',
-      type : 'number',
-    }, {
-      field : 'lifetime',
-      displayName : 'STOCK.LIFETIME',
-      headerTooltip : 'STOCK.LIFETIME',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
-      type : 'number',
-      sort : {
-        direction : uiGridConstants.ASC,
-        priority : 2,
-      },
-    }, {
-      field : 'S_LOT_LIFETIME',
-      displayName : 'STOCK.LOT_LIFETIME',
-      headerTooltip : 'STOCK.LOT_LIFETIME',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
-      cellClass : 'text-right',
-      type : 'number',
-    }, {
-      field : 'S_RISK',
-      displayName : 'STOCK.RISK',
-      headerTooltip : 'STOCK.RISK',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
-      cellClass : 'text-right',
-      type : 'number',
-      sort : {
-        direction : uiGridConstants.DESC,
-        priority : 3,
-      },
-    },
-    {
-      field : 'IS_IN_RISK_EXPIRATION',
-      displayName : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
-      headerTooltip : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/in_risk_of_expiration.html',
-      cellClass : 'text-right',
-      type : 'number',
-    },
-    {
-      field : 'S_RISK_QUANTITY',
-      displayName : 'STOCK.RISK_QUANTITY',
-      headerTooltip : 'STOCK.RISK_QUANTITY',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
-      type : 'number',
-    },
-    {
       field : 'tagNames',
       displayName : 'TAG.LABEL',
       headerTooltip : 'TAG.LABEL',
@@ -176,18 +112,24 @@ function LotsRegistryService(uiGridConstants, Session) {
 
       <span class="fa fa-circle icon-expired legend"></span>
       <strong>
-        <span translate>STOCK.EXPIRATION</span>:
+        <span translate>STOCK.EXPIRED</span>: {{grid.appScope.totals.expired}}
+      </strong>
+
+      <span class="fa fa-circle icon-at-risk-of-expiring legend"></span>
+      <strong>
+        <span translate>STOCK.RISK_OF_EXPIRATION</span>: {{grid.appScope.totals['at-risk-of-expiring']}}
       </strong>
 
       <span class="fa fa-circle icon-at-risk legend"></span>
       <strong>
-        <span translate>STOCK.RISK_OF_EXPIRATION</span>:
+        <span translate>STOCK.RISK_OF_STOCK_OUT</span>: {{grid.appScope.totals['at-risk']}}
       </strong>
 
       <span class="fa fa-circle icon-out-of-stock legend"></span>
       <strong>
-        <span translate>STOCK.STATUS.STOCK_OUT</span>:
+        <span translate>STOCK.STATUS.STOCK_OUT</span>: {{grid.appScope.totals['out-of-stock']}}
       </strong>
+
     </div>
   `;
 
@@ -205,6 +147,8 @@ function LotsRegistryService(uiGridConstants, Session) {
       delete lot.expiration_date;
       delete lot.lifetime;
       delete lot.S_LOT_LIFETIME;
+      delete lot.S_RISK;
+      delete lot.S_RISK_QUANTITY;
     }
   };
 
