@@ -285,11 +285,6 @@ BEGIN
   /* continue only if inventoryUuid is defined */
   IF (inventoryUuid IS NOT NULL) THEN
 
-    /* update the consumption (avg_consumption) */
-    IF (inventoryCmm IS NOT NULL OR inventoryCmm <> '' OR inventoryCmm <> 'NULL') THEN
-      UPDATE inventory SET avg_consumption = inventoryCmm WHERE `uuid` = inventoryUuid;
-    END IF;
-
     /*
       =======================================================================
       check if the lot exists in the depot
