@@ -2023,8 +2023,8 @@ CREATE TABLE  `stock_movement_status` (
     `depot_uuid` BINARY(16) NOT NULL,
     PRIMARY KEY(`uuid`),
     KEY `depot_uuid` (`depot_uuid`),
-    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     KEY `inventory_uuid` (`inventory_uuid`),
+    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -2060,22 +2060,6 @@ CREATE TABLE `integration` (
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
--- stock consumption total
-CREATE TABLE `stock_consumption` (
-  `inventory_uuid`  BINARY(16) NOT NULL,
-  `depot_uuid`      BINARY(16) NOT NULL,
-  `period_id`       MEDIUMINT(8) UNSIGNED NOT NULL,
-  `quantity`        INT(11) DEFAULT 0,
-  PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
-  KEY `inventory_uuid` (`inventory_uuid`),
-  KEY `depot_uuid` (`depot_uuid`),
-  KEY `period_id` (`period_id`),
-  CONSTRAINT `stock_consumption__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
-  CONSTRAINT `stock_consumption__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
-  CONSTRAINT `stock_consumption__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 /*
   The transaction_history table stores the editing history of transactions that
