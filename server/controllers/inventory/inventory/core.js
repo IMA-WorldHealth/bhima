@@ -259,7 +259,7 @@ function getItemsMetadataById(uid) {
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval,
+      ig.sales_account, i.default_quantity, i.delay, i.purchase_interval,
       i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration,
       i.importance
     FROM inventory AS i JOIN inventory_type AS it
