@@ -5,8 +5,7 @@ DROP PROCEDURE IF EXISTS PostStockMovement;
 CREATE PROCEDURE PostStockMovement (
   IN documentUuid BINARY(16),
   IN isExit TINYINT(1),
-  IN projectId SMALLINT(5),
-  IN currencyId SMALLINT(5)
+  IN projectId SMALLINT(5)
 )
 BEGIN
   -- voucher
@@ -18,6 +17,8 @@ BEGIN
   DECLARE voucher_type_id SMALLINT(3);
   DECLARE voucher_description TEXT;
   DECLARE voucher_amount DECIMAL(19, 4);
+
+  DECLARE currencyId TINYINT(3) UNSIGNED;
 
   -- voucher item
   DECLARE voucher_item_uuid BINARY(16);
@@ -58,8 +59,13 @@ BEGIN
   -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
 
+  -- set the currencyId from the enterprise's currencyId
+  SELECT e.currency_id INTO currencyId
+    FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
+    WHERE p.id = projectId;
+
   -- Check that every inventory has a stock account and a variation account
-  -- if they do not, the transaction will be Unbalanced, so the operation will not continue
+  -- if they do not, the transaction will be unbalanced, so the operation will not continue
   SELECT COUNT(l.uuid)
     INTO v_has_invalid_accounts
   FROM stock_movement AS sm
