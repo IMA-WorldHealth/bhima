@@ -669,11 +669,6 @@ INSERT INTO `stock_movement_status` (`uuid`, `start_date`, `end_date`, `quantity
 INSERT INTO `stock_movement_status` (`uuid`, `start_date`, `end_date`, `quantity`, `in_quantity`, `out_quantity`, `inventory_uuid`, `depot_uuid`) VALUES (0x4F2AB5390FB411EBAD4F507B9DD6DEA5, DATE_ADD(CURRENT_DATE, INTERVAL -215 DAY), DATE_ADD(CURRENT_DATE, INTERVAL -32 DAY), 40.0000, 0.0000, 5.0000, 0xF6556E729D0547998CBD0A03B1810185, 0xF9CAEB16168443C5A6C447DBAC1DF296);
 INSERT INTO `stock_movement_status` (`uuid`, `start_date`, `end_date`, `quantity`, `in_quantity`, `out_quantity`, `inventory_uuid`, `depot_uuid`) VALUES (0x4F2BCF910FB411EBAD4F507B9DD6DEA5, DATE_ADD(CURRENT_DATE, INTERVAL -31 DAY), DATE_ADD(CURRENT_DATE, INTERVAL -24 DAY), 30.0000, 0.0000, 10.0000, 0xF6556E729D0547998CBD0A03B1810185, 0xF9CAEB16168443C5A6C447DBAC1DF296);
 
-INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
-  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80),
-  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), '%Y%m'),  10),
-  (0xF6556E729D0547998CBD0A03B1810185, 0xF9CAEB16168443C5A6C447DBAC1DF296, DATE_FORMAT(DATE_ADD(CURRENT_DATE, INTERVAL -1 WEEK), '%Y%m'),  5);
-
 -- Rubric Payroll
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `value`) VALUES
   (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 0, 1, 306, 353, 0, 0, 5),

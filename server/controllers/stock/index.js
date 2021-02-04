@@ -465,14 +465,6 @@ async function normalMovement(document, params, metadata) {
 
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
-
-    // track distribution to patient and service
-    if (isDistributable) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
@@ -535,16 +527,6 @@ async function depotMovement(document, params) {
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
-
-    isWarehouse = !!(parameters.from_depot_is_warehouse);
-
-    // track distribution to other depot from a warehouse
-    if (record.is_exit && isWarehouse) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
