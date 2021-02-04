@@ -116,6 +116,15 @@ INSERT INTO unit VALUES
  * @author: jniles
  * @date: 2021-02-04
  * @subject: drop average_consumption column
- * @issue:
+ * @issue: #5144
+ * @PR: #5357
 */
 CALL drop_column_if_exists('inventory', 'avg_consumption');
+
+/*
+ * @author: jniles
+ * @date: 2021-02-04
+ * @subject: drop stock_consumption table in favor of stock_movement_status
+ * @issue: #5073
+*/
+DROP TABLE stock_consumption;
