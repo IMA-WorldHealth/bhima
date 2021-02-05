@@ -75,7 +75,6 @@
     "GROUPING"        : "Grouping",
     "JOIN_INVOICE"    : "Join an invoice",
     "INCLUDE_EMPTY_LOTS" : "Include empty lots",
-    "INCLUDE_EMPTY_LOTS_HELP" : "Shows inventory lots with quantity equal to zero",
     "INCLUDE_ARTICLES_NOT_IN_STOCK" : "Include articles not in stock",
     "INCLUDE_ARTICLES_NOT_IN_STOCK_HELP" : "Shows inventory articles not in stock (with quantity equal to zero)",
     "INCLUDE_EMPTY_OR_NEGATIVE_LOTS" : "Include exhausted or negative lots",
