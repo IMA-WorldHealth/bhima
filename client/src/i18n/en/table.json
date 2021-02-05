@@ -163,6 +163,7 @@
             "NR": "Nr",
             "NO_PAYMENTS": "No payments made against this invoice.",
             "NUM": "Number",
+            "NUM_DUPLICATE_LOTS": "# Duplicates",
             "NUMBER_CASES": "Number of cases",
             "OF": "of",
             "PASSIVE": "Passive",
