@@ -990,8 +990,15 @@ async function createAggregatedConsumption(req, res, next) {
       throw new Error('No defined depot');
     }
 
+    const checkInvalid = movement.lots
+      .filter(l => ((l.quantity_consumed + l.quantity_lost) > l.oldQuantity));
+
+    if (checkInvalid.length) {
+      throw new Error('Invalid data');
+    }
+
     // only consider lots that have consumed or lost.
-    // Non detaille
+    // Here we filter the consumption of batches that do not have chronological details
     const lots = movement.lots
       .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (!l.detailled)));
 
