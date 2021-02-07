@@ -6,6 +6,7 @@ const StockExitToPatient = require('./exit/exitToPatient');
 const StockExitToService = require('./exit/exitToService');
 const StockExitToDepot = require('./exit/exitToDepot');
 const StockExitToLoss = require('./exit/exitToLoss');
+const StockExitAggregateConsumption = require('./exit/exitAggregateConsumption');
 
 /**
  * @method stockExitReport
@@ -81,6 +82,9 @@ function groupCollection(exitCollection) {
   // exit to loss
   collection.exitToLoss = formatAndCombine(exitCollection.exitToLoss);
 
+  // exit to aggregate consumption
+  collection.exitAggregateConsumption = formatAndCombine(exitCollection.exitAggregateConsumption);
+
   return collection;
 }
 
@@ -136,6 +140,7 @@ async function collect(params) {
     includeGroupedServiceExit,
     includeDepotExit,
     includeLossExit,
+    includeAggregateConsumption,
   } = params;
 
   const data = {};
@@ -158,6 +163,11 @@ async function collect(params) {
   // get stock exit to loss
   if (includeLossExit) {
     data.exitToLoss = await StockExitToLoss.fetch(depotUuid, dateFrom, dateTo, showDetails);
+  }
+
+  // get stock exit for aggregate consumption
+  if (includeAggregateConsumption) {
+    data.exitAggregateConsumption = await StockExitAggregateConsumption.fetch(depotUuid, dateFrom, dateTo, showDetails);
   }
 
   return data;
