@@ -20,17 +20,21 @@ function DuplicateLotsController(
 
   const columns = [
     {
-      field : 'label',
-      displayName : 'TABLE.COLUMNS.LABEL',
-      headerTooltip : 'TABLE.COLUMNS.LABEL',
+      field : 'inventory_code',
+      displayName : 'TABLE.COLUMNS.CODE',
+      headerTooltip : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
-
     }, {
       field : 'inventory_text',
       displayName : 'TABLE.COLUMNS.INVENTORY',
       headerTooltip : 'TABLE.COLUMNS.INVENTORY',
       headerCellFilter : 'translate',
       width : '20%',
+    }, {
+      field : 'label',
+      displayName : 'TABLE.COLUMNS.LOT',
+      headerTooltip : 'TABLE.COLUMNS.LOT',
+      headerCellFilter : 'translate',
     }, {
       field : 'quantity',
       displayName : 'TABLE.COLUMNS.QUANTITY',
