@@ -18,7 +18,7 @@ const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
     l.unit_cost, l.description, l.entry_date, l.expiration_date,
-    BUID(i.uuid) AS inventory_uuid, i.text
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;
