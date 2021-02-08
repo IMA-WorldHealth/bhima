@@ -29,7 +29,7 @@ describe('(/lots/) The lots HTTP API', () => {
     return agent.get('/stock/lots/depots/')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });
