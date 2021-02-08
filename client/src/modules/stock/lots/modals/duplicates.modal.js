@@ -19,6 +19,7 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
     Lots.read(data.uuid)
       .then(selectedLot => {
         vm.selectedLot = selectedLot;
+        console.log("SL: ", selectedLot);
         Lots.dupes({ label : vm.selectedLot.label, inventory_uuid : vm.selectedLot.inventory_uuid })
           .then(lots => {
             lots.forEach(lot2 => {
