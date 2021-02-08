@@ -17,7 +17,7 @@ const FilterParser = require('../../lib/filter');
 const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
-    l.unit_cost, l.description, l.expiration_date, l.entry_date,
+    l.unit_cost, l.description, l.entry_date, l.expiration_date,
     BUID(i.uuid) AS inventory_uuid, i.text
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -113,8 +113,23 @@ function getDupes(req, res, next) {
   filters.equals('entry_date');
   filters.equals('expiration_date');
 
-  const query = filters.applyQuery(detailsQuery);
+  let query = filters.applyQuery(detailsQuery);
   const params = filters.parameters();
+
+  if ('find_dupes' in options) {
+    // For the 'find duplicate lots' search, we need a different query
+    query = `
+      SELECT
+        BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
+        l.unit_cost, l.description, l.entry_date, l.expiration_date,
+        BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+        COUNT(*) as num_duplicates
+      FROM lot l
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      GROUP BY label, inventory_uuid HAVING num_duplicates > 1
+      ORDER BY inventory_text, num_duplicates, label
+    `;
+  }
 
   return db.exec(query, params)
     .then(rows => {
