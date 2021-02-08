@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('DuplicateLotsController', DuplicateLotsController);
 
 DuplicateLotsController.$inject = [
-  'LotService', 'NotifyService', 'uiGridConstants', 'StockModalService',
-  'SessionService', 'GridStateService', '$state', 'GridColumnService',
+  'LotService', 'NotifyService', 'StockModalService', 'SessionService',
+  'GridColumnService', 'GridStateService', '$state',
 ];
 
 /**
@@ -11,14 +11,12 @@ DuplicateLotsController.$inject = [
  * This module is a registry page for stock inventories
  */
 function DuplicateLotsController(
-  Lots, Notify, uiGridConstants, Modal,
-  Session, GridState, $state, Columns,
+  Lots, Notify, Modal, Session,
+  Columns, GridState, $state,
 ) {
   const vm = this;
   const cacheKey = 'duplicate-lots-grid';
   vm.enterprise = Session.enterprise;
-
-  // const duplicateLotsFilters = Stock.filter.inventory;
 
   const columns = [
     {
@@ -100,22 +98,16 @@ function DuplicateLotsController(
     gridFooterTemplate : footerTemplate,
     fastWatch          : true,
     flatEntityAccess   : true,
-    onRegisterApi,
   };
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);
 
-  vm.gridApi = {};
   vm.saveGridState = state.saveGridState;
 
   function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }
-
-  function onRegisterApi(gridApi) {
-    vm.gridApi = gridApi;
   }
 
   // expose view logic
@@ -125,8 +117,6 @@ function DuplicateLotsController(
   // This function opens a modal through column service to let the user toggle
   // the visibility of the inventories registry's columns.
   function openColumnConfigModal() {
-    // column configuration has direct access to the grid API to alter the current
-    // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
   }
 
@@ -139,7 +129,10 @@ function DuplicateLotsController(
       .then((rows) => {
         vm.gridOptions.data = rows;
       })
-      .catch(Notify.handleError)
+      .catch((err) => {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
       .finally(() => {
         vm.loading = false;
       });
