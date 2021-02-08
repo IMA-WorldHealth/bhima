@@ -103,3 +103,11 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
  */
 CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
 CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');
+
+/*
+ * @author: jmcameron
+ * @date: 2021-02-04
+ * @subject : Add nav entry for 'Find Duplicate Lots' page
+ */
+INSERT INTO unit VALUES
+ (293, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');

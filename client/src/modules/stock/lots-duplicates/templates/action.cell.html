@@ -1,0 +1,15 @@
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.label}} - {{row.entity.inventory_text}}</li>
+    <li>
+      <a data-method="find-duplicates" ng-click="grid.appScope.openDuplicatesModal(row.entity.uuid, row.entity.depot_uuid)" href>
+        <i class="fa fa-search"></i> <span translate>LOTS.MERGE_DUPLICATE_LOTS</span>
+      </a>
+    </li>
+  </ul>
+</div>

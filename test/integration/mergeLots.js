@@ -142,7 +142,7 @@ describe('Test merging lots', () => {
     return agent.get('/lot/dupes')
       .query({ label : lot1Label, inventory_uuid : vitamineUuid })
       .then((res) => {
-        helpers.api.listed(res, 4); // 4 = he lot itself and 3 dupes
+        helpers.api.listed(res, 4); // 4 = the lot itself and 3 dupes
       })
       .catch(helpers.handler);
   });
@@ -172,6 +172,15 @@ describe('Test merging lots', () => {
     return db.exec('SELECT * from stock_movement')
       .then((res) => {
         expect(res.length).to.equal(mockStockMovements.length + stockMovementsPreTest.count);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`Verify the 'find duplicate lots' query works`, () => {
+    return agent.get('/lot/dupes')
+      .query({ find_dupes : 1 })
+      .then((res) => {
+        helpers.api.listed(res, 1); // all dupes can be merged into one
       })
       .catch(helpers.handler);
   });

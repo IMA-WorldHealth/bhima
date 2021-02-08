@@ -261,6 +261,7 @@
     "EXCLUDE_EXHAUSTED_LOTS": "Exclude exhausted lots",
     "DETAILS":"Lot Information",
     "FIND_DUPLICATE_LOTS" : "Find duplicate lots",
+    "MERGE_DUPLICATE_LOTS" : "Merge duplicate lots",
     "LOT_LABEL":"Lot label",
     "SUCCESSFULLY_EDITED":"Lot updated with success",
     "ASSIGNMENT_HISTORIC":"Assignment History",
