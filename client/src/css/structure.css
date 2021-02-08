@@ -437,13 +437,12 @@ li.selected {
 
 /**
  * Temporary header breadcrumb bootstrap fork
- * @todo implement this in less using the boostrap element
+ * @todo implement this in less using the bootstrap element
  */
 .headercrumb {
   padding: 8px 0px;
   list-style: none;
   border-radius: 2px;
-
 }
 ol.headercrumb {
   margin-bottom : 0px !important;
