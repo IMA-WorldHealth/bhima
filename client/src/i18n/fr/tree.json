@@ -49,6 +49,7 @@
     "DISPLAY_METADATA": "Afficher les métadonnées",
     "DISTRIBUTION_KEYS": "Gestion des clés de répartitions",
     "DITRIBUTION_AUX_FEES_CENTERS" : "Répartitions des centres de frais auxiliaires",
+    "DUPLICATE_LOTS"  : "Trouver des lots en double",
     "EMPLOYEE":"Gestion des Employés",
     "EMPLOYEE_REGISTRY" : "Registre des employés",
     "EMPLOYEE_STANDING_REPORT" : "Rapport des employés",

@@ -10,6 +10,15 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('stockLotsDuplicates', {
+        url         : '/stock/lots/duplicates',
+        controller  : 'DuplicateLotsController as DupeLotsCtrl',
+        templateUrl : 'modules/stock/lots-duplicates/lots-duplicates.html',
+        params : {
+          filters : [],
+        },
+      })
+
       .state('stockMovements', {
         url         : '/stock/movements',
         controller  : 'StockMovementsController as StockCtrl',

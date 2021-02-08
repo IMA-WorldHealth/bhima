@@ -261,6 +261,7 @@
     "EXCLUDE_EXHAUSTED_LOTS": "Exclure les lots de stocks épuisés",
     "DETAILS":"Information sur le lot",
     "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
+    "MERGE_DUPLICATE_LOTS" : "fusionner des lots en double",
     "LOT_LABEL":"Designation du lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
