@@ -154,8 +154,8 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
    * @function processLotsFromStore
    *
    * @description
-   * This function loops through the store's contents mapping them into a flat array
-   * of lots.
+   * This function loops through the store's contents mapping them into a flat
+   * array of lots.
    *
    * @returns {Array} - lots in an array.
  */

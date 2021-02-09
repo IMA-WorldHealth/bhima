@@ -2,6 +2,7 @@
   <bh-date-picker
     date="row.entity.expiration_date"
     on-change="grid.appScope.onDateChange(date, row.entity)"
+    ng-disabled="row.entity._initialized"
     required="true">
   </bh-date-picker>
 </div>
