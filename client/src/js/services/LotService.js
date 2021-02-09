@@ -8,18 +8,29 @@ function LotService(Api, $http, util) {
 
   lots.read = (uuid) => {
     return Api.read.call(lots, uuid)
-      .then(res => {
+      .then((res) => {
         res.expiration_date = new Date(res.expiration_date);
         return res;
       });
   };
 
+  lots.candidates = (params) => {
+    return $http.get(`/lots_candidates/${params.inventory_uuid}`)
+      .then((res) => {
+        res.data.forEach((lot) => {
+          lot.expiration_date = new Date(lot.expiration_date);
+        });
+        return res;
+      })
+      .then(util.unwrapHttpResponse);
+  };
+
   lots.dupes = (params) => {
-    return $http.get('/lot/dupes', { params })
-      .then(res => {
-        res.data.forEach((row) => {
-          row.entry_date = new Date(row.entry_date);
-          row.expiration_date = new Date(row.expiration_date);
+    return $http.get('/lots_dupes', { params })
+      .then((res) => {
+        res.data.forEach((lot) => {
+          lot.entry_date = new Date(lot.entry_date);
+          lot.expiration_date = new Date(lot.expiration_date);
         });
         return res;
       })

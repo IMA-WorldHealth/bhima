@@ -267,6 +267,7 @@
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
     "ASSIGNMENT_CURRENT":"En cours",
     "NO_ASSIGNMENT":"Aucune assignation",
+    "LOT_LABEL_EXPIRES": "{{label}} (expirira le {{expdate}})",
     "INCLUDE_EXHAUSTED_LOTS":"Inclure les lots de stocks épuisés",
     "INCLUDE_ONLY_EXHAUSTED_LOTS": "Inclure uniquement les lots de stocks épuisé",
     "CLICK_TO_SEE":"Cliquez ici pour voir les lots",
