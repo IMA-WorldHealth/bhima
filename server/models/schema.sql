@@ -2016,14 +2016,14 @@ CREATE TABLE  `stock_movement_status` (
     `depot_uuid` BINARY(16) NOT NULL,
     `inventory_uuid` BINARY(16) NOT NULL,
     `date` DATE,
-    `quantity` DECIMAL(19,4) NOT NULL, -- current balance of day
+    `quantity_delta` DECIMAL(19,4) NOT NULL, -- the difference between inflows and outflows for the day
     `in_quantity` DECIMAL(19,4) NOT NULL, -- current in flows of day
     `out_quantity_exit` DECIMAL(19,4) NOT NULL, -- current out flows of day to exits
     `out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- current out flows of day to consumptions
     `sum_quantity` DECIMAL(19,4) NOT NULL,  -- cumulative quantity to date (running balance)
     `sum_in_quantity` DECIMAL(19,4) NOT NULL, -- cumulative in flows to date
     `sum_out_quantity_exit` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as exits
-    `sum_out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- cumulative out flows to date as consumption
+    `sum_out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as consumption
     KEY `depot_uuid` (`depot_uuid`),
     KEY `inventory_uuid` (`inventory_uuid`),
     KEY `date` (`date`), -- add index on date
