@@ -1,40 +1,11 @@
 DELIMITER $$
 
--- stock consumption
-CREATE PROCEDURE ComputeStockConsumptionByPeriod (
-  IN inventory_uuid BINARY(16),
-  IN depot_uuid BINARY(16),
-  IN period_id MEDIUMINT(8),
-  IN movementQuantity INT(11)
-)
-BEGIN
-  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
-    (inventory_uuid, depot_uuid, period_id, movementQuantity)
-  ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
-END $$
-
--- compute stock consumption
-CREATE PROCEDURE ComputeStockConsumptionByDate (
-  IN inventory_uuid BINARY(16),
-  IN depot_uuid BINARY(16),
-  IN movementDate DATE,
-  IN movementQuantity INT(11)
-)
-BEGIN
-  INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`)
-    SELECT inventory_uuid, depot_uuid, p.id, movementQuantity
-    FROM period p
-    WHERE DATE(movementDate) BETWEEN DATE(p.start_date) AND DATE(p.end_date)
-  ON DUPLICATE KEY UPDATE `quantity` = `quantity` + movementQuantity;
-END $$
-
 -- post stock movement into vouchers
 DROP PROCEDURE IF EXISTS PostStockMovement;
 CREATE PROCEDURE PostStockMovement (
   IN documentUuid BINARY(16),
   IN isExit TINYINT(1),
-  IN projectId SMALLINT(5),
-  IN currencyId SMALLINT(5)
+  IN projectId SMALLINT(5)
 )
 BEGIN
   -- voucher
@@ -46,6 +17,8 @@ BEGIN
   DECLARE voucher_type_id SMALLINT(3);
   DECLARE voucher_description TEXT;
   DECLARE voucher_amount DECIMAL(19, 4);
+
+  DECLARE currencyId TINYINT(3) UNSIGNED;
 
   -- voucher item
   DECLARE voucher_item_uuid BINARY(16);
@@ -86,8 +59,13 @@ BEGIN
   -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
 
+  -- set the currencyId from the enterprise's currencyId
+  SELECT e.currency_id INTO currencyId
+    FROM enterprise AS e JOIN project AS p ON e.id = p.enterprise_id
+    WHERE p.id = projectId;
+
   -- Check that every inventory has a stock account and a variation account
-  -- if they do not, the transaction will be Unbalanced, so the operation will not continue
+  -- if they do not, the transaction will be unbalanced, so the operation will not continue
   SELECT COUNT(l.uuid)
     INTO v_has_invalid_accounts
   FROM stock_movement AS sm
@@ -284,11 +262,6 @@ BEGIN
   /* continue only if inventoryUuid is defined */
   IF (inventoryUuid IS NOT NULL) THEN
 
-    /* update the consumption (avg_consumption) */
-    IF (inventoryCmm IS NOT NULL OR inventoryCmm <> '' OR inventoryCmm <> 'NULL') THEN
-      UPDATE inventory SET avg_consumption = inventoryCmm WHERE `uuid` = inventoryUuid;
-    END IF;
-
     /*
       =======================================================================
       check if the lot exists in the depot
@@ -328,249 +301,144 @@ BEGIN
 
 END $$
 
--- the main procedure that loops through stock_movement , retrieve and caculate cmm data
 /*
-CALL computeStockQuantity(startDate, inventoryUuid, depotUuid);
+CALL StageInventoryForAMC(inventoryUuid)
 
 DESCRIPTION
-Computes the quantity in stock from the startDate until now for a given inventoryUuid.
+This procedure adds an inventory uuid to a temporary table for latter use in the
+ComputeStockStatus() stored procedure.  The idea is to allow the database to use a
+JOIN to group the calculation upon the stock_movement table.
 
-Originally written by @jeremielodi
-and updated 2020-10-14, to allow entry and exit of backdated stock to be taken into account
 */
-
-DELIMITER $$
-
-DROP PROCEDURE IF EXISTS `computeStockQuantity`$$
-CREATE PROCEDURE `computeStockQuantity` (
-  IN _start_date DATE,
-  IN _inventory_uuid BINARY(16),
-  IN _depot_filter_uuid BINARY(16)
+CREATE PROCEDURE StageInventoryForAMC(
+  IN _inventory_uuid BINARY(16)
 ) BEGIN
-  DECLARE done BOOLEAN;
-  DECLARE _depot_uuid, _row_uuid BINARY(16);
-  DECLARE _end_date DATE;
-  DECLARE _qtt, _in_qtt, _out_qtt DECIMAL(19, 4);
-
-    -- every stock movement for a inventory will be stored here in order to facilitate search
-  CREATE TEMPORARY TABLE `temp_stock_movement` (
-    `reference` INT,
-    `date` DATE,
-    `depot_uuid` BINARY(16),
-    `inventory_uuid` BINARY(16),
-    `quantity` DECIMAL(19,4),
-    `in_quantity` DECIMAL(19,4),
-    `out_quantity` DECIMAL(19,4),
-    `is_exit` TINYINT(2),
-    KEY `depot_uuid` (`depot_uuid`),
-    KEY `inventory_uuid` (`inventory_uuid`),
-    KEY `reference` (`reference`)
-  ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-  -- every stock movement for a inventory will be stored here in order to facilitate search
-  CREATE TEMPORARY TABLE IF NOT EXISTS `temp_depot` (
-    `reference` INT,
-    `uuid` BINARY(16),
-    `text` varchar(100),
-    KEY `uuid` (`uuid`),
-    KEY `reference` (`reference`)
-  ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-  SET _end_date = NOW();
-  SET _start_date = DATE(_start_date);
-  SET @depot_number = 0;
-
-  DELETE FROM `temp_depot` WHERE 1;
-
-  SET @filter_by_depot = (_depot_filter_uuid IS NOT NULL);
-
-  IF @filter_by_depot = 0  THEN -- will compute inventory's quantity in each depot
-    INSERT INTO `temp_depot`
-    SELECT (@depot_number:=@depot_number + 1) as ref, `uuid`, `text`
-    FROM depot;
-  ELSE
-    INSERT INTO `temp_depot`  -- will compute inventory's quantity just in a specific depot
-    SELECT (@depot_number := @depot_number + 1) as ref, `uuid`, `text`
-    FROM depot
-    WHERE `uuid` = _depot_filter_uuid;
-  END IF;
-
-  SET @depot_counter = 1;
-  -- let's loop through all inventories
-
-  WHILE (@depot_counter <= @depot_number) DO
-    SET @depot_uuid = (SELECT `uuid` FROM `temp_depot` WHERE `reference` = @depot_counter);
-
-    SELECT sm.date
-    INTO @first_mvt_date
-    FROM stock_movement AS sm
-    JOIN lot l ON l.uuid = sm.lot_uuid
-    WHERE l.inventory_uuid = _inventory_uuid  AND `depot_uuid` = @depot_uuid
-    ORDER BY sm.date ASC
-    LIMIT 1;
-
-    SELECT MAX(end_date) INTO @last_mvt_date
-    FROM stock_movement_status
-    WHERE `inventory_uuid` = _inventory_uuid AND `depot_uuid` = @depot_uuid;
-
-    SET @antidating = 0;
-    -- antidatement
-    IF @last_mvt_date > _start_date THEN
-      -- delete all inventory's data for this period
-      DELETE FROM `stock_movement_status`  WHERE  `inventory_uuid` = _inventory_uuid AND `depot_uuid` = @depot_uuid;
-      SET @antidating = 1;
-      IF ISNULL(@first_mvt_date) = 0 THEN
-        SET _start_date = DATE_SUB(@first_mvt_date, INTERVAL 1 DAY);
-      END IF;
-    ELSE
-      DELETE FROM `stock_movement_status`  WHERE  start_date >= _start_date  AND `inventory_uuid` = _inventory_uuid AND `depot_uuid` = @depot_uuid;
-    END IF;
-
-    DELETE FROM `temp_stock_movement` WHERE 1;
-    SET @row_number = 0;
-    INSERT INTO `temp_stock_movement`
-    SELECT (@row_number:=@row_number + 1) AS `reference`, x.* FROM (
-      SELECT DATE(m.date) AS `date`,  m.depot_uuid, i.uuid,
-        SUM( IFNULL(m.quantity * IF(m.is_exit = 1, -1, 1), 0)) AS quantity,
-        SUM(IF(m.is_exit = 0, m.quantity, 0)),
-        SUM(IF(m.is_exit = 1  AND (m.flux_id <> 8 OR d.is_warehouse <> 0) AND m.flux_id <> 11, m.quantity, 0)), m.is_exit
-      FROM `stock_movement` m
-        JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN depot d ON d.uuid = m.depot_uuid
-      WHERE i.uuid = _inventory_uuid AND DATE(m.date) <= DATE(_end_date) AND m.depot_uuid = @depot_uuid
-      GROUP BY  DATE(m.date), m.depot_uuid
-      ORDER BY  `date`
-    ) AS x
-    ORDER BY x.date;
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_inventory_for_amc (inventory_uuid BINARY(16) NOT NULL);
+  INSERT INTO stage_inventory_for_amc SET stage_inventory_for_amc.inventory_uuid = _inventory_uuid;
+END $$
 
 
-    SET @row_i = NULL;
-    SET _row_uuid = NULL;
-
-    SELECT SUM(quantity) AS quantity INTO _qtt
-    FROM temp_stock_movement m
-      JOIN inventory i ON i.uuid = m.inventory_uuid
-      JOIN depot d ON d.uuid = m.depot_uuid
-    WHERE DATE(m.date) <=_start_date AND m.depot_uuid = @depot_uuid;
-
-
-    SET _qtt = IFNULL(_qtt, 0);
-
-    SELECT in_quantity, out_quantity
-    INTO _in_qtt, _out_qtt
-    FROM temp_stock_movement m
-    WHERE DATE(m.date) =DATE(_start_date) AND m.depot_uuid = @depot_uuid;
-
-    -- DELETE FROM temp_stock_movement WHERE DATE(`date`) <=_start_date AND `depot_uuid` = @depot_uuid;
-
-    -- check if this date already exist in stock_movement_status for the inventory
-    SET @date_exists = 0;
-
-
-    SELECT `uuid`, count(`uuid`) as nbr
-      INTO _row_uuid, @date_exists
-    FROM `stock_movement_status`
-    WHERE `depot_uuid` = @depot_uuid AND `inventory_uuid` = _inventory_uuid
-      AND DATE(`start_date`) <= _start_date AND DATE(`end_date`) >= _start_date
-    ORDER BY `start_date` DESC
-    LIMIT 1;
-
-
-    IF @date_exists = 0 AND @antidating = 0 THEN
-      SET _row_uuid  = HUID(uuid());
-      INSERT INTO  `stock_movement_status`
-      VALUES (_row_uuid, _start_date, _start_date, _qtt, IFNULL(_in_qtt, 0), IFNULL(_out_qtt, 0), _inventory_uuid, @depot_uuid);
-    END IF;
-
-
-    SELECT `reference` INTO @row_i
-    FROM temp_stock_movement
-    WHERE `date` > _start_date
-    LIMIT 1;
-
-    SET @mvts_number = (SELECT COUNT(*) from temp_stock_movement  WHERE `date` > _start_date);
-    SET @row_number = @row_i + @mvts_number - 1;
-
-
-    -- @row_i is null when there is no movement that come ofter the start_date
-        -- @row_i is null when there is no movement that come ofter the start_date
-    IF @row_i IS NULL THEN
-
-      -- the start_date is in the interval but there is not other mvts after
-      IF @date_exists = 1 THEN
-         SELECT start_date, end_date
-      INTO @sms_start_date, @sms_end_date
-
-      FROM stock_movement_status WHERE `uuid` = _row_uuid;
-
-      -- the start_date is in the interval but there is not other mvts after, as the start_date <> end_date, we split the interval
-      IF @sms_start_date <> @sms_end_date THEN
-        SET @yesterday = DATE_SUB(_start_date, INTERVAL 1 DAY);
-        UPDATE `stock_movement_status` SET `end_date` = @yesterday WHERE `uuid` = _row_uuid;
-        SET _row_uuid = HUID(UUID());
-        INSERT INTO  `stock_movement_status` VALUES (_row_uuid, _start_date, _start_date, _qtt, _in_qtt, _out_qtt, _inventory_uuid, @depot_uuid);
-      ELSE
-         --   the start_date is in the interval but there is not other mvts after for the same day
-         UPDATE `stock_movement_status` SET `in_quantity` = _in_qtt, `out_quantity` = _out_qtt WHERE `uuid` = _row_uuid;
-      END IF;
-
-      ELSE
-        UPDATE `stock_movement_status` SET `end_date` = _end_date WHERE `uuid` = _row_uuid;
-      END IF;
-
-    ELSE
-
-      WHILE (@row_i < @row_number + 1) DO
-        SET _in_qtt = 0;
-        SET _out_qtt = 0;
-
-        SET @current_qtt = 0;
-        SET @current_date = _start_date;
-
-        SELECT  m.quantity, m.in_quantity, m.out_quantity, m.date
-          INTO @current_qtt, _in_qtt, _out_qtt, @current_date
-        FROM temp_stock_movement m
-        JOIN inventory i ON i.uuid = m.inventory_uuid
-        JOIN depot d ON d.uuid = m.depot_uuid
-        WHERE m.reference = @row_i
-        GROUP BY m.depot_uuid;
-        UPDATE `stock_movement_status` SET `end_date` = DATE_SUB(@current_date, INTERVAL 1 DAY) WHERE `uuid` = _row_uuid;
-        IF @current_qtt <> _qtt THEN
-          SET _row_uuid = HUID(UUID());
-          SET _qtt = @current_qtt + _qtt;
-          INSERT INTO  `stock_movement_status` VALUES (_row_uuid, @current_date, @current_date, _qtt, _in_qtt, _out_qtt, _inventory_uuid, @depot_uuid);
-        END IF;
-        SET @row_i= @row_i + 1;
-      END WHILE;
-
-    END IF;
-
-    UPDATE `stock_movement_status` SET `end_date` = _end_date WHERE `uuid` = _row_uuid;
-    SET _qtt = 0;
-    SET @depot_counter = @depot_counter +1;
-    SET _row_uuid = NULL;
-  END WHILE;
-
-  DROP TEMPORARY TABLE IF EXISTS `temp_stock_movement`;
-  DROP TEMPORARY TABLE IF EXISTS `temp_depot`;
-END$$
-
-DROP PROCEDURE IF EXISTS `computeStockQuantityByLotUuid`$$
-CREATE PROCEDURE `computeStockQuantityByLotUuid` (
+CREATE PROCEDURE ComputeStockStatusForStagedInventory(
   IN _start_date DATE,
-  IN _lot_uuid BINARY(16),
-  IN _depot_filter_uuid BINARY(16)
-)
-BEGIN
+  IN _depot_uuid BINARY(16)
+) BEGIN
+  DECLARE TO_DEPOT INTEGER DEFAULT 8;
+  DECLARE TO_PATIENT INTEGER DEFAULT 9;
+  DECLARE TO_SERVICE INTEGER DEFAULT 10;
 
-  DECLARE _inventory_uuid BINARY(16);
-  SELECT inventory_uuid INTO _inventory_uuid
-  FROM lot WHERE uuid = _lot_uuid
-  LIMIT 1;
+  /*
+    Creates a temporary table of stock movements classified by is_consumption or not for the staged inventory uuids.
+    NOTE: this embeds the system logic that a "consumption" event is different if the depot is a warehouse or not
+    If it is a warehouse, transfers to other depots are considered consumption.  Otherwise, only transfers to patients
+    or services are considered consumption events.
+  */
+  CREATE TEMPORARY TABLE stock_movement_grp AS
+    SELECT DATE(sm.date) as date, l.inventory_uuid, sm.depot_uuid, sm.quantity, is_exit, flux_id,
+      CASE
+        WHEN d.is_warehouse AND flux_id IN (TO_DEPOT, TO_PATIENT, TO_SERVICE) THEN TRUE
+        WHEN flux_id IN (TO_PATIENT, TO_SERVICE) THEN TRUE
+        ELSE FALSE
+      END AS is_consumption
+    FROM stage_inventory_for_amc AS tmp
+      JOIN lot AS l ON tmp.inventory_uuid = l.inventory_uuid
+      JOIN stock_movement AS sm ON l.uuid = sm.lot_uuid
+      JOIN depot d ON sm.depot_uuid = d.uuid
+    WHERE sm.depot_uuid = _depot_uuid AND DATE(sm.date) >= DATE(_start_date);
 
-  CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_filter_uuid);
-END$$
+    -- create a temporary table similar to stock_movement_status
+    CREATE TEMPORARY TABLE tmp_sms AS
+      SELECT date, depot_uuid, inventory_uuid,
+        SUM(IF(is_exit, -1 * quantity, quantity)) as quantity,
+        SUM(IF(NOT is_exit, quantity, 0)) as in_quantity,
+        SUM(IF(is_exit AND is_consumption, quantity, 0)) as out_quantity_consumption,
+        SUM(IF(is_exit AND NOT is_consumption, quantity, 0)) as out_quantity_exit
+      FROM stock_movement_grp
+      GROUP BY date, depot_uuid, inventory_uuid
+      ORDER BY date;
+
+    -- clone the temporary table to prevent self-referencing issues in temporary tables
+    -- https://dev.mysql.com/doc/refman/5.7/en/temporary-table-problems.html
+    CREATE TEMPORARY TABLE tmp_sms_cp AS SELECT * FROM tmp_sms;
+
+    -- create a table of grouped running totals for each category (date, depot_uuid, inventory_uuid)
+    CREATE TEMPORARY TABLE tmp_grouped AS
+    SELECT date, depot_uuid, inventory_uuid,
+      quantity AS quantity,
+      in_quantity AS in_quantity,
+      out_quantity_consumption AS out_quantity_consumption,
+      out_quantity_exit as out_quantity_exit,
+      SUM(sum_quantity) AS sum_quantity,
+      SUM(sum_in_quantity) AS sum_in_quantity,
+      SUM(sum_out_quantity_consumption) AS sum_out_quantity_consumption,
+      SUM(sum_out_quantity_exit) as sum_out_quantity_exit
+    FROM (
+      SELECT t1.date, t1.depot_uuid, t1.inventory_uuid,
+      t1.quantity, -- current balances
+      t1.in_quantity,
+      t1.out_quantity_consumption,
+      t1.out_quantity_exit,
+      IFNULL(t2.quantity, 0) AS sum_quantity, -- running balances
+      IFNULL(t2.in_quantity, 0) AS sum_in_quantity,
+      IFNULL(t2.out_quantity_consumption, 0) AS sum_out_quantity_consumption,
+      IFNULL(t2.out_quantity_exit, 0) AS sum_out_quantity_exit
+      FROM tmp_sms t1 JOIN tmp_sms_cp t2 WHERE
+        t2.date <= t1.date AND
+        t1.inventory_uuid = t2.inventory_uuid AND
+        t1.depot_uuid = t2.depot_uuid
+      ORDER BY t1.date
+    )z
+    GROUP BY date, depot_uuid, inventory_uuid
+    ORDER BY date;
+
+    -- clean up temporary tables
+    DROP TEMPORARY TABLE tmp_sms;
+    DROP TEMPORARY TABLE tmp_sms_cp;
+    DROP TEMPORARY TABLE stock_movement_grp;
+
+    -- remove all rows from stock_movement_status that are invalidated by this date.
+    DELETE sms FROM stock_movement_status AS sms
+      JOIN stage_inventory_for_amc AS staged ON sms.inventory_uuid = staged.inventory_uuid
+    WHERE sms.date >= DATE(_start_date) AND sms.depot_uuid = _depot_uuid;
+
+    -- get the max date for each inventory_uuid so we can look up the totals in a second
+    CREATE TEMPORARY TABLE tmp_max_dates AS
+      SELECT sms.inventory_uuid, MAX(date) AS max_date FROM stage_inventory_for_amc AS staged LEFT JOIN stock_movement_status AS sms
+        ON staged.inventory_uuid = sms.inventory_uuid
+        WHERE sms.depot_uuid = _depot_uuid
+        GROUP BY staged.inventory_uuid;
+
+    -- now get the "beginning balances" based on the date.  I think this needs to be two queries because one cannot
+    -- reuse an SQL query with a temporary tabel. But we may be able to optimize it down the road.
+    CREATE TEMPORARY TABLE tmp_max_values AS
+      SELECT sms.inventory_uuid, tmd.max_date, sms.sum_quantity, sms.sum_in_quantity, sms.sum_out_quantity_exit, sum_out_quantity_consumption
+      FROM stock_movement_status AS sms JOIN tmp_max_dates AS tmd ON
+        sms.inventory_uuid = tmd.inventory_uuid AND tmd.max_date = sms.date
+      GROUP BY sms.inventory_uuid, sms.date;
+
+    DROP TEMPORARY TABLE tmp_max_dates;
+
+    -- copy into stock_movement_status, including the opening balances
+    INSERT INTO stock_movement_status
+      SELECT tg.depot_uuid, tg.inventory_uuid, tg.date,
+        tg.quantity AS quantity_delta,
+        tg.in_quantity,
+        tg.out_quantity_exit,
+        tg.out_quantity_consumption,
+
+        -- these gnarly SQL queries just get the current sum, the current values of this movement, and the beginning balances
+        tg.sum_quantity + IFNULL(tmv.sum_quantity, 0),
+        tg.sum_in_quantity + IFNULL(tmv.sum_in_quantity, 0),
+        tg.sum_out_quantity_exit + IFNULL(tmv.sum_out_quantity_exit, 0),
+        tg.sum_out_quantity_consumption + IFNULL(tmv.sum_out_quantity_consumption, 0)
+      FROM tmp_grouped AS tg LEFT JOIN tmp_max_values AS tmv
+        ON tg.inventory_uuid = tmv.inventory_uuid;
+
+    DROP TEMPORARY TABLE tmp_max_values;
+
+    -- clean up final temporary tables
+    DROP TEMPORARY TABLE tmp_grouped;
+    DROP TEMPORARY TABLE stage_inventory_for_amc;
+END $$
 
 
 /*

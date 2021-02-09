@@ -779,7 +779,6 @@ CREATE TABLE `inventory` (
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delivery time',
-  `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Average consumption' ,
   `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order Interval' ,
   `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering INTerval',
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
@@ -2014,18 +2013,21 @@ CREATE TABLE `stock_movement` (
 
 DROP TABLE IF EXISTS `stock_movement_status`;
 CREATE TABLE  `stock_movement_status` (
-    `uuid` BINARY(16) NOT NULL,
-    `start_date` DATE,
-    `end_date` DATE,
-    `quantity` DECIMAL(19,4) NOT NULL,
-    `in_quantity` DECIMAL(19,4) NOT NULL,
-    `out_quantity` DECIMAL(19,4) NOT NULL,
-    `inventory_uuid` BINARY(16) NOT NULL,
     `depot_uuid` BINARY(16) NOT NULL,
-    PRIMARY KEY(`uuid`),
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `date` DATE,
+    `quantity_delta` DECIMAL(19,4) NOT NULL, -- the difference between inflows and outflows for the day
+    `in_quantity` DECIMAL(19,4) NOT NULL, -- current in flows of day
+    `out_quantity_exit` DECIMAL(19,4) NOT NULL, -- current out flows of day to exits
+    `out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- current out flows of day to consumptions
+    `sum_quantity` DECIMAL(19,4) NOT NULL,  -- cumulative quantity to date (running balance)
+    `sum_in_quantity` DECIMAL(19,4) NOT NULL, -- cumulative in flows to date
+    `sum_out_quantity_exit` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as exits
+    `sum_out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as consumption
     KEY `depot_uuid` (`depot_uuid`),
-    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     KEY `inventory_uuid` (`inventory_uuid`),
+    KEY `date` (`date`), -- add index on date
+    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -2061,22 +2063,6 @@ CREATE TABLE `integration` (
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
--- stock consumption total
-CREATE TABLE `stock_consumption` (
-  `inventory_uuid`  BINARY(16) NOT NULL,
-  `depot_uuid`      BINARY(16) NOT NULL,
-  `period_id`       MEDIUMINT(8) UNSIGNED NOT NULL,
-  `quantity`        INT(11) DEFAULT 0,
-  PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
-  KEY `inventory_uuid` (`inventory_uuid`),
-  KEY `depot_uuid` (`depot_uuid`),
-  KEY `period_id` (`period_id`),
-  CONSTRAINT `stock_consumption__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
-  CONSTRAINT `stock_consumption__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
-  CONSTRAINT `stock_consumption__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 /*
   The transaction_history table stores the editing history of transactions that

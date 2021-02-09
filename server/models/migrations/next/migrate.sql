@@ -111,3 +111,46 @@ CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTE
  */
 INSERT INTO unit VALUES
  (293, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');
+
+/*
+ * @author: jniles
+ * @date: 2021-02-04
+ * @subject: drop average_consumption column
+ * @issue: #5144
+ * @PR: #5357
+*/
+CALL drop_column_if_exists('inventory', 'avg_consumption');
+
+/*
+ * @author: jniles
+ * @date: 2021-02-04
+ * @subject: drop stock_consumption table in favor of stock_movement_status
+ * @issue: #5073
+*/
+DROP TABLE IF EXISTS stock_consumption;
+
+/*
+ * @author: jniles
+ * @date: 2021-02-08
+ * @subject: replace stock movement status table structure
+ * @issue: #5332
+*/
+DROP TABLE IF EXISTS `stock_movement_status`;
+CREATE TABLE  `stock_movement_status` (
+    `depot_uuid` BINARY(16) NOT NULL,
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `date` DATE,
+    `quantity_delta` DECIMAL(19,4) NOT NULL, -- the difference between inflows and outflows for the day
+    `in_quantity` DECIMAL(19,4) NOT NULL, -- current in flows of day
+    `out_quantity_exit` DECIMAL(19,4) NOT NULL, -- current out flows of day to exits
+    `out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- current out flows of day to consumptions
+    `sum_quantity` DECIMAL(19,4) NOT NULL,  -- cumulative quantity to date (running balance)
+    `sum_in_quantity` DECIMAL(19,4) NOT NULL, -- cumulative in flows to date
+    `sum_out_quantity_exit` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as exits
+    `sum_out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- cumulative out flows to date as consumption
+    KEY `depot_uuid` (`depot_uuid`),
+    KEY `inventory_uuid` (`inventory_uuid`),
+    KEY `date` (`date`), -- add index on date
+    CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+    CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
