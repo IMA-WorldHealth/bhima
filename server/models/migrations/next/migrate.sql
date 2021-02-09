@@ -140,7 +140,7 @@ CREATE TABLE  `stock_movement_status` (
     `depot_uuid` BINARY(16) NOT NULL,
     `inventory_uuid` BINARY(16) NOT NULL,
     `date` DATE,
-    `quantity` DECIMAL(19,4) NOT NULL, -- current balance of day
+    `quantity_delta` DECIMAL(19,4) NOT NULL, -- the difference between inflows and outflows for the day
     `in_quantity` DECIMAL(19,4) NOT NULL, -- current in flows of day
     `out_quantity_exit` DECIMAL(19,4) NOT NULL, -- current out flows of day to exits
     `out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- current out flows of day to consumptions

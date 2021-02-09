@@ -345,9 +345,6 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
       JOIN depot d ON sm.depot_uuid = d.uuid
     WHERE sm.depot_uuid = _depot_uuid AND DATE(sm.date) >= DATE(_start_date);
 
-    -- remove all rows from stock_movement_status that are invalidated by this date.
-    DELETE FROM stock_movement_status sms WHERE sms.date >= DATE(_start_date);
-
     -- create a temporary table similar to stock_movement_status
     CREATE TEMPORARY TABLE tmp_sms AS
       SELECT date, depot_uuid, inventory_uuid,
@@ -398,21 +395,49 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
     DROP TEMPORARY TABLE tmp_sms_cp;
     DROP TEMPORARY TABLE stock_movement_grp;
 
+    -- remove all rows from stock_movement_status that are invalidated by this date.
+    DELETE sms FROM stock_movement_status AS sms
+      JOIN stage_inventory_for_amc AS staged ON sms.inventory_uuid = staged.inventory_uuid
+    WHERE sms.date >= DATE(_start_date) AND sms.depot_uuid = _depot_uuid;
+
+    -- get the max date for each inventory_uuid so we can look up the totals in a second
+    CREATE TEMPORARY TABLE tmp_max_dates AS
+      SELECT sms.inventory_uuid, MAX(date) AS max_date FROM stage_inventory_for_amc AS staged LEFT JOIN stock_movement_status AS sms
+        ON staged.inventory_uuid = sms.inventory_uuid
+        WHERE sms.depot_uuid = _depot_uuid
+        GROUP BY staged.inventory_uuid;
+
+    -- now get the "beginning balances" based on the date.  I think this needs to be two queries because one cannot
+    -- reuse an SQL query with a temporary tabel. But we may be able to optimize it down the road.
+    CREATE TEMPORARY TABLE tmp_max_values AS
+      SELECT sms.inventory_uuid, tmd.max_date, sms.sum_quantity, sms.sum_in_quantity, sms.sum_out_quantity_exit, sum_out_quantity_consumption
+      FROM stock_movement_status AS sms JOIN tmp_max_dates AS tmd ON
+        sms.inventory_uuid = tmd.inventory_uuid AND tmd.max_date = sms.date
+      GROUP BY sms.inventory_uuid, sms.date;
+
+    DROP TEMPORARY TABLE tmp_max_dates;
+
     -- copy into stock_movement_status, including the opening balances
     INSERT INTO stock_movement_status
-      SELECT depot_uuid, inventory_uuid, date,
-        quantity,
-        in_quantity,
-        out_quantity_exit,
-        out_quantity_consumption,
-        sum_quantity + IFNULL((SELECT sum_quantity FROM stock_movement_status WHERE date <= _start_date ORDER BY date DESC LIMIT 1), 0),
-        sum_in_quantity + IFNULL((SELECT sum_in_quantity FROM stock_movement_status WHERE date <= _start_date ORDER BY date DESC LIMIT 1), 0),
-        sum_out_quantity_exit + IFNULL((SELECT sum_out_quantity_exit FROM stock_movement_status WHERE date <= _start_date ORDER BY date DESC LIMIT 1), 0),
-        sum_out_quantity_consumption + IFNULL((SELECT sum_out_quantity_consumption FROM stock_movement_status WHERE date <= _start_date ORDER BY date DESC LIMIT 1), 0)
-      FROM tmp_grouped;
+      SELECT tg.depot_uuid, tg.inventory_uuid, tg.date,
+        tg.quantity AS quantity_delta,
+        tg.in_quantity,
+        tg.out_quantity_exit,
+        tg.out_quantity_consumption,
 
-    -- clean up final temporary table
+        -- these gnarly SQL queries just get the current sum, the current values of this movement, and the beginning balances
+        tg.sum_quantity + IFNULL(tmv.sum_quantity, 0),
+        tg.sum_in_quantity + IFNULL(tmv.sum_in_quantity, 0),
+        tg.sum_out_quantity_exit + IFNULL(tmv.sum_out_quantity_exit, 0),
+        tg.sum_out_quantity_consumption + IFNULL(tmv.sum_out_quantity_consumption, 0)
+      FROM tmp_grouped AS tg LEFT JOIN tmp_max_values AS tmv
+        ON tg.inventory_uuid = tmv.inventory_uuid;
+
+    DROP TEMPORARY TABLE tmp_max_values;
+
+    -- clean up final temporary tables
     DROP TEMPORARY TABLE tmp_grouped;
+    DROP TEMPORARY TABLE stage_inventory_for_amc;
 END $$
 
 
