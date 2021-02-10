@@ -37,6 +37,7 @@ function downloadTemplate(req, res, next) {
 async function importStock(req, res, next) {
   let queryParams;
 
+  const operationDate = new Date(req.body.date);
   const filePath = req.files[0].path;
   const depotUuid = db.bid(req.body.depot_uuid);
   const documentUuid = db.bid(util.uuid());
@@ -46,7 +47,7 @@ async function importStock(req, res, next) {
     await db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid);
 
     // get the fiscal year period information
-    const period = await Fiscal.lookupFiscalYearByDate(new Date());
+    const period = await Fiscal.lookupFiscalYearByDate(operationDate);
 
     // read the csv file
     const data = await util.formatCsvToJson(filePath);
@@ -55,10 +56,11 @@ async function importStock(req, res, next) {
     checkDataFormat(data);
 
     const transaction = db.transaction();
-    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
       queryParams = [
+        moment(operationDate).format('YYYY-MM-DD'),
         req.session.enterprise.id,
         req.session.project.id,
         req.session.user.id,
