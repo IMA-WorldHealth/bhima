@@ -91,7 +91,8 @@
       "DOWNLOAD_TEMPLATE_HERE" : "Download the template here",
       "DESCRIPTION" : "Please download and then fill in the template file appropriately with your stock information. Then select the completed file via the input box below",
       "PLEASE_SELECT_DEPOT" : "Please select a depot first",
-      "UPLOAD_SUCCESS" : "Stock imported successfully"
+      "UPLOAD_SUCCESS" : "Stock imported successfully",
+      "UPLOAD_DATE_REQUIRED" : "Define the importation date please"
     },
     "INVENTORY_UNIT"  : "Unit",
     "INPUT"           : "Input",

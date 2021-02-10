@@ -223,6 +223,7 @@ END $$
 */
 DROP PROCEDURE IF EXISTS ImportStock;
 CREATE PROCEDURE ImportStock (
+  IN operationDate DATE,
   IN enterpriseId SMALLINT(5),
   IN projectId SMALLINT(5),
   IN userId SMALLINT(5),
@@ -308,7 +309,7 @@ BEGIN
       /* create integration info for the lot */
       SET integrationUuid = HUID(UUID());
       INSERT INTO integration (`uuid`, `project_id`, `date`)
-      VALUES (integrationUuid, projectId, CURRENT_DATE());
+      VALUES (integrationUuid, projectId, DATE(operationDate));
 
       /* create the lot */
       SET lotUuid = HUID(UUID());
@@ -322,7 +323,7 @@ BEGIN
     /* 13 is the id of integration flux */
     SET fluxId = 13;
     INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `period_id`)
-    VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId, periodId);
+    VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, DATE(operationDate), stockLotQuantity, inventoryUnitCost, 0, userId, periodId);
 
   END IF;
 
