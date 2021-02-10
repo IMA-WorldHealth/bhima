@@ -90,7 +90,8 @@
       "DOWNLOAD_TEMPLATE_HERE" : "Télécharger le modèle ici",
       "DESCRIPTION" : "Veuillez télécharger puis remplir le fichier modèle convenablement avec les informations de votre stock puis séléctionner le fichier rempli grâce à la zone de saisie ci-dessous",
       "PLEASE_SELECT_DEPOT" : "Veuillez séléctionner un dépot d'abord",
-      "UPLOAD_SUCCESS" : "Stock importé avec succès"
+      "UPLOAD_SUCCESS" : "Stock importé avec succès",
+      "UPLOAD_DATE_REQUIRED" : "Veuillez indiquer la date pour cette importation"
     },
     "INVENTORY_UNIT"  : "Unité",
     "IO"              : "Entrée/Sortie",
