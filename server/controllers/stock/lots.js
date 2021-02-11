@@ -18,7 +18,8 @@ const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
     l.unit_cost, l.description, l.entry_date, l.expiration_date,
-    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+    i.code as inventory_code
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;
@@ -123,7 +124,7 @@ function getDupes(req, res, next) {
         BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
         l.unit_cost, l.description, l.entry_date, l.expiration_date,
         BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
-        COUNT(*) as num_duplicates
+        i.code as inventory_code, COUNT(*) as num_duplicates
       FROM lot l
       JOIN inventory i ON i.uuid = l.inventory_uuid
       GROUP BY label, inventory_uuid HAVING num_duplicates > 1
