@@ -24,7 +24,11 @@ function DuplicateLotsController(
       displayName : 'TABLE.COLUMNS.LABEL',
       headerTooltip : 'TABLE.COLUMNS.LABEL',
       headerCellFilter : 'translate',
-
+    }, {
+      field : 'inventory_code',
+      displayName : 'TABLE.COLUMNS.CODE',
+      headerTooltip : 'TABLE.COLUMNS.CODE',
+      headerCellFilter : 'translate',
     }, {
       field : 'inventory_text',
       displayName : 'TABLE.COLUMNS.INVENTORY',
