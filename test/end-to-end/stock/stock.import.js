@@ -14,6 +14,8 @@ function StockImportTests() {
   it('importing stock from a csv file', async () => {
     await shared.setDepot(depot);
 
+    await components.dateEditor.set(new Date());
+
     await shared.uploadFile(STOCK_CSV_FILE);
 
     await FU.buttons.submit();
@@ -22,6 +24,8 @@ function StockImportTests() {
 
   it('importing stock from a csv file which have inventory_code and inventory_cmm missing', async () => {
     await shared.setDepot(depot);
+
+    await components.dateEditor.set(new Date());
 
     await shared.uploadFile(STOCK_CSV_FILE_NO_CODE_NO_CMM);
 
