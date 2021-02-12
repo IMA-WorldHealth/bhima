@@ -34,8 +34,6 @@ async function report(req, res, next) {
   try {
     reporting = new ReportManager(TEMPLATE, req.session, params);
 
-    console.log('parameters:', params);
-
     const sql = `
     SELECT BUID(sc.inventory_uuid) AS inventory_uuid, iv.text, p.translate_key, MONTH(p.start_date) AS month_key,
       f.label AS fiscal_year, sm.out_quantity, d.text AS depot
