@@ -327,10 +327,16 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
   DECLARE TO_SERVICE INTEGER DEFAULT 10;
 
   /*
-    Creates a temporary table of stock movements classified by is_consumption or not for the staged inventory uuids.
-    NOTE: this embeds the system logic that a "consumption" event is different if the depot is a warehouse or not
-    If it is a warehouse, transfers to other depots are considered consumption.  Otherwise, only transfers to patients
-    or services are considered consumption events.
+    Creates a temporary table of stock movements for the depot, inventory items, and time frame under consideration.
+    The purpose of this table is to classify movements by "is_consumption", using the following logic:
+      - if the movement is an exit from a warehouse, it is a consumption if and only if it is to a depot, patient, or serivce
+      - else if the movement is an exit from a depot, it is a consumption if and only if it is to a patient or service
+      - else it is not a consumption
+
+    This allows us to easily SUM/GROUP on this logic in future tables.  This is essentially a raw copy of the stock_movement table
+
+    TODO(@jniles): I think we can actually completely do away with tis table by combining it into the following query.  But it would
+    be rather hard to read.  This is a TODO for a future optimisation.
   */
   CREATE TEMPORARY TABLE stock_movement_grp AS
     SELECT DATE(sm.date) as date, l.inventory_uuid, sm.depot_uuid, sm.quantity, is_exit, flux_id,
@@ -345,7 +351,17 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
       JOIN depot d ON sm.depot_uuid = d.uuid
     WHERE sm.depot_uuid = _depot_uuid AND DATE(sm.date) >= DATE(_start_date);
 
-    -- create a temporary table similar to stock_movement_status
+    /*
+      Creates a temporary table of the stock_movements grouped by day.  This allows us to get daily
+      SUMs for movements.  Using the previous table (stock_movement_grp), we are able to aggregate:
+        - quantity - the daily increase/decrease of stock for that inventory/depot combo.
+        - in_quantity - the daily amount of stock entering the depot
+        - out_quantity_consumption - the daily amount of stock exiting the depot as consumptions
+        - out_quantity_exit - the daily amount of stock exiting by all other non-consumption means
+
+      At this point, we should have unique dates.  At this point, we have everything for the stock_movement_status
+      table except the running balances.  Everything beyond this point is to set up the running balances.
+    */
     CREATE TEMPORARY TABLE tmp_sms AS
       SELECT date, depot_uuid, inventory_uuid,
         SUM(IF(is_exit, -1 * quantity, quantity)) as quantity,
@@ -356,11 +372,17 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
       GROUP BY date, depot_uuid, inventory_uuid
       ORDER BY date;
 
+    -- we no longer need this table
+    DROP TEMPORARY TABLE stock_movement_grp;
+
     -- clone the temporary table to prevent self-referencing issues in temporary tables
     -- https://dev.mysql.com/doc/refman/5.7/en/temporary-table-problems.html
     CREATE TEMPORARY TABLE tmp_sms_cp AS SELECT * FROM tmp_sms;
 
-    -- create a table of grouped running totals for each category (date, depot_uuid, inventory_uuid)
+    /*
+      Creates a temporary table of running totals for the date range in question.  We still
+      don't have opening balances though, so this is only half way there.
+    */
     CREATE TEMPORARY TABLE tmp_grouped AS
     SELECT date, depot_uuid, inventory_uuid,
       quantity AS quantity,
@@ -393,21 +415,21 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
     -- clean up temporary tables
     DROP TEMPORARY TABLE tmp_sms;
     DROP TEMPORARY TABLE tmp_sms_cp;
-    DROP TEMPORARY TABLE stock_movement_grp;
 
-    -- remove all rows from stock_movement_status that are invalidated by this date.
+    -- remove all rows from stock_movement_status that will need to be recomputed.
     DELETE sms FROM stock_movement_status AS sms
       JOIN stage_inventory_for_amc AS staged ON sms.inventory_uuid = staged.inventory_uuid
     WHERE sms.date >= DATE(_start_date) AND sms.depot_uuid = _depot_uuid;
 
-    -- get the max date for each inventory_uuid so we can look up the totals in a second
+    -- get the max date from the stock_movement_status table (remember, we deleted the invalidated rows above)
+    -- to look up the opening balances with.
     CREATE TEMPORARY TABLE tmp_max_dates AS
       SELECT sms.inventory_uuid, MAX(date) AS max_date FROM stage_inventory_for_amc AS staged LEFT JOIN stock_movement_status AS sms
         ON staged.inventory_uuid = sms.inventory_uuid
         WHERE sms.depot_uuid = _depot_uuid
         GROUP BY staged.inventory_uuid;
 
-    -- now get the "beginning balances" based on the date.  I think this needs to be two queries because one cannot
+    -- now get the "opening balances" based on the date.  I think this needs to be two queries because one cannot
     -- reuse an SQL query with a temporary tabel. But we may be able to optimize it down the road.
     CREATE TEMPORARY TABLE tmp_max_values AS
       SELECT sms.inventory_uuid, tmd.max_date, sms.sum_quantity, sms.sum_in_quantity, sms.sum_out_quantity_exit, sum_out_quantity_consumption
@@ -415,9 +437,11 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
         sms.inventory_uuid = tmd.inventory_uuid AND tmd.max_date = sms.date
       GROUP BY sms.inventory_uuid, sms.date;
 
+    -- we don't need to know those max dates anymore
     DROP TEMPORARY TABLE tmp_max_dates;
 
-    -- copy into stock_movement_status, including the opening balances
+    -- copy all staged records into stock_movement_status, including the opening balances!
+    -- NOTE(@jniles) - we are going to need a second pass to caluclate the duration.  Maybe there is a better way?
     INSERT INTO stock_movement_status
       SELECT tg.depot_uuid, tg.inventory_uuid, tg.date,
         tg.quantity AS quantity_delta,
@@ -429,17 +453,197 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
         tg.sum_quantity + IFNULL(tmv.sum_quantity, 0),
         tg.sum_in_quantity + IFNULL(tmv.sum_in_quantity, 0),
         tg.sum_out_quantity_exit + IFNULL(tmv.sum_out_quantity_exit, 0),
-        tg.sum_out_quantity_consumption + IFNULL(tmv.sum_out_quantity_consumption, 0)
+        tg.sum_out_quantity_consumption + IFNULL(tmv.sum_out_quantity_consumption, 0),
+        0 AS duration
       FROM tmp_grouped AS tg LEFT JOIN tmp_max_values AS tmv
         ON tg.inventory_uuid = tmv.inventory_uuid;
 
     DROP TEMPORARY TABLE tmp_max_values;
-
-    -- clean up final temporary tables
     DROP TEMPORARY TABLE tmp_grouped;
+
+    -- finally, update the durations for this inventory_uuid/depot_uuid combo
+    -- TODO(@jniles): can we do this at the same time as another query above?
+    -- TODO(@jniles): investigate the performance of this query
+    -- NOTE(@jniles): the final record will always have a duration of "0".  It should be the only record with a duration of "0".
+    UPDATE stock_movement_status AS sms
+    INNER JOIN stage_inventory_for_amc AS staged
+      ON sms.inventory_uuid = staged.inventory_uuid
+    SET sms.duration = (
+      SELECT IFNULL(duration, 0) FROM (
+        SELECT DATEDIFF(MIN(next.date), sms.date) AS duration
+        FROM stock_movement_status AS `next`
+        WHERE next.depot_uuid = _depot_uuid AND next.inventory_uuid = sms.inventory_uuid
+        AND next.date > sms.date
+        LIMIT 1
+      ) AS x
+    )
+    WHERE sms.depot_uuid = _depot_uuid;
+
     DROP TEMPORARY TABLE stage_inventory_for_amc;
+
+    /*
+      We are done. We've removed, then recreated, all data in the stock_movement_status table
+      corresponding to the depot_uuid and inventory_uuids from the start date on (including the
+      start date).  We've also computed the duration between each row and the subsequent row.
+    */
 END $$
 
+
+DROP PROCEDURE IF EXISTS getAMC$$
+CREATE PROCEDURE getAMC(
+  IN _date DATE, /* what date the user wants to know the AMC for */
+  IN _depot_uuid BINARY(16), /* the depot for the AMC */
+  IN _inventory_uuid BINARY(16) /* the inventory for the AMC */
+) BEGIN
+
+  DECLARE _start_date,
+          _min_date,
+          _max_date DATE;
+
+  DECLARE _sum_consumed_quantity,
+          _sum_exit_quantity,
+          _last_quantity,
+          _initial_quantity DECIMAL(19,4);
+
+  DECLARE _sum_stock_day,
+          _sum_consumption_day,
+          _sum_stock_out_day,
+          _sum_day,
+          _number_of_month,
+          _head_days,
+          _tail_days INTEGER;
+
+  DECLARE _algo_1,
+          _algo_2,
+          _algo_3,
+          _algo_msh DECIMAL(19,4);
+
+  -- NOTE(@jniles): I am ignoring the enterprise_id for ease of use.  For full correctness,
+  -- we will need to pass in the enteprise_id.  However, we always only have a single enterprise
+  -- in production, so this works for now.
+  SELECT
+    ss.month_average_consumption,
+    DATE_SUB(_date, INTERVAL ss.month_average_consumption MONTH)
+  INTO
+    _number_of_month,
+    _start_date
+  FROM stock_setting AS ss LIMIT 1;
+
+  SELECT
+    SUM(IF(sms.sum_quantity <= 0, sms.duration, 0)),
+    SUM(IF(sms.sum_quantity > 0, sms.duration, 0)),
+    SUM(IF(sms.out_quantity_consumption != 0, sms.duration, 0)),
+    MIN(sms.date),
+    MAX(sms.date),
+
+    -- NOTE(@jniles): sum_* fields are monotonically increasing, so the MAX is the last,
+    -- MIN is the first
+    MAX(sms.sum_out_quantity_consumption) - MIN(sms.sum_out_quantity_consumption),
+    MAX(sms.sum_out_quantity_exit) - MIN(sms.sum_out_quantity_exit)
+
+  INTO
+    _sum_stock_out_day,
+    _sum_stock_day,
+    _sum_consumption_day,
+    _min_date,
+    _max_date,
+    _sum_consumed_quantity,
+    _sum_exit_quantity
+  FROM stock_movement_status AS sms WHERE
+    sms.date >=_start_date AND
+    sms.date <= _date AND
+    sms.depot_uuid = _depot_uuid AND
+    sms.inventory_uuid = _inventory_uuid;
+
+  -- account for the "tail"
+  -- the "tail" (number of days since final record until today) will not be included in either
+  -- _sum_stock_out_day or _sum_stock_day, since duration is always 0 for the last record.  Here
+  -- we check what condition we are in to figure out if the tail
+  SELECT sms.sum_quantity INTO _last_quantity FROM stock_movement_status AS sms WHERE
+      sms.date = _max_date AND
+      sms.inventory_uuid = _inventory_uuid AND
+      sms.depot_uuid = _depot_uuid;
+
+  SELECT DATEDIFF(_date, _max_date) INTO _tail_days;
+
+  IF (_last_quantity = 0) THEN
+    -- ended in a stock out.  Add the "tail" to the days of stock outs
+    SELECT _sum_stock_out_day + _tail_days INTO _sum_stock_out_day;
+  ELSE
+    -- ended with stock.  Add the "tail" to the days of stock
+    SELECT _sum_stock_day + _tail_days INTO _sum_stock_day;
+  END IF;
+
+  -- account for the "head"
+  -- the "head" (number of days before the first record captured in this range) needs to be considered
+  -- separately, since it won't be picked up by the above query.  We just need to know if we were in stock
+  -- out or had stock at the beginning of our window of time.
+  -- NOTE: we only need to be concerned about days here, not quantities.  If there were a change of quantities, it would
+  -- have corresponded to a record.
+  SELECT
+    sms.sum_quantity INTO _initial_quantity
+  FROM stock_movement_status AS sms WHERE
+    -- get the record right before the start
+    sms.date = (SELECT MAX(date) FROM stock_movement_status ss WHERE ss.date <= _start_date AND ss.depot_uuid = _depot_uuid AND ss.inventory_uuid = _inventory_uuid) AND
+    sms.depot_uuid = _depot_uuid AND
+    sms.inventory_uuid = _inventory_uuid;
+
+  SELECT DATEDIFF(_min_date, _start_date)  INTO _head_days;
+
+  IF (_initial_quantity = 0) THEN
+    -- started without stock. Add the "head" to  days to stock out days.
+    SELECT _sum_stock_out_day + _head_days INTO _sum_stock_out_day;
+  ELSE
+    -- started with stock.  Add the "head" to the days of stock.
+    SELECT _sum_stock_day + _head_days INTO _sum_stock_day;
+  END IF;
+
+  -- the number of days in the period
+  SELECT DATEDIFF(_date, _start_date) INTO _sum_day;
+
+  -- Algo 1
+  -- The average monthly consumption is obtained by dividing the quantity consumed during the period by
+  -- the number of days with stock during the period, and by multiplying the result by 30.5.
+  SET _algo_1 = (_sum_consumed_quantity / IF(_sum_stock_day IS NULL OR _sum_stock_day = 0, 1, _sum_stock_day)) * 30.5;
+
+  -- Algo 2
+  -- The average consumption is obtained by dividing the quantity consumed during the period by the number
+  -- of days of consumption for the period, and by multiplying the result by 30.5.
+  SET _algo_2 = (_sum_consumed_quantity / IF( _sum_consumption_day IS NULL OR _sum_consumption_day = 0, 1, _sum_consumption_day)) * 30.5;
+
+  -- Algo 3
+  -- The average consumption is obtained by dividing the quantity consumed during the period by the number of
+  -- days in the period, and by multiplying the result obtained by 30.5.
+  SET _algo_3 = (_sum_consumed_quantity / IF( _sum_day IS NULL OR _sum_day = 0, 1, _sum_day)) * 30.5;
+
+  -- Algo 4 (MSH)
+  -- The average consumption is obtained by dividing the quantity consumed during the period by the difference of the
+  -- number of months in the period minus the total number of days of stock out in the period. The MSH algorithm
+  -- is recommended by the Management Sciences for Health organization (https://www.msh.org).
+  SET _algo_msh = (_sum_consumed_quantity / (_number_of_month - (_sum_stock_out_day / 30.5)));
+
+  SELECT
+    BUID(_depot_uuid) AS depot_uuid,
+    BUID(_inventory_uuid) AS inventory_uuid,
+    _start_date AS start_date,
+    _date AS end_date,
+    ROUND(IFNULL(_algo_1, 0), 2) AS algo1,
+    ROUND(IFNULL(_algo_2, 0), 2) AS algo2,
+    ROUND(IFNULL(_algo_3, 0),2) AS algo3,
+    ROUND(IFNULL(_algo_msh, 0), 2) AS algo_msh,
+    _last_quantity AS quantity_in_stock,
+    _sum_day AS sum_days,
+    _sum_stock_day AS sum_stock_day,
+    _sum_stock_out_day AS sum_stock_out_days,
+    _sum_consumption_day AS sum_consumption_day,
+    _sum_consumed_quantity AS sum_consumed_quantity,
+    _max_date AS max_date,
+    _min_date AS min_date,
+    _number_of_month AS number_of_month,
+    _head_days AS head_days,
+    _tail_days AS tail_days,
+    _initial_quantity AS quantity_at_beginning;
+END $$
 
 /*
  This procedure is designed for calculating the CMM for an inventory in a depot during a period
@@ -521,7 +725,6 @@ CREATE PROCEDURE `getCMM` (
           ORDER BY d.text
       ) AS `x` HAVING frequency > -1
   ) AS `cmm_data`;
-
 
   -- get the current amount in stock
   SET @quantityInStock = (

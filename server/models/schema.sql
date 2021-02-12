@@ -2015,7 +2015,7 @@ DROP TABLE IF EXISTS `stock_movement_status`;
 CREATE TABLE  `stock_movement_status` (
     `depot_uuid` BINARY(16) NOT NULL,
     `inventory_uuid` BINARY(16) NOT NULL,
-    `date` DATE,
+    `date` DATE NOT NULL,
     `quantity_delta` DECIMAL(19,4) NOT NULL, -- the difference between inflows and outflows for the day
     `in_quantity` DECIMAL(19,4) NOT NULL, -- current in flows of day
     `out_quantity_exit` DECIMAL(19,4) NOT NULL, -- current out flows of day to exits
@@ -2024,9 +2024,11 @@ CREATE TABLE  `stock_movement_status` (
     `sum_in_quantity` DECIMAL(19,4) NOT NULL, -- cumulative in flows to date
     `sum_out_quantity_exit` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as exits
     `sum_out_quantity_consumption` DECIMAL(19,4) NOT NULL, -- cumulative outflows to date as consumption
+    `duration` INTEGER UNSIGNED NULL DEFAULT 0, -- duration for which this row is valid
     KEY `depot_uuid` (`depot_uuid`),
     KEY `inventory_uuid` (`inventory_uuid`),
-    KEY `date` (`date`), -- add index on date
+    INDEX `depot_inventory` (`depot_uuid`, `inventory_uuid`),
+    INDEX `date` (`date`), -- add index on date
     CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
