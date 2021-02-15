@@ -3,11 +3,13 @@ angular.module('bhima.controllers')
 
 StockDefineLotsModalController.$inject = [
   'appcache', '$uibModalInstance', 'uiGridConstants', 'data',
-  'SessionService', 'bhConstants', 'StockEntryModalForm', 'focus',
+  'SessionService', 'bhConstants', 'StockEntryModalForm',
+  '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm, Focus,
+  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm,
+  $translate, Focus,
 ) {
   const vm = this;
 
@@ -30,7 +32,6 @@ function StockDefineLotsModalController(
   vm.enterprise = Session.enterprise;
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
-
   vm.isTransfer = (vm.entryType === 'transfer_reception');
 
   // exposing method to the view
@@ -42,6 +43,8 @@ function StockDefineLotsModalController(
   vm.onChangeQuantity = onChangeQuantity;
   vm.onChangeUnitCost = onChangeUnitCost;
   vm.onDateChange = onDateChange;
+
+  vm.onSelectLot = onSelectLot;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
@@ -85,11 +88,13 @@ function StockDefineLotsModalController(
   vm.gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
+    enableColumnResize : true,
     enableColumnMenus : false,
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
     data : vm.form.rows,
+    minRowsToShow : 4,
     columnDefs : cols,
     onRegisterApi,
   };
@@ -115,9 +120,12 @@ function StockDefineLotsModalController(
    * if the fast insert option is enable do this :
    * - add new row automatically on blur
    * - set the focus in the new row
-   * @param {string} rowLot the row.entity.lot string
+   * @param {string} rowLot the row.entity.lot string/object
    */
   function onLotBlur(rowLot) {
+    // NOTE: rowLot will be an object if an existed lot was
+    //       selected from the typeahead.  Otherwise it will
+    //       be the lot name string that was typed in.
     if (vm.enableFastInsert && rowLot) {
 
       const emptyLotRow = getFirstEmptyLot();
@@ -168,6 +176,27 @@ function StockDefineLotsModalController(
       row.expiration_date = date;
       onChanges();
     }
+  }
+
+  /**
+   * @method onSelectLot
+   *
+   * @description
+   * Updates the expiration field based on the date in
+   * the corresponding candidate lot.
+   *
+   * NOTE: This function is only called when a lot is selected
+   *       from the typeahead (which is created from the list
+   *       valid candidate lots for this inventory item).  So
+   *       the 'find()' below should always work.
+   *
+   * @param {object} entity the row.entity.lot object (being displayed)
+   * @param {object} item the active typeahead model object
+   */
+  function onSelectLot(entity, item) {
+    const lot = vm.stockLine.candidateLots.find(l => l.uuid === item.uuid);
+    entity.expiration_date = new Date(lot.expiration_date);
+    onChanges();
   }
 
   function cancel() {

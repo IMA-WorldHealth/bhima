@@ -139,7 +139,7 @@ describe('Test merging lots', () => {
   // ===========================================================================
   // Verify we have created the lots, tags, etc
   it('Verify we created lot1 and its dupes (lot3, lot4, lot5)', () => {
-    return agent.get('/lot/dupes')
+    return agent.get('/lots_dupes')
       .query({ label : lot1Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 4); // 4 = the lot itself and 3 dupes
@@ -147,7 +147,7 @@ describe('Test merging lots', () => {
       .catch(helpers.handler);
   });
   it('Verify we created lot2', () => {
-    return agent.get('/lot/dupes')
+    return agent.get('/lots_dupes')
       .query({ label : lot2Label, inventory_uuid : vitamineUuid })
       .then((res) => {
         helpers.api.listed(res, 1);
@@ -177,7 +177,7 @@ describe('Test merging lots', () => {
   });
 
   it(`Verify the 'find duplicate lots' query works`, () => {
-    return agent.get('/lot/dupes')
+    return agent.get('/lots_dupes')
       .query({ find_dupes : 1 })
       .then((res) => {
         helpers.api.listed(res, 1); // all dupes can be merged into one
