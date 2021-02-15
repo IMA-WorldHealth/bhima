@@ -234,7 +234,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      m.date AS entry_date, i.avg_consumption, i.purchase_interval, i.delay,
+      m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference, t.name AS tag_name, t.color
@@ -307,13 +307,13 @@ async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsump
   // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
   // times for the same inventory item.
   const params = _.chain(lots)
-    .map(row => ([monthAverageConsumption, row.inventory_uuid, row.depot_uuid]))
+    .map(row => ([row.depot_uuid, row.inventory_uuid]))
     .uniqBy(row => row.toString())
     .value();
 
   // query the server
   const cmms = await Promise.all(
-    params.map(row => db.exec(`CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), HUID(?), HUID(?))`, row)
+    params.map(row => db.exec(`CALL GetAMC(DATE(NOW()), HUID(?), HUID(?))`, row)
       .then(values => values[0][0])),
   );
 
@@ -649,7 +649,7 @@ async function getInventoryQuantityAndConsumption(params) {
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
+      i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
       dm.text AS documentReference, d.enterprise_id
@@ -828,7 +828,7 @@ function getInventoryMovements(params) {
       m.quantity, m.is_exit, m.date,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
+      i.purchase_interval, i.delay, iu.text AS unit_type,
       dm.text AS documentReference, flux.label as flux
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
