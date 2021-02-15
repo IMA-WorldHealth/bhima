@@ -18,7 +18,7 @@ describe('(/lots/) The lots HTTP API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /stock/lots/depots/  Obtain lots with risk of peremptions', () => {
+  it('GET /stock/lots/depots/ Obtain lots with risk of expiration', () => {
     const conditions = {
       includeEmptyLot : '0',
       is_expiry_risk : '1',
@@ -29,7 +29,7 @@ describe('(/lots/) The lots HTTP API', () => {
     return agent.get('/stock/lots/depots/')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
