@@ -171,12 +171,13 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
 
   // loop through the inventory uuids, queuing up them to rerun
   uniqueInventoryUuids.forEach(uid => {
-    txn.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
-      new Date(mvmtDate),
-      db.bid(uid),
-      db.bid(depotUuid),
-    ]);
+    txn.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(uid)]);
   });
+
+  txn.addQuery(`CALL ComputeStockStatusForStagedInventory(DATE(?), ?)`, [
+    new Date(mvmtDate),
+    db.bid(depotUuid),
+  ]);
 
   return txn.execute();
 }
