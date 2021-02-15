@@ -122,5 +122,4 @@ INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
 --
 -- Compute quantities of all inventories and write into stock_movement_status table
 --
-
-CALL zComputeAllInventoryStockQuantities(@one_year_ago, NULL)
+CALL zRecomputeStockMovementStatus();

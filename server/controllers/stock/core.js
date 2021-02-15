@@ -307,13 +307,13 @@ async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsump
   // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
   // times for the same inventory item.
   const params = _.chain(lots)
-    .map(row => ([monthAverageConsumption, row.inventory_uuid, row.depot_uuid]))
+    .map(row => ([row.depot_uuid, row.inventory_uuid]))
     .uniqBy(row => row.toString())
     .value();
 
   // query the server
   const cmms = await Promise.all(
-    params.map(row => db.exec(`CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), HUID(?), HUID(?))`, row)
+    params.map(row => db.exec(`CALL GetAMC(DATE(NOW()), HUID(?), HUID(?))`, row)
       .then(values => values[0][0])),
   );
 
