@@ -200,39 +200,6 @@ CREATE PROCEDURE zMergeAccounts(
 END $$
 
 /*
-CALL zComputeAllInventoryStockQuantities(startDate, depotUuid)
-
-DESCRIPTION
-Recomputes the quantity in stock for all inventory items for a given depot.
-If _depot_uuid is NULL, Recomputation will be done for every depots
-*/
-DROP PROCEDURE IF EXISTS zComputeAllInventoryStockQuantities $$
-CREATE PROCEDURE zComputeAllInventoryStockQuantities (
-  IN _start_date DATE,
-  IN _depot_uuid BINARY(16)
-) BEGIN
-  DECLARE _inventory_uuid BINARY(16);
-  DECLARE done BOOLEAN;
-  DECLARE inventory_cursor
-    CURSOR FOR SELECT inventory.uuid FROM inventory WHERE consumable = 1
-    AND inventory.uuid IN (SELECT DISTINCT inventory_uuid FROM lot);
-
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-  OPEN inventory_cursor;
-
-  read_loop: LOOP
-    FETCH inventory_cursor INTO _inventory_uuid;
-    IF done THEN
-      LEAVE read_loop;
-    END IF;
-    CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_uuid);
-  END LOOP;
-
-  CLOSE inventory_cursor;
-END$$
-
-/*
 CALL zRecomputeStockMovementStatus()
 
 DESCRIPTION

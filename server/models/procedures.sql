@@ -47,7 +47,7 @@ SOURCE server/models/procedures/location.sql
 SOURCE server/models/procedures/trial_balance.sql
 
 /*
-  Stock procedures include: getCMM, PostStockMovement, ImportStock, computeStockQuantity
+  Stock procedures include: GetAMC, PostStockMovement, ImportStock, computeStockQuantity
   computeStockQuantityByLotUuid
 */
 SOURCE server/models/procedures/stock.sql

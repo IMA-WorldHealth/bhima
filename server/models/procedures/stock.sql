@@ -490,8 +490,8 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
 END $$
 
 
-DROP PROCEDURE IF EXISTS getAMC$$
-CREATE PROCEDURE getAMC(
+DROP PROCEDURE IF EXISTS GetAMC$$
+CREATE PROCEDURE GetAMC(
   IN _date DATE, /* what date the user wants to know the AMC for */
   IN _depot_uuid BINARY(16), /* the depot for the AMC */
   IN _inventory_uuid BINARY(16) /* the inventory for the AMC */
@@ -533,7 +533,7 @@ CREATE PROCEDURE getAMC(
   SELECT
     SUM(IF(sms.sum_quantity <= 0, sms.duration, 0)),
     SUM(IF(sms.sum_quantity > 0, sms.duration, 0)),
-    SUM(IF(sms.out_quantity_consumption != 0, sms.duration, 0)),
+    SUM(IF(sms.out_quantity_consumption != 0, 1, 0)),
     MIN(sms.date),
     MAX(sms.date),
 
@@ -645,118 +645,5 @@ CREATE PROCEDURE getAMC(
     _tail_days AS tail_days,
     _initial_quantity AS quantity_at_beginning;
 END $$
-
-/*
- This procedure is designed for calculating the CMM for an inventory in a depot during a period
- It actually retrieve the CMM value for each aglorithm we have so we get just choose which one to use
- : Updated by lomamech, to recalculate the number of days of consumption, and modify the parameter definition for the calculation
-*/
-DROP PROCEDURE IF EXISTS `getCMM`$$
-CREATE PROCEDURE `getCMM` (
-  IN _start_date DATE,
-  IN _end_date DATE,
-  IN _inventory_uuid BINARY(16),
-  IN _depot_uuid BINARY(16)
-) BEGIN
-
-  DECLARE _last_inventory_mvt_date, _first_inventory_mvt_date DATE;
-  DECLARE _sum_consumed_quantity, _sum_stock_day,
-    _sum_consumption_day, _sum_stock_out_days, _sum_days, _number_of_month,
-    _days_before_consumption
-    DECIMAL(19,4);
-
-  SET _last_inventory_mvt_date = NULL;
-  SET _first_inventory_mvt_date = NULL;
-
-  SELECT MAX(m.end_date) INTO  _last_inventory_mvt_date
-  FROM stock_movement_status m
-    JOIN inventory i ON m.inventory_uuid = i.uuid
-  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid;
-
-  SELECT MIN(m.start_date) INTO _first_inventory_mvt_date
-  FROM stock_movement_status m
-    JOIN inventory i ON m.inventory_uuid = i.uuid
-  WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.start_date) >= DATE(_start_date);
-
-  SET _sum_consumed_quantity = 0;
-  SET _sum_stock_day = 0;
-  SET _sum_consumption_day =0;
-  SET _sum_stock_out_days = 0;
-
-  SELECT COUNT(DISTINCT(aggr.date)) AS consumption_days INTO  _sum_consumption_day
-  FROM (
-    SELECT DATE(sm.date) AS date, sm.quantity
-    FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-    WHERE l.inventory_uuid = _inventory_uuid AND sm.depot_uuid = _depot_uuid
-    AND (DATE(sm.date) >= DATE(_start_date) AND DATE(sm.date) <= DATE(_end_date))
-    AND sm.is_exit = 1 AND sm.flux_id <> 11
-    ORDER BY sm.date ASC
-  ) AS aggr;
-
-  SET _sum_days = DATEDIFF(_end_date,  _start_date) + 1;
-  SET _number_of_month = ROUND(DATEDIFF(_end_date,  _start_date)/30.5);
-  SET _days_before_consumption = DATEDIFF(_first_inventory_mvt_date,  _start_date);
-
-  SELECT
-    SUM(cmm_data.out_quantity) AS sum_consumed_quantity,
-    SUM(IF(cmm_data.in_stock_quantity = 0, cmm_data.frequency, 0)) AS sum_stock_out_days,
-    SUM(IF(cmm_data.in_stock_quantity <> 0, cmm_data.frequency, 0)) AS sum_stock_day
-  INTO _sum_consumed_quantity, _sum_stock_out_days, _sum_stock_day
-  FROM (
-      SELECT x.start_date, x.end_date, x.in_quantity, x.out_quantity, x.in_stock_quantity,
-          x.inventory, x.depot, (DATEDIFF(x.end_date, x.start_date) + 1) AS frequency
-      FROM (
-          SELECT
-          IF(m.start_date < _start_date, _start_date, m.start_date) AS start_date ,
-          IF(m.end_date > _end_date, _end_date,  IF(m.end_date = _last_inventory_mvt_date AND
-                  _last_inventory_mvt_date < _end_date, _end_date, m.end_date )) AS end_date,
-          in_quantity, out_quantity, m.quantity AS `in_stock_quantity`,
-          i.text as 'inventory', d.text AS `depot`
-          FROM stock_movement_status m
-          JOIN depot d ON d.uuid = m.depot_uuid
-          JOIN inventory i ON i.uuid = m.inventory_uuid
-
-          WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid
-             AND  (
-              DATE(m.start_date) >= DATE(_start_date) AND DATE(m.end_date) <= DATE(_end_date)
-              -- ((m.start_date >= _start_date) AND  (m.end_date >= _end_date)) OR
-              -- ((m.start_date <= _start_date) AND  (m.end_date <= _end_date))
-            )
-          ORDER BY d.text
-      ) AS `x` HAVING frequency > -1
-  ) AS `cmm_data`;
-
-  -- get the current amount in stock
-  SET @quantityInStock = (
-    SELECT quantity FROM stock_movement_status AS sms
-      WHERE sms.inventory_uuid = _inventory_uuid
-        AND sms.depot_uuid = _depot_uuid ORDER BY start_date LIMIT 1
-  );
-
-  SET @algo1 = ( _sum_consumed_quantity/(IF((_sum_stock_day = NULL) OR (_sum_stock_day = 0),1, _sum_stock_day)))*30.5;
-  SET @algo2 = ((_sum_consumed_quantity)/(IF( (_sum_consumption_day = NULL) OR _sum_consumption_day = 0,1, _sum_consumption_day))) * 30.5;
-  SET @algo3 =((_sum_consumed_quantity)/(IF( (_sum_days = NULL) OR _sum_days = 0,1, _sum_days))) * 30.5;
-  SET @algo_msh = (_sum_consumed_quantity/(_number_of_month - (_sum_stock_out_days/30.5) ));
-
-  SELECT ROUND(IFNULL(@algo1, 0), 2) as algo1,
-    ROUND(IFNULL(@algo2, 0), 2) as algo2,
-    ROUND(IFNULL(@algo3, 0),2) as algo3,
-    ROUND(IFNULL(@algo_msh, 0), 2) as algo_msh,
-    IFNULL(@quantityInStock, 0) AS quantity_in_stock, -- FIXME(@jniles): this returns incorrect results.  DO NOT USE
-    BUID(_inventory_uuid) as inventory_uuid,
-    BUID(_depot_uuid) as depot_uuid,
-    _start_date as start_date,
-    _end_date as end_date,
-    _first_inventory_mvt_date as first_inventory_movement_date,
-    _last_inventory_mvt_date as last_inventory_movement_date,
-    _sum_days as sum_days,
-    _sum_stock_day as sum_stock_day,
-    _sum_consumption_day as sum_consumption_day,
-    _sum_consumed_quantity as sum_consumed_quantity,
-    _number_of_month as number_of_month,
-    _sum_stock_out_days as sum_stock_out_days,
-    _days_before_consumption as days_before_consumption;
-END$$
 
 DELIMITER ;
