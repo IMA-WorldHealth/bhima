@@ -20,9 +20,9 @@ function StockAMCModalController(Stock, Notify, Instance, data, moment, Constant
       vm.inventory = items.inventory;
       vm.depot = items.depot;
 
-      // FIXME(@jniles) - make this use the quantity from the getCMM() algorithm which
+      // FIXME(@jniles) - make this use the quantity from the GetAMC() algorithm which
       // is currently returning incorrect data.
-      vm.data.quantity_in_stock = data.quantity;
+      vm.data.quantity_in_stock = data.quantity_in_stock;
 
       vm.data.avg_consumption = vm.data[vm.settings.average_consumption_algo];
 
