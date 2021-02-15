@@ -380,6 +380,12 @@ function StockEntryController(
       item.expiration_date = new Date();
       item.unit = inventory.unit;
 
+      // Store the candidate lots for this inventory code
+      Lots.candidates({ inventory_uuid : item.inventory_uuid })
+        .then((lots) => {
+          item.candidateLots = lots;
+        });
+
       if (vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
           isValid : true,
