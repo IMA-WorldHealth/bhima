@@ -59,4 +59,7 @@ mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecomputeDocumentMap(
 echo "[build] recalculating period totals"
 mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "Call zRecalculatePeriodTotals();" || { echo 'failed to recalculate period totals' ; exit 1; }
 
+echo "[build] recalulcating stock_movement_status"
+mysql -u $DB_USER -p$DB_PASS -h$DB_HOST $DB_NAME -e "CALL zRecomputeStockMovementStatus();" || { echo 'failed to recalculate stock movement status' ; exit 1; }
+
 echo "[/build]"
