@@ -86,11 +86,9 @@ async function getUsers(req, res, next) {
 async function getInventoryAverageMonthlyConsumption(req, res, next) {
   const { uuid, inventoryUuid } = req.params;
   try {
-
-    const monthAvgConsumption = req.session.stock_settings.month_average_consumption;
     const [[averageMonthlyConsumption]] = await db.exec(
-      'CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), ?, ?);',
-      [monthAvgConsumption, db.bid(inventoryUuid), db.bid(uuid)],
+      'CALL GetAMC(DATE(NOW()), ?, ?);',
+      [db.bid(uuid), db.bid(inventoryUuid)],
     );
 
     const sql = `SELECT
