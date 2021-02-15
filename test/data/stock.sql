@@ -40,7 +40,6 @@ INSERT INTO depot_permission (user_id, depot_uuid) VALUES
 --
 -- Déchargement des données de la table `document_map`
 --
-
 INSERT INTO document_map (uuid,`text`) VALUES
 (0x07ECF74060C5456096DC3F74DC1CB862,'SM.10.22')
 ,(0x0A9BF0AF1DB24B11B378A63C6106001F,'SM.10.21')
@@ -149,5 +148,4 @@ INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
 --
 -- Compute quantities of all inventories and write into stock_movement_status table
 --
-
-CALL zComputeAllInventoryStockQuantities(DATE('2020-01-01'), 0x4341F89CD1EB47BD9527DF9E13D2237C);
+CALL zRecomputeStockMovementStatus();
