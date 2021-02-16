@@ -461,25 +461,38 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
     DROP TEMPORARY TABLE tmp_max_values;
     DROP TEMPORARY TABLE tmp_grouped;
 
+    -- create a temporary table pointing to the next record
+    CREATE TEMPORARY TABLE tmp_next_sms AS
+      SELECT
+        sms.inventory_uuid,
+        sms.date,
+        (SELECT next.date FROM stock_movement_status AS next
+          WHERE next.inventory_uuid = sms.inventory_uuid
+            AND next.depot_uuid = sms.depot_uuid
+            AND next.date > sms.date
+          ORDER BY next.date ASC
+          LIMIT 1
+        ) AS next_date
+      FROM stock_movement_status AS sms
+      JOIN stage_inventory_for_amc AS staged
+        ON staged.inventory_uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = _depot_uuid
+        AND sms.date >= _start_date;
+
+    DROP TEMPORARY TABLE stage_inventory_for_amc;
+
     -- finally, update the durations for this inventory_uuid/depot_uuid combo
     -- TODO(@jniles): can we do this at the same time as another query above?
     -- TODO(@jniles): investigate the performance of this query
     -- NOTE(@jniles): the final record will always have a duration of "0".  It should be the only record with a duration of "0".
     UPDATE stock_movement_status AS sms
-    INNER JOIN stage_inventory_for_amc AS staged
-      ON sms.inventory_uuid = staged.inventory_uuid
-    SET sms.duration = (
-      SELECT IFNULL(duration, 0) FROM (
-        SELECT DATEDIFF(MIN(next.date), sms.date) AS duration
-        FROM stock_movement_status AS `next`
-        WHERE next.depot_uuid = _depot_uuid AND next.inventory_uuid = sms.inventory_uuid
-        AND next.date > sms.date
-        LIMIT 1
-      ) AS x
-    )
+      JOIN tmp_next_sms AS next
+        ON sms.inventory_uuid = next.inventory_uuid
+          AND sms.date = next.date
+    SET sms.duration = IFNULL(DATEDIFF(next.next_date, next.date), 0)
     WHERE sms.depot_uuid = _depot_uuid;
 
-    DROP TEMPORARY TABLE stage_inventory_for_amc;
+    DROP TEMPORARY TABLE tmp_next_sms;
 
     /*
       We are done. We've removed, then recreated, all data in the stock_movement_status table
