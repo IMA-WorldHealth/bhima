@@ -98,13 +98,13 @@ async function update(req, res, next) {
 }
 
 /**
- * GET /lots_candidates/:inventory_uuid
+ * GET /inventory/:uuid/lot_candidates
  *
  * @description
- * Returns all lots with the that inventory_uuid
+ * Returns all lots with the that inventory uuid
  */
 function getCandidates(req, res, next) {
-  const inventoryUuid = db.bid(req.params.inventory_uuid);
+  const inventoryUuid = db.bid(req.params.uuid);
 
   const query = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.description, l.expiration_date
