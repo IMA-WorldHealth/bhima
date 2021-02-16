@@ -213,6 +213,15 @@ function StockDefineLotsModalController(
       return;
     }
 
+    // Handle differences in selecting vs creating lots
+    vm.form.rows.forEach((row) => {
+      if (typeof row.lot !== 'string') {
+        const { label, uuid } = row.lot;
+        row.lot = label;
+        row.uuid = uuid;
+      }
+    });
+
     if (vm.errors.length === 0) {
       saveSetting();
       Instance.close({
