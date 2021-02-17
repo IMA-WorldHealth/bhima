@@ -118,7 +118,7 @@
     "MONTHLY_CONSUMPTION" : {
       "AVERAGE_MONTHLY_CONSUMPTION"  : "Average Monthly Consumption",
       "ALGO_1"          : "Algorithm 1",
-      "ALGO_1_COMMENT"  : "The average monthly consumption is obtained by dividing the quantity consumed during the period by the number of days with stock for the period, and by multiplying the result by 30.5.",
+      "ALGO_1_COMMENT"  : "The average monthly consumption is obtained by dividing the quantity consumed during the period by the number of days with stock during the period, and by multiplying the result by 30.5.",
       "ALGO_2"          : "Algorithm 2",
       "ALGO_2_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the number of days of consumption for the period, and by multiplying the result by 30.5.",
       "ALGO_3"          : "Algorithm 3",

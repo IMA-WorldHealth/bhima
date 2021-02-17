@@ -200,37 +200,39 @@ CREATE PROCEDURE zMergeAccounts(
 END $$
 
 /*
-CALL zComputeAllInventoryStockQuantities(startDate, depotUuid)
+CALL zRecomputeStockMovementStatus()
 
 DESCRIPTION
-Recomputes the quantity in stock for all inventory items for a given depot.
-If _depot_uuid is NULL, Recomputation will be done for every depots
+Recomputes the entire stock movement status table from the beginning
+of time.
 */
-DROP PROCEDURE IF EXISTS zComputeAllInventoryStockQuantities $$
-CREATE PROCEDURE zComputeAllInventoryStockQuantities (
-  IN _start_date DATE,
-  IN _depot_uuid BINARY(16)
-) BEGIN
-  DECLARE _inventory_uuid BINARY(16);
-  DECLARE done BOOLEAN;
-  DECLARE inventory_cursor
-    CURSOR FOR SELECT inventory.uuid FROM inventory WHERE consumable = 1
-    AND inventory.uuid IN (SELECT DISTINCT inventory_uuid FROM lot);
+DROP PROCEDURE IF EXISTS zRecomputeStockMovementStatus $$
+CREATE PROCEDURE zRecomputeStockMovementStatus()
+BEGIN
+
+  DECLARE start_date DATE;
+  DECLARE _depot_uuid BINARY(16);
+  DECLARE done BOOLEAN DEFAULT FALSE;
+
+  DECLARE depot_cursor CURSOR FOR
+    SELECT depot.uuid FROM depot;
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-  OPEN inventory_cursor;
+  SET start_date = (SELECT MIN(DATE(date)) FROM stock_movement);
 
+  OPEN depot_cursor;
   read_loop: LOOP
-    FETCH inventory_cursor INTO _inventory_uuid;
+    FETCH depot_cursor INTO _depot_uuid;
     IF done THEN
       LEAVE read_loop;
     END IF;
-    CALL computeStockQuantity(_start_date, _inventory_uuid, _depot_uuid);
+    CREATE TEMPORARY TABLE `stage_inventory_for_amc` AS SELECT DISTINCT inventory_uuid FROM lot;
+    CALL ComputeStockStatusForStagedInventory(start_date, _depot_uuid);
   END LOOP;
 
-  CLOSE inventory_cursor;
-END$$
+  CLOSE depot_cursor;
+END $$
 
 
 DROP PROCEDURE IF EXISTS  zUnpostRecord $$
