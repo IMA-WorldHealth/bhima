@@ -83,7 +83,7 @@ async function createStock(req, res, next) {
 
       const lotUuid = lot.uuid;
 
-      if (lotUuid === null) {
+      if (lotUuid === null || typeof lotUuid === 'undefined') {
         // Create new lot (if one it does not already exist)
         lotUuid = uuid();
 
