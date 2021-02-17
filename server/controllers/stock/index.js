@@ -80,26 +80,37 @@ async function createStock(req, res, next) {
     const createMovementQuery = 'INSERT INTO stock_movement SET ?';
 
     params.lots.forEach(lot => {
-      // parse the expiration date
-      const date = new Date(lot.expiration_date);
 
-      // the lot object to insert
-      const createLotObject = {
-        uuid : db.bid(uuid()),
-        label : lot.label,
-        initial_quantity : lot.quantity,
-        quantity : lot.quantity,
-        unit_cost : lot.unit_cost,
-        expiration_date : date,
-        inventory_uuid : db.bid(lot.inventory_uuid),
-        origin_uuid : db.bid(lot.origin_uuid),
-        delay : 0,
-      };
+      let lotUuid = lot.uuid;
+
+      if (lotUuid === null || typeof lotUuid === 'undefined') {
+        // Create new lot (if one it does not already exist)
+        lotUuid = uuid();
+
+        // parse the expiration date
+        const date = new Date(lot.expiration_date);
+
+        // the lot object to insert
+        const createLotObject = {
+          uuid : db.bid(lotUuid),
+          label : lot.label,
+          initial_quantity : lot.quantity,
+          quantity : lot.quantity,
+          unit_cost : lot.unit_cost,
+          expiration_date : date,
+          inventory_uuid : db.bid(lot.inventory_uuid),
+          origin_uuid : db.bid(lot.origin_uuid),
+          delay : 0,
+        };
+
+        // adding a lot insertion query into the transaction
+        transaction.addQuery(createLotQuery, [createLotObject]);
+      }
 
       // the movement object to insert
       const createMovementObject = {
         uuid : db.bid(uuid()),
-        lot_uuid : createLotObject.uuid,
+        lot_uuid : db.bid(lotUuid),
         depot_uuid : db.bid(document.depot_uuid),
         document_uuid : db.bid(documentUuid),
         flux_id : params.flux_id,
@@ -115,9 +126,6 @@ async function createStock(req, res, next) {
       if (params.entity_uuid) {
         createMovementObject.entity_uuid = db.bid(params.entity_uuid);
       }
-
-      // adding a lot insertion query into the transaction
-      transaction.addQuery(createLotQuery, [createLotObject]);
 
       // adding a movement insertion query into the transaction
       transaction.addQuery(createMovementQuery, [createMovementObject]);
@@ -199,20 +207,24 @@ async function insertNewStock(session, params, originTable = 'integration') {
   transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
-    const lotUuid = uuid();
+    let lotUuid = lot.uuid;
 
-    // adding a lot insertion query into the transaction
-    transaction.addQuery(`INSERT INTO lot SET ?`, {
-      uuid : db.bid(lotUuid),
-      label : lot.label,
-      initial_quantity : lot.quantity,
-      quantity : lot.quantity,
-      unit_cost : lot.unit_cost,
-      expiration_date : new Date(lot.expiration_date),
-      inventory_uuid : db.bid(lot.inventory_uuid),
-      origin_uuid : db.bid(identifier),
-      delay : 0,
-    });
+    if (lotUuid === null) {
+      // adding a lot insertion query into the transaction
+      // (this is necessary only if we are creating a new lot)
+      lotUuid = uuid();
+      transaction.addQuery(`INSERT INTO lot SET ?`, {
+        uuid : db.bid(lotUuid),
+        label : lot.label,
+        initial_quantity : lot.quantity,
+        quantity : lot.quantity,
+        unit_cost : lot.unit_cost,
+        expiration_date : new Date(lot.expiration_date),
+        inventory_uuid : db.bid(lot.inventory_uuid),
+        origin_uuid : db.bid(identifier),
+        delay : 0,
+      });
+    }
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(`INSERT INTO stock_movement SET ?`, {

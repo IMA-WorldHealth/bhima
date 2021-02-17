@@ -10,7 +10,13 @@
     class="form-control"
     ng-model="row.entity.lot"
     ng-model-options="{ 'debounce' : 0 }"
-    ng-change="grid.appScope.onChanges()"
-    bh-blur="grid.appScope.onLotBlur(row.entity.lot)"
+    typeahead-editable="true"
+    typeahead-append-to-body="true"
+    uib-typeahead="lot as lot.label for lot in grid.appScope.stockLine.candidateLots | filter:$viewValue | limitTo:8"
+    typeahead-template-url="/modules/stock/entry/modals/templates/selectLot.tmpl.html"
+    typeahead-select-on-blur="false"
+    typeahead-select-on-exact="true"
+    typeahead-on-select="grid.appScope.onSelectLot(row.entity, $item)"
+    ng-blur="grid.appScope.onLotBlur(row.entity.lot)"
     required>
 </div>
