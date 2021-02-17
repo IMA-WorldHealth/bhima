@@ -83,7 +83,7 @@ async function createStock(req, res, next) {
 
       const lotUuid = lot.uuid;
 
-      if (lotUuid === null || typeof lotUuid === 'undefined') {
+      if (lotUuid === null) {
         // Create new lot (if one it does not already exist)
 
         // parse the expiration date
