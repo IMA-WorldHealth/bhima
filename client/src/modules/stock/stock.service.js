@@ -244,10 +244,12 @@ function StockModalService(Modal) {
 
   function openAMCCalculationModal(request) {
     const templateUrl = 'modules/stock/inventories/modals/amc.modal.html';
-    const controller = 'StockAMCModalController as ModalCtrl';
+    const controller = 'StockAMCModalController';
+
     const params = angular.extend(modalParameters, {
       templateUrl,
       controller,
+      controllerAs : 'ModalCtrl',
       size         : 'lg',
       resolve      : { data : () => request },
     });

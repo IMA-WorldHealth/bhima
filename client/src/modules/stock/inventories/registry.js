@@ -302,7 +302,7 @@ function StockInventoriesController(
   vm.viewAMCCalculations = viewAMCCalculations;
 
   function viewAMCCalculations(item) {
-    return Modal.openAMCCalculationModal(item)
+    Modal.openAMCCalculationModal(item)
       .catch(angular.noop);
   }
 
