@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DuplicateLotsController.$inject = [
   'LotService', 'NotifyService', 'StockModalService', 'SessionService',
-  'GridColumnService', 'GridStateService', '$state',
+  'GridColumnService', 'GridStateService', '$state', '$translate',
 ];
 
 /**
@@ -12,7 +12,7 @@ DuplicateLotsController.$inject = [
  */
 function DuplicateLotsController(
   Lots, Notify, Modal, Session,
-  Columns, GridState, $state,
+  Columns, GridState, $state, $translate,
 ) {
   const vm = this;
   const cacheKey = 'duplicate-lots-grid';
@@ -123,6 +123,20 @@ function DuplicateLotsController(
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
   }
+
+  // Call the server function to merge lots automatically
+  function autoMergeLots() {
+    vm.loading = true;
+    Lots.autoMerge()
+      .then((res) => {
+        const msg = $translate.instant('LOTS.MERGED_LOTS_AUTOMATICALLY', res);
+        Notify.success(msg);
+        load();
+        vm.loading = false;
+      });
+  }
+
+  vm.autoMergeLots = autoMergeLots;
 
   // load stock lots in the grid
   function load() {
