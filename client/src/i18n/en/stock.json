@@ -125,7 +125,7 @@
       "ALGO_3"          : "Algorithm 3",
       "ALGO_3_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the number of days in the period, and by multiplying the result obtained by 30.5.",
       "ALGO_4"          : "Algorithm 4 (MSH)",
-      "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by the difference of the number of months in the period minus the total number of days of stock out in the period. The MSH algorithm is recommended by the Management Sciences for Health organization (https://www.msh.org).",
+      "ALGO_4_COMMENT"  : "The average consumption is obtained by dividing the quantity consumed during the period by number of months of stock (found by subtracting the number of days of stock outs divided by 30.5 from the number of months in the period). The MSH algorithm is recommended by the Management Sciences for Health organization (https://www.msh.org).",
       "FIRST_INVENTORY_MOVEMENT_DATE" : "First Recorded Movement",
       "LAST_INVENTORY_MOVEMENT_DATE" : "Last Recorded Movement",
       "DAYS_BEFORE_CONSUMPTION" : "Days before First Consumption",
