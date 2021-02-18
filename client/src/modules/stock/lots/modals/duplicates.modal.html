@@ -20,6 +20,10 @@
     </div>
     <div ng-if="$ctrl.lots.length > 1">
       <span translate translate-values="{'N':$ctrl.lots.length - 1}">LOTS.FOUND_N_LOTS</span>
+      <div>
+        <input type="checkbox" ng-model="$ctrl.allSelected" ng-change="$ctrl.selectAll()" />
+        <span translate>FORM.LABELS.SELECT_ALL_LOTS</span>
+      </div>
       <table class="table table-condensed table-bordered">
         <thead>
           <th translate>TABLE.COLUMNS.KEEP</th>
