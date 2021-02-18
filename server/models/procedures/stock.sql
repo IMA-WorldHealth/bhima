@@ -436,6 +436,7 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
       SELECT sms.inventory_uuid, tmd.max_date, sms.sum_quantity, sms.sum_in_quantity, sms.sum_out_quantity_exit, sum_out_quantity_consumption
       FROM stock_movement_status AS sms JOIN tmp_max_dates AS tmd ON
         sms.inventory_uuid = tmd.inventory_uuid AND tmd.max_date = sms.date
+      WHERE sms.depot_uuid = _depot_uuid
       GROUP BY sms.inventory_uuid, sms.date;
 
     -- we don't need to know those max dates anymore
