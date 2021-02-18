@@ -11,9 +11,11 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
   vm.selectedLot = null;
   vm.lots = [];
   vm.selectLot = selectLot;
+  vm.selectAll = selectAll;
   vm.cancel = cancel;
   vm.submit = submit;
   vm.selectedLot = null;
+  vm.allSelected = false;
 
   function startup() {
     Lots.read(data.uuid)
@@ -31,12 +33,20 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
       .catch(Notify.handleError);
   }
 
-  function selectLot(sLot) {
-    vm.selectedLot = sLot;
+  function selectLot(lotSelected) {
+    vm.selectedLot = lotSelected;
     vm.lots.forEach(lot => {
-      lot.selected = lot.uuid === sLot.uuid;
-      if (lot.uuid === sLot.uuid) {
+      lot.selected = lot.uuid === lotSelected.uuid;
+      if (lot.uuid === lotSelected.uuid) {
         lot.merge = false;
+      }
+    });
+  }
+
+  function selectAll() {
+    vm.lots.forEach(lot => {
+      if (lot.uuid !== vm.selectedLot.uuid) {
+        lot.merge = vm.allSelected;
       }
     });
   }
