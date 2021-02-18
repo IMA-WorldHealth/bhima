@@ -267,6 +267,7 @@
     "ASSIGNMENT_HISTORIC":"Assignment History",
     "ASSIGNMENT_CURRENT":"Current",
     "NO_ASSIGNMENT":"No Assignment",
+    "LOT_LABEL_EXPIRES": "{{label}} (expires: {{expdate}})",
     "INCLUDE_EXHAUSTED_LOTS":"Include exhausted lots",
     "INCLUDE_ONLY_EXHAUSTED_LOTS": "Include only exhausted lots",
     "CLICK_TO_SEE":"Click here to see lots",
