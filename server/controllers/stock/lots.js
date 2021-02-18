@@ -31,6 +31,7 @@ exports.getLotTags = getLotTags;
 exports.getCandidates = getCandidates;
 exports.getDupes = getDupes;
 exports.merge = merge;
+exports.autoMerge = autoMerge;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -127,7 +128,7 @@ function getCandidates(req, res, next) {
  * Returns all lots with the given label or matching field(s)
  * inventory_uuid, initial_quantity, entry_date, expiration_date
  *
- * TODO: After getting this working purge unneeded params
+ * TODO: After getting this working, purge unneeded params
  *
  */
 function getDupes(req, res, next) {
@@ -165,6 +166,8 @@ function getDupes(req, res, next) {
     .done();
 }
 
+
+
 /**
  * GET /lots/:uuid/merge
  *
@@ -198,10 +201,79 @@ async function merge(req, res, next) {
       transaction.addQuery(deleteLot, [mergeLotUuid]);
     });
     await transaction.execute();
-    res.sendStatus(200);
+    if (!req.params.internal) {
+      res.sendStatus(200);
+    }
   } catch (error) {
     next(error);
   }
+}
+
+/**
+ * GET /lots/merge/auto
+ *
+ * @description
+ * Finds and merges all lots suitable for automatic merging
+ *  - To qualify, the lots must have the same inventory_uuid,
+ *    label, and expiration date.
+ */
+function autoMerge(req, res, next) {
+  // The first query gets the inventory UUID for each
+  // inventory article with duplicate lots (having the
+  // same label, inventory_uuid, and expiration_date).
+  // (Since these are grouped, only one of the several
+  // lots is given.)
+  const query1 = `
+  SELECT
+    BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+    COUNT(*) as num_duplicates
+  FROM lot l
+  JOIN inventory i ON i.uuid = l.inventory_uuid
+  GROUP BY label, inventory_uuid, expiration_date HAVING num_duplicates > 1
+`;
+  // The second query gets all lots matching the label,
+  // inventory_uuid, and expiration dates
+  const query2 = `
+    SELECT
+      BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+      BUID(i.uuid) AS inventory_uuid, i.text as inventory_text
+    FROM lot l
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    WHERE l.label=? AND i.uuid=? AND l.expiration_date=DATE(?)
+  `;
+  console.log("SERVER Auto Merge: ");
+  db.exec(query1, [])
+    .then((rows) => {
+      const numInventories = rows.length;
+      let numLots = rows.reduce((sum, row) => {
+        return sum + row.num_duplicates;
+      }, 0) - numInventories;
+      rows.forEach(async (row) => {
+        db.exec(query2, [row.label, db.bid(row.inventory_uuid), row.expiration_date])
+          .then((lots) => {
+            // Arbitrarily pick first lot and merge the duplicates into it
+            const masterLotUuid = lots[0].uuid;
+            const lotUuids = lots.reduce((list, elt) => {
+              if (elt.uuid !== masterLotUuid) {
+                list.push(elt.uuid);
+              }
+              return list;
+            }, []);
+            numLots = numLots + lotUuids.length - 1;
+
+            // Now merge this lot and its duplicates
+            merge({
+              query: {},
+              params: { uuid : masterLotUuid, internal : true },
+              body: { lotsToMerge : lotUuids },
+            }, res, next);
+          });
+      });
+      res.status(200).json({ numInventories, numLots });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
