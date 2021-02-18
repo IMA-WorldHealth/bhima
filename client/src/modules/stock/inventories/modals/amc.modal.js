@@ -26,13 +26,10 @@ function StockAMCModalController(Stock, Notify, Instance, data, moment, Constant
         vm.data.avg_consumption = vm.data[vm.settings.average_consumption_algo];
 
         // calculate date when the stock will run out at current consumption rate
+        // NOTE(@jniles): momentjs does not accept decimals as of 2.12.0.  We need to use days, not
+        // months
         const daysOfStockLeft = (vm.data.quantity_in_stock / vm.data.avg_consumption) * 30.5;
-
-        // NOTE: momentjs does not accept decimals as of 2.12.0
-        const stockOutDate = moment().add(daysOfStockLeft, 'days').toDate();
-
-        // provide this information to the view.
-        vm.data.stock_out_date = stockOutDate;
+        vm.data.stock_out_date = moment().add(daysOfStockLeft, 'days').toDate();
 
         // nicer aliases to use in the HTML
         vm.isAlgo1 = vm.settings.average_consumption_algo === 'algo1';
