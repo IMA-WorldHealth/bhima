@@ -212,12 +212,14 @@ function mergeLotsInternal(uuid, lotsToMerge) {
  *      references to the lot to keep.
  *   2. Delete the lot to be merged
  */
-async function merge(req, res, next) {
+function merge(req, res, next) {
   const { uuid } = req.params;
   const lotsToMerge = req.body.lotsToMerge.map(db.bid);
 
   mergeLotsInternal(uuid, lotsToMerge)
-    .then(res.sendStatus(200))
+    .then(() => {
+      res.sendStatus(200);
+    })
     .catch(next)
     .done();
 }
