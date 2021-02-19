@@ -323,16 +323,21 @@ BEGIN
   SELECT COUNT(uuid) INTO isCash  FROM cash  WHERE cash.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
   SELECT COUNT(uuid) INTO isVoucher  FROM voucher  WHERE voucher.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
 
+  -- NOTE(@jniles): DO NOT OPTIMIZE THESE QUERIES.
+  -- NOTE(@jniles): these queries look funny, like they could be optimized.  DO NOT DO IT.  They are purposefully nested
+  -- to defeat MySQL8's _really smart_ query optimizer that optimizes them into an invalid query that crashes the posting
+  -- proceedure.
+
   IF isInvoice > 0 THEN
-    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
   END IF;
 
   IF isCash > 0 THEN
-    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
   END IF;
 
   IF isVoucher > 0 THEN
-    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
   END IF;
 
 END $$

@@ -17,7 +17,7 @@ describe('Stock end-to-end test', () => {
   describe('Stock Assign Module', StockAssignTests);
   describe('Stock Entry Test', StockEntryTests);
   describe('Stock Exit Test', StockExiTests);
-  describe.skip('Stock Import', StockImportTests);
+  describe('Stock Import', StockImportTests);
   describe('Stock Inventory Registry', StockInventoriesRegistryTests);
   describe('Stock Lots Registry', StockLotsRegistryTests);
   describe('Stock Movement Registry', StockMovementsRegistryTests);

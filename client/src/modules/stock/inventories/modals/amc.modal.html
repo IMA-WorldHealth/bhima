@@ -53,10 +53,10 @@
           </dd>
 
           <dt translate>STOCK.MONTHLY_CONSUMPTION.FIRST_INVENTORY_MOVEMENT_DATE</dt>
-          <dd>{{ModalCtrl.data.first_inventory_movement_date | date }}</dd>
+          <dd>{{ModalCtrl.data.min_date | date:ModalCtrl.DATE_FORMAT }}</dd>
 
           <dt translate>STOCK.MONTHLY_CONSUMPTION.LAST_INVENTORY_MOVEMENT_DATE</dt>
-          <dd>{{ModalCtrl.data.last_inventory_movement_date | date }}</dd>
+          <dd>{{ModalCtrl.data.max_date | date:ModalCtrl.DATE_FORMAT }}</dd>
 
           <dt translate>STOCK.MONTHLY_CONSUMPTION.SUM_CONSUMED_QUANTITY</dt>
           <dd class="text-primary">{{ModalCtrl.data.sum_consumed_quantity }} {{ModalCtrl.inventory.unit}}</dd>

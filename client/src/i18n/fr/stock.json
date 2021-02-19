@@ -92,7 +92,8 @@
       "DOWNLOAD_TEMPLATE_HERE" : "Télécharger le modèle ici",
       "DESCRIPTION" : "Veuillez télécharger puis remplir le fichier modèle convenablement avec les informations de votre stock puis séléctionner le fichier rempli grâce à la zone de saisie ci-dessous",
       "PLEASE_SELECT_DEPOT" : "Veuillez séléctionner un dépot d'abord",
-      "UPLOAD_SUCCESS" : "Stock importé avec succès"
+      "UPLOAD_SUCCESS" : "Stock importé avec succès",
+      "UPLOAD_DATE_REQUIRED" : "Veuillez indiquer la date pour cette importation"
     },
     "INVENTORY_UNIT"  : "Unité",
     "IO"              : "Entrée/Sortie",
@@ -130,11 +131,11 @@
       "LAST_INVENTORY_MOVEMENT_DATE" : "Dernier mouvement enregistré ",
       "DAYS_BEFORE_CONSUMPTION" : "Jours avant la première consommation ",
       "NUMBER_OF_MONTHS" : "Nombre de mois",
-      "SUM_CONSUMPTION_DAY" : "Consommation de stock ",
+      "SUM_CONSUMPTION_DAY" : "Jours de consommation de stock ",
       "SUM_CONSUMED_QUANTITY" :"Quantité consommée",
       "SUM_DAYS" : "Jours au total",
       "SUM_STOCK_DAY" : "Jours avec stock disponible en dépôt",
-      "SUM_STOCK_OUT_DAYS" : "Rupture de stock",
+      "SUM_STOCK_OUT_DAYS" : "Jours de rupture de stock",
       "NEXT_STOCK_OUT" : "Prochaine rupture de stock",
       "TITLE"  : "Consommation Mensuelle Moyenne",
       "DAYS" : "Jours",

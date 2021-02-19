@@ -42,7 +42,11 @@
             <span translate>STOCK.IMPORT.PLEASE_SELECT_DEPOT</span>
           </p>
 
-          <br>
+          <!-- date -->
+          <bh-date-editor
+            date-value="StockCtrl.operationDate"
+            on-change="StockCtrl.onDateChange(date)">
+          </bh-date-editor>
 
           <div>
             <span translate>STOCK.IMPORT.TEMPLATE_FILE_DESCRIPTION</span>
