@@ -22,6 +22,7 @@ function StockInventoriesController(
   const stockInventoryFilters = Stock.filter.inventory;
 
   vm.openBarcodeScanner = openBarcodeScanner;
+  vm.openStockSheetReport = openStockSheetReport;
 
   const columns = [{
     field            : 'depot_text',
@@ -323,6 +324,22 @@ function StockInventoriesController(
         load(stockInventoryFilters.formatHTTP(true));
         vm.latestViewFilters = stockInventoryFilters.formatView();
       });
+  }
+
+  function openStockSheetReport(row) {
+    const [dateTo] = new Date().toISOString().split('T');
+
+    const options = {
+      renderer : 'pdf',
+      lang : Languages.key,
+      inventory_uuid : row.inventory_uuid,
+      depot_uuid : row.depot_uuid,
+      report_id : 14,
+      dateTo,
+    };
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   }
 
   startup();
