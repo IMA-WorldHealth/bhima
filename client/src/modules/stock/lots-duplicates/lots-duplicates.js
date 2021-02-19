@@ -130,8 +130,8 @@ function DuplicateLotsController(
     Lots.autoMerge()
       .then((res) => {
         const msg = $translate.instant('LOTS.MERGED_LOTS_AUTOMATICALLY', res);
-        Notify.success(msg);
         load();
+        Notify.success(msg);
         vm.loading = false;
       });
   }
