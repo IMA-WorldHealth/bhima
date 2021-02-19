@@ -43,7 +43,6 @@ function LotService(Api, $http, util) {
   };
 
   lots.autoMerge = () => {
-    console.log("Automerge (LotService)");
     return $http.post(`/lots/merge/auto`, {})
       .then(util.unwrapHttpResponse);
   };

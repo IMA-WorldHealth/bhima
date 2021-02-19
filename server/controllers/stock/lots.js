@@ -242,7 +242,6 @@ function autoMerge(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     WHERE l.label=? AND i.uuid=? AND l.expiration_date=DATE(?)
   `;
-  console.log("SERVER Auto Merge: ");
   db.exec(query1, [])
     .then((rows) => {
       const numInventories = rows.length;
@@ -264,9 +263,9 @@ function autoMerge(req, res, next) {
 
             // Now merge this lot and its duplicates
             merge({
-              query: {},
-              params: { uuid : masterLotUuid, internal : true },
-              body: { lotsToMerge : lotUuids },
+              query : {},
+              params : { uuid : masterLotUuid, internal : true },
+              body : { lotsToMerge : lotUuids },
             }, res, next);
           });
       });
