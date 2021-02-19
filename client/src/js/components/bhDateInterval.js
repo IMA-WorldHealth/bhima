@@ -28,6 +28,8 @@ angular.module('bhima.components')
       canClear : '<?', // flag for displaying clear button
       label : '@?',
       mode : '@?', // the date mode (day|month|year)
+      startDatePlaceholder : '@?',
+      endDatePlaceholder : '@?',
       limitMinFiscal : '@?', // do not allow the minimum date to be before the first fiscal year
     },
   });
@@ -35,11 +37,11 @@ angular.module('bhima.components')
 // dependencies injection
 bhDateInterval.$inject = [
   'bhConstants', 'FiscalService',
-  'SessionService', 'PeriodService',
+  'SessionService', 'PeriodService', '$translate'
 ];
 
 // controller definition
-function bhDateInterval(bhConstants, Fiscal, Session, PeriodService) {
+function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate) {
   const $ctrl = this;
 
   PeriodService.dateFormat = 'YYYY-MM-DD';
@@ -64,6 +66,8 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService) {
     $ctrl.dateFormat = bhConstants.dayOptions.format;
     $ctrl.pickerFromOptions = { showWeeks : false };
     $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
+    $ctrl.startDatePlaceholder = $translate.instant($ctrl.startDatePlaceholder || 'FORM.LABELS.START_DATE');
+    $ctrl.endDatePlaceholder = $translate.instant($ctrl.endDatePlaceholder || 'FORM.LABELS.END_DATE');
 
     // if controller has requested limit-min-fiscal, fetch required information
     if (angular.isDefined($ctrl.limitMinFiscal)) {
