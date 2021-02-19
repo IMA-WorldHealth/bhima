@@ -166,7 +166,41 @@ function getDupes(req, res, next) {
     .done();
 }
 
+/**
+ * Internal function to merge lots
+ * @description
+ * Merge the lotsToMerge into the lot to keep (given by uuid).
+ * This is a accomplished in two steps for each lot to merge:
+ *   1. Replace all references to the lot to be merged with
+ *      references to the lot to keep.
+ *   2. Delete the lot to be merged
+ *
+ * @param uuid {string} UUID of the primary lot to keep
+ * @param lotsToMerge {list} UUIDs (strings) for lots to be merged into the primary lot
+ *
+ * @return a promise for the DB transaction
+ */
 
+function mergeLotsInternal(uuid, lotsToMerge) {
+  const keepLotUuid = db.bid(uuid);
+
+  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
+
+  const transaction = db.transaction();
+
+  lotsToMerge.forEach(rawUuid => {
+    const mergeLotUuid = db.bid(rawUuid);
+    transaction.addQuery(updateLotTags, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(updateStockAssign, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(updateStockMovement, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(deleteLot, [mergeLotUuid]);
+  });
+
+  return transaction.execute();
+}
 
 /**
  * GET /lots/:uuid/merge
@@ -177,36 +211,15 @@ function getDupes(req, res, next) {
  *   1. Replace all references to the lot to be merged with
  *      references to the lot to keep.
  *   2. Delete the lot to be merged
- *
- * lot_tag : lot_uuid
- * stock_assign : lot_uuid
- * stock_movement : lot_uuid
  */
 async function merge(req, res, next) {
-  const uuid = db.bid(req.params.uuid);
+  const { uuid } = req.params;
   const lotsToMerge = req.body.lotsToMerge.map(db.bid);
 
-  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
-
-  try {
-    const transaction = db.transaction();
-    lotsToMerge.forEach(rawUuid => {
-      const mergeLotUuid = db.bid(rawUuid);
-      transaction.addQuery(updateLotTags, [uuid, mergeLotUuid]);
-      transaction.addQuery(updateStockAssign, [uuid, mergeLotUuid]);
-      transaction.addQuery(updateStockMovement, [uuid, mergeLotUuid]);
-      transaction.addQuery(deleteLot, [mergeLotUuid]);
-    });
-    await transaction.execute();
-    if (!req.params.internal) {
-      res.sendStatus(200);
-    }
-  } catch (error) {
-    next(error);
-  }
+  mergeLotsInternal(uuid, lotsToMerge)
+    .then(res.sendStatus(200))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -245,31 +258,28 @@ function autoMerge(req, res, next) {
   db.exec(query1, [])
     .then((rows) => {
       const numInventories = rows.length;
-      let numLots = rows.reduce((sum, row) => {
+      const numLots = rows.reduce((sum, row) => {
         return sum + row.num_duplicates;
       }, 0) - numInventories;
-      rows.forEach(async (row) => {
+      const dbPromises = [];
+      rows.forEach((row) => {
         db.exec(query2, [row.label, db.bid(row.inventory_uuid), row.expiration_date])
           .then((lots) => {
-            // Arbitrarily pick first lot and merge the duplicates into it
-            const masterLotUuid = lots[0].uuid;
+            // Arbitrarily keep the first lot and merge the duplicates into it
+            const keepLotUuid = lots[0].uuid;
             const lotUuids = lots.reduce((list, elt) => {
-              if (elt.uuid !== masterLotUuid) {
+              if (elt.uuid !== keepLotUuid) {
                 list.push(elt.uuid);
               }
               return list;
             }, []);
-            numLots = numLots + lotUuids.length - 1;
-
-            // Now merge this lot and its duplicates
-            merge({
-              query : {},
-              params : { uuid : masterLotUuid, internal : true },
-              body : { lotsToMerge : lotUuids },
-            }, res, next);
+            dbPromises.push(mergeLotsInternal(keepLotUuid, lotUuids));
           });
       });
-      res.status(200).json({ numInventories, numLots });
+      Promise.all(dbPromises)
+        .then(() => {
+          res.status(200).json({ numInventories, numLots });
+        });
     })
     .catch(next)
     .done();
