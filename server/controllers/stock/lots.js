@@ -265,7 +265,7 @@ function autoMerge(req, res, next) {
       }, 0) - numInventories;
       const dbPromises = [];
       rows.forEach((row) => {
-        db.exec(query2, [row.label, db.bid(row.inventory_uuid), row.expiration_date])
+        const promise = db.exec(query2, [row.label, db.bid(row.inventory_uuid), row.expiration_date])
           .then((lots) => {
             // Arbitrarily keep the first lot and merge the duplicates into it
             const keepLotUuid = lots[0].uuid;
@@ -275,8 +275,9 @@ function autoMerge(req, res, next) {
               }
               return list;
             }, []);
-            dbPromises.push(mergeLotsInternal(keepLotUuid, lotUuids));
+            return mergeLotsInternal(keepLotUuid, lotUuids);
           });
+        dbPromises.push(promise);
       });
       Promise.all(dbPromises)
         .then(() => {
