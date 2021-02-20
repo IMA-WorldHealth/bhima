@@ -712,6 +712,7 @@
             "STAFF_COST": "Staff",
             "STAFFING_BASE_INDICES" : "Basic indices for recruitment",
             "START": "Start",
+            "START_DATE": "Start date",
             "STATUS": "Status",
             "STOCK": "Stock",
             "SUBSIDIES": "Subsidies Applied",
