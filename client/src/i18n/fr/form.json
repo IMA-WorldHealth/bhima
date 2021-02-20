@@ -10,6 +10,7 @@
             "ADD_RUBRIC_CONFIGURATION" : "Ajouter une configuration des rubriques",
             "ADD_WEEKEND_CONFIGURATION": "Ajouter une configuration des weekend",
             "AUTO_INVOICES_BREAKDOWN": "Ventilation automatique des factures",
+            "AUTO_MERGE_LOTS": "Fusionner automatiquement des lots",
             "BACK": "Précédent",
             "BREAKDOWNS_PERCENTAGES": "Ventilation en pourcentage",
             "CANCEL": "Annuler",
