@@ -782,9 +782,9 @@ async function listLotsDepot(req, res, next) {
     params.check_user_id = req.session.user.id;
   }
 
-  if (params.defaultPeriod) {
-    params.defaultPeriodEntry = params.defaultPeriod;
-    delete params.defaultPeriod;
+  if (params.period) {
+    params.defaultPeriodEntry = params.period;
+    delete params.period;
   }
 
   try {
