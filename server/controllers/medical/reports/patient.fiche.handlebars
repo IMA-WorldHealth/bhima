@@ -24,6 +24,11 @@
           <dt>{{translate "FORM.LABELS.GENDER"}}</dt>
           <dd>{{translate patient.sexFormatted}} ({{ patient.sex }})</dd>
 
+          {{#if patient.mother_name}}
+            <dt>{{translate "FORM.LABELS.MOTHER_NAME"}}</dt>
+            <dd>{{ patient.mother_name }}</dd>
+          {{/if}}
+
           <dt>{{translate "FORM.LABELS.DEBTOR_GROUP"}}<dt>
           <dd>{{patient.debtor_group_name }}</dd>
 
