@@ -132,7 +132,7 @@ async function createStock(req, res, next) {
     });
 
     const isExit = 0;
-    const postingParams = [db.bid(documentUuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
+    const postingParams = [db.bid(documentUuid), isExit, req.session.project.id];
 
     if (req.session.stock_settings.enable_auto_stock_accounting) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
@@ -171,12 +171,13 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
 
   // loop through the inventory uuids, queuing up them to rerun
   uniqueInventoryUuids.forEach(uid => {
-    txn.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
-      new Date(mvmtDate),
-      db.bid(uid),
-      db.bid(depotUuid),
-    ]);
+    txn.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(uid)]);
   });
+
+  txn.addQuery(`CALL ComputeStockStatusForStagedInventory(DATE(?), ?)`, [
+    new Date(mvmtDate),
+    db.bid(depotUuid),
+  ]);
 
   return txn.execute();
 }
@@ -247,7 +248,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
   const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
 
   const postingParams = [
-    db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
+    db.bid(documentUuid), 0, session.project.id,
   ];
 
   if (session.stock_settings.enable_auto_stock_accounting) {
@@ -344,11 +345,11 @@ async function createInventoryAdjustment(req, res, next) {
     });
 
     const negativeAdjustmentParams = [
-      db.bid(negativeAdjustmentUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+      db.bid(negativeAdjustmentUuid), 1, req.session.project.id,
     ];
 
     const positiveAdjustmentParams = [
-      db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
+      db.bid(positiveAdjustmentUuid), 0, req.session.project.id,
     ];
 
     if (req.session.stock_settings.enable_auto_stock_accounting) {
@@ -465,25 +466,15 @@ async function normalMovement(document, params, metadata) {
 
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
-
-    // track distribution to patient and service
-    if (isDistributable) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
-  const projectId = metadata.project.id;
-  const currencyId = metadata.enterprise.currency_id;
-  const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
+  const postStockParameters = [db.bid(document.uuid), parameters.is_exit, metadata.project.id];
 
   if (metadata.stock_settings.enable_auto_stock_accounting) {
-    transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
+    transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
   const result = await transaction.execute();
@@ -499,8 +490,6 @@ async function normalMovement(document, params, metadata) {
  * @description movement between depots
  */
 async function depotMovement(document, params) {
-
-  let isWarehouse;
   const transaction = db.transaction();
   const parameters = params;
   const isExit = parameters.isExit ? 1 : 0;
@@ -535,16 +524,6 @@ async function depotMovement(document, params) {
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
-
-    isWarehouse = !!(parameters.from_depot_is_warehouse);
-
-    // track distribution to other depot from a warehouse
-    if (record.is_exit && isWarehouse) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates

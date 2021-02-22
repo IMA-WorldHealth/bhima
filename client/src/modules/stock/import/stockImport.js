@@ -29,10 +29,19 @@ function StockImportController(
     vm.depot = depot;
   };
 
+  vm.onDateChange = date => {
+    vm.operationDate = date;
+  };
+
   vm.submit = () => {
     // send data only when a file is selected
     if (!vm.depot.uuid || !vm.file) {
       vm.noSelectedFile = true;
+      return null;
+    }
+
+    if (!vm.operationDate) {
+      Notify.warn('STOCK.IMPORT.UPLOAD_DATE_REQUIRED');
       return null;
     }
 
@@ -43,7 +52,7 @@ function StockImportController(
   function uploadFile(file) {
     const parameters = {
       url : '/stock/import/',
-      data : { file, depot_uuid : vm.depot.uuid },
+      data : { file, depot_uuid : vm.depot.uuid, date : vm.operationDate },
     };
 
     // upload the file to the server
