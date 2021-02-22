@@ -42,6 +42,11 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
+  lots.autoMerge = () => {
+    return $http.post(`/lots/merge/auto`, {})
+      .then(util.unwrapHttpResponse);
+  };
+
   lots.assignments = (uuid, depotUuid) => {
     return $http.get(`/lots/${uuid}/assignments/${depotUuid}`)
       .then(util.unwrapHttpResponse);
