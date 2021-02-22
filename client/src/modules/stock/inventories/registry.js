@@ -299,6 +299,13 @@ function StockInventoriesController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
+  vm.viewAMCCalculations = viewAMCCalculations;
+
+  function viewAMCCalculations(item) {
+    return Modal.openAMCCalculationModal(item)
+      .catch(angular.noop);
+  }
+
   /**
    * @function openBarcodeScanner
    *

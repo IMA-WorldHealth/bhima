@@ -1,6 +1,7 @@
 {
     "INVENTORY": {
         "ADD_GROUP": "Ajouter un groupe d'inventaire",
+        "OPEN_AMC_CALCULATION" : "Voire CMM calcules",
         "ADD_METADATA": "Ajouter un inventaire",
         "ADD_TYPE": "Ajouter un type d'inventaire",
         "ADD_UNIT": "Ajouter une forme d'Inventaire",
@@ -22,7 +23,7 @@
         "LIST_TYPE": "Types d'inventaires",
         "LIST_UNIT": "Formes d'inventaires",
         "REGISTRY": "Registre des inventaires",
-		"NO_INVENTORY_FOUND": "Aucun inventaire trouvé",
+        "NO_INVENTORY_FOUND": "Aucun trouvé !",
         "NO_INVENTORY_REGISTERED": "Il n'y aucun inventaire enregistré jusque là",
         "EXPIRES" : "Expire",
         "UNIQUE_ITEM" : "Un seul item",
@@ -42,7 +43,7 @@
         "COLUMNS_INFO" : "Note sur certaines colonnes",
         "SELLABLE" : "A vendre",
         "VIEW_ARTICLES_IN_STOCK" : "Voir les articles en stock",
-        "VIEW_ITEM_IN_INVENTORY" : "Voir l'article dans l'inventaire",
+        "VIEW_ARTICLE_IN_INVENTORY" : "Voir l'article dans l'inventaire",
         "VIEW_LOTS_IN_STOCK" : "Voir les lots en stock",
         "PREVIOUS_VALUE" : "Valeur Précédente",
         "UPDATED_VALUE" : "Nouvelle Valeur",

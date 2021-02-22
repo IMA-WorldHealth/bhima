@@ -1,0 +1,129 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static">{{ModalCtrl.depot.text}}</li>
+    <li class="static">{{ModalCtrl.inventory.groupName}}</li>
+    <li class="title">{{ModalCtrl.inventory.code}} - {{ModalCtrl.inventory.label}}</li>
+  </ol>
+</div>
+
+<div class="modal-body">
+  <div ng-if="ModalCtrl.loading" class="text-center">
+    <loading-indicator></loading-indicator>
+  </div>
+
+  <div ng-if="!ModalCtrl.loading">
+    <p class="alert alert-info">
+      <i class="fa fa-info-circle"></i>
+      <span ng-show="ModalCtrl.isAlgo1">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1</strong>
+        <br />
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT</span>
+      </span>
+
+      <span ng-show="ModalCtrl.isAlgo2">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2</strong>
+        <br />
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT</span>
+      </span>
+
+      <span ng-show="ModalCtrl.isAlgo3">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3</strong>
+        <br />
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT</span>
+      </span>
+
+      <span ng-show="ModalCtrl.isAlgo4">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</strong>
+        <br />
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT</span>
+      </span>
+    </p>
+
+    <div class="row">
+      <!-- left hand side -->
+      <div class="col-sm-6 col-xs-12">
+        <dl>
+          <dt translate>STOCK.INVENTORY</dt>
+          <dd>{{ModalCtrl.inventory.code}} - {{ModalCtrl.inventory.label}}</dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.NUMBER_OF_MONTHS</dt>
+          <dd>
+            {{ModalCtrl.data.start_date | date }} &minus; {{ModalCtrl.data.end_date | date}}
+            (<span class="text-warning">{{ModalCtrl.data.number_of_month}} <span translate>STOCK.MONTHLY_CONSUMPTION.MONTHS</span></span>)
+          </dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.FIRST_INVENTORY_MOVEMENT_DATE</dt>
+          <dd>{{ModalCtrl.data.first_inventory_movement_date | date }}</dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.LAST_INVENTORY_MOVEMENT_DATE</dt>
+          <dd>{{ModalCtrl.data.last_inventory_movement_date | date }}</dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.SUM_CONSUMED_QUANTITY</dt>
+          <dd class="text-primary">{{ModalCtrl.data.sum_consumed_quantity }} {{ModalCtrl.inventory.unit}}</dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.SUM_CONSUMPTION_DAY</dt>
+          <dd class="text-info">{{ModalCtrl.data.sum_consumption_day}} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span></dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.SUM_STOCK_DAY</dt>
+          <dd class="text-success">{{ModalCtrl.data.sum_stock_day}} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span></dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.SUM_STOCK_OUT_DAYS</dt>
+          <dd class="text-danger">{{ModalCtrl.data.sum_stock_out_days}} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span></dd>
+        </dl>
+      </div>
+
+      <!-- right hand side -->
+      <div class="col-sm-6 col-xs-12">
+        <table class="table table-condensed table-bordered">
+          <thead>
+            <tr>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_1</th>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_2</th>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_3</th>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-right">
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo1 }">{{ModalCtrl.data.algo1}}</td>
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo2 }">{{ModalCtrl.data.algo2}}</td>
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo3 }">{{ModalCtrl.data.algo3}}</td>
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo4 }">{{ModalCtrl.data.algo_msh}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr />
+
+        <dl>
+          <dt ng-show="ModalCtrl.isAlgo1" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1</dt>
+          <dd ng-show="ModalCtrl.isAlgo1">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-success">{{ModalCtrl.data.sum_stock_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
+
+          <dt ng-show="ModalCtrl.isAlgo2" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2</dt>
+          <dd ng-show="ModalCtrl.isAlgo2">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-info">{{ModalCtrl.data.sum_consumption_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
+
+          <dt ng-show="ModalCtrl.isAlgo3" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3</dt>
+          <dd ng-show="ModalCtrl.isAlgo3">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / {{ModalCtrl.data.sum_days}}) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
+
+          <dt ng-show="ModalCtrl.isAlgo4" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</dt>
+          <dd ng-show="ModalCtrl.isAlgo4"><span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / (<span class="text-warning">{{ModalCtrl.data.number_of_month}}</span> &minus; (<span class="text-danger">{{ModalCtrl.data.sum_stock_out_days}}</span> / 30.5)) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
+        </dl>
+        <hr />
+        <dl>
+          <dt translate>STOCK.CURRENT_QUANTITY</dt>
+          <dd>{{ModalCtrl.data.quantity_in_stock}} <span translate>{{ModalCtrl.inventory.unit}}</span></dd>
+
+          <dt translate>STOCK.MONTHLY_CONSUMPTION.NEXT_STOCK_OUT</dt>
+          <dd> {{ModalCtrl.data.stock_out_date | date:ModalCtrl.DATE_FORMAT }} ({{ModalCtrl.data.stock_out_date | amDifference:null:'days' }} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span>)</dd>
+        </dl>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="ModalCtrl.close()">
+    <span translate>FORM.BUTTONS.CLOSE</span>
+  </button>
+</div>
