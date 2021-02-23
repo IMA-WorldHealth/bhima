@@ -34,16 +34,16 @@ function StockInventoriesRegistryTests() {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
       quantity : '30',
     };
-    const vitamine = {
+    const acide = {
       label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
-      quantity : '23',
+      quantity : '617',
     };
     await modal.setDepot('Depot Principal');
     await modal.submit();
     await GU.expectCellValueMatch(gridId, 1, 2, quinine.label);
     await GU.expectCellValueMatch(gridId, 1, 4, quinine.quantity);
-    await GU.expectCellValueMatch(gridId, 2, 2, vitamine.label);
-    await GU.expectCellValueMatch(gridId, 2, 4, vitamine.quantity);
+    await GU.expectCellValueMatch(gridId, 2, 2, acide.label);
+    await GU.expectCellValueMatch(gridId, 2, 4, acide.quantity);
     await filters.resetFilters();
   });
 }
