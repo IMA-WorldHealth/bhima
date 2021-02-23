@@ -14,6 +14,7 @@ const StockSetting = require('./stock.setting');
 const StockAggregateConsumptionTests = require('./stock.aggregate_consumption');
 
 describe.only('Stock end-to-end test', () => {
+  describe('Stock Aggregate ConsumptionTests', StockAggregateConsumptionTests);
   describe('Stock Adjustment Test', StockAdjustmentTests);
   describe('Stock Assign Module', StockAssignTests);
   describe('Stock Entry Test', StockEntryTests);
@@ -25,5 +26,4 @@ describe.only('Stock end-to-end test', () => {
   describe('Stock Requisition Module', StockRequisitionTests);
   describe('Stock Inventory Adjustment', StockInventoryAdjustement);
   describe('Stock Setting', StockSetting);
-  describe.only('Stock Aggregate ConsumptionTests', StockAggregateConsumptionTests);
 });

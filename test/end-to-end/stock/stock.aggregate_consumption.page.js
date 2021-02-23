@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
@@ -7,7 +7,7 @@ const SharedStockPage = require('./stock.shared.page');
 function StockAggregateConsumptionPage() {
   const page = this;
   const gridId = 'aggregated-consumption-grid';
-  const modalGridId = 'stock-requisition-grid-articles';
+  const modalGridId = 'lots-grid';
 
   // change current depot
   page.changeDepot = SharedStockPage.setDepot;
@@ -26,14 +26,8 @@ function StockAggregateConsumptionPage() {
     return $('[data-method="search"]').click();
   };
 
-  page.setPeriod = scale => {
-    console.log('Si nous sommes simple PRIMATE');
-    const year = 'Test Fiscal Year 2020';
-    components.fiscalYearPeriodSelect.set(year, 'Nov');
-
-    // components.fiscalYearSelect.set(year);
-    // components.fiscalPeriodSelect.set();
-
+  page.setFiscalPeriod = async (fiscalYear, period) => {
+    await components.fiscalYearPeriodSelect.set(fiscalYear, period);
   };
 
   // depot select
@@ -45,55 +39,104 @@ function StockAggregateConsumptionPage() {
     await components.addItem.set(number);
   };
 
-  // add item
-  page.addItem = async function setInventory(rowNumber, code, quantity) {
-    // inventory code column
-    const itemCell = await GU.getCell(modalGridId, rowNumber, 0);
-
-    // inventory quantity column
-    const quantityCell = await GU.getCell(modalGridId, rowNumber, 2);
-
-    // enter data into the typeahead input.
-    await FU.input('row.entity.inventory', code, itemCell);
-
-    const externalAnchor = element(by.css('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)'));
-    const option = externalAnchor.all(by.cssContainingText('[role="option"]', code)).first();
-    await option.click();
-
-    // set the quantity
-    await FU.input('row.entity.quantity', quantity, quantityCell);
-  };
-
   // set description
   page.setDescription = description => {
     return FU.input('StockCtrl.movement.description', description);
   };
 
-  page.expectRowCount = (number) => {
-    return GU.expectRowCount(gridId, number);
+  /**
+   * @method setHeaderValue
+   */
+  page.setHeaderValue = async function setHeaderValue(rowIndex, columnIndex, value) {
+    const cell = await GU.getCell(gridId, rowIndex, columnIndex);
+    const inputOutStock = cell.element(by.id('row.treeNode.children[0].row.entity.inventory_uuid'));
+    inputOutStock.sendKeys(value);
   };
 
-  page.expectCellValueMatch = (row, col, value) => {
-    return GU.expectCellValueMatch(gridId, row, col, value);
+  /**
+   * @method setQuantityConsumed
+   */
+  page.setQuantityConsumed = async function setQuantityConsumed(rowIndex, columnIndex, quantity) {
+    const quantityCell = await GU.getCell(gridId, rowIndex, columnIndex);
+    await FU.input('row.entity.quantity_consumed', quantity, quantityCell);
   };
 
-  page.removeRequisition = async (row = 0) => {
-    const cell = await GU.getCell(gridId, row, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=remove-record]').click();
-    await FU.buttons.submit();
-    await components.notification.hasSuccess();
+  /**
+   * @method setQuantityLost
+   */
+  page.setQuantityLost = async function setQuantityLost(rowIndex, columnIndex, quantity) {
+    const quantityCell = await GU.getCell(gridId, rowIndex, columnIndex);
+    await FU.input('row.entity.quantity_lost', quantity, quantityCell);
   };
 
-  page.changeStatus = async (row = 0, status) => {
-    const cell = await GU.getCell(gridId, row, 7);
-    await cell.$('[data-method=action]').click();
-    await $('[data-method=edit]').click();
+  /**
+   * @method setDetailled
+   */
+  page.setDetailled = async function setDetailled(rowIndex, columnIndex, arrayLength) {
+    const getCell = await GU.getCell(gridId, rowIndex, columnIndex);
+    await getCell.element(by.id('aggregated_details')).click();
+  };
 
-    const selectStatus = element(by.id(status));
-    await selectStatus.click();
+  page.setLotsDetailled = async function setLotsDetailled(lotsArray) {
+    const dateCell0 = await GU.getCell(modalGridId, 0, 1);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);
+    await components.datePicker.set(lotsArray[0].date, dateCell0);
+    await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
+    await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
+    await components.addItem.set(1);
 
-    await FU.buttons.submit();
+    const dateCell1 = await GU.getCell(modalGridId, 1, 1);
+    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 2);
+    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 3);
+    await components.datePicker.set(lotsArray[1].date, dateCell1);
+    await FU.input('row.entity.quantity_consumed', lotsArray[1].quantity_consumed, quantityConsumptionCell1);
+    await FU.input('row.entity.quantity_lost', lotsArray[1].quantity_lost, quantityLostCell1);
+    await components.addItem.set(1);
+
+    const dateCell2 = await GU.getCell(modalGridId, 2, 1);
+    const quantityConsumptionCell2 = await GU.getCell(modalGridId, 2, 2);
+    const quantityLostCell2 = await GU.getCell(modalGridId, 2, 3);
+    await components.datePicker.set(lotsArray[2].date, dateCell2);
+    await FU.input('row.entity.quantity_consumed', lotsArray[2].quantity_consumed, quantityConsumptionCell2);
+    await FU.input('row.entity.quantity_lost', lotsArray[2].quantity_lost, quantityLostCell2);
+    await components.addItem.set(1);
+
+    const dateCell3 = await GU.getCell(modalGridId, 3, 1);
+    const quantityConsumptionCell3 = await GU.getCell(modalGridId, 3, 2);
+    const quantityLostCell3 = await GU.getCell(modalGridId, 3, 3);
+    await components.datePicker.set(lotsArray[3].date, dateCell3);
+    await FU.input('row.entity.quantity_consumed', lotsArray[3].quantity_consumed, quantityConsumptionCell3);
+    await FU.input('row.entity.quantity_lost', lotsArray[3].quantity_lost, quantityLostCell3);
+    await components.addItem.set(1);
+
+    const dateCell4 = await GU.getCell(modalGridId, 4, 1);
+    const quantityConsumptionCell4 = await GU.getCell(modalGridId, 4, 2);
+    const quantityLostCell4 = await GU.getCell(modalGridId, 4, 3);
+    await components.datePicker.set(lotsArray[4].date, dateCell4);
+    await FU.input('row.entity.quantity_consumed', lotsArray[4].quantity_consumed, quantityConsumptionCell4);
+    await FU.input('row.entity.quantity_lost', lotsArray[4].quantity_lost, quantityLostCell4);
+
+    FU.modal.submit();
+  };
+
+  page.setLots2Detailled = async function setLots2Detailled(lotsArray) {
+    const dateCell0 = await GU.getCell(modalGridId, 0, 1);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);
+    await components.datePicker.set(lotsArray[0].date, dateCell0);
+    await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
+    await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
+    await components.addItem.set(1);
+
+    const dateCell1 = await GU.getCell(modalGridId, 1, 1);
+    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 2);
+    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 3);
+    await components.datePicker.set(lotsArray[1].date, dateCell1);
+    await FU.input('row.entity.quantity_consumed', lotsArray[1].quantity_consumed, quantityConsumptionCell1);
+    await FU.input('row.entity.quantity_lost', lotsArray[1].quantity_lost, quantityLostCell1);
+
+    FU.modal.submit();
   };
 
   /**
@@ -106,6 +149,16 @@ function StockAggregateConsumptionPage() {
     // close the modal
     await element(by.css('[data-action="close"]')).click();
   };
+
+  /**
+   * @method submitErrorQuantity
+   */
+  page.submitErrorQuantity = async function submitErrorQuantity() {
+    FU.buttons.submit();
+
+    await components.notification.hasDanger();
+  };
+
 }
 
 module.exports = StockAggregateConsumptionPage;

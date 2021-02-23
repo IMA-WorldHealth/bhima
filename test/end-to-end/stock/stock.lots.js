@@ -99,7 +99,7 @@ function StockLotsRegistryTests() {
     );
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 0);
   });
 
   it('Find the lots with a risk of expiry', async () => {
