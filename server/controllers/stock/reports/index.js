@@ -118,7 +118,7 @@ async function renderStockReceipt(req, res, next) {
     case Stock.flux.AGGREGATE_CONSUMPTION:
       renderer = stockExitAggregateConsumptionReceipt;
       break;
-  
+
     default:
       throw new BadRequest('Could not determine stock receipt.');
     }

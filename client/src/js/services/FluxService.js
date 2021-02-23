@@ -24,9 +24,8 @@ function FluxService(Api, $translate) {
     13 : 'STOCK_FLUX.FROM_INTEGRATION',
     14 : 'STOCK_FLUX.INVENTORY_RESET',
     15 : 'STOCK_FLUX.INVENTORY_ADJUSTMENT',
-	16 : 'STOCK_FLUX.AGGREGATE_CONSUMPTION',
+    16 : 'STOCK_FLUX.AGGREGATE_CONSUMPTION',
   };
-
 
   /**
    * @method addI18nLabelToItems
