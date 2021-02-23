@@ -1,5 +1,5 @@
 <div ng-if="!row.groupHeader" class="ui-grid-cell-contents">
-  <a ng-if="!row.entity.detailled && (row.entity.quantity_consumed || row.entity.quantity_consumed == 0)
+  <a id="aggregated_details" ng-if="!row.entity.detailled && (row.entity.quantity_consumed || row.entity.quantity_consumed == 0)
     && (row.entity.quantity_lost || row.entity.quantity_lost == 0)"
     href ng-click="grid.appScope.setConsumptionByLots(row.entity)" data-lots>
     <span ng-hide="row.entity.lots.length">
@@ -8,7 +8,7 @@
     </span>
   </a>
 
-  <a ng-if="row.entity.detailled" href ng-click="grid.appScope.setConsumptionByLots(row.entity)" data-lots>
+  <a id="aggregated_movements" ng-if="row.entity.detailled" href ng-click="grid.appScope.setConsumptionByLots(row.entity)" data-lots>
     <span ng-hide="row.entity.lots.length">
       <i class="fa fa-sign-out"></i> 
       <span translate>STOCK.AGGREGATED_STOCK_CONSUMPTION.AGGREGATED_MOVEMENTS</span>
