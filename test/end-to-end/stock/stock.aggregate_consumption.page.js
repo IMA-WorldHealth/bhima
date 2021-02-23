@@ -72,7 +72,7 @@ function StockAggregateConsumptionPage() {
   /**
    * @method setDetailled
    */
-  page.setDetailled = async function setDetailled(rowIndex, columnIndex, arrayLength) {
+  page.setDetailled = async function setDetailled(rowIndex, columnIndex) {
     const getCell = await GU.getCell(gridId, rowIndex, columnIndex);
     await getCell.element(by.id('aggregated_details')).click();
   };
