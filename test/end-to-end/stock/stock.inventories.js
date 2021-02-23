@@ -31,7 +31,7 @@ function StockInventoriesRegistryTests() {
   it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
     await filters.resetFilters();
   });
 
@@ -77,15 +77,15 @@ function StockInventoriesRegistryTests() {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 6);
+    await GU.expectRowCount(gridId, 8);
     await filters.resetFilters();
   });
 
-  it('find 7 inventories for all time ', async () => {
+  it('find 9 inventories for all time ', async () => {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 7);
+    await GU.expectRowCount(gridId, 9);
     await filters.resetFilters();
   });
 
