@@ -978,7 +978,6 @@ function getStockTransfers(req, res, next) {
     .done();
 }
 
-
 /**
  * POST /stock/aggregated_consumption
  * Stock Aggregated Consumption
@@ -989,6 +988,13 @@ async function createAggregatedConsumption(req, res, next) {
 
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
+    }
+
+    const checkInvalid = movement.lots
+      .filter(l => ((l.quantity_consumed + l.quantity_lost) > l.oldQuantity));
+
+    if (checkInvalid.length) {
+      throw new Error('Invalid data');
     }
 
     // only consider lots that have consumed or lost.
@@ -1016,10 +1022,11 @@ async function createAggregatedConsumption(req, res, next) {
       const lossUuid = uuid();
 
       // get all lots with positive quantity_consumed
-      const stockConsumptionQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_consumed > 0));
+      const stockConsumptionQuantities = lots.filter(
+        lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_consumed > 0));
 
       // get all lots with negative quantity_lost
-      const stockLossQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid &&lot.quantity_lost > 0));
+      const stockLossQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_lost > 0));
 
       stockConsumptionQuantities.forEach(lot => {
         const consumptionMovementObject = {
@@ -1037,7 +1044,7 @@ async function createAggregatedConsumption(req, res, next) {
           user_id : req.session.user.id,
           period_id : periodId,
         };
-        
+
         trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
 
         const consumptionParams = [
@@ -1069,16 +1076,16 @@ async function createAggregatedConsumption(req, res, next) {
       const stockConsumptionParams = [
         db.bid(consumptionUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
       ];
-  
+
       const stockLossParams = [
         db.bid(lossUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
       ];
-  
+
       if (req.session.stock_settings.enable_auto_stock_accounting) {
         if (stockConsumptionQuantities.length > 0) {
           trx.addQuery('CALL PostStockMovement(?)', [stockConsumptionParams]);
         }
-  
+
         if (stockLossQuantities.length > 0) {
           trx.addQuery('CALL PostStockMovement(?)', [stockLossParams]);
         }
@@ -1101,7 +1108,7 @@ async function createAggregatedConsumption(req, res, next) {
     });
 
     await transact.execute();
-   
+
     res.status(201).json({});
   } catch (err) {
     next(err);
