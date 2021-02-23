@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockAggregatedConsumptionController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants', 'GridGroupingService',
+  'uiGridConstants', 'GridGroupingService', 'StockModalService',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockAggregatedConsumptionController.$inject = [
  */
 function StockAggregatedConsumptionController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants, Grouping,
+  Stock, uiGridConstants, Grouping, StockModal,
 ) {
   const vm = this;
 
@@ -26,6 +26,8 @@ function StockAggregatedConsumptionController(
   vm.Stock = new StockForm('StockAggregatedConsumption');
   vm.movement = {};
   vm.stockOut = {};
+  vm.setConsumptionByLots = setConsumptionByLots;
+  vm.checkValidation = checkValidation;
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     setupStock();
@@ -34,6 +36,7 @@ function StockAggregatedConsumptionController(
 
   vm.onSelectPeriod = (period) => {
     vm.movement.date = period.end_date;
+    vm.movement.start_date = period.start_date;
     vm.currentDate = new Date();
 
     if (vm.currentDate < vm.movement.date) {
@@ -51,18 +54,31 @@ function StockAggregatedConsumptionController(
     loadInventories(vm.depot);
   };
 
+  /**
+   * @method setConsumptionByLots
+   * @param {object} stockLine
+   * @description [grid] pop up a modal for defining consumption lots for each row in the grid
+   */
+  function setConsumptionByLots(stockLine) {
+    stockLine.start_date = vm.movement.start_date;
+    stockLine.end_date = vm.movement.date;
+
+    StockModal.openConsumptionByLots({
+      stockLine,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        stockLine.detailled = res.lots;
+      })
+      .catch(Notify.handleError);
+  }
+
   // bind constants
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
 
   // bind methods
   vm.submit = submit;
-
-  const expirationDateCellTemplate = `
-    <div class="ui-grid-cell-contents">
-      <span am-time-ago="row.entity.expiration_date"></span>
-    </div>
-  `;
 
   // grid columns
   const columns = [
@@ -72,14 +88,14 @@ function StockAggregatedConsumptionController(
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
-        field : 'status',
-        width : 25,
-        displayName : '',
-        cellTemplate : 'modules/stock/aggregated_consumption/templates/status.tmpl.html',
-        enableFiltering : false,
+      field : 'status',
+      width : 25,
+      displayName : '',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/status.tmpl.html',
+      enableFiltering : false,
     }, {
       field : 'code',
-      width : 90,      
+      width : 90,
       displayName : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
     }, {
@@ -102,7 +118,7 @@ function StockAggregatedConsumptionController(
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_consumed.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
-    }, {      
+    }, {
       field : 'quantity_lost',
       width : 150,
       displayName : 'STOCK.QUANTITY_LOST',
@@ -118,8 +134,13 @@ function StockAggregatedConsumptionController(
       cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
-    },
-  ];
+    }, {
+      field : 'consumption',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.CONSUMPTION',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_aggregate.tmpl.html',
+    }];
 
   // grid options
   vm.gridOptions = {
@@ -169,7 +190,7 @@ function StockAggregatedConsumptionController(
     vm.loading = true;
     setupStock();
 
-    Stock.lots.read(null, {
+    return Stock.lots.read(null, {
       depot_uuid : depot.uuid,
       includeEmptyLot : vm.includeEmptyLot || 0,
       dateTo : vm.movement.date,
@@ -207,12 +228,29 @@ function StockAggregatedConsumptionController(
       });
   }
 
+  function checkValidation(consumptionData) {
+    let valid = true;
+
+    consumptionData.forEach(item => {
+      if (item.old_quantity < (item.quantity_consumed + item.quantity_lost)) {
+        valid = false;
+      }
+    });
+
+    return valid;
+  }
+
   // ================================= Submit ================================
   function submit(form) {
     // check stock validity
     const isValid = vm.Stock.validate();
+    const isValidConsumption = checkValidation(vm.Stock.store.data);
 
-    if (!isValid || form.$invalid) { return 0; }
+    if (!isValidConsumption) {
+      Notify.danger('FORM.WARNINGS.INVALID_CONSUMPTION');
+    }
+
+    if (!isValid || form.$invalid || !isValidConsumption) { return 0; }
 
     const movement = {
       depot_uuid : vm.depot.uuid,
@@ -232,7 +270,8 @@ function StockAggregatedConsumptionController(
     });
 
     movement.lots = lots.filter(lot => {
-      return (lot.quantity_consumed > 0 || lot.quantity_lost > 0);
+      return ((lot.quantity_consumed > 0 || lot.quantity_lost > 0)
+        && (lot.old_quantity >= (lot.quantity_consumed + lot.quantity_lost)));
     });
 
     return Stock.aggregatedConsumption.create(movement)

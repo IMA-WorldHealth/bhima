@@ -978,7 +978,6 @@ function getStockTransfers(req, res, next) {
     .done();
 }
 
-
 /**
  * POST /stock/aggregated_consumption
  * Stock Aggregated Consumption
@@ -992,8 +991,12 @@ async function createAggregatedConsumption(req, res, next) {
     }
 
     // only consider lots that have consumed or lost.
+    // Non detaille
     const lots = movement.lots
-      .filter(l => (l.quantity_consumed > 0 || l.quantity_lost > 0));
+      .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (!l.detailled)));
+
+    const consumptionDetailled = movement.lots
+      .filter(l => l.detailled);
 
     const periodId = movement.period_id;
 
@@ -1010,16 +1013,19 @@ async function createAggregatedConsumption(req, res, next) {
 
     inventoryUuids.forEach(inventoryUuid => {
       const daysStockOut = movement.stock_out[inventoryUuid];
-      const movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
+      let movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
+      movementDate = new Date(movementDate);
+      movementDate = movementDate.setHours(23, 30, 0);
 
       const consumptionUuid = uuid();
       const lossUuid = uuid();
 
       // get all lots with positive quantity_consumed
-      const stockConsumptionQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_consumed > 0));
+      const stockConsumptionQuantities = lots.filter(lot => (
+        lot.inventory_uuid === inventoryUuid && lot.quantity_consumed > 0));
 
       // get all lots with negative quantity_lost
-      const stockLossQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid &&lot.quantity_lost > 0));
+      const stockLossQuantities = lots.filter(lot => (lot.inventory_uuid === inventoryUuid && lot.quantity_lost > 0));
 
       stockConsumptionQuantities.forEach(lot => {
         const consumptionMovementObject = {
@@ -1030,18 +1036,18 @@ async function createAggregatedConsumption(req, res, next) {
           quantity : lot.quantity_consumed,
           unit_cost : lot.unit_cost,
           date : new Date(movementDate),
-          entity_uuid : movement.entity_uuid,
           is_exit : 1,
           flux_id : core.flux.AGGREGATE_CONSUMPTION,
           description : movement.description,
           user_id : req.session.user.id,
           period_id : periodId,
         };
-        
+
         trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
 
         const consumptionParams = [
-          db.bid(lot.inventory_uuid), db.bid(movement.depot_uuid), new Date(movementDate), lot.quantity_consumed,
+          db.bid(lot.inventory_uuid),
+          db.bid(movement.depot_uuid), new Date(movementDate), lot.quantity_consumed,
         ];
 
         trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
@@ -1056,7 +1062,6 @@ async function createAggregatedConsumption(req, res, next) {
           quantity : lot.quantity_lost,
           unit_cost : lot.unit_cost,
           date : new Date(movementDate),
-          entity_uuid : movement.entity_uuid,
           is_exit : 1,
           flux_id : core.flux.TO_LOSS,
           description : movement.description,
@@ -1069,29 +1074,105 @@ async function createAggregatedConsumption(req, res, next) {
       const stockConsumptionParams = [
         db.bid(consumptionUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
       ];
-  
+
       const stockLossParams = [
         db.bid(lossUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
       ];
-  
+
       if (req.session.stock_settings.enable_auto_stock_accounting) {
         if (stockConsumptionQuantities.length > 0) {
           trx.addQuery('CALL PostStockMovement(?)', [stockConsumptionParams]);
         }
-  
+
         if (stockLossQuantities.length > 0) {
           trx.addQuery('CALL PostStockMovement(?)', [stockLossParams]);
         }
       }
     });
 
+    consumptionDetailled.forEach(item => {
+      item.detailled.forEach(elt => {
+        const consumptionUuid = uuid();
+        const lossUuid = uuid();
+
+        let eltDate = new Date(elt.end_date);
+        eltDate = eltDate.setHours(23, 30, 0);
+
+        if (elt.quantity_consumed > 0) {
+          const consumptionMovementObject = {
+            uuid : db.bid(uuid()),
+            lot_uuid : db.bid(item.uuid),
+            depot_uuid : db.bid(movement.depot_uuid),
+            document_uuid : db.bid(consumptionUuid),
+            quantity : elt.quantity_consumed,
+            unit_cost : item.unit_cost,
+            date : new Date(eltDate),
+            is_exit : 1,
+            flux_id : core.flux.AGGREGATE_CONSUMPTION,
+            description : movement.description,
+            user_id : req.session.user.id,
+            period_id : periodId,
+          };
+          trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
+
+          const consumptionParams = [
+            db.bid(item.inventory_uuid),
+            db.bid(movement.depot_uuid), new Date(`${elt.end_date} 23:30`), elt.quantity_consumed,
+          ];
+
+          trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+        }
+
+        if (elt.quantity_lost > 0) {
+          const lossMovementObject = {
+            uuid : db.bid(uuid()),
+            lot_uuid : db.bid(item.uuid),
+            depot_uuid : db.bid(movement.depot_uuid),
+            document_uuid : db.bid(lossUuid),
+            quantity : elt.quantity_lost,
+            unit_cost : item.unit_cost,
+            date : new Date(eltDate),
+            is_exit : 1,
+            flux_id : core.flux.TO_LOSS,
+            description : movement.description,
+            user_id : req.session.user.id,
+            period_id : periodId,
+          };
+          trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
+
+          const consumptionParams = [
+            db.bid(item.inventory_uuid),
+            db.bid(movement.depot_uuid), new Date(eltDate), elt.quantity_lost,
+          ];
+
+          trx.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
+        }
+      });
+    });
+
     await trx.execute();
+
+    consumptionDetailled.forEach(item => {
+      item.detailled.forEach(elt => {
+
+        let eltDate = new Date(elt.end_date);
+        eltDate = eltDate.setHours(23, 30, 0);
+
+        transact.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
+          new Date(eltDate),
+          db.bid(item.inventory_uuid),
+          db.bid(movement.depot_uuid),
+        ]);
+      });
+    });
 
     // gather inventory uuids for later quantity in stock calculation updates
     inventoryUuids.forEach(inventoryUuid => {
 
       const daysStockOut = movement.stock_out[inventoryUuid];
-      const movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
+      let movementDate = (daysStockOut > 0) ? moment(movement.date).subtract(daysStockOut, 'day') : movement.date;
+      movementDate = new Date(movementDate);
+      movementDate = movementDate.setHours(23, 30, 0);
 
       transact.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
         new Date(movementDate),
@@ -1101,7 +1182,7 @@ async function createAggregatedConsumption(req, res, next) {
     });
 
     await transact.execute();
-   
+
     res.status(201).json({});
   } catch (err) {
     next(err);

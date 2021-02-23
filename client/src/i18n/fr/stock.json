@@ -4,6 +4,9 @@
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
     "AGGREGATED_STOCK_CONSUMPTION": {
+      "AGGREGATED_MOVEMENTS": "Mouvements agrégés",
+      "CONSUMPTION_TO_DATE": "Consommation à la date",
+      "DETAILS": "Détails",
       "DESCRIPTION": "Ce module de consommation de stock agrégée permet de definir pour un dépôt et pour une période la quantité de stock consommée par produits mais surtout par lot, tout en précisant pour chaque produit le nombre de jour de rupture de stock",
       "TITLE": "Consommation de stock agrégée"
     },    
@@ -53,13 +56,20 @@
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",
       "INVALID_LOT_QUANTITY" : "Quantité de lot invalide",
-      "INVALID_LOT_EXPIRATION" : "Date d'expiration invalide",
       "INVALID_GLOBAL_QUANTITY" : "Quantité globale des lots invalide",
+      "INVALID_LOT_EXPIRATION" : "Date d'expiration invalide",
+      "INVALID_PERIOD" : "La date définie est dans la mauvaise période",
+      "INVALID_QUANTITY_NEGATIVE" : "Quantité négative",
       "LOT_ROW_WITH_ERRORS" : "Données invalide dans certaines lignes de lot ",
       "EXCESSIVE_QUANTITY": "Quantité excessive",
       "LOT_QUANTITY_OVER_GLOBAL": "La quantité totale des lots dépasse la quantity globale fournie",
       "MISSING_LOT_UNIT_COST": "Une valeur non négative est requise pour le coût unitaire du lot",
-      "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration"
+      "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration",
+      "QUANTITY_CONSUMED_LOWER" : "La quantité totale consommé est inférieure à la quantity globale consommée",
+      "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
+      "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
+      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue"
+
     },
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque d'expiration",

@@ -11,8 +11,16 @@
 </div>
 
 <div ng-if="!row.groupHeader">
-  <div ng-if="(row.entity.quantity_consumed || row.entity.quantity_consumed == 0)
-    && (row.entity.quantity_lost || row.entity.quantity_lost == 0)"
+  <div ng-if="((row.entity.quantity_consumed || row.entity.quantity_consumed == 0)
+    && (row.entity.quantity_lost || row.entity.quantity_lost == 0)) &&
+    (row.entity.old_quantity < (row.entity.quantity_consumed + row.entity.quantity_lost))"
+    class="ui-grid-cell-contents bg-danger text-center">
+    <span class="text-danger fa fa-exclamation-triangle"></span>
+  </div>
+
+  <div ng-if="((row.entity.quantity_consumed || row.entity.quantity_consumed == 0)
+    && (row.entity.quantity_lost || row.entity.quantity_lost == 0)) &&
+    (row.entity.old_quantity >= (row.entity.quantity_consumed + row.entity.quantity_lost))"
     class="ui-grid-cell-contents bg-success text-center">
     <span class="text-success fa fa-check-circle"></span>
   </div>
@@ -22,5 +30,6 @@
     class="ui-grid-cell-contents bg-warning text-center">
     <span class="text-warning fa fa-circle-o"></span>
   </div>
+
 </div>
 
