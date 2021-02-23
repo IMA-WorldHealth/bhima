@@ -104,6 +104,15 @@ angular.module('bhima.routes')
         templateUrl : 'modules/stock/settings/stock-settings.html',
         params : {
         },
+      })
+
+      .state('stockAggregatedConsumption', {
+        url         : '/stock/aggregated_consumption',
+        controller  : 'StockAggregatedConsumptionController as StockCtrl',
+        templateUrl : 'modules/stock/aggregated_consumption/aggregated_consumption.html',
+        params : {
+          filters : [],
+        },
       });
   }]);
 
