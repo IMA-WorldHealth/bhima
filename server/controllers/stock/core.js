@@ -33,6 +33,7 @@ const flux = {
   FROM_INTEGRATION : 13,
   INVENTORY_RESET  : 14,
   INVENTORY_ADJUSTMENT : 15,
+  AGGREGATE_CONSUMPTION : 16,
 };
 
 // exports

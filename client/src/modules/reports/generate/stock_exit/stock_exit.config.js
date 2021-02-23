@@ -17,6 +17,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
   vm.includeGroupedServiceExit = 0;
   vm.includeDepotExit = 0;
   vm.includeLossExit = 0;
+  vm.includeAggregateConsumption = 0;
   vm.previewGenerated = false;
   vm.onExitTypeChange = onExitTypeChange;
 
@@ -57,6 +58,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
       includeGroupedServiceExit : vm.includeGroupedServiceExit,
       includeDepotExit : vm.includeDepotExit,
       includeLossExit : vm.includeLossExit,
+      includeAggregateConsumption : vm.includeAggregateConsumption,
       showDetails : vm.showDetails,
     };
 
@@ -96,7 +98,8 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
       + vm.includeServiceExit
       + vm.includeGroupedServiceExit
       + vm.includeDepotExit
-      + vm.includeLossExit;
+      + vm.includeLossExit
+      + vm.includeAggregateConsumption;
     vm.hasOneChecked = sum > 0;
   }
 }

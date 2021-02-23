@@ -20,6 +20,8 @@ const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.r
 const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt.handlebars`;
 const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
 
+const STOCK_AGGREGATE_CONSUMPTION_TEMPLATE = `${BASE_PATH}/stock_aggregate_consumption.receipt.handlebars`;
+
 // reports
 const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
 const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
@@ -209,4 +211,5 @@ module.exports = {
   STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
   STOCK_MOVEMENT_REPORT_TEMPLATE,
   STOCK_EXPIRATION_REPORT_TEMPLATE,
+  STOCK_AGGREGATE_CONSUMPTION_TEMPLATE,
 };

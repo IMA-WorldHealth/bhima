@@ -2,6 +2,10 @@
     "ALERT" : "Alert",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
+    "AGGREGATED_STOCK_CONSUMPTION": {
+      "DESCRIPTION": "This aggregated stock consumption module makes it possible to define for a warehouse and for a period the quantity of stock consumed by product but especially by batch, while specifying for each product the number of days of out of stock",
+      "TITLE": "Aggregate stock Consumption"
+    },
     "AMOUNT"          : "Amount",
     "APPROVISIONING"  : "Quantity to order",
     "AT_LEAST_ONE_CHECKED" : "At least one option must be checked",
@@ -150,6 +154,7 @@
     "QUANTITY_RECEIVED"   : "Received Quantity",
     "QUANTITY_DIFFERENCE" : "Difference",
     "QUANTITY_CONSUMED" : "Quantity Consumed",
+    "QUANTITY_IN_STOCK" : "Quantity in stock",
     "QUANTITY_LOST" : "Quantity Lost",
     "QUANTITY_REMAINING" : "Quantity Remaining",
     "INITIAL_QUANTITY" : "Initial Quantity",
@@ -157,6 +162,7 @@
     "TRANSFER_AVAILABLE" : "Available",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
+      "AGGREGATE_CONSUMPTION" : "Stock exit - Aggregate consumption",
       "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
@@ -221,6 +227,7 @@
     "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limits the depots a user can interact with to the depots that the user has access to. Thus, if a user cannot distribute stock from a depot, they also cannot transfer stock to that depot."
   },
   "STOCK_FLUX" : {
+    "AGGREGATE_CONSUMPTION" : "Aggregate consumption",
     "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
     "FROM_ADJUSTMENT"  : "Adjustment (Positive)",

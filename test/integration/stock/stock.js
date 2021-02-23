@@ -85,7 +85,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /reports/stock/lots?renderer=json returns exits for all depots`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json`);
-      expect(res.body.rows.length).to.equal(13);
+      expect(res.body.rows.length).to.equal(16);
     },
   );
 
@@ -148,7 +148,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/lots/movements filters on user`, async () => {
     const res = await agent.get('/stock/lots/movements').query({ user_id : 1 });
-    helpers.api.listed(res, 22);
+    helpers.api.listed(res, 25);
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
@@ -175,7 +175,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   it(`GET /stock/inventories/depots filters on non-expired lots`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 });
-    helpers.api.listed(res, 4);
+    helpers.api.listed(res, 6);
   });
 
   it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, async () => {
@@ -213,4 +213,21 @@ describe('(/stock/) The Stock HTTP API', () => {
     const srcLabels = src.lots.map(lot => lot.label);
     expect(labels).to.deep.equal(srcLabels);
   });
+
+  // create Aggregate consumption
+  it('POST /stock/aggregated_consumption create standard aggregate stock consumption', async () => {
+    const res = await agent.post('/stock/aggregated_consumption').send(shared.movementStandardAggregate);
+    expect(res).to.have.status(201);
+  });
+
+  it('POST /stock/aggregated_consumption create complexe aggregate stock consumption', async () => {
+    const res = await agent.post('/stock/aggregated_consumption').send(shared.movementComplexeAggregate);
+    expect(res).to.have.status(201);
+  });
+
+  it('POST /stock/aggregated_consumption Prevent incorrect aggregate consumption', async () => {
+    const res = await agent.post('/stock/aggregated_consumption').send(shared.invalidAggregateMovement);
+    expect(res).to.have.status(500);
+  });
+
 });
