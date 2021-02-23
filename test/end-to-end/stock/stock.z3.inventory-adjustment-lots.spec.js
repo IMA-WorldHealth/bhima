@@ -23,7 +23,7 @@ function StockLotsRegistryTests() {
   });
 
   const gridId = 'stock-lots-grid';
-  const LOT_FOR_ALLTIME = 2;
+  const LOT_FOR_ALLTIME = 12;
   const GROUPING_ROW = 1;
 
   it(`finds ${LOT_FOR_ALLTIME} lots for all time`, async () => {
@@ -35,9 +35,9 @@ function StockLotsRegistryTests() {
   });
 
   it('find only lots set during the adjustment process', async () => {
-    const quinine = {
-      label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      lot : 'QUININE-C',
+    const acide = {
+      label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      lot : 'ASB17001',
       quantity : '17',
     };
 
@@ -58,9 +58,9 @@ function StockLotsRegistryTests() {
     await GU.expectCellValueMatch(gridId, 1, 2, vitamine.label);
     await GU.expectCellValueMatch(gridId, 1, 4, vitamine.lot);
     await GU.expectCellValueMatch(gridId, 1, 5, vitamine.quantity);
-    await GU.expectCellValueMatch(gridId, 2, 2, quinine.label);
-    await GU.expectCellValueMatch(gridId, 2, 4, quinine.lot);
-    await GU.expectCellValueMatch(gridId, 2, 5, quinine.quantity);
+    await GU.expectCellValueMatch(gridId, 2, 2, acide.label);
+    await GU.expectCellValueMatch(gridId, 2, 4, acide.lot);
+    await GU.expectCellValueMatch(gridId, 2, 5, acide.quantity);
 
     await filters.resetFilters();
   });
