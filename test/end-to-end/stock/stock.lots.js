@@ -28,9 +28,9 @@ function StockLotsRegistryTests() {
   const depotGroupingRow = 1;
   // techinically this is 23 in total, but the grid doesn't render that
   // many on small screens
-  const LOT_FOR_ALLTIME = 14;
-  const LOT_FOR_TODAY = 10;
-  const LOT_FOR_LAST_YEAR = 10;
+  const LOT_FOR_ALLTIME = 24;
+  const LOT_FOR_TODAY = 13;
+  const LOT_FOR_LAST_YEAR = 20;
 
   const inventoryGroup = 'Injectable';
 
@@ -58,7 +58,7 @@ function StockLotsRegistryTests() {
   it('find lots in depot principal', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 6 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 16 + depotGroupingRow);
   });
 
   it('find lots by inventory', async () => {
@@ -108,7 +108,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 6);
+    await GU.expectRowCount(gridId, 11);
   });
 
   it('Find the lots with no risk of expiry', async () => {
