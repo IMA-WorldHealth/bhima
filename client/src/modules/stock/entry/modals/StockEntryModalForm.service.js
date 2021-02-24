@@ -114,6 +114,10 @@ function StockEntryModalForm(uuid) {
       errors.push(ERR_NO_ROWS);
     }
 
+    if (this.opts.max_quantity < this.total()) {
+      errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
+    }
+
     if (this.opts.max_quantity_consumed < this.total()) {
       errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
     }
