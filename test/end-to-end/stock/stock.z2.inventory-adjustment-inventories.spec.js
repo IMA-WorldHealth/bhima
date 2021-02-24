@@ -22,28 +22,28 @@ function StockInventoriesRegistryTests() {
   const gridId = 'stock-inventory-grid';
   const GROUPING_ROW = 1;
 
-  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
+  it('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 2 + GROUPING_ROW);
+    await GU.expectRowCount(gridId, 4 + GROUPING_ROW);
     await filters.resetFilters();
   });
 
   it('find only inventories setted during the adjustment process', async () => {
     const quinine = {
       label : 'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
-      quantity : '17',
+      quantity : '30',
     };
-    const vitamine = {
-      label : 'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
-      quantity : '23',
+    const acide = {
+      label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
+      quantity : '617',
     };
     await modal.setDepot('Depot Principal');
     await modal.submit();
     await GU.expectCellValueMatch(gridId, 1, 2, quinine.label);
     await GU.expectCellValueMatch(gridId, 1, 4, quinine.quantity);
-    await GU.expectCellValueMatch(gridId, 2, 2, vitamine.label);
-    await GU.expectCellValueMatch(gridId, 2, 4, vitamine.quantity);
+    await GU.expectCellValueMatch(gridId, 2, 2, acide.label);
+    await GU.expectCellValueMatch(gridId, 2, 4, acide.quantity);
     await filters.resetFilters();
   });
 }

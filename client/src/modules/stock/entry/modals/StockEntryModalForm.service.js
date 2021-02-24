@@ -118,6 +118,14 @@ function StockEntryModalForm(uuid) {
       errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
     }
 
+    if (this.opts.max_quantity_consumed < this.total()) {
+      errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
+    }
+
+    if (this.opts.max_quantity_lost < this.total()) {
+      errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
+    }
+
     if (this.unit_cost === undefined) {
       errors.push(ERR_MISSING_LOT_UNIT_COST);
     }

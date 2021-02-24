@@ -1,34 +1,51 @@
 angular.module('bhima.controllers')
-  .controller('StockInventoryAdjustmentController', StockInventoryAdjustmentController);
+  .controller('StockAggregatedConsumptionController', StockAggregatedConsumptionController);
 
 // dependencies injections
-StockInventoryAdjustmentController.$inject = [
+StockAggregatedConsumptionController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants',
+  'uiGridConstants', 'GridGroupingService', 'StockModalService',
 ];
 
 /**
- * @class StockInventoryAdjustmentController
+ * @class StockAggregatedConsumptionController
  *
  * @description
- * This module exists to make sure that existing stock can be adjusted entirely
+ * This module exists to Aggregated Consumption
  */
-function StockInventoryAdjustmentController(
+function StockAggregatedConsumptionController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants,
+  Stock, uiGridConstants, Grouping, StockModal,
 ) {
   const vm = this;
 
-  const { INVENTORY_ADJUSTMENT } = bhConstants.flux;
+  const { AGGREGATED_CONSUMPTION } = bhConstants.flux;
 
   // global variables
-  vm.Stock = new StockForm('StockInventoryAdjustment');
+  vm.Stock = new StockForm('StockAggregatedConsumption');
   vm.movement = {};
   vm.stockOut = {};
+  vm.setConsumptionByLots = setConsumptionByLots;
+  vm.checkValidation = checkValidation;
 
-  vm.onDateChange = date => {
-    vm.movement.date = date;
+  vm.onSelectFiscalYear = (fiscalYear) => {
+    setupStock();
+    vm.movement.fiscal_id = fiscalYear.id;
+  };
+
+  vm.onSelectPeriod = (period) => {
+    vm.movement.date = period.end_date;
+    vm.movement.start_date = period.start_date;
+    vm.currentDate = new Date();
+
+    if (vm.currentDate < vm.movement.date) {
+      Notify.warn('FORM.WARNINGS.AGGREGATED_STOCK_MODULE');
+      setupStock();
+      return;
+    }
+
+    vm.movement.period_id = period.id;
     loadInventories(vm.depot);
   };
 
@@ -37,6 +54,25 @@ function StockInventoryAdjustmentController(
     loadInventories(vm.depot);
   };
 
+  /**
+   * @method setConsumptionByLots
+   * @param {object} stockLine
+   * @description [grid] pop up a modal for defining consumption lots for each row in the grid
+   */
+  function setConsumptionByLots(stockLine) {
+    stockLine.start_date = vm.movement.start_date;
+    stockLine.end_date = vm.movement.date;
+
+    StockModal.openConsumptionByLots({
+      stockLine,
+    })
+      .then((res) => {
+        if (!res) { return; }
+        stockLine.detailled = res.lots;
+      })
+      .catch(Notify.handleError);
+  }
+
   // bind constants
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
@@ -44,70 +80,67 @@ function StockInventoryAdjustmentController(
   // bind methods
   vm.submit = submit;
 
-  const expirationDateCellTemplate = `
-    <div class="ui-grid-cell-contents"
-      ng-class="{ 'bg-danger text-danger' : row.entity.isExpired }"
-      title="{{row.entity.expiration_date | date }}">
-      <span am-time-ago="row.entity.expiration_date"></span>
-    </div>
-  `;
-
   // grid columns
   const columns = [
     {
-      field : 'status',
-      width : 25,
-      displayName : '',
-      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
-      enableFiltering : false,
-    }, {
-      field : 'code',
-      width : 120,
-      displayName : 'TABLE.COLUMNS.CODE',
-      headerCellFilter : 'translate',
-    }, {
       field : 'text',
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
+      field : 'status',
+      width : 25,
+      displayName : '',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/status.tmpl.html',
+      enableFiltering : false,
+    }, {
+      field : 'code',
+      width : 90,
+      displayName : 'TABLE.COLUMNS.CODE',
+      headerCellFilter : 'translate',
+    }, {
       field : 'label',
-      width : 150,
+      width : 120,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
       field : 'old_quantity',
-      width : 150,
-      displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
+      width : 120,
+      displayName : 'STOCK.QUANTITY_IN_STOCK',
       headerCellFilter : 'translate',
       enableFiltering : false,
     }, {
-      field : 'quantity',
-      width : 180,
-      displayName : 'INVENTORY_ADJUSTMENT.NEW_QUANTITY',
+      field : 'quantity_consumed',
+      width : 150,
+      displayName : 'STOCK.QUANTITY_CONSUMED',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_consumed.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
-      field : 'difference',
+      field : 'quantity_lost',
       width : 150,
-      cellTemplate : 'modules/stock/inventory-adjustment/templates/difference.tmpl.html',
-      displayName : 'INVENTORY_ADJUSTMENT.DIFFERENCE',
+      displayName : 'STOCK.QUANTITY_LOST',
       headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_lost.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
-      enableSorting : true,
-    },
-    {
-      field : 'expiration_date',
+    }, {
+      field : 'days_stock_out',
       width : 150,
-      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+      displayName : 'STOCK.DAYS_OF_STOCK_OUT',
       headerCellFilter : 'translate',
-      cellTemplate : expirationDateCellTemplate,
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
-    },
-  ];
+    }, {
+      field : 'consumption',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.CONSUMPTION',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_aggregate.tmpl.html',
+    }];
 
   // grid options
   vm.gridOptions = {
@@ -121,6 +154,8 @@ function StockInventoryAdjustmentController(
     rowTemplate : 'modules/templates/grid/error.row.html',
     onRegisterApi : onRegisterApiFn,
   };
+
+  vm.grouping = new Grouping(vm.gridOptions, true, 'text', vm.grouped, true);
 
   // register api
   function onRegisterApiFn(gridApi) {
@@ -136,13 +171,11 @@ function StockInventoryAdjustmentController(
   function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
+    vm.stockOut = {};
+    vm.movement.description = '';
   }
 
   function startup() {
-    vm.movement = {
-      date : new Date(),
-    };
-
     setupStock();
   }
 
@@ -152,18 +185,17 @@ function StockInventoryAdjustmentController(
   };
 
   function loadInventories(depot) {
+    if (!vm.movement.date) { return 0; }
+
     vm.loading = true;
     setupStock();
 
-    const today = new Date();
-
-    Stock.lots.read(null, {
+    return Stock.lots.read(null, {
       depot_uuid : depot.uuid,
       includeEmptyLot : vm.includeEmptyLot || 0,
       dateTo : vm.movement.date,
     })
       .then(lots => {
-
         const n = lots.length;
         let i = 0;
 
@@ -175,8 +207,6 @@ function StockInventoryAdjustmentController(
 
           Object.assign(row, {
             old_quantity : row.quantity,
-
-            isExpired : (new Date(lot.expiration_date) < today),
 
             // overwrite the default validation function as it doesn't make sense in
             // this case.
@@ -190,6 +220,7 @@ function StockInventoryAdjustmentController(
 
         // run validation on all rows
         vm.Stock.validate();
+        vm.grouping.unfoldAllGroups();
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -197,20 +228,40 @@ function StockInventoryAdjustmentController(
       });
   }
 
+  function checkValidation(consumptionData) {
+    let valid = true;
+
+    consumptionData.forEach(item => {
+      if (item.old_quantity < (item.quantity_consumed + item.quantity_lost)) {
+        valid = false;
+      }
+    });
+
+    return valid;
+  }
+
   // ================================= Submit ================================
   function submit(form) {
     // check stock validity
     const isValid = vm.Stock.validate();
+    const isValidConsumption = checkValidation(vm.Stock.store.data);
 
-    if (!isValid || form.$invalid) { return 0; }
+    if (!isValidConsumption) {
+      Notify.danger('FORM.WARNINGS.INVALID_CONSUMPTION');
+    }
+
+    if (!isValid || form.$invalid || !isValidConsumption) { return 0; }
 
     const movement = {
       depot_uuid : vm.depot.uuid,
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 0,
-      flux_id : INVENTORY_ADJUSTMENT,
+      flux_id : AGGREGATED_CONSUMPTION,
       user_id : Session.user.id,
+      stock_out : vm.stockOut,
+      fiscal_id : vm.movement.fiscal_id,
+      period_id : vm.movement.period_id,
     };
 
     const lots = vm.Stock.store.data.map((row) => {
@@ -219,19 +270,15 @@ function StockInventoryAdjustmentController(
     });
 
     movement.lots = lots.filter(lot => {
-      return lot.quantity !== lot.oldQuantity;
+      return ((lot.quantity_consumed > 0 || lot.quantity_lost > 0)
+        && (lot.old_quantity >= (lot.quantity_consumed + lot.quantity_lost)));
     });
 
-    if (!movement.lots.length) {
-      Notify.warn('INVENTORY_ADJUSTMENT.NO_CHANGE');
-      return 0;
-    }
-
-    return Stock.inventoryAdjustment.create(movement)
+    return Stock.aggregatedConsumption.create(movement)
       .then(() => {
         // since we have effectively performed an inventory, instead of rendering a receipt,
         // we will render the "Articles in Stock" report for this depot.
-        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
+        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, AGGREGATED_CONSUMPTION);
 
         startup();
         return loadInventories(vm.depot);
