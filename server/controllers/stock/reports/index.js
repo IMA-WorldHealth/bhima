@@ -24,6 +24,7 @@ const stockInventoriesReport = require('./stock/inventories_report');
 const stockSheetReport = require('./stock/stock_sheet');
 const stockExitPatientReceipt = require('./stock/exit_patient_receipt');
 const stockExitDepotReceipt = require('./stock/exit_depot_receipt');
+const stockExitAggregateConsumptionReceipt = require('./stock/exit_aggregate_consumption_receipt');
 const stockEntryDepotReceipt = require('./stock/entry_depot_receipt');
 const stockExitServiceReceipt = require('./stock/exit_service_receipt');
 const stockExitLossReceipt = require('./stock/exit_loss_receipt');
@@ -114,6 +115,10 @@ async function renderStockReceipt(req, res, next) {
       renderer = stockEntryDonationReceipt;
       break;
 
+    case Stock.flux.AGGREGATE_CONSUMPTION:
+      renderer = stockExitAggregateConsumptionReceipt;
+      break;
+
     default:
       throw new BadRequest('Could not determine stock receipt.');
     }
@@ -147,4 +152,5 @@ exports.purchaseOrderAnalysis = require('./purchase_order_analysis');
 
 exports.stockChangesReport = stockChangesReport;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
+exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;
 exports.monthlyConsumption = require('./stock/monthly_consumption');
