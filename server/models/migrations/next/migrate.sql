@@ -116,16 +116,3 @@ INSERT INTO unit VALUES
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
   (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
-
-/*
- * @author: lomamech
- * @date: 2021-02-23
- * @subject : Allow users to record aggregate consumption information for a depot
- */
-INSERT INTO unit VALUES
-  (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption',160,'/stock/aggregated_consumption');
-
--- Stock Movement Flux
-INSERT INTO `flux` VALUES
-  (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
-
