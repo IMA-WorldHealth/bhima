@@ -196,6 +196,7 @@ function StockDefineLotsModalController(
   function onSelectLot(entity, item) {
     const lot = vm.stockLine.candidateLots.find(l => l.uuid === item.uuid);
     entity.expiration_date = new Date(lot.expiration_date);
+    entity.disabled = true;
     onChanges();
   }
 
