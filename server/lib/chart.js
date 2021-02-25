@@ -3,6 +3,7 @@ const util = require('./util');
 
 module.exports = {
   barChart,
+  renderChart,
 };
 
 /**
@@ -120,19 +121,31 @@ function barChart(params) {
     });
   }
 
+  const dataParameter = {
+    labels : chart.labels,
+    datasets : chart.data,
+  };
+
+  return renderChart(canvasId, dataParameter, xAxesLabelString, yAxesLabelString, showLegend);
+}
+
+function renderChart(
+  canvasId,
+  data,
+  xAxesLabelString = 'X',
+  yAxesLabelString = 'Y',
+  showLegend = false,
+  type = 'bar',
+) {
   return `
     window.addEventListener('load', function () {
-      const series = ${JSON.stringify(chart.data)};
       var ctx = document.getElementById('${canvasId}').getContext('2d');
 
       var chart = new Chart(ctx, {
         // The type of chart we want to create
-          type: 'bar',
+          type: '${type}',
           // The data for our dataset
-          data: {
-            labels: ${JSON.stringify(chart.labels)},
-            datasets: series,
-          },
+          data: ${JSON.stringify(data)},
           
           // Configuration options go here
           options: {
@@ -140,7 +153,7 @@ function barChart(params) {
               duration: 0,            
             },
             hover: {
-              animationDuration: 0 // duration of animations when hovering an item
+              animationDuration: 0
             },
             responsiveAnimationDuration: 0,
           
@@ -179,7 +192,6 @@ function barChart(params) {
                 };
               },
               formatter: function(value, context) {
-
                 return value ?  value : '';
               }
             }
