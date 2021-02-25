@@ -157,3 +157,9 @@ CREATE TABLE  `stock_movement_status` (
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+/**
+  * @author: mbayopanda
+  * @date: 2021-02-25
+  * @desc: fix stock movement report title
+  */
+UPDATE report SET title_key = 'REPORT.STOCK_MOVEMENT_REPORT.TITLE' WHERE report_key = 'stock_movement_report';

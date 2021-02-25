@@ -33,6 +33,7 @@ const STOCK_EXPIRATION_REPORT_TEMPLATE = `${BASE_PATH}/stock_expiration_report.h
 
 // General imports
 const _ = require('lodash');
+const moment = require('moment');
 
 // Application-specific imports
 const q = require('q');
@@ -170,6 +171,7 @@ const stockFluxReceipt = {
 // Exports
 module.exports = {
   _,
+  moment,
   q,
   db,
   util,
