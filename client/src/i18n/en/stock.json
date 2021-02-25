@@ -1,4 +1,5 @@
-{ "STOCK" : {
+{
+  "STOCK" : {
     "ALERT" : "Alert",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
