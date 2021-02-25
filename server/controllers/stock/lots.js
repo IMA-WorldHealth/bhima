@@ -17,8 +17,9 @@ const FilterParser = require('../../lib/filter');
 const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
-    l.unit_cost, l.description, l.expiration_date, l.entry_date,
-    BUID(i.uuid) AS inventory_uuid, i.text
+    l.unit_cost, l.description, l.entry_date, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+    i.code as inventory_code
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;
@@ -27,6 +28,7 @@ exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
+exports.getCandidates = getCandidates;
 exports.getDupes = getDupes;
 exports.merge = merge;
 
@@ -95,7 +97,31 @@ async function update(req, res, next) {
 }
 
 /**
- * GET /lot_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
+ * GET /inventory/:uuid/lot_candidates
+ *
+ * @description
+ * Returns all lots with the that inventory uuid
+ */
+function getCandidates(req, res, next) {
+  const inventoryUuid = db.bid(req.params.uuid);
+
+  const query = `
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description, l.expiration_date
+    FROM lot l
+    WHERE l.inventory_uuid = ?
+    ORDER BY label, expiration_date
+    `;
+
+  return db.exec(query, [inventoryUuid])
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /lots_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
  *
  * @description
  * Returns all lots with the given label or matching field(s)
@@ -113,8 +139,23 @@ function getDupes(req, res, next) {
   filters.equals('entry_date');
   filters.equals('expiration_date');
 
-  const query = filters.applyQuery(detailsQuery);
+  let query = filters.applyQuery(detailsQuery);
   const params = filters.parameters();
+
+  if ('find_dupes' in options) {
+    // For the 'find duplicate lots' search, we need a different query
+    query = `
+      SELECT
+        BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
+        l.unit_cost, l.description, l.entry_date, l.expiration_date,
+        BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+        i.code as inventory_code, COUNT(*) as num_duplicates
+      FROM lot l
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      GROUP BY label, inventory_uuid HAVING num_duplicates > 1
+      ORDER BY inventory_text, num_duplicates, label
+    `;
+  }
 
   return db.exec(query, params)
     .then(rows => {

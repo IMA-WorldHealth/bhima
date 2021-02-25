@@ -61,7 +61,6 @@ function PeriodSelect(Periods, bhConstants) {
     }
   };
 
-
   ctrl.selectPeriod = function selectPeriod(key, togglable) {
     const period = Periods.definition(key);
     ctrl.onSelectCallback({ period });
@@ -80,7 +79,6 @@ function PeriodSelect(Periods, bhConstants) {
     _period.customPeriodEnd = ctrl.customSelection.to;
     ctrl.onSelectCallback({ period : _period });
   };
-
 
   ctrl.selectCustomPeriod = function selectCustomPeriod(selection) {
     const period = Periods.index.custom;
