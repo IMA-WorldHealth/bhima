@@ -25,14 +25,6 @@ function StockMovementReportCtrl($sce, Notify, SavedReports, AppCache, reportDat
     vm.reportDetails.depot_uuid = depot.uuid;
   };
 
-  vm.onSelectFiscalYear = year => {
-    vm.reportDetails.fiscal_id = year.id;
-  };
-
-  vm.onSelectPeriod = period => {
-    vm.reportDetails.period_id = period.id;
-  };
-
   vm.onFluxChange = function onFluxChange(fluxes) {
     vm.reportDetails.flux_id = fluxes.map(f => f.id);
   };
