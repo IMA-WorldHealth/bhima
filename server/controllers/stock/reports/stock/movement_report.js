@@ -1,9 +1,10 @@
 const {
-  _, db, util, ReportManager, STOCK_MOVEMENT_REPORT_TEMPLATE,
+  _, Stock, ReportManager, STOCK_MOVEMENT_REPORT_TEMPLATE,
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
 const chartjs = require('../../../../lib/chart');
+const db = require('../../../../lib/db');
 /**
    * @method stockEntryReport
    *
@@ -11,7 +12,7 @@ const chartjs = require('../../../../lib/chart');
    * This method builds the stock entry report as either a JSON, PDF, or HTML
    * file to be sent to the client.
    *
-   * GET /reports/stock/consumption_graph
+   * GET /reports/stock/movement_report
    */
 async function document(req, res, next) {
   try {
@@ -24,39 +25,43 @@ async function document(req, res, next) {
 
     // set up the report with report manager
     const report = new ReportManager(STOCK_MOVEMENT_REPORT_TEMPLATE, req.session, optionReport);
-
     const options = req.query;
 
-    let dateFrom = '';
-    let dateTo = '';
+    params.group_by_flux = 1;
 
-    if (params.period_id) {
-      const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
-      dateFrom = period.start_date;
-      dateTo = period.end_date;
-    }
+    const collection = [];
+    const reportType = options.reportType || 'movement_number';
+    const depot = await db.one('SELECT text FROM depot WHERE uuid = ?', db.bid(params.depot_uuid));
     const result = await stockCore.getDailyStockConsumption(params);
 
-    util.dateFormatter(result, 'DD');
+    result.forEach(item => {
+      const line = {
+        label : i18n(options.lang)(Stock.fluxLabel[item.flux_id]),
+        value : item[reportType],
+      };
+      collection.push(line);
+    });
 
-    const reportType = options.reportType || 'movement_number';
+    const data = {
+      labels : collection.map(item => item.label),
+      datasets : [{
+        data : collection.map(item => item.value),
+        backgroundColor : 'rgba(8, 84, 132, 1)',
+      }],
+    };
+
+    const chartRenderOptions = {
+      chart_canvas_id : 'stockMovementReportChart',
+      chart_data : data,
+      chart_x_axis_label : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
+      chart_type : 'horizontalBar',
+    };
 
     const reportResult = await report.render({
-      dateFrom,
-      dateTo,
-      chartjs : chartjs.barChart({
-        label : 'date',
-        data : result,
-        uniqueColor : true,
-        item : {
-          uuid : 'date',
-          name : 'date',
-          value : reportType,
-        },
-        yAxesLabelString : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
-        xAxesLabelString : i18n(options.lang)('FORM.LABELS.DAYS'),
-        canvasId : 'stockMovementReportChart',
-      }),
+      depotText : depot.text,
+      dateFrom : params.dateFrom,
+      dateTo : params.dateTo,
+      chartjs : chartjs.renderChart(chartRenderOptions),
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
