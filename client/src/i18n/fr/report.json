@@ -152,8 +152,8 @@
     },
 
     "STOCK_MOVEMENT_REPORT" : {
-      "TITLE" : "Rapport graphique des mouvements de stock",
-      "DESCRIPTION" : ""
+      "TITLE" : "Graphique des mouvements de stock",
+      "DESCRIPTION" : "Ce rapport affiche sous forme graphique les différents mouvements de stock opérés durant une période"
     },
 
     "PREVIOUS_MONTHS": "Mois Précédents",
