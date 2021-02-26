@@ -63,7 +63,7 @@ function StockImportController(
     function handleSuccess() {
       Notify.success('STOCK.IMPORT.UPLOAD_SUCCESS');
 
-      filters.push({ key : 'depot_uuid', value : vm.depot.uuid });
+      filters.push({ key : 'depot_uuid', value : vm.depot.uuid, displayValue : vm.depot.text });
       $state.go('stockLots', { filters });
     }
 
