@@ -18,32 +18,34 @@
       <table class="table table-striped table-condensed table-report table-bordered">
         <thead>
           <tr style="background-color:#ddd;">
-            <th class="text-center" style="width: 3%;"> {{translate 'FORM.LABELS.NR'}}</th>
-            <th class="text-center">{{translate 'FORM.LABELS.INVENTORY'}} </th>
-            {{#each periods}}
-              <th class="text-center" style="width: 7.5%;">{{translate translate_key}}</th>
+            <th class="text-center" style="max-width: 3%;"> {{translate 'FORM.LABELS.NR'}}</th>
+            <th style="min-width:100px;">{{translate 'FORM.LABELS.INVENTORY'}}</th>
+            {{#each header as | key |}}
+              <th class="text-center" style="width: calc(75% / {{../size}});">{{translate key}}</th>
             {{/each}}
             <th style="width: 7.5%;" class="text-center">{{translate 'FORM.LABELS.TOTAL'}} </th>
           </tr>
         </thead>
 
         <tbody>
-        {{#each inventories}}
-          <tr>
-            <td class="text-center">{{ add @index 1}}</td>
-            <td>{{ inventory_text }}</td>
-            {{#each monthlyConsumption}}
-              <td class="text-right">
-                {{#if quantity}}{{ quantity }}{{/if}}
-              </td>
-            {{/each}}
-            <td class="text-right"> <strong> {{ total }} </strong> </td>
-          </tr>
-        {{else}}
-          <tr>
-            <th class="text-center" colspan="{{ spanColumn }}"> {{translate 'STOCK.NO_DATA'}} </th>
-          </tr>
-        {{/each}}
+          {{#each matrix as | row |}}
+            <tr>
+              {{#each row as | column | }}
+                {{#unless @last}}
+                  <td {{#gt @index 2}}class="text-right"{{/gt}}>
+                    {{column}}
+                  </td>
+                {{else}}
+                  <th class="text-right">{{column}}</th>
+                {{/unless}}
+
+              {{/each}}
+            </tr>
+          {{else}}
+            <tr>
+              <th class="text-center" colspan="{{size}}"> {{translate 'STOCK.NO_DATA'}} </th>
+            </tr>
+          {{/each}}
         </tbody>
       </table>
     </div>
