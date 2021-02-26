@@ -39,6 +39,7 @@ async function generate(req, res, next) {
       month_average_consumption : req.session.stock_settings.month_average_consumption,
       average_consumption_algo : req.session.stock_settings.average_consumption_algo,
     });
+
     const data = _.groupBy(lots, 'text');
 
     const totals = { lots : lots.length, items : Object.keys(data).length };
@@ -46,6 +47,7 @@ async function generate(req, res, next) {
     const result = await report.render({
       data, depot, period, totals,
     });
+
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
