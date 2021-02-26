@@ -13,7 +13,7 @@ function StockMovementReportCtrl($sce, Notify, SavedReports, AppCache, reportDat
 
   // default values
   vm.reportDetails = {
-    reportType : 'quantity',
+    reportType : 'movement_number',
   };
 
   vm.previewGenerated = false;
