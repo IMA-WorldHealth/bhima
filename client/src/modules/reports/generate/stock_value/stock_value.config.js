@@ -13,9 +13,11 @@ function StockValueConfigController($sce, Notify, SavedReports,
   const cache = new AppCache('configure_stock_value_report');
   const reportUrl = 'reports/stock/value';
 
+  // Default values
   vm.previewGenerated = false;
   vm.orderByCreatedAt = 0;
   vm.dateTo = new Date();
+  vm.excludeZeroValue = 0;
 
   vm.onDateChange = (date) => {
     vm.dateTo = date;
@@ -46,12 +48,16 @@ function StockValueConfigController($sce, Notify, SavedReports,
     vm.currency_id = currency.id;
   };
 
+  vm.onExcludeZeroValue = () => {
+    vm.reportDetails.exclude_zero_value = vm.excludeZeroValue;
+  };
+
   function formatData() {
     const params = {
       depot_uuid : vm.depot.uuid,
       dateTo : vm.dateTo,
       currency_id : vm.currency_id,
-      exclude_zero_value : vm.reportDetails.excludeZeroValue,
+      exclude_zero_value : vm.reportDetails.exclude_zero_value,
     };
     cache.reportDetails = angular.copy(params);
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');

@@ -22,7 +22,7 @@ The following are properties of **inventory**:
 The following are properties of **stock**:
  1. **Purchase Price** - each stock item is bought from a vendor at a price. This is the purchase price.
  2. **Expiration Date** - perishable stock will have an expiration date.  This date will differ from lot to lot.
- 3. **Lot Number** - the identifier used to distinguish between different items in stock.  Often, this is issued by the manufacturer.
+ 3. **Lot Number** - the identifier used to distinguish between different articles in stock.  Often, this is issued by the manufacturer.
 
 
 <div class="bs-callout bs-callout-primary">
