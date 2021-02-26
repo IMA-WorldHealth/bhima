@@ -26,9 +26,10 @@
 
             <!-- select depot -->
             <bh-depot-select
-              depot-uuid="ReportConfigCtrl.reportDetails.depotUuid"
+              depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
               on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
               required="true">
+              <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
             </bh-depot-select>
 
             <!-- date interval -->
@@ -48,7 +49,7 @@
             <!-- movement or value -->
             <div class="form-group">
               <label translate>FORM.LABELS.TYPE</label>
-                          
+              <bh-clear on-clear="ReportConfigCtrl.clear('reportType')"></bh-clear>
               <div class="radio">
                 <label>
                   <input type="radio" name="movement_number" value="movement_number" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
@@ -65,15 +66,14 @@
 
             <!-- entry or exit -->
             <div class="form-group">
-              <label translate>STOCK.MOVEMENT</label>
-                          
+              <label translate>STOCK.MOVEMENT</label> 
+              <bh-clear on-clear="ReportConfigCtrl.clear('is_exit')"></bh-clear>
               <div class="radio">
                 <label>
                   <input type="radio" name="is_exit" value="0" ng-model="ReportConfigCtrl.reportDetails.is_exit"/>
                   <span translate>STOCK.ENTRY</span>
                 </label>
-              </div>
-                             
+              </div>      
               <div class="radio">
                 <label>
                   <input type="radio" name="is_exit" value="1" ng-model="ReportConfigCtrl.reportDetails.is_exit"/>
