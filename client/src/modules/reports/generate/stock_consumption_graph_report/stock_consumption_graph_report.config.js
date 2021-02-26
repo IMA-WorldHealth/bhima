@@ -28,14 +28,6 @@ function StockConsGraphReportConfigCtrl($sce, Notify, SavedReports, AppCache, re
     vm.reportDetails.inventory_uuid = inventory.uuid;
   };
 
-  vm.onSelectFiscalYear = year => {
-    vm.reportDetails.fiscal_id = year.id;
-  };
-
-  vm.onSelectPeriod = period => {
-    vm.reportDetails.period_id = period.id;
-  };
-
   vm.clear = key => {
     delete vm.reportDetails[key];
   };
