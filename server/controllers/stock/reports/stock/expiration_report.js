@@ -47,10 +47,10 @@ async function stockExpirationReport(req, res, next) {
     const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
 
     // get the lots that are "at risk"
-    const risky = lots.filter(lot => (lot.S_RISK < 0 && lot.lifetime > 0));
+    const risky = lots.filter(lot => (lot.at_risk && lot.lifetime > 0));
 
     // get expired lots
-    const expired = lots.filter(lot => (lot.S_RISK <= 0 && lot.expiration_date <= today));
+    const expired = lots.filter(lot => (lot.expired && lot.expiration_date <= today));
 
     // merge risky and expired
     const riskyAndExpiredLots = risky.concat(expired);
