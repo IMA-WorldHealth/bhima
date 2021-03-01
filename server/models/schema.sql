@@ -834,8 +834,8 @@ CREATE TABLE `inventory_type` (
 DROP TABLE IF EXISTS `inventory_unit`;
 CREATE TABLE `inventory_unit` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `abbr` VARCHAR(100) NOT NULL,
-  `text` VARCHAR(100) NOT NULL,
+  `abbr` VARCHAR(50) NOT NULL,
+  `text` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_unit_1` (`text`),
   UNIQUE KEY `inventory_unit_2` (`abbr`)
