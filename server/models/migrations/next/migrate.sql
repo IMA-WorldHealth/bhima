@@ -103,3 +103,10 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
  */
 CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
 CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');
+
+/**
+  * @author: mbayopanda
+  * @date: 2021-02-25
+  * @desc: fix stock movement report title
+  */
+UPDATE report SET title_key = 'REPORT.STOCK_MOVEMENT_REPORT.TITLE' WHERE report_key = 'stock_movement_report';
