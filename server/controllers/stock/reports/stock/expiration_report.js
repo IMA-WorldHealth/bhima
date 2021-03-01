@@ -76,8 +76,6 @@ async function stockExpirationReport(req, res, next) {
           totals.expired.quantity += lot.mvt_quantity;
           total += lot.value;
         } else {
-          console.log("-----------------------------------------------------------");
-          console.log(lot);
           lot.quantity_at_risk = lot.mvt_quantity;
           lot.value = (lot.quantity_at_risk * lot.unit_cost);
           lot.statusKey = 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION';
