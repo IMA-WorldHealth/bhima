@@ -75,6 +75,7 @@
     "EXPIRATION_RISK" : "Risque d'expiration",
     "EXPIRATION"      : "Expiration",
     "EXIT"            : "Sortie de stock",
+    "EXIT_AGGREGATE_CONSUMPTION" : "Consommation agrégée pour le Dépôt: {{depot}} à la Période: {{period}} par l'utilisateur: {{user}}",
     "EXIT_DEPOT"      : "Transfert vers un dépôt",
     "EXIT_PATIENT"    : "Distribution vers un patient",
     "EXIT_PATIENT_ADVANCED" : "Distribution vers le patient {{patient}} à partir du dépôt {{depot}}",

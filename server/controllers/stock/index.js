@@ -994,13 +994,25 @@ async function createAggregatedConsumption(req, res, next) {
       .filter(l => ((l.quantity_consumed + l.quantity_lost) > l.oldQuantity));
 
     if (checkInvalid.length) {
-      throw new Error('Invalid data');
+      throw new Error('Invalid data!  Some lots have consumed or lost more stock than they originally had.');
     }
+
+    // Here we want that the detailed consumption can only concern the periods when there is out of stock
+    movement.lots.forEach(lot => {
+      if (movement.stock_out[lot.inventory_uuid] === 0) {
+        lot.detailled = [];
+      }
+
+      // Here we initialize an empty array just to check that there are no details
+      if (!lot.detailled) {
+        lot.detailled = [];
+      }
+    });
 
     // only consider lots that have consumed or lost.
     // Here we filter the consumption of batches that do not have chronological details
     const lots = movement.lots
-      .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (!l.detailled)));
+      .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (l.detailled.length === 0)));
 
     const consumptionDetailled = movement.lots
       .filter(l => l.detailled);
