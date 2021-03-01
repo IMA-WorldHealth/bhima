@@ -116,3 +116,7 @@ INSERT INTO unit VALUES
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
   (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
+
+ALTER TABLE `inventory_unit`
+	CHANGE COLUMN `abbr` `abbr` VARCHAR(50),
+	CHANGE COLUMN `text` `text` VARCHAR(50);
