@@ -161,6 +161,7 @@ function renderChart(options) {
   const type = options.chart_type || 'bar';
 
   const defaultOption = {
+    maintainAspectRatio : false,
     responsiveAnimationDuration : 0,
     animation : { duration : 0 },
     hover : { animationDuration : 0 },
