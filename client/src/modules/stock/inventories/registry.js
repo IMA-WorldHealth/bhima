@@ -196,6 +196,7 @@ function StockInventoriesController(
   }
 
   function setStatusFlag(item) {
+
     item.noAlert = !item.hasRiskyLots && !item.hasNearExpireLots && !item.hasExpiredLots;
     item.alert = item.hasExpiredLots;
     item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
