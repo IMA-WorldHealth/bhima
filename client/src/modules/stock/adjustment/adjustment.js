@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockAdjustmentController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants',
+  'uiGridConstants', '$translate',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockAdjustmentController.$inject = [
  */
 function StockAdjustmentController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants,
+  Stock, uiGridConstants, $translate,
 ) {
   const vm = this;
 
@@ -207,12 +207,14 @@ function StockAdjustmentController(
   }
 
   // ================================= Submit ================================
-  function submit() {
+  function submit(form) {
     let isExit;
     let fluxId;
 
     // check stock validity
     checkValidity();
+
+    if (form.$invalid) { return 0; }
 
     if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
 
@@ -220,19 +222,31 @@ function StockAdjustmentController(
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 
+    let description;
+
     if (vm.adjustmentOption === 'increase') {
       isExit = 0;
       fluxId = bhConstants.flux.FROM_ADJUSTMENT;
+      description = $translate.instant('STOCK.ENTRY_ADJUSTMENT', {
+        numArticles : vm.Stock.store.data.length,
+        user : Session.user.display_name,
+        depot : vm.depot.text,
+      });
     } else if (vm.adjustmentOption === 'decrease') {
       isExit = 1;
       fluxId = bhConstants.flux.TO_ADJUSTMENT;
+      description = $translate.instant('STOCK.EXIT_ADJUSTMENT', {
+        numArticles : vm.Stock.store.data.length,
+        user : Session.user.display_name,
+        depot : vm.depot.text,
+      });
     }
 
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
-      description : vm.movement.description,
+      description : description.concat(' -- ', vm.movement.description || ''),
       is_exit : isExit,
       flux_id : fluxId,
       user_id : Session.user.id,

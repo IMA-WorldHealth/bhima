@@ -70,6 +70,8 @@
     "EXIT_SERVICE_ADVANCED" : "Distribution vers le service {{service}} à partir du dépôt {{depot}}",
     "EXIT_LOSS"       : "Perte",
     "EXIT_INDIVIDUAL" : "Distribution aux individus",
+    "EXIT_ADJUSTMENT" : "Ajustement négatif de {{numArticles}} articles de {{depot}} par {{user}}.",
+    "ENTRY_ADJUSTMENT" : "Ajustement positif de {{numArticles}} articles de dans {{depot}} par {{user}}.",
     "FILE"            : "Fiche de stock",
     "FLUX"            : "Raison",
     "FROM"            : "Provenance",
