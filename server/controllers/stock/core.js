@@ -591,6 +591,10 @@ async function getDailyStockConsumption(params) {
 
   db.convert(params, ['depot_uuid', 'inventory_uuid']);
 
+  if (params.destinationType) {
+    params.flux_id = flux[params.destinationType];
+  }
+
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
@@ -621,8 +625,10 @@ async function getDailyStockConsumption(params) {
   filters.equals('is_exit');
   filters.custom('consumption', consumptionValue);
 
-  if (params.consumption) {
+  if (params.consumption && !params.destinationType) {
     filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  } else if (params.consumption && params.destinationType) {
+    filters.setGroup('GROUP BY i.uuid');
   } else {
     filters.setGroup('GROUP BY DATE(m.date)');
   }
@@ -631,7 +637,11 @@ async function getDailyStockConsumption(params) {
     filters.setGroup('GROUP BY m.flux_id');
   }
 
-  filters.setOrder('ORDER BY m.date ');
+  if (params.destinationType) {
+    filters.setOrder('ORDER BY i.text ');
+  } else {
+    filters.setOrder('ORDER BY m.date ');
+  }
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();

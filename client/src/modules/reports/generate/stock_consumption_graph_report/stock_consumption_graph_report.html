@@ -50,7 +50,6 @@
             
             <div class="form-group">
               <label translate>FORM.LABELS.TYPE</label>
-                          
               <div class="radio">
                 <label>
                   <input type="radio" name="quantity" value="quantity" ng-model="ReportConfigCtrl.reportDetails.reportType"/>
@@ -64,6 +63,36 @@
                 </label>
               </div>
             </div>
+
+            <div class="form-group">
+              <label translate>STOCK.DESTINATION</label>
+              <bh-clear on-clear="ReportConfigCtrl.clear('destinationType')"></bh-clear>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="all" value="all" ng-model="ReportConfigCtrl.reportDetails.destinationType"/>
+                  <span translate>STOCK.ALL_DESTINATION</span>
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="patient" value="TO_PATIENT" ng-model="ReportConfigCtrl.reportDetails.destinationType"/>
+                  <span translate>STOCK.EXIT_PATIENT</span>
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="service" value="TO_SERVICE" ng-model="ReportConfigCtrl.reportDetails.destinationType"/>
+                  <span translate>STOCK.EXIT_SERVICE</span>
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="depot" value="TO_OTHER_DEPOT" ng-model="ReportConfigCtrl.reportDetails.destinationType"/>
+                  <span translate>STOCK.EXIT_DEPOT</span>
+                </label>
+              </div>
+            </div>
+
             <!-- preview -->
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

@@ -14,6 +14,7 @@ function StockConsGraphReportConfigCtrl($sce, Notify, SavedReports, AppCache, re
   // default values
   vm.reportDetails = {
     reportType : 'quantity',
+    destinationType : 'all',
   };
   vm.previewGenerated = false;
 
