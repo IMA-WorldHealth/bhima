@@ -742,7 +742,7 @@ function computeLotIndicators(inventories) {
           lot.expiration_date = '';
         }
 
-        lot.exhausted = lot.quantity === 0;
+        lot.exhausted = lot.quantity <= 0;
         lot.expired = !lot.exhausted && (lot.expiration_date < today);
 
         // algorithm for tracking the stock consumption by day
