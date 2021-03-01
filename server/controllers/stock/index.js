@@ -986,6 +986,9 @@ async function createAggregatedConsumption(req, res, next) {
   try {
     const movement = req.body;
 
+    console.log('NEW_DOCUMENTNTTTTTTTttttttt');
+    console.log(movement.lots);
+
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
     }
@@ -1000,22 +1003,22 @@ async function createAggregatedConsumption(req, res, next) {
     // Here we want that the detailed consumption can only concern the periods when there is out of stock
     movement.lots.forEach(lot => {
       if (movement.stock_out[lot.inventory_uuid] === 0) {
-        lot.detailled = [];
+        lot.detailed = [];
       }
 
       // Here we initialize an empty array just to check that there are no details
-      if (!lot.detailled) {
-        lot.detailled = [];
+      if (!lot.detailed) {
+        lot.detailed = [];
       }
     });
 
     // only consider lots that have consumed or lost.
     // Here we filter the consumption of batches that do not have chronological details
     const lots = movement.lots
-      .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (l.detailled.length === 0)));
+      .filter(l => ((l.quantity_consumed > 0 || l.quantity_lost > 0) && (l.detailed.length === 0)));
 
-    const consumptionDetailled = movement.lots
-      .filter(l => l.detailled);
+    const consumptionDetailed = movement.lots
+      .filter(l => l.detailed);
 
     const periodId = movement.period_id;
 
@@ -1109,8 +1112,8 @@ async function createAggregatedConsumption(req, res, next) {
       }
     });
 
-    consumptionDetailled.forEach(item => {
-      item.detailled.forEach(elt => {
+    consumptionDetailed.forEach(item => {
+      item.detailed.forEach(elt => {
         const consumptionUuid = uuid();
         const lossUuid = uuid();
 
@@ -1171,8 +1174,8 @@ async function createAggregatedConsumption(req, res, next) {
 
     await trx.execute();
 
-    consumptionDetailled.forEach(item => {
-      item.detailled.forEach(elt => {
+    consumptionDetailed.forEach(item => {
+      item.detailed.forEach(elt => {
 
         let eltDate = new Date(elt.end_date);
         eltDate = eltDate.setHours(23, 30, 0);

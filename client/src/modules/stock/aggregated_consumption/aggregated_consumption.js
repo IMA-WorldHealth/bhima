@@ -69,7 +69,7 @@ function StockAggregatedConsumptionController(
     })
       .then((res) => {
         if (!res) { return; }
-        stockLine.detailled = res.lots;
+        stockLine.detailed = res.lots;
       })
       .catch(Notify.handleError);
   }

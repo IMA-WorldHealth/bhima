@@ -21,7 +21,7 @@ function StockConsumptionLotsModalController(
     lot : Data.stockLine.label,
     end_date : Data.stockLine.end_date,
     start_date : Data.stockLine.start_date,
-    rows : Data.stockLine.detailled,
+    rows : Data.stockLine.detailed,
   });
 
   vm.hasMissingLotIdentifier = false;
