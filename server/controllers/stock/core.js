@@ -35,9 +35,27 @@ const flux = {
   INVENTORY_ADJUSTMENT : 15,
 };
 
+const fluxLabel = {};
+fluxLabel[flux.FROM_PURCHASE] = 'STOCK_FLUX.FROM_PURCHASE';
+fluxLabel[flux.FROM_OTHER_DEPOT] = 'STOCK_FLUX.FROM_OTHER_DEPOT';
+fluxLabel[flux.FROM_ADJUSTMENT] = 'STOCK_FLUX.FROM_ADJUSTMENT';
+fluxLabel[flux.FROM_PATIENT] = 'STOCK_FLUX.FROM_PATIENT';
+fluxLabel[flux.FROM_SERVICE] = 'STOCK_FLUX.FROM_SERVICE';
+fluxLabel[flux.FROM_DONATION] = 'STOCK_FLUX.FROM_DONATION';
+fluxLabel[flux.FROM_LOSS] = 'STOCK_FLUX.FROM_LOSS';
+fluxLabel[flux.TO_OTHER_DEPOT] = 'STOCK_FLUX.TO_OTHER_DEPOT';
+fluxLabel[flux.TO_PATIENT] = 'STOCK_FLUX.TO_PATIENT';
+fluxLabel[flux.TO_SERVICE] = 'STOCK_FLUX.TO_SERVICE';
+fluxLabel[flux.TO_LOSS] = 'STOCK_FLUX.TO_LOSS';
+fluxLabel[flux.TO_ADJUSTMENT] = 'STOCK_FLUX.TO_ADJUSTMENT';
+fluxLabel[flux.FROM_INTEGRATION] = 'STOCK_FLUX.FROM_INTEGRATION';
+fluxLabel[flux.INVENTORY_RESET] = 'STOCK_FLUX.INVENTORY_RESET';
+fluxLabel[flux.INVENTORY_ADJUSTMENT] = 'STOCK_FLUX.INVENTORY_ADJUSTMENT';
+
 // exports
 module.exports = {
   flux,
+  fluxLabel,
   getMovements,
   getLots,
   getLotsDepot,
@@ -573,6 +591,10 @@ async function getDailyStockConsumption(params) {
 
   db.convert(params, ['depot_uuid', 'inventory_uuid']);
 
+  if (params.destinationType) {
+    params.flux_id = flux[params.destinationType];
+  }
+
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
@@ -585,7 +607,8 @@ async function getDailyStockConsumption(params) {
       BUID(m.uuid) AS uuid,
       i.text AS inventory_name,
       d.text AS depot_name,
-      BUID(d.uuid) AS depot_uuid
+      BUID(d.uuid) AS depot_uuid,
+      f.id AS flux_id
     FROM stock_movement m
     JOIN flux f ON m.flux_id = f.id
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -602,13 +625,23 @@ async function getDailyStockConsumption(params) {
   filters.equals('is_exit');
   filters.custom('consumption', consumptionValue);
 
-  if (params.consumption) {
+  if (params.consumption && !params.destinationType) {
     filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  } else if (params.consumption && params.destinationType) {
+    filters.setGroup('GROUP BY i.uuid');
   } else {
     filters.setGroup('GROUP BY DATE(m.date)');
   }
 
-  filters.setOrder('ORDER BY m.date ');
+  if (params.group_by_flux) {
+    filters.setGroup('GROUP BY m.flux_id');
+  }
+
+  if (params.destinationType) {
+    filters.setOrder('ORDER BY i.text ');
+  } else {
+    filters.setOrder('ORDER BY m.date ');
+  }
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();

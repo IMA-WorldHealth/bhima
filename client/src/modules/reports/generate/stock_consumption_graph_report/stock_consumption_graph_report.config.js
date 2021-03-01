@@ -14,6 +14,7 @@ function StockConsGraphReportConfigCtrl($sce, Notify, SavedReports, AppCache, re
   // default values
   vm.reportDetails = {
     reportType : 'quantity',
+    destinationType : 'all',
   };
   vm.previewGenerated = false;
 
@@ -26,14 +27,6 @@ function StockConsGraphReportConfigCtrl($sce, Notify, SavedReports, AppCache, re
 
   vm.onSelectInventory = inventory => {
     vm.reportDetails.inventory_uuid = inventory.uuid;
-  };
-
-  vm.onSelectFiscalYear = year => {
-    vm.reportDetails.fiscal_id = year.id;
-  };
-
-  vm.onSelectPeriod = period => {
-    vm.reportDetails.period_id = period.id;
   };
 
   vm.clear = key => {

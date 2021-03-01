@@ -1,4 +1,4 @@
-{{> head title="TREE.STOCK_CONSUMPTION_GRAPH_REPORT" }}
+{{> head title="REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE" }}
 
 <script src="{{nodeModulesPath}}/chart.js/dist/Chart.min.js"></script>
 <script src="{{nodeModulesPath}}/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -11,22 +11,18 @@
     <!-- body  -->
     <div class="row">
       <div class="col-xs-12">
-
-    <!-- page title  -->
-        <h2 class="text-center">
-          {{translate 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'}}
-        </h2>
-
+        <h2 class="text-center">{{translate 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'}}</h2>
         {{#if depot.text}}
           <h4 class="text-center">{{depot.text}}</h4>
         {{/if}}
-        <h4 class="text-center">
-          {{date dateFrom}} - {{date dateTo}}
-        </h4>
+        <h4 class="text-center">{{date dateFrom}} - {{date dateTo}}</h4>
       </div>
       
-      <canvas id="stockConsumptionChart" style="width:100%" height="330"></canvas>
-           
+      <div class="col-xs-12">
+        <div style="height: {{chartHeight}};">
+          <canvas id="stockConsumptionChart"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 

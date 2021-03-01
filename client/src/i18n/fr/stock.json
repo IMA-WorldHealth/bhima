@@ -3,6 +3,7 @@
     "ALERT"  : "Alert",
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
+    "ALL_DESTINATION" : "Toutes les destinations",
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
     "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
