@@ -1,6 +1,6 @@
 const accountingjs = require('accounting-js');
 const Handlebars = require('handlebars');
-const NumberToText = require('../../../lib/NumberToText');
+const NumberToText = require('../../NumberToText');
 
 const USD_FMT = { precision : 2 };
 
@@ -94,7 +94,6 @@ function lessZero(value = 0) {
     <span class="text-right ${cellClass}">${value}</span>
   `);
 }
-
 
 exports.debcred = debcred;
 exports.currency = currency;
