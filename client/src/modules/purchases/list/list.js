@@ -30,6 +30,12 @@ function PurchaseListController(
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
 
+  vm.openPurchaseOrderAnalysisReport = (uuid) => {
+    const params = PurchaseOrder.openPurchaseOrderAnalysisReport(uuid);
+    const link = `/reports/purchase_order_analysis?${params}`;
+    return link;
+  };
+
   vm.editStatus = editStatus;
 
   vm.FLUX_FROM_PURCHASE = bhConstants.flux.FROM_PURCHASE;

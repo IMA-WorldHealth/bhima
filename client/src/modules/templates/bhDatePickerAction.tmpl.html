@@ -1,10 +1,11 @@
 <span class="text-action" ng-dblclick="$ctrl.open()">
-  <input 
+  <input
     uib-datepicker-popup="{{ $ctrl.dateFormat }}"
-    class="form-control text-right" 
-    type="text" 
+    class="form-control text-right"
+    type="text"
     ng-change="$ctrl.notifyDateChange()"
     ng-model="$ctrl.date"
     ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
+    ng-disabled="$ctrl.disabled"
     ng-required="$ctrl.required">
 </span>

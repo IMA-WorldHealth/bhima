@@ -3,6 +3,7 @@ const util = require('./util');
 
 module.exports = {
   barChart,
+  renderChart,
 };
 
 /**
@@ -120,73 +121,110 @@ function barChart(params) {
     });
   }
 
+  const dataParameter = {
+    labels : chart.labels,
+    datasets : chart.data,
+  };
+
+  const options = {
+    chart_canvas_id : canvasId,
+    chart_data : dataParameter,
+    chart_x_axis_label : xAxesLabelString,
+    chart_y_axis_label : yAxesLabelString,
+    chart_enable_legend : showLegend,
+  };
+
+  return renderChart(options);
+}
+
+/**
+ * @method renderChart
+ * @param {object} options global settings for the chart
+ * @description the options parameter must have some of these properties
+ * {
+ *  chart_canvas_id : ..., (required) the canvas id
+ *  chart_data : ..., (required) the chartjs data structure
+ *  chart_x_axis_label : ..., the x axis label
+ *  chart_y_axis_label : ..., the y axis label
+ *  chart_enable_legend : ..., enable or not the legend
+ *  chart_type : ..., the type of chart : 'bar', 'horizontalBar'
+ *  chart_option : ... the chartjs option
+ * }
+ */
+function renderChart(options) {
+  const canvasId = options.chart_canvas_id;
+  const data = options.chart_data;
+  const option = options.chart_option || {};
+  const xAxesLabelString = options.chart_x_axis_label || '';
+  const yAxesLabelString = options.chart_y_axis_label || '';
+  const showLegend = options.chart_enable_legend || false;
+  const type = options.chart_type || 'bar';
+
+  const defaultOption = {
+    responsiveAnimationDuration : 0,
+    animation : { duration : 0 },
+    hover : { animationDuration : 0 },
+
+    legend :  {
+      position : 'bottom',
+      display : showLegend,
+    },
+
+    scales : {
+      yAxes : [{
+        scaleLabel : {
+          display : true,
+          labelString : `${yAxesLabelString}`,
+        },
+        ticks : {
+          beginAtZero : true,
+        },
+      }],
+      xAxes : [{
+        scaleLabel : {
+          display : true,
+          labelString : `${xAxesLabelString}`,
+        },
+      }],
+    },
+
+    plugins : {
+      datalabels : {
+        align : 'end',
+        anchor : 'end',
+        color() {
+          return 'rgb(0, 0, 0)';
+        },
+        font(context) {
+          const w = context.chart.width;
+          return {
+            size : w < 512 ? 12 : 14,
+          };
+        },
+        formatter(value) {
+          return value || '';
+        },
+      },
+    },
+  };
+
+  const _option_ = _.assign({}, defaultOption, option);
+
   return `
     window.addEventListener('load', function () {
-      const series = ${JSON.stringify(chart.data)};
       var ctx = document.getElementById('${canvasId}').getContext('2d');
 
       var chart = new Chart(ctx, {
-        // The type of chart we want to create
-          type: 'bar',
-          // The data for our dataset
-          data: {
-            labels: ${JSON.stringify(chart.labels)},
-            datasets: series,
-          },
+          // The type of chart we want to create
+          type: '${type}',
+
+          // The data structure for our dataset
+          // https://www.chartjs.org/docs/master/general/data-structures/
+          data: ${JSON.stringify(data)},
           
           // Configuration options go here
-          options: {
-            animation: {
-              duration: 0,            
-            },
-            hover: {
-              animationDuration: 0 // duration of animations when hovering an item
-            },
-            responsiveAnimationDuration: 0,
-          
-            legend:  {
-              position : 'bottom',
-              display: ${showLegend}
-            },
-            scales: {
-              yAxes: [{
-                scaleLabel: {
-                  display: true,
-                  labelString:  "${yAxesLabelString}"
-                },
-                ticks: {
-                  beginAtZero: true
-                }
-              }],
-            xAxes: [{
-            scaleLabel: {
-              display: true,             
-              labelString: "${xAxesLabelString}"
-            }
-            }]
-          },
-          plugins: {
-            datalabels: {
-              align: 'end',
-                anchor: 'end',
-                  color: function(context) {
-                    return 'rgb(0, 0, 0)';
-                  },
-              font: function(context) {
-                var w = context.chart.width;
-                return {
-                  size: w < 512 ? 12 : 14
-                };
-              },
-              formatter: function(value, context) {
-
-                return value ?  value : '';
-              }
-            }
-          },
-        }
+          options: ${JSON.stringify(_option_)}
       });
     });
-    
   `;
 }

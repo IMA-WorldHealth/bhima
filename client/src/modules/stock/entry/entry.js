@@ -4,9 +4,9 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockEntryController.$inject = [
   'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
-  'StockService', 'StockModalService', 'uiGridConstants', 'Store',
-  'uuid', '$translate',
+  'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
+  'StockFormService', 'StockService', 'StockModalService', 'LotService',
+  'uiGridConstants', 'Store', 'uuid', '$translate',
 ];
 
 /**
@@ -17,7 +17,7 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, Uuid, $translate,
+  StockForm, Stock, StockModal, Lots, uiGridConstants, Store, Uuid, $translate,
 ) {
   // variables
   let inventoryStore;
@@ -43,6 +43,7 @@ function StockEntryController(
   vm.submit = submit;
   vm.reset = reset;
   vm.onDateChange = onDateChange;
+
   vm.gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
@@ -379,6 +380,12 @@ function StockEntryController(
       item.expiration_date = new Date();
       item.unit = inventory.unit;
 
+      // Store the candidate lots for this inventory code
+      Lots.candidates({ inventory_uuid : item.inventory_uuid })
+        .then((lots) => {
+          item.candidateLots = lots;
+        });
+
       if (vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
           isValid : true,
@@ -423,7 +430,7 @@ function StockEntryController(
    * @description [grid] pop up a modal for defining lots for each row in the grid
    */
   function setLots(stockLine) {
-    // Additionnal information for an inventory Group
+    // Additional information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
     stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
@@ -436,7 +443,7 @@ function StockEntryController(
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.quantity = res.quantity;
-        stockLine.unit_cost = res.unit_cost; // integration and donation price is defined in the lot modal
+        stockLine.unit_cost = res.unit_cost; // integration and donation price are defined in the lot modal
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
@@ -504,7 +511,6 @@ function StockEntryController(
       })
       .catch(Notify.handleError);
   }
-
 
   /**
    * @method submitIntegration
@@ -605,6 +611,12 @@ function StockEntryController(
     line.unit = inventory.unit;
     line.tracking_expiration = inventory.tracking_expiration;
     setInitialized(line);
+
+    // Store the candidate lots for this inventory code
+    Lots.candidates({ inventory_uuid : line.inventory_uuid })
+      .then((lots) => {
+        line.candidateLots = lots;
+      });
   }
 
   startup();

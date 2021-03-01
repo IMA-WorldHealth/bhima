@@ -196,6 +196,7 @@ function StockInventoriesController(
   }
 
   function setStatusFlag(item) {
+
     item.noAlert = !item.hasRiskyLots && !item.hasNearExpireLots && !item.hasExpiredLots;
     item.alert = item.hasExpiredLots;
     item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
@@ -298,6 +299,13 @@ function StockInventoriesController(
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
+
+  vm.viewAMCCalculations = viewAMCCalculations;
+
+  function viewAMCCalculations(item) {
+    Modal.openAMCCalculationModal(item)
+      .catch(angular.noop);
+  }
 
   /**
    * @function openBarcodeScanner
