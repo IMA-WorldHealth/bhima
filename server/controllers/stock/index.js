@@ -832,21 +832,25 @@ async function listInventoryDepot(req, res, next) {
         const hasSameDepot = lots[j].depot_uuid === inventories[i].depot_uuid;
         const hasSameInventory = lots[j].inventory_uuid === inventories[i].inventory_uuid;
         if (hasSameDepot && hasSameInventory) {
+
+          // NOTE(@jniles): at this point, we've called computeLotIndicators() in the
+          // core.getLotsDepot() function.  This means we can use all the flags defined
+          // in that function to compute those here.
           const lot = lots[j];
-          if (lot.quantity <= 0) {
-            // lot exhausted
-          } else if (lot.lifetime < 0) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime < 0
+
+          if (lot.exhausted) {
+            // skip exhausted lots
+          } else if (lot.expired) {
             hasExpiredLots = true;
             expiredLotsQuantity += lot.quantity;
-          } else if (lot.IS_IN_RISK_EXPIRATION) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.IS_IN_RISK_EXPIRATION
+          } else if (lot.near_expiration) {
             hasNearExpireLots = true;
             nearExpireLotsQuantity += lot.quantity;
-          } else if (lot.S_RISK <= 0) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.S_RISK <= 0
+
+          // flag if any lots are at risk of running out
+          } else if (lot.S_RISK_QUANTITY > 0) {
             hasRiskyLots = true;
-            riskyLotsQuantity += lot.quantity;
+            riskyLotsQuantity += lot.S_RISK_QUANTITY;
           }
         }
       }
