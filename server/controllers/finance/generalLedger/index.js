@@ -14,7 +14,6 @@
  * @requires lib/util
  */
 
-
 // module dependencies
 const Tree = require('@ima-worldhealth/tree');
 
@@ -103,7 +102,6 @@ function getAggregates(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @function getAccountTotalsMatrix
