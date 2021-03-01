@@ -336,7 +336,7 @@ const movementComplexeAggregate = {
       old_quantity : 750,
       quantity_consumed : 500,
       quantity_lost : 250,
-      detailled : [
+      detailed : [
         {
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(28, 'days'),
           unit_cost :  null,
@@ -406,7 +406,7 @@ const movementComplexeAggregate = {
       old_quantity : 750,
       quantity_consumed : 500,
       quantity_lost : 250,
-      detailled : [
+      detailed : [
         {
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(12, 'days'),
           unit_cost :  null,
