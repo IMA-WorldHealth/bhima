@@ -18,6 +18,15 @@
       
       <div class="col-xs-12">
         <canvas id="stockMovementReportChart" style="width:100%" height="330"></canvas>
+
+        <div>
+          {{#each chartLegend as | legend |}}
+            <div>
+              <span style="background-color:{{legend.color}}; display:inline-block; padding: 5px; margin-right: 10px;">&nbsp; &nbsp;</span>
+              <span>{{legend.text}}</span>
+            </div>
+          {{/each}}
+        </div>
       </div>
     </div>
   </div>

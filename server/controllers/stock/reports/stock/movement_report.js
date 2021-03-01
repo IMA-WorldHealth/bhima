@@ -3,6 +3,7 @@ const {
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
+const financeParser = require('../../../../lib/template/helpers/finance');
 const chartjs = require('../../../../lib/chart');
 const db = require('../../../../lib/db');
 /**
@@ -28,9 +29,10 @@ async function document(req, res, next) {
     const options = req.query;
 
     params.group_by_flux = 1;
+    params.order_by_exit = 1;
 
     const collection = [];
-    const reportType = options.reportType || 'movement_number';
+    const reportType = options.reportType || 'movement_count';
     const depot = await db.one('SELECT text FROM depot WHERE uuid = ?', db.bid(params.depot_uuid));
     const result = await stockCore.getDailyStockConsumption(params);
 
@@ -38,6 +40,7 @@ async function document(req, res, next) {
       const line = {
         label : i18n(options.lang)(Stock.fluxLabel[item.flux_id]),
         value : item[reportType],
+        isExit : !!item.is_exit,
       };
       collection.push(line);
     });
@@ -46,15 +49,64 @@ async function document(req, res, next) {
       labels : collection.map(item => item.label),
       datasets : [{
         data : collection.map(item => item.value),
-        backgroundColor : 'rgba(8, 84, 132, 1)',
+        backgroundColor : collection.map(item => (item.isExit ? 'rgba(255, 0, 0, 1)' : 'rgba(8, 84, 132, 1)')),
       }],
     };
+
+    const chartOption = {
+      legend : {
+        position : 'bottom',
+        display : false,
+      },
+      plugins : {
+        datalabels : {
+          align : 'end',
+          anchor : 'end',
+          color() {
+            return 'rgb(0, 0, 0)';
+          },
+          font(context) {
+            const w = context.chart.width;
+            return {
+              size : w < 512 ? 12 : 14,
+            };
+          },
+          formatter(value) {
+            return (reportType === 'value')
+              ? financeParser.currency(value, req.session.enterprise.currency_id) : value;
+          },
+        },
+        tooltip : {
+          callbacks : {
+            label(context) {
+              let label = context.dataset.label || '';
+
+              if (label) {
+                label += ' : ';
+              }
+
+              if (context.parsed.x !== null) {
+                label += financeParser.currency(context.parsed.x, req.session.enterprise.currency_id);
+              }
+
+              return label;
+            },
+          },
+        },
+      },
+    };
+
+    const chartLegend = [
+      { color : 'rgba(255, 0, 0, 1)', text : i18n(options.lang)('STOCK.EXIT') },
+      { color : 'rgba(8, 84, 132, 1)', text : i18n(options.lang)('STOCK.ENTRY') },
+    ];
 
     const chartRenderOptions = {
       chart_canvas_id : 'stockMovementReportChart',
       chart_data : data,
       chart_x_axis_label : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
       chart_type : 'horizontalBar',
+      chart_option : chartOption,
     };
 
     const reportResult = await report.render({
@@ -62,6 +114,7 @@ async function document(req, res, next) {
       dateFrom : params.dateFrom,
       dateTo : params.dateTo,
       chartjs : chartjs.renderChart(chartRenderOptions),
+      chartLegend,
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
