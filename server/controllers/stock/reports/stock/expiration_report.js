@@ -76,12 +76,14 @@ async function stockExpirationReport(req, res, next) {
           totals.expired.quantity += lot.mvt_quantity;
           total += lot.value;
         } else {
-          lot.quantity_at_risk = (lot.S_RISK_QUANTITY * -1);
+          console.log("-----------------------------------------------------------");
+          console.log(lot);
+          lot.quantity_at_risk = lot.mvt_quantity;
           lot.value = (lot.quantity_at_risk * lot.unit_cost);
           lot.statusKey = 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION';
           lot.classKey = 'bg-warning text-warning';
           totals.at_risk.value += lot.value;
-          totals.at_risk.quantity += (lot.S_RISK_QUANTITY * -1);
+          totals.at_risk.quantity += lot.quantity_at_risk;
           total += lot.value;
         }
       });
