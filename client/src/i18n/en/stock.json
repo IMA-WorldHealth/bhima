@@ -73,6 +73,7 @@
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_RISK" : "Expiration Risk",
     "EXIT"            : "Stock Exit",
+    "EXIT_AGGREGATE_CONSUMPTION" : "Aggregate consumption for the depot: {{depot}} in the period: {{period}} by the user: {{user}}",
     "EXIT_DEPOT"      : "Distribution to a depot",
     "EXIT_PATIENT"    : "Distribution to a patient",
     "EXIT_PATIENT_ADVANCED" : "Distribution to the patient {{patient}} from depot {{depot}}",

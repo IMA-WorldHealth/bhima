@@ -390,7 +390,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockAggregateConsumptionReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.FLUX.AGGREGATE_CONSUMPTION', notifyCreated, renderer : Receipts.renderer };
+    const opts = { title : 'STOCK.RECEIPT.AGGREGATE_CONSUMPTION', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockAggregateConsumptionReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }

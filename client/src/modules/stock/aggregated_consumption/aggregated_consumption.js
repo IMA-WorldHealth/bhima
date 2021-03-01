@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockAggregatedConsumptionController.$inject = [
-  'NotifyService', 'SessionService', 'util',
+  'NotifyService', 'SessionService', 'util', '$translate',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'uiGridConstants', 'GridGroupingService', 'StockModalService',
 ];
@@ -15,7 +15,7 @@ StockAggregatedConsumptionController.$inject = [
  * This module exists to Aggregated Consumption
  */
 function StockAggregatedConsumptionController(
-  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Notify, Session, util, $translate, bhConstants, ReceiptModal, StockForm,
   Stock, uiGridConstants, Grouping, StockModal,
 ) {
   const vm = this;
@@ -35,6 +35,7 @@ function StockAggregatedConsumptionController(
   };
 
   vm.onSelectPeriod = (period) => {
+    vm.movement.hrLabel = period.hrLabel;
     vm.movement.date = period.end_date;
     vm.movement.start_date = period.start_date;
     vm.currentDate = new Date();
@@ -136,7 +137,6 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'consumption',
-      width : 150,
       displayName : 'TABLE.COLUMNS.CONSUMPTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_aggregate.tmpl.html',
@@ -243,6 +243,14 @@ function StockAggregatedConsumptionController(
   // ================================= Submit ================================
   function submit(form) {
     // check stock validity
+    const i18nKeys = {
+      depot : vm.depot.text,
+      period : vm.movement.hrLabel,
+      user : Session.user.display_name,
+    };
+
+    const formatedDescription = $translate.instant('STOCK.EXIT_AGGREGATE_CONSUMPTION', i18nKeys);
+
     const isValid = vm.Stock.validate();
     const isValidConsumption = checkValidation(vm.Stock.store.data);
 
@@ -255,7 +263,8 @@ function StockAggregatedConsumptionController(
     const movement = {
       depot_uuid : vm.depot.uuid,
       date : vm.movement.date,
-      description : vm.movement.description,
+      description : vm.movement.description
+        ? formatedDescription.concat(' : ', vm.movement.description) : formatedDescription,
       is_exit : 0,
       flux_id : AGGREGATED_CONSUMPTION,
       user_id : Session.user.id,
@@ -269,6 +278,7 @@ function StockAggregatedConsumptionController(
       return row;
     });
 
+    // Here we filter the products that were either consumed or lost
     movement.lots = lots.filter(lot => {
       return ((lot.quantity_consumed > 0 || lot.quantity_lost > 0)
         && (lot.old_quantity >= (lot.quantity_consumed + lot.quantity_lost)));
