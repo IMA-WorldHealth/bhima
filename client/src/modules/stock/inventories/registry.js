@@ -22,6 +22,7 @@ function StockInventoriesController(
   const stockInventoryFilters = Stock.filter.inventory;
 
   vm.openBarcodeScanner = openBarcodeScanner;
+  vm.openStockSheetReport = openStockSheetReport;
 
   const columns = [{
     field            : 'depot_text',
@@ -196,6 +197,7 @@ function StockInventoriesController(
   }
 
   function setStatusFlag(item) {
+
     item.noAlert = !item.hasRiskyLots && !item.hasNearExpireLots && !item.hasExpiredLots;
     item.alert = item.hasExpiredLots;
     item.warning = !item.hasExpiredLots && (item.hasNearExpireLots || item.hasRiskyLots);
@@ -299,6 +301,13 @@ function StockInventoriesController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
+  vm.viewAMCCalculations = viewAMCCalculations;
+
+  function viewAMCCalculations(item) {
+    Modal.openAMCCalculationModal(item)
+      .catch(angular.noop);
+  }
+
   /**
    * @function openBarcodeScanner
    *
@@ -316,6 +325,22 @@ function StockInventoriesController(
         load(stockInventoryFilters.formatHTTP(true));
         vm.latestViewFilters = stockInventoryFilters.formatView();
       });
+  }
+
+  function openStockSheetReport(row) {
+    const [dateTo] = new Date().toISOString().split('T');
+
+    const options = {
+      renderer : 'pdf',
+      lang : Languages.key,
+      inventory_uuid : row.inventory_uuid,
+      depot_uuid : row.depot_uuid,
+      report_id : 14,
+      dateTo,
+    };
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   }
 
   startup();

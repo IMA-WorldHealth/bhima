@@ -4,7 +4,7 @@ angular.module('bhima.services')
 PurchaseOrderService.$inject = [
   '$uibModal', 'FilterService', 'appcache', 'PeriodService',
   'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
-  'bhConstants',
+  'bhConstants', 'SessionService',
 ];
 
 /**
@@ -16,7 +16,7 @@ PurchaseOrderService.$inject = [
  */
 function PurchaseOrderService(
   $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
-  Languages, bhConstants,
+  Languages, bhConstants, Session,
 ) {
   const baseUrl = '/purchases/';
   const service = new Api(baseUrl);
@@ -35,6 +35,8 @@ function PurchaseOrderService(
   service.stockStatus = stockStatus;
   service.stockBalance = stockBalance;
   service.purchaseState = purchaseState;
+
+  service.openPurchaseOrderAnalysisReport = openPurchaseOrderAnalysisReport;
 
   purchaseFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
@@ -142,6 +144,18 @@ function PurchaseOrderService(
         params : () => params,
       },
     }).result;
+  }
+
+  function openPurchaseOrderAnalysisReport(row) {
+    const opts = {
+      lang : Languages.key,
+      currency_id : Session.enterprise.currency_id,
+      purchase_uuid : row.uuid,
+      shouldShowDetails : 1,
+      renderer : 'pdf',
+    };
+
+    return $httpParamSerializer(opts);
   }
 
   function download(type) {
