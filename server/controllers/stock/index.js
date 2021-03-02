@@ -81,7 +81,7 @@ async function createStock(req, res, next) {
 
     params.lots.forEach(lot => {
 
-      const lotUuid = lot.uuid;
+      let lotUuid = lot.uuid;
 
       if (lotUuid === null || typeof lotUuid === 'undefined') {
         // Create new lot (if one it does not already exist)
