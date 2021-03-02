@@ -57,8 +57,17 @@
           </tr>
         </thead>
         <tbody>
+          {{#if header}}
+            <tr{{#if header.hasNegativeValues}}class="bg-danger text-danger"{{/if}}>
+              <td colspan="10" class="text-center">{{translate 'REPORT.OPENING_BALANCE'}} </td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{header.quantity}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{precision header.unit_cost 4}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}>{{currency header.value metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/if}}
+
           {{#each rows}}
-            <tr>
+            <tr {{#if hasNegativeValues}}class="bg-danger text-danger"{{/if}}>
               <td style="border-left: 1px solid #000;">{{reference}}</td>
               <td style="border-right: 1px solid #000;">{{timestamp date}}</td>
               {{#unless ../depot.text}}
@@ -77,9 +86,9 @@
               <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../metadata.enterprise.currency_id}}{{/if}}</td>
 
               {{!-- stock --}}
-              <td class="text-right" style="background-color:#efefef;">{{stock.quantity}}</td>
-              <td class="text-right" style="background-color:#efefef;">{{precision stock.unit_cost 4}}</td>
-              <td class="text-right" style="background-color:#efefef;border-right: 1px solid #000;">{{currency stock.value ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{stock.quantity}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{precision stock.unit_cost 4}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}>{{currency stock.value ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
         </tbody>
