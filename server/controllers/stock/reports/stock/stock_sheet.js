@@ -6,10 +6,10 @@ const {
  * @method stockSheetReport
  *
  * @description
- * This method builds the stock inventory report as either a JSON, PDF, or HTML
+ * This method builds the stock sheet report as either a JSON, PDF, or HTML
  * file to be sent to the client.
  *
- * GET /reports/stock/inventory
+ * GET /reports/stock/sheet
  */
 async function stockSheetReport(req, res, next) {
   const optionReport = _.extend(req.query, {
@@ -40,6 +40,11 @@ async function stockSheetReport(req, res, next) {
       // already sorted by created_at by mysql
       data.rows = rows.movements;
     }
+
+    // mark rows if they contain negative balances
+    data.rows.forEach(row => {
+      row.hasNegativeValues = row.stock.quantity < 0;
+    });
 
     data.totals = rows.totals;
     data.result = rows.result;
