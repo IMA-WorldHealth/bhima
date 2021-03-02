@@ -986,9 +986,6 @@ async function createAggregatedConsumption(req, res, next) {
   try {
     const movement = req.body;
 
-    console.log('NEW_DOCUMENTNTTTTTTTttttttt');
-    console.log(movement.lots);
-
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
     }
@@ -1120,6 +1117,9 @@ async function createAggregatedConsumption(req, res, next) {
         let eltDate = new Date(elt.end_date);
         eltDate = eltDate.setHours(23, 30, 0);
 
+        const formatStartDate = moment(elt.start_date).format('DD/MM/YYYY');
+        const formatEndDate = moment(elt.end_date).format('DD/MM/YYYY');
+
         if (elt.quantity_consumed > 0) {
           const consumptionMovementObject = {
             uuid : db.bid(uuid()),
@@ -1131,10 +1131,11 @@ async function createAggregatedConsumption(req, res, next) {
             date : new Date(eltDate),
             is_exit : 1,
             flux_id : core.flux.AGGREGATE_CONSUMPTION,
-            description : movement.description,
+            description : `${movement.description} [${formatStartDate} - ${formatEndDate}]`,
             user_id : req.session.user.id,
             period_id : periodId,
           };
+
           trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
 
           const consumptionParams = [
@@ -1156,10 +1157,11 @@ async function createAggregatedConsumption(req, res, next) {
             date : new Date(eltDate),
             is_exit : 1,
             flux_id : core.flux.TO_LOSS,
-            description : movement.description,
+            description : `${movement.description} [${formatStartDate} - ${formatEndDate}]`,
             user_id : req.session.user.id,
             period_id : periodId,
           };
+
           trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
 
           const consumptionParams = [

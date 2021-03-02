@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('AggregateConsumptionModalForm', AggregateConsumptionModalForm);
 
-AggregateConsumptionModalForm.$inject = ['uuid'];
+AggregateConsumptionModalForm.$inject = ['uuid', 'moment'];
 
 /**
  * @function AggregateConsumptionModalForm
@@ -11,18 +11,21 @@ AggregateConsumptionModalForm.$inject = ['uuid'];
  * the aggregate consumption of a batch by date. This function makes it possible to better track
  * consumption to quickly detect periods of out of stock
  */
-function AggregateConsumptionModalForm(uuid) {
+function AggregateConsumptionModalForm(uuid, moment) {
   const ERR_NO_ROWS = 'STOCK.ERRORS.NO_ROWS';
   const ERR_QUANTITY_CONSUMED_OVER_GLOBAL = 'STOCK.ERRORS.QUANTITY_CONSUMED_OVER_GLOBAL';
   const ERR_QUANTITY_LOST_OVER_GLOBAL = 'STOCK.ERRORS.QUANTITY_LOST_OVER_GLOBAL';
   const ERR_MISSING_LOT_UNIT_COST = 'STOCK.ERRORS.MISSING_LOT_UNIT_COST';
   const ERR_INVALID_QUANTITY_NEGATIVE = 'STOCK.ERRORS.INVALID_QUANTITY_NEGATIVE';
   const ERR_INVALID_PERIOD = 'STOCK.ERRORS.INVALID_PERIOD';
+  const ERR_INVALID_RANGE = 'STOCK.ERRORS.INVALID_RANGE';
   const ERR_QUANTITY_CONSUMED_LOWER = 'STOCK.ERRORS.QUANTITY_CONSUMED_LOWER';
   const ERR_QUANTITY_LOST_LOWER = 'STOCK.ERRORS.QUANTITY_LOST_LOWER';
+  const POORLY_FORMALIZED_DATE_RANGE = 'STOCK.ERRORS.POORLY_FORMALIZED_DATE_RANGE';
 
   function Lot(row = {}) {
     this.end_date = new Date(row.end_date) || new Date();
+    this.start_date = new Date(row.start_date) || new Date();
     this.unit_cost = row.unit_cost || null;
     this.quantity_consumed = row.quantity_consumed || 0;
     this.quantity_lost = row.quantity_lost || 0;
@@ -97,12 +100,20 @@ function AggregateConsumptionModalForm(uuid) {
    */
   function validateSingleRow(row) {
 
-    const isInTheRightPeriod = new Date(row.end_date) >= new Date(this.opts.start_date)
+    const isEndDateInTheRightPeriod = new Date(row.end_date) >= new Date(this.opts.start_date)
       && new Date(row.end_date) <= new Date(this.opts.end_date);
     row._error = null;
 
+    const isStartDateInTheRightPeriod = new Date(row.start_date) >= new Date(this.opts.start_date)
+      && new Date(row.start_date) <= new Date(this.opts.end_date);
+    row._error = null;
+
+    if (new Date(row.start_date) > new Date(row.end_date)) {
+      row._error = ERR_INVALID_RANGE;
+    }
+
     // check invalid lot expiration date
-    if (!isInTheRightPeriod) {
+    if (!isEndDateInTheRightPeriod || !isStartDateInTheRightPeriod) {
       row._error = ERR_INVALID_PERIOD;
     }
 
@@ -152,6 +163,26 @@ function AggregateConsumptionModalForm(uuid) {
 
       if (lot.isInvalid) {
         errors.push(lot._error);
+      }
+    });
+
+    this.rows.forEach(lot => {
+      let countStartDate = 0;
+      let countEndDate = 0;
+
+      this.rows.forEach(l => {
+        const checkStartDate = moment(lot.start_date).isBetween(l.start_date, l.end_date);
+        const checkEndDate = moment(lot.end_date).isBetween(l.start_date, l.end_date);
+        if (checkStartDate) {
+          countStartDate++;
+        }
+        if (checkEndDate) {
+          countEndDate++;
+        }
+      });
+
+      if (countStartDate > 0 || countEndDate > 0) {
+        errors.push(POORLY_FORMALIZED_DATE_RANGE);
       }
     });
 
