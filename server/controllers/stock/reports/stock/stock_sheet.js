@@ -46,8 +46,12 @@ async function stockSheetReport(req, res, next) {
       row.hasNegativeValues = row.stock.quantity < 0;
     });
 
+    const header = rows.openingBalance;
+    header.hasNegativeValues = rows.openingBalance && rows.openingBalance.value < 0;
+
     data.totals = rows.totals;
     data.result = rows.result;
+    data.header = header;
     data.dateFrom = options.dateFrom;
     data.dateTo = options.dateTo;
 

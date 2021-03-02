@@ -57,6 +57,15 @@
           </tr>
         </thead>
         <tbody>
+          {{#if header}}
+            <tr{{#if header.hasNegativeValues}}class="bg-danger text-danger"{{/if}}>
+              <td colspan="10" class="text-center">{{translate 'REPORT.OPENING_BALANCE'}} </td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{header.quantity}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{precision header.unit_cost 4}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}>{{currency header.value metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/if}}
+
           {{#each rows}}
             <tr {{#if hasNegativeValues}}class="bg-danger text-danger"{{/if}}>
               <td style="border-left: 1px solid #000;">{{reference}}</td>
