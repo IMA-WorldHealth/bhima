@@ -70,6 +70,7 @@ async function stockConsumptionGraphReport(req, res, next) {
       dateTo : options.dateTo,
       depot,
       chartjs : chartjs.renderChart(chartRenderOptions),
+      destinationType : `STOCK_FLUX.${options.destinationType || 'ALL_DESTINATION'}`,
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
