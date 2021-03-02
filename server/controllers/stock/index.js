@@ -438,10 +438,6 @@ async function normalMovement(document, params, metadata) {
   const transaction = db.transaction();
   const parameters = params;
 
-  const isDistributable = !!(
-    (parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE) && parameters.is_exit
-  );
-
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
   parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
 
