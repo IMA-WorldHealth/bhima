@@ -46,11 +46,11 @@ async function stockExpirationReport(req, res, next) {
     // get the lots for this depot
     const lots = await stockCore.getLotsDepot(options.depot_uuid, options);
 
-    // get the lots that are "at risk"
-    const risky = lots.filter(lot => (lot.at_risk && lot.lifetime > 0));
+    // get the lots that are "at risk" of expiring
+    const risky = lots.filter(lot => (lot.near_expiration && lot.lifetime > 0));
 
     // get expired lots
-    const expired = lots.filter(lot => (lot.expired && lot.expiration_date <= today));
+    const expired = lots.filter(lot => (lot.flags.expired && lot.expiration_date <= today));
 
     // merge risky and expired
     const riskyAndExpiredLots = risky.concat(expired);
@@ -76,7 +76,7 @@ async function stockExpirationReport(req, res, next) {
           totals.expired.quantity += lot.mvt_quantity;
           total += lot.value;
         } else {
-          lot.quantity_at_risk = lot.mvt_quantity;
+          lot.quantity_at_risk = lot.S_RISK_QUANTITY;
           lot.value = (lot.quantity_at_risk * lot.unit_cost);
           lot.statusKey = 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION';
           lot.classKey = 'bg-warning text-warning';
