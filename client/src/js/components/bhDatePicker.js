@@ -7,6 +7,7 @@ angular.module('bhima.components')
       onChange : '&', // use a callback to notify for changes
       format   : '<?',
       mode     : '@?', // will this ever change?  If so, we can use '<'
+      disabled : '<?', // Optional flag to disable this field
       required : '<?',
     },
   });
@@ -43,6 +44,10 @@ function DatePickerController(Modal, bhConstants) {
   }
 
   function open() {
+    if (vm.disabled) {
+      // Do not open the date picker popup if the field is disabled
+      return;
+    }
     openDatePicker({ mode : vm.mode })
       .then(date => {
         // notify the parent controller of a date change via a callback

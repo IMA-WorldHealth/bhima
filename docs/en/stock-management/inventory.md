@@ -25,7 +25,7 @@ The Inventory Registry provides an overview of all inventory items in the applic
   </p>
 </div>
 
-The registry also has links inline to the Invoices Registry, Stock Movements Registry, Items in Stock Registry, and Inventory Changes Report.
+The registry also has links inline to the Invoices Registry, Stock Movements Registry, Articles in Stock Registry, and Inventory Changes Report.
 
 
 #### Creating an Inventory Item

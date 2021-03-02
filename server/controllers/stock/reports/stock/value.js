@@ -109,6 +109,7 @@ async function reporting(_options, session) {
   data.emptyResult = data.stockValues.length === 0;
 
   data.currency_id = options.currency_id;
+  data.exclude_zero_value = options.exclude_zero_value;
   return report.render(data);
 }
 
