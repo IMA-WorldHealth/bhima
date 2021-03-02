@@ -16,26 +16,11 @@ function StockAggregateConsumptionPage() {
   page.gridId = gridId;
   page.modalGridId = modalGridId;
 
-  // create modal
-  page.showCreateModal = async isNewRequisition => {
-    const selector = isNewRequisition ? '[data-method="create-record"]' : '[data-method="create-other-record"]';
-    await $(selector).click();
-  };
-
-  page.showSearchModal = () => {
-    return $('[data-method="search"]').click();
-  };
-
   page.setFiscalPeriod = async (fiscalYear, period) => {
     await components.fiscalYearPeriodSelect.set(fiscalYear, period);
   };
 
-  // depot select
-  page.setDepot = depot => {
-    return components.depotSelect.set(depot, 'depot-supplier');
-  };
-
-  page.setRows = async number => {
+  page.addRows = async number => {
     await components.addItem.set(number);
   };
 
@@ -70,14 +55,14 @@ function StockAggregateConsumptionPage() {
   };
 
   /**
-   * @method setDetailled
+   * @method setDetailed
    */
-  page.setDetailled = async function setDetailled(rowIndex, columnIndex) {
+  page.setDetailed = async function setDetailed(rowIndex, columnIndex) {
     const getCell = await GU.getCell(gridId, rowIndex, columnIndex);
     await getCell.element(by.id('aggregated_details')).click();
   };
 
-  page.setLotsDetailled = async function setLotsDetailled(lotsArray) {
+  page.setLotsDetailed = async function setLotsDetailed(lotsArray) {
     const dateCell0 = await GU.getCell(modalGridId, 0, 1);
     const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
     const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);
@@ -120,7 +105,7 @@ function StockAggregateConsumptionPage() {
     FU.modal.submit();
   };
 
-  page.setLots2Detailled = async function setLots2Detailled(lotsArray) {
+  page.setLots2Detailed = async function setLots2Detailed(lotsArray) {
     const dateCell0 = await GU.getCell(modalGridId, 0, 1);
     const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
     const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);

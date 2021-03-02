@@ -11,8 +11,7 @@ function StockConsumptionLotsModalController(
 ) {
   const vm = this;
 
-  const cache = new AppCache('StockEntryModal');
-
+  const cache = new AppCache('ConsumptionLotsModal');
   // initialize the form instance
   vm.form = new AggregateForm({
     max_quantity_consumed : Data.stockLine.quantity_consumed,
@@ -52,17 +51,24 @@ function StockConsumptionLotsModalController(
     displayName : '',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html',
   }, {
-    field : 'movement_date',
+    field : 'start_date',
     type : 'date',
     cellFilter : `date:"${bhConstants.dates.format}"`,
     width : 200,
-    displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.CONSUMPTION_TO_DATE',
+    displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.START_OF_CONSUMPTION',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_movement_start_date.tmpl.html',
+  }, {
+    field : 'end_date',
+    type : 'date',
+    cellFilter : `date:"${bhConstants.dates.format}"`,
+    width : 200,
+    displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.END_OF_CONSUMPTION',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_movement_date.tmpl.html',
   }, {
     field : 'quantity_consumed',
     type : 'number',
-    width : 150,
     displayName : 'STOCK.QUANTITY_CONSUMED',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
@@ -72,7 +78,6 @@ function StockConsumptionLotsModalController(
   }, {
     field : 'quantity_lost',
     type : 'number',
-    width : 150,
     displayName : 'STOCK.QUANTITY_LOST',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
@@ -80,6 +85,7 @@ function StockConsumptionLotsModalController(
     footerCellClass : 'text-right',
     cellTemplate : 'modules/stock/aggregated_consumption/templates/lost.tmpl.html',
   }, {
+    width : 75,
     field : 'actions',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
   }];
@@ -166,9 +172,9 @@ function StockConsumptionLotsModalController(
     onChanges();
   }
 
-  function onDateChange(date, row) {
+  function onDateChange(date, row, property) {
     if (date) {
-      row.end_date = date;
+      row[property] = date;
       onChanges();
     }
   }
