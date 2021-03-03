@@ -17,8 +17,9 @@ const FilterParser = require('../../lib/filter');
 const detailsQuery = `
   SELECT
     BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
-    l.unit_cost, l.description, l.expiration_date, l.entry_date,
-    BUID(i.uuid) AS inventory_uuid, i.text
+    l.unit_cost, l.description, l.entry_date, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+    i.code as inventory_code
   FROM lot l
   JOIN inventory i ON i.uuid = l.inventory_uuid
   `;
@@ -27,8 +28,10 @@ exports.update = update;
 exports.details = details;
 exports.assignments = assignments;
 exports.getLotTags = getLotTags;
+exports.getCandidates = getCandidates;
 exports.getDupes = getDupes;
 exports.merge = merge;
+exports.autoMerge = autoMerge;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -95,13 +98,37 @@ async function update(req, res, next) {
 }
 
 /**
- * GET /lot_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
+ * GET /inventory/:uuid/lot_candidates
+ *
+ * @description
+ * Returns all lots with the that inventory uuid
+ */
+function getCandidates(req, res, next) {
+  const inventoryUuid = db.bid(req.params.uuid);
+
+  const query = `
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description, l.expiration_date
+    FROM lot l
+    WHERE l.inventory_uuid = ?
+    ORDER BY label, expiration_date
+    `;
+
+  return db.exec(query, [inventoryUuid])
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * GET /lots_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
  *
  * @description
  * Returns all lots with the given label or matching field(s)
  * inventory_uuid, initial_quantity, entry_date, expiration_date
  *
- * TODO: After getting this working purge unneeded params
+ * TODO: After getting this working, purge unneeded params
  *
  */
 function getDupes(req, res, next) {
@@ -113,8 +140,23 @@ function getDupes(req, res, next) {
   filters.equals('entry_date');
   filters.equals('expiration_date');
 
-  const query = filters.applyQuery(detailsQuery);
+  let query = filters.applyQuery(detailsQuery);
   const params = filters.parameters();
+
+  if ('find_dupes' in options) {
+    // For the 'find duplicate lots' search, we need a different query
+    query = `
+      SELECT
+        BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
+        l.unit_cost, l.description, l.entry_date, l.expiration_date,
+        BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+        i.code as inventory_code, COUNT(*) as num_duplicates
+      FROM lot l
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      GROUP BY label, inventory_uuid HAVING num_duplicates > 1
+      ORDER BY inventory_text, num_duplicates, label
+    `;
+  }
 
   return db.exec(query, params)
     .then(rows => {
@@ -122,6 +164,42 @@ function getDupes(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * Internal function to merge lots
+ * @description
+ * Merge the lotsToMerge into the lot to keep (given by uuid).
+ * This is a accomplished in two steps for each lot to merge:
+ *   1. Replace all references to the lot to be merged with
+ *      references to the lot to keep.
+ *   2. Delete the lot to be merged
+ *
+ * @param uuid {string} UUID of the primary lot to keep
+ * @param lotsToMerge {list} UUIDs (strings) for lots to be merged into the primary lot
+ *
+ * @return a promise for the DB transaction
+ */
+
+function mergeLotsInternal(uuid, lotsToMerge) {
+  const keepLotUuid = db.bid(uuid);
+
+  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
+  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
+
+  const transaction = db.transaction();
+
+  lotsToMerge.forEach(rawUuid => {
+    const mergeLotUuid = db.bid(rawUuid);
+    transaction.addQuery(updateLotTags, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(updateStockAssign, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(updateStockMovement, [keepLotUuid, mergeLotUuid]);
+    transaction.addQuery(deleteLot, [mergeLotUuid]);
+  });
+
+  return transaction.execute();
 }
 
 /**
@@ -133,34 +211,86 @@ function getDupes(req, res, next) {
  *   1. Replace all references to the lot to be merged with
  *      references to the lot to keep.
  *   2. Delete the lot to be merged
- *
- * lot_tag : lot_uuid
- * stock_assign : lot_uuid
- * stock_movement : lot_uuid
  */
-async function merge(req, res, next) {
-  const uuid = db.bid(req.params.uuid);
+function merge(req, res, next) {
+  const { uuid } = req.params;
   const lotsToMerge = req.body.lotsToMerge.map(db.bid);
 
-  const updateLotTags = 'UPDATE lot_tag SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const updateStockAssign = 'UPDATE stock_assign SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const updateStockMovement = 'UPDATE stock_movement SET lot_uuid = ?  WHERE lot_uuid = ?';
-  const deleteLot = 'DELETE FROM lot WHERE uuid = ?';
+  mergeLotsInternal(uuid, lotsToMerge)
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(next)
+    .done();
+}
 
-  try {
-    const transaction = db.transaction();
-    lotsToMerge.forEach(rawUuid => {
-      const mergeLotUuid = db.bid(rawUuid);
-      transaction.addQuery(updateLotTags, [uuid, mergeLotUuid]);
-      transaction.addQuery(updateStockAssign, [uuid, mergeLotUuid]);
-      transaction.addQuery(updateStockMovement, [uuid, mergeLotUuid]);
-      transaction.addQuery(deleteLot, [mergeLotUuid]);
-    });
-    await transaction.execute();
-    res.sendStatus(200);
-  } catch (error) {
-    next(error);
-  }
+/**
+ * GET /lots/merge/auto
+ *
+ * @description
+ * Finds and merges all lots suitable for automatic merging
+ *  - To qualify, the lots must have the same inventory_uuid,
+ *    label, and expiration date.
+ */
+function autoMerge(req, res, next) {
+  // The first query gets the inventory UUID for each
+  // inventory article with duplicate lots (having the
+  // same label, inventory_uuid, and expiration_date).
+  // (Since these are grouped, only one of the several
+  // lots is given.)
+  const query1 = `
+  SELECT
+    BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+    BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
+    COUNT(*) as num_duplicates
+  FROM lot l
+  JOIN inventory i ON i.uuid = l.inventory_uuid
+  GROUP BY label, inventory_uuid, expiration_date HAVING num_duplicates > 1
+`;
+
+  // The second query gets all lots matching the label,
+  // inventory_uuid, and expiration dates
+  const query2 = `
+    SELECT
+      BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+      BUID(i.uuid) AS inventory_uuid, i.text as inventory_text
+    FROM lot l
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    WHERE l.label=? AND i.uuid=? AND l.expiration_date=DATE(?)
+  `;
+
+  let numInventories = null;
+  let numLots = null;
+
+  db.exec(query1, [])
+    .then((rows) => {
+      numInventories = rows.length;
+      numLots = rows.reduce((sum, row) => {
+        return sum + row.num_duplicates;
+      }, 0) - numInventories;
+      const dbPromises = [];
+      rows.forEach((row) => {
+        const promise = db.exec(query2, [row.label, db.bid(row.inventory_uuid), row.expiration_date])
+          .then((lots) => {
+            // Arbitrarily keep the first lot and merge the duplicates into it
+            const keepLotUuid = lots[0].uuid;
+            const lotUuids = lots.reduce((list, elt) => {
+              if (elt.uuid !== keepLotUuid) {
+                list.push(elt.uuid);
+              }
+              return list;
+            }, []);
+            return mergeLotsInternal(keepLotUuid, lotUuids);
+          });
+        dbPromises.push(promise);
+      });
+      return Promise.all(dbPromises);
+    })
+    .then(() => {
+      res.status(200).json({ numInventories, numLots });
+    })
+    .catch(next)
+    .done();
 }
 
 /**

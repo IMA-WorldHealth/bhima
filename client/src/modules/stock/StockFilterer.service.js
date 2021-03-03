@@ -2,14 +2,13 @@ angular.module('bhima.services')
   .service('StockFilterer', StockFiltererService);
 
 StockFiltererService.$inject = [
-  'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  'FilterService', 'appcache', '$httpParamSerializer', 'LanguageService', 'bhConstants',
 ];
 
 /**
  * @class StockFilterer
  */
-function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
+function StockFiltererService(Filters, AppCache, $httpParamSerializer, Languages, bhConstants) {
   const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'purchase_uuid', label : 'PURCHASES.ORDER' },
@@ -34,7 +33,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'is_expiry_risk', label : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION' },
     { key : 'tag_uuid', label : 'TAG.LABEL' },
     { key : 'tags', label : 'TAG.LABEL' },
-    { key : 'show_only_risky', label : 'STOCK.LOTS.SHOW_ONLY_RISKY' },
+    { key : 'show_only_risky', label : 'LOTS.SHOW_ONLY_RISKY_LOTS' },
     { key : 'stock_requisition_uuid', label : 'FORM.LABELS.REQUISITION_REFERENCE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',

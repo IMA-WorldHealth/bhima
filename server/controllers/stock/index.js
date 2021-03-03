@@ -80,26 +80,37 @@ async function createStock(req, res, next) {
     const createMovementQuery = 'INSERT INTO stock_movement SET ?';
 
     params.lots.forEach(lot => {
-      // parse the expiration date
-      const date = new Date(lot.expiration_date);
 
-      // the lot object to insert
-      const createLotObject = {
-        uuid : db.bid(uuid()),
-        label : lot.label,
-        initial_quantity : lot.quantity,
-        quantity : lot.quantity,
-        unit_cost : lot.unit_cost,
-        expiration_date : date,
-        inventory_uuid : db.bid(lot.inventory_uuid),
-        origin_uuid : db.bid(lot.origin_uuid),
-        delay : 0,
-      };
+      let lotUuid = lot.uuid;
+
+      if (lotUuid === null || typeof lotUuid === 'undefined') {
+        // Create new lot (if one it does not already exist)
+        lotUuid = uuid();
+
+        // parse the expiration date
+        const date = new Date(lot.expiration_date);
+
+        // the lot object to insert
+        const createLotObject = {
+          uuid : db.bid(lotUuid),
+          label : lot.label,
+          initial_quantity : lot.quantity,
+          quantity : lot.quantity,
+          unit_cost : lot.unit_cost,
+          expiration_date : date,
+          inventory_uuid : db.bid(lot.inventory_uuid),
+          origin_uuid : db.bid(lot.origin_uuid),
+          delay : 0,
+        };
+
+        // adding a lot insertion query into the transaction
+        transaction.addQuery(createLotQuery, [createLotObject]);
+      }
 
       // the movement object to insert
       const createMovementObject = {
         uuid : db.bid(uuid()),
-        lot_uuid : createLotObject.uuid,
+        lot_uuid : db.bid(lotUuid),
         depot_uuid : db.bid(document.depot_uuid),
         document_uuid : db.bid(documentUuid),
         flux_id : params.flux_id,
@@ -116,15 +127,12 @@ async function createStock(req, res, next) {
         createMovementObject.entity_uuid = db.bid(params.entity_uuid);
       }
 
-      // adding a lot insertion query into the transaction
-      transaction.addQuery(createLotQuery, [createLotObject]);
-
       // adding a movement insertion query into the transaction
       transaction.addQuery(createMovementQuery, [createMovementObject]);
     });
 
     const isExit = 0;
-    const postingParams = [db.bid(documentUuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
+    const postingParams = [db.bid(documentUuid), isExit, req.session.project.id];
 
     if (req.session.stock_settings.enable_auto_stock_accounting) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
@@ -163,12 +171,13 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
 
   // loop through the inventory uuids, queuing up them to rerun
   uniqueInventoryUuids.forEach(uid => {
-    txn.addQuery(`CALL computeStockQuantity(?, ?, ?)`, [
-      new Date(mvmtDate),
-      db.bid(uid),
-      db.bid(depotUuid),
-    ]);
+    txn.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(uid)]);
   });
+
+  txn.addQuery(`CALL ComputeStockStatusForStagedInventory(DATE(?), ?)`, [
+    new Date(mvmtDate),
+    db.bid(depotUuid),
+  ]);
 
   return txn.execute();
 }
@@ -199,20 +208,24 @@ async function insertNewStock(session, params, originTable = 'integration') {
   transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
-    const lotUuid = uuid();
+    let lotUuid = lot.uuid;
 
-    // adding a lot insertion query into the transaction
-    transaction.addQuery(`INSERT INTO lot SET ?`, {
-      uuid : db.bid(lotUuid),
-      label : lot.label,
-      initial_quantity : lot.quantity,
-      quantity : lot.quantity,
-      unit_cost : lot.unit_cost,
-      expiration_date : new Date(lot.expiration_date),
-      inventory_uuid : db.bid(lot.inventory_uuid),
-      origin_uuid : db.bid(identifier),
-      delay : 0,
-    });
+    if (lotUuid === null) {
+      // adding a lot insertion query into the transaction
+      // (this is necessary only if we are creating a new lot)
+      lotUuid = uuid();
+      transaction.addQuery(`INSERT INTO lot SET ?`, {
+        uuid : db.bid(lotUuid),
+        label : lot.label,
+        initial_quantity : lot.quantity,
+        quantity : lot.quantity,
+        unit_cost : lot.unit_cost,
+        expiration_date : new Date(lot.expiration_date),
+        inventory_uuid : db.bid(lot.inventory_uuid),
+        origin_uuid : db.bid(identifier),
+        delay : 0,
+      });
+    }
 
     // adding a movement insertion query into the transaction
     transaction.addQuery(`INSERT INTO stock_movement SET ?`, {
@@ -235,7 +248,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
   const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
 
   const postingParams = [
-    db.bid(documentUuid), 0, session.project.id, session.enterprise.currency_id,
+    db.bid(documentUuid), 0, session.project.id,
   ];
 
   if (session.stock_settings.enable_auto_stock_accounting) {
@@ -332,11 +345,11 @@ async function createInventoryAdjustment(req, res, next) {
     });
 
     const negativeAdjustmentParams = [
-      db.bid(negativeAdjustmentUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+      db.bid(negativeAdjustmentUuid), 1, req.session.project.id,
     ];
 
     const positiveAdjustmentParams = [
-      db.bid(positiveAdjustmentUuid), 0, req.session.project.id, req.session.enterprise.currency_id,
+      db.bid(positiveAdjustmentUuid), 0, req.session.project.id,
     ];
 
     if (req.session.stock_settings.enable_auto_stock_accounting) {
@@ -425,10 +438,6 @@ async function normalMovement(document, params, metadata) {
   const transaction = db.transaction();
   const parameters = params;
 
-  const isDistributable = !!(
-    (parameters.flux_id === core.flux.TO_PATIENT || parameters.flux_id === core.flux.TO_SERVICE) && parameters.is_exit
-  );
-
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
   parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
 
@@ -453,25 +462,15 @@ async function normalMovement(document, params, metadata) {
 
     // transaction - add movement
     transaction.addQuery(createMovementQuery, [createMovementObject]);
-
-    // track distribution to patient and service
-    if (isDistributable) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.depot_uuid), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
-  const projectId = metadata.project.id;
-  const currencyId = metadata.enterprise.currency_id;
-  const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
+  const postStockParameters = [db.bid(document.uuid), parameters.is_exit, metadata.project.id];
 
   if (metadata.stock_settings.enable_auto_stock_accounting) {
-    transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
+    transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
   const result = await transaction.execute();
@@ -487,8 +486,6 @@ async function normalMovement(document, params, metadata) {
  * @description movement between depots
  */
 async function depotMovement(document, params) {
-
-  let isWarehouse;
   const transaction = db.transaction();
   const parameters = params;
   const isExit = parameters.isExit ? 1 : 0;
@@ -523,16 +520,6 @@ async function depotMovement(document, params) {
     };
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
-
-    isWarehouse = !!(parameters.from_depot_is_warehouse);
-
-    // track distribution to other depot from a warehouse
-    if (record.is_exit && isWarehouse) {
-      const consumptionParams = [
-        db.bid(lot.inventory_uuid), db.bid(parameters.from_depot), document.date, lot.quantity,
-      ];
-      transaction.addQuery('CALL ComputeStockConsumptionByDate(?, ?, ?, ?)', consumptionParams);
-    }
   });
 
   // gather inventory uuids for later quantity in stock calculation updates
@@ -770,9 +757,9 @@ async function listLotsDepot(req, res, next) {
     params.check_user_id = req.session.user.id;
   }
 
-  if (params.defaultPeriod) {
-    params.defaultPeriodEntry = params.defaultPeriod;
-    delete params.defaultPeriod;
+  if (params.period) {
+    params.defaultPeriodEntry = params.period;
+    delete params.period;
   }
 
   try {
@@ -841,21 +828,25 @@ async function listInventoryDepot(req, res, next) {
         const hasSameDepot = lots[j].depot_uuid === inventories[i].depot_uuid;
         const hasSameInventory = lots[j].inventory_uuid === inventories[i].inventory_uuid;
         if (hasSameDepot && hasSameInventory) {
+
+          // NOTE(@jniles): at this point, we've called computeLotIndicators() in the
+          // core.getLotsDepot() function.  This means we can use all the flags defined
+          // in that function to compute those here.
           const lot = lots[j];
-          if (lot.quantity <= 0) {
-            // lot exhausted
-          } else if (lot.lifetime < 0) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime < 0
+
+          if (lot.exhausted) {
+            // skip exhausted lots
+          } else if (lot.expired) {
             hasExpiredLots = true;
             expiredLotsQuantity += lot.quantity;
-          } else if (lot.IS_IN_RISK_EXPIRATION) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.IS_IN_RISK_EXPIRATION
+          } else if (lot.near_expiration) {
             hasNearExpireLots = true;
             nearExpireLotsQuantity += lot.quantity;
-          } else if (lot.S_RISK <= 0) {
-            // Equivalent to: lot.quantity > 0 && lot.lifetime >= 0 && lot.S_RISK <= 0
+
+          // flag if any lots are at risk of running out
+          } else if (lot.S_RISK_QUANTITY > 0) {
             hasRiskyLots = true;
-            riskyLotsQuantity += lot.quantity;
+            riskyLotsQuantity += lot.S_RISK_QUANTITY;
           }
         }
       }

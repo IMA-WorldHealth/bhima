@@ -10,15 +10,16 @@ describe('(/lots/) The lots HTTP API', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         const expectedKeys = [
-          'uuid', 'label', 'quantity', 'initial_quantity', 'unit_cost', 'description',
-          'entry_date', 'expiration_date', 'inventory_uuid', 'text', 'tags',
+          'uuid', 'label', 'quantity', 'initial_quantity', 'unit_cost',
+          'description', 'entry_date', 'expiration_date', 'inventory_uuid',
+          'inventory_code', 'inventory_text', 'tags',
         ];
         expect(res.body).to.have.all.keys(expectedKeys);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /stock/lots/depots/  Obtain lots with risk of peremptions', () => {
+  it('GET /stock/lots/depots/ Obtain lots with risk of expiration', () => {
     const conditions = {
       includeEmptyLot : '0',
       is_expiry_risk : '1',
@@ -29,7 +30,7 @@ describe('(/lots/) The lots HTTP API', () => {
     return agent.get('/stock/lots/depots/')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
