@@ -38,6 +38,7 @@ function StockExitController(
       vm.dateMessageWarning = true;
     }
     loadInventories(vm.depot, date);
+    checkValidity();
   };
 
   vm.onChangeDepot = depot => {
@@ -264,9 +265,10 @@ function StockExitController(
 
   function loadInventories(depot, dateTo = new Date()) {
     setupStock();
+
+    vm.loading = true;
     Stock.inventories.read(null, { depot_uuid : depot.uuid, dateTo })
       .then(inventories => {
-        vm.loading = false;
         vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
         // Here we check directly if a Depot has inventories in stock available
@@ -276,7 +278,10 @@ function StockExitController(
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
         checkValidity();
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // on lot select
@@ -306,7 +311,8 @@ function StockExitController(
     const lotsExists = vm.stockForm.store.data.every(item => {
       return item.quantity > 0 && item.lot.uuid;
     });
-    vm.validForSubmit = (lotsExists && vm.stockForm.store.data.length);
+
+    vm.validForSubmit = (lotsExists && vm.stockForm.store.data.length && !vm.loading);
   }
 
   function handleSelectedEntity(_entity, _type) {
@@ -461,13 +467,10 @@ function StockExitController(
     }
 
     vm.$loading = true;
-    return mapExit[vm.movement.exit_type].submit(form)
-      .then(toggleLoadingIndicator)
-      .catch(Notify.handleError);
-  }
 
-  function toggleLoadingIndicator() {
-    vm.$loading = !vm.$loading;
+    return mapExit[vm.movement.exit_type].submit(form)
+      .catch(Notify.handleError)
+      .finally(() => { vm.$loading = false; });
   }
 
   function reinit(form) {
