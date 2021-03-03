@@ -306,6 +306,12 @@ const movementStandardAggregate = {
     }],
 };
 
+let formatedMonth = getMovementMonthComplexe + 1;
+
+if (formatedMonth < 10) {
+  formatedMonth = `0${formatedMonth}`;
+}
+
 const movementComplexeAggregate = {
   depot_uuid : 'BD4B14524742E4FAA128246814140877',
   date : getLastDaysComplexe,
@@ -318,7 +324,7 @@ const movementComplexeAggregate = {
     '43F3DECBFCE9940A426EE62186BC2150' : 20,
   },
   fiscal_id : 6,
-  period_id : `${getMovementYearComplexe}${getMovementMonthComplexe + 1}`,
+  period_id : `${getMovementYearComplexe}${formatedMonth}`,
   lots : [
     {
       inventory_uuid : '43F3DECBFCE9426E940AB2150E62186C',
@@ -338,6 +344,7 @@ const movementComplexeAggregate = {
       quantity_lost : 250,
       detailed : [
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(30, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(28, 'days'),
           unit_cost :  null,
           quantity_consumed :  0,
@@ -348,6 +355,7 @@ const movementComplexeAggregate = {
           _error :  null,
         },
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(22, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(20, 'days'),
           unit_cost :  null,
           quantity_consumed :  0,
@@ -358,6 +366,7 @@ const movementComplexeAggregate = {
           _error :  null,
         },
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(16, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(14, 'days'),
           unit_cost :  null,
           quantity_consumed :  225,
@@ -368,6 +377,7 @@ const movementComplexeAggregate = {
           _error :  null,
         },
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(7, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(5, 'days'),
           unit_cost :  null,
           quantity_consumed :  125,
@@ -378,6 +388,7 @@ const movementComplexeAggregate = {
           _error :  null,
         },
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(4, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(2, 'days'),
           unit_cost :  null,
           quantity_consumed :  150,
@@ -408,6 +419,7 @@ const movementComplexeAggregate = {
       quantity_lost : 250,
       detailed : [
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(14, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(12, 'days'),
           unit_cost :  null,
           quantity_consumed :  125,
@@ -418,6 +430,7 @@ const movementComplexeAggregate = {
           _error :  null,
         },
         {
+          start_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(6, 'days'),
           end_date : moment(new Date(getLastDaysComplexe), 'YYYY-MM-DD').subtract(4, 'days'),
           unit_cost :  null,
           quantity_consumed :  375,
