@@ -149,7 +149,7 @@ function StockLotsController(
         const totals = {
           expired : 0,
           'at-risk-of-expiring' : 0,
-          'at-risk' : 0,
+          'at-risk-of-stock-out' : 0,
           'out-of-stock' : 0,
         };
 
@@ -161,8 +161,8 @@ function StockLotsController(
             totals.expired += 1;
           }
 
-          if (lot.at_risk) {
-            totals['at-risk'] += 1;
+          if (lot.at_risk_of_stock_out) {
+            totals['at-risk-of-stock-out'] += 1;
           }
 
           if (lot.near_expiration) {
