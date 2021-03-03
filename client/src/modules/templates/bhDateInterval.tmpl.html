@@ -41,6 +41,7 @@
           show-button-bar="false"
           ng-model="$ctrl.dateFrom"
           ng-change="$ctrl.onChangeDate()"
+          placeholder="{{ $ctrl.startDatePlaceholder }}"
           ng-required="$ctrl.required">
         <span class="input-group-btn">
           <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
@@ -71,6 +72,7 @@
           show-button-bar="false"
           ng-model="$ctrl.dateTo"
           ng-change="$ctrl.onChangeDate()"
+          placeholder="{{ $ctrl.endDatePlaceholder }}"
           ng-required="$ctrl.required">
         <span class="input-group-btn">
           <button class="btn btn-default" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">

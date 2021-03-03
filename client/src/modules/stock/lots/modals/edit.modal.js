@@ -9,6 +9,7 @@ EditLotModalController.$inject = [
 function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance) {
   const vm = this;
   vm.model = {};
+
   vm.enterprise = Session.enterprise;
   vm.onDateChange = onDateChange;
   vm.onSelectTags = onSelectTags;
@@ -18,6 +19,7 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
   vm.trackingExpiration = true;
 
   function startup() {
+
     Lots.read(Data.uuid)
       .then(lot => {
         vm.model = lot;

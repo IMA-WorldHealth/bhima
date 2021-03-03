@@ -50,6 +50,7 @@ async function report(req, res, next) {
     canceled : {
       color : '#d9534f',
       icon : 'X',
+      text : 'FORM.LABELS.CANCELED',
     },
     exessive : {
       color : '#d9534f',
@@ -71,10 +72,10 @@ async function report(req, res, next) {
     // This request makes it possible to obtain the quantities of the ordered products
     const sqlInventoriesOrdered = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid, iv.code,
-      iv.text AS inventory_text, pi.quantity AS quantity_ordered
+        iv.text AS inventory_text, pi.quantity AS quantity_ordered
       FROM purchase AS p
-      JOIN purchase_item AS pi ON pi.purchase_uuid = p.uuid
-      JOIN inventory AS iv ON iv.uuid = pi.inventory_uuid
+        JOIN purchase_item AS pi ON pi.purchase_uuid = p.uuid
+        JOIN inventory AS iv ON iv.uuid = pi.inventory_uuid
       WHERE p.uuid = ?
       ORDER BY iv.text ASC;
     `;
@@ -82,12 +83,12 @@ async function report(req, res, next) {
     // This query is used to get the quantities in stock for a purchase order
     const sqlInventoriesInStock = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid,
-      iv.text AS inventoryText, l.label AS lotLabel, p.project_id,
-      p.reference, p.user_id, l.uuid AS lotUuid, SUM(l.quantity) AS quantity_inStock,
-      l.expiration_date, MAX(l.entry_date) AS entry_date, iv.code
+        iv.text AS inventoryText, l.label AS lotLabel, p.project_id,
+        p.reference, p.user_id, l.uuid AS lotUuid, SUM(l.quantity) AS quantity_inStock,
+        l.expiration_date, MAX(l.entry_date) AS entry_date, iv.code
       FROM purchase AS p
-      JOIN lot AS l ON l.origin_uuid = p.uuid
-      JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+        JOIN lot AS l ON l.origin_uuid = p.uuid
+        JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
       WHERE p.uuid = ?
       GROUP BY iv.uuid
       ORDER BY iv.text ASC;
@@ -96,15 +97,15 @@ async function report(req, res, next) {
     // This request tracks the entries in stock of a purchase order, by date, by deposit but also by product
     const sqlInventoriesInStockDetailled = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid, iv.text AS inventoryText,
-      l.label AS lotLabel, p.project_id, p.reference, p.user_id, l.uuid AS lotUuid, l.quantity,
-      l.expiration_date, l.entry_date, iv.code,
-      d.text AS depotText, BUID(sm.uuid) AS stock_movement_uuid, dm1.text AS stock_movement_reference
+        l.label AS lotLabel, p.project_id, p.reference, p.user_id, l.uuid AS lotUuid, l.quantity,
+        l.expiration_date, l.entry_date, iv.code,
+        d.text AS depotText, BUID(sm.uuid) AS stock_movement_uuid, dm1.text AS stock_movement_reference
       FROM purchase AS p
-      JOIN lot AS l ON l.origin_uuid = p.uuid
-      JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
-      JOIN stock_movement AS sm ON sm.lot_uuid = l.uuid
-      JOIN depot AS d ON d.uuid = sm.depot_uuid
-      JOIN document_map AS dm1 ON dm1.uuid = sm.document_uuid
+        JOIN lot AS l ON l.origin_uuid = p.uuid
+        JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+        JOIN stock_movement AS sm ON sm.lot_uuid = l.uuid
+        JOIN depot AS d ON d.uuid = sm.depot_uuid
+        JOIN document_map AS dm1 ON dm1.uuid = sm.document_uuid
       WHERE p.uuid = ? AND sm.is_exit = 0 AND sm.flux_id = ?
       ORDER BY iv.text ASC, l.entry_date ASC
     `;
@@ -113,7 +114,7 @@ async function report(req, res, next) {
     const PURCHASE_FLUX_ID = 1;
 
     const [
-      purchase, inventoriesOrdered, inventoriesInStock, inventoriesInStockDetailled,
+      [purchase], inventoriesOrdered, inventoriesInStock, inventoriesInStockDetailled,
     ] = await Promise.all([
       Purchases.find({ uuid : params.purchase_uuid }),
       db.exec(sqlInventoriesOrdered, uidPurchase),
@@ -146,6 +147,13 @@ async function report(req, res, next) {
       } else if (ordered.quantity_difference > 0 && ordered.quantity_difference < ordered.quantity_ordered) {
         ordered.status = statusDisplay.partial;
       }
+
+      // if the purchase order is canceled, it should display canceled for all
+      // items
+      if (purchase.status_id === 5) {
+        ordered.status = statusDisplay.canceled;
+      }
+
     });
 
     inventoriesOrdered.forEach(ordered => {
@@ -159,7 +167,7 @@ async function report(req, res, next) {
 
     data.inventoriesOrdered = inventoriesOrdered;
 
-    [data.purchase] = purchase;
+    data.purchase = purchase;
 
     if (data.purchase.status_id === 1) {
       data.purchase.statusDisplay = statusDisplay.waiting;

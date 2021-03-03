@@ -17,7 +17,6 @@ const REPORT_TEMPLATE = './server/controllers/finance/reports/purchases/report.h
 
 exports.report = report;
 
-
 /**
  * @function report
  *
