@@ -66,9 +66,6 @@ async function createStock(req, res, next) {
     const period = await Fiscal.lookupFiscalYearByDate(params.date);
     const periodId = period.id;
 
-    console.log('FISCAL_YEAR: _ID');
-    console.log(periodId);
-
     const transaction = db.transaction();
     const document = {
       uuid : documentUuid,
