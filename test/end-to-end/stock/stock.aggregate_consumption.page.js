@@ -63,42 +63,52 @@ function StockAggregateConsumptionPage() {
   };
 
   page.setLotsDetailed = async function setLotsDetailed(lotsArray) {
-    const dateCell0 = await GU.getCell(modalGridId, 0, 1);
-    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
-    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);
-    await components.datePicker.set(lotsArray[0].date, dateCell0);
+    const dateStartCell0 = await GU.getCell(modalGridId, 0, 1);
+    const dateEndCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 3);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 4);
+    await components.datePicker.set(lotsArray[0].start_date, dateStartCell0);
+    await components.datePicker.set(lotsArray[0].end_date, dateEndCell0);
     await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
     await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
     await components.addItem.set(1);
 
-    const dateCell1 = await GU.getCell(modalGridId, 1, 1);
-    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 2);
-    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 3);
-    await components.datePicker.set(lotsArray[1].date, dateCell1);
+    const dateStartCell1 = await GU.getCell(modalGridId, 1, 1);
+    const dateEndCell1 = await GU.getCell(modalGridId, 1, 2);
+    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 3);
+    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 4);
+    await components.datePicker.set(lotsArray[1].start_date, dateStartCell1);
+    await components.datePicker.set(lotsArray[1].end_date, dateEndCell1);
     await FU.input('row.entity.quantity_consumed', lotsArray[1].quantity_consumed, quantityConsumptionCell1);
     await FU.input('row.entity.quantity_lost', lotsArray[1].quantity_lost, quantityLostCell1);
     await components.addItem.set(1);
 
-    const dateCell2 = await GU.getCell(modalGridId, 2, 1);
-    const quantityConsumptionCell2 = await GU.getCell(modalGridId, 2, 2);
-    const quantityLostCell2 = await GU.getCell(modalGridId, 2, 3);
-    await components.datePicker.set(lotsArray[2].date, dateCell2);
+    const dateStartCell2 = await GU.getCell(modalGridId, 2, 1);
+    const dateEndCell2 = await GU.getCell(modalGridId, 2, 2);
+    const quantityConsumptionCell2 = await GU.getCell(modalGridId, 2, 3);
+    const quantityLostCell2 = await GU.getCell(modalGridId, 2, 4);
+    await components.datePicker.set(lotsArray[2].start_date, dateStartCell2);
+    await components.datePicker.set(lotsArray[2].end_date, dateEndCell2);
     await FU.input('row.entity.quantity_consumed', lotsArray[2].quantity_consumed, quantityConsumptionCell2);
     await FU.input('row.entity.quantity_lost', lotsArray[2].quantity_lost, quantityLostCell2);
     await components.addItem.set(1);
 
-    const dateCell3 = await GU.getCell(modalGridId, 3, 1);
-    const quantityConsumptionCell3 = await GU.getCell(modalGridId, 3, 2);
-    const quantityLostCell3 = await GU.getCell(modalGridId, 3, 3);
-    await components.datePicker.set(lotsArray[3].date, dateCell3);
+    const dateStartCell3 = await GU.getCell(modalGridId, 3, 1);
+    const dateEndCell3 = await GU.getCell(modalGridId, 3, 2);
+    const quantityConsumptionCell3 = await GU.getCell(modalGridId, 3, 3);
+    const quantityLostCell3 = await GU.getCell(modalGridId, 3, 4);
+    await components.datePicker.set(lotsArray[3].start_date, dateStartCell3);
+    await components.datePicker.set(lotsArray[3].end_date, dateEndCell3);
     await FU.input('row.entity.quantity_consumed', lotsArray[3].quantity_consumed, quantityConsumptionCell3);
     await FU.input('row.entity.quantity_lost', lotsArray[3].quantity_lost, quantityLostCell3);
     await components.addItem.set(1);
 
-    const dateCell4 = await GU.getCell(modalGridId, 4, 1);
-    const quantityConsumptionCell4 = await GU.getCell(modalGridId, 4, 2);
-    const quantityLostCell4 = await GU.getCell(modalGridId, 4, 3);
-    await components.datePicker.set(lotsArray[4].date, dateCell4);
+    const dateStartCell4 = await GU.getCell(modalGridId, 4, 1);
+    const dateEndCell4 = await GU.getCell(modalGridId, 4, 2);
+    const quantityConsumptionCell4 = await GU.getCell(modalGridId, 4, 3);
+    const quantityLostCell4 = await GU.getCell(modalGridId, 4, 4);
+    await components.datePicker.set(lotsArray[4].start_date, dateStartCell4);
+    await components.datePicker.set(lotsArray[4].end_date, dateEndCell4);
     await FU.input('row.entity.quantity_consumed', lotsArray[4].quantity_consumed, quantityConsumptionCell4);
     await FU.input('row.entity.quantity_lost', lotsArray[4].quantity_lost, quantityLostCell4);
 
@@ -106,22 +116,64 @@ function StockAggregateConsumptionPage() {
   };
 
   page.setLots2Detailed = async function setLots2Detailed(lotsArray) {
-    const dateCell0 = await GU.getCell(modalGridId, 0, 1);
-    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 2);
-    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 3);
-    await components.datePicker.set(lotsArray[0].date, dateCell0);
+    const dateStartCell0 = await GU.getCell(modalGridId, 0, 1);
+    const dateEndCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 3);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 4);
+    await components.datePicker.set(lotsArray[0].start_date, dateStartCell0);
+    await components.datePicker.set(lotsArray[0].end_date, dateEndCell0);
     await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
     await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
     await components.addItem.set(1);
 
-    const dateCell1 = await GU.getCell(modalGridId, 1, 1);
-    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 2);
-    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 3);
-    await components.datePicker.set(lotsArray[1].date, dateCell1);
+    const dateStartCell1 = await GU.getCell(modalGridId, 1, 1);
+    const dateEndCell1 = await GU.getCell(modalGridId, 1, 2);
+    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 3);
+    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 4);
+    await components.datePicker.set(lotsArray[1].start_date, dateStartCell1);
+    await components.datePicker.set(lotsArray[1].end_date, dateEndCell1);
     await FU.input('row.entity.quantity_consumed', lotsArray[1].quantity_consumed, quantityConsumptionCell1);
     await FU.input('row.entity.quantity_lost', lotsArray[1].quantity_lost, quantityLostCell1);
 
     FU.modal.submit();
+  };
+
+  page.setLots3Detailed = async function setLots3Detailed(lotsArray) {
+    const dateStartCell0 = await GU.getCell(modalGridId, 0, 1);
+    const dateEndCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 3);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 4);
+    await components.datePicker.set(lotsArray[0].start_date, dateStartCell0);
+    await components.datePicker.set(lotsArray[0].end_date, dateEndCell0);
+    await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
+    await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
+
+    await FU.exists(by.id('validation-error'), true);
+    FU.modal.cancel();
+  };
+
+  page.setLots4Detailed = async function setLots4Detailed(lotsArray) {
+    const dateStartCell0 = await GU.getCell(modalGridId, 0, 1);
+    const dateEndCell0 = await GU.getCell(modalGridId, 0, 2);
+    const quantityConsumptionCell0 = await GU.getCell(modalGridId, 0, 3);
+    const quantityLostCell0 = await GU.getCell(modalGridId, 0, 4);
+    await components.datePicker.set(lotsArray[0].start_date, dateStartCell0);
+    await components.datePicker.set(lotsArray[0].end_date, dateEndCell0);
+    await FU.input('row.entity.quantity_consumed', lotsArray[0].quantity_consumed, quantityConsumptionCell0);
+    await FU.input('row.entity.quantity_lost', lotsArray[0].quantity_lost, quantityLostCell0);
+    await components.addItem.set(1);
+
+    const dateStartCell1 = await GU.getCell(modalGridId, 1, 1);
+    const dateEndCell1 = await GU.getCell(modalGridId, 1, 2);
+    const quantityConsumptionCell1 = await GU.getCell(modalGridId, 1, 3);
+    const quantityLostCell1 = await GU.getCell(modalGridId, 1, 4);
+    await components.datePicker.set(lotsArray[1].start_date, dateStartCell1);
+    await components.datePicker.set(lotsArray[1].end_date, dateEndCell1);
+    await FU.input('row.entity.quantity_consumed', lotsArray[1].quantity_consumed, quantityConsumptionCell1);
+    await FU.input('row.entity.quantity_lost', lotsArray[1].quantity_lost, quantityLostCell1);
+
+    await FU.exists(by.id('validation-error'), true);
+    FU.modal.cancel();
   };
 
   /**
