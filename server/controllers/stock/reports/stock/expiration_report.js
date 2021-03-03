@@ -61,7 +61,7 @@ async function stockExpirationReport(req, res, next) {
     // grand totals
     const totals = {
       expired : { value : 0, quantity : 0 },
-      at_risk : { value : 0, quantity : 0 },
+      at_risk_of_stock_out : { value : 0, quantity : 0 },
     };
 
     const values = _.map(groupedByDepot, (rows) => {
@@ -80,8 +80,8 @@ async function stockExpirationReport(req, res, next) {
           lot.value = (lot.quantity_at_risk * lot.unit_cost);
           lot.statusKey = 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION';
           lot.classKey = 'bg-warning text-warning';
-          totals.at_risk.value += lot.value;
-          totals.at_risk.quantity += lot.quantity_at_risk;
+          totals.at_risk_of_stock_out.value += lot.value;
+          totals.at_risk_of_stock_out.quantity += lot.quantity_at_risk;
           total += lot.value;
         }
       });
