@@ -35,6 +35,39 @@ function StockMovementsController(
 
   vm.gridApi = {};
 
+  function aggregateCostColumn(rows) {
+    // base case: no data to aggregate, just return 0.
+    if (rows.length === 0) {
+      return 0;
+    }
+
+    // get the last direction
+    const direction = rows[rows.length - 1].entity.is_exit;
+
+    let value = 0;
+    let i = rows.length;
+    let hasMixedEntryExit = false;
+
+    while (i--) {
+      const row = rows[i].entity;
+
+      // skip group headers
+      if (row.is_exit === undefined) {
+        continue; // eslint-disable-line
+      }
+
+      // do not sum if the direction is not correct
+      if (row.is_exit !== direction) {
+        hasMixedEntryExit = true;
+        break;
+      }
+
+      value += row.cost;
+    }
+
+    return hasMixedEntryExit ? '---' : value;
+  }
+
   // global variables
   vm.enterprise = Session.enterprise;
 
@@ -56,12 +89,21 @@ function StockMovementsController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/io.cell.html',
     }, {
+      field : 'flux_id',
+      displayName : 'STOCK.FLUX',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
+    }, {
       field : 'cost',
       type : 'number',
       displayName : 'STOCK.COST',
       headerCellFilter : 'translate',
       cellFilter : 'currency:grid.appScope.enterprise.currency_id',
       cellClass : 'text-right',
+      footerCellClass : 'text-right',
+      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      aggregationHideLabel : true,
+      aggregationType : aggregateCostColumn,
     }, {
       field : 'date',
       type : 'date',
@@ -69,11 +111,6 @@ function StockMovementsController(
       headerCellFilter : 'translate',
       cellFilter : 'date',
       cellClass : 'text-right',
-    }, {
-      field : 'flux_id',
-      displayName : 'STOCK.FLUX',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
       field : 'action',
       displayName : '',
