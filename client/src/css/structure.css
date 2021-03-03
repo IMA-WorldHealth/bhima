@@ -895,11 +895,11 @@ a[disabled] {
   color: #FF7B7B !important;
 }
 
-.at-risk {
+.at-risk-of-stock-out {
   background-color: #ffff6686 !important;
 }
 
-.icon-at-risk {
+.icon-at-risk-of-stock-out {
   color: #FFFFA9 !important;
 }
 
