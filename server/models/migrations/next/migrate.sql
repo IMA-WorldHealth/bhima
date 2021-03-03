@@ -103,3 +103,20 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
  */
 CALL add_column_if_missing('depot', 'description', 'TEXT DEFAULT NULL AFTER `text`');
 CALL add_column_if_missing('depot', 'dhis2_uid', 'VARCHAR(150) DEFAULT NULL AFTER `parent_uuid`');
+
+/*
+ * @author: lomamech
+ * @date: 2021-01-12
+ * @subject : Allow users to record aggregate consumption information for a depot
+ */
+
+INSERT INTO unit VALUES
+  (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption',160,'/stock/aggregated_consumption');
+
+-- Stock Movement Flux
+INSERT INTO `flux` VALUES
+  (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
+
+ALTER TABLE `inventory_unit`
+	CHANGE COLUMN `abbr` `abbr` VARCHAR(50),
+	CHANGE COLUMN `text` `text` VARCHAR(50);
