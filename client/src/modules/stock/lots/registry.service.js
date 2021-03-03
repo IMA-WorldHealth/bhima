@@ -120,9 +120,9 @@ function LotsRegistryService(uiGridConstants, Session) {
         <span translate>STOCK.RISK_OF_EXPIRATION</span>: {{grid.appScope.totals['at-risk-of-expiring']}}
       </strong>
 
-      <span class="fa fa-circle icon-at-risk legend"></span>
+      <span class="fa fa-circle icon-at-risk-of-stock-out legend"></span>
       <strong>
-        <span translate>STOCK.RISK_OF_STOCK_OUT</span>: {{grid.appScope.totals['at-risk']}}
+        <span translate>STOCK.RISK_OF_STOCK_OUT</span>: {{grid.appScope.totals['at-risk-of-stock-out']}}
       </strong>
 
       <span class="fa fa-circle icon-out-of-stock legend"></span>

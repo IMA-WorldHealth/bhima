@@ -697,7 +697,7 @@ async function getInventoryQuantityAndConsumption(params) {
  *   1) expired - if the expiration date is in the past
  *   2) exhausted - if the quantity is 0.
  *   3) near_expiration - if the expiration date is sooner than the lot's stock out date
- *   4) at_risk - if the lot is part of an _inventory_ that is at risk of running out.
+ *   4) at_risk_of_stock_out - if the lot is part of an _inventory_ that is at risk of running out.
  *
  * Further, we add the following properties:
  *   1) lot_lifetime - the number of days left before the stock runs out.
@@ -798,14 +798,14 @@ function computeLotIndicators(inventories) {
         // if the inventory item is at risk of stock out, mark the stock lot "at risk".  It may be that a single
         // lot is not at risk of expiring, but the inventory is at risk of expiring
         // TODO(@jniles): does this make sense?
-        lot.at_risk = !lot.expired && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
+        lot.at_risk_of_stock_out = !lot.expired && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
 
         // attach flags after computation for use on client
         lot.flags = {
           expired : lot.expired,
           near_expiration : lot.near_expiration,
           exhausted : lot.exhausted,
-          at_risk : lot.at_risk,
+          at_risk_of_stock_out : lot.at_risk_of_stock_out,
         };
 
         flattenLots.push(lot);
