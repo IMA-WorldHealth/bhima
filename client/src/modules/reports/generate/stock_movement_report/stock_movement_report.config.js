@@ -13,7 +13,7 @@ function StockMovementReportCtrl($sce, Notify, SavedReports, AppCache, reportDat
 
   // default values
   vm.reportDetails = {
-    reportType : 'quantity',
+    reportType : 'movement_count',
   };
 
   vm.previewGenerated = false;
@@ -23,14 +23,6 @@ function StockMovementReportCtrl($sce, Notify, SavedReports, AppCache, reportDat
 
   vm.onSelectDepot = depot => {
     vm.reportDetails.depot_uuid = depot.uuid;
-  };
-
-  vm.onSelectFiscalYear = year => {
-    vm.reportDetails.fiscal_id = year.id;
-  };
-
-  vm.onSelectPeriod = period => {
-    vm.reportDetails.period_id = period.id;
   };
 
   vm.onFluxChange = function onFluxChange(fluxes) {
