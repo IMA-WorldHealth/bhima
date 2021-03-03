@@ -81,14 +81,6 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
     displayValues.group_uuid = group.name;
   };
 
-  // Save the entry dates
-  vm.onEntryDate = (dateFrom, dateTo) => {
-    vm.searchQueries.entry_date_from = dateFrom;
-    displayValues.entry_date_from = dateFrom;
-    vm.searchQueries.entry_date_to = dateTo;
-    displayValues.entry_date_to = dateTo;
-  };
-
   // Save the expiration dates
   vm.onExpirationDate = (dateFrom, dateTo) => {
     vm.searchQueries.expiration_date_from = dateFrom;

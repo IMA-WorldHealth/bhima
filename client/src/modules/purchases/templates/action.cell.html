@@ -17,6 +17,14 @@
 
     <li class="divider"></li>
 
+    <li>
+      <a ng-href="{{ grid.appScope.openPurchaseOrderAnalysisReport(row.entity) }}" target="_blank">
+        <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.PURCHASE_ORDER_ANALYSIS.TITLE</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
     <li ng-if="row.entity.hasStockMovement">
       <a href
         data-method="view-stock-movements"
@@ -29,13 +37,15 @@
       </a>
     </li>
 
+
+
     <li ng-if="row.entity.hasStockMovement">
       <a data-method="view-stock-lot" href
         ui-sref="stockInventories({ filters : [
           { key : 'period', value : 'allTime' },
           { key : 'includeEmptyLot', value : 1 },
           { key : 'purchase_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
-        <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ITEM_STOCK</span>
+        <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ARTICLE_IN_STOCK</span>
       </a>
     </li>
 
