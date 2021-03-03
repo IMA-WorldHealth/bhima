@@ -23,6 +23,11 @@
 
       <span><u>{{translate "FORM.LABELS.DOB"}}</u> {{date patient.dob }}</span> <br />
       <span><u>{{translate "FORM.LABELS.SEX"}}</u> {{translate patient.sexFormatted }}</span> <br />
+
+      {{#if patient.mother_name}}
+        <span><u>{{translate "FORM.LABELS.MOTHER_NAME"}}</u> {{patient.mother_name}}</span><br />
+      {{/if}}
+
       {{#if patient.email}}
         <span><u>{{translate "FORM.LABELS.EMAIL"}}</u> {{patient.email}}</span><br />
       {{/if}}
