@@ -616,7 +616,7 @@ async function getDailyStockConsumption(params) {
   }
 
   if (params.group_by_flux) {
-    filters.setGroup('GROUP BY m.flux_id');
+    filters.setGroup('GROUP BY m.document_uuid');
   }
 
   if (params.order_by_exit) {

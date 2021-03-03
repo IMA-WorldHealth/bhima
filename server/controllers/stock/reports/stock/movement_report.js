@@ -36,11 +36,14 @@ async function document(req, res, next) {
     const depot = await db.one('SELECT text FROM depot WHERE uuid = ?', db.bid(params.depot_uuid));
     const result = await stockCore.getDailyStockConsumption(params);
 
-    result.forEach(item => {
+    const resultByFlux = _.groupBy(result, 'flux_id');
+
+    Object.keys(resultByFlux).forEach(key => {
+      const [first] = resultByFlux[key];
       const line = {
-        label : i18n(options.lang)(Stock.fluxLabel[item.flux_id]),
-        value : item[reportType],
-        isExit : !!item.is_exit,
+        label : i18n(options.lang)(Stock.fluxLabel[key]),
+        value : reportType === 'movement_count' ? resultByFlux[key].length : _.sumBy(resultByFlux[key], reportType),
+        isExit : !!first.is_exit,
       };
       collection.push(line);
     });
