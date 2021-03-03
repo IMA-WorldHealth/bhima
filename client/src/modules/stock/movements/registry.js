@@ -56,6 +56,11 @@ function StockMovementsController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/io.cell.html',
     }, {
+      field : 'flux_id',
+      displayName : 'STOCK.FLUX',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
+    }, {
       field : 'cost',
       type : 'number',
       displayName : 'STOCK.COST',
@@ -69,11 +74,6 @@ function StockMovementsController(
       headerCellFilter : 'translate',
       cellFilter : 'date',
       cellClass : 'text-right',
-    }, {
-      field : 'flux_id',
-      displayName : 'STOCK.FLUX',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
       field : 'action',
       displayName : '',
