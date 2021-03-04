@@ -157,8 +157,8 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
    * @function processLotsFromStore
    *
    * @description
-   * This function loops through the store's contents mapping them into a flat array
-   * of lots.
+   * This function loops through the store's contents mapping them into a flat
+   * array of lots.
    *
    * @returns {Array} - lots in an array.
  */
@@ -192,6 +192,11 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
         return importing.util.download(response, 'Import Stock Template', 'csv');
       });
   }
+
+  inventories.loadAMCForInventory = function loadAMCForInventory(inventoryUuid, depotUuid) {
+    return inventories.$http.get(`/depots/${depotUuid}/inventories/${inventoryUuid}/cmm`)
+      .then(util.unwrapHttpResponse);
+  };
 
   return {
     stocks,

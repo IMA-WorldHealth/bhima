@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents">
+<div class="ui-grid-cell-contents" ng-dblclick="grid.appScope.viewAMCCalculations(row.entity)" ng-if="!row.groupHeader">
   <span class="text-right">
     {{row.entity.avg_consumption}}
   </span>

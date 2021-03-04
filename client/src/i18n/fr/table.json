@@ -164,6 +164,7 @@
             "NR": "N°",
             "NO_PAYMENTS": "Aucun paiement n'a été effectué sur cette facture.",
             "NUM": "Numéro",
+            "NUM_DUPLICATE_LOTS": "Nb de doublons",
             "NUMBER_CASES": "Nombre de cas",
             "OF": "sur",
             "PASSIVE": "Passive",

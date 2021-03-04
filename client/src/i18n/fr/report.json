@@ -152,8 +152,8 @@
     },
 
     "STOCK_MOVEMENT_REPORT" : {
-      "TITLE" : "Rapport graphique des mouvements de stock",
-      "DESCRIPTION" : ""
+      "TITLE" : "Graphique des mouvements de stock",
+      "DESCRIPTION" : "Ce rapport affiche sous forme graphique les différents mouvements de stock opérés durant une période"
     },
 
     "PREVIOUS_MONTHS": "Mois Précédents",
@@ -170,7 +170,7 @@
     "VIEW_ACCOUNT_STATEMENT": "Voir le Rélevé de Compte",
     "VIEW_CREDIT_NOTE": "Voir la note de credit",
     "VIEW_INVOICE": "Voir les factures",
-    "VIEW_ITEM_STOCK": "Voir l'article en stock",
+    "VIEW_ARTICLE_IN_STOCK": "Voir l'article en stock",
     "VIEW_PATIENT": "Voir le Patient",
     "VIEW_PAYMENTS": "Voir les payments",
     "VIEW_RECEIPT": "Voir le document",

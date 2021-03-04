@@ -1,0 +1,7 @@
+<a id="lot-uuid-{{ match.model.uuid }}" href>
+  <span ng-bind-html="match.model.label | uibTypeaheadHighlight:query"></span>
+  <span style="margin-left: 1em">[</span>
+  <span translate>INVENTORY.EXPIRES</span><span> </span>
+  <span ng-bind-html="match.model.expiration_date | date"></span>
+  <span>]</span>
+</a>
