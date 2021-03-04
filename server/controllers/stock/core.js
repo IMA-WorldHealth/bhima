@@ -36,9 +36,14 @@ const flux = {
   AGGREGATE_CONSUMPTION : 16,
 };
 
+// const fluxLabel = {};
+const fluxLabel = Object.entries(flux)
+  .reduce((map, [key, value]) => { map[value] = `STOCK_FLUX.${key}`; return map; }, {});
+
 // exports
 module.exports = {
   flux,
+  fluxLabel,
   getMovements,
   getLots,
   getLotsDepot,
@@ -178,6 +183,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
       LEFT JOIN service AS ser ON ser.uuid = m.entity_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
   `;
+
   const filters = getLotFilters(parameters);
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
@@ -232,10 +238,10 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       d.min_months_security_stock,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      m.date AS entry_date, i.avg_consumption, i.purchase_interval, i.delay,
+      m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference, t.name AS tag_name, t.color
@@ -267,23 +273,22 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     params.average_consumption_algo,
   );
 
-  // FIXME(@jniles) - this step seems to mostly just change the ordering of lots.  Can we combine
-  // it with the getBulkInventoryCMM?
+  // add lot indicators to the inventory list.
   let inventoriesWithLotsProcessed = computeLotIndicators(inventoriesWithManagementData);
 
   if (_status) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(row => row.status === _status);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.status === _status);
   }
 
   // Since the status of a product risking expiry is only defined
   // after the comparison with the CMM, reason why the filtering
   // is not carried out with an SQL request
   if (parseInt(params.is_expiry_risk, 10) === 1) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK < 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.flags.near_expiration);
   }
 
   if (parseInt(params.is_expiry_risk, 10) === 0) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(item => (item.S_RISK >= 0 && item.lifetime > 0));
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.flags.near_expiration);
   }
 
   return inventoriesWithLotsProcessed;
@@ -309,13 +314,13 @@ async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsump
   // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
   // times for the same inventory item.
   const params = _.chain(lots)
-    .map(row => ([monthAverageConsumption, row.inventory_uuid, row.depot_uuid]))
+    .map(row => ([row.depot_uuid, row.inventory_uuid]))
     .uniqBy(row => row.toString())
     .value();
 
   // query the server
   const cmms = await Promise.all(
-    params.map(row => db.exec(`CALL getCMM(DATE_SUB(NOW(), INTERVAL ? MONTH), NOW(), HUID(?), HUID(?))`, row)
+    params.map(row => db.exec(`CALL GetAMC(DATE(NOW()), HUID(?), HUID(?))`, row)
       .then(values => values[0][0])),
   );
 
@@ -574,11 +579,15 @@ async function getDailyStockConsumption(params) {
 
   db.convert(params, ['depot_uuid', 'inventory_uuid']);
 
+  if (params.destinationType) {
+    params.flux_id = flux[params.destinationType];
+  }
+
   const filters = new FilterParser(params, { tableAlias : 'm' });
 
   const sql = `
     SELECT
-      COUNT(m.uuid) as movement_number,
+      COUNT(m.uuid) as movement_count,
       SUM(m.quantity) as quantity,
       SUM(m.quantity * m.unit_cost) as value,
       DATE(m.date) as date,
@@ -586,7 +595,9 @@ async function getDailyStockConsumption(params) {
       BUID(m.uuid) AS uuid,
       i.text AS inventory_name,
       d.text AS depot_name,
-      BUID(d.uuid) AS depot_uuid
+      BUID(d.uuid) AS depot_uuid,
+      f.id AS flux_id,
+      m.is_exit
     FROM stock_movement m
     JOIN flux f ON m.flux_id = f.id
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -597,19 +608,30 @@ async function getDailyStockConsumption(params) {
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
   filters.equals('depot_uuid', 'uuid', 'd');
-  filters.equals('period_id');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('flux_id', 'id', 'f', true);
   filters.equals('is_exit');
   filters.custom('consumption', consumptionValue);
 
-  if (params.consumption) {
+  if (params.consumption && !params.destinationType) {
     filters.setGroup('GROUP BY DATE(m.date), i.uuid');
+  } else if (params.consumption && params.destinationType) {
+    filters.setGroup('GROUP BY i.uuid');
   } else {
     filters.setGroup('GROUP BY DATE(m.date)');
   }
 
-  filters.setOrder('ORDER BY m.date ');
+  if (params.group_by_flux) {
+    filters.setGroup('GROUP BY m.document_uuid');
+  }
+
+  if (params.order_by_exit) {
+    filters.setOrder('ORDER BY m.is_exit DESC, i.text ASC ');
+  } else if (params.destinationType) {
+    filters.setOrder('ORDER BY i.text ');
+  } else {
+    filters.setOrder('ORDER BY m.date ');
+  }
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();
@@ -648,10 +670,10 @@ async function getInventoryQuantityAndConsumption(params) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
-      ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
+      DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.avg_consumption, i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
+      i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
       dm.text AS documentReference, d.enterprise_id
@@ -672,6 +694,7 @@ async function getInventoryQuantityAndConsumption(params) {
   const settingsql = `
     SELECT month_average_consumption, average_consumption_algo FROM stock_setting WHERE enterprise_id = ?
   `;
+
   const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
 
   // add the CMM
@@ -693,16 +716,35 @@ async function getInventoryQuantityAndConsumption(params) {
  * process multiple stock lots
  *
  * @description
+ * Computes the indicators on stock lots.  Sets the following flags:
+ *   1) expired - if the expiration date is in the past
+ *   2) exhausted - if the quantity is 0.
+ *   3) near_expiration - if the expiration date is sooner than the lot's stock out date
+ *   4) at_risk_of_stock_out - if the lot is part of an _inventory_ that is at risk of running out.
+ *
+ * Further, we add the following properties:
+ *   1) lot_lifetime - the number of days left before the stock runs out.
+ *   2) max_stock_date - the last day stock will be usable.
+ *   3) min_stock_date - the first day the stock will be consumed
+ *   4) usable_quantity_remaining - the total quantity that will be usable of the lot.
+ *
+ * Note that these indicators are only tracked if we are tracking_consumption
+ * or tracking_expiration.
+ *
+ * The algorithm for calculation at risk of expiry and at risk of stock out is
+ * FIFO by expiration.  Basically, we assume that lots will be used in order of
+ * their expiration dates.
  */
 function computeLotIndicators(inventories) {
   const flattenLots = [];
+
   const inventoryByDepots = _.groupBy(inventories, 'depot_uuid');
 
-  _.map(inventoryByDepots, (depotInventories) => {
-
+  _.forEach(inventoryByDepots, (depotInventories) => {
     const inventoryLots = _.groupBy(depotInventories, 'inventory_uuid');
 
-    _.map(inventoryLots, (lots) => {
+    _.forEach(inventoryLots, (lots) => {
+
       // if we don't have the default CMM (avg_consumption) use the
       // defined or computed CMM for each lots
       const cmm = _.max(lots.map(lot => lot.avg_consumption));
@@ -711,36 +753,85 @@ function computeLotIndicators(inventories) {
       // assuming the lot with lowest quantity is consumed first
       let orderedInventoryLots = _.orderBy(lots, 'quantity', 'asc');
 
-      // order lots by ascending lifetime has a hight priority than quantity
+      // order lots by ascending lifetime has a higher priority than quantity
       orderedInventoryLots = _.orderBy(orderedInventoryLots, 'lifetime', 'asc');
 
-      // compute the lot coefficient
-      let lotLifetime = 0;
-      _.each(orderedInventoryLots, lot => {
+      // compute the lot coefficients
+      let runningLotLifetimes = 0;
+      const today = moment().endOf('day').toDate();
+
+      _.forEach(orderedInventoryLots, (lot) => {
         if (!lot.tracking_expiration) {
           lot.expiration_date = '';
         }
 
-        if (lot.tracking_consumption) {
+        lot.exhausted = lot.quantity <= 0;
+        lot.expired = !lot.exhausted && (lot.expiration_date < today);
+
+        // algorithm for tracking the stock consumption by day
+        if (lot.tracking_consumption && !lot.exhausted && !lot.expired) {
           // apply the same CMM to all lots and update monthly consumption
           lot.avg_consumption = cmm;
           lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
 
-          const zeroMSD = Math.round(lot.S_MONTH) === 0;
+          // get daily average consumption
+          const consumptionPerDay = lot.avg_consumption / 30.5;
 
-          const numMonthsOfStockLeft = (lot.quantity / lot.CMM); // how many months of stock left
-          const today = new Date();
-          // if we have more months of stock than the expiration date,
-          // then we'll need to label these are in risk of expiration
-          const numDaysOfStockLeft = numMonthsOfStockLeft * 30.5;
-          const isInRiskOfExpiration = lot.expiration_date <= moment(today).add(numDaysOfStockLeft, 'days').toDate();
-          lot.IS_IN_RISK_EXPIRATION = isInRiskOfExpiration;
+          // check if the lot will expire before being used up
+          const numDaysOfStockBeforeConsumed = runningLotLifetimes + Math.ceil(lot.quantity / consumptionPerDay);
+          const stockOutDate = moment(new Date()).add(numDaysOfStockBeforeConsumed, 'days').toDate();
 
-          lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
-          lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
-          lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
-          lotLifetime += lot.S_LOT_LIFETIME;
+          lot.near_expiration = lot.expiration_date <= stockOutDate;
+
+          // here, we are attempting to calculate if this quantity will be at risk of expiry
+          // given that all inventory is consummed in order of their expiration dates.
+
+          // Get the real quantity of usable stock remaining
+          // If the lot will expire before being used, use the expiration date as the max date.
+          // If the lot will be consumed by CMM before expiry, use the CMM date as the max date.
+          // We've already calculated this above - it is the near_expiration variable
+          const maxStockDate = lot.near_expiration ? lot.expiration_date : stockOutDate;
+          const numDaysOfStockLeft = moment(maxStockDate).diff(new Date(), 'day');
+
+          // calculate finally the remaining days of stock, assuming we use this stock in order
+          // maybe we will not ever get a chance to use it ... then it is 0.
+          lot.lifetime_lot = Math.max(0, numDaysOfStockLeft - runningLotLifetimes);
+          lot.min_stock_date = moment(new Date()).add(runningLotLifetimes).toDate();
+          lot.max_stock_date = maxStockDate;
+
+          // add to the running LotLifetimes so that the next product will be used after it.
+          runningLotLifetimes += lot.lifetime_lot;
+
+          // the usable quantity remaining is the minimum of the stock actually available
+          // and the amount able to be consumed in the time remaining
+          const usableStockQuantityRemaining = Math.min(lot.lifetime_lot * consumptionPerDay, lot.quantity);
+          lot.usable_quantity_remaining = usableStockQuantityRemaining;
+
+          // compute the "risk" quantities and duration.  This is the amount of stock in this lot that
+          // the enterprise will lose at the current rate of consumption.  We express this in
+          // both quantity and in time, despite this not corresponding to a definite time period. The
+          // time period should be understood as a _quantity_ measurement - how long the pharmacy could
+          // have run if this stock wasn't expiring.
+          lot.S_RISK_QUANTITY = Math.round(lot.quantity - usableStockQuantityRemaining);
+          // if S_RISK_QUANTITY is less than a day's stock, it is likely a rounding error.  Set it to 0.
+          if (lot.S_RISK_QUANTITY < consumptionPerDay) { lot.S_RISK_QUANTITY = 0; }
+          lot.S_RISK = Math.round(lot.S_RISK_QUANTITY / consumptionPerDay);
         }
+
+        // if the inventory item is at risk of stock out, mark the stock lot "at risk".  It may be that a single
+        // lot is not at risk of expiring, but the inventory is at risk of expiring
+        // TODO(@jniles): does this make sense?
+        lot.at_risk_of_stock_out = !lot.expired
+          && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
+
+        // attach flags after computation for use on client
+        lot.flags = {
+          expired : lot.expired,
+          near_expiration : lot.near_expiration,
+          exhausted : lot.exhausted,
+          at_risk_of_stock_out : lot.at_risk_of_stock_out,
+        };
+
         flattenLots.push(lot);
       });
     });
@@ -750,9 +841,69 @@ function computeLotIndicators(inventories) {
 }
 
 /**
- * Inventory Movement Report
+ * @function getOpeningStockBalanceForDepot
+ *
+ * @description
+ * This function gets the opening stock balance for a date, depot
+ * and inventory combination by looking up the most recent value from
+ * the stock_movement_status table.  If none is found, it returns 0s.
  */
-function getInventoryMovements(params) {
+async function getOpeningStockBalanceForDepot(date, depotUuid, inventoryUuid) {
+  const quantities = await db.exec(` 
+    SELECT sum_quantity AS quantity FROM stock_movement_status
+    WHERE date < ? AND depot_uuid = ? AND inventory_uuid = ?
+    ORDER BY date DESC
+    LIMIT 1;
+    `, [date, db.bid(depotUuid), db.bid(inventoryUuid)]);
+
+  // if nothing is found, return nothing
+  if (quantities.length === 0) {
+    return { quantity : 0 };
+  }
+
+  const [{ quantity }] = quantities;
+
+  return {
+    date,
+    quantity,
+  };
+}
+
+/**
+ * @function getOpeningStockBalance
+ *
+ * @description
+ * Gets the opening balance across the enterprise.  This is somewhat
+ * more complex since we keep stock values binned by depot_uuid, so we
+ * just need to get the most recent stock values in all depots. at that date.
+ */
+async function getOpeningStockBalance(date, inventoryUuid) {
+  const [{ quantity }] = await db.exec(` 
+    SELECT IFNULL(SUM(sum_quantity), 0) AS quantity FROM stock_movement_status AS sms
+    JOIN (SELECT sms2.depot_uuid, MAX(sms2.date) AS max_date FROM stock_movement_status sms2
+      WHERE sms2.date < ? AND sms2.inventory_uuid = ?
+      GROUP BY depot_uuid
+    )z
+    ON z.depot_uuid = sms.depot_uuid AND sms.date = z.max_date
+    WHERE inventory_uuid = ?;`, [date, db.bid(inventoryUuid), db.bid(inventoryUuid)]);
+
+  return {
+    date,
+    quantity,
+  };
+}
+
+/**
+ * Inventory Movement Report
+ *
+ * @description
+ * This function powers the stock sheet report ("fiche de stock").  It provides the
+ * Weighted Average Cost algorithm for the stock sheet and arranges the data for
+ * presentation.
+ *
+ * TODO(@jniles) - make the WAC algorithm into it's own function.
+ */
+async function getInventoryMovements(params) {
   const bundle = {};
 
   const sql = `
@@ -762,7 +913,7 @@ function getInventoryMovements(params) {
       m.quantity, m.is_exit, m.date,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.avg_consumption, i.purchase_interval, i.delay, iu.text AS unit_type,
+      i.purchase_interval, i.delay, iu.text AS unit_type,
       dm.text AS documentReference, flux.label as flux
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -775,88 +926,106 @@ function getInventoryMovements(params) {
 
   const orderBy = params.orderByCreatedAt ? 'm.created_at' : 'm.date';
 
-  return getLots(sql, params, ` ORDER BY ${orderBy} ASC `)
-    .then((rows) => {
-      bundle.movements = rows;
+  // if a params.dateFrom is provided, assume we need to load the opening balance
+  // before any computations
+  let openingBalance = { quantity : 0 };
+  if (params.dateFrom && params.depot_uuid) {
+    openingBalance = await getOpeningStockBalanceForDepot(params.dateFrom, params.depot_uuid, params.inventory_uuid);
+  } else if (params.dateFrom) {
+    openingBalance = await getOpeningStockBalance(params.dateFrom, params.inventory_uuid);
+  }
 
-      // build the inventory report
-      let stockQuantity = 0;
-      let stockUnitCost = 0;
-      let stockValue = 0;
+  const rows = await getLots(sql, params, ` ORDER BY ${orderBy} ASC `);
 
-      // stock method CUMP : cout unitaire moyen pondere
-      const movements = bundle.movements.map(line => {
-        const movement = {
-          reference : line.documentReference,
-          date : line.date,
-          depot_text : line.depot_text,
-          label : line.label,
-          flux : line.flux,
-          entry : { quantity : 0, unit_cost : 0, value : 0 },
-          exit : { quantity : 0, unit_cost : 0, value : 0 },
-          stock : { quantity : 0, unit_cost : 0, value : 0 },
-        };
+  // get the first value of the array to get the first cost value for the opening balance
+  const [firstRow] = rows;
+  openingBalance.unit_cost = (firstRow && firstRow.unit_cost) || 0;
 
-        if (line.is_exit) {
-          stockQuantity -= line.quantity;
-          stockValue = stockQuantity * stockUnitCost;
-          // fix negative value disorder
-          // ignoring negative stock value by setting them to zero for entry
-          stockValue = (stockValue < 0) ? 0 : stockValue;
+  bundle.movements = rows;
 
-          // exit
-          movement.exit.quantity = line.quantity;
-          movement.exit.unit_cost = stockUnitCost;
-          movement.exit.value = line.quantity * line.unit_cost;
-        } else {
-          const newQuantity = line.quantity + stockQuantity;
-          // fix negative value disorder
-          // ignoring negative stock value by setting them to movement value for exit
-          const newValue = (stockValue < 0)
-            ? (line.unit_cost * line.quantity)
-            : (line.unit_cost * line.quantity) + stockValue;
-          // don't use cumulated quantity when stock quantity < 0
-          // in this case use movement quantity only
-          const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
+  // build the inventory report using the opening balance
+  let stockQuantity = openingBalance.quantity;
+  let stockUnitCost = openingBalance.unit_cost;
+  let stockValue = stockQuantity * stockUnitCost;
+  openingBalance.value = stockValue;
 
-          stockQuantity = newQuantity;
-          stockUnitCost = newCost;
-          stockValue = newValue;
+  // stock method CUMP : cout unitaire moyen pondere
+  const movements = bundle.movements.map(line => {
+    const movement = {
+      reference : line.documentReference,
+      date : line.date,
+      depot_text : line.depot_text,
+      label : line.label,
+      flux : line.flux,
+      entry : { quantity : 0, unit_cost : 0, value : 0 },
+      exit : { quantity : 0, unit_cost : 0, value : 0 },
+      stock : { quantity : 0, unit_cost : 0, value : 0 },
+    };
 
-          // entry
-          movement.entry.quantity = line.quantity;
-          movement.entry.unit_cost = line.unit_cost;
-          movement.entry.value = line.quantity * line.unit_cost;
-        }
+    if (line.is_exit) {
+      stockQuantity -= line.quantity;
+      stockValue = stockQuantity * stockUnitCost;
+      // fix negative value disorder
+      // ignoring negative stock value by setting them to zero for entry
+      stockValue = (stockValue < 0) ? 0 : stockValue;
 
-        // stock status
-        movement.stock.quantity = stockQuantity;
-        movement.stock.unit_cost = stockUnitCost;
-        movement.stock.value = stockValue;
+      // exit
+      movement.exit.quantity = line.quantity;
+      movement.exit.unit_cost = stockUnitCost;
+      movement.exit.value = line.quantity * line.unit_cost;
+    } else {
+      const newQuantity = line.quantity + stockQuantity;
+      // fix negative value disorder
+      // ignoring negative stock value by setting them to movement value for exit
+      const newValue = (stockValue < 0)
+        ? (line.unit_cost * line.quantity)
+        : (line.unit_cost * line.quantity) + stockValue;
+        // don't use cumulated quantity when stock quantity < 0
+        // in this case use movement quantity only
+      const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
 
-        return movement;
-      });
+      stockQuantity = newQuantity;
+      stockUnitCost = newCost;
+      stockValue = newValue;
 
-      // totals of quantities
-      const totals = movements.reduce((total, line) => {
-        total.entry += line.entry.quantity;
-        total.entryValue += line.entry.value;
-        total.exit += line.exit.quantity;
-        total.exitValue += line.exit.value;
-        return total;
-      }, {
-        entry : 0, entryValue : 0, exit : 0, exitValue : 0,
-      });
+      // entry
+      movement.entry.quantity = line.quantity;
+      movement.entry.unit_cost = line.unit_cost;
+      movement.entry.value = line.quantity * line.unit_cost;
+    }
 
-      // stock value
-      const result = movements.length ? movements[movements.length - 1] : {};
-      return { movements, totals, result };
-    });
+    // stock status
+    movement.stock.quantity = stockQuantity;
+    movement.stock.unit_cost = stockUnitCost;
+    movement.stock.value = stockValue;
+
+    return movement;
+  });
+
+  // totals of quantities
+  const totals = movements.reduce((total, line) => {
+    total.entry += line.entry.quantity;
+    total.entryValue += line.entry.value;
+    total.exit += line.exit.quantity;
+    total.exitValue += line.exit.value;
+    return total;
+  }, {
+    entry : 0, entryValue : 0, exit : 0, exitValue : 0,
+  });
+
+  // stock value
+  const result = movements.length ? movements[movements.length - 1] : {};
+  return {
+    movements, totals, result, openingBalance,
+  };
 }
 
-function listStatus(req, res, next) {
+async function listStatus(req, res, next) {
   const sql = `SELECT id, status_key, title_key FROM status`;
-  db.exec(sql).then(status => {
+  try {
+    const status = await db.exec(sql);
     res.status(200).json(status);
-  }).catch(next);
+  } catch (e) {
+    next(e);
+  }
 }
