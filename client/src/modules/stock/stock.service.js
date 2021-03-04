@@ -31,6 +31,7 @@ function StockModalService(Modal) {
   service.openAssignmentHistoric = openAssignmentHistoric;
   service.openDuplicateLotsModal = openDuplicateLotsModal;
   service.openAMCCalculationModal = openAMCCalculationModal;
+  service.openConsumptionByLots = openConsumptionByLots;
 
   /** create stock assign */
   function openActionStockAssign(request) {
@@ -262,6 +263,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/lots.modal.html',
       controller   : 'StockDefineLotsModalController',
+      controllerAs : '$ctrl',
+      size         : 'lg',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  function openConsumptionByLots(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/aggregated_consumption/modals/consumption_lot.modal.html',
+      controller   : 'StockConsumptionLotsModalController',
       controllerAs : '$ctrl',
       size         : 'lg',
       resolve      : { data : () => request },

@@ -66,6 +66,9 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // API for stock requisition
   const stockRequestorType = new Api('/stock/requestor_type/');
 
+  // API for stock Aggregated Consumption
+  const aggregatedConsumption = new Api('/stock/aggregated_consumption');
+
   // Overide the stock assign api
   stockAssign.remove = uuid => {
     return stockAssign.$http.put(`/stock/assign/${uuid}/remove`)
@@ -213,5 +216,6 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     statusLabelMap,
     downloadTemplate,
     status,
+    aggregatedConsumption,
   };
 }

@@ -166,7 +166,8 @@ INSERT INTO unit VALUES
   (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
   (291, '[Stock] Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard'),
   (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
-  (293, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');
+  (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption',160,'/stock/aggregated_consumption'),
+  (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -324,7 +325,8 @@ INSERT INTO `flux` VALUES
   (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
   (13, 'STOCK_FLUX.FROM_INTEGRATION'),
   (14, 'STOCK_FLUX.INVENTORY_RESET'),
-  (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT');
+  (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT'),
+  (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
 
 -- Roles Actions
 

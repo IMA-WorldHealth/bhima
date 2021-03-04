@@ -1006,6 +1006,7 @@
             "UNIQUE": "This field must be unique. This value is already taken."
         },
         "WARNINGS": {
+            "AGGREGATED_STOCK_MODULE": "The aggregated stock consumption module can only be used for a prior period",
             "ONLY_TWO_COUNTRIES":"Please select two countries only",
             "ONLY_TWO_PATIENTS":"Please select two patient registrations only",
             "ONLY_TWO_PROVINCES":"Please select two provinces only",
@@ -1018,6 +1019,7 @@
             "BAD_FILE_TYPE": "Bad file type",
             "DOC_NOT_FOUND": "The document was not found on the server",
             "EMPTY_SELECTION": "Empty Selection",
+            "INVALID_CONSUMPTION": "There are products whose output sum is greater than the quantity in stock",
             "NOT_AUTHORISED": "The requested page is not authorised",
             "NOT_FOUND": "Not found",
             "NO_COUNTRIES_HAS_SELECTED": "No country has been selected",
