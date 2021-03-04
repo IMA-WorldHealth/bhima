@@ -298,6 +298,7 @@ async function createInventoryAdjustment(req, res, next) {
     // pass reverse operations
     const trx = db.transaction();
 
+    const uniqueAdjustmentUuid = uuid();
     const positiveAdjustmentUuid = uuid();
     const negativeAdjustmentUuid = uuid();
 
@@ -314,8 +315,8 @@ async function createInventoryAdjustment(req, res, next) {
         uuid : db.bid(uuid()),
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(negativeAdjustmentUuid),
-        quantity : lot.oldQuantity,
+        document_uuid : db.bid(uniqueAdjustmentUuid),
+        quantity : lot.oldQuantity + (lot.quantity - lot.oldQuantity),
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
@@ -333,8 +334,8 @@ async function createInventoryAdjustment(req, res, next) {
         uuid : db.bid(uuid()),
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(positiveAdjustmentUuid),
-        quantity : lot.oldQuantity * -1,
+        document_uuid : db.bid(uniqueAdjustmentUuid),
+        quantity : lot.oldQuantity + (lot.quantity - lot.oldQuantity),
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
@@ -369,25 +370,25 @@ async function createInventoryAdjustment(req, res, next) {
     await trx.execute();
 
     // pass inventory adjustment as new movement
-    const document = {
-      uuid : uuid(),
-      date : new Date(movement.date),
-      user : req.session.user.id,
-    };
-    const positiveLots = lots
-      .filter(lot => lot.quantity > 0)
-      .map(lot => {
-        delete lot.oldQuantity;
-        return lot;
-      });
+    // const document = {
+    //   uuid : uuid(),
+    //   date : new Date(movement.date),
+    //   user : req.session.user.id,
+    // };
+    // const positiveLots = lots
+    //   .filter(lot => lot.quantity > 0)
+    //   .map(lot => {
+    //     delete lot.oldQuantity;
+    //     return lot;
+    //   });
 
-    movement.is_exit = 0;
-    movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
-    movement.lots = positiveLots;
-    movement.period_id = periodId;
+    // movement.is_exit = 0;
+    // movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
+    // movement.lots = positiveLots;
+    // movement.period_id = periodId;
 
-    await normalMovement(document, movement, req.session);
-    res.status(201).json(document);
+    // await normalMovement(document, movement, req.session);
+    res.status(201).json({ uuid : uniqueAdjustmentUuid, date : new Date(movement.date), user : req.session.user.id });
   } catch (err) {
     next(err);
   }
