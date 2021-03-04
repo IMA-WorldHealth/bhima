@@ -81,18 +81,17 @@ async function createStock(req, res, next) {
 
     params.lots.forEach(lot => {
 
-      let lotUuid = lot.uuid;
+      const lotUuid = lot.uuid;
 
       if (lotUuid === null || typeof lotUuid === 'undefined') {
         // Create new lot (if one it does not already exist)
-        lotUuid = uuid();
 
         // parse the expiration date
         const date = new Date(lot.expiration_date);
 
         // the lot object to insert
         const createLotObject = {
-          uuid : db.bid(lotUuid),
+          uuid : db.bid(uuid()),
           label : lot.label,
           initial_quantity : lot.quantity,
           quantity : lot.quantity,
