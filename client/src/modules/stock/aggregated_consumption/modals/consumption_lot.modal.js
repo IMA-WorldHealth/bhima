@@ -37,7 +37,6 @@ function StockConsumptionLotsModalController(
   vm.submit = submit;
   vm.cancel = cancel;
 
-  vm.onLotBlur = onLotBlur;
   vm.onChanges = onChanges;
   vm.onChangeQuantity = onChangeQuantity;
   vm.onChangeUnitCost = onChangeUnitCost;
@@ -103,10 +102,6 @@ function StockConsumptionLotsModalController(
   };
 
   function init() {
-    if (cache.enableFastInsert) {
-      vm.enableFastInsert = cache.enableFastInsert;
-    }
-
     if (vm.form.rows.length) { return; }
 
     vm.form.addItem();
@@ -114,44 +109,6 @@ function StockConsumptionLotsModalController(
 
   function onRegisterApi(api) {
     vm.gridApi = api;
-  }
-
-  /**
-   * @method onLotBlur
-   *
-   * @description
-   * if the fast insert option is enable do this :
-   * - add new row automatically on blur
-   * - set the focus in the new row
-   * @param {string} rowLot the row.entity.lot string
-   */
-  function onLotBlur(rowLot) {
-    if (vm.enableFastInsert && rowLot) {
-
-      const emptyLotRow = getFirstEmptyLot();
-
-      if (emptyLotRow) {
-        // don't add new row but focus on the empty lot row
-        Focus(emptyLotRow.identifier);
-      } else {
-        // add a new row
-        const newLotRow = vm.form.addItem();
-        // set the focus on the new row
-        Focus(newLotRow.identifier);
-      }
-    }
-  }
-
-  function getFirstEmptyLot() {
-    let line;
-    for (let i = 0; i < vm.form.rows.length; i++) {
-      const row = vm.form.rows[i];
-      if (!row.lot || row.lot.length === 0) {
-        line = row;
-        break;
-      }
-    }
-    return line;
   }
 
   function onChanges() {
