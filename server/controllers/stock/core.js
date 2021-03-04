@@ -833,9 +833,69 @@ function computeLotIndicators(inventories) {
 }
 
 /**
- * Inventory Movement Report
+ * @function getOpeningStockBalanceForDepot
+ *
+ * @description
+ * This function gets the opening stock balance for a date, depot
+ * and inventory combination by looking up the most recent value from
+ * the stock_movement_status table.  If none is found, it returns 0s.
  */
-function getInventoryMovements(params) {
+async function getOpeningStockBalanceForDepot(date, depotUuid, inventoryUuid) {
+  const quantities = await db.exec(` 
+    SELECT sum_quantity AS quantity FROM stock_movement_status
+    WHERE date < ? AND depot_uuid = ? AND inventory_uuid = ?
+    ORDER BY date DESC
+    LIMIT 1;
+    `, [date, db.bid(depotUuid), db.bid(inventoryUuid)]);
+
+  // if nothing is found, return nothing
+  if (quantities.length === 0) {
+    return { quantity : 0 };
+  }
+
+  const [{ quantity }] = quantities;
+
+  return {
+    date,
+    quantity,
+  };
+}
+
+/**
+ * @function getOpeningStockBalance
+ *
+ * @description
+ * Gets the opening balance across the enterprise.  This is somewhat
+ * more complex since we keep stock values binned by depot_uuid, so we
+ * just need to get the most recent stock values in all depots. at that date.
+ */
+async function getOpeningStockBalance(date, inventoryUuid) {
+  const [{ quantity }] = await db.exec(` 
+    SELECT IFNULL(SUM(sum_quantity), 0) AS quantity FROM stock_movement_status AS sms
+    JOIN (SELECT sms2.depot_uuid, MAX(sms2.date) AS max_date FROM stock_movement_status sms2
+      WHERE sms2.date < ? AND sms2.inventory_uuid = ?
+      GROUP BY depot_uuid
+    )z
+    ON z.depot_uuid = sms.depot_uuid AND sms.date = z.max_date
+    WHERE inventory_uuid = ?;`, [date, db.bid(inventoryUuid), db.bid(inventoryUuid)]);
+
+  return {
+    date,
+    quantity,
+  };
+}
+
+/**
+ * Inventory Movement Report
+ *
+ * @description
+ * This function powers the stock sheet report ("fiche de stock").  It provides the
+ * Weighted Average Cost algorithm for the stock sheet and arranges the data for
+ * presentation.
+ *
+ * TODO(@jniles) - make the WAC algorithm into it's own function.
+ */
+async function getInventoryMovements(params) {
   const bundle = {};
 
   const sql = `
@@ -858,83 +918,98 @@ function getInventoryMovements(params) {
 
   const orderBy = params.orderByCreatedAt ? 'm.created_at' : 'm.date';
 
-  return getLots(sql, params, ` ORDER BY ${orderBy} ASC `)
-    .then((rows) => {
-      bundle.movements = rows;
+  // if a params.dateFrom is provided, assume we need to load the opening balance
+  // before any computations
+  let openingBalance = { quantity : 0 };
+  if (params.dateFrom && params.depot_uuid) {
+    openingBalance = await getOpeningStockBalanceForDepot(params.dateFrom, params.depot_uuid, params.inventory_uuid);
+  } else if (params.dateFrom) {
+    openingBalance = await getOpeningStockBalance(params.dateFrom, params.inventory_uuid);
+  }
 
-      // build the inventory report
-      let stockQuantity = 0;
-      let stockUnitCost = 0;
-      let stockValue = 0;
+  const rows = await getLots(sql, params, ` ORDER BY ${orderBy} ASC `);
 
-      // stock method CUMP : cout unitaire moyen pondere
-      const movements = bundle.movements.map(line => {
-        const movement = {
-          reference : line.documentReference,
-          date : line.date,
-          depot_text : line.depot_text,
-          label : line.label,
-          flux : line.flux,
-          entry : { quantity : 0, unit_cost : 0, value : 0 },
-          exit : { quantity : 0, unit_cost : 0, value : 0 },
-          stock : { quantity : 0, unit_cost : 0, value : 0 },
-        };
+  // get the first value of the array to get the first cost value for the opening balance
+  const [firstRow] = rows;
+  openingBalance.unit_cost = (firstRow && firstRow.unit_cost) || 0;
 
-        if (line.is_exit) {
-          stockQuantity -= line.quantity;
-          stockValue = stockQuantity * stockUnitCost;
-          // fix negative value disorder
-          // ignoring negative stock value by setting them to zero for entry
-          stockValue = (stockValue < 0) ? 0 : stockValue;
+  bundle.movements = rows;
 
-          // exit
-          movement.exit.quantity = line.quantity;
-          movement.exit.unit_cost = stockUnitCost;
-          movement.exit.value = line.quantity * line.unit_cost;
-        } else {
-          const newQuantity = line.quantity + stockQuantity;
-          // fix negative value disorder
-          // ignoring negative stock value by setting them to movement value for exit
-          const newValue = (stockValue < 0)
-            ? (line.unit_cost * line.quantity)
-            : (line.unit_cost * line.quantity) + stockValue;
-          // don't use cumulated quantity when stock quantity < 0
-          // in this case use movement quantity only
-          const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
+  // build the inventory report using the opening balance
+  let stockQuantity = openingBalance.quantity;
+  let stockUnitCost = openingBalance.unit_cost;
+  let stockValue = stockQuantity * stockUnitCost;
+  openingBalance.value = stockValue;
 
-          stockQuantity = newQuantity;
-          stockUnitCost = newCost;
-          stockValue = newValue;
+  // stock method CUMP : cout unitaire moyen pondere
+  const movements = bundle.movements.map(line => {
+    const movement = {
+      reference : line.documentReference,
+      date : line.date,
+      depot_text : line.depot_text,
+      label : line.label,
+      flux : line.flux,
+      entry : { quantity : 0, unit_cost : 0, value : 0 },
+      exit : { quantity : 0, unit_cost : 0, value : 0 },
+      stock : { quantity : 0, unit_cost : 0, value : 0 },
+    };
 
-          // entry
-          movement.entry.quantity = line.quantity;
-          movement.entry.unit_cost = line.unit_cost;
-          movement.entry.value = line.quantity * line.unit_cost;
-        }
+    if (line.is_exit) {
+      stockQuantity -= line.quantity;
+      stockValue = stockQuantity * stockUnitCost;
+      // fix negative value disorder
+      // ignoring negative stock value by setting them to zero for entry
+      stockValue = (stockValue < 0) ? 0 : stockValue;
 
-        // stock status
-        movement.stock.quantity = stockQuantity;
-        movement.stock.unit_cost = stockUnitCost;
-        movement.stock.value = stockValue;
+      // exit
+      movement.exit.quantity = line.quantity;
+      movement.exit.unit_cost = stockUnitCost;
+      movement.exit.value = line.quantity * line.unit_cost;
+    } else {
+      const newQuantity = line.quantity + stockQuantity;
+      // fix negative value disorder
+      // ignoring negative stock value by setting them to movement value for exit
+      const newValue = (stockValue < 0)
+        ? (line.unit_cost * line.quantity)
+        : (line.unit_cost * line.quantity) + stockValue;
+        // don't use cumulated quantity when stock quantity < 0
+        // in this case use movement quantity only
+      const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
 
-        return movement;
-      });
+      stockQuantity = newQuantity;
+      stockUnitCost = newCost;
+      stockValue = newValue;
 
-      // totals of quantities
-      const totals = movements.reduce((total, line) => {
-        total.entry += line.entry.quantity;
-        total.entryValue += line.entry.value;
-        total.exit += line.exit.quantity;
-        total.exitValue += line.exit.value;
-        return total;
-      }, {
-        entry : 0, entryValue : 0, exit : 0, exitValue : 0,
-      });
+      // entry
+      movement.entry.quantity = line.quantity;
+      movement.entry.unit_cost = line.unit_cost;
+      movement.entry.value = line.quantity * line.unit_cost;
+    }
 
-      // stock value
-      const result = movements.length ? movements[movements.length - 1] : {};
-      return { movements, totals, result };
-    });
+    // stock status
+    movement.stock.quantity = stockQuantity;
+    movement.stock.unit_cost = stockUnitCost;
+    movement.stock.value = stockValue;
+
+    return movement;
+  });
+
+  // totals of quantities
+  const totals = movements.reduce((total, line) => {
+    total.entry += line.entry.quantity;
+    total.entryValue += line.entry.value;
+    total.exit += line.exit.quantity;
+    total.exitValue += line.exit.value;
+    return total;
+  }, {
+    entry : 0, entryValue : 0, exit : 0, exitValue : 0,
+  });
+
+  // stock value
+  const result = movements.length ? movements[movements.length - 1] : {};
+  return {
+    movements, totals, result, openingBalance,
+  };
 }
 
 async function listStatus(req, res, next) {
