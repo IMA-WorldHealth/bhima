@@ -5,7 +5,7 @@ const EXIT_AGGREGATED_CONSUMPTION_ID = 16;
 
 /**
  * @function fetch
- * @description fetch stock exit for patient
+ * @description fetch stock exit for Aggregate consumption
  */
 function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   const sql = `
