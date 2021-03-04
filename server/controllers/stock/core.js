@@ -35,9 +35,14 @@ const flux = {
   INVENTORY_ADJUSTMENT : 15,
 };
 
+// const fluxLabel = {};
+const fluxLabel = Object.entries(flux)
+  .reduce((map, [key, value]) => { map[value] = `STOCK_FLUX.${key}`; return map; }, {});
+
 // exports
 module.exports = {
   flux,
+  fluxLabel,
   getMovements,
   getLots,
   getLotsDepot,
@@ -577,7 +582,7 @@ async function getDailyStockConsumption(params) {
 
   const sql = `
     SELECT
-      COUNT(m.uuid) as movement_number,
+      COUNT(m.uuid) as movement_count,
       SUM(m.quantity) as quantity,
       SUM(m.quantity * m.unit_cost) as value,
       DATE(m.date) as date,
@@ -585,7 +590,9 @@ async function getDailyStockConsumption(params) {
       BUID(m.uuid) AS uuid,
       i.text AS inventory_name,
       d.text AS depot_name,
-      BUID(d.uuid) AS depot_uuid
+      BUID(d.uuid) AS depot_uuid,
+      f.id AS flux_id,
+      m.is_exit
     FROM stock_movement m
     JOIN flux f ON m.flux_id = f.id
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -608,7 +615,15 @@ async function getDailyStockConsumption(params) {
     filters.setGroup('GROUP BY DATE(m.date)');
   }
 
-  filters.setOrder('ORDER BY m.date ');
+  if (params.group_by_flux) {
+    filters.setGroup('GROUP BY m.document_uuid');
+  }
+
+  if (params.order_by_exit) {
+    filters.setOrder('ORDER BY m.is_exit DESC, i.text ASC ');
+  } else {
+    filters.setOrder('ORDER BY m.date ');
+  }
 
   const rqtSQl = filters.applyQuery(sql);
   const rqtParams = filters.parameters();
