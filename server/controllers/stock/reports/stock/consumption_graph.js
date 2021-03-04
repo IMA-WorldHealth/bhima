@@ -1,5 +1,5 @@
 const {
-  _, db, util, ReportManager, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
+  _, db, ReportManager, STOCK_CONSUMPTION_GRAPTH_TEMPLATE,
 } = require('../common');
 const stockCore = require('../../core');
 const i18n = require('../../../../lib/helpers/translate');
@@ -13,7 +13,7 @@ const chartjs = require('../../../../lib/chart');
    *
    * GET /reports/stock/consumption_graph
    */
-async function stockConsumptionGrathReport(req, res, next) {
+async function stockConsumptionGraphReport(req, res, next) {
   try {
 
     const params = _.clone(req.query);
@@ -24,45 +24,53 @@ async function stockConsumptionGrathReport(req, res, next) {
 
     // set up the report with report manager
     const report = new ReportManager(STOCK_CONSUMPTION_GRAPTH_TEMPLATE, req.session, optionReport);
-
-    const depotSql = 'SELECT text FROM depot WHERE uuid=?';
     const options = req.query;
     let depot = {};
 
     if (options.depot_uuid) {
-      depot = await db.one(depotSql, db.bid(options.depot_uuid));
+      depot = await db.one('SELECT text FROM depot WHERE uuid=?', db.bid(options.depot_uuid));
     }
-    let dateFrom = '';
-    let dateTo = '';
 
-    if (params.period_id) {
-      const period = await db.one('SELECT start_date,end_date FROM period WHERE id=?', params.period_id);
-      dateFrom = period.start_date;
-      dateTo = period.end_date;
-    }
     options.consumption = true;
-    const result = await stockCore.getDailyStockConsumption(options);
-    util.dateFormatter(result, 'DD');
 
+    const collection = [];
     const reportType = options.reportType || 'quantity';
+    const result = await stockCore.getDailyStockConsumption(options);
+
+    result.forEach(item => {
+      const line = {
+        label : item.inventory_name,
+        value : item[reportType],
+      };
+      collection.push(line);
+    });
+
+    const data = {
+      labels : collection.map(item => item.label),
+      datasets : [{
+        data : collection.map(item => item.value),
+        backgroundColor : 'rgba(8, 84, 132, 1)',
+      }],
+    };
+
+    const chartRenderOptions = {
+      chart_canvas_id : 'stockConsumptionChart',
+      chart_data : data,
+      chart_x_axis_label : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
+      chart_type : 'horizontalBar',
+    };
+
+    const lineHeight = 16; // height of an inventory line
+    const defaultPadding = 100;
+    const chartHeight = String((result.length * lineHeight) + defaultPadding).concat('px');
 
     const reportResult = await report.render({
-      dateFrom,
-      dateTo,
+      chartHeight,
+      dateFrom : options.dateFrom,
+      dateTo : options.dateTo,
       depot,
-      chartjs : chartjs.barChart({
-        label : 'date',
-        data : result,
-        showLegend : true,
-        item : {
-          uuid : 'inventory_uuid',
-          name : 'inventory_name',
-          value : options.reportType || 'quantity',
-        },
-        yAxesLabelString : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
-        xAxesLabelString : i18n(options.lang)('FORM.LABELS.DAYS'),
-        canvasId : 'stockConsumptionChart',
-      }),
+      chartjs : chartjs.renderChart(chartRenderOptions),
+      destinationType : `STOCK_FLUX.${options.destinationType || 'ALL_DESTINATION'}`,
     });
     res.set(reportResult.headers).send(reportResult.report);
   } catch (error) {
@@ -70,4 +78,4 @@ async function stockConsumptionGrathReport(req, res, next) {
   }
 }
 
-module.exports = stockConsumptionGrathReport;
+module.exports = stockConsumptionGraphReport;
