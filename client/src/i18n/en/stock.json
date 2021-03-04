@@ -241,6 +241,7 @@
     "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limits the depots a user can interact with to the depots that the user has access to. Thus, if a user cannot distribute stock from a depot, they also cannot transfer stock to that depot."
   },
   "STOCK_FLUX" : {
+    "ALL_DESTINATION"  : "All Destination",
     "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
     "FROM_ADJUSTMENT"  : "Adjustment (Positive)",
