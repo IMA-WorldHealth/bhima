@@ -326,6 +326,7 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
   DECLARE TO_DEPOT INTEGER DEFAULT 8;
   DECLARE TO_PATIENT INTEGER DEFAULT 9;
   DECLARE TO_SERVICE INTEGER DEFAULT 10;
+  DECLARE TO_AGGREGATE_CONSUMPTION INTEGER DEFAULT 16;
 
   /*
     Creates a temporary table of stock movements for the depot, inventory items, and time frame under consideration.
@@ -342,8 +343,8 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
   CREATE TEMPORARY TABLE stock_movement_grp AS
     SELECT DATE(sm.date) as date, l.inventory_uuid, sm.depot_uuid, sm.quantity, is_exit, flux_id,
       CASE
-        WHEN d.is_warehouse AND flux_id IN (TO_DEPOT, TO_PATIENT, TO_SERVICE) THEN TRUE
-        WHEN flux_id IN (TO_PATIENT, TO_SERVICE) THEN TRUE
+        WHEN d.is_warehouse AND flux_id IN (TO_DEPOT, TO_PATIENT, TO_SERVICE, TO_AGGREGATE_CONSUMPTION) THEN TRUE
+        WHEN flux_id IN (TO_PATIENT, TO_SERVICE, TO_AGGREGATE_CONSUMPTION) THEN TRUE
         ELSE FALSE
       END AS is_consumption
     FROM stage_inventory_for_amc AS tmp
