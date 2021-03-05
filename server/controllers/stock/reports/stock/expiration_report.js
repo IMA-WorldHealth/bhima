@@ -40,7 +40,7 @@ async function stockExpirationReport(req, res, next) {
 
     // define month average and the algo to use
     // eslint-disable-next-line
-    const { month_average_consumption, average_consumption_algo } = req.session.stock_settings;
+    const { month_average_consumption, average_consumption_algo, min_delay } = req.session.stock_settings;
     _.extend(options, { month_average_consumption, average_consumption_algo });
 
     // get the lots for this depot

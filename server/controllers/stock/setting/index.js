@@ -23,7 +23,8 @@ exports.list = function list(req, res, next) {
     SELECT month_average_consumption, default_min_months_security_stock,
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
       enable_strict_depot_permission, enable_supplier_credit,
-      enable_strict_depot_distribution, average_consumption_algo
+      enable_strict_depot_distribution, average_consumption_algo,
+      min_delay
     FROM stock_setting
     WHERE enterprise_id = ? LIMIT 1;
     `;
