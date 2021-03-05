@@ -266,6 +266,11 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   const resultFromProcess = await db.exec(query, queryParameters);
 
+  // add minumum delay
+  resultFromProcess.forEach(row => {
+    row.min_delay = params.min_delay;
+  });
+
   // calulate the CMM and add inventory flags.
   const inventoriesWithManagementData = await getBulkInventoryCMM(
     resultFromProcess,
@@ -509,11 +514,16 @@ function computeInventoryIndicators(inventories) {
     // Signal that no consumption has occurred of the inventory items
     inventory.NO_CONSUMPTION = (CMM === 0);
 
+    // NOTE(@jniles) ensure that this value is set before going too far.
+    const delay = Math.max(inventory.min_delay, inventory.delay);
+
     // Compute the Security Stock
     // Security stock is defined by taking the average monthly consumption (AMC or CMM)
-    // and multiplying it by the Lead Time (inventory.delay).  The Lead Time is by default 1 month.
+    // and multiplying it by the delay factor.  Typically, this is the lead time (with
+    // a default of one month).  However, if the lead time is too small, the user can set
+    // a floor value using the stock setting's min_delay parameter.
     // This gives you a security stock quantity.
-    inventory.S_SEC = CMM * inventory.delay; // stock de securite
+    inventory.S_SEC = CMM * delay; // stock de securite
 
     // Compute Minimum Stock
     // The minumum of stock required is double the security stock.
@@ -692,10 +702,15 @@ async function getInventoryQuantityAndConsumption(params) {
   if (filteredRows.length === 0) { return []; }
 
   const settingsql = `
-    SELECT month_average_consumption, average_consumption_algo FROM stock_setting WHERE enterprise_id = ?
+    SELECT month_average_consumption, average_consumption_algo, min_delay FROM stock_setting WHERE enterprise_id = ?
   `;
 
   const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
+
+  // add the minimum delay to the rows
+  filteredRows.forEach(row => {
+    row.min_delay = opts.min_delay;
+  });
 
   // add the CMM
   filteredRows = await getBulkInventoryCMM(filteredRows, opts.month_average_consumption, opts.average_consumption_algo);

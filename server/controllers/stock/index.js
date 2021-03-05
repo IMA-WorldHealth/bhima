@@ -591,7 +591,7 @@ function listMovements(req, res, next) {
  */
 function dashboard(req, res, next) {
   // eslint-disable-next-line
-  const { month_average_consumption, average_consumption_algo } = req.session.stock_settings;
+  const { month_average_consumption, average_consumption_algo, min_delay } = req.session.stock_settings;
 
   const dbPromises = [];
   let depotsByUser = [];
@@ -642,6 +642,7 @@ function dashboard(req, res, next) {
             is_expiry_risk : '1',
             month_average_consumption,
             average_consumption_algo,
+            min_delay,
           };
 
           dbPromises.push(core.getLotsDepot(
@@ -755,6 +756,7 @@ async function listLotsDepot(req, res, next) {
 
   params.month_average_consumption = req.session.stock_settings.month_average_consumption;
   params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
+  params.min_delay = req.session.stock_settings.min_delay;
 
   if (req.session.stock_settings.enable_strict_depot_permission) {
     params.check_user_id = req.session.user.id;
@@ -810,6 +812,7 @@ async function listInventoryDepot(req, res, next) {
 
   params.month_average_consumption = req.session.stock_settings.month_average_consumption;
   params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
+  params.min_delay = req.session.stock_settings.min_delay;
 
   try {
     // FIXME(@jniles) - these two call essentially the same route.  Do we need both?
