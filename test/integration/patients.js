@@ -280,9 +280,12 @@ describe('(/patients) Patients', () => {
   it('GET patients/:uuid/stock/movements Returns the stock movement related to the Patient', () => {
     return agent.get(`/patients/${patientTest2}/stock/movements`)
       .then((res) => {
-        const expectedKeys = ['document_uuid', 'depot_uuid', 'date', 'reference_text'];
+        const expectedKeys = [
+          'document_uuid', 'depot_uuid', 'date', 'invoiceReference',
+          'value', 'depot_name', 'hrReference',
+        ];
         expect(res.body[0]).to.contain.keys(expectedKeys);
-        expect(res.body[0].reference_text).to.equal('SM.9.7');
+        expect(res.body[0].hrReference).to.equal('SM.9.7');
       });
 
   });
@@ -376,7 +379,6 @@ function PatientGroups() {
       .catch(helpers.handler);
   });
 }
-
 
 // Tests for /patients/hospital_number/:id/exists
 function HospitalNumber() {
