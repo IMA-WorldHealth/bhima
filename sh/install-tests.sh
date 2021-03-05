@@ -3,37 +3,21 @@
 # bash script mode
 set -euo pipefail
 
-trap 'kill $(jobs -p)' EXIT
-
 set -a
 source .env || { echo '[install-tests.sh] could not load .env, using variables from environment.' ; }
 set +a
 
-./sh/build-init-database.sh
+./sh/build-init-database.sh || { echo 'failed to build DB' ; exit 1; }
 
 echo "[install test]"
 
-# set build timeout
-TIMEOUT=${BUILD_TIMEOUT:-8}
-
-echo "[install test] Spawning server process..."
+echo "[install test] building the server..."
 # build and start the server
 ./node_modules/.bin/gulp build
-cd bin
-node server/app.js &
-NODE_PID=$!
-
-echo "[install test] Spawned node process $NODE_PID."
-
-# make sure we have enough time for the server to start
-echo "[install test] Sleeping for $TIMEOUT seconds."
-sleep $TIMEOUT
 
 echo "[install test] running tests using mocha"
 
 # run the tests
-../node_modules/.bin/mocha --recursive ../test/integration-install
-
-echo "[install test] cleaning up node process $NODE_PID."
+./node_modules/.bin/mocha --recursive --bail --exit ./test/integration-install
 
 echo "[/install test]"
