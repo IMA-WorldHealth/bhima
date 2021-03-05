@@ -65,25 +65,17 @@ function build(req, res, next) {
       if (data.includeStockDistributed) {
         data.stockMovement = stockMovement;
         data.stockMovement.forEach(item => {
-          item.consumed = [];
-          item.totalMovement = 0;
-          stockConsumed.forEach(inv => {
-            if (item.reference_text === inv.reference_text) {
-              inv.total = inv.quantity * inv.unit_cost;
-              item.totalMovement += inv.total;
-              item.consumed.push(inv);
-            }
-          });
-
-          data.totalAllMovement += item.totalMovement;
+          item.consumed = stockConsumed
+            .filter(inv => item.hrReference === inv.reference_text);
+          data.totalAllMovement += item.value;
         });
       }
 
       aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
 
       _.extend(data, { transactions, aggregates });
+      return report.render(data);
     })
-    .then(() => report.render(data))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
