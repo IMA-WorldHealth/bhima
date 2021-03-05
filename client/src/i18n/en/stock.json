@@ -275,7 +275,7 @@
     "TO_LOSS"          : "To Loss",
     "TO_ADJUSTMENT"    : "Adjustment (Negative)",
     "INVENTORY_RESET"  : "Inventory Reset",
-    "INVENTORY_ADJUSTMENT" : "New Stock After Inventory"
+    "INVENTORY_ADJUSTMENT" : "Inventory Adjustment"
   },
   "LOTS" : {
     "REGISTRY" : "Lots Registry",
