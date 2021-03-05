@@ -61,8 +61,6 @@ describe('(/depots) The depots API ', () => {
 
       let values = {
         algo1 : 53.48,
-        algo2 : 2168.89,
-        algo3 : 53.48,
         algo_msh : 53.33,
         sum_days : 365,
         sum_stock_day : 365,
@@ -74,8 +72,6 @@ describe('(/depots) The depots API ', () => {
       };
 
       expect(res.body.algo1, 'quinine CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
-      expect(res.body.algo2, 'quinine CMM algorithm 2 is not calculated correctly').to.equal(values.algo2);
-      expect(res.body.algo3, 'quinine CMM algorithm 3 is not calculated correctly').to.equal(values.algo3);
       expect(res.body.algo_msh, 'quinine CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
 
       expect(res.body, 'quinine CMM not calculated correctly').to.deep.include(values);
@@ -83,8 +79,6 @@ describe('(/depots) The depots API ', () => {
       res = await agent.get(`/depots/${principal}/inventories/${oxytocine}/cmm`);
       values = {
         algo1 : 74.37,
-        algo2 : 3393.13,
-        algo3 : 74.37,
         algo_msh : 74.17,
         sum_days : 365,
         sum_stock_day : 365,
@@ -96,16 +90,12 @@ describe('(/depots) The depots API ', () => {
       };
 
       expect(res.body.algo1, 'oxytocine CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
-      expect(res.body.algo2, 'oxytocine CMM algorithm 2 is not calculated correctly').to.equal(values.algo2);
-      expect(res.body.algo3, 'oxytocine CMM algorithm 3 is not calculated correctly').to.equal(values.algo3);
       expect(res.body.algo_msh, 'oxytocine CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
       expect(res.body, 'oxytocine CMM not calculated correctly').to.deep.include(values);
 
       res = await agent.get(`/depots/${principal}/inventories/${ampicilline}/cmm`);
       values = {
         algo1 : 33.27,
-        algo2 : 1143.75,
-        algo3 : 25.07,
         algo_msh : 33.15,
         sum_days : 365,
         sum_stock_day : 275,
@@ -117,8 +107,6 @@ describe('(/depots) The depots API ', () => {
       };
 
       expect(res.body.algo1, 'ampicilline CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
-      expect(res.body.algo2, 'ampicilline CMM algorithm 2 is not calculated correctly').to.equal(values.algo2);
-      expect(res.body.algo3, 'ampicilline CMM algorithm 3 is not calculated correctly').to.equal(values.algo3);
       expect(res.body.algo_msh, 'ampicilline CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
       expect(res.body, 'ampicilline CMM not calculated correctly').to.deep.include(values);
     } catch (err) {
