@@ -1871,6 +1871,7 @@ CREATE TABLE `stock_setting` (
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
   `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh', -- Algo MSH
+  `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 0, -- minimum number of months for inventory delay
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

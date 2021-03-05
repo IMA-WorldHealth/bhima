@@ -11,7 +11,7 @@
       "END_OF_CONSUMPTION": "Fin de la consommation",
       "START_OF_CONSUMPTION": "Début de la consommation",
       "TITLE": "Consommation de stock agrégée"
-    },    
+    },
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
     "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
@@ -258,7 +258,9 @@
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système",
     "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activer la restriction des depots de distribution",
-    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts qui peuvent recevoir du stock à partir d'un dépôt donné; lors de la sortie de stock vers un dépôt, seul les dépôts autorisés peuvent s'afficher pour le dépôt donné afin de recevoir du stock"
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limite les dépôts qui peuvent recevoir du stock à partir d'un dépôt donné; lors de la sortie de stock vers un dépôt, seul les dépôts autorisés peuvent s'afficher pour le dépôt donné afin de recevoir du stock",
+    "MIN_PURCHASE_DELAY": "Délai d'achat minimum",
+    "MIN_PURCHASE_DELAY_HELP_TEXT": "Définit le délai minimum en mois prévu pour un fournisseur pour livrer des médicaments après la finalisation de la commande d'achat. "
   },
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "Toutes les destinations",
