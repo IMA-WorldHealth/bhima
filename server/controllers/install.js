@@ -64,7 +64,6 @@ exports.checkBasicInstallExist = async (req, res, next) => {
   }
 };
 
-
 /**
  * @function defaultEnterpriseLocation
  *
@@ -74,7 +73,6 @@ exports.checkBasicInstallExist = async (req, res, next) => {
 function defaultEnterpriseLocation() {
   return db.one(`SELECT uuid FROM village LIMIT 1;`);
 }
-
 
 /**
  * POST /install
