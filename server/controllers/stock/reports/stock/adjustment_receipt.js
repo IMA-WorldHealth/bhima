@@ -34,10 +34,14 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     JOIN user u ON u.id = m.user_id
     WHERE m.flux_id IN (${FLUX_TYPE}) AND m.document_uuid = ?
   `;
+  const adjustmentLogQuery = `
+    SELECT s.log_timestamp, s.text, s.user_id FROM stock_adjustment_log s WHERE s.document_uuid = ?
+  `;
 
-  const [rows, [references]] = await Promise.all([
+  const [rows, [references], [adjustmentLog]] = await Promise.all([
     db.exec(sql, [db.bid(documentUuid)]),
     getVoucherReferenceForStockMovement(documentUuid),
+    db.exec(adjustmentLogQuery, [db.bid(documentUuid)]),
   ]);
 
   const voucherReference = references && references.voucher_reference;
@@ -45,6 +49,8 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
   if (!rows.length) {
     throw new NotFound(`Could not find document with uuid: ${documentUuid}`);
   }
+
+  const stockAdjustmentLog = adjustmentLog ? JSON.parse(adjustmentLog.text) : [];
 
   const line = rows[0];
   const { key } = identifiers.STOCK_MOVEMENT;
@@ -73,8 +79,15 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
   };
 
   data.rows = rows;
+  data.increasedAdjustment = stockAdjustmentLog.map(computeTotal).filter(item => item.is_exit === 0);
+  data.decreasedAdjustment = stockAdjustmentLog.map(computeTotal).filter(item => item.is_exit === 1);
 
   return report.render(data);
+}
+
+function computeTotal(item) {
+  item.total = item.unit_cost * item.quantity;
+  return item;
 }
 
 module.exports = stockAdjustmentReceipt;

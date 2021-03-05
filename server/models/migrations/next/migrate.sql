@@ -179,3 +179,19 @@ INSERT INTO `flux` VALUES
 ALTER TABLE `inventory_unit`
 	CHANGE COLUMN `abbr` `abbr` VARCHAR(50),
 	CHANGE COLUMN `text` `text` VARCHAR(50);
+
+/**
+  * @author: mbayopanda
+  * @date: 2021-03-5
+  * @desc: the stock_adjustment_log table
+  */
+DROP TABLE IF EXISTS `stock_adjustment_log`;
+CREATE TABLE `stock_adjustment_log` (
+  `document_uuid` BINARY(16) NOT NULL,
+  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `text` JSON,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY `document_uuid` (`document_uuid`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `stock_adjustment_log__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
