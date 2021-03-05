@@ -1978,6 +1978,17 @@ CREATE TABLE `stock_requisition_item` (
   CONSTRAINT `stock_req_item__stock_req_item` FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `stock_adjustment_log`;
+CREATE TABLE `stock_adjustment_log` (
+  `document_uuid` BINARY(16) NOT NULL,
+  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `text` JSON,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY `document_uuid` (`document_uuid`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `stock_adjustment_log__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `stock_movement`;
 CREATE TABLE `stock_movement` (
   `uuid`                    BINARY(16) NOT NULL,
