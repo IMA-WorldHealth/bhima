@@ -179,3 +179,11 @@ INSERT INTO `flux` VALUES
 ALTER TABLE `inventory_unit`
 	CHANGE COLUMN `abbr` `abbr` VARCHAR(50),
 	CHANGE COLUMN `text` `text` VARCHAR(50);
+
+
+/*
+ * @author: jniles
+ * @date: 2021-03-05
+ * @description: add minimum delay column to stock settings
+*/
+ALTER TABLE stock_setting ADD COLUMN `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 0;

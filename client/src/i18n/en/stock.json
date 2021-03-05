@@ -257,7 +257,9 @@
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
     "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system",
     "ENABLE_STRICT_DEPOT_DISTRIBUTION" : "Activate the restriction of distribution depots",
-    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limits the depots a user can interact with to the depots that the user has access to. Thus, if a user cannot distribute stock from a depot, they also cannot transfer stock to that depot."
+    "ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT" : "Limits the depots a user can interact with to the depots that the user has access to. Thus, if a user cannot distribute stock from a depot, they also cannot transfer stock to that depot.",
+    "MIN_PURCHASE_DELAY": "Minimum Purchase Delay",
+    "MIN_PURCHASE_DELAY_HELP_TEXT": "Set the minumum amount of expected delay in months for a supplier to deliver medicines after the purchase order is finalised."
   },
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "All Destinations",

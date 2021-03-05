@@ -34,18 +34,17 @@ function StockSettingsController(
 
         // Now look up the stock settings
         // (assume they have already been created )
-        StockSettings.read(null, params)
-          .then(settings => {
-            if (settings.length > 0) {
-              [vm.settings] = settings;
-            }
-          })
-          .catch(Notify.handleError);
+        return StockSettings.read(null, params);
+      })
+      .then(settings => {
+        if (settings.length > 0) {
+          [vm.settings] = settings;
+        }
       })
       .catch(Notify.handleError);
 
-    // load algorithmes for Average Consumption
-    vm.algorithmes = bhConstants.average_consumption_algo;
+    // load algorithms for Average Consumption
+    vm.algorithms = bhConstants.average_consumption_algo;
   }
 
   // form submission
@@ -62,9 +61,11 @@ function StockSettingsController(
     }
 
     const changes = util.filterFormElements(form, true);
+
     Object.keys(vm.settings).forEach(key => {
       delete changes[key];
     });
+
     changes.settings = angular.copy(vm.settings);
 
     const promise = StockSettings.update(vm.enterprise.id, changes);
@@ -101,6 +102,8 @@ function StockSettingsController(
   vm.setDefaultMinMonthsSecurityStock = function setDefaultMinMonthsSecurityStock() {
     $touched = true;
   };
+
+  vm.setMinDelay = () => { $touched = true; };
 
   startup();
 }
