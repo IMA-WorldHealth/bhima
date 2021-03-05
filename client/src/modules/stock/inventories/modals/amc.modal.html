@@ -20,18 +20,6 @@
         <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT</span>
       </span>
 
-      <span ng-show="ModalCtrl.isAlgo2">
-        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2</strong>
-        <br />
-        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT</span>
-      </span>
-
-      <span ng-show="ModalCtrl.isAlgo3">
-        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3</strong>
-        <br />
-        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT</span>
-      </span>
-
       <span ng-show="ModalCtrl.isAlgo4">
         <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</strong>
         <br />
@@ -78,16 +66,12 @@
           <thead>
             <tr>
               <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_1</th>
-              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_2_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_2</th>
-              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_3_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_3</th>
               <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_4</th>
             </tr>
           </thead>
           <tbody>
             <tr class="text-right">
               <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo1 }">{{ModalCtrl.data.algo1}}</td>
-              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo2 }">{{ModalCtrl.data.algo2}}</td>
-              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo3 }">{{ModalCtrl.data.algo3}}</td>
               <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo4 }">{{ModalCtrl.data.algo_msh}}</td>
             </tr>
           </tbody>
@@ -99,12 +83,6 @@
           <dt ng-show="ModalCtrl.isAlgo1" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1</dt>
           <dd ng-show="ModalCtrl.isAlgo1">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-success">{{ModalCtrl.data.sum_stock_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
 
-          <dt ng-show="ModalCtrl.isAlgo2" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_2</dt>
-          <dd ng-show="ModalCtrl.isAlgo2">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-info">{{ModalCtrl.data.sum_consumption_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
-
-          <dt ng-show="ModalCtrl.isAlgo3" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_3</dt>
-          <dd ng-show="ModalCtrl.isAlgo3">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / {{ModalCtrl.data.sum_days}}) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
-
           <dt ng-show="ModalCtrl.isAlgo4" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</dt>
           <dd ng-show="ModalCtrl.isAlgo4"><span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / (<span class="text-warning">{{ModalCtrl.data.number_of_month}}</span> &minus; (<span class="text-danger">{{ModalCtrl.data.sum_stock_out_days}}</span> / 30.5)) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
         </dl>
@@ -113,10 +91,9 @@
           <dt translate>STOCK.CURRENT_QUANTITY</dt>
           <dd>{{ModalCtrl.data.quantity_in_stock}} <span translate>{{ModalCtrl.inventory.unit}}</span></dd>
 
-          <dt translate>STOCK.MONTHLY_CONSUMPTION.NEXT_STOCK_OUT</dt>
-          <dd> {{ModalCtrl.data.stock_out_date | date:ModalCtrl.DATE_FORMAT }} ({{ModalCtrl.data.stock_out_date | amDifference:null:'days' }} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span>)</dd>
+          <dt translate ng-if="ModalCtrl.data.avg_consumption">STOCK.MONTHLY_CONSUMPTION.NEXT_STOCK_OUT</dt>
+          <dd ng-if="ModalCtrl.data.avg_consumption"> {{ModalCtrl.data.stock_out_date | date:ModalCtrl.DATE_FORMAT }} ({{ModalCtrl.data.stock_out_date | amDifference:null:'days' }} <span translate>STOCK.MONTHLY_CONSUMPTION.DAYS</span>)</dd>
         </dl>
-
       </div>
     </div>
   </div>
