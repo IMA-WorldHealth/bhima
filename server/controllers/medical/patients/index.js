@@ -1015,18 +1015,18 @@ function getStockMovements(req, res, next) {
 
 function stockMovementByPatient(patientUuid) {
   const sql = `
-      SELECT DISTINCT BUID(sm.document_uuid) AS document_uuid,
-      BUID(sm.depot_uuid) AS depot_uuid, d.text as depot_name,
-      sm.unit_cost, (sm.quantity * sm.unit_cost) AS value,
-      sm.date, map.text AS reference_text,
-      i.text AS inventory_name
+      SELECT BUID(sm.document_uuid) AS document_uuid,
+      dmi.text AS invoiceReference,
+      BUID(sm.depot_uuid) AS depot_uuid, MAX(d.text) as depot_name,
+      SUM(sm.quantity * sm.unit_cost) AS value,
+      MAX(sm.date) AS date, MAX(dm.text) AS hrReference
     FROM stock_movement AS sm
       JOIN depot AS d ON d.uuid = sm.depot_uuid
       JOIN patient AS p ON p.uuid = sm.entity_uuid
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory i ON i.uuid = l.inventory_uuid
-      JOIN document_map AS map ON map.uuid = sm.document_uuid
+      JOIN document_map AS dm ON dm.uuid = sm.document_uuid
+      LEFT JOIN document_map AS dmi ON dmi.uuid = sm.invoice_uuid
     WHERE sm.entity_uuid = ?
+    GROUP BY sm.document_uuid
     ORDER BY sm.date DESC
   `;
 
@@ -1037,6 +1037,7 @@ function stockConsumedPerPatient(patientUuid) {
   const sql = `
     SELECT sm.document_uuid, sm.depot_uuid, sm.date, map.text AS reference_text,
     iv.text AS inventory_text, sm.quantity, sm.unit_cost,
+    (sm.unit_cost * sm.quantity) AS total,
     l.label AS lotLabel, un.text AS inventoryUnit
     FROM stock_movement AS sm
       JOIN lot AS l ON l.uuid = sm.lot_uuid
