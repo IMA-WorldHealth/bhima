@@ -33,8 +33,6 @@ function StockAMCModalController(Stock, Notify, Instance, data, moment, Constant
 
         // nicer aliases to use in the HTML
         vm.isAlgo1 = vm.settings.average_consumption_algo === 'algo1';
-        vm.isAlgo2 = vm.settings.average_consumption_algo === 'algo2';
-        vm.isAlgo3 = vm.settings.average_consumption_algo === 'algo3';
         vm.isAlgo4 = vm.settings.average_consumption_algo === 'algo_msh';
       })
       .catch(Notify.handleError)
