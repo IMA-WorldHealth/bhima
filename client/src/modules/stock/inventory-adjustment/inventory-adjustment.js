@@ -228,10 +228,8 @@ function StockInventoryAdjustmentController(
     }
 
     return Stock.inventoryAdjustment.create(movement)
-      .then(() => {
-        // since we have effectively performed an inventory, instead of rendering a receipt,
-        // we will render the "Articles in Stock" report for this depot.
-        ReceiptModal.stockAdjustmentReport(movement.depot_uuid, movement.date, INVENTORY_ADJUSTMENT);
+      .then(document => {
+        ReceiptModal.stockAdjustmentReceipt(document.uuid);
 
         startup();
         return loadInventories(vm.depot);

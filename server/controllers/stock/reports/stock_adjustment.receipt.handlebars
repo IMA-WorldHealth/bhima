@@ -48,40 +48,128 @@
   {{/if}}
 
   <!-- list of data  -->
-  <table class="table table-condensed table-bordered table-report">
-    <thead>
-      <tr>
-        <th>{{translate 'STOCK.CODE'}}</th>
-        <th>{{translate 'STOCK.INVENTORY'}}</th>
-        <th>{{translate 'STOCK.LOT'}}</th>
-        <th>{{translate 'STOCK.EXPIRATION'}}</th>
-        <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.UNIT_COST'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each rows}}
+  {{#equal details.flux_id 15}}
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
         <tr>
-          <td>{{code}}</td>
-          <td>{{text}}</td>
-          <td>{{label}}</td>
-          <td>{{date expiration_date}}</td>
-          <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          <th style="background-color: #ccc;" colspan="9">{{translate 'STOCK_FLUX.FROM_ADJUSTMENT'}}</th>
         </tr>
-      {{else}}
-        {{> emptyTable columns=9}}
-      {{/each}}
-    </tbody>
-    <tfoot>
-      <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
-      </tr>
-    </tfoot>
-  </table>
+        <tr>
+          <th>{{translate 'STOCK.CODE'}}</th>
+          <th>{{translate 'STOCK.INVENTORY'}}</th>
+          <th>{{translate 'STOCK.LOT'}}</th>
+          <th>{{translate 'STOCK.EXPIRATION'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.OLD_QUANTITY'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.NEW_QUANTITY'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.DIFFERENCE'}}</th>
+          <th>{{translate 'STOCK.UNIT_COST'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each increasedAdjustment}}
+          <tr>
+            <td>{{code}}</td>
+            <td>{{text}}</td>
+            <td>{{label}}</td>
+            <td>{{date expiration_date}}</td>
+            <td class="text-right">{{old_quantity}}</td>
+            <td class="text-right">{{new_quantity}}</td>
+            <td class="text-right">{{difference}}</td>
+            <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+            <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          </tr>
+        {{else}}
+          {{> emptyTable columns=9}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr style="font-weight: bold;">
+          <td colspan="8">{{increasedAdjustment.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td class="text-right">{{currency (sum increasedAdjustment 'total') enterprise.currency_id}}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <br>
+
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr>
+          <th style="background-color: #ccc;" colspan="9">{{translate 'STOCK_FLUX.TO_ADJUSTMENT'}}</th>
+        </tr>
+        <tr>
+          <th>{{translate 'STOCK.CODE'}}</th>
+          <th>{{translate 'STOCK.INVENTORY'}}</th>
+          <th>{{translate 'STOCK.LOT'}}</th>
+          <th>{{translate 'STOCK.EXPIRATION'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.OLD_QUANTITY'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.NEW_QUANTITY'}}</th>
+          <th>{{translate 'INVENTORY_ADJUSTMENT.DIFFERENCE'}}</th>
+          <th>{{translate 'STOCK.UNIT_COST'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each decreasedAdjustment}}
+          <tr>
+            <td>{{code}}</td>
+            <td>{{text}}</td>
+            <td>{{label}}</td>
+            <td>{{date expiration_date}}</td>
+            <td class="text-right">{{old_quantity}}</td>
+            <td class="text-right">{{new_quantity}}</td>
+            <td class="text-right">{{difference}}</td>
+            <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+            <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          </tr>
+        {{else}}
+          {{> emptyTable columns=9}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr style="font-weight: bold;">
+          <td colspan="8">{{decreasedAdjustment.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td class="text-right">{{currency (sum decreasedAdjustment 'total') enterprise.currency_id}}</td>
+        </tr>
+      </tfoot>
+    </table>
+  {{else}}
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr>
+          <th>{{translate 'STOCK.CODE'}}</th>
+          <th>{{translate 'STOCK.INVENTORY'}}</th>
+          <th>{{translate 'STOCK.LOT'}}</th>
+          <th>{{translate 'STOCK.EXPIRATION'}}</th>
+          <th>{{translate 'STOCK.QUANTITY'}}</th>
+          <th>{{translate 'STOCK.UNIT_COST'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each rows}}
+          <tr>
+            <td>{{code}}</td>
+            <td>{{text}}</td>
+            <td>{{label}}</td>
+            <td>{{date expiration_date}}</td>
+            <td class="text-right">{{quantity}}</td>
+            <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+            <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          </tr>
+        {{else}}
+          {{> emptyTable columns=9}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr style="font-weight: bold;">
+          <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        </tr>
+      </tfoot>
+    </table>
+  {{/equal}}
 
   <br>
 

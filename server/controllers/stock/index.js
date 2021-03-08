@@ -298,96 +298,73 @@ async function createInventoryAdjustment(req, res, next) {
     // pass reverse operations
     const trx = db.transaction();
 
-    const positiveAdjustmentUuid = uuid();
-    const negativeAdjustmentUuid = uuid();
+    const uniqueAdjustmentUuid = uuid();
 
-    // get all lots with positive quantities
-    const positiveQuantities = lots.filter(lot => lot.oldQuantity > 0);
+    let countNeedIncrease = 0;
+    let countNeedDecrease = 0;
 
-    // get all lots with negative quantities
-    // negative quantities occurs during some extra stock exit when quantity in stock
-    // is already under or equal to zero
-    const negativeQuantities = lots.filter(lot => lot.oldQuantity < 0);
+    lots.forEach(lot => {
+      const difference = lot.quantity - lot.oldQuantity;
 
-    positiveQuantities.forEach(lot => {
-      const reverseMovementObject = {
+      const adjustmentMovement = {
         uuid : db.bid(uuid()),
         lot_uuid : db.bid(lot.uuid),
         depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(negativeAdjustmentUuid),
-        quantity : lot.oldQuantity,
+        document_uuid : db.bid(uniqueAdjustmentUuid),
+        quantity : Math.abs(difference),
         unit_cost : lot.unit_cost,
         date : new Date(movement.date),
         entity_uuid : movement.entity_uuid,
-        is_exit : 1,
-        flux_id : core.flux.INVENTORY_RESET,
+        flux_id : core.flux.INVENTORY_ADJUSTMENT,
         description : movement.description,
         user_id : req.session.user.id,
         period_id : periodId,
       };
-      trx.addQuery('INSERT INTO stock_movement SET ?', reverseMovementObject);
-    });
 
-    negativeQuantities.forEach(lot => {
-      const reverseMovementObject = {
-        uuid : db.bid(uuid()),
-        lot_uuid : db.bid(lot.uuid),
-        depot_uuid : db.bid(movement.depot_uuid),
-        document_uuid : db.bid(positiveAdjustmentUuid),
-        quantity : lot.oldQuantity * -1,
-        unit_cost : lot.unit_cost,
-        date : new Date(movement.date),
-        entity_uuid : movement.entity_uuid,
-        is_exit : 0,
-        flux_id : core.flux.INVENTORY_RESET,
-        description : movement.description,
-        user_id : req.session.user.id,
-        period_id : periodId,
+      const log = {
+        movement_uuid : adjustmentMovement.uuid,
+        old_quantity : lot.oldQuantity,
+        new_quantity : lot.quantity,
       };
-      trx.addQuery('INSERT INTO stock_movement SET ?', reverseMovementObject);
+
+      if (difference < 0) {
+        // we have to do a stock exit movement
+        // we must substract the |difference| to the current quantity
+        countNeedDecrease++;
+        adjustmentMovement.is_exit = 1;
+      } else {
+        // we must do increase the current quantity by the |difference|
+        countNeedIncrease++;
+        adjustmentMovement.is_exit = 0;
+      }
+
+      trx.addQuery('INSERT INTO stock_movement SET ?', adjustmentMovement);
+      trx.addQuery('INSERT INTO stock_adjustment_log SET ?', log);
     });
 
-    const negativeAdjustmentParams = [
-      db.bid(negativeAdjustmentUuid), 1, req.session.project.id,
+    const decreaseParams = [
+      db.bid(uniqueAdjustmentUuid), 1, req.session.project.id,
     ];
 
-    const positiveAdjustmentParams = [
-      db.bid(positiveAdjustmentUuid), 0, req.session.project.id,
+    const increaseParams = [
+      db.bid(uniqueAdjustmentUuid), 0, req.session.project.id,
     ];
 
     if (req.session.stock_settings.enable_auto_stock_accounting) {
-      if (positiveQuantities.length > 0) {
-        trx.addQuery('CALL PostStockMovement(?)', [negativeAdjustmentParams]);
+      if (countNeedDecrease > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [decreaseParams]);
       }
 
-      if (negativeQuantities.length > 0) {
-        trx.addQuery('CALL PostStockMovement(?)', [positiveAdjustmentParams]);
+      if (countNeedIncrease > 0) {
+        trx.addQuery('CALL PostStockMovement(?)', [increaseParams]);
       }
     }
 
     // reset all previous lots
     await trx.execute();
 
-    // pass inventory adjustment as new movement
-    const document = {
-      uuid : uuid(),
-      date : new Date(movement.date),
-      user : req.session.user.id,
-    };
-    const positiveLots = lots
-      .filter(lot => lot.quantity > 0)
-      .map(lot => {
-        delete lot.oldQuantity;
-        return lot;
-      });
-
-    movement.is_exit = 0;
-    movement.flux_id = core.flux.INVENTORY_ADJUSTMENT;
-    movement.lots = positiveLots;
-    movement.period_id = periodId;
-
-    await normalMovement(document, movement, req.session);
-    res.status(201).json(document);
+    // await normalMovement(document, movement, req.session);
+    res.status(201).json({ uuid : uniqueAdjustmentUuid, date : new Date(movement.date), user : req.session.user.id });
   } catch (err) {
     next(err);
   }
@@ -1016,7 +993,7 @@ async function createAggregatedConsumption(req, res, next) {
 
     // pass reverse operations
     const trx = db.transaction();
-    const transact = db.transaction();
+    // const transact = db.transaction();
 
     const inventoryMapUuids = lots.map(lot => lot.inventory_uuid);
 
