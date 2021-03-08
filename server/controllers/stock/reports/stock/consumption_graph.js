@@ -58,6 +58,7 @@ async function stockConsumptionGraphReport(req, res, next) {
       chart_data : data,
       chart_x_axis_label : i18n(options.lang)(`FORM.LABELS.${reportType.toUpperCase()}`),
       chart_type : 'horizontalBar',
+      chart_option : { maintainAspectRatio : false },
     };
 
     const lineHeight = 16; // height of an inventory line
