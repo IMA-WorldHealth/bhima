@@ -33,7 +33,8 @@ function RolesService(Api) {
 
   service.actions = function actions(roleUuid) {
     const url = `/roles/actions/${roleUuid}`;
-    return service.$http.get(url);
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
   };
 
   service.assignActions = function actions(data) {
