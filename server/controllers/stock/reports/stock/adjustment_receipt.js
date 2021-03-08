@@ -25,8 +25,10 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid, m.is_exit,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name, dm.text AS document_reference,
-      l.label, l.expiration_date, d.text AS depot_name, m.flux_id
+      l.label, l.expiration_date, d.text AS depot_name, m.flux_id,
+      sal.new_quantity, sal.old_quantity, (sal.new_quantity - sal.old_quantity) AS difference
     FROM stock_movement m
+    LEFT JOIN stock_adjustment_log sal ON sal.movement_uuid = m.uuid
     JOIN document_map dm ON dm.uuid = m.document_uuid
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -74,7 +76,17 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
 
   data.rows = rows;
 
+  if (data.details.flux_id === Stock.flux.INVENTORY_ADJUSTMENT) {
+    data.increasedAdjustment = rows.map(computeTotal).filter(item => item.is_exit === 0);
+    data.decreasedAdjustment = rows.map(computeTotal).filter(item => item.is_exit === 1);
+  }
+
   return report.render(data);
+}
+
+function computeTotal(item) {
+  item.total = item.unit_cost * item.quantity;
+  return item;
 }
 
 module.exports = stockAdjustmentReceipt;
