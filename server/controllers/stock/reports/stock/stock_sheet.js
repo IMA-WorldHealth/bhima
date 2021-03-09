@@ -2,6 +2,8 @@ const {
   _, db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE,
 } = require('../common');
 
+const PeriodService = require('../../../../lib/period');
+
 /**
  * @method stockSheetReport
  *
@@ -22,6 +24,16 @@ async function stockSheetReport(req, res, next) {
   // set up the report with report manager
   try {
     const options = { ...req.query };
+
+    if (options.period) {
+      // compute the dateFrom and dateTo required for having opening balance
+      const period = new PeriodService();
+      const target = period.lookupPeriod(options.period);
+      options.dateFrom = target.limit.start();
+      options.dateTo = target.limit.end();
+      delete options.period;
+    }
+
     const report = new ReportManager(STOCK_SHEET_REPORT_TEMPLATE, req.session, optionReport);
 
     const [inventory, depot, rows] = await Promise.all([

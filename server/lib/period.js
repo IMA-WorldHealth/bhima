@@ -67,10 +67,10 @@ class PeriodService {
       const currentPeriod = Moment().get(periodKey);
 
       return {
-        start : () =>
-          (new Moment(self.timestamp)).set(periodKey, currentPeriod + dateModifier).startOf(periodKey).toDate(),
-        end : () =>
-          (new Moment(self.timestamp)).set(periodKey, currentPeriod + dateModifier).endOf(periodKey).toDate(),
+        start : () => (new Moment(self.timestamp))
+          .set(periodKey, currentPeriod + dateModifier).startOf(periodKey).toDate(),
+        end : () => (new Moment(self.timestamp))
+          .set(periodKey, currentPeriod + dateModifier).endOf(periodKey).toDate(),
       };
     }
   }
