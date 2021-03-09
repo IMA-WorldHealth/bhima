@@ -39,7 +39,6 @@ function UtilService(moment) {
     hiddenElement.click();
   };
 
-
   /** @todo comments showing usage */
   service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
     const response = {};
@@ -129,7 +128,6 @@ function UtilService(moment) {
     };
   };
 
-
   /**
    * @function before
    *
@@ -209,7 +207,6 @@ function UtilService(moment) {
   service.isEmptyObject = function isEmptyObject(object) {
     return Object.keys(object).length === 0;
   };
-
 
   /**
    * @function xor
