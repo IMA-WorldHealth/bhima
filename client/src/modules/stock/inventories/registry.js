@@ -328,7 +328,6 @@ function StockInventoriesController(
   }
 
   function openStockSheetReport(row) {
-    const [dateTo] = new Date().toISOString().split('T');
 
     const options = {
       renderer : 'pdf',
@@ -336,7 +335,8 @@ function StockInventoriesController(
       inventory_uuid : row.inventory_uuid,
       depot_uuid : row.depot_uuid,
       report_id : 14,
-      dateTo,
+      period : 'year',
+      orientation : 'landscape',
     };
 
     // return  serialized options
