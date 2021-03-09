@@ -328,15 +328,17 @@ function StockInventoriesController(
   }
 
   function openStockSheetReport(row) {
-    const [dateTo] = new Date().toISOString().split('T');
-
+    const filters = stockInventoryFilters.formatHTTP();
     const options = {
       renderer : 'pdf',
       lang : Languages.key,
       inventory_uuid : row.inventory_uuid,
       depot_uuid : row.depot_uuid,
       report_id : 14,
-      dateTo,
+      period : filters.period || 'year',
+      custom_period_end : filters.custom_period_end,
+      custom_period_start : filters.custom_period_start,
+      orientation : 'landscape',
     };
 
     // return  serialized options

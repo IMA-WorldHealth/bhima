@@ -233,6 +233,7 @@
       "ALL_INVENTORIES": "All Inventories",
       "ONE_INVENTORY": "One Specific Inventory",
       "INVENTORY_REPORT": "Stock Sheet",
+      "INVENTORY_REPORT_TOOLTIP": "The Stock Sheet Report will be generated for the period currently selected in the search filter",
       "INVENTORY_REPORT_DESCRIPTION": "This report shows all movements of a product and its stock status and value.",
       "QUANTITY": "Quantity",
       "UNIT_COST": "Unit Cost",
