@@ -106,7 +106,7 @@ async function document(req, res, next) {
     params.isEnterpriseCurrency = true;
 
     // get the opening balance for the acount
-    const header = await AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
+    const header = await AccountExtras.getOpeningBalanceForDate(cashbox.account_id, new Date(params.dateFrom), false);
     _.merge(context, { header });
 
     // get the account's transactions
