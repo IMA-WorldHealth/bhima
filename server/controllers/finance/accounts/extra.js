@@ -27,7 +27,6 @@ function getFiscalYearForDate(date) {
     .then(data => data.id);
 }
 
-
 /**
  * @function getPeriodForDate
  * @private
@@ -109,7 +108,6 @@ function getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMa
   return db.one(sql, [accountId, date, periodId]);
 }
 
-
 /**
  * @method getOpeningBalanceForDate
  * @public
@@ -134,6 +132,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
 
     // 2. Fetch the current dates period
     .then((previousPeriodClosing) => {
+
       balance += previousPeriodClosing.balance;
       credit += previousPeriodClosing.credit;
       debit += previousPeriodClosing.debit;
