@@ -42,13 +42,16 @@
     <li class="divider"></li>
 
     <li>
-      <a data-method="view-amc-calculations" href ng-click="grid.appScope.viewAMCCalculations(row.entity)">
+      <a data-method="view-amc-calculations" href
+        ng-click="grid.appScope.viewAMCCalculations(row.entity)">
         <i class="fa fa-newspaper-o"></i> <span translate>INVENTORY.OPEN_AMC_CALCULATION</span>
       </a>
     </li>
 
     <li>
-      <a ng-href="/reports/stock/sheet?{{ grid.appScope.openStockSheetReport(row.entity) }}" target="_blank">
+      <a uib-tooltip="{{ 'REPORT.STOCK.INVENTORY_REPORT_TOOLTIP' | translate }}"
+        ng-href="/reports/stock/sheet?{{ grid.appScope.openStockSheetReport(row.entity) }}"
+        target="_blank">
         <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.STOCK.INVENTORY_REPORT</span>
       </a>
     </li>
