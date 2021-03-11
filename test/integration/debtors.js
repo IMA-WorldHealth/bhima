@@ -12,7 +12,6 @@ describe('(/debtors) The /debtors API', () => {
     text : 'Patient/2/Patient',
   };
 
-
   it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices`)
       .then((res) => {

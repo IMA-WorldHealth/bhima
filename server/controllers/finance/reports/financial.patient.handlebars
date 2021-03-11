@@ -21,18 +21,25 @@
       </thead>
       <tbody>
         {{#each transactions}}
-          <tr>
-            <td>{{date this.trans_date}}</td>
-            <td class="text-right" title="{{this.document}}">{{this.document}}</td>
-            <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
-            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
-            <td class="text-right">
-              {{debcred this.balance ../metadata.enterprise.currency_id}}
-            </td>
-            <td class="text-right">
-              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
-            </td>
-          </tr>
+          {{#if isChangeGroup}}
+            <tr>
+              <td>{{date created_at }}</td>
+              <th colspan="4" class="text-center">{{group_prev}} &#8594; {{group_next}} <th>
+            </tr>
+          {{else}}
+            <tr>
+              <td>{{date this.trans_date}}</td>
+              <td class="text-right" title="{{this.document}}">{{this.document}}</td>
+              <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
+              <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
+              <td class="text-right">
+                {{debcred this.balance ../metadata.enterprise.currency_id}}
+              </td>
+              <td class="text-right">
+                {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+              </td>
+            </tr>
+          {{/if}}
         {{else}}
           {{>emptyTable columns=5}}
         {{/each}}
