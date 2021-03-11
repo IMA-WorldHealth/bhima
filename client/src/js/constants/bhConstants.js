@@ -180,14 +180,14 @@ function constantConfig() {
     },
     average_consumption_algo : [
       {
-        name : 'algo1',
-        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1',
-        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT',
+        name : 'algo_def',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT_COMMENT',
       },
       {
         name : 'algo_msh',
-        label : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4',
-        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT',
+        label : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH',
+        comment : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH_COMMENT',
       },
     ],
   };
