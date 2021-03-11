@@ -6,6 +6,7 @@ StockInventoriesController.$inject = [
   'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
   'GridGroupingService', 'bhConstants', 'GridStateService',
   '$state', 'GridColumnService', '$httpParamSerializer', 'BarcodeService',
+  '$translate',
 ];
 
 /**
@@ -15,7 +16,7 @@ StockInventoriesController.$inject = [
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns,
-  $httpParamSerializer, Barcode,
+  $httpParamSerializer, Barcode, $translate,
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
@@ -59,12 +60,11 @@ function StockInventoriesController(
     displayName      : '',
     cellTemplate     : 'modules/stock/inventories/templates/warning.cell.html',
     width            : 50,
+    enableFiltering  : false,
   }, {
-    field            : 'status',
+    field            : 'status_translated',
     displayName      : 'STOCK.STATUS.LABEL',
     headerCellFilter : 'translate',
-    enableFiltering  : false,
-    enableSorting    : false,
     cellTemplate     : 'modules/stock/inventories/templates/status.cell.html',
   }, {
     field           : 'avg_consumption',
@@ -233,7 +233,10 @@ function StockInventoriesController(
         rows.sort(orderByDepot);
 
         // set status flags
-        rows.forEach(setStatusFlag);
+        rows.forEach(row => {
+          setStatusFlag(row);
+          row.status_translated = $translate.instant(Stock.statusLabelMap(row.status));
+        });
 
         vm.gridOptions.data = rows;
 
