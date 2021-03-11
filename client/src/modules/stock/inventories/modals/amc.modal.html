@@ -14,16 +14,16 @@
   <div ng-if="!ModalCtrl.loading">
     <p class="alert alert-info">
       <i class="fa fa-info-circle"></i>
-      <span ng-show="ModalCtrl.isAlgo1">
-        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1</strong>
+      <span ng-show="ModalCtrl.isAlgoDef">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT</strong>
         <br />
-        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT</span>
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT_COMMENT</span>
       </span>
 
-      <span ng-show="ModalCtrl.isAlgo4">
-        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</strong>
+      <span ng-show="ModalCtrl.isAlgoMSH">
+        <strong translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH</strong>
         <br />
-        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT</span>
+        <span translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH_COMMENT</span>
       </span>
     </p>
 
@@ -65,14 +65,14 @@
         <table class="table table-condensed table-bordered">
           <thead>
             <tr>
-              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_1_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_1</th>
-              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGO_4_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGO_4</th>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT</th>
+              <th translate translate-attr="{ 'title' : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH_COMMENT' }">STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH</th>
             </tr>
           </thead>
           <tbody>
             <tr class="text-right">
-              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo1 }">{{ModalCtrl.data.algo1}}</td>
-              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgo4 }">{{ModalCtrl.data.algo_msh}}</td>
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgoDef }">{{ModalCtrl.data.algo_def}}</td>
+              <td ng-class="{ 'bg-success text-success' : ModalCtrl.isAlgoMSH }">{{ModalCtrl.data.algo_msh}}</td>
             </tr>
           </tbody>
         </table>
@@ -80,11 +80,11 @@
         <hr />
 
         <dl>
-          <dt ng-show="ModalCtrl.isAlgo1" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_1</dt>
-          <dd ng-show="ModalCtrl.isAlgo1">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-success">{{ModalCtrl.data.sum_stock_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
+          <dt ng-show="ModalCtrl.isAlgoDef" translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_DEFAULT</dt>
+          <dd ng-show="ModalCtrl.isAlgoDef">30.5 &times; (<span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / <span class="text-success">{{ModalCtrl.data.sum_stock_day}}</span>) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u> </dd>
 
-          <dt ng-show="ModalCtrl.isAlgo4" translate>STOCK.MONTHLY_CONSUMPTION.ALGO_4</dt>
-          <dd ng-show="ModalCtrl.isAlgo4"><span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / (<span class="text-warning">{{ModalCtrl.data.number_of_month}}</span> &minus; (<span class="text-danger">{{ModalCtrl.data.sum_stock_out_days}}</span> / 30.5)) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
+          <dt ng-show="ModalCtrl.isAlgoMSH" translate>STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH</dt>
+          <dd ng-show="ModalCtrl.isAlgoMSH"><span class="text-primary">{{ModalCtrl.data.sum_consumed_quantity}}</span> / (<span class="text-warning">{{ModalCtrl.data.number_of_month}}</span> &minus; (<span class="text-danger">{{ModalCtrl.data.sum_stock_out_days}}</span> / 30.5)) &equals; <u>{{ModalCtrl.data.avg_consumption}}</u></dd>
         </dl>
         <hr />
         <dl>

@@ -60,7 +60,7 @@ describe('(/depots) The depots API ', () => {
       expect(res).to.be.json; // eslint-disable-line
 
       let values = {
-        algo1 : 53.48,
+        algo_def : 53.48,
         algo_msh : 53.33,
         sum_days : 365,
         sum_stock_day : 365,
@@ -71,14 +71,14 @@ describe('(/depots) The depots API ', () => {
         head_days : 0,
       };
 
-      expect(res.body.algo1, 'quinine CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
+      expect(res.body.algo_def, 'quinine CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
       expect(res.body.algo_msh, 'quinine CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
 
       expect(res.body, 'quinine CMM not calculated correctly').to.deep.include(values);
 
       res = await agent.get(`/depots/${principal}/inventories/${oxytocine}/cmm`);
       values = {
-        algo1 : 74.37,
+        algo_def : 74.37,
         algo_msh : 74.17,
         sum_days : 365,
         sum_stock_day : 365,
@@ -89,13 +89,13 @@ describe('(/depots) The depots API ', () => {
         head_days : 0,
       };
 
-      expect(res.body.algo1, 'oxytocine CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
+      expect(res.body.algo_def, 'oxytocine CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
       expect(res.body.algo_msh, 'oxytocine CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
       expect(res.body, 'oxytocine CMM not calculated correctly').to.deep.include(values);
 
       res = await agent.get(`/depots/${principal}/inventories/${ampicilline}/cmm`);
       values = {
-        algo1 : 33.27,
+        algo_def : 33.27,
         algo_msh : 33.15,
         sum_days : 365,
         sum_stock_day : 275,
@@ -106,7 +106,7 @@ describe('(/depots) The depots API ', () => {
         head_days : 0,
       };
 
-      expect(res.body.algo1, 'ampicilline CMM algorithm 1 is not calculated correctly').to.equal(values.algo1);
+      expect(res.body.algo_def, 'ampicilline CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
       expect(res.body.algo_msh, 'ampicilline CMM algorithm MSH is not calculated correctly').to.equal(values.algo_msh);
       expect(res.body, 'ampicilline CMM not calculated correctly').to.deep.include(values);
     } catch (err) {

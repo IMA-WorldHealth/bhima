@@ -529,7 +529,7 @@ CREATE PROCEDURE GetAMC(
           _head_days,
           _tail_days INTEGER;
 
-  DECLARE _algo_1,
+  DECLARE _algo_def,
           _algo_msh DECIMAL(19,4);
 
   -- NOTE(@jniles): I am ignoring the enterprise_id for ease of use.  For full correctness,
@@ -618,7 +618,7 @@ CREATE PROCEDURE GetAMC(
   -- Algo 1
   -- The average monthly consumption is obtained by dividing the quantity consumed during the period by
   -- the number of days with stock during the period, and by multiplying the result by 30.5.
-  SET _algo_1 = (_sum_consumed_quantity / IF(_sum_stock_day IS NULL OR _sum_stock_day = 0, 1, _sum_stock_day)) * 30.5;
+  SET _algo_def = (_sum_consumed_quantity / IF(_sum_stock_day IS NULL OR _sum_stock_day = 0, 1, _sum_stock_day)) * 30.5;
 
   -- Algo 4 (MSH)
   -- The average consumption is obtained by dividing the quantity consumed during the period by the difference of the
@@ -631,7 +631,7 @@ CREATE PROCEDURE GetAMC(
     BUID(_inventory_uuid) AS inventory_uuid,
     _start_date AS start_date,
     _date AS end_date,
-    ROUND(IFNULL(_algo_1, 0), 2) AS algo1,
+    ROUND(IFNULL(_algo_def, 0), 2) AS algo_def,
     ROUND(IFNULL(_algo_msh, 0), 2) AS algo_msh,
     _last_quantity AS quantity_in_stock,
     _sum_day AS sum_days,

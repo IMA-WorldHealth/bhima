@@ -32,8 +32,8 @@ function StockAMCModalController(Stock, Notify, Instance, data, moment, Constant
         vm.data.stock_out_date = moment().add(daysOfStockLeft, 'days').toDate();
 
         // nicer aliases to use in the HTML
-        vm.isAlgo1 = vm.settings.average_consumption_algo === 'algo1';
-        vm.isAlgo4 = vm.settings.average_consumption_algo === 'algo_msh';
+        vm.isAlgoDef = vm.settings.average_consumption_algo === 'algo_def';
+        vm.isAlgoMSH = vm.settings.average_consumption_algo === 'algo_msh';
       })
       .catch(Notify.handleError)
       .finally(() => {

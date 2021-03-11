@@ -21,16 +21,12 @@ function StockSettingTests() {
     await page.setRadio('yes', 'enable_strict_depot_permission');
     await page.setRadio('yes', 'enable_auto_stock_accounting');
     await page.setRadio('yes', 'enable_supplier_credit');
+
     await element(by.id('algo_msh')).click();
+    const checkSelectAlgoDef = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
 
-    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
-    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
-    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(2);
-    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(3);
-
-    expect(await checkSelectAlgo1.isSelected()).to.equal(false);
-    expect(await checkSelectAlgo2.isSelected()).to.equal(false);
-    expect(await checkSelectAlgo3.isSelected()).to.equal(false);
+    expect(await checkSelectAlgoDef.isSelected()).to.equal(false);
     expect(await checkSelectAlgoMsh.isSelected()).to.equal(true);
 
     // submit
@@ -46,16 +42,12 @@ function StockSettingTests() {
     await page.setRadio('no', 'enable_strict_depot_permission');
     await page.setRadio('no', 'enable_auto_stock_accounting');
     await page.setRadio('no', 'enable_supplier_credit');
-    await element(by.id('algo3')).click();
 
-    const checkSelectAlgo1 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
-    const checkSelectAlgo2 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
-    const checkSelectAlgo3 = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(2);
-    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(3);
+    await element(by.id('algo_def')).click();
+    const checkSelectAlgoDef = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(0);
+    const checkSelectAlgoMsh = element.all(by.model('StockSettingsCtrl.settings.average_consumption_algo')).get(1);
 
-    expect(await checkSelectAlgo1.isSelected()).to.equal(false);
-    expect(await checkSelectAlgo2.isSelected()).to.equal(false);
-    expect(await checkSelectAlgo3.isSelected()).to.equal(true);
+    expect(await checkSelectAlgoDef.isSelected()).to.equal(true);
     expect(await checkSelectAlgoMsh.isSelected()).to.equal(false);
 
     // submit
