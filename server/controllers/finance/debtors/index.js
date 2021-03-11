@@ -93,7 +93,6 @@ async function update(req, res, next) {
       next_debtor_group : data.group_uuid,
     });
 
-
     await transaction.execute();
     const debtor = await lookupDebtor(req.params.uuid);
     res.status(200).json(debtor);
@@ -125,7 +124,6 @@ function lookupDebtor(uid) {
       return rows[0];
     });
 }
-
 
 /**
  * This function returns all invoices billed to a particular debtor.
@@ -295,15 +293,15 @@ async function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
 
   const sql = `
     SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
-      BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
+      BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance, created_at,
       (@cumsum := balance + @cumsum) AS cumsum
     FROM (
       SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
         SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
-        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance, 0 AS posted
+        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance, 0 AS posted, created_at
       FROM (
         SELECT trans_id, entity_uuid, description, record_uuid, trans_date,
-          p.debit_equiv, p.credit_equiv
+          p.debit_equiv, p.credit_equiv, created_at
         FROM posting_journal AS p
         WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
         ORDER BY CHAR_LENGTH(description) DESC
@@ -315,10 +313,10 @@ async function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
 
       SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
         SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
-        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance, 0 AS posted
+        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance, 0 AS posted, created_at
       FROM (
         SELECT trans_id, entity_uuid, description, record_uuid, trans_date,
-          g.debit_equiv, g.credit_equiv
+          g.debit_equiv, g.credit_equiv, created_at
         FROM general_ledger AS g
         WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
         ORDER BY CHAR_LENGTH(description) DESC
@@ -328,7 +326,6 @@ async function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
     )c, (SELECT @cumsum := 0)z
     ORDER BY trans_date ASC, trans_id ASC;
   `;
-
 
   const [transactions, aggs] = await Promise.all([
     db.exec(sql, [uid, uid]),
