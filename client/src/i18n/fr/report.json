@@ -235,6 +235,7 @@
       "ALL_INVENTORIES" : "Tous les articles",
       "ONE_INVENTORY" : "Un article en particulier",
       "INVENTORY_REPORT" : "Fiche de stock",
+      "INVENTORY_REPORT_TOOLTIP": "Le fiche de stock sera généré pour la période actuellement sélectionnée dans le filtre de recherche.",
       "INVENTORY_REPORT_DESCRIPTION" : "Ce rapport affiche montre les mouvements d'un article ainsi que son état et sa valeur dans le stock",
       "QUANTITY" : "Quantité",
       "UNIT_COST" : "Coût Unitaire",
