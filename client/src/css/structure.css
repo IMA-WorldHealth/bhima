@@ -900,7 +900,7 @@ a[disabled] {
 }
 
 .icon-at-risk-of-stock-out {
-  color: #FFFFA9 !important;
+  color: #FFFF00 !important;
 }
 
 .at-risk-of-expiring {
@@ -909,6 +909,21 @@ a[disabled] {
 
 .icon-at-risk-of-expiring {
   color: #FFB766 !important;
+}
+
+.out-of-stock-status {
+  color: black !important;
+  background-color: red !important;
+}
+
+.critical-stock-status {
+  color: black !important;;
+  background-color: #FFB766 !important;
+}
+
+.low-stock-status {
+  color: black !important;;
+  background-color: #FFFF00 !important;
 }
 
 .out-of-stock {
