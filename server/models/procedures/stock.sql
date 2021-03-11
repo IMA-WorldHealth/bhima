@@ -598,13 +598,15 @@ CREATE PROCEDURE GetAMC(
     sms.sum_quantity INTO _initial_quantity
   FROM stock_movement_status AS sms WHERE
     -- get the record right before the start
-    sms.date = (SELECT MAX(date) FROM stock_movement_status ss WHERE ss.date <= _start_date AND ss.depot_uuid = _depot_uuid AND ss.inventory_uuid = _inventory_uuid) AND
+    sms.date < _start_date AND
     sms.depot_uuid = _depot_uuid AND
-    sms.inventory_uuid = _inventory_uuid;
+    sms.inventory_uuid = _inventory_uuid
+    ORDER BY sms.date DESC
+    LIMIT 1;
 
   SELECT DATEDIFF(_min_date, _start_date)  INTO _head_days;
 
-  IF (_initial_quantity = 0) THEN
+  IF (_initial_quantity = 0 OR _initial_quantity IS NULL) THEN
     -- started without stock. Add the "head" to  days to stock out days.
     SELECT _sum_stock_out_day + _head_days INTO _sum_stock_out_day;
   ELSE
