@@ -1,19 +1,19 @@
 angular.module('bhima.components')
-  .component('bhStockSoldOut', {
-    templateUrl : 'js/components/bhStockSoldOut/bhStockSoldOut.html',
-    controller  : bhStockSoldOutController,
+  .component('bhStockOut', {
+    templateUrl : 'js/components/bhStockOut/bhStockOut.html',
+    controller  : bhStockOutController,
     bindings    : {
       depotUuid : '<',
       date : '<',
     },
   });
 
-bhStockSoldOutController.$inject = ['StockService', 'moment', 'NotifyService', '$filter'];
+bhStockOutController.$inject = ['StockService', 'moment', 'NotifyService', '$filter'];
 
 /**
- * @function bhStockSoldOutController
+ * @function bhStockOutController
  */
-function bhStockSoldOutController(Stock, moment, Notify, $filter) {
+function bhStockOutController(Stock, moment, Notify, $filter) {
   const $ctrl = this;
   $ctrl.loading = false;
   $ctrl.stockOutInventories = [];
