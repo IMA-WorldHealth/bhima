@@ -1,8 +1,9 @@
-&raquo; [Home](../index.md) / Inventory Management
+&raquo; [Home](../index.md) / Inventory & Stock Management
 
 # Inventory and Stock Management
 
-Inventory and stock management modules enable you to make stock movements as well as to track all these movements.
+Inventory and stock management modules provide a robust stock management solution for
+hospitals.  Below you'll find an index to particular subsections that may be of interest.
 
 1. [Overview](./overview.md)
 2. [Inventories](./inventory.md)
