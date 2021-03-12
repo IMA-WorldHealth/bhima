@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data',
-  'SessionService', 'bhConstants', 'StockEntryModalForm',
-  '$translate', 'focus',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
+  'bhConstants', 'StockEntryModalForm', '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm,
-  $translate, Focus,
+  AppCache, Instance, uiGridConstants, Data, Session,
+  bhConstants, EntryForm, $translate, Focus,
 ) {
   const vm = this;
 
@@ -113,6 +112,23 @@ function StockDefineLotsModalController(
     vm.gridApi = api;
   }
 
+  // Handle the extra validation for expired lot labels
+  function validateForm() {
+    vm.errors = vm.form.validate();
+    vm.form.rows.forEach((row) => {
+      // Note that row.lot can different depending on whether we are
+      // selecting an existing lot or creating a new one.
+      const lotLabel = typeof row.lot === 'string' ? row.lot : row.lot.label;
+      const existingLot = vm.stockLine.availableLots
+        .find(l => l.label.toUpperCase() === lotLabel.toUpperCase());
+      if (existingLot && existingLot.expired) {
+        vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXIRED',
+          { label : existingLot.label }));
+        vm.form.$invalid = true;
+      }
+    });
+  }
+
   /**
    * @method onLotBlur
    *
@@ -124,8 +140,22 @@ function StockDefineLotsModalController(
    */
   function onLotBlur(rowLot) {
     // NOTE: rowLot will be an object if an existed lot was
-    //       selected from the typeahead.  Otherwise it will
-    //       be the lot name string that was typed in.
+    //       selected from the typeahead. Otherwise
+    //       it will be the lot name string that was typed in.
+    //       Complain if the lot exists and is expired.
+
+    // First make sure that if the entered lot label exists
+    // that it is not expired
+    const existingLot = vm.stockLine.availableLots
+      .find(l => l.label.toUpperCase() === rowLot.toUpperCase());
+    if (rowLot && existingLot && existingLot.expired) {
+      vm.errors = vm.form.validate();
+      vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXIRED',
+        { label : existingLot.label }));
+      vm.form.$invalid = true;
+      return;
+    }
+
     if (vm.enableFastInsert && rowLot) {
 
       const emptyLotRow = getFirstEmptyLot();
@@ -155,7 +185,7 @@ function StockDefineLotsModalController(
   }
 
   function onChanges() {
-    vm.errors = vm.form.validate();
+    validateForm();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
@@ -206,7 +236,8 @@ function StockDefineLotsModalController(
   }
 
   function submit(form) {
-    vm.errors = vm.form.validate();
+    validateForm();
+
     // unfortunately, a negative number will not trigger the onChange() function
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.

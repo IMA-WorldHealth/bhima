@@ -17,8 +17,10 @@ function LotService(Api, $http, util) {
   lots.candidates = (params) => {
     return $http.get(`/inventory/${params.inventory_uuid}/lot_candidates`)
       .then((res) => {
+        const now = new Date();
         res.data.forEach((lot) => {
           lot.expiration_date = new Date(lot.expiration_date);
+          lot.expired = lot.expiration_date < now;
         });
         return res;
       })

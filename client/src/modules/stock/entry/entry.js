@@ -380,10 +380,11 @@ function StockEntryController(
       item.expiration_date = new Date();
       item.unit = inventory.unit;
 
-      // Store the candidate lots for this inventory code
+      // Store the non-expired candidate lots for this inventory code
       Lots.candidates({ inventory_uuid : item.inventory_uuid })
         .then((lots) => {
-          item.candidateLots = lots;
+          item.availableLots = lots;
+          item.candidateLots = lots.filter(lot => !lot.expired);
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
@@ -612,10 +613,11 @@ function StockEntryController(
     line.tracking_expiration = inventory.tracking_expiration;
     setInitialized(line);
 
-    // Store the candidate lots for this inventory code
+    // Store the non-expired candidate lots for this inventory code
     Lots.candidates({ inventory_uuid : line.inventory_uuid })
       .then((lots) => {
-        line.candidateLots = lots;
+        line.availableLots = lots;
+        line.candidateLots = lots.filter(lot => !lot.expired);
       });
   }
 
