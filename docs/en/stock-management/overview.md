@@ -27,34 +27,34 @@ The following are properties of **stock**:
 
 <div class="bs-callout bs-callout-primary">
 <h4>A Philosophical Analogy</h4>
-If you are still struggling to understand the relationship between stock and inventory, a useful analogy is that _inventory_ is a platonic form and _stock_ is the physical manifestation of that form.  The institutions sells the inventory item of "Quinine in 500 milligram capsules", but it may not be in stock.  If it is in stock, a particular lot of Quinine might have an expiration date that is different from other Quinines in stock.
+If you are still struggling to understand the relationship between stock and inventory, a useful analogy is that <i>inventory</i> is a platonic form and <i>stock</i> is the physical manifestation of that form.  The institutions sells the inventory item of "Quinine in 500 milligram capsules", but it may not be in stock.  If it is in stock, a particular lot of Quinine might have an expiration date that is different from other Quinines in stock.
 </div>
 
 ## Features of Stock Management
 
-Inventory management in BHIMA allows you to:
+Stock management in BHIMA has some powerful features:
 
-- Have the stock sheet of each item (inventory) in real time
-- Valuate stocks in real time
-- Know the status of stocks in real time
-- Make the entries of stocks:
-    - Entry of stocks from purchases
-    - Entry of stocks from integrations
-    - Entry of stocks from donations
-    - Entry of stocks from another warehouse
-- Make out of stocks:
-    - Outflow of stocks to patients
-    - Outputs from stocks to services
-    - Outflow of stocks to other deposits
-    - Out of stock as inventory loss
-- Make inventory adjustments
-- Make inventory assignments
-- Consult the registers of stocks:
-    - The batch register
-    - The inventory register
-    - Inventory movements register
+- A stock sheet containing the entries, exists, and balance of each article in stock is available in real time
+- Real-time valuation of the hospital's stock assets, including real-time computation of Cost of Goods Sold (COGS)
+- Easy access to stock status reports
+- Entry of stock into depots/pharmacies from:
+    - Purchases
+    - Integrations
+    - Donations
+    - Other depots/pharmacies
+- Exists of stock from depots/pharamcies to:
+    - Patients, optionally linking an invoice
+    - Services
+    - Other depots/pharmacies
+    - Record losses
+- Adjustments to stock levels during routine inventory
+- Assign stock to individuals
+- Consult stock registries:
+    - The stock lots registry
+    - The articles in stock registry
+    - The stock movements registry
 
-### the dependencies of the stock management
+### Stock Management's Dependencies
 
 To manage stock with BHIMA there are some dependencies that must be completed beforehand.
 
@@ -62,8 +62,14 @@ To manage stock with BHIMA there are some dependencies that must be completed be
 
 This management requires certain prerequisites:
 
-- **The presence of depots**: stocks are always in deposits, from which you can not manage stocks without defining deposits.
+- **The presence of depots**: stocks are always in depots, from which you can not manage stocks without defining depots.
 
-- **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in repositories
+- **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in depots
 
-- **The presence of users with the required permissions on the repositories**: BHIMA has a permission policy on deposits, that is to say that only authorized users can have access to a given repository
+- **The presence of users with the required permissions on the depots**: BHIMA has a permission policy on depots, that is to say that only authorized users can have access to a given repository
+
+### Stock Management & Accounting
+Stock management in BHIMA can be a standalone package or work in concert with the finance modules.  When automatic stock accounting
+is turned on, BHIMA will create writings in the appropriately configured accounts for these items.  If automatic stock accounting
+is turned off, the system will simply move stock around.
+
