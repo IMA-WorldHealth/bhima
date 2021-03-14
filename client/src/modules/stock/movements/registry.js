@@ -265,6 +265,15 @@ function StockMovementsController(
     vm.latestViewFilters = stockMovementsFilters.formatView();
   }
 
+  vm.deleteMovement = documentUuid => {
+    return Stock.movements.delete(documentUuid)
+      .then(() => {
+        Notify.success('STOCK.SUCCESSFULLY_DELETED');
+        startup();
+      })
+      .catch(Notify.handleError);
+  };
+
   vm.downloadExcel = () => {
     const filterOpts = stockMovementsFilters.formatHTTP();
     const defaultOpts = {
