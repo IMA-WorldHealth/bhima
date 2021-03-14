@@ -4,10 +4,10 @@ angular.module('bhima.controllers')
 SearchMovementsModalController.$inject = [
   'data', '$uibModalInstance',
   'PeriodService', 'Store', 'util', 'StockService',
-  'SearchModalUtilService',
+  'SearchModalUtilService', 'SessionService',
 ];
 
-function SearchMovementsModalController(data, Instance, Periods, Store, util, Stock, SearchModal) {
+function SearchMovementsModalController(data, Instance, Periods, Store, util, Stock, SearchModal, Session) {
   const vm = this;
   const displayValues = {};
   const changes = new Store({ identifier : 'key' });
@@ -15,8 +15,10 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id',
     'dateFrom', 'dateTo', 'user_id', 'patientReference', 'service_uuid', 'invoice_uuid',
-    'stock_requisition_uuid',
+    'stock_requisition_uuid', 'voucherReference',
   ];
+
+  vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
 
   vm.filters = data;
   vm.searchQueries = {};

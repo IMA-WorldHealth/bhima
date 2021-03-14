@@ -111,6 +111,13 @@ function getLotFilters(parameters) {
   filters.equals('tag_uuid', 'tags', 't');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
+  // filter on the underlying voucher t
+  filters.custom('voucherReference',
+    `document_uuid = (
+      SELECT DISTINCT vi.document_uuid FROM voucher_item AS vi
+      WHERE vi.voucher_uuid = (SELECT uuid FROM document_map WHERE document_map.text = ?)
+    )`);
+
   // depot permission check
   filters.custom(
     'check_user_id',

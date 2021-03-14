@@ -33,17 +33,21 @@
             </div>
           </div>
 
-          <!-- reference -->
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
             <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
-            <input
-              name="reference"
-              class="form-control"
-              ng-model="$ctrl.searchQueries.reference"
-              ng-change="$ctrl.onSelectReference($ctrl.searchQueries.reference)">
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
 
-            <div class="help-block" ng-messages="ModalForm.reference.$error">
+          <!-- voucher reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.voucherReference.$invalid }" ng-if="$ctrl.hasAutoStockAccounting">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_VOUCHER</label>
+            <bh-clear on-clear="$ctrl.clear('voucherReference')"></bh-clear>
+            <input name="voucherReference" class="form-control" ng-model="$ctrl.searchQueries.voucherReference">
+            <div class="help-block" ng-messages="ModalForm.voucherReference.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
