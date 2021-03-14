@@ -813,6 +813,7 @@ exports.configure = function configure(app) {
 
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
+  app.delete('/stock/lots/movements/:document_uuid', stock.deleteMovement);
 
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
