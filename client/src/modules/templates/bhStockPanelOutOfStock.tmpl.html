@@ -1,12 +1,13 @@
 <div bh-stock-panel-out-of-stock ng-model-options="{ updateOn: 'default' }">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <b><i class="{{ $ctrl.display }}"></i> <span translate> {{$ctrl.label}} </span></b>:
+      <b><i class="fa fa-battery-empty icon-out-of-stock"></i> <span translate> {{$ctrl.label}} </span></b>:
     </div>
 
     <div class="panel-body" style="height : 165px; overflow-y : auto;">
       <div class="text-center" ng-if="$ctrl.loading">
-        <span><span class="fa fa-circle-o-notch fa-spin"></span>
+        <span>
+          <span class="fa fa-circle-o-notch fa-spin"></span>
           <span translate>FORM.INFO.LOADING</span>
         </span>
       </div>

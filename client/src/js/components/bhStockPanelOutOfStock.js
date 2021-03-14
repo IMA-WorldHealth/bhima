@@ -20,7 +20,6 @@ function StockPanelOutOfStockController(StockDashboard, Notify) {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.loading = true;
-    $ctrl.display = 'fa fa-battery-empty icon-out-of-stock';
 
     StockDashboard.read({ status : 'out_of_stock' })
       .then((data) => {
