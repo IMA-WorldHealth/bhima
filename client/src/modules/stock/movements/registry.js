@@ -112,6 +112,10 @@ function StockMovementsController(
       cellFilter : 'date',
       cellClass : 'text-right',
     }, {
+      field : 'userName',
+      displayName : 'FORM.LABELS.USER',
+      headerCellFilter : 'translate',
+    }, {
       field : 'action',
       displayName : '',
       enableFiltering : false,
