@@ -53,7 +53,9 @@ router.get('/search/name', searchByName);
  * @method getQuantitiesInStock
  *
  * @description
- * Returns the quantities in stock in the depot for a given date.
+ * Returns the quantities in stock in the depot for a given date.  Includes
+ * the quantities that are out of stock, if the inventory has previously been
+ * used in the depot.
  */
 async function getQuantitiesInStock(req, res, next) {
   const { depotUuid } = req.params;
