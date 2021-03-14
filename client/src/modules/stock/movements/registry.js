@@ -267,6 +267,15 @@ function StockMovementsController(
 
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
 
+  vm.deleteMovement = documentUuid => {
+    return Stock.movements.delete(documentUuid)
+      .then(() => {
+        Notify.success('STOCK.SUCCESSFULLY_DELETED');
+        startup();
+      })
+      .catch(Notify.handleError);
+  };
+
   vm.downloadExcel = () => {
     const filterOpts = stockMovementsFilters.formatHTTP();
     const defaultOpts = {
