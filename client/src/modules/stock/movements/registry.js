@@ -265,6 +265,8 @@ function StockMovementsController(
     vm.latestViewFilters = stockMovementsFilters.formatView();
   }
 
+  vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
+
   vm.downloadExcel = () => {
     const filterOpts = stockMovementsFilters.formatHTTP();
     const defaultOpts = {

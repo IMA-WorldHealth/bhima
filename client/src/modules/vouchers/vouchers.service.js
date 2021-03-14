@@ -56,6 +56,7 @@ function VoucherService(
     { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
+    { key : 'stockReference', label : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT' },
   ]);
 
   if (filterCache.filters) {
