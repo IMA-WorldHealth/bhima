@@ -25,10 +25,10 @@
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
-            <th>{{translate 'STOCK.IO'}}</th>
-            <th>{{translate 'STOCK.COST'}}</th>
             <th>{{translate 'FORM.LABELS.DATE'}}</th>
-            <th>{{translate 'STOCK.FLUX'}}</th>
+            <th>{{translate 'STOCK.IO'}}</th>
+            <th>{{translate 'FORM.LABELS.USER'}}</th>
+            <th>{{translate 'STOCK.COST'}}</th>
           </tr>
         </thead>
         <tbody>
@@ -37,10 +37,10 @@
 
             <!-- this is the depot group header -->
             <tr style="border:none">
-              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+              <th colspan="3" style="border:none; border-bottom: solid black 1px;" class="text-uppercase">
                 {{ name }}
               </th>
-              <th colspan="4" style="border:none; border-bottom: solid black 2px;" class="text-right">
+              <th colspan="2" style="border:none; border-bottom: solid black 1px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
             </tr>
@@ -49,16 +49,16 @@
             {{#each items}}
               <tr {{#if is_exit}}class="text-danger"{{/if}}>
                 <td>{{documentReference}}</td>
+                <td>{{date date}}</td>
                 <td>
                   {{#if is_exit}}
-                    {{translate 'STOCK.OUTPUT'}}
+                    {{translate 'STOCK.OUTPUT'}} - {{translate flux_label}}
                   {{else}}
-                    {{translate 'STOCK.INPUT'}}
+                    {{translate 'STOCK.INPUT'}} - {{translate flux_label}}
                   {{/if}}
                 </td>
+                <td>{{ userName }}</td>
                 <td class="text-right">{{currency cost ../../metadata.enterprise.currency_id}}</td>
-                <td>{{date date}}</td>
-                <td>{{translate flux_label}}</td>
               </tr>
             {{/each}}
 
