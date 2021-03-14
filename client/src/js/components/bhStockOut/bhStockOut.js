@@ -1,20 +1,24 @@
 angular.module('bhima.components')
-  .component('bhStockSoldOut', {
-    templateUrl : 'js/components/bhStockSoldOut/bhStockSoldOut.html',
-    controller  : bhStockSoldOutController,
+  .component('bhStockOut', {
+    templateUrl : 'js/components/bhStockOut/bhStockOut.html',
+    controller  : bhStockOutController,
     bindings    : {
       depotUuid : '<',
-      date : '<',
+      date : '<?',
     },
   });
 
-bhStockSoldOutController.$inject = ['StockService', 'moment', 'NotifyService', '$filter'];
+bhStockOutController.$inject = ['DepotService', 'moment', 'NotifyService', '$filter'];
 
 /**
- * @function bhStockSoldOutController
+ * @function bhStockOutController
+ *
+ * @description
+ * Displays a list of out of stock items given a depot and date.
  */
-function bhStockSoldOutController(Stock, moment, Notify, $filter) {
+function bhStockOutController(Depots, moment, Notify, $filter) {
   const $ctrl = this;
+
   $ctrl.loading = false;
   $ctrl.stockOutInventories = [];
 
@@ -38,12 +42,9 @@ function bhStockSoldOutController(Stock, moment, Notify, $filter) {
     const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
 
-    Stock.inventories.read(null, {
-      status : 'stock_out',
-      depot_uuid : $ctrl.depotUuid,
-      dateTo,
-    })
+    Depots.getStockOutsForDate($ctrl.depotUuid, dateTo)
       .then(inventories => {
+
         inventories.forEach(inventory => {
           inventory.stock_out_date_raw = $date(inventory.stock_out_date);
           inventory.stock_out_date_parsed = moment(inventory.stock_out_date).fromNow();
@@ -56,5 +57,4 @@ function bhStockSoldOutController(Stock, moment, Notify, $filter) {
         $ctrl.loading = false;
       });
   }
-
 }

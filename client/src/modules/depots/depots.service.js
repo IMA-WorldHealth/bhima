@@ -61,6 +61,34 @@ function DepotService(Api, Modal, HttpCache) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  /**
+   * @function getStockQuantityForDate
+   *
+   * @description
+   * Looks up the quantites in stock for all inventory items for a depot.  This is more
+   * efficient than the more general Stock.inventories.* API since it uses the stock_movement_status
+   * table.
+   */
+  service.getStockQuantityForDate = function getStockQuantityForDate(depotUuid, date = new Date()) {
+    const target = `/depots/${depotUuid}/stock`;
+    return service.$http.get(target, { params : { date } })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  /**
+   * @function getStockOutsForDate
+   *
+   * @description
+   * Looks for stock outs for a given depot on a given date.  If no date is provided, the
+   * current date is used.  This API is more efficient than the Stock.inventories.* API as
+   * it uses the stock_movement_status table.
+   */
+  service.getStockOutsForDate = function getStockOutsForDate(depotUuid, date = new Date()) {
+    const target = `/depots/${depotUuid}/flags/stock_out`;
+    return service.$http.get(target, { params : { date } })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   service.clean = depot => {
     delete depot.country_name;
     delete depot.province_name;
