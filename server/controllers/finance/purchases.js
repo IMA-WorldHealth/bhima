@@ -65,6 +65,8 @@ exports.purchaseState = purchaseState;
 
 exports.find = find;
 
+exports.remove = remove;
+
 /**
  * @function linkPurchaseItems
  *
@@ -531,6 +533,31 @@ function purchaseBalance(req, res, next) {
     .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
+}
+
+/**
+ * @function remove
+ *
+ * @decription
+ * This function allows users to delete purchase orders that are awaiting confirmation.
+ */
+async function remove(req, res, next) {
+  const pid = db.bid(req.params.uuid);
+
+  try {
+    const record = await db.one('SELECT * FROM purchase WHERE uuid = ?', pid);
+
+    const WAITING_CONFIRMATION = 1;
+    if (record.status_id !== WAITING_CONFIRMATION) {
+      throw new BadRequest('Cannot remove a purchase order that is confirmed');
+    }
+
+    // there is no financial writings about purchase orders, so we simply need to delete it
+    await db.exec('DELETE FROM purchase WHERE uuid = ?;', pid);
+    res.sendStatus(201);
+  } catch (e) {
+    next(e);
+  }
 }
 
 /**
