@@ -59,5 +59,13 @@
         <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
       </a>
     </li>
+
+    <li class="divider" ng-if="grid.appScope.allowsRecordDeletion(row.entity)"></li>
+
+    <li ng-if="grid.appScope.allowsRecordDeletion(row.entity)">
+      <a data-method="delete-record" href ng-click="grid.appScope.deletePurchaseOrder(row.entity)">
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
+      </a>
+    </li>
   </ul>
 </div>
