@@ -23,10 +23,12 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
+const journal = require('../finance/journal');
 
 // expose to the API
 exports.createStock = createStock;
 exports.createMovement = createMovement;
+exports.deleteMovement = deleteMovement;
 exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
 exports.listInventoryDepot = listInventoryDepot;
@@ -404,6 +406,63 @@ async function createMovement(req, res, next) {
     res.status(201).json({ uuid : document.uuid });
   } catch (err) {
     next(err);
+  }
+}
+
+/**
+ * @method deleteMovement
+ * @desc perform a fake stock movement deletion based on its document uuid
+ */
+async function deleteMovement(req, res, next) {
+  const tx = db.transaction();
+  const identifier = db.bid(req.params.document_uuid);
+  const stockSettings = req.session.stock_settings;
+
+  const movementDeletionQuery = `
+    DELETE FROM stock_movement WHERE document_uuid = ?;
+  `;
+
+  // simulate movement deletion
+  tx.addQuery(movementDeletionQuery, [identifier]);
+
+  const deleteLots = `
+    DELETE FROM lot WHERE uuid IN (
+      SELECT uuid FROM stock_movement WHERE document_uuid = ? AND flux_id IN (1, 6, 13)
+    );
+  `;
+
+  // delete lots from (purchase, donation and integration)
+  tx.addQuery(deleteLots, [identifier]);
+
+  // recompute stock movement status
+  // NOTE : this operation can take a lot of minutes
+  // tx.addQuery('CALL zRecomputeStockMovementStatus();');
+
+  try {
+    await tx.execute();
+
+    if (stockSettings.enable_auto_stock_accounting) {
+      // reverse coresponding vouchers
+      // NOTE : posted transaction in the general ledger are not reversed
+      const findTransactionInJournal = `
+      SELECT DISTINCT record_uuid, description FROM posting_journal WHERE reference_uuid = ?
+      `;
+      const records = await db.exec(findTransactionInJournal, [identifier]);
+      const dbPromise = [];
+      records.forEach(item => {
+        const params = [
+          item.record_uuid,
+          req.session.user.id,
+          item.description,
+        ];
+        dbPromise.push(journal.reverseTransaction(...params));
+      });
+      await Promise.all(dbPromise);
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
   }
 }
 

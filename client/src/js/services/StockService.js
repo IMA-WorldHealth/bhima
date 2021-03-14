@@ -13,10 +13,10 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   const lots = new Api('/stock/lots/depots');
 
   // API for stock lots movements
-  const movements = new Api('/stock/lots/movements');
+  const movements = new Api('/stock/lots/movements/');
 
   // API for stock lots movements
-  const inlineMovements = new Api('/stock/movements');
+  const inlineMovements = new Api('/stock/movements/');
 
   const status = new Api('/stock/status');
 
