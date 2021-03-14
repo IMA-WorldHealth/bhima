@@ -119,7 +119,7 @@ const REFERENCE_SQL = `
   )`;
 
 function find(options) {
-  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
+  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid', 'stockReference']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
   let typeIds = [];
@@ -166,6 +166,11 @@ function find(options) {
 
   filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
   filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
+
+  filters.custom('stockReference',
+    `v.uuid IN (
+      SELECT vi.voucher_uuid FROM voucher_item AS vi WHERE vi.document_uuid = ?
+    )`);
 
   // reversed = 2 implies that we want to filter out both the inversed record and the inverted
   // record.
