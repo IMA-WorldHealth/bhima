@@ -77,7 +77,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
 
   // stock status label keys
   const stockStatusLabelKeys = {
-    stock_out          : 'STOCK.STATUS.STOCK_OUT',
+    stock_out         : 'STOCK.STATUS.STOCK_OUT',
     in_stock          : 'STOCK.STATUS.IN_STOCK',
     security_reached  : 'STOCK.STATUS.SECURITY',
     minimum_reached   : 'STOCK.STATUS.MINIMUM',
