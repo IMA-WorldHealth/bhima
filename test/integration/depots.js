@@ -160,7 +160,7 @@ describe('(/depots) The depots API ', () => {
     return agent.get(`/depots/${principal}/inventories/${QUININE}/cmm`)
       .then(res => {
         expect(res).to.be.json; // eslint-disable-line
-        expect(res.body).to.have.any.keys('algo1', 'algo2', 'algo3', 'algo_msh');
+        expect(res.body).to.have.any.keys('algo_def', 'algo_msh');
       })
       .catch(helpers.handler);
   });
