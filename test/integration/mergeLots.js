@@ -99,7 +99,6 @@ function addStockMovementSQL(params) {
     + `  '${createdAt}', ${isExit}, ${userId}, 9, '${createdAt}', '${periodId}');`;
 }
 
-
 describe('Test merging lots', () => {
 
   before('Note original counts of lots, tags, etc', () => {
@@ -188,70 +187,43 @@ describe('Test merging lots', () => {
   // ===========================================================================
   // NOW do the merge tests
 
-  it('Merge lot 3 with lot 1 (single lot)', () => {
-    return agent.post(`/lots/${lot1Uuid}/merge`)
-      .send({ lotsToMerge : [lot3Uuid] })
-      .then(res => {
-        // Verify the operation was successful
-        expect(res).to.have.status(200);
-      })
-      .then(() => {
-        db.exec(`SELECT uuid from lot WHERE uuid = 0x${lot3Uuid}`)
-          .then((res) => {
-            expect(res.length).to.equal(0,
-              'Verify lot3 no longer exists');
-          });
-      })
-      .then(() => {
-        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag3Uuid}`)
-          .then((res) => {
-            expect(res.length).to.equal(1);
-            expect(res[0].lot_uuid).to.equal(lot1Uuid,
-              'Verify that tag3 now refers to lot1');
-          });
-      })
-      .then(() => {
-        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from stock_movement WHERE uuid = 0x${stockMovement1Uuid}`)
-          .then((res) => {
-            expect(res.length).to.equal(1);
-            expect(res[0].lot_uuid).to.equal(lot1Uuid,
-              'Verify that the stock movement now refers to lot1');
-          });
-      });
+  it('Merge lot 3 with lot 1 (single lot)', async () => {
+    let res = await agent.post(`/lots/${lot1Uuid}/merge`)
+      .send({ lotsToMerge : [lot3Uuid] });
+    expect(res).to.have.status(200);
+
+    res = await db.exec(`SELECT uuid from lot WHERE uuid = 0x${lot3Uuid}`);
+    expect(res.length).to.equal(0,
+      'Verify lot3 no longer exists');
+
+    res = await db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag3Uuid}`);
+    expect(res.length).to.equal(1);
+    expect(res[0].lot_uuid).to.equal(lot1Uuid,
+      'Verify that tag3 now refers to lot1');
+
+    res = await db.exec(`SELECT HEX(lot_uuid) as lot_uuid from stock_movement WHERE uuid = 0x${stockMovement1Uuid}`);
+    expect(res.length).to.equal(1);
+    expect(res[0].lot_uuid).to.equal(lot1Uuid,
+      'Verify that the stock movement now refers to lot1');
   });
 
   // ---------------------------------------------------------------------------
 
-  it('Merge lots 4 and 5 with lot 1 (multiple lots)', () => {
-    return agent.post(`/lots/${lot1Uuid}/merge`)
-      .send({ lotsToMerge : [lot4Uuid, lot5Uuid] })
-      .then(res => {
-        // Verify the operation was successful
-        expect(res).to.have.status(200);
-      })
-      .then(() => {
-        db.exec(`SELECT * from lot WHERE uuid IN (0x${lot4Uuid}, 0x${lot5Uuid})`)
-          .then((res) => {
-            expect(res.length).to.equal(0,
-              'Verify lots 4 and 5 no longer exist');
-          });
-      })
-      .then(() => {
-        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag4Uuid}`)
-          .then((res) => {
-            expect(res.length).to.equal(1);
-            expect(res[0].lot_uuid).to.equal(lot1Uuid,
-              'Verify that tag4 now points to lot1');
-          });
-      })
-      .then(() => {
-        db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag5Uuid}`)
-          .then((res) => {
-            expect(res.length).to.equal(1);
-            expect(res[0].lot_uuid).to.equal(lot1Uuid,
-              'Verify that tag5 now points to lot1');
-          });
-      });
+  it('Merge lots 4 and 5 with lot 1 (multiple lots)', async () => {
+    let res = await agent.post(`/lots/${lot1Uuid}/merge`)
+      .send({ lotsToMerge : [lot4Uuid, lot5Uuid] });
+    expect(res).to.have.status(200);
+
+    res = await db.exec(`SELECT * from lot WHERE uuid IN (0x${lot4Uuid}, 0x${lot5Uuid})`);
+    expect(res.length).to.equal(0, 'Verify lots 4 and 5 no longer exist');
+
+    res = await db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag4Uuid}`);
+    expect(res.length).to.equal(1);
+    expect(res[0].lot_uuid).to.equal(lot1Uuid, 'Verify that tag4 now points to lot1');
+
+    res = await db.exec(`SELECT HEX(lot_uuid) as lot_uuid from lot_tag WHERE tag_uuid = 0x${tag5Uuid}`);
+    expect(res.length).to.equal(1);
+    expect(res[0].lot_uuid).to.equal(lot1Uuid, 'Verify that tag5 now points to lot1');
   });
 
   // ===========================================================================
