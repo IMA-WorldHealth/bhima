@@ -366,6 +366,7 @@ async function createInventoryAdjustment(req, res, next) {
  */
 async function createMovement(req, res, next) {
   const params = req.body;
+  let stockAvailable = [];
 
   const document = {
     uuid : params.document_uuid || uuid(),
@@ -378,6 +379,21 @@ async function createMovement(req, res, next) {
     enterprise : req.session.enterprise,
     stock_settings : req.session.stock_settings,
   };
+
+  params.month_average_consumption = req.session.stock_settings.month_average_consumption;
+  params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
+
+  const paramsStock = {
+    dateTo : new Date(),
+    depot_uuid : params.depot_uuid,
+    includeEmptyLot : 0,
+    month_average_consumption : params.month_average_consumption,
+    average_consumption_algo : params.average_consumption_algo,
+  };
+
+  if (params.is_exit) {
+    stockAvailable = await core.getLotsDepot(null, paramsStock);
+  }
 
   try {
     const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
