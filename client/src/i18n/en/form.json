@@ -664,6 +664,7 @@
             "RECORDS": "Records (Rows)",
             "REFERENCE_GROUP": "Reference Group",
             "REFERENCE_PATIENT": "Patient Reference",
+            "REFERENCE_VOUCHER" : "Voucher Reference",
             "REFERENCE": "Reference",
             "REFERENCE_STOCK_MOVEMENT" : "Stock Movement Reference",
             "REFERENCES": "References",

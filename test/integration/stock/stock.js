@@ -230,4 +230,16 @@ describe('(/stock/) The Stock HTTP API', () => {
     expect(res).to.have.status(500);
   });
 
+  it('GET /stock/movements returns a list of stock movements', async () => {
+    const res = await agent.get('/stock/movements');
+    helpers.api.listed(res, 22);
+  });
+
+  // FIXME(@jniles) - it looks like auto_stock_accounting is turned off in our
+  // test dataset.  This will at least ensure we don't crash.
+  it('GET /stock/movements filters by voucher reference', async () => {
+    const res = await agent.get('/stock/movements')
+      .query({ voucherReference : 'VO.TPA.300000' });
+    helpers.api.listed(res, 0);
+  });
 });

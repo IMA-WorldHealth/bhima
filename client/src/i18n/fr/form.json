@@ -665,6 +665,7 @@
             "RECORDS": "Enregistrements (Lignes)",
             "REFERENCE_GROUP": "Groupe de référence",
             "REFERENCE_PATIENT": "Référence Patient",
+            "REFERENCE_VOUCHER": "Référence Bordereau",
             "REFERENCE": "Référence",
             "REFERENCE_STOCK_MOVEMENT" : "Référence de mouvement stock",
             "REFERENCES": "Références",

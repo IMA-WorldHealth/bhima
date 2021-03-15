@@ -32,6 +32,7 @@ function StockFiltererService(Filters, AppCache, $httpParamSerializer, Languages
     { key : 'is_expired', label : 'STOCK.EXPIRED' },
     { key : 'is_expiry_risk', label : 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION' },
     { key : 'tag_uuid', label : 'TAG.LABEL' },
+    { key : 'voucherReference', label : 'FORM.LABELS.REFERENCE_VOUCHER' },
     { key : 'tags', label : 'TAG.LABEL' },
     { key : 'show_only_risky', label : 'LOTS.SHOW_ONLY_RISKY_LOTS' },
     { key : 'stock_requisition_uuid', label : 'FORM.LABELS.REQUISITION_REFERENCE' },
