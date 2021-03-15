@@ -91,6 +91,8 @@ function StockEntryModalForm(uuid) {
     const hasInvalidExpiration = (!row.expiration_date || !hasFutureExpirationDate);
     if (hasInvalidExpiration) {
       row._error = ERR_INVALID_EXPIRATION;
+      console.log("ERR", hasFutureExpirationDate);
+      console.log(this);
     }
 
     // check invalid lot quantity

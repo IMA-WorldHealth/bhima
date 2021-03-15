@@ -131,7 +131,35 @@ function StockEntryController(
    * @description on change in bhDateEditor component update the date
    */
   function onDateChange(date) {
+    if (typeof date === 'undefined') {
+      // Ignore intermediate invalid date strings (eg, 15/03/201)
+      return;
+    }
     vm.movement.date = date;
+    console.log("NEW DATE", typeof date, date);
+
+    // Check all stock lines and their lots to make sure that all
+    // the lot expiration statuses are still
+    vm.stockForm.store.data.forEach(stockLine => {
+
+      // Check the expiration status of all previously selected lots
+      if (stockLine.lots) {
+        stockLine.lots.forEach(lot => {
+          if (lot.expiration_date > vm.movement.date) {
+            lot.expired = true;
+            lot.isValid = false;
+            lot.isInvalid = true;
+            stockLine.isValid = false;
+          }
+        });
+      }
+
+      // Update expiration status of the available and candidate lots
+      stockLine.availableLots.forEach(lot => {
+        lot.expired = lot.expiration_date > vm.movement.data;
+      });
+      stockLine.candidateLots = stockLine.availableLots.filter(lot => !lot.expired);
+    });
   }
 
   /**

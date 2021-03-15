@@ -114,15 +114,24 @@ function StockDefineLotsModalController(
 
   // Handle the extra validation for expired lot labels
   function validateForm() {
+    console.log("V1");
     vm.errors = vm.form.validate();
+    console.log("V2");
     vm.form.rows.forEach((row) => {
-      // Note that row.lot can different depending on whether we are
-      // selecting an existing lot or creating a new one.
+      console.log("LOT: ", row.lot);
+      if (!row.lot) {
+        // Ignore corner case where the user clicks elsewhere
+        // BEFORE typing in a lot name
+        return;
+      }
+      // Note that the type of row.lot will different depending on whether
+      // we are selecting an existing lot or creating a new one.
       const lotLabel = typeof row.lot === 'string' ? row.lot : row.lot.label;
       const existingLot = vm.stockLine.availableLots
         .find(l => l.label.toUpperCase() === lotLabel.toUpperCase());
+      console.log("ELot1: ", existingLot);
       if (existingLot && existingLot.expired) {
-        vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXIRED',
+        vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
           { label : existingLot.label }));
         vm.form.$invalid = true;
       }
@@ -146,11 +155,15 @@ function StockDefineLotsModalController(
 
     // First make sure that if the entered lot label exists
     // that it is not expired
+    const rowLotLabel = typeof rowLot === 'string' ? rowLot : rowLot.label;
     const existingLot = vm.stockLine.availableLots
-      .find(l => l.label.toUpperCase() === rowLot.toUpperCase());
+      .find(l => l.label.toUpperCase() === rowLotLabel.toUpperCase());
+    console.log("ELot2: ", existingLot);
     if (rowLot && existingLot && existingLot.expired) {
+      console.log("B1");
       vm.errors = vm.form.validate();
-      vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXIRED',
+      console.log("B2");
+      vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
         { label : existingLot.label }));
       vm.form.$invalid = true;
       return;
@@ -227,6 +240,7 @@ function StockDefineLotsModalController(
     const lot = vm.stockLine.candidateLots.find(l => l.uuid === item.uuid);
     entity.expiration_date = new Date(lot.expiration_date);
     entity.disabled = true;
+    console.log("OS: ", entity);
     onChanges();
   }
 
