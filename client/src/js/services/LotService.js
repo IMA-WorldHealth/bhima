@@ -14,10 +14,21 @@ function LotService(Api, $http, util) {
       });
   };
 
+  /**
+  * @function candidates()
+  *
+  * @description returns a list of candidate lots for a specific inventory_uuid
+  *
+  * @param {object} params
+  * @param {string} params.inventory_uuid - get all lots for this inventory UUID
+  * @param {string} params.date [now] - Optional date: lots after this date will be marked expired
+  *                             If params.date is not given, it will default to the current time/date
+  * @return {list}
+  */
   lots.candidates = (params) => {
     return $http.get(`/inventory/${params.inventory_uuid}/lot_candidates`)
       .then((res) => {
-        const now = new Date();
+        const now = params.date ? new Date(params.date) : new Date();
         res.data.forEach((lot) => {
           lot.expiration_date = new Date(lot.expiration_date);
           lot.expired = lot.expiration_date < now;

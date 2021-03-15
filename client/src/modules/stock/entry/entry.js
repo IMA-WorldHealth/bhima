@@ -381,7 +381,7 @@ function StockEntryController(
       item.unit = inventory.unit;
 
       // Store the non-expired candidate lots for this inventory code
-      Lots.candidates({ inventory_uuid : item.inventory_uuid })
+      Lots.candidates({ inventory_uuid : item.inventory_uuid, date : vm.movement.date })
         .then((lots) => {
           item.availableLots = lots;
           item.candidateLots = lots.filter(lot => !lot.expired);
@@ -614,7 +614,7 @@ function StockEntryController(
     setInitialized(line);
 
     // Store the non-expired candidate lots for this inventory code
-    Lots.candidates({ inventory_uuid : line.inventory_uuid })
+    Lots.candidates({ inventory_uuid : line.inventory_uuid, date : vm.movement.date })
       .then((lots) => {
         line.availableLots = lots;
         line.candidateLots = lots.filter(lot => !lot.expired);
