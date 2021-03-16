@@ -75,7 +75,8 @@ async function getQuantitiesInStock(req, res, next) {
       ON outside.date = sms.date
         AND sms.depot_uuid = ?
         AND sms.inventory_uuid = outside.inventory_uuid
-      JOIN inventory ON inventory.uuid = sms.inventory_uuid;
+      JOIN inventory ON inventory.uuid = sms.inventory_uuid
+      ORDER BY inventory.text;
     `;
 
     const params = [db.bid(depotUuid), new Date(date), db.bid(depotUuid)];
@@ -111,7 +112,8 @@ async function getStockOuts(req, res, next) {
         AND sms.depot_uuid = ?
         AND sms.inventory_uuid = outside.inventory_uuid
       JOIN inventory ON inventory.uuid = sms.inventory_uuid
-      WHERE sms.sum_quantity = 0;
+      WHERE sms.sum_quantity = 0
+      ORDER BY inventory.text;
     `;
 
     const params = [db.bid(depotUuid), new Date(date), db.bid(depotUuid)];
