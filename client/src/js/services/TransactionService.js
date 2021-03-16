@@ -29,7 +29,6 @@ function TransactionService($http, util, Modal) {
       .then(util.unwrapHttpResponse);
   }
 
-
   /**
    * @method comment
    * @description

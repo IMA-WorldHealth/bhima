@@ -5,7 +5,7 @@ StockMovementsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants',
   'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
   'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
-  '$translate', 'bhConstants',
+  '$translate', 'bhConstants', 'ModalService',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockMovementsController.$inject = [
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
-  $translate, bhConstants,
+  $translate, bhConstants, ModalService,
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
@@ -267,11 +267,18 @@ function StockMovementsController(
 
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
 
+  vm.allowsRecordDeletion = () => Session.enterprise.settings.enable_delete_records;
+
   vm.deleteMovement = documentUuid => {
-    return Stock.movements.delete(documentUuid)
+    ModalService.confirm()
+      .then(ans => {
+        if (!ans) { return null; }
+
+        return Stock.inlineMovements.delete(documentUuid);
+      })
       .then(() => {
         Notify.success('STOCK.SUCCESSFULLY_DELETED');
-        startup();
+        load(stockMovementsFilters.formatHTTP(true));
       })
       .catch(Notify.handleError);
   };
