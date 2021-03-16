@@ -8,7 +8,6 @@
  * @requires lib/db
  */
 
-
 const db = require('../../../lib/db');
 
 exports.list = list;
