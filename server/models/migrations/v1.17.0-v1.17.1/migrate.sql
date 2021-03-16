@@ -13,7 +13,7 @@ UPDATE `unit` SET `path` = '/reports/patient_standing' WHERE id = 202;
 UPDATE `unit` SET `path` = '/reports/unpaid_invoice_payments' WHERE id = 210;
 UPDATE `unit` SET `path` = '/reports/fee_center' WHERE id = 222;
 UPDATE `unit` SET `path` = '/reports/break_even' WHERE id = 231;
-UPDATE `unit` SET `path` = '/reports/break_even_fee_center' WHERE id = 232
+UPDATE `unit` SET `path` = '/reports/break_even_fee_center' WHERE id = 232;
 UPDATE `unit` SET `path` = '/reports/indicators_report' WHERE id = 238;
 UPDATE `unit` SET `path` = '/reports/monthly_balance' WHERE id = 244;
 UPDATE `unit` SET `path` = '/reports/debtor_summary' WHERE id = 245;
