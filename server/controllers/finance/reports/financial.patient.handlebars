@@ -67,9 +67,9 @@
         </tr>
       </tfoot>
     </table>
+
     {{#if includeStockDistributed }}
-      <br>
-      <br>
+      <br />
       <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
@@ -78,61 +78,64 @@
             </th>
           </tr>
         </thead>
-        <tbody>
-          {{#each stockMovement}}
-            <tr>
-              <td class="text-uppercase" style="background-color: #eee;" colspan="8">
+        {{#each stockMovement}}
+          <tbody style="padding-bottom: 2px;">
+            <tr style="background-color: #eee;">
+              <td
+                class="text-uppercase"
+                colspan="{{#if invoiceReference}}6{{else}}8{{/if}}">
                 <strong>
-                  ({{ add @index 1 }}): {{translate "FORM.LABELS.REFERENCE" }} : {{ reference_text }}  | {{timestamp date}}
+                  ({{ add @index 1 }}): {{ hrReference }}  | {{timestamp date}}
                 </strong>
               </td>
+
+              {{#if invoiceReference}}
+                <th colspan=2 class="text-right">{{invoiceReference}}</th>
+              {{/if}}
             </tr>
             <tr class="text-capitalize text-bold" style="background-color: #efefef;">
-              <td style="width: 2%;"></td>
-              <td style="width: 2%;"> {{translate "FORM.LABELS.NR" }} </td>
-              <td> {{translate "FORM.LABELS.INVENTORY" }} </td>
-              <td> {{translate "FORM.LABELS.UNIT" }} </td>
-              <td> {{translate "FORM.LABELS.LOT" }} </td>
-              <td> {{translate "FORM.LABELS.QUANTITY" }} </td>
-              <td> {{translate "FORM.LABELS.UNIT_PRICE" }} </td>
-              <td> {{translate "FORM.LABELS.TOTAL" }} </td>
+              <td class="text-center" colspan=2 style="width: 4%;">{{translate "FORM.LABELS.NR" }}</td>
+              <td>{{translate "FORM.LABELS.INVENTORY" }} </td>
+              <td>{{translate "FORM.LABELS.UNIT" }} </td>
+              <td>{{translate "FORM.LABELS.LOT" }} </td>
+              <td>{{translate "FORM.LABELS.QUANTITY" }} </td>
+              <td>{{translate "FORM.LABELS.UNIT_PRICE" }} </td>
+              <td>{{translate "FORM.LABELS.TOTAL" }} </td>
             </tr>
               {{#each consumed}}
                 <tr>
-                  <td></td>
-                  <td>{{ add @index 1 }}</td>
-                  <td><strong> {{ inventory_text }} </strong></td>
-                  <td> {{ inventoryUnit }} </td>
-                  <td>
-                    <strong>
-                      {{ lotLabel }}
-                    </strong>
-                  </td>
-                  <td> {{ quantity }} </td>
-                  <td> {{ unit_cost }} </td>
+                  <td colspan=2 class="text-center">{{ add @index 1 }}</td>
+                  <td>{{ inventory_text }}</td>
+                  <td>{{ inventoryUnit }}</td>
+                  <td>{{ lotLabel }}</td>
+                  <td class="text-right"> {{ quantity }} </td>
+                  <td class="text-right"> {{ currency unit_cost ../../metadata.enterprise.currency_id }} </td>
                   <td class="text-right"> {{ debcred  total ../../metadata.enterprise.currency_id }} </td>
                 </tr>
               {{/each}}
               <tr class="text-right text-bold">
-                <td></td>
-                <td  colspan="6"> {{translate "FORM.LABELS.TOTAL" }} </td>
-                <td> {{ debcred  totalMovement ../metadata.enterprise.currency_id }} </td>
+                <td colspan="7"> {{translate "FORM.LABELS.TOTAL" }} </td>
+                <td>{{ debcred value ../metadata.enterprise.currency_id }} </td>
               </tr>
-              <tr>
-                <td colspan="8"></td>
-              <tr>
+
+              <!-- dummy row to make offset padding -->
+              <tr style="border: 0;"><td colspan="8" style="border:0;"></td></tr>
+            </tbody>
           {{else}}
-            {{>emptyTable columns=8}}
+            <tbody>
+              {{>emptyTable columns=8}}
+            </tbody>
           {{/each}}
-          <tr style="background-color: #ddd; font-size: 17" class="text-uppercase text-right">
-            <td  colspan="7"><h5><strong>{{translate "REPORT.PATIENT_STANDING.TOTAL_ALL_STOCK_MOV" }}</strong></h5></td>
-            <td>
-              <h5>
-                <strong>{{ debcred  totalAllMovement metadata.enterprise.currency_id }}</strong>
-              </h5>
-            </td>
-          </tr>
-        </tbody>
+          <tfoot>
+            <tr style="background-color: #ddd;" class="text-uppercase">
+              <th class="text-right" colspan="7">
+                {{translate "REPORT.PATIENT_STANDING.TOTAL_ALL_STOCK_MOV" }}
+              </th>
+              <th class="text-right">
+               {{ debcred totalAllMovement metadata.enterprise.currency_id }}
+              </th>
+            </tr>
+          </tfoot>
       </table>
     {{/if}}
   </section>
