@@ -810,10 +810,10 @@ exports.configure = function configure(app) {
 
   // stock management API
   app.get('/stock/movements', stock.listMovements);
+  app.delete('/stock/movements/:document_uuid', stock.deleteMovement);
 
   app.post('/stock/lots/movements', stock.createMovement);
   app.get('/stock/lots/movements', stock.listLotsMovements);
-  app.delete('/stock/lots/movements/:document_uuid', stock.deleteMovement);
 
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);

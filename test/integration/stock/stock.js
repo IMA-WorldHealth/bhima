@@ -214,6 +214,14 @@ describe('(/stock/) The Stock HTTP API', () => {
     expect(labels).to.deep.equal(srcLabels);
   });
 
+  // create stock movement to delete
+  it('POST /stock/lots/movements distributes stock lots to a depot', async () => {
+    delete shared.movementFromDonation.lots[1];
+    shared.movementFromDonation.lots[0].label = 'don3';
+    const res = await agent.post('/stock/lots/movements').send(shared.movementFromDonation);
+    helpers.api.created(res);
+  });
+
   // create Aggregate consumption
   it('POST /stock/aggregated_consumption create standard aggregate stock consumption', async () => {
     const res = await agent.post('/stock/aggregated_consumption').send(shared.movementStandardAggregate);

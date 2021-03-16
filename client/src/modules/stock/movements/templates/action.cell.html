@@ -36,9 +36,11 @@
       </a>
     </li>
     
-    <li>
-      <a data-method="delete" class="text-danger" ng-click="grid.appScope.deleteMovement(row.entity.document_uuid)" href>
-        <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+    <li ng-if="grid.appScope.allowsRecordDeletion()" class="divider"></li>
+
+    <li ng-if="grid.appScope.allowsRecordDeletion()">
+      <a data-method="delete" ng-click="grid.appScope.deleteMovement(row.entity.document_uuid)" href>
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>
     </li>
   </ul>

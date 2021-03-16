@@ -91,7 +91,7 @@ const movementFromDonation = {
   depot_uuid  : 'f9caeb16-1684-43c5-a6c4-47dbac1df296',
   date        : new Date(),
   is_exit     : 0,
-  description : 'Stock Exit to Donation',
+  description : 'Stock entry from a donation',
   flux_id     : flux.FROM_DONATION,
   user_id     : 1,
   lots        : [
