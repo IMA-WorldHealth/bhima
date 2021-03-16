@@ -13,6 +13,7 @@ const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../../medical/patients');
 const Debtors = require('../debtors');
+const DebtorGroups = require('../debtors/groups');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
 
@@ -44,11 +45,21 @@ function build(req, res, next) {
   const data = {};
   data.includeStockDistributed = parseInt(options.include_stock_distributed, 10);
 
+  function getTxnIndexOfDate(array, date) {
+    let i = 0;
+    while (i < array.length) {
+      if (array[i].created_at > date) { break; }
+      i++;
+    }
+    return i;
+  }
+
   return Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       _.extend(data, { patient });
       const dbPromises = [
         Debtors.getFinancialActivity(patient.debtor_uuid, true),
+        DebtorGroups.getDebtorGroupHistory(patient.debtor_uuid),
       ];
 
       if (data.includeStockDistributed) {
@@ -58,9 +69,16 @@ function build(req, res, next) {
 
       return Promise.all(dbPromises);
     })
-    .then(([financial, stockMovement, stockConsumed]) => {
+    .then(([financial, history, stockMovement, stockConsumed]) => {
       const { transactions, aggregates } = financial;
       data.totalAllMovement = 0;
+
+      // interleave the debtor group history changes with the transactions
+      history.forEach(row => {
+        const index = getTxnIndexOfDate(transactions, row.created_at);
+        row.isChangeGroup = true;
+        transactions.splice(index, 0, row);
+      });
 
       if (data.includeStockDistributed) {
         data.stockMovement = stockMovement;

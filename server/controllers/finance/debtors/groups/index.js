@@ -1,4 +1,3 @@
-
 /**
 * The Debtor Groups Controllers
 *
@@ -42,6 +41,7 @@ exports.invoices = invoices;
 exports.lookupDebtorGroup = lookupDebtorGroup;
 
 exports.history = history;
+exports.getDebtorGroupHistory = getDebtorGroupHistory;
 
 /**
  * Looks up a debtor group in the database by uuid.
@@ -355,12 +355,14 @@ function remove(req, res, next) {
     .done();
 }
 
-// retrieve all informations about patient's debtor group change
-function history(req, res, next) {
-
-  const { debtorUuid } = req.params;
-  const limit = req.query.limit || 5;
-  const sql = `
+/**
+ * @function getDebtorGroupHistory
+ *
+ * @description
+ * Finds the history of debtor group changes of a debtor.
+ */
+function getDebtorGroupHistory(debtorUuid, limit = 0) {
+  let sql = `
     SELECT dg_prev.name AS group_prev, dg_next.name AS group_next, dgh.created_at,
       u.display_name AS 'user'
     FROM debtor_group_history dgh
@@ -369,13 +371,24 @@ function history(req, res, next) {
     JOIN user u ON u.id = dgh.user_id
     WHERE dgh.debtor_uuid = ?
     ORDER BY dgh.created_at DESC
-    LIMIT ${limit}
   `;
 
-  db.exec(sql, db.bid(debtorUuid))
+  if (limit) {
+    sql += `LIMIT ${limit};`;
+  }
+
+  return db.exec(sql, db.bid(debtorUuid));
+}
+
+// retrieve all informations about patient's debtor group change
+function history(req, res, next) {
+  const { debtorUuid } = req.params;
+  const limit = req.query.limit || 5;
+  getDebtorGroupHistory(debtorUuid, limit)
     .then((rows) => {
       res.status(200).json(rows);
     })
     .catch(next)
     .done();
+
 }
