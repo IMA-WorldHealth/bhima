@@ -9,8 +9,11 @@ source .env || { echo '[test.sh] did not load .env, using variables from environ
 set +a
 
 function startfold {
+  echo
+  echo "----------------------------------------------------------------------"
+  echo $1
+  echo
   if [ -n "$TRAVIS_BUILD_NUMBER" ]; then
-    echo $1
     echo -en "travis_fold:start:$2\r"
   fi
 }
