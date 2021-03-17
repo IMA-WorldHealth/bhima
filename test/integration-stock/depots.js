@@ -4,10 +4,9 @@ const helpers = require('./helpers');
 
 // The /depots API endpoint
 describe('(/depots) The depots API ', () => {
+  const { principal } = helpers.data.depots;
 
   it('GET /depots/:uuid/inventories returns inventory for a depot', () => {
-    const { principal } = helpers.data.depots;
-
     const principalInventoryItems = [
       'Ampicilline, 500mg, Vial, Unité',
       'Oxytocine, 10 UI/ml, 1ml, Amp, Unité',
@@ -40,7 +39,6 @@ describe('(/depots) The depots API ', () => {
   });
 
   it('GET /depots/:uuid/users returns the users who have access to a depot', () => {
-    const { principal } = helpers.data.depots;
     return agent.get(`/depots/${principal}/users`)
       .then(res => {
         helpers.api.listed(res, 1);
@@ -52,7 +50,6 @@ describe('(/depots) The depots API ', () => {
   });
 
   it('GET /depots/:uuid/inventories/:uuid/cmm returns the CMM for a depot', async () => {
-    const { principal } = helpers.data.depots;
     const { quinine, oxytocine, ampicilline } = helpers.data.inventories;
     try {
       let res = await agent.get(`/depots/${principal}/inventories/${quinine}/cmm`);
@@ -115,7 +112,6 @@ describe('(/depots) The depots API ', () => {
   });
 
   it('GET /depots/:uuid/inventories/:uuid/lots returns the lots for a depot', () => {
-    const { principal } = helpers.data.depots;
     const { quinine } = helpers.data.inventories;
     return agent.get(`/depots/${principal}/inventories/${quinine}/lots`)
       .then(res => {
@@ -155,6 +151,27 @@ describe('(/depots) The depots API ', () => {
         ]);
       })
       .catch(helpers.handler);
+  });
+
+  // mock today's date
+  const [today] = new Date().toISOString().split('T');
+
+  it('GET /depots/:uuid/stock returns the stock in a depot', async () => {
+    const res = await agent.get(`/depots/${principal}/stock`).query({ date : today });
+    helpers.api.listed(res, 3);
+
+    // check the quantites of each individual article
+    const [ampicilline, oxytocine, quinine] = res.body;
+    expect(ampicilline.quantity).to.equal(0);
+    expect(oxytocine.quantity).to.equal(9110);
+    expect(quinine.quantity).to.equal(360);
+  });
+
+  it('GET /depots/:uuid/flags/stock_out returns the stock in a depot', async () => {
+    const res = await agent.get(`/depots/${principal}/flags/stock_out`).query({ date : today });
+    helpers.api.listed(res, 1);
+    const [ampicilline] = res.body;
+    expect(ampicilline.quantity).to.equal(0);
   });
 
   it('GET /depots should returns the list of depots', () => {

@@ -43,9 +43,86 @@ router.get('/:uuid', detail);
 router.put('/:uuid', update);
 router.post('/', create);
 router.delete('/:uuid', remove);
+router.get('/:depotUuid/stock', getQuantitiesInStock);
+router.get('/:depotUuid/flags/stock_out', getStockOuts);
 
 // special route for searching depot by name
 router.get('/search/name', searchByName);
+
+/**
+ * @method getQuantitiesInStock
+ *
+ * @description
+ * Returns the quantities in stock in the depot for a given date.  Includes
+ * the quantities that are out of stock, if the inventory has previously been
+ * used in the depot.
+ */
+async function getQuantitiesInStock(req, res, next) {
+  const { depotUuid } = req.params;
+  const { date } = req.query;
+
+  try {
+    const sql = `
+      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
+        inventory.code, inventory.text
+      FROM stock_movement_status AS sms JOIN (
+        SELECT inside.inventory_uuid, MAX(inside.date) AS date
+        FROM stock_movement_status AS inside
+        WHERE inside.depot_uuid = ?
+          AND inside.date <= DATE(?)
+        GROUP BY inside.inventory_uuid
+      ) AS outside
+      ON outside.date = sms.date
+        AND sms.depot_uuid = ?
+        AND sms.inventory_uuid = outside.inventory_uuid
+      JOIN inventory ON inventory.uuid = sms.inventory_uuid
+      ORDER BY inventory.text;
+    `;
+
+    const params = [db.bid(depotUuid), new Date(date), db.bid(depotUuid)];
+    const stock = await db.exec(sql, params);
+    res.status(200).json(stock);
+  } catch (err) {
+    next(err);
+  }
+}
+
+/**
+ * @method getStockOuts
+ *
+ * @description
+ * Returns the articles that are out of stock at this time.
+ */
+async function getStockOuts(req, res, next) {
+  const { depotUuid } = req.params;
+  const { date } = req.query;
+
+  try {
+    const sql = `
+      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
+        inventory.code, inventory.text
+      FROM stock_movement_status AS sms JOIN (
+        SELECT inside.inventory_uuid, MAX(inside.date) AS date
+        FROM stock_movement_status AS inside
+        WHERE inside.depot_uuid = ?
+          AND inside.date <= DATE(?)
+        GROUP BY inside.inventory_uuid
+      ) AS outside
+      ON outside.date = sms.date
+        AND sms.depot_uuid = ?
+        AND sms.inventory_uuid = outside.inventory_uuid
+      JOIN inventory ON inventory.uuid = sms.inventory_uuid
+      WHERE sms.sum_quantity = 0
+      ORDER BY inventory.text;
+    `;
+
+    const params = [db.bid(depotUuid), new Date(date), db.bid(depotUuid)];
+    const stock = await db.exec(sql, params);
+    res.status(200).json(stock);
+  } catch (err) {
+    next(err);
+  }
+}
 
 /**
 * POST /depots
