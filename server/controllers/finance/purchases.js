@@ -549,7 +549,7 @@ async function remove(req, res, next) {
 
     const WAITING_CONFIRMATION = 1;
     if (record.status_id !== WAITING_CONFIRMATION) {
-      throw new BadRequest('Cannot remove a purchase order that is confirmed');
+      throw new BadRequest('Can only remove purchase orders that have been confirmed.');
     }
 
     // there is no financial writings about purchase orders, so we simply need to delete it
@@ -628,9 +628,7 @@ function resetPurchaseIntervall(purchaseUuid) {
   return db.exec(sql, [db.bid(purchaseUuid)])
     .then((rows) => {
       const inventories = rows.map(item => item.inventory_uuid);
-
       const transactions = purchaceIntervalleSetting(inventories);
-
       return transactions.execute();
     })
     .then((items) => {
