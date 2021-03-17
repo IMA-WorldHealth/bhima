@@ -420,7 +420,8 @@ async function deleteMovement(req, res, next) {
   try {
     // movement details for future quantity update
     const movementDetailsQuery = `
-      SELECT DISTINCT m.depot_uuid, l.inventory_uuid, m.is_exit
+      SELECT DISTINCT BUID(m.depot_uuid) AS depot_uuid, BUID(l.inventory_uuid) AS inventory_uuid,
+        m.is_exit, m.date
       FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       WHERE m.document_uuid = ?
@@ -431,7 +432,10 @@ async function deleteMovement(req, res, next) {
     const movementDeletionQuery = `
       DELETE FROM stock_movement WHERE document_uuid = ?;
     `;
+
     tx.addQuery(movementDeletionQuery, [identifier]);
+
+    const oldestDate = Math.min(...movementDetails.map(m => m.date));
 
     // delete lots from (purchase, donation and integration)
     const deleteLots = `
@@ -439,6 +443,7 @@ async function deleteMovement(req, res, next) {
         SELECT uuid FROM stock_movement WHERE document_uuid = ? AND flux_id IN (1, 6, 13)
       );
     `;
+
     tx.addQuery(deleteLots, [identifier]);
 
     // remove stock movements and related lots
@@ -463,7 +468,7 @@ async function deleteMovement(req, res, next) {
     const inventoriesByDepots = _.groupBy(movementDetails, 'depot_uuid');
     const inventoriesToUpdates = Object.keys(inventoriesByDepots).map(depot => {
       const inventories = inventoriesByDepots[depot].map(item => item.inventory_uuid);
-      return updateQuantityInStockAfterMovement(inventories, new Date(), depot);
+      return updateQuantityInStockAfterMovement(inventories, new Date(oldestDate), depot);
     });
 
     await Promise.all(inventoriesToUpdates);
