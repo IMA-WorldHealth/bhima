@@ -252,9 +252,16 @@ describe('(/stock/) The Stock HTTP API', () => {
   it(`DELETE /stock/movements/ delete the stock movement of ${quantityForEntry} Quinines`, async () => {
     const res = await agent.delete(`/stock/movements/${movementUuid}`);
     helpers.api.deleted(res);
+
     const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
     const currentQuantityAfterDeletion = res2.body[0].quantity;
+
     expect(currentQuantityAfterDeletion).to.be.equal(quantityBeforeEntry);
+
+    console.log('res2.body', res2.body);
+
+    expect(currentQuantityAfterDeletion, 'quantity in stock is not equal to quantity')
+      .to.equal(res2.body[0].cmms.quantity_in_stock);
   });
 
   // create Aggregate consumption
