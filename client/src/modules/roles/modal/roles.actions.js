@@ -4,43 +4,53 @@ RoleActionsController.$inject = [
   'RolesService', 'SessionService', 'NotifyService',
 ];
 
+/**
+ * @function RoleActionsController
+ *
+ * @decription
+ * Determines which actions can be applied to the role.
+ */
 function RoleActionsController(data, $uibModal, $uibModalInstance, RolesService, session, Notify) {
   const vm = this;
-  vm.close = close;
-  vm.role = angular.copy(data);
-  vm.loadRoles = loadRoles;
+
   vm.assignActionToRole = assignActionToRole;
-  vm.actions = [];
+  vm.onChangeSelection = onChangeSelection;
+
+  vm.role = { ...data };
+
+  vm.close = () => $uibModalInstance.close();
 
   // loa all roles
-  function loadRoles() {
-    RolesService.actions(vm.role.uuid)
-      .then(response => {
-        vm.actions = response.data;
+  function loadActions() {
+    return RolesService.actions(data.uuid)
+      .then(actions => {
+        vm.actions = actions;
+
+        vm.checkedIds = actions
+          .filter(action => action.affected)
+          .map(action => action.id);
       })
       .catch(Notify.handleError);
   }
 
+  function onChangeSelection(ids) {
+    vm.checkedIds = ids;
+  }
+
   // assigned actions to a role
   function assignActionToRole() {
-    const ids = vm.actions
-      .filter(action => action.affected === 1)
-      .map(action => action.id);
-
     const param = {
-      role_uuid : vm.role.uuid,
-      action_ids : [...ids],
+      role_uuid : data.uuid,
+      action_ids : [...vm.checkedIds],
     };
-    RolesService.assignActions(param)
+
+    return RolesService.assignActions(param)
       .then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');
         vm.close();
-      }).catch(Notify.handleError);
+      })
+      .catch(Notify.handleError);
   }
 
-  function close() {
-    $uibModalInstance.close();
-  }
-
-  vm.loadRoles();
+  loadActions();
 }

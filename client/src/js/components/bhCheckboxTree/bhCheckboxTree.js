@@ -46,8 +46,10 @@ function bhCheckboxTreeController(Tree) {
     }
 
     if (changes.checkedIds && changes.checkedIds.currentValue) {
-      processCheckedIds();
-      getCheckedNodes();
+      if (!angular.equals(changes.checkedIds.currentValue, changes.checkedIds.previousValue)) {
+        processCheckedIds();
+        getCheckedNodes();
+      }
     }
   };
 
@@ -101,7 +103,7 @@ function bhCheckboxTreeController(Tree) {
       node._disabled = false;
 
       // work on flat arrays by faking a tree
-      if ($ctrl.isFlatTree) { node[$ctrl.parentKey] = 0; }
+      if (angular.isDefined($ctrl.isFlatTree)) { node[$ctrl.parentKey] = 0; }
     });
 
     // create the tree
@@ -127,9 +129,11 @@ function bhCheckboxTreeController(Tree) {
 
     $ctrl.tree.walk(node => { if (node._checked) { checked.push($ctrl.tree.id(node)); } });
 
+    const offset = $ctrl.disabledIds ? $ctrl.disabledIds.length : 0;
+
     // since disabled nodes cannot be checked, remove them from the count
     // this allows the toggle on the root node to function correctly.
-    const numCheckableNodes = ($ctrl.data.length - $ctrl.disabledIds.length);
+    const numCheckableNodes = ($ctrl.data.length - offset);
 
     // toggle the root node if all child nodes are checked
     $ctrl.root._checked = checked.length === numCheckableNodes;
