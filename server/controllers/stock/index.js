@@ -23,10 +23,12 @@ const assign = require('./assign');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
+const vouchers = require('../finance/vouchers');
 
 // expose to the API
 exports.createStock = createStock;
 exports.createMovement = createMovement;
+exports.deleteMovement = deleteMovement;
 exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
 exports.listInventoryDepot = listInventoryDepot;
@@ -404,6 +406,72 @@ async function createMovement(req, res, next) {
     res.status(201).json({ uuid : document.uuid });
   } catch (err) {
     next(err);
+  }
+}
+
+/**
+ * @method deleteMovement
+ * @desc perform a stock movement deletion based on its document uuid
+ */
+async function deleteMovement(req, res, next) {
+  const tx = db.transaction();
+  const identifier = db.bid(req.params.document_uuid);
+  const stockSettings = req.session.stock_settings;
+
+  try {
+    // movement details for future quantity update
+    const movementDetailsQuery = `
+      SELECT DISTINCT m.depot_uuid, l.inventory_uuid, m.is_exit
+      FROM stock_movement m
+      JOIN lot l ON l.uuid = m.lot_uuid
+      WHERE m.document_uuid = ?
+    `;
+    const movementDetails = await db.exec(movementDetailsQuery, [identifier]);
+
+    // delete the movement(s)
+    const movementDeletionQuery = `
+      DELETE FROM stock_movement WHERE document_uuid = ?;
+    `;
+    tx.addQuery(movementDeletionQuery, [identifier]);
+
+    // delete lots from (purchase, donation and integration)
+    const deleteLots = `
+      DELETE FROM lot WHERE uuid IN (
+        SELECT uuid FROM stock_movement WHERE document_uuid = ? AND flux_id IN (1, 6, 13)
+      );
+    `;
+    tx.addQuery(deleteLots, [identifier]);
+
+    // remove stock movements and related lots
+    // by removing stock movements, only quantities are affected
+    // accounting amounts are not touched in the next line
+    await tx.execute();
+
+    if (stockSettings.enable_auto_stock_accounting) {
+      // find transaction's record_uuid from journal
+      // safely delete voucher related to record_uuid found
+      const findTransactionInJournal = `
+      SELECT DISTINCT record_uuid
+      FROM posting_journal 
+      WHERE reference_uuid = ?
+      `;
+      const records = await db.exec(findTransactionInJournal, [identifier]);
+      const dbPromise = records.map(item => vouchers.safelyDeleteVoucher(item.record_uuid));
+      await Promise.all(dbPromise);
+    }
+
+    // update the quantity of inventories
+    const inventoriesByDepots = _.groupBy(movementDetails, 'depot_uuid');
+    const inventoriesToUpdates = Object.keys(inventoriesByDepots).map(depot => {
+      const inventories = inventoriesByDepots[depot].map(item => item.inventory_uuid);
+      return updateQuantityInStockAfterMovement(inventories, new Date(), depot);
+    });
+
+    await Promise.all(inventoriesToUpdates);
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
   }
 }
 
