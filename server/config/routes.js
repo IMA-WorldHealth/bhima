@@ -669,6 +669,7 @@ exports.configure = function configure(app) {
   app.get('/purchases/purchaseState', purchases.purchaseState);
   app.get('/purchases/:uuid', purchases.detail);
   app.put('/purchases/:uuid', purchases.update);
+  app.delete('/purchases/:uuid/', purchases.remove);
   app.get('/purchases/:uuid/stock_status', purchases.stockStatus);
   app.get('/purchases/:uuid/stock_balance', purchases.stockBalance);
 

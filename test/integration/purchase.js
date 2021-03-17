@@ -4,6 +4,8 @@ const moment = require('moment');
 const helpers = require('./helpers');
 const SearchTests = require('./purchase.search.js');
 
+const puid = helpers.uuid();
+
 /*
  * The /purchases API endpoint
  *
@@ -24,6 +26,7 @@ describe('(/purchases) Purchases', () => {
 
   // purchase order we will add during this test suite
   const purchaseOrder = {
+    uuid : puid,
     cost          : 546.7520,
     date          : new Date(datePurchaseFormat1),
     currency_id   : 1,
@@ -269,4 +272,24 @@ describe('(/purchases) Purchases', () => {
   });
 
   describe('/purchases/search', SearchTests);
+
+  describe('deletion tests', DeletionTests);
 });
+
+function DeletionTests() {
+  it('DELETE /purchases/:uuid removes a purchase order', () => {
+    return agent.delete(`/purchases/${puid}`)
+      .then(res => {
+        expect(res).to.have.status(201);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /purchases/:uuid should return 404 if the purchase order does not exist', () => {
+    return agent.delete(`/purchases/${puid}`)
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+}

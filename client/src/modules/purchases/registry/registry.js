@@ -198,6 +198,28 @@ function PurchaseListController(
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }
 
+  vm.deletePurchaseOrder = deletePurchaseOrderWithConfirmation;
+  function deletePurchaseOrderWithConfirmation(entity) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then((isOk) => {
+        if (isOk) { remove(entity); }
+      });
+  }
+
+  // allows users to delete purchase orders
+  function remove(purchase) {
+    PurchaseOrder.delete(purchase.uuid)
+      .then(() => {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+        return load(PurchaseOrder.filters.formatHTTP(true));
+      });
+  }
+
+  vm.allowsRecordDeletion = function allowsRecordDeletion(purchase) {
+    return Session.enterprise.settings.enable_delete_records
+      && purchase.status_id === vm.status.WAITING_CONFIRMATION;
+  };
+
   /**
    * @function searchByBarcode()
    *
