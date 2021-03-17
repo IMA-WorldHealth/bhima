@@ -215,11 +215,39 @@ describe('(/stock/) The Stock HTTP API', () => {
   });
 
   // create stock movement to delete
-  it('POST /stock/lots/movements distributes stock lots to a depot', async () => {
-    delete shared.movementFromDonation.lots[1];
+  let movementUuid;
+  let quantityBeforeEntry;
+  let quantityAfterEntry;
+  const quantityForEntry = 77;
+  const inventoryQuantityQuery = {
+    inventory_uuid : helpers.data.QUININE,
+    depot_uuid : shared.depotPrincipalUuid,
+  };
+
+  it(`POST /stock/lots/ stock entry movement of ${quantityForEntry} Quinines`, async () => {
+    shared.movementFromDonation.lots = shared.movementFromDonation.lots.splice(1);
+    shared.movementFromDonation.lots[0].inventory_uuid = helpers.data.QUININE;
     shared.movementFromDonation.lots[0].label = 'don3';
-    const res = await agent.post('/stock/lots/movements').send(shared.movementFromDonation);
+    shared.movementFromDonation.lots[0].quantity = quantityForEntry;
+
+    const res0 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
+    quantityBeforeEntry = res0.body[0].cmms.quantity_in_stock;
+
+    const res = await agent.post('/stock/lots/').send(shared.movementFromDonation);
+    movementUuid = res.body.uuid;
     helpers.api.created(res);
+
+    const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
+    quantityAfterEntry = res2.body[0].cmms.quantity_in_stock;
+    await expect(quantityAfterEntry).to.be.equal(quantityBeforeEntry + quantityForEntry);
+  });
+
+  it(`DELETE /stock/movements/ delete the stock movement of ${quantityForEntry} Quinines`, async () => {
+    const res = await agent.delete(`/stock/movements/${movementUuid}`);
+    helpers.api.deleted(res);
+    const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
+    const currentQuantityAfterDeletion = res2.body[0].cmms.quantity_in_stock;
+    await expect(currentQuantityAfterDeletion).to.be.equal(quantityBeforeEntry);
   });
 
   // create Aggregate consumption

@@ -469,7 +469,7 @@ async function deleteMovement(req, res, next) {
 
     await Promise.all(inventoriesToUpdates);
 
-    res.sendStatus(201);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
