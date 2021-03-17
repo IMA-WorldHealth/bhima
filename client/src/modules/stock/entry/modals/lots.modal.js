@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data',
-  'SessionService', 'bhConstants', 'StockEntryModalForm',
-  '$translate', 'focus',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
+  'bhConstants', 'StockEntryModalForm', '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm,
-  $translate, Focus,
+  AppCache, Instance, uiGridConstants, Data, Session,
+  bhConstants, EntryForm, $translate, Focus,
 ) {
   const vm = this;
 
@@ -25,6 +24,7 @@ function StockDefineLotsModalController(
     rows : Data.stockLine.lots,
   });
 
+  vm.Constants = bhConstants;
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
@@ -32,6 +32,7 @@ function StockDefineLotsModalController(
   vm.enterprise = Session.enterprise;
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
+  vm.entryDate = Data.entry_date;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
 
   // exposing method to the view
@@ -104,13 +105,39 @@ function StockDefineLotsModalController(
       vm.enableFastInsert = cache.enableFastInsert;
     }
 
-    if (vm.form.rows.length) { return; }
+    if (vm.form.rows.length) {
+      // If we are visiting the form again, re-validate it
+      validateForm();
+      return;
+    }
 
     vm.form.addItem();
   }
 
   function onRegisterApi(api) {
     vm.gridApi = api;
+  }
+
+  // Handle the extra validation for expired lot labels
+  function validateForm() {
+    vm.errors = vm.form.validate(vm.entryDate);
+    vm.form.rows.forEach((row) => {
+      if (!row.lot) {
+        // Ignore corner case where the user clicks elsewhere
+        // BEFORE typing in a lot name
+        return;
+      }
+      // Note that the type of row.lot will different depending on whether
+      // we are selecting an existing lot or creating a new one.
+      const lotLabel = typeof row.lot === 'string' ? row.lot : row.lot.label;
+      const existingLot = vm.stockLine.availableLots
+        .find(l => l.label.toUpperCase() === lotLabel.toUpperCase());
+      if (existingLot && existingLot.expired) {
+        vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
+          { label : existingLot.label }));
+        vm.form.$invalid = true;
+      }
+    });
   }
 
   /**
@@ -124,8 +151,29 @@ function StockDefineLotsModalController(
    */
   function onLotBlur(rowLot) {
     // NOTE: rowLot will be an object if an existed lot was
-    //       selected from the typeahead.  Otherwise it will
-    //       be the lot name string that was typed in.
+    //       selected from the typeahead. Otherwise
+    //       it will be the lot name string that was typed in.
+    //       Complain if the lot exists and is expired.
+
+    if (!rowLot) {
+      // Handle corner case
+      return;
+    }
+
+    // First make sure that if the entered lot label exists
+    // that it is not expired
+
+    const rowLotLabel = typeof rowLot === 'string' ? rowLot : rowLot.label;
+    const existingLot = vm.stockLine.availableLots
+      .find(l => l.label.toUpperCase() === rowLotLabel.toUpperCase());
+    if (rowLot && existingLot && existingLot.expired) {
+      vm.errors = vm.form.validate(vm.entryDate);
+      vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
+        { label : existingLot.label }));
+      vm.form.$invalid = true;
+      return;
+    }
+
     if (vm.enableFastInsert && rowLot) {
 
       const emptyLotRow = getFirstEmptyLot();
@@ -155,7 +203,7 @@ function StockDefineLotsModalController(
   }
 
   function onChanges() {
-    vm.errors = vm.form.validate();
+    validateForm();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
@@ -206,7 +254,8 @@ function StockDefineLotsModalController(
   }
 
   function submit(form) {
-    vm.errors = vm.form.validate();
+    validateForm();
+
     // unfortunately, a negative number will not trigger the onChange() function
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.
