@@ -233,13 +233,20 @@ describe('(/stock/) The Stock HTTP API', () => {
     const res0 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
     quantityBeforeEntry = res0.body[0].quantity;
 
+    expect(quantityBeforeEntry, 'quantity in stock is not equal to quantity')
+      .to.equal(res0.body[0].cmms.quantity_in_stock);
+
     const res = await agent.post('/stock/lots/').send(shared.movementFromDonation);
     movementUuid = res.body.uuid;
     helpers.api.created(res);
 
     const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
     quantityAfterEntry = res2.body[0].quantity;
-    await expect(quantityAfterEntry).to.be.equal(quantityBeforeEntry + quantityForEntry);
+
+    expect(quantityAfterEntry).to.be.equal(quantityBeforeEntry + quantityForEntry);
+
+    expect(quantityAfterEntry, 'quantity in stock is not equal to quantity')
+      .to.equal(res2.body[0].cmms.quantity_in_stock);
   });
 
   it(`DELETE /stock/movements/ delete the stock movement of ${quantityForEntry} Quinines`, async () => {
@@ -247,7 +254,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     helpers.api.deleted(res);
     const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
     const currentQuantityAfterDeletion = res2.body[0].quantity;
-    await expect(currentQuantityAfterDeletion).to.be.equal(quantityBeforeEntry);
+    expect(currentQuantityAfterDeletion).to.be.equal(quantityBeforeEntry);
   });
 
   // create Aggregate consumption
