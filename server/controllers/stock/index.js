@@ -16,6 +16,7 @@ const moment = require('moment');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
+
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
@@ -370,6 +371,7 @@ async function createInventoryAdjustment(req, res, next) {
 async function createMovement(req, res, next) {
   const params = req.body;
   let stockAvailable = [];
+  let filteredInvalidData = [];
 
   const document = {
     uuid : params.document_uuid || uuid(),
@@ -394,11 +396,29 @@ async function createMovement(req, res, next) {
     average_consumption_algo : params.average_consumption_algo,
   };
 
+  stockAvailable = await core.getLotsDepot(null, paramsStock);
+
   if (params.is_exit) {
-    stockAvailable = await core.getLotsDepot(null, paramsStock);
+    params.lots.forEach(lot => {
+      lot.quantityAvailable = 0;
+      if (stockAvailable) {
+        stockAvailable.forEach(stock => {
+          if (stock.uuid === lot.uuid) {
+            lot.quantityAvailable = stock.quantity;
+          }
+        });
+      }
+    });
+
+    filteredInvalidData = await params.lots.filter(l => l.quantity > l.quantityAvailable);
   }
 
   try {
+    if (filteredInvalidData.length) {
+      throw new Error(`Invalid data!  There are stock movements,
+        which may overconsume the quantity in stock and generate negative quantity in stock.`);
+    }
+
     const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
     params.period_id = periodId;
 
