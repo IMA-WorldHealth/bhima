@@ -19,6 +19,7 @@
     "CHOOSE_AGAIN"    : "(Cliquer Sur Cette Boite Pour Choisir Encore)",
     "BY_INVENTORY"    : "Par produits",
     "BY_SERVICE"      : "Par services",
+    "CANCEL_STOCK_MOVEMENTS" : "Annulation des mouvements de stock",
     "CODE"            : "Code",
     "COST"            : "Coût",
     "DASHBOARD" : {
@@ -227,7 +228,8 @@
       "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration"
     },
   "STOCK_MOVEMENTS" : "Les Mouvements de Stock",
-    "SUCCESS"         : "Mouvement realisé avec success",
+    "SUCCESS"         : "Mouvement realisé avec succès",
+    "SUCCESSFULLY_DELETED" : "Supprimé avec succès",
     "TO"              : "Destination",
     "UNIT_COST"       : "Coût unitaire",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date",
