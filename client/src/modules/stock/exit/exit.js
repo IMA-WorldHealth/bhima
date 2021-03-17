@@ -676,8 +676,11 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
-        reinit(form);
+
+        if (document.uuid) {
+          ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
+          reinit(form);
+        }
       })
       .catch(Notify.handleError);
   }
