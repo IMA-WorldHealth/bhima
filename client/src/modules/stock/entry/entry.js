@@ -459,6 +459,7 @@ function StockEntryController(
    */
   function setLots(stockLine) {
     if (!stockLine.inventory_uuid) {
+      // Prevent the lots modal pop-up if now inventory code has been selected
       return;
     }
     // Additional information for an inventory Group
