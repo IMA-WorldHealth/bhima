@@ -1,5 +1,4 @@
-/**
- * @module stock
+/** @module stock
  *
  *
  * @description
@@ -1061,14 +1060,11 @@ async function createAggregatedConsumption(req, res, next) {
 
     // pass reverse operations
     const trx = db.transaction();
-    // const transact = db.transaction();
 
-    const inventoryMapUuids = lots.map(lot => lot.inventory_uuid);
-
-    const inventoryUuids = inventoryMapUuids.reduce((a, b) => {
-      if (a.indexOf(b) < 0) a.push(b);
-      return a;
-    }, []);
+    // unique inventoryUuids
+    const inventoryUuids = lots
+      .map(lot => lot.inventory_uuid)
+      .filter((uid, index, array) => array.lastIndexOf(uid) === index);
 
     inventoryUuids.forEach(inventoryUuid => {
       const daysStockOut = movement.stock_out[inventoryUuid];
@@ -1103,8 +1099,6 @@ async function createAggregatedConsumption(req, res, next) {
         };
 
         trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
-
-        trx.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(lot.inventory_uuid)]);
       });
 
       stockLossQuantities.forEach(lot => {
@@ -1122,8 +1116,8 @@ async function createAggregatedConsumption(req, res, next) {
           user_id : req.session.user.id,
           period_id : periodId,
         };
+
         trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
-        trx.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(lot.inventory_uuid)]);
       });
 
       const stockConsumptionParams = [
@@ -1173,8 +1167,6 @@ async function createAggregatedConsumption(req, res, next) {
           };
 
           trx.addQuery('INSERT INTO stock_movement SET ?', consumptionMovementObject);
-
-          trx.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(item.inventory_uuid)]);
         }
 
         if (elt.quantity_lost > 0) {
@@ -1194,17 +1186,20 @@ async function createAggregatedConsumption(req, res, next) {
           };
 
           trx.addQuery('INSERT INTO stock_movement SET ?', lossMovementObject);
-          trx.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(item.inventory_uuid)]);
         }
       });
     });
 
-    trx.addQuery(`CALL ComputeStockStatusForStagedInventory(DATE(?), ?)`, [
-      new Date(movement.date),
-      db.bid(movement.depot_uuid),
-    ]);
-
     await trx.execute();
+
+    // we need to update the quantities at the beginning of the period.  So, we
+    // construct the start date of the period from the period_id.
+    const year = String(movement.period_id).slice(0, 4);
+    const month = String(movement.period_id).slice(4);
+    const date = `${year}-${month}-01`;
+
+    // update quantities in stock after movement
+    await updateQuantityInStockAfterMovement(inventoryUuids, date, movement.depot_uuid);
 
     res.status(201).json({});
   } catch (err) {
