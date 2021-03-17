@@ -136,7 +136,6 @@ function StockEntryController(
       return;
     }
     vm.movement.date = date;
-    console.log("NEW DATE", typeof date, date);
 
     // Check all stock lines and their lots to make sure that all
     // the lot expiration statuses are still
@@ -405,7 +404,7 @@ function StockEntryController(
       item.unit_cost = items[index].unit_price || items[index].unit_cost; // transfer comes with unit_cost
       item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
-      item.expiration_date = new Date();
+      item.expiration_date = vm.movement.date || new Date();
       item.unit = inventory.unit;
 
       // Store the non-expired candidate lots for this inventory code
@@ -459,6 +458,9 @@ function StockEntryController(
    * @description [grid] pop up a modal for defining lots for each row in the grid
    */
   function setLots(stockLine) {
+    if (!stockLine.inventory_uuid) {
+      return;
+    }
     // Additional information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
     stockLine.tracking_expiration = inventory.tracking_expiration;
@@ -467,6 +469,7 @@ function StockEntryController(
     StockModal.openDefineLots({
       stockLine,
       entry_type : vm.movement.entry_type,
+      entry_date : vm.movement.date,
     })
       .then((res) => {
         if (!res) { return; }
@@ -631,12 +634,13 @@ function StockEntryController(
    */
   function buildStockLine(line) {
     const inventory = inventoryStore.get(line.inventory_uuid);
+    const entryDate = vm.movement.date || Date();
     line.code = inventory.code;
     line.label = inventory.label;
     line.unit_cost = inventory.price;
     line.quantity = 0;
     line.cost = line.quantity * line.unit_cost;
-    line.expiration_date = new Date();
+    line.expiration_date = entryDate;
     line.unit = inventory.unit;
     line.tracking_expiration = inventory.tracking_expiration;
     setInitialized(line);

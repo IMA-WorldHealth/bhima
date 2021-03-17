@@ -77,22 +77,23 @@ function StockEntryModalForm(uuid) {
    *
    * @description
    * This function takes in a single row and runs validation against it.
+   * @param row - row of lot info
+   * @param [date] {object} - Entry date for expiration check (not always 'now')
    */
-  function validateSingleRow(row) {
-    let hasFutureExpirationDate = new Date(row.expiration_date) >= new Date();
+  function validateSingleRow(row, date) {
+    const entryDate = date || new Date();
+    let hasFutureExpirationDate = new Date(row.expiration_date) >= entryDate;
     row._error = null;
 
     // if the stock does not expire/have an expiration date, generate a fake one
     if (!this.opts.tracking_expiration) {
       hasFutureExpirationDate = true;
-      row.expiration_date = new Date((new Date().getFullYear() + 1000), new Date().getMonth());
+      row.expiration_date = new Date((entryDate.getFullYear() + 1000), entryDate.getMonth());
     }
     // check invalid lot expiration date
     const hasInvalidExpiration = (!row.expiration_date || !hasFutureExpirationDate);
     if (hasInvalidExpiration) {
       row._error = ERR_INVALID_EXPIRATION;
-      console.log("ERR", hasFutureExpirationDate);
-      console.log(this);
     }
 
     // check invalid lot quantity
@@ -109,10 +110,10 @@ function StockEntryModalForm(uuid) {
     row.isValid = !row.isInvalid;
   }
 
-  function validateAllRows() {
+  function validateAllRows(date) {
     const errors = [];
 
-    if (this.rows.length === 0) {
+    if (!this.rows || this.rows.length === 0) {
       errors.push(ERR_NO_ROWS);
     }
 
@@ -133,7 +134,7 @@ function StockEntryModalForm(uuid) {
     }
 
     this.rows.forEach(lot => {
-      validateSingleRow.call(this, lot);
+      validateSingleRow.call(this, lot, date);
 
       if (lot.isInvalid) {
         errors.push(lot._error);
@@ -145,9 +146,8 @@ function StockEntryModalForm(uuid) {
       .filter((err, idx, arr) => arr.indexOf(err) === idx);
   }
 
-  StockForm.prototype.validate = function validate(row) {
-    const validationFn = angular.isDefined(row) ? validateSingleRow : validateAllRows;
-    return validationFn.call(this, row);
+  StockForm.prototype.validate = function validate(date) {
+    return validateAllRows.call(this, date);
   };
 
   return StockForm;
