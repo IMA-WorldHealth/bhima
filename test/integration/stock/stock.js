@@ -231,14 +231,14 @@ describe('(/stock/) The Stock HTTP API', () => {
     shared.movementFromDonation.lots[0].quantity = quantityForEntry;
 
     const res0 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
-    quantityBeforeEntry = res0.body[0].cmms.quantity_in_stock;
+    quantityBeforeEntry = res0.body[0].quantity;
 
     const res = await agent.post('/stock/lots/').send(shared.movementFromDonation);
     movementUuid = res.body.uuid;
     helpers.api.created(res);
 
     const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
-    quantityAfterEntry = res2.body[0].cmms.quantity_in_stock;
+    quantityAfterEntry = res2.body[0].quantity;
     await expect(quantityAfterEntry).to.be.equal(quantityBeforeEntry + quantityForEntry);
   });
 
@@ -246,7 +246,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     const res = await agent.delete(`/stock/movements/${movementUuid}`);
     helpers.api.deleted(res);
     const res2 = await agent.get(`/stock/inventories/depots`).query(inventoryQuantityQuery);
-    const currentQuantityAfterDeletion = res2.body[0].cmms.quantity_in_stock;
+    const currentQuantityAfterDeletion = res2.body[0].quantity;
     await expect(currentQuantityAfterDeletion).to.be.equal(quantityBeforeEntry);
   });
 
