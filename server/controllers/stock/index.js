@@ -17,6 +17,7 @@ const moment = require('moment');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 const core = require('./core');
 const importing = require('./import');
@@ -412,7 +413,7 @@ async function createMovement(req, res, next) {
 
   try {
     if (filteredInvalidData.length) {
-      throw new Error(`Invalid data!  There are stock movements,
+      throw new BadRequest(`Invalid data!  There are stock movements,
         which may overconsume the quantity in stock and generate negative quantity in stock.`);
     }
 
