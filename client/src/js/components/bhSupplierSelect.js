@@ -7,7 +7,6 @@ angular.module('bhima.components')
       supplierUuid     : '<',
       onSelectCallback : '&',
       label            : '@?',
-      required         : '<?',
     },
   });
 
