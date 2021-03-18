@@ -138,8 +138,10 @@ function PurchaseListController(
   // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
-      .then(() => {
-        return load(PurchaseOrder.filters.formatHTTP(true));
+      .then((reload) => {
+        if (reload) {
+          load(PurchaseOrder.filters.formatHTTP(true));
+        }
       })
       .catch(handler);
   }

@@ -96,23 +96,26 @@ function PurchaseOrderService(
    * Preprocesses purchase order data for submission to the server
    */
   function create(data) {
+    return Api.create.call(service, data);
+  }
+
+  service.preprocessItemsForSubmission = function preprocessItemsForSubmission(items) {
     // loop through the items ensuring that they are properly formatted for
     // inserting into the database.  We only want to send minimal information
     // to the server.
     // Technically, this filtering is also done on the server, but this reduces
     // bandwidth required for the POST request.
-    data.items = data.items.map((item) => {
-      delete item._initialised;
-      delete item._invalid;
-      delete item._valid;
+    return items.map((item) => {
       delete item.code;
       delete item.description;
       delete item.unit;
+      delete item._hasValidAccounts;
+      delete item._initialised;
+      delete item._invalid;
+      delete item._valid;
       return item;
     });
-
-    return Api.create.call(service, data);
-  }
+  };
 
   function stockStatus(id) {
     const url = ''.concat(id, '/stock_status');
