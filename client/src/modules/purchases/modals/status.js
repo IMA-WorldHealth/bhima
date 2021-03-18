@@ -23,7 +23,7 @@ function PurchaseOrderStatusModalController(Instance, Notify, PurchaseOrder, Dat
 
     PurchaseOrder.update(vm.purchase.uuid, data)
       .then(() => {
-        Instance.close();
+        Instance.close(true);
       })
       .catch(Notify.handleError);
   }

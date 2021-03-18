@@ -8,21 +8,15 @@ const puid = helpers.uuid();
 
 /*
  * The /purchases API endpoint
- *
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
 describe('(/purchases) Purchases', () => {
-  const datePurchaseFormat1 = moment(new Date(), 'YYYY-MM-DD').subtract(1725, 'days').toDate();
-
-  const datePurchaseFormat2 = moment(new Date(), 'YYYY-MM-DD').subtract(1665, 'days').toDate();
-
-  const datePurchaseFormat3 = moment(new Date(), 'YYYY-MM-DD').subtract(1543, 'days').toDate();
-
-  const datePurchaseFormat4 = moment(new Date(), 'YYYY-MM-DD').subtract(1512, 'days').toDate();
-
-  const datePurchaseFormat5 = moment(new Date(), 'YYYY-MM-DD').subtract(1421, 'days').toDate();
-
-  const datePurchaseFormat6 = moment(new Date(), 'YYYY-MM-DD').subtract(1542, 'days').toDate();
+  const datePurchaseFormat1 = moment().subtract(1725, 'days').toDate();
+  const datePurchaseFormat2 = moment().subtract(1665, 'days').toDate();
+  const datePurchaseFormat3 = moment().subtract(1543, 'days').toDate();
+  const datePurchaseFormat4 = moment().subtract(1512, 'days').toDate();
+  const datePurchaseFormat5 = moment().subtract(1421, 'days').toDate();
+  const datePurchaseFormat6 = moment().subtract(1542, 'days').toDate();
 
   // purchase order we will add during this test suite
   const purchaseOrder = {
@@ -233,7 +227,7 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-  it(`GET /inventory/metadata/:uuid downloads
+  it(`GET /inventory/metadata/:uuid 
     Checking the calculation of the order interval for inventory: ${helpers.data.QUININE_TEXT}`, () => {
     return agent.get(`/inventory/metadata/${helpers.data.QUININE}`)
       .then(res => {
@@ -243,7 +237,7 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-  it(`GET /inventory/metadata/:uuid downloads
+  it(`GET /inventory/metadata/:uuid 
     Checking the calculation of the order interval for inventory: ${helpers.data.PREDNISONE_TEXT}`, () => {
     return agent.get(`/inventory/metadata/${helpers.data.PREDNISONE}`)
       .then(res => {
@@ -253,27 +247,82 @@ describe('(/purchases) Purchases', () => {
       .catch(helpers.handler);
   });
 
-  it(`PUT /purchases/:uuid Modification of the status of the purchase order
-    in order to verify the modifications on the calculation of the order interval and the number of orders`, () => {
+  it('PUT /purchases/:uuid cannot change a purchase order not awaiting confirmation', () => {
+    const changes = { ...purchaseOrder3, status_id : 1, date : new Date(datePurchaseFormat6) };
     return agent.put(`/purchases/${purchaseOrder3.uuid}`)
-      .send({ status_id : 1, date : new Date(datePurchaseFormat6) })
+      .send(changes)
+      .then(res => {
+        helpers.api.errored(res, 400);
+      })
       .catch(helpers.handler);
   });
 
-  it(`GET /inventory/metadata/:uuid downloads
+  // TODO(@jniles) - should we allow modification of non-awaiting-confirmation purchase orders?
+  // if not, then this is kind of irrelevant.
+  it.skip(`GET /inventory/metadata/:uuid
     Checking the calculation of the order interval for inventory
     After Updating status:: ${helpers.data.QUININE_TEXT}`, () => {
     return agent.get(`/inventory/metadata/${helpers.data.QUININE}`)
       .then(res => {
-        expect(res.body.purchase_interval).to.be.equal(2.99);
+        expect(res.body.purchase_interval).to.be.equal(2);
         expect(res.body.num_purchase).to.be.equal(2);
       })
       .catch(helpers.handler);
   });
 
+  // tests modification of a non-confirmed purchase order
+  it('PUT /purchases/:uuid allows modification of non-confirmed purchase orders', async () => {
+    const before = (await agent.get(`/purchases/${puid}`)).body;
+
+    const note = 'Test of note modification.  I\'ve been modified!';
+
+    await agent.put(`/purchases/${puid}`)
+      .send({ note });
+
+    const after = (await agent.get(`/purchases/${puid}`)).body;
+
+    // check that the update when through.
+    expect(after.note).not.to.equal(before.note);
+    expect(after.note).to.equal(note);
+
+    // remove the notes
+    delete before.note;
+    delete after.note;
+
+    // everything else should be identical
+    expect(before).to.deep.equal(after);
+  });
+
+  it('PUT /purchases/:uuid modifies items of non-confirmed purchase orders', async () => {
+    const purchase = (await agent.get(`/purchases/${puid}`)).body;
+
+    // make new items, preserving the old values
+    const items = purchase.items.map(item => ({
+      uuid : item.uuid,
+      quantity : 10,
+      unit_price : 15,
+      total : 10 * 15,
+    }));
+
+    // reset items
+    purchase.items = items;
+
+    // update the purchase order
+    await agent.put(`/purchases/${purchase.uuid}`)
+      .send({ items });
+
+    const after = (await agent.get(`/purchases/${puid}`)).body;
+
+    const hasCorrectPrices = after.items.every(item => item.unit_price === 15);
+    expect(hasCorrectPrices).to.equal(true);
+    const hasCorrectQuantities = after.items.every(item => item.quantity === 10);
+    expect(hasCorrectQuantities).to.equal(true);
+  });
+
   describe('/purchases/search', SearchTests);
 
   describe('deletion tests', DeletionTests);
+
 });
 
 function DeletionTests() {
