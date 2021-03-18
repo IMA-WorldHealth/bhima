@@ -25,9 +25,8 @@
                 <div class="col-md-6">
                   <bh-supplier-select
                     supplier-uuid="PurchaseCtrl.order.details.supplier_uuid"
-                    required="true"
-                    on-select-callback="PurchaseCtrl.setSupplier(supplier)">
-                    </bh-supplier-select>
+                    on-select-callback="PurchaseCtrl.order.setSupplier(supplier)">
+                  </bh-supplier-select>
 
                   <div class="form-group">
                     <label class="control-label">
@@ -113,7 +112,7 @@
                 type="button"
                 ng-click="PurchaseCtrl.optimalPurchase()"
                 id="optimal_purchase"
-                ng-disabled="!PurchaseCtrl.supplier || PurchaseCtrl.optimalPurchaseLoading">
+                ng-disabled="!PurchaseCtrl.order.hasSupplier() || PurchaseCtrl.optimalPurchaseLoading">
                 <span ng-hide="PurchaseCtrl.optimalPurchaseLoading">
                   <i class="fa fa-shopping-cart"></i>
                   <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span>
@@ -126,8 +125,8 @@
 
             <!-- "Add number of grid rows" input-group -->
             <bh-add-item
-              disable="PurchaseCtrl.supplier"
-              callback="PurchaseCtrl.addItems(numItem)">
+              disable="PurchaseCtrl.order.hasSupplier()"
+              callback="PurchaseCtrl.order.addItems(numItem)">
             </bh-add-item>
 
             <!-- @todo - hacky check for inventory to prevent local variables -->
@@ -142,7 +141,7 @@
             <p
               style="padding-top : 10px;"
               class="text-info"
-              ng-show="!PurchaseCtrl.supplier">
+              ng-show="!PurchaseCtrl.order.hasSupplier()">
               <span class="fa fa-info-circle"></span>
               <span translate>FORM.INFO.NO_SUPPLIER</span>
             </p>
@@ -150,34 +149,33 @@
         </div>
 
         <div
-            id="purchase-order-grid"
-            ui-grid="PurchaseCtrl.gridOptions"
-            style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;">
+          id="purchase-order-grid"
+          ui-grid="PurchaseCtrl.gridOptions"
+          style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;">
         </div>
 
-        <div class="row" ng-if="PurchaseCtrl.supplier">
+        <div class="row" ng-if="PurchaseCtrl.order.hasSupplier()">
           <h4 class="text-right" style="margin-right: 25px;">
             <span translate>FORM.LABELS.TOTAL</span>
             {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.enterprise.currency_id }}
           </h4>
         </div>
 
-        <!-- TODO Temporary styles -->
         <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
           <div class="col-md-12 text-right">
-              <bh-loading-button
-                disabled="!PurchaseCtrl.supplier"
-                loading-state="PurchaseCtrl.loadingState">
-                <span translate>FORM.BUTTONS.SAVE</span>
-              </bh-loading-button>
+            <bh-loading-button
+              disabled="!PurchaseCtrl.order.hasSupplier()"
+              loading-state="PurchaseCtrl.loadingState">
+              <span translate>FORM.BUTTONS.SAVE</span>
+            </bh-loading-button>
 
-              <button
-                type="button"
-                class="btn btn-default"
-                ng-click="PurchaseCtrl.clear(PurchaseOrderForm)"
-                data-method="clear" translate>
-                FORM.BUTTONS.CLEAR
-              </button>
+            <button
+              type="button"
+              class="btn btn-default"
+              ng-click="PurchaseCtrl.clear(PurchaseOrderForm)"
+              data-method="clear" translate>
+              FORM.BUTTONS.CLEAR
+            </button>
             <p
               class="text-danger"
               ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
