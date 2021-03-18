@@ -131,7 +131,34 @@ function StockEntryController(
    * @description on change in bhDateEditor component update the date
    */
   function onDateChange(date) {
+    if (typeof date === 'undefined') {
+      // Ignore intermediate invalid date strings (eg, 15/03/201)
+      return;
+    }
     vm.movement.date = date;
+
+    // Check all stock lines and their lots to make sure that all
+    // the lot expiration statuses are still
+    vm.stockForm.store.data.forEach(stockLine => {
+
+      // Check the expiration status of all previously selected lots
+      if (stockLine.lots) {
+        stockLine.lots.forEach(lot => {
+          if (lot.expiration_date > vm.movement.date) {
+            lot.expired = true;
+            lot.isValid = false;
+            lot.isInvalid = true;
+            stockLine.isValid = false;
+          }
+        });
+      }
+
+      // Update expiration status of the available and candidate lots
+      stockLine.availableLots.forEach(lot => {
+        lot.expired = lot.expiration_date > vm.movement.data;
+      });
+      stockLine.candidateLots = stockLine.availableLots.filter(lot => !lot.expired);
+    });
   }
 
   /**
@@ -377,13 +404,14 @@ function StockEntryController(
       item.unit_cost = items[index].unit_price || items[index].unit_cost; // transfer comes with unit_cost
       item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
-      item.expiration_date = new Date();
+      item.expiration_date = vm.movement.date || new Date();
       item.unit = inventory.unit;
 
-      // Store the candidate lots for this inventory code
-      Lots.candidates({ inventory_uuid : item.inventory_uuid })
+      // Store the non-expired candidate lots for this inventory code
+      Lots.candidates({ inventory_uuid : item.inventory_uuid, date : vm.movement.date })
         .then((lots) => {
-          item.candidateLots = lots;
+          item.availableLots = lots;
+          item.candidateLots = lots.filter(lot => !lot.expired);
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
@@ -430,6 +458,10 @@ function StockEntryController(
    * @description [grid] pop up a modal for defining lots for each row in the grid
    */
   function setLots(stockLine) {
+    if (!stockLine.inventory_uuid) {
+      // Prevent the lots modal pop-up if now inventory code has been selected
+      return;
+    }
     // Additional information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
     stockLine.tracking_expiration = inventory.tracking_expiration;
@@ -438,6 +470,7 @@ function StockEntryController(
     StockModal.openDefineLots({
       stockLine,
       entry_type : vm.movement.entry_type,
+      entry_date : vm.movement.date,
     })
       .then((res) => {
         if (!res) { return; }
@@ -602,20 +635,22 @@ function StockEntryController(
    */
   function buildStockLine(line) {
     const inventory = inventoryStore.get(line.inventory_uuid);
+    const entryDate = vm.movement.date || Date();
     line.code = inventory.code;
     line.label = inventory.label;
     line.unit_cost = inventory.price;
     line.quantity = 0;
     line.cost = line.quantity * line.unit_cost;
-    line.expiration_date = new Date();
+    line.expiration_date = entryDate;
     line.unit = inventory.unit;
     line.tracking_expiration = inventory.tracking_expiration;
     setInitialized(line);
 
-    // Store the candidate lots for this inventory code
-    Lots.candidates({ inventory_uuid : line.inventory_uuid })
+    // Store the non-expired candidate lots for this inventory code
+    Lots.candidates({ inventory_uuid : line.inventory_uuid, date : vm.movement.date })
       .then((lots) => {
-        line.candidateLots = lots;
+        line.availableLots = lots;
+        line.candidateLots = lots.filter(lot => !lot.expired);
       });
   }
 

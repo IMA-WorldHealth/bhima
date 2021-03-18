@@ -21,6 +21,7 @@
     "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
     "ER_DUP_ENTRY" : "Vous avez dupliqué une valeur dans un champ unique! Assurez-vous que les valeurs nécessaires sont uniques.",
     "ER_EXPIRED_STOCK_LOTS" : "Certains lots de stock sont expirés",
+    "ER_STOCK_LOT_IS_EXPIRED" : "Le lot de stock '{{label}}' ne peut être sélectionné car il est expiré",
     "ER_BAD_FIELD_ERROR" : "Vous avez entré un champ qui ne peut pas être stocké dans la base de données.",
     "ER_ROW_IS_REFERENCED" : "Vous ne pouvez pas supprimer cet enregistrement, car il est référencé par un autre enregistrement dans la base de données.",
     "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cet enregistrement, car il est référencé par un autre enregistrement dans la base de données.",
@@ -54,6 +55,6 @@
     "ER_DUP_UNIQUE" : "Une clé unique a été dupliquée",
     "ER_ACCESS_DENIED_ERROR" : "Accès interdit pour ce utilisateur",
     "ER_NO_DB_ERROR" : "Aucune base de donnée selectionée"
-    
+
   }
 }

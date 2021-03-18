@@ -12,6 +12,16 @@
   </div>
 
   <div class="modal-body">
+
+    <div class="row" style="margin-top: 0.5em; margin-bottom: 0.5em">
+      <div class="col-xs-12">
+        <div>
+          <span class="text-bold" translate>STOCK.ENTRY_DATE</span> :
+          {{ $ctrl.entryDate | date:$ctrl.Constants.dates.format }}
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="control-label" translate>FORM.LABELS.GLOBAL_QUANTITY</label>
 
@@ -52,12 +62,12 @@
     <div style="margin-bottom: 5px;">
       <div class="checkbox">
         <label>
-          <input 
-            id="enableFastInsert" 
-            ng-model="$ctrl.enableFastInsert" 
+          <input
+            id="enableFastInsert"
+            ng-model="$ctrl.enableFastInsert"
             type="checkbox"
             ng-true-value="1"
-            ng-false-value="0"> 
+            ng-false-value="0">
           <span translate>LOTS.ENABLE_FAST_INSERT</span>
         </label>
         <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
