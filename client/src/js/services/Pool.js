@@ -35,7 +35,6 @@ function PoolService(Store) {
     return item;
   };
 
-
   // return the unavailable item to the pool
   Pool.prototype.release = function release(id) {
     const item = this.unavailable.get(id);
@@ -45,6 +44,11 @@ function PoolService(Store) {
     }
 
     return item;
+  };
+
+  // lists all available data in the Pool
+  Pool.prototype.list = function list() {
+    return this.available.data;
   };
 
   // the total number of items stored in the Pool

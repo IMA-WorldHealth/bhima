@@ -29,6 +29,7 @@ const util = require('../../lib/util');
 // PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY
 // in the bhima.sql data
 
+const PURCHASE_STATUS_WAITING_CONFIRMATION = 1;
 const PURCHASE_STATUS_CONFIRMED_ID = 2;
 const PURCHASES_STATUS_RECEIVED_ID = 3;
 const PURCHASES_STATUS_PARTIALLY_RECEIVED_ID = 4;
@@ -299,23 +300,59 @@ function detail(req, res, next) {
  * @description
  * PUT /purchases/:uuid
  *
- * Updates a purchase order in the database.
+ * Updates a purchase order in the database.  We are only allowing modification of
+ * purchase orders that are awaiting confirmation.
  */
-function update(req, res, next) {
-  req.body.date = new Date(req.body.date);
+async function update(req, res, next) {
+
+  // parse the date if it exists
+  if (req.body.date) {
+    req.body.date = new Date(req.body.date);
+  }
+
   const sql = 'UPDATE purchase SET ? WHERE uuid = ?;';
+  const itemSQL = 'UPDATE purchase_item SET ? WHERE uuid = ?';
 
-  const data = db.convert(req.body, ['supplier_uuid']);
+  try {
+    const data = db.convert(req.body, ['supplier_uuid']);
 
-  // protect from updating the purchase's uuid
-  delete data.uuid;
+    const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [db.bid(req.params.uuid)]);
 
-  db.exec(sql, [req.body, db.bid(req.params.uuid)])
-    .then(() => resetPurchaseIntervall(req.params.uuid))
-    .then(() => lookupPurchaseOrder(req.params.uuid))
-    .then(record => res.status(200).json(record))
-    .catch(next)
-    .done();
+    // can't edit non-awaiting-confirmation records
+    if (purchase.status_id !== PURCHASE_STATUS_WAITING_CONFIRMATION) {
+      throw new BadRequest('Cannot modify purchase orders that are not awaiting confirmation.');
+    }
+
+    // protect from updating the purchase's uuid
+    delete data.uuid;
+    data.edited = true;
+
+    const items = req.body.items || [];
+    delete req.body.items;
+
+    const txn = db.transaction();
+
+    txn.addQuery(sql, [req.body, db.bid(req.params.uuid)]);
+    items.forEach(item => {
+      const uid = db.bid(item.uuid);
+      delete item.uuid;
+      db.convert(item, ['inventory_uuid']);
+      txn.addQuery(itemSQL, [item, uid]);
+    });
+
+    // run the transaction
+    await txn.execute();
+
+    // we only need the second return value
+    const [, record] = await Promise.all([
+      resetPurchaseIntervall(req.params.uuid),
+      lookupPurchaseOrder(req.params.uuid),
+    ]);
+
+    res.status(200).json(record);
+  } catch (err) {
+    next(err);
+  }
 }
 
 /**
@@ -547,8 +584,7 @@ async function remove(req, res, next) {
   try {
     const record = await db.one('SELECT * FROM purchase WHERE uuid = ?', pid);
 
-    const WAITING_CONFIRMATION = 1;
-    if (record.status_id !== WAITING_CONFIRMATION) {
+    if (record.status_id !== PURCHASE_STATUS_WAITING_CONFIRMATION) {
       throw new BadRequest('Can only remove purchase orders that have been confirmed.');
     }
 
