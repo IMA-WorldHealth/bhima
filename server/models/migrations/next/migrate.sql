@@ -19,3 +19,4 @@ CREATE TABLE `stock_adjustment_log` (
 @description: add edited flag to the purchase order.
 */
 CALL add_column_if_missing('purchase', 'edited', 'BOOLEAN NOT NULL DEFAULT FALSE');
+CALL add_column_if_missing('purchase', 'updated_at', 'TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP');
