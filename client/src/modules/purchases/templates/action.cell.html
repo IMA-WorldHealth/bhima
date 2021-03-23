@@ -35,7 +35,18 @@
       </a>
     </li>
 
-    <li class="divider"></li>
+    <li ng-if="!row.entity.hasStockMovement && row.entity.status_id !== grid.appScope.status.CANCELLED">
+      <a
+        href
+        class="text-action"
+        ng-click="grid.appScope.editStatus(row.entity)"
+        data-edit-metadata="{{ row.entity.uuid }}"
+        data-method="edit-status">
+        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+      </a>
+    </li>
+
+    <li class="divider" ng-if="row.entity.hasStockMovement"></li>
 
     <li ng-if="row.entity.hasStockMovement">
       <a href
@@ -56,18 +67,6 @@
           { key : 'includeEmptyLot', value : 1 },
           { key : 'purchase_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
         <i class="fa fa-cart-plus"></i> <span translate>REPORT.VIEW_ARTICLE_IN_STOCK</span>
-      </a>
-    </li>
-
-
-    <li ng-if="!row.entity.hasStockMovement">
-      <a
-        href
-        class="text-action"
-        ng-click="grid.appScope.editStatus(row.entity)"
-        data-edit-metadata="{{ row.entity.uuid }}"
-        data-method="edit">
-        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
       </a>
     </li>
 

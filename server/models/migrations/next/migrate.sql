@@ -19,6 +19,7 @@ CREATE TABLE `stock_adjustment_log` (
 @description: add edited flag to the purchase order.
 */
 CALL add_column_if_missing('purchase', 'edited', 'BOOLEAN NOT NULL DEFAULT FALSE');
+CALL add_column_if_missing('purchase', 'updated_at', 'TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP');
 
 DROP TABLE IF EXISTS `integration`;
 
@@ -31,3 +32,4 @@ CALL drop_column_if_exists('lots', 'delay');
 CALL drop_column_if_exists('lots', 'initial_quantity');
 CALL drop_column_if_exists('lots', 'quantity');
 CALL drop_column_if_exists('lots', 'entry_date');
+

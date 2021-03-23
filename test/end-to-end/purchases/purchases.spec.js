@@ -1,9 +1,7 @@
 /* global by */
 const moment = require('moment');
-const chai = require('chai');
+const { expect } = require('chai');
 const helpers = require('../shared/helpers');
-
-const { expect } = chai;
 
 const FU = require('../shared/FormUtils');
 const PurchaseOrderPage = require('./purchases.page.js');

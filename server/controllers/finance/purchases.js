@@ -33,6 +33,7 @@ const PURCHASE_STATUS_WAITING_CONFIRMATION = 1;
 const PURCHASE_STATUS_CONFIRMED_ID = 2;
 const PURCHASES_STATUS_RECEIVED_ID = 3;
 const PURCHASES_STATUS_PARTIALLY_RECEIVED_ID = 4;
+const PURCHASES_STATUS_CANCELLED = 5;
 const PURCHASES_STATUS_EXCESSIVE_RECEIVED_QUANTITY_ID = 6;
 
 const entityIdentifier = identifiers.PURCHASE_ORDER.key;
@@ -314,13 +315,32 @@ async function update(req, res, next) {
   const itemSQL = 'UPDATE purchase_item SET ? WHERE uuid = ?';
 
   try {
-    const data = db.convert(req.body, ['supplier_uuid']);
 
+    if (req.body.status_id) {
+      req.body.status_id = parseInt(req.body.status_id, 10);
+    }
+
+    // these statuses are able to be canceled
+    // TODO(@jniles) - are we sure that you should be able to cancel a confirmed purchase
+    // order?
+    const statusCanCancel = [
+      PURCHASE_STATUS_CONFIRMED_ID,
+      PURCHASE_STATUS_WAITING_CONFIRMATION,
+    ];
+
+    const data = db.convert(req.body, ['supplier_uuid']);
     const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [db.bid(req.params.uuid)]);
 
+    // lazy check to allow cancelling confirmed or awaiting confirmation purchase orders.
+    // FIXME(@jniles) - we need a better process for this.  Probably a whole new modal to have
+    // users confirm only validated purchase orders.
+    const isCancelRequest = Object.keys(req.body).length === 1
+      && req.body.status_id === PURCHASES_STATUS_CANCELLED
+      && statusCanCancel.includes(purchase.status_id);
+
     // can't edit non-awaiting-confirmation records
-    if (purchase.status_id !== PURCHASE_STATUS_WAITING_CONFIRMATION) {
-      throw new BadRequest('Cannot modify purchase orders that are not awaiting confirmation.');
+    if (!isCancelRequest && purchase.status_id !== PURCHASE_STATUS_WAITING_CONFIRMATION) {
+      throw new BadRequest('Can only modify purchase orders that are awaiting confirmation.');
     }
 
     // protect from updating the purchase's uuid
