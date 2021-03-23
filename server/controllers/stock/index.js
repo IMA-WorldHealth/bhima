@@ -190,26 +190,14 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
  * @method insertNewStock
  * @param {object} session The session object
  * @param {object} params Request body params (req.body)
- * @param {string} originTable the name of the lot origin table
  */
-async function insertNewStock(session, params, originTable = 'integration') {
+async function insertNewStock(session, params) {
   const transaction = db.transaction();
   const identifier = uuid();
   const documentUuid = uuid();
 
   const period = await Fiscal.lookupFiscalYearByDate(params.movement.date);
   const periodId = period.id;
-
-  const integration = {
-    uuid : db.bid(identifier),
-    project_id : session.project.id,
-    description : params.movement.description || originTable,
-    date : new Date(params.movement.date),
-  };
-
-  const sql = `INSERT INTO ${originTable} SET ?`;
-
-  transaction.addQuery(sql, [integration]);
 
   params.lots.forEach((lot) => {
     let lotUuid = lot.uuid;
@@ -261,7 +249,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
 
   await transaction.execute();
   // update the quantity in stock as needed
-  await updateQuantityInStockAfterMovement(inventoryUuids, integration.date, params.movement.depot_uuid);
+  await updateQuantityInStockAfterMovement(inventoryUuids, params.movement.date, params.movement.depot_uuid);
   return documentUuid;
 }
 
@@ -270,7 +258,7 @@ async function insertNewStock(session, params, originTable = 'integration') {
  * create a new integration entry
  */
 function createIntegration(req, res, next) {
-  insertNewStock(req.session, req.body, 'integration')
+  insertNewStock(req.session, req.body)
     .then(documentUuid => {
       res.status(201).json({ uuid : documentUuid });
     })

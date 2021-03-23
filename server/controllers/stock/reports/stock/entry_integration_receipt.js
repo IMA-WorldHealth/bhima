@@ -24,9 +24,7 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
-      CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, integ.reference) AS integration_reference,
-      integ.description, integ.date AS integration_date,
-      proj.name AS project_display_name, ig.tracking_expiration,
+      m.description, ig.tracking_expiration,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires,
       dm.text as document_reference
     FROM stock_movement m
@@ -35,8 +33,6 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN integration integ ON integ.uuid = l.origin_uuid
-    JOIN project proj ON proj.id = integ.project_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_INTEGRATION} AND m.document_uuid = ?
     ORDER BY i.text, l.label
@@ -66,8 +62,6 @@ async function stockEntryIntegrationReceipt(documentUuid, session, options) {
     date                  : line.date,
     document_uuid         : line.document_uuid,
     document_reference    : line.document_reference,
-    integration_reference : line.integration_reference,
-    integration_date      : line.integration_date,
     project_display_name  : line.project_display_name,
     barcode : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
