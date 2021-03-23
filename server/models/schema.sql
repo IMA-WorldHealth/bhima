@@ -1383,6 +1383,7 @@ CREATE TABLE `purchase` (
   `supplier_uuid`   BINARY(16) DEFAULT NULL,
   `date`            DATETIME NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `payment_method`  TEXT,
   `note`            TEXT,
