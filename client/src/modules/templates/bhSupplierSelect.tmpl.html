@@ -3,19 +3,22 @@
     class="form-group"
     ng-class="{ 'has-error' : SupplierForm.$submitted && SupplierForm.supplier_uuid.$invalid }">
 
-    <label class="control-label" translate>
-      {{$ctrl.label}}
-    </label>
+    <label class="control-label" translate>{{$ctrl.label}}</label>
 
     <ng-transclude></ng-transclude>
+
     <ui-select
-        name="supplier_uuid"
-        ng-model="$ctrl.supplierUuid"
-        on-select="$ctrl.onSelect($item)">
+      name="supplier_uuid"
+      ng-model="$ctrl.supplierUuid"
+      on-select="$ctrl.onSelect($item)">
+
       <ui-select-match placeholder="{{ 'FORM.SELECT.SUPPLIER' | translate }}">
         {{$select.selected.display_name}}
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="supplier.uuid as supplier in $ctrl.suppliers | filter: { 'display_name': $select.search }">
+
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="supplier.uuid as supplier in $ctrl.suppliers | filter: { 'display_name': $select.search }">
         <span ng-bind-html="supplier.display_name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>

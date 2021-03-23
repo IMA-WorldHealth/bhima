@@ -5,7 +5,13 @@
   </a>
 
   <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="bh-dropdown-header">{{row.entity.reference}}</li>
+    <li class="bh-dropdown-header">
+      {{row.entity.reference}}
+      <span ng-show="row.entity.edited" class="text-primary">
+        <i class="fa fa-pencil"></i>
+        <span translate>FORM.INFO.EDITED</span>
+      </span>
+    </li>
     <li>
       <a
         href
@@ -23,7 +29,24 @@
       </a>
     </li>
 
-    <li class="divider"></li>
+    <li ng-if="row.entity.status_id === grid.appScope.status.WAITING_CONFIRMATION">
+      <a href data-method="edit-record" ui-sref="purchasesUpdate({ uuid : row.entity.uuid })" >
+        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT</span>
+      </a>
+    </li>
+
+    <li ng-if="!row.entity.hasStockMovement && row.entity.status_id !== grid.appScope.status.CANCELLED">
+      <a
+        href
+        class="text-action"
+        ng-click="grid.appScope.editStatus(row.entity)"
+        data-edit-metadata="{{ row.entity.uuid }}"
+        data-method="edit-status">
+        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+      </a>
+    </li>
+
+    <li class="divider" ng-if="row.entity.hasStockMovement"></li>
 
     <li ng-if="row.entity.hasStockMovement">
       <a href
@@ -37,8 +60,6 @@
       </a>
     </li>
 
-
-
     <li ng-if="row.entity.hasStockMovement">
       <a data-method="view-stock-lot" href
         ui-sref="stockInventories({ filters : [
@@ -49,16 +70,6 @@
       </a>
     </li>
 
-    <li ng-if="!row.entity.hasStockMovement">
-      <a
-        href
-        class="text-action"
-        ng-click="grid.appScope.editStatus(row.entity)"
-        data-edit-metadata="{{ row.entity.uuid }}"
-        data-method="edit">
-        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
-      </a>
-    </li>
 
     <li class="divider" ng-if="grid.appScope.allowsRecordDeletion(row.entity)"></li>
 
