@@ -1,0 +1,23 @@
+{
+    "CDR_REPORTING" : {
+        "MODULE_TITLE" : "Rapport CDR",
+        "DATABASE_INFO" : "Les fichiers suivant proviennent de la base de données APISOFT actualisée de la CDR concernée",
+        "DATABASE" : "Version de la base de données",
+        "DEPOT" : "CDR Depots",
+        "DEPOT_LABEL" : "Dépôt (CDR)",
+        "REGISTRY" : "CDR Registre",
+        "PEREMPTION" : "CDR Taux de peremption",
+        "MOVEMENT_DATABASE" : "Fichier des mouvements (MouvementStock.xls)",
+        "ARTICLE_DATABASE" : "Fichier des articles (Article.xls)",
+        "LOT_DATABASE" : "Fichier des lots (ArticleLot.xls)",
+        "LOT_IN_DOC_DATABASE" : "Fichier des lots documentés (LigneLotDansDoc.xls)",
+        "NO_MOVEMENT_FILE_SELECTED" : "Aucun fichier des mouvements de stock selectionné",
+        "NO_ARTICLE_FILE_SELECTED" : "Aucun fichier des articles selectionné",
+        "NO_LOT_FILE_SELECTED" : "Aucun fichier des lots en stock selectionné",
+        "NO_LOT_DOC_FILE_SELECTED" : "Aucun fichier des lots documentés selectionné",
+        "NO_FILE_SELECTED" : "Aucun fichier selectionné",
+        "REQUIRE_FOUR_DB_FILES" : "Veuillez selectionner les quatres fichiers suivant : MouvementStock.xls, Article.xls, ArticleLot.xls et LigneLotDansDoc.xls",
+        "SHOW_PEREMPTION_REPORT" : "Afficher le rapport des peremptions",
+        "UPDATE_DEPOT_DATABASE" : "Mettre à jour la base de données"
+    }
+}

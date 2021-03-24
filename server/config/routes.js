@@ -144,6 +144,9 @@ const lots = require('../controllers/stock/lots');
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
 
+// cdr reporting
+const cdrReporting = require('../controllers/cdrReporting');
+
 // Data Kit
 const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
 const choicesListManagement = require('../controllers/admin/choicesListManagement');
@@ -352,6 +355,10 @@ exports.configure = function configure(app) {
 
   /* Depot routes */
   app.use('/depots', depots.router);
+
+  // cdr reporting
+  app.use('/cdr_reporting', cdrReporting.router);
+
   // currencies API
   app.get('/currencies', currencies.list);
   app.get('/currencies/:id', currencies.detail);
