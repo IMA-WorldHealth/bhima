@@ -91,7 +91,6 @@ function bhCheckboxTree() {
     // simulate a click on one of the checkboxes
     const node = find(element, '[data-label="Amy"] input');
 
-    // console.log('node:', node);
     angular.element(node).triggerHandler('click');
     $scope.$digest();
 

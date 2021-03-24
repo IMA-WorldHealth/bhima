@@ -21,6 +21,7 @@
     "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
     "ER_DUP_ENTRY" : "You have duplicated a value in a unique field!  Please make sure that the necessary values are unique.",
     "ER_EXPIRED_STOCK_LOTS" : "Some stock lots are expired",
+    "ER_STOCK_LOT_IS_EXPIRED" : "Stock lot '{{label}}' cannot be selected because it is expired",
     "ER_BAD_FIELD_ERROR" : "Column does not exist in database.",
     "ER_ROW_IS_REFERENCED" : "Cannot delete entity because entity is used in another table.",
     "ER_ROW_IS_REFERENCED_2" : "Cannot delete entity because entity is used in another table.",
