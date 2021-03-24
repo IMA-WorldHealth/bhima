@@ -75,8 +75,6 @@ INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`,
   (0xC26BA248149D4FAB882C97A368072F2B,'QUININE-A-XXX',200,200,9.4000,NULL,@expiration_date,0x6D93ED88393211EBA0B954E1AD7439C7,0x9EE84A161CF5491A9B5EC06A5BBCBC5D,0,@one_year_ago,0),
   (0xD5C6BC2825A24C218025817F8F00B8A7,'QUININE-D-XXX',200,200,9.4000,NULL,@expiration_date,0x6D93ED88393211EBA0B954E1AD7439C7,0x9EE84A161CF5491A9B5EC06A5BBCBC5D,0,@one_year_ago,0);
 
-INSERT INTO `integration` (`uuid`, `reference`, `project_id`, `description`, `date`) VALUES (0x9EE84A161CF5491A9B5EC06A5BBCBC5D,1,1,'Initializing the inventory of the first depot.',@one_year_ago);
-
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `stock_requisition_uuid`, `period_id`, `created_at`) VALUES
   (0x04F19F9316DA4DE09DACD1F670424D7F,0x7FA5E0D14D7E436B89E4E7D0CDF0570F,@depot_uuid,0x8E8D1F39D57348689800EB8EA707E813,0xB1816006555845F993A0C222B5EFA6CB,'Distribution to the service Administration from Depot Principal : Consumption for Mai 2020',10,@seven_months_ago,100,7.0600,1,1,6,NULL,NULL,GetPeriodId(@seven_months_ago), @seven_months_ago),
   (0x05655DFD319144A7A52C5C8E1E2CBA2C,0x0BF8E5AB353F4C0BA6BDD2E119C5C58E,@depot_uuid,0xC26BA248149D4FAB882C97A368072F2B,0xE3988489EF6641DF88FA8B8ED6AA03AC,'Distribution to the service Medecine Interne from Depot Principal : Consumption for April 2020',10,@eight_months_ago,120,9.4000,1,1,5,NULL,NULL,GetPeriodId(@eight_months_ago), @eight_months_ago),

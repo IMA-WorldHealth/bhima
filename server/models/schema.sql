@@ -2064,18 +2064,6 @@ CREATE TABLE `donation` (
   UNIQUE KEY `donation_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
--- integration
-DROP TABLE IF EXISTS `integration`;
-CREATE TABLE `integration` (
-  `uuid`            BINARY(16) NOT NULL,
-  `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
-  `description`     TEXT NULL,
-  `date`            DATE NOT NULL,
-  PRIMARY KEY (`reference`),
-  UNIQUE KEY `integration_uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 /*
   The transaction_history table stores the editing history of transactions that
   have gone through the posting process.  The record_uuid should be the same
