@@ -271,6 +271,17 @@ function createIntegration(req, res, next) {
 async function createInventoryAdjustment(req, res, next) {
   try {
     const movement = req.body;
+    let filteredInvalidData = [];
+
+    const paramsStock = {
+      dateTo : new Date(),
+      depot_uuid : movement.depot_uuid,
+      includeEmptyLot : 0,
+      month_average_consumption : req.session.stock_settings.month_average_consumption,
+      average_consumption_algo : req.session.stock_settings.average_consumption_algo,
+    };
+
+    const stockAvailable = await core.getLotsDepot(null, paramsStock);
 
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
@@ -283,13 +294,38 @@ async function createInventoryAdjustment(req, res, next) {
     const period = await Fiscal.lookupFiscalYearByDate(new Date(movement.date));
     const periodId = period.id;
 
-    // pass reverse operations
     const trx = db.transaction();
-
     const uniqueAdjustmentUuid = uuid();
 
     let countNeedIncrease = 0;
     let countNeedDecrease = 0;
+
+    lots.forEach(lot => {
+      lot.quantityAvailable = 0;
+
+      if (lot.oldQuantity > lot.quantity) {
+        lot.isExit = 1;
+        lot.outputQuantity = lot.oldQuantity - lot.quantity;
+
+        if (stockAvailable) {
+          stockAvailable.forEach(stock => {
+            if (stock.uuid === lot.uuid) {
+              lot.quantityAvailable = stock.quantity;
+            }
+          });
+        }
+      }
+    });
+
+    filteredInvalidData = await lots.filter(l => l.outputQuantity > l.quantityAvailable);
+
+    if (filteredInvalidData.length) {
+      throw new BadRequest(
+        `There are stock movements,
+        which may overconsume the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+      );
+    }
 
     lots.forEach(lot => {
       const difference = lot.quantity - lot.oldQuantity;
@@ -413,8 +449,11 @@ async function createMovement(req, res, next) {
 
   try {
     if (filteredInvalidData.length) {
-      throw new BadRequest(`Invalid data!  There are stock movements,
-        which may overconsume the quantity in stock and generate negative quantity in stock.`);
+      throw new BadRequest(
+        `There are stock movements,
+        which may overconsume the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+      );
     }
 
     const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
@@ -1051,6 +1090,41 @@ function getStockTransfers(req, res, next) {
 async function createAggregatedConsumption(req, res, next) {
   try {
     const movement = req.body;
+    let filteredInvalidData = [];
+
+    const paramsStock = {
+      dateTo : new Date(),
+      depot_uuid : movement.depot_uuid,
+      includeEmptyLot : 0,
+      month_average_consumption : req.session.stock_settings.month_average_consumption,
+      average_consumption_algo : req.session.stock_settings.average_consumption_algo,
+    };
+
+    const stockAvailable = await core.getLotsDepot(null, paramsStock);
+
+    movement.lots.forEach(lot => {
+      lot.quantityAvailable = 0;
+
+      lot.outputQuantity = lot.quantity_consumed + lot.quantity_lost;
+
+      if (stockAvailable) {
+        stockAvailable.forEach(stock => {
+          if (stock.uuid === lot.uuid) {
+            lot.quantityAvailable = stock.quantity;
+          }
+        });
+      }
+    });
+
+    filteredInvalidData = await movement.lots.filter(l => l.outputQuantity > l.quantityAvailable);
+
+    if (filteredInvalidData.length) {
+      throw new BadRequest(
+        `There are stock movements,
+        which may overconsume the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+      );
+    }
 
     if (!movement.depot_uuid) {
       throw new Error('No defined depot');
