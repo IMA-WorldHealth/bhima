@@ -25,6 +25,7 @@
     "ER_BAD_FIELD_ERROR" : "Vous avez entré un champ qui ne peut pas être stocké dans la base de données.",
     "ER_ROW_IS_REFERENCED" : "Vous ne pouvez pas supprimer cet enregistrement, car il est référencé par un autre enregistrement dans la base de données.",
     "ER_ROW_IS_REFERENCED_2" : "Vous ne pouvez pas supprimer cet enregistrement, car il est référencé par un autre enregistrement dans la base de données.",
+    "ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK" : "Il y a des mouvements de stock, qui peuvent surconsommer la quantité en stock et générer une quantité négative en stock",
     "ER_BAD_NULL_ERROR" : "Un champ a été laissé vide qui ne peut pas être vide.",
     "ER_PARSE_ERROR" : "Votre demande n'a pas été comprise. Veuillez modifier votre demande et réessayer.",
     "ER_EMPTY_QUERY" : "Votre demande semble vide. Êtes-vous sûr de remplir tout?",
