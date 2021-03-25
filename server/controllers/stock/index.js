@@ -274,6 +274,9 @@ function createIntegration(req, res, next) {
 async function createInventoryAdjustment(req, res, next) {
   try {
     const movement = req.body;
+    console.log('MOUVEMEMNTTTTTTTTTTTTTTTTTTTTZ');
+    console.log(movement);
+
     let filteredInvalidData = [];
 
     const paramsStock = {
@@ -1103,6 +1106,17 @@ async function createAggregatedConsumption(req, res, next) {
       average_consumption_algo : req.session.stock_settings.average_consumption_algo,
     };
 
+    if (!movement.depot_uuid) {
+      throw new Error('No defined depot');
+    }
+
+    const checkInvalid = movement.lots
+      .filter(l => ((l.quantity_consumed + l.quantity_lost) > l.oldQuantity));
+
+    if (checkInvalid.length) {
+      throw new Error('Invalid data!  Some lots have consumed or lost more stock than they originally had.');
+    }
+
     const stockAvailable = await core.getLotsDepot(null, paramsStock);
 
     movement.lots.forEach(lot => {
@@ -1127,17 +1141,6 @@ async function createAggregatedConsumption(req, res, next) {
         which may overconsume the quantity in stock and generate negative quantity in stock`,
         `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
       );
-    }
-
-    if (!movement.depot_uuid) {
-      throw new Error('No defined depot');
-    }
-
-    const checkInvalid = movement.lots
-      .filter(l => ((l.quantity_consumed + l.quantity_lost) > l.oldQuantity));
-
-    if (checkInvalid.length) {
-      throw new Error('Invalid data!  Some lots have consumed or lost more stock than they originally had.');
     }
 
     // Here we want that the detailed consumption can only concern the periods when there is out of stock
