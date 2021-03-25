@@ -57,10 +57,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventory by state (security reached)', async () => {
-    await FU.radio('$ctrl.searchQueries.status', 0);
+  it('find 2 inventory by state (security reached)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 2);
 
     await filters.resetFilters();
   });
@@ -77,7 +77,7 @@ function StockInventoriesRegistryTests() {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 9);
+    await GU.expectRowCount(gridId, 8);
     await filters.resetFilters();
   });
 
@@ -89,10 +89,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 0 inventories who requires a purchase order plus one line of grouping', async () => {
+  it('find 1 inventories who requires a purchase order plus one line of grouping', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 0);
+    await GU.expectRowCount(gridId, 2);
     await filters.resetFilters();
   });
 }
