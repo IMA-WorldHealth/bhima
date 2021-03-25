@@ -274,9 +274,6 @@ function createIntegration(req, res, next) {
 async function createInventoryAdjustment(req, res, next) {
   try {
     const movement = req.body;
-    console.log('MOUVEMEMNTTTTTTTTTTTTTTTTTTTTZ');
-    console.log(movement);
-
     let filteredInvalidData = [];
 
     const paramsStock = {
