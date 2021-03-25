@@ -74,9 +74,9 @@ function addLotSQL(params) {
   const [lotUuid, label, inventoryUuid] = params;
   const expDate = moment().add(1, 'year').format('YYYY-MM-DD');
   return 'INSERT INTO lot (uuid, label, inventory_uuid, quantity, '
-    + '  initial_quantity, unit_cost, expiration_date, origin_uuid) '
+    + ' unit_cost, expiration_date, origin_uuid) '
     + `VALUES (0x${lotUuid}, '${label}', 0x${inventoryUuid}, 321, `
-    + `  500, 1.2, '${expDate}', 0x${uuid()});`;
+    + `  1.2, '${expDate}', 0x${uuid()});`;
 }
 
 function addTagSQL(params) {

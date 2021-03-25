@@ -176,8 +176,9 @@ function getLotFilters(parameters) {
 function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
   const sql = sqlQuery || `
       SELECT
-        BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-        l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
+        BUID(l.uuid) AS uuid, l.label, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+        l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay,
+        (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
         dm.text AS documentReference, ser.name AS service_name
@@ -240,7 +241,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+    SELECT BUID(l.uuid) AS uuid, l.label,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
@@ -381,11 +382,13 @@ async function getLotsMovements(depotUuid, params) {
 
   const sql = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, m.quantity, m.reference, m.description,
+      BUID(l.uuid) AS uuid, l.label, m.quantity, m.reference, m.description,
       d.text AS depot_text, d.min_months_security_stock,
       IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
       l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-      BUID(l.origin_uuid) AS origin_uuid, l.entry_date, i.code, i.text,
+      BUID(l.origin_uuid) AS origin_uuid,
+      (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
+      i.code, i.text,
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
       m.flux_id, BUID(m.entity_uuid) AS entity_uuid, m.unit_cost,
       f.label AS flux_label, i.delay, BUID(m.invoice_uuid) AS invoice_uuid, idm.text AS invoice_reference,
@@ -466,7 +469,8 @@ function getLotsOrigins(depotUuid, params, averageConsumptionAlgo) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-        l.entry_date, i.code, i.text, origin.display_name, om.text AS reference,
+        (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
+        i.code, i.text, origin.display_name, om.text AS reference,
         BUID(m.document_uuid) AS document_uuid, m.flux_id,
         iu.text AS unit_type,
         dm.text AS documentReference
@@ -685,13 +689,14 @@ async function getInventoryQuantityAndConsumption(params) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+    SELECT BUID(l.uuid) AS uuid, l.label,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-      l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+      (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
+      BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
@@ -873,7 +878,7 @@ function computeLotIndicators(inventories) {
  * the stock_movement_status table.  If none is found, it returns 0s.
  */
 async function getOpeningStockBalanceForDepot(date, depotUuid, inventoryUuid) {
-  const quantities = await db.exec(` 
+  const quantities = await db.exec(`
     SELECT sum_quantity AS quantity FROM stock_movement_status
     WHERE date < ? AND depot_uuid = ? AND inventory_uuid = ?
     ORDER BY date DESC
@@ -902,7 +907,7 @@ async function getOpeningStockBalanceForDepot(date, depotUuid, inventoryUuid) {
  * just need to get the most recent stock values in all depots. at that date.
  */
 async function getOpeningStockBalance(date, inventoryUuid) {
-  const [{ quantity }] = await db.exec(` 
+  const [{ quantity }] = await db.exec(`
     SELECT IFNULL(SUM(sum_quantity), 0) AS quantity FROM stock_movement_status AS sms
     JOIN (SELECT sms2.depot_uuid, MAX(sms2.date) AS max_date FROM stock_movement_status sms2
       WHERE sms2.date < ? AND sms2.inventory_uuid = ?
@@ -931,12 +936,13 @@ async function getInventoryMovements(params) {
   const bundle = {};
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
+    SELECT BUID(l.uuid) AS uuid, l.label,
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
       m.quantity, m.is_exit, m.date,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-      l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+      (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
+      i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, iu.text AS unit_type,
       dm.text AS documentReference, flux.label as flux
     FROM stock_movement m

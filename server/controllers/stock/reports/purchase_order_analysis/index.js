@@ -85,7 +85,8 @@ async function report(req, res, next) {
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid,
         iv.text AS inventoryText, l.label AS lotLabel, p.project_id,
         p.reference, p.user_id, l.uuid AS lotUuid, SUM(l.quantity) AS quantity_inStock,
-        l.expiration_date, MAX(l.entry_date) AS entry_date, iv.code
+        l.expiration_date,
+        iv.code
       FROM purchase AS p
         JOIN lot AS l ON l.origin_uuid = p.uuid
         JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
@@ -93,12 +94,18 @@ async function report(req, res, next) {
       GROUP BY iv.uuid
       ORDER BY iv.text ASC;
     `;
+    // NOTE: Removed entry_date from previous query since it was removed from the lot table.
+    //       If it is needed, it should be retrieved from stock_movements table.
+    //       See getLots() query in server/controllers/stock/core.js for an example query.
+    //       jmcameron 2021-03-26.
 
     // This request tracks the entries in stock of a purchase order, by date, by deposit but also by product
     const sqlInventoriesInStockDetailled = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid, iv.text AS inventoryText,
         l.label AS lotLabel, p.project_id, p.reference, p.user_id, l.uuid AS lotUuid, l.quantity,
-        l.expiration_date, l.entry_date, iv.code,
+        l.expiration_date,
+        (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
+        iv.code,
         d.text AS depotText, BUID(sm.uuid) AS stock_movement_uuid, dm1.text AS stock_movement_reference
       FROM purchase AS p
         JOIN lot AS l ON l.origin_uuid = p.uuid
@@ -107,7 +114,7 @@ async function report(req, res, next) {
         JOIN depot AS d ON d.uuid = sm.depot_uuid
         JOIN document_map AS dm1 ON dm1.uuid = sm.document_uuid
       WHERE p.uuid = ? AND sm.is_exit = 0 AND sm.flux_id = ?
-      ORDER BY iv.text ASC, l.entry_date ASC
+      ORDER BY iv.text ASC, entry_date ASC
     `;
 
     const uidPurchase = db.bid(params.purchase_uuid);

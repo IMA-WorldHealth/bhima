@@ -43,13 +43,6 @@ function DuplicateLotsController(
       cellClass : 'text-right',
       type : 'number',
     }, {
-      field : 'initial_quantity',
-      displayName : 'STOCK.INITIAL_QUANTITY',
-      headerTooltip : 'STOCK.INITIAL_QUANTITY',
-      headerCellFilter : 'translate',
-      cellClass : 'text-right',
-      type : 'number',
-    }, {
       field : 'unit_cost',
       displayName : 'TABLE.COLUMNS.UNIT_PRICE',
       headerTooltip : 'TABLE.COLUMNS.UNIT_PRICE',
@@ -57,13 +50,6 @@ function DuplicateLotsController(
       cellFilter : `currency:${vm.enterprise.currency_id}`,
       cellClass : 'text-right',
       type : 'number',
-    }, {
-      field : 'entry_date',
-      displayName : 'STOCK.ENTRY_DATE',
-      headerTooltip : 'STOCK.ENTRY_DATE',
-      headerCellFilter : 'translate',
-      cellFilter : 'date',
-      cellClass : 'text-right',
     }, {
       field : 'expiration_date',
       displayName : 'STOCK.EXPIRATION_DATE',
