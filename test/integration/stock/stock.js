@@ -1,5 +1,5 @@
 /* global expect, agent */
-
+const moment = require('moment');
 const helpers = require('../helpers');
 const shared = require('./shared');
 
@@ -290,4 +290,27 @@ describe('(/stock/) The Stock HTTP API', () => {
       .query({ voucherReference : 'VO.TPA.300000' });
     helpers.api.listed(res, 0);
   });
+
+  // Prevent negative stock quantities
+  it(`POST /stock/lots/movements Prevent negative stock quantities 
+    when distribute lots to patients from a depot`, async () => {
+
+    shared.movementOutPatient.date = moment(new Date(), 'YYYY-MM-DD').subtract(1, 'days');
+
+    const res = await agent.post('/stock/lots/movements').send(shared.movementOutPatient);
+    expect(res).to.have.status(400);
+  });
+
+  it(`POST /stock/aggregated_consumption movements Prevent negative stock quantities
+      create complexe aggregate stock consumption`, async () => {
+    const res = await agent.post('/stock/aggregated_consumption').send(shared.movementOverConsumptionAggregate);
+    expect(res).to.have.status(400);
+  });
+
+  it(`POST /stock/inventory_adjustment movements Prevent negative stock quantities
+      create complexe aggregate stock consumption`, async () => {
+    const res = await agent.post('/stock/inventory_adjustment').send(shared.adjustmentPrevention);
+    expect(res).to.have.status(400);
+  });
+
 });
