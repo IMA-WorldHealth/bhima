@@ -1,0 +1,41 @@
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate> CDR_REPORTING.MODULE_TITLE </li>
+        <li class="title" translate> CDR_REPORTING.PEREMPTION </li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+            <select class="form-control" ng-model="CdrPeremptionRateCtrl.selectedYear" ng-change="CdrPeremptionRateCtrl.loadReport(year)">
+                <option value="" disabled translate>CDR_REPORTING.YEAR</option>
+                <option ng-repeat="year in CdrPeremptionRateCtrl.availableYears" ng-value="year">{{ year }}</option>
+            </select>
+        </div>
+        <div class="toolbar-item">
+          <button class="btn btn-primary" ng-disabled="!CdrPeremptionRateCtrl.selectedYear" ng-click="CdrPeremptionRateCtrl.download(CdrPeremptionRateCtrl.selectedYear)">
+            <i class="fa fa-download"></i>
+            <span translate>CDR_REPORTING.DOWNLOAD</span>
+          </button>
+        </div>
+        <div class="toolbar-item">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="recompute" ng-true-value="1" ng-false-value="0"
+                ng-model="CdrPeremptionRateCtrl.recompute">
+              <span translate>CDR_REPORTING.RECOMPUTE</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- main content -->
+  <div class="flex-content">
+    <div class="container-fluid">
+        <iframe id="report" name="report" style="border : none; width : 100%; height : 90vh;" srcdoc="{{CdrPeremptionRateCtrl.report}}"></iframe>
+        <p class="text-center" ng-if="CdrPeremptionRateCtrl.loading"><span translate>FORM.INFO.LOADING</span>...</p>
+    </div>
+  </div>
+  

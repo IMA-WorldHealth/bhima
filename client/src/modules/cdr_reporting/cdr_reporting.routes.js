@@ -24,6 +24,12 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', '$transition$', cdrDepotModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('cdrReportingPeremptionRate', {
+        url         : '/cdr_reporting/peremption',
+        controller  : 'CDRReportingPeremptionRateController as CdrPeremptionRateCtrl',
+        templateUrl : 'modules/cdr_reporting/peremption/peremption.html',
       });
   }]);
 

@@ -6,7 +6,7 @@
         "DEPOT" : "CDR Depots",
         "DEPOT_LABEL" : "Dépôt (CDR)",
         "REGISTRY" : "CDR Registre",
-        "PEREMPTION" : "CDR Taux de peremption",
+        "PEREMPTION" : "CDR Taux de péremption",
         "MOVEMENT_DATABASE" : "Fichier des mouvements (MouvementStock.xls)",
         "ARTICLE_DATABASE" : "Fichier des articles (Article.xls)",
         "LOT_DATABASE" : "Fichier des lots (ArticleLot.xls)",
@@ -18,6 +18,13 @@
         "NO_FILE_SELECTED" : "Aucun fichier selectionné",
         "REQUIRE_FOUR_DB_FILES" : "Veuillez selectionner les quatres fichiers suivant : MouvementStock.xls, Article.xls, ArticleLot.xls et LigneLotDansDoc.xls",
         "SHOW_PEREMPTION_REPORT" : "Afficher le rapport des peremptions",
-        "UPDATE_DEPOT_DATABASE" : "Mettre à jour la base de données"
+        "UPDATE_DEPOT_DATABASE" : "Mettre à jour la base de données",
+        "YEAR" : "Année",
+        "PEREMPTION_REPORT_TITLE" : "Rapport sur le taux de péremption",
+        "MONTHLY_PEREMPTION_RATE" : "Taux de peremption mensuel",
+        "TRIMONTHLY_PEREMPTION_RATE" : "Taux de peremption trimestriel",
+        "SIXMONTHLY_PEREMPTION_RATE" : "Taux de peremption semestriel",
+        "RECOMPUTE" : "Recalculer",
+        "DOWNLOAD" : "Télécharger"
     }
 }

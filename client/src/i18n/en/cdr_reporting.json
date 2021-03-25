@@ -18,6 +18,12 @@
         "NO_FILE_SELECTED" : "No file selected",
         "REQUIRE_FOUR_DB_FILES" : "Please select these four files : MouvementStock.xls, Article.xls, ArticleLot.xls et LigneLotDansDoc.xls",
         "SHOW_PEREMPTION_REPORT" : "Show peremption report",
-        "UPDATE_DEPOT_DATABASE" : "Update the database"
+        "UPDATE_DEPOT_DATABASE" : "Update the database",
+        "YEAR" : "Year",
+        "MONTHLY_PEREMPTION_RATE" : "Monthly peremption rate",
+        "TRIMONTHLY_PEREMPTION_RATE" : "Quarterly peremption rate",
+        "SIXMONTHLY_PEREMPTION_RATE" : "Semi annual peremption rate",
+        "RECOMPUTE" : "Recompute",
+        "DOWNLOAD" : "Download"
     }
 }
