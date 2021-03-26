@@ -56,20 +56,23 @@
             </div>
           </div>
 
-          <div ng-if="StockCtrl.overconsumption.length" class="row">
-            <div class="alert alert-danger">
-              <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.PROBLEMATIC_ADJUSTMENT </span>
-              <ul>
-                <li ng-repeat="item in StockCtrl.overconsumption track by $index">
-                  <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.PROBLEMATIC_ADJUSTMENT_DESCRIPTION </span>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-md-6">
           <h3 translate>INVENTORY_ADJUSTMENT.TITLE</h3>
           <p translate>INVENTORY_ADJUSTMENT.DESC</p>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom: 5px;">
+        <div ng-if="StockCtrl.overconsumption.length" class="col-xs-12 col-sm-6 col-md-6">
+          <div class="alert alert-danger">
+            <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.PROBLEMATIC_ADJUSTMENT </span>
+            <ul>
+              <li ng-repeat="item in StockCtrl.overconsumption track by $index">
+                <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.PROBLEMATIC_ADJUSTMENT_DESCRIPTION </span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -99,7 +102,7 @@
       <!-- grid -->
       <div id="stock-adjustment-grid"
         ui-grid="StockCtrl.gridOptions"
-        style="height: 600px; width: 100%;"
+        style="height: 300px; width: 100%;"
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
