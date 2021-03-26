@@ -44,6 +44,7 @@
     "EXPIRED"         : "Expiré",
     "ENTRY"           : "Entrée de stock",
     "ENTRY_DATE"      : "Date d'entrée",
+    "ENTRY_DATE_TOOLTIP" : "Date de la première entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",
     "ENTRY_PURCHASE"  : "Achat",
     "ENTRY_DONATION"  : "Donation",
@@ -187,7 +188,6 @@
     "QUANTITY_IN_STOCK" : "Quantité en stock",
     "QUANTITY_LOST" : "Quantité perdue",
     "QUANTITY_REMAINING" : "Quantité restante",
-    "INITIAL_QUANTITY" : "Quantité initiale",
     "TRANSFER_RECEIVED" : "Reçu",
     "TRANSFER_AVAILABLE" : "Disponible",
     "RECEIPT"         : {

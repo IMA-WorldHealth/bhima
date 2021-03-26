@@ -76,7 +76,7 @@ function LotsRegistryService(uiGridConstants, Session) {
     }, {
       field : 'entry_date',
       displayName : 'STOCK.ENTRY_DATE',
-      headerTooltip : 'STOCK.ENTRY_DATE',
+      headerTooltip : 'STOCK.ENTRY_DATE_TOOLTIP',
       headerCellFilter : 'translate',
       cellFilter : 'date',
     }, {

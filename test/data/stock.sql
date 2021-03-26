@@ -100,11 +100,11 @@ INSERT INTO `integration` (`uuid`, `reference`, `project_id`, `description`, `da
 -- Déchargement des données de la table `lot`
 --
 
-INSERT INTO `lot` (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `delay`, `entry_date`, `is_assigned`) VALUES
-(0x0b89e88d4cbb462ea5dad3dcf31f2a26, 'Q', 100, 100, '0.5000', NULL, '2022-12-02', 0x6D93A100393211EBA0B954E1AD7439C7, 0x9a54c2ea1b664a19bc5fad7c4f11a028, 0, '2020-12-02 10:09:03', 0),
-(0x2bacb3bedf9b42fe896c11ad300f2dc5, 'Q', 100, 100, '0.5000', NULL, '2022-10-13', 0x6D93A100393211EBA0B954E1AD7439C7, 0xc59ece8817b64d18b7316bf768325ff9, 0, '2020-10-13 14:03:02', 0),
-(0x605ecb0f6a8e49f79c197ddcd8da3324, 'Q', 200, 200, '0.5000', NULL, '2022-12-01', 0x6D93A100393211EBA0B954E1AD7439C7, 0x7e68a63fcdd84230ab4a4087bb2bc41e, 0, '2020-12-01 14:11:56', 0),
-(0xa8f8d186889f42cfa9279a7c4d52d8d2, 'Q', 100, 100, '0.5000', NULL, '2022-10-13', 0x6D93A100393211EBA0B954E1AD7439C7, 0xf5212fa19e2b48f2afd15c1d131b919d, 0, '2020-10-13 13:54:23', 0);
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `origin_uuid`, `is_assigned`) VALUES
+(0x0b89e88d4cbb462ea5dad3dcf31f2a26, 'Q', 100, '0.5000', NULL, '2022-12-02', 0x6D93A100393211EBA0B954E1AD7439C7, 0x9a54c2ea1b664a19bc5fad7c4f11a028, 0),
+(0x2bacb3bedf9b42fe896c11ad300f2dc5, 'Q', 100, '0.5000', NULL, '2022-10-13', 0x6D93A100393211EBA0B954E1AD7439C7, 0xc59ece8817b64d18b7316bf768325ff9, 0),
+(0x605ecb0f6a8e49f79c197ddcd8da3324, 'Q', 200, '0.5000', NULL, '2022-12-01', 0x6D93A100393211EBA0B954E1AD7439C7, 0x7e68a63fcdd84230ab4a4087bb2bc41e, 0),
+(0xa8f8d186889f42cfa9279a7c4d52d8d2, 'Q', 100, '0.5000', NULL, '2022-10-13', 0x6D93A100393211EBA0B954E1AD7439C7, 0xf5212fa19e2b48f2afd15c1d131b919d, 0);
 
 --
 -- Déchargement des données de la table `stock_movement`

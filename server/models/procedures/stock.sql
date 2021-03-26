@@ -286,8 +286,8 @@ BEGIN
 
       /* create the lot */
       SET lotUuid = HUID(UUID());
-      INSERT INTO lot (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`)
-      VALUES (lotUuid, stockLotLabel, stockLotQuantity, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, integrationUuid);
+      INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`)
+      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, integrationUuid);
 
     END IF;
 

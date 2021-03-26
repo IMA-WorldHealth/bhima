@@ -1,4 +1,5 @@
-/** @module stock
+/**
+ * @module stock
  *
  *
  * @description
@@ -98,13 +99,11 @@ async function createStock(req, res, next) {
         const createLotObject = {
           uuid : db.bid(lotUuid),
           label : lot.label,
-          initial_quantity : lot.quantity,
           quantity : lot.quantity,
           unit_cost : lot.unit_cost,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
           origin_uuid : db.bid(lot.origin_uuid),
-          delay : 0,
         };
 
         // adding a lot insertion query into the transaction
@@ -209,13 +208,11 @@ async function insertNewStock(session, params) {
       transaction.addQuery(`INSERT INTO lot SET ?`, {
         uuid : db.bid(lotUuid),
         label : lot.label,
-        initial_quantity : lot.quantity,
         quantity : lot.quantity,
         unit_cost : lot.unit_cost,
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
         origin_uuid : db.bid(identifier),
-        delay : 0,
       });
     }
 
@@ -444,7 +441,7 @@ async function deleteMovement(req, res, next) {
       // safely delete voucher related to record_uuid found
       const findTransactionInJournal = `
       SELECT DISTINCT record_uuid
-      FROM posting_journal 
+      FROM posting_journal
       WHERE reference_uuid = ?
       `;
       const records = await db.exec(findTransactionInJournal, [identifier]);
