@@ -169,7 +169,6 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
         return {
           uuid : lot.uuid || null,
           label : lot.lot,
-          initial_quantity : lot.quantity,
           quantity : lot.quantity,
           unit_cost : line.unit_cost,
           expiration_date : lot.expiration_date,

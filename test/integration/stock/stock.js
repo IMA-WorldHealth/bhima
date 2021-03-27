@@ -125,7 +125,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       }));
     helpers.api.listed(res, 1);
     const lotQuinine = res.body[0];
-    expect(lotQuinine.initial_quantity).to.equal(100);
+    expect(lotQuinine.unit_cost).to.equal(1.7);
   });
 
   // list exit of QUININE-A from 'Depot Principal'

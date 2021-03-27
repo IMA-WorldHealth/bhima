@@ -16,8 +16,10 @@ const FilterParser = require('../../lib/filter');
 
 const detailsQuery = `
   SELECT
-    BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
-    l.unit_cost, l.description, l.entry_date, l.expiration_date,
+    BUID(l.uuid) AS uuid, l.label, l.quantity,
+    l.unit_cost, l.description, l.expiration_date,
+    (SELECT MIN(sm.date) FROM stock_movement sm
+     WHERE sm.lot_uuid = l.uuid) AS entry_date,
     BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
     i.code as inventory_code
   FROM lot l
@@ -122,11 +124,11 @@ function getCandidates(req, res, next) {
 }
 
 /**
- * GET /lots_dupes/:label?/:inventory_uuid?/:initial_quantity?/:entry_date?/:expiration_date?
+ * GET /lots_dupes/:label?/:inventory_uuid?/:entry_date?/:expiration_date?
  *
  * @description
  * Returns all lots with the given label or matching field(s)
- * inventory_uuid, initial_quantity, entry_date, expiration_date
+ * inventory_uuid, entry_date, expiration_date
  *
  * TODO: After getting this working, purge unneeded params
  *
@@ -136,7 +138,6 @@ function getDupes(req, res, next) {
   const filters = new FilterParser(options, { tableAlias : 'l' });
   filters.fullText('label');
   filters.equals('inventory_uuid');
-  filters.equals('initial_quantity');
   filters.equals('entry_date');
   filters.equals('expiration_date');
 
@@ -147,8 +148,12 @@ function getDupes(req, res, next) {
     // For the 'find duplicate lots' search, we need a different query
     query = `
       SELECT
-        BUID(l.uuid) AS uuid, l.label, l.quantity, l.initial_quantity,
-        l.unit_cost, l.description, l.entry_date, l.expiration_date,
+        BUID(l.uuid) AS uuid, l.label,
+        l.unit_cost, l.description, l.expiration_date,
+        (SELECT SUM(sm.quantity * IF(sm.is_exit = 1, -1, 1))
+         FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS quantity,
+        (SELECT MIN(sm2.date)
+         FROM stock_movement sm2 WHERE sm2.lot_uuid = l.uuid) AS entry_date,
         BUID(i.uuid) AS inventory_uuid, i.text as inventory_text,
         i.code as inventory_code, COUNT(*) as num_duplicates
       FROM lot l

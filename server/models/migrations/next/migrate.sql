@@ -14,3 +14,13 @@ CREATE TABLE `stock_adjustment_log` (
 
 
 DROP TABLE IF EXISTS `integration`;
+
+/**
+  * @author: jmcameron
+  * @date: 2021-03-25
+  * @desc: Remove obsolete columns from the lots table
+  */
+CALL drop_column_if_exists('lots', 'delay');
+CALL drop_column_if_exists('lots', 'initial_quantity');
+CALL drop_column_if_exists('lots', 'quantity');
+CALL drop_column_if_exists('lots', 'entry_date');

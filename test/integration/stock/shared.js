@@ -24,57 +24,47 @@ const flux = {
 const lots = [
   {
     label            : 'T-QUININE-A',
-    initial_quantity : 100,
     quantity         : 100,
     unit_cost        : 1.2,
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(923, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
-    entry_date       : moment(new Date(), 'YYYY-MM-DD').subtract(1408, 'days'),
   },
 
   {
     label            : 'T-QUININE-B',
-    initial_quantity : 200,
     quantity         : 200,
     unit_cost        : 0.8,
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(923, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
-    entry_date       : moment(new Date(), 'YYYY-MM-DD').subtract(1408, 'days'),
   },
 
   {
     label            : 'T-QUININE-C',
-    initial_quantity : 50,
     quantity         : 50,
     unit_cost        : 2,
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(1288, 'days'),
     inventory_uuid   : helpers.data.QUININE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
-    entry_date       : moment(new Date(), 'YYYY-MM-DD').subtract(1408, 'days'),
   },
 
   {
     label            : 'T-VITAMINE-A',
-    initial_quantity : 100,
     quantity         : 100,
     unit_cost        : 1.2,
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(1288, 'days'),
     inventory_uuid   : helpers.data.MULTIVITAMINE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
-    entry_date       : moment(new Date(), 'YYYY-MM-DD').subtract(1408, 'days'),
   },
 
   {
     label            : 'T-VITAMINE-B',
-    initial_quantity : 20,
     quantity         : 20,
     unit_cost        : 0.5,
     expiration_date  : moment(new Date(), 'YYYY-MM-DD').subtract(192, 'days'),
     inventory_uuid   : helpers.data.MULTIVITAMINE,
     origin_uuid      : 'e07ceadc-82cf-4ae2-958a-6f6a78c87588',
-    entry_date       : moment(new Date(), 'YYYY-MM-DD').subtract(1408, 'days'),
   },
 ];
 

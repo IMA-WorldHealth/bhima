@@ -30,7 +30,6 @@
           <th translate>TABLE.COLUMNS.MERGE</th>
           <th translate>TABLE.COLUMNS.LABEL</th>
           <th translate>TABLE.COLUMNS.QUANTITY</th>
-          <th translate>STOCK.INITIAL_QUANTITY</th>
           <th translate>TABLE.COLUMNS.UNIT_PRICE</th>
           <th translate>STOCK.ENTRY_DATE</th>
           <th translate>STOCK.EXPIRATION_DATE</th>
@@ -54,7 +53,6 @@
             </td>
             <td>{{lot.label}}</td>
             <td class="text-right">{{lot.quantity}}</td>
-            <td class="text-right">{{lot.initial_quantity}}</td>
             <td class="text-right">{{lot.unit_cost | currency:$ctrl.enterprise.currency_id}}</td>
             <td class="text-right">{{lot.entry_date | date}}</td>
             <td class="text-right">{{lot.expiration_date | date}}</td>

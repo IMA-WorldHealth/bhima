@@ -470,7 +470,6 @@ function StockEntryController(
     StockModal.openDefineLots({
       stockLine,
       entry_type : vm.movement.entry_type,
-      entry_date : vm.movement.date,
     })
       .then((res) => {
         if (!res) { return; }
