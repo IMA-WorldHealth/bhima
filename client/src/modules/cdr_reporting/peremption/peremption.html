@@ -21,7 +21,7 @@
         <div class="toolbar-item">
           <div class="checkbox">
             <label>
-              <input type="checkbox" name="recompute" ng-true-value="1" ng-false-value="0"
+              <input type="checkbox" name="recompute" ng-change="CdrPeremptionRateCtrl.recomputeInContext()" ng-true-value="1" ng-false-value="0"
                 ng-model="CdrPeremptionRateCtrl.recompute">
               <span translate>CDR_REPORTING.RECOMPUTE</span>
             </label>

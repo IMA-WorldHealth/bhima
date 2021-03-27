@@ -12,6 +12,7 @@ function CDRReportingPeremptionRateController(
 
   vm.loadReport = loadReport;
   vm.download = download;
+  vm.recomputeInContext = recomputeInContext;
 
   Depots.getAvailableYears()
     .then(years => {
@@ -34,5 +35,11 @@ function CDRReportingPeremptionRateController(
 
   function download(year) {
     return Depots.downloadReport(year);
+  }
+
+  function recomputeInContext() {
+    if (vm.recompute) {
+      loadReport();
+    }
   }
 }
