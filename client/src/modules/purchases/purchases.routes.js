@@ -12,6 +12,6 @@ angular.module('bhima.routes')
       .state('purchasesList', {
         url         : '/purchases',
         controller  : 'PurchaseListController as PurchaseListCtrl',
-        templateUrl : 'modules/purchases/list/list.html',
+        templateUrl : 'modules/purchases/registry/registry.html',
       });
   }]);
