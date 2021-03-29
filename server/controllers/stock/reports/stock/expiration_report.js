@@ -50,7 +50,7 @@ async function stockExpirationReport(req, res, next) {
     const risky = lots.filter(lot => (lot.near_expiration && lot.lifetime > 0));
 
     // get expired lots
-    const expired = lots.filter(lot => lot.flags.expired);
+    const expired = lots.filter(lot => lot.expired);
 
     // merge risky and expired
     const riskyAndExpiredLots = risky.concat(expired);
