@@ -211,9 +211,6 @@ function StockInventoryAdjustmentController(
     Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo })
       .then(lots => {
         vm.currentInventories = lots.filter(item => item.quantity > 0);
-
-        // Here we check directly if a Depot has inventories in stock available in current date
-        vm.emptyCurrentStock = !vm.currentInventories.length;
       })
       .catch(Notify.handleError)
       .finally(() => {
