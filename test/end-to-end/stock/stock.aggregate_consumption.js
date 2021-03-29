@@ -287,6 +287,34 @@ function StockAggregateConsumptionTests() {
     await page.setLots4Detailed(lots);
   });
 
+  it(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
+    await page.changeDepot(DEPOT_TERTIAIRE);
+  });
+
+  it(`Prevent negative stock quantities when Aggregate Consumption greater than the 
+      quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(90, 'days');
+    const getMovementMonth = moment(getMovementDate).month();
+    const getMovementYear = moment(getMovementDate).year();
+
+    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+
+    await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
+    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+
+    await page.setHeaderValue(0, 7, 0);
+    await page.setQuantityConsumed(1, 5, 300);
+    await page.setQuantityLost(1, 6, 200);
+
+    await page.setQuantityConsumed(2, 5, 100);
+    await page.setQuantityLost(2, 6, 200);
+
+    await page.setHeaderValue(3, 7, 20);
+    await page.setQuantityConsumed(4, 5, 400);
+    await page.setQuantityLost(4, 6, 300);
+
+    await page.submitErrorQuantity();
+  });
 }
 
 module.exports = StockAggregateConsumptionTests;

@@ -1,6 +1,7 @@
 /* global */
 
 // const EC = require('protractor').ExpectedConditions;
+const moment = require('moment');
 const helpers = require('../shared/helpers');
 const ExitPage = require('./stock.exit.page');
 
@@ -80,6 +81,25 @@ function StockExiTests() {
 
     // submit
     await page.submit();
+  });
+
+  it(`Should Prevent negative stock quantities when distribute the stock to the patient ${PATIENT} `, async () => {
+    const movementDate = moment(new Date(), 'YYYY-MM-DD').subtract(1, 'days');
+
+    // select the patient
+    await page.setPatient(PATIENT);
+    await page.setDate(new Date(movementDate));
+    await page.setDescription(DESCRIPTION.concat(' - Patient'));
+    await page.addRows(2);
+
+    // first item
+    await page.setItem(0, 'Quinine', 'QUININE-C', 40);
+
+    // second item
+    await page.setItem(1, 'Vitamines', 'VITAMINE-A', 10);
+
+    // submit
+    await page.submitError();
   });
 
   it(`should distribute the stock to the service ${SERVICE} `, async () => {
