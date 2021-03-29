@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents text-right" ng-class="{'text-danger': row.entity.S_RISK > 0}">
-  <span ng-if="row.entity.hasExpirationDate && !row.entity.flags.expired && row.entity.avg_consumption > 0">
+  <span ng-if="row.entity.hasExpirationDate && !row.entity.expired && row.entity.avg_consumption > 0">
     {{ row.entity.S_RISK }} <span translate>FORM.LABELS.DAYS</span>
   </span>
 </div>
