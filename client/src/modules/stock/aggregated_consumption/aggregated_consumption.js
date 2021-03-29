@@ -29,6 +29,9 @@ function StockAggregatedConsumptionController(
   vm.setConsumptionByLots = setConsumptionByLots;
   vm.checkValidation = checkValidation;
 
+  vm.currentInventories = [];
+  vm.overconsumption = [];
+
   vm.onSelectFiscalYear = (fiscalYear) => {
     setupStock();
     vm.movement.fiscal_id = fiscalYear.id;
@@ -48,11 +51,13 @@ function StockAggregatedConsumptionController(
 
     vm.movement.period_id = period.id;
     loadInventories(vm.depot);
+    loadCurrentInventories(vm.depot);
   };
 
   vm.onChangeDepot = depot => {
     vm.depot = depot;
     loadInventories(vm.depot);
+    loadCurrentInventories(vm.depot);
   };
 
   /**
@@ -228,6 +233,18 @@ function StockAggregatedConsumptionController(
       });
   }
 
+  function loadCurrentInventories(depot, dateTo = new Date()) {
+    vm.loading = true;
+    Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo })
+      .then(lots => {
+        vm.currentInventories = lots.filter(item => item.quantity > 0);
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
   function checkValidation(consumptionData) {
     let valid = true;
 
@@ -248,6 +265,37 @@ function StockAggregatedConsumptionController(
       period : vm.movement.hrLabel,
       user : Session.user.display_name,
     };
+
+    const checkOverconsumption = vm.Stock.store.data;
+
+    checkOverconsumption.forEach(stock => {
+      stock.quantityAvailable = 0;
+
+      vm.currentInventories.forEach(lot => {
+        if (lot.uuid === stock.uuid) {
+          stock.quantityAvailable = lot.quantity;
+        }
+      });
+    });
+
+    vm.overconsumption = checkOverconsumption.filter(
+      c => (c.quantity_consumed + c.quantity_lost) > c.quantityAvailable,
+    );
+
+    if (vm.overconsumption.length) {
+      vm.overconsumption.forEach(item => {
+        item.textI18n = {
+          text : item.text,
+          label : item.label,
+          quantityAvailable : item.quantityAvailable,
+          quantity : (item.quantity_consumed + item.quantity_lost),
+        };
+      });
+
+      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK');
+      vm.$loading = false;
+      return 0;
+    }
 
     const formatedDescription = $translate.instant('STOCK.EXIT_AGGREGATE_CONSUMPTION', i18nKeys);
 

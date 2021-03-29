@@ -29,8 +29,10 @@ function StockExitController(
   vm.gridApi = {};
   vm.selectedLots = [];
   vm.selectableInventories = [];
+  vm.currentInventories = [];
   vm.reset = reset;
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
+  vm.overconsumption = [];
 
   vm.onDateChange = date => {
     vm.movement.date = date;
@@ -38,12 +40,18 @@ function StockExitController(
       vm.dateMessageWarning = true;
     }
     loadInventories(vm.depot, date);
+    loadCurrentInventories(vm.depot);
+
+    vm.overconsumption = [];
     checkValidity();
   };
 
   vm.onChangeDepot = depot => {
     vm.depot = depot;
     loadInventories(vm.depot);
+    loadCurrentInventories(vm.depot);
+
+    vm.overconsumption = [];
   };
 
   // bind methods
@@ -206,6 +214,8 @@ function StockExitController(
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
+
+    vm.overconsumption = [];
   }
 
   function setupStock() {
@@ -277,6 +287,18 @@ function StockExitController(
         // map of inventories by inventory uuid
         vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
         checkValidity();
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
+  function loadCurrentInventories(depot, dateTo = new Date()) {
+    vm.loading = true;
+    Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo })
+      .then(lots => {
+        vm.currentInventories = lots.filter(item => item.quantity > 0);
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -399,12 +421,14 @@ function StockExitController(
   }
 
   function setSelectedEntity(entity) {
-    const uniformEntity = Stock.uniformSelectedEntity(entity);
-    vm.reference = uniformEntity.reference;
-    vm.displayName = uniformEntity.displayName;
-    vm.selectedEntityUuid = uniformEntity.uuid;
-    vm.requisition = (entity && entity.requisition) || {};
-    loadRequisitions(entity);
+    if (entity) {
+      const uniformEntity = Stock.uniformSelectedEntity(entity);
+      vm.reference = uniformEntity.reference;
+      vm.displayName = uniformEntity.displayName;
+      vm.selectedEntityUuid = uniformEntity.uuid;
+      vm.requisition = (entity && entity.requisition) || {};
+      loadRequisitions(entity);
+    }
   }
 
   function loadRequisitions(entity) {
@@ -450,6 +474,36 @@ function StockExitController(
   function submit(form) {
     if (form.$invalid) { return null; }
 
+    const checkOverconsumption = vm.stockForm.store.data;
+
+    checkOverconsumption.forEach(stock => {
+      stock.quantityAvailable = 0;
+
+      vm.currentInventories.forEach(lot => {
+        if (lot.uuid === stock.lot.uuid) {
+          stock.quantityAvailable = lot.quantity;
+        }
+      });
+    });
+
+    vm.overconsumption = checkOverconsumption.filter(c => c.quantity > c.quantityAvailable);
+
+    if (vm.overconsumption.length) {
+      vm.overconsumption.forEach(item => {
+        item.textI18n = {
+          text : item.inventory.text,
+          label : item.lot.label,
+          quantityAvailable : item.quantityAvailable,
+          quantity : item.quantity,
+          unit_type : item.inventory.unit_type,
+        };
+      });
+
+      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK');
+      vm.$loading = false;
+      return 0;
+    }
+
     if (vm.movement.exit_type !== 'loss' && expiredLots()) {
       // NOTE: This check may not be necessary, since the user cannot select
       //       expired lots/batches directly.  But lots can also come in via
@@ -477,8 +531,12 @@ function StockExitController(
     // Load inventories
     loadInventories(vm.depot);
 
+    // Load current inventories for antedate cases
+    loadCurrentInventories(vm.depot);
+
     vm.reset(form);
     vm.selectedLots = [];
+    vm.overconsumption = [];
     resetSelectedEntity();
   }
 
@@ -676,8 +734,11 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
-        reinit(form);
+
+        if (document.uuid) {
+          ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
+          reinit(form);
+        }
       })
       .catch(Notify.handleError);
   }
