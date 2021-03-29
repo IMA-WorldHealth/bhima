@@ -292,7 +292,7 @@ function StockAggregatedConsumptionController(
         };
       });
 
-      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK');
+      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_AGGREGATE_CONSUMPTION');
       vm.$loading = false;
       return 0;
     }
