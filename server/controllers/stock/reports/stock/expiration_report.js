@@ -50,7 +50,7 @@ async function stockExpirationReport(req, res, next) {
     const risky = lots.filter(lot => (lot.near_expiration && lot.lifetime > 0));
 
     // get expired lots
-    const expired = lots.filter(lot => lot.flags.expired);
+    const expired = lots.filter(lot => lot.expired);
 
     // merge risky and expired
     const riskyAndExpiredLots = risky.concat(expired);
@@ -68,6 +68,7 @@ async function stockExpirationReport(req, res, next) {
       let total = 0;
 
       rows.forEach(lot => {
+        console.log("Lot: ", lot);
         if (lot.expiration_date < today) {
           lot.value = (lot.mvt_quantity * lot.unit_cost);
           lot.statusKey = 'STOCK.EXPIRED';
