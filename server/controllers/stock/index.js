@@ -321,9 +321,8 @@ async function createInventoryAdjustment(req, res, next) {
 
     if (filteredInvalidData.length) {
       throw new BadRequest(
-        `There are stock movements,
-        which may overconsume the quantity in stock and generate negative quantity in stock`,
-        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+        `This stock adjustement will overconsume the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_ADJUSTMENT_STOCK`,
       );
     }
 
@@ -450,9 +449,8 @@ async function createMovement(req, res, next) {
   try {
     if (filteredInvalidData.length) {
       throw new BadRequest(
-        `There are stock movements,
-        which may overconsume the quantity in stock and generate negative quantity in stock`,
-        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+        `This stock exit will overconsume the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_EXIT_STOCK`,
       );
     }
 
@@ -1131,9 +1129,9 @@ async function createAggregatedConsumption(req, res, next) {
 
     if (filteredInvalidData.length) {
       throw new BadRequest(
-        `There are stock movements,
-        which may overconsume the quantity in stock and generate negative quantity in stock`,
-        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK`,
+        `This aggregate stock consumption will overconsume
+          the quantity in stock and generate negative quantity in stock`,
+        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_AGGREGATE_CONSUMPTION`,
       );
     }
 

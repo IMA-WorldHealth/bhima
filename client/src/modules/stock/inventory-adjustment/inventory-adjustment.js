@@ -264,7 +264,7 @@ function StockInventoryAdjustmentController(
         };
       });
 
-      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_STOCK');
+      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_ADJUSTMENT_STOCK');
       vm.$loading = false;
       return 0;
     }
