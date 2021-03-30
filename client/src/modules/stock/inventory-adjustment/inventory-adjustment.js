@@ -27,14 +27,23 @@ function StockInventoryAdjustmentController(
   vm.movement = {};
   vm.stockOut = {};
 
+  vm.currentInventories = [];
+  vm.overconsumption = [];
+
   vm.onDateChange = date => {
     vm.movement.date = date;
     loadInventories(vm.depot);
+    loadCurrentInventories(vm.depot);
+
+    vm.overconsumption = [];
   };
 
   vm.onChangeDepot = depot => {
     vm.depot = depot;
     loadInventories(vm.depot);
+    loadCurrentInventories(vm.depot);
+
+    vm.overconsumption = [];
   };
 
   // bind constants
@@ -197,6 +206,18 @@ function StockInventoryAdjustmentController(
       });
   }
 
+  function loadCurrentInventories(depot, dateTo = new Date()) {
+    vm.loading = true;
+    Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo })
+      .then(lots => {
+        vm.currentInventories = lots.filter(item => item.quantity > 0);
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
   // ================================= Submit ================================
   function submit(form) {
     // check stock validity
@@ -217,6 +238,36 @@ function StockInventoryAdjustmentController(
       row.oldQuantity = row.old_quantity;
       return row;
     });
+
+    const checkOverconsumption = vm.Stock.store.data;
+
+    checkOverconsumption.forEach(stock => {
+      stock.quantityAvailable = 0;
+
+      vm.currentInventories.forEach(lot => {
+        if (lot.uuid === stock.uuid) {
+          stock.quantityAvailable = lot.quantity;
+        }
+      });
+    });
+
+    vm.overconsumption = checkOverconsumption.filter(c => (c.old_quantity - c.quantity) > c.quantityAvailable);
+
+    if (vm.overconsumption.length) {
+      vm.overconsumption.forEach(item => {
+        item.textI18n = {
+          text : item.text,
+          label : item.label,
+          old_quantity : item.old_quantity,
+          quantityAvailable : item.quantityAvailable,
+          quantity : item.quantity,
+        };
+      });
+
+      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_ADJUSTMENT_STOCK');
+      vm.$loading = false;
+      return 0;
+    }
 
     movement.lots = lots.filter(lot => {
       return lot.quantity !== lot.oldQuantity;
