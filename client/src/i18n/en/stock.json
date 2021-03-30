@@ -73,7 +73,7 @@
       "OVERCONSUMED_INVENTORIES_DESCRIPTION": "<strong>{{ text }}</strong> with batch number <strong>{{ label }}</strong>, actually only has <strong>{{ quantityAvailable }} {{ unit_type }}</strong>, consumption of <strong>{{ quantity }} {{ unit_type }}</strong> items is unrealistic",
       "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiration date",
       "PROBLEMATIC_ADJUSTMENT": "Problematic Adjustment",
-      "PROBLEMATIC_ADJUSTMENT_DESCRIPTION": "Changing the quantity of <strong>{{ text }}</strong> in lot label <strong>{{ label }}</strong> from {{ old_quantity }} to {{ quantity }} will result in a negative inventory quantity, The quantity currently in stock is {{ quantityAvailable }}",
+      "PROBLEMATIC_ADJUSTMENT_DESCRIPTION": "Changing the quantity of <strong>{{ text }}</strong> in lot label <strong>{{ label }}</strong> from {{ old_quantity }} to {{ quantity }} will result in a negative inventory quantity, The quantity currently in stock is <strong>{{ quantityAvailable }}</strong>",
       "POORLY_FORMALIZED_DATE_RANGE": "Poorly formalized date range: one consumption period must not be contained in another",
       "QUANTITY_CONSUMED_LOWER" : "Total quantity consumed is lower than the global quantity consumed",
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "Total quantity consumed is more than the global quantity consumed",
