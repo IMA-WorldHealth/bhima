@@ -120,7 +120,7 @@
             <!-- "Add number of grid rows" input-group -->
             <div class="grid-toolbar-item">
               <bh-add-item
-                disable = "StockCtrl.movement.exit_type"
+                disable = "StockCtrl.movement.exit_type && !StockCtrl.emptyStock"
                 callback = "StockCtrl.addItems(numItem)">
               </bh-add-item>
             </div>
