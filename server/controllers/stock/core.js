@@ -297,11 +297,11 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   // after the comparison with the CMM, reason why the filtering
   // is not carried out with an SQL request
   if (parseInt(params.is_expiry_risk, 10) === 1) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.flags.near_expiration);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => lot.near_expiration);
   }
 
   if (parseInt(params.is_expiry_risk, 10) === 0) {
-    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.flags.near_expiration);
+    inventoriesWithLotsProcessed = inventoriesWithLotsProcessed.filter(lot => !lot.near_expiration);
   }
 
   return inventoriesWithLotsProcessed;
@@ -852,14 +852,6 @@ function computeLotIndicators(inventories) {
         // TODO(@jniles): does this make sense?
         lot.at_risk_of_stock_out = !lot.expired
           && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
-
-        // attach flags after computation for use on client
-        lot.flags = {
-          expired : lot.expired,
-          near_expiration : lot.near_expiration,
-          exhausted : lot.exhausted,
-          at_risk_of_stock_out : lot.at_risk_of_stock_out,
-        };
 
         flattenLots.push(lot);
       });
