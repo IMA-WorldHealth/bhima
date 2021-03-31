@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('PurchaseOrderForm', PurchaseOrderFormService);
 
 PurchaseOrderFormService.$inject = [
-  'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService',
+  'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService', '$q',
 ];
 
 /**
@@ -13,8 +13,7 @@ PurchaseOrderFormService.$inject = [
  * associated with purchase order creation.  The developer must specify a cacheKey
  * to enable the class to be instantiated correctly.
  */
-function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem) {
-
+function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem, $q) {
   /**
    * @constructor
    *
@@ -25,7 +24,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    *   order.
    */
   function PurchaseOrderForm(cacheKey) {
-
     if (!cacheKey) {
       throw new Error('PurchaseOrderForm expected a cacheKey, but it was not provided.');
     }
@@ -37,6 +35,8 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // this will be referred to as PurchaseOrderForm.inventory.available.data
     this.inventory = new Pool({ identifier : 'uuid', data : [] });
 
+    this._ready = $q.defer();
+
     // set up the inventory
     Inventory.read(null, { locked : 0, use_previous_price : 1 })
       .then((data) => {
@@ -45,6 +45,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
         // FIXME(@jniles) - this is a hack. We should actually put a list() method on the
         // PoolService to get all data out of it.
         this.inventory._data = angular.copy(data);
+      })
+      .finally(() => {
+        this._ready.resolve();
       });
 
     // setup the rows of the grid as a store
@@ -53,6 +56,56 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     this.setup();
   }
+
+  /**
+   * @function ready
+   *
+   * @description
+   * This provides a deferred promise that is only fulfilled when the
+   * data that requires loading is fulfilled.
+   */
+  PurchaseOrderForm.prototype.ready = function ready() {
+    return this._ready.promise;
+  };
+
+  /**
+   * @method setupFromPreviousPurchaseOrder
+   *
+   * @description
+   *
+   */
+  PurchaseOrderForm.prototype.setupFromPreviousPurchaseOrder = function setupFromPreviousPurchaseOrder(order) {
+    // clear previous data
+    this.setup();
+
+    this.details.date = new Date(order.date);
+    this.details.cost = order.cost;
+    this.details.note = order.note;
+    this.details.supplier_uuid = order.supplier_uuid;
+
+    // TODO(@jniles) - what do we do about user_id?  Should we
+    // modify it?  Keep a table of modifications to purchase orders?
+
+    // add the expected number of items
+    order.items.forEach((prev) => {
+      // make the item uuids match between the previous and current records
+      const current = this.addItem();
+      current.uuid = prev.uuid;
+
+      // get the inventory item to configure this row
+      const inventory = this.inventory.available.get(prev.inventory_uuid);
+      current.configure(inventory);
+
+      current.quantity = prev.quantity;
+      current.unit_price = prev.unit_price;
+    });
+
+    // update the store's uuid -> object mapping since we
+    // changed the uuid primary key in the above loop
+    this.store.recalculateIndex();
+
+    this.validate();
+  };
 
   // initial setup and clearing of the order
   PurchaseOrderForm.prototype.setup = function setup() {
@@ -63,9 +116,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
       date : new Date(),
       cost : 0,
     };
-
-    // the supplier is null
-    this.supplier = null;
 
     // this object holds the totals for the order.
     this.totals = {
@@ -109,7 +159,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     return invalidItems;
   };
 
-
   /**
    * @method setSupplier
    *
@@ -133,7 +182,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // run validation and calculation
     order.digest();
-
   };
 
   /**
@@ -182,6 +230,17 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   /*
    * PurchaseOrderForm Item Methods
    */
+
+  /**
+   * @method addItems
+   *
+   * @description
+   * Adds new purchase order items for each integer passed in.
+   */
+  PurchaseOrderForm.prototype.addItems = function addItems(n) {
+    let i = n;
+    while (i--) { this.addItem(); }
+  };
 
   /**
    * @method addItem
@@ -244,7 +303,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.digest();
   };
 
-
   /**
    * @method readCache
    *
@@ -287,7 +345,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    */
   PurchaseOrderForm.prototype.writeCache = function writeCache() {
     this.cache.details = this.details;
-    this.cache.supplier = this.supplier;
     this.cache.items = angular.copy(this.store.data);
   };
 
@@ -299,7 +356,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    */
   PurchaseOrderForm.prototype.clearCache = function clearCache() {
     delete this.cache.details;
-    delete this.cache.supplier;
     delete this.cache.items;
   };
 
@@ -311,6 +367,16 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    */
   PurchaseOrderForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
+  };
+
+  /**
+   * @method hasSupplier
+   *
+   * @description
+   * Just checks to see if the supplier is available.
+   */
+  PurchaseOrderForm.prototype.hasSupplier = function hasSupplier() {
+    return angular.isDefined(this.details.supplier_uuid);
   };
 
   /**
@@ -330,7 +396,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     inventories.forEach(inventory => {
       const row = new PurchaseOrderItem(inventory);
       row.quantity = 0;
-      // row.unit_price = null;
       row._invalid = true;
       row._valid = false;
 

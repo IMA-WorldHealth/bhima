@@ -4,29 +4,32 @@ angular.module('bhima.controllers')
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
+  '$state', '$q',
 ];
 
-
+/**
+ * @function PurchaseOrderController
+ *
+ * @description
+ * The controller binds the functionality of the PurchaseOrderForm to the purchase
+ * order create/update modules.
+ */
 function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
-  Session, util, Receipts, bhConstants, Stock) {
+  Session, util, Receipts, bhConstants, Stock, $state, $q) {
   const vm = this;
 
   // create a new purchase order form
   vm.order = new PurchaseOrder('PurchaseOrder');
   vm.bhConstants = bhConstants;
 
+  const isUpdateState = ($state.params.uuid && $state.params.uuid.length > 0);
+
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
   vm.loadingState = false;
-  vm.setSupplier = setSupplier;
   vm.optimalPurchase = optimalPurchase;
   vm.optimalPO = false;
-
-  function setSupplier(supplier) {
-    vm.supplier = supplier;
-    vm.order.setSupplier(supplier);
-  }
 
   const cols = [{
     field : 'status',
@@ -72,7 +75,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html',
   }];
 
-
   // grid options for the purchase order grid
   const gridOptions = {
     appScopeProvider : vm,
@@ -86,12 +88,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   // this function will be called whenever items change in the grid.
   function handleUIGridChange() {
     vm.order.digest();
-  }
-
-  // adds n items to the purchase order grid
-  function addItems(n) {
-    let i = n;
-    while (i--) { vm.order.addItem(); }
   }
 
   // expose the API so that scrolling methods can be used
@@ -123,22 +119,32 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
       return 0;
     }
 
-    // Set Waiting confirmation like default Purchase Order Status
+    // Set Waiting confirmation as default Purchase Order Status
     vm.order.details.status_id = 1;
 
     // copy the purchase order object into something that can be sent to the server
     const order = angular.copy(vm.order.details);
-    order.items = angular.copy(vm.order.store.data);
+    order.items = Purchases.preprocessItemsForSubmission(angular.copy(vm.order.store.data));
 
     vm.loadingState = true;
 
-    return Purchases.create(order)
-      .then((res) => {
-        // open the receipt modal
-        Receipts.purchase(res.uuid, true);
+    const submitFn = isUpdateState
+      ? Purchases.update($state.params.uuid, order)
+      : Purchases.create(order);
 
-        // reset the module
-        clear(form);
+    return submitFn
+      .then((res) => {
+
+        if (!isUpdateState) {
+          // reset the module
+          clear(form);
+        }
+
+        // open the receipt modal
+        return Receipts.purchase(res.uuid, true);
+      })
+      .then(() => {
+        if (isUpdateState) { $state.go('purchasesCreate'); }
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -148,10 +154,8 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
 
   // clears the module, resetting it
   function clear(form) {
-    // remove the data
-    delete vm.supplier;
-    delete vm.order.details.supplier_uuid;
 
+    // remove the data
     vm.order.setup();
 
     // if the form was passed in, reset the validation
@@ -185,7 +189,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
           vm.order.store.post(item);
         });
 
-
         vm.order.digest();
 
         return 0;
@@ -196,13 +199,43 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
       });
   }
 
+  function startup() {
+    clear();
+
+    // read the previous purchase order from the database for modification
+    if (isUpdateState) {
+
+      // we are using this $q.all() construction to deal with the
+      // race condition of not having loaded inventory before
+      // trying to set up the purchase form.
+      $q.all([
+        Purchases.read($state.params.uuid),
+        vm.order.ready(),
+      ])
+        .then(([data]) => {
+          vm.order.setupFromPreviousPurchaseOrder(data);
+        })
+        .catch(err => {
+          // if we can't find this uuid, reroute to the create state
+          Notify.handleError(err);
+          $state.go('purchasesCreate');
+        });
+    }
+  }
+
   // bind methods
   vm.gridOptions = gridOptions;
-  vm.addItems = addItems;
   vm.submit = submit;
-  vm.clear = clear;
+  vm.clear = () => {
+
+    // NOTE(@jniles): this is somewhat a hack.  You shouldn't do
+    // a complete replacement of the form during an update, so if
+    // you clear the form, we just send you to the creation state.
+    if (isUpdateState) { $state.go('purchasesCreate'); }
+    clear();
+  };
+
   vm.handleChange = handleUIGridChange;
 
-  // trigger the module start
-  clear();
+  startup();
 }
