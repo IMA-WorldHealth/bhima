@@ -11,10 +11,8 @@ angular.module('bhima.services')
 function StoreService() {
 
   /** @constructor */
-  function Store(options) {
-
+  function Store(options = {}) {
     // default to empty options
-    options = options || {};
 
     // default index and data
     this.index = {};
@@ -53,18 +51,18 @@ function StoreService() {
    * matches.  Otherwise, it returns undefined.
    */
   Store.prototype.get = function get(id) {
-    var key = this.index[id];
-    if (angular.isUndefined(key)) { return; }
+    const key = this.index[id];
+    if (angular.isUndefined(key)) { return undefined; }
     return this.data[key];
   };
 
   // return only the latest (indexed) copy of each data element
   Store.prototype.getAll = function getAll() {
-    var keys = Object.keys(this.index);
-    return keys.map(function (key) {
+    const keys = Object.keys(this.index);
+    return keys.map((key) => {
       return this.data[this.index[key]];
-    }.bind(this));
-  }
+    });
+  };
 
   /**
    * @method post
@@ -76,19 +74,17 @@ function StoreService() {
    * @param {Object} object - an object to be inserted into the store.
    */
   Store.prototype.post = function post(object) {
-    var data = this.data;
-    var index = this.index;
-    var identifier = this.identifier;
+    const { data, index, identifier } = this;
 
     // default to an empty array if data not provided
     if (!data) { this.data = []; }
 
-    var id = object[identifier];
+    const id = object[identifier];
 
     if (angular.isUndefined(id)) {
       throw new Error(
-        'Trying to insert an object without the identity property "' + identifier + '".\n' +
-        'Failing object: ' + JSON.stringify(object)
+        `Trying to insert an object without the identity property "${identifier}".\n`
+        + `Failing object: ${JSON.stringify(object)}`,
       );
     }
 
@@ -103,9 +99,8 @@ function StoreService() {
    *
    * @param {Object} object - an object to be inserted into the store
    */
-   Store.prototype.remove = function remove(id) {
-    var data = this.data;
-    var index = this.index;
+  Store.prototype.remove = function remove(id) {
+    const { data, index } = this;
 
     if (id in index) {
       data.splice(index[id], 1);
@@ -146,11 +141,11 @@ function StoreService() {
    * Recalculates the stores index when data is added/removed via other methods.
    */
   Store.prototype.recalculateIndex = function recalculateIndex() {
-    var data = this.data;
-    var index = this.index = {};
-    var identifier = this.identifier;
+    const { data } = this;
+    this.index = {};
+    const { index, identifier } = this;
 
-    for (var i = 0, l = data.length; i < l; i += 1) {
+    for (let i = 0, l = data.length; i < l; i += 1) {
       index[data[i][identifier]] = i;
     }
   };

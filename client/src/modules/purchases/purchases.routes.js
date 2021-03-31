@@ -8,6 +8,14 @@ angular.module('bhima.routes')
         templateUrl : 'modules/purchases/create/createUpdate.html',
       })
 
+    // purchases/:uuid/update
+      .state('purchasesUpdate', {
+        url         : '/purchases/:uuid/update',
+        params  : { uuid : { squash : true, value : null } },
+        controller  : 'PurchaseOrderController as PurchaseCtrl',
+        templateUrl : 'modules/purchases/create/createUpdate.html',
+      })
+
     // purchases/list
       .state('purchasesList', {
         url         : '/purchases',

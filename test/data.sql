@@ -590,8 +590,9 @@ INSERT INTO `price_list_item` VALUES
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
 
 SET @purchase_order = HUID('e07ceadc-82cf-4ae2-958a-6f6a78c87588');
-INSERT INTO `purchase` VALUES
-  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1725 DAY), CURRENT_TIMESTAMP, 1, NULL, NULL, 1);
+INSERT INTO `purchase`
+  (uuid, project_id, reference, cost, currency_id, supplier_uuid, date, user_id, payment_method, status_id) VALUES
+  (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1725 DAY), 1, NULL, 1);
 
 INSERT INTO `purchase_item` VALUES
   (HUID('fca58822-b1b2-11e8-9103-7782f63484ff'), @purchase_order, @quinine, 1, 200, 200),
@@ -599,8 +600,8 @@ INSERT INTO `purchase_item` VALUES
 
 -- confirmed purchase order
 SET @purchase = HUID('8027d1c8-dd68-4686-9f4c-8860f856f8ba');
-INSERT INTO `purchase` VALUES
-  (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1321 DAY), CURRENT_TIMESTAMP, 1, NULL, 'Purchase Order Confirmed', 2);
+INSERT INTO `purchase` (uuid, project_id, reference, cost, currency_id, supplier_uuid, date, user_id, payment_method, note, status_id) VALUES
+  (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE_ADD(CURRENT_DATE, INTERVAL -1321 DAY), 1, NULL, 'Purchase Order Confirmed', 2);
 
 INSERT INTO `purchase_item` VALUES
   (HUID('1fcc1316-b1b3-11e8-b276-bfdbdae020fb'), @purchase, @prednisone, 1000, 0.05, (1000 * 0.05));
