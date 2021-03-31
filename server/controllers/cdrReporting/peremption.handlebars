@@ -1,4 +1,8 @@
 <style>
+
+  body {
+    font-family: sans-serif;
+  }
   table.report-table {
     font-size: 10pt;
     margin: auto;
@@ -13,6 +17,7 @@
     font-size: large;
     font-weight: bold;
     letter-spacing: .3em;
+    text-transform: uppercase;
   }
 
   table.report-table thead th {
@@ -114,5 +119,94 @@
       {{/each}}
     </tbody>
   </table>
+
+  <br><br>
+  
+  <table class="report-table">
+    <caption style="background-color: #d9e1f2; border-bottom: 1px solid #333">
+      <span>{{translate 'CDR_REPORTING.TRIMONTHLY_PEREMPTION_RATE'}}</span>
+    </caption>
+    <thead>
+      <tr>
+        <th class="first">Date</th>
+        <th>Volet</th>
+        <th>Totals</th>
+        {{#each depots as |d|}}
+        <th>{{ d.text }}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each quarterPeriods as |periodKey|}}
+        <tr>
+          <td rowspan="3" class="first">{{look ../quarterLabels periodKey}}</td>
+          <td class="first">Périmés sortis</td>
+          <td>{{currency (look ../quarterVars.totalExpiredDistributed periodKey)}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{currency (look ../../quarterVars.expiredDistributed periodKey depot.text)}}</td>
+          {{/each}}
+        </tr>
+        <tr>
+          <td class="first">Stocks</td>
+          <td>{{currency (look ../quarterVars.rangeTotalStockAtPeriod periodKey)}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{currency (look ../../quarterVars.rangeStockAtPeriod periodKey depot.text)}}</td>
+          {{/each}}
+        </tr>
+        <tr class="highlighted delimitter">
+          <td class="first">Tx de péremption</td>
+          <td>{{percentage (look ../quarterVars.rangeTotalPeremptionRate periodKey) 4}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{percentage (look ../../quarterVars.rangePeremptionRate periodKey depot.text) 4}}</td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  <br><br>
+  
+  <table class="report-table">
+    <caption style="background-color: #d9e1f2; border-bottom: 1px solid #333">
+      <span>{{translate 'CDR_REPORTING.SIXMONTHLY_PEREMPTION_RATE'}}</span>
+    </caption>
+    <thead>
+      <tr>
+        <th class="first">Date</th>
+        <th>Volet</th>
+        <th>Totals</th>
+        {{#each depots as |d|}}
+        <th>{{ d.text }}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each semestrePeriods as |periodKey|}}
+        <tr>
+          <td rowspan="3" class="first">{{look ../semestreLabels periodKey}}</td>
+          <td class="first">Périmés sortis</td>
+          <td>{{currency (look ../semestreVars.totalExpiredDistributed periodKey)}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{currency (look ../../semestreVars.expiredDistributed periodKey depot.text)}}</td>
+          {{/each}}
+        </tr>
+        <tr>
+          <td class="first">Stocks</td>
+          <td>{{currency (look ../semestreVars.rangeTotalStockAtPeriod periodKey)}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{currency (look ../../semestreVars.rangeStockAtPeriod periodKey depot.text)}}</td>
+          {{/each}}
+        </tr>
+        <tr class="highlighted delimitter">
+          <td class="first">Tx de péremption</td>
+          <td>{{percentage (look ../semestreVars.rangeTotalPeremptionRate periodKey) 4}}</td>
+          {{#each ../depots as |depot|}}
+            <td>{{percentage (look ../../semestreVars.rangePeremptionRate periodKey depot.text) 4}}</td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
 
 </div>

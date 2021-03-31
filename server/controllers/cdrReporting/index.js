@@ -269,13 +269,35 @@ async function getPeremptionReport(req, res, next) {
 
     const rows = await loadAggregatedValues(options.year);
 
+    // const quarters = rows.filter(item => {
+    //   const quarterList = [3, 6, 9, 12];
+    //   const month = item.periode.getMonth() + 1;
+    //   return quarterList.includes(month);
+    // });
+
+    // const semestres = rows.filter(item => {
+    //   const semestreList = [6, 12];
+    //   const month = item.periode.getMonth() + 1;
+    //   return semestreList.includes(month);
+    // });
+
     const vars = getVariables(rows);
+
+    const quarterVars = getVariables(rows, 'quarter');
+
+    const semestreVars = getVariables(rows, 'semestre');
 
     const data = {
       year : options.year,
       rows,
       depots,
       vars,
+      quarterVars,
+      semestreVars,
+      quarterPeriods : [1, 2, 3, 4],
+      quarterLabels : getQuarterPeriods(),
+      semestrePeriods : [1, 2],
+      semestreLabels : getSemestrePeriods(),
     };
 
     const result = await report.render(data);
@@ -315,7 +337,9 @@ async function loadAggregatedValues(year) {
   const query = `
     SELECT 
       d.text, agg.periode, agg.expired_distributed, agg.stock_at_period,
-      agg.peremption_rate, agg.quarter, agg.semestre
+      agg.peremption_rate, agg.quarter, agg.semestre,
+      agg.expired_distributed_quarter, agg.expired_distributed_semestre,
+      agg.peremption_rate_quarter, agg.peremption_rate_semestre
     FROM cdr_reporting_aggregated_stock agg
     JOIN cdr_reporting_depot d ON d.uuid = agg.depot_uuid
     WHERE YEAR(agg.periode) = ?
@@ -329,6 +353,12 @@ async function processAggregatedValues(year) {
   const periods = getPeriods(year);
   const depots = await getDepots();
   const dbPromise = [];
+  const quarterMonths = [3, 6, 9, 12];
+  const semestreMonths = [6, 12];
+  let quarterExpiredDistributed = { stock : 0 };
+  let semestreExpiredDistributed = { stock : 0 };
+  let quarterPeremptionRate = 0;
+  let semestrePeremptionRate = 0;
 
   const queryCleanAggregatedStock = `
     DELETE FROM cdr_reporting_aggregated_stock WHERE YEAR(periode) = ?;
@@ -384,12 +414,66 @@ async function processAggregatedValues(year) {
 
       const semestre = Math.ceil(month / 6);
 
+      if (quarterMonths.includes(month)) {
+        const quarterLimit = getDatesFromQuarter(year, month);
+        // compute quarter values
+        const queryQuarterExpiredDistributed = `
+        SELECT 
+          IFNULL(SUM(ll.valorisation), 0) stock 
+        FROM cdr_reporting_mouvement_stock ms
+        JOIN cdr_reporting_lot_document ll ON ll.code_document = ms.code_document 
+        JOIN cdr_reporting_article_lot al
+          ON al.code_article = ll.code_article AND al.numero_lot = ll.numero_lot
+        JOIN cdr_reporting_depot crd ON crd.uuid = ms.depot_uuid 
+        WHERE ms.depot_uuid = ? AND al.date_peremption < DATE(?)
+          AND ms.date >= DATE(?)
+            AND ms.date <= DATE(?) and type = "S"
+        `;
+        // eslint-disable-next-line no-await-in-loop
+        [quarterExpiredDistributed] = await db.exec(
+          queryQuarterExpiredDistributed, [
+            db.bid(d.uuid), quarterLimit.dateFrom, quarterLimit.dateFrom, quarterLimit.dateTo,
+          ],
+        );
+
+        quarterPeremptionRate = stockAtPeriod.stock ? quarterExpiredDistributed.stock / stockAtPeriod.stock : 0;
+      }
+
+      if (semestreMonths.includes(month)) {
+        const semestreLimit = getDatesFromSemestre(year, month);
+        // compute quarter values
+        const querySemestreExpiredDistributed = `
+        SELECT 
+          IFNULL(SUM(ll.valorisation), 0) stock 
+        FROM cdr_reporting_mouvement_stock ms
+        JOIN cdr_reporting_lot_document ll ON ll.code_document = ms.code_document 
+        JOIN cdr_reporting_article_lot al
+          ON al.code_article = ll.code_article AND al.numero_lot = ll.numero_lot
+        JOIN cdr_reporting_depot crd ON crd.uuid = ms.depot_uuid 
+        WHERE ms.depot_uuid = ? AND al.date_peremption < DATE(?)
+          AND ms.date >= DATE(?)
+            AND ms.date <= DATE(?) and type = "S"
+        `;
+        // eslint-disable-next-line no-await-in-loop
+        [semestreExpiredDistributed] = await db.exec(
+          querySemestreExpiredDistributed, [
+            db.bid(d.uuid), semestreLimit.dateFrom, semestreLimit.dateFrom, semestreLimit.dateTo,
+          ],
+        );
+
+        semestrePeremptionRate = stockAtPeriod.stock ? semestreExpiredDistributed.stock / stockAtPeriod.stock : 0;
+      }
+
       const write = {
         depot_uuid : db.bid(d.uuid),
         expired_distributed : expiredDistributed.stock,
         stock_at_period : stockAtPeriod.stock,
         peremption_rate : peremptionRate,
         periode : new Date(p),
+        expired_distributed_quarter : quarterExpiredDistributed.stock,
+        peremption_rate_quarter : quarterPeremptionRate,
+        expired_distributed_semestre : semestreExpiredDistributed.stock,
+        peremption_rate_semestre : semestrePeremptionRate,
         quarter,
         semestre,
       };
@@ -416,22 +500,63 @@ function getVariables(rows, groupingKey = 'periodeKey') {
   const totalExpiredDistributed = {};
   const totalStockAtPeriod = {};
   const totalRate = {};
-  Object.keys(periods).forEach(periodKey => {
+
+  const rangeStockAtPeriod = {};
+  const rangePeremptionRate = {};
+  const rangeTotalExpiredDistributed = {};
+  const rangeTotalStockAtPeriod = {};
+  const rangeTotalPeremptionRate = {};
+
+  const periodForQuarter = {
+    1 : 3, 2 : 6, 3 : 9, 4 : 12,
+  };
+
+  const periodForSemestre = {
+    1 : 6, 2 : 12,
+  };
+
+  Object.keys(periods).forEach((periodKey, index, theArray) => {
     expiredDistributed[periodKey] = {};
     stockAtPeriod[periodKey] = {};
     peremptionRate[periodKey] = {};
+    rangeStockAtPeriod[periodKey] = {};
+    rangePeremptionRate[periodKey] = {};
+
+    rangeTotalExpiredDistributed[periodKey] = 0;
+    rangeTotalStockAtPeriod[periodKey] = 0;
+    rangeTotalPeremptionRate[periodKey] = 0;
+
     const depotsData = _.groupBy(periods[periodKey], 'text');
 
     Object.keys(depotsData).forEach(depotKey => {
       expiredDistributed[periodKey][depotKey] = _.sumBy(depotsData[depotKey], 'expired_distributed');
       stockAtPeriod[periodKey][depotKey] = _.sumBy(depotsData[depotKey], 'stock_at_period');
       peremptionRate[periodKey][depotKey] = _.sumBy(depotsData[depotKey], 'peremption_rate');
+
+      let rangeData = 0;
+      if (theArray.length === 4) {
+        rangeData = depotsData[depotKey]
+          .filter(item => item.periode.getMonth() + 1 === periodForQuarter[periodKey]);
+      } else if (theArray.length === 2) {
+        rangeData = depotsData[depotKey]
+          .filter(item => item.periode.getMonth() + 1 === periodForSemestre[periodKey]);
+      }
+
+      rangeStockAtPeriod[periodKey][depotKey] = _.sumBy(rangeData, 'stock_at_period');
+      rangePeremptionRate[periodKey][depotKey] = rangeStockAtPeriod[periodKey][depotKey]
+        ? (expiredDistributed[periodKey][depotKey] / rangeStockAtPeriod[periodKey][depotKey]) : 0;
+
+      rangeTotalStockAtPeriod[periodKey] += rangeStockAtPeriod[periodKey][depotKey];
+      rangeTotalExpiredDistributed[periodKey] += expiredDistributed[periodKey][depotKey];
     });
 
     totalExpiredDistributed[periodKey] = _.sumBy(periods[periodKey], 'expired_distributed');
     totalStockAtPeriod[periodKey] = _.sumBy(periods[periodKey], 'stock_at_period');
     totalRate[periodKey] = totalStockAtPeriod[periodKey]
       ? totalExpiredDistributed[periodKey] / totalStockAtPeriod[periodKey] : 0;
+
+    rangeTotalPeremptionRate[periodKey] = rangeTotalStockAtPeriod[periodKey]
+      ? rangeTotalExpiredDistributed[periodKey] / rangeTotalStockAtPeriod[periodKey] : 0;
   });
 
   return {
@@ -442,12 +567,51 @@ function getVariables(rows, groupingKey = 'periodeKey') {
     expiredDistributed,
     stockAtPeriod,
     peremptionRate,
+    rangeStockAtPeriod,
+    rangePeremptionRate,
+    rangeTotalStockAtPeriod,
+    rangeTotalExpiredDistributed,
+    rangeTotalPeremptionRate,
   };
 }
 
 function getPeriods(year) {
   const periods = [...Array(12)];
   return periods.map((item, index) => new Date(`${(index + 1) < 10 ? '0'.concat(index + 1) : index + 1}-01-${year}`));
+}
+
+function getQuarterPeriods() {
+  return {
+    1 : 'Trimestre 1',
+    2 : 'Trimestre 2',
+    3 : 'Trimestre 3',
+    4 : 'Trimestre 4',
+  };
+}
+
+function getSemestrePeriods() {
+  return {
+    1 : 'Semestre 1',
+    2 : 'Semestre 2',
+  };
+}
+
+function getDatesFromQuarter(year, quarter) {
+  const map = {
+    3 : { dateFrom : new Date(`${year}-01-01`), dateTo : new Date(`${year}-03-31`) },
+    6 : { dateFrom : new Date(`${year}-04-01`), dateTo : new Date(`${year}-06-30`) },
+    9 : { dateFrom : new Date(`${year}-07-01`), dateTo : new Date(`${year}-09-30`) },
+    12 : { dateFrom : new Date(`${year}-08-01`), dateTo : new Date(`${year}-12-31`) },
+  };
+  return map[quarter];
+}
+
+function getDatesFromSemestre(year, semestre) {
+  const map = {
+    6 : { dateFrom : new Date(`${year}-01-01`), dateTo : new Date(`${year}-06-30`) },
+    12 : { dateFrom : new Date(`${year}-07-01`), dateTo : new Date(`${year}-12-31`) },
+  };
+  return map[semestre];
 }
 
 async function getDepots() {
