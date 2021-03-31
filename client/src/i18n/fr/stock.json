@@ -227,7 +227,8 @@
       "STOCK_OUT"     : "Rupture de stock",
       "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration"
     },
-  "STOCK_MOVEMENTS" : "Les Mouvements de Stock",
+    "STOCK_MOVEMENT"  : "Voir le mouvement de Stock",
+    "STOCK_MOVEMENTS" : "Les Mouvements de Stock",
     "SUCCESS"         : "Mouvement realisé avec succès",
     "SUCCESSFULLY_DELETED" : "Supprimé avec succès",
     "TO"              : "Destination",

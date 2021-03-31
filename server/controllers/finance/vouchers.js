@@ -133,12 +133,18 @@ function find(options) {
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       dm.text AS reference, v.edited, BUID(v.reference_uuid) AS reference_uuid,
-      p.name AS project_name, v.reversed
+      p.name AS project_name, v.reversed, BUID(mov.document_uuid) AS stock_mov_document
     FROM voucher v
     JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
+    LEFT JOIN (
+      SELECT DISTINCT(vi.document_uuid) AS document_uuid,  vi.voucher_uuid
+      FROM voucher_item AS vi
+      JOIN stock_movement AS sm ON sm.document_uuid = vi.document_uuid
+      WHERE vi.document_uuid IS NOT NULL
+     ) AS mov ON mov.voucher_uuid = v.uuid
   `;
 
   delete options.detailed;
