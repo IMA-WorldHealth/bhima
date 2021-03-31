@@ -39,7 +39,7 @@
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_VOUCHER</span>
       </a>
     </li>
-    <li ng-show="row.entity.stock_mov_document">
+    <li ng-show="row.entity.type_id === 12 || row.entity.type_id === 13 || row.entity.type_id === 14">
       <a data-method="view-stock-movements" ui-sref="stockMovements({ filters : [{ key : 'voucherReference', value : row.entity.reference, displayValue: row.entity.reference, cacheable:false }, { key : 'period', value : 'allTime', cacheable:false }]})" href>
         <span class="fa fa-list-alt"></span> <span translate>STOCK.STOCK_MOVEMENT</span>
       </a>
