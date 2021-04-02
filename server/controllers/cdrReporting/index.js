@@ -23,7 +23,7 @@ router.put('/depots/:uuid', upload.multipleFields('cdr_reporting', uploadFields)
 router.get('/depots', list);
 router.get('/depots/available_years', getAvailableYears);
 router.get('/depots/peremption', getPeremptionReport);
-router.get('/depots/peremption/download', downloadReport);
+router.get('/depots/peremption/download', getPeremptionReport);
 router.get('/depots/:uuid', details);
 router.delete('/depots/:uuid', remove);
 
@@ -269,18 +269,6 @@ async function getPeremptionReport(req, res, next) {
 
     const rows = await loadAggregatedValues(options.year);
 
-    // const quarters = rows.filter(item => {
-    //   const quarterList = [3, 6, 9, 12];
-    //   const month = item.periode.getMonth() + 1;
-    //   return quarterList.includes(month);
-    // });
-
-    // const semestres = rows.filter(item => {
-    //   const semestreList = [6, 12];
-    //   const month = item.periode.getMonth() + 1;
-    //   return semestreList.includes(month);
-    // });
-
     const vars = getVariables(rows);
 
     const quarterVars = getVariables(rows, 'quarter');
@@ -298,32 +286,6 @@ async function getPeremptionReport(req, res, next) {
       quarterLabels : getQuarterPeriods(),
       semestrePeriods : [1, 2],
       semestreLabels : getSemestrePeriods(),
-    };
-
-    const result = await report.render(data);
-    res.set(result.headers).send(result.report);
-  } catch (error) {
-    next(error);
-  }
-}
-
-async function downloadReport(req, res, next) {
-  const CDR_PEREMPTION_REPORT_TEMPLATE = './server/controllers/cdrReporting/peremption.handlebars';
-  try {
-    const options = { ...req.query };
-    const report = new ReportManager(CDR_PEREMPTION_REPORT_TEMPLATE, req.session, options);
-
-    const depots = await getDepots();
-
-    const rows = await loadAggregatedValues(options.year);
-
-    const vars = getVariables(rows);
-
-    const data = {
-      year : options.year,
-      rows,
-      depots,
-      vars,
     };
 
     const result = await report.render(data);
