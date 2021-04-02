@@ -86,5 +86,8 @@ if (!process.env.CI && process.env.CHROME_OPTIONS) {
   config.capabilities.chromeOptions.args.push(...opts);
 }
 
+console.log('config.capabilities.chromeOptions', config.capabilities.chromeOptions);
+
+
 // expose to the outside world
 exports.config = config;
