@@ -80,7 +80,10 @@ if (process.env.CI) {
 
 // Add custom Chrome options for local environments
 if (!process.env.CI && process.env.CHROME_OPTIONS) {
-  config.capabilities.chromeOptions.args.push(process.env.CHROME_OPTIONS);
+
+  // normalize options so that multiple options can be used.
+  const opts = process.env.CHROME_OPTIONS.split(' ');
+  config.capabilities.chromeOptions.args.push(...opts);
 }
 
 // expose to the outside world
