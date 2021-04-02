@@ -29,8 +29,8 @@ function StockLotsRegistryTests() {
   // techinically this is 23 in total, but the grid doesn't render that
   // many on small screens
   const LOT_FOR_ALLTIME = 24;
-  const LOT_FOR_TODAY = 13;
-  const LOT_FOR_LAST_YEAR = 20;
+  const LOT_FOR_TODAY = 17;
+  const LOT_FOR_LAST_YEAR = 24;
 
   const inventoryGroup = 'Injectable';
 
@@ -71,18 +71,6 @@ function StockLotsRegistryTests() {
     await modal.setLotLabel('VITAMINE-A');
     await modal.submit();
     await GU.expectRowCount(gridId, 1 + depotGroupingRow);
-  });
-
-  it('find lots by entry date', async () => {
-    const dateEntry = moment(new Date(), 'YYYY-MM-DD').subtract(1376, 'days');
-    const dateEntryFormated = moment(dateEntry).format('DD/MM/YYYY');
-
-    await modal.setdateInterval(
-      dateEntryFormated, dateEntryFormated, 'entry-date',
-    );
-
-    await modal.submit();
-    await GU.expectRowCount(gridId, 6);
   });
 
   it('find lots by expiration date', async () => {
