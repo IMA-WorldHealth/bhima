@@ -224,7 +224,6 @@ BEGIN
   DECLARE existLot TINYINT(1);
 
   DECLARE inventoryUuid BINARY(16);
-  DECLARE integrationUuid BINARY(16);
   DECLARE lotUuid BINARY(16);
   DECLARE fluxId INT(11);
 
@@ -279,15 +278,10 @@ BEGIN
 
     ELSE
 
-      /* create integration info for the lot */
-      SET integrationUuid = HUID(UUID());
-      INSERT INTO integration (`uuid`, `project_id`, `date`)
-      VALUES (integrationUuid, projectId, DATE(operationDate));
-
       /* create the lot */
       SET lotUuid = HUID(UUID());
       INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`)
-      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, integrationUuid);
+      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, NULL);
 
     END IF;
 

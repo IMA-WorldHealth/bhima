@@ -33,3 +33,10 @@ CALL drop_column_if_exists('lots', 'initial_quantity');
 CALL drop_column_if_exists('lots', 'quantity');
 CALL drop_column_if_exists('lots', 'entry_date');
 
+/**
+* @author: jniles
+* @date: 2021-04-02
+* @desc: make the origin_uuid NULL by default.
+*/
+ALTER TABLE `lot` MODIFY `origin_uuid` BINARY(16) NULL;
+
