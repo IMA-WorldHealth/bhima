@@ -5348,10 +5348,10 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.10.2:
-  version "3.10.2"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.10.2.tgz#6e58e29187cb592ef43200aa83955134dcac9ae9"
-  integrity sha512-ebRs6nAM2OcDw9g9hZ3F0DKkUTTy9DnyduF3mWLF0XEImv/Du3GGgyOWBpoqWuZjCWstQvPOKl50Ts/GhfSZOA==
+json-2-csv@^3.10.3:
+  version "3.10.3"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.10.3.tgz#343a376c0341123620de277ab60add1a0ae8c7da"
+  integrity sha512-GEvAkQ8dtvI9cD3VslY6TUtOYBzwlNF/4OzoVoiKXl+Ztd9VXL2SNQnYyXyqZCnKU3hwIfOoD9MdaWMMA2WOeg==
   dependencies:
     deeks "2.3.0"
     doc-path "2.3.0"
