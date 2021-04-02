@@ -15,6 +15,7 @@ function CDRReportingDepotController(
   vm.editDepot = editDepot;
   vm.createDepot = createDepot;
   vm.toggleFilter = toggleFilter;
+  vm.showPeremptionReport = showPeremptionReport;
 
   // global variables
   vm.gridApi = {};
@@ -78,6 +79,16 @@ function CDRReportingDepotController(
       .finally(() => {
         vm.loading = false;
       });
+  }
+
+  function showPeremptionReport(uuid) {
+    const current = new Date();
+    const params = {
+      uuid,
+      year : current.getFullYear(),
+      recompute : 1,
+    };
+    $state.go('cdrReportingPeremptionRate', params);
   }
 
   // switch to delete warning mode

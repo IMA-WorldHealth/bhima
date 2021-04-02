@@ -120,6 +120,7 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
       quantite : row.Quantite,
       valorisation : row.Valorisation,
       periode : String(moment(new Date(row.Date)).format('YYYY-MM-')).concat('01'),
+      type_identifiant : row.TypeIdentifiant,
     };
     tx.addQuery('INSERT INTO cdr_reporting_mouvement_stock SET ?', value);
   });
@@ -346,7 +347,7 @@ async function processAggregatedValues(year) {
             FROM cdr_reporting_mouvement_stock ms 
             WHERE ms.depot_uuid = ?
               AND ms.date >= DATE_SUB(?,INTERVAL DAYOFMONTH(?)-1 DAY)
-                AND ms.date <= LAST_DAY(?) and type = 'S'
+                AND ms.date <= LAST_DAY(?) AND type = 'S'
           )
         )z
       `;

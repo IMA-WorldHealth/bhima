@@ -523,6 +523,7 @@ CREATE TABLE `cdr_reporting_mouvement_stock` (
   `quantite` INTEGER(11) NOT NULL DEFAULT 0,
   `valorisation` DECIMAL(19,4) NOT NULL DEFAULT 0,
   `periode` VARCHAR(10) NOT NULL ,
+  `type_identifiant` VARCHAR(1) NOT NULL,
   KEY `depot_uuid` (`depot_uuid`),
   KEY (`compteur`),
   KEY (`code_document`),
