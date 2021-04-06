@@ -25,7 +25,17 @@ function VoucherController(
   const cacheKey = 'voucher-grid';
   const transactionTypeMap = {};
 
-  const { INCOME, EXPENSE } = bhConstants.transactionType;
+  const {
+    INCOME,
+    EXPENSE,
+    STOCK_EXIT,
+    STOCK_ENTRY,
+  } = bhConstants.transactionType;
+
+  const stockMovementTypes = [
+    STOCK_EXIT,
+    STOCK_ENTRY,
+  ];
 
   vm.gridOptions = {};
   vm.bhConstants = bhConstants;
@@ -146,6 +156,11 @@ function VoucherController(
 
     Vouchers.read(null, filters)
       .then(vouchers => {
+
+        vouchers.forEach(row => {
+          row.isStockMovement = stockMovementTypes.includes(row.type_id);
+        });
+
         vm.gridOptions.data = vouchers;
 
         // TODO(@jniles) - can we do better?

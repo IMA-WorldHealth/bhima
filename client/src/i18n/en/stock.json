@@ -226,6 +226,7 @@
       "STOCK_OUT"      : "Stock Out",
       "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
     },
+    "STOCK_MOVEMENT"  : "View Stock Movement",
     "STOCK_MOVEMENTS" : "View Stock Movements",
 	  "SUCCESS"         : "Successfully created a movement",
     "SUCCESSFULLY_DELETED" : "Successfully deleted",
