@@ -1111,11 +1111,11 @@ async function createAggregatedConsumption(req, res, next) {
       });
 
       const stockConsumptionParams = [
-        db.bid(consumptionUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+        db.bid(consumptionUuid), 1, req.session.project.id,
       ];
 
       const stockLossParams = [
-        db.bid(lossUuid), 1, req.session.project.id, req.session.enterprise.currency_id,
+        db.bid(lossUuid), 1, req.session.project.id,
       ];
 
       if (req.session.stock_settings.enable_auto_stock_accounting) {
