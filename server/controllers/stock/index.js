@@ -429,9 +429,9 @@ async function createMovement(req, res, next) {
     average_consumption_algo : params.average_consumption_algo,
   };
 
-  stockAvailable = await core.getLotsDepot(null, paramsStock);
-
   if (params.is_exit) {
+    stockAvailable = await core.getLotsDepot(null, paramsStock);
+
     params.lots.forEach(lot => {
       lot.quantityAvailable = 0;
       if (stockAvailable) {
