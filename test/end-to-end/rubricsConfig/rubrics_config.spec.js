@@ -39,7 +39,7 @@ describe('Rubrics Configuration Management', () => {
     await page.remove(updateRubricConfig.label);
   });
 
-  it('should have 1 rubric to end with', async () => {
+  it('should have 2 rubrics to end with', async () => {
     expect(await page.count()).to.equal(2);
   });
 });
