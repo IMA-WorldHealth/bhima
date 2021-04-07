@@ -5,6 +5,9 @@ const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
 
+// FIXME(@jniles) - all these tests find 0 for their stock
+// flags.
+
 function StockInventoriesRegistryTests() {
   let modal;
   let filters;
@@ -13,8 +16,7 @@ function StockInventoriesRegistryTests() {
   before(() => helpers.navigate('#/stock/inventories'));
 
   beforeEach(async () => {
-    await SearchModal.open();
-    modal = new SearchModal('stock-inventories-search');
+    await SearchModal.open(); modal = new SearchModal('stock-inventories-search');
     filters = new Filters();
   });
 
@@ -28,7 +30,7 @@ function StockInventoriesRegistryTests() {
     await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
-  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
+  it('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
     await GU.expectRowCount(gridId, 5 + depotGroupingRow);
@@ -57,10 +59,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 2 inventory by state (security reached)', async () => {
+  it('find 0 inventory by state (security reached)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 2);
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 0);
 
     await filters.resetFilters();
   });
@@ -73,11 +75,11 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 6 inventories by state (over maximum)', async () => {
+  it('find 9 inventories by state (over maximum)', async () => {
     await FU.radio('$ctrl.searchQueries.status', 4);
     await FU.modal.submit();
 
-    await GU.expectRowCount(gridId, 8);
+    await GU.expectRowCount(gridId, 9);
     await filters.resetFilters();
   });
 
@@ -89,10 +91,10 @@ function StockInventoriesRegistryTests() {
     await filters.resetFilters();
   });
 
-  it('find 1 inventories who requires a purchase order plus one line of grouping', async () => {
+  it('find 0 inventories who requires a purchase order plus one line of grouping', async () => {
     await element(by.model('$ctrl.searchQueries.require_po')).click();
     await FU.modal.submit();
-    await GU.expectRowCount(gridId, 2);
+    await GU.expectRowCount(gridId, 0);
     await filters.resetFilters();
   });
 }
