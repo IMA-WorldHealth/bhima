@@ -33,3 +33,14 @@ CALL drop_column_if_exists('lots', 'initial_quantity');
 CALL drop_column_if_exists('lots', 'quantity');
 CALL drop_column_if_exists('lots', 'entry_date');
 
+/**
+  * @author: jmcameron
+  * @date: 2021-04-08
+  * @desc: Add support for Euros
+  */
+INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
+VALUES
+  (3,'Euro','EUR','€',NULL,0.01);
+INSERT IGNORE INTO `exchange_rate`
+VALUES
+  (3, 1, @EUR, 0.84, NOW());
