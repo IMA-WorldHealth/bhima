@@ -469,6 +469,84 @@ CREATE TABLE `depot` (
   INDEX `parent_uuid` (`parent_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `cdr_reporting_depot`;
+CREATE TABLE `cdr_reporting_depot` (
+  `uuid` BINARY(16) NOT NULL,
+  `text` VARCHAR(191) NOT NULL,
+  `last_movement_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `cdr_reporting_depot_1` (`text`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cdr_reporting_article`;
+CREATE TABLE `cdr_reporting_article` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `code` VARCHAR(30) NOT NULL,
+  `nom` VARCHAR(191) NOT NULL,
+  KEY (`code`),
+  KEY `depot_uuid` (`depot_uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cdr_reporting_article_lot`;
+CREATE TABLE `cdr_reporting_article_lot` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `code_article` VARCHAR(30) NOT NULL,
+  `numero_lot` VARCHAR(30) NOT NULL,
+  `date_peremption` DATETIME DEFAULT NULL,
+  KEY `code_article` (`code_article`),
+  KEY `numero_lot` (`numero_lot`),
+  KEY `depot_uuid` (`depot_uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cdr_reporting_lot_document`;
+CREATE TABLE `cdr_reporting_lot_document` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `code_document` VARCHAR(10) NOT NULL,
+  `code_article` VARCHAR(30) NOT NULL,
+  `numero_lot` VARCHAR(30) NOT NULL,
+  `quantite` INTEGER(11) NOT NULL DEFAULT 0,
+  `valorisation` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY `code_document` (`code_document`),
+  KEY `code_article` (`code_article`),
+  KEY `numero_lot` (`numero_lot`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cdr_reporting_mouvement_stock`;
+CREATE TABLE `cdr_reporting_mouvement_stock` (
+  `compteur` INTEGER(11) NOT NULL AUTO_INCREMENT,
+  `depot_uuid` BINARY(16) NOT NULL,
+  `type` VARCHAR(1) NOT NULL,
+  `code_document` VARCHAR(30) NOT NULL,
+  `code_article` VARCHAR(30) NOT NULL,
+  `date` DATETIME DEFAULT NULL,
+  `quantite` INTEGER(11) NOT NULL DEFAULT 0,
+  `valorisation` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `periode` VARCHAR(10) NOT NULL ,
+  `type_identifiant` VARCHAR(1) NOT NULL,
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY (`compteur`),
+  KEY (`code_document`),
+  KEY (`code_article`),
+  KEY (`periode`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cdr_reporting_aggregated_stock`;
+CREATE TABLE `cdr_reporting_aggregated_stock` (
+  `depot_uuid` BINARY(16) NOT NULL,
+  `expired_distributed` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `stock_at_period` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `peremption_rate` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `expired_distributed_quarter` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `peremption_rate_quarter` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `expired_distributed_semestre` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `peremption_rate_semestre` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `periode` DATETIME DEFAULT NULL ,
+  `quarter` SMALLINT(1) NOT NULL DEFAULT 0,
+  `semestre` SMALLINT(1) NOT NULL DEFAULT 0,
+  KEY `depot_uuid` (`depot_uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `depot_distribution_permission`;
 CREATE TABLE `depot_distribution_permission` (
   `depot_uuid` BINARY(16) NOT NULL,
