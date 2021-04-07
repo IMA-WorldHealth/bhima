@@ -175,7 +175,7 @@ exports.configure = function configure(app) {
   app.get('/invoices/stats', stats.invoices);
 
   // exchange rate modules
-  app.get('/exchange', exchange.list);
+  app.get('/exchange/:id?', exchange.list);
   app.post('/exchange', exchange.create);
   app.put('/exchange/:id', exchange.update);
   app.delete('/exchange/:id', exchange.delete);

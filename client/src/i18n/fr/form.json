@@ -221,6 +221,7 @@
             "PATIENT_INVOICE_FOUND": "La facture a été trouvée",
             "PATIENT_INVOICE_NOT_FOUND": "La facture est inexistante pour le patient: {{name}}",
             "PAYMENT": "Référence du Paiement",
+            "PER": "par",
             "PREVIOUS": "Précédent",
             "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
             "REQUISITION": {
@@ -874,6 +875,7 @@
             "CODE": "Entrer le code",
             "COUNTRY": "Entrer le nom du pays",
             "CREDITOR": "Entrer un Créditeur",
+            "CURRENCY": "Sélectionner la monnaie",
             "DEBTOR": "Entrer un Débiteur",
             "DEBTOR_GROUP": "Entrer un Groupe Débiteur",
             "PATIENT_GROUP": "Entrer un groupe de patients",

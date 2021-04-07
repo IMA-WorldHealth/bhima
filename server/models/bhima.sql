@@ -247,7 +247,8 @@ INSERT INTO `language` VALUES
 -- Currencies
 INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
   (1,'Congolese Francs','fc','Fc',NULL,50.00),
-  (2,'United States Dollars','usd','$',NULL,0.01);
+  (2,'United States Dollars','usd','$',NULL,0.01),
+  (3,'Euro','EUR','€',NULL,0.01);
 
 INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
 INSERT INTO `inventory_unit` VALUES

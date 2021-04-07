@@ -37,7 +37,7 @@ function currencyFormat(Currencies, $http, Store) {
     var formatObject = null;
     fetchingKeys[key] = true;
 
-    $http.get(currencyConfigurationPath.concat(key, '.json'))
+    $http.get(currencyConfigurationPath.concat(key.toLowerCase(), '.json'))
       .then(function (response) {
 
         // Add configuration to local cache
