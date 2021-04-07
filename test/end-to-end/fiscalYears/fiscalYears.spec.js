@@ -35,7 +35,7 @@ describe('Fiscal Year', () => {
     await components.notification.hasDanger();
   });
 
-  it('creates a new fiscalYear', async () => {
+  it('creates a new Fiscal Year', async () => {
     await FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
@@ -47,7 +47,7 @@ describe('Fiscal Year', () => {
     await components.notification.hasSuccess();
   });
 
-  it('edits a fiscal Year', async () => {
+  it('edits a fiscal year', async () => {
     const updateButton = element.all(by.css('[data-fiscal-entry]'));
     await updateButton.all(by.css('[data-method="update"]')).first().click();
 

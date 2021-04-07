@@ -160,14 +160,13 @@ function StockEntryPage() {
    * fast insert lots rows
    * @param {array} lots an array of strings
    */
-  page.fastLotsInsert = async (lots = []) => {
+  page.fastLotsInsert = async (lots) => {
     let index = 0;
 
     // eslint-disable-next-line
     for (const lot of lots) {
       const lotCell = await GU.getCell(lotGridId, index, 1);
       const input = await FU.input('row.entity.lot', lot, lotCell);
-
       await input.sendKeys(protractor.Key.TAB);
       index += 1;
     }
