@@ -21,6 +21,12 @@ function CDRReportingPeremptionRateController(
     .catch(Notify.handleError);
 
   function loadReport() {
+
+    // need to select a year before this will fire.
+    if (!vm.selectedYear) {
+      return;
+    }
+
     vm.loading = true;
 
     Depots.getPeremptionReport({ year : vm.selectedYear, recompute : vm.recompute })

@@ -5,6 +5,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const router = require('express').Router();
 const excelToJson = require('convert-excel-to-json');
+const debug = require('debug')('bhima:cdr');
 
 const { uuid } = require('../../lib/util');
 const upload = require('../../lib/uploader');
@@ -18,6 +19,7 @@ const uploadFields = [
   { name : 'lots', maxCount : 1 },
   { name : 'lotsDoc', maxCount : 1 },
 ];
+
 router.post('/depots', upload.multipleFields('cdr_reporting', uploadFields), create);
 router.put('/depots/:uuid', upload.multipleFields('cdr_reporting', uploadFields), update);
 router.get('/depots', list);
@@ -44,6 +46,7 @@ async function clearCdrDepotData(depotUuid) {
 }
 
 async function importCdrDepotDataFromFiles(files, depotUuid) {
+  debug(`importCdrDepotDataFromFiles(): importing data from CDR files for depot ${depotUuid}.`);
   const tx = db.transaction();
   const movements = excelToJson({
     sourceFile : files.movements[0].link,
@@ -110,6 +113,8 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
   });
 
   const movementsKey = Object.keys(movements)[0];
+
+  let i = 0;
   movements[movementsKey].forEach(row => {
     const value = {
       depot_uuid : db.bid(depotUuid),
@@ -122,9 +127,14 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
       periode : String(moment(new Date(row.Date)).format('YYYY-MM-')).concat('01'),
       type_identifiant : row.TypeIdentifiant,
     };
+
     tx.addQuery('INSERT INTO cdr_reporting_mouvement_stock SET ?', value);
+    i++;
   });
 
+  debug(`Wrote ${i++} movements.`);
+
+  i = 0;
   const articlesKey = Object.keys(articles)[0];
   articles[articlesKey].forEach(row => {
     const value = {
@@ -133,8 +143,12 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
       nom : row.Nom,
     };
     tx.addQuery('INSERT INTO cdr_reporting_article SET ?', value);
+    i++;
   });
 
+  debug(`Wrote ${i++} articles.`);
+
+  i = 0;
   const lotsKey = Object.keys(lots)[0];
   lots[lotsKey].forEach(row => {
     const value = {
@@ -144,8 +158,12 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
       date_peremption : row.DatePeremption,
     };
     tx.addQuery('INSERT INTO cdr_reporting_article_lot SET ?', value);
+    i++;
   });
 
+  debug(`Wrote ${i++} lots.`);
+
+  i = 0;
   const lotsDocKey = Object.keys(lotsDoc)[0];
   lotsDoc[lotsDocKey].forEach(row => {
     const value = {
@@ -157,10 +175,15 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
       valorisation : row.Valorisation,
     };
     tx.addQuery('INSERT INTO cdr_reporting_lot_document SET ?', value);
+    i++;
   });
+
+  debug(`Wrote ${i++} lot documents.`);
 
   // create the new depot and related movements
   await tx.execute();
+
+  debug('data updated');
 
   // set the depot version according its last record movement
   const queryUpdateDepotVersion = 'UPDATE cdr_reporting_depot SET last_movement_date = ? WHERE uuid = ?';
@@ -171,6 +194,7 @@ async function importCdrDepotDataFromFiles(files, depotUuid) {
   `;
   const [record] = await db.exec(queryLastMovement, [db.bid(depotUuid)]);
   if (record && record.date) {
+    debug('updated last_movement_date for record');
     await db.exec(queryUpdateDepotVersion, [record.date, db.bid(depotUuid)]);
   }
 }
@@ -267,14 +291,19 @@ async function getPeremptionReport(req, res, next) {
     }
 
     const depots = await getDepots();
+    debug(`Found ${depots.length} depots.`);
 
     const rows = await loadAggregatedValues(options.year);
+    debug(`Found ${rows.length} rows.`);
 
     const vars = getVariables(rows);
+    debug(`Found vars:`, vars);
 
     const quarterVars = getVariables(rows, 'quarter');
+    debug(`Found quarter vars:`, quarterVars);
 
     const semestreVars = getVariables(rows, 'semestre');
+    debug(`Found semestre vars:`, semestreVars);
 
     const data = {
       year : options.year,
@@ -448,6 +477,7 @@ async function processAggregatedValues(year) {
       dbPromise.push(db.exec(queryInsertAggregatedStock, [write]));
     }
   }
+
   return Promise.all(dbPromise);
 }
 

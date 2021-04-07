@@ -4,7 +4,7 @@ angular.module('bhima.services')
 CdrDepotService.$inject = ['PrototypeApiService', 'LanguageService'];
 
 /**
- * @class DepotService
+ * @class CDRDepotService
  * @extends PrototypeApiService
  *
  * @description
