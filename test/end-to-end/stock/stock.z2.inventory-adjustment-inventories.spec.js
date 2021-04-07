@@ -25,7 +25,7 @@ function StockInventoriesRegistryTests() {
   it('find 5 inventory in Depot Principal plus one line for the Grouping', async () => {
     await modal.setDepot('Depot Principal');
     await modal.submit();
-    await GU.expectRowCount(gridId, 4 + GROUPING_ROW);
+    await GU.expectRowCount(gridId, 5 + GROUPING_ROW);
     await filters.resetFilters();
   });
 
@@ -36,8 +36,9 @@ function StockInventoriesRegistryTests() {
     };
     const acide = {
       label : 'Acide Acetylsalicylique, 500mg, Tab, 1000, Vrac',
-      quantity : '617',
+      quantity : '360600',
     };
+
     await modal.setDepot('Depot Principal');
     await modal.submit();
     await GU.expectCellValueMatch(gridId, 1, 2, quinine.label);
