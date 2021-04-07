@@ -10,7 +10,7 @@ const UserPage = require('./user.page.js');
 const UserCreateUpdatePage = require('./userCU.page.js');
 const EditPasswordPage = require('./edit.password.page.js');
 
-describe('User Management Page', () => {
+describe.only('User Management Page', () => {
   const path = '#/users';
   const userPage = new UserPage();
 
@@ -92,7 +92,7 @@ describe('User Management Page', () => {
     await userCreateUpdatePage.close();
   });
 
-  it('deactivate user system access successfully', async () => {
+  it.only('deactivate user system access successfully', async () => {
     await userPage.toggleUser(mockUserEdit.display_name, false);
     // submit the confirmation modal
     await FU.modal.submit();
