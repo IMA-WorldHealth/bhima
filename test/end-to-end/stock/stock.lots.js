@@ -96,7 +96,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 11);
+    await GU.expectRowCount(gridId, 0);
   });
 
   it('Find the lots with no risk of expiry', async () => {
@@ -105,7 +105,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 8);
+    await GU.expectRowCount(gridId, 24);
   });
 
   it('find inventories by group', async () => {

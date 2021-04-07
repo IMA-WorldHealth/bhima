@@ -30,7 +30,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 24 + (2 * depotGroupingRow));
+    await GU.expectRowCount(gridId, 31 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
@@ -41,12 +41,12 @@ function StockMovementsRegistryTests() {
     await GU.expectRowCount(gridId, 11 + (2 * depotGroupingRow));
   });
 
-  it('filters by entry/exit', async () => {
+  it('filters by exit', async () => {
     // for Exit
     await modal.setEntryExit(1);
     await modal.switchToDefaultFilterTab();
     await modal.submit();
-    await GU.expectRowCount(gridId, 25 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 31 + depotGroupingRow);
   });
 
   it('find movements by depot', async () => {
@@ -89,7 +89,7 @@ function StockMovementsRegistryTests() {
   it('find by lots reasons for distribution to depot', async () => {
     await modal.setMovementReason(['Vers un dépôt']);
     await modal.submit();
-    await GU.expectRowCount(gridId, 4 + depotGroupingRow);
+    await GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution from depot', async () => {
