@@ -115,8 +115,9 @@ function lookupPurchaseOrder(uid) {
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
-      p.cost, p.date, s.display_name  AS supplier, p.user_id,
-      BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
+      p.cost, p.date, s.display_name AS supplier, p.user_id,
+      BUID(p.supplier_uuid) as supplier_uuid, p.currency_id,
+      p.note, u.display_name AS author,
       p.status_id, ps.text AS status
     FROM purchase AS p
     JOIN document_map dm ON p.uuid = dm.uuid
@@ -180,7 +181,7 @@ function create(req, res, next) {
 
   data.user_id = req.session.user.id;
   data.project_id = req.session.project.id;
-  data.currency_id = req.session.enterprise.currency_id;
+  data.currency_id = data.currency_id ? data.currency_id : req.session.enterprise.currency_id;
 
   if (req.session.stock_settings.enable_auto_purchase_order_confirmation) {
     data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
@@ -423,7 +424,7 @@ function find(options) {
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.status_id, ps.text AS status
+        p.currency_id, p.status_id, ps.text AS status
       FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN supplier AS s ON s.uuid = p.supplier_uuid

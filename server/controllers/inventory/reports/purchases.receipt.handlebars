@@ -53,15 +53,15 @@
           <td>{{this.text}}</td>
           <td>{{this.unit}}</td>
           <td class="text-right">{{this.quantity}}</td>
-          <td class="text-right">{{currency this.unit_price ../metadata.enterprise.currency_id}}</td>
-          <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
+          <td class="text-right">{{currency this.unit_price ../purchase.currency_id}}</td>
+          <td class="text-right">{{currency this.total ../purchase.currency_id}}</td>
         </tr>
       {{/each}}
     </tbody>
     <tfoot>
       <tr>
         <td class="text-left" colspan="5">{{translate "FORM.LABELS.TOTAL"}} ({{purchase.items.length}} {{ translate "TABLE.AGGREGATES.RECORDS" }})</td>
-        <td class="text-right" >{{currency purchase.cost metadata.enterprise.currency_id}}</td>
+        <td class="text-right" >{{currency purchase.cost purchase.currency_id}}</td>
       </tr>
     </tfoot>
   </table>

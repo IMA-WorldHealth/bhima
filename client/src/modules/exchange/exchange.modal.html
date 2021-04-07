@@ -17,13 +17,14 @@
       <ui-select
         name="currency"
         ng-model="ModalCtrl.rate.currency"
+        ng-change="ModalCtrl.selectCurrency()"
         required>
         <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CURRENCY' | translate }}">
           <span>{{ ModalCtrl.format($select.selected.id) }}</span>
         </ui-select-match>
         <ui-select-choices
           ui-select-focus-patch
-          repeat="currency.id as currency in ModalCtrl.currencies | filter:$select.search">
+          repeat="currency as currency in ModalCtrl.currencies | filter:$select.search">
           <span ng-bind-html="ModalCtrl.format(currency.id) | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
@@ -38,9 +39,11 @@
       on-change="ModalCtrl.onDateChange(date)">
     </bh-date-editor>
 
-    <p>
-      <span translate>EXCHANGE.CURRENT_RATE</span>: <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
-    </p>
+    <div>
+      <span translate>EXCHANGE.CURRENT_RATE</span>:
+        <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
+        <i><span translate>FORM.INFO.PER</span> {{ModalCtrl.enterprise.currencySymbol}}</i>
+    </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
