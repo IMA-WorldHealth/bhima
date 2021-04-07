@@ -189,6 +189,16 @@ function StockExitPage() {
     // close the modal
     await $('[data-action="close"]').click();
   };
+
+  /**
+   * @method submitError
+   */
+  page.submitError = async function submitError() {
+    FU.buttons.submit();
+
+    await components.notification.hasDanger();
+  };
+
 }
 
 module.exports = StockExitPage;
