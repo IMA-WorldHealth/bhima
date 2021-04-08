@@ -1,5 +1,3 @@
-/* global element, by */
-
 /**
  * This class is represents a Ipr Tax page in term of structure and
  * behaviour so it is a Ipr Tax page object
@@ -10,10 +8,6 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class IprTaxConfigPage {
-  constructor() {
-    this.iprTaxGrid = element(by.id('iprconfig-grid'));
-  }
-
   /**
    * simulate the create Ipr Scale button click to show the dialog of creation
    */
