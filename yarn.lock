@@ -76,10 +76,10 @@
   dependencies:
     eslint "^6.1.0"
 
-"@ima-worldhealth/tree@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/tree/-/tree-2.3.0.tgz#cfe8d67bf9d102268cc0e2e933ad044f7c7e86c9"
-  integrity sha512-lyXtqTnNYpt359xjR3BHr/tTaEbUbkZXpg7P15MdkQ+Ysw8VFYakbcs6uup8eP3Obcv9J0OplkE2y/23d/b8rA==
+"@ima-worldhealth/tree@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/tree/-/tree-2.3.2.tgz#06d3e799cc21343c31a2d08de77a8d6217cd45a2"
+  integrity sha512-DjBlan65Gtm5I9StS3K0WkVgbHDNkdEgBgu3vlJbgnbnxH1E9OJn0YqWwEIFuaK/luI9E9NfYgasJjH3xXbqUQ==
   dependencies:
     debug "^4.0.0"
 
