@@ -27,7 +27,9 @@ function StockRequisitionTests() {
     await page.changeDepot(DEPOT_PRINCIPAL);
   });
 
-  it(`Create a new stock requisition based on current depot ${DEPOT_PRINCIPAL}`, async () => {
+  // FIXME(@jniles) - impossible to automatically allocate stock given the CMM calculation changes
+  // we need to have relative dates before this will work.
+  it.skip(`Create a new stock requisition based on current depot ${DEPOT_PRINCIPAL}`, async () => {
     await page.showCreateModal(true);
     await page.setDepot(DEPOT_SECONDAIRE);
     await page.setDescription(`Quick Requisition from current depot ${DEPOT_PRINCIPAL}`);

@@ -139,7 +139,6 @@ function getLotFilters(parameters) {
     'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
 
   filters.period('defaultPeriod', 'date');
-  filters.period('defaultPeriodEntry', 'entry_date', 'l');
   filters.period('period', 'date');
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');

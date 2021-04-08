@@ -12,19 +12,19 @@ angular.module('bhima.components')
   });
 
 bhServiceOrDepotController.$inject = [
-  'ServiceService', 'DepotService', 'StockService', 'NotifyService',
+  'ServiceService', 'DepotService', 'StockService', 'NotifyService', '$q',
 ];
 
 /**
  * service or depot selection component
  */
-function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
+function bhServiceOrDepotController(Services, Depots, Stock, Notify, $q) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'REQUISITION.SERVICE_OR_DEPOT';
 
-    Promise.all([
+    $q.all([
       Stock.stockRequestorType.read(),
       Depots.read(),
       Services.read(),
