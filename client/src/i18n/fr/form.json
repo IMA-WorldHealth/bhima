@@ -221,6 +221,7 @@
             "PATIENT_INVOICE_FOUND": "La facture a été trouvée",
             "PATIENT_INVOICE_NOT_FOUND": "La facture est inexistante pour le patient: {{name}}",
             "PAYMENT": "Référence du Paiement",
+            "PER": "par",
             "PREVIOUS": "Précédent",
             "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
             "REQUISITION": {

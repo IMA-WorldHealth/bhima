@@ -221,6 +221,7 @@
             "PATIENT_INVOICE_FOUND": "Invoice found",
             "PATIENT_INVOICE_NOT_FOUND": "No invoices found for the patient: {{name}}",
             "PAYMENT": "Cash Payment",
+            "PER": "per",
             "PREVIOUS": "Previous",
             "RECORD_SAME":"No changes have been made to the form",
             "REQUISITION": {
