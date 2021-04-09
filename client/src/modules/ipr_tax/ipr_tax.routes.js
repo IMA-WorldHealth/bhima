@@ -46,6 +46,7 @@ angular.module('bhima.routes')
         params : {
           taxIprId : { value : null },
           id : { value : null },
+          isCreateState : { value : false },
         },
         onEnter : ['$uibModal', '$transition$', iprTaxConfigModal],
         onExit : ['$uibModalStack', closeModal],

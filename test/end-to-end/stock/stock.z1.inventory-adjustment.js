@@ -19,7 +19,7 @@ function StockInventoryAdjustmentTests() {
     return page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should make inventory adjustment correctly', async () => {
+  it.skip('Should make inventory adjustment correctly', async () => {
     await page.setDate(new Date());
 
     await page.setDescription(DESCRIPTION);
