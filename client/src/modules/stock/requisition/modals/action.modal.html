@@ -23,6 +23,7 @@
       uuid="$ctrl.model.requestor_uuid"
       label="REQUISITION.RECEIVER"
       on-select-callback="$ctrl.onSelectRequestor(requestor)"
+      ng-value="requestor"
       required="true">
     </bh-service-or-depot>
 
@@ -30,7 +31,7 @@
     <div class="form-group">
       <label translate>FORM.LABELS.ARTICLES</label>
 
-      <div style="margin-bottom: 5px;" class="space-between"> 
+      <div style="margin-bottom: 5px;" class="space-between">
         <bh-add-item callback="$ctrl.addItem(numItem)" disable="true"></bh-add-item>
 
         <button ng-disabled="!$ctrl.enableAutoSuggest || $ctrl.loadingSuggest" ng-click="$ctrl.autoSuggestInventories()" type="button" class="btn btn-success">

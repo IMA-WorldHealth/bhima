@@ -143,7 +143,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   }
 
   function startup() {
-    if ($state.params.filters.length) {
+    if ($state.params.filters && $state.params.filters.length) {
       Users.filters.replaceFiltersFromState($state.params.filters);
       Users.cacheFilters();
     }

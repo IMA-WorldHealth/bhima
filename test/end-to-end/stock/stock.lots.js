@@ -29,8 +29,8 @@ function StockLotsRegistryTests() {
   // techinically this is 23 in total, but the grid doesn't render that
   // many on small screens
   const LOT_FOR_ALLTIME = 24;
-  const LOT_FOR_TODAY = 13;
-  const LOT_FOR_LAST_YEAR = 20;
+  const LOT_FOR_TODAY = 17;
+  const LOT_FOR_LAST_YEAR = 24;
 
   const inventoryGroup = 'Injectable';
 
@@ -73,18 +73,6 @@ function StockLotsRegistryTests() {
     await GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
 
-  it('find lots by entry date', async () => {
-    const dateEntry = moment(new Date(), 'YYYY-MM-DD').subtract(1376, 'days');
-    const dateEntryFormated = moment(dateEntry).format('DD/MM/YYYY');
-
-    await modal.setdateInterval(
-      dateEntryFormated, dateEntryFormated, 'entry-date',
-    );
-
-    await modal.submit();
-    await GU.expectRowCount(gridId, 6);
-  });
-
   it('find lots by expiration date', async () => {
     const yearSubstract3 = moment(new Date(), 'YYYY').subtract(3, 'year');
     const formatYear = moment(yearSubstract3).format('YYYY');
@@ -108,7 +96,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 11);
+    await GU.expectRowCount(gridId, 0);
   });
 
   it('Find the lots with no risk of expiry', async () => {
@@ -117,7 +105,7 @@ function StockLotsRegistryTests() {
     await modal.setPeriod('allTime');
 
     await modal.submit();
-    await GU.expectRowCount(gridId, 8);
+    await GU.expectRowCount(gridId, 24);
   });
 
   it('find inventories by group', async () => {
