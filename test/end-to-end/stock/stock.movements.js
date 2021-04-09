@@ -30,7 +30,7 @@ function StockMovementsRegistryTests() {
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('allTime');
     await modal.submit();
-    await GU.expectRowCount(gridId, 31 + (2 * depotGroupingRow));
+    await GU.expectRowCountAbove(gridId, 30 + (2 * depotGroupingRow));
   });
 
   it('find entry movements ', async () => {
