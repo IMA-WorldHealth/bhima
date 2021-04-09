@@ -18,7 +18,6 @@ class AccountsPage {
     };
   }
 
-
   getGrid() {
     return element(by.id(this.gridId));
   }
