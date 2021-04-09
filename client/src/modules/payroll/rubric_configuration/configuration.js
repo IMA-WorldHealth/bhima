@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('ConfigurationController', ConfigurationController);
+  .controller('ConfigurationController', ConfigurationController);
 
 ConfigurationController.$inject = [
   'ConfigurationService', 'ModalService',
@@ -36,7 +36,6 @@ function ConfigurationController(Configs, ModalService,
   // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
-
 
   // options for the UI grid
   vm.gridOptions = {
@@ -76,9 +75,8 @@ function ConfigurationController(Configs, ModalService,
   function deleteConfig(title) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((bool) => {
-        if (!bool) { return; }
-
-        Configs.delete(title.id);
+        if (!bool) { return 0; }
+        return Configs.delete(title.id);
       })
       .then(() => {
         Notify.success('FORM.INFO.DELETE_SUCCESS');

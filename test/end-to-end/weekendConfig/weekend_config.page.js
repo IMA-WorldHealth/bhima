@@ -1,5 +1,3 @@
-/* global $$ */
-
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const { notification } = require('../shared/components');
@@ -9,11 +7,10 @@ class WeekendConfigPage {
   async create(label) {
     await FU.buttons.create();
     await FU.input('WeekendModalCtrl.weekend.label', label);
-    // set days
-    const days = $$('[name="days"]');
-    await days.get(0).click();
-    await days.get(1).click();
-    await days.get(6).click();
+
+    $('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
+    $('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
+    $('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
 
     await FU.modal.submit();
     await notification.hasSuccess();
@@ -33,11 +30,9 @@ class WeekendConfigPage {
     await row.edit().click();
     await FU.input('WeekendModalCtrl.weekend.label', newLabel);
 
-    // set days
-    const days = $$('[name="days"]');
-    await days.get(0).click();
-    await days.get(1).click();
-    await days.get(6).click();
+    $('[data-label="FORM.LABELS.WEEK_DAYS.SUNDAY"]').click();
+    $('[data-label="FORM.LABELS.WEEK_DAYS.MONDAY"]').click();
+    $('[data-label="FORM.LABELS.WEEK_DAYS.SATURDAY"]').click();
 
     await FU.modal.submit();
     await notification.hasSuccess();

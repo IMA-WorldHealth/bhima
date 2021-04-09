@@ -13,7 +13,7 @@ describe('Fiscal Year', () => {
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
-    previous : '2019',
+    previous : '2020',
   };
 
   it('blocks invalid form submission with relevant error classes', async () => {
@@ -35,11 +35,11 @@ describe('Fiscal Year', () => {
     await components.notification.hasDanger();
   });
 
-  it('creates a new fiscalYear', async () => {
+  it('creates a new Fiscal Year', async () => {
     await FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    await components.dateInterval.range('01/01/2021', '31/12/2021');
+    await components.dateInterval.range('01/01/2022', '31/12/2022');
     await FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     await FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     await FU.buttons.submit();
@@ -47,7 +47,7 @@ describe('Fiscal Year', () => {
     await components.notification.hasSuccess();
   });
 
-  it('edits a fiscal Year', async () => {
+  it('edits a fiscal year', async () => {
     const updateButton = element.all(by.css('[data-fiscal-entry]'));
     await updateButton.all(by.css('[data-method="update"]')).first().click();
 
