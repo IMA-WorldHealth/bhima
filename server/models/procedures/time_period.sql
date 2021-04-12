@@ -104,7 +104,7 @@ BEGIN
 
     SET periodNumber = periodNumber + 1;
 
-    call UpdatePeriodLabels();
+    CALL UpdatePeriodLabels();
   END WHILE;
 END $$
 
