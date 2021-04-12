@@ -12,6 +12,7 @@
  */
 
 const q = require('q');
+const moment = require('moment');
 const _ = require('lodash');
 const debug = require('debug')('FiscalYear');
 const Tree = require('@ima-worldhealth/tree');
@@ -191,8 +192,8 @@ function create(req, res, next) {
 
   record.user_id = req.session.user.id;
   record.enterprise_id = req.session.enterprise.id;
-  record.start_date = new Date(record.start_date);
-  record.end_date = new Date(record.end_date);
+  record.start_date = moment(record.start_date).format('YYYY-MM-DD');
+  record.end_date = moment(record.end_date).format('YYYY-MM-DD');
 
   const params = [
     record.enterprise_id, record.previous_fiscal_year_id, record.user_id,
@@ -204,12 +205,12 @@ function create(req, res, next) {
 
   transaction
     .addQuery('SET @fiscalYearId = 0;')
-    .addQuery('CALL CreateFiscalYear(?, ?, ?, ?, ?, ?, ?, ?, @fiscalYearId);', params)
+    .addQuery('CALL CreateFiscalYear(?, ?, ?, ?, ?, DATE(?), DATE(?), ?, @fiscalYearId);', params)
     .addQuery('SELECT @fiscalYearId AS fiscalYearId;')
     .execute()
-    .then((results) => {
+    .then(([,, results]) => {
       // results[2] : is an array from the query SELECT @fiscalYearId AS fiscalYearId;
-      res.status(201).json({ id : results[2][0].fiscalYearId });
+      res.status(201).json({ id : results[0].fiscalYearId });
     })
     .catch(next)
     .done();

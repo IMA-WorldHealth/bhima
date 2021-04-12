@@ -16,8 +16,8 @@
         name="requestor"
         type="radio"
         ng-model="$ctrl.requestorType"
-        ng-value="requestor"
         ng-change="$ctrl.onChangeRequestor()"
+        ng-value="requestor"
         data-requestor-option="{{ requestor.type_key }}"
         ng-required="$ctrl.required">
       <span translate>{{ requestor.title_key }}</span>
@@ -47,4 +47,3 @@
     </bh-depot-select>
   </div>
 </div>
-  

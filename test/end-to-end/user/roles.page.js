@@ -7,7 +7,6 @@ const { bhCheckboxTree } = require('../shared/components');
 
 class RolesPage {
   constructor() {
-    this.gridId = 'roles-grid';
     this.roleLabel = element(by.model('RolesAddCtrl.role.label'));
   }
 
@@ -60,8 +59,8 @@ class RolesPage {
     return bhCheckboxTree.toggle([txt]);
   }
 
-  setAction(id) {
-    return $(`[id="${id}"]`).click();
+  setAction(label) {
+    return $(`[data-label="${label}"]`).click();
   }
 
   openCreateModal() {
