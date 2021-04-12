@@ -5,9 +5,6 @@ const FU = require('../shared/FormUtils');
 const { notification, accountSelect } = require('../shared/components');
 
 class RubricPage {
-  constructor() {
-    this.gridId = 'rubric-grid';
-  }
 
   async create(rubric) {
     await FU.buttons.create();
