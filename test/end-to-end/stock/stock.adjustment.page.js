@@ -86,9 +86,6 @@ function StockAdjustmentPage() {
   page.submit = async function submit() {
     await FU.buttons.submit();
 
-    // the receipt modal is displayed
-    await FU.exists(by.id('receipt-confirm-created'), true);
-
     // close the modal
     await element(by.css('[data-action="close"]')).click();
   };
