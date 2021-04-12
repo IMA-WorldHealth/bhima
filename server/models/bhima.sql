@@ -167,7 +167,10 @@ INSERT INTO unit VALUES
   (291, '[Stock] Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard'),
   (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
   (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption',160,'/stock/aggregated_consumption'),
-  (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');
+  (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates'),
+  (295, 'CDR Peremption Reporting','CDR_REPORTING.MODULE_TITLE','CDR reporting module',0,'/CDR_REPORTING_FOLDER'),
+  (296, 'CDR Peremption Depot','CDR_REPORTING.DEPOT','CDR reporting depot',295,'/cdr_reporting/depots'),
+  (297, 'CDR Peremption Peremption','CDR_REPORTING.PEREMPTION','CDR peremption reporting',295,'/cdr_reporting/peremption');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

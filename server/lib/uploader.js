@@ -57,6 +57,7 @@ exports.directory = dir;
 
 // export the uploader
 exports.middleware = Uploader;
+exports.multipleFields = multipleFields;
 exports.hasFilesToUpload = hasFilesToUpload;
 
 const mkdirp = (dpath) => fs.promises.mkdir(dpath, { recursive : true });
@@ -102,6 +103,37 @@ function Uploader(prefix, fields) {
 
   // set up multer as the middleware
   return multer({ storage }).array(fields);
+}
+
+function multipleFields(prefix, fields) {
+  // format the upload directory.  Add a trailing slash for consistency
+  const hasTrailingSlash = (prefix[prefix.length - 1] === '/');
+  const directory = path.join(fsdir, hasTrailingSlash ? prefix : `${prefix}/`);
+
+  // configure the storage space using multer's diskStorage.  This will allow
+  const storage = multer.diskStorage({
+    destination : async (req, file, cb) => {
+
+      try {
+        debug(`creating upload directory ${directory}.`);
+        await mkdirp(directory);
+        cb(null, directory);
+      } catch (err) {
+        cb(err);
+      }
+    },
+    filename : (req, file, cb) => {
+      const id = uuid();
+
+      // ensure that a link is passed to the req.file object
+      file.link = `${directory}${id}`;
+      debug(`Storing file in ${file.link}.`);
+      cb(null, id);
+    },
+  });
+
+  // set up multer as the middleware
+  return multer({ storage }).fields(fields);
 }
 
 /**

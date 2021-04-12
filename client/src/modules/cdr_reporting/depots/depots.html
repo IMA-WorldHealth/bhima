@@ -1,0 +1,37 @@
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate> CDR_REPORTING.MODULE_TITLE </li>
+        <li class="title" translate> CDR_REPORTING.DEPOT </li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <button class="btn btn-default text-capitalize" id="create" ng-click="CdrDepotCtrl.createDepot()" data-method="create">
+            <span class="fa fa-plus"></span> <span translate>DEPOT.ADD_DEPOT</span>
+          </button>
+        </div>
+        <bh-filter-toggle on-toggle="CdrDepotCtrl.toggleFilter()"></bh-filter-toggle>
+      </div>
+    </div>
+  </div>
+  
+  <!-- main content -->
+  <div class="flex-content">
+    <div class="container-fluid">
+      <div
+        id="cdr-depot-grid"
+        ui-grid="CdrDepotCtrl.gridOptions"
+        class="grid-full-height"
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+  
+        <bh-grid-loading-indicator
+          loading-state="CdrDepotCtrl.loading"
+          empty-state="CdrDepotCtrl.gridOptions.data.length === 0"
+          error-state="CdrDepotCtrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+  </div>
+  

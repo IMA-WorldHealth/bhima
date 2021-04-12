@@ -1,0 +1,108 @@
+<form name="DepotForm" bh-submit="CdrDepotModalCtrl.submit(DepotForm)" enctype="multipart/form-data" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="CdrDepotModalCtrl.isCreateState" class="title">
+        <span translate>DEPOT.ADD_DEPOT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!CdrDepotModalCtrl.isCreateState" class="title">
+        <span translate>DEPOT.EDIT_DEPOT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.text.$invalid }">
+      <label class="control-label" translate>DEPOT.LABEL</label>
+      <input name="text" ng-model="CdrDepotModalCtrl.depot.text" autocomplete="off" ng-disabled="!CdrDepotModalCtrl.isCreateState" class="form-control" required>
+      <div class="help-block" ng-messages="DepotForm.text.$error" ng-show="DepotForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+      <div ng-if="!CdrDepotModalCtrl.isCreateState" class="help-block">
+        <span translate>CDR_REPORTING.DATABASE</span> : <span>{{ CdrDepotModalCtrl.depot.version | date }}</span>
+      </div>
+    </div>
+
+    <div class="alert alert-info">
+      <h3 style="padding: 0; margin: 0;" translate>CDR_REPORTING.DATABASE</h3>
+      <p translate>CDR_REPORTING.DATABASE_INFO</p>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : CdrDepotModalCtrl.noSelectedMovementFile }">
+      <label translate>CDR_REPORTING.MOVEMENT_DATABASE</label>
+      <input
+        id="import-input"
+        accept=".csv, .xls, .xlsx"
+        class="form-control"
+        type="file"
+        name="movements"
+        ng-model="CdrDepotModalCtrl.movementFile"
+        ngf-select="CdrDepotModalCtrl.select(CdrDepotModalCtrl.movementFile)">
+      <div class="help-block" data-error-message ng-show="CdrDepotModalCtrl.noSelectedMovementFile">
+        <i class="fa fa-warning"></i> <span translate>CDR_REPORTING.NO_MOVEMENT_FILE_SELECTED</span>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : CdrDepotModalCtrl.noSelectedArticleFile }">
+      <label translate>CDR_REPORTING.ARTICLE_DATABASE</label>
+      <input
+        id="import-input"
+        accept=".csv, .xls, .xlsx"
+        class="form-control"
+        type="file"
+        name="articles"
+        ng-model="CdrDepotModalCtrl.articleFile"
+        ngf-select="CdrDepotModalCtrl.select(CdrDepotModalCtrl.articleFile)">
+      <div class="help-block" data-error-message ng-show="CdrDepotModalCtrl.noSelectedArticleFile">
+        <i class="fa fa-warning"></i> <span translate>CDR_REPORTING.NO_ARTICLE_FILE_SELECTED</span>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : CdrDepotModalCtrl.noSelectedLotFile }">
+      <label translate>CDR_REPORTING.LOT_DATABASE</label>
+      <input
+        id="import-input"
+        accept=".csv, .xls, .xlsx"
+        class="form-control"
+        type="file"
+        name="lots"
+        ng-model="CdrDepotModalCtrl.lotFile"
+        ngf-select="CdrDepotModalCtrl.select(CdrDepotModalCtrl.lotFile)">
+      <div class="help-block" data-error-message ng-show="CdrDepotModalCtrl.noSelectedLotFile">
+        <i class="fa fa-warning"></i> <span translate>CDR_REPORTING.NO_LOT_FILE_SELECTED</span>
+      </div>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : CdrDepotModalCtrl.noSelectedLotDocFile }">
+      <label translate>CDR_REPORTING.LOT_IN_DOC_DATABASE</label>
+      <input
+        id="import-input"
+        accept=".csv, .xls, .xlsx"
+        class="form-control"
+        type="file"
+        name="lotsDoc"
+        ng-model="CdrDepotModalCtrl.lotDocFile"
+        ngf-select="CdrDepotModalCtrl.select(CdrDepotModalCtrl.lotDocFile)">
+      <div class="help-block" data-error-message ng-show="CdrDepotModalCtrl.noSelectedLotDocFile">
+        <i class="fa fa-warning"></i> <span translate>CDR_REPORTING.NO_LOT_DOC_FILE_SELECTED</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="cdrReportingDepots">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="DepotForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
