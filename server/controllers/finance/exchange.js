@@ -38,7 +38,7 @@ function formatExchangeRateForDisplay(value) {
  */
 exports.list = function list(req, res, next) {
   const { enterprise } = req.session;
-  const options = req.query;
+  const options = { ...req.query, ...req.params };
 
   getExchangeRateList(enterprise.id, options)
     .then(rows => {
@@ -60,17 +60,17 @@ function getExchangeRateList(enterpriseId, opts) {
 
   const limit = Number(options.limit);
   const limitQuery = Number.isNaN(limit) ? '' : `LIMIT ${limit}`;
+  const whereQuery = options.id ? `AND exchange_rate.id = ${options.id}` : '';
 
   const sql = `
     SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
     exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS 'enterprise_currency_id'
     FROM exchange_rate
     JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
-    WHERE exchange_rate.enterprise_id = ?
+    WHERE exchange_rate.enterprise_id = ? ${whereQuery}
     ORDER BY date DESC
     ${limitQuery};
   `;
-
   return db.exec(sql, [enterpriseId]);
 }
 
@@ -103,7 +103,6 @@ exports.update = function update(req, res, next) {
   if (req.body.date) {
     req.body.date = new Date(req.body.date);
   }
-
   db.exec(sql, [req.body, req.params.id])
     .then(() => {
       sql = `SELECT
