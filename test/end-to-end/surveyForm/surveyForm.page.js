@@ -1,22 +1,16 @@
-/* global element, by */
-/* eslint  */
+/* global element, by, browser */
 
 /**
  * This class is represents a Survey Form page in term of structure and
  * behaviour so it is a Survey Form Management page object
  */
 
-/* loading grid actions */
+const EC = require('protractor').ExpectedConditions;
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class SurveyFormManagementPage {
-  constructor() {
-    this.gridId = 'choices-list-management-grid';
-    this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 5;
-  }
 
   /**
    * simulate the create Survey Form button click to show the dialog of creation
@@ -43,7 +37,9 @@ class SurveyFormManagementPage {
     await FU.input('SurveyFormModalCtrl.surveyForm.name', surveyFormName);
     await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
     await FU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
-    await element(by.id('is_required')).click();
+    const isRequiredField = element(by.id('is_required'));
+    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
+    await isRequiredField.click();
     await FU.buttons.submit();
     await FU.exists(by.id('error_format'), true);
     await FU.modal.cancel();
@@ -60,7 +56,9 @@ class SurveyFormManagementPage {
     await components.surveyListSelect.set(SurveyForm.filter_choice_list_id);
     await FU.input('SurveyFormModalCtrl.surveyForm.name', SurveyForm.name);
     await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
-    await element(by.id('is_required')).click();
+    const isRequiredField = element(by.id('is_required'));
+    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
+    await isRequiredField.click();
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   }
@@ -77,8 +75,9 @@ class SurveyFormManagementPage {
     await FU.input('SurveyFormModalCtrl.surveyForm.name', updateSurveyForm.name);
     await FU.input('SurveyFormModalCtrl.surveyForm.label', updateSurveyForm.label);
     await FU.input('SurveyFormModalCtrl.surveyForm.hint', updateSurveyForm.hint);
-    await element(by.id('is_required')).click();
-
+    const isRequiredField = element(by.id('is_required'));
+    await browser.wait(EC.elementToBeClickable(isRequiredField), 2000, 'Cannot click is_required field');
+    await isRequiredField.click();
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   }

@@ -46,8 +46,7 @@ ALTER TABLE `lot` MODIFY `origin_uuid` BINARY(16) NULL;
   * @desc: Add support for Euros
   */
 INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
-VALUES
-  (3,'Euro','EUR','€',NULL,0.01);
-INSERT IGNORE INTO `exchange_rate`
-VALUES
-  (3, 1, @EUR, 0.84, NOW());
+VALUES (3,'Euro','EUR','€',NULL,0.01);
+
+INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
+
