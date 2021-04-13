@@ -32,6 +32,10 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
   vm.symbol = Currencies.symbol;
   vm.cancel = function cancel() { ModalInstance.dismiss(); };
 
+  vm.selectCurrency = () => {
+    vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
+  };
+
   // this turns on and off the currency select input
   vm.hasMultipleCurrencies = false;
 

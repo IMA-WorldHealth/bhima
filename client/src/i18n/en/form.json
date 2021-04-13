@@ -221,6 +221,7 @@
             "PATIENT_INVOICE_FOUND": "Invoice found",
             "PATIENT_INVOICE_NOT_FOUND": "No invoices found for the patient: {{name}}",
             "PAYMENT": "Cash Payment",
+            "PER": "per",
             "PREVIOUS": "Previous",
             "RECORD_SAME":"No changes have been made to the form",
             "REQUISITION": {
@@ -873,6 +874,7 @@
             "CODE": "Enter code",
             "COUNTRY": "Enter country",
             "CREDITOR": "Enter creditor",
+            "CURRENCY": "Select currency",
             "DATE": "Enter a Date",
             "DEBTOR": "Enter debtor",
             "DEBTOR_GROUP": "Enter a Debtor Group",

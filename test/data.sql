@@ -373,11 +373,13 @@ INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 
 SET @USD = 1;
 SET @FC = 2;
+SET @EUR = 3;
 
 -- exchange rate for the current date
 INSERT INTO `exchange_rate` VALUES
   (1, 1, @USD, 900.0000, DATE('2016-01-01')),
-  (2, 1, @USD, 930.0000, NOW());
+  (2, 1, @USD, 930.0000, NOW()),
+  (3, 1, @EUR, 0.8400, NOW());
 
 INSERT INTO `cash_box` (id, label, project_id, is_auxiliary) VALUES
   (1, 'Caisse Principale', 1, 0),
