@@ -67,3 +67,15 @@ ALTER TABLE `stock_setting`
 	CHANGE COLUMN `min_delay` `min_delay` DECIMAL(19,4) NOT NULL DEFAULT '1' AFTER `average_consumption_algo`;
 
 UPDATE stock_setting SET min_delay = 1;
+
+/**
+@author: jniles
+@date: 2021-04-14
+@desc: Add actions to allow users to delete individual record types.
+*/
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (3, 'USERS.ACTIONS.DELETE_CASH_PAYMENT' ),
+  (4, 'USERS.ACTIONS.DELETE_INVOICE' ),
+  (5, 'USERS.ACTIONS.DELETE_PURCHASE_ORDER'),
+  (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
+  (7, 'USERS.ACTIONS.DELETE_VOUCHER');
