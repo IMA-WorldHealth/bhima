@@ -27,6 +27,7 @@ function StockMovementsController(
 
   // add in FLUX identifiers
   vm.flux = bhConstants.flux;
+  vm.bhConstants = bhConstants;
 
   // grouping box
   vm.groupingBox = [
@@ -270,8 +271,6 @@ function StockMovementsController(
   }
 
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
-
-  vm.allowsRecordDeletion = () => Session.enterprise.settings.enable_delete_records;
 
   vm.deleteMovement = documentUuid => {
     ModalService.confirm()

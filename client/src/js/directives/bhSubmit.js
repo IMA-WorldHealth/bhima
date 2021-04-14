@@ -1,18 +1,18 @@
 angular.module('bhima.directives')
-.directive('bhSubmit', bhSubmitDirective);
+  .directive('bhSubmit', bhSubmitDirective);
 
 function bhSubmitDirective() {
   return {
     restrict : 'A',
     require : 'form', // make sure we are on an ngForm element
-    priority : 1,     // This must be a number greater than zero
+    priority : 1, // This must be a number greater than zero
     scope : {
-      submit: '&bhSubmit'
+      submit : '&bhSubmit',
     },
     link : function bhSubmitLinkFn($scope, $element, $attrs, $controller) {
 
       // pick up the form controller
-      var FormController = $controller;
+      const FormController = $controller;
 
       // bind the initial loading state to false
       FormController.$loading = false;
@@ -37,7 +37,7 @@ function bhSubmitDirective() {
         FormController.$setSubmitted();
 
         // fire the submit method
-        var response = $scope.submit();
+        const response = $scope.submit();
 
         // the response is a promise, toggle the loading state on
         // fulfillment/rejection
@@ -54,9 +54,9 @@ function bhSubmitDirective() {
       }
 
       // bind to the 'submit' event, ensure a $digest loop is run
-      $element.bind('submit', function () {
+      $element.bind('submit', () => {
         $scope.$apply(submitEventHandler);
       });
-    }
+    },
   };
 }
