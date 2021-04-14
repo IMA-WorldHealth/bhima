@@ -57,7 +57,7 @@
       </a>
     </li>
 
-    <li ng-if="grid.appScope.allowsRecordDeletion()" ng-hide="row.entity.reversed" >
+    <li bh-has-permission="grid.appScope.bhConstants.actions.DELETE_CASH_PAYMENT" ng-hide="row.entity.reversed" >
       <a data-method="delete-record" href ng-click="grid.appScope.deleteCashPayment(row.entity)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

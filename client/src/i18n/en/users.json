@@ -18,6 +18,13 @@
     "UPDATE" : "Update",
     "LAST_LOGIN" : "Last Login",
     "UPDATING_USER" : "Edit User",
-    "VIEW_USERS" : "View Users"
+    "VIEW_USERS" : "View Users",
+    "ACTIONS" : {
+      "DELETE_CASH_PAYMENT" : "Delete Cash Payment",
+      "DELETE_INVOICE" : "Delete Invoice",
+      "DELETE_PURCHASE_ORDER" : "Delete Purchase Order",
+      "DELETE_STOCK_MOVEMENT" : "Delete Stock Movement",
+      "DELETE_VOUCHER" : "Delete Voucher"
+    }
   }
 }

@@ -50,3 +50,16 @@ VALUES (3,'Euro','EUR','€',NULL,0.01);
 
 INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
 
+/**
+@author: jniles
+@date: 2021-04-14
+@desc: Add actions to allow users to delete individual record types.
+*/
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (3, 'USERS.ACTIONS.DELETE_CASH_PAYMENT' ),
+  (4, 'USERS.ACTIONS.DELETE_INVOICE' ),
+  (5, 'USERS.ACTIONS.DELETE_PURCHASE_ORDER'),
+  (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
+  (7, 'USERS.ACTIONS.DELETE_VOUCHER');
+
+CALL drop_column_if_exists('enterprise_setting', 'enable_delete_records');
