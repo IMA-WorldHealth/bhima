@@ -66,11 +66,17 @@
             <i class="fa fa-balance-scale"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.TRIAL_BALANCE</span>
           </button>
         </div>
-        <div class="toolbar-item" ng-if="JournalCtrl.canUnpostTransactions">
-          <button class="btn btn-default" ng-click="JournalCtrl.unpostTransactions()"> <i class="fa fa-undo"></i>
-            <span translate>POSTING_JOURNAL.UNPOST</span>
+
+        <div class="toolbar-item" bh-has-permission="JournalCtrl.bhConstants.actions.CAN_UNPOST_TRANSACTIONS">
+          <button
+              class="btn btn-default"
+              ng-click="JournalCtrl.unpostTransactions()"
+              ng-disabled="JournalCtrl.selection.selected.groups.length === 0">
+            <i class="fa fa-undo"></i>
+            <span class="visible-lg-inline" translate>POSTING_JOURNAL.UNPOST</span>
           </button>
         </div>
+
         <bh-search-button on-click="JournalCtrl.openSearchModal()"></bh-search-button>
 
         <div class="toolbar-item">
