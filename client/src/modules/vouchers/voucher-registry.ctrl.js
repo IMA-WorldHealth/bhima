@@ -54,7 +54,6 @@ function VoucherController(
   // date format function
   vm.format = util.formatDate;
 
-  vm.allowsRecordDeletion = allowsRecordDeletion;
   vm.showReceipt = Receipts.voucher;
 
   vm.loading = false;
@@ -293,10 +292,6 @@ function VoucherController(
       .then(isOk => {
         if (isOk) { remove(entity); }
       });
-  }
-
-  function allowsRecordDeletion() {
-    return Session.enterprise.settings.enable_delete_records;
   }
 
   /**
