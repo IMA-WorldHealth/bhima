@@ -138,7 +138,6 @@ function sendArchived(req, res, next) {
     .done();
 }
 
-
 /**
  * @function deleteArchived
  *
@@ -184,7 +183,6 @@ bhi.ma
 const template = (str, values) => {
   return Object.keys(values).reduce((formatted, key) => formatted.replace(`%${key}%`, values[key]), str);
 };
-
 
 /**
  * @function emailArchived
