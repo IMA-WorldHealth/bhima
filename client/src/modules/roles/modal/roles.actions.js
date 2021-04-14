@@ -1,6 +1,7 @@
-angular.module('bhima.controllers').controller('RoleActionsController', RoleActionsController);
+angular.module('bhima.controllers')
+  .controller('RoleActionsController', RoleActionsController);
 RoleActionsController.$inject = [
-  'data', '$uibModal', '$uibModalInstance',
+  'data', '$uibModalInstance', 'SessionService',
   'RolesService', 'SessionService', 'NotifyService',
 ];
 
@@ -10,7 +11,7 @@ RoleActionsController.$inject = [
  * @decription
  * Determines which actions can be applied to the role.
  */
-function RoleActionsController(data, $uibModal, $uibModalInstance, RolesService, session, Notify) {
+function RoleActionsController(data, $uibModalInstance, Session, RolesService, session, Notify) {
   const vm = this;
 
   vm.assignActionToRole = assignActionToRole;
@@ -47,8 +48,9 @@ function RoleActionsController(data, $uibModal, $uibModalInstance, RolesService,
     return RolesService.assignActions(param)
       .then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');
-        vm.close();
+        return Session.reload();
       })
+      .then(() => vm.close())
       .catch(Notify.handleError);
   }
 

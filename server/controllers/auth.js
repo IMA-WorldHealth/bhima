@@ -154,6 +154,16 @@ async function loadSessionInformation(user) {
 
   session.user = await db.one(sql, [user.id, user.project_id]);
 
+  sql = `
+    SELECT DISTINCT actions_id AS id FROM role_actions
+    JOIN user_role ON role_actions.role_uuid = user_role.role_uuid
+    WHERE user_role.user_id = ?
+  `;
+
+  const actions = await db.exec(sql, [user.id]);
+  // transform actions into an array of ids
+  session.actions = actions.map(action => action.id);
+
   // next make sure this user has permissions
   // we use now roles for assigning permissions to users
   sql = `
