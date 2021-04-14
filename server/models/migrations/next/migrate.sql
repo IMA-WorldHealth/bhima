@@ -61,3 +61,5 @@ INSERT INTO `actions`(`id`, `description`) VALUES
   (5, 'USERS.ACTIONS.DELETE_PURCHASE_ORDER'),
   (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
   (7, 'USERS.ACTIONS.DELETE_VOUCHER');
+
+CALL drop_column_if_exists('enterprise_setting', 'enable_delete_records');

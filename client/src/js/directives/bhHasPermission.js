@@ -7,8 +7,11 @@ bhHasPermission.$inject = ['SessionService'];
  * @function bhHasPermission
  *
  * @description
- * A sort directive to remove the underlying HTML if the Enterprise Setting is
- * not set.
+ * A sort directive to remove the underlying HTML if the user does not have the
+ * appropriate permission to access it.
+ *
+ * USAGE:
+ * <element bh-has-permission="bhConstants.actions.SOME_ACTION"></element>
  */
 function bhHasPermission(Session) {
   return {
