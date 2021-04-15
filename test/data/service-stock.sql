@@ -10,8 +10,9 @@ SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 INSERT INTO `stock_setting` (
   `enterprise_id`,
   `enable_auto_stock_accounting`,
-  `month_average_consumption`
-) VALUES (1, 0, 12);
+  `month_average_consumption`,
+  `default_purchase_interval`
+) VALUES (1, 0, 12, 0);
 
 
 -- default constant
@@ -25,9 +26,9 @@ SET @third_depot_uuid = HUID('bd4b1452-4742-e4fa-a128-246814140877');
 --
 
 INSERT INTO `depot` VALUES
-  (@depot_uuid, 'Depot Principal', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL, NULL),
-  (@second_depot_uuid, 'Depot Secondaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL),
-  (@third_depot_uuid, 'Depot Tertiaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL);
+  (@depot_uuid, 'Depot Principal', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL, NULL, 0),
+  (@second_depot_uuid, 'Depot Secondaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL, 0),
+  (@third_depot_uuid, 'Depot Tertiaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL, 0);
 
 --
 -- Set Depot Management By User
