@@ -878,6 +878,7 @@
             "CURRENCY": "Sélectionner la monnaie",
             "DEBTOR": "Entrer un Débiteur",
             "DEBTOR_GROUP": "Entrer un Groupe Débiteur",
+            "DEFAULT_PURCHASE_ORDER_INTERVAL": "L'intervalle de commande par défaut pour le calcul du stock Maximum",
             "PATIENT_GROUP": "Entrer un groupe de patients",
             "DATE": "Entrer la Date",
             "DESCRIPTION": "Entrer une description",

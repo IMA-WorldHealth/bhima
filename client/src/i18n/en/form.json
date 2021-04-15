@@ -879,6 +879,7 @@
             "DATE": "Enter a Date",
             "DEBTOR": "Enter debtor",
             "DEBTOR_GROUP": "Enter a Debtor Group",
+            "DEFAULT_PURCHASE_ORDER_INTERVAL": "The default purchase order interval for calculating Maximum stock",
             "DESCRIPTION": "Enter description",
             "DOCUMENT_NAME": "Enter document name",
             "PATIENT_GROUP": "Enter patient group",
