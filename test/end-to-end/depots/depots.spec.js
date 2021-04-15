@@ -20,6 +20,7 @@ describe('Depots Management', () => {
   const depot = {
     text : 'E2E_new_depot',
     is_warehouse : 0,
+    default_purchase_interval : 0,
   };
 
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
@@ -27,20 +28,23 @@ describe('Depots Management', () => {
   const updateDepot = {
     text : 'E2E_updated_depot',
     is_warehouse : 1,
+    default_purchase_interval : 2,
   };
 
   const setParentUpdateDepot = {
     depot : 'E2E_updated_depot',
     parent : 'Depot Principal',
+    default_purchase_interval : 0,
   };
 
   const depotByParent = {
     text : 'Depot Principal 2',
     parent : 'Depot Principal',
+    default_purchase_interval : 0,
   };
 
   it('successfully creates a new depot', async () => {
-    await page.createDepot(depot.text, false, true, helpers.data.locations);
+    await page.createDepot(depot.text, false, true, helpers.data.locations, depot.default_purchase_interval);
   });
 
   it('successfully creates a new depot by depot Parent', async () => {
@@ -48,7 +52,7 @@ describe('Depots Management', () => {
   });
 
   it('successfully edits a depot', async () => {
-    await page.editDepot(depot.text, updateDepot.text);
+    await page.editDepot(depot.text, updateDepot.text, updateDepot.default_purchase_interval);
   });
 
   it('Edits a depot, set depot without parent', async () => {

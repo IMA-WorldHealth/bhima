@@ -464,6 +464,7 @@ CREATE TABLE `depot` (
   `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
   `parent_uuid` BINARY(16) NULL,
   `dhis2_uid` VARCHAR(150) DEFAULT NULL,
+  `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
@@ -1873,7 +1874,8 @@ CREATE TABLE `stock_setting` (
   `enable_supplier_credit` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_strict_depot_distribution` TINYINT(1) NOT NULL DEFAULT 0,
   `average_consumption_algo` VARCHAR(100) NOT NULL DEFAULT 'algo_msh', -- Algo MSH
-  `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 0, -- minimum number of months for inventory delay
+  `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 0, -- minimum number of months for inventory delay)
+  `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0, -- default minimum purchase order intervall)
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
