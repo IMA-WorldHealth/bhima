@@ -50,3 +50,10 @@ VALUES (3,'Euro','EUR','€',NULL,0.01);
 
 INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
 
+/*
+ * @author: lomamech
+ * @date: 2021-04-14
+ * @description: add default purchase order interval
+*/
+ALTER TABLE stock_setting ADD COLUMN `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0;
+ALTER TABLE depot ADD COLUMN `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0;

@@ -248,6 +248,8 @@
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
+    "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Intervalle de commande par défaut (En mois)",
+    "DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT" : "Définit l'intervalle de commande par défaut",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Nombre de mois pour le calcul de la consommation moyenne mensuelle",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT": "Cela détermine le nombre de mois (N) passés à utiliser pour calculer la consommation mensuelle moyenne. L'AMC est une moyenne 'mobile', puisqu'elle utilise une fenêtre de seulement les N mois précédents pour déterminer la moyenne. Ce paramètre fixera la valeur de N.",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Activer la confirmation automatique des commandes d'achat",

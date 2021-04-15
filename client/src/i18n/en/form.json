@@ -407,6 +407,7 @@
             "DEDUCTION" : "Deduction",
             "DEFAULT": "Default",
             "DEFAULT_QUANTITY": "Default Quantity",
+            "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Default Purchase order interval (In Month)",
             "DEFAULTS": "Default Filters",
             "DEFINE_UNTIL_DATE": "Define a limit date",
             "DELAY": "Delay",
