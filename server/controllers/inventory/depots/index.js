@@ -249,7 +249,7 @@ async function update(req, res, next) {
         allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
         allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
         min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid,
-        dhis2_uid
+        dhis2_uid, default_purchase_interval
       FROM depot WHERE uuid = ?`;
     const rows = await db.exec(sql, [uid]);
 
@@ -294,8 +294,9 @@ function list(req, res, next) {
       d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
-      d.min_months_security_stock, IFNULL(BUID(d.parent_uuid), 0) as parent_uuid, d.dhis2_uid,
-      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+      d.min_months_security_stock, d.default_purchase_interval,
+      IFNULL(BUID(d.parent_uuid), 0) as parent_uuid, d.dhis2_uid, v.name as village_name,
+      s.name as sector_name, p.name as province_name, c.name as country_name
     FROM depot d
       LEFT JOIN village v ON v.uuid = d.location_uuid
       LEFT JOIN sector s ON s.uuid = v.sector_uuid
@@ -373,7 +374,8 @@ function searchByName(req, res, next) {
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
       IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid, d.dhis2_uid,
-      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+      d.default_purchase_interval, v.name as village_name, s.name as sector_name,
+      p.name as province_name, c.name as country_name
     FROM depot d
       LEFT JOIN village v ON v.uuid = d.location_uuid
       LEFT JOIN sector s ON s.uuid = v.sector_uuid
@@ -418,7 +420,7 @@ async function detail(req, res, next) {
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
       BUID(parent_uuid) parent_uuid, dhis2_uid,
-      min_months_security_stock
+      min_months_security_stock, default_purchase_interval
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
 
