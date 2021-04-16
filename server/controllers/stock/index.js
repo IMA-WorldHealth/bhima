@@ -17,7 +17,7 @@ const moment = require('moment');
 
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
-const BadRequest = require('../../lib/errors/BadRequest');
+const { BadRequest, Unauthorized } = require('../../lib/errors');
 
 const core = require('./core');
 const importing = require('./import');
@@ -476,15 +476,25 @@ async function deleteMovement(req, res, next) {
   const identifier = db.bid(req.params.document_uuid);
   const stockSettings = req.session.stock_settings;
 
+  // delete stock movement.
+  const DELETE_STOCK_MOVEMENT = 6;
+  const isUserAuthorized = req.session.actions.includes(DELETE_STOCK_MOVEMENT);
+
   try {
+
+    if (!isUserAuthorized) {
+      throw new Unauthorized(`User ${req.session.user.username} is not authorized to delete stock movements.`);
+    }
+
     // movement details for future quantity update
     const movementDetailsQuery = `
       SELECT DISTINCT BUID(m.depot_uuid) AS depot_uuid, BUID(l.inventory_uuid) AS inventory_uuid,
         m.is_exit, m.date
       FROM stock_movement m
-      JOIN lot l ON l.uuid = m.lot_uuid
+        JOIN lot l ON l.uuid = m.lot_uuid
       WHERE m.document_uuid = ?
     `;
+
     const movementDetails = await db.exec(movementDetailsQuery, [identifier]);
 
     // delete the movement(s)
@@ -514,9 +524,7 @@ async function deleteMovement(req, res, next) {
       // find transaction's record_uuid from journal
       // safely delete voucher related to record_uuid found
       const findTransactionInJournal = `
-      SELECT DISTINCT record_uuid
-      FROM posting_journal
-      WHERE reference_uuid = ?
+        SELECT DISTINCT record_uuid FROM posting_journal WHERE reference_uuid = ?
       `;
       const records = await db.exec(findTransactionInJournal, [identifier]);
       const dbPromise = records.map(item => vouchers.safelyDeleteVoucher(item.record_uuid));

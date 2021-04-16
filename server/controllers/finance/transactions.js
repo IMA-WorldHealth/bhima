@@ -4,17 +4,16 @@
  * @description
  * This module contains the DELETE route for transactions.
  *
- * @requires q
  * @requires lib/db
  * @requires controllers/finance/shared
  * @requires controllers/finance/cash
  * @requires controllers/finance/vouchers
  * @requires controllers/finance/patientInvoice
  */
-const q = require('q');
-
+const debug = require('debug')('bhima:controller:transactions');
 const shared = require('./shared');
 const db = require('../../lib/db');
+const Unauthorized = require('../../lib/errors/Unauthorized');
 
 const Cash = require('./cash');
 const Invoices = require('./patientInvoice');
@@ -49,6 +48,30 @@ function parseDocumentMapString(text) {
 }
 
 /**
+ * @functio isUserAuthorized
+ *
+ * @description
+ * This function checks if the user is authorized to delete the record from their "actions"
+ * set by their user role.
+ *
+ * @returns {Boolean} true if the user is authorized, false if not.
+ */
+function isUserAuthorized(text, actions) {
+  const DELETE_CASH_PAYMENT = 3;
+  const DELETE_INVOICE = 4;
+  const DELETE_VOUCHER = 7;
+
+  const key = text.split('.').shift();
+  const authMap = {
+    CP : DELETE_CASH_PAYMENT,
+    IV : DELETE_INVOICE,
+    VO : DELETE_VOUCHER,
+  };
+
+  return actions.includes(authMap[key]);
+}
+
+/**
  * @function deleteRoute
  *
  * @description
@@ -59,20 +82,29 @@ function parseDocumentMapString(text) {
 function deleteRoute(req, res, next) {
   const { uuid } = req.params;
 
-  deleteTransaction(uuid)
+  debug(`#delete() attempting to remove transaction ${uuid}.`);
+
+  deleteTransaction(uuid, req.session.actions)
     .then(() => {
+      debug(`#delete() successfully removed transaction ${uuid}.`);
       res.sendStatus(201);
     })
     .catch(next)
     .done();
 }
 
-function deleteTransaction(uuid) {
-
+function deleteTransaction(uuid, actions) {
   return shared.getRecordTextByUuid(uuid)
     .then(documentMap => {
+      debug(`#delete() resolved transaction ${uuid} to ${documentMap.text}.`);
+
       // route to do the correct safe deletion method.
       const safeDeleteFn = parseDocumentMapString(documentMap.text);
+
+      if (!isUserAuthorized(documentMap.text, actions)) {
+        debug(`#delete() user is not autorized to remove ${documentMap.text}!`);
+        throw new Unauthorized(`User is not authorized to remove ${documentMap.text}.`);
+      }
 
       // run the safe deletion method
       return safeDeleteFn(uuid);
@@ -98,13 +130,12 @@ function commentTransactions(req, res, next) {
   const journalUpdate = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
   const ledgerUpdate = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
 
-  q.all([
+  Promise.all([
     db.exec(journalUpdate, [comment, [uids]]),
     db.exec(ledgerUpdate, [comment, [uids]]),
   ])
     .then(() => {
       res.sendStatus(200);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }

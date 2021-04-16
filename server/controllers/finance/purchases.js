@@ -16,7 +16,7 @@ const q = require('q');
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
-const BadRequest = require('../../lib/errors/BadRequest');
+const { BadRequest, Unauthorized } = require('../../lib/errors');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
@@ -119,12 +119,12 @@ function lookupPurchaseOrder(uid) {
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
       p.status_id, ps.text AS status
     FROM purchase AS p
-    JOIN document_map dm ON p.uuid = dm.uuid
-    JOIN project ON p.project_id = project.id
-    JOIN supplier AS s ON s.uuid = p.supplier_uuid
-    JOIN project AS pr ON p.project_id = pr.id
-    JOIN user AS u ON u.id = p.user_id
-    JOIN purchase_status AS ps ON ps.id = p.status_id
+      JOIN document_map dm ON p.uuid = dm.uuid
+      JOIN project ON p.project_id = project.id
+      JOIN supplier AS s ON s.uuid = p.supplier_uuid
+      JOIN project AS pr ON p.project_id = pr.id
+      JOIN user AS u ON u.id = p.user_id
+      JOIN purchase_status AS ps ON ps.id = p.status_id
     WHERE p.uuid = ?;
   `;
 
@@ -600,12 +600,17 @@ function purchaseBalance(req, res, next) {
  */
 async function remove(req, res, next) {
   const pid = db.bid(req.params.uuid);
+  const DELETE_PURCHASE_ORDER = 5;
 
   try {
     const record = await db.one('SELECT * FROM purchase WHERE uuid = ?', pid);
 
     if (record.status_id !== PURCHASE_STATUS_WAITING_CONFIRMATION) {
       throw new BadRequest('Can only remove purchase orders that have been confirmed.');
+    }
+
+    if (!req.session.actions.includes(DELETE_PURCHASE_ORDER)) {
+      throw new Unauthorized(`User ${req.session.user.username} is not allowed to delete purchase orders.`);
     }
 
     // there is no financial writings about purchase orders, so we simply need to delete it
