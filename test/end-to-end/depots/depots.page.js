@@ -22,9 +22,11 @@ class DepotPage {
    * @param {boolean} hasLocation if true it will enable the option of adding location
    * @param {array} location an array of location as [country_uuid, province_uuid, sector_uuid, village_uuid]
    */
-  async createDepot(name, hasWarehouse, hasLocation, location) {
+  async createDepot(name, hasWarehouse, hasLocation, location, defaultPurchaseInterval) {
     await FU.buttons.create();
     await FU.input('DepotModalCtrl.depot.text', name);
+    await FU.input('DepotModalCtrl.depot.default_purchase_interval', defaultPurchaseInterval);
+
 
     if (hasWarehouse) {
       await $('[name="is_warehouse"]').click();
@@ -53,6 +55,7 @@ class DepotPage {
     await $(`${findul} a[data-method="add-dependant-depot"]`).click();
 
     await FU.input('DepotModalCtrl.depot.text', item.text);
+    await FU.input('DepotModalCtrl.depot.default_purchase_interval', item.default_purchase_interval);
 
     if (hasLocation) {
       await $('[name="has_location"]').click();
@@ -76,12 +79,13 @@ class DepotPage {
   /**
    * simulate a click on the edit link of a depot
    */
-  async editDepot(text, newDepotText) {
+  async editDepot(text, newDepotText, defaultPurchaseInterval) {
     const row = new GridRow(text);
     await row.dropdown().click();
     await row.edit().click();
 
     await FU.input('DepotModalCtrl.depot.text', newDepotText);
+    await FU.input('DepotModalCtrl.depot.default_purchase_interval', defaultPurchaseInterval);
 
     // entry/exit permissions
     await $('[name="allow_entry_purchase"]').click();
