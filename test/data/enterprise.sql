@@ -24,6 +24,5 @@ INSERT INTO `enterprise_setting` (
   enterprise_id,
   enable_price_lock,
   enable_password_validation,
-  enable_delete_records,
   enable_auto_email_report
-) VALUES (1, 0, 0, 1, 1);
+) VALUES (1, 0, 0, 1);
