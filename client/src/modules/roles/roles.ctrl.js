@@ -8,8 +8,7 @@ RolesController.$inject = [
 
 function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, uiGridConstants) {
   const vm = this;
-
-  vm.canEditRoles = false;
+  vm.bhConstants = bhConstants;
 
   vm.createUpdateRoleModal = function createUpdateRoleModal(selectedRole = {}) {
     $uibModal.open({
@@ -60,18 +59,8 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
       });
   };
 
-  function checkRoleEditonAllowability() {
-    Roles.userHasAction(bhConstants.actions.CAN_EDIT_ROLES)
-      .then(response => {
-        vm.canEditRoles = response.data;
-      })
-      .catch(Notify.handleError);
-  }
-
   function loadRoles() {
     vm.loading = true;
-
-    checkRoleEditonAllowability();
 
     Roles.read()
       .then(roles => {
@@ -110,6 +99,7 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
   };
 
   loadRoles();
+
   /**
    * @function toggleInlineFilter
    *

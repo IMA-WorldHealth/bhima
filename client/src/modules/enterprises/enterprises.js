@@ -219,7 +219,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   vm.enablePriceLockSetting = proxy('enable_price_lock');
   vm.enablePrepaymentsSetting = proxy('enable_prepayments');
-  vm.enableDeleteRecordsSetting = proxy('enable_delete_records');
   vm.enablePasswordValidationSetting = proxy('enable_password_validation');
   vm.enableBalanceOnInvoiceReceipSetting = proxy('enable_balance_on_invoice_receipt');
   vm.enableBarcodesSetting = proxy('enable_barcodes');

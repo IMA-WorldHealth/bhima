@@ -217,9 +217,8 @@ function PurchaseListController(
       });
   }
 
-  vm.allowsRecordDeletion = function allowsRecordDeletion(purchase) {
-    return Session.enterprise.settings.enable_delete_records
-      && purchase.status_id === vm.status.WAITING_CONFIRMATION;
+  vm.allowRecordDeletion = function allowRecordDeletion(purchase) {
+    return purchase.status_id === vm.status.WAITING_CONFIRMATION;
   };
 
   /**
