@@ -247,6 +247,8 @@
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "The stock supply should provide at least this many months of stock for the depot involved.",
+    "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Default Purchase order interval (In Month)",
+    "DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT" : "Sets the default minimum order interval",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION": "Number of months for calculating the average monthly consumption",
     "DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT": "This determines the number of months (N) in the past to use to estimate the average monthly consumption. The AMC is a 'moving' average, since it uses a window of only the previous N months to determine the average. This setting will set the value of N.",
     "ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL" : "Enable automatic confirmation of purchase orders",

@@ -60,12 +60,31 @@
             <input type="number" class="form-control" autocomplete="off"
               name="min_delay"
               ng-model="StockSettingsCtrl.settings.min_delay"
-              ng-change="StockSettingsCtrl.setMinDelay(value)" min="0"
+              ng-change="StockSettingsCtrl.setMinDelay(value)" min="1"
               placeholder="0.00">
             <span class="help-block" translate>
               SETTINGS.MIN_PURCHASE_DELAY_HELP_TEXT
             </span>
             <div class="help-block" ng-messages="StockSettingsForm.min_delay.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_purchase_interval.$invalid }">
+            <label class="control-label" translate>
+              SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL
+            </label>
+            <input type="number" class="form-control" autocomplete="off"
+              name="default_purchase_interval"
+              ng-model="StockSettingsCtrl.settings.default_purchase_interval"
+              ng-change="StockSettingsCtrl.setPurchaseInterval(value)" min="0"
+              placeholder="0.00">
+            <span class="help-block" translate>
+              SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT
+            </span>
+            <div class="help-block" ng-messages="StockSettingsForm.default_purchase_interval.$error"
               ng-show="StockSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>

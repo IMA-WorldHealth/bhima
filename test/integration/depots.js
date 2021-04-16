@@ -13,6 +13,7 @@ describe('(/depots) The depots API ', () => {
     enterprise_id : 1,
     is_warehouse : 0,
     parent_uuid : 0,
+    default_purchase_interval : 0,
   };
 
   // second depot object
@@ -21,6 +22,7 @@ describe('(/depots) The depots API ', () => {
     enterprise_id : 1,
     is_warehouse : 0,
     parent_uuid : 0,
+    default_purchase_interval : 0,
   };
 
   // depot object with missing uuid
@@ -29,6 +31,7 @@ describe('(/depots) The depots API ', () => {
     enterprise_id : 1,
     is_warehouse : 0,
     parent_uuid : 0,
+    default_purchase_interval : 0,
   };
 
   // removable depot
@@ -37,6 +40,7 @@ describe('(/depots) The depots API ', () => {
     enterprise_id : 1,
     is_warehouse : 1,
     parent_uuid : 0,
+    default_purchase_interval : 0,
   };
 
   // depot with distribution depots
@@ -46,6 +50,7 @@ describe('(/depots) The depots API ', () => {
     is_warehouse : 1,
     parent_uuid : 0,
     allowed_distribution_depots : [principalDepotUuid, secondaryDepotUuid],
+    default_purchase_interval : 0,
   };
 
   const editDepot = {
@@ -60,6 +65,7 @@ describe('(/depots) The depots API ', () => {
     allow_exit_transfer : 1,
     allow_exit_loss : 1,
     parent_uuid : secondaryDepotUuid,
+    default_purchase_interval : 0,
   };
 
   it('POST /depots create a new depot in the database', () => {
