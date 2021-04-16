@@ -147,7 +147,6 @@ class Transaction {
               connection.destroy();
             });
 
-
             // increment the number of restarts
             this.restarts += 1;
             const isDeadlock = (err.code === 'ER_LOCK_DEADLOCK');
