@@ -18,6 +18,13 @@
     "UPDATE" : "Éditer",
     "LAST_LOGIN" : "Dernière connexion",
     "UPDATING_USER" : "Mise à jour utilisateur",
-    "VIEW_USERS" : "View Users"
+    "VIEW_USERS" : "View Users",
+    "ACTIONS" : {
+      "DELETE_CASH_PAYMENT" : "Supprimer les paiements",
+      "DELETE_INVOICE" : "Supprimer les factures",
+      "DELETE_PURCHASE_ORDER" : "Supprimer les ordres d'achat",
+      "DELETE_STOCK_MOVEMENT" : "Supprimer les mouvements de stock",
+      "DELETE_VOUCHER" : "Supprimer les bordereaux"
+    }
   }
 }
