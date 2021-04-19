@@ -43,7 +43,6 @@ function CashPaymentRegistryController(
   vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
   vm.download = Cash.download;
 
-  vm.allowsRecordDeletion = allowsRecordDeletion;
   vm.openBarcodeScanner = openBarcodeScanner;
 
   const columnDefs = [{
@@ -219,10 +218,6 @@ function CashPaymentRegistryController(
       .then((isOk) => {
         if (isOk) { remove(entity); }
       });
-  }
-
-  function allowsRecordDeletion() {
-    return Session.enterprise.settings.enable_delete_records;
   }
 
   /**

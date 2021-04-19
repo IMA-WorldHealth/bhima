@@ -6,7 +6,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', 'GridExportService',
   'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
-  'util', 'RolesService',
+  'util',
 ];
 
 /**
@@ -33,7 +33,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions, util, Roles,
+  $httpParamSerializer, Transactions, util,
 ) {
   // store journal data
   const journalStore = new Store({
@@ -49,6 +49,8 @@ function JournalController(
   const cache = AppCache(cacheKey.concat('-module'));
   const vm = this;
 
+  vm.bhConstants = bhConstants;
+
   vm.format = util.formatDate;
 
   // number of all of the transactions in the system
@@ -62,8 +64,6 @@ function JournalController(
   vm.languages = Languages;
   vm.gridApi = {};
   vm.canUnpostTransactions = false;
-
-  checkUnpostTransactionsAllowability();
 
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
@@ -91,14 +91,6 @@ function JournalController(
       })
       .catch(Notify.handleError);
   };
-
-  function checkUnpostTransactionsAllowability() {
-    Roles.userHasAction(bhConstants.actions.CAN_UNPOST_TRANSACTIONS)
-      .then(response => {
-        vm.canUnpostTransactions = response.data;
-      })
-      .catch(Notify.handleError);
-  }
 
   // update local rows
   function updateGridComment(rows, comment) {

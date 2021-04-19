@@ -59,10 +59,27 @@ ALTER TABLE `stock_setting`
 UPDATE stock_setting SET min_delay = 1;
 
 /**
-  * @author: jmcameron
-  * @date: 2021-04-19
-  * @desc: Add support for Euros
-  */
+@author: jniles
+@date: 2021-04-14
+@desc: Add actions to allow users to delete individual record types.
+These must match the bhConstants on both the client and server.
+See also #1221.
+*/
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (3, 'USERS.ACTIONS.DELETE_CASH_PAYMENT' ),
+  (4, 'USERS.ACTIONS.DELETE_INVOICE' ),
+  (5, 'USERS.ACTIONS.DELETE_PURCHASE_ORDER'),
+  (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
+  (7, 'USERS.ACTIONS.DELETE_VOUCHER');
+
+CALL drop_column_if_exists('enterprise_setting', 'enable_delete_records');
+
+
+/**
+ * @author: jmcameron
+ * @date: 2021-04-19
+ * @desc: Add support for Euros
+ */
 INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
        VALUES (3,'Euro','EUR','€',NULL,0.01);
 
