@@ -72,6 +72,8 @@ UPDATE stock_setting SET min_delay = 1;
 @author: jniles
 @date: 2021-04-14
 @desc: Add actions to allow users to delete individual record types.
+These must match the bhConstants on both the client and server.
+See also #1221.
 */
 INSERT INTO `actions`(`id`, `description`) VALUES
   (3, 'USERS.ACTIONS.DELETE_CASH_PAYMENT' ),

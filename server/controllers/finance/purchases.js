@@ -17,6 +17,7 @@ const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
 const { BadRequest, Unauthorized } = require('../../lib/errors');
+const { DELETE_PURCHASE_ORDER } = require('../../config/constants').actions;
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
@@ -600,7 +601,6 @@ function purchaseBalance(req, res, next) {
  */
 async function remove(req, res, next) {
   const pid = db.bid(req.params.uuid);
-  const DELETE_PURCHASE_ORDER = 5;
 
   try {
     const record = await db.one('SELECT * FROM purchase WHERE uuid = ?', pid);

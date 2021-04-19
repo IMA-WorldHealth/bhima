@@ -18,6 +18,7 @@ const moment = require('moment');
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const { BadRequest, Unauthorized } = require('../../lib/errors');
+const { DELETE_STOCK_MOVEMENT } = require('../../config/constants').actions;
 
 const core = require('./core');
 const importing = require('./import');
@@ -477,7 +478,6 @@ async function deleteMovement(req, res, next) {
   const stockSettings = req.session.stock_settings;
 
   // delete stock movement.
-  const DELETE_STOCK_MOVEMENT = 6;
   const isUserAuthorized = req.session.actions.includes(DELETE_STOCK_MOVEMENT);
 
   try {

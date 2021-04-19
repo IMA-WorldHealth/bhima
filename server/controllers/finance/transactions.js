@@ -14,6 +14,11 @@ const debug = require('debug')('bhima:controller:transactions');
 const shared = require('./shared');
 const db = require('../../lib/db');
 const Unauthorized = require('../../lib/errors/Unauthorized');
+const {
+  DELETE_CASH_PAYMENT,
+  DELETE_INVOICE,
+  DELETE_VOUCHER,
+} = require('../../config/constants').actions;
 
 const Cash = require('./cash');
 const Invoices = require('./patientInvoice');
@@ -57,16 +62,15 @@ function parseDocumentMapString(text) {
  * @returns {Boolean} true if the user is authorized, false if not.
  */
 function isUserAuthorized(text, actions) {
-  const DELETE_CASH_PAYMENT = 3;
-  const DELETE_INVOICE = 4;
-  const DELETE_VOUCHER = 7;
-
   const key = text.split('.').shift();
   const authMap = {
     CP : DELETE_CASH_PAYMENT,
     IV : DELETE_INVOICE,
     VO : DELETE_VOUCHER,
   };
+
+  console.log('authMap:', authMap);
+  console.log('actions:', actions);
 
   return actions.includes(authMap[key]);
 }
