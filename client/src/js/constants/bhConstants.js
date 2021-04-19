@@ -13,6 +13,11 @@ function constantConfig() {
     actions : {
       CAN_EDIT_ROLES : 1,
       CAN_UNPOST_TRANSACTIONS : 2,
+      DELETE_CASH_PAYMENT : 3,
+      DELETE_INVOICE : 4,
+      DELETE_PURCHASE_ORDER : 5,
+      DELETE_STOCK_MOVEMENT : 6,
+      DELETE_VOUCHER : 7,
     },
     accounts : {
       ROOT  : 0,

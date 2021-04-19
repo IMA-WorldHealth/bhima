@@ -1,6 +1,6 @@
 <div
   class="ui-grid-cell-contents text-right"
-  ng-if="grid.appScope.canEditRoles"
+  bh-has-permission="grid.appScope.bhConstants.actions.CAN_EDIT_ROLES"
   data-row="{{row.entity.label}}"
   uib-dropdown dropdown-append-to-body>
 
@@ -32,7 +32,9 @@
         <i class="fa fa-user"></i> <span translate>USERS.VIEW_USERS</span>
       </a>
     </li>
+
     <li class="divider"></li>
+
     <li>
       <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
         <span class="text-danger">
