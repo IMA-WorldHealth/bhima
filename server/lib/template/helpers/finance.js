@@ -15,7 +15,7 @@ const FC_FMT = {
 const EUR_FMT = {
   symbol : '€',
   precision : 2,
-  thousand : '&#8239;', // thin non-breaking space
+  thousand : '&nbsp;', // thin non-breaking space
   decimal : ',',
   format : '%v&nbsp;%s', // value before symbol
 };
@@ -25,7 +25,6 @@ const FORMATS = [null, FC_FMT, USD_FMT, EUR_FMT]; // NB: Indeces must match curr
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
 function currency(value = 0, currencyId) {
   const fmtNum = Number(currencyId);
-  // if currencyId is not defined, defaults to USD.
   const fmt = fmtNum > 0 ? FORMATS[fmtNum] : USD_FMT;
   return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
 }

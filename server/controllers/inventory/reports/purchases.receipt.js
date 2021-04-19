@@ -32,6 +32,7 @@ async function build(req, res, next) {
 
     // format the receipt and ship it off to the client
     const purchase = await Purchases.lookup(req.params.uuid);
+    report.currency_id = purchase.currency_id;
     const result = await report.render({ purchase });
     res.set(result.headers).send(result.report);
   } catch (e) {
