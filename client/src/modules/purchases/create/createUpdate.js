@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
-  '$state', '$q',
+  'CurrencyService', 'ExchangeRateService', '$state', '$q',
 ];
 
 /**
@@ -15,12 +15,14 @@ PurchaseOrderController.$inject = [
  * order create/update modules.
  */
 function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
-  Session, util, Receipts, bhConstants, Stock, $state, $q) {
+  Session, util, Receipts, bhConstants, Stock,
+  Currencies, Exchange, $state, $q) {
   const vm = this;
+
+  vm.bhConstants = bhConstants;
 
   // create a new purchase order form
   vm.order = new PurchaseOrder('PurchaseOrder');
-  vm.bhConstants = bhConstants;
 
   const isUpdateState = ($state.params.uuid && $state.params.uuid.length > 0);
 
@@ -30,6 +32,14 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   vm.loadingState = false;
   vm.optimalPurchase = optimalPurchase;
   vm.optimalPO = false;
+  vm.handleChange = handleUIGridChange;
+
+  vm.format = Currencies.format;
+  vm.symbol = Currencies.symbol;
+  vm.hasMultipleCurrencies = false;
+  vm.rate = {
+    date : new Date(),
+  };
 
   const cols = [{
     field : 'status',
@@ -75,6 +85,8 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html',
   }];
 
+
+
   // grid options for the purchase order grid
   const gridOptions = {
     appScopeProvider : vm,
@@ -83,6 +95,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     columnDefs : cols,
     onRegisterApi,
     data : vm.order.store.data,
+  };
+
+  vm.selectCurrency = () => {
+    vm.order.setCurrencyId(vm.rate.currency.id);
+    vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
+    vm.order.setExchangeRate(vm.currentExchangeRate);
   };
 
   // this function will be called whenever items change in the grid.
@@ -201,26 +219,58 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
 
   function startup() {
     clear();
+    vm.loadingState = true;
 
-    // read the previous purchase order from the database for modification
-    if (isUpdateState) {
+    // Load the currencies and exchange rates
+    Currencies.read()
+      .then((currencies) => {
+        vm.currencies = currencies;
 
-      // we are using this $q.all() construction to deal with the
-      // race condition of not having loaded inventory before
-      // trying to set up the purchase form.
-      $q.all([
-        Purchases.read($state.params.uuid),
-        vm.order.ready(),
-      ])
-        .then(([data]) => {
-          vm.order.setupFromPreviousPurchaseOrder(data);
-        })
-        .catch(err => {
-          // if we can't find this uuid, reroute to the create state
-          Notify.handleError(err);
-          $state.go('purchasesCreate');
-        });
-    }
+        // use the first currency in the list as the default
+        [vm.rate.currency] = vm.currencies;
+
+        // if there are more than a single other currency (besides the enterprise currency)
+        // show the currency selection input
+        if (vm.currencies.length > 1) {
+          vm.hasMultipleCurrencies = true;
+        }
+
+        // Update the currency/exchange info
+        vm.order.setCurrencyId(vm.rate.currency.id);
+
+        return Exchange.read({ limit : 10 });
+      })
+      .then((rates) => {
+        vm.rates = rates;
+        vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
+        vm.order.setExchangeRate(vm.currentExchangeRate);
+
+        // read the previous purchase order from the database for modification
+        if (isUpdateState) {
+          // we are using this $q.all() construction to deal with the
+          // race condition of not having loaded inventory before
+          // trying to set up the purchase form.
+          $q.all([
+            Purchases.read($state.params.uuid),
+            vm.order.ready(),
+          ])
+            .then(([data]) => {
+              vm.order.setupFromPreviousPurchaseOrder(data);
+              vm.rate.currency = vm.currencies.find(curr => curr.id === vm.order.details.currency_id);
+              vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
+              vm.order.setExchangeRate(vm.currentExchangeRate);
+            })
+            .catch(err => {
+              // if we can't find this uuid, reroute to the create state
+              Notify.handleError(err);
+              $state.go('purchasesCreate');
+            });
+        }
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loadingState = false;
+      });
   }
 
   // bind methods
@@ -234,8 +284,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     if (isUpdateState) { $state.go('purchasesCreate'); }
     clear();
   };
-
-  vm.handleChange = handleUIGridChange;
 
   startup();
 }

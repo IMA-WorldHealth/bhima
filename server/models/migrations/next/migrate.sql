@@ -40,16 +40,6 @@ CALL drop_column_if_exists('lots', 'entry_date');
 */
 ALTER TABLE `lot` MODIFY `origin_uuid` BINARY(16) NULL;
 
-/**
-  * @author: jmcameron
-  * @date: 2021-04-08
-  * @desc: Add support for Euros
-  */
-INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
-VALUES (3,'Euro','EUR','€',NULL,0.01);
-
-INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
-
 /*
  * @author: lomamech
  * @date: 2021-04-14
@@ -67,3 +57,14 @@ ALTER TABLE `stock_setting`
 	CHANGE COLUMN `min_delay` `min_delay` DECIMAL(19,4) NOT NULL DEFAULT '1' AFTER `average_consumption_algo`;
 
 UPDATE stock_setting SET min_delay = 1;
+
+/**
+  * @author: jmcameron
+  * @date: 2021-04-19
+  * @desc: Add support for Euros
+  */
+INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
+       VALUES (3,'Euro','EUR','€',NULL,0.01);
+
+INSERT IGNORE INTO `exchange_rate`
+       VALUES (3, 1, @EUR, 0.84, NOW());

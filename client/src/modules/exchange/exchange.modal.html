@@ -39,11 +39,11 @@
       on-change="ModalCtrl.onDateChange(date)">
     </bh-date-editor>
 
-    <p>
+    <div>
       <span translate>EXCHANGE.CURRENT_RATE</span>:
         <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
         <i><span translate>FORM.INFO.PER</span> {{ModalCtrl.enterprise.currencySymbol}}</i>
-    </p>
+    </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
