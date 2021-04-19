@@ -105,5 +105,7 @@ function StockSettingsController(
 
   vm.setMinDelay = () => { $touched = true; };
 
+  vm.setPurchaseInterval = () => { $touched = true; };
+
   startup();
 }

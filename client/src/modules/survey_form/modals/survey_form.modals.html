@@ -119,18 +119,18 @@
         </div>
       </div>
     </div>
+
     <!-- hint -->
     <div class="form-group">
       <label class="control-label" translate>FORM.LABELS.HINT</label>
-      <div>
         <textarea
           ng-model="SurveyFormModalCtrl.surveyForm.hint"
           name="hint"
           class="form-control"
           rows="4">
         </textarea>
-      </div>
     </div>
+
     <!-- required -->
     <div class="checkbox">
       <label>
@@ -140,15 +140,12 @@
           ng-true-value="1"
           ng-false-value="0"
           ng-model="SurveyFormModalCtrl.surveyForm.required">
-        <span translate>
-          <strong>
-            FORM.LABELS.REQUIRED
-          </strong>
-        </span>
+          <strong translate>FORM.LABELS.REQUIRED</strong>
       </label>
     </div>
 
-    <hr>
+    <hr />
+
     <!-- default -->
     <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.default.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DEFAULT</label>

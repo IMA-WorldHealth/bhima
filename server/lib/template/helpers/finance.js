@@ -24,7 +24,6 @@ const FORMATS = [null, FC_FMT, USD_FMT, EUR_FMT]; // NB: Indeces must match curr
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
 function currency(value = 0, currencyId) {
-  // if currencyId is not defined, defaults to USD.
   const fmtNum = Number(currencyId);
   const fmt = fmtNum > 0 ? FORMATS[fmtNum] : USD_FMT;
   return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));

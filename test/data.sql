@@ -615,9 +615,9 @@ SET @second_depot_uuid = HUID('d4bb1452-e4fa-4742-a281-814140246877');
 SET @third_deposit_uuid = HUID('bd4b1452-4742-e4fa-a128-246814140877');
 
 INSERT INTO `depot` VALUES
-  (@depot_uuid, 'Depot Principal', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL, NULL),
-  (@second_depot_uuid, 'Depot Secondaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL),
-  (@third_deposit_uuid, 'Depot Tertiaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL);
+  (@depot_uuid, 'Depot Principal', NULL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 2, NULL, NULL, 0),
+  (@second_depot_uuid, 'Depot Secondaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL, 0),
+  (@third_deposit_uuid, 'Depot Tertiaire', NULL, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 3, NULL, NULL, 0);
 
 
 -- Set Depot Management By User
@@ -642,7 +642,7 @@ INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, 
   (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A',	0,	3.1800,	DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine, HUID('1908da7a-7892-48d7-a924-be647e5215ef'));
 
 -- stock settings (go with defaults)
-INSERT INTO `stock_setting` (`enterprise_id`, `enable_auto_stock_accounting`, `month_average_consumption`, `average_consumption_algo`) VALUES (1, 0, 6, 'algo_msh');
+INSERT INTO `stock_setting` (`enterprise_id`, `enable_auto_stock_accounting`, `month_average_consumption`, `average_consumption_algo`, `default_purchase_interval`) VALUES (1, 0, 6, 'algo_msh', 0);
 
 -- stock lots movements
 INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`, `entity_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `period_id`, `user_id`) VALUES

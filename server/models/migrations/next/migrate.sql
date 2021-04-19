@@ -34,13 +34,37 @@ CALL drop_column_if_exists('lots', 'quantity');
 CALL drop_column_if_exists('lots', 'entry_date');
 
 /**
+* @author: jniles
+* @date: 2021-04-02
+* @desc: make the origin_uuid NULL by default.
+*/
+ALTER TABLE `lot` MODIFY `origin_uuid` BINARY(16) NULL;
+
+/*
+ * @author: lomamech
+ * @date: 2021-04-14
+ * @description: add default purchase order interval
+*/
+ALTER TABLE stock_setting ADD COLUMN `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0;
+ALTER TABLE depot ADD COLUMN `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0;
+
+/*
+ * @author: lomamech
+ * @date: 2021-04-16
+ * @description: Set the default value for the minimum waiting time to 1
+*/
+ALTER TABLE `stock_setting`
+	CHANGE COLUMN `min_delay` `min_delay` DECIMAL(19,4) NOT NULL DEFAULT '1' AFTER `average_consumption_algo`;
+
+UPDATE stock_setting SET min_delay = 1;
+
+/**
   * @author: jmcameron
-  * @date: 2021-04-08
+  * @date: 2021-04-19
   * @desc: Add support for Euros
   */
 INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`)
-VALUES
-  (3,'Euro','EUR','€',NULL,0.01);
+       VALUES (3,'Euro','EUR','€',NULL,0.01);
+
 INSERT IGNORE INTO `exchange_rate`
-VALUES
-  (3, 1, @EUR, 0.84, NOW());
+       VALUES (3, 1, @EUR, 0.84, NOW());

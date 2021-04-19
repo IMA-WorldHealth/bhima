@@ -139,7 +139,6 @@ function getLotFilters(parameters) {
     'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
 
   filters.period('defaultPeriod', 'date');
-  filters.period('defaultPeriodEntry', 'entry_date', 'l');
   filters.period('period', 'date');
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
@@ -245,7 +244,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
-      d.min_months_security_stock,
+      d.min_months_security_stock, d.default_purchase_interval,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
@@ -315,7 +314,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
  * inventory/depot pairings in the array.  It then creates a mapping for the CMMs in memory and uses
  * those to compute the relevant indicators.
  */
-async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo) {
+async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo, defaultPurchaseInterval) {
   if (!lots.length) return [];
 
   // NOTE(@jniles) - this is a developer sanity check. Fail _hard_ if the query is underspecified
@@ -344,6 +343,7 @@ async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsump
   const getCMMForLot = (depotUuid, inventoryUuid) => cmmMap.get(`${depotUuid}-${inventoryUuid}`);
 
   lots.forEach(lot => {
+    lot.enterprisePurchaseInterval = defaultPurchaseInterval;
     const lotCMM = getCMMForLot(lot.depot_uuid, lot.inventory_uuid);
     if (lotCMM) {
       lot.cmms = lotCMM;
@@ -546,7 +546,14 @@ function computeInventoryIndicators(inventories) {
     // Compute Maximum Stock
     // The maximum stock is the minumum stock plus the amount able to be consumed in a
     // single purchase interval.
-    inventory.S_MAX = (CMM * inventory.purchase_interval) + inventory.S_MIN; // stock maximum
+
+    // Here we are looking for the maximum order interval defined either
+    // at the level of the company, the depot or the inventory
+    const purchaseInterval = Math.max(
+      inventory.enterprisePurchaseInterval, inventory.default_purchase_interval, inventory.purchase_interval,
+    );
+
+    inventory.S_MAX = (CMM * purchaseInterval) + inventory.S_MIN; // stock maximum
 
     // Compute Months of Stock Remaining
     // The months of stock remaining is the quantity in stock divided by the Average
@@ -691,7 +698,7 @@ async function getInventoryQuantityAndConsumption(params) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
-      d.text AS depot_text, d.min_months_security_stock,
+      d.text AS depot_text, d.min_months_security_stock, d.default_purchase_interval,
       l.unit_cost, l.expiration_date,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
@@ -716,7 +723,8 @@ async function getInventoryQuantityAndConsumption(params) {
   if (filteredRows.length === 0) { return []; }
 
   const settingsql = `
-    SELECT month_average_consumption, average_consumption_algo, min_delay FROM stock_setting WHERE enterprise_id = ?
+    SELECT month_average_consumption, average_consumption_algo, min_delay, default_purchase_interval
+    FROM stock_setting WHERE enterprise_id = ?
   `;
 
   const opts = await db.one(settingsql, filteredRows[0].enterprise_id);
@@ -727,7 +735,9 @@ async function getInventoryQuantityAndConsumption(params) {
   });
 
   // add the CMM
-  filteredRows = await getBulkInventoryCMM(filteredRows, opts.month_average_consumption, opts.average_consumption_algo);
+  filteredRows = await getBulkInventoryCMM(
+    filteredRows, opts.month_average_consumption, opts.average_consumption_algo, opts.default_purchase_interval,
+  );
 
   if (_status) {
     filteredRows = filteredRows.filter(row => row.status === _status);

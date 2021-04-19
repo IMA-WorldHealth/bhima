@@ -201,6 +201,7 @@ function StockDefineLotsModalController(
 
   function getFirstEmptyLot() {
     let line;
+
     for (let i = 0; i < vm.form.rows.length; i++) {
       const row = vm.form.rows[i];
       if (!row.lot || row.lot.length === 0) {
@@ -208,6 +209,7 @@ function StockDefineLotsModalController(
         break;
       }
     }
+
     return line;
   }
 
