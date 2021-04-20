@@ -1,7 +1,7 @@
 {
   "CURRENCY_SYM": "€",
   "DECIMAL_SEP": ",",
-  "GROUP_SEP": "&#8239;",
+  "GROUP_SEP": "\u00a0",
   "PATTERNS": [
     {
       "gSize": 3,

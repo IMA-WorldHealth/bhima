@@ -6,6 +6,8 @@
     "ENTERPRISE_CURRENCY" : "Enterprise Currency",
     "EXCHANGE_RATES" : "Exchange Rate(s)",
     "INVOICE_DISCLAIMER" : "Exchange rate based on the latest enterprise exchange:",
+    "MISSING_EXCHANGE_RATES": "The exchange for some currencies have not be defined!",
+    "MUST_DEFINE_EXCHANGE_RATES_FIRST": "The exchange rates for all currencies be defined first!",
     "NEW_RATE" : "New Exchange Rate",
     "ON" : "on",
     "FOR" : "for",
