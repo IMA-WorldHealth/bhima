@@ -6,6 +6,8 @@
     "ENTERPRISE_CURRENCY" : "Monnaie de l'entreprise",
     "EXCHANGE_RATES" : "le taux de change",
     "INVOICE_DISCLAIMER" : "Taux de Change basé sur le dernier taux de l'entreprise",
+    "MISSING_EXCHANGE_RATES": "Les taux de change de certaines monnaies n'ont pas été définis !",
+    "MUST_DEFINE_EXCHANGE_RATES_FIRST": "Les taux de change de toutes les monnaies doivent d'abord être définis !",
     "NEW_RATE" : "Nouveau taux",
     "RATE_SET" : "Taux configuré",
     "REVIEW" : "Revoir le taux",

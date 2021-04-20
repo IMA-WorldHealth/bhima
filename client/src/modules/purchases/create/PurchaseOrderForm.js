@@ -31,6 +31,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // bind the cache key
     this.cache = AppCache(cacheKey);
 
+    // Save a default for the current exchange rate
+    this.currentExchangeRate = 1.0;
+
     // set up the inventory
     // this will be referred to as PurchaseOrderForm.inventory.available.data
     this.inventory = new Pool({ identifier : 'uuid', data : [] });
@@ -80,6 +83,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     this.details.date = new Date(order.date);
     this.details.cost = order.cost;
+    this.details.currency_id = order.currency_id;
     this.details.note = order.note;
     this.details.supplier_uuid = order.supplier_uuid;
 
@@ -205,8 +209,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
       // do not sum the row if the row is invalid
       if (unit._invalid) { return value; }
-
-      unit.total = unit.unit_price * unit.quantity;
+      unit.total = unit.unit_price * unit.quantity; // NB: In selected currency
       return unit.total + value;
     }, 0);
 
@@ -299,7 +302,48 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // configure the PurchaseOrderFormItem with the inventory values
     item.configure(inventoryItem);
 
+    // Inventory item prices are kept in the enterprise currency
+    // Unit prices of items in an order are kept in the selected currency
+    // so we need to fix the unit price.
+    item.unit_price = inventoryItem.price * this.currentExchangeRate;
+
     // make sure to validate and calculate new totals
+    this.digest();
+  };
+
+  /**
+   * @method setCurrencyId
+   *
+   * @description
+   * Set the currency ID for this order
+   *
+   * @param {number} currencyId
+   */
+  PurchaseOrderForm.prototype.setCurrencyId = function setCurrencyId(currencyId) {
+    this.details.currency_id = currencyId;
+  };
+
+  /**
+   * @method setExchangeRate
+   *
+   * @description
+   * Set the exchange rate for the current currency for all items
+   *
+   * @param {number} newExchangeRate
+   */
+  PurchaseOrderForm.prototype.setExchangeRate = function setExchangeRate(newExchangeRate) {
+    this.currentExchangeRate = newExchangeRate;
+
+    // Update unit prices for all order items
+    this.store.data.forEach((item) => {
+      if (!item._initialised) { return; }
+      // We have no way to tell if this form is being invoked when creating
+      // or editing a purchase, so do this work-around to get the inventory item
+      const avItem = this.inventory.unavailable.get(item.inventory_uuid);
+      const inventoryItem = avItem || this.inventory.available.get(item.inventory_uuid);
+      item.unit_price = inventoryItem.price * this.currentExchangeRate;
+    });
+
     this.digest();
   };
 
