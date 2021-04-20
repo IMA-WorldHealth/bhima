@@ -28,6 +28,11 @@
                     on-select-callback="PurchaseCtrl.order.setSupplier(supplier)">
                   </bh-supplier-select>
 
+                  <bh-date-editor
+                    date-value="PurchaseCtrl.order.details.date"
+                    on-change="PurchaseCtrl.order.onDateChange(date)">
+                  </bh-date-editor>
+
                   <div class="form-group">
                     <label class="control-label">
                       <span translate>FORM.LABELS.PAYMENT_METHOD</span>
@@ -63,13 +68,45 @@
                       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                     </div>
                   </div>
+
                 </div>
 
                 <div class="col-md-6">
-                  <bh-date-editor
-                    date-value="PurchaseCtrl.order.details.date"
-                    on-change="PurchaseCtrl.order.onDateChange(date)">
-                  </bh-date-editor>
+                  <div
+                    class="form-group"
+                    style="margin-bottom: 0.5em"
+                    ng-show="PurchaseCtrl.hasMultipleCurrencies"
+                    ng-class="{ 'has-error' : PurchaseCtrl.$submitted && PurchaseCtrl.currency.$invalid }">
+                    <label class="control-label" translate>FORM.LABELS.CURRENCY</label>
+
+                    <ui-select
+                      name="currency"
+                      ng-model="PurchaseCtrl.rate.currency"
+                      ng-change="PurchaseCtrl.selectCurrency()"
+                      required>
+                      <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CURRENCY' | translate }}">
+                        <span>{{ PurchaseCtrl.format($select.selected.id) }}</span>
+                      </ui-select-match>
+                      <ui-select-choices
+                        ui-select-focus-patch
+                        repeat="currency as currency in PurchaseCtrl.currencies">
+                        <span ng-bind-html="PurchaseCtrl.format(currency.id) | highlight:$select.search"></span>
+                      </ui-select-choices>
+                    </ui-select>
+
+                    <div class="help-block"
+                      ng-messages="PurchaseCtrl.currency.$error"
+                      ng-show="PurchaseCtrl.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+
+                  <div ng-if="PurchaseCtrl.rate.currency.id != PurchaseCtrl.enterprise.currency_id"
+                    style="margin-bottom: 1em;">
+                    <span translate>EXCHANGE.CURRENT_RATE</span>:
+                      <i>{{ PurchaseCtrl.currentExchangeRate | currency:PurchaseCtrl.rate.currency.id }}</i>
+                      <i><span translate>FORM.INFO.PER</span> {{PurchaseCtrl.enterprise.currencySymbol}}</i>
+                  </div>
 
                   <div
                     class="form-group"
@@ -79,7 +116,7 @@
                       ng-model="PurchaseCtrl.order.details.note"
                       name="notes"
                       class="form-control"
-                      rows="4"
+                      rows="5"
                       ng-maxlength="PurchaseCtrl.maxLength"
                       required>
                     </textarea>
@@ -157,7 +194,7 @@
         <div class="row" ng-if="PurchaseCtrl.order.hasSupplier()">
           <h4 class="text-right" style="margin-right: 25px;">
             <span translate>FORM.LABELS.TOTAL</span>
-            {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.enterprise.currency_id }}
+            {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.rate.currency.id }}
           </h4>
         </div>
 

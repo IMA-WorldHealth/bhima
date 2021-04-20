@@ -3,19 +3,20 @@ angular.module('bhima.controllers')
 
 StockDefineLotsModalController.$inject = [
   'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
-  'bhConstants', 'StockEntryModalForm', '$translate', 'focus',
+  'CurrencyService', 'NotifyService', 'bhConstants', 'StockEntryModalForm',
+  '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Session,
-  bhConstants, EntryForm, $translate, Focus,
+  Currencies, Notify, bhConstants, EntryForm,
+  $translate, Focus,
 ) {
   const vm = this;
 
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
-
   const tracking = Data.stockLine.tracking_expiration;
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
@@ -34,6 +35,9 @@ function StockDefineLotsModalController(
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
   vm.entryDate = Data.entry_date;
+  vm.currencyId = Data.currency_id !== undefined
+    ? Data.currency_id : vm.enterprise.currency_id;
+  vm.currency = null;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
 
   // exposing method to the view
@@ -105,6 +109,14 @@ function StockDefineLotsModalController(
     if (cache.enableFastInsert) {
       vm.enableFastInsert = cache.enableFastInsert;
     }
+
+    // Load the currency info
+    Currencies.read()
+      .then((currencies) => {
+        vm.currency = currencies.find(curr => curr.id === vm.currencyId);
+        vm.currency.label = Currencies.format(vm.currencyId);
+      })
+      .catch(Notify.handleError);
 
     if (vm.form.rows.length) {
       // If we are visiting the form again, re-validate it

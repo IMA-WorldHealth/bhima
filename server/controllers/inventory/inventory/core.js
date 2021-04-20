@@ -194,10 +194,15 @@ function getItemsMetadata(params) {
   }
 
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
-
   const previousPriceQuery = `IFNULL(
-    (SELECT pi.unit_price FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
-    WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1)
+    (SELECT pi.unit_price /
+            (SELECT e.rate FROM exchange_rate AS e
+             WHERE e.enterprise_id = inventory.enterprise_id
+               AND e.currency_id = p.currency_id
+               AND e.date <= date
+             ORDER BY e.date DESC LIMIT 1)
+     FROM purchase_item pi JOIN purchase p ON pi.purchase_uuid = p.uuid
+     WHERE pi.inventory_uuid = inventory.uuid ORDER BY p.date DESC LIMIT 1)
   , inventory.price) AS price`;
 
   const sql = `

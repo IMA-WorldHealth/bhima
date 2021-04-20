@@ -15,7 +15,7 @@ const FC_FMT = {
 const EUR_FMT = {
   symbol : '€',
   precision : 2,
-  thousand : '&#8239;', // thin non-breaking space
+  thousand : '&nbsp;', // thin non-breaking space
   decimal : ',',
   format : '%v&nbsp;%s', // value before symbol
 };

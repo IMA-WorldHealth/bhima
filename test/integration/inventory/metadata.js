@@ -245,9 +245,9 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
 
         expect(oldQuinine.uuid).to.equal(newQuinine.uuid);
         expect(oldQuinine.code).to.equal(newQuinine.code);
-        expect(oldQuinine.price).to.not.equal(newQuinine.price);
+        expect(oldQuinine.price).to.equal(newQuinine.price);
         expect(oldQuinine.price).to.equal(quinineInventoryPrice);
-        expect(newQuinine.price).to.equal(quininePreviousPrice);
+        expect(newQuinine.price).to.not.equal(quininePreviousPrice);
 
         // price should be unchanged for items not bought
         expect(oldTenofovir.price).to.equal(newTenofovir.price);
