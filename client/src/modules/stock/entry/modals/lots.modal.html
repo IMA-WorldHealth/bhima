@@ -43,7 +43,7 @@
       <label translate>STOCK.UNIT_COST</label>
 
       <div ng-if="!$ctrl.isCostEditable">
-        <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.enterprise.currencyLabel }} </span>
+        <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.currency.label }} </span>
       </div>
 
       <div ng-if="$ctrl.isCostEditable" class="input-group">
@@ -55,7 +55,7 @@
           ng-change="$ctrl.onChangeUnitCost()"
           ng-model="$ctrl.stockLine.unit_cost"
           ng-model-options="{ '*' : '$inherit' }">
-        <span class="input-group-addon">{{ $ctrl.enterprise.currencySymbol }}</span>
+        <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
       </div>
     </div>
 

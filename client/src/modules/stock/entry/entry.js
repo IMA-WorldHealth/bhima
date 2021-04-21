@@ -33,6 +33,7 @@ function StockEntryController(
   vm.entryOption = false;
   vm.resetEntryExitTypes = false;
   vm.enterprise = Session.enterprise;
+  vm.currencyId = vm.enterprise.currency_id;
   vm.movement = {};
   vm.addItems = addItems;
   vm.removeItem = removeItem;
@@ -279,6 +280,7 @@ function StockEntryController(
     vm.reference = null;
     vm.displayName = null;
     vm.resetEntryExitTypes = true;
+    vm.currencyId = vm.enterprise.currency_id;
   }
 
   /**
@@ -339,6 +341,7 @@ function StockEntryController(
       .then((purchase) => {
         handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
+        vm.currencyId = vm.movement.entity.instance.currency_id;
       })
       .catch(Notify.handleError);
   }
@@ -437,6 +440,7 @@ function StockEntryController(
     vm.displayName = '';
     vm.reference = '';
     vm.movement.description = description;
+    vm.currencyId = vm.enterprise.currency_id;
   }
 
   /**
@@ -470,6 +474,7 @@ function StockEntryController(
     StockModal.openDefineLots({
       stockLine,
       entry_type : vm.movement.entry_type,
+      currency_id : vm.currencyId,
     })
       .then((res) => {
         if (!res) { return; }

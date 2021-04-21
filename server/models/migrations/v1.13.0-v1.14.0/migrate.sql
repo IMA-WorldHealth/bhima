@@ -89,7 +89,7 @@ ALTER TABLE `province` DROP INDEX `province_1`;
 
 ALTER TABLE `sector` DROP INDEX `sector_1`;
 
-/* ??? ALTER TABLE `village` DROP INDEX `village_1`;
+/* DISABLED: ALTER TABLE `village` DROP INDEX `village_1`;
 JMC: Disabled since this fails when using migration script  2020-07-31
 */
 
