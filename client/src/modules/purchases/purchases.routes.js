@@ -16,10 +16,11 @@ angular.module('bhima.routes')
         templateUrl : 'modules/purchases/create/createUpdate.html',
       })
 
-    // purchases/list
-      .state('purchasesList', {
+    // purchases
+      .state('purchasesRegistry', {
         url         : '/purchases',
-        controller  : 'PurchaseListController as PurchaseListCtrl',
+        controller  : 'PurchaseRegistryController as PurchaseRegistryCtrl',
         templateUrl : 'modules/purchases/registry/registry.html',
+        params      : { filters : [] },
       });
   }]);

@@ -9,10 +9,10 @@
  * @requires db
  * @requires NotFound
  * @requires BadRequest
- * @requires moment
+ * @requires debug
  */
 
-const q = require('q');
+const debug = require('debug')('bhima:purchases');
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
@@ -130,9 +130,13 @@ function lookupPurchaseOrder(uid) {
     WHERE p.uuid = ?;
   `;
 
+  debug(`#lookupPurchaseorder() looking up purchase order by uuid ${uid}`);
+
   return db.one(sql, [db.bid(uid), uid, 'Purchase Order'])
     .then((row) => {
       record = row;
+
+      debug(`#lookupPurchaseorder() found a match!  Looking up purchase items...`);
 
       sql = `
         SELECT BUID(pi.uuid) AS uuid, pi.quantity, pi.unit_price, pi.total,
@@ -148,6 +152,7 @@ function lookupPurchaseOrder(uid) {
     })
     .then((rows) => {
       // bind the purchase items to the "items" property and return
+      debug(`#lookupPurchaseorder() found ${rows.length} items for purchase order.`);
       record.items = rows;
       record.barcode = barcode.generate(entityIdentifier, record.uuid);
       return record;
@@ -162,89 +167,73 @@ function lookupPurchaseOrder(uid) {
  *
  * Creates a purchase order in the database
  */
-function create(req, res, next) {
+async function create(req, res, next) {
   let data = req.body;
   let inventories = [];
 
-  if (!data.items) {
-    return next(new BadRequest('Cannot create a purchase order without purchase items.'));
-  }
+  debug('#create() creating a new purchase order.');
 
-  // default to a new uuid if the client did not provide one
-  const puid = data.uuid || uuid();
-  data.uuid = db.bid(puid);
+  try {
+    if (!data.items) {
+      throw new BadRequest('Cannot create a purchase order without purchase items.');
+    }
 
-  data = db.convert(data, ['supplier_uuid']);
+    // default to a new uuid if the client did not provide one
+    const puid = data.uuid || uuid();
+    data.uuid = db.bid(puid);
 
-  if (data.date) {
-    data.date = new Date(data.date);
-  }
+    data.user_id = req.session.user.id;
+    data.project_id = req.session.project.id;
+    data.currency_id = data.currency_id ? data.currency_id : req.session.enterprise.currency_id;
+    data = db.convert(data, ['supplier_uuid']);
 
-  data.user_id = req.session.user.id;
-  data.project_id = req.session.project.id;
-  data.currency_id = data.currency_id ? data.currency_id : req.session.enterprise.currency_id;
+    if (data.date) {
+      data.date = new Date(data.date);
+    }
 
-  if (req.session.stock_settings.enable_auto_purchase_order_confirmation) {
-    data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
-  }
+    // enable autoconfirmation.  We may want to remove this in the future.
+    if (req.session.stock_settings.enable_auto_purchase_order_confirmation) {
+      debug('#create() enable_auto_purchase_order_confirmation is enabled!  Marking status as confirmed.');
+      data.status_id = PURCHASE_STATUS_CONFIRMED_ID;
+    }
 
-  const statusPurchase = data.status_id;
+    if (data.status_id === PURCHASE_STATUS_CONFIRMED_ID) {
+      debug('#create() Purchase order is a confirmed purchase order. Scheduling recalculation of purchase interval');
+      inventories = data.items.map(item => item.inventory_uuid);
+    }
 
-  if (data.status_id === PURCHASE_STATUS_CONFIRMED_ID) {
-    inventories = data.items.map(item => item.inventory_uuid);
-  }
-
-  const sql = 'INSERT INTO purchase SET ?';
-
-  const itemSql = `
+    const sql = 'INSERT INTO purchase SET ?';
+    const itemSql = `
     INSERT INTO purchase_item
       (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid)
     VALUES ?;
   `;
 
-  const items = linkPurchaseItems(data.items, data.uuid);
+    const items = linkPurchaseItems(data.items, data.uuid);
 
-  // delete the purchase order items
-  delete data.items;
-  delete data.reference;
+    // delete the purchase order items
+    delete data.items;
+    delete data.reference;
 
-  const transaction = db.transaction();
+    await db.transaction()
+      .addQuery(sql, [data])
+      .addQuery(itemSql, [items])
+      .execute();
 
-  transaction
-    .addQuery(sql, [data])
-    .addQuery(itemSql, [items]);
-
-  return transaction.execute()
-    .then(() => {
-      let transactions;
-
-      if (statusPurchase !== PURCHASE_STATUS_CONFIRMED_ID) {
-        return true;
-      }
-
-      if (inventories.length) {
-        transactions = purchaceIntervalleSetting(inventories);
-      }
-
-      return transactions.execute();
-    })
-    .then((rows) => {
-      if (statusPurchase !== PURCHASE_STATUS_CONFIRMED_ID) {
-        return true;
-      }
-
+    if (inventories.length) {
+      const rows = await purchaseIntervalSetting(inventories);
       const datePurchase = new Date(data.date);
       const transactionWrapper = db.transaction();
 
       rows.forEach((row) => {
-        /*
-          * For the calculation of the average order interval, the system takes into account
-          * that of confirmed purchase orders, received in stock or partially and even those
-          * that are received in excess quantity, the default order interval is zero, and the
-          * calculation is made in addition the sum of all the order intervals by the sum of
-          * the purchase orders minus one, the results are stored in the inventory table,
-          * in order to facilitate the calculation of the various indicators for stock management
-        */
+      /*
+        * For the calculation of the average order interval, the system takes into account
+        * that of confirmed purchase orders, received in stock or partially and even those
+        * that are received in excess quantity, the default order interval is zero, and the
+        * calculation is made in addition the sum of all the order intervals by the sum of
+        * the purchase orders minus one, the results are stored in the inventory table,
+        * in order to facilitate the calculation of the various indicators for stock management
+      */
         const purchaseInterval = row[0].purchase_interval || 0;
         const numPurchase = row[0].num_purchase;
 
@@ -256,13 +245,13 @@ function create(req, res, next) {
 
       });
 
-      return transactionWrapper.execute();
-    })
-    .then(() => {
-      res.status(201).json({ uuid : puid });
-    })
-    .catch(next)
-    .done();
+      await transactionWrapper.execute();
+    }
+
+    res.status(201).json({ uuid : puid });
+  } catch (err) {
+    next(err);
+  }
 }
 
 /**
@@ -367,7 +356,7 @@ async function update(req, res, next) {
 
     // we only need the second return value
     const [, record] = await Promise.all([
-      resetPurchaseIntervall(req.params.uuid),
+      resetPurchaseInterval(req.params.uuid),
       lookupPurchaseOrder(req.params.uuid),
     ]);
 
@@ -449,9 +438,13 @@ function find(options) {
  * @description
  * This method return the updated status of purchase order
  * if it is completed or partially entered
+ *
+ * NOTE(@jniles) - stock movements use the entity_uuid
+ * column to refer to the purchase orders
  */
-function purchaseStatus(req, res, next) {
+async function purchaseStatus(req, res, next) {
   const FROM_PURCHASE_ID = 1;
+
   const PURCHASE_PARTIALLY_RECEIVED = 4;
   const PURCHASE_FULLY_RECEIVED = 3;
   const PURCHASE_EXCESSIVELY_RECEIVED = 6;
@@ -468,88 +461,83 @@ function purchaseStatus(req, res, next) {
         WHERE p.uuid = ?
       ) UNION ALL (
         SELECT 0 AS purchase_quantity, SUM(m.quantity) AS movement_quantity FROM stock_movement m
-        JOIN lot l ON l.uuid = m.lot_uuid
-        JOIN purchase p ON p.uuid = l.origin_uuid
+        JOIN purchase p ON p.uuid = m.entity_uuid
         WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0
       )
     )t
   `;
 
   const sqlPurchaseDelay = `
-    SELECT
-    p.cost, DATEDIFF(m.date, p.date) AS delay
+    SELECT p.cost, DATEDIFF(m.date, p.date) AS delay
     FROM stock_movement m
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN purchase p ON p.uuid = l.origin_uuid
+      JOIN purchase p ON p.uuid = m.entity_uuid
     WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0 LIMIT 1;
   `;
 
   const sqlPurchaseInventories = `
     SELECT purchase_item.inventory_uuid AS inventory_uuid, inventory.delay, inventory.num_delivery
     FROM purchase_item
-    JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+      JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
     WHERE purchase_item.purchase_uuid = ?
   `;
 
-  const dbPromise = [
-    db.one(sqlQuantities, [purchaseUuid, purchaseUuid, FROM_PURCHASE_ID]),
-    db.one(sqlPurchaseDelay, [purchaseUuid, FROM_PURCHASE_ID]),
-    db.exec(sqlPurchaseInventories, [purchaseUuid]),
-  ];
+  try {
 
-  q.all(dbPromise)
-    .spread((resultQuantities, resultDelay, resultPurchaseInventories) => {
-      const rq = resultQuantities;
-      const rd = resultDelay;
+    const dbPromises = [
+      db.one(sqlQuantities, [purchaseUuid, purchaseUuid, FROM_PURCHASE_ID]),
+      db.one(sqlPurchaseDelay, [purchaseUuid, FROM_PURCHASE_ID]),
+      db.exec(sqlPurchaseInventories, [purchaseUuid]),
+    ];
 
-      glb.delay = util.roundDecimal((rd.delay / 30), 2);
-      glb.purchaseInventories = resultPurchaseInventories;
+    const [resultQuantities, resultDelay, resultPurchaseInventories] = await Promise.all(dbPromises);
 
-      let query;
-      let statusId;
+    const rq = resultQuantities;
+    const rd = resultDelay;
 
-      if (rq.movement_quantity > 0 && rq.movement_quantity === rq.purchase_quantity) {
-        // the purchase is totally delivered
-        statusId = PURCHASE_FULLY_RECEIVED;
-        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
-      } else if (rq.movement_quantity > 0 && rq.movement_quantity < rq.purchase_quantity) {
-        // the purchase is partially delivered
-        statusId = PURCHASE_PARTIALLY_RECEIVED;
-        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
-      } else if (rq.movement_quantity > rq.purchase_quantity) {
-        // the purchase is delivered in an excessive quantity
-        statusId = PURCHASE_EXCESSIVELY_RECEIVED;
-        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
-      }
-      return query ? db.exec(query, [statusId, purchaseUuid]) : '';
-    })
-    .then(() => {
-      const transaction = db.transaction();
+    glb.delay = util.roundDecimal((rd.delay / 30), 2);
+    glb.purchaseInventories = resultPurchaseInventories;
 
-      glb.purchaseInventories.forEach((row) => {
-        /**
-          * Normally the delay agreement time between the order and the delivery is calculated
-          * by finding the average duration of agreement of orders of last six months for a product
-          * this calculation is very expensive in terms of memory, which is the reason why we keep
-          * this information in the inventory table for article shovel
-        */
-        const numDelivery = row.num_delivery + 1;
+    let statusId;
 
-        const delay = (((row.delay * (numDelivery - 1)) + glb.delay) / numDelivery);
+    if (rq.movement_quantity > 0 && rq.movement_quantity === rq.purchase_quantity) {
+      // the purchase is totally delivered
+      statusId = PURCHASE_FULLY_RECEIVED;
+    } else if (rq.movement_quantity > 0 && rq.movement_quantity < rq.purchase_quantity) {
+      // the purchase is partially delivered
+      statusId = PURCHASE_PARTIALLY_RECEIVED;
+    } else if (rq.movement_quantity > rq.purchase_quantity) {
+      // the purchase is delivered in an excessive quantity
+      statusId = PURCHASE_EXCESSIVELY_RECEIVED;
+    }
 
-        transaction.addQuery(
-          'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
-          [delay, numDelivery, row.inventory_uuid],
-        );
-      });
+    // if we defined a status id, update the status
+    if (statusId !== undefined) {
+      await db.exec('UPDATE purchase SET status_id = ? WHERE uuid = ?', [statusId, purchaseUuid]);
+    }
 
-      return transaction.execute();
-    })
-    .then(() => {
-      res.status(200).send();
-    })
-    .catch(next)
-    .done();
+    const transaction = db.transaction();
+
+    /**
+     * Normally the delay agreement time between the order and the delivery is calculated
+     * by finding the average duration of agreement of orders of last six months for a product
+     * this calculation is very expensive in terms of memory, which is the reason why we keep
+     * this information in the inventory table for article shovel
+     */
+    glb.purchaseInventories.forEach((row) => {
+      const numDelivery = row.num_delivery + 1;
+      const delay = (((row.delay * (numDelivery - 1)) + glb.delay) / numDelivery);
+
+      transaction.addQuery(
+        'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
+        [delay, numDelivery, row.inventory_uuid],
+      );
+    });
+
+    await transaction.execute();
+    res.status(200).send();
+  } catch (e) {
+    next(e);
+  }
 }
 
 /**
@@ -577,15 +565,15 @@ function purchaseBalance(req, res, next) {
     JOIN user u ON u.id = p.user_id
     LEFT JOIN
     (
-      SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, l.origin_uuid
+      SELECT l.label, SUM(IFNULL(m.quantity, 0)) AS quantity, l.inventory_uuid, m.entity_uuid
       FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
-      WHERE m.flux_id = ? AND m.is_exit = 0 AND l.origin_uuid = ?
-      GROUP BY l.origin_uuid, l.inventory_uuid
+      WHERE m.flux_id = ? AND m.is_exit = 0 AND m.entity_uuid = ?
+      GROUP BY m.entity_uuid, l.inventory_uuid
     ) AS distributed
       ON distributed.inventory_uuid = pi.inventory_uuid
-      AND distributed.origin_uuid = p.uuid
+      AND distributed.entity_uuid = p.uuid
     WHERE p.uuid = ? HAVING balance > 0 AND balance <= pi.quantity
   `;
 
@@ -641,34 +629,39 @@ function purchaseState(req, res, next) {
     .done();
 }
 
-function purchaceIntervalleSetting(items) {
-  const trans = db.transaction();
-
-  items.forEach((item) => {
-    const sql = `
-      SELECT ROUND(AVG(orderIntervall.diff),2) AS purchase_interval, (COUNT(orderIntervall.text)) AS num_purchase,
-      BUID(?) AS inventory_uuid
+/**
+ * @function purchaseIntervalSetting
+ *
+ * @description
+ * This is the
+ *
+ */
+function purchaseIntervalSetting(items) {
+  const sql = `
+    SELECT ROUND(AVG(orderInterval.diff),2) AS purchase_interval, (COUNT(orderInterval.text)) AS num_purchase,
+    BUID(?) AS inventory_uuid
+    FROM (
+      SELECT aggr.text, aggr.date, aggr.precedent_date,
+        (TIMESTAMPDIFF(DAY, DATE(aggr.precedent_date), DATE(aggr.date)) *12/365.24) AS diff,
+      aggr.inventory_uuid
       FROM (
-        SELECT aggr.text, aggr.date, aggr.precedent_date,
-          (TIMESTAMPDIFF(DAY, DATE(aggr.precedent_date), DATE(aggr.date)) *12/365.24) AS diff,
-        aggr.inventory_uuid
+        SELECT purch.text, DATE(purch.date) AS date,
+          @last_purchase AS precedent_date, (@last_purchase := DATE(purch.date)) AS last_purchase,
+          BUID(purch.inventory_uuid) AS inventory_uuid
         FROM (
-          SELECT purch.text, DATE(purch.date) AS date,
-            @last_purchase AS precedent_date, (@last_purchase := DATE(purch.date)) AS last_purchase,
-            BUID(purch.inventory_uuid) AS inventory_uuid
-          FROM (
-            SELECT inv.text, p.date, inv.uuid AS inventory_uuid
-            FROM purchase AS p
+          SELECT inv.text, p.date, inv.uuid AS inventory_uuid
+          FROM purchase AS p
             JOIN purchase_item AS it ON it.purchase_uuid = p.uuid
             JOIN inventory AS inv ON inv.uuid = it.inventory_uuid
-            WHERE inv.uuid = ? AND p.status_id IN ( ?, ?, ?, ?)
-            ORDER BY p.date ASC
-          ) AS purch, (SELECT @last_purchase := DATE(0)) AS z
-        ) AS aggr
-      ) AS orderIntervall
-    `;
+          WHERE inv.uuid = ? AND p.status_id IN ( ?, ?, ?, ?)
+          ORDER BY p.date ASC
+        ) AS purch, (SELECT @last_purchase := DATE(0)) AS z
+      ) AS aggr
+    ) AS orderInterval
+  `;
 
-    trans.addQuery(sql, [
+  const queries = items.map((item) => {
+    return db.exec(sql, [
       db.bid(item),
       db.bid(item),
       PURCHASE_STATUS_CONFIRMED_ID,
@@ -678,41 +671,38 @@ function purchaceIntervalleSetting(items) {
     ]);
   });
 
-  return trans;
+  return Promise.all(queries);
+
 }
 
-function resetPurchaseIntervall(purchaseUuid) {
+async function resetPurchaseInterval(purchaseUuid) {
   const sql = `
     SELECT BUID(it.inventory_uuid) AS inventory_uuid
     FROM purchase_item AS it
     WHERE it.purchase_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(purchaseUuid)])
-    .then((rows) => {
-      const inventories = rows.map(item => item.inventory_uuid);
-      const transactions = purchaceIntervalleSetting(inventories);
-      return transactions.execute();
-    })
-    .then((items) => {
-      const transactionWrapper = db.transaction();
-      const updateDate = new Date();
+  const rows = await db.exec(sql, [db.bid(purchaseUuid)]);
+  const inventories = rows.map(item => item.inventory_uuid);
+  const items = await purchaseIntervalSetting(inventories);
 
-      items.forEach((item) => {
-        /*
-          * here we trace all the times when the status of a purchase
-          * order is modified, this one allows to recalculate the order
-          * interval as well as the number of valid orders
-        */
-        const purchaseInterval = item[0].purchase_interval || 0;
-        const numPurchase = item[0].num_purchase;
+  const transactionWrapper = db.transaction();
+  const updateDate = new Date();
 
-        transactionWrapper.addQuery(
-          'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
-          [purchaseInterval, updateDate, numPurchase, db.bid(item[0].inventory_uuid)],
-        );
-      });
+  items.forEach(([item]) => {
+    /*
+      * here we trace all the times when the status of a purchase
+      * order is modified, this one allows to recalculate the order
+      * interval as well as the number of valid orders
+    */
+    const purchaseInterval = item.purchase_interval || 0;
+    const numPurchase = item.num_purchase;
 
-      return transactionWrapper.execute();
-    });
+    transactionWrapper.addQuery(
+      'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
+      [purchaseInterval, updateDate, numPurchase, db.bid(item.inventory_uuid)],
+    );
+  });
+
+  return transactionWrapper.execute();
 }
