@@ -22,9 +22,8 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
-      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference,
-      p.note, p.cost, p.date AS purchase_date, p.payment_method,
-      s.display_name AS supplier_display_name, proj.name AS project_display_name,
+      dm2.text AS purchase_reference, p.note, p.cost, p.date AS purchase_date,
+      p.payment_method, s.display_name AS supplier_display_name,
       dm.text as document_reference, ig.tracking_expiration,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
@@ -33,10 +32,10 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
       JOIN user u ON u.id = m.user_id
-      JOIN purchase p ON p.uuid = l.origin_uuid
+      JOIN purchase p ON p.uuid = m.entity_uuid
       JOIN supplier s ON s.uuid = p.supplier_uuid
-      JOIN project proj ON proj.id = p.project_id
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_PURCHASE} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;
@@ -71,7 +70,6 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
     p_date                : line.purchase_date,
     p_method              : line.payment_method,
     supplier_display_name : line.supplier_display_name,
-    project_display_name  : line.project_display_name,
     barcode               : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
   };

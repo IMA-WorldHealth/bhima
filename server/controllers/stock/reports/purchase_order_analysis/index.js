@@ -84,16 +84,19 @@ async function report(req, res, next) {
     const sqlInventoriesInStock = `
       SELECT BUID(p.uuid) AS purchase_uuid, BUID(iv.uuid) AS inventory_uuid,
         iv.text AS inventoryText, l.label AS lotLabel, p.project_id,
-        p.reference, p.user_id, l.uuid AS lotUuid, SUM(l.quantity) AS quantity_inStock,
+        p.reference, p.user_id, l.uuid AS lotUuid, SUM(sm.quantity) AS quantity_inStock,
         l.expiration_date,
         iv.code
       FROM purchase AS p
-        JOIN lot AS l ON l.origin_uuid = p.uuid
-        JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
+        JOIN purchase_item pi ON p.uuid = pi.purchase_uuid
+        JOIN stock_movement sm ON sm.entity_uuid = p.uuid
+        JOIN lot l ON l.uuid = sm.lot_uuid
+        JOIN inventory AS iv ON iv.uuid = pi.inventory_uuid
       WHERE p.uuid = ?
       GROUP BY iv.uuid
       ORDER BY iv.text ASC;
     `;
+
     // NOTE: Removed entry_date from previous query since it was removed from the lot table.
     //       If it is needed, it should be retrieved from stock_movements table.
     //       See getLots() query in server/controllers/stock/core.js for an example query.
@@ -108,9 +111,9 @@ async function report(req, res, next) {
         iv.code,
         d.text AS depotText, BUID(sm.uuid) AS stock_movement_uuid, dm1.text AS stock_movement_reference
       FROM purchase AS p
-        JOIN lot AS l ON l.origin_uuid = p.uuid
+        JOIN stock_movement AS sm ON sm.entity_uuid = p.uuid
+        JOIN lot AS l ON l.uuid = sm.lot_uuid
         JOIN inventory AS iv ON iv.uuid = l.inventory_uuid
-        JOIN stock_movement AS sm ON sm.lot_uuid = l.uuid
         JOIN depot AS d ON d.uuid = sm.depot_uuid
         JOIN document_map AS dm1 ON dm1.uuid = sm.document_uuid
       WHERE p.uuid = ? AND sm.is_exit = 0 AND sm.flux_id = ?
@@ -192,7 +195,6 @@ async function report(req, res, next) {
 
     const result = await reporting.render(data);
     res.set(result.headers).send(result.report);
-
   } catch (e) {
     next(e);
   }

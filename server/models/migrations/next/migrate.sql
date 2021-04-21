@@ -83,4 +83,10 @@ INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `mi
 VALUES (3,'Euro','EUR','€',NULL,0.01);
 
 INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
-VALUES (3, 1, @EUR, 0.84, NOW());
+
+/**
+@author: jniles
+@date: 2021-04-21
+@description: remove the origin_uuid column from the lot table.
+*/
+ALTER TABLE `lot` DROP COLUMN `origin_uuid`;

@@ -48,7 +48,6 @@ module.exports = {
   getLots,
   getLotsDepot,
   getLotsMovements,
-  getLotsOrigins,
   listStatus,
   // stock consumption
   getInventoryQuantityAndConsumption,
@@ -107,7 +106,7 @@ function getLotFilters(parameters) {
   filters.equals('reference', 'text', 'dm');
   filters.equals('service_uuid', 'uuid', 'serv');
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
-  filters.equals('purchase_uuid', 'origin_uuid', 'l');
+  filters.equals('purchase_uuid', 'entity_uuid', 'm');
   filters.equals('tag_uuid', 'tags', 't');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
@@ -175,8 +174,8 @@ function getLotFilters(parameters) {
 function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
   const sql = sqlQuery || `
       SELECT
-        BUID(l.uuid) AS uuid, l.label, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-        l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay,
+        BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
+        BUID(l.inventory_uuid) AS inventory_uuid, i.delay,
         (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
         i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
         BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
@@ -246,7 +245,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       d.min_months_security_stock, d.default_purchase_interval,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
-      BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
+      BUID(l.inventory_uuid) AS inventory_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
@@ -386,7 +385,6 @@ async function getLotsMovements(depotUuid, params) {
       d.text AS depot_text, d.min_months_security_stock,
       IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
       l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
-      BUID(l.origin_uuid) AS origin_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       i.code, i.text,
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
@@ -450,48 +448,6 @@ async function getMovements(depotUuid, params) {
   const movements = await getLots(sql, params, finalClause, orderBy);
 
   return movements;
-}
-
-/**
- * @function getLotsOrigins
- *
- * @description returns lot's origins
- *
- * @param {number} depot_uuid - optional depot uuid for retrieving on depot
- *
- * @param {object} params - A request query object
- */
-function getLotsOrigins(depotUuid, params, averageConsumptionAlgo) {
-  if (depotUuid) {
-    params.depot_uuid = depotUuid;
-  }
-
-  const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
-        BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-        (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
-        i.code, i.text, origin.display_name, om.text AS reference,
-        BUID(m.document_uuid) AS document_uuid, m.flux_id,
-        iu.text AS unit_type,
-        dm.text AS documentReference
-    FROM lot l
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN (
-      SELECT p.uuid, 'STOCK.PURCHASE_ORDER' AS display_name FROM purchase
-      UNION
-      SELECT d.uuid, 'STOCK.DONATION' AS display_name FROM donation d
-      UNION
-      SELECT i.uuid, 'STOCK.INTEGRATION' AS display_name FROM integration i
-    ) AS origin ON origin.uuid = l.origin_uuid
-    JOIN stock_movement m ON m.lot_uuid = l.uuid
-      AND m.is_exit = 0
-        AND m.flux_id IN (${flux.FROM_PURCHASE}, ${flux.FROM_DONATION}, ${flux.FROM_INTEGRATION})
-    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-    LEFT JOIN odcument_map om ON om.uuid = l.origin_uuid
-  `;
-
-  return getLots(sql, params, averageConsumptionAlgo);
 }
 
 /**
@@ -701,7 +657,7 @@ async function getInventoryQuantityAndConsumption(params) {
       d.text AS depot_text, d.min_months_security_stock, d.default_purchase_interval,
       l.unit_cost, l.expiration_date,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
-      BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
+      BUID(l.inventory_uuid) AS inventory_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
@@ -942,7 +898,7 @@ async function getInventoryMovements(params) {
       d.text AS depot_text, d.min_months_security_stock,
       l.unit_cost, l.expiration_date,
       m.quantity, m.is_exit, m.date,
-      BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
+      BUID(l.inventory_uuid) AS inventory_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, iu.text AS unit_type,
