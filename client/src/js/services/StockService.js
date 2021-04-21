@@ -163,7 +163,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
    *
    * @returns {Array} - lots in an array.
  */
-  function processLotsFromStore(data, uuid) {
+  function processLotsFromStore(data) {
     return data.reduce((current, line) => {
       return line.lots.map((lot) => {
         return {
@@ -173,7 +173,6 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
           unit_cost : line.unit_cost,
           expiration_date : lot.expiration_date,
           inventory_uuid : line.inventory_uuid,
-          origin_uuid : uuid,
         };
       }).concat(current);
     }, []);

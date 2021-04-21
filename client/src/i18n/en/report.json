@@ -176,6 +176,7 @@
     "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",
     "VIEW_INVOICE": "View Invoices",
+    "VIEW_PURCHASE_ORDER" : "View Purchase Order",
     "VIEW_ARTICLE_IN_STOCK": "View Article in Stock",
     "VIEW_PATIENT": "View Patient",
     "VIEW_PAYMENTS": "View Cash Payments",

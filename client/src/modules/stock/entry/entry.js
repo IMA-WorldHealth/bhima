@@ -591,10 +591,6 @@ function StockEntryController(
     };
 
     /*
-      the origin_uuid of lots is set on the client
-      because donation table depends on donor, and donor management
-      is not yet implemented in the application
-
       TODO: add a donor management module
     */
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
