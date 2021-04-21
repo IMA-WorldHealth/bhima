@@ -38,7 +38,6 @@ exports.listInventoryDepot = listInventoryDepot;
 exports.listLotsMovements = listLotsMovements;
 exports.listMovements = listMovements;
 exports.listStockFlux = listStockFlux;
-exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
 exports.importing = importing;
 exports.assign = assign;
@@ -106,7 +105,6 @@ async function createStock(req, res, next) {
           unit_cost : lot.unit_cost,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
-          origin_uuid : db.bid(lot.origin_uuid),
         };
 
         // adding a lot insertion query into the transaction
@@ -215,7 +213,6 @@ async function insertNewStock(session, params) {
         unit_cost : lot.unit_cost,
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
-        origin_uuid : db.bid(identifier),
       });
     }
 
@@ -994,20 +991,6 @@ async function listInventoryDepot(req, res, next) {
   } catch (error) {
     next(error);
   }
-}
-
-/**
- * GET /stock/lots/origins/
- * returns list of lots with their origins as reference
- */
-function listLotsOrigins(req, res, next) {
-  const params = req.query;
-  core.getLotsOrigins(null, params)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
 }
 
 /**
