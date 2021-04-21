@@ -1894,7 +1894,6 @@ CREATE TABLE `lot` (
   `description`       TEXT,
   `expiration_date`   DATE NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
-  `origin_uuid`       BINARY(16) NULL,
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),

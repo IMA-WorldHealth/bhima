@@ -1,13 +1,11 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', function invoiceRoutes($stateProvider) {
     $stateProvider
       .state('invoiceRegistry', {
         url         : '/invoices',
         controller  : 'InvoiceRegistryController as InvoiceRegistryCtrl',
         templateUrl : '/modules/invoices/registry/registry.html',
-        params      : {
-          filters : [],
-        },
+        params      : { filters : [] },
       })
       .state('patientInvoice', {
         url         : '/invoices/patient',

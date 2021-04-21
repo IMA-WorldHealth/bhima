@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-  .controller('PurchaseListController', PurchaseListController);
+  .controller('PurchaseRegistryController', PurchaseRegistryController);
 
-PurchaseListController.$inject = [
+PurchaseRegistryController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
   'ReceiptModal', 'bhConstants', 'BarcodeService',
@@ -12,7 +12,7 @@ PurchaseListController.$inject = [
  *
  * This module is responsible for the management of Purchase Order Registry.
  */
-function PurchaseListController(
+function PurchaseRegistryController(
   $state, PurchaseOrder, Notify, uiGridConstants,
   Columns, GridState, Session, Modal, ReceiptModal, bhConstants, Barcode,
 ) {
@@ -196,6 +196,11 @@ function PurchaseListController(
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    if ($state.params.filters.length) {
+      PurchaseOrder.filters.replaceFiltersFromState($state.params.filters);
+      PurchaseOrder.cacheFilters();
+    }
+
     load(PurchaseOrder.filters.formatHTTP(true));
     vm.latestViewFilters = PurchaseOrder.filters.formatView();
   }
