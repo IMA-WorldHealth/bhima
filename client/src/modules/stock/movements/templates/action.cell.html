@@ -28,6 +28,12 @@
       <a data-method="view-invoice" href ui-sref="invoiceRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'uuid', value : row.entity.invoice_uuid, displayValue: row.entity.invoice_reference, cacheable:false }]})">
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_INVOICE</span>
       </a>
+
+    <li ng-if="row.entity.flux_id === grid.appScope.flux.FROM_PURCHASE">
+      <a data-method="view-purchase-order" href ui-sref="purchasesRegistry({ filters : [{ key : 'defaultPeriod', value : 'allTime' }, { key : 'uuid', value : row.entity.entity_uuid, displayValue: row.entity.documentReference, cacheable:false }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_PURCHASE_ORDER</span>
+      </a>
+    </li>
     </li>
 
     <li ng-if="grid.appScope.hasAutoStockAccounting">

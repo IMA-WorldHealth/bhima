@@ -218,6 +218,8 @@ function StockMovementsController(
     // preprocess data
     rows.forEach(handleMovementRow);
 
+    console.log('rows:', rows);
+
     vm.gridOptions.data = rows;
 
     // force expand grid
