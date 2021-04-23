@@ -23,7 +23,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
       u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
       dm2.text AS purchase_reference, p.note, p.cost, p.date AS purchase_date,
-      p.payment_method, s.display_name AS supplier_display_name,
+      p.payment_method, p.currency_id, s.display_name AS supplier_display_name,
       dm.text as document_reference, ig.tracking_expiration,
       IF(ig.tracking_expiration = 1, TRUE, FALSE) as expires
     FROM stock_movement m
@@ -53,6 +53,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
   }
 
   const line = rows[0];
+
   const { key } = identifiers.STOCK_ENTRY;
 
   data.enterprise = session.enterprise;
@@ -67,6 +68,7 @@ async function stockEntryPurchaseReceipt(documentUuid, session, options) {
     purchase_reference    : line.purchase_reference,
     p_note                : line.note,
     p_cost                : line.cost,
+    p_currency_id         : line.currency_id,
     p_date                : line.purchase_date,
     p_method              : line.payment_method,
     supplier_display_name : line.supplier_display_name,
