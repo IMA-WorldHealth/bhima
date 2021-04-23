@@ -2,10 +2,11 @@ angular.module('bhima.controllers')
   .controller('StockMovementsController', StockMovementsController);
 
 StockMovementsController.$inject = [
-  'StockService', 'NotifyService', 'uiGridConstants',
-  'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
-  'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
-  '$translate', 'bhConstants', 'ModalService',
+  'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService',
+  'LanguageService', 'SessionService', 'FluxService', 'ReceiptModal',
+  'GridGroupingService', '$state', 'GridColumnService', 'GridStateService',
+  '$httpParamSerializer', 'ExchangeRateService', '$translate', 'bhConstants',
+  'ModalService',
 ];
 
 /**
@@ -15,8 +16,10 @@ StockMovementsController.$inject = [
  */
 function StockMovementsController(
   Stock, Notify, uiGridConstants, Modal,
-  Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer,
-  $translate, bhConstants, ModalService,
+  Languages, Session, Flux, ReceiptModal,
+  Grouping, $state, Columns, GridState,
+  $httpParamSerializer, Exchange, $translate, bhConstants,
+  ModalService,
 ) {
   const vm = this;
   const cacheKey = 'movements-grid';
@@ -228,6 +231,12 @@ function StockMovementsController(
     // the column must be filtered on the translated text
     row.io = $translate.instant(row.is_exit === 0 ? 'STOCK.INPUT' : 'STOCK.OUTPUT');
 
+    // Update the cost to enterprise currency (if necessary)
+    if (row.currency_id && row.currency_id !== vm.enterprise.currency_id) {
+      const exchangeRate = Exchange.getCurrentRate(row.currency_id);
+      row.cost /= exchangeRate;
+    }
+
     // compute the fluxName from its ID
     row.fluxName = getFluxName(row.flux_id);
   }
@@ -261,13 +270,17 @@ function StockMovementsController(
 
   // initialize module
   function startup() {
+
     if ($state.params.filters.length) {
       stockMovementsFilters.replaceFiltersFromState($state.params.filters);
       stockMovementsFilters.formatCache();
     }
 
-    load(stockMovementsFilters.formatHTTP(true));
-    vm.latestViewFilters = stockMovementsFilters.formatView();
+    Exchange.read({ limit : 10 })
+      .then(() => {
+        load(stockMovementsFilters.formatHTTP(true));
+        vm.latestViewFilters = stockMovementsFilters.formatView();
+      });
   }
 
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
