@@ -431,7 +431,8 @@ async function getMovements(depotUuid, params) {
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference,
     BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
-    u.display_name AS userName
+    u.display_name AS userName,
+    (SELECT p.currency_id from purchase p WHERE p.uuid=m.entity_uuid) as currency_id
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -442,6 +443,9 @@ async function getMovements(depotUuid, params) {
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
     LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
   `;
+  // NB: Had to use subquery for currency_id to avoid unqualified 'date'
+  //     conflicts with getLots() WHERE queries for date ranges which
+  //     use unqualified 'date' column name             -JMC 2021-04-23
 
   const finalClause = 'GROUP BY document_uuid, is_exit';
   const orderBy = 'ORDER BY d.text, m.date';
