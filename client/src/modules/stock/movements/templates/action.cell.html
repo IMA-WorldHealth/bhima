@@ -42,6 +42,12 @@
       </a>
     </li>
 
+    <li ng-if="grid.appScope.hasAutoStockAccounting">
+      <a data-method="view-transactions" href ui-sref="journal({ filters : [{ key : 'period', value : 'allTime' }, { key : 'stockReference', value : row.entity.document_uuid, displayValue: row.entity.documentReference, cacheable:false }, { key : 'includeNonPosted', value : 1 }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
+
     <li bh-has-permission="grid.appScope.actions.DELETE_STOCK_MOVEMENT" class="divider"></li>
 
     <li bh-has-permission="grid.appScope.actions.DELETE_STOCK_MOVEMENT">
