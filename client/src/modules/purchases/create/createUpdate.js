@@ -243,7 +243,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
         // Update the currency/exchange info
         vm.order.setCurrencyId(vm.rate.currency.id);
 
-        return Exchange.read({ limit : 10 });
+        return Exchange.read();
       })
       .then((rates) => {
         vm.rates = rates;
