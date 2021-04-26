@@ -4,10 +4,12 @@ angular.module('bhima.controllers')
 StockFindPurchaseModalController.$inject = [
   '$uibModalInstance', 'PurchaseOrderService', 'NotifyService',
   'uiGridConstants', 'GridFilteringService', 'bhConstants', 'SessionService',
+  'ExchangeRateService',
 ];
 
 function StockFindPurchaseModalController(
-  Instance, Purchase, Notify, uiGridConstants, Filtering, bhConstants, Session,
+  Instance, Purchase, Notify, uiGridConstants, Filtering,
+  bhConstants, Session, Exchange
 ) {
   const vm = this;
 
@@ -35,7 +37,6 @@ function StockFindPurchaseModalController(
       field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      // cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html',
       cellTemplate : purchaseReferenceCellTemplate,
     }, {
       field            : 'date',
@@ -52,7 +53,7 @@ function StockFindPurchaseModalController(
       field            : 'cost',
       displayName      : 'STOCK.AMOUNT',
       headerCellFilter : 'translate',
-      cellFilter       : `currency:${Session.enterprise.currency_id}`,
+      cellFilter       : `currency:row.entity.currency_id`,
       cellClass        : 'text-right',
     },
     { field : 'author', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
@@ -88,7 +89,10 @@ function StockFindPurchaseModalController(
   /* ======================= End Grid ======================================== */
   function load() {
     vm.loading = true;
-    Purchase.search({ status_id : [CONFIRMED, PARTIALLY_RECEIVED] })
+    Exchange.read()
+      .then(() => {
+        return Purchase.search({ status_id: [CONFIRMED, PARTIALLY_RECEIVED] });
+      })
       .then(purchases => {
         vm.gridOptions.data = purchases;
       })
