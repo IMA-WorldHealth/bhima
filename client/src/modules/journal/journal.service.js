@@ -119,6 +119,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     { key : 'hrReference', label : 'TABLE.COLUMNS.REFERENCE' },
     { key : 'hrEntity', label : 'TABLE.COLUMNS.RECIPIENT' },
     { key : 'comment', label : 'FORM.LABELS.COMMENT' },
+    { key : 'stockReference', label : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT' },
   ]);
 
   if (filterCache.filters) {
@@ -136,7 +137,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     // assign default period filter
     const periodDefined = service.util.arrayIncludes(
       assignedKeys,
-      ['period', 'custom_period_start', 'custom_period_end']
+      ['period', 'custom_period_start', 'custom_period_end'],
     );
 
     if (!periodDefined) {

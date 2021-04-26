@@ -108,7 +108,9 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid', 'uuids', 'record_uuids', 'reference_uuid']);
+  db.convert(options, [
+    'uuid', 'record_uuid', 'uuids', 'record_uuids', 'reference_uuid', 'entity_uuid', 'stockReference',
+  ]);
 
   const filters = new FilterParser(options, { tableAlias : 'p' });
 
@@ -160,6 +162,8 @@ function buildTransactionQuery(options, posted) {
   filters.equals('hrEntity', 'text', 'em');
   filters.equals('hrRecord', 'text', 'dm1');
   filters.equals('hrReference', 'text', 'dm2');
+  filters.equals('entity_uuid');
+  filters.equals('stockReference', 'reference_uuid', 'p');
   filters.custom('currency_id', 'c.id=?');
 
   filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
