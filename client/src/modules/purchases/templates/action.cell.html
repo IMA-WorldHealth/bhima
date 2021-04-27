@@ -70,7 +70,7 @@
       </a>
     </li>
 
-    <li bh-has-permission="grid.appScope.actions.DELETE_PURCHASE_ORDER" class="divider" ></li>
+    <li bh-has-permission="grid.appScope.actions.DELETE_PURCHASE_ORDER" ng-if="grid.appScope.allowRecordDeletion(row.entity)" class="divider"></li>
 
     <li bh-has-permission="grid.appScope.actions.DELETE_PURCHASE_ORDER" ng-if="grid.appScope.allowRecordDeletion(row.entity)">
       <a data-method="delete-record" href ng-click="grid.appScope.deletePurchaseOrder(row.entity)">
