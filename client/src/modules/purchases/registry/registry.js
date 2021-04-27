@@ -26,6 +26,7 @@ function PurchaseRegistryController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = PurchaseOrder.download;
   vm.status = bhConstants.purchaseStatus;
+  vm.actions = bhConstants.actions;
 
   // barcode scanner
   vm.openBarcodeScanner = openBarcodeScanner;
