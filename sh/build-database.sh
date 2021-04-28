@@ -21,6 +21,9 @@ if [ "$1" == "debug" ]; then
     fout=/dev/tty
 fi
 
+# default database port
+DB_PORT=${DB_PORT:-3306}
+
 echo "Building database: $DB_USER,$DB_PASS,$DB_HOST,$DB_PORT,$DB_NAME'"
 
 # build the test database
