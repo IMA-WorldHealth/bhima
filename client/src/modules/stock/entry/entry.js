@@ -5,7 +5,8 @@ angular.module('bhima.controllers')
 StockEntryController.$inject = [
   'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
-  'StockFormService', 'StockService', 'StockModalService', 'LotService',
+  'StockFormService', 'StockService', 'StockModalService',
+  'LotService', 'ExchangeRateService',
   'uiGridConstants', 'Store', 'uuid', '$translate',
 ];
 
@@ -16,8 +17,11 @@ StockEntryController.$inject = [
  * This controller is responsible to handle stock entry module.
  */
 function StockEntryController(
-  Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, Lots, uiGridConstants, Store, Uuid, $translate,
+  Inventory, Notify, Session, util,
+  bhConstants, ReceiptModal, Purchase,
+  StockForm, Stock, StockModal,
+  Lots, Exchange,
+  uiGridConstants, Store, Uuid, $translate,
 ) {
   // variables
   let inventoryStore;
@@ -44,6 +48,7 @@ function StockEntryController(
   vm.submit = submit;
   vm.reset = reset;
   vm.onDateChange = onDateChange;
+  vm.$loading = false;
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -242,14 +247,24 @@ function StockEntryController(
    * - A depot from the cache or give possiblity of choosing one if not set
    */
   function startup() {
+    vm.$loading = true;
+
     // init a movement object
     vm.movement = {
       date : new Date(),
       entity : {},
     };
 
-    // loading all purchasable inventories
-    loadInventories();
+    // Load the exchange rates
+    Exchange.read()
+      .then(() => {
+        // loading all purchasable inventories
+        loadInventories();
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        toggleLoadingIndicator();
+      });
   }
 
   /**
@@ -341,7 +356,7 @@ function StockEntryController(
       .then((purchase) => {
         handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
-        vm.currencyId = vm.movement.entity.instance.currency_id;
+        vm.currencyId = vm.movement.entity.instance.currency_id || vm.currencyId;
       })
       .catch(Notify.handleError);
   }
@@ -536,6 +551,14 @@ function StockEntryController(
     };
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
+
+    // fix the unit price, if necessary
+    if (vm.currencyId !== vm.enterprise.currency_id) {
+      const exchangeRate = Exchange.getCurrentRate(vm.currencyId);
+      movement.lots.forEach(lot => {
+        lot.unit_cost /= exchangeRate;
+      });
+    }
 
     return Stock.stocks.create(movement)
       .then(document => {
