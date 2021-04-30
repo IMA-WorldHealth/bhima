@@ -52,6 +52,7 @@ angular.module('bhima.routes')
       'stock_movement_report',
       'stock_expiration_report',
       'stock_changes',
+      'rumer_report',
     ];
 
     function resolveReportData($stateParams, SavedReports) {
