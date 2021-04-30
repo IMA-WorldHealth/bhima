@@ -193,7 +193,6 @@ function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid)
  */
 async function insertNewStock(session, params) {
   const transaction = db.transaction();
-  const identifier = uuid();
   const documentUuid = uuid();
 
   const period = await Fiscal.lookupFiscalYearByDate(params.movement.date);

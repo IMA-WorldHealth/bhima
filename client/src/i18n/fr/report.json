@@ -132,6 +132,14 @@
       "TITLE": "Situation financière d'un Patient",
       "TOTAL_ALL_STOCK_MOV": "Total de tous les mouvements de stocks"
     },
+    "RUMER": {
+      "DESCRIPTION": "Registre d’utilisation des médicaments et recettes",
+      "INCLUDE_OUT_STOCK_ITEMS": "Inclure les articles en rupture de stock",
+      "STOCK_BEGINNING": "Stock au début du mois",
+      "STOCK_END": "Stock à la fin du mois",
+      "TITLE": "RUMER",
+      "TOTAL_ENTRIES": "Total des entrées du mois"
+    },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
       "TITLE": "Analyse de commande d'achat"
