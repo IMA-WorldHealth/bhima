@@ -143,6 +143,14 @@
       "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",
       "TITLE": "Purchase Order Analysis"
     },
+    "RUMER": {
+      "DESCRIPTION": "Drug Usage and Recipe Register",
+      "INCLUDE_OUT_STOCK_ITEMS": "Include out-of-stock items",
+      "STOCK_BEGINNING": "Stock at the beginning of the month",
+      "STOCK_END": "Stock at the end of the month",
+      "TITLE": "RUMER",
+      "TOTAL_ENTRIES": "Total entries for the month"
+    },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",
       "DESCRIPTION": "This report shows the current stock value for each inventory in a depot",
