@@ -65,23 +65,19 @@ async function report(req, res, next) {
     const reporting = new ReportManager(TEMPLATE, req.session, params);
 
     const sqlDailyConsumption = `
-      SELECT BUID(inv.uuid) AS uuid, inv.code, inv.text AS inventory_text,
-      SUM(sm.quantity) AS quantity, DATE(sm.date) AS dateMovement
-        FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
-      AND sm.is_exit = 1
-      GROUP BY inv.uuid, dateMovement;
+      SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
+      sms.out_quantity_consumption AS quantity, sms.date
+        FROM stock_movement_status AS sms
+        JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ? AND DATE(sms.date) >= DATE(?) AND DATE(sms.date) <= DATE(?)
     `;
 
     const sqlMonthlyConsumption = `
-      SELECT BUID(inv.uuid) AS uuid, inv.code, inv.text AS inventory_text, SUM(sm.quantity) AS quantity, sm.date
-        FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
-      AND sm.is_exit = 1
+      SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
+      SUM(sms.out_quantity_consumption) AS quantity, sms.date
+        FROM stock_movement_status AS sms
+        JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ? AND DATE(sms.date) >= DATE(?) AND DATE(sms.date) <= DATE(?)
       GROUP BY inv.uuid;
     `;
 
@@ -124,7 +120,7 @@ async function report(req, res, next) {
 
       inventoriesConsumed.forEach(consumed => {
         if (inventory.inventoryUuid === consumed.uuid) {
-          const dateConsumption = parseInt(moment(consumed.dateMovement).format('DD'), 10);
+          const dateConsumption = parseInt(moment(consumed.date).format('DD'), 10);
           dailyConsumption.forEach(d => {
             if (d.index === dateConsumption) {
               d.value = consumed.quantity;
