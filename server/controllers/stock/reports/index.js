@@ -154,3 +154,4 @@ exports.stockChangesReport = stockChangesReport;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;
 exports.monthlyConsumption = require('./stock/monthly_consumption');
+exports.rumer = require('./stock/rumer');

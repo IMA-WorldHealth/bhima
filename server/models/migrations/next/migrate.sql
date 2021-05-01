@@ -90,3 +90,14 @@ INSERT IGNORE INTO `exchange_rate` VALUES (3, 1, @EUR, 0.84, NOW());
 @description: remove the origin_uuid column from the lot table.
 */
 ALTER TABLE `lot` DROP COLUMN `origin_uuid`;
+
+/*
+ * @author: lomamech
+ * @date: 2021-04-26
+ * @subject : Implement the RUMER report
+ */
+INSERT INTO unit VALUES
+  (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('rumer_report', 'REPORT.RUMER.TITLE');
