@@ -57,15 +57,15 @@ describe('(/depots) The depots API ', () => {
       expect(res).to.be.json; // eslint-disable-line
 
       let values = {
-        algo_def : 53.48,
-        algo_msh : 53.33,
+        algo_def : 48.47,
+        algo_msh : 48.33,
         sum_days : 365,
         sum_stock_day : 365,
         sum_consumption_day : 9,
-        sum_consumed_quantity : 640,
+        sum_consumed_quantity : 580,
         number_of_month : 12,
         sum_stock_out_days : 0,
-        head_days : 0,
+        head_days : 29,
       };
 
       expect(res.body.algo_def, 'quinine CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
@@ -75,15 +75,15 @@ describe('(/depots) The depots API ', () => {
 
       res = await agent.get(`/depots/${principal}/inventories/${oxytocine}/cmm`);
       values = {
-        algo_def : 74.37,
-        algo_msh : 74.17,
+        algo_def : 72.28,
+        algo_msh : 72.08,
         sum_days : 365,
         sum_stock_day : 365,
         sum_consumption_day : 8,
-        sum_consumed_quantity : 890,
+        sum_consumed_quantity : 865,
         number_of_month : 12,
         sum_stock_out_days : 0,
-        head_days : 0,
+        head_days : 60,
       };
 
       expect(res.body.algo_def, 'oxytocine CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
@@ -92,15 +92,15 @@ describe('(/depots) The depots API ', () => {
 
       res = await agent.get(`/depots/${principal}/inventories/${ampicilline}/cmm`);
       values = {
-        algo_def : 33.27,
-        algo_msh : 33.15,
+        algo_def : 30.16,
+        algo_msh : 30.05,
         sum_days : 365,
-        sum_stock_day : 275,
+        sum_stock_day : 273,
         sum_consumption_day : 8,
-        sum_consumed_quantity : 300,
+        sum_consumed_quantity : 270,
         number_of_month : 12,
-        sum_stock_out_days : 90,
-        head_days : 0,
+        sum_stock_out_days : 92,
+        head_days : 29,
       };
 
       expect(res.body.algo_def, 'ampicilline CMM algorithm 1 is not calculated correctly').to.equal(values.algo_def);
