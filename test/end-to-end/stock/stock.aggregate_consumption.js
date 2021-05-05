@@ -293,7 +293,7 @@ function StockAggregateConsumptionTests() {
 
   it(`Prevent negative stock quantities when Aggregate Consumption greater than the 
       quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
-    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(90, 'days');
+    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
     const getMovementMonth = moment(getMovementDate).month();
     const getMovementYear = moment(getMovementDate).year();
 
