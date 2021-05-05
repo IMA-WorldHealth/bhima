@@ -59,14 +59,14 @@
   resolved "https://registry.yarnpkg.com/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.6.0.tgz#44f07158e36a57e14f521cb6902cab3786828cc3"
-  integrity sha512-8QT/plIKCAHz/8dZYl28KfTezJg2ucY/ZLW0tCIcdmruMBze+X4qcmNRMB3iAbn9VR2tc5BRlkBjwq1f1Q8aXA==
+"@ima-worldhealth/coral@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.6.1.tgz#f70c295ab95ace0483ce895c9efc2e0c48173310"
+  integrity sha512-i1vju06U9dYV9mSTrb6jTqQc38z/CsljTqGjR8hUAKrCPWLsRCIL18Nzz7QG3us0/PXVLv79LZVh/Vlqma4ORQ==
   dependencies:
     debug "^4.1.1"
     inline-source "^7.2.0"
-    puppeteer "^8.0.0"
+    puppeteer "^9.1.1"
     puppeteer-cluster "^0.22.0"
 
 "@ima-worldhealth/rewire@^4.1.0":
@@ -2582,10 +2582,10 @@ detect-newline@^3.1.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
   integrity sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==
 
-devtools-protocol@0.0.854822:
-  version "0.0.854822"
-  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.854822.tgz#eac3a5260a6b3b4e729a09fdc0c77b0d322e777b"
-  integrity sha512-xd4D8kHQtB0KtWW0c9xBZD5LVtm9chkMOfs/3Yn01RhT/sFIsVtzTtypfKoFfWBaL+7xCYLxjOLkhwPXaX/Kcg==
+devtools-protocol@0.0.869402:
+  version "0.0.869402"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.869402.tgz#03ade701761742e43ae4de5dc188bcd80f156d8d"
+  integrity sha512-VvlVYY+VDJe639yHs5PHISzdWTLL3Aw8rO4cvUtwvoxFd6FHbE4OpHHcde52M6096uYYazAmd4l0o5VuFRO2WA==
 
 di@^0.0.1:
   version "0.0.1"
@@ -2712,10 +2712,10 @@ dot-prop@^5.1.0, dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
-dotenv@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.4.0.tgz#08576a9d5dc63b4fc58df087015c768eb102e0f3"
-  integrity sha512-l+pIWjvRva0AhnLerv9VvpscgXa72iPW1qKlCgA7COzJA414vGQ/PMcOuNfR1CmQbK208WWYeVwQUa8yfuqH8Q==
+dotenv@^8.5.1:
+  version "8.5.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.5.1.tgz#e3a4c7862daba51b92bce0da5c349f11faa28663"
+  integrity sha512-qC1FbhCH7UH7B+BcRNUDhAk04d/n+tnGGB1ctwndZkVFeehYJOn39pRWWzmdzpFqImyX1KB8tO0DCHLf8yRaYQ==
 
 dotgitignore@^2.1.0:
   version "2.1.0"
@@ -7315,13 +7315,13 @@ puppeteer-cluster@^0.22.0:
   dependencies:
     debug "^4.1.1"
 
-puppeteer@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-8.0.0.tgz#a236669118aa795331c2d0ca19877159e7664705"
-  integrity sha512-D0RzSWlepeWkxPPdK3xhTcefj8rjah1791GE82Pdjsri49sy11ci/JQsAO8K2NRukqvwEtcI+ImP5F4ZiMvtIQ==
+puppeteer@^9.1.1:
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-9.1.1.tgz#f74b7facf86887efd6c6b9fabb7baae6fdce012c"
+  integrity sha512-W+nOulP2tYd/ZG99WuZC/I5ljjQQ7EUw/jQGcIb9eu8mDlZxNY2SgcJXTLG9h5gRvqA3uJOe4hZXYsd3EqioMw==
   dependencies:
     debug "^4.1.0"
-    devtools-protocol "0.0.854822"
+    devtools-protocol "0.0.869402"
     extract-zip "^2.0.0"
     https-proxy-agent "^5.0.0"
     node-fetch "^2.6.1"
