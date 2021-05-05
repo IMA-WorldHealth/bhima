@@ -69,11 +69,13 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants, $q) 
           if (index < limitRecent) {
             dataMovement.push(item);
           }
+
           $ctrl.dataMovementTotalValue += item.value;
         });
 
         $ctrl.dataMovement = dataMovement;
         $ctrl.noStockMovement = stockData.length === 0;
+        $ctrl.totalMovementCount = stockData.length;
       }).finally(() => {
         $ctrl.loading = false;
       });
