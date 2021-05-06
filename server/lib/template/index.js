@@ -13,7 +13,6 @@
  *   context.
  */
 
-
 const path = require('path');
 const exphbs = require('express-handlebars');
 

@@ -1,0 +1,68 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 translate>REPORT.RUMER.TITLE</h3>
+      <p class="text-info" translate>REPORT.RUMER.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+
+        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+
+          <!-- select depot -->
+          <bh-depot-select
+            depot-uuid="ReportConfigCtrl.reportDetails.depotUuid"
+            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+            required="true">
+          </bh-depot-select>
+
+          <bh-fiscal-year-select
+            fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+            on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+          </bh-fiscal-year-select>
+
+          <bh-period-selection
+            fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+            period-id="ReportConfigCtrl.reportDetails.period_id"
+            on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+          </bh-period-selection>
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.exclude_out_stock" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.RUMER.EXCLUDE_OUT_STOCK_ITEMS</span>
+            </label>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.consensed_report" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.RUMER.CONDENSED_REPORT</span>
+            </label>
+          </div>
+
+          <!-- preview -->
+          <bh-loading-button loading-state="ConfigForm.$loading">
+            <span translate>REPORT.UTIL.PREVIEW</span>
+          </bh-loading-button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

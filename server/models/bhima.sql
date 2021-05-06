@@ -166,8 +166,10 @@ INSERT INTO unit VALUES
   (290, '[SETTINGS] Settings', 'TREE.STOCK_SETTINGS', 'Stock Settings', 160, '/stock/setting'),
   (291, '[Stock] Dashboard', 'TREE.STOCK_DASHBOARD','Stock Dashboard', 160,'/stock/dashboard'),
   (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
-  (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption',160,'/stock/aggregated_consumption'),
-  (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list',160,'/stock/lots/duplicates');
+  (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption', 160,'/stock/aggregated_consumption'),
+  (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
+  (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -237,7 +239,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('invoiceRegistryReport', 'Invoice Registry as report'),
   ('stock_movement_report', 'REPORT.STOCK_MOVEMENT_REPORT.TITLE'),
   ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
-  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE');
+  ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
+  ('rumer_report', 'REPORT.RUMER.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
