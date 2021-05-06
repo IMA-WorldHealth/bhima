@@ -207,6 +207,7 @@ function StockInventoriesController(
     item.hasSecurityWarning = item.status === bhConstants.stockStatus.HAS_SECURITY_WARNING;
     item.hasMinimumWarning = item.status === bhConstants.stockStatus.HAS_MINIMUM_WARNING;
     item.hasOverageWarning = item.status === bhConstants.stockStatus.HAS_OVERAGE_WARNING;
+    item.isUnusedStock = item.status === bhConstants.stockStatus.UNUSED_STOCK;
   }
 
   // on remove one filter

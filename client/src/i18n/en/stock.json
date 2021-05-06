@@ -222,13 +222,14 @@
     "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "In Stock",
+      "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration",
       "LABEL"         : "Status",
       "MAXIMUM"       : "Maximum Stock Reached",
       "MINIMUM"       : "Low Stock",
       "OVER_MAX"      : "Over Maximum",
       "SECURITY"      : "Critical Stock",
-      "STOCK_OUT"      : "Stock Out",
-      "IS_IN_RISK_OF_EXPIRATION" : "At risk of expiration"
+      "STOCK_OUT"     : "Stock Out",
+      "UNUSED_STOCK"  : "Unused stock"
     },
     "STOCK_MOVEMENT"  : "View Stock Movement",
     "STOCK_MOVEMENTS" : "View Stock Movements",
