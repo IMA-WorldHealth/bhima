@@ -146,12 +146,14 @@
     "RUMER": {
       "CONDENSED_REPORT": "Condensed report",
       "DESCRIPTION": "Drug Usage and Recipe Register",
-      "EXCLUDE_OUT_STOCK_ITEMS": "Exclude out-of-stock items",
+      "EXCLUDE_OUT_STOCK_ITEMS": "Exclude inventories without movements and out of stock",
       "STOCK_BEGINNING": "Stock at the beginning of the month",
       "STOCK_END": "Stock at the end of the month",
       "TITLE": "RUMER",
       "TOTAL_ENTRIES": "Total entries",
-      "TOTAL_EXITS": "Total Exits"
+      "TOTAL_EXITS": "Total Exits",
+      "TOTAL_QUANTITIES_CONSUMED": "Total consumed",
+      "TOTAL_QUANTITIES_LOST": "Total lost"
     },
     "STOCK_VALUE": {
       "TITLE": "Stock value report",

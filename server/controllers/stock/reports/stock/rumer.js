@@ -5,7 +5,8 @@ const db = require('../../../../lib/db');
 const core = require('../../core');
 const ReportManager = require('../../../../lib/ReportManager');
 
-const TEMPLATE = './server/controllers/stock/reports/rumer.report.handlebars';
+const TEMPLATE1 = './server/controllers/stock/reports/rumer.report.handlebars';
+const TEMPLATE2 = './server/controllers/stock/reports/rumer_condensed.report.handlebars';
 
 exports.report = report;
 
@@ -29,6 +30,9 @@ async function report(req, res, next) {
   const params = req.query;
 
   params.exclude_out_stock = parseInt(params.exclude_out_stock, 10);
+  params.consensed_report = parseInt(params.consensed_report, 10);
+
+  const template = params.consensed_report ? TEMPLATE2 : TEMPLATE1;
 
   const data = {};
   const headerReport = [];
@@ -64,7 +68,7 @@ async function report(req, res, next) {
   _.defaults(params, DEFAULT_PARAMS);
 
   try {
-    const reporting = new ReportManager(TEMPLATE, req.session, params);
+    const reporting = new ReportManager(template, req.session, params);
 
     const sqlDailyConsumption = `
       SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
@@ -91,12 +95,33 @@ async function report(req, res, next) {
       GROUP BY sms.inventory_uuid;
     `;
 
+    const sqlOutQuantityConsumption = `
+      SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
+      SUM(sms.out_quantity_consumption) AS quantity, sms.date
+        FROM stock_movement_status AS sms
+        JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
+      GROUP BY inv.uuid;
+    `;
+
+    const sqlOutQuantityExit = `
+      SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
+      SUM(sms.out_quantity_exit) AS quantity, sms.date
+        FROM stock_movement_status AS sms
+        JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
+      GROUP BY inv.uuid;
+    `;
+
     const [inventoriesOpening, inventoriesConsumed,
-      inventoriesEntry, monthlyConsumption, inventoriesEnding] = await Promise.all([
+      inventoriesEntry, monthlyConsumption, outQuantityConsumption,
+      outQuantityExit, inventoriesEnding] = await Promise.all([
       core.getInventoryQuantityAndConsumption(parameterOpeningStock),
       db.exec(sqlDailyConsumption, [db.bid(params.depotUuid), params.start_date, params.end_date]),
       db.exec(sqlStockEntryMonth, [db.bid(params.depotUuid), params.start_date, params.end_date]),
       db.exec(sqlMonthlyConsumption, [db.bid(params.depotUuid), params.start_date, params.end_date]),
+      db.exec(sqlOutQuantityConsumption, [db.bid(params.depotUuid), params.start_date, params.end_date]),
+      db.exec(sqlOutQuantityExit, [db.bid(params.depotUuid), params.start_date, params.end_date]),
       core.getInventoryQuantityAndConsumption(parameterEndingStock),
     ]);
 
@@ -107,6 +132,8 @@ async function report(req, res, next) {
         quantityOpening : 0,
         quantityTotalEntry : 0,
         quantityTotalExit : 0,
+        outQuantityConsumption : 0,
+        outQuantityExit : 0,
         quantityEnding : inventory.quantity,
       });
     });
@@ -117,18 +144,32 @@ async function report(req, res, next) {
         dailyConsumption.push({ value : 0, index : i });
       }
 
-      inventoriesConsumed.forEach(consumed => {
-        if (inventory.inventoryUuid === consumed.uuid) {
-          const dateConsumption = parseInt(moment(consumed.date).format('DD'), 10);
-          dailyConsumption.forEach(d => {
-            if (d.index === dateConsumption) {
-              d.value = consumed.quantity;
-            }
-          });
-        }
-      });
+      if (params.consensed_report) {
+        outQuantityConsumption.forEach(outConsumption => {
+          if (inventory.inventoryUuid === outConsumption.uuid) {
+            inventory.outQuantityConsumption = outConsumption.quantity;
+          }
+        });
 
-      inventory.dailyConsumption = dailyConsumption;
+        outQuantityExit.forEach(outExit => {
+          if (inventory.inventoryUuid === outExit.uuid) {
+            inventory.outQuantityExit = outExit.quantity;
+          }
+        });
+
+      } else {
+        inventoriesConsumed.forEach(consumed => {
+          if (inventory.inventoryUuid === consumed.uuid) {
+            const dateConsumption = parseInt(moment(consumed.date).format('DD'), 10);
+            dailyConsumption.forEach(d => {
+              if (d.index === dateConsumption) {
+                d.value = consumed.quantity;
+              }
+            });
+          }
+        });
+        inventory.dailyConsumption = dailyConsumption;
+      }
 
       if (inventoriesOpening.length) {
         inventoriesOpening.forEach(opening => {

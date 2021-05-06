@@ -135,12 +135,14 @@
     "RUMER": {
       "CONDENSED_REPORT": "Rapport condensé",
       "DESCRIPTION": "Registre d’utilisation des médicaments et recettes",
-      "EXCLUDE_OUT_STOCK_ITEMS": "Exclure les articles en rupture de stock",
+      "EXCLUDE_OUT_STOCK_ITEMS": "Exclure les inventaires sans mouvements et en rupture de stock",
       "STOCK_BEGINNING": "Stock au début du mois",
       "STOCK_END": "Stock à la fin du mois",
       "TITLE": "RUMER",
       "TOTAL_ENTRIES": "Total des entrées",
-      "TOTAL_EXITS": "Total des sorties"
+      "TOTAL_EXITS": "Total des sorties",
+      "TOTAL_QUANTITIES_CONSUMED": "Total consommées",
+      "TOTAL_QUANTITIES_LOST": "Total perdues"
     },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
