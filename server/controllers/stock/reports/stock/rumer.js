@@ -28,6 +28,8 @@ const DEFAULT_PARAMS = {
 async function report(req, res, next) {
   const params = req.query;
 
+  params.exclude_out_stock = parseInt(params.exclude_out_stock, 10);
+
   const data = {};
   const headerReport = [];
   const configurationData = [];
@@ -66,30 +68,27 @@ async function report(req, res, next) {
 
     const sqlDailyConsumption = `
       SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
-      sms.out_quantity_consumption AS quantity, sms.date
+      (sms.out_quantity_consumption + sms.out_quantity_exit) AS quantity, sms.date
         FROM stock_movement_status AS sms
         JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
-      WHERE sms.depot_uuid = ? AND DATE(sms.date) >= DATE(?) AND DATE(sms.date) <= DATE(?)
+      WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
     `;
 
     const sqlMonthlyConsumption = `
       SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
-      SUM(sms.out_quantity_consumption) AS quantity, sms.date
+      SUM(sms.out_quantity_consumption + sms.out_quantity_exit) AS quantity, sms.date
         FROM stock_movement_status AS sms
         JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
-      WHERE sms.depot_uuid = ? AND DATE(sms.date) >= DATE(?) AND DATE(sms.date) <= DATE(?)
+      WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
       GROUP BY inv.uuid;
     `;
 
     const sqlStockEntryMonth = `
-      SELECT BUID(inv.uuid) AS uuid, inv.code, inv.text AS inventory_text, SUM(sm.quantity) AS quantity,
-      sm.date, sm.is_exit
-        FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
-      AND sm.is_exit = 0
-      GROUP BY inv.uuid;
+      SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text, SUM(sms.in_quantity) AS quantity
+      FROM stock_movement_status AS sms
+      JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
+      GROUP BY sms.inventory_uuid;
     `;
 
     const [inventoriesOpening, inventoriesConsumed,
@@ -130,39 +129,39 @@ async function report(req, res, next) {
       });
 
       inventory.dailyConsumption = dailyConsumption;
-    });
 
-    if (inventoriesOpening.length) {
-      configurationData.forEach(inventory => {
+      if (inventoriesOpening.length) {
         inventoriesOpening.forEach(opening => {
           if (inventory.inventoryUuid === opening.inventory_uuid) {
             inventory.quantityOpening = opening.quantity;
           }
         });
-      });
-    }
+      }
 
-    if (inventoriesEntry.length) {
-      configurationData.forEach(inventory => {
+      if (inventoriesEntry.length) {
         inventoriesEntry.forEach(entry => {
           if (inventory.inventoryUuid === entry.uuid) {
             inventory.quantityTotalEntry = entry.quantity;
           }
         });
-      });
-    }
+      }
 
-    if (monthlyConsumption.length) {
-      configurationData.forEach(inventory => {
+      if (monthlyConsumption.length) {
         monthlyConsumption.forEach(exit => {
           if (inventory.inventoryUuid === exit.uuid) {
             inventory.quantityTotalExit = exit.quantity;
           }
         });
-      });
-    }
+      }
+    });
 
     data.configurationData = configurationData;
+
+    if (params.exclude_out_stock) {
+      data.configurationData = data.configurationData.filter(item => {
+        return ((item.quantityOpening !== 0 && item.quantityEnding !== 0)) || (item.quantityTotalExit);
+      });
+    }
 
     const result = await reporting.render(data);
     res.set(result.headers).send(result.report);

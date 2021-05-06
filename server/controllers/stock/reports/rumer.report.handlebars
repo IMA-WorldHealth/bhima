@@ -25,7 +25,7 @@
             {{#each header as | key |}}
               <th style="min-width:20px;" class="text-center">{{key}}</th>
             {{/each}}
-            <th style="width: 7.5%;" class="text-center">{{translate 'FORM.LABELS.TOTAL'}} </th>
+            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.TOTAL_EXITS'}} </th>
             <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.STOCK_END'}}</th>
           </tr>
         </thead>
@@ -34,8 +34,8 @@
             {{#each configurationData}}
             <tr>
               <td> {{ inventoryText }} </td>
-              <td><strong> {{ quantityOpening }} </strong></td>
-              <td> {{ quantityTotalEntry }} </td>
+              <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
+              <td class="text-right"> {{ quantityTotalEntry }} </td>
               {{#each dailyConsumption }}
                 <td class="text-right">
                 {{#if value}}
@@ -43,8 +43,8 @@
                 {{/if}}  
                 </td>
               {{/each}}
-              <td><strong> {{ quantityTotalExit }} </strong></td>
-              <td><strong> {{ quantityEnding }} </strong></td>  
+              <td class="text-right"><strong> {{ quantityTotalExit }} </strong></td>
+              <td class="text-right"><strong> {{ quantityEnding }} </strong></td>
             </tr>
             {{/each}}
           </tbody>
