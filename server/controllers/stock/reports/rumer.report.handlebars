@@ -32,15 +32,13 @@
 
           <tbody>
             {{#each configurationData}}
-            <tr>
+              <tr {{#lt quantityEnding 0 }}class="bg-danger"{{/lt}}>
               <td> {{ inventoryText }} </td>
               <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
-              <td class="text-right"> {{ quantityTotalEntry }} </td>
+              <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
               {{#each dailyConsumption }}
                 <td class="text-right">
-                {{#if value}}
-                  {{ value }}
-                {{/if}}  
+                {{#if value}} {{ value }} {{/if}}
                 </td>
               {{/each}}
               <td class="text-right"><strong> {{ quantityTotalExit }} </strong></td>

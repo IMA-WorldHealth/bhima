@@ -11,10 +11,7 @@ function rumerReportController($sce, Notify, SavedReports, AppCache, reportData,
   const cache = new AppCache('rumer_report');
   const reportUrl = 'reports/stock/rumer_report';
 
-  // default values
-  vm.reportDetails = {
-    includePurchaseEntry : 1,
-  };
+  vm.reportDetails = { };
   vm.previewGenerated = false;
 
   // check cached configuration
