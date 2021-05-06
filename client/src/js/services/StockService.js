@@ -83,6 +83,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     security_reached  : 'STOCK.STATUS.SECURITY',
     minimum_reached   : 'STOCK.STATUS.MINIMUM',
     over_maximum      : 'STOCK.STATUS.OVER_MAX',
+    unused_stock      : 'STOCK.STATUS.UNUSED_STOCK',
   };
 
   // Filter service
