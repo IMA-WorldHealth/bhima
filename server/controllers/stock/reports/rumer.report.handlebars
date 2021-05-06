@@ -1,0 +1,52 @@
+{{> head title="REPORT.MONTHLY_CONSUMPTION.TITLE" }}
+
+<body class="container-fluid">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.RUMER.TITLE'}}
+      </h2>
+
+      <h5 class="text-center">{{translate 'REPORT.RUMER.DESCRIPTION'}}</h5>
+
+      <h3 class="text-center">{{params.depot_text}}</h3>
+      <h4 class="text-center">{{translate params.translate_key}} - {{params.year}} </h4>
+
+      <table class="table table-striped table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th style="min-width:100px;">{{translate 'FORM.LABELS.INVENTORY'}}</th>
+            <th class="text-center"> {{translate 'REPORT.RUMER.STOCK_BEGINNING'}} </th>
+            <th class="text-center"> {{translate 'REPORT.RUMER.TOTAL_ENTRIES'}} </th>
+            {{#each header as | key |}}
+              <th style="min-width:20px;" class="text-center">{{key}}</th>
+            {{/each}}
+            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.TOTAL_EXITS'}} </th>
+            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.STOCK_END'}}</th>
+          </tr>
+        </thead>
+
+          <tbody>
+            {{#each configurationData}}
+              <tr {{#lt quantityEnding 0 }}class="bg-danger"{{/lt}}>
+              <td> {{ inventoryText }} </td>
+              <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
+              <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
+              {{#each dailyConsumption }}
+                <td class="text-right">
+                {{#if value}} {{ value }} {{/if}}
+                </td>
+              {{/each}}
+              <td class="text-right"><strong> {{ quantityTotalExit }} </strong></td>
+              <td class="text-right"><strong> {{ quantityEnding }} </strong></td>
+            </tr>
+            {{/each}}
+          </tbody>
+      </table>
+    </div>
+  </div>
+</body>
