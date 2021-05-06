@@ -7,6 +7,14 @@
       STOCK.STATUS.STOCK_OUT
     </div>
 
+    <div ng-if="row.entity.isUnusedStock" class="label unused-stock-status"
+      uib-tooltip="{{'STOCK.STATUS.UNUSED_STOCK' | translate}}"
+      tooltip-append-to-body="true"
+      tooltip-placement="left"
+      translate>
+      STOCK.STATUS.UNUSED_STOCK
+    </div>
+
     <div ng-if="row.entity.hasSecurityWarning" class="label critical-stock-status"
       uib-tooltip="{{'STOCK.STATUS.SECURITY' | translate}}"
       tooltip-append-to-body="true"

@@ -223,13 +223,14 @@
     "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "Disponible",
+      "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration",
       "LABEL"         : "État",
       "MAXIMUM"       : "Stock Max Atteint",
       "MINIMUM"       : "Stock faible",
       "OVER_MAX"      : "Stock Max Depassé",
       "SECURITY"      : "Stock Critique",
       "STOCK_OUT"     : "Rupture de stock",
-      "IS_IN_RISK_OF_EXPIRATION" : "A risque d'expiration"
+      "UNUSED_STOCK"  : "Produits non utilisé"
     },
     "STOCK_MOVEMENT"  : "Voir le mouvement de Stock",
     "STOCK_MOVEMENTS" : "Les Mouvements de Stock",

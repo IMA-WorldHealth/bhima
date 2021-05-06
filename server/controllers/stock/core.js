@@ -525,6 +525,8 @@ function computeInventoryIndicators(inventories) {
     if (Q <= 0) {
       inventory.status = 'stock_out';
       inventory.stock_out_date = inventory.last_movement_date;
+    } else if (Q > 0 && inventory.NO_CONSUMPTION) {
+      inventory.status = 'unused_stock';
     } else if (Q > 0 && Q <= inventory.S_SEC) {
       inventory.status = 'security_reached';
     } else if (Q > inventory.S_SEC && Q <= inventory.S_MIN) {

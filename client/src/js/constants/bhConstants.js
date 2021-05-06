@@ -108,11 +108,12 @@ function constantConfig() {
       completed_status : 6,
     },
     stockStatus : {
-      IS_STOCK_OUT          : 'stock_out',
+      IS_STOCK_OUT         : 'stock_out',
       IS_IN_STOCK          : 'in_stock',
       HAS_SECURITY_WARNING : 'security_reached',
       HAS_MINIMUM_WARNING  : 'minimum_reached',
       HAS_OVERAGE_WARNING  : 'over_maximum',
+      UNUSED_STOCK         : 'unused_stock',
     },
     reports : {
       AGED_DEBTOR    : 'AGED_DEBTOR',
