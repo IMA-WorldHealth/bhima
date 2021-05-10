@@ -60,6 +60,7 @@ function StockEntryModalForm(uuid) {
 
   StockForm.prototype.removeItem = function removeItem(idx) {
     this.rows.splice(idx, 1);
+    this.validate(this.opts.entry_date || new Date());
   };
 
   /**
