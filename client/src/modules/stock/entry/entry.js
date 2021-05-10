@@ -177,6 +177,7 @@ function StockEntryController(
     form.$setPristine();
     form.$setUntouched();
     vm.movement = { date : new Date() };
+    vm.entityAllowAddItems = false;
     vm.resetEntryExitTypes = true;
   }
 
