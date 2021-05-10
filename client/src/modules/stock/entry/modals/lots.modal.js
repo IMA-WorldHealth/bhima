@@ -131,6 +131,16 @@ function StockDefineLotsModalController(
     vm.gridApi = api;
   }
 
+  function lookupLotByLabel(label) {
+    return vm.stockLine.availableLots
+      .find(l => l.label.toUpperCase() === label.toUpperCase());
+  }
+
+  function lookupLotByUuid(uuid) {
+    return vm.stockLine.availableLots
+      .find(l => l.uuid === uuid);
+  }
+
   // Handle the extra validation for expired lot labels
   function validateForm() {
     vm.errors = vm.form.validate(vm.entryDate);
@@ -143,9 +153,10 @@ function StockDefineLotsModalController(
 
       // Note that the type of row.lot will differ depending on whether
       // we are selecting an existing lot or creating a new one.
-      const lotLabel = typeof row.lot === 'string' ? row.lot : row.lot.label;
-      const existingLot = vm.stockLine.availableLots
-        .find(l => l.label.toUpperCase() === lotLabel.toUpperCase());
+      const existingLot = typeof row.lot === 'string'
+        ? lookupLotByLabel(row.lot)
+        : lookupLotByUuid(row.lot.uuid);
+
       if (existingLot) {
         // Disable changing the date for rows with lots already defined.
         // (This does not prevent changing the quantity.)
