@@ -1,6 +1,6 @@
 <form
   name="ModalForm"
-  ng-submit="$ctrl.submit(ModalForm)"
+  bh-submit="$ctrl.submit(ModalForm)"
   data-modal="stock-lots-duplicates"
   novalidate>
 
@@ -20,10 +20,12 @@
     </div>
     <div ng-if="$ctrl.lots.length > 1">
       <span translate translate-values="{'N':$ctrl.lots.length - 1}">LOTS.FOUND_N_LOTS</span>
+
       <div>
         <input type="checkbox" ng-model="$ctrl.allSelected" ng-change="$ctrl.selectAll()" />
         <span translate>FORM.LABELS.SELECT_ALL_LOTS</span>
       </div>
+
       <table class="table table-condensed table-bordered">
         <thead>
           <th translate>TABLE.COLUMNS.KEEP</th>
@@ -38,12 +40,13 @@
           <tr ng-repeat="lot in $ctrl.lots track by lot.uuid"
               ng-class="{ 'selected-lot' : lot.selected }">
             <td class="center">
-              <input type="radio" name="selected" style="cursor:pointer;"
-                ng-model="$ctrl.selectedLot.uuid"
-                ng-change="$ctrl.selectLot(lot)"
-                ng-checked="lot.uuid === $ctrl.selectedLot.uuid"
-                required
-                >
+              <input
+                  type="radio" name="selected" style="cursor:pointer;"
+                  ng-model="$ctrl.selectedLot.uuid"
+                  ng-change="$ctrl.selectLot(lot)"
+                  ng-checked="lot.uuid === $ctrl.selectedLot.uuid"
+                  required
+                  >
             </td>
             <td class="center">
               <input type="checkbox" name="merge" style="cursor:pointer;"

@@ -154,10 +154,12 @@ function StockDefineLotsModalController(
 
       // Check to make sure the lot has not expired
       if (existingLot && existingLot.expired) {
+
         vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
           { label : existingLot.label }));
         vm.form.$invalid = true;
       }
+
     });
   }
 

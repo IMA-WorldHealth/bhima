@@ -6,10 +6,12 @@
  * The /lots HTTP API endpoint
  *
  * @requires lodash
+ * @requires moment
  * @requires lib/db
  * @requires lib/filter
  */
 const _ = require('lodash');
+const debug = require('debug')('bhima:lots');
 const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
@@ -219,6 +221,9 @@ function mergeLotsInternal(uuid, lotsToMerge) {
  */
 function merge(req, res, next) {
   const { uuid } = req.params;
+
+  debug(`#merge(): merging ${req.body.lotsToMerge.length} lots into ${uuid}.`);
+
   const lotsToMerge = req.body.lotsToMerge.map(db.bid);
 
   mergeLotsInternal(uuid, lotsToMerge)

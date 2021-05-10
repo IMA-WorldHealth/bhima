@@ -21,14 +21,15 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
     Lots.read(data.uuid)
       .then(selectedLot => {
         vm.selectedLot = selectedLot;
-        Lots.dupes({ label : vm.selectedLot.label, inventory_uuid : vm.selectedLot.inventory_uuid })
-          .then(lots => {
-            lots.forEach(lot2 => {
-              lot2.selected = lot2.uuid === vm.selectedLot.uuid;
-              lot2.merge = false;
-            });
-            vm.lots = lots;
-          });
+        return Lots.dupes({ label : vm.selectedLot.label, inventory_uuid : vm.selectedLot.inventory_uuid });
+      })
+      .then(lots => {
+        lots.forEach(lot2 => {
+          lot2.selected = lot2.uuid === vm.selectedLot.uuid;
+          lot2.merge = false;
+        });
+
+        vm.lots = lots;
       })
       .catch(Notify.handleError);
   }
@@ -56,25 +57,24 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
   }
 
   function submit(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // Collect the lots to be merged
-    const lotsToMerge = [];
-    vm.lots.forEach(lot => {
-      if (lot.merge) {
-        lotsToMerge.push(lot.uuid);
-      }
-    });
+    const lotsToMerge = vm.lots
+      .filter(lot => lot.merge)
+      .map(lot => lot.uuid);
+
     if (lotsToMerge.length === 0) {
-      Instance.close();
       Notify.warn($translate.instant('LOTS.NO_LOTS_MERGED'));
-    } else {
-      Lots.merge(vm.selectedLot.uuid, lotsToMerge)
-        .then(() => {
-          Instance.close('success');
-        });
-      Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
+      return Instance.close();
     }
+
+    return Lots.merge(vm.selectedLot.uuid, lotsToMerge)
+      .then(() => {
+        Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
+        Instance.close('success');
+      });
+
   }
 
   startup();
