@@ -25,7 +25,9 @@
 
           <!--select the Patient -->
           <bh-find-patient
+            patient-uuid="ReportConfigCtrl.reportDetails.patientUuid"
             suppress-reset="false"
+            required="true"
             on-search-complete="ReportConfigCtrl.setPatient(patient)">
           </bh-find-patient>
 

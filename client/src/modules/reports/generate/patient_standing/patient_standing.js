@@ -16,15 +16,15 @@ function patientStandingController($state, $sce, Notify, BaseReportService, AppC
   const vm = this;
   const cache = new AppCache('configure_patient_standing');
   const reportUrl = '/reports/finance/financial_patient/';
-  let baseReportUrl = '';
 
-  vm.reportDetails = {};
+  vm.reportDetails = { patientUuid : '' };
 
   checkCachedConfiguration();
 
   vm.requestSaveAs = function requestSaveAs() {
+    const targetUrl = reportUrl.concat(vm.reportDetails.patientUuid);
     const options = {
-      url : baseReportUrl,
+      url : targetUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
@@ -38,16 +38,21 @@ function patientStandingController($state, $sce, Notify, BaseReportService, AppC
 
   // set patient
   vm.setPatient = function setPatient(patient) {
-    baseReportUrl = `${reportUrl}${patient.uuid}`;
+    vm.reportDetails.patientUuid = patient.uuid;
   };
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
+    // do not submit if missing a patient
+    if (!vm.reportDetails.patientUuid) { return 0; }
+
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview(baseReportUrl, reportData.id, angular.copy(vm.reportDetails))
+    const targetUrl = reportUrl.concat(vm.reportDetails.patientUuid);
+
+    return SavedReports.requestPreview(targetUrl, reportData.id, angular.copy(vm.reportDetails))
       .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
