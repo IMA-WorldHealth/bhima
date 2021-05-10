@@ -156,7 +156,8 @@
       <p ng-if="!DepotModalCtrl.depot.allowed_distribution_depots.length"><i translate>DEPOT.NO_DEPOT</i></p>
       <bh-depot-search-select label="STOCK.DEPOT" id="distribution_depots"
         depots-uuids="DepotModalCtrl.depot.allowed_distribution_depots"
-        on-change="DepotModalCtrl.onDistributionDepotChange(depots)" form-name="DepotForm">
+        on-change="DepotModalCtrl.onDistributionDepotChange(depots)"
+        required="DepotModalCtrl.enable_strict_depot_distribution">
       </bh-depot-search-select>
     </div>
 
