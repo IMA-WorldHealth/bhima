@@ -273,7 +273,7 @@ function StockMovementsController(
   vm.hasAutoStockAccounting = Session.stock_settings.enable_auto_stock_accounting;
 
   vm.deleteMovement = documentUuid => {
-    ModalService.confirm()
+    return ModalService.confirm()
       .then(ans => {
         if (!ans) { return null; }
 
