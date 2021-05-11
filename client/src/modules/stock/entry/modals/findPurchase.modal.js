@@ -9,12 +9,9 @@ StockFindPurchaseModalController.$inject = [
 
 function StockFindPurchaseModalController(
   Instance, Purchase, Notify, uiGridConstants, Filtering,
-  bhConstants, Session, Exchange
+  bhConstants, Session, Exchange,
 ) {
   const vm = this;
-
-  // global
-  vm.selectedRow = {};
 
   const {
     CONFIRMED,
@@ -22,7 +19,6 @@ function StockFindPurchaseModalController(
   } = bhConstants.purchaseStatus;
 
   /* ======================= Grid configurations ============================ */
-  vm.filterEnabled = false;
   vm.gridOptions = { appScopeProvider : vm };
 
   const filtering = new Filtering(vm.gridOptions);
@@ -62,7 +58,7 @@ function StockFindPurchaseModalController(
   vm.gridOptions.columnDefs = columns;
   vm.gridOptions.multiSelect = false;
   vm.gridOptions.enableColumnMenus = false;
-  vm.gridOptions.enableFiltering = vm.filterEnabled;
+  vm.gridOptions.enableFiltering = false;
   vm.gridOptions.onRegisterApi = onRegisterApi;
   vm.toggleFilter = toggleFilter;
 
@@ -72,17 +68,11 @@ function StockFindPurchaseModalController(
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionCallback);
-  }
-
-  function rowSelectionCallback(row) {
-    vm.selectedRow = row.entity;
   }
 
   /** toggle filter */
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -90,9 +80,7 @@ function StockFindPurchaseModalController(
   function load() {
     vm.loading = true;
     Exchange.read()
-      .then(() => {
-        return Purchase.search({ status_id : [CONFIRMED, PARTIALLY_RECEIVED] });
-      })
+      .then(() => Purchase.search({ status_id : [CONFIRMED, PARTIALLY_RECEIVED] }))
       .then(purchases => {
         vm.gridOptions.data = purchases;
       })
@@ -104,11 +92,12 @@ function StockFindPurchaseModalController(
       });
   }
 
-  // submit
   function submit() {
-    if (!vm.selectedRow || (vm.selectedRow && !vm.selectedRow.uuid)) { return null; }
+    const [selectedRow] = vm.gridApi.selection.getSelectedRows();
 
-    return Purchase.stockBalance(vm.selectedRow.uuid)
+    if (!selectedRow || (selectedRow && !selectedRow.uuid)) { return null; }
+
+    return Purchase.stockBalance(selectedRow.uuid)
       .then(handlePurchaseInformation)
       .catch(Notify.handleError);
   }
@@ -118,7 +107,8 @@ function StockFindPurchaseModalController(
     purchases.forEach(purchase => {
       purchase.display_name = purchase.supplier_name;
     });
-    Instance.close(purchases);
+
+    return Instance.close(purchases);
   }
 
   // cancel
