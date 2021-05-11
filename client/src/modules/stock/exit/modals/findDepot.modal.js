@@ -8,6 +8,7 @@ StockFindDepotModalController.$inject = [
 
 function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Session, RequisitionHelpers) {
   const vm = this;
+
   const enableStrictDepotDistribution = Session.stock_settings.enable_strict_depot_distribution;
 
   // global
@@ -29,11 +30,8 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
       .then(depots => {
         // set defined the previous selected depot
         if (Data.entity_uuid) {
-          const currentDepot = depots.filter(item => {
-            return item.uuid === Data.entity_uuid;
-          });
-
-          vm.selected = currentDepot.length > 0 ? currentDepot[0] : {};
+          const currentDepot = depots.find(item => item.uuid === Data.entity_uuid);
+          vm.selected = currentDepot || {};
         }
 
         // forbid to distribute to the same depot
@@ -52,13 +50,13 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
 
   // submit
   function submit(form) {
+
     if (vm.reference) {
       return RequisitionHelpers.lookupRequisitionByReference(vm.reference)
         .then(requisition => RequisitionHelpers.isRequisitionForDepot(requisition, Data.depot))
         .then(depotDetails)
         .then(assignDepotRequisition)
         .catch(err => {
-
           // bind the error flags as needed
           vm.requisitionMessage = err.message;
           vm.requisitionLabel = err.label;
@@ -66,7 +64,8 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
         });
     }
 
-    if (form.$invalid && !vm.requisition.uuid) { return null; }
+    if (form.$invalid && (vm.requisition && !vm.requisition.uuid)) { return null; }
+
     return Instance.close(vm.selected);
   }
 

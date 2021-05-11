@@ -18,12 +18,15 @@ function bhHasRequisitionVoucherController() {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.requisitionVoucherExist = 0;
+    $ctrl.requisitionDisabled = true;
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.requestor && changes.requestor.currentValue) {
       $ctrl.requisitionVoucherExist = 0;
+      $ctrl.requisitionDisabled = false;
     }
+
   };
 
   $ctrl.onChangeVoucherExist = value => {
