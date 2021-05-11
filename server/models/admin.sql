@@ -246,4 +246,19 @@ BEGIN
   DELETE FROM general_ledger WHERE record_uuid = _record_uuid;
 END$$
 
+DROP PROCEDURE IF EXISTS  zMergeDepots$$
+CREATE PROCEDURE zMergeDepots(
+  IN _old_uuid BINARY(16),
+  IN _new_uuid BINARY(16)
+) BEGIN
+  UPDATE stock_movement SET depot_uuid = _new_uuid WHERE depot_uuid = _old_uuid;
+  DELETE FROM depot_distribution_permission WHERE depot_uuid = _old_uuid;
+  UPDATE stock_assign SET depot_uuid = _new_uuid WHERE depot_uuid = _old_uuid;
+  UPDATE stock_requisition SET depot_uuid = _new_uuid WHERE depot_uuid = _old_uuid;
+  DELETE FROM stock_movement_status WHERE depot_uuid =  _old_uuid;
+  DELETE FROM depot_permission WHERE depot_uuid =  _old_uuid;
+  DELETE FROM depot WHERE uuid =  _old_uuid;
+END$$
+
+
 DELIMITER ;
