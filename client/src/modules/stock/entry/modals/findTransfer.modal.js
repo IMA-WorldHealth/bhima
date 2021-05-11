@@ -3,21 +3,29 @@ angular.module('bhima.controllers')
 
 StockFindTransferModalController.$inject = [
   '$uibModalInstance', 'StockService', 'NotifyService', 'uiGridConstants',
-  'GridFilteringService', 'ReceiptModal', 'data', 'bhConstants',
+  'GridFilteringService', 'data', 'bhConstants',
 ];
 
 function StockFindTransferModalController(
   Instance, StockService, Notify,
-  uiGridConstants, Filtering, Receipts, data, bhConstants,
+  uiGridConstants, Filtering, data, bhConstants,
 ) {
   const vm = this;
-
-  let selectedRow;
 
   vm.filterReceived = false;
   vm.gridOptions = { appScopeProvider : vm };
 
   const filtering = new Filtering(vm.gridOptions);
+
+  const documentReferenceTmpl = `
+    <div class="ui-grid-cell-contents">
+      <bh-stock-receipt
+        value="row.entity.document_uuid"
+        flux-id="row.entity.flux_id"
+        display-value="row.entity.document_reference">
+      </bh-stock-receipt>
+    </div>
+  `;
 
   const columns = [{
     field : 'status',
@@ -35,7 +43,7 @@ function StockFindTransferModalController(
     field : 'document_reference',
     displayName : 'FORM.LABELS.REFERENCE',
     headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/entry/modals/templates/document_reference.tmpl.html',
+    cellTemplate : documentReferenceTmpl,
   }, {
     field : 'depot_name',
     displayName : 'FORM.LABELS.ORIGIN',
@@ -53,7 +61,6 @@ function StockFindTransferModalController(
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
-  vm.showReceipt = showReceipt;
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.toggleReceived = toggleReceived;
 
@@ -61,11 +68,6 @@ function StockFindTransferModalController(
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionCallback);
-  }
-
-  function rowSelectionCallback(row) {
-    selectedRow = row.entity;
   }
 
   /** toggle filter */
@@ -81,11 +83,6 @@ function StockFindTransferModalController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  /** get transfer document */
-  function showReceipt(uuid) {
-    Receipts.stockExitDepotReceipt(uuid, true);
-  }
-
   function load() {
     vm.loading = true;
 
@@ -93,6 +90,11 @@ function StockFindTransferModalController(
       depot_uuid : data.depot_uuid,
     })
       .then((transfers) => {
+        // needed for receipt rendering
+        transfers.forEach(transfer => {
+          transfer.flux_id = bhConstants.flux.TO_OTHER_DEPOT;
+        });
+
         vm.allTransfers = transfers;
         vm.pendingTransfers = transfers.filter(transferNotReceived);
         vm.gridOptions.data = vm.pendingTransfers;
@@ -116,7 +118,10 @@ function StockFindTransferModalController(
 
   // submit
   function submit() {
+    const [selectedRow] = vm.gridApi.selection.getSelectedRows();
+
     if (!selectedRow) { return 0; }
+
     return StockService.movements.read(null, {
       document_uuid : selectedRow.document_uuid,
       is_exit : 1,
