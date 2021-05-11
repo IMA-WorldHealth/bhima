@@ -1,5 +1,5 @@
 const {
-  _, db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE,
+  db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE,
 } = require('../common');
 
 const PeriodService = require('../../../../lib/period');
@@ -14,10 +14,11 @@ const PeriodService = require('../../../../lib/period');
  * GET /reports/stock/sheet
  */
 async function stockSheetReport(req, res, next) {
-  const optionReport = _.extend(req.query, {
+  const optionReport = {
+    ...req.query,
     filename : 'REPORT.STOCK.INVENTORY_REPORT',
     csvKey : 'rows',
-  });
+  };
 
   delete req.query.label;
 
@@ -45,11 +46,11 @@ async function stockSheetReport(req, res, next) {
     const report = new ReportManager(STOCK_SHEET_REPORT_TEMPLATE, req.session, optionReport);
 
     const [inventory, depot, rows] = await Promise.all([
-      await db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),
+      db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),
       options.depot_uuid
-        ? await db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)])
+        ? db.one('SELECT text FROM depot WHERE uuid = ?;', [db.bid(options.depot_uuid)])
         : null,
-      await Stock.getInventoryMovements(options),
+      Stock.getInventoryMovements(options),
     ]);
 
     const data = { inventory, depot };

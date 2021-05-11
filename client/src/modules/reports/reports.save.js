@@ -10,7 +10,6 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
   vm.documentOptions = {};
 
   vm.report = options.report;
-
   vm.dismiss = ModalInstance.dismiss;
 
   /* @TODO verify that options passed in are valid */
