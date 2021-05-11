@@ -22,6 +22,7 @@
       <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as (type.label | translate) for type in SaveCtrl.supportedRenderTypes">
       </select>
     </div>
+
     <!-- layout orientation -->
     <bh-render-option
       on-change="SaveCtrl.setDocumentorientation(orientation)"
@@ -29,7 +30,7 @@
     </bh-render-option>
 
     <div class="form-group">
-      <input 
+      <input
         type="checkbox" name="disableColor" id="disableColor" value="landscape"
         ng-true-value="1"
         ng-false-value="0"

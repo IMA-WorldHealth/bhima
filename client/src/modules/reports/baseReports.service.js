@@ -64,7 +64,7 @@ function BaseReportService($http, Modal, util, Languages) {
     const params = {
       // @TODO This should be known by the server
       reportId : report.id,
-      saveReport : '1',
+      saveReport : 1,
     };
     const options = angular.merge(reportOptions, params);
 
@@ -98,12 +98,8 @@ function BaseReportService($http, Modal, util, Languages) {
 
   function saveAsModal(options) {
     const instance = Modal.open({
-      animation : false,
       keyboard : true,
-      size : 'md',
-      resolve : {
-        options : function resolveOptions() { return options; },
-      },
+      resolve : { options : () => options },
       controller : 'SaveReportController as SaveCtrl',
       templateUrl : '/modules/templates/modals/report.save.html',
     });
