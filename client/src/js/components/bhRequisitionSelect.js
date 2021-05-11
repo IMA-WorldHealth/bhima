@@ -9,6 +9,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       required : '@?',
       label : '@?',
+      disabled : '<?',
     },
   });
 

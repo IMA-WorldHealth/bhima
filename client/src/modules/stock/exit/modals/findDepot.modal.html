@@ -2,21 +2,20 @@
   name="FindForm"
   bh-submit="$ctrl.submit(FindForm)"
   novalidate>
-
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static"> <i class="fa fa-search"></i> </li>
-      <li class="title">
+      <li class="static">
+        <i class="fa fa-search"></i>
         <span translate>FORM.LABELS.SEARCH</span>
-        <span translate>STOCK.DEPOT</span>
       </li>
+      <li class="title" translate>STOCK.DEPOT</li>
     </ol>
   </div>
 
   <div class="modal-body">
-    <div class="form-group">
+    <div class="form-group" ng-class="{ 'has-error' : FindForm.$submitted && FindForm.depot.$invalid }" >
       <label class="control-label" translate>STOCK.DEPOT</label>
-      <ui-select name="depot" ng-model="$ctrl.selected">
+      <ui-select name="depot" ng-model="$ctrl.selected" required="true">
         <ui-select-match>
           <span>{{$select.selected.text}}</span>
         </ui-select-match>
