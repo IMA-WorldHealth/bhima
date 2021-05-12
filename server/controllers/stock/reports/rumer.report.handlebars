@@ -1,5 +1,13 @@
 {{> head title="REPORT.MONTHLY_CONSUMPTION.TITLE" }}
 
+<style>
+  .bg-danger-important {
+    color: #a94442 !important;
+    background-color: #f2dede !important;
+    border-color: #ebccd1 !important;
+  }
+</style>
+
 <body class="container-fluid">
   {{> header}}
 
@@ -32,7 +40,7 @@
 
           <tbody>
             {{#each configurationData}}
-              <tr {{#lt quantityEnding 0 }}class="bg-danger"{{/lt}}>
+              <tr {{#lt quantityEnding 0 }}class="bg-danger-important"{{/lt}}>
               <td> {{ inventoryText }} </td>
               <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
               <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
