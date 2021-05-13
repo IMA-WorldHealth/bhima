@@ -32,6 +32,7 @@ function StockExitController(
   vm.currentInventories = [];
   vm.reset = reset;
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
+  vm.DATE_FMT = bhConstants.dates.format;
   vm.overconsumption = [];
 
   vm.onDateChange = date => {
