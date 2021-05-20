@@ -1,16 +1,15 @@
 const {
   _, ReportManager, Stock, db,
-} = require('./common');
+} = require('../../common');
 
-const Periods = require('../../finance/period');
+const Periods = require('../../../../finance/period');
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
   filename : 'REPORTS.STOCK_CHANGES.TITLE',
-  orientation : 'landscape',
 };
 
-const STOCK_CHANGES_REPORT_TEMPLATE = './server/controllers/stock/reports/stock_changes.handlebars';
+const STOCK_CHANGES_REPORT_TEMPLATE = './server/controllers/stock/reports/stock/stock_changes/stock_changes.handlebars';
 
 /**
  * @function generate

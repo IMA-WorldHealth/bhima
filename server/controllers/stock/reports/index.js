@@ -35,7 +35,7 @@ const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
-const stockChangesReport = require('./stock_changes');
+const stockChangesReport = require('./stock/stock_changes/stock_changes');
 
 /**
  * @function determineReceiptType
