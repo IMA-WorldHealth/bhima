@@ -39,7 +39,16 @@ async function generate(req, res, next) {
       average_consumption_algo : req.session.stock_settings.average_consumption_algo,
     });
 
-    const data = _.groupBy(lots, 'text');
+    const data = {};
+
+    const rawData = _.groupBy(lots, 'text');
+
+    const objectWithSortedKeys = objectSorter(rawData);
+
+    _.keys(objectWithSortedKeys).forEach(item => {
+      const value = _.sortBy(objectWithSortedKeys[item], ['label']);
+      data[item] = value;
+    });
 
     const totals = { lots : lots.length, items : Object.keys(data).length };
 
@@ -51,6 +60,18 @@ async function generate(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+/**
+ * This function sorts object keys
+ * @param {object} obj
+ * @returns {object}
+ */
+function objectSorter(obj) {
+  return Object.keys(obj).sort(Intl.Collator().compare).reduce((result, key) => {
+    result[key] = obj[key];
+    return result;
+  }, {});
 }
 
 module.exports = generate;
