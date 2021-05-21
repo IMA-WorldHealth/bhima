@@ -1,6 +1,6 @@
 {{> head title="REPORT.STOCK_CHANGES.TITLE" }}
 
-<body class="container">
+<body class="container-fluid">
   {{> header}}
   <!-- body  -->
   <div class="row">
@@ -19,7 +19,7 @@
           <tr>
             <th>{{translate "STOCK.LOT"}}</th>
             <th>{{translate "STOCK.EXPIRATION_DATE"}}</th>
-            <th>{{translate "STOCK.QUANTITY"}}</th>
+            <th>{{translate "STOCK.QUANTITY_IN_STOCK"}}</th>
             <th>{{translate "STOCK.QUANTITY_CONSUMED"}}</th>
             <th>{{translate "STOCK.QUANTITY_LOST"}}</th>
             <th>{{translate "STOCK.QUANTITY_REMAINING"}}</th>
@@ -49,7 +49,7 @@
 
         <tfoot>
           <tr>
-            <th colspan="4">{{translate "STOCK.ITEMS"}} : <u>{{ totals.items}}</u></th>
+            <th colspan="4">{{translate "STOCK.PRODUCTS"}} : <u>{{ totals.items}}</u></th>
             <th colspan="2">{{translate "STOCK.LOTS"}} : <u>{{ totals.lots }}</u></th>
           </tr>
         </tfoot>
