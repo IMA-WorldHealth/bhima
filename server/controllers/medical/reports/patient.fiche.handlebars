@@ -65,6 +65,11 @@
             <dd>{{patient.health_area}}</dd>
           {{/if}}
 
+          {{#if patient.notes}}
+            <dt>{{translate "FORM.LABELS.NOTES"}}<dt>
+            <dd>{{patient.notes}}</dd>
+          {{/if}}
+
         </dl>
       </div>
 
