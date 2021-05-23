@@ -54,9 +54,11 @@
         <th>{{translate 'STOCK.CODE'}}</th>
         <th>{{translate 'STOCK.INVENTORY'}}</th>
         <th>{{translate 'STOCK.LOT'}}</th>
+        <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+        <th>{{translate 'STOCK.UNIT_COST'}}</th>
+        <th class="text-center">{{translate 'TABLE.COLUMNS.TOTAL_COST'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -65,17 +67,22 @@
           <td>{{code}}</td>
           <td>{{text}}</td>
           <td>{{label}}</td>
+          <td>{{unit}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
-          <td>{{unit}}</td>
+          <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id}}</td>
+          <td class="text-right">{{currency total ../metadata.enterprise.currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=6}}
+        {{> emptyTable columns=8}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        <td colspan="9">
+          <span>{{rows.length}} {{translate 'STOCK.ITEMS'}}</span>
+          <span class="pull-right">{{currency totals.cost metadata.enterprise.currency_id}}</span>
+        </td>
       </tr>
     </tfoot>
   </table>

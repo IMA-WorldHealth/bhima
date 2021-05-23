@@ -27,6 +27,10 @@ function stockExitDepotReceipt(documentUuid, session, options) {
   return getDepotMovement(documentUuid, session.enterprise, true)
     .then(data => {
       const { key } = identifiers.STOCK_EXIT;
+
+      // get the total cost of the movement
+      data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
+
       data.exit.details.barcode = barcode.generate(key, data.exit.details.document_uuid);
       return report.render(data);
     });

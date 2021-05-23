@@ -20,6 +20,7 @@ function stockEntryDepotReceipt(documentUuid, session, options) {
   return getDepotMovement(documentUuid, session.enterprise, false)
     .then(data => {
       const { key } = identifiers.STOCK_ENTRY;
+      data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
       data.entry.details.barcode = barcode.generate(key, data.entry.details.document_uuid);
       return report.render(data);
     });
