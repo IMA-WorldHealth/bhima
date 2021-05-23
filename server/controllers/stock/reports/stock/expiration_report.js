@@ -14,15 +14,14 @@ async function stockExpirationReport(req, res, next) {
   const today = new Date();
 
   try {
-    const params = { includeEmptyLot : 0, ...req.query };
+    const options = { trackingExpiration : 1, includeEmptyLot : 0, ...req.query };
 
-    const optionReport = _.extend(params, {
+    const optionReport = _.extend(options, {
       filename : 'REPORT.STOCK_EXPIRATION_REPORT.TITLE',
     });
 
     // set up the report with report manager
     const report = new ReportManager(STOCK_EXPIRATION_REPORT_TEMPLATE, req.session, optionReport);
-    const options = params;
 
     if (req.session.stock_settings.enable_strict_depot_permission) {
       options.check_user_id = req.session.user.id;
