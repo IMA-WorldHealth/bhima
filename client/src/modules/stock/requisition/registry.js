@@ -17,6 +17,7 @@ function StockRequisitionController(
   uiGridConstants, StockModal,
   GridState, Columns,
 ) {
+
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
   const stockRequisitionFilters = Stock.filter.requisition;

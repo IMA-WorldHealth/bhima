@@ -84,7 +84,7 @@ angular.module('bhima.routes')
           creating : { value : true },
           filters : [],
         },
-        onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockAssign')],
+        onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('create', 'stockAssign')],
         onExit : ['$uibModalStack', closeModals],
       })
 
@@ -98,12 +98,8 @@ angular.module('bhima.routes')
       })
       .state('stockRequisition.create', {
         url : '/create',
-        params : {
-          creating : { value : true },
-          filters : [],
-          depot : null,
-        },
-        onEnter : ['$state', 'StockModalService', onEnterFactory('create', 'stockRequisition')],
+        onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('create', 'stockRequisition')],
+        params : { depot : null },
         onExit : ['$uibModalStack', closeModals],
       })
 
@@ -111,8 +107,7 @@ angular.module('bhima.routes')
         url         : '/stock/setting',
         controller  : 'StockSettingsController as StockSettingsCtrl',
         templateUrl : 'modules/stock/settings/stock-settings.html',
-        params : {
-        },
+        params : { },
       })
 
       .state('stockAggregatedConsumption', {
@@ -133,14 +128,15 @@ function closeModals($uibModalStack) {
 function onEnterFactory(stateType, state) {
   const isCreateState = stateType === 'create';
 
-  return function onEnter($state, StockModal) {
+  return function onEnter($state, StockModal, $transition) {
+    const transitionParams = $transition.params('to');
     const mapAction = {
       stockAssign : StockModal.openActionStockAssign,
       stockRequisition : StockModal.openActionStockRequisition,
     };
 
     const instance = mapAction[state];
-    instance()
+    instance(transitionParams)
       .then((_uuid) => {
         const params = { uuid : _uuid };
 
