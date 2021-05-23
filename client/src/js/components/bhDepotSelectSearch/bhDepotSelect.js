@@ -19,7 +19,7 @@ DepotSearchSelectController.$inject = [
 * Multiple Depot Selection Component
 *
 */
-function DepotSearchSelectController(Depots, uuidService) {
+function DepotSearchSelectController(Depots) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
@@ -29,7 +29,7 @@ function DepotSearchSelectController(Depots, uuidService) {
     $ctrl.depotsSelected = $ctrl.depotsSelected || [];
     // init the model
     $ctrl.depotsUuids = $ctrl.depotsUuids || [];
-    $ctrl.componentId = $ctrl.id || uuidService().replace('-', '');
+
   };
 
   $ctrl.$onChanges = () => {
@@ -51,7 +51,6 @@ function DepotSearchSelectController(Depots, uuidService) {
   $ctrl.onSelect = (item) => {
     $ctrl.depotsSelected.push(angular.copy(item));
     $ctrl.handleChange();
-    delete $ctrl.depotSelected;
   };
 
   // fires the onChange bound to the component boundary
