@@ -117,6 +117,7 @@ function render(data, template, options) {
 
 /**
  * @function find
+ *
  * @description
  * Finds available data to write in the excel file rows is the default key.
  * If nothing is found, this function get look at rowsDataKey it return
@@ -140,7 +141,9 @@ function setValue(ws, x, y, value) {
     return cell.number(value);
   }
 
-  if (_.isDate(value)) {
+  const isValidDate = _.isDate(value) && !Number.isNaN(value.valueOf());
+
+  if (isValidDate) {
     return cell.date(value).style({
       numberFormat : 'yyyy-mm-dd hh:mm:ss',
     });
