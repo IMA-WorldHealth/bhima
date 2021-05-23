@@ -62,8 +62,8 @@
             ng-disabled="!StockCtrl.selectedGroup.label">
             <span>
               <i class="fa fa-object-group"></i>
-              <span ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
-              <span ng-show="StockCtrl.selectedGroup.label" translate>
+              <span class="hidden-xs" ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span class="hidden-xs" ng-show="StockCtrl.selectedGroup.label" translate>
                 {{ StockCtrl.selectedGroup.label }}
               </span>
             </span>
