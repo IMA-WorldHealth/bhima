@@ -132,7 +132,7 @@ function ActionRequisitionModalController(
       autoSuggestInventories();
     }
 
-    Inventories.read()
+    Inventories.read(null, { consumable : 1 })
       .then(rows => {
         vm.selectableInventories = rows;
       })
