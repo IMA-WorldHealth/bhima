@@ -70,19 +70,23 @@
                   <dt translate>TABLE.COLUMNS.GENDER</dt>
                   <dd id="gender">{{::PatientRecordCtrl.patient.sex}}</dd>
 
-                  <dt translate>FORM.LABELS.GROUPS_PATIENT_TITLE</dt>
+                  <dt ng-show="PatientRecordCtrl.patient.groups.length" translate>FORM.LABELS.GROUPS_PATIENT_TITLE</dt>
                   <ul class="list-unstyled">
                     <li ng-repeat="group in PatientRecordCtrl.patient.groups track by group.uuid">
                       {{group.name}}
                     </li>
                   </ul>
+
+                  <dt ng-show="PatientRecordCtrl.patient.notes" translate>FORM.LABELS.NOTES</dt>
+                  <dd ng-show="PatientRecordCtrl.patient.notes"><p>{{::PatientRecordCtrl.patient.notes}}</p></dd>
+
                 </dl>
               </div>
 
               <div class="col-sm-4">
                 <div class="avatar-thumbnail">
                   <div class="crop" ng-if="!PatientRecordCtrl.patient.avatar">
-                    <span class="glyphicon glyphicon-picture"></span>
+                    <span class="fa fa-picture-o"></span>
                   </div>
                   <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
                     <img ng-src="{{ PatientRecordCtrl.patient.avatar }}"   style="width: 100% !important; height:100%; max-height:200px" onError="this.src='assets/empty.png';" >
@@ -90,7 +94,7 @@
                 </div>
 
                 <label class="btn btn-default btn-block">
-                    <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
+                    <span class="fa fa-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
                     <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
                 </label>
                 <a
