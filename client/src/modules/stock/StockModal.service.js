@@ -111,7 +111,7 @@ function StockModalService(Modal) {
     return instance.result;
   }
 
-  /** create stock assign */
+  /** create stock requisition */
   function openActionStockRequisition(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/requisition/modals/action.modal.html',
