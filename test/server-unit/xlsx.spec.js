@@ -64,13 +64,31 @@ describe('xlsx.js', () => {
         { uuid : '7a9480cc-b2cd-4975-a1dc-e8c167070481', name : 'Alice' },
         { uuid : '1459ce89-5d67-4019-84d8-b2bcb808eacb', name : 'Bob' }],
     };
-    const formatedData = [
+    const formattedData = [
       { name : 'Alice' },
       { name : 'Bob' },
     ];
 
     const options = { rowsDataKey : 'students', ignoredColumns : ['uuid'] };
     const result = xlsx.find(data, options);
-    expect(result).to.deep.equal(formatedData);
+    expect(result).to.deep.equal(formattedData);
+  });
+
+  it('should not crash on an invalid date', () => {
+    const data = {
+      students : [
+        { name : 'Alice', dob : new Date('1980-06-13') },
+        { name : 'Bob', dob : new Date('') },
+      ],
+    };
+
+    const formattedData = [
+      { name : 'Alice', dob : new Date('1980-06-13') },
+      { name : 'Bob', dob : new Date('') },
+    ];
+
+    const options = { rowsDataKey : 'students' };
+    const result = xlsx.find(data, options);
+    expect(result).to.deep.equal(formattedData);
   });
 });
