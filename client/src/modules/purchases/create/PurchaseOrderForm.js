@@ -3,6 +3,7 @@ angular.module('bhima.services')
 
 PurchaseOrderFormService.$inject = [
   'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService', '$q',
+  'uuid',
 ];
 
 /**
@@ -13,7 +14,7 @@ PurchaseOrderFormService.$inject = [
  * associated with purchase order creation.  The developer must specify a cacheKey
  * to enable the class to be instantiated correctly.
  */
-function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem, $q) {
+function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrderItem, $q, uuid) {
   /**
    * @constructor
    *
@@ -81,6 +82,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // clear previous data
     this.setup();
 
+    this.details.uuid = uuid();
     this.details.date = new Date(order.date);
     this.details.cost = order.cost;
     this.details.currency_id = order.currency_id;
