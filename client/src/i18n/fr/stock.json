@@ -341,6 +341,7 @@
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment supprimer cette réquisition ?",
     "CREATE_SUCCESS" : "Nouvelle réquisition de stock réussie",
     "DEPOT_REQUESTOR" : "Dépôt bénéficiaire",
+    "DEPOT_SUPPLIER" : "Dépôt fournisseur",
     "DOES_REQUISITION_EXIST": "Est-ce que vous avez un bon de requisition ?",
     "DOES_REQUISITION_EXIST_HELP": "Cliquez sur cette option si vous voulez effectuer une sortie de stock à partir d'un bon de requisition",
     "EDIT_REQUISITION" : "Editer",
