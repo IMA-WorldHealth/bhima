@@ -3,6 +3,7 @@ angular.module('bhima.services')
 
 PurchaseOrderFormService.$inject = [
   'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService', '$q',
+  'uuid',
 ];
 
 /**
@@ -81,7 +82,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // clear previous data
     this.setup();
 
-    this.details.date = new Date(order.date);
+    this.details.uuid = this.details.date = new Date(order.date);
     this.details.cost = order.cost;
     this.details.currency_id = order.currency_id;
     this.details.note = order.note;
