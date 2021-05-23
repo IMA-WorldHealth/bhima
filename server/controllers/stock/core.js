@@ -108,6 +108,7 @@ function getLotFilters(parameters) {
   filters.equals('invoice_uuid', 'invoice_uuid', 'm');
   filters.equals('purchase_uuid', 'entity_uuid', 'm');
   filters.equals('tag_uuid', 'tags', 't');
+  filters.equals('trackingExpiration', 'tracking_expiration');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
   // filter on the underlying voucher t

@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 ActionRequisitionModalController.$inject = [
-  '$state', 'Store', 'InventoryService', 'NotifyService',
-  '$uibModalInstance', 'StockService', 'ReceiptModal',
+  'Store', 'InventoryService', 'NotifyService',
+  '$uibModalInstance', 'StockService', 'ReceiptModal', 'data',
 ];
 
 function ActionRequisitionModalController(
-  $state, Store, Inventories, Notify, Modal, Stock, Receipts,
+  Store, Inventories, Notify, Modal, Stock, Receipts, data,
 ) {
   const vm = this;
   const store = new Store({ data : [] });
@@ -50,8 +50,7 @@ function ActionRequisitionModalController(
     flatEntityAccess : true,
   };
 
-  vm.model = {};
-  vm.model.date = new Date();
+  vm.model = { date : new Date() };
 
   vm.addItem = addItem;
   vm.removeItem = removeItem;
@@ -122,9 +121,9 @@ function ActionRequisitionModalController(
   }
 
   function startup() {
-    if ($state.params.depot && $state.params.depot.uuid) {
+    if (data.depot && data.depot.uuid) {
       const DEPOT_REQUESTOR_TYPE = 2;
-      const { depot } = $state.params;
+      const { depot } = data;
 
       vm.model.requestor_type_id = DEPOT_REQUESTOR_TYPE;
       vm.model.requestor_uuid = depot.uuid;
@@ -171,7 +170,7 @@ function ActionRequisitionModalController(
   }
 
   function cancel() {
-    Modal.dismiss('cancel');
+    Modal.dismiss();
   }
 
   startup();
