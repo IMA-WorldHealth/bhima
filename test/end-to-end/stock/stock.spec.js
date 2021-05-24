@@ -13,8 +13,8 @@ const StockInventoryAdjustement = require('./stock.z1.inventory-adjustment');
 const StockSetting = require('./stock.setting');
 const StockAggregateConsumptionTests = require('./stock.aggregate_consumption');
 
-describe.only('Stock end-to-end test', () => {
-  describe.only('Stock Aggregate ConsumptionTests', StockAggregateConsumptionTests);
+describe('Stock end-to-end test', () => {
+  describe('Stock Aggregate ConsumptionTests', StockAggregateConsumptionTests);
   describe('Stock Adjustment Test', StockAdjustmentTests);
   describe('Stock Assign Module', StockAssignTests);
   describe('Stock Entry Test', StockEntryTests);
