@@ -124,7 +124,7 @@ function getLotFilters(parameters) {
     'd.uuid IN (SELECT depot_uuid FROM depot_permission WHERE user_id = ?)',
   );
 
-  // tags
+  // lot tags
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
 
   // NOTE(@jniles)
@@ -666,7 +666,8 @@ async function getInventoryQuantityAndConsumption(params) {
       i.purchase_interval, i.delay, MAX(m.created_at) AS last_movement_date,
       iu.text AS unit_type, ig.tracking_consumption, ig.tracking_expiration,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-      dm.text AS documentReference, d.enterprise_id
+      dm.text AS documentReference, d.enterprise_id,
+      t.name AS tag_name, t.color AS tag_color
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -674,6 +675,8 @@ async function getInventoryQuantityAndConsumption(params) {
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN inventory_tag it ON it.inventory_uuid = i.uuid
+    LEFT JOIN tags t ON t.uuid = it.tag_uuid
   `;
 
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${emptyLotToken} ORDER BY ig.name, i.text `;

@@ -34,7 +34,6 @@ async function prices(req, res, next) {
   try {
     const report = new ReportManager(TEMPLATE, metadata, qs);
 
-
     const items = await inventorycore.getItemsMetadata(params);
     let groups = _.groupBy(items, i => i.groupName);
 

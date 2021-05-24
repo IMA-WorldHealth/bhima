@@ -61,7 +61,14 @@
             on-select-callback="ModalCtrl.onSelectType(type)">
             <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
           </bh-inventory-type-select>
+          
           <br/>
+
+          <bh-tag-select
+            tag-uuids="ModalCtrl.searchQueries.tags"
+            on-select-callback="ModalCtrl.onSelectTags(tags)">
+          </bh-tag-select>
+          
           <div class="form-group">
             <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
             <label class="control-label" translate>

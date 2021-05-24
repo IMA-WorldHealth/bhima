@@ -19,7 +19,7 @@ function InventorySearchModalController(ModalInstance, filters, Inventory, Store
 
   const searchQueryOptions = [
     'code', 'group_uuid', 'consumable', 'text', 'locked',
-    'label', 'type_id', 'price',
+    'label', 'type_id', 'price', 'tags',
   ];
 
   const changes = new Store({ identifier : 'key' });
@@ -66,6 +66,11 @@ function InventorySearchModalController(ModalInstance, filters, Inventory, Store
   vm.onSelectType = function onSelectType(type) {
     displayValues.type_id = type.text;
     vm.searchQueries.type_id = type.id;
+  };
+
+  vm.onSelectTags = tags => {
+    vm.searchQueries.tags = tags;
+    displayValues.tags = tags.map(t => t.name).join(',');
   };
 
   // returns the parameters to the parent controller
