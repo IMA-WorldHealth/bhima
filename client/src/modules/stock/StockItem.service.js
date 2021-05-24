@@ -18,6 +18,9 @@ function StockItemService() {
     this.unit_cost = 0;
     this.expiration_date = new Date();
     this.lots = [];
+    this.quantity_opening = 0;
+    this.total_quantity_entry = 0;
+    this.total_quantity_exit = 0;
     this.isValid = false;
 
     this.validate();
@@ -37,6 +40,7 @@ function StockItemService() {
   StockItem.prototype.configure = function configure(item) {
     const mergeableProperties = [
       'uuid', 'inventory_uuid', 'code', 'label', 'quantity', 'unit_cost', 'expiration_date', 'lots', 'text',
+      'quantity_opening', 'total_quantity_entry', 'total_quantity_exit',
     ];
 
     mergeableProperties.forEach(prop => mergeIfPropertyExists(prop, item, this));
