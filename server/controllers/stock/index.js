@@ -34,7 +34,7 @@ exports.createMovement = createMovement;
 exports.deleteMovement = deleteMovement;
 exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
-exports.listLotsDepotDetailled = listLotsDepotDetailled;
+exports.listLotsDepotDetailed = listLotsDepotDetailed;
 exports.listInventoryDepot = listInventoryDepot;
 exports.listLotsMovements = listLotsMovements;
 exports.listMovements = listMovements;
@@ -914,7 +914,7 @@ async function listLotsDepot(req, res, next) {
  * GET /stock/lots/depots/
  * returns list of each lots in each depots with their quantities
  */
-async function listLotsDepotDetailled(req, res, next) {
+async function listLotsDepotDetailed(req, res, next) {
   const params = req.query;
 
   params.startDate = moment(new Date(params.startDate)).format('YYYY-MM-DD');
@@ -947,26 +947,15 @@ async function listLotsDepotDetailled(req, res, next) {
   };
 
   try {
-    const sqlGetMonthlyStockEntry = `
+    const sqlGetMonthlyStockMovements = `
       SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid, 
-      sm.date, inv.text AS inventoryText,
-      l.label, SUM(sm.quantity) AS quantity
+        sm.date, inv.text AS inventoryText,
+        l.label, SUM(IF(sm.is_exit = 1, sm.quantity, 0)) AS exit_quantity,
+        SUM(IF(sm.is_exit = 0, sm.quantity, 0)) AS entry_quantity
       FROM stock_movement AS sm
       JOIN lot AS l ON l.uuid = sm.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND sm.is_exit = 0
-      AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
-      GROUP BY l.uuid, sm.date;
-    `;
-
-    const sqlGetMonthlyStockExit = `
-      SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid, 
-      sm.date, inv.text AS inventoryText,
-      l.label, SUM(sm.quantity) AS quantity
-      FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND sm.is_exit = 1
+      WHERE sm.depot_uuid = ?
       AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
       GROUP BY l.uuid, sm.date;
     `;
@@ -974,13 +963,11 @@ async function listLotsDepotDetailled(req, res, next) {
     const [
       data,
       dataPreviousMonth,
-      dataStockEntry,
-      dataStockExit,
+      dataStockMovements,
     ] = await Promise.all([
       core.getLotsDepot(null, params),
       core.getLotsDepot(null, paramsPrevious),
-      db.exec(sqlGetMonthlyStockEntry, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
-      db.exec(sqlGetMonthlyStockExit, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
+      db.exec(sqlGetMonthlyStockMovements, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
     ]);
 
     data.forEach(current => {
@@ -994,15 +981,10 @@ async function listLotsDepotDetailled(req, res, next) {
         }
       });
 
-      dataStockEntry.forEach(entry => {
-        if (current.uuid === entry.lot_uuid) {
-          current.total_quantity_entry = entry.quantity;
-        }
-      });
-
-      dataStockExit.forEach(exit => {
-        if (current.uuid === exit.lot_uuid) {
-          current.total_quantity_exit = exit.quantity;
+      dataStockMovements.forEach(row => {
+        if (current.uuid === row.lot_uuid) {
+          current.total_quantity_entry = row.entry_quantity;
+          current.total_quantity_exit = row.exit_quantity;
         }
       });
     });

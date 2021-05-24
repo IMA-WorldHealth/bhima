@@ -820,7 +820,7 @@ exports.configure = function configure(app) {
   app.get('/stock/lots', stock.listLots);
 
   app.get('/stock/lots/depots/', stock.listLotsDepot);
-  app.get('/stock/lots/depotsDetailed/', stock.listLotsDepotDetailled);
+  app.get('/stock/lots/depotsDetailed/', stock.listLotsDepotDetailed);
   app.get('/stock/inventories/depots', stock.listInventoryDepot);
 
   // stock integration

@@ -113,16 +113,22 @@ function StockAggregatedConsumptionController(
       field : 'quantity_opening',
       displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.STOCK_BEGINNING',
       headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      cellClass : 'text-right',
       enableFiltering : false,
     }, {
       field : 'total_quantity_entry',
       displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.TOTAL_ENTRIES',
       headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      cellClass : 'text-right',
       enableFiltering : false,
     }, {
       field : 'total_quantity_exit',
       displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.TOTAL_EXITS',
       headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      cellClass : 'text-right',
       enableFiltering : false,
     }, {
       field : 'quantity_consumed',
@@ -153,6 +159,8 @@ function StockAggregatedConsumptionController(
     }, {
       field : 'old_quantity',
       displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.STOCK_END',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      cellClass : 'text-right',
       headerCellFilter : 'translate',
       enableFiltering : false,
     }];
