@@ -10,6 +10,10 @@
       "DESCRIPTION": "Ce module de consommation de stock agrégée permet de definir pour un dépôt et pour une période la quantité de stock consommée par produits mais surtout par lot, tout en précisant pour chaque produit le nombre de jour de rupture de stock",
       "END_OF_CONSUMPTION": "Fin de la consommation",
       "START_OF_CONSUMPTION": "Début de la consommation",
+      "STOCK_BEGINNING": "Début du mois",
+      "STOCK_END": "Fin du mois",
+      "TOTAL_ENTRIES": "Entrées",
+      "TOTAL_EXITS": "Sorties",
       "TITLE": "Consommation de stock agrégée"
     },
     "AMOUNT"          : "Montant",

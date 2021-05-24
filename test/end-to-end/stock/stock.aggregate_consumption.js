@@ -34,16 +34,16 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
-    await page.setHeaderValue(0, 7, 0);
-    await page.setQuantityConsumed(1, 5, 2000);
-    await page.setQuantityLost(1, 6, 1000);
+    await page.setHeaderValue(0, 9, 0);
+    await page.setQuantityConsumed(1, 7, 2000);
+    await page.setQuantityLost(1, 8, 1000);
 
-    await page.setQuantityConsumed(2, 5, 500);
-    await page.setQuantityLost(2, 6, 250);
+    await page.setQuantityConsumed(2, 7, 500);
+    await page.setQuantityLost(2, 8, 250);
 
-    await page.setHeaderValue(3, 7, 20);
-    await page.setQuantityConsumed(4, 5, 1500);
-    await page.setQuantityLost(4, 6, 3000);
+    await page.setHeaderValue(3, 9, 20);
+    await page.setQuantityConsumed(4, 7, 1500);
+    await page.setQuantityLost(4, 8, 3000);
 
     await page.submitErrorQuantity();
   });
@@ -62,16 +62,16 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
-    await page.setHeaderValue(0, 7, 0);
-    await page.setQuantityConsumed(1, 5, 250);
-    await page.setQuantityLost(1, 6, 0);
+    await page.setHeaderValue(0, 9, 0);
+    await page.setQuantityConsumed(1, 7, 250);
+    await page.setQuantityLost(1, 8, 0);
 
-    await page.setQuantityConsumed(2, 5, 250);
-    await page.setQuantityLost(2, 6, 0);
+    await page.setQuantityConsumed(2, 7, 250);
+    await page.setQuantityLost(2, 8, 0);
 
-    await page.setHeaderValue(3, 7, 0);
-    await page.setQuantityConsumed(4, 5, 150);
-    await page.setQuantityLost(4, 6, 250);
+    await page.setHeaderValue(3, 9, 0);
+    await page.setQuantityConsumed(4, 7, 150);
+    await page.setQuantityLost(4, 8, 250);
 
     await page.submit();
   });
@@ -88,9 +88,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
-    await page.setHeaderValue(0, 7, 5);
-    await page.setQuantityConsumed(1, 5, 500);
-    await page.setQuantityLost(1, 6, 250);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 500);
+    await page.setQuantityLost(1, 8, 250);
 
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(27, 'days'),
@@ -119,11 +119,11 @@ function StockAggregateConsumptionTests() {
       quantity_lost :  0,
     }];
 
-    await page.setDetailed(1, 8);
+    await page.setDetailed(1, 10);
     await page.setLotsDetailed(lots);
 
-    await page.setQuantityConsumed(2, 5, 500);
-    await page.setQuantityLost(2, 6, 250);
+    await page.setQuantityConsumed(2, 7, 500);
+    await page.setQuantityLost(2, 8, 250);
 
     const lots2 = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(20, 'days'),
@@ -137,12 +137,12 @@ function StockAggregateConsumptionTests() {
       quantity_lost :  250,
     }];
 
-    await page.setDetailed(2, 8);
+    await page.setDetailed(2, 10);
     await page.setLots2Detailed(lots2);
 
-    await page.setHeaderValue(3, 7, 20);
-    await page.setQuantityConsumed(4, 5, 550);
-    await page.setQuantityLost(4, 6, 50);
+    await page.setHeaderValue(3, 9, 20);
+    await page.setQuantityConsumed(4, 7, 550);
+    await page.setQuantityLost(4, 8, 50);
 
     await page.submit();
   });
@@ -164,9 +164,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-    await page.setHeaderValue(0, 7, 5);
-    await page.setQuantityConsumed(1, 5, 15);
-    await page.setQuantityLost(1, 6, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(3, 'days'),
@@ -175,7 +175,7 @@ function StockAggregateConsumptionTests() {
       quantity_lost : 5,
     }];
 
-    await page.setDetailed(1, 8);
+    await page.setDetailed(1, 10);
     await page.setLots3Detailed(lots);
   });
 
@@ -195,9 +195,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-    await page.setHeaderValue(0, 7, 5);
-    await page.setQuantityConsumed(1, 5, 15);
-    await page.setQuantityLost(1, 6, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(25, 'days'),
@@ -211,7 +211,7 @@ function StockAggregateConsumptionTests() {
       quantity_lost : 2,
     }];
 
-    await page.setDetailed(1, 8);
+    await page.setDetailed(1, 10);
     await page.setLots4Detailed(lots);
   });
 
@@ -231,9 +231,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-    await page.setHeaderValue(0, 7, 5);
-    await page.setQuantityConsumed(1, 5, 15);
-    await page.setQuantityLost(1, 6, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
@@ -247,7 +247,7 @@ function StockAggregateConsumptionTests() {
       quantity_lost : 2,
     }];
 
-    await page.setDetailed(1, 8);
+    await page.setDetailed(1, 10);
     await page.setLots4Detailed(lots);
   });
 
@@ -267,9 +267,9 @@ function StockAggregateConsumptionTests() {
     await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
     await page.setDescription(`Aggregate consumption from current depot ${DEPOT_PRINCIPAL}`);
 
-    await page.setHeaderValue(0, 7, 5);
-    await page.setQuantityConsumed(1, 5, 15);
-    await page.setQuantityLost(1, 6, 5);
+    await page.setHeaderValue(0, 9, 5);
+    await page.setQuantityConsumed(1, 7, 15);
+    await page.setQuantityLost(1, 8, 5);
 
     const lots = [{
       start_date : moment(new Date(getLastDays), 'YYYY-MM-DD').subtract(15, 'days'),
@@ -283,38 +283,42 @@ function StockAggregateConsumptionTests() {
       quantity_lost : 2,
     }];
 
-    await page.setDetailed(1, 8);
+    await page.setDetailed(1, 10);
     await page.setLots4Detailed(lots);
   });
 
-  it(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
-    await page.changeDepot(DEPOT_TERTIAIRE);
-  });
+  // Fixe Me : lomamech 2021-05-24
+  // You will need to provide data in the test database to be able 
+  // to perform this test with the current data the repositories are empty
 
-  it(`Prevent negative stock quantities when Aggregate Consumption greater than the 
-      quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
-    const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
-    const getMovementMonth = moment(getMovementDate).month();
-    const getMovementYear = moment(getMovementDate).year();
+  // it(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
+  //   await page.changeDepot(DEPOT_TERTIAIRE);
+  // });
 
-    const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
+  // it(`Prevent negative stock quantities when Aggregate Consumption greater than the 
+  //     quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
+  //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
+  //   const getMovementMonth = moment(getMovementDate).month();
+  //   const getMovementYear = moment(getMovementDate).year();
 
-    await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
-    await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
+  //   const fiscalYearLabel = `Fiscal Year ${getMovementYear}`;
 
-    await page.setHeaderValue(0, 7, 0);
-    await page.setQuantityConsumed(1, 5, 300);
-    await page.setQuantityLost(1, 6, 200);
+  //   await page.setFiscalPeriod(fiscalYearLabel, month[getMovementMonth]);
+  //   await page.setDescription(`Aggregate consumption from current depot ${DEPOT_TERTIAIRE}`);
 
-    await page.setQuantityConsumed(2, 5, 100);
-    await page.setQuantityLost(2, 6, 200);
+  //   await page.setHeaderValue(0, 9, 0);
+  //   await page.setQuantityConsumed(1, 7, 300);
+  //   await page.setQuantityLost(1, 8, 200);
 
-    await page.setHeaderValue(3, 7, 20);
-    await page.setQuantityConsumed(4, 5, 400);
-    await page.setQuantityLost(4, 6, 300);
+  //   await page.setQuantityConsumed(2, 7, 100);
+  //   await page.setQuantityLost(2, 8, 200);
 
-    await page.submitErrorQuantity();
-  });
+  //   await page.setHeaderValue(3, 9, 20);
+  //   await page.setQuantityConsumed(4, 7, 400);
+  //   await page.setQuantityLost(4, 8, 300);
+
+  //   await page.submitErrorQuantity();
+  // });
 }
 
 module.exports = StockAggregateConsumptionTests;
