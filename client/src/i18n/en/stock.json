@@ -9,6 +9,10 @@
       "DESCRIPTION": "This aggregated stock consumption module makes it possible to define for a warehouse and for a period the quantity of stock consumed by product but especially by batch, while specifying for each product the number of days of out of stock",
       "END_OF_CONSUMPTION": "End of consumption",
       "START_OF_CONSUMPTION": "Start of consumption",
+      "STOCK_BEGINNING": "Beginning of the month",
+      "STOCK_END": "End of the month",
+      "TOTAL_EXITS": "Exits",
+      "TOTAL_ENTRIES": "Entries",
       "TITLE": "Aggregate stock Consumption"
     },
     "AMOUNT"          : "Amount",

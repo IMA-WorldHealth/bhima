@@ -90,6 +90,7 @@ function StockAggregatedConsumptionController(
   const columns = [
     {
       field : 'text',
+      width : 500,
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       enableSorting : true,
@@ -101,24 +102,30 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'code',
-      width : 90,
       displayName : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
     }, {
       field : 'label',
-      width : 120,
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       enableSorting : true,
     }, {
-      field : 'old_quantity',
-      width : 120,
-      displayName : 'STOCK.QUANTITY_IN_STOCK',
+      field : 'quantity_opening',
+      displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.STOCK_BEGINNING',
+      headerCellFilter : 'translate',
+      enableFiltering : false,
+    }, {
+      field : 'total_quantity_entry',
+      displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.TOTAL_ENTRIES',
+      headerCellFilter : 'translate',
+      enableFiltering : false,
+    }, {
+      field : 'total_quantity_exit',
+      displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.TOTAL_EXITS',
       headerCellFilter : 'translate',
       enableFiltering : false,
     }, {
       field : 'quantity_consumed',
-      width : 150,
       displayName : 'STOCK.QUANTITY_CONSUMED',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_consumed.tmpl.html',
@@ -126,7 +133,6 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'quantity_lost',
-      width : 150,
       displayName : 'STOCK.QUANTITY_LOST',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_lost.tmpl.html',
@@ -134,7 +140,6 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'days_stock_out',
-      width : 150,
       displayName : 'STOCK.DAYS_OF_STOCK_OUT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
@@ -145,7 +150,15 @@ function StockAggregatedConsumptionController(
       displayName : 'TABLE.COLUMNS.CONSUMPTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/lot_aggregate.tmpl.html',
+    }, {
+      field : 'old_quantity',
+      displayName : 'STOCK.AGGREGATED_STOCK_CONSUMPTION.STOCK_END',
+      headerCellFilter : 'translate',
+      enableFiltering : false,
     }];
+
+  console.log('NOUVVVVVvvvvvvv');
+  console.log(vm.Stock.store.data);
 
   // grid options
   vm.gridOptions = {
@@ -195,9 +208,10 @@ function StockAggregatedConsumptionController(
     vm.loading = true;
     setupStock();
 
-    return Stock.lots.read(null, {
+    return Stock.lotsDetailed.read(null, {
       depot_uuid : depot.uuid,
       includeEmptyLot : vm.includeEmptyLot || 0,
+      startDate : vm.movement.start_date,
       dateTo : vm.movement.date,
     })
       .then(lots => {
@@ -212,7 +226,6 @@ function StockAggregatedConsumptionController(
 
           Object.assign(row, {
             old_quantity : row.quantity,
-
             // overwrite the default validation function as it doesn't make sense in
             // this case.
             validate() {
