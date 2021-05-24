@@ -107,7 +107,7 @@
     "csvtojson": "^2.0.8",
     "debug": "^4.3.1",
     "delay": "^5.0.0",
-    "dotenv": "^9.0.2",
+    "dotenv": "^10.0.0",
     "excel4node": "^1.7.0",
     "express": "^4.16.4",
     "express-handlebars": "^5.3.2",
