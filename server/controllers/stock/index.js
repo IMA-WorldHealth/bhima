@@ -34,6 +34,7 @@ exports.createMovement = createMovement;
 exports.deleteMovement = deleteMovement;
 exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
+exports.listLotsDepotDetailled = listLotsDepotDetailled;
 exports.listInventoryDepot = listInventoryDepot;
 exports.listLotsMovements = listLotsMovements;
 exports.listMovements = listMovements;
@@ -882,6 +883,129 @@ async function listLotsDepot(req, res, next) {
 
   try {
     const data = await core.getLotsDepot(null, params);
+
+    const queryTags = `
+      SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
+      FROM tags t
+        JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+      WHERE lt.lot_uuid IN (?)
+    `;
+
+    // if we have an empty set, do not query tags.
+    if (data.length !== 0) {
+      const lotUuids = data.map(row => db.bid(row.uuid));
+      const tags = await db.exec(queryTags, [lotUuids]);
+
+      // make a lot_uuid -> tags map.
+      const tagMap = _.groupBy(tags, 'lot_uuid');
+
+      data.forEach(lot => {
+        lot.tags = tagMap[lot.uuid] || [];
+      });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * GET /stock/lots/depots/
+ * returns list of each lots in each depots with their quantities
+ */
+async function listLotsDepotDetailled(req, res, next) {
+  const params = req.query;
+
+  params.startDate = moment(new Date(params.startDate)).format('YYYY-MM-DD');
+  params.dateTo = moment(new Date(params.dateTo)).format('YYYY-MM-DD');
+  const lastDayPreviousMonth = moment(params.startDate).subtract(1, 'day').format('YYYY-MM-DD');
+
+  params.month_average_consumption = req.session.stock_settings.month_average_consumption;
+  params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
+  params.min_delay = req.session.stock_settings.min_delay;
+  params.default_purchase_interval = req.session.stock_settings.default_purchase_interval;
+
+  if (req.session.stock_settings.enable_strict_depot_permission) {
+    params.check_user_id = req.session.user.id;
+  }
+
+  if (params.period) {
+    params.defaultPeriodEntry = params.period;
+    delete params.period;
+  }
+
+  const paramsPrevious = {
+    dateTo : lastDayPreviousMonth,
+    depot_uuid : params.depot_uuid,
+    includeEmptyLot : 0,
+    month_average_consumption : req.session.stock_settings.month_average_consumption,
+    average_consumption_algo : req.session.stock_settings.average_consumption_algo,
+    min_delay : req.session.stock_settings.min_delay,
+    default_purchase_interval : req.session.stock_settings.default_purchase_interval,
+    check_user_id : params.check_user_id,
+  };
+
+  try {
+    const sqlGetMonthlyStockEntry = `
+      SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid, 
+      sm.date, inv.text AS inventoryText,
+      l.label, SUM(sm.quantity) AS quantity
+      FROM stock_movement AS sm
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+      WHERE sm.depot_uuid = ? AND sm.is_exit = 0
+      AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
+      GROUP BY l.uuid, sm.date;
+    `;
+
+    const sqlGetMonthlyStockExit = `
+      SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid, 
+      sm.date, inv.text AS inventoryText,
+      l.label, SUM(sm.quantity) AS quantity
+      FROM stock_movement AS sm
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+      WHERE sm.depot_uuid = ? AND sm.is_exit = 1
+      AND DATE(sm.date) >= DATE(?) AND DATE(sm.date) <= DATE(?)
+      GROUP BY l.uuid, sm.date;
+    `;
+
+    const [
+      data,
+      dataPreviousMonth,
+      dataStockEntry,
+      dataStockExit,
+    ] = await Promise.all([
+      core.getLotsDepot(null, params),
+      core.getLotsDepot(null, paramsPrevious),
+      db.exec(sqlGetMonthlyStockEntry, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
+      db.exec(sqlGetMonthlyStockExit, [db.bid(params.depot_uuid), params.startDate, params.dateTo]),
+    ]);
+
+    data.forEach(current => {
+      current.quantity_opening = 0;
+      current.total_quantity_entry = 0;
+      current.total_quantity_exit = 0;
+
+      dataPreviousMonth.forEach(previous => {
+        if (current.uuid === previous.uuid) {
+          current.quantity_opening = previous.quantity;
+        }
+      });
+
+      dataStockEntry.forEach(entry => {
+        if (current.uuid === entry.lot_uuid) {
+          current.total_quantity_entry = entry.quantity;
+        }
+      });
+
+      dataStockExit.forEach(exit => {
+        if (current.uuid === exit.lot_uuid) {
+          current.total_quantity_exit = exit.quantity;
+        }
+      });
+    });
 
     const queryTags = `
       SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
