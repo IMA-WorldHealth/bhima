@@ -157,9 +157,6 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }];
 
-  console.log('NOUVVVVVvvvvvvv');
-  console.log(vm.Stock.store.data);
-
   // grid options
   vm.gridOptions = {
     appScopeProvider : vm,

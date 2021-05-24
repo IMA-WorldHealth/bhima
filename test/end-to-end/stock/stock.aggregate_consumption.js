@@ -288,14 +288,14 @@ function StockAggregateConsumptionTests() {
   });
 
   // Fixe Me : lomamech 2021-05-24
-  // You will need to provide data in the test database to be able 
+  // You will need to provide data in the test database to be able
   // to perform this test with the current data the repositories are empty
 
   // it(`Should select the ${DEPOT_TERTIAIRE}`, async () => {
   //   await page.changeDepot(DEPOT_TERTIAIRE);
   // });
 
-  // it(`Prevent negative stock quantities when Aggregate Consumption greater than the 
+  // it(`Prevent negative stock quantities when Aggregate Consumption greater than the
   //     quantity available on current depot ${DEPOT_TERTIAIRE}`, async () => {
   //   const getMovementDate = moment(new Date(), 'YYYY-MM-DD').subtract(80, 'days');
   //   const getMovementMonth = moment(getMovementDate).month();
