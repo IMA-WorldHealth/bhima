@@ -72,6 +72,11 @@ function SearchInventoriesModalController(data, Instance, Store, Periods, util, 
     }
   };
 
+  vm.onSelectTags = tags => {
+    vm.searchQueries.tags = tags;
+    displayValues.tags = tags.map(t => t.name).join(',');
+  };
+
   // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {

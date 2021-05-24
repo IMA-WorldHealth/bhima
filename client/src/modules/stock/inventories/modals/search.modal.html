@@ -39,6 +39,12 @@
             <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
+          <!-- inventory tag -->
+          <bh-tag-select
+            tag-uuids="$ctrl.searchQueries.tags"
+            on-select-callback="$ctrl.onSelectTags(tags)">
+          </bh-tag-select>
+
           <div class="checkbox">
             <label>
               <input type="checkbox"
