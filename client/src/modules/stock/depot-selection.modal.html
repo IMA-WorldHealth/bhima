@@ -35,7 +35,7 @@
     <ul style="margin-bottom: 2px;" class="list-group">
       <li
         class="list-group-item"
-        ng-repeat="depot in $ctrl.depots  | limitTo: $ctrl.displayLimit | filter: $ctrl.search track by depot.uuid"
+        ng-repeat="depot in $ctrl.depots | filter: $ctrl.search | limitTo: $ctrl.displayLimit track by depot.uuid"
         ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
         ng-click="$ctrl.selectDepot(depot.uuid)"
         style="cursor:pointer;">
