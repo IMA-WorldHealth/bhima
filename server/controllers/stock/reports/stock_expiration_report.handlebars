@@ -33,12 +33,18 @@
     {{date today}}
   </h4>
 
+  {{#unless isEnterpriseCurrency}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+    </div>
+  {{/unless}}
+
   <div class="row">
     <div class="col-xs-6">
       <div class="card" >
         <label class="title">{{translate 'STOCK.EXPIRED'}}</label>
         <div class="details text-right text-danger">
-          <b class="value">{{currency totals.expired.value metadata.enterprise.currency_id}}</b>
+          <b class="value">{{currency totals.expired.value currencyId}}</b>
         </div>
       </div>
     </div>
@@ -47,7 +53,7 @@
       <div class="card">
         <label class="title">{{translate 'STOCK.STATUS.IS_IN_RISK_OF_EXPIRATION'}}</label>
         <div class="details text-right text-warning">
-          <b class="value">{{currency totals.at_risk_of_stock_out.value metadata.enterprise.currency_id}}</b>
+          <b class="value">{{currency totals.at_risk_of_stock_out.value currencyId}}</b>
         </div>
       </div>
     </div>
@@ -82,8 +88,8 @@
             <td width="6%" class="text-right">{{lot.quantity}}</td>
             <td width="6%" class="text-right">{{lot.quantity_at_risk}}</td>
             <td width="6%">{{lot.unit_type}}</td>
-            <td width="5%" class="text-right">{{currency lot.unit_cost ../../metadata.enterprise.currency_id}}</td>
-            <td width="5%" class="text-right">{{currency lot.value ../../metadata.enterprise.currency_id}}</td>
+            <td width="5%" class="text-right">{{currency lot.unit_cost ../../currencyId}}</td>
+            <td width="5%" class="text-right">{{currency lot.value ../../currencyId}}</td>
             <td width="12%" class="{{lot.classKey}}">{{translate lot.statusKey}}</td>
           </tr>
         {{/each}}
@@ -91,7 +97,7 @@
       <tfoot>
         <tr>
           <th colspan="8">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
-          <th class="text-right">{{currency depot.total ../metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{currency depot.total ../currencyId}}</th>
           <td></td>
         </tr>
       </tfoot>
