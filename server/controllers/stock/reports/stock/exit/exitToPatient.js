@@ -1,5 +1,4 @@
 const db = require('../../../../../lib/db');
-const identifiers = require('../../../../../config/identifiers');
 
 const IS_EXIT = 1;
 const EXIT_TO_PATIENT_ID = 9;
@@ -16,8 +15,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name, p.display_name AS patient_display_name,
     dm.text AS document_reference, d.text AS depot_name,
-    CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference,
-    dm2.text AS invoice_reference
+    em.text AS patient_reference, dm2.text AS invoice_reference
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -29,6 +27,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN invoice iv ON iv.uuid = m.invoice_uuid
     LEFT JOIN document_map dm2 ON dm2.uuid = iv.uuid
+    LEFT JOIN entity_map em ON em.uuid = p.uuid
   WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${EXIT_TO_PATIENT_ID} AND d.uuid = ?
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;
