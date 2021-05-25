@@ -17,8 +17,7 @@ const StockExitAggregateConsumption = require('./exit/exitAggregateConsumption')
  *
  * GET /reports/stock/exit
  */
-function stockExitReport(req, res, next) {
-  let report;
+async function stockExitReport(req, res, next) {
 
   const params = util.convertStringToNumber(req.query);
 
@@ -28,27 +27,27 @@ function stockExitReport(req, res, next) {
 
   // set up the report with report manager
   try {
-    report = new ReportManager(STOCK_EXIT_REPORT_TEMPLATE, req.session, optionReport);
+    const report = new ReportManager(STOCK_EXIT_REPORT_TEMPLATE, req.session, optionReport);
+
+    const [depot, [{ rate }]] = await Promise.all([
+      fetchDepotDetails(params.depotUuid),
+      db.exec('SELECT GetExchangeRate(?, ?, NOW()) as rate;', [req.session.enterprise.id, params.currencyId]),
+    ]);
+
+    params.isEnterpriseCurrency = params.currencyId === req.session.enterprise.currency_id;
+    params.exchangeRate = params.isEnterpriseCurrency ? 1 : rate;
+
+    params.depotName = depot.text;
+    const collection = await collect(params);
+    const bundle = await groupCollection(collection);
+
+    _.extend(bundle, params);
+
+    const result = await report.render(bundle);
+    res.set(result.headers).send(result.report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  return fetchDepotDetails(params.depotUuid)
-    .then(depot => {
-      params.depotName = depot.text;
-      return collect(params);
-    })
-    .then(groupCollection)
-    .then((bundle) => {
-      _.extend(bundle, params);
-
-      return report.render(bundle);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 /**
@@ -141,33 +140,46 @@ async function collect(params) {
     includeDepotExit,
     includeLossExit,
     includeAggregateConsumption,
+    exchangeRate,
   } = params;
 
-  const data = {};
+  const data = { };
+
+  // TODO(@jniles):
+  function exchange(rows) {
+    rows.forEach(row => {
+      row.cost *= exchangeRate;
+      row.unit_cost *= exchangeRate;
+    });
+
+    return rows;
+  }
 
   // get stock exit to patient
   if (includePatientExit) {
-    data.exitToPatient = await StockExitToPatient.fetch(depotUuid, dateFrom, dateTo, showDetails);
+    data.exitToPatient = exchange(await StockExitToPatient.fetch(depotUuid, dateFrom, dateTo, showDetails));
   }
 
   // get stock exit to service
   if (includeServiceExit || includeGroupedServiceExit) {
-    data.exitToService = await StockExitToService.fetch(depotUuid, dateFrom, dateTo, showDetails);
+    data.exitToService = exchange(await StockExitToService.fetch(depotUuid, dateFrom, dateTo, showDetails));
   }
 
   // get stock exit to other depot
   if (includeDepotExit) {
-    data.exitToDepot = await StockExitToDepot.fetch(depotUuid, dateFrom, dateTo, showDetails);
+    data.exitToDepot = exchange(await StockExitToDepot.fetch(depotUuid, dateFrom, dateTo, showDetails));
   }
 
   // get stock exit to loss
   if (includeLossExit) {
-    data.exitToLoss = await StockExitToLoss.fetch(depotUuid, dateFrom, dateTo, showDetails);
+    data.exitToLoss = exchange(await StockExitToLoss.fetch(depotUuid, dateFrom, dateTo, showDetails));
   }
 
   // get stock exit for aggregate consumption
   if (includeAggregateConsumption) {
-    data.exitAggregateConsumption = await StockExitAggregateConsumption.fetch(depotUuid, dateFrom, dateTo, showDetails);
+    data.exitAggregateConsumption = exchange(
+      await StockExitAggregateConsumption.fetch(depotUuid, dateFrom, dateTo, showDetails),
+    );
   }
 
   return data;
