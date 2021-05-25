@@ -4,6 +4,14 @@ const {
 
 const stockCore = require('../../core');
 
+function exchange(rows, exchangeRate) {
+  rows.forEach(row => {
+    row.unit_cost *= exchangeRate;
+  });
+
+  return rows;
+}
+
 /**
  * @method stockExpirationReport
  *
@@ -34,8 +42,14 @@ async function stockExpirationReport(req, res, next) {
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
 
+    const [{ rate }] = await db.exec(
+      'SELECT GetExchangeRate(?, ?, NOW()) AS rate;',
+      [req.session.enterprise.id, options.currency_id],
+    );
+
     // clean off the label if it exists so it doesn't mess up the PDF export
     delete options.label;
+    delete options.currency_id;
 
     // define month average and the algo to use
     // eslint-disable-next-line
@@ -52,7 +66,7 @@ async function stockExpirationReport(req, res, next) {
     const expired = lots.filter(lot => lot.expired);
 
     // merge risky and expired
-    const riskyAndExpiredLots = risky.concat(expired);
+    const riskyAndExpiredLots = exchange(risky.concat(expired), rate);
 
     // make sure lots are grouped by depot.
     const groupedByDepot = _.groupBy(riskyAndExpiredLots, 'depot_uuid');
