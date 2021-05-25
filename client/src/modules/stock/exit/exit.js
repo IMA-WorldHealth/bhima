@@ -235,8 +235,17 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
+
+    // restore the inventory to the selectableInventories list
+    // if there are no more copies.
+    if (item.inventory) {
+      const isInList = vm.selectableInventories.some(row => row.uuid === item.inventory.uuid);
+      if (!isInList) { vm.selectableInventories.push(item.inventory); }
+    }
+
     checkValidity();
     refreshSelectedLotsList();
+
   }
 
   // configure item
