@@ -4,6 +4,15 @@ const {
 
 const stockCore = require('../../core');
 
+function exchange(rows, exchangeRate) {
+
+  rows.forEach(row => {
+    row.unit_cost *= exchangeRate;
+  });
+
+  return rows;
+}
+
 /**
  * @method stockExpirationReport
  *
@@ -15,6 +24,7 @@ async function stockExpirationReport(req, res, next) {
 
   try {
     const options = { trackingExpiration : 1, includeEmptyLot : 0, ...req.query };
+    const currencyId = parseInt(req.query.currencyId, 10);
 
     const optionReport = _.extend(options, {
       filename : 'REPORT.STOCK_EXPIRATION_REPORT.TITLE',
@@ -34,6 +44,15 @@ async function stockExpirationReport(req, res, next) {
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
 
+    const isEnterpriseCurrency = currencyId === req.session.enterprise.currency_id;
+
+    const [{ rate }] = await db.exec(
+      'SELECT GetExchangeRate(?, ?, NOW()) AS rate;',
+      [req.session.enterprise.id, currencyId],
+    );
+
+    const exchangeRate = isEnterpriseCurrency ? 1 : rate;
+
     // clean off the label if it exists so it doesn't mess up the PDF export
     delete options.label;
 
@@ -52,7 +71,7 @@ async function stockExpirationReport(req, res, next) {
     const expired = lots.filter(lot => lot.expired);
 
     // merge risky and expired
-    const riskyAndExpiredLots = risky.concat(expired);
+    const riskyAndExpiredLots = exchange(risky.concat(expired), exchangeRate);
 
     // make sure lots are grouped by depot.
     const groupedByDepot = _.groupBy(riskyAndExpiredLots, 'depot_uuid');
@@ -93,7 +112,12 @@ async function stockExpirationReport(req, res, next) {
     });
 
     const reportResult = await report.render({
-      depot, result : values, totals, today,
+      result : values,
+      isEnterpriseCurrency,
+      currencyId,
+      depot,
+      totals,
+      today,
     });
 
     res.set(reportResult.headers).send(reportResult.report);
