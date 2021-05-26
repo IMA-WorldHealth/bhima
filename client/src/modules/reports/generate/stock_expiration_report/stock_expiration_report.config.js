@@ -3,16 +3,16 @@ angular.module('bhima.controllers')
 
 StockExpirationReportConfigCtrl.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService',
+  'LanguageService', 'SessionService',
 ];
 
-function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
+function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, Session) {
   const vm = this;
   const cache = new AppCache('stock_expiration_report');
   const reportUrl = 'reports/stock/expiration_report';
 
   // default values
-  vm.reportDetails = {};
+  vm.reportDetails = { currencyId : Session.enterprise.currency_id };
   vm.previewGenerated = false;
 
   // check cached configuration
@@ -24,6 +24,10 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
 
   vm.onSelectFiscalYear = year => {
     vm.reportDetails.fiscal_id = year.id;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.onSelectPeriod = period => {
@@ -86,5 +90,4 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
   function checkCachedConfiguration() {
     vm.reportDetails = angular.copy(cache.reportDetails || {});
   }
-
 }
