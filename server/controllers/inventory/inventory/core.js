@@ -273,7 +273,7 @@ async function getItemsMetadata(params) {
   filters.equals('sellable');
   filters.equals('note');
   filters.equals('importance');
-  filters.custom('tags', 't.uuid IN (?)', params.tags);
+  filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
   filters.setOrder('ORDER BY inventory.code ASC');
