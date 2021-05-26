@@ -14,7 +14,7 @@ function InventoryListActionsModalController(
   const cache = AppCache('InventoryList');
 
   // this is the model
-  vm.item = { sellable : 1 };
+  vm.item = { sellable : 1, tags : [] };
   vm.stateParams = {};
   vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
@@ -39,15 +39,25 @@ function InventoryListActionsModalController(
   // expose to the view
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.onSelectTags = onSelectTags;
 
   // startup
   startup();
+
+  /** on select tags */
+  function onSelectTags(tags) {
+    vm.item.tags = tags;
+  }
 
   /** submit data */
   function submit(form) {
     if (form.$invalid) { return null; }
 
     const record = util.filterFormElements(form, true);
+
+    if (vm.item) {
+      record.tags = vm.item.tags;
+    }
 
     // if no changes were made, simply dismiss the modal
     if (util.isEmptyObject(record)) { return cancel(); }

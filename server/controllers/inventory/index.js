@@ -18,6 +18,7 @@ const types = require('./inventory/types');
 const units = require('./inventory/units');
 const importing = require('./import');
 const util = require('../../lib/util');
+const db = require('../../lib/db');
 
 const xlsx = require('../../lib/renderers/xlsx');
 const ReportManager = require('../../lib/ReportManager');
@@ -170,17 +171,36 @@ async function logDownLoad(req, res, next) {
   *
   * @function searchInventoryItems
 */
-function getInventoryItems(req, res, next) {
+async function getInventoryItems(req, res, next) {
   const params = req.query;
 
-  core.getItemsMetadata(params)
-    .then((row) => {
-      res.status(200).json(row);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
+  try {
+    const data = await core.getItemsMetadata(params);
+
+    const queryTags = `
+      SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(it.inventory_uuid) inventory_uuid
+      FROM tags t
+        JOIN inventory_tag it ON it.tag_uuid = t.uuid
+      WHERE it.inventory_uuid IN (?)
+    `;
+
+    // if we have an empty set, do not query tags.
+    if (data.length !== 0) {
+      const inventoryUuids = data.map(row => db.bid(row.uuid));
+      const tags = await db.exec(queryTags, [inventoryUuids]);
+
+      // make a inventory_uuid -> tags map.
+      const tagMap = _.groupBy(tags, 'inventory_uuid');
+
+      data.forEach(inventory => {
+        inventory.tags = tagMap[inventory.uuid] || [];
+      });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    core.errorHandler(error, req, res, next);
+  }
 }
 
 /**
@@ -198,8 +218,7 @@ function getInventoryItemsById(req, res, next) {
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);
-    })
-    .done();
+    });
 }
 
 /**

@@ -186,6 +186,12 @@
 
     <hr>
 
+    <bh-tag-select
+      tag-uuids="$ctrl.item.tags"
+      enable-add-tag="true"
+      on-select-callback="$ctrl.onSelectTags(tags)">
+    </bh-tag-select>
+
     <div class="form-group">
       <label class="control-label" translate>INVENTORY.IMPORTANCE_LEVEL</label>
       <select

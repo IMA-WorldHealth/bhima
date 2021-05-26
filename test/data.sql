@@ -1093,3 +1093,8 @@ INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `qua
 INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x271C0EBEDDC24476BFCDBA9D31231141, 0x25FCAAC9F67811EAA705507B9DD6DEA5, 35);
 INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0x43F3DECBFCE9426E940ABC2150E62186, 4);
 INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0xF6556E729D0547998CBD0A03B1810185, 20);
+
+-- DATA FOR TAGS
+INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES 
+  (HUID('983a6291-be1f-11eb-84e7-fe335098a4d5'), 'Medicament Traceur', '#0000ff'),
+  (HUID('27cfe424-be27-11eb-84e7-fe335098a4d5'), 'Virologie', '#00ff00');
