@@ -24,24 +24,28 @@
 
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-              <!-- depot options -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneDepot">
-              <span translate>REPORT.STOCK.ONE_DEPOT</span>
-            </label>
-          </div>
-
-          <!-- select depot -->
-          <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
+            <!-- depot options -->
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.chooseOneDepot">
+                <span translate>REPORT.STOCK.ONE_DEPOT</span>
+              </label>
+            </div>
 
             <!-- select depot -->
-            <bh-depot-select
-              depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
-              on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
-              <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
-           </bh-depot-select>
-          </div>
+            <div ng-if="!!ReportConfigCtrl.chooseOneDepot">
+              <!-- select depot -->
+              <bh-depot-select
+                depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
+                on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
+                <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
+              </bh-depot-select>
+            </div>
+
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currencyId"
+              on-change="ReportConfigCtrl.onSelectCurrency(currency)">
+            </bh-currency-select>
 
             <!-- preview -->
             <bh-loading-button loading-state="ConfigForm.$loading">
