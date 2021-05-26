@@ -72,9 +72,12 @@ exports.inventoryColsMap = inventoryColsMap;
 * @return {Promise} Returns a database query promise
 */
 async function createItemsMetadata(record, session) {
+  let tags;
+
   const recordCopy = _.clone(record);
-  record.enterprise_id = session.enterprise.id;
   const recordUuid = record.uuid || uuid();
+
+  record.enterprise_id = session.enterprise.id;
   record.uuid = db.bid(recordUuid);
   record.group_uuid = db.bid(record.group_uuid);
 
@@ -84,7 +87,20 @@ async function createItemsMetadata(record, session) {
   const current = _.extend({}, { action : 'CREATION' }, recordCopy, await loadGroupAndType(record));
   const transaction = db.transaction();
 
+  if (record.tags) {
+    tags = _.clone(record.tags);
+    delete record.tags;
+  }
+
   transaction.addQuery(sql, [record]);
+
+  if (tags.length) {
+    tags.forEach(t => {
+      const binaryTagUuid = db.bid(t.uuid);
+      const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
+      transaction.addQuery(queryAddTags, [db.bid(recordUuid), binaryTagUuid]);
+    });
+  }
 
   transaction.addQuery(inventoryLogSql, {
     uuid : db.uuid(),
@@ -92,15 +108,6 @@ async function createItemsMetadata(record, session) {
     text : JSON.stringify({ action : 'CREATION', current, last : {} }),
     user_id : session.user.id,
   });
-
-  console.log('create inventory : ', record);
-  if (recordCopy.tags) {
-    recordCopy.tags.forEach(t => {
-      const binaryTagUuid = db.bid(t.uuid);
-      const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
-      transaction.addQuery(queryAddTags, [db.bid(recordUuid), binaryTagUuid]);
-    });
-  }
 
   /*
    * return a promise which can contains result or error which is caught
