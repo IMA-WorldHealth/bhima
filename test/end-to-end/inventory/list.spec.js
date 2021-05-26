@@ -25,6 +25,8 @@ describe('Inventory List', () => {
     unit  : 'Act',
     unit_weight : 1,
     unit_volume : 1,
+    purchase_interval : 1,
+    tags : 'Medicament Traceur',
   };
 
   const metadataUpdate = {
@@ -35,12 +37,15 @@ describe('Inventory List', () => {
     unit  : 'Pill',
     unit_weight : 7,
     unit_volume : 7,
+    tags : 'Virologie',
   };
 
   const metadataSearch = {
     label : 'Quinine',
     group : 'Eau',
     type  : 'Article',
+    tag   : 'Medicament Traceur',
+    tags  : ['Medicament Traceur', 'Virologie'],
   };
 
   it('successfully creates a new inventory item (metadata)', async () => {
@@ -62,6 +67,8 @@ describe('Inventory List', () => {
     await FU.select('$ctrl.item.unit_id', metadata.unit);
     await FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
     await FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
+    await FU.input('$ctrl.item.purchase_interval', metadata.purchase_interval);
+    await components.tagSelect.set(metadata.tags);
 
     await FU.modal.submit();
 
@@ -99,6 +106,7 @@ describe('Inventory List', () => {
     await FU.select('$ctrl.item.unit_id', metadataUpdate.unit);
     await FU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
     await FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
+    await components.tagSelect.set(metadataUpdate.tags);
 
     await FU.modal.submit();
 
@@ -119,7 +127,6 @@ describe('Inventory List', () => {
     await filters.resetFilters();
   });
 
-
   // demonstrates that filtering works
   // eslint-disable-next-line
   it(`should find 17 inventory items with group "${metadataSearch.group}" and type "${metadataSearch.type}"`, async () => {
@@ -133,6 +140,25 @@ describe('Inventory List', () => {
     await filters.resetFilters();
   });
 
+  it(`should find 1 inventory item with tag string "${metadataSearch.tag}"`, async () => {
+    await FU.buttons.search();
+
+    await components.tagSelect.set(metadataSearch.tag);
+    await FU.modal.submit();
+
+    await GU.expectRowCount('inventoryListGrid', 1);
+    await filters.resetFilters();
+  });
+
+  it(`should find 2 inventory items within this tags array [${metadataSearch.tags}]`, async () => {
+    await FU.buttons.search();
+
+    await components.tagSelect.set(metadataSearch.tags);
+    await FU.modal.submit();
+
+    await GU.expectRowCount('inventoryListGrid', 2);
+    await filters.resetFilters();
+  });
 
   it('doesn\'t create a new inventory item (metadata) for invalid data', async () => {
     await FU.buttons.create();

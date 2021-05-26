@@ -72,9 +72,12 @@ exports.inventoryColsMap = inventoryColsMap;
 * @return {Promise} Returns a database query promise
 */
 async function createItemsMetadata(record, session) {
+  let tags;
+
   const recordCopy = _.clone(record);
-  record.enterprise_id = session.enterprise.id;
   const recordUuid = record.uuid || uuid();
+
+  record.enterprise_id = session.enterprise.id;
   record.uuid = db.bid(recordUuid);
   record.group_uuid = db.bid(record.group_uuid);
 
@@ -84,7 +87,20 @@ async function createItemsMetadata(record, session) {
   const current = _.extend({}, { action : 'CREATION' }, recordCopy, await loadGroupAndType(record));
   const transaction = db.transaction();
 
+  if (record.tags) {
+    tags = _.clone(record.tags);
+    delete record.tags;
+  }
+
   transaction.addQuery(sql, [record]);
+
+  if (tags.length) {
+    tags.forEach(t => {
+      const binaryTagUuid = db.bid(t.uuid);
+      const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
+      transaction.addQuery(queryAddTags, [db.bid(recordUuid), binaryTagUuid]);
+    });
+  }
 
   transaction.addQuery(inventoryLogSql, {
     uuid : db.uuid(),
@@ -123,6 +139,7 @@ async function loadGroupAndType(record) {
 * @return {Promise} Returns a database query promise
 */
 async function updateItemsMetadata(record, identifier, session) {
+  let tags;
   // remove the uuid if it exists
   delete record.uuid;
   const recordCopy = _.clone(record);
@@ -137,23 +154,42 @@ async function updateItemsMetadata(record, identifier, session) {
     return getItemsMetadataById(identifier);
   }
 
+  if (record.tags) {
+    tags = _.clone(record.tags);
+    delete record.tags;
+  }
+
   const inventoryLogSql = 'INSERT INTO inventory_log SET ?';
   const transaction = db.transaction();
 
   // @lastInfo inventory informations before update
-  const lastInfo = await getItemsMetadataById(identifier);
+  if (!_.isEmpty(record)) {
+    transaction.addQuery(sql, [record, db.bid(identifier)]);
+  }
 
-  const othersKyes = await loadGroupAndType(record);
+  if (tags.length) {
+    tags.forEach(t => {
+      const binaryTagUuid = db.bid(t.uuid);
+      const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
+      const queryClearPreviousTags = 'DELETE FROM inventory_tag WHERE inventory_uuid = ?';
+      transaction.addQuery(queryClearPreviousTags, [db.bid(identifier)]);
+      transaction.addQuery(queryAddTags, [db.bid(identifier), binaryTagUuid]);
+    });
+  }
 
-  const current = _.extend({}, recordCopy, othersKyes);
+  // write into inventory log all changes
+  if (!_.isEmpty(record) || tags.length) {
+    const lastInfo = await getItemsMetadataById(identifier);
+    const othersKyes = await loadGroupAndType(record);
+    const current = _.extend({}, recordCopy, othersKyes);
 
-  transaction.addQuery(sql, [record, db.bid(identifier)]);
-  transaction.addQuery(inventoryLogSql, {
-    uuid : db.uuid(),
-    inventory_uuid : db.bid(identifier),
-    text : JSON.stringify({ action : 'UPDATE', last : lastInfo, current }),
-    user_id : session.user.id,
-  });
+    transaction.addQuery(inventoryLogSql, {
+      uuid : db.uuid(),
+      inventory_uuid : db.bid(identifier),
+      text : JSON.stringify({ action : 'UPDATE', last : lastInfo, current }),
+      user_id : session.user.id,
+    });
+  }
 
   /*
    * return a promise which can contains result or error which is caught
@@ -182,8 +218,8 @@ function getIds() {
 * @function getItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function getItemsMetadata(params) {
-  db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
+async function getItemsMetadata(params) {
+  db.convert(params, ['inventory_uuids', 'tags', 'uuid', 'group_uuid']);
 
   const usePreviousPrice = params.use_previous_price && parseInt(params.use_previous_price, 10);
   delete params.usePreviousPrice;
@@ -214,12 +250,14 @@ function getItemsMetadata(params) {
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
-      inventory.importance,
+      inventory.importance, t.name AS tag_name, t.color AS tag_color,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
-      inventory.unit_id = iu.id`;
+      inventory.unit_id = iu.id
+      LEFT JOIN inventory_tag itag ON itag.inventory_uuid = inventory.uuid
+      LEFT JOIN tags t ON t.uuid = itag.tag_uuid`;
 
   filters.fullText('text', 'text', 'inventory');
 
@@ -235,13 +273,16 @@ function getItemsMetadata(params) {
   filters.equals('sellable');
   filters.equals('note');
   filters.equals('importance');
+  filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
   filters.setOrder('ORDER BY inventory.code ASC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-  return db.exec(query, parameters);
+  const response = await db.exec(query, parameters);
+
+  return response;
 }
 
 // This function helps to delete an inventory
@@ -258,7 +299,7 @@ function remove(_uuid) {
 * @param {String} uuid The inventory item identifier
 * @return {Promise} Returns a database query promise
 */
-function getItemsMetadataById(uid) {
+async function getItemsMetadataById(uid) {
   const sql = `
     SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
@@ -266,14 +307,26 @@ function getItemsMetadataById(uid) {
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.delay, i.purchase_interval,
       i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration,
-      i.importance
+      i.importance, t.name AS tag_name, t.color AS tag_color
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
       i.unit_id = iu.id
+      LEFT JOIN inventory_tag itag ON itag.inventory_uuid = i.uuid
+      LEFT JOIN tags t ON t.uuid = itag.tag_uuid
     WHERE i.uuid = ?;`;
 
-  return db.one(sql, [db.bid(uid), uid, 'inventory']);
+  const queryTags = `
+    SELECT BUID(t.uuid) AS uuid, t.name, t.color 
+    FROM tags t
+    JOIN inventory_tag it ON it.tag_uuid = t.uuid
+    WHERE it.inventory_uuid = ?;
+  `;
+
+  const response = await db.one(sql, [db.bid(uid), uid, 'inventory']);
+  const tags = await db.exec(queryTags, [db.bid(uid)]);
+  response.tags = tags;
+  return response;
 }
 
 /**
