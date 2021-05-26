@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 StockExitConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService',
+  'LanguageService', 'SessionService',
 ];
 
-function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
+function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, Session) {
   const vm = this;
   const cache = new AppCache('configure_stock_exit_report');
   const reportUrl = 'reports/stock/exit';
@@ -21,6 +21,8 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
   vm.previewGenerated = false;
   vm.onExitTypeChange = onExitTypeChange;
 
+  vm.currency_id = Session.enterprise.currency_id;
+
   // check cached configuration
   checkCachedConfiguration();
 
@@ -29,6 +31,10 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
 
   vm.onSelectDepot = depot => {
     vm.depot = depot;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.currency_id = currency.id;
   };
 
   vm.clear = key => {
@@ -53,6 +59,7 @@ function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportD
       depotUuid : vm.depot.uuid,
       dateFrom : vm.dateFrom,
       dateTo : vm.dateTo,
+      currencyId : vm.currency_id,
       includePatientExit : vm.includePatientExit,
       includeServiceExit : vm.includeServiceExit,
       includeGroupedServiceExit : vm.includeGroupedServiceExit,
