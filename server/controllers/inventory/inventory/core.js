@@ -94,7 +94,7 @@ async function createItemsMetadata(record, session) {
 
   transaction.addQuery(sql, [record]);
 
-  if (tags.length) {
+  if (tags && tags.length) {
     tags.forEach(t => {
       const binaryTagUuid = db.bid(t.uuid);
       const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
@@ -167,7 +167,7 @@ async function updateItemsMetadata(record, identifier, session) {
     transaction.addQuery(sql, [record, db.bid(identifier)]);
   }
 
-  if (tags.length) {
+  if (tags && tags.length) {
     tags.forEach(t => {
       const binaryTagUuid = db.bid(t.uuid);
       const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
@@ -287,8 +287,12 @@ async function getItemsMetadata(params) {
 
 // This function helps to delete an inventory
 function remove(_uuid) {
-  const sql = `DELETE FROM inventory WHERE uuid = ?`;
-  return db.exec(sql, db.bid(_uuid));
+  const removeInventory = `DELETE FROM inventory WHERE uuid = ?`;
+  const removeInventoryTags = `DELETE FROM inventory_tag WHERE inventory_uuid = ?`;
+  const tx = db.transaction();
+  tx.addQuery(removeInventoryTags, [db.bid(_uuid)]);
+  tx.addQuery(removeInventory, [db.bid(_uuid)]);
+  return tx.execute();
 }
 
 /**
