@@ -1,6 +1,6 @@
 <div ng-form="DepotForm" bh-depot-select ng-model-options="{ updateOn: 'default' }">
   <div
-    class="form-group"
+    class="form-group has-feedback"
     ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.depot_uuid.$invalid }">
 
     <label class="control-label" translate>
@@ -16,13 +16,15 @@
       name="depot_uuid"
       ng-model="$ctrl.depotText"
       uib-typeahead="depot for depot in $ctrl.searchByName($viewValue)"
-      typeahead-loading="$ctrl.loading"
+      typeahead-loading="$ctrl.$loading"
       typeahead-template-url="/modules/templates/depotList.tmpl.html"
       typeahead-on-select="$ctrl.onSelect($item, $model)"
       typeahead-min-length="0"
       autocomplete="off"
       translate-attr="{ 'placeholder': 'FORM.SELECT.DEPOT' }"
       ng-required="$ctrl.required">
+
+    <span ng-show="$ctrl.$loading" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
 
     <div class="help-block" ng-messages="DepotForm.depot_uuid.$error" ng-show="DepotForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
