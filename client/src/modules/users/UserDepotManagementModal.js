@@ -67,10 +67,7 @@ function UsersDepotManagementController($state, Users, Notify, AppCache, Depots,
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-    const filterChecked = vm.depotsData.filter((item) => {
-      return item._checked;
-    });
-
+    const filterChecked = vm.depotsData.filter((item) => item._checked);
     const userDepots = filterChecked.map(depot => depot.uuid);
 
     if (userForm.$invalid || !vm.user.id) { return 0; }
