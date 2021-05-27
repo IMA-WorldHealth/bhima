@@ -13,9 +13,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
       <label class="control-label" translate>FORM.LABELS.USERNAME</label>
-      <div>
-        <h4><i> {{ UsersDepotModalCtrl.user.display_name }} </i></h4>
-      </div>
+      <p class="form-control-static">{{ UsersDepotModalCtrl.user.display_name }}<p>
     </div>
 
     <span translate> FORM.INFO.USER_DEPOT </span>
@@ -25,7 +23,7 @@
         <strong class="text-capitalize" translate>FORM.LABELS.CHECK_ALL</strong>
       </label>
     </div>
-    
+
     <div class="panel panel-default" style="margin-bottom : 0px;">
       <div class="panel-heading">
         <a href ng-click="UsersDepotModalCtrl.toggleFilter()">
@@ -36,12 +34,12 @@
       <input ng-model="UsersDepotModalCtrl.filter" ng-show="UsersDepotModalCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
     </div>
 
-    <div ng-if="!UsersDepotModalCtrl.loading" ng-repeat="depot in UsersDepotModalCtrl.depotsData | filter : { text : UsersDepotModalCtrl.filter }">
-      <div style="margin-left: calc({{depot.$$treeLevel}} * 15px)" class="list-unstyled">
+    <div ng-if="!UsersDepotModalCtrl.loading" ng-repeat="depot in UsersDepotModalCtrl.depotsData | filter : { text : UsersDepotModalCtrl.filter } track by depot.uuid">
+      <div style="margin-left: calc({{::depot.$$treeLevel}} * 15px)" class="list-unstyled">
         <div class="checkbox">
-          <label data-label="{{child._label}}">
-            <input type="checkbox" id="{{depot.uuid}}" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
-            <span translate>{{depot.text}}</span>
+          <label data-label="{{::child._label}}">
+            <input type="checkbox" id="{{::depot.uuid}}" ng-model="depot._checked" ng-change="UsersDepotModalCtrl.setNodeValue(depot.children, depot)" />
+            <span>{{::depot.text}}</span>
           </label>
         </div>
       </div>
