@@ -144,6 +144,10 @@ function InventoryService(
     key : 'price',
     label : 'FORM.LABELS.PRICE',
   },
+  {
+    key : 'tags',
+    label : 'TAG.TAGS',
+  },
   ]);
 
   if (filterCache.filters) {
