@@ -83,10 +83,10 @@ async function reporting(_options, session) {
       const isExit = item.is_exit ? (-1) : 1;
 
       if (!item.is_exit && (quantityInStock > 0)) {
-        weightedAverageUnitCost = ((quantityInStock * weightedAverageUnitCost) + (item.quantity * item.unit_cost))
+        weightedAverageUnitCost = ((quantityInStock * weightedAverageUnitCost) + (item.quantity * (item.unit_cost * rate)))
           / (item.quantity + quantityInStock);
       } else if (!item.is_exit && (quantityInStock === 0)) {
-        weightedAverageUnitCost = item.unit_cost;
+        weightedAverageUnitCost = (item.unit_cost * rate);
       }
 
       quantityInStock += (item.quantity * isExit);
@@ -95,9 +95,9 @@ async function reporting(_options, session) {
     });
 
     stock.stockQtt = quantityInStock;
-    stock.stockUnitCost = weightedAverageUnitCost * rate;
-    stock.stockValue = (quantityInStock * weightedAverageUnitCost) * rate;
-    stockTotal += (stock.stockValue * rate);
+    stock.stockUnitCost = weightedAverageUnitCost;
+    stock.stockValue = (quantityInStock * weightedAverageUnitCost);
+    stockTotal += (stock.stockValue);
   });
 
   const stockValueElements = options.exclude_zero_value
