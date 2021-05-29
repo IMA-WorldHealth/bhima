@@ -9,6 +9,9 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
   vm.depot = {};
+  vm.depotRight = [];
+  vm.depotLeft = [];
+
   vm.identifier = params.uuid;
   vm.isCreateState = params.isCreateState;
   vm.enable_strict_depot_distribution = Session.stock_settings.enable_strict_depot_distribution;
@@ -22,10 +25,43 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.depot.parent_uuid = params.parentUuid;
   }
 
+  Depots.read()
+    .then(depots => {
+      vm.depots = depots;
+
+      let index = 0;
+      depots.forEach(depot => {
+        if ((vm.identifier && (vm.identifier !== depot.uuid)) || !vm.identifier) {
+          const indexCheck = index % 2;
+          if (indexCheck === 0) {
+            vm.depotRight.push(depot);
+          } else if (indexCheck === 1) {
+            vm.depotLeft.push(depot);
+          }
+          index++;
+        }
+      });
+    })
+    .catch(Notify.handleError);
+
   if (!vm.isCreateState) {
     if (!vm.identifier) { return; }
     Depots.read(vm.identifier)
       .then(depot => {
+        depot.allowed_distribution_depots.forEach(depotDist => {
+          vm.depotRight.forEach(r => {
+            if (r.uuid === depotDist) {
+              r.checked = 1;
+            }
+          });
+
+          vm.depotLeft.forEach(l => {
+            if (l.uuid === depotDist) {
+              l.checked = 1;
+            }
+          });
+        });
+
         vm.depot = depot;
 
         // make sure hasLocation is set
@@ -65,6 +101,16 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     if (depotForm.$invalid) {
       return 0;
     }
+
+    vm.depot.allowed_distribution_depots = [];
+
+    vm.depotRight.forEach(depot => {
+      if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
+    });
+
+    vm.depotLeft.forEach(depot => {
+      if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
+    });
 
     Depots.clean(vm.depot);
 
