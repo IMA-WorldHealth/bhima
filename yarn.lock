@@ -598,10 +598,10 @@ angular-ui-bootstrap@^2.5.6:
   resolved "https://registry.yarnpkg.com/angular-ui-bootstrap/-/angular-ui-bootstrap-2.5.6.tgz#23937322ec641a6fbee16498cc32452aa199e7c5"
   integrity sha512-yzcHpPMLQl0232nDzm5P4iAFTFQ9dMw0QgFLuKYbDj9M0xJ62z0oudYD/Lvh1pWfRsukiytP4Xj6BHOSrSXP8A==
 
-angular-ui-grid@^4.10.0:
-  version "4.10.0"
-  resolved "https://registry.yarnpkg.com/angular-ui-grid/-/angular-ui-grid-4.10.0.tgz#5904a366c49a0a687c6a23a48b46d2b5c57d43ce"
-  integrity sha512-y0AtYkTf41JTmWc+hyl0bXYtUnjOWHu8JIhrxCx7kn9wdbOAkcfyYhV/MT2Cp0pS4gzUI1sjL0qqRyrTtKljnQ==
+angular-ui-grid@^4.10.1:
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/angular-ui-grid/-/angular-ui-grid-4.10.1.tgz#ab89b715f8810a7323eb9416010459622894e29a"
+  integrity sha512-VIDND9FbMu4ElFzDa6Lx1mOqdseG7//266TyLfi/txulhH4Y2D2en8c6GQrQL3ab6rKRt2iAZQeXxLoKJdkqjg==
   dependencies:
     angular ">=1.4.0 1.8.x"
 
