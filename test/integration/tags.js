@@ -26,6 +26,8 @@ describe('(/tags) The tags API endpoint', () => {
     name : 'Repaired',
   };
 
+  const TAGS_IN_TEST_DB = 2;
+
   it('POST /tags add a new tags', () => {
     return agent.post('/tags')
       .send(tags)
@@ -40,7 +42,7 @@ describe('(/tags) The tags API endpoint', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.be.length(1);
+        expect(res.body).to.be.length(1 + TAGS_IN_TEST_DB);
       })
       .catch(helpers.handler);
   });
@@ -59,7 +61,7 @@ describe('(/tags) The tags API endpoint', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
-        expect(res.body).to.be.length(2);
+        expect(res.body).to.be.length(2 + TAGS_IN_TEST_DB);
       })
       .catch(helpers.handler);
   });
@@ -95,7 +97,7 @@ describe('(/tags) The tags API endpoint', () => {
         return agent.get(`/tags`);
       })
       .then(res => {
-        expect(res.body).to.be.length(1);
+        expect(res.body).to.be.length(1 + TAGS_IN_TEST_DB);
       })
       .catch(helpers.handler);
   });

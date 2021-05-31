@@ -112,8 +112,13 @@ function InventoryListController(
     displayName : 'INVENTORY.SELLABLE',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/inventory/list/templates/sellable.cell.tmpl.html',
-  },
-  {
+  }, {
+    field : 'tagNames',
+    displayName : 'TAG.LABEL',
+    headerTooltip : 'TAG.LABEL',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/lots/templates/tags.cell.html',
+  }, {
     field : 'action',
     displayName : '',
     cellTemplate : '/modules/inventory/list/templates/action.cell.html',
@@ -133,7 +138,6 @@ function InventoryListController(
     columnDefs,
     onRegisterApi,
   };
-
 
   // configurations
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
@@ -177,7 +181,16 @@ function InventoryListController(
   }
 
   function handleInventoryResult(rows) {
-    vm.gridOptions.data = rows;
+    vm.gridOptions.data = (rows || []).map(inventory => {
+      // serialize tag names for filters
+      inventory.tagNames = inventory.tags.map(tag => tag.name).join(',');
+      inventory.tags.forEach(addColorStyle);
+      return inventory;
+    });
+  }
+
+  function addColorStyle(tag) {
+    tag.style = { color : tag.color };
   }
 
   function handleException(exception) {
@@ -211,7 +224,6 @@ function InventoryListController(
     vm.latestViewFilters = Inventory.filters.formatView();
     return load(Inventory.filters.formatHTTP(true));
   }
-
 
   function startup() {
     // if parameters are passed through the $state object, use them.
