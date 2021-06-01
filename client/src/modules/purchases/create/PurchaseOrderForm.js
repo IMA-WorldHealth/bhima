@@ -91,26 +91,32 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // TODO(@jniles) - what do we do about user_id?  Should we
     // modify it?  Keep a table of modifications to purchase orders?
+    // NOTE(@jniles) - Vanga would like to see who modified the purchase orders.
 
-    // add the expected number of items
-    order.items.forEach((prev) => {
-      // make the item uuids match between the previous and current records
-      const current = this.addItem();
-      current.uuid = prev.uuid;
+    // make sure we have our inventory loaded before applying the old order prices.
+    return this.ready().then(() => {
 
-      // get the inventory item to configure this row
-      const inventory = this.inventory.available.get(prev.inventory_uuid);
-      current.configure(inventory);
+      // add the expected number of items
+      order.items.forEach((prev) => {
 
-      current.quantity = prev.quantity;
-      current.unit_price = prev.unit_price;
+        // make the item uuids match between the previous and current records
+        const current = this.addItem();
+        current.uuid = prev.uuid;
+
+        // get the inventory item to configure this row
+        const inventory = this.inventory.available.get(prev.inventory_uuid);
+        current.configure(inventory);
+
+        current.quantity = prev.quantity;
+        current.unit_price = prev.unit_price;
+      });
+
+      // update the store's uuid -> object mapping since we
+      // changed the uuid primary key in the above loop
+      this.store.recalculateIndex();
+
+      this.validate();
     });
-
-    // update the store's uuid -> object mapping since we
-    // changed the uuid primary key in the above loop
-    this.store.recalculateIndex();
-
-    this.validate();
   };
 
   // initial setup and clearing of the order
