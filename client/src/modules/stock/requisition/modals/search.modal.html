@@ -46,6 +46,13 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <!-- user -->
+          <bh-user-select
+            user-id="$ctrl.searchQueries.user_id"
+            name="user_id"
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
