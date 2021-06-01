@@ -74,6 +74,11 @@
             on-change-callback="ReportConfigCtrl.setOrderByCreatedAt(value)">
           </bh-yes-no-radios>
 
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.currency_id"
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)" >
+          </bh-currency-select>
+
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>

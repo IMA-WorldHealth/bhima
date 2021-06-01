@@ -1,5 +1,5 @@
 const {
-  db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE,
+  db, ReportManager, Stock, STOCK_SHEET_REPORT_TEMPLATE, util,
 } = require('../common');
 
 const PeriodService = require('../../../../lib/period');
@@ -24,7 +24,7 @@ async function stockSheetReport(req, res, next) {
 
   // set up the report with report manager
   try {
-    const options = { ...req.query };
+    const options = { ...util.convertStringToNumber(req.query) };
 
     if (options.period) {
       // compute the dateFrom and dateTo required for having opening balance
@@ -45,6 +45,15 @@ async function stockSheetReport(req, res, next) {
 
     const report = new ReportManager(STOCK_SHEET_REPORT_TEMPLATE, req.session, optionReport);
 
+    const [{ rate }] = await db.exec('SELECT GetExchangeRate(?, ?, NOW()) as rate;', [req.session.enterprise.id, options.currencyId]);
+    const data = {};
+
+    data.isEnterpriseCurrency = options.currencyId === req.session.enterprise.currency_id;
+    data.exchangeRate = data.isEnterpriseCurrency ? 1 : rate;
+    data.currencyId = options.currencyId;
+
+    options.exchangeRate = data.exchangeRate;
+
     const [inventory, depot, rows] = await Promise.all([
       db.one('SELECT code, text FROM inventory WHERE uuid = ?;', [db.bid(options.inventory_uuid)]),
       options.depot_uuid
@@ -53,7 +62,7 @@ async function stockSheetReport(req, res, next) {
       Stock.getInventoryMovements(options),
     ]);
 
-    const data = { inventory, depot };
+    Object.assign(data, { inventory, depot });
 
     if (!parseInt(options.orderByCreatedAt, 10)) {
       data.rows = rows.movements.sort((x, y) => x.date - y.date);
