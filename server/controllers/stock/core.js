@@ -933,7 +933,10 @@ async function getInventoryMovements(params) {
 
   // get the first value of the array to get the first cost value for the opening balance
   const [firstRow] = rows;
-  openingBalance.unit_cost = (firstRow && firstRow.unit_cost) || 0;
+
+  // if an exchange rate was passed in, use it.  Otherwise, use 1.
+  const rate = params.exchangeRate ? params.exchangeRate : 1;
+  openingBalance.unit_cost = (firstRow && (firstRow.unit_cost * rate)) || 0;
 
   bundle.movements = rows;
 
@@ -955,6 +958,9 @@ async function getInventoryMovements(params) {
       exit : { quantity : 0, unit_cost : 0, value : 0 },
       stock : { quantity : 0, unit_cost : 0, value : 0 },
     };
+
+    // exchange the unit_cost
+    line.unit_cost *= rate;
 
     if (line.is_exit) {
       stockQuantity -= line.quantity;
