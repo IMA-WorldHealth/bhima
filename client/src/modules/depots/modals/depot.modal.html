@@ -153,12 +153,30 @@
 
     <div ng-if="DepotModalCtrl.enable_strict_depot_distribution">
       <label class="control-label" translate>DEPOT.ALLOWED_DESTINATION_DEPOTS</label>
-      <p ng-if="!DepotModalCtrl.depot.allowed_distribution_depots.length"><i translate>DEPOT.NO_DEPOT</i></p>
-      <bh-depot-search-select label="STOCK.DEPOT" id="distribution_depots"
-        depots-uuids="DepotModalCtrl.depot.allowed_distribution_depots"
-        on-change="DepotModalCtrl.onDistributionDepotChange(depots)"
-        required="DepotModalCtrl.enable_strict_depot_distribution">
-      </bh-depot-search-select>
+      <div class="row">
+        <div ng-repeat ="d in DepotModalCtrl.depots">
+          <div class="col-md-6">
+            <div ng-if="$index %2 == 0">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
+                  <span translate> {{ d.text }} </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div ng-if="$index %2 != 0">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
+                  <span translate> {{ d.text }} </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-group" ng-class="{'has-error' : DepotForm.description.$invalid && DepotForm.$submitted}">
@@ -166,7 +184,7 @@
       <textarea
         class="form-control"
         name="description"
-        ng-model="DepotModalCtrl.depot.description"
+        ng-model=" DepotModalCtrl.depot.description"
         rows="4">
       </textarea>
       <div class="help-block" ng-messages="DepotForm.description.$error" ng-show="DepotForm.$submitted">
