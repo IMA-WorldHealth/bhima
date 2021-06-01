@@ -9,8 +9,6 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
   vm.depot = {};
-  vm.depotRight = [];
-  vm.depotLeft = [];
 
   vm.identifier = params.uuid;
   vm.isCreateState = params.isCreateState;
@@ -28,19 +26,6 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   Depots.read()
     .then(depots => {
       vm.depots = depots;
-
-      let index = 0;
-      depots.forEach(depot => {
-        if ((vm.identifier && (vm.identifier !== depot.uuid)) || !vm.identifier) {
-          const indexCheck = index % 2;
-          if (indexCheck === 0) {
-            vm.depotRight.push(depot);
-          } else if (indexCheck === 1) {
-            vm.depotLeft.push(depot);
-          }
-          index++;
-        }
-      });
     })
     .catch(Notify.handleError);
 
@@ -49,15 +34,9 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     Depots.read(vm.identifier)
       .then(depot => {
         depot.allowed_distribution_depots.forEach(depotDist => {
-          vm.depotRight.forEach(r => {
-            if (r.uuid === depotDist) {
-              r.checked = 1;
-            }
-          });
-
-          vm.depotLeft.forEach(l => {
-            if (l.uuid === depotDist) {
-              l.checked = 1;
+          vm.depots.forEach(d => {
+            if (d.uuid === depotDist) {
+              d.checked = 1;
             }
           });
         });
@@ -104,11 +83,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
 
     vm.depot.allowed_distribution_depots = [];
 
-    vm.depotRight.forEach(depot => {
-      if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
-    });
-
-    vm.depotLeft.forEach(depot => {
+    vm.depots.forEach(depot => {
       if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
     });
 

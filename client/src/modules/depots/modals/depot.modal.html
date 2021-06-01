@@ -153,25 +153,26 @@
 
     <div ng-if="DepotModalCtrl.enable_strict_depot_distribution">
       <label class="control-label" translate>DEPOT.ALLOWED_DESTINATION_DEPOTS</label>
-
       <div class="row">
-        <div class="col-md-6">
-          <div ng-repeat ="r in DepotModalCtrl.depotRight">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="r.checked" ng-true-value="1" ng-false-value="0">
-                <span translate> {{ r.text }} </span>
-              </label>
+        <div ng-repeat ="d in DepotModalCtrl.depots">
+          <div class="col-md-6">
+            <div ng-if="$index %2 == 0">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
+                  <span translate> {{ d.text }} </span>
+                </label>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div ng-repeat ="l in DepotModalCtrl.depotLeft">
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="l.checked"  ng-true-value="1" ng-false-value="0">
-                <span translate> {{ l.text }} </span>
-              </label>
+          <div class="col-md-6">
+            <div ng-if="$index %2 != 0">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="d.checked" ng-true-value="1" ng-false-value="0">
+                  <span translate> {{ d.text }} </span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
