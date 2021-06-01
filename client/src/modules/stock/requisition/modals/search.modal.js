@@ -16,7 +16,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'date_from', 'date_to',
+    'depot_uuid', 'date_from', 'date_to', 'user_id',
   ];
 
   const displayValues = {};
@@ -32,6 +32,11 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
+  };
+
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
   };
 
   vm.onSelectRequestor = requestor => {

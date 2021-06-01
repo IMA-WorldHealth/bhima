@@ -111,7 +111,6 @@ function PurchaseRegistryController(
     fastWatch : true,
     onRegisterApi : (api) => { vm.gridApi = api; },
     columnDefs,
-
   };
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
