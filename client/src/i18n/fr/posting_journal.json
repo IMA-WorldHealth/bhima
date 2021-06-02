@@ -6,6 +6,7 @@
     "REMOVE_ROW" : "Supprimer la(les) ligne(s)",
     "ROWS" : "Ligne(s)",
     "EDITING" : "Édition",
+    "DELETING" : "Suppression",
     "CORRECTING" : "Corriger",
     "DELETE_TRANSACTION_SUCCESS" : "La transaction a été supprimée avec succés",
     "SAVE_TRANSACTION_SUCCESS" : "La transaction a été enregistrée avec succés",
@@ -27,6 +28,7 @@
       "TITLE" : "Configuration colonnes",
       "COLUMNS" : "Colonnes"
     },
+    "LOG":"Journal historique",
     "ERRORS": {
       "CLOSED_FISCAL_YEAR" : "L'annee fiscale pour cette date a déjà été fermé",
       "CREDITED_DEBITED": "Sur une même ligne de transaction un compte ne peut pas être débité et crédité en même temps",

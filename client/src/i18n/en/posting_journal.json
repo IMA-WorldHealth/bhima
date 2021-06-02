@@ -6,6 +6,7 @@
     "REMOVE_ROW" : "Remove Row(s)",
     "ROWS" : "Row(s)",
     "EDITING" : "Editing",
+    "DELETING" : "Deleting",
     "CORRECTING" : "Correcting",
     "NO_TRANSACTION_TYPE" : "No assigned transaction type",
     "HAS_PREVIOUS_EDITS" : "Last edit by {{ user }} on {{ date }}",
@@ -26,6 +27,7 @@
       "TITLE" : "Column configuration",
       "COLUMNS" : "Columns"
     },
+    "LOG":"Journal Log",
     "ERRORS": {
       "CLOSED_FISCAL_YEAR" : "The fiscal year for this date has already been closed",
       "CREDITED_DEBITED" : "An account can not be debited and credited on the same transaction line ",

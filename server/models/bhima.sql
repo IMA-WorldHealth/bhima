@@ -168,7 +168,8 @@ INSERT INTO unit VALUES
   (292, '[Stock] Changes Report', 'REPORT.STOCK_CHANGES.TITLE', 'Stock Changes Report', 282, '/reports/stock_changes'),
   (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption', 160,'/stock/aggregated_consumption'),
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
-  (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report');
+  (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
+  (297, 'Journal Log','TREE.JOURNAL_LOG','The Jouranl log module', 5,'/journal/log');
 
 
 -- Reserved system account type
