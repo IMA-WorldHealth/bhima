@@ -48,6 +48,53 @@ exports.getTransactionEditHistory = getTransactionEditHistory;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
+exports.log = log;
+
+async function log(req, res, next) {
+  const options = req.query;
+  db.convert(options, ['record_uuid']);
+  const filters = new FilterParser(options, { tableAlias : 'th' });
+
+  // journal log
+  const sql = `
+    SELECT 
+      BUID(th.uuid) AS uuid,
+      BUID(th.record_uuid) AS record_uuid,
+      th.timestamp AS timestamp,
+      th.value AS value,
+      th.action,
+      u.display_name
+    FROM transaction_history th
+    JOIN user u ON u.id = th.user_id
+  `;
+
+  filters.fullText('description', 'value');
+  filters.fullText('hrRecord', 'value');
+  filters.fullText('trans_id', 'value');
+
+  filters.equals('action');
+  filters.equals('user_id');
+
+  filters.dateFrom('custom_period_start', 'timestamp', 'th');
+  filters.dateTo('custom_period_end', 'timestamp', 'th');
+
+  filters.period('period', 'timestamp', 'th');
+  filters.setOrder('ORDER BY th.timestamp DESC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  try {
+    const rows = await db.exec(query, parameters);
+    const data = rows.map(item => {
+      item.value = JSON.parse(item.value);
+      return item;
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
 
 /**
  * Looks up a transaction by record_uuid.
@@ -280,7 +327,17 @@ function editTransaction(req, res, next) {
   let _fiscalYear;
   let _recordTableToEdit;
 
-  rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
+  rowsRemoved.forEach(row => {
+    const deletedTransactionHistory = {
+      uuid : db.bid(uuid()),
+      record_uuid : db.bid(row.uuid),
+      user_id : req.session.user.id,
+      action : 'deleted',
+      value : JSON.stringify(row),
+    };
+    transaction.addQuery(UPDATE_TRANSACTION_HISTORY, deletedTransactionHistory);
+    transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]);
+  });
 
   // verify that this transaction is NOT in the general ledger already
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
@@ -352,6 +409,7 @@ function editTransaction(req, res, next) {
         uuid : db.bid(uuid()),
         record_uuid : db.bid(row.record_uuid),
         user_id : req.session.user.id,
+        value : JSON.stringify(row),
       };
 
       transaction
