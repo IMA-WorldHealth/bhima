@@ -8,3 +8,15 @@ CREATE TABLE `inventory_tag` (
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+/**
+ * @author: jmcameron
+ * @date: 2021-06-02
+ */
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE');
+
+INSERT IGNORE INTO unit VALUES
+(296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE',
+ 'aggregated consumption', 282, '/reports/aggregated_stock_consumption');
