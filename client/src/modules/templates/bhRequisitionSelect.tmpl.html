@@ -15,7 +15,7 @@
       on-select="$ctrl.onSelect($item, $model)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.REFERENCE_REQUISITION' | translate }}"><span>{{$select.selected.reference}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="requisition.uuid as requisition in $ctrl.requisitions | filter: { 'reference': $select.search }">
-        <span ng-bind-html="requisition.reference | highlight:$select.search"></span>
+        <span ng-bind-html="requisition.reference | highlight:$select.search"></span> - <span translate>{{requisition.title_key}}</span>
       </ui-select-choices>
     </ui-select>
 
