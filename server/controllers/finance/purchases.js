@@ -303,7 +303,10 @@ async function update(req, res, next) {
   }
 
   const sql = 'UPDATE purchase SET ? WHERE uuid = ?;';
-  const itemSQL = 'UPDATE purchase_item SET ? WHERE uuid = ?';
+
+  const updateItemSql = 'UPDATE purchase_item SET ? WHERE uuid = ?';
+  const createItemSql = 'INSERT INTO purchase_item (uuid, inventory_uuid, quantity, unit_price, total, purchase_uuid) VALUES ?';
+  const deleteItemSql = 'DELETE FROM purchase_item WHERE uuid = ?';
 
   try {
 
@@ -312,15 +315,15 @@ async function update(req, res, next) {
     }
 
     // these statuses are able to be canceled
-    // TODO(@jniles) - are we sure that you should be able to cancel a confirmed purchase
-    // order?
+    // TODO(@jniles) - are we sure that you should be able to cancel a confirmed purchase order?
     const statusCanCancel = [
       PURCHASE_STATUS_CONFIRMED_ID,
       PURCHASE_STATUS_WAITING_CONFIRMATION,
     ];
 
     const data = db.convert(req.body, ['supplier_uuid']);
-    const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [db.bid(req.params.uuid)]);
+    const poUuid = db.bid(req.params.uuid);
+    const purchase = await db.one('SELECT * FROM purchase WHERE uuid = ?', [poUuid]);
 
     // lazy check to allow cancelling confirmed or awaiting confirmation purchase orders.
     // FIXME(@jniles) - we need a better process for this.  Probably a whole new modal to have
@@ -334,21 +337,45 @@ async function update(req, res, next) {
       throw new BadRequest('Can only modify purchase orders that are awaiting confirmation.');
     }
 
+    // Get the Uuids for the previous purchase order items
+    const rawUuids = await db.exec('SELECT HEX(uuid) as uuid FROM purchase_item WHERE purchase_uuid = ?', [poUuid]);
+    const oldItemUuids = rawUuids.map(x => x.uuid);
+
     // protect from updating the purchase's uuid
     delete data.uuid;
     data.edited = true;
 
+    const itemUuids = req.body.items.map(x => x.uuid);
+
+    // Filter out any items with 0 quantity
     const items = req.body.items || [];
     delete req.body.items;
 
     const txn = db.transaction();
 
     txn.addQuery(sql, [req.body, db.bid(req.params.uuid)]);
+
+    // Process updated and new purchase items
     items.forEach(item => {
+      // See if it is an existing item
       const uid = db.bid(item.uuid);
-      delete item.uuid;
-      db.convert(item, ['inventory_uuid']);
-      txn.addQuery(itemSQL, [item, uid]);
+      if (oldItemUuids.includes(item.uuid)) {
+        // Update existing purchase items
+        delete item.uuid;
+        db.convert(item, ['inventory_uuid']);
+        txn.addQuery(updateItemSql, [item, uid]);
+      } else {
+        // Create a new purchase item
+        const newItems = linkPurchaseItems([item], poUuid);
+        txn.addQuery(createItemSql, [newItems]);
+      }
+    });
+
+    // Delete any removed purchase items
+    oldItemUuids.forEach(duid => {
+      if (!itemUuids.includes(duid)) {
+        txn.addQuery(deleteItemSql, [db.bid(duid)]);
+      }
     });
 
     // run the transaction

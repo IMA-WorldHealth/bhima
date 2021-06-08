@@ -53,6 +53,7 @@ const multiplePayroll = require('../controllers/payroll/multiplePayroll');
 const multiplePayrollIndice = require('../controllers/payroll/multiplePayrollIndice');
 const staffingIndices = require('../controllers/payroll/staffingIndices');
 const staffingIndicesReport = require('../controllers/payroll/staffingIndices/report');
+
 // medical routes
 const patients = require('../controllers/medical/patients');
 const patientGroups = require('../controllers/medical/patientGroups');
