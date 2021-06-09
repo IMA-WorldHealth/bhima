@@ -3,10 +3,12 @@ angular.module('bhima.controllers')
 
 StockSheetConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService', 'moment',
+  'LanguageService', 'moment', 'SessionService',
 ];
 
-function StockSheetConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, moment) {
+function StockSheetConfigController(
+  $sce, Notify, SavedReports, AppCache, reportData, $state, Languages, moment, Session,
+) {
   const vm = this;
   const cache = new AppCache('configure_stock_sheet_report');
   const reportUrl = 'reports/stock/sheet';
@@ -17,6 +19,7 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
   vm.reportDetails = {
     dateTo : new Date(),
     orderByCreatedAt : 0,
+    currencyId : Session.enterprise.currency_id,
   };
 
   // check cached configuration
@@ -26,6 +29,10 @@ function StockSheetConfigController($sce, Notify, SavedReports, AppCache, report
     vm.hasDateInterval = value;
     vm.reportDetails.dateFrom = value ? new Date() : undefined;
     vm.reportDetails.dateTo = new Date();
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.onDateChange = (date) => {
