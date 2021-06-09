@@ -200,8 +200,12 @@ exports.update = async (req, res, next) => {
     const requisition = _.omit(req.body, 'items');
     const requisitionItems = _.pick(req.body, 'items').items;
 
-    if (requisition.uuid) {
-      delete requisition.uuid;
+    if (requisition.date) {
+      requisition.date = new Date(requisition.date);
+    }
+
+    if (requisition.depot_uuid) {
+      requisition.depot_uuid = db.bid(requisition.depot_uuid);
     }
 
     if (requisition.movementRequisition) {
@@ -280,7 +284,7 @@ exports.update = async (req, res, next) => {
 
     if (requisitionItems && requisitionItems.length) {
       transaction
-        .addQuery('DELETE FROM stock_requisition_item WHERE requisition_uuid = ?;', [binarize(requisition), uuid]);
+        .addQuery('DELETE FROM stock_requisition_item WHERE requisition_uuid = ?;', [uuid]);
 
       requisitionItems.forEach(item => {
         item.requisition_uuid = req.params.uuid;
@@ -289,7 +293,7 @@ exports.update = async (req, res, next) => {
     }
 
     await transaction.execute();
-    res.sendStatus(200);
+    res.status(200).json({ uuid : req.params.uuid });
   } catch (error) {
     next(error);
   }

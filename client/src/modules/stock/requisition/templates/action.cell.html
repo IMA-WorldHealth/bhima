@@ -12,6 +12,15 @@
       </a>
     </li>
 
+    <li ng-if="row.entity.status_key === 'in_progress'">
+      <a
+        ui-sref="stockRequisition.edit({ uuid : row.entity.uuid })"
+        data-method="edit"
+        class="text-action">
+        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT</span>
+      </a>
+    </li>
+
     <li ng-if="row.entity.status_key !== 'completed' && row.entity.status_key !== 'done' && row.entity.status_key !== 'excessive'">
       <a
         href
