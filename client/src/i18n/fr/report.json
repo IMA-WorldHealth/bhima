@@ -242,7 +242,7 @@
     },
     "STOCK":{
       "TITLE" : "Rapport de stock",
-      "DESCRIPTION" : "Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et état",
+      "DESCRIPTION" : "Ce rapport indique le stock des produits, leur consommation mensuelle moyenne et indique si une commande est nécessaire à la date spécifiée. Les articles sont classés par groupe d'inventaire, puis par leur nom. Par défaut, tous les produits de chaque dépôt sont affichés, mais ceux-ci peuvent être filtrés en spécifiant un produit ou un dépôt individuel.",
       "ALL_DEPOTS" : "Tous les dépôts",
       "ONE_DEPOT" : "Un dépôt en particulier",
       "ALL_INVENTORIES" : "Tous les articles",
@@ -259,7 +259,7 @@
       "EXIT_REPORT" : "Rapport des sorties de stocks",
       "EXIT_REPORT_DESCRIPTION" : "Ce rapport affiche les sorties de stock qui ont eu lieu dans different dépôts",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Inclure les consommations agrégées",
-	  "INCLUDE_INFORMATION" : "Information à inclure",
+      "INCLUDE_INFORMATION" : "Information à inclure",
       "INCLUDE_PATIENT_EXIT" : "Inclure les distributions vers les patients",
       "INCLUDE_SERVICE_EXIT" : "Inclure les distributions vers les services",
       "INCLUDE_GROUPED_SERVICE_EXIT" : "Inclure les distributions groupées par services",
