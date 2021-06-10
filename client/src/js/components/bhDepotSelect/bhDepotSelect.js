@@ -23,7 +23,6 @@ function DepotSelectController(Depots, Notify) {
 
   $ctrl.$onInit = () => {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
-
     if ($ctrl.depotUuid) {
       if ($ctrl.depotUuid === '0') { return; }
       Depots.read($ctrl.depotUuid)
