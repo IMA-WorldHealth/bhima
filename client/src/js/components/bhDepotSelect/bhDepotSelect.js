@@ -25,17 +25,24 @@ function DepotSelectController(Depots, Notify) {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
     if ($ctrl.depotUuid) {
       if ($ctrl.depotUuid === '0') { return; }
-      Depots.read($ctrl.depotUuid)
-        .then(depot => {
-          $ctrl.depotText = depot.text;
-        })
-        .catch(Notify.handleError);
+      loadDepotByUuid($ctrl.depotUuid);
     }
   };
 
+  function loadDepotByUuid(uuid) {
+    Depots.read(uuid)
+      .then(depot => {
+      $ctrl.depotText = depot.text;
+    })
+    .catch(Notify.handleError);
+  }
+
   $ctrl.$onChanges = changes => {
+    console.log('$onChanges():', JSON.stringify(changes));
     if (changes.depotUuid && changes.depotUuid.currentValue === undefined) {
       $ctrl.depotText = undefined;
+    } else if (changes.depotUuid && changes.depotUuid.currentValue) {
+      loadDepotByUuid(changes.depotUuid.currentValue);
     }
   };
 
