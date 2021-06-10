@@ -11,6 +11,8 @@ function ActionRequisitionModalController(
   Store, Inventories, Notify, Modal, Stock, Receipts, data,
 ) {
   const vm = this;
+  vm.isCreateState = true;
+
   const store = new Store({ data : [] });
   const columns = [
     {
@@ -74,6 +76,32 @@ function ActionRequisitionModalController(
     vm.enableAutoSuggest = (requestor.requestor_type_id === DEPOT_REQUESTOR_TYPE && requestor.uuid);
   };
 
+  if (data.uuid) {
+    vm.requisitionUuid = data.uuid;
+    vm.isCreateState = false;
+
+    Stock.stockRequisition.read(data.uuid)
+      .then((requisionData) => {
+        console.log('requisitionData:', requisionData)
+        requisionData.items.forEach((item, index) => {
+          addItem(1, {
+            _initialised : true,
+            id : index,
+            inventory_uuid : item.inventory_uuid,
+            code : item.code,
+            S_Q : item.quantity,
+            quantity : item.quantity,
+            inventory_label : item.text,
+            uuid : item.inventory_uuid,
+          });
+        });
+
+        vm.model = requisionData;
+        vm.model.date = new Date(vm.model.date);
+      })
+      .catch(Notify.handleError);
+  }
+
   vm.submit = form => {
     if (form.$invalid) { return null; }
 
@@ -83,7 +111,22 @@ function ActionRequisitionModalController(
 
     angular.extend(vm.model, { items });
 
-    return Stock.stockRequisition.create(vm.model)
+    const updateElement = {
+      date : new Date(vm.model.date),
+      depot_uuid : vm.model.depot_uuid,
+      description : vm.model.description,
+      items : vm.model.items,
+      project_id : vm.model.project_id,
+      requestor_type_id : vm.model.requestor_type_id,
+      requestor_uuid : vm.model.requestor_uuid,
+      user_id : vm.model.user_id,
+    };
+
+    const promise = (vm.isCreateState)
+      ? Stock.stockRequisition.create(vm.model)
+      : Stock.stockRequisition.update(vm.requisitionUuid, updateElement);
+
+    return promise
       .then(res => {
         Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
@@ -141,7 +184,6 @@ function ActionRequisitionModalController(
 
   function addItem(n, item) {
     let i = n;
-
     while (i--) {
       const row = { id : store.data.length };
 
@@ -151,6 +193,10 @@ function ActionRequisitionModalController(
         row.inventory = item;
         row.inventory_uuid = item.inventory_uuid;
         row.quantity = item.S_Q;
+
+        if (item.inventory_label) {
+          row.inventory.label = item.inventory_label;
+        }
       }
 
       store.post(row);

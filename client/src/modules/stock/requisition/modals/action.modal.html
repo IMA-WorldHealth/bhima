@@ -7,7 +7,9 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>REQUISITION.STOCK_REQUISITION</li>
-      <li class="title" translate>FORM.LABELS.CREATE</li>
+
+      <li ng-if="$ctrl.isCreateState" class="title" translate>FORM.LABELS.CREATE</li>
+      <li ng-if="!$ctrl.isCreateState" class="title" translate>FORM.LABELS.UPDATE</li>
     </ol>
   </div>
 
