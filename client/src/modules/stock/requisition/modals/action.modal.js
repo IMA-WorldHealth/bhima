@@ -11,6 +11,8 @@ function ActionRequisitionModalController(
   Store, Inventories, Notify, Modal, Stock, Receipts, data,
 ) {
   const vm = this;
+  vm.isCreateState = true;
+
   const store = new Store({ data : [] });
   const columns = [
     {
@@ -75,8 +77,8 @@ function ActionRequisitionModalController(
   };
 
   if (data.uuid) {
-    vm.isUpdate = true;
     vm.requisitionUuid = data.uuid;
+    vm.isCreateState = false;
 
     Stock.stockRequisition.read(data.uuid)
       .then((requisionData) => {
@@ -119,9 +121,9 @@ function ActionRequisitionModalController(
       user_id : vm.model.user_id,
     };
 
-    const promise = (vm.isUpdate)
-      ? Stock.stockRequisition.update(vm.requisitionUuid, updateElement)
-      : Stock.stockRequisition.create(vm.model);
+    const promise = (vm.isCreateState)
+      ? Stock.stockRequisition.create(vm.model)
+      : Stock.stockRequisition.update(vm.requisitionUuid, updateElement);
 
     return promise
       .then(res => {

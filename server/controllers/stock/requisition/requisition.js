@@ -198,6 +198,7 @@ exports.update = async (req, res, next) => {
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
     const requisition = _.omit(req.body, 'items');
+
     const requisitionItems = _.pick(req.body, 'items').items;
 
     if (requisition.date) {
