@@ -85,31 +85,41 @@ function deleteRoute(req, res, next) {
 
   debug(`#delete() attempting to remove transaction ${uuid}.`);
 
-  deleteTransaction(uuid, req.session.actions)
+  deleteTransaction(uuid, req.session.actions, req.session.user.id)
     .then(() => {
       debug(`#delete() successfully removed transaction ${uuid}.`);
       res.sendStatus(201);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function deleteTransaction(uuid, actions) {
-  return shared.getRecordTextByUuid(uuid)
-    .then(documentMap => {
-      debug(`#delete() resolved transaction ${uuid} to ${documentMap.text}.`);
+async function deleteTransaction(uuid, actions, userId) {
+  const documentMap = await shared.getRecordTextByUuid(uuid);
 
-      // route to do the correct safe deletion method.
-      const safeDeleteFn = parseDocumentMapString(documentMap.text);
+  debug(`#delete() resolved transaction ${uuid} to ${documentMap.text}.`);
 
-      if (!isUserAuthorized(documentMap.text, actions)) {
-        debug(`#delete() user is not autorized to remove ${documentMap.text}!`);
-        throw new Unauthorized(`User is not authorized to remove ${documentMap.text}.`);
-      }
+  // route to do the correct safe deletion method.
+  const safeDeleteFn = parseDocumentMapString(documentMap.text);
 
-      // run the safe deletion method
-      return safeDeleteFn(uuid);
-    });
+  if (!isUserAuthorized(documentMap.text, actions)) {
+    debug(`#delete() user is not autorized to remove ${documentMap.text}!`);
+    throw new Unauthorized(`User is not authorized to remove ${documentMap.text}.`);
+  }
+
+  const transactionRecord = await db.exec('SELECT * FROM posting_journal WHERE record_uuid = ?', [db.bid(uuid)]);
+  const INSERT_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
+  const transactionHistory = {
+    uuid : db.uuid(),
+    record_uuid : db.bid(uuid),
+    user_id : userId,
+    action : 'deleted',
+    value : JSON.stringify(transactionRecord),
+  };
+
+  await db.exec(INSERT_TRANSACTION_HISTORY, transactionHistory);
+
+  // run the safe deletion method
+  return safeDeleteFn(uuid);
 }
 
 /**

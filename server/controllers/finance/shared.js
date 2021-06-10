@@ -19,7 +19,6 @@ exports.isRemovableTransaction = isRemovableTransaction;
 exports.getRecordTextByUuid = getRecordTextByUuid;
 exports.getEntityTextByUuid = getEntityTextByUuid;
 
-
 /**
  * @function getRecordTextByUuid
  *
@@ -112,7 +111,6 @@ function getTransactionRecords(uuid) {
   return db.exec(sql, [db.bid(uuid), db.bid(uuid)]);
 }
 
-
 function isRemovableTransaction(uuid) {
   // get all the rows of the transaction
   return getTransactionRecords(uuid)
@@ -123,7 +121,7 @@ function isRemovableTransaction(uuid) {
       if (isPosted) {
         throw new BadRequest(
           `Transaction ${firstRow.trans_id} (${firstRow.identifier}) is already posted.`,
-          'TRANSACTIONS.ERRORS.TRANSACTION_POSTED'
+          'TRANSACTIONS.ERRORS.TRANSACTION_POSTED',
         );
       }
 

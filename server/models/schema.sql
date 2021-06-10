@@ -2078,10 +2078,11 @@ CREATE TABLE `donation` (
 */
 CREATE TABLE `transaction_history` (
   `uuid`  BINARY(16) NOT NULL,
-  `record_uuid`      BINARY(16) NOT NULL,
-  `timestamp`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
-  `action` VARCHAR(15) DEFAULT 'edit',
+  `record_uuid` BINARY(16) NOT NULL,
+  `timestamp`   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`     SMALLINT(5) UNSIGNED NOT NULL,
+  `action`      VARCHAR(15) DEFAULT 'edit',
+  `value`       TEXT DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `record_uuid` (`record_uuid`),
   KEY `user_id` (`user_id`),

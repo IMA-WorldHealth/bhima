@@ -169,6 +169,7 @@
     "VOUCHER_REGISTRY":"Registre des Bordereaux",
     "WARD" : "Gestion des pavillons",
     "WARD_CONFIGURATION" : "Configurations",
-    "WEEKEND_CONFIGURATION":"Configuration des weekend"
+    "WEEKEND_CONFIGURATION":"Configuration des weekend",
+    "JOURNAL_LOG":"Journal historique"
   }
 }

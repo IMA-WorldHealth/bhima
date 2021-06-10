@@ -378,10 +378,6 @@ function safelyDeleteVoucher(guid) {
     DELETE FROM voucher WHERE uuid = ?;
   `;
 
-  const DELETE_TRANSACTION_HISTORY = `
-    DELETE FROM transaction_history WHERE record_uuid = ?;
-  `;
-
   const DELETE_DOCUMENT_MAP = `
     DELETE FROM document_map WHERE uuid = ?;
   `;
@@ -422,9 +418,7 @@ function safelyDeleteVoucher(guid) {
         .addQuery(TOGGLE_INVOICE_REVERSAL, binaryUuid)
         .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid)
         .addQuery(TOGGLE_VOUCHER_REVERSAL, binaryUuid)
-
         .addQuery(DELETE_VOUCHER, binaryUuid)
-        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
         .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 
       return transaction.execute();
