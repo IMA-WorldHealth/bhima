@@ -170,6 +170,7 @@ INSERT INTO unit VALUES
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption');
+  (297, 'Journal Log','TREE.JOURNAL_LOG','The Jouranl log module', 5,'/journal/log');
 
 
 -- Reserved system account type
