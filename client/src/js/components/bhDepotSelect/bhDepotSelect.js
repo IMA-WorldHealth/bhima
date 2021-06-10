@@ -32,13 +32,12 @@ function DepotSelectController(Depots, Notify) {
   function loadDepotByUuid(uuid) {
     Depots.read(uuid)
       .then(depot => {
-      $ctrl.depotText = depot.text;
-    })
-    .catch(Notify.handleError);
+        $ctrl.depotText = depot.text;
+      })
+      .catch(Notify.handleError);
   }
 
   $ctrl.$onChanges = changes => {
-    console.log('$onChanges():', JSON.stringify(changes));
     if (changes.depotUuid && changes.depotUuid.currentValue === undefined) {
       $ctrl.depotText = undefined;
     } else if (changes.depotUuid && changes.depotUuid.currentValue) {
