@@ -16,7 +16,7 @@ CREATE TABLE `inventory_tag` (
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
 ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE');
 
-INSERT IGNORE INTO unit VALUES
+INSERT IGNORE INTO `unit` VALUES
 (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE',
  'aggregated consumption', 282, '/reports/aggregated_stock_consumption');
 
@@ -24,7 +24,7 @@ INSERT IGNORE INTO unit VALUES
  * @author: mbayopanda
  * @date: 2021-06-01
  */
-INSERT INTO `unit` VALUES 
-  (297, 'Journal Log','TREE.JOURNAL_LOG','The Jouranl log module', 5,'/journal/log');
+INSERT IGNORE INTO `unit` VALUES 
+(297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
   
 ALTER TABLE transaction_history ADD COLUMN `value` TEXT DEFAULT NULL;
