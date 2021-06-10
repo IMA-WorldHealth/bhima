@@ -24,7 +24,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   // create a new purchase order form
   vm.order = new PurchaseOrder('PurchaseOrder');
 
-  const isUpdateState = ($state.params.uuid && $state.params.uuid.length > 0);
+  vm.isUpdateState = ($state.params.uuid && $state.params.uuid.length > 0);
 
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
@@ -142,6 +142,26 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
       return 0;
     }
 
+    // Check for duplicated inventory items
+    const inventUuids = [];
+    let dupItem = null;
+    vm.order.store.data.forEach(item => {
+      const invUUID = item.inventory_uuid;
+      if (inventUuids.includes(invUUID)) {
+        dupItem = item;
+        return false;
+      }
+      inventUuids.push(invUUID);
+      return false;
+    });
+    if (dupItem) {
+      dupItem._valid = false;
+      dupItem._invalid = true;
+      vm.gridApi.core.scrollTo(dupItem);
+      Notify.danger('ERRORS.ER_DUP_PURCHASE_ORDER_ITEM', 10000);
+      return 0;
+    }
+
     // Set Waiting confirmation as default Purchase Order Status
     vm.order.details.status_id = 1;
 
@@ -151,14 +171,14 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
 
     vm.loadingState = true;
 
-    const submitFn = isUpdateState
+    const submitFn = vm.isUpdateState
       ? Purchases.update($state.params.uuid, order)
       : Purchases.create(order);
 
     return submitFn
       .then((res) => {
 
-        if (!isUpdateState) {
+        if (!vm.isUpdateState) {
           // reset the module
           clear(form);
         }
@@ -167,7 +187,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
         return Receipts.purchase(res.uuid, true);
       })
       .then(() => {
-        if (isUpdateState) { $state.go('purchasesCreate'); }
+        if (vm.isUpdateState) { $state.go('purchasesCreate'); }
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -251,7 +271,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
         vm.order.setExchangeRate(vm.currentExchangeRate);
 
         // read the previous purchase order from the database for modification
-        if (isUpdateState) {
+        if (vm.isUpdateState) {
           // we are using this $q.all() construction to deal with the
           // race condition of not having loaded inventory before
           // trying to set up the purchase form.
@@ -293,8 +313,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     // NOTE(@jniles): this is somewhat a hack.  You shouldn't do
     // a complete replacement of the form during an update, so if
     // you clear the form, we just send you to the creation state.
-    if (isUpdateState) { $state.go('purchasesCreate'); }
+    if (vm.isUpdateState) { $state.go('purchasesCreate'); }
     clear();
+  };
+
+  vm.cancel = () => {
+    $state.go('purchasesRegistry');
   };
 
   startup();

@@ -45,6 +45,8 @@ function DepotSelectController(Depots, Notify) {
       return null;
     }
 
+    $ctrl.$loading = true;
+
     const options = {
       text : (text || '').toLowerCase(),
       exception : $ctrl.exception,

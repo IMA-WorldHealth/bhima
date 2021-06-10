@@ -252,7 +252,7 @@
     },
     "STOCK": {
       "TITLE": "Articles in Stock Report",
-      "DESCRIPTION": "This report shows the stock of products, their average monthly consumption and indicates if a reorder is needed.  The items are ordered by inventory group, then by their name.  By default, all products in every depot is displayed, but these can be filtered by specifying an individual product or depot.",
+      "DESCRIPTION": "This report shows the stock of products, their average monthly consumption and indicates if a reorder is needed at the specified date.  The items are ordered by inventory group, then by their name.  By default, all products in every depot is displayed, but these can be filtered by specifying an individual product or depot.",
       "ALL_DEPOTS": "All Depots",
       "ONE_DEPOT": "One Specific Depot",
       "ALL_INVENTORIES": "All Inventories",

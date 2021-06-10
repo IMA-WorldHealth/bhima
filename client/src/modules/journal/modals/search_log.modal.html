@@ -1,0 +1,94 @@
+<form
+  name="ModalForm"
+  ng-submit="ModalCtrl.submit(ModalForm)"
+  data-modal="journal-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>POSTING_JOURNAL.LOG</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="padding : 0px;">
+    <uib-tabset>
+      <uib-tab index="0" data-custom-filter-tab heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}">
+        <div class="tab-body">
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.trans_id.$invalid }">
+          <label class="control-label" translate>
+            FORM.LABELS.TRANSACTION
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('trans_id')"></bh-clear>
+          <input type="text" class="form-control" name="trans_id" ng-model="ModalCtrl.searchQueries.trans_id">
+          <div class="help-block" ng-messages="ModalForm.trans_id.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrRecord.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.RECORD</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrRecord')"></bh-clear>
+          <input type="text" class="form-control" name="hrRecord" ng-model="ModalCtrl.searchQueries.hrRecord">
+          <div class="help-block" ng-messages="ModalForm.hrRecord.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
+          <label class="control-label" translate>
+            FORM.LABELS.DESCRIPTION
+          </label>
+          <bh-clear on-clear="ModalCtrl.clear('description')"></bh-clear>
+          <textarea
+            class="form-control"
+            name="description"
+            ng-model="ModalCtrl.searchQueries.description"
+            rows="3">
+          </textarea>
+          <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <bh-user-select
+          user-id="ModalCtrl.searchQueries.user_id"
+          name="user_id"
+          on-select-callback="ModalCtrl.onSelectUser(user)">
+          <bh-clear on-clear="ModalCtrl.clear('user_id')"></bh-clear>
+        </bh-user-select>
+
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" data-default-filter-tab heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
+        <div class="tab-body">
+
+          <bh-period-select
+            default-period="{{ModalCtrl.filters.period}}"
+            on-select-callback="ModalCtrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" min="0" bh-integer bh-max-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

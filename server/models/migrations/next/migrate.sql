@@ -9,7 +9,6 @@ CREATE TABLE `inventory_tag` (
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
 /**
  * @author: jmcameron
  * @date: 2021-06-02

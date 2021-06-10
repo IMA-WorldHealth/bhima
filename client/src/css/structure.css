@@ -1088,3 +1088,9 @@ td.center {
   padding-right: 5px;
   text-rendering: auto;
 }
+
+/* Log Styles */
+.log-row {
+  border-bottom: 1px solid #efefef;
+  width: 100%;
+}
