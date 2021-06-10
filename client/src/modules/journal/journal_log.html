@@ -32,10 +32,10 @@
             <td><small ng-if="row.timestamp">{{ row.timestamp | date:'medium' }}</small></td>
             <td>
               <span ng-if="row.action === 'deleted'" class="text-danger text-uppercase text-bold" translate>
-                POSTING_JOURNAL.DELETING
+                POSTING_JOURNAL.DELETED_TRANSACTION
               </span>
               <span ng-if="row.action === 'edit'" class="text-primary text-uppercase text-bold" translate>
-                POSTING_JOURNAL.EDITING
+                POSTING_JOURNAL.EDITED_TRANSACTION
               </span>
             </td>
             <td>
