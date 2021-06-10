@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('journal', {
         url         : '/journal',
@@ -10,9 +10,17 @@ angular.module('bhima.routes')
           scrollTo : null,
         },
       })
+      .state('journal_log', {
+        url         : '/journal/log',
+        controller  : 'JournalLogController as JournalLogCtrl',
+        templateUrl : 'modules/journal/journal_log.html',
+        params : {
+          filters : [],
+        },
+      })
       .state('TrialBalanceModal', {
         parent  : 'journal',
-        onEnter : ['$state', '$uibModal', function ($state, Modal) {
+        onEnter : ['$state', '$uibModal', ($state, Modal) => {
           Modal.open({
             size        : 'lg',
             controller  : 'TrialBalanceController as TrialBalanceCtrl',
@@ -21,7 +29,7 @@ angular.module('bhima.routes')
             backdrop    : 'static',
           });
         }],
-        onExit : ['$uibModalStack', function (ModalStack) {
+        onExit : ['$uibModalStack', (ModalStack) => {
           ModalStack.dismissAll();
         }],
       })

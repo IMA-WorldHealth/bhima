@@ -329,10 +329,6 @@ function safelyDeleteInvoice(guid) {
     DELETE FROM invoice WHERE uuid = ?;
   `;
 
-  const DELETE_TRANSACTION_HISTORY = `
-    DELETE FROM transaction_history WHERE record_uuid = ?;
-  `;
-
   const DELETE_DOCUMENT_MAP = `
     DELETE FROM document_map WHERE uuid = ?;
   `;
@@ -344,7 +340,6 @@ function safelyDeleteInvoice(guid) {
 
       transaction
         .addQuery(DELETE_TRANSACTION, binaryUuid)
-        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
         .addQuery(DELETE_INVOICE, binaryUuid)
         .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 

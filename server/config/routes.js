@@ -264,6 +264,7 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
+  app.get('/journal/log', journal.log);
 
   // API for trial balance
   app.post('/journal/trialbalance', trialBalance.runTrialBalance);

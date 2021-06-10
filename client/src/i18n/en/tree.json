@@ -169,6 +169,7 @@
     "VOUCHER_REGISTRY" : "Voucher Registry",
     "WARD" : "Ward Management",
     "WARD_CONFIGURATION" : "Settings",
-    "WEEKEND_CONFIGURATION" : "Weekend Configuration"
+    "WEEKEND_CONFIGURATION" : "Weekend Configuration",
+    "JOURNAL_LOG":"Journal Log"
   }
 }

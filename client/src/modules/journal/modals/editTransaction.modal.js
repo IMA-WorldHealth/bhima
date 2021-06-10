@@ -205,7 +205,6 @@ function JournalEditTransactionController(
     vm.gridOptions.data = vm.rows.data;
   }
 
-
   function verifyEditableTransaction(transaction) {
     const { posted } = transaction[0];
 
@@ -283,7 +282,6 @@ function JournalEditTransactionController(
       vm.validation.message = offlineErrors;
       return;
     }
-
 
     // building object to conform to legacy API
     // @FIXME(sfount) update journal service API for human readable interface
