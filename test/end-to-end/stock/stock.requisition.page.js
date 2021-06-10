@@ -80,6 +80,12 @@ function StockRequisitionPage() {
     await components.notification.hasSuccess();
   };
 
+  page.updateRequisition = async (row = 0) => {
+    const cell = await GU.getCell(gridId, row, 7);
+    await cell.$('[data-method=action]').click();
+    await $('[data-method=edit-record]').click();
+  };
+
   page.changeStatus = async (row = 0, status) => {
     const cell = await GU.getCell(gridId, row, 7);
     await cell.$('[data-method=action]').click();
