@@ -1,7 +1,6 @@
 DELIMITER $$
 CREATE PROCEDURE superUserRole(IN user_id INT)
 BEGIN
-
     DECLARE roleUUID BINARY(16);
 
     SET roleUUID = HUID(UUID());

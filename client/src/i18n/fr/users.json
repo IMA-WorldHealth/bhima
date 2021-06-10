@@ -24,7 +24,8 @@
       "DELETE_INVOICE" : "Supprimer les factures",
       "DELETE_PURCHASE_ORDER" : "Supprimer les ordres d'achat",
       "DELETE_STOCK_MOVEMENT" : "Supprimer les mouvements de stock",
-      "DELETE_VOUCHER" : "Supprimer les bordereaux"
+      "DELETE_VOUCHER" : "Supprimer les bordereaux",
+      "EDIT_LOT" : "Modifier les informations sur le lot"
     }
   }
 }
