@@ -9,7 +9,7 @@ const {
  * This method builds the aggregated stock consumption report as either a
  * JSON, PDF, or HTML file to be sent to the client.
  *
- * GET /reports/stock/aggreated_consumption
+ * GET /reports/stock/aggregated_consumption
  */
 function stockAggregatedConsumptionReport(req, res, next) {
   reporting(req.query, req.session).then(result => {
@@ -35,12 +35,13 @@ async function reporting(_options, session) {
   data.inventoryGroupUuid = options.inventoryGroupUuid;
   data.inventoryGroupName = null;
   if (data.inventoryGroupUuid) {
-    const gnameQuery = `SELECT name FROM inventory_group WHERE uuid = 0x${data.inventoryGroupUuid}`;
-    const result = await db.one(gnameQuery);
+    const gnameQuery = `SELECT name FROM inventory_group WHERE uuid = ?`;
+    const result = await db.one(gnameQuery, db.bid(data.inventoryGroupUuid));
     data.inventoryGroupName = result.name;
   }
 
-  const WhereInvGroup = options.inventoryGroupUuid ? `AND inv.group_uuid = 0x${options.inventoryGroupUuid}` : '';
+  const WhereInvGroup = options.inventoryGroupUuid
+    ? `AND inv.group_uuid = HUID(${db.escape(options.inventoryGroupUuid)})` : '';
 
   // Get the aggregated stock consumption for both service and patients
   const sqlCombined = `
