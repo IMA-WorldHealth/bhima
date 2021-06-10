@@ -82,7 +82,6 @@ function ActionRequisitionModalController(
 
     Stock.stockRequisition.read(data.uuid)
       .then((requisionData) => {
-        console.log('requisitionData:', requisionData)
         requisionData.items.forEach((item, index) => {
           addItem(1, {
             _initialised : true,
