@@ -1,6 +1,7 @@
 const {
   _, ReportManager, Stock, db, barcode, NotFound, pdf, identifiers,
   STOCK_EXIT_SERVICE_TEMPLATE, POS_STOCK_EXIT_SERVICE_TEMPLATE,
+  getVoucherReferenceForStockMovement,
 } = require('../common');
 
 /**
@@ -10,9 +11,10 @@ const {
  * This method builds the stock inventory report as either a JSON, PDF, or HTML
  * file to be sent to the client.
  */
-function stockExitServiceReceipt(documentUuid, session, options) {
+async function stockExitServiceReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_SERVICE' });
+  const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   let template = STOCK_EXIT_SERVICE_TEMPLATE;
 
@@ -47,31 +49,38 @@ function stockExitServiceReceipt(documentUuid, session, options) {
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_SERVICE} AND m.document_uuid = ?
   `;
 
-  return db.exec(sql, [db.bid(documentUuid)])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound('document not found');
-      }
-      const line = rows[0];
-      const { key } = identifiers.STOCK_EXIT;
-      data.enterprise = session.enterprise;
+  const results = await Promise.all([
+    db.exec(sql, [db.bid(documentUuid)]),
+    getVoucherReferenceForStockMovement(documentUuid),
+  ]);
 
-      data.details = {
-        depot_name           : line.depot_name,
-        service_display_name : line.service_display_name,
-        user_display_name    : line.user_display_name,
-        description          : line.description,
-        date                 : line.date,
-        document_uuid        : line.document_uuid,
-        document_reference   : line.document_reference,
-        barcode : barcode.generate(key, line.document_uuid),
-        document_requisition : line.document_requisition,
-      };
+  const rows = results[0];
+  const voucherReference = results[1][0] ? results[1][0].voucher_reference : null;
 
-      data.rows = rows;
+  if (!rows.length) {
+    throw new NotFound('document not found');
+  }
+  const line = rows[0];
+  const { key } = identifiers.STOCK_EXIT;
+  data.enterprise = session.enterprise;
 
-      return report.render(data);
-    });
+  data.details = {
+    depot_name           : line.depot_name,
+    service_display_name : line.service_display_name,
+    user_display_name    : line.user_display_name,
+    description          : line.description,
+    date                 : line.date,
+    document_uuid        : line.document_uuid,
+    document_reference   : line.document_reference,
+    barcode : barcode.generate(key, line.document_uuid),
+    document_requisition : line.document_requisition,
+    voucher_reference    : voucherReference,
+    autoStockAccountingEnabled,
+  };
+
+  data.rows = rows;
+
+  return report.render(data);
 }
 
 module.exports = stockExitServiceReceipt;
