@@ -13,6 +13,15 @@
 <p style="margin-top: 0px">
   <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{details.depot_name}}</strong> <br>
   <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span> : <strong>{{details.document_reference}}</strong> <br>
+  {{#if details.autoStockAccountingEnabled}}
+    <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+    {{#if details.voucher_reference}}
+      <strong>{{details.voucher_reference}}</strong>
+    {{else}}
+      <i>{{translate 'STOCK.DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP'}}</i>
+    {{/if}}
+    <br>
+  {{/if}}
   {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.user_display_name}}
 </p>
 

@@ -1,6 +1,7 @@
 {
   "STOCK" : {
     "ALERT" : "Alert",
+    "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"Does not exist because the movement of stock was made before the implementation of stock accounting",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
     "AGGREGATED_STOCK_CONSUMPTION": {

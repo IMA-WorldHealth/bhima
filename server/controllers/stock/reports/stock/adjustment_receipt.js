@@ -11,6 +11,7 @@ const {
  */
 async function stockAdjustmentReceipt(documentUuid, session, options) {
   const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.ADJUSTMENT' });
+  const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   const FLUX_TYPE = [
     Stock.flux.FROM_ADJUSTMENT,
@@ -72,6 +73,7 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
     document_reference : line.document_reference,
     barcode : barcode.generate(key, line.document_uuid),
     voucher_reference : voucherReference,
+    autoStockAccountingEnabled,
   };
 
   data.rows = rows;

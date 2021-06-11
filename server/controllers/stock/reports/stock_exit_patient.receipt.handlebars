@@ -28,8 +28,14 @@
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{details.document_reference}}</strong> <br>
 
-        {{#if details.voucher_reference}}
-          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: <strong>{{details.voucher_reference}}</strong> <br>
+        {{#if details.autoStockAccountingEnabled}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+          {{#if details.voucher_reference}}
+            <strong>{{details.voucher_reference}}</strong>
+          {{else}}
+            <i>{{translate 'STOCK.DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP'}}</i>
+          {{/if}}
+          <br>
         {{/if}}
 
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
