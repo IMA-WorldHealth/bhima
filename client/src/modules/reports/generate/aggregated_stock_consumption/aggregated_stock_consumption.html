@@ -24,6 +24,12 @@
 
         <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
+          <bh-depot-select
+            depot-uuid="ReportConfigCtrl.depot_uuid"
+            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)">
+            <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
+
           <bh-date-interval
             date-from="ReportConfigCtrl.dateFrom"
             date-to="ReportConfigCtrl.dateTo"

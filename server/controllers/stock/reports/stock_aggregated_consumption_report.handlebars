@@ -12,6 +12,11 @@
         <h2 class="text-center text-uppercase">
           {{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'}}
         </h2>
+        {{#if depotName}}
+        <h2 class="text-center">
+          {{depotName}}
+        </h2>
+        {{/if}}
         {{#if inventoryGroupName}}
         <h2 class="text-center">
           {{inventoryGroupName}}

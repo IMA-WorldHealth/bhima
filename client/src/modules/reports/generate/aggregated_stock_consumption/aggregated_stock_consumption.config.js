@@ -19,7 +19,10 @@ function StockAggregatedConsumptionConfigController($sce, Notify, SavedReports,
   // check cached configuration
   checkCachedConfiguration();
 
-  // custom filter group_uuid - assign the value to the params object
+  vm.onSelectDepot = (depot) => {
+    vm.depot_uuid = depot.uuid;
+  };
+
   vm.onSelectGroup = (group) => {
     vm.group_uuid = group.uuid;
   };
@@ -38,6 +41,7 @@ function StockAggregatedConsumptionConfigController($sce, Notify, SavedReports,
       dateFrom : vm.dateFrom,
       dateTo : vm.dateTo,
       inventoryGroupUuid : vm.group_uuid,
+      depotUuid : vm.depot_uuid,
     };
     cache.reportDetails = angular.copy(params);
     params.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD');

@@ -32,6 +32,16 @@ async function reporting(_options, session) {
   const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options.params;
   data.dateFrom = options.dateFrom;
   data.dateTo = options.dateTo;
+
+  data.depotUuid = options.depotUuid;
+  data.depotName = null;
+  if (data.depotUuid) {
+    const depotQuery = `SELECT text FROM depot WHERE uuid = ?`;
+    const result = await db.one(depotQuery, db.bid(data.depotUuid));
+    data.depotName = result.text;
+    console.log("D: ", data.depotName);
+  }
+
   data.inventoryGroupUuid = options.inventoryGroupUuid;
   data.inventoryGroupName = null;
   if (data.inventoryGroupUuid) {
@@ -40,8 +50,11 @@ async function reporting(_options, session) {
     data.inventoryGroupName = result.name;
   }
 
+  const WhereDepot = options.depotUuid
+    ? ` AND sm.depot_uuid = HUID(${db.escape(options.depotUuid)})` : '';
+
   const WhereInvGroup = options.inventoryGroupUuid
-    ? `AND inv.group_uuid = HUID(${db.escape(options.inventoryGroupUuid)})` : '';
+    ? ` AND inv.group_uuid = HUID(${db.escape(options.inventoryGroupUuid)})` : '';
 
   // Get the aggregated stock consumption for both service and patients
   const sqlCombined = `
@@ -58,7 +71,8 @@ async function reporting(_options, session) {
       JOIN lot AS l ON l.uuid = sm.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
       WHERE DATE(sm.date) BETWEEN DATE(?) AND DATE(?) AND
-            sm.flux_id IN (${TO_PATIENT}, ${TO_SERVICE}) ${WhereInvGroup}
+            sm.flux_id IN (${TO_PATIENT}, ${TO_SERVICE}) AND
+            sm.is_exit=1 ${WhereDepot} ${WhereInvGroup}
      ) AS mov
     GROUP BY mov.inventory_uuid
     ORDER BY mov.text ASC;
@@ -83,7 +97,8 @@ async function reporting(_options, session) {
       JOIN lot AS l ON l.uuid = sm.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
       WHERE DATE(sm.date) BETWEEN DATE(?) AND DATE(?) AND
-            sm.flux_id=${TO_PATIENT} ${WhereInvGroup}
+            sm.flux_id=${TO_PATIENT} AND
+            sm.is_exit=1 ${WhereDepot} ${WhereInvGroup}
     ) AS mov
     GROUP BY mov.inventory_uuid
     ORDER BY mov.text ASC;
