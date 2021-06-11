@@ -39,7 +39,6 @@ async function reporting(_options, session) {
     const depotQuery = `SELECT text FROM depot WHERE uuid = ?`;
     const result = await db.one(depotQuery, db.bid(data.depotUuid));
     data.depotName = result.text;
-    console.log("D: ", data.depotName);
   }
 
   data.inventoryGroupUuid = options.inventoryGroupUuid;
