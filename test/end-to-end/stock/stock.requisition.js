@@ -143,6 +143,24 @@ function StockRequisitionTests() {
     await page.expectRowCount(0);
   });
 
+  it('Update stock requisition', async () => {
+    await SearchModal.open();
+    await modal.reset();
+    await modal.setReference(REFERENCES[1]);
+    await modal.submit();
+    await page.updateRequisition(0);
+
+    await modal.setRequestor(DEPOT_SECONDAIRE, 'depot');
+
+    await page.setDepot(DEPOT_TERTIAIRE);
+    await page.setDescription(`Update the Requisition: ${REFERENCES[1]}`);
+
+    await page.setRows(2);
+    await page.addItem(2, 'Polyvidone iodée, 10%, 200ml, flacon, Unité', 4);
+    await page.addItem(3, 'Boîtiers pour lames 5 places', 12);
+    await page.submit();
+  });
+
   it('Remove stock requisition', async () => {
     await SearchModal.open();
     await modal.reset();
