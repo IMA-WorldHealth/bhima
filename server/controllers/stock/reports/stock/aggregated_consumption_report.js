@@ -58,7 +58,7 @@ async function reporting(_options, session) {
   // Get the aggregated stock consumption for both service and patients
   const sqlCombined = `
     SELECT
-      mov.code, mov.inventory_name, mov.depot_name,
+      mov.depot_name, mov.code, mov.inventory_name,
       MIN(mov.quantity) AS min_quantity,
       MAX(mov.quantity) AS max_quantity,
       SUM(mov.quantity) AS quantity,

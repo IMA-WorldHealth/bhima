@@ -35,12 +35,10 @@
             <tr style="background-color:#ddd;">
               <th style="border-bottom: 0;"></th>
               <th style="border-bottom: 0;"></th>
-              <th style="border-bottom: 0;"></th>
               <th class="text-center" colspan=5>{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.DISTRIBUTED_TO'}}</th>
               <th class="text-center" colspan=4>{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.DISTRIBUTED_TO_PATIENTS'}}</th>
             </tr>
             <tr style="background-color:#ddd;">
-              <th>{{translate 'Depot???'}}</th>
               <th class="text-center">{{translate 'STOCK.CODE'}}</th>
               <th>{{translate 'FORM.LABELS.DESIGNATION'}}</th>
               <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.NUMBER_DISTRIBUTIONS'}}</th>
@@ -56,10 +54,10 @@
           </thead>
           <tbody>
             {{!-- for each depot --}}
+            {{#each depots as | items depot_name |}}
 
               <!-- depot group header -->
-              <!--
-              <tr style="border:none; background-color:#eee ;">
+              <tr style="border:none; background-color:#eee;">
                 <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase" colspan="7">
                   {{ depot_name }}
                 </th>
@@ -68,11 +66,10 @@
                   ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
                 </th>
               </tr>
-              -->
 
-              {{#each aggregatedValues}}
+              <!-- the items for this depot -->
+              {{#each items}}
               <tr>
-                <td>{{depot_name}}</td>
                 <td class="text-right">{{code}}</td>
                 <td>{{inventory_name}}</td>
                 <td class="text-right">{{num_distributions}}</td>
@@ -88,7 +85,7 @@
               {{else}}
                 {{> emptyTable columns=11}}
               {{/each}}
-
+            {{/each}}
           </tbody>
         </table>
         {{#if aggregatedValues}}
