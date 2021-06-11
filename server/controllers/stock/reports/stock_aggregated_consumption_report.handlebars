@@ -1,0 +1,79 @@
+{{> head title="REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- page title  -->
+        <h2 class="text-center text-uppercase">
+          {{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'}}
+        </h2>
+        {{#if depotName}}
+        <h2 class="text-center">
+          {{depotName}}
+        </h2>
+        {{/if}}
+        {{#if inventoryGroupName}}
+        <h2 class="text-center">
+          {{inventoryGroupName}}
+        </h2>
+        {{/if}}
+
+        <h3 class="text-center">
+          {{#if depot.text}}{{depot.text}}{{/if}}
+        </h3>
+
+        <h4 class="text-center">
+          {{date dateFrom}} - {{date dateTo}}
+        </h4>
+
+        <br>
+
+        <!-- list of data  -->
+        <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color:#ddd;">
+              <th class="text-center">{{translate 'STOCK.CODE'}}</th>
+              <th class="text-center">{{translate 'FORM.LABELS.DESIGNATION'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.NUMBER_DISTRIBUTIONS'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.MIN_QUANTITY_DISTRIBUTED'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.MAX_QUANTITY_DISTRIBUTED'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.AVG_QUANTITY_DISTRIBUTED'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TOTAL_QUANTITY_DISTRIBUTED'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.NUM_DISTRIBUTIONS_TO_PATIENTS'}}</th>
+              <th class="text-center">{{translate 'TABLE.AGGREGATES.NUM_PATIENTS'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.QUANTITY_DISTRIBUTED_TO_PATIENTS'}}</th>
+              <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.AVG_DISTRIBUTION_PER_PATIENT'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each aggregatedValues}}
+            <tr>
+              <td class="text-right">{{code}}</td>
+              <td>{{inventory_name}}</td>
+              <td class="text-right">{{num_distributions}}</td>
+              <td class="text-right">{{min_quantity}}</td>
+              <td class="text-right">{{max_quantity}}</td>
+              <td class="text-right">{{avg_distribution}}</td>
+              <td class="text-right">{{quantity}}</td>
+              <td class="text-right">{{num_distributions_patients}}</td>
+              <td class="text-right">{{num_patients}}</td>
+              <td class="text-right">{{quantity_patients}}</td>
+              <td class="text-right">{{avg_distribution_per_patient}}</td>
+            </tr>
+            {{else}}
+              {{> emptyTable columns=11}}
+            {{/each}}
+          </tbody>
+        </table>
+        {{#if aggregatedValues}}
+        <p class="text-left">{{aggregatedValues.length}} {{translate 'FORM.INFO.FOUND'}}</p>
+        {{/if}}
+        </div>
+    </div>
+  </div>
+</body>

@@ -13,6 +13,18 @@
       "TITLE" : "Balance Âgée des Conventionnés",
       "DESCRIPTION" : "Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
+    "AGGREGATED_STOCK_CONSUMPTION": {
+      "TITLE": "Consommation de stocks agrégés",
+      "DESCRIPTION": "Ce rapport donne un résumé agrégé de la répartition du stock par distribution et par patient",
+      "NUMBER_DISTRIBUTIONS": "Nb distributions",
+      "MIN_QUANTITY_DISTRIBUTED": "Quantité min. distribuée",
+      "MAX_QUANTITY_DISTRIBUTED": "Quantité max. distribuée",
+      "AVG_QUANTITY_DISTRIBUTED": "Quantité moyenne distribuée",
+      "TOTAL_QUANTITY_DISTRIBUTED": "Quantité totale distribuée",
+      "NUM_DISTRIBUTIONS_TO_PATIENTS": "Nb distributions aux patients",
+      "QUANTITY_DISTRIBUTED_TO_PATIENTS": "Quantité distribuée aux patients",
+      "AVG_DISTRIBUTION_PER_PATIENT": "Distribution moyenne par patient"
+    },
     "ANALYSIS_AUX_CASHBOXES": {
       "TITLE": "Analyse des caisses auxiliaires",
       "AUXILIARY_TRANSFERT": "Caisse auxiliaire vers compte de transfert",
