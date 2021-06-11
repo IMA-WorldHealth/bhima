@@ -15,7 +15,7 @@
     },
     "AGGREGATED_STOCK_CONSUMPTION": {
       "TITLE": "Consommation de stocks agrégés",
-      "DESCRIPTION": "Ce rapport donne un résumé agrégé de la répartition du stock par distribution et par patient",
+      "DESCRIPTION": "Ce rapport donne un résumé agrégé de la répartition du stock par distribution du stock aux services et aux patients",
       "NUMBER_DISTRIBUTIONS": "Nb distributions",
       "MIN_QUANTITY_DISTRIBUTED": "Quantité min. distribuée",
       "MAX_QUANTITY_DISTRIBUTED": "Quantité max. distribuée",
