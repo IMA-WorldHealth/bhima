@@ -12,11 +12,7 @@
         <h2 class="text-center text-uppercase">
           {{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'}}
         </h2>
-        {{#if depotName}}
-        <h2 class="text-center">
-          {{depotName}}
-        </h2>
-        {{/if}}
+
         {{#if inventoryGroupName}}
         <h2 class="text-center">
           {{inventoryGroupName}}
@@ -44,7 +40,7 @@
             </tr>
             <tr style="background-color:#ddd;">
               <th class="text-center">{{translate 'STOCK.CODE'}}</th>
-              <th class="text-center">{{translate 'FORM.LABELS.DESIGNATION'}}</th>
+              <th>{{translate 'FORM.LABELS.DESIGNATION'}}</th>
               <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.NUMBER_DISTRIBUTIONS'}}</th>
               <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.MIN_QUANTITY_DISTRIBUTED'}}</th>
               <th class="text-center">{{translate 'REPORT.AGGREGATED_STOCK_CONSUMPTION.MAX_QUANTITY_DISTRIBUTED'}}</th>
@@ -57,27 +53,42 @@
             </tr>
           </thead>
           <tbody>
-            {{#each aggregatedValues}}
-            <tr>
-              <td class="text-right">{{code}}</td>
-              <td>{{inventory_name}}</td>
-              <td class="text-right">{{num_distributions}}</td>
-              <td class="text-right">{{min_quantity}}</td>
-              <td class="text-right">{{max_quantity}}</td>
-              <td class="text-right">{{avg_distribution}}</td>
-              <td class="text-right">{{quantity}}</td>
-              <td class="text-right">{{num_distributions_patients}}</td>
-              <td class="text-right">{{num_patients}}</td>
-              <td class="text-right">{{quantity_patients}}</td>
-              <td class="text-right">{{avg_distribution_per_patient}}</td>
-            </tr>
-            {{else}}
-              {{> emptyTable columns=11}}
+            {{!-- for each depot --}}
+            {{#each depots as | items depot_name |}}
+
+              <!-- depot group header -->
+              <tr style="border:none; background-color:#eee ;">
+                <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase" colspan="7">
+                  {{ depot_name }}
+                </th>
+
+                <th colspan="4" style="border:none; border-bottom: solid black 2px;" class="text-right">
+                  ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
+                </th>
+              </tr>
+
+              {{#each items}}
+              <tr>
+                <td class="text-right">{{code}}</td>
+                <td>{{inventory_name}}</td>
+                <td class="text-right">{{num_distributions}}</td>
+                <td class="text-right">{{min_quantity}}</td>
+                <td class="text-right">{{max_quantity}}</td>
+                <td class="text-right">{{avg_distribution}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{num_distributions_patients}}</td>
+                <td class="text-right">{{num_patients}}</td>
+                <td class="text-right">{{quantity_patients}}</td>
+                <td class="text-right">{{avg_distribution_per_patient}}</td>
+              </tr>
+              {{else}}
+                {{> emptyTable columns=11}}
+              {{/each}}
             {{/each}}
           </tbody>
         </table>
         {{#if aggregatedValues}}
-        <p class="text-left">{{aggregatedValues.length}} {{translate 'FORM.INFO.FOUND'}}</p>
+        <p class="text-left">{{aggregatedValues.length}} {{translate 'TABLE.AGGREGATES.RECORDS'}}</p>
         {{/if}}
         </div>
     </div>

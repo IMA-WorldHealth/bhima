@@ -58,23 +58,25 @@ async function reporting(_options, session) {
   // Get the aggregated stock consumption for both service and patients
   const sqlCombined = `
     SELECT
-      mov.code, mov.text AS inventory_name,
+      mov.code, mov.inventory_name, mov.depot_name,
       MIN(mov.quantity) AS min_quantity,
       MAX(mov.quantity) AS max_quantity,
       SUM(mov.quantity) AS quantity,
       COUNT(DISTINCT(mov.sm_uuid)) AS num_distributions
     FROM (
-      SELECT inv.uuid AS inventory_uuid, inv.text, inv.code,
-             sm.uuid as sm_uuid, sm.quantity, sm.entity_uuid, sm.date
+      SELECT inv.uuid AS inventory_uuid, inv.text as inventory_name, inv.code,
+             sm.uuid as sm_uuid, sm.quantity, sm.entity_uuid, sm.date,
+             dep.text as depot_name
       FROM stock_movement AS sm
       JOIN lot AS l ON l.uuid = sm.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+      JOIN depot as dep ON dep.uuid = sm.depot_uuid
       WHERE DATE(sm.date) BETWEEN DATE(?) AND DATE(?) AND
             sm.flux_id IN (${TO_PATIENT}, ${TO_SERVICE}) AND
             sm.is_exit=1 ${WhereDepot} ${WhereInvGroup}
      ) AS mov
     GROUP BY mov.inventory_uuid
-    ORDER BY mov.text ASC;
+    ORDER BY mov.depot_name, mov.inventory_name ASC;
     `;
 
   // Get the aggregated stock distributions to either patients or services
@@ -83,14 +85,14 @@ async function reporting(_options, session) {
   // Get the aggregated stock consumption for patients
   const sqlPatients = `
     SELECT
-      mov.code, mov.text AS inventory_name,
+      mov.code, mov.inventory_name,
       MIN(mov.quantity) AS min_quantity_patients,
       MAX(mov.quantity) AS max_quantity_patients,
       SUM(mov.quantity) AS quantity_patients,
       COUNT(DISTINCT(mov.sm_uuid)) AS num_distributions_patients,
       COUNT(DISTINCT(mov.entity_uuid)) AS num_patients
     FROM (
-      SELECT inv.uuid AS inventory_uuid, inv.text, inv.code,
+      SELECT inv.uuid AS inventory_uuid, inv.text as inventory_name, inv.code,
              sm.uuid as sm_uuid, sm.quantity, sm.entity_uuid, sm.date
       FROM stock_movement AS sm
       JOIN lot AS l ON l.uuid = sm.lot_uuid
@@ -100,13 +102,13 @@ async function reporting(_options, session) {
             sm.is_exit=1 ${WhereDepot} ${WhereInvGroup}
     ) AS mov
     GROUP BY mov.inventory_uuid
-    ORDER BY mov.text ASC;
+    ORDER BY mov.inventory_name ASC;
   `;
 
   // Get the aggregated stock distributions to patients
   const patientValues = await db.exec(sqlPatients, [options.dateFrom, options.dateTo]);
 
-  // Add in the patient data
+  // Add in the patient data to the row
   aggregatedValues.forEach(dist => {
     const patData = patientValues.find(row => row.code === dist.code);
     if (patData) {
@@ -120,11 +122,24 @@ async function reporting(_options, session) {
     }
   });
 
+  // group by depot
+  const groupedDepots = _.groupBy(aggregatedValues, d => d.depot_name);
+  const depots = {};
+
+  Object.keys(groupedDepots).sort(compare).forEach(d => {
+    depots[d] = _.sortBy(groupedDepots[d], line => String(line.depot_name).toLocaleLowerCase());
+  });
+
+  data.depots = depots || [];
   data.aggregatedValues = aggregatedValues || [];
 
   data.emptyResult = data.aggregatedValues.length === 0;
 
   return report.render(data);
+}
+
+function compare(a, b) {
+  return a.localeCompare(b);
 }
 
 module.exports = stockAggregatedConsumptionReport;
