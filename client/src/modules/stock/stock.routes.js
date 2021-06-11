@@ -102,6 +102,14 @@ angular.module('bhima.routes')
         params : { depot : null },
         onExit : ['$uibModalStack', closeModals],
       })
+      .state('stockRequisition.edit', {
+        url : '/:uuid/edit',
+        params : {
+          uuid : { value : null },
+        },
+        onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('edit', 'stockRequisition')],
+        onExit : ['$uibModalStack', closeModals],
+      })
 
       .state('stockSetting', {
         url         : '/stock/setting',

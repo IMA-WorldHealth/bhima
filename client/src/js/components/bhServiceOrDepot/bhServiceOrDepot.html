@@ -31,6 +31,7 @@
   <!-- service  -->
   <div ng-if="$ctrl.requestorType.type_key === 'service'">
     <bh-service-select
+      service-uuid="$ctrl.uuid"
       label="REQUISITION.SERVICE_REQUESTOR"
       on-select-callback="$ctrl.onSelectRequestor(service)"
       required="true">
