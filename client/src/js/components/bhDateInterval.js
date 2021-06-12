@@ -132,6 +132,7 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
   function clear() {
     delete $ctrl.dateFrom;
     delete $ctrl.dateTo;
+    delete $ctrl.selected;
   }
 
   function startup() {
