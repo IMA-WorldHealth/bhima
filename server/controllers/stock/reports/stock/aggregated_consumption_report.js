@@ -76,7 +76,7 @@ async function reporting(_options, session) {
   const accumulatedResults = [];
 
   // Loop through the depots and accumulate the results
-  await depotUuids.reduce(async (memo, depot_uuid) => {
+  await depotUuids.reduce(async (memo, depotUuid) => {
     await memo;
 
     // Get the aggregated stock consumption for both service and patients
@@ -104,7 +104,7 @@ async function reporting(_options, session) {
     `;
 
     // Get the aggregated stock distributions to either patients or services
-    const aggregatedValues = await db.exec(sqlCombined, [data.dateFrom, data.dateTo, depot_uuid]);
+    const aggregatedValues = await db.exec(sqlCombined, [data.dateFrom, data.dateTo, depotUuid]);
 
     // Get the aggregated stock consumption for patients
     const sqlPatients = `
@@ -131,7 +131,7 @@ async function reporting(_options, session) {
   `;
 
     // Get the aggregated stock distributions to patients
-    const patientValues = await db.exec(sqlPatients, [options.dateFrom, options.dateTo, depot_uuid]);
+    const patientValues = await db.exec(sqlPatients, [options.dateFrom, options.dateTo, depotUuid]);
 
     // Add in the patient data to the row for each distribution to patients
     await aggregatedValues.forEach(dist => {
