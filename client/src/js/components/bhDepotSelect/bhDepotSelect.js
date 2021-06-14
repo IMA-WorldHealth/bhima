@@ -23,20 +23,25 @@ function DepotSelectController(Depots, Notify) {
 
   $ctrl.$onInit = () => {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
-
     if ($ctrl.depotUuid) {
       if ($ctrl.depotUuid === '0') { return; }
-      Depots.read($ctrl.depotUuid)
-        .then(depot => {
-          $ctrl.depotText = depot.text;
-        })
-        .catch(Notify.handleError);
+      loadDepotByUuid($ctrl.depotUuid);
     }
   };
+
+  function loadDepotByUuid(uuid) {
+    Depots.read(uuid)
+      .then(depot => {
+        $ctrl.depotText = depot.text;
+      })
+      .catch(Notify.handleError);
+  }
 
   $ctrl.$onChanges = changes => {
     if (changes.depotUuid && changes.depotUuid.currentValue === undefined) {
       $ctrl.depotText = undefined;
+    } else if (changes.depotUuid && changes.depotUuid.currentValue) {
+      loadDepotByUuid(changes.depotUuid.currentValue);
     }
   };
 
@@ -44,6 +49,8 @@ function DepotSelectController(Depots, Notify) {
     if (!text) {
       return null;
     }
+
+    $ctrl.$loading = true;
 
     const options = {
       text : (text || '').toLowerCase(),

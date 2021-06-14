@@ -297,10 +297,6 @@ function safelyDeleteCashPayment(uuid) {
     DELETE FROM cash WHERE uuid = ?;
   `;
 
-  const DELETE_TRANSACTION_HISTORY = `
-    DELETE FROM transaction_history WHERE record_uuid = ?;
-  `;
-
   const DELETE_DOCUMENT_MAP = `
     DELETE FROM document_map WHERE uuid = ?;
   `;
@@ -312,7 +308,6 @@ function safelyDeleteCashPayment(uuid) {
 
       transaction
         .addQuery(DELETE_TRANSACTION, binaryUuid)
-        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
         .addQuery(DELETE_CASH_PAYMENT, binaryUuid)
         .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
 

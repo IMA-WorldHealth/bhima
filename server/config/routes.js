@@ -53,6 +53,7 @@ const multiplePayroll = require('../controllers/payroll/multiplePayroll');
 const multiplePayrollIndice = require('../controllers/payroll/multiplePayrollIndice');
 const staffingIndices = require('../controllers/payroll/staffingIndices');
 const staffingIndicesReport = require('../controllers/payroll/staffingIndices/report');
+
 // medical routes
 const patients = require('../controllers/medical/patients');
 const patientGroups = require('../controllers/medical/patientGroups');
@@ -263,6 +264,7 @@ exports.configure = function configure(app) {
   // API for journal
   app.get('/journal', journal.list);
   app.get('/journal/count', journal.count);
+  app.get('/journal/log', journal.log);
 
   // API for trial balance
   app.post('/journal/trialbalance', trialBalance.runTrialBalance);

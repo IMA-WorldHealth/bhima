@@ -21,6 +21,7 @@ INSERT IGNORE INTO `unit` VALUES
 (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE',
  'aggregated consumption', 282, '/reports/aggregated_stock_consumption');
 
+
 /**
  * @author: mbayopanda
  * @date: 2021-06-01

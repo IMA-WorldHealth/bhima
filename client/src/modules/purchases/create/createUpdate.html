@@ -210,10 +210,19 @@
               type="button"
               class="btn btn-default"
               ng-click="PurchaseCtrl.clear(PurchaseOrderForm)"
-              data-method="clear" translate>
+              data-method="clear"
+              ng-show="!PurchaseCtrl.isUpdateState"
+              translate>
               FORM.BUTTONS.CLEAR
             </button>
-            <p
+            <button
+              type="button"
+              class="btn btn-default"
+              ng-click="PurchaseCtrl.cancel()"
+              data-method="cancel">
+              <span ng-show="PurchaseCtrl.isUpdateState" translate>FORM.BUTTONS.CANCEL_EDIT</span>
+              <span ng-show="!PurchaseCtrl.isUpdateState" translate>FORM.BUTTONS.CANCEL</span>
+            </button>            <p
               class="text-danger"
               ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
               <span class="fa fa-exclamation-circle"></span>

@@ -9,6 +9,7 @@ function DepotModalController($state, Depots, Notify, Session, params) {
   const vm = this;
 
   vm.depot = {};
+
   vm.identifier = params.uuid;
   vm.isCreateState = params.isCreateState;
   vm.enable_strict_depot_distribution = Session.stock_settings.enable_strict_depot_distribution;
@@ -22,10 +23,24 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     vm.depot.parent_uuid = params.parentUuid;
   }
 
+  Depots.read()
+    .then(depots => {
+      vm.depots = depots;
+    })
+    .catch(Notify.handleError);
+
   if (!vm.isCreateState) {
     if (!vm.identifier) { return; }
     Depots.read(vm.identifier)
       .then(depot => {
+        depot.allowed_distribution_depots.forEach(depotDist => {
+          vm.depots.forEach(d => {
+            if (d.uuid === depotDist) {
+              d.checked = 1;
+            }
+          });
+        });
+
         vm.depot = depot;
 
         // make sure hasLocation is set
@@ -65,6 +80,12 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     if (depotForm.$invalid) {
       return 0;
     }
+
+    vm.depot.allowed_distribution_depots = [];
+
+    vm.depots.forEach(depot => {
+      if (depot.checked) vm.depot.allowed_distribution_depots.push(depot.uuid);
+    });
 
     Depots.clean(vm.depot);
 

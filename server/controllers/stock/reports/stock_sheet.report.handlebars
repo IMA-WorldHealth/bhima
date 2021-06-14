@@ -25,6 +25,12 @@
 
       <br>
 
+      {{#unless isEnterpriseCurrency}}
+        <div class="alert alert-warning">
+          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+        </div>
+      {{/unless}}
+
       <!-- list of data  -->
       <table class="table table-condensed table-report">
         <thead>
@@ -62,7 +68,7 @@
               <td style="border-left: 1px solid #000; border-right:1px solid #000; border-bottom: 1px solid #000;" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}} class="text-center"><b>{{translate 'REPORT.OPENING_BALANCE'}}</b></td>
               <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;"{{/unless}}><b>{{header.quantity}}</b></td>
               <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;"{{/unless}}><b>{{precision header.unit_cost 4}}</b></td>
-              <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}><b>{{currency header.value metadata.enterprise.currency_id}}</b></td>
+              <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}><b>{{currency header.value currencyId}}</b></td>
             </tr>
           {{/if}}
 
@@ -78,17 +84,17 @@
 
               {{!-- entry --}}
               <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td> <td class="text-right">{{#if entry.unit_cost}}{{precision entry.unit_cost 4}}{{/if}}</td>
-              <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../currencyId}}{{/if}}</td>
 
               {{!-- exit --}}
               <td class="text-right">{{#if exit.quantity}}{{exit.quantity}}{{/if}}</td>
               <td class="text-right">{{#if exit.unit_cost}}{{precision exit.unit_cost 4}}{{/if}}</td>
-              <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../metadata.enterprise.currency_id}}{{/if}}</td>
+              <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../currencyId}}{{/if}}</td>
 
               {{!-- stock --}}
               <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{stock.quantity}}</td>
               <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{precision stock.unit_cost 4}}</td>
-              <td class="text-right" style="{{#unless hasNegativeValues}}background-color:#efefef;{{/unless}} border-right: 1px solid #000;">{{currency stock.value ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right" style="{{#unless hasNegativeValues}}background-color:#efefef;{{/unless}} border-right: 1px solid #000;">{{currency stock.value ../currencyId}}</td>
             </tr>
           {{/each}}
         </tbody>
@@ -96,12 +102,12 @@
           <tr class="text-right" style="font-weight: bold; background-color: #efefef; border-top: 1px solid #000;">
             <th colspan={{#if depot.text}}"4"{{else}}"5"{{/if}}></th>
             <th class="text-right">{{totals.entry}}</th> <th></th>
-            <th class="text-right">{{currency totals.entryValue metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totals.entryValue currencyId}}</th>
             <th class="text-right">{{totals.exit}}</th> <th></th>
-            <th class="text-right">{{currency totals.exitValue metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency totals.exitValue currencyId}}</th>
             <th class="text-right">{{result.stock.quantity}}</th>
             <th class="text-right">{{precision result.stock.unit_cost 4}}</th>
-            <th class="text-right">{{currency result.stock.value metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{currency result.stock.value currencyId}}</th>
           </tr>
         </tfoot>
       </table>
