@@ -162,6 +162,7 @@ function StockAggregatedConsumptionController(
       aggregationType : uiGridConstants.aggregationTypes.sum,
       cellClass : 'text-right',
       headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_remain.tmpl.html',
       enableFiltering : false,
     }];
 
