@@ -2600,10 +2600,10 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-doc-path@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-3.0.0.tgz#b449e3f4a9d1938be7d334532b88462cfa00dc11"
-  integrity sha512-fafPInMvgvUfJ50OmoXOTHTfSiLKd7VgLh2CkLxfB56tVSPi6m+9VytjYtfqw+oM/2MNYaZM7FrNBvG6e0AHQg==
+doc-path@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/doc-path/-/doc-path-3.0.1.tgz#81c10f2f5b2178e59d8777f693b24d26e0e1f670"
+  integrity sha512-Z7yrgf71bNXFK7dHqanaJO6QOkDsIemcxQqEyhIVY/Jfcwm8mMmCHV/w7UZyr9NzTFFbo698TFiLc5exfHNvog==
 
 doctrine@^2.1.0:
   version "2.1.0"
@@ -5210,13 +5210,13 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.14.0:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.14.0.tgz#9d3a5e32a3174b1443c683f6101e5fff897a7817"
-  integrity sha512-gQygjulk3hS/SMrn9EdnCHnZ+SkrXniNd4igGteqgK5yBNRH99+gJ/H6HMXiX38xPzRRB5A6AJ01J+MonfbWJA==
+json-2-csv@^3.14.1:
+  version "3.14.1"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.14.1.tgz#87f7efb3d633bd6f486cf9f6597432574e6e4284"
+  integrity sha512-Nx84ZyolEOVoft43ztfzmC7fETUo/+6dDlKTLZXPd+hVYHP1YTeE/K6Axx4ipofwywpR6iwMLtKQ9EZwBYWD+A==
   dependencies:
     deeks "2.4.1"
-    doc-path "3.0.0"
+    doc-path "3.0.1"
 
 json-buffer@3.0.0:
   version "3.0.0"
