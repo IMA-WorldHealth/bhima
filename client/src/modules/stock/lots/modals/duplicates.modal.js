@@ -71,7 +71,7 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
 
     return Lots.merge(vm.selectedLot.uuid, lotsToMerge)
       .then(() => {
-        Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }));
+        Notify.success($translate.instant('LOTS.MERGED_N_LOTS', { N : lotsToMerge.length }), 4000);
         Instance.close('success');
       });
 
