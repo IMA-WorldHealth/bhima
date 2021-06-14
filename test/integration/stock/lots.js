@@ -11,8 +11,8 @@ describe('(/lots/) The lots HTTP API', () => {
         expect(res).to.have.status(200);
         const expectedKeys = [
           'uuid', 'label', 'quantity', 'unit_cost',
-          'description', 'entry_date', 'expiration_date', 'inventory_uuid',
-          'inventory_code', 'inventory_text', 'tags',
+          'entry_date', 'expiration_date', 'inventory_uuid',
+          'inventory_code', 'inventory_name', 'tags',
         ];
         expect(res.body).to.have.all.keys(expectedKeys);
       })
