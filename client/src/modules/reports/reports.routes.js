@@ -52,6 +52,7 @@ angular.module('bhima.routes')
       'stock_movement_report',
       'stock_expiration_report',
       'stock_changes',
+      'aggregated_stock_consumption',
       'rumer_report',
     ];
 
