@@ -16,6 +16,12 @@ function ActionRequisitionModalController(
   const store = new Store({ data : [] });
   const columns = [
     {
+      field : 'available',
+      displayName : '',
+      width : 25,
+      cellTemplate : 'modules/stock/requisition/templates/available.cell.html',
+    },
+    {
       field : 'inventory_uuid',
       displayName : 'FORM.LABELS.INVENTORY',
       headerCellFilter : 'translate',
@@ -59,9 +65,18 @@ function ActionRequisitionModalController(
   vm.configureItem = configureItem;
   vm.autoSuggestInventories = autoSuggestInventories;
   vm.cancel = cancel;
+  vm.checkInventoryAvailability = checkInventoryAvailability;
 
   vm.onSelectDepot = depot => {
     vm.model.depot_uuid = depot.uuid;
+
+    loadAvailableInventories()
+      .then(values => {
+        vm.supplierInventoriesQuantities = values.supplierInventoriesQuantities;
+        vm.availableSupplierInventories = values.availableSupplierInventories;
+        handleAvailability();
+      })
+      .catch(Notify.handleError);
   };
 
   vm.onDateChange = date => {
@@ -144,6 +159,55 @@ function ActionRequisitionModalController(
       .finally(toggleLoadingSuggest);
   }
 
+  function loadAvailableInventories() {
+    if (!vm.model.depot_uuid) { return {}; }
+
+    return Stock.inventories.read(null, {
+      depot_uuid : vm.model.depot_uuid,
+      includeEmptyLot : 0,
+      consumable : 1,
+    })
+      .then(inventories => {
+        vm.supplierInventoriesQuantities = {};
+        vm.availableSupplierInventories = inventories.map(i => {
+          vm.supplierInventoriesQuantities[i.inventory_uuid] = i.quantity;
+          return i.inventory_uuid;
+        });
+        return {
+          supplierInventoriesQuantities : vm.supplierInventoriesQuantities,
+          availableSupplierInventories : vm.availableSupplierInventories,
+        };
+      })
+      .catch(Notify.handleError);
+  }
+
+  function checkInventoryAvailability(inventory, currentQuantity) {
+    if (vm.model.depot_uuid) {
+      if (currentQuantity) {
+        inventory.quantity = currentQuantity;
+      }
+
+      const identifier = vm.enableAutoSuggest ? inventory.inventory_uuid : inventory.uuid;
+      const quantity = vm.enableAutoSuggest ? inventory.S_Q : inventory.quantity;
+
+      inventory.isAvailable = !!vm.availableSupplierInventories.includes(identifier);
+
+      if (inventory.isAvailable) {
+        inventory.isEnough = !!(vm.supplierInventoriesQuantities[identifier] >= quantity);
+      }
+    }
+
+    return inventory;
+  }
+
+  function handleAvailability() {
+    vm.toggleAvailability = true;
+
+    if (!vm.model.depot_uuid) { return; }
+
+    store.data.map(i => checkInventoryAvailability(i.inventory, i.quantity));
+  }
+
   function toggleLoadingSuggest() {
     vm.loadingSuggest = !vm.loadingSuggest;
   }
@@ -163,6 +227,16 @@ function ActionRequisitionModalController(
   }
 
   function startup() {
+    // load available supplier inventories if supplier depot defined
+    if (vm.model.depot_uuid) {
+      loadAvailableInventories()
+        .then(values => {
+          vm.supplierInventoriesQuantities = values.supplierInventoriesQuantities;
+          vm.availableSupplierInventories = values.availableSupplierInventories;
+        })
+        .catch(Notify.handleError);
+    }
+
     if (data.depot && data.depot.uuid) {
       const DEPOT_REQUESTOR_TYPE = 2;
       const { depot } = data;
@@ -187,6 +261,7 @@ function ActionRequisitionModalController(
       const row = { id : store.data.length };
 
       if (item) {
+        checkInventoryAvailability(item);
         item.label = item.text;
         row._initialised = true;
         row.inventory = item;
