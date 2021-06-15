@@ -6,6 +6,7 @@
       type="number"
       class="form-control text-right"
       ng-model="row.entity.quantity"
+      ng-change="grid.appScope.checkInventoryAvailability(row.entity.inventory, row.entity.quantity)"
       required>
   </div>
 </div>
