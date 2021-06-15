@@ -90,7 +90,7 @@ function StockAggregatedConsumptionController(
   const columns = [
     {
       field : 'text',
-      width : 500,
+      width : 350,
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       enableSorting : true,
@@ -132,20 +132,25 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'quantity_consumed',
+      width : '12%',
       displayName : 'STOCK.QUANTITY_CONSUMED',
+      headerToolTip : 'STOCK.QUANTITY_CONSUMED',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_consumed.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
       field : 'quantity_lost',
+      width : '10%',
       displayName : 'STOCK.QUANTITY_LOST',
+      headerToolTip : 'STOCK.QUANTITY_LOST',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_lost.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
     }, {
       field : 'days_stock_out',
+      width : '12%',
       displayName : 'STOCK.DAYS_OF_STOCK_OUT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
@@ -162,6 +167,7 @@ function StockAggregatedConsumptionController(
       aggregationType : uiGridConstants.aggregationTypes.sum,
       cellClass : 'text-right',
       headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/aggregated_consumption/templates/quantity_remain.tmpl.html',
       enableFiltering : false,
     }];
 
