@@ -132,7 +132,7 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'quantity_consumed',
-      width: '12%',
+      width : '12%',
       displayName : 'STOCK.QUANTITY_CONSUMED',
       headerToolTip : 'STOCK.QUANTITY_CONSUMED',
       headerCellFilter : 'translate',
@@ -141,7 +141,7 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'quantity_lost',
-      width: '10%',
+      width : '10%',
       displayName : 'STOCK.QUANTITY_LOST',
       headerToolTip : 'STOCK.QUANTITY_LOST',
       headerCellFilter : 'translate',
@@ -150,7 +150,7 @@ function StockAggregatedConsumptionController(
       enableFiltering : false,
     }, {
       field : 'days_stock_out',
-      width: '12%',
+      width : '12%',
       displayName : 'STOCK.DAYS_OF_STOCK_OUT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/aggregated_consumption/templates/days_stock_out.tmpl.html',
