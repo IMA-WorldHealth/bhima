@@ -42,8 +42,15 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this._ready = $q.defer();
 
     // set up the inventory
-    Inventory.read(null, { locked : 0, use_previous_price : 1 })
+    Inventory.read(null, { locked : 0 })
       .then((data) => {
+
+        // zero out price so that users don't automatically use the sale price.
+        data.forEach(row => {
+          row.price = 0;
+        });
+
+
         this.inventory.initialize('uuid', data);
 
         // FIXME(@jniles) - this is a hack. We should actually put a list() method on the
