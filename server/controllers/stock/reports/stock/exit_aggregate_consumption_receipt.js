@@ -13,6 +13,7 @@ const {
 async function stockExitAggregateConsumptionReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.AGGREGATE_CONSUMPTION' });
+  const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   // set up the report with report manager
   const report = new ReportManager(STOCK_AGGREGATE_CONSUMPTION_TEMPLATE, session, optionReport);
@@ -66,6 +67,7 @@ async function stockExitAggregateConsumptionReceipt(documentUuid, session, optio
     document_reference    : line.document_reference,
     barcode               : barcode.generate(key, line.document_uuid),
     voucher_reference     : voucherReference,
+    autoStockAccountingEnabled,
   };
 
   data.rows = rows;
