@@ -168,7 +168,7 @@
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
-    "karma": "^6.3.3",
+    "karma": "^6.3.4",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
