@@ -10,7 +10,7 @@ Ce guide vous permettra de vous familiariser avec bhima localement. Veuillez not
 
 Avant de commencer le processus d'installation, assurez-vous que toutes les dépendances bhima sont installées localement. Nous ne testons que sous Linux. Il est donc préférable d’utiliser une version de Linux que vous connaissez bien. Assurez-vous d'avoir la version récente de:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.7 ou 8.0\)
+1. [MySQL](http://dev.mysql.com/downloads/)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(nous vous recommandons d’utiliser le [gestionnaire de version de node](https://github.com/creationix/nvm) sous Linux. Notez que nous ne testons que sur des versions stables. et bord \).
@@ -96,7 +96,7 @@ nano .env
 # Exécutez les commandes suivantes pour créer l'utilisateur bhima dans MySQL afin qu'il puisse construire la base de données (assurez-vous que l'utilisateur et #password correspondent tous les deux à ce que vous avez défini dans le fichier .env):
 
 sudo mysql -u root -p
-CREATE USER 'bhima' @ 'localhost' IDENTIFIED BY 'mot de passe';
+CREATE USER 'bhima' @ 'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'mot de passe';
 Accordez tous les privilèges sur *. * TO 'bhima' @ 'localhost';
 #Utilisez ctrl + z pour revenir à l'invite du terminal principal
 ```
@@ -133,9 +133,7 @@ docker run --name mysql8 -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -d mysql:8 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
-  --default-authentication-plugin=mysql_native_password \
-  --character-set-server=utf8mb4 \
-  --collation-server=utf8mb4_unicode_ci
+  --default-authentication-plugin=mysql_native_password
 
 ```
 
