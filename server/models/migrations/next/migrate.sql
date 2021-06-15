@@ -26,7 +26,13 @@ INSERT IGNORE INTO `unit` VALUES
  * @author: mbayopanda
  * @date: 2021-06-01
  */
-INSERT IGNORE INTO `unit` VALUES 
+INSERT IGNORE INTO `unit` VALUES
 (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
-  
+
 ALTER TABLE transaction_history ADD COLUMN `value` TEXT DEFAULT NULL;
+
+/* author: jniles
+ * @date: 2021-06-15
+ */
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (8, 'USERS.ACTIONS.EDIT_LOT');
