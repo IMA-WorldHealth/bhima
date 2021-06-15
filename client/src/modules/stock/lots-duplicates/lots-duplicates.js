@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DuplicateLotsController.$inject = [
   'LotService', 'NotifyService', 'StockModalService', 'SessionService',
-  'GridColumnService', 'GridStateService', '$state', '$translate',
+  'GridColumnService', 'GridStateService', '$state', '$translate', 'bhConstants',
 ];
 
 /**
@@ -12,11 +12,13 @@ DuplicateLotsController.$inject = [
  */
 function DuplicateLotsController(
   Lots, Notify, Modal, Session,
-  Columns, GridState, $state, $translate,
+  Columns, GridState, $state, $translate, bhConstants,
 ) {
   const vm = this;
   const cacheKey = 'duplicate-lots-grid';
   vm.enterprise = Session.enterprise;
+
+  vm.bhConstants = bhConstants;
 
   const columns = [
     {

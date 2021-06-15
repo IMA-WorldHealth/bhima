@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 StockLotsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  'BarcodeService', 'LotService', 'LotsRegistryService', 'moment',
+  'BarcodeService', 'LotService', 'LotsRegistryService', 'moment', 'bhConstants',
 ];
 
 /**
@@ -14,11 +14,13 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Grouping, GridState, Columns, $state, $httpParamSerializer,
-  Barcode, LotService, LotsRegistry, moment,
+  Barcode, LotService, LotsRegistry, moment, bhConstants,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
   const stockLotFilters = Stock.filter.lot;
+
+  vm.bhConstants = bhConstants;
 
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
