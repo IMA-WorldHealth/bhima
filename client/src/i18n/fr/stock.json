@@ -340,6 +340,9 @@
     "RECEIVER" : "Bénéficiaire"
   },
   "REQUISITION" : {
+    "INVENTORY_AVAILABLE" : "Disponible",
+    "INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY" : "Disponible mais en quantité insuffisante",
+    "INVENTORY_NOT_AVAILABLE" : "Indisponible",
     "ALREADY_USED":"Le bon de requisition a déjà été utilisé",
     "CANCELLED": "Le bon de réquisition a été annulé",
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment supprimer cette réquisition ?",

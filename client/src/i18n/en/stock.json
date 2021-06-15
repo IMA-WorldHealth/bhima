@@ -339,6 +339,9 @@
     "RECEIVER" : "Receiver"
   },
   "REQUISITION": {
+    "INVENTORY_AVAILABLE" : "Available",
+    "INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY" : "Available but not enough",
+    "INVENTORY_NOT_AVAILABLE" : "Not available",
     "ALREADY_USED":"The requisition slip has been already used",
     "CANCELLED": "The requisition voucher has been canceled",
     "CREATE_SUCCESS": "Successful requisition creation",

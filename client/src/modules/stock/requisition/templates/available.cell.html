@@ -1,0 +1,21 @@
+<div class="ui-grid-cell-contents">
+  <span ng-if="grid.appScope.toggleAvailability && row.entity._initialised">
+    <span ng-if="row.entity.inventory.isAvailable">
+      <i 
+        translate-attr="{title : 'REQUISITION.INVENTORY_AVAILABLE'}" 
+        ng-if="row.entity.inventory.isEnough"
+        class="fa fa-thumbs-up text-success">
+      </i>
+      <i
+        translate-attr="{title : 'REQUISITION.INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY'}"
+        ng-if="!row.entity.inventory.isEnough"
+        class="fa fa-warning text-warning">
+      </i>
+    </span>
+    <i 
+      translate-attr="{title : 'REQUISITION.INVENTORY_NOT_AVAILABLE'}" 
+      ng-if="!row.entity.inventory.isAvailable"
+      class="fa fa-thumbs-down text-danger">
+    </i>
+  </span>
+</div>
