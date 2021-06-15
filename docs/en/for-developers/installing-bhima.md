@@ -10,7 +10,7 @@ This guide will get you up and running with bhima locally. Please note that bhim
 
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally. We only test on Linux, so your best bet is to use a Linux flavor you are familiar with. Please make sure you have recent version of:
 
-1. [MySQL](http://dev.mysql.com/downloads/) \(5.7 or 8.0\)
+1. [MySQL 8](http://dev.mysql.com/downloads/)
 2. [Redis](https://redis.io)
 3. [curl](https://curl.haxx.se/)
 4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
@@ -112,7 +112,7 @@ nano .env
 #Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env file):
 
 sudo mysql -u root -p
-CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'password';
+CREATE USER 'bhima'@'localhost' IDENTIFIED WITH 'mysql_native_password' BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
 #Use ctrl + z to get back to the main terminal prompt
 ```
@@ -149,9 +149,7 @@ docker run --name mysql8 -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=MyPassword \
   -d mysql:8 \
   --sql-mode='STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION' \
-  --default-authentication-plugin=mysql_native_password \
-  --character-set-server=utf8mb4 \
-  --collation-server=utf8mb4_unicode_ci
+  --default-authentication-plugin=mysql_native_password
 
 # give it a few seconds, and MySQL will be started and listening on port 3306
 ```
