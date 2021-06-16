@@ -1,0 +1,32 @@
+<div class="ui-grid-cell-contents">
+  <div ng-if="grid.appScope.toggleAvailability && row.entity._initialised">
+    <div
+      ng-if="row.entity.inventory.isAvailable"
+      uib-popover-template="'information-template.html'"
+      popover-trigger="'mouseenter'"
+      popover-append-to-body="true"
+      popover-placement="'left'">
+      <i ng-if="row.entity.inventory.hasEnoughQuantity" class="fa fa-thumbs-up text-success"></i>
+      <i ng-if="!row.entity.inventory.hasEnoughQuantity" class="fa fa-warning text-warning"></i>
+    </div>
+    <div
+      ng-if="!row.entity.inventory.isAvailable"
+      uib-popover-template="'no-stock-template.html'"
+      popover-trigger="'mouseenter'"
+      popover-append-to-body="true"
+      popover-placement="'left'">
+      <i class="fa fa-thumbs-down text-danger"></i>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="information-template.html">
+  <div>
+    <span translate>REQUISITION.IN_STOCK_QUANTITY</span>:&nbsp;<b>{{ row.entity.inventory.supplierAvailableQuantity }}</b>
+  </div>
+</script>
+<script type="text/ng-template" id="no-stock-template.html">
+  <div>
+    <span translate>REQUISITION.NO_STOCK</span>
+  </div>
+</script>
