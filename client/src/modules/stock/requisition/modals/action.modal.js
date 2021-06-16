@@ -126,11 +126,8 @@ function ActionRequisitionModalController(
       consumable : 1,
     })
       .then(inventories => {
-        vm.supplierInventoriesQuantities = {};
-        vm.availableSupplierInventories = inventories.map(i => {
-          vm.supplierInventoriesQuantities[i.inventory_uuid] = i.quantity;
-          return i.inventory_uuid;
-        });
+        vm.supplierInventoriesQuantities = new Map(inventories.map(i => ([i.inventory_uuid, i.quantity])));
+        vm.availableSupplierInventories = inventories.map(i => i.inventory_uuid);
         return {
           supplierInventoriesQuantities : vm.supplierInventoriesQuantities,
           availableSupplierInventories : vm.availableSupplierInventories,
@@ -151,7 +148,8 @@ function ActionRequisitionModalController(
       inventory.isAvailable = !!vm.availableSupplierInventories.includes(identifier);
 
       if (inventory.isAvailable) {
-        inventory.isEnough = !!(vm.supplierInventoriesQuantities[identifier] >= quantity);
+        inventory.hasEnoughQuantity = !!(vm.supplierInventoriesQuantities.get(identifier) >= quantity);
+        inventory.supplierAvailableQuantity = vm.supplierInventoriesQuantities.get(identifier);
       }
     }
 
