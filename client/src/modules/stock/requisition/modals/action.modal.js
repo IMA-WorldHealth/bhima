@@ -184,8 +184,8 @@ function ActionRequisitionModalController(
         inventory.quantity = currentQuantity;
       }
 
-      const identifier = vm.enableAutoSuggest ? inventory.inventory_uuid : inventory.uuid;
-      const quantity = vm.enableAutoSuggest ? inventory.S_Q : inventory.quantity;
+      const identifier = inventory.inventory_uuid ? inventory.inventory_uuid : inventory.uuid;
+      const quantity = inventory.inventory_uuid ? inventory.S_Q : inventory.quantity;
 
       inventory.isAvailable = !!vm.availableSupplierInventories.includes(identifier);
 
