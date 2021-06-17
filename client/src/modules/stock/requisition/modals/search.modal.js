@@ -17,7 +17,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'date_from', 'date_to', 'user_id',
+    'depot_uuid', 'date_from', 'date_to', 'user_id', 'status',
   ];
 
   const displayValues = {};
@@ -79,11 +79,17 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
 
   vm.submit = function submit() {
     vm.searchQueries.status = [];
+    let statusText = '/';
 
     if (vm.requisitionStatus.length) {
       vm.requisitionStatus.forEach(status => {
-        if (status.checked) vm.searchQueries.status.push(status.id);
+        if (status.checked) {
+          vm.searchQueries.status.push(status.id);
+          statusText += `${status.plainText} / `;
+        }
       });
+
+      displayValues.status = statusText;
     }
 
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
