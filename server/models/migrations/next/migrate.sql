@@ -31,8 +31,32 @@ INSERT IGNORE INTO `unit` VALUES
 
 ALTER TABLE transaction_history ADD COLUMN `value` TEXT DEFAULT NULL;
 
+<<<<<<< HEAD
 /* author: jniles
  * @date: 2021-06-15
  */
 INSERT INTO `actions`(`id`, `description`) VALUES
   (8, 'USERS.ACTIONS.EDIT_LOT');
+=======
+
+/**
+ * @author: lomamech
+ * @date: 2021-06-17
+ * Requisition status
+ */
+ALTER TABLE `status` ADD COLUMN `class_style` tinyint(1) unsigned NOT NULL DEFAULT 0;
+
+UPDATE status SET class_style = 'label label-default' WHERE id = 1;
+UPDATE status SET class_style = 'label label-primary' WHERE id = 2;
+UPDATE status SET class_style = 'label label-warning' WHERE id = 3;
+UPDATE status SET class_style = 'label label-info' WHERE id = 4;
+UPDATE status SET class_style = 'label label-danger' WHERE id = 5;
+UPDATE status SET class_style = 'label label-success' WHERE id = 6;
+UPDATE status SET class_style = 'label label-danger' WHERE id = 7;
+
+
+
+
+
+
+>>>>>>> 3e993962a (feature(Requisition))

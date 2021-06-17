@@ -1942,6 +1942,7 @@ CREATE TABLE `status` (
   `id`              SMALLINT(5) NOT NULL AUTO_INCREMENT,
   `status_key`      VARCHAR(50) NOT NULL,
   `title_key`       VARCHAR(100) NOT NULL,
+  `class_style`     VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
