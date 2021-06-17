@@ -7,7 +7,7 @@ SearchStockRequisitionModalController.$inject = [
   'SearchModalUtilService', 'NotifyService', '$translate',
 ];
 
-function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock, SearchModal, Notify, 
+function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock, SearchModal, Notify,
   $translate) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
