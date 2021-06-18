@@ -27,7 +27,7 @@ function DuplicateLotsController(
       headerTooltip : 'TABLE.COLUMNS.CODE',
       headerCellFilter : 'translate',
     }, {
-      field : 'inventory_text',
+      field : 'inventory_name',
       displayName : 'TABLE.COLUMNS.INVENTORY',
       headerTooltip : 'TABLE.COLUMNS.INVENTORY',
       headerCellFilter : 'translate',
@@ -38,9 +38,9 @@ function DuplicateLotsController(
       headerTooltip : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
     }, {
-      field : 'quantity',
-      displayName : 'TABLE.COLUMNS.QUANTITY',
-      headerTooltip : 'TABLE.COLUMNS.QUANTITY',
+      field : 'quantity_in_stock',
+      displayName : 'STOCK.QUANTITY_IN_STOCK',
+      headerTooltip : 'STOCK.QUANTITY_IN_STOCK',
       headerCellFilter : 'translate',
       cellClass : 'text-right',
       type : 'number',
@@ -123,15 +123,27 @@ function DuplicateLotsController(
         Notify.success(msg);
       });
   }
-
   vm.autoMergeLots = autoMergeLots;
+
+  // Call the server function to merge lot with zero quantity in stock
+  function autoMergeZeroLots() {
+    vm.loading = true;
+    Lots.autoMergeZero()
+      .then((res) => {
+        const msg = $translate.instant('LOTS.MERGED_LOTS_AUTOMATICALLY', res);
+        vm.loading = false;
+        load();
+        Notify.success(msg);
+      });
+  }
+  vm.autoMergeZeroLots = autoMergeZeroLots;
 
   // load stock lots in the grid
   function load() {
     vm.hasError = false;
     vm.loading = true;
 
-    Lots.dupes({ find_dupes : true })
+    Lots.allDupes()
       .then((rows) => {
         vm.gridOptions.data = rows;
       })

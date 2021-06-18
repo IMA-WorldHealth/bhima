@@ -50,6 +50,18 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
+  lots.allDupes = (params) => {
+    return $http.get('/lots_all_dupes', { params })
+      .then((res) => {
+        res.data.forEach((lot) => {
+          lot.entry_date = new Date(lot.entry_date);
+          lot.expiration_date = new Date(lot.expiration_date);
+        });
+        return res;
+      })
+      .then(util.unwrapHttpResponse);
+  };
+
   lots.merge = (uuid, lotsToMerge) => {
     return $http.post(`/lots/${uuid}/merge/`, { lotsToMerge })
       .then(util.unwrapHttpResponse);
@@ -57,6 +69,11 @@ function LotService(Api, $http, util) {
 
   lots.autoMerge = () => {
     return $http.post(`/lots/merge/auto`, {})
+      .then(util.unwrapHttpResponse);
+  };
+
+  lots.autoMergeZero = () => {
+    return $http.post(`/lots/merge/autoZero`, {})
       .then(util.unwrapHttpResponse);
   };
 

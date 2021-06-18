@@ -41,8 +41,13 @@
                 ng-click="DupeLotsCtrl.autoMergeLots()">
                 <i class="fa"></i> <span translate>FORM.BUTTONS.AUTO_MERGE_LOTS</span>
               </a>
+              <a href data-method="auto-merge-zero"
+                uib-tooltip="{{ 'FORM.BUTTONS.AUTO_MERGE_ZERO_LOTS_TOOLTIP' | translate }}"
+                tooltip-placement="left"
+                ng-click="DupeLotsCtrl.autoMergeZeroLots()">
+                <i class="fa"></i> <span translate>FORM.BUTTONS.AUTO_MERGE_ZERO_LOTS</span>
+              </a>
             </li>
-
           </ul>
         </div>
       </div>
