@@ -1,6 +1,7 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
     "AGGREGATED_STOCK_CONSUMPTION": {
@@ -340,6 +341,11 @@
     "RECEIVER" : "Bénéficiaire"
   },
   "REQUISITION" : {
+    "NO_STOCK" : "Aucun stock disponible",
+    "IN_STOCK_QUANTITY" : "Quantité en stock",
+    "INVENTORY_AVAILABLE" : "Disponible",
+    "INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY" : "Disponible mais en quantité insuffisante",
+    "INVENTORY_NOT_AVAILABLE" : "Indisponible",
     "ALREADY_USED":"Le bon de requisition a déjà été utilisé",
     "CANCELLED": "Le bon de réquisition a été annulé",
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment supprimer cette réquisition ?",

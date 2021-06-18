@@ -1,19 +1,20 @@
 {
   "STOCK" : {
     "ALERT" : "Alert",
+    "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"Does not exist because the movement of stock was made before the implementation of stock accounting",
     "ADJUSTMENT"      : "Adjustment",
     "ADJUSTMENT_TYPE" : "Adjustment Type",
     "AGGREGATED_STOCK_CONSUMPTION": {
       "AGGREGATED_MOVEMENTS": "Aggregated movements",
       "DETAILS": "Details",
-      "DESCRIPTION": "This aggregated stock consumption module makes it possible to define for a warehouse and for a period the quantity of stock consumed by product but especially by batch, while specifying for each product the number of days of out of stock",
+      "DESCRIPTION": "The compute Aggregate stock consumption, makes possible to define for a warehouse and for a period the quantity of stock consumed but especially by batch number, while specifying for each product the number of days of out of stock",
       "END_OF_CONSUMPTION": "End of consumption",
       "START_OF_CONSUMPTION": "Start of consumption",
       "STOCK_BEGINNING": "Beginning of the month",
       "STOCK_END": "End of the month",
       "TOTAL_EXITS": "Exits",
       "TOTAL_ENTRIES": "Entries",
-      "TITLE": "Aggregate stock Consumption"
+      "TITLE": "Compute Aggregate Stock Consumption"
     },
     "AMOUNT"          : "Amount",
     "APPROVISIONING"  : "Quantity to order",
@@ -339,6 +340,11 @@
     "RECEIVER" : "Receiver"
   },
   "REQUISITION": {
+    "NO_STOCK" : "No stock available",
+    "IN_STOCK_QUANTITY" : "Quantity in depot",
+    "INVENTORY_AVAILABLE" : "Available",
+    "INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY" : "Available but not enough",
+    "INVENTORY_NOT_AVAILABLE" : "Not available",
     "ALREADY_USED":"The requisition slip has been already used",
     "CANCELLED": "The requisition voucher has been canceled",
     "CREATE_SUCCESS": "Successful requisition creation",

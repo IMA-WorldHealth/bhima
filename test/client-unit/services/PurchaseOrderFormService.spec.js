@@ -38,7 +38,7 @@ describe('PurchaseOrderForm', () => {
 
     httpBackend = $httpBackend;
 
-    httpBackend.when('GET', '/inventory/metadata/?locked=0&use_previous_price=1')
+    httpBackend.when('GET', '/inventory/metadata/?locked=0')
       .respond(200, Mocks.inventories());
 
   }));

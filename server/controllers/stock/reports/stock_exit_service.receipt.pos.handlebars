@@ -16,6 +16,15 @@
   {{#if details.document_requisition}}
     <span>{{translate 'FORM.LABELS.REQUISITION_REFERENCE'}}</span>: <strong>{{details.document_requisition}}</strong> <br>
   {{/if}}
+  {{#if details.autoStockAccountingEnabled}}
+    <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+    {{#if details.voucher_reference}}
+      <strong>{{details.voucher_reference}}</strong>
+    {{else}}
+      <i>{{translate 'STOCK.DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP'}}</i>
+    {{/if}}
+    <br>
+  {{/if}}
   {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.user_display_name}}
 </p>
 

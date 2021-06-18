@@ -16,6 +16,7 @@ const {
 async function stockExitLossReceipt(documentUuid, session, options) {
   const data = {};
   const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_LOSS' });
+  const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   let template = STOCK_EXIT_LOSS_TEMPLATE;
 
@@ -67,6 +68,7 @@ async function stockExitLossReceipt(documentUuid, session, options) {
     document_reference : line.document_reference,
     barcode : barcode.generate(key, line.document_uuid),
     voucher_reference : voucherReference,
+    autoStockAccountingEnabled,
   };
 
   data.rows = rows;

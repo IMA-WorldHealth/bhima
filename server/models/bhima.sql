@@ -169,7 +169,8 @@ INSERT INTO unit VALUES
   (293, 'Aggregated consumption','TREE.AGGREGATED_STOCK_CONSUMPTION','Aggregated consumption', 160,'/stock/aggregated_consumption'),
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
-  (297, 'Journal Log','TREE.JOURNAL_LOG','The Jouranl log module', 5,'/journal/log');
+  (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
+  (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
 
 
 -- Reserved system account type
@@ -241,6 +242,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_movement_report', 'REPORT.STOCK_MOVEMENT_REPORT.TITLE'),
   ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
+  ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE');
 
 -- Supported Languages
@@ -342,7 +344,8 @@ INSERT INTO `actions`(`id`, `description`) VALUES
   (4, 'USERS.ACTIONS.DELETE_INVOICE' ),
   (5, 'USERS.ACTIONS.DELETE_PURCHASE_ORDER'),
   (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
-  (7, 'USERS.ACTIONS.DELETE_VOUCHER');
+  (7, 'USERS.ACTIONS.DELETE_VOUCHER'),
+  (8, 'USERS.ACTIONS.EDIT_LOT');
 
 
 -- Purchase Status
