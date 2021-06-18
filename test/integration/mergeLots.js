@@ -175,10 +175,10 @@ describe('Test merging lots', () => {
       .catch(helpers.handler);
   });
 
-  it(`Verify the 'find duplicate lots' query works`, () => {
-    return agent.get('/lots_dupes')
-      .query({ find_dupes : 1 })
+  it(`Verify the 'find all duplicate lots' query works`, () => {
+    return agent.get('/lots_all_dupes')
       .then((res) => {
+        console.log("DUPES: ", res);
         helpers.api.listed(res, 1); // all dupes can be merged into one
       })
       .catch(helpers.handler);
