@@ -129,7 +129,7 @@
     "mysql": "^2.16.0",
     "ng-file-upload": "^12.2.13",
     "ngstorage": "^0.3.11",
-    "nodemailer": "^6.6.1",
+    "nodemailer": "^6.6.2",
     "p-retry": "^4.5.0",
     "q": "^1.5.1",
     "stream-to-promise": "^3.0.0",
