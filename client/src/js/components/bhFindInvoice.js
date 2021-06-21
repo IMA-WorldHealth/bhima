@@ -63,7 +63,6 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
           return;
         }
 
-
         // trigger form validation for the invoice search input
         form.$setSubmitted();
 
@@ -100,7 +99,6 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
       })
       .catch(Notify.handleError);
   }
-
 
   /**
    * @method selectInvoice
