@@ -242,6 +242,7 @@
             "SUPPORT_COST": " est prise en charge par",
             "THE_NECESSARY_CONFIG_MISSING": "Les configurations nécessaires manquent",
             "THIS_INVOICE_NO_STOCK": "Cette facture ne concerne aucun article en stock",
+            "THIS_PATIENT_NOT_BILLED": "Ce(tte) patient(e) n'a pas encore été facturé(e)",
             "TRANSACTIONS": "Transactions",
             "TRANSACTION_REVER_SUCCESS": "Cette transaction a été Annulée avec succès",
             "UNAUTHORIZED": "Non autorisée",
