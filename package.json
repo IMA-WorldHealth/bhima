@@ -176,7 +176,7 @@
     "karma-mocha": "^2.0.1",
     "karma-ng-html2js-preprocessor": "^1.0.0",
     "merge-stream": "^2.0.0",
-    "mocha": "^9.0.0",
+    "mocha": "^9.0.1",
     "protractor": "^7.0.0",
     "protractor-console-plugin": "^0.1.1",
     "qs": "^6.10.1",
