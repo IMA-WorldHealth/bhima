@@ -1,8 +1,3 @@
 <div class="ui-grid-cell-contents">
-  <span ng-if="row.entity.status_key === 'completed'" class="label label-success" translate> {{ row.entity.title_key }} </span>
-  <span ng-if="row.entity.status_key === 'done'" class="label label-primary" translate> {{ row.entity.title_key }} </span>
-  <span ng-if="row.entity.status_key === 'partially'" class="label label-warning" translate> {{ row.entity.title_key }} </span>
-  <span ng-if="row.entity.status_key === 'in_progress'" class="label label-default" translate> {{ row.entity.title_key }} </span>
-  <span ng-if="row.entity.status_key === 'cancelled'" class="label label-danger" translate> {{ row.entity.title_key }} </span>
-  <span ng-if="row.entity.status_key === 'excessive'" class="label label-danger" translate> {{ row.entity.title_key }} </span>
+  <span ng-class="row.entity.class_style" translate> {{ row.entity.title_key }} </span>
 </div>

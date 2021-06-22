@@ -38,6 +38,20 @@
             </div>
           </div>
 
+          <div style="margin-bottom: 10px">
+            <label class="control-label" translate>FORM.LABELS.STATUS</label>
+            <div class="row">
+              <div ng-repeat ="r in $ctrl.requisitionStatus | orderBy:'plainText'" class="col-md-6">
+                <div class="checkbox" style="margin-top: 0; margin-bottom: 2px">
+                  <label>
+                    <input type="checkbox" ng-model="r.checked" ng-true-value="1" ng-false-value="0">
+                    <span ng-class="r.class_style" translate> {{ r.plainText }} </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"
@@ -53,6 +67,7 @@
             on-select-callback="$ctrl.onSelectUser(user)">
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
+         
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
