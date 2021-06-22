@@ -16,38 +16,74 @@ const StockEntryFromTransfer = require('./entry/entryFromTransfer');
    *
    * GET /reports/stock/entry
    */
-function stockEntryReport(req, res, next) {
-  let report;
+// function stockEntryReport(req, res, next) {
+//   let report;
+
+//   const params = util.convertStringToNumber(req.query);
+
+//   const optionReport = _.extend(params, {
+//     filename : 'REPORT.STOCK.ENTRY_REPORT',
+//   });
+
+//   // set up the report with report manager
+//   try {
+//     report = new ReportManager(STOCK_ENTRY_REPORT_TEMPLATE, req.session, optionReport);
+//   } catch (e) {
+//     return next(e);
+//   }
+
+//   return fetchDepotDetails(params.depotUuid)
+//     .then(depot => {
+//       params.depotName = depot.text;
+//       return collect(params);
+//     })
+//     .then(groupCollection)
+//     .then((bundle) => {
+//       _.extend(bundle, params);
+
+//       return report.render(bundle);
+//     })
+//     .then((result) => {
+//       res.set(result.headers).send(result.report);
+//     })
+//     .catch(next)
+//     .done();
+// }
+async function stockEntryReport(req, res, next) {
 
   const params = util.convertStringToNumber(req.query);
 
   const optionReport = _.extend(params, {
-    filename : 'REPORT.STOCK.ENTRY_REPORT',
+    filename : 'REPORT.STOCK.EXIT_REPORT',
   });
 
   // set up the report with report manager
   try {
-    report = new ReportManager(STOCK_ENTRY_REPORT_TEMPLATE, req.session, optionReport);
+    const report = new ReportManager(STOCK_ENTRY_REPORT_TEMPLATE, req.session, optionReport);
+
+    const [depot, [{ rate }]] = await Promise.all([
+      fetchDepotDetails(params.depotUuid),
+      db.exec('SELECT GetExchangeRate(?, ?, NOW()) as rate;', [req.session.enterprise.id, params.currencyId]),
+    ]);
+
+    params.isEnterpriseCurrency = params.currencyId === req.session.enterprise.currency_id;
+
+    console.log('NEW-(W) --- ');
+    console.log(params.isEnterpriseCurrency);
+
+    params.exchangeRate = params.isEnterpriseCurrency ? 1 : rate;
+
+    params.depotName = depot.text;
+    const collection = await collect(params);
+    const bundle = await groupCollection(collection);
+
+    _.extend(bundle, params);
+
+    const result = await report.render(bundle);
+    res.set(result.headers).send(result.report);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-
-  return fetchDepotDetails(params.depotUuid)
-    .then(depot => {
-      params.depotName = depot.text;
-      return collect(params);
-    })
-    .then(groupCollection)
-    .then((bundle) => {
-      _.extend(bundle, params);
-
-      return report.render(bundle);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 /**
