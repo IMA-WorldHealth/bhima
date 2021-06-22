@@ -63,6 +63,12 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
       statuses.forEach((item) => {
         item.plainText = $translate.instant(item.title_key);
         item.checked = 0;
+
+        if (lastDisplayValues.status ) {
+          if (lastDisplayValues.status.includes(item.plainText)) {
+            item.checked = 1;
+          }
+        }
       });
 
       statuses.sort((a, b) => a.plainText > b.plainText);
@@ -79,17 +85,23 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
 
   vm.submit = function submit() {
     vm.searchQueries.status = [];
-    let statusText = '/';
+    let statusText = '';
+    let countStatusChecked = 0;
 
     if (vm.requisitionStatus.length) {
       vm.requisitionStatus.forEach(status => {
         if (status.checked) {
           vm.searchQueries.status.push(status.id);
-          statusText += `${status.plainText} / `;
+          statusText += countStatusChecked === 0 ? statusText += `${status.plainText}` : ` / ${status.plainText}`;
+          countStatusChecked++;
         }
       });
 
       displayValues.status = statusText;
+
+      if (countStatusChecked === 0) {
+        delete vm.searchQueries.status;
+      }
     }
 
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
