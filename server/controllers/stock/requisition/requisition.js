@@ -12,10 +12,10 @@ const REQUISITION_STATUS_EXCESSIVE = 7;
 const SELECT_QUERY = `
   SELECT
     BUID(sr.uuid) uuid, BUID(sr.requestor_uuid) requestor_uuid, BUID(sr.depot_uuid) depot_uuid,
-    sr.requestor_type_id, sr.description, sr.date, sr.user_id, sr.project_id,
+    sr.requestor_type_id, sr.description, sr.date, sr.user_id, sr.project_id, sr.status_id,
     u.display_name AS user_display_name, d.text AS depot_text,
     s.name service_requestor, dd.text depot_requestor,
-    dm.text reference, stat.title_key, stat.status_key
+    dm.text reference, stat.title_key, stat.status_key, stat.class_style
   FROM stock_requisition sr
   JOIN user u ON u.id = sr.user_id
   JOIN depot d ON d.uuid = sr.depot_uuid
@@ -121,7 +121,6 @@ function getStockRequisition(params) {
   filters.equals('uuid', 'uuid', 'sr');
   filters.equals('stock_requisition_uuid', 'uuid', 'sr');
   filters.equals('type_id', 'requestor_type_id', 'sr');
-  filters.equals('status_id', 'status_id', 'sr');
   filters.equals('depot_uuid', 'depot_uuid', 'sr');
   filters.equals('requestor_uuid', 'requestor_uuid', 'sr');
   filters.equals('user_id', 'user_id', 'sr');
@@ -131,6 +130,7 @@ function getStockRequisition(params) {
   filters.period('period', 'date', 'sr');
   filters.dateFrom('custom_period_start', 'date', 'sr');
   filters.dateTo('custom_period_end', 'date', 'sr');
+  filters.custom('status', 'sr.status_id IN (?)', [params.status]);
   filters.setOrder('ORDER BY sr.date DESC');
 
   const query = filters.applyQuery(SELECT_QUERY);
