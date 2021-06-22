@@ -8,7 +8,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
   const keys = [
     'uuid', 'requestor_uuid', 'requestor_type_id', 'description', 'date',
     'user_id', 'project_id', 'user_display_name', 'depot_uuid', 'depot_text', 'service_requestor',
-    'depot_requestor', 'reference', 'items', 'status_key', 'title_key',
+    'depot_requestor', 'reference', 'items', 'status_key', 'title_key', 'class_style', 'status_id',
   ];
 
   // create new stock requisition on "Depot Principal" from a servicedelete stock requisition
@@ -120,6 +120,17 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
           .length === 0;
         expect(doesnExist).to.be.equal(true);
         helpers.api.listed(res, 5);
+      })
+      .catch(helpers.handler);
+  });
+
+  // search requisitions by filters
+  it('GET /stock/requisition Filter requisitions of a given depot and Status', () => {
+    const conditions = { depot_uuid : shared.depotSecondaireUuid, status : [1, 2] };
+    return agent.get('/stock/requisition/?')
+      .query(conditions)
+      .then(res => {
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

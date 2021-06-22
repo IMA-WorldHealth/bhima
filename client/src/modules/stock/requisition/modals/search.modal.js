@@ -4,10 +4,11 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchStockRequisitionModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
-  'SearchModalUtilService',
+  'SearchModalUtilService', 'NotifyService', '$translate',
 ];
 
-function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock, SearchModal) {
+function SearchStockRequisitionModalController(data, util, Store, Instance, Periods, Stock, SearchModal, Notify,
+  $translate) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -16,7 +17,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'date_from', 'date_to', 'user_id',
+    'depot_uuid', 'date_from', 'date_to', 'user_id', 'status',
   ];
 
   const displayValues = {};
@@ -56,6 +57,26 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
     }
   };
 
+  // load all Requisition status
+  Stock.status.read()
+    .then(statuses => {
+      statuses.forEach((item) => {
+        item.plainText = $translate.instant(item.title_key);
+        item.checked = 0;
+
+        if (lastDisplayValues.status ) {
+          if (lastDisplayValues.status.includes(item.plainText)) {
+            item.checked = 1;
+          }
+        }
+      });
+
+      statuses.sort((a, b) => a.plainText > b.plainText);
+
+      vm.requisitionStatus = statuses;
+    })
+    .catch(Notify.handleError);
+
   vm.clear = function clear(key) {
     delete vm.searchQueries[key];
   };
@@ -63,6 +84,26 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.cancel = Instance.dismiss;
 
   vm.submit = function submit() {
+    vm.searchQueries.status = [];
+    let statusText = '';
+    let countStatusChecked = 0;
+
+    if (vm.requisitionStatus.length) {
+      vm.requisitionStatus.forEach(status => {
+        if (status.checked) {
+          vm.searchQueries.status.push(status.id);
+          statusText += countStatusChecked === 0 ? statusText += `${status.plainText}` : ` / ${status.plainText}`;
+          countStatusChecked++;
+        }
+      });
+
+      displayValues.status = statusText;
+
+      if (countStatusChecked === 0) {
+        delete vm.searchQueries.status;
+      }
+    }
+
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
     return Instance.close(loggedChanges);
   };

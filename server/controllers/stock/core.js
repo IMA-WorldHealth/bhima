@@ -1021,7 +1021,7 @@ async function getInventoryMovements(params) {
 }
 
 async function listStatus(req, res, next) {
-  const sql = `SELECT id, status_key, title_key FROM status`;
+  const sql = `SELECT id, status_key, title_key, class_style FROM status`;
   try {
     const status = await db.exec(sql);
     res.status(200).json(status);
