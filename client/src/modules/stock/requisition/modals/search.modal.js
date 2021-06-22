@@ -64,7 +64,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
         item.plainText = $translate.instant(item.title_key);
         item.checked = 0;
 
-        if (lastDisplayValues.status ) {
+        if (lastDisplayValues.status) {
           if (lastDisplayValues.status.includes(item.plainText)) {
             item.checked = 1;
           }
