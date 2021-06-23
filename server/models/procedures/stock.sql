@@ -695,9 +695,9 @@ BEGIN
       SET v_is_exit = 1;
     END IF;
 
-    IF v_line_is_exit <> 0 AND v_quantity_in_stock > 0 THEN 
+    IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN 
       SET v_wac = ((v_quantity_in_stock * v_wac) + (v_line_quantity * v_line_unit_cost)) / (v_line_quantity + v_quantity_in_stock);
-    ELSEIF v_line_is_exit <> 0 AND v_quantity_in_stock = 0 THEN
+    ELSEIF v_line_is_exit = 0 AND v_quantity_in_stock = 0 THEN
       SET v_wac = (v_line_unit_cost * 1); /* we must use the exchange rate */
     END IF;
 
