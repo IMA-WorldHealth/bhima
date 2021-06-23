@@ -2,21 +2,25 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
-  'SessionService', 'CurrencyService', 'NotifyService', 'StockEntryModalForm',
-  'bhConstants', '$translate', 'focus',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
+  'CurrencyService', 'NotifyService', 'bhConstants', 'StockEntryModalForm',
+  '$translate', 'focus', 'ExchangeRateService', 'LotService',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Lots,
-  Session, Currencies, Notify, EntryForm,
-  bhConstants, $translate, Focus,
+  AppCache, Instance, uiGridConstants, Data, Session,
+  Currencies, Notify, bhConstants, EntryForm,
+  $translate, Focus, ExchangeRate, Lots,
 ) {
   const vm = this;
 
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
+  if (Data.stockLine.wac) {
+    Data.stockLine.unit_cost = Data.stockLine.wac;
+  }
+
   const tracking = Data.stockLine.tracking_expiration;
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
@@ -118,6 +122,8 @@ function StockDefineLotsModalController(
       .then((currencies) => {
         vm.currency = currencies.find(curr => curr.id === vm.currencyId);
         vm.currency.label = Currencies.format(vm.currencyId);
+        const rate = ExchangeRate.getExchangeRate(vm.currencyId, new Date());
+        vm.wacValue = rate * Data.stockLine.wacValue;
       })
       .catch(Notify.handleError);
 
@@ -312,7 +318,7 @@ function StockDefineLotsModalController(
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.
     if (form.$invalid) {
-      return 0;
+      return;
     }
 
     // Handle differences in selecting vs creating lots
@@ -336,7 +342,7 @@ function StockDefineLotsModalController(
           }
         });
       }
-      return Promise.all(promises)
+      Promise.all(promises)
         .then(() => {
           saveSetting();
           Instance.close({
