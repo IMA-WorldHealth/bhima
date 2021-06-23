@@ -27,27 +27,39 @@ function LotService(Api, $http, util) {
   */
   lots.candidates = (params) => {
     return $http.get(`/inventory/${params.inventory_uuid}/lot_candidates`)
-      .then((res) => {
+      .then(util.unwrapHttpResponse)
+      .then((data) => {
         const now = params.date ? new Date(params.date) : new Date();
-        res.data.forEach((lot) => {
+        data.forEach((lot) => {
           lot.expiration_date = new Date(lot.expiration_date);
           lot.expired = lot.expiration_date < now;
         });
-        return res;
-      })
-      .then(util.unwrapHttpResponse);
+        return data;
+      });
   };
 
   lots.dupes = (params) => {
     return $http.get('/lots_dupes', { params })
-      .then((res) => {
-        res.data.forEach((lot) => {
+      .then(util.unwrapHttpResponse)
+      .then((data) => {
+        data.forEach((lot) => {
           lot.entry_date = new Date(lot.entry_date);
           lot.expiration_date = new Date(lot.expiration_date);
         });
-        return res;
-      })
-      .then(util.unwrapHttpResponse);
+        return data;
+      });
+  };
+
+  lots.allDupes = (params) => {
+    return $http.get('/lots_all_dupes', { params })
+      .then(util.unwrapHttpResponse)
+      .then((data) => {
+        data.forEach((lot) => {
+          lot.entry_date = new Date(lot.entry_date);
+          lot.expiration_date = new Date(lot.expiration_date);
+        });
+        return data;
+      });
   };
 
   lots.merge = (uuid, lotsToMerge) => {
@@ -57,6 +69,11 @@ function LotService(Api, $http, util) {
 
   lots.autoMerge = () => {
     return $http.post(`/lots/merge/auto`, {})
+      .then(util.unwrapHttpResponse);
+  };
+
+  lots.autoMergeZero = () => {
+    return $http.post(`/lots/merge/autoZero`, {})
       .then(util.unwrapHttpResponse);
   };
 
