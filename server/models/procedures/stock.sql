@@ -769,6 +769,10 @@ BEGIN
   loop_cursor_all_depots : LOOP
     FETCH cursor_all_depots INTO v_depot_uuid;
 
+    IF v_cursor_finished = 1 THEN
+      LEAVE loop_cursor_all_depots;
+    END IF;
+
     IF _date IS NOT NULL THEN 
       CALL RecomputeDepotStockValue(v_depot_uuid, _date);
     ELSE 
