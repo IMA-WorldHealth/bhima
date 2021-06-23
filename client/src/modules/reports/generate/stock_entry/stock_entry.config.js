@@ -35,7 +35,7 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
   };
 
   vm.onSelectCurrency = currency => {
-    vm.reportDetails.currency_id = currency.id;
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.clear = key => {
