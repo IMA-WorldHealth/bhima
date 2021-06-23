@@ -182,7 +182,7 @@ function getAllDupes(req, res, next) {
   // Then compute the max quantity-in-stock for all lots for each inventory_uuid, label pair
   const query2 = `
     SELECT
-      HEX(lot1.uuid) AS uuid, label, unit_cost, expiration_date, entry_date,
+      BUID(lot1.uuid) AS uuid, label, unit_cost, expiration_date, entry_date,
       inventory_code, inventory_name, inventory_uuid, num_duplicates, lot1.quantity_in_stock,
       MAX(quantity_in_stock) OVER (PARTITION BY inventory_uuid, label) AS max_quantity
     FROM tmp_dupe_lots lot1
@@ -401,10 +401,7 @@ function autoMergeZero(req, res, next) {
         const keepLotUuid = row.uuid;
         const promise = db.exec(getLotsSQL, [db.bid(row.inventory_uuid), db.bid(keepLotUuid)])
           .then((lots) => {
-            const lotUuids = lots.reduce((list, elt) => {
-              list.push(elt.uuid);
-              return list;
-            }, []);
+            const lotUuids = lots.map(elt => elt.uuid);
             return mergeLotsInternal(keepLotUuid, lotUuids);
           });
         dbPromises.push(promise);
