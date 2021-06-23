@@ -3,10 +3,11 @@ angular.module('bhima.controllers')
 
 StockFindPatientModalController.$inject = [
   '$uibModalInstance', 'PatientService', 'NotifyService', 'data', 'AppCache',
-  'BarcodeService',
+  'BarcodeService', 'DebtorService', 'PatientInvoiceService',
 ];
 
-function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCache, Barcodes) {
+function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCache, Barcodes, Debtors,
+  PatientInvoice) {
   const vm = this;
   const cache = new AppCache('StockFindPatient');
 
@@ -17,6 +18,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
 
   // global
   vm.selected = {};
+  vm.patientInvoices = [];
 
   // bind methods
   vm.setPatient = setPatient;
@@ -24,6 +26,10 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   vm.submit = submit;
   vm.cancel = cancel;
   vm.openBarcodeScanner = openBarcodeScanner;
+  vm.getLastInvoice = getLastInvoice;
+  vm.invoiceSelected = false;
+
+  vm.findDetailInvoice = findDetailInvoice;
 
   if (Data.entity_uuid) {
     Patients.read(Data.entity_uuid)
@@ -39,14 +45,40 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
       });
   }
 
-
   // set patient
   function setPatient(patient) {
+    vm.joinInvoice = false;
+    vm.invoiceSelected = false;
     vm.selected = patient;
+  }
+
+  function getLastInvoice() {
+    // load debtor invoices
+    Debtors.invoices(vm.selected.debtor_uuid, { descLimit5 : 1 })
+      .then((invoices) => {
+        vm.patientInvoices = invoices;
+      })
+      .catch(Notify.handleError);
+  }
+
+  function findDetailInvoice(invoice) {
+    const parameters = {
+      invoiceReference : invoice.reference,
+      patientUuid : vm.selected.uuid,
+    };
+
+    PatientInvoice.findConsumableInvoicePatient(parameters)
+      .then(consumableInvoice => {
+        vm.invoice = consumableInvoice;
+
+      })
+      .catch(Notify.handleError);
+
   }
 
   function setInvoice(invoice) {
     vm.invoice = invoice;
+    vm.invoiceSelected = true;
   }
 
   // submit

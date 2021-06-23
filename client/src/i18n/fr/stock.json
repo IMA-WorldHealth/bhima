@@ -225,6 +225,7 @@
     "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
+    "SELECT_INVOICE"  : "Sélectionner la facture",
     "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "Disponible",

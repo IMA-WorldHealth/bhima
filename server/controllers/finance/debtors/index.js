@@ -185,11 +185,18 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
   const debtorUid = db.bid(debtorUuid);
 
   let balanced = '';
+  let orderBy = '';
 
   if (options.balanced === '1') {
     balanced = 'HAVING balance = 0';
   } else if (options.balanced === '0') {
     balanced = 'HAVING balance <> 0';
+  }
+
+  if (options.descLimit5 === '1') {
+    orderBy = 'ORDER BY invoice.date DESC, invoice.reference LIMIT 5';
+  } else {
+    orderBy = 'ORDER BY invoice.date ASC, invoice.reference';
   }
 
   const invs = uuids.map(uid => db.bid(uid));
@@ -233,7 +240,7 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
       JOIN invoice ON i.uuid = invoice.uuid
       JOIN project ON invoice.project_id = project.id
       LEFT JOIN document_map dm ON i.uuid = dm.uuid
-    ORDER BY invoice.date ASC, invoice.reference;
+    ${orderBy};
   `;
 
   return db.exec(sql, [invs, debtorUid, invs, debtorUid, invs, debtorUid, invs, debtorUid]);
