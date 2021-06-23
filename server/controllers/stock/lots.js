@@ -396,15 +396,15 @@ function autoMergeZero(req, res, next) {
     .then(txresults => {
       const rows = txresults[2];
       numLots = rows.length;
-      const dbPromises = [];
-      rows.forEach((row) => {
+      const dbPromises = rows.map(row => {
         const keepLotUuid = row.uuid;
-        const promise = db.exec(getLotsSQL, [db.bid(row.inventory_uuid), db.bid(keepLotUuid)])
-          .then((lots) => {
+        // Get the lots associated with this inventory, excluding the lot to keep
+        return db.exec(getLotsSQL, [db.bid(row.inventory_uuid), db.bid(keepLotUuid)])
+          .then(lots => {
             const lotUuids = lots.map(elt => elt.uuid);
+            // Merge the other lots into keepLotUuid
             return mergeLotsInternal(keepLotUuid, lotUuids);
           });
-        dbPromises.push(promise);
       });
       return Promise.all(dbPromises);
     })
