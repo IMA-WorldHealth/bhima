@@ -27,6 +27,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   vm.cancel = cancel;
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.getLastInvoice = getLastInvoice;
+  vm.invoiceSelected = false;
 
   vm.findDetailInvoice = findDetailInvoice;
 
@@ -47,6 +48,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   // set patient
   function setPatient(patient) {
     vm.joinInvoice = false;
+    vm.invoiceSelected = false;
     vm.selected = patient;
   }
 
@@ -76,6 +78,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
 
   function setInvoice(invoice) {
     vm.invoice = invoice;
+    vm.invoiceSelected = true;
   }
 
   // submit

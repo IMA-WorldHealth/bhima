@@ -43,7 +43,7 @@
         </bh-find-invoice>
       </div>
 
-      <div ng-if="$ctrl.patientInvoices.length && $ctrl.joinInvoice">
+      <div ng-if="$ctrl.patientInvoices.length && $ctrl.joinInvoice && !$ctrl.invoiceSelected">
         <div translate> FORM.INFO.THE_LAST_5_INVOICES </div>
         <div ng-repeat="invoice in $ctrl.patientInvoices" class="radio">
           <label>
