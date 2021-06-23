@@ -13,6 +13,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name,
+    SUM(m.quantity * m.unit_cost) AS cost, m.unit_cost,
     dm.text AS document_reference, d.text AS depot_name
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
