@@ -432,6 +432,15 @@ function StockEntryController(
         .then((lots) => {
           item.availableLots = lots;
           item.candidateLots = lots.filter(lot => !lot.expired);
+
+          return vm.depot && vm.depot.uuid ? Stock.inventories.read(null, {
+            depot_uuid  : vm.depot.uuid,
+            inventory_uuid : item.inventory_uuid,
+          }) : {};
+        })
+        .then(stockInventory => {
+          if (!stockInventory.length) { return; }
+          item.wacValue = stockInventory[0].wac;
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
@@ -676,24 +685,35 @@ function StockEntryController(
    * @description [grid] initialize each cell of defined rows with value
    */
   function buildStockLine(line) {
-    const inventory = inventoryStore.get(line.inventory_uuid);
-    const entryDate = vm.movement.date || Date();
-    line.code = inventory.code;
-    line.label = inventory.label;
-    line.unit_cost = inventory.price;
-    line.quantity = 0;
-    line.cost = line.quantity * line.unit_cost;
-    line.expiration_date = entryDate;
-    line.unit = inventory.unit;
-    line.tracking_expiration = inventory.tracking_expiration;
-    setInitialized(line);
 
     // Store the non-expired candidate lots for this inventory code
     Lots.candidates({ inventory_uuid : line.inventory_uuid, date : vm.movement.date })
       .then((lots) => {
         line.availableLots = lots;
         line.candidateLots = lots.filter(lot => !lot.expired);
-      });
+
+        const inventory = inventoryStore.get(line.inventory_uuid);
+        const entryDate = vm.movement.date || Date();
+        line.code = inventory.code;
+        line.label = inventory.label;
+        line.unit_cost = inventory.price;
+        line.quantity = 0;
+        line.cost = line.quantity * line.unit_cost;
+        line.expiration_date = entryDate;
+        line.unit = inventory.unit;
+        line.tracking_expiration = inventory.tracking_expiration;
+        setInitialized(line);
+
+        return vm.depot && vm.depot.uuid ? Stock.inventories.read(null, {
+          inventory_uuid : line.inventory_uuid,
+          depot_uuid : vm.depot.uuid,
+        }) : {};
+      })
+      .then(stockInventory => {
+        if (!stockInventory.length) { return; }
+        line.wac = stockInventory[0].wac;
+      })
+      .catch(Notify.handleError);
   }
 
   startup();
