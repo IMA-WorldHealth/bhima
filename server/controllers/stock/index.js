@@ -143,6 +143,8 @@ async function createStock(req, res, next) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
     }
 
+    transaction.addQuery('CALL RecomputeStockValue(NULL);');
+
     // gather inventory uuids for use later recomputing the stock quantities
     const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
 
@@ -243,6 +245,8 @@ async function insertNewStock(session, params) {
   if (session.stock_settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
   }
+
+  transaction.addQuery('CALL RecomputeStockValue(NULL);');
 
   await transaction.execute();
   // update the quantity in stock as needed
@@ -381,6 +385,8 @@ async function createInventoryAdjustment(req, res, next) {
       }
     }
 
+    trx.addQuery('CALL RecomputeStockValue(NULL);');
+
     // reset all previous lots
     await trx.execute();
 
@@ -512,6 +518,8 @@ async function deleteMovement(req, res, next) {
 
     tx.addQuery(deleteLots, [identifier]);
 
+    tx.addQuery('CALL RecomputeStockValue(NULL);');
+
     // remove stock movements and related lots
     // by removing stock movements, only quantities are affected
     // accounting amounts are not touched in the next line
@@ -589,6 +597,8 @@ async function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
+  transaction.addQuery('CALL RecomputeStockValue(NULL);');
+
   const result = await transaction.execute();
 
   // update the quantity in stock as needed
@@ -640,6 +650,8 @@ async function depotMovement(document, params) {
 
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
+
+  transaction.addQuery('CALL RecomputeStockValue(NULL);');
 
   const result = await transaction.execute();
 
@@ -1392,6 +1404,8 @@ async function createAggregatedConsumption(req, res, next) {
         }
       });
     });
+
+    trx.addQuery('CALL RecomputeStockValue(NULL);');
 
     await trx.execute();
 
