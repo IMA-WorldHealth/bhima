@@ -223,7 +223,6 @@ function StockModalService(Modal) {
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
-
     const instance = Modal.open(params);
     return instance.result;
   }

@@ -52,3 +52,10 @@ UPDATE status SET class_style = 'label label-info' WHERE id = 4;
 UPDATE status SET class_style = 'label label-danger' WHERE id = 5;
 UPDATE status SET class_style = 'label label-success' WHERE id = 6;
 UPDATE status SET class_style = 'label label-danger' WHERE id = 7;
+
+/* author: jmcameron
+ * @date: 2021-06-24
+ */
+CALL add_column_if_missing('purchase', 'shipping_handling',
+  ' DECIMAL(19,8) UNSIGNED NOT NULL DEFAULT 0.0 AFTER `cost`');
+ALTER TABLE `purchase` MODIFY `cost` DECIMAL(19,8);
