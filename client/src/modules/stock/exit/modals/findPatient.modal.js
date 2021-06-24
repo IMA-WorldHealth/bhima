@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 StockFindPatientModalController.$inject = [
   '$uibModalInstance', 'PatientService', 'NotifyService', 'data', 'AppCache',
-  'BarcodeService', 'DebtorService', 'PatientInvoiceService',
+  'BarcodeService', 'DebtorService', 'PatientInvoiceService', 'SessionService',
 ];
 
 function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCache, Barcodes, Debtors,
-  PatientInvoice) {
+  PatientInvoice, Session) {
   const vm = this;
   const cache = new AppCache('StockFindPatient');
 
