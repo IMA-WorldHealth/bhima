@@ -22,7 +22,7 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
   vm.previewGenerated = false;
   vm.onEntryTypeChange = onEntryTypeChange;
 
-  vm.currency_id = Session.enterprise.currency_id;
+  vm.reportDetails.currencyId = Session.enterprise.currency_id;
 
   // check cached configuration
   checkCachedConfiguration();
