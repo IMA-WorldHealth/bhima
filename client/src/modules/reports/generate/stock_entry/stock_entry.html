@@ -39,6 +39,11 @@
             required="true">
           </bh-date-interval>
 
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.reportDetails.currencyId"
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)" >
+          </bh-currency-select>          
+
           <!-- stock entry type -->
           <div ng-class="{'has-error': ConfigForm.$submitted && !ReportConfigCtrl.hasOneChecked}">
             <div class="checkbox">

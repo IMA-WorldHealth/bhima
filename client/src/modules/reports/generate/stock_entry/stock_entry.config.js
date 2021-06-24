@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 StockEntryConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService',
+  'LanguageService', 'SessionService',
 ];
 
-function StockEntryConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
+function StockEntryConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, Session) {
   const vm = this;
   const cache = new AppCache('configure_stock_entry_report');
   const reportUrl = 'reports/stock/entry';
@@ -22,6 +22,8 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
   vm.previewGenerated = false;
   vm.onEntryTypeChange = onEntryTypeChange;
 
+  vm.reportDetails.currencyId = Session.enterprise.currency_id;
+
   // check cached configuration
   checkCachedConfiguration();
 
@@ -30,6 +32,10 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
 
   vm.onSelectDepot = depot => {
     vm.reportDetails.depotUuid = depot.uuid;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.clear = key => {
