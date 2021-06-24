@@ -56,6 +56,22 @@
       settings :  {},
     });
 
+    service.exchange = () => [{
+      // placeholder
+    }, {
+      currency_id : 1,
+      name : 'FC',
+      rate : 2000.0,
+    }, {
+      currency_id : 2,
+      name : 'USD',
+      rate : 1.0,
+    }, {
+      currency_id : 3,
+      name : 'EUR',
+      rate : 0.84,
+    }];
+
     service.stock_settings = () => ({
       enterprise_id : 1,
       enable_auto_stock_accounting : 0,
