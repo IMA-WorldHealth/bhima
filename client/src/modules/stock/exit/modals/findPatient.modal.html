@@ -51,7 +51,7 @@
               type="radio"
               ng-click="$ctrl.findDetailInvoice(invoice)"
               name="invoice">
-            <span><strong>{{ invoice.reference }}: {{ invoice.debit | currency: $ctrl.enterprise.currency_id }}</strong> - ({{ invoice.date | date:'dd/mm/yyyy, hh:mm' }})</span>
+            <span><strong>{{ invoice.reference }}: {{ invoice.debit | currency: $ctrl.enterprise.currency_id }}</strong> - ({{ invoice.date | date:'dd/MM/yyyy, hh:mm' }})</span>
           </label>
         </div>
       </div>
