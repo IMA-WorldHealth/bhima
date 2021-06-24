@@ -28,6 +28,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.getLastInvoice = getLastInvoice;
   vm.invoiceSelected = false;
+  vm.enterprise = Session.enterprise;
 
   vm.findDetailInvoice = findDetailInvoice;
 
