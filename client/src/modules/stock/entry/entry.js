@@ -355,6 +355,7 @@ function StockEntryController(
   function findPurchase() {
     StockModal.openFindPurchase()
       .then((purchase) => {
+        vm.originalPO = purchase;
         handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
         vm.currencyId = vm.movement.entity.instance.currency_id || vm.currencyId;
@@ -544,7 +545,7 @@ function StockEntryController(
   function submitPurchase() {
     const movement = {
       depot_uuid  : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
+      entity_uuid : vm.movement.entity.uuid, // The purchase order UUID
       date        : vm.movement.date,
       description : vm.movement.description,
       flux_id     : bhConstants.flux.FROM_PURCHASE,
@@ -553,9 +554,50 @@ function StockEntryController(
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
-    // fix the unit price, if necessary
+    const exchangeRate = Exchange.getCurrentRate(vm.currencyId);
+
+    // If there are shipping and handling charges, distribute them to the individual lot articles
+    if (vm.originalPO[0].shipping_handling) {
+
+      // Compute the cost of the original order (in PO currency), not including shipping+handling
+      const costPO = vm.originalPO.reduce((accum, lot) => accum + lot.unit_price * lot.quantity, 0.0);
+
+      // // ??? TEMPORARY DIAGNOSTIC CODE
+      // // Compute the cost of the order, as delivered (in PO currency), not including shipping+handling
+      // const costDelivered = movement.lots.reduce((accum, lot) => accum + lot.unit_cost * lot.quantity, 0.0);
+
+      // Compute the ratio of the original PO shipping+handling costs to the total cost of lots
+      // (Note that the total shipping_handling is copied to each lot in originalPO)
+      const SHRatio = vm.originalPO[0].shipping_handling / costPO;
+
+      // // ??? TEMPORARY DIAGNOSITIC CODE
+      // // Compute the total delivered cost with pro-rated shipping+handling cost (in PO currency)
+      // // (Note: if the order is full, this will be just the PO cost of lots + shipping+handling)
+      // const totalCostDelivered = costDelivered * (1.0 + SHRatio);
+      // console.log("ORIG PO: ", vm.originalPO);
+      // console.log("PO COST: ", costPO);
+      // console.log("DELIV COST: ", costDelivered);
+      // console.log("SHRatio: ", SHRatio);
+      // console.log("LOTS: ", movement.lots);
+      // console.log("PO TOTAL COST: ", costPO + vm.originalPO[0].shipping_handling);
+      // console.log("DELIV TOTAL COST: ", totalCostDelivered);
+      // movement.lots.forEach(lot => {
+      //   console.log("ORIG lot unit_cost: ", lot.unit_cost);
+      // });
+
+      // Adjust the article unit price by distributing the shipping+handling costs
+      movement.lots.forEach(lot => {
+        lot.unit_cost = ((lot.unit_cost * lot.quantity) * (1.0 + SHRatio)) / lot.quantity;
+      });
+
+      // // ??? TEMPORARY DIAGNOSITIC CODE
+      // movement.lots.forEach(lot => {
+      //   console.log("ADJ lot unit_cost (PO currency): ", lot.unit_cost);
+      // });
+    }
+
+    // fix the unit cost, if necessary
     if (vm.currencyId !== vm.enterprise.currency_id) {
-      const exchangeRate = Exchange.getCurrentRate(vm.currencyId);
       movement.lots.forEach(lot => {
         lot.unit_cost /= exchangeRate;
       });

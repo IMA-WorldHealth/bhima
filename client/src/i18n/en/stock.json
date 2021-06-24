@@ -6,6 +6,7 @@
     "ADJUSTMENT_TYPE" : "Adjustment Type",
     "AGGREGATED_STOCK_CONSUMPTION": {
       "AGGREGATED_MOVEMENTS": "Aggregated movements",
+      "CONSUMPTION_TO_DATE": "Consomption to date",
       "DETAILS": "Details",
       "DESCRIPTION": "The compute Aggregate stock consumption, makes possible to define for a warehouse and for a period the quantity of stock consumed but especially by batch number, while specifying for each product the number of days of out of stock",
       "END_OF_CONSUMPTION": "End of consumption",
@@ -242,6 +243,8 @@
     "SUCCESSFULLY_DELETED" : "Successfully deleted",
     "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost",
+    "UNIT_COST_SH"    : "Unit cost + S&H",
+    "UNIT_COST_SH_NOTE" : "This unit cost includes distributed Shipping and Handling costs",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date. Only the lots available on the chosen date will be visible as well as the quantity on this date",
     "STOCK_COST_DESCRIPTION" : "Monetary values are based on the cost of purchasing inventory, not the selling price",
     "STOCK_UNIT_COST_ROUNDED" : "The unit cost is rounded with two decimals",
