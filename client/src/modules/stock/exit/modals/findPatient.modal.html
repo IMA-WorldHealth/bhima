@@ -20,7 +20,7 @@
       on-search-complete="$ctrl.setPatient(patient)">
     </bh-find-patient>
 
-    <div class="form-group">
+    <div ng-if="$ctrl.selected.uuid" class="form-group">
       <div class="checkbox">
         <label>
           <input
@@ -28,7 +28,8 @@
             name="join_invoice"
             ng-true-value="1"
             ng-false-value="0"
-            ng-model="$ctrl.joinInvoice">
+            ng-model="$ctrl.joinInvoice"
+            ng-click="$ctrl.getLastInvoice()">
           <span translate>STOCK.JOIN_INVOICE</span>
         </label>
       </div>
@@ -40,6 +41,22 @@
           on-search-complete="$ctrl.setInvoice(invoice)"
           disabled="!$ctrl.selected.uuid">
         </bh-find-invoice>
+      </div>
+
+      <div ng-if="$ctrl.patientInvoices.length && $ctrl.joinInvoice && !$ctrl.invoiceSelected">
+        <div translate> FORM.INFO.THE_LAST_5_INVOICES </div>
+        <div ng-repeat="invoice in $ctrl.patientInvoices" class="radio">
+          <label>
+            <input
+              type="radio"
+              ng-click="$ctrl.findDetailInvoice(invoice)"
+              name="invoice">
+            <span><strong>{{ invoice.reference }}: {{ invoice.debit | currency: $ctrl.enterprise.currency_id }}</strong> - ({{ invoice.date | date:'dd/mm/yyyy, hh:mm' }})</span>
+          </label>
+        </div>
+      </div>
+      <div class="text-warning" ng-if="!$ctrl.patientInvoices.length && $ctrl.joinInvoice">
+        <i class="fa fa-warning"></i> <span translate> FORM.INFO.THIS_PATIENT_NOT_BILLED </span>
       </div>
     </div>
 
