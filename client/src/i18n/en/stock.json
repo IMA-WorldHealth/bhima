@@ -224,6 +224,7 @@
     "ROWS"            : "Rows",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
+    "SELECT_INVOICE"  : "Select Invoice",
     "SERVICE"         : "Service",
     "STATUS"          : {
       "IN_STOCK"      : "In Stock",
