@@ -1,5 +1,6 @@
 <form
   name="FindForm"
+  bh-submit="$ctrl.submit(FindForm)"
   ng-model-options="{ 'debounce' : { 'default' : 200, 'blur' : 0 }}"
   novalidate>
 
@@ -17,7 +18,7 @@
       <div class="col-xs-12">
         <div>
           <span class="text-bold" translate>STOCK.ENTRY_DATE</span> :
-          {{ $ctrl.entryDate | date:$ctrl.Constants.dates.format }}
+          {{ $ctrl.entryDate | date:$ctrl.bhConstants.dates.format }}
         </div>
       </div>
     </div>
@@ -73,7 +74,22 @@
         <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
       </div>
 
-      <bh-add-item callback="$ctrl.form.addItem()" disable="true">
+      <div style="margin-bottom: 5px;" bh-has-permission="$ctrl.bhConstants.actions.EDIT_LOT">
+        <div class="checkbox">
+          <label>
+            <input
+              id="editExpirationDates"
+              type="checkbox"
+              ng-model="$ctrl.editExpirationDates"
+              ng-change="$ctrl.onExpDateEditable()"
+              ng-true-value="1"
+              ng-false-value="0">
+            <span translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES</span>
+          </label>
+          <p class="help-block" translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES_DESCRIPTION</p>
+        </div>
+
+        <bh-add-item callback="$ctrl.form.addItem()" disable="true">
       </bh-add-item>
     </div>
 
@@ -105,8 +121,8 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <button type="submit" class="btn btn-primary" ng-click="$ctrl.submit(FindForm, $event)" data-method="submit" translate>
-      FORM.BUTTONS.SUBMIT
-    </button>
+    <bh-loading-button loading-state="$ctrl.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
   </div>
 </form>
