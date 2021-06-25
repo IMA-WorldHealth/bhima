@@ -649,7 +649,7 @@ END $$
  * and update value in the database, the value is computed
  * in the enterprise currency
  */
-DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue;
+DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue$$
 CREATE PROCEDURE RecomputeInventoryStockValue(
   IN _inventory_uuid BINARY(16),
   IN _depot_uuid BINARY(16),
@@ -714,7 +714,7 @@ BEGIN
 
 END $$
 
-DROP PROCEDURE IF EXISTS RecomputeDepotStockValue;
+DROP PROCEDURE IF EXISTS RecomputeDepotStockValue$$
 CREATE PROCEDURE RecomputeDepotStockValue(
   IN _depot_uuid BINARY(16),
   IN _date DATE
@@ -751,7 +751,7 @@ BEGIN
   CLOSE cursor_all_inventories;
 END $$
 
-DROP PROCEDURE IF EXISTS RecomputeStockValue;
+DROP PROCEDURE IF EXISTS RecomputeStockValue$$
 CREATE PROCEDURE RecomputeStockValue(
   IN _date DATE
 )
