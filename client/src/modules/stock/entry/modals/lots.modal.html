@@ -41,6 +41,10 @@
 
     <div class="form-group">
       <label translate>STOCK.UNIT_COST</label>
+      <span ng-if="$ctrl.stockLine.wacValue" class="text-primary">
+        <i class="fa fa-info-circle"></i>&nbsp;
+        <span translate>STOCK.WAC_NOTIFICATION</span> : <b>{{ $ctrl.wacValue | currency: $ctrl.currencyId }}</b>
+      </span>
 
       <div ng-if="!$ctrl.isCostEditable">
         <span class="form-control-static">{{ $ctrl.stockLine.unit_cost }}  {{ $ctrl.currency.label }} </span>

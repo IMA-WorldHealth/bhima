@@ -431,6 +431,15 @@ function StockEntryController(
         .then((lots) => {
           item.availableLots = lots;
           item.candidateLots = lots.filter(lot => !lot.expired);
+
+          return vm.depot && vm.depot.uuid ? Stock.inventories.read(null, {
+            depot_uuid  : vm.depot.uuid,
+            inventory_uuid : item.inventory_uuid,
+          }) : {};
+        })
+        .then(stockInventory => {
+          if (!stockInventory.length) { return; }
+          item.wacValue = stockInventory[0].wac;
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
