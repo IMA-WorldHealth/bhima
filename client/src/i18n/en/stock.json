@@ -1,7 +1,7 @@
 {
   "STOCK" : {
     "ALERT" : "Alert",
-    "USE_OF_STOCK_WAC" : "Use of the weighted average unit cost of the product",
+    "USE_OF_STOCK_WAC" : "Use of the value in stock of the product (Weighted Average Cost)",
     "WAC_NOTIFICATION" : "The value of the product in stock is",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"Does not exist because the movement of stock was made before the implementation of stock accounting",
     "ADJUSTMENT"      : "Adjustment",
