@@ -4,19 +4,23 @@ angular.module('bhima.controllers')
 StockDefineLotsModalController.$inject = [
   'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
   'CurrencyService', 'NotifyService', 'bhConstants', 'StockEntryModalForm',
-  '$translate', 'focus',
+  '$translate', 'focus', 'ExchangeRateService',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Session,
   Currencies, Notify, bhConstants, EntryForm,
-  $translate, Focus,
+  $translate, Focus, ExchangeRate,
 ) {
   const vm = this;
 
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
+  if (Data.stockLine.wac) {
+    Data.stockLine.unit_cost = Data.stockLine.wac;
+  }
+
   const tracking = Data.stockLine.tracking_expiration;
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
@@ -115,6 +119,8 @@ function StockDefineLotsModalController(
       .then((currencies) => {
         vm.currency = currencies.find(curr => curr.id === vm.currencyId);
         vm.currency.label = Currencies.format(vm.currencyId);
+        const rate = ExchangeRate.getExchangeRate(vm.currencyId, new Date());
+        vm.wacValue = rate * Data.stockLine.wacValue;
       })
       .catch(Notify.handleError);
 
