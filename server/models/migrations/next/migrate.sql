@@ -71,3 +71,7 @@ CREATE TABLE  `stock_value` (
     CONSTRAINT `stock_value__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     CONSTRAINT `stock_value__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/** Recompute stock values for all depots */
+/** All databases in production must run this script */
+CALL RecomputeStockValue(NULL);
