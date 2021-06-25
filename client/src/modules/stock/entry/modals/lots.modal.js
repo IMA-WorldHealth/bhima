@@ -17,6 +17,10 @@ function StockDefineLotsModalController(
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
+  if (Data.stockLine.wac) {
+    Data.stockLine.unit_cost = Data.stockLine.wac;
+  }
+
   const tracking = Data.stockLine.tracking_expiration;
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,

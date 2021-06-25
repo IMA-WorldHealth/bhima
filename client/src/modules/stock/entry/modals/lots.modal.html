@@ -13,7 +13,7 @@
 
   <div class="modal-body">
 
-    <div class="row" style="margin-top: 0.5em; margin-bottom: 0.5em">
+    <div ng-if="$ctrl.entryDate" class="row" style="margin-top: 0.5em; margin-bottom: 0.5em">
       <div class="col-xs-12">
         <div>
           <span class="text-bold" translate>STOCK.ENTRY_DATE</span> :
@@ -57,6 +57,7 @@
           ng-model-options="{ '*' : '$inherit' }">
         <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
       </div>
+      <div ng-if="$ctrl.stockLine.wac" class="text-primary"><i class="fa fa-info-circle"></i>&nbsp;<span translate>STOCK.USE_OF_STOCK_WAC</span></div>
     </div>
 
     <div style="margin-bottom: 5px;">

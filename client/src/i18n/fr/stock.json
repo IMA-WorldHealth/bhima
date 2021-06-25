@@ -1,6 +1,7 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "USE_OF_STOCK_WAC" : "Utilisation du coût unitaire moyen pondéré du produit",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
