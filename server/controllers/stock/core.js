@@ -138,8 +138,8 @@ function getLotFilters(parameters) {
   filters.custom('patientReference',
     'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
 
-  filters.period('defaultPeriod', 'date');
-  filters.period('period', 'date');
+  filters.period('defaultPeriod', 'date', 'm');
+  filters.period('period', 'date', 'm');
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
