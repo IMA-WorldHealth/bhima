@@ -8,13 +8,23 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h3 class="text-center">
+      <h2 class="text-center">
         {{translate 'REPORT.STOCK.ENTRY_REPORT'}}
-      </h3>
+      </h2>
 
-      <h2 class="text-center"> {{ depotName }} </h2>
+      <h1 class="text-center">
+        {{ depotName }}
+      </h1>
 
-      <h5 class="text-center"> {{date dateFrom}} - {{date dateTo}} </h5>
+      <h4 class="text-center">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
+
+      {{#unless isEnterpriseCurrency}}
+        <div class="alert alert-warning">
+          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+        </div>
+      {{/unless}}
 
       <br/>
 
@@ -23,18 +33,16 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #EFEFEF;">
-              <th colspan="3"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.ENTRY_PURCHASE'}}</h3></th>
-              <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
-              <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
-              <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+              <th colspan="5">{{translate 'STOCK.RECEIPT.ENTRY_PURCHASE'}}</th>
+              <th colspan="2" class="text-right">{{currency entryFromPurchase.cost currencyId}}</th>
             </tr>
           </thead>
           {{#each entryFromPurchase.data as | data |}}
             <thead>
               <tr>
-                <th colspan="4">({{data.code}}) {{ data.inventory_name }}</th>
-                <th class="text-right">{{ data.inventory_stock_entry_quantity }}</th>
-                <th class="text-left">{{ data.inventory_unit }}</i></th>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th colspan="2" class="text-right">{{ data.inventory_stock_entry_quantity }} {{ data.inventory_unit }}</th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_entry_cost ../currencyId}}</th>
               </tr>
             </thead>
 
@@ -44,10 +52,15 @@
                   <tr>
                     <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
                     <td class="text-left" style="border:none; width: 40%;">({{ purchase_reference }}) {{ supplier_display_name }}</td>
-                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td class="text-left" style="border:none; width: 15%">
+                      {{#if invoice_reference}}
+                        {{translate 'FORM.LABELS.INVOICE' }}: <b>{{ invoice_reference }}</b>
+                      {{/if}}
+                    </td>
                     <td style="border:none;">{{date date }}</td>
-                    <td class="text-right" style="border:none;">{{ quantity }}</td>
-                    <td class="text-left" style="border:none;">{{ unit_text }}</i></td>
+                    <td class="text-right" style="border:none;">{{ quantity }} {{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../currencyId}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../currencyId}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -57,7 +70,7 @@
 
           <!-- no data -->
           {{#if entryFromPurchase.isEmpty}}
-            <tr><th colspan="6" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
@@ -69,18 +82,16 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #EFEFEF;">
-              <th colspan="3"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.ENTRY_INTEGRATION'}}</h3></th>
-              <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
-              <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
-              <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+              <th colspan="5">{{translate 'STOCK.RECEIPT.ENTRY_INTEGRATION'}}</th>
+              <th colspan="2" class="text-right">{{currency entryFromIntegration.cost currencyId}}</th>
             </tr>
           </thead>
           {{#each entryFromIntegration.data as | data |}}
             <thead>
               <tr>
-                <th colspan="4">({{data.code}}) {{ data.inventory_name }}</th>
-                <th class="text-right">{{ data.inventory_stock_entry_quantity }}</th>
-                <th class="text-left">{{ data.inventory_unit }}</i></th>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th colspan="2" class="text-right">{{ data.inventory_stock_entry_quantity }} {{ data.inventory_unit }}</th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_entry_cost ../currencyId}}</th>
               </tr>
             </thead>
 
@@ -90,10 +101,15 @@
                   <tr>
                     <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
                     <td class="text-left" style="border:none; width: 40%;">{{ description }}</td>
-                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td class="text-left" style="border:none; width: 15%">
+                      {{#if invoice_reference}}
+                        {{translate 'FORM.LABELS.INVOICE' }}: <b>{{ invoice_reference }}</b>
+                      {{/if}}
+                    </td>
                     <td style="border:none;">{{date date }}</td>
-                    <td class="text-right" style="border:none;">{{ quantity }}</td>
-                    <td class="text-left" style="border:none;">{{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} {{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../currencyId}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../currencyId}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -102,8 +118,8 @@
           {{/each}}
 
           <!-- no data -->
-          {{#if entryFromIntegration.isEmpty}}
-            <tr><th colspan="6" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{#if entryFromPurchase.isEmpty}}
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
@@ -115,18 +131,16 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #EFEFEF;">
-              <th colspan="3"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.ENTRY_DONATION'}}</h3></th>
-              <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
-              <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
-              <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+              <th colspan="5">{{translate 'STOCK.RECEIPT.ENTRY_DONATION'}}</th>
+              <th colspan="2" class="text-right">{{currency entryFromDonation.cost currencyId}}</th>
             </tr>
           </thead>
           {{#each entryFromDonation.data as | data |}}
             <thead>
               <tr>
-                <th colspan="4">({{data.code}}) {{ data.inventory_name }}</th>
-                <th class="text-right">{{ data.inventory_stock_entry_quantity }}</th>
-                <th class="text-left">{{ data.inventory_unit }}</i></th>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th colspan="2" class="text-right">{{ data.inventory_stock_entry_quantity }} {{ data.inventory_unit }}</th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_entry_cost ../currencyId}}</th>
               </tr>
             </thead>
 
@@ -138,8 +152,9 @@
                     <td class="text-left" style="border:none; width: 40%;">{{ description }}</td>
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
-                    <td class="text-right" style="border:none;">{{ quantity }}</td>
-                    <td class="text-left" style="border:none;">{{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} {{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../currencyId}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../currencyId}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -149,30 +164,28 @@
 
           <!-- no data -->
           {{#if entryFromDonation.isEmpty}}
-            <tr><th colspan="6" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
 
-      <br>
+      <br/>
 
       <!-- stock entry to other depot -->
       {{#if includeTransferEntry}}
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color: #EFEFEF;">
-              <th colspan="3"><h3 style="margin: 0px;">{{translate 'STOCK.RECEIPT.ENTRY_DEPOT'}}</h3></th>
-              <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
-              <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
-              <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
+              <th colspan="5">{{translate 'STOCK.RECEIPT.ENTRY_DEPOT'}}</th>
+              <th colspan="2" class="text-right">{{currency entryFromTransfer.cost currencyId}}</th>
             </tr>
           </thead>
           {{#each entryFromTransfer.data as | data |}}
             <thead>
               <tr>
-                <th colspan="4">({{data.code}}) {{ data.inventory_name }}</th>
-                <th class="text-right">{{ data.inventory_stock_entry_quantity }}</th>
-                <th class="text-left">{{ data.inventory_unit }}</i></th>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th colspan="2" class="text-right">{{ data.inventory_stock_entry_quantity }} {{ data.inventory_unit }}</th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_entry_cost ../currencyId}}</th>
               </tr>
             </thead>
 
@@ -181,11 +194,12 @@
                 {{#each data.inventory_stock_entry_data as | item |}}
                   <tr>
                     <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
-                    <td class="text-left" style="border:none;  width: 40%;">{{ depot_name }}</td>
+                    <td class="text-left" style="border:none; width: 40%;">{{ depot_name }}</td>
                     <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
                     <td style="border:none;">{{date date }}</td>
-                    <td class="text-right" style="border:none;">{{ quantity }}</td>
-                    <td class="text-left" style="border:none;">{{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} {{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../currencyId}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../currencyId}}</td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -195,11 +209,16 @@
 
           <!-- no data -->
           {{#if entryFromTransfer.isEmpty}}
-            <tr><th colspan="6" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
       {{/if}}
 
+      <br/>
+
+
+      <p>*<em>{{translate 'STOCK.STOCK_COST_DESCRIPTION'}}</em></p>
+      <p>*<em>{{translate 'STOCK.STOCK_UNIT_COST_ROUNDED'}}</em></p>
     </div>
   </div>
 </body>

@@ -12,6 +12,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     SELECT
       i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
       SUM(m.quantity) as quantity, m.date, m.description,
+      SUM(m.quantity * m.unit_cost) AS cost, m.unit_cost,
       u.display_name AS user_display_name,
       dm.text AS document_reference, dd.text AS depot_name
     FROM stock_movement m
