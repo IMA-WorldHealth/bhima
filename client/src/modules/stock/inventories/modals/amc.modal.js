@@ -16,12 +16,12 @@ function StockAMCModalController(Stock, Notify, Instance, data, moment, Constant
     vm.loading = true;
 
     Stock.inventories.loadAMCForInventory(data.inventory_uuid, data.depot_uuid)
-      .then(items => {
-        vm.data = items;
+      .then(articles => {
+        vm.data = articles;
 
         vm.settings = vm.data.settings;
-        vm.inventory = items.inventory;
-        vm.depot = items.depot;
+        vm.inventory = articles.inventory;
+        vm.depot = articles.depot;
 
         vm.data.avg_consumption = vm.data[vm.settings.average_consumption_algo];
 

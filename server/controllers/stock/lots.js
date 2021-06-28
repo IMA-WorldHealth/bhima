@@ -144,7 +144,7 @@ function getDupes(req, res, next) {
   filters.equals('entry_date');
   filters.equals('expiration_date');
 
-  let query = filters.applyQuery(detailsQuery);
+  const query = filters.applyQuery(detailsQuery);
   const params = filters.parameters();
 
   return db.exec(query, params)
