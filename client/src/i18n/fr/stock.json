@@ -297,6 +297,8 @@
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
     "MERGED_LOTS_AUTOMATICALLY": "{{NumLots}} lots fusionnés automatiquement pour {{numInventories}} articles d'inventaire",
+    "ENABLE_CORRECTING_LOT_EXPIRATION_DATES": "Permettre la correction des dates d'expiration des lots",
+    "ENABLE_CORRECTING_LOT_EXPIRATION_DATES_DESCRIPTION": "Permettre la correction des dates d'expiration des lots existants.",
     "ENABLE_FAST_INSERT": "Activer les insertions rapides",
     "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
     "EXCLUDE_EXHAUSTED_LOTS": "Exclure les lots de stocks épuisés",

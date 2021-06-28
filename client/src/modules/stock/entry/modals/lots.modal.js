@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'SessionService',
-  'CurrencyService', 'NotifyService', 'bhConstants', 'StockEntryModalForm',
-  '$translate', 'focus',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
+  'SessionService', 'CurrencyService', 'NotifyService', 'StockEntryModalForm',
+  'bhConstants', '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Session,
-  Currencies, Notify, bhConstants, EntryForm,
-  $translate, Focus,
+  AppCache, Instance, uiGridConstants, Data, Lots,
+  Session, Currencies, Notify, EntryForm,
+  bhConstants, $translate, Focus,
 ) {
   const vm = this;
 
@@ -26,7 +26,7 @@ function StockDefineLotsModalController(
     rows : Data.stockLine.lots,
   });
 
-  vm.Constants = bhConstants;
+  vm.bhConstants = bhConstants;
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
@@ -47,12 +47,15 @@ function StockDefineLotsModalController(
   vm.onLotBlur = onLotBlur;
   vm.onChanges = onChanges;
   vm.onChangeQuantity = onChangeQuantity;
+  vm.onExpDateEditable = onExpDateEditable;
   vm.onChangeUnitCost = onChangeUnitCost;
   vm.onDateChange = onDateChange;
 
   vm.onSelectLot = onSelectLot;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
+
+  vm.editExpirationDates = false;
 
   const cols = [{
     field : 'status',
@@ -141,6 +144,18 @@ function StockDefineLotsModalController(
       .find(l => l.uuid === uuid);
   }
 
+  /**
+   * @method getExistingLot
+   *
+   * @description
+   *  If the lot given is a string, it is a label, so look it up by label.
+   *  If the lot is not a string, it will contain the lots UUID, use it to look up the lot
+   * @param {lot} the 'lot' object from the lot selection popup modal form
+   */
+  function getExistingLot(lot) {
+    return typeof lot === 'string' ? lookupLotByLabel(lot) : lookupLotByUuid(lot.uuid);
+  }
+
   // Handle the extra validation for expired lot labels
   function validateForm() {
     vm.errors = vm.form.validate(vm.entryDate);
@@ -151,17 +166,9 @@ function StockDefineLotsModalController(
         return;
       }
 
-      // Note that the type of row.lot will differ depending on whether
-      // we are selecting an existing lot or creating a new one.
-      const existingLot = typeof row.lot === 'string'
-        ? lookupLotByLabel(row.lot)
-        : lookupLotByUuid(row.lot.uuid);
+      const existingLot = getExistingLot(row.lot);
 
-      if (existingLot) {
-        // Disable changing the date for rows with lots already defined.
-        // (This does not prevent changing the quantity.)
-        row.disabled = true;
-      }
+      row.editExpDateDisabled = (existingLot && !vm.editExpirationDates);
 
       // Check to make sure the lot has not expired
       if (existingLot && existingLot.expired) {
@@ -250,6 +257,15 @@ function StockDefineLotsModalController(
     onChanges();
   }
 
+  function onExpDateEditable() {
+    vm.form.rows.forEach((row) => {
+      if (row.lot === null) {
+        return;
+      }
+      row.editExpDateDisabled = (getExistingLot(row.lot) && !vm.editExpirationDates);
+    });
+  }
+
   function onChangeUnitCost() {
     vm.form.setUnitCost(vm.stockLine.unit_cost);
     onChanges();
@@ -280,7 +296,7 @@ function StockDefineLotsModalController(
   function onSelectLot(entity, item) {
     const lot = vm.stockLine.candidateLots.find(l => l.uuid === item.uuid);
     entity.expiration_date = new Date(lot.expiration_date);
-    entity.disabled = true;
+    entity.editExpDateDisabled = !vm.editExpirationDates;
     onChanges();
   }
 
@@ -296,7 +312,7 @@ function StockDefineLotsModalController(
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.
     if (form.$invalid) {
-      return;
+      return 0;
     }
 
     // Handle differences in selecting vs creating lots
@@ -309,12 +325,26 @@ function StockDefineLotsModalController(
     });
 
     if (vm.errors.length === 0) {
-      saveSetting();
-      Instance.close({
-        lots : vm.form.rows,
-        unit_cost : vm.stockLine.unit_cost,
-        quantity : vm.form.total(),
-      });
+
+      // Maybe update some lot expiration dates
+      const promises = [];
+      if (vm.editExpirationDates) {
+        vm.form.rows.forEach((row) => {
+          const existingLot = getExistingLot(row.lot);
+          if (existingLot && (row.expiration_date !== existingLot.expiration_date)) {
+            promises.push(Lots.update(existingLot.uuid, { expiration_date : row.expiration_date }));
+          }
+        });
+      }
+      return Promise.all(promises)
+        .then(() => {
+          saveSetting();
+          Instance.close({
+            lots : vm.form.rows,
+            unit_cost : vm.stockLine.unit_cost,
+            quantity : vm.form.total(),
+          });
+        });
     }
   }
 
