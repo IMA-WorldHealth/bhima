@@ -6,6 +6,31 @@ const helpers = require('./helpers');
 describe('(/depots) The depots API ', () => {
   const { principal } = helpers.data.depots;
 
+  /**
+   * In the depot principal, the cost of oxitocine is 7.06, and its quantity before the new entry is 9110
+   * the current stock value for oxytocine is 9110 * 7.06 = 64316.60
+   */
+  const CURRENT_STOCK_VALUE = 64316.60;
+
+  /**
+   * In the depot principal, the entry of oxytocine has as cost 9 and quantity 5000
+   * the incoming stock value for oxytocine is 5000 * 9 = 45000
+   */
+  const INCOMING_STOCK_VALUE = 45000;
+
+  /**
+   * After the entry of oxytocine, the final quantity is 9110 + 5000 = 14110
+   */
+  const FINAL_STOCK_QUANTITY = 14110;
+
+  /**
+   * The WAC (Weighted Avarage Cost) is :
+   * (CURRENT_STOCK_VALUE + INCOMING_STOCK_VALUE) / FINAL_STOCK_QUANTITY
+   * NOTA: From the 3rd decimal place after the decimal point,
+   *       the EXPECTED_WAC is different from what the procedure `RecomputeInventoryStockValue` compute
+   */
+  const EXPECTED_WAC = Number((CURRENT_STOCK_VALUE + INCOMING_STOCK_VALUE) / FINAL_STOCK_QUANTITY).toFixed(2);
+
   it('GET /depots/:uuid/inventories returns inventory for a depot', () => {
     const principalInventoryItems = [
       'Ampicilline, 500mg, Vial, Unité',
@@ -163,8 +188,29 @@ describe('(/depots) The depots API ', () => {
     // check the quantites of each individual article
     const [ampicilline, oxytocine, quinine] = res.body;
     expect(ampicilline.quantity).to.equal(0);
-    expect(oxytocine.quantity).to.equal(9110);
+    expect(oxytocine.quantity).to.equal(14110);
     expect(quinine.quantity).to.equal(360);
+  });
+
+  let WAC_FROM_PROCEDURE;
+  let WAC_FROM_STOCK_SHEET;
+
+  it(`GET /depots/:uuid/inventories/:uuid/wac returns the WAC for an inventory`, async () => {
+    const { oxytocine } = helpers.data.inventories;
+    const res = await agent.get(`/depots/${principal}/inventories/${oxytocine}/wac`);
+    WAC_FROM_PROCEDURE = Number(res.body.wac).toFixed(2);
+    expect(res.body.quantity).to.equal(FINAL_STOCK_QUANTITY);
+    expect(WAC_FROM_PROCEDURE).to.equal(EXPECTED_WAC);
+  });
+
+  it(`GET /depots/:uuid/inventories/:uuid/sheet_wac returns the WAC from stock sheet`, async () => {
+    const { oxytocine } = helpers.data.inventories;
+    const res = await agent.get(`/depots/${principal}/inventories/${oxytocine}/sheet_wac`);
+    const { stock } = res.body.result;
+    WAC_FROM_STOCK_SHEET = Number(stock.unit_cost).toFixed(2);
+    expect(stock.quantity).to.equal(FINAL_STOCK_QUANTITY);
+    expect(WAC_FROM_STOCK_SHEET).to.equal(EXPECTED_WAC);
+    expect(WAC_FROM_STOCK_SHEET).to.equal(WAC_FROM_PROCEDURE);
   });
 
   it('GET /depots/:uuid/flags/stock_out returns the stock in a depot', async () => {
