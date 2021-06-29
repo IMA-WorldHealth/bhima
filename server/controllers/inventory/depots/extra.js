@@ -25,6 +25,52 @@ router.get('/movements/:fluxId', getDepotStockMovementsByFluxType);
 router.get('/inventories/:inventoryUuid/cmm', getInventoryAverageMonthlyConsumption);
 router.get('/inventories/:inventoryUuid/lots', getInventoryLots);
 
+router.get('/inventories/:inventoryUuid/wac', getInventoryWac);
+router.get('/inventories/:inventoryUuid/sheet_wac', getInventorySheetWac);
+
+/**
+ * return inventory WAC from stock_value table
+ */
+async function getInventoryWac(req, res, next) {
+  try {
+    const binaryDepotUuid = db.bid(req.params.uuid);
+    const binaryInventoryUuid = db.bid(req.params.inventoryUuid);
+    const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?, ?);';
+    const querySelect = `
+      SELECT 
+        BUID(sv.inventory_uuid) inventory_uuid, BUID(sv.depot_uuid) depot_uuid, 
+        i.text, d.text, sv.date, sv.quantity, sv.wac
+      FROM stock_value sv
+      JOIN inventory i ON i.uuid = sv.inventory_uuid
+      JOIN depot d ON d.uuid = sv.depot_uuid
+      WHERE inventory_uuid = ? AND depot_uuid = ?;
+    `;
+
+    await db.exec(queryRecompute, [binaryInventoryUuid, binaryDepotUuid, new Date()]);
+    const data = await db.one(querySelect, [binaryInventoryUuid, binaryDepotUuid]);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * return inventory sheet WAC
+ */
+async function getInventorySheetWac(req, res, next) {
+  try {
+    const movParameters = {
+      orderByCreatedAt : 'm.created_at',
+      depot_uuid : req.params.uuid,
+      inventory_uuid : req.params.inventoryUuid,
+    };
+    const movements = await core.getInventoryMovements(movParameters);
+    res.status(200).json(movements);
+  } catch (error) {
+    next(error);
+  }
+}
+
 /**
  * @function getInventory
  *
