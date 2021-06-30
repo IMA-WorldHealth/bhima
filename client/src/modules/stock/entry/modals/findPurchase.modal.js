@@ -54,7 +54,8 @@ function StockFindPurchaseModalController(
     }, {
       field            : 'author',
       displayName      : 'TABLE.COLUMNS.BY',
-      headerCellFilter : 'translate' },
+      headerCellFilter : 'translate',
+    },
   ];
 
   vm.gridOptions.columnDefs = columns;
