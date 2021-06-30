@@ -50,7 +50,6 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
           row.price = 0;
         });
 
-
         this.inventory.initialize('uuid', data);
 
         // FIXME(@jniles) - this is a hack. We should actually put a list() method on the
@@ -92,6 +91,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.details.uuid = uuid();
     this.details.date = new Date(order.date);
     this.details.cost = order.cost;
+    this.details.shipping_handling = order.shipping_handling;
     this.details.currency_id = order.currency_id;
     this.details.note = order.note;
     this.details.supplier_uuid = order.supplier_uuid;
@@ -134,6 +134,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
       payment_method : 'FORM.LABELS.ON_PURCHASE',
       date : new Date(),
       cost : 0,
+      shipping_handling : 0,
     };
 
     // this object holds the totals for the order.
@@ -229,6 +230,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     }, 0);
 
     // bind the total as as the total cost
+    // order.details.cost = totals.rows + order.details.shipping_handling;
     order.details.cost = totals.rows;
   };
 
