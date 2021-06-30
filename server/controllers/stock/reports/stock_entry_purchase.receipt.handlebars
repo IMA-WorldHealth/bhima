@@ -15,19 +15,32 @@
     <!-- summary  -->
     <div class="row receipt-summary">
       <div class="col-xs-6">
+        <!-- LEFT column -->
         <h4>{{translate 'STOCK.FROM'}}: {{translate 'STOCK.ENTRY_PURCHASE'}}</h4>
         <span class="text-capitalize">{{translate 'FORM.LABELS.SUPPLIER'}}</span>: <strong>{{details.supplier_display_name}}</strong> <br>
         <span class="text-capitalize">{{translate 'STOCK.PURCHASE_ORDER'}}</span>: <strong>{{details.purchase_reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.p_date}}<br>
-        <span class="text-capitalize">{{translate 'STOCK.AMOUNT'}}</span>: {{currency details.p_cost enterprise.currency_id}} <br>
+        <span class="text-capitalize">{{translate 'TABLE.AGGREGATES.TOTAL_AMOUNT'}}</span>: {{currency details.p_total_cost details.p_currency_id}}
+        {{#if not_in_enterprise_currency}}
+          = {{currency details.p_total_cost_ent enterprise.currency_id}}
+        {{/if}}
+        <br>
+        {{#if details.p_shipping_handling}}
+        <span style="margin-left: 1em;">{{translate 'FORM.LABELS.INCLUDES_SHIPPING_HANDLING_COST'}}</span>: {{currency details.p_shipping_handling details.p_currency_id}}
+        {{#if not_in_enterprise_currency }}
+          = {{currency details.p_shipping_handling_ent enterprise.currency_id}}
+        {{/if}}
+        <br>
+        {{/if}}
         <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT_METHOD'}}</span>: {{translate details.p_method}} <br>
       </div>
       <div class="col-xs-6">
+        <!-- RIGHT column -->
         <h4>{{translate 'STOCK.TO'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{details.document_reference}}</strong> <br>
         {{#if details.autoStockAccountingEnabled}}
-          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>:
           {{#if details.voucher_reference}}
             <strong>{{details.voucher_reference}}</strong>
           {{else}}
@@ -36,7 +49,13 @@
           <br>
         {{/if}}
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.VALUE'}}</span>: {{currency (sum rows 'total') enterprise.currency_id}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.VALUE'}}</span>: {{currency details.total_cost_deliv details.p_currency_id}}
+        {{#if not_in_enterprise_currency }}
+          = {{currency details.total_cost_deliv_ent enterprise.currency_id}}
+        {{/if}}
+        {{#unless details.order_complete}}
+          ({{translate 'FORM.LABELS.PARTIAL_DELIVERY'}})
+        {{/unless}}        <br>
         <span class="text-capitalize">{{translate 'STOCK.INVENTORY'}}</span>: {{rows.length}} {{translate 'STOCK.ITEMS'}} <br>
         <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{details.user_display_name}} <br>
       </div>
@@ -60,6 +79,9 @@
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
         <th>{{translate 'STOCK.UNIT_COST'}}</th>
+        {{#if details.p_shipping_handling}}
+        <th style="width: 5.5em; text-align: center" title="{{translate 'STOCK.UNIT_COST_SH_TOOLTIP'}}">{{translate 'STOCK.UNIT_COST_SH'}} *</th>
+        {{/if}}
         <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
       </tr>
     </thead>
@@ -75,8 +97,11 @@
             <td></td>
           {{/if}}
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+          <td class="text-right">{{currency unit_cost_base ../details.p_currency_id}}</td>
+          {{#if ../details.p_shipping_handling}}
+          <td class="text-right">{{currency unit_cost_deliv ../details.p_currency_id}}</td>
+          {{/if}}
+          <td class="text-right">{{currency cost_deliv ../details.p_currency_id}}</td>
         </tr>
       {{else}}
         {{> emptyTable columns=9}}
@@ -84,13 +109,17 @@
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        <td colspan="{{ncols}}">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        <td class="text-right">{{currency details.total_cost_deliv details.p_currency_id}}</td>
       </tr>
     </tfoot>
   </table>
-
   <br>
+  {{#if details.p_shipping_handling }}
+  <div style="margin: 0 0 1ex 0; padding: 0;">
+    * {{translate 'STOCK.UNIT_COST_SH_NOTE'}}
+  </div>
+  {{/if}}
 
   <footer>
     <div class="row">
