@@ -33,7 +33,7 @@ function StockFindPurchaseModalController(
       field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate : purchaseReferenceCellTemplate,
+      cellTemplate     : purchaseReferenceCellTemplate,
     }, {
       field            : 'date',
       cellFilter       : `date:"${bhConstants.dates.format}"`,
@@ -46,13 +46,15 @@ function StockFindPurchaseModalController(
       displayName      : 'FORM.LABELS.SUPPLIER',
       headerCellFilter : 'translate',
     }, {
-      field            : 'cost',
+      field            : 'total_cost',
       displayName      : 'STOCK.AMOUNT',
       headerCellFilter : 'translate',
       cellFilter       : `currency:row.entity.currency_id`,
       cellClass        : 'text-right',
-    },
-    { field : 'author', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
+    }, {
+      field            : 'author',
+      displayName      : 'TABLE.COLUMNS.BY',
+      headerCellFilter : 'translate' },
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -82,6 +84,9 @@ function StockFindPurchaseModalController(
     Exchange.read()
       .then(() => Purchase.search({ status_id : [CONFIRMED, PARTIALLY_RECEIVED] }))
       .then(purchases => {
+        purchases.forEach(p => {
+          p.total_cost = p.cost + p.shipping_handling;
+        });
         vm.gridOptions.data = purchases;
       })
       .catch(() => {

@@ -124,6 +124,25 @@
                       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                     </div>
                   </div>
+
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : PurchaseOrderForm.$submitted && PurchaseOrderForm.shipping_handling.$invalid }">
+                    <label class="control-label">
+                      <span translate>FORM.LABELS.SHIPPING_HANDLING_COST</span> ({{PurchaseCtrl.rate.currency.symbol}})</label>
+                    <input
+                      ng-model="PurchaseCtrl.order.details.shipping_handling"
+                      name="shipping_handling"
+                      class="form-control"
+                      type="number"
+                      min="0"
+                      onkeypress="return event.charCode != 45"
+                      ng-change="PurchaseCtrl.onChangeShippingHandling()">
+                    <div class="help-block" ng-messages="PurchaseOrderForm.shipping_handling.$error" ng-show="PurchaseOrderForm.$submitted">
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -194,7 +213,7 @@
         <div class="row" ng-if="PurchaseCtrl.order.hasSupplier()">
           <h4 class="text-right" style="margin-right: 25px;">
             <span translate>FORM.LABELS.TOTAL</span>
-            {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.rate.currency.id }}
+            {{ PurchaseCtrl.order.totals.rows + PurchaseCtrl.order.details.shipping_handling | currency:PurchaseCtrl.rate.currency.id }}
           </h4>
         </div>
 
