@@ -102,7 +102,7 @@ function startupConfig(
   amMoment.changeLocale('fr');
 }
 
-// set the proper key prifix
+// set the proper key prefix
 function localStorageConfig($localStorageProvider) {
   const PREFIX = `bh-${window.location.hostname}-`;
   $localStorageProvider.setKeyPrefix(PREFIX);
