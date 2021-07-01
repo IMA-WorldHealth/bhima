@@ -310,7 +310,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
  * @function getBulkInventoryCMM
  *
  * @description
- * This function takes in an array of lots or inventory items and computes the CMM for all unique
+ * This function takes in an array of lots or inventory articles and computes the CMM for all unique
  * inventory/depot pairings in the array.  It then creates a mapping for the CMMs in memory and uses
  * those to compute the relevant indicators.
  */
@@ -458,7 +458,7 @@ async function getMovements(depotUuid, params) {
  * This function acts on information coming from the getBulkInventoryCMM() function.  It's
  * separated for clarity.
  *
- * This could be either lots or inventory items passed in.
+ * This could be either lots or inventory articles passed in.
  *
  * Here is the order you should be executing these:
  *   getBulkInventoryCMM()
@@ -481,7 +481,7 @@ function computeInventoryIndicators(inventories) {
     // It provides the average monthly consumption for the particular product.
     const CMM = inventory.avg_consumption;
 
-    // Signal that no consumption has occurred of the inventory items
+    // Signal that no consumption has occurred of the inventory articles
     inventory.NO_CONSUMPTION = (CMM === 0);
 
     // NOTE(@jniles) ensure that this value is set before going too far.
