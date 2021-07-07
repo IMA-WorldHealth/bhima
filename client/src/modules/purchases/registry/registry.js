@@ -170,6 +170,7 @@ function PurchaseRegistryController(
 
     PurchaseOrder.openSearchModal(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
         PurchaseOrder.filters.replaceFilters(changes);
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();
