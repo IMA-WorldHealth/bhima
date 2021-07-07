@@ -80,7 +80,7 @@
   "dependencies": {
     "@ima-worldhealth/coral": "^2.6.1",
     "@ima-worldhealth/tree": "^2.3.2",
-    "@types/angular": "^1.8.1",
+    "@types/angular": "^1.8.2",
     "@uirouter/angularjs": "^1.0.29",
     "accounting-js": "^1.1.1",
     "angular": "^1.8.2",
