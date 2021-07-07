@@ -28,6 +28,7 @@ function JournalLogController(Journal, Notify, $state) {
     const filtersSnapshot = Journal.filters.formatHTTP();
     Journal.openSearchModal(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
         Journal.filters.replaceFilters(changes);
         Journal.cacheFilters();
         vm.latestViewFilters = Journal.filters.formatView();

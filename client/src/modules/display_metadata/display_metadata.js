@@ -196,7 +196,7 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
               _isDefault : true,
               displayValue : vm.collector.label,
               comparitorLabel : ':',
-            }
+            },
           );
         })
         .catch(handleError)
@@ -239,7 +239,7 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
               _isDefault : true,
               displayValue : vm.collector.label,
               comparitorLabel : ':',
-            }
+            },
           );
         })
         .catch(handleError)
@@ -283,11 +283,11 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
     DisplayMetadata.openSearchModal(params)
       .then(changes => {
-        if (changes) {
-          vm.collectorId = changes.collectorId;
-          vm.includePatientData = changes.includePatientData;
-          vm.changes = changes;
-        }
+        if (!changes) { return; }
+
+        vm.collectorId = changes.collectorId;
+        vm.includePatientData = changes.includePatientData;
+        vm.changes = changes;
 
         vm.filterElements.defaultFilters = [];
         loadGrid();

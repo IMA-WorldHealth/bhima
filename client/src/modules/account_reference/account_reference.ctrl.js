@@ -114,6 +114,8 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
 
     AccountReferences.openSearchModal(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
+
         AccountReferences.filters.replaceFilters(changes);
 
         AccountReferences.cacheFilters();

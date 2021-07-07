@@ -58,7 +58,6 @@ function AccountStatementController(
       <span ng-show="row.groupHeader">{{ COL_FIELD | currency: row.treeNode.children[0].row.entity.currency_id }}</span>
     </div>`;
 
-
   // columns definition
   const columns = [{
     field            : 'trans_id',
@@ -243,6 +242,8 @@ function AccountStatementController(
       hidePostedOption : true,
     })
       .then(changes => {
+        if (!changes) { return; }
+
         AccountStatement.filters.replaceFilters(changes);
 
         AccountStatement.cacheFilters();
@@ -263,12 +264,6 @@ function AccountStatementController(
   };
 
   // exports zone =====================================================================
-
-  // format parameters
-  function formatExportParameters(type) {
-    const filters = AccountStatement.filters.formatHTTP(true);
-    return angular.extend(filters, { renderer : type || 'pdf', lang : Languages.key });
-  }
 
   vm.download = function download(type) {
     const filterOpts = AccountStatement.filters.formatHTTP();

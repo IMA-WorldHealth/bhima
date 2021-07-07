@@ -18,7 +18,7 @@ MultiplePayrollIndiceController.$inject = [
  */
 function MultiplePayrollIndiceController(
   MultiplePayroll, Notify, Columns, GridState,
-  $state, util, uiGridConstants, Languages, $httpParamSerializer
+  $state, util, uiGridConstants, Languages, $httpParamSerializer,
 ) {
   const vm = this;
   const cacheKey = 'multiple-indice-payroll-grid';
@@ -84,7 +84,7 @@ function MultiplePayrollIndiceController(
 
     MultiplePayroll.openSearchModal(filtersSnapshot)
       .then((changes) => {
-        if (!changes.length) { return null; }
+        if (!changes || !changes.length) { return null; }
         MultiplePayroll.filters.replaceFilters(changes);
         MultiplePayroll.cacheFilters();
         vm.latestViewFilters = MultiplePayroll.filters.formatView();
@@ -236,7 +236,6 @@ function MultiplePayrollIndiceController(
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
     }
   };
-
 
   vm.saveGridState = state.saveGridState;
   // saves the grid's current configuration
