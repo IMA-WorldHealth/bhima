@@ -1,0 +1,88 @@
+<form
+  name="ModalForm"
+  data-modal="stock-lots-schedule"
+  ondragstart="return false;" ondrop="return false;"
+  novalidate>
+
+  <div class="modal-header">
+    <h2 translate>LOTS_SCHEDULE.TITLE</h2>
+    <b><span class="text-uppercase" translate>FORM.LABELS.FOR</span>: {{$ctrl.inventory_name}}</b>
+    <p>{{$ctrl.projection_text}}</p>
+  </div>
+
+  <div class="modal-body" ng-show="$ctrl.lots.length">
+    <table class="table table-condensed lot-schedule">
+      <thead>
+        <tr>
+          <th style="width: {{$ctrl.labelWidth}}px" translate>STOCK.LOT</th>
+          <th class="wrap right" translate>STOCK.QUANTITY</th>
+          <th class="wrap right" translate>STOCK.UNIT_COST</th>
+          <th class="wrap right" translate>TABLE.COLUMNS.VALUE</th>
+          <th translate>LOTS_SCHEDULE.LOT_START_DATE</th>
+          <th translate>LOTS_SCHEDULE.LOT_END_DATE</th>
+          <th translate>LOTS_SCHEDULE.LOT_EXPIRES</th>
+          <th class="wrap right" translate>STOCK.MONTHLY_CONSUMPTION.MONTHS</th>
+          <th class="wrap right" translate>LOTS_SCHEDULE.QUANTITY_USED</th>
+          <th class="wrap right" translate>LOTS_SCHEDULE.QUANTITY_WASTED</th>
+          <th class="wrap right" translate>LOTS_SCHEDULE.VALUE_WASTED</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="lot in $ctrl.lots">
+          <td>{{lot.label}}</td>
+          <td class="wrap right">{{lot.quantity}}</td>
+          <td class="wrap right">{{lot.unit_cost | currency}}</td>
+          <td class="wrap right">{{lot.value | currency}}</td>
+          <td>{{lot.start_date | date:$ctrl.DATE_FMT}}</td>
+          <td>{{lot.end_date | date:$ctrl.DATE_FMT}}</td>
+          <td>{{lot.expiration_date | date:$ctrl.DATE_FMT}}</td>
+          <td class="wrap right">{{lot.num_months | number:'2.2'}}</td>
+          <td class="wrap right">{{lot.quantity_used}}</td>
+          <td class="wrap right">{{lot.quantity_wasted}}</td>
+          <td class="wrap right">{{lot.value_wasted | currency}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div ng-show="$ctrl.lots.length">
+    <table class="table table-condensed table-bordered lot-schedule"
+      style="width: {{$ctrl.chartWidth}}px; table-layout: fixed; display: block; overflow-x: auto;">
+      <thead>
+        <tr>
+          <th class="year" style="width: {{$ctrl.labelWidth}}px">&nbsp;</th>
+          <th ng-repeat="year in $ctrl.years" colspan="{{year.count}}" style="text-align: center">{{year.year}}</th>
+        </tr>
+        <tr>
+          <th class="month">
+            <div style="width: {{$ctrl.labelWidth}}px !important">&nbsp;</div>
+          </th>
+          <th ng-repeat="month in $ctrl.months" style="font-size: 12px; overflow: hidden; padding: 0;">
+            <div style="width: {{$ctrl.monthWidth-1}}px !important; padding: 0; text-align: center">{{month.month}}</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="lot in $ctrl.lots" >
+          <td>{{lot.label}}</td>
+          <td colspan="{{$ctrl.numMonths}}" style="margin: 0; padding-left: 0; padding-right: 0">
+            <div
+              class="lot-marker" style="display: block; float: left; margin-left: {{lot.start_pixel}}px !important; width: {{lot.width_pixels}}px !important; {{lot.new_color}}"
+              uib-tooltip="{{lot.tooltip}}" tooltip-append-to-body="true"
+            ><span class="start">{{lot.quantity}}</span><span class="wasted" style="float: right">{{lot.quantity_wasted}}</span></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-body" ng-show="!$ctrl.lots.length">
+    <b translate>LOTS_SCHEDULE.NO_LOTS_FOUND</b>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.close()" data-method="close" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+  </div>
+
+</form>

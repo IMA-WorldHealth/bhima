@@ -304,11 +304,12 @@
     "DETAILS":"Lot Information",
     "FIND_DUPLICATE_LOTS" : "Find duplicate lots",
     "MERGE_DUPLICATE_LOTS" : "Merge duplicate lots",
-    "LOT_LABEL":"Lot label",
+    "SHOW_LOT_SCHEDULE": "Show lot consumption schedule",
     "SUCCESSFULLY_EDITED":"Lot updated with success",
     "ASSIGNMENT_HISTORIC":"Assignment History",
     "ASSIGNMENT_CURRENT":"Current",
     "NO_ASSIGNMENT":"No Assignment",
+    "LOT_LABEL":"Lot label",
     "LOT_LABEL_EXPIRES": "{{label}} (expires: {{expdate}})",
     "INCLUDE_EXHAUSTED_LOTS":"Include exhausted lots",
     "INCLUDE_ONLY_EXHAUSTED_LOTS": "Include only exhausted lots",
@@ -323,6 +324,19 @@
     "FOUND_N_LOTS": "Found {{N}} matching lots",
     "NO_LOTS_MERGED": "No lots were selected to be merged!",
     "MERGED_N_LOTS": "Merged {{N}} lots"
+  },
+  "LOTS_SCHEDULE" : {
+    "TITLE": "Projected Stock Consumption Schedule",
+    "LOT_END_DATE": "End date",
+    "LOT_EXPIRES": "Expires",
+    "LOT_START_DATE": "Start date",
+    "LOT_TOOLTIP": "Lot {{label}} should start being used on {{start_date | date}} with {{quantity}} items and end being used on {{end_date | date}}.  The lot expires on {{expiration_date | date}}.",
+    "LOT_TOOLTIP_WASTE": "  There will be {{quantity_wasted}} expired items left over.",
+    "NO_LOTS_FOUND": "No lots found that were not expired or exhausted!",
+    "PROJECTION_BASIS": "This projection is based on current average consumption of {{avg_consumption}} {{unit_type}} per month.",
+    "QUANTITY_USED": "Quantity used",
+    "QUANTITY_WASTED": "Quantity wasted",
+    "VALUE_WASTED": "Value wasted"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"

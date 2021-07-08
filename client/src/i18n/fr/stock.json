@@ -305,6 +305,7 @@
     "DETAILS":"Information sur le lot",
     "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
     "MERGE_DUPLICATE_LOTS" : "fusionner des lots en double",
+    "SHOW_LOT_SCHEDULE": "Montrer le calendrier de consommation des lots",
     "LOT_LABEL":"Designation du lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
@@ -324,6 +325,19 @@
     "FOUND_N_LOTS": "Trouvé {{N}} lots correspondants",
     "NO_LOTS_MERGED": "Aucun lot n'a été sélectionné pour être fusionné",
     "MERGED_N_LOTS": "{{N}} Lots ont été fusionnés"
+  },
+  "LOTS_SCHEDULE" : {
+    "TITLE": "Calendrier prévisionnel de consommation des stocks",
+    "LOT_END_DATE": "Date de fin",
+    "LOT_EXPIRES": "Date d'expiration",
+    "LOT_START_DATE": "Date de début",
+    "LOT_TOOLTIP": "Le lot {{label}} doit commencer à être utilisé à la {{start_date | date}} avec des articles {{quantity}} et se terminer à la {{end_date | date}}.  Le lot expire le {{expiration_date | date}}.",
+    "LOT_TOOLTIP_WASTE": "  Il restera des articles périmés en {{quantity_wasted}}.",
+    "NO_LOTS_FOUND": "Aucun lot trouvé qui ne soit pas périmé ou épuisé !",
+    "PROJECTION_BASIS": "Cette projection est basée sur la consommation moyenne actuelle de {{avg_consumption}} {{unit_type}} par mois.",
+    "QUANTITY_USED": "Quantité utilisée",
+    "QUANTITY_WASTED": "Quantité gaspillée",
+    "VALUE_WASTED": "Valeur gaspillée"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"

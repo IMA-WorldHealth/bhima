@@ -1094,3 +1094,42 @@ td.center {
   border-bottom: 1px solid #efefef;
   width: 100%;
 }
+
+/* ---------------------------------------------
+    Styles for lot schedule table
+---------------------------------------------- */
+
+table.lot-schedule {
+  padding-left: 10px;
+}
+
+table.lot-schedule th.year {
+  border-bottom: 0;
+}
+
+table.lot-schedule th.month {
+  border-top: 0;
+}
+
+table.lot-schedule div.lot-marker {
+  border: 1px solid black;
+  background-color: lightgray;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+table.lot-schedule div.lot-marker span.start {
+  color: black;
+}
+
+table.lot-schedule div.lot-marker span.wasted {
+  color: red;
+}
+
+table.lot-schedule .wrap {
+  width: 4em;
+}
+
+table.lot-schedule .right {
+  text-align: right;
+}
