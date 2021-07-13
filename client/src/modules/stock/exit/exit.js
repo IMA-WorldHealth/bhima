@@ -320,6 +320,10 @@ function StockExitController(
   function onLotSelect(row) {
     if (!row.lot || !row.lot.uuid) { return; }
 
+    if (row.lot.lifetime < 0) {
+      row.isExpired = true;
+    }
+
     checkValidity();
     refreshSelectedLotsList(row);
   }
