@@ -215,8 +215,12 @@ function StockExitController(
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
-
     vm.overconsumption = [];
+
+    // reload inventories only if exit type has been selected previously
+    if (vm.depot) {
+      loadInventories(vm.depot);
+    }
   }
 
   function setupStock() {
@@ -286,8 +290,14 @@ function StockExitController(
   function loadInventories(depot, dateTo = new Date()) {
     setupStock();
 
+    const loadExpiredOnlyForLoss = vm.movement.exit_type === 'loss' ? undefined : 0;
+
     vm.loading = true;
-    Stock.inventories.read(null, { depot_uuid : depot.uuid, dateTo })
+    Stock.inventories.read(null, {
+      depot_uuid : depot.uuid,
+      dateTo,
+      is_expired : loadExpiredOnlyForLoss,
+    })
       .then(inventories => {
         vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
