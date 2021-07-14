@@ -217,7 +217,6 @@ function StockExitController(
     vm.resetEntryExitTypes = false;
     vm.overconsumption = [];
 
-    // reload inventories only if exit type has been selected previously
     if (vm.depot) {
       loadInventories(vm.depot);
     }
@@ -445,14 +444,19 @@ function StockExitController(
   }
 
   function setSelectedEntity(entity) {
-    if (entity) {
-      const uniformEntity = Stock.uniformSelectedEntity(entity);
-      vm.reference = uniformEntity.reference;
-      vm.displayName = uniformEntity.displayName;
-      vm.selectedEntityUuid = uniformEntity.uuid;
-      vm.requisition = (entity && entity.requisition) || {};
-      loadRequisitions(entity);
+    if (!entity) {
+      vm.reference = undefined;
+      vm.displayName = undefined;
+      vm.selectedEntityUuid = undefined;
+      return;
     }
+
+    const uniformEntity = Stock.uniformSelectedEntity(entity);
+    vm.reference = uniformEntity.reference;
+    vm.displayName = uniformEntity.displayName;
+    vm.selectedEntityUuid = uniformEntity.uuid;
+    vm.requisition = (entity && entity.requisition) || {};
+    loadRequisitions(entity);
   }
 
   function loadRequisitions(entity) {
