@@ -36,17 +36,17 @@ function currency(value = 0, currencyId) {
  * @todo merge this function with the currency function, since actually
  * setting a position as third param in the currency function cause 0 decimal
  * when nothing is defined as position we are using this currencyWithPosition
- * @param {*} value 
- * @param {*} currencyId 
- * @param {*} precision 
- * @returns 
+ * @param {number} value the value to format
+ * @param {number} currencyId the id of the currency
+ * @param {number} digit the precision needed
+ * @returns {string}
  */
-function currencyWithPosition(value = 0, currencyId, precision) {
+function currencyWithPosition(value = 0, currencyId, digit) {
   const fmtNum = Number(currencyId);
   // if currencyId is not defined, defaults to USD.
   const fmt = fmtNum > 0 ? FORMATS[fmtNum] : USD_FMT;
   const format = JSON.parse(JSON.stringify(fmt));
-  format.precision = precision;
+  format.precision = digit;
   return new Handlebars.SafeString(accountingjs.formatMoney(value, format));
 }
 
