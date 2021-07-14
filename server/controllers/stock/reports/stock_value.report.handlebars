@@ -39,7 +39,7 @@
                 <td style="width:50%">{{inventory_name}}</td>
                 <td class="text-right">{{stockQtt}}</td>
                 <td class="text-right">{{currencyWithPosition stockUnitCost ../currency_id 4}}</td>
-                <td class="text-right">{{currencyWithPosition stockValue ../currency_id 4}}</td>
+                <td class="text-right">{{currency stockValue ../currency_id}}</td>
               </tr>
           {{else}}
             {{> emptyTable columns=4}}
