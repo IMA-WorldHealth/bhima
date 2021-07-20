@@ -47,7 +47,7 @@ function StaffingIndiceService(Api, Filters, AppCache, bhConstants, Modal, Perio
     // assign default period filter
     const periodDefined = service.util.arrayIncludes(
       assignedKeys,
-      ['period', 'custom_period_start', 'custom_period_end']
+      ['period', 'custom_period_start', 'custom_period_end'],
     );
 
     if (!periodDefined) {
@@ -59,7 +59,6 @@ function StaffingIndiceService(Api, Filters, AppCache, bhConstants, Modal, Perio
       staffingFilters.assignFilter('limit', 100);
     }
   }
-
 
   function openSearchModal(filters, options) {
     return Modal.open({

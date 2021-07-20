@@ -34,7 +34,7 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
 
     StaffingIndice.openSearchModal(filtersSnapshot)
       .then((changes) => {
-        if (!changes) return;
+        if (!changes) { return; }
 
         StaffingIndice.filters.replaceFilters(changes);
         StaffingIndice.cacheFilters();

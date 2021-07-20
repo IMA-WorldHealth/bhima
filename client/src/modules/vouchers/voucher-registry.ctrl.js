@@ -138,6 +138,7 @@ function VoucherController(
 
     Vouchers.openSearchModal(filtersSnapshot)
       .then(changes => {
+        if (!changes) { return null; }
 
         Vouchers.filters.replaceFilters(changes);
         Vouchers.cacheFilters();
