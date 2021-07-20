@@ -34,7 +34,6 @@ const hbs = exphbs.create({
     add           : math.add,
     substract     : math.substract,
     currency      : finance.currency,
-    currencyWithPosition : finance.currencyWithPosition,
     numberToText  : finance.numberToText,
     indentAccount : finance.indentAccount,
     percentage    : finance.percentage,
