@@ -1,27 +1,102 @@
 angular.module('bhima.controllers')
   .controller('JournalLogController', JournalLogController);
 
-JournalLogController.$inject = ['JournalLogService', 'NotifyService', '$state'];
+JournalLogController.$inject = [
+  'JournalLogService', 'NotifyService', '$state', 'bhConstants',
+  'LanguageService', 'uiGridConstants',
+];
 
-function JournalLogController(Journal, Notify, $state) {
+function JournalLogController(
+  Journal, Notify, $state, bhConstants, Language, uiGridConstants,
+) {
   const vm = this;
 
+  vm.languageKey = Language.key;
+  vm.rowsDetails = { totalDeleted : 0, totalEdited : 0 };
   vm.onRemoveFilter = onRemoveFilter;
   vm.openSearchModal = openSearchModal;
+  vm.toggleFilter = toggleFilter;
+
+  function onRegisterApi(api) {
+    vm.gridApi = api;
+  }
+
+  const columnDefs = [{
+    field : 'timestamp',
+    displayName : 'TABLE.COLUMNS.DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date:"'.concat(bhConstants.dates.formatLong, '"'),
+    footerCellTemplate : '<i></i>',
+    width : 150,
+  }, {
+    field : 'action',
+    displayName : 'TABLE.COLUMNS.ACTION',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/log.action.html',
+    width : 110,
+  }, {
+    field : 'hrRecord',
+    displayName : 'TABLE.COLUMNS.RECORD',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/log.record.html',
+    width : 110,
+  }, {
+    field : 'description',
+    displayName : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'transaction',
+    displayName : 'TABLE.COLUMNS.TRANSACTION',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/log.transaction.html',
+    width : 110,
+  }, {
+    field : 'display_name',
+    displayName : 'TABLE.COLUMNS.USER',
+    headerCellFilter : 'translate',
+    width : 200,
+  }];
+
+  vm.gridOptions = {
+    enableColumnMenus : false,
+    showColumnFooter : false,
+    appScopeProvider : vm,
+    flatEntityAccess : true,
+    showGridFooter : true,
+    onRegisterApi,
+    columnDefs,
+    gridFooterTemplate : '/modules/journal/templates/log.footer.html',
+  };
 
   function load(filters) {
     Journal.read(null, filters)
       .then(rows => {
-        vm.data = rows.map(row => {
+        vm.rowsDetails.totalDeleted = 0;
+        vm.rowsDetails.totalEdited = 0;
+        vm.gridOptions.data = rows.map(row => {
           if (row.value) {
             const line = Array.isArray(row.value) && row.value.length ? row.value[0] : row.value;
+            row.hrRecord = line.hrRecord;
             row.transId = line.trans_id;
             row.description = line.description;
+
+            if (row.action === 'deleted') {
+              vm.rowsDetails.totalDeleted++;
+            }
+
+            if (row.action === 'edit') {
+              vm.rowsDetails.totalEdited++;
+            }
           }
           return row;
         });
       })
       .catch(Notify.handleError);
+  }
+
+  function toggleFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   function openSearchModal() {
