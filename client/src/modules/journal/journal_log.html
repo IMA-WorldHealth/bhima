@@ -10,6 +10,7 @@
     <div class="toolbar">
       <fieldset>
         <bh-search-button on-click="JournalLogCtrl.openSearchModal()"></bh-search-button>
+        <bh-filter-toggle on-toggle="JournalLogCtrl.toggleFilter()"></bh-filter-toggle>
       </fieldset>
     </div>
   </div>
@@ -27,41 +28,20 @@
     <div class="row">
       <div class="col-md-12">
 
-        <table class="table table-condensed">
-          <thead>
-            <th translate>TABLE.COLUMNS.DATE</th>
-            <th translate>TABLE.COLUMNS.ACTION</th>
-            <th translate>TABLE.COLUMNS.TRANSACTION</th>
-            <th translate>TABLE.COLUMNS.DESCRIPTION</th>
-            <th translate>TABLE.COLUMNS.USER</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="row in JournalLogCtrl.data track by row.uuid">
-              <td><small ng-if="row.timestamp">{{ row.timestamp | date:'medium' }}</small></td>
-              <td>
-                <span ng-if="row.action === 'deleted'" class="text-danger text-uppercase text-bold" translate>
-                  POSTING_JOURNAL.DELETED_TRANSACTION
-                </span>
-                <span ng-if="row.action === 'edit'" class="text-primary text-uppercase text-bold" translate>
-                  POSTING_JOURNAL.EDITED_TRANSACTION
-                </span>
-              </td>
-              <td>
-                <span ng-if="row.transId" class="text-success text-uppercase text-bold">
-                  {{ row.transId }}
-                </span>
-              </td>
-              <td>
-                <span ng-if="row.description">{{ row.description }}</span>
-              </td>
-              <td>
-                <small translate>FORM.LABELS.BY</small>
-                <small>{{ row.display_name}}</small>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
+        <div
+          id="journal-log-grid"
+          class="grid-journal"
+          ui-grid="JournalLogCtrl.gridOptions"
+          ui-grid-resize-columns>
+
+          <bh-grid-loading-indicator
+            loading-state="JournalLogCtrl.loading"
+            empty-state="JournalLogCtrl.gridOptions.data.length === 0"
+            error-state="JournalLogCtrl.hasError">
+          </bh-grid-loading-indicator>
+
+        </div>
+
       </div>
     </div>
   </div>
