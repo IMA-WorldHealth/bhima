@@ -239,7 +239,7 @@
     },
     "STOCK_MOVEMENT"  : "View Stock Movement",
     "STOCK_MOVEMENTS" : "View Stock Movements",
-	  "SUCCESS"         : "Successfully created a movement",
+    "SUCCESS"         : "Successfully created a movement",
     "SUCCESSFULLY_DELETED" : "Successfully deleted",
     "TO"              : "Destination",
     "UNIT_COST"       : "Unit cost",
@@ -328,6 +328,7 @@
   "LOTS_SCHEDULE" : {
     "TITLE": "Projected Stock Consumption Schedule",
     "LOT_END_DATE": "End date",
+    "LOT_EXHAUSTED": "Exhausted",
     "LOT_EXPIRES": "Expires",
     "LOT_START_DATE": "Start date",
     "LOT_TOOLTIP": "Lot {{label}} should start being used on {{start_date | date}} with {{quantity}} items and end being used on {{end_date | date}}.  The lot expires on {{expiration_date | date}}.",

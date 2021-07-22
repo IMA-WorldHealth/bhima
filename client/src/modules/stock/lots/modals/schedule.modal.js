@@ -14,9 +14,11 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
   vm.lotUuid = data.uuid; // The lot that invoked this modal
   vm.DATE_FMT = bhConstants.dates.format;
   vm.labelWidth = 100; // pixels
-  vm.monthWidth = 36; // pixels
+  vm.monthWidthPads = 3; // Left-right padding + left border width
+  vm.monthWidth = 21;
+  vm.monthWidthInner = vm.monthWidth - vm.monthWidthPads;
+  vm.monthWidthPads = 4; // Left-right padding + left border width
   vm.numMonths = 36; // Number of table columns for months
-  vm.chartWidth = vm.labelWidth + (vm.numMonths * vm.monthWidth); // pixels
 
   const today = new Date();
   vm.startDate = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -44,14 +46,17 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
         vm.lots.forEach(lot => {
           // Process the lots and determine sequential start/end dates and other info
           lot.start_date = new Date(runningDate);
+          lot.expiration_date = new Date(lot.expiration_date);
 
           // Compute when the lot runs out (based on adjusted start date)
           lot.exhausted_date = Moment(lot.start_date).add(lot.quantity / lot.avg_consumption, 'months').toDate();
 
           // Compute the end date for this lot
-          lot.end_date = new Date(lot.expiration_date);
-          if (lot.exhausted_date < lot.expiration_date) {
-            lot.end_date = lot.exhausted_date;
+          lot.end_date = new Date(lot.exhausted_date);
+          lot.premature_expiration = false;
+          if (lot.exhausted_date > lot.expiration_date) {
+            lot.end_date = lot.expiration_date;
+            lot.premature_expiration = true;
           }
 
           // Compute the starting value (assume enterprise currency)
@@ -66,12 +71,23 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           lot.value_wasted = lot.quantity_wasted * lot.unit_cost;
 
           // Compute the width of the lot rectangle in pixels
-          lot.width_pixels = Math.ceil(lot.num_months * vm.monthWidth);
+          lot.width_pixels = lot.num_months * vm.monthWidth;
 
           // Compute the starting location for the lot in pixels
-          lot.start_pixel = Math.round((
-            Moment(lot.start_date).diff(Moment(vm.startDate), 'days') / 30.5) * vm.monthWidth);
+          lot.start_pixel = (Moment(lot.start_date).diff(Moment(vm.startDate), 'days') / 30.5) * vm.monthWidth + 1;
 
+          // If the lot is exhausted prematurely, compute the width of the unusable RESIDUAL rectangle
+          if (lot.premature_expiration) {
+            lot.residual_start_pixel = lot.start_pixel + lot.width_pixels;
+            lot.residual_days = Moment(lot.exhausted_date).diff(Moment(lot.expiration_date), 'days');
+            lot.residual_months = lot.residual_days / 30.5;
+            // Truncate the width of the residual area to the width of the chart so it does not wrap
+            const residualWidth = lot.residual_months * vm.monthWidth;
+            const chartWidth = vm.monthWidth * vm.numMonths;
+            lot.residual_width_pixels = Math.min(residualWidth, chartWidth - lot.residual_start_pixel);
+          }
+
+          // Construct the main summary tooltip for the lot
           lot.tooltip = $translate.instant('LOTS_SCHEDULE.LOT_TOOLTIP', lot);
           if (lot.quantity_wasted > 0) {
             lot.tooltip += $translate.instant('LOTS_SCHEDULE.LOT_TOOLTIP_WASTE', lot);
@@ -98,14 +114,10 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
         // Get sorted list of the years and the number of months in each year
         const allYears = vm.months.map(obj => obj.year);
         const years = Array.from(new Set(allYears)).sort();
-        vm.years = [];
-        years.forEach(yr => {
-          vm.years.push({
-            year : yr,
-            count : allYears.reduce((n, year) => n + (year === yr), 0),
-          });
-        });
-
+        vm.years = years.map(yr => ({
+          year : yr,
+          count : allYears.reduce((n, year) => n + (year === yr), 0),
+        }));
       })
       .catch(Notify.handleError);
   }
