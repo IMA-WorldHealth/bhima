@@ -1,0 +1,9 @@
+<div ng-if="row.entity.hrRecord && row.entity.action != 'deleted'" class="ui-grid-cell-contents">
+  <bh-reference-link  reference="row.entity.hrRecord" />
+</div>
+<div ng-if="row.entity.hrRecord && row.entity.action == 'deleted'" class="ui-grid-cell-contents">
+  <span class="text-danger">{{ row.entity.hrRecord }}</span>
+</div>
+<div ng-if="!row.entity.hrRecord && row.entity.action == 'deleted'" class="ui-grid-cell-contents">
+  <em class="text-danger" translate>POSTING_JOURNAL.DELETED_TRANSACTION</em>
+</div>

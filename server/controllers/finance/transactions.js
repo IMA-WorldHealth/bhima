@@ -106,7 +106,13 @@ async function deleteTransaction(uuid, actions, userId) {
     throw new Unauthorized(`User is not authorized to remove ${documentMap.text}.`);
   }
 
-  const transactionRecord = await db.exec('SELECT * FROM posting_journal WHERE record_uuid = ?', [db.bid(uuid)]);
+  const transactionRecord = await db.exec(`
+    SELECT pj.*, dm.text as hrRecord
+    FROM posting_journal pj
+    JOIN document_map dm ON dm.uuid = pj.record_uuid
+    WHERE pj.record_uuid = ?
+  `, [db.bid(uuid)]);
+
   const INSERT_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
   const transactionHistory = {
     uuid : db.uuid(),
