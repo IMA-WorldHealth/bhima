@@ -1,0 +1,25 @@
+<form name="ModalForm" class="exchange-warning" novalidate>
+  <div class="modal-header">
+    <h2 translate>EXCHANGE.WARNING</h2>
+    <h3 translate>EXCHANGE.FIX_MISSING_RATES_FIRST</h3>
+  </div>
+
+  <div class="modal-body">
+    <div>
+      <h3 translate>EXCHANGE.ADD_MISSING_RATES_FOR</h3>
+      <ul ng-repeat="cur in ModalCtrl.missing">
+        <li>{{cur.name}} ({{cur.symbol}})</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3><a href ng-click="ModalCtrl.goToExchangePage()" translate>EXCHANGE.CLICK_HERE_TO_FIX_RATES</a></h3>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+  </div>
+</form>
