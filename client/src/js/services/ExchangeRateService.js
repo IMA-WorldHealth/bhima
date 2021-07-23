@@ -2,8 +2,18 @@ angular.module('bhima.services')
   .service('ExchangeRateService', ExchangeRateService);
 
 ExchangeRateService.$inject = [
-  '$http', 'util', 'CurrencyService', 'SessionService',
+  '$http', 'util', '$uibModal', 'CurrencyService', 'SessionService', 'NotifyService',
 ];
+
+/**
+ * Define a new error type
+*/
+class MissingCurrencyError extends Error {
+  constructor(message, missing) {
+    super(message);
+    this.missing = missing;
+  }
+}
 
 /**
  * Exchange Rate Service
@@ -25,12 +35,14 @@ ExchangeRateService.$inject = [
  *
  * @todo - documentation improvements
  */
-function ExchangeRateService($http, util, Currencies, Session) {
+function ExchangeRateService($http, util, Modal, Currencies, Session, Notify) {
   const service = {};
 
   // The cMap object contains rates namespaced by their currency IDs for faster
   // lookups when doing conversions.
   let cMap = {};
+
+  service.missingRates = [];
 
   service.read = read;
   service.create = create;
@@ -41,6 +53,8 @@ function ExchangeRateService($http, util, Currencies, Session) {
   service.getCurrentRate = getCurrentRate;
   service.getExchangeRate = getExchangeRate;
   service.getCurrentExchange = getCurrentExchange;
+  service.getMissingExchangeRates = getMissingExchangeRates;
+  service.warnMissingExchangeRates = warnMissingExchangeRates;
 
   service.round = round;
 
@@ -86,6 +100,7 @@ function ExchangeRateService($http, util, Currencies, Session) {
           .filter((currency) => currency.id !== Session.enterprise.currency_id);
 
         // check if we have a rate for every currency defined
+        service.missingRates = null;
         const complete = currencies.every((currency) => {
           return rates.some((rate) => {
             return rate.currency_id === currency.id;
@@ -95,7 +110,10 @@ function ExchangeRateService($http, util, Currencies, Session) {
         // you must have at least one rate for each currency defined
         // if that doesn't exist, throw an error
         if (!complete) {
-          throw new Error('EXCHANGE.MISSING_EXCHANGE_RATES');
+          const knownIds = (new Set([...rates.map(rate => rate.currency_id)])).add(Session.enterprise.currency_id);
+          const missing = currencyArray.filter(cur => !knownIds.has(cur.id));
+          service.missingRates = missing;
+          throw new MissingCurrencyError('EXCHANGE.MUST_DEFINE_RATES_FIRST', missing);
         }
 
         // store the exchange rates for the fast future lookup.
@@ -196,18 +214,41 @@ function ExchangeRateService($http, util, Currencies, Session) {
     // you to apply this transformation to a list of mixed currencies.
     if (currencyId === Session.enterprise.currency_id) { return 1; }
 
-    // look up the rates for currencyId via the cMap object.
-    const rates = cMap[currencyId].filter((row) => row.date <= cdate);
+    // Get the current rates
+    if (cMap[currencyId]) {
+      // look up the rates for currencyId via the cMap object
+      const rates = cMap[currencyId].filter((row) => row.date <= cdate);
 
-    // get the last rate for the given currency
-    const { rate } = rates[rates.length - 1];
+      // get the last rate for the given currency
+      const { rate } = rates[rates.length - 1];
 
-    return rate;
+      return rate;
+    }
+
+    // Warn the user if the currency does not have an exchange rate
+    Notify.danger('EXCHANGE.MUST_DEFINE_RATES_FIRST', 60000);
+    return null;
   }
 
   function del(id) {
     return $http.delete(`/exchange/${id}`)
       .then(util.unwrapHttpResponse);
+  }
+
+  function getMissingExchangeRates() {
+    // Reload to get the latest rates
+    read();
+    return service.missingRates;
+  }
+
+  // Warn the user using a modal with a link to fix missing exchange rates
+  function warnMissingExchangeRates(missing) {
+    return Modal.open({
+      templateUrl : 'modules/exchange/warnExchange.modal.html',
+      controller : 'WarnExchangeMissingRateModalController as ModalCtrl',
+      resolve : { missing : () => missing },
+      size : 'lg',
+    });
   }
 
   return service;
