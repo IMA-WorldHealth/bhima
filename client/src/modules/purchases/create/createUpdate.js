@@ -102,7 +102,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
       vm.order.setCurrencyId(vm.rate.currency.id);
       vm.order.setExchangeRate(vm.currentExchangeRate);
     } catch (err) {
-      Notify.danger('EXCHANGE.MUST_DEFINE_EXCHANGE_RATES_FIRST', 60000);
+      Notify.danger('EXCHANGE.MUST_DEFINE_RATES_FIRST', 60000);
       vm.rate.currency = vm.currencies.find(curr => curr.id === vm.enterprise.currency_id);
       vm.$invalid = true;
     }
