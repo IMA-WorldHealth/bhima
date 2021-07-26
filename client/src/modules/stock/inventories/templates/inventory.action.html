@@ -56,5 +56,11 @@
         <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.STOCK.INVENTORY_REPORT</span>
       </a>
     </li>
+
+    <li>
+      <a data-method="lot-schedule" ng-click="grid.appScope.openLotScheduleModal(null, row.entity.inventory_uuid, row.entity.depot_uuid)" href>
+        <i class="fa fa-info-circle"></i> <span translate>LOTS.SHOW_LOT_SCHEDULE</span>
+      </a>
+    </li>
   </ul>
 </div>
