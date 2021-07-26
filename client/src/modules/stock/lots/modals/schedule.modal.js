@@ -94,13 +94,13 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
             lot.residual_start_pixel = lot.start_pixel + lot.width_pixels;
             lot.residual_days = Moment(lot.exhausted_date).diff(Moment(lot.expiration_date), 'days');
             lot.residual_months = lot.residual_days / 30.5;
-            // Truncate the width of the residual area to the width of the chart so it does not wrap
 
+            // Truncate the width of the residual area to the width of the chart so it does not wrap
             const residualWidth = lot.residual_months * vm.monthWidth;
             const chartWidth = vm.monthWidth * vm.numMonths;
             lot.residual_truncated = false;
             lot.residual_width_pixels = residualWidth;
-            if (residualWidth > chartWidth - lot.residual_start_pixel) {
+            if (residualWidth > chartWidth - lot.residual_start_pixel) {
               lot.residual_truncated = true;
               lot.residual_width_pixels = chartWidth - lot.residual_start_pixel;
             }
