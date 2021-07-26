@@ -1094,3 +1094,77 @@ td.center {
   border-bottom: 1px solid #efefef;
   width: 100%;
 }
+
+/* ---------------------------------------------
+    Styles for lot schedule table
+---------------------------------------------- */
+
+table.lot-schedule {
+  padding-left: 10px;
+}
+
+table.lot-schedule th.year {
+  border-bottom: 0;
+}
+
+table.lot-schedule th.month {
+  font-size: 12px;
+  padding: 2px 1px;
+  border-top: 0;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+}
+
+table.lot-schedule th.reorder {
+  background-color: #ffaaaa;
+}
+
+table.lot-schedule tr.lot-schedule th {
+  padding-top: 0;
+}
+
+table.lot-schedule tr.selected {
+  background-color: #ddeeff;
+}
+
+table.lot-schedule div.lot-marker,
+table.lot-schedule div.lot-marker-exhausted {
+  border: 1px solid black;
+  background-color: #aaffaa;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+table.lot-schedule div.lot-marker-exhausted {
+  border: 1px solid black;
+  border-left: 0;
+  background-color: #ffaaaa;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+table.lot-schedule div.lot-marker span.start {
+  color: black;
+  padding-left: 1px;
+}
+
+table.lot-schedule div.lot-marker-exhausted span.wasted {
+  color: #990000;
+  padding-left: 2px;
+}
+
+table.lot-schedule div.lot-marker-exhausted span.ellipsis {
+  font-size: 125%;
+  line-height: 80%;
+  margin-top: 0.3ex;
+  margin-right: 4px;
+}
+
+table.lot-schedule .wrap {
+  width: 4em;
+}
+
+table.lot-schedule .right {
+  text-align: right;
+}
