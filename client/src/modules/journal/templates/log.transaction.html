@@ -1,0 +1,17 @@
+<div class="ui-grid-cell-contents">
+  <a 
+    data-method="view-in-journal"
+    ui-sref="journal({filters : [{ key : 'trans_id', displayValue : row.entity.transId, value: row.entity.transId, cacheable: 0 },
+      { key : 'includeNonPosted', value : 1 }, { key : 'period', value : 'allTime' }]})"
+    ui-sref-opts="{ reload : false }"
+    ng-if="row.entity.transId && row.entity.action != 'deleted'"
+    class="text-uppercase">
+    {{ row.entity.transId }}
+  </a>
+
+  <span
+    ng-if="row.entity.transId && row.entity.action == 'deleted'"
+    class="text-danger text-uppercase">
+    {{ row.entity.transId }}
+  </span>
+</div>

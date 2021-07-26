@@ -6,7 +6,7 @@ VisitService.$inject = [
 ];
 
 function VisitService(
-  $http, util, $uibModal, GridRegistryFilterer
+  $http, util, $uibModal, GridRegistryFilterer,
 ) {
   const service = this;
   const baseUrl = '/patients';
@@ -128,7 +128,6 @@ function VisitService(
     return $http.get(`${baseUrl}/visits`, { params : options })
       .then(util.unwrapHttpResponse);
   }
-
 
   /**
    * @method openSearchModal
