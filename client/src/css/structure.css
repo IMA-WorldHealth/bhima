@@ -1154,6 +1154,7 @@ table.lot-schedule div.lot-marker-exhausted span.wasted {
   padding-left: 2px;
 }
 
+table.lot-schedule div.lot-marker span.ellipsis,
 table.lot-schedule div.lot-marker-exhausted span.ellipsis {
   font-size: 125%;
   line-height: 80%;

@@ -71,6 +71,7 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
             lot.end_date = lot.expiration_date;
             lot.premature_expiration = true;
           }
+          lot.truncated = lot.end_date.getTime() === vm.endChartDate.getTime();
 
           // Compute the starting value (assume enterprise currency)
           lot.value = lot.quantity * lot.unit_cost;
@@ -83,11 +84,11 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           lot.quantity_wasted = lot.quantity - lot.quantity_used;
           lot.value_wasted = lot.quantity_wasted * lot.unit_cost;
 
-          // Compute the width of the lot rectangle in pixels
-          lot.width_pixels = lot.num_months * vm.monthWidth;
-
           // Compute the starting location for the lot in pixels
           lot.start_pixel = (Moment(lot.start_date).diff(Moment(vm.startChartDate), 'days') / 30.5) * vm.monthWidth + 1;
+
+          // Compute the width of the lot rectangle in pixels
+          lot.width_pixels = lot.num_months * vm.monthWidth;
 
           // If the lot is exhausted prematurely, compute the width of the unusable RESIDUAL rectangle
           if (lot.premature_expiration) {
@@ -100,7 +101,8 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
             const chartWidth = vm.monthWidth * vm.numMonths;
             lot.residual_truncated = false;
             lot.residual_width_pixels = residualWidth;
-            if (residualWidth > chartWidth - lot.residual_start_pixel) {
+            if ((residualWidth > chartWidth - lot.residual_start_pixel)
+              || (avgConsumption <= 0 && (lot.residual_months > 0))) {
               lot.residual_truncated = true;
               lot.residual_width_pixels = chartWidth - lot.residual_start_pixel;
             }
