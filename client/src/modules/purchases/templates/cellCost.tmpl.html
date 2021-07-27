@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents">
   <div class="text-right">
-    {{ row.entity.cost | currency: row.entity.currency_id }}
+    {{ row.entity.cost + row.entity.shipping_handling | currency: row.entity.currency_id }}
   </div>
 </div>
