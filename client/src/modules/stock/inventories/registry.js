@@ -312,6 +312,12 @@ function StockInventoriesController(
       .catch(angular.noop);
   }
 
+  // lot schedule modal
+  vm.openLotScheduleModal = (uuid, inventoryUuid, depotUuid) => {
+    Modal.openLotScheduleModal({ uuid, inventoryUuid, depotUuid })
+      .catch(angular.noop);
+  };
+
   /**
    * @function openBarcodeScanner
    *

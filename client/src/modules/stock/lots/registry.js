@@ -105,6 +105,14 @@ function StockLotsController(
       });
   };
 
+  // lot schedule modal
+  vm.openLotScheduleModal = (uuid, inventoryUuid, depotUuid) => {
+    Modal.openLotScheduleModal({ uuid, inventoryUuid, depotUuid })
+      .then((/* res */) => {
+        // Do nothing since this modal does not change anything
+      });
+  };
+
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
