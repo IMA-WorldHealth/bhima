@@ -63,9 +63,11 @@ async function log(req, res, next) {
       th.timestamp AS timestamp,
       th.value AS value,
       th.action,
-      u.display_name
+      u.display_name,
+      dm.text as hrRecord
     FROM transaction_history th
     JOIN user u ON u.id = th.user_id
+    LEFT JOIN document_map dm ON dm.uuid = th.record_uuid
   `;
 
   filters.fullText('description', 'value');

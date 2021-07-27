@@ -515,6 +515,8 @@ function JournalController(
 
     Journal.openSearchModal(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
+
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();

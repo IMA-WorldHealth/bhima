@@ -23,11 +23,24 @@ const EUR_FMT = {
 const FORMATS = [null, FC_FMT, USD_FMT, EUR_FMT]; // NB: Indeces must match currency IDs in database
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
-function currency(value = 0, currencyId) {
+function currency(value = 0, currencyId, digit) {
+  let output;
+  const DEFAULT_CURRENCY_PARAMETERS = 3;
   const fmtNum = Number(currencyId);
   // if currencyId is not defined, defaults to USD.
   const fmt = fmtNum > 0 ? FORMATS[fmtNum] : USD_FMT;
-  return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
+
+  if (arguments.length === DEFAULT_CURRENCY_PARAMETERS) {
+    // default usage of the currency function
+    output = new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
+  } else {
+    // usage with custom digits for precision
+    const format = JSON.parse(JSON.stringify(fmt));
+    format.precision = digit;
+    output = new Handlebars.SafeString(accountingjs.formatMoney(value, format));
+  }
+
+  return output;
 }
 
 /**

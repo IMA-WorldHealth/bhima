@@ -197,6 +197,7 @@ function PatientRegistryController(
 
     Patients.openSearchModal(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
         Patients.filters.replaceFilters(changes);
         Patients.cacheFilters();
         vm.latestViewFilters = Patients.filters.formatView();

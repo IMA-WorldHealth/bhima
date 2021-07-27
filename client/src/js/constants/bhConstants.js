@@ -40,6 +40,7 @@ function constantConfig() {
       minDOB : new Date('1900-01-01'),
       format : 'dd/MM/yyyy',
       formatDB : 'YYYY-MM-DD',
+      formatLong : 'dd MMM yyyy hh:mm:ss',
     },
     yearOptions : {
       format         : 'yyyy',
