@@ -108,6 +108,10 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     }
   };
 
+  vm.onChangeShippingHandling = () => {
+    vm.order.digest();
+  };
+
   // this function will be called whenever items change in the grid.
   function handleUIGridChange() {
     vm.order.digest();

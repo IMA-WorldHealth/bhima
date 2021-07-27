@@ -1375,20 +1375,21 @@ CREATE TABLE `province` (
 DROP TABLE IF EXISTS `purchase`;
 
 CREATE TABLE `purchase` (
-  `uuid`            BINARY(16) NOT NULL,
-  `project_id`      SMALLINT(5) UNSIGNED NOT NULL,
-  `reference`       INT(10) UNSIGNED NOT NULL DEFAULT 0,
-  `cost`            DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.0,
-  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
-  `supplier_uuid`   BINARY(16) DEFAULT NULL,
-  `date`            DATETIME NOT NULL,
-  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
-  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
-  `payment_method`  TEXT,
-  `note`            TEXT,
-  `edited`          BOOLEAN NOT NULL DEFAULT FALSE,
-  `status_id`       TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
+  `uuid`              BINARY(16) NOT NULL,
+  `project_id`        SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`         INT(10) UNSIGNED NOT NULL DEFAULT 0,
+  `cost`              DECIMAL(19,8) UNSIGNED NOT NULL DEFAULT 0.0,
+  `shipping_handling` DECIMAL(19,8) UNSIGNED NOT NULL DEFAULT 0.0,
+  `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
+  `supplier_uuid`     BINARY(16) DEFAULT NULL,
+  `date`              DATETIME NOT NULL,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `payment_method`    TEXT,
+  `note`              TEXT,
+  `edited`            BOOLEAN NOT NULL DEFAULT FALSE,
+  `status_id`         TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
@@ -1725,7 +1726,6 @@ CREATE TABLE `transaction_type` (
 
 
 DROP TABLE IF EXISTS `unit`;
-
 CREATE TABLE `unit` (
   `id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(30) NOT NULL,

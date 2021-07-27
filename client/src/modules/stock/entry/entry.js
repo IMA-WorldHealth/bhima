@@ -355,6 +355,7 @@ function StockEntryController(
   function findPurchase() {
     StockModal.openFindPurchase()
       .then((purchase) => {
+        vm.originalPO = purchase;
         handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
         vm.currencyId = vm.movement.entity.instance.currency_id || vm.currencyId;
@@ -544,7 +545,7 @@ function StockEntryController(
   function submitPurchase() {
     const movement = {
       depot_uuid  : vm.depot.uuid,
-      entity_uuid : vm.movement.entity.uuid,
+      entity_uuid : vm.movement.entity.uuid, // The purchase order UUID
       date        : vm.movement.date,
       description : vm.movement.description,
       flux_id     : bhConstants.flux.FROM_PURCHASE,
@@ -553,9 +554,26 @@ function StockEntryController(
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
-    // fix the unit price, if necessary
+    const exchangeRate = Exchange.getCurrentRate(vm.currencyId);
+
+    // If there are shipping and handling charges, distribute them to the individual lot articles
+    if (vm.originalPO[0].shipping_handling) {
+
+      // Compute the cost of the original order (in PO currency), not including shipping+handling
+      const costPO = vm.originalPO.reduce((accum, lot) => accum + lot.unit_price * lot.quantity, 0.0);
+
+      // Compute the ratio of the original PO shipping+handling costs to the total cost of lots
+      // (Note that the total shipping_handling is copied to each lot in originalPO)
+      const SHRatio = vm.originalPO[0].shipping_handling / costPO;
+
+      // Adjust the article unit price by distributing the shipping+handling costs
+      movement.lots.forEach(lot => {
+        lot.unit_cost = ((lot.unit_cost * lot.quantity) * (1.0 + SHRatio)) / lot.quantity;
+      });
+    }
+
+    // fix the unit cost, if necessary
     if (vm.currencyId !== vm.enterprise.currency_id) {
-      const exchangeRate = Exchange.getCurrentRate(vm.currencyId);
       movement.lots.forEach(lot => {
         lot.unit_cost /= exchangeRate;
       });
