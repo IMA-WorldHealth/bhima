@@ -24,12 +24,13 @@ function StockModalService(Modal) {
   service.openFindDepot = openFindDepot;
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
-  service.openFindTansfer = openFindTansfer;
+  service.openFindTransfer = openFindTransfer;
   service.openActionStockAssign = openActionStockAssign;
   service.openActionStockRequisition = openActionStockRequisition;
   service.openSearchStockRequisition = openSearchStockRequisition;
   service.openAssignmentHistoric = openAssignmentHistoric;
   service.openDuplicateLotsModal = openDuplicateLotsModal;
+  service.openLotScheduleModal = openLotScheduleModal;
   service.openAMCCalculationModal = openAMCCalculationModal;
   service.openConsumptionByLots = openConsumptionByLots;
 
@@ -91,6 +92,20 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/lots/modals/duplicates.modal.html',
       controller   : 'DuplicateLotsModalController',
       controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** show schedule for lots consumption */
+  function openLotScheduleModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/schedule.modal.html',
+      controller   : 'LotsScheduleModalController',
+      controllerAs : '$ctrl',
+      size         : 'lg',
       resolve      : { data : () => request },
     });
 
@@ -229,7 +244,7 @@ function StockModalService(Modal) {
   }
 
   /** search transfer  */
-  function openFindTansfer(request) {
+  function openFindTransfer(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/findTransfer.modal.html',
       controller   : 'StockFindTransferModalController',
