@@ -59,9 +59,15 @@
       {{/each}}
     </tbody>
     <tfoot>
+      {{#if purchase.shipping_handling }}
+      <tr>
+        <td class="text-left" colspan="5">{{translate "FORM.LABELS.SHIPPING_HANDLING_COST"}}</td>
+        <td class="text-right" >{{currency purchase.shipping_handling purchase.currency_id}}</td>
+      </tr>
+      {{/if}}
       <tr>
         <td class="text-left" colspan="5">{{translate "FORM.LABELS.TOTAL"}} ({{purchase.items.length}} {{ translate "TABLE.AGGREGATES.RECORDS" }})</td>
-        <td class="text-right" >{{currency purchase.cost purchase.currency_id}}</td>
+        <td class="text-right" >{{currency purchase.total_cost purchase.currency_id}}</td>
       </tr>
     </tfoot>
   </table>
