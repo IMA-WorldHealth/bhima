@@ -86,6 +86,13 @@ async function renderHTML(data, template, options = {}) {
   debug(`rendering HTML file`);
 
   const html = await hbs.render(template, data);
+
+  // set back the default currency after the rendering
+  if (options.skipCurrencyRendering) {
+    hbs.helpers.currency = finance.currency;
+    hbs.helpers.debcred = finance.currency;
+  }
+
   return inlineSource(html, {
     attribute : false, rootpath : '/', compress : false, swallowErrors : true,
   });
