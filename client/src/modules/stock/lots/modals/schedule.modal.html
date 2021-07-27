@@ -30,7 +30,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="lot in $ctrl.lots" class="{{lot.selected}}">
+        <tr ng-repeat="lot in $ctrl.lots" class="{{::lot.selected}}">
           <td>{{lot.label}}</td>
           <td class="wrap right">{{lot.quantity}}</td>
           <td class="wrap right">{{lot.unit_cost | currency}}</td>
@@ -40,8 +40,8 @@
           <td>{{lot.expiration_date | date:$ctrl.DATE_FMT}}</td>
           <td class="wrap right">{{lot.num_months | number:'2.2'}}</td>
           <td class="wrap right">{{lot.quantity_used}}</td>
-          <td class="wrap right">{{lot.quantity_wasted}}</td>
-          <td class="wrap right">{{lot.value_wasted | currency}}</td>
+          <td class="wrap right text-danger">{{lot.quantity_wasted}}</td>
+          <td class="wrap right text-danger">{{lot.value_wasted | currency}}</td>
         </tr>
       </tbody>
     </table>

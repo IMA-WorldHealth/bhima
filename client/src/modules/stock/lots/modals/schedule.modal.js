@@ -45,8 +45,7 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
         // We need to eliminate any exhausted lots and any expired lots
         // and then sort the remaining lots by expiration date
         vm.lots = lots.filter(lot => lot.quantity > 0)
-          .filter(lot => Moment(new Date(lot.expiration_date)) >= Moment(today))
-          .sort(sortByExpirationDate);
+          .filter(lot => Moment(new Date(lot.expiration_date)) >= Moment(today));
 
         // runningDate is the date the last lot ran out
         // (Always start the first lot at the current date; ignore past)
@@ -59,7 +58,9 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
 
           // Compute when the lot runs out (based on adjusted start date)
           if (avgConsumption > 0) {
-            lot.exhausted_date = Moment(lot.start_date).add(lot.quantity / avgConsumption, 'months').toDate();
+            // use `lot.lifetime_lot` since it is already in days, and momentjs doesn't accept decimals for
+            // months
+            lot.exhausted_date = Moment(lot.start_date).add(lot.lifetime_lot, 'days').toDate();
           } else {
             lot.exhausted_date = vm.endChartDate;
           }
@@ -71,6 +72,7 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
             lot.end_date = lot.expiration_date;
             lot.premature_expiration = true;
           }
+
           lot.truncated = lot.end_date.getTime() === vm.endChartDate.getTime();
 
           // Compute the starting value (assume enterprise currency)
@@ -168,17 +170,6 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
 
   function close() {
     Instance.close('close');
-  }
-
-  function sortByExpirationDate(a, b) {
-    // Sort by expiration date : earlier dates first
-    if (a.expiration_date > b.expiration_date) {
-      return 1;
-    }
-    if (a.expiration_date === b.expiration_date) {
-      return 0;
-    }
-    return -1;
   }
 
   startup();
