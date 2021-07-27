@@ -215,8 +215,11 @@ function StockExitController(
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
-
     vm.overconsumption = [];
+
+    if (vm.depot) {
+      loadInventories(vm.depot);
+    }
   }
 
   function setupStock() {
@@ -286,8 +289,14 @@ function StockExitController(
   function loadInventories(depot, dateTo = new Date()) {
     setupStock();
 
+    const loadExpiredOnlyForLoss = vm.movement.exit_type === 'loss' ? undefined : 0;
+
     vm.loading = true;
-    Stock.inventories.read(null, { depot_uuid : depot.uuid, dateTo })
+    Stock.inventories.read(null, {
+      depot_uuid : depot.uuid,
+      dateTo,
+      is_expired : loadExpiredOnlyForLoss,
+    })
       .then(inventories => {
         vm.selectableInventories = inventories.filter(item => item.quantity > 0);
 
@@ -431,14 +440,20 @@ function StockExitController(
   }
 
   function setSelectedEntity(entity) {
-    if (entity) {
-      const uniformEntity = Stock.uniformSelectedEntity(entity);
-      vm.reference = uniformEntity.reference;
-      vm.displayName = uniformEntity.displayName;
-      vm.selectedEntityUuid = uniformEntity.uuid;
-      vm.requisition = (entity && entity.requisition) || {};
-      loadRequisitions(entity);
+    if (!entity) {
+      vm.reference = undefined;
+      vm.displayName = undefined;
+      vm.selectedEntityUuid = undefined;
+      vm.requisition = {};
+      return;
     }
+
+    const uniformEntity = Stock.uniformSelectedEntity(entity);
+    vm.reference = uniformEntity.reference;
+    vm.displayName = uniformEntity.displayName;
+    vm.selectedEntityUuid = uniformEntity.uuid;
+    vm.requisition = (entity && entity.requisition) || {};
+    loadRequisitions(entity);
   }
 
   function loadRequisitions(entity) {
