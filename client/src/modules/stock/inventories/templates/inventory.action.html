@@ -4,7 +4,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul class="dropdown-menu-right" uib-dropdown-menu>
+  <ul class="dropdown-menu-right" uib-dropdown-menu bh-dropdown-menu-auto-dropup >
     <li class="bh-dropdown-header">{{row.entity.code}} - {{row.entity.text}}</li>
     <li>
       <a data-method="stock-movement" ui-sref="stockMovements({
@@ -54,6 +54,12 @@
         ng-href="/reports/stock/sheet?{{ grid.appScope.openStockSheetReport(row.entity) }}"
         target="_blank">
         <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.STOCK.INVENTORY_REPORT</span>
+      </a>
+    </li>
+
+    <li>
+      <a data-method="lot-schedule" ng-click="grid.appScope.openLotScheduleModal(null, row.entity.inventory_uuid, row.entity.depot_uuid)" href>
+        <i class="fa fa-info-circle"></i> <span translate>LOTS.SHOW_LOT_SCHEDULE</span>
       </a>
     </li>
   </ul>
