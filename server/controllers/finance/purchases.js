@@ -116,7 +116,7 @@ function lookupPurchaseOrder(uid) {
 
   let sql = `
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
-      p.cost, p.date, s.display_name AS supplier, p.user_id,
+      p.cost, p.shipping_handling, p.date, s.display_name AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.currency_id,
       p.note, u.display_name AS author,
       p.status_id, ps.text AS status
@@ -445,7 +445,8 @@ function find(options) {
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, dm.text as reference,
-        p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
+        p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
+        p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
         p.currency_id, p.status_id, ps.text AS status
       FROM purchase AS p
@@ -587,7 +588,7 @@ function purchaseBalance(req, res, next) {
     SELECT
       s.display_name AS supplier_name, u.display_name AS user_name, BUID(p.uuid) AS uuid,
       dm.text AS reference, p.date, BUID(pi.inventory_uuid) AS inventory_uuid,
-      pi.quantity, pi.unit_price, p.currency_id,
+      pi.quantity, pi.unit_price, p.shipping_handling, p.currency_id,
       IFNULL(distributed.quantity, 0) AS distributed_quantity,
       (pi.quantity - IFNULL(distributed.quantity, 0)) AS balance
     FROM purchase p
