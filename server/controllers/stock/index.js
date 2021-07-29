@@ -884,15 +884,14 @@ async function listLotsDepot(req, res, next) {
   try {
     const data = await core.getLotsDepot(null, params);
 
-    const queryTags = `
-      SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
-      FROM tags t
-        JOIN lot_tag lt ON lt.tag_uuid = t.uuid
-      WHERE lt.lot_uuid IN (?)
-    `;
-
     // if we have an empty set, do not query tags.
     if (data.length !== 0) {
+      const queryTags = `
+        SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
+        FROM tags t
+          JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+        WHERE lt.lot_uuid IN (?)
+      `;
       const lotUuids = data.map(row => db.bid(row.uuid));
       const tags = await db.exec(queryTags, [lotUuids]);
 
@@ -948,7 +947,7 @@ async function listLotsDepotDetailed(req, res, next) {
 
   try {
     const sqlGetMonthlyStockMovements = `
-      SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid, 
+      SELECT BUID(l.inventory_uuid) AS inventory_uuid, BUID(sm.lot_uuid) AS lot_uuid,
         sm.date, inv.text AS inventoryText,
         l.label, SUM(IF(sm.is_exit = 1, sm.quantity, 0)) AS exit_quantity,
         SUM(IF(sm.is_exit = 0, sm.quantity, 0)) AS entry_quantity

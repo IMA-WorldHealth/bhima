@@ -785,7 +785,7 @@ function computeLotIndicators(inventories) {
           lot.near_expiration = lot.expiration_date <= stockOutDate;
 
           // here, we are attempting to calculate if this quantity will be at risk of expiry
-          // given that all inventory is consummed in order of their expiration dates.
+          // given that all inventory is consumed in order of their expiration dates.
 
           // Get the real quantity of usable stock remaining
           // If the lot will expire before being used, use the expiration date as the max date.

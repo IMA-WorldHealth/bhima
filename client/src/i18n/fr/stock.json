@@ -6,7 +6,6 @@
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
     "AGGREGATED_STOCK_CONSUMPTION": {
       "AGGREGATED_MOVEMENTS": "Mouvements agrégés",
-      "CONSUMPTION_TO_DATE": "Consommation à la date",
       "DESCRIPTION": "Ce module de consommation de stock agrégée permet de definir pour un dépôt et pour une période la quantité de stock consommée par produits mais surtout par lot, tout en précisant pour chaque produit le nombre de jour de rupture de stock",
       "DETAILS": "Détails",
       "END_OF_CONSUMPTION": "Fin de la consommation",

@@ -368,7 +368,7 @@ function StockEntryController(
    * @description pop up  a modal to let user find a transfer to receive
    */
   function findTransfer() {
-    StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
+    StockModal.openFindTransfer({ depot_uuid : vm.depot.uuid })
       .then((transfers) => {
         handleSelectedEntity(transfers, 'transfer_reception');
         setSelectedEntity(vm.movement.entity.instance);
