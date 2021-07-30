@@ -34,7 +34,7 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
   /*
     vm.isFirstCurencyLabel is used to check the exchange Rate
     is lower then 1  the program show display something
-    mutch better for reading
+    much better for reading
   */
   vm.isFirstCurencyLabel = false;
 
@@ -46,7 +46,6 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       });
       // format the enterprise currency
       vm.enterprise.currencyLabel = Currencies.format(vm.enterprise.currency_id);
-
       // load supported rates
       return Rates.read(true);
     })
@@ -72,7 +71,13 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       [vm.primaryExchange] = vm.currencies;
 
     })
-    .catch(Notify.handleError);
+    .catch(err => {
+      if (err.message === 'EXCHANGE.MUST_DEFINE_RATES_FIRST') {
+        Rates.warnMissingExchangeRates(err.missing);
+      } else {
+        Notify.handleError(err);
+      }
+    });
 
   Fiscal.getFiscalYearByDate({ date : vm.today })
     .then(([year]) => {
