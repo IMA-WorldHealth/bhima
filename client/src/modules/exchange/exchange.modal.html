@@ -4,6 +4,7 @@
       <li class="static" translate>EXCHANGE.TITLE</li>
       <li class="title" translate>EXCHANGE.ADDING_RATE</li>
     </ol>
+    <p ng-if="ModalCtrl.missingRates" class="missing-exchange-rate">{{ModalCtrl.missingRatesWarning}}</p>
   </div>
 
   <div class="modal-body">
@@ -12,6 +13,7 @@
       class="form-group"
       ng-show="ModalCtrl.hasMultipleCurrencies"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.currency.$invalid }">
+
       <label class="control-label" translate>FORM.LABELS.CURRENCY</label>
 
       <ui-select
