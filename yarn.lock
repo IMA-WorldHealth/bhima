@@ -4122,10 +4122,10 @@ gulp-postcss@^9.0.0:
     postcss-load-config "^2.1.1"
     vinyl-sourcemaps-apply "^0.2.1"
 
-gulp-rev-rewrite@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/gulp-rev-rewrite/-/gulp-rev-rewrite-4.0.0.tgz#14aebc50c5caafe9d434d348caaec66a5cc92ca8"
-  integrity sha512-KbyC2epeYS6ZUG2yOwEbE8vriARhJ3259cgVCtiM3CQyX8k/ntGKS1lY5QhIyNWYTt7+X9jDsXYeXugPexGJ6w==
+gulp-rev-rewrite@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/gulp-rev-rewrite/-/gulp-rev-rewrite-5.0.0.tgz#d03bab0a06f36569c7036f2525ab15972f34a8d9"
+  integrity sha512-uB9hOCAFspiBP4V2FDu/xRwuTVPle/6qC9OuDuYds8Vno2cqSf9P4Xmm3lUHJVa9NrsE9Rdo9cY3UEuwsrX5ww==
   dependencies:
     lodash.escaperegexp "^4.1.2"
     plugin-error "^1.0.1"
