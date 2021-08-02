@@ -38,9 +38,7 @@ function DuplicateLotsModalController(data, Instance, Lots, Notify, $translate) 
     vm.selectedLot = lotSelected;
     vm.lots.forEach(lot => {
       lot.selected = lot.uuid === lotSelected.uuid;
-      if (lot.uuid === lotSelected.uuid) {
-        lot.merge = false;
-      }
+      lot.merge = false;
     });
   }
 
