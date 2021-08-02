@@ -139,7 +139,7 @@ function getCandidates(req, res, next) {
 function getDupes(req, res, next) {
   const options = db.convert(req.query, ['inventory_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'l' });
-  filters.fullText('label');
+  filters.equals('label');
   filters.equals('inventory_uuid');
   filters.equals('entry_date');
   filters.equals('expiration_date');
