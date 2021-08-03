@@ -23,12 +23,6 @@
 
     <li class="divider"></li>
 
-    <li>
-      <a ng-href="{{ grid.appScope.openPurchaseOrderAnalysisReport(row.entity) }}" target="_blank">
-        <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.PURCHASE_ORDER_ANALYSIS.TITLE</span>
-      </a>
-    </li>
-
     <li ng-if="row.entity.status_id === grid.appScope.status.WAITING_CONFIRMATION">
       <a href data-method="edit-record" ui-sref="purchasesUpdate({ uuid : row.entity.uuid })" >
         <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT</span>
@@ -43,6 +37,12 @@
         data-edit-metadata="{{ row.entity.uuid }}"
         data-method="edit-status">
         <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_STATUS</span>
+      </a>
+    </li>
+
+    <li>
+      <a ng-href="{{ grid.appScope.openPurchaseOrderAnalysisReport(row.entity) }}" target="_blank">
+        <span class="fa fa-file-pdf-o"></span> <span translate>REPORT.PURCHASE_ORDER_ANALYSIS.TITLE</span>
       </a>
     </li>
 

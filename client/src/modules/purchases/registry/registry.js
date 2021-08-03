@@ -170,7 +170,10 @@ function PurchaseRegistryController(
 
     PurchaseOrder.openSearchModal(filtersSnapshot)
       .then((changes) => {
-        if (!changes) { return null; }
+        if (!changes) {
+          // Exit immediatly if the user closes the Search dialog with no changes
+          return;
+        }
         PurchaseOrder.filters.replaceFilters(changes);
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();
