@@ -731,6 +731,33 @@ growl-notification.fading.ng-leave.ng-leave-active {
   margin-left : 1.5em;
 }
 
+form.exchange-warning {
+  margin: 20px;
+  padding: 20px;
+}
+
+form.exchange-warning .modal-header,
+form.exchange-warning .modal-body {
+  background-color: #ffcccc;
+}
+form.exchange-warning .modal-footer {
+  padding-bottom: 0;
+}
+
+form.exchange-warning h2 {
+  font-weight: bold;
+  text-align: center;
+}
+
+form.exchange-warning .modal-footer {
+  background-color: transparent;
+}
+
+p.missing-exchange-rate {
+  font-weight: bold;
+  background-color: #ffcccc;
+}
+
 /* 'Card' Utility class */
 .text-float-util {
   text-align : right;

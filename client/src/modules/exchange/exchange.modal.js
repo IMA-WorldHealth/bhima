@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 ExchangeRateModalController.$inject = [
   '$uibModalInstance', 'ExchangeRateService', 'CurrencyService',
-  'SessionService', 'NotifyService',
+  'SessionService', 'NotifyService', '$translate',
 ];
 
 /**
@@ -11,13 +11,17 @@ ExchangeRateModalController.$inject = [
  * set the exchange rate from virtually anywhere in the application.
  *
  */
-function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Session, Notify) {
+function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Session, Notify, $translate) {
   const vm = this;
 
   // bind defaults
   vm.timestamp = new Date();
   vm.date = new Date();
   vm.enterprise = Session.enterprise;
+  vm.missingRates = Exchange.getMissingExchangeRates();
+  if (vm.missingRates) {
+    vm.missingRatesWarning = $translate.instant('EXCHANGE.DEFINE_EXCHANGE_RATE', vm.missingRates[0]);
+  }
 
   vm.rate = {
     date : new Date(),
