@@ -28,7 +28,7 @@ function CurrencyFilter(CurrencyFormat, Session) {
     if (angular.isUndefined(currencyId)) {
 
       if (requireCurrencyDefinition) {
-        return formatError('INVALID_CURRENCY_DEFINITION', amount);
+        return formatError('EXCHANGE.INVALID_CURRENCY_DEFINITION', amount);
       } else {
 
         // Display enterprise currency unless otherwise specified
@@ -55,7 +55,7 @@ function CurrencyFilter(CurrencyFormat, Session) {
 
     // Currency ID did not match a currency ID or format configuration was not found
     if (!formatConfiguration.supported) {
-      return formatError('CURRENCY_NOT_SUPPORTED', amount);
+      return formatError('EXCHANGE.CURRENCY_NOT_SUPPORTED', amount);
     }
 
     return formatNumber(amount, formatConfiguration.PATTERNS[1], formatConfiguration.GROUP_SEP, formatConfiguration.DECIMAL_SEP)
