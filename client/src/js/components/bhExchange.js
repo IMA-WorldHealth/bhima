@@ -33,7 +33,13 @@ function bhExchangeController(Session, Exchange, Notify, Currencies, $uibModal) 
       .then((rates) => {
         $ctrl.rates = rates;
       })
-      .catch(Notify.handleError)
+      .catch(err => {
+        if (err.message === 'EXCHANGE.MUST_DEFINE_RATES_FIRST') {
+          Notify.danger('EXCHANGE.MUST_DEFINE_RATES_FIRST', 60000);
+        } else {
+          Notify.handleError(err);
+        }
+      })
       .finally(() => {
         $ctrl.loading = false;
       });
