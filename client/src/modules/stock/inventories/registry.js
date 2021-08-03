@@ -25,7 +25,7 @@ function StockInventoriesController(
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.openStockSheetReport = openStockSheetReport;
 
-  const displayEnableExpiredStockOut = (Session.stock_settings.enable_expired_stock_out) || false;
+  const displayEnableExpiredStockOut = !!(Session.stock_settings.enable_expired_stock_out);
 
   const columns = [{
     field            : 'depot_text',

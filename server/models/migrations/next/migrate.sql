@@ -59,4 +59,4 @@ UPDATE status SET class_style = 'label label-danger' WHERE id = 7;
  * @date: 2021-07-31
  * @description: If a medicine has only expired stock, we should consider it as "stock out" is enable_expired_stock_out
 */
-ALTER TABLE stock_setting ADD COLUMN `enable_expired_stock_out` TINYINT(1) NOT NULL DEFAULT 0;
+CALL add_column_if_missing('stock_setting', 'enable_expired_stock_out', 'TINYINT(1) NOT NULL DEFAULT 0');
