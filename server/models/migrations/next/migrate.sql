@@ -52,3 +52,11 @@ UPDATE status SET class_style = 'label label-info' WHERE id = 4;
 UPDATE status SET class_style = 'label label-danger' WHERE id = 5;
 UPDATE status SET class_style = 'label label-success' WHERE id = 6;
 UPDATE status SET class_style = 'label label-danger' WHERE id = 7;
+
+
+/*
+ * @author: lomamech
+ * @date: 2021-07-31
+ * @description: If a medicine has only expired stock, we should consider it as "stock out" is enable_expired_stock_out
+*/
+CALL add_column_if_missing('stock_setting', 'enable_expired_stock_out', 'TINYINT(1) NOT NULL DEFAULT 0');

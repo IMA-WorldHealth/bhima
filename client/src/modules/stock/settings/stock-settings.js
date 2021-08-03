@@ -96,6 +96,8 @@ function StockSettingsController(
   vm.enableStrictDepotPermission = proxy('enable_strict_depot_permission');
   vm.enableSupplierCredit = proxy('enable_supplier_credit');
   vm.enableStrictDepotDistribution = proxy('enable_strict_depot_distribution');
+  vm.enableExpiredStockOut = proxy('enable_expired_stock_out');
+
   vm.setMonthAverage = function setMonthAverage() {
     $touched = true;
   };

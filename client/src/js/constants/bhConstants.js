@@ -116,6 +116,7 @@ function constantConfig() {
       HAS_MINIMUM_WARNING  : 'minimum_reached',
       HAS_OVERAGE_WARNING  : 'over_maximum',
       UNUSED_STOCK         : 'unused_stock',
+      AVAILABLE_NOT_USABLE : 'available_not_usable',
     },
     reports : {
       AGED_DEBTOR    : 'AGED_DEBTOR',

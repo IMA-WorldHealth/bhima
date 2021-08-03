@@ -130,6 +130,14 @@
             on-change-callback="StockSettingsCtrl.enableStrictDepotDistribution(value)">
           </bh-yes-no-radios>
 
+          <bh-yes-no-radios
+            label="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT"
+            help-text="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT_HELP_TEXT"
+            value="StockSettingsCtrl.settings.enable_expired_stock_out"
+            name="enable_expired_stock_out"
+            on-change-callback="StockSettingsCtrl.enableExpiredStockOut(value)">
+          </bh-yes-no-radios>
+
           <!-- average_consumption_algo -->
           <div id="average_consumption_algo" class="form-group"
             ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
