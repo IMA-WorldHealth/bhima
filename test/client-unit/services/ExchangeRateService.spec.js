@@ -10,7 +10,9 @@ describe('ExchangeRateService', () => {
     'angularMoment',
     'bhima.mocks',
     'ngStorage',
-    'ui.router'
+    'ui.router',
+    'ui.bootstrap',
+    'pascalprecht.translate',
   ));
 
   beforeEach(inject((_ExchangeRateService_, _SessionService_, _MockDataService_, _$httpBackend_) => {
@@ -36,16 +38,22 @@ describe('ExchangeRateService', () => {
       rate : 1200,
       date : new Date('01-01-2001'),
     }, {
-      id : 2,
+      id : 3,
       enterprise_id : enterprise.id,
       currency_id : 2,
       rate : 1500,
       date : new Date('01-01-2010'),
     }, {
-      id : 2,
+      id : 4,
       enterprise_id : enterprise.id,
       currency_id : 2,
       rate : 2000,
+      date : new Date('01-02-2010'),
+    }, {
+      id : 5,
+      enterprise_id : enterprise.id,
+      currency_id : 3,
+      rate : 0.84,
       date : new Date('01-02-2010'),
     }];
 
@@ -56,10 +64,16 @@ describe('ExchangeRateService', () => {
       name : 'Congolese Francs',
       min_monentary_unit : 50,
     }, {
-      id : 1,
+      id : 2,
       symbol : 'USD',
       format_key : 'usd',
       name : 'US Dollars',
+      min_monentary_unit : 0.01,
+    }, {
+      id : 3,
+      symbol : '€',
+      format_key : 'EUR',
+      name : 'Euro',
       min_monentary_unit : 0.01,
     }];
 
@@ -74,7 +88,6 @@ describe('ExchangeRateService', () => {
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });
-
 
   it('gets the exchange rate for a currency with id 2 for today', () => {
     Exchange.read();
