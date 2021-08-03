@@ -143,7 +143,9 @@ async function createStock(req, res, next) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
     }
 
-    transaction.addQuery('CALL RecomputeStockValue(NULL);');
+    if (!isExit) {
+      transaction.addQuery('CALL RecomputeStockValue(NULL);');
+    }
 
     // gather inventory uuids for use later recomputing the stock quantities
     const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
@@ -597,7 +599,9 @@ async function normalMovement(document, params, metadata) {
     transaction.addQuery('CALL PostStockMovement(?, ?, ?);', postStockParameters);
   }
 
-  transaction.addQuery('CALL RecomputeStockValue(NULL);');
+  if (!parameters.is_exit) {
+    transaction.addQuery('CALL RecomputeStockValue(NULL);');
+  }
 
   const result = await transaction.execute();
 
