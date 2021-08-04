@@ -91,6 +91,7 @@ function StockInventoryAdjustmentController(
       displayName : 'INVENTORY_ADJUSTMENT.OLD_QUANTITY',
       headerCellFilter : 'translate',
       enableFiltering : false,
+      type : 'number',
     }, {
       field : 'quantity',
       width : 180,
