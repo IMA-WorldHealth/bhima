@@ -704,7 +704,7 @@ function listMovements(req, res, next) {
  */
 function dashboard(req, res, next) {
   // eslint-disable-next-line
-  const { month_average_consumption, average_consumption_algo, min_delay } = req.session.stock_settings;
+  const { month_average_consumption, average_consumption_algo, min_delay, enable_expired_stock_out } = req.session.stock_settings;
 
   const dbPromises = [];
   let depotsByUser = [];
@@ -737,10 +737,15 @@ function dashboard(req, res, next) {
             month_average_consumption,
           ));
         } else if (status === 'out_of_stock') {
+          // add the params for considered expired stock as being out of stock
           const paramsFilter = {
             dateTo : new Date(),
             depot_uuid : depot.depot_uuid,
             status : 'stock_out',
+            enable_expired_stock_out,
+            month_average_consumption,
+            average_consumption_algo,
+            min_delay,
           };
 
           dbPromises.push(core.getInventoryQuantityAndConsumption(
@@ -1032,6 +1037,7 @@ async function listInventoryDepot(req, res, next) {
   params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
   params.min_delay = req.session.stock_settings.min_delay;
   params.default_purchase_interval = req.session.stock_settings.default_purchase_interval;
+  params.enable_expired_stock_out = req.session.stock_settings.enable_expired_stock_out;
 
   try {
     // FIXME(@jniles) - these two call essentially the same route.  Do we need both?
@@ -1083,6 +1089,7 @@ async function listInventoryDepot(req, res, next) {
       inventories[i].nearExpireLotsQuantity = nearExpireLotsQuantity;
       inventories[i].riskyLotsQuantity = riskyLotsQuantity;
       inventories[i].expiredLotsQuantity = expiredLotsQuantity;
+      inventories[i].usableAvailableStock = inventories[i].quantity - expiredLotsQuantity;
     }
 
     let rows = inventories;
