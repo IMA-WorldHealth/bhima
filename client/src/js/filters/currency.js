@@ -14,11 +14,11 @@ angular.module('bhima.filters')
   .filter('currency', CurrencyFilter);
 
 CurrencyFilter.$inject = [
-  'currencyFormat', 'SessionService',
+  'currencyFormat', 'SessionService', '$translate',
 ];
 
 
-function CurrencyFilter(CurrencyFormat, Session) {
+function CurrencyFilter(CurrencyFormat, Session, $translate) {
   var requireCurrencyDefinition = false;
 
   function currencyFilter(amount, currencyId) {
@@ -64,7 +64,7 @@ function CurrencyFilter(CurrencyFormat, Session) {
 
   // utility methods
   function formatError(message, amount) {
-    return message.concat('(', amount, ')');
+    return $translate.instant(message).concat(' ', amount ? amount : '?');
   }
 
   // Formatting method directly from angular native filter - does not support BHIMA coding guidelines
