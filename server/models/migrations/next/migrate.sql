@@ -30,12 +30,12 @@ INSERT IGNORE INTO `unit` VALUES
 INSERT IGNORE INTO `unit` VALUES
 (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
 
-ALTER TABLE transaction_history ADD COLUMN `value` TEXT DEFAULT NULL;
+CALL add_column_if_missing('transaction_history', 'value', 'TEXT DEFAULT NULL');
 
 /* author: jniles
  * @date: 2021-06-15
  */
-INSERT INTO `actions`(`id`, `description`) VALUES
+INSERT IGNORE INTO `actions`(`id`, `description`) VALUES
   (8, 'USERS.ACTIONS.EDIT_LOT');
 
 /**
@@ -43,7 +43,7 @@ INSERT INTO `actions`(`id`, `description`) VALUES
  * @date: 2021-06-17
  * Requisition status
  */
-ALTER TABLE `status` ADD COLUMN `class_style` VARCHAR(100) NOT NULL;
+CALL add_column_if_missing('status', 'class_style', 'VARCHAR(100) NOT NULL');
 
 UPDATE status SET class_style = 'label label-default' WHERE id = 1;
 UPDATE status SET class_style = 'label label-primary' WHERE id = 2;
