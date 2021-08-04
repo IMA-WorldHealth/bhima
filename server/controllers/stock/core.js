@@ -314,7 +314,9 @@ async function getLotsDepot(depotUuid, params, finalClause) {
  * inventory/depot pairings in the array.  It then creates a mapping for the CMMs in memory and uses
  * those to compute the relevant indicators.
  */
-async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo, defaultPurchaseInterval) {
+async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo, defaultPurchaseInterval,
+  stockParams) {
+
   if (!lots.length) return [];
 
   // NOTE(@jniles) - this is a developer sanity check. Fail _hard_ if the query is underspecified
@@ -353,6 +355,28 @@ async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsump
       lot.avg_consumption = 0;
     }
   });
+
+  // verification of the activation of the option enable expired stock_out,
+  // search for expired quantities in order to calculate the stock management
+  // indicators with the usable quantities
+  if (stockParams && stockParams.enable_expired_stock_out) {
+    const lotsAvailable = await getLotsDepot(null, stockParams);
+
+    lots.forEach(inventory => {
+      inventory.expiredLotsQuantity = 0;
+
+      lotsAvailable.forEach(lot => {
+        const hasSameDepot = lot.depot_uuid === inventory.depot_uuid;
+        const hasSameInventory = lot.inventory_uuid === inventory.inventory_uuid;
+
+        if (hasSameDepot && hasSameInventory) {
+          if (lot.expired) {
+            inventory.expiredLotsQuantity += lot.quantity;
+          }
+        }
+      });
+    });
+  }
 
   // now that we have the CMMs correctly mapped, we can compute the inventory indicators
   const result = computeInventoryIndicators(lots);
@@ -473,8 +497,10 @@ function computeInventoryIndicators(inventories) {
   for (let i = 0; i < inventories.length; i++) {
     const inventory = inventories[i];
 
-    // the quantity of stock available in the given depot
-    const Q = inventory.quantity; // the quantity
+    const inventoryExpiredLotsQuantity = inventory.expiredLotsQuantity || 0;
+
+    const Q = inventoryExpiredLotsQuantity
+      ? inventory.quantity - inventoryExpiredLotsQuantity : inventory.quantity; // the quantity
 
     // Average Monthly Consumption (CMM/AMC)
     // This value is computed in the getBulkInventoryCMM() function.
@@ -515,17 +541,23 @@ function computeInventoryIndicators(inventories) {
     // Compute Months of Stock Remaining
     // The months of stock remaining is the quantity in stock divided by the Average
     // monthly consumption. Skip division by zero if the CMM is 0.
-    inventory.S_MONTH = inventory.NO_CONSUMPTION ? null : Math.floor(inventory.quantity / CMM); // mois de stock
+    inventory.S_MONTH = inventory.NO_CONSUMPTION ? null : Math.floor(Q / CMM); // mois de stock
 
     // Compute the Refill Quantity
     // The refill quantity is the amount of stock needed to order to reach your maximum stock.
-    inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
+    inventory.S_Q = inventory.S_MAX - Q; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
 
     // compute the inventory status code
-    if (Q <= 0) {
+    if (Q <= 0 && inventoryExpiredLotsQuantity === 0) {
       inventory.status = 'stock_out';
       inventory.stock_out_date = inventory.last_movement_date;
+    } else if (Q <= 0 && inventoryExpiredLotsQuantity > 0) {
+      inventory.status = 'stock_out';
+
+      // This property is added just to make a small difference
+      // between products that are actually out of stock and those that are no longer consumable.
+      inventory.notUsable = true;
     } else if (Q > 0 && inventory.NO_CONSUMPTION) {
       inventory.status = 'unused_stock';
     } else if (Q > 0 && Q <= inventory.S_SEC) {
@@ -698,7 +730,8 @@ async function getInventoryQuantityAndConsumption(params) {
 
   // add the CMM
   filteredRows = await getBulkInventoryCMM(
-    filteredRows, opts.month_average_consumption, opts.average_consumption_algo, opts.default_purchase_interval,
+    filteredRows, opts.month_average_consumption, opts.average_consumption_algo,
+    opts.default_purchase_interval, params,
   );
 
   if (_status) {
