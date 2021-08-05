@@ -42,6 +42,12 @@ function InventoryService(
       .then(service.util.unwrapHttpResponse);
   };
 
+  // return the global WAC for the given inventory
+  service.inventoryWac = (uuid) => {
+    return service.$http.get(`/inventory/wac/${uuid}`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   function downloadInventoriesTemplate() {
     service.$http.get(INVENTORY_IMPORT_URL.concat('template_file'))
       .then(response => {
