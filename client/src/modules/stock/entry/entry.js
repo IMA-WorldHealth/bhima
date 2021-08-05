@@ -432,15 +432,18 @@ function StockEntryController(
         .then((lots) => {
           item.availableLots = lots;
           item.candidateLots = lots.filter(lot => !lot.expired);
-
-          return vm.depot && vm.depot.uuid ? Stock.inventories.read(null, {
-            depot_uuid  : vm.depot.uuid,
-            inventory_uuid : item.inventory_uuid,
-          }) : {};
+          return Inventory.inventoryWac(item.inventory_uuid);
         })
-        .then(stockInventory => {
-          if (!stockInventory.length) { return; }
-          item.wacValue = stockInventory[0].wac;
+        .then(inventoryWacDetails => {
+          if (!inventoryWacDetails) { return; }
+          item.wacValue = inventoryWacDetails.wac;
+
+          // in case of transfer reception
+          // we force the movement to be made with current WAC
+          // since there is no way to edit the unit cost in this case
+          if (vm.movement.entity.type === 'transfer_reception') {
+            item.unit_cost = inventoryWacDetails.wac;
+          }
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
@@ -704,14 +707,11 @@ function StockEntryController(
         line.tracking_expiration = inventory.tracking_expiration;
         setInitialized(line);
 
-        return vm.depot && vm.depot.uuid ? Stock.inventories.read(null, {
-          inventory_uuid : line.inventory_uuid,
-          depot_uuid : vm.depot.uuid,
-        }) : {};
+        return Inventory.inventoryWac(line.inventory_uuid);
       })
-      .then(stockInventory => {
-        if (!stockInventory.length) { return; }
-        line.wac = stockInventory[0].wac;
+      .then(inventoryWacDetails => {
+        if (!inventoryWacDetails) { return; }
+        line.wac = inventoryWacDetails.wac;
       })
       .catch(Notify.handleError);
   }
