@@ -33,7 +33,6 @@ router.get('/inventories/:inventoryUuid/sheet_wac', getInventorySheetWac);
  */
 async function getInventoryWac(req, res, next) {
   try {
-    const binaryDepotUuid = db.bid(req.params.uuid);
     const binaryInventoryUuid = db.bid(req.params.inventoryUuid);
     const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?);';
     const querySelect = `
