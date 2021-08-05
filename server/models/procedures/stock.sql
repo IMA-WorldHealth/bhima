@@ -682,7 +682,6 @@ END $$
 DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue$$
 CREATE PROCEDURE RecomputeInventoryStockValue(
   IN _inventory_uuid BINARY(16),
-  IN _depot_uuid BINARY(16),
   IN _date DATE
 )
 BEGIN 
@@ -701,10 +700,8 @@ BEGIN
     FROM stock_movement AS sm
     JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
     WHERE
-      sm.depot_uuid = _depot_uuid 
-      AND inv.uuid = _inventory_uuid
+      inv.uuid = _inventory_uuid
       AND DATE(sm.date) <= DATE(_date)
     ORDER BY inv.text, DATE(sm.date), sm.created_at ASC;
   
@@ -739,8 +736,8 @@ BEGIN
   CLOSE cursor_all_movements;
 
   /* write the line in the database */
-  DELETE FROM `stock_value` WHERE `depot_uuid` = _depot_uuid AND `inventory_uuid` = _inventory_uuid;
-  INSERT INTO `stock_value` VALUES (_depot_uuid, _inventory_uuid, _date, v_quantity_in_stock, v_wac);
+  DELETE FROM `stock_value` WHERE `inventory_uuid` = _inventory_uuid;
+  INSERT INTO `stock_value` VALUES (_inventory_uuid, _date, v_quantity_in_stock, v_wac);
 
 END $$
 
@@ -760,7 +757,7 @@ BEGIN
     JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
     JOIN document_map AS map ON map.uuid = sm.document_uuid
-    WHERE sm.depot_uuid = _depot_uuid AND DATE(sm.date) <= DATE(_date)
+    WHERE DATE(sm.date) <= DATE(_date)
     GROUP BY inv.uuid;
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_finished = 1;
@@ -774,7 +771,7 @@ BEGIN
       LEAVE loop_cursor_all_inventories;
     END IF;
 
-    CALL RecomputeInventoryStockValue(v_inventory_uuid, _depot_uuid, _date);
+    CALL RecomputeInventoryStockValue(v_inventory_uuid, _date);
 
   END LOOP;
 
@@ -786,32 +783,13 @@ CREATE PROCEDURE RecomputeStockValue(
   IN _date DATE
 )
 BEGIN 
-  DECLARE v_depot_uuid BINARY(16);
-  DECLARE v_cursor_finished INTEGER DEFAULT 0;
 
-  DECLARE cursor_all_depots CURSOR FOR
-    SELECT uuid AS depot_uuid FROM depot;
+  IF _date IS NOT NULL THEN 
+    CALL RecomputeDepotStockValue(NULL, _date);
+  ELSE 
+    CALL RecomputeDepotStockValue(NULL, CURRENT_DATE());
+  END IF;
 
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_finished = 1;
-
-  OPEN cursor_all_depots;
-
-  loop_cursor_all_depots : LOOP
-    FETCH cursor_all_depots INTO v_depot_uuid;
-
-    IF v_cursor_finished = 1 THEN
-      LEAVE loop_cursor_all_depots;
-    END IF;
-
-    IF _date IS NOT NULL THEN 
-      CALL RecomputeDepotStockValue(v_depot_uuid, _date);
-    ELSE 
-      CALL RecomputeDepotStockValue(v_depot_uuid, CURRENT_DATE());
-    END IF;
-
-  END LOOP;
-
-  CLOSE cursor_all_depots;
 END $$
 
 DELIMITER ;
