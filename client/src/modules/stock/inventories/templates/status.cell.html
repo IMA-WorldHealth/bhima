@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents">
-    <div ng-if="row.entity.hasStockOut" class="label out-of-stock-status"
+    <div ng-if="row.entity.hasStockOut && !row.entity.notUsable" class="label out-of-stock-status"
       uib-tooltip="{{'STOCK.STATUS.STOCK_OUT' | translate}}"
       tooltip-append-to-body="true"
       tooltip-placement="left"
@@ -46,4 +46,12 @@
       translate>
       STOCK.STATUS.OVER_MAX
     </div>
-</div>
+
+    <div ng-if="row.entity.hasStockOut && row.entity.notUsable" class="label label-warning"
+      uib-tooltip="{{'STOCK.STATUS.STOCK_OUT_NOT_USABLE' | translate}}"
+      tooltip-append-to-body="true"
+      tooltip-placement="left"
+      translate>
+      STOCK.STATUS.STOCK_OUT_NOT_USABLE
+    </div>
+  </div>
