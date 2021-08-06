@@ -57,8 +57,9 @@ function DuplicateLotsController(
       displayName : 'STOCK.EXPIRATION_DATE',
       headerTooltip : 'STOCK.EXPIRATION_DATE',
       headerCellFilter : 'translate',
-      cellFilter : 'date:"mediumDate"',
       cellClass : 'text-right',
+      cellFilter : 'date',
+      type : 'date',
     }, {
       field : 'num_duplicates',
       displayName : 'TABLE.COLUMNS.NUM_DUPLICATE_LOTS',
