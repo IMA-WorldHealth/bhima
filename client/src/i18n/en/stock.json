@@ -338,6 +338,7 @@
     "NEVER_EXHAUSTED": "Never",
     "NO_LOTS_FOUND": "No lots found that were not expired or exhausted!",
     "PROJECTION_BASIS": "This projection is based on current average consumption of {{avg_consumption}} {{unit_type}} per month.",
+    "REORDER_STOCK_TODAY": "Reorder this stock today!",
     "REORDER_STOCK_DATE": "Suggested date to reorder stock: {{reorder_date | date}}",
     "QUANTITY_USED": "Quantity used",
     "QUANTITY_WASTED": "Quantity wasted",

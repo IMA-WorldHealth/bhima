@@ -34,6 +34,7 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
         // Save info about the inventory article
         // (lot[0] may have zero quantity and be filtered out below)
         vm.inventory_name = lots[0].text;
+        vm.inventory_code = lots[0].code;
         const avgConsumption = lots[0].avg_consumption;
         const minMonthsSecurityStock = lots[0].min_months_security_stock;
         if (avgConsumption > 0) {
@@ -47,8 +48,8 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           .filter(lot => Moment(new Date(lot.expiration_date)) >= Moment(today));
 
         // runningDate is the date the last lot ran out
-        // (Always start the first lot at the current date; ignore past)
-        let runningDate = new Date(today);
+        // (Always start the first lot 00:00 AM of current date; ignore the past)
+        let runningDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
         vm.lots.forEach(lot => {
           // Process the lots and determine sequential start/end dates and other info
@@ -82,7 +83,9 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           // Compute the lot quantity that will be left at the end date
           lot.num_days = Moment(lot.end_date).diff(Moment(lot.start_date), 'days');
           lot.num_months = lot.num_days / 30.5;
-          const numUsed = Math.ceil(lot.num_months * avgConsumption);
+          // if we do not expire before exhaustion, assume all stock articles are used.
+          // Otherwise, do the calculation to estimate how many will be wasted
+          const numUsed = lot.premature_expiration ? Math.ceil(lot.num_months * avgConsumption) : lot.quantity;
           lot.quantity_used = Math.min(numUsed, lot.quantity); // Cannot use more than we have!
           lot.quantity_wasted = lot.quantity - lot.quantity_used;
           lot.value_wasted = lot.quantity_wasted * lot.unit_cost;
@@ -135,6 +138,10 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           vm.reorderDate = Moment(allLotsExhausted).subtract(minMonthsSecurityStock * 30.5, 'days').toDate();
           vm.reorderSuggestion = avgConsumption > 0 ? $translate.instant('LOTS_SCHEDULE.REORDER_STOCK_DATE',
             { reorder_date : vm.reorderDate }) : '';
+          if (vm.reorderDate < today) {
+            vm.reorderDate = today;
+            vm.reorderSuggestion = $translate.instant('LOTS_SCHEDULE.REORDER_STOCK_TODAY');
+          }
         } else {
           vm.reorderDate = vm.endChartDate;
           vm.reorderSuggestion = '';
