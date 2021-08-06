@@ -52,6 +52,36 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="control-label" translate>TABLE.COLUMNS.ACTION</label>
+          <bh-clear on-clear="ModalCtrl.clear('action')"></bh-clear>
+          <div>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="action"
+                id="deleted"
+                value="deleted"
+                ng-value="'deleted'"
+                ng-model="ModalCtrl.searchQueries.action"
+                ng-click="ModalCtrl.onActionSelect('deleted')">
+              <span translate>POSTING_JOURNAL.DELETED_TRANSACTION</span>
+            </label>
+
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="action"
+                id="edit"
+                value="edit"
+                ng-value="'edit'"
+                ng-model="ModalCtrl.searchQueries.action"
+                ng-click="ModalCtrl.onActionSelect('edit')">
+              <span translate>POSTING_JOURNAL.EDITED_TRANSACTION</span>
+            </label>
+          </div>
+        </div>
+
         <bh-user-select
           user-id="ModalCtrl.searchQueries.user_id"
           name="user_id"
