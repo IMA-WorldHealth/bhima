@@ -306,3 +306,9 @@ CREATE TABLE  `stock_value` (
 /** Recompute stock values for all depots */
 /** All databases in production must run this script */
 CALL RecomputeStockValue(NULL);
+
+/* author: mbayopanda
+ * @date: 2021-08-05
+ */
+CALL add_column_if_missing('depot', 'is_cost_regulator', ' TINYINT(1) UNSIGNED NOT NULL DEFAULT 0');
+
