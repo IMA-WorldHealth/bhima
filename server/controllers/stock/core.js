@@ -1007,7 +1007,7 @@ async function getInventoryMovements(params) {
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.purchase_interval, i.delay, iu.text AS unit_type,
-      dm.text AS documentReference, flux.label as flux, sv.wac
+      dm.text AS documentReference, flux.label as flux, sv.wac, d.is_cost_regulator
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -1037,6 +1037,7 @@ async function getInventoryMovements(params) {
   // if an exchange rate was passed in, use it.  Otherwise, use 1.
   const rate = params.exchangeRate ? params.exchangeRate : 1;
   openingBalance.unit_cost = (firstRow && (firstRow.unit_cost * rate)) || 0;
+  const isCostRegulatorDepot = (firstRow && firstRow.is_cost_regulator);
 
   bundle.movements = rows;
 
@@ -1077,12 +1078,22 @@ async function getInventoryMovements(params) {
       const newQuantity = line.quantity + stockQuantity;
       // fix negative value disorder
       // ignoring negative stock value by setting them to movement value for exit
-      const newValue = (stockValue < 0)
-        ? (line.unit_cost * line.quantity)
-        : (line.unit_cost * line.quantity) + stockValue;
+      let newValue;
+      let newCost;
+      if (isCostRegulatorDepot) {
+        newValue = (stockValue < 0)
+          ? (line.unit_cost * line.quantity)
+          : (line.unit_cost * line.quantity) + stockValue;
         // don't use cumulated quantity when stock quantity < 0
         // in this case use movement quantity only
-      const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
+        newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
+      } else {
+        // in cast the movement doesn't concern a cost regulator depot
+        // the value and unit cost are defined based on the last movement
+        // WE SUPPOSE THE LAST MOVEMENT IS USING AN ACCEPTED WAC
+        newValue = line.unit_cost * newQuantity;
+        newCost = line.unit_cost;
+      }
 
       stockQuantity = newQuantity;
       stockUnitCost = newCost;
