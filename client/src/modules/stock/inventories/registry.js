@@ -25,6 +25,8 @@ function StockInventoriesController(
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.openStockSheetReport = openStockSheetReport;
 
+  const displayEnableExpiredStockOut = (Session.stock_settings.enable_expired_stock_out) || false;
+
   const columns = [{
     field            : 'depot_text',
     displayName      : 'STOCK.DEPOT',
@@ -47,7 +49,16 @@ function StockInventoriesController(
     field            : 'quantity',
     displayName      : 'STOCK.QUANTITY',
     headerCellFilter : 'translate',
+    width            : '10%',
     cellClass        : 'text-right',
+    type : 'number',
+  }, {
+    field            : 'usableAvailableStock',
+    displayName      : 'STOCK.USABLE_AVAILABLE_STOCK',
+    headerCellFilter : 'translate',
+    width            : '10%',
+    cellClass        : 'text-right',
+    visible          : displayEnableExpiredStockOut,
     type : 'number',
   }, {
     field            : 'unit_type',
