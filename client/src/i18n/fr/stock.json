@@ -246,7 +246,7 @@
     "UNIT_COST"       : "Coût unitaire",
     "UNIT_COST_SH"    : "Coût unitaire + E&M",
     "UNIT_COST_SH_NOTE" : "Ce coût unitaire comprend les frais d'Expédition et de Manutention distribués",
-    "USABLE_AVAILABLE_STOCK": "Stock disponible utilisable",
+    "USABLE_AVAILABLE_STOCK": "Quantité utilisable",
     "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date",
     "STOCK_COST_DESCRIPTION" : "Les valeurs monetaires sont basées sur le coût d'achat de stock et non sur le prix de vente",
     "STOCK_UNIT_COST_ROUNDED" : "Le cout unitaire est arrondi avec deux decimales",
