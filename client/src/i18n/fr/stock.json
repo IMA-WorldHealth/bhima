@@ -339,6 +339,7 @@
     "NO_LOTS_FOUND": "Aucun lot trouvé qui ne soit pas périmé ou épuisé !",
     "PROJECTION_BASIS": "Cette projection est basée sur la consommation moyenne actuelle de {{avg_consumption}} {{unit_type}} par mois.",
     "REORDER_STOCK_DATE": "Date suggérée pour commander plus de stock: {{reorder_date | date}}",
+    "REORDER_STOCK_TODAY": "Commandez ce stock aujourd'hui!",
     "QUANTITY_USED": "Quantité utilisée",
     "QUANTITY_WASTED": "Quantité gaspillée",
     "VALUE_WASTED": "Valeur gaspillée",
