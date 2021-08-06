@@ -433,6 +433,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
+  app.get('/reports/finance/journal/log', financeReports.journal.journalLogReport);
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
