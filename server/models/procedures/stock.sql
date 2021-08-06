@@ -701,8 +701,10 @@ BEGIN
     FROM stock_movement AS sm
     JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+    JOIN depot d ON d.uuid = sm.depot_uuid
     WHERE
-      inv.uuid = _inventory_uuid
+      d.is_cost_regulator = 1
+      AND inv.uuid = _inventory_uuid
       AND DATE(sm.date) <= DATE(_date)
     ORDER BY inv.text, DATE(sm.date), sm.created_at ASC;
   
