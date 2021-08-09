@@ -2,24 +2,16 @@ angular.module('bhima.controllers')
   .controller('monthly_balanceController', monthlyBalanceController);
 
 monthlyBalanceController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'AccountService',
-  'FormatTreeDataService',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts, FormatTreeData) {
+function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('monthly_balance');
   const reportUrl = 'reports/finance/monthly_balance';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-
-  Accounts.read()
-    .then(elements => {
-      // bind the accounts to the controller
-      const accounts = FormatTreeData.order(elements);
-      vm.accounts = accounts;
-    });
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
@@ -33,6 +25,10 @@ function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportDa
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+  };
+
+  vm.onSelectAccount = function onSelectAccount(account) {
+    vm.account = account;
   };
 
   vm.preview = function preview(form) {
