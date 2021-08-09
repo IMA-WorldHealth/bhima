@@ -49,9 +49,24 @@ exports.getTransactionEditHistory = getTransactionEditHistory;
 exports.editTransaction = editTransaction;
 exports.count = count;
 exports.log = log;
+exports.findJournalLog = findJournalLog;
 
 async function log(req, res, next) {
   const options = req.query;
+  const { query, parameters } = findJournalLog(options);
+  try {
+    const rows = await db.exec(query, parameters);
+    const data = rows.map(item => {
+      item.value = JSON.parse(item.value);
+      return item;
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+function findJournalLog(options) {
   db.convert(options, ['record_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'th' });
 
@@ -85,17 +100,7 @@ async function log(req, res, next) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-
-  try {
-    const rows = await db.exec(query, parameters);
-    const data = rows.map(item => {
-      item.value = JSON.parse(item.value);
-      return item;
-    });
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
+  return { query, parameters };
 }
 
 /**
