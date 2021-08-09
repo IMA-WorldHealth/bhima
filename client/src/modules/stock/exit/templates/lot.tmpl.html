@@ -7,9 +7,8 @@
     <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.LOT' | translate }}">
       <span>{{$select.selected.label}}</span>
     </ui-select-match>
-    <ui-select-choices
-      repeat="lot as lot in row.entity.lots | filter: $select.search">
-      <span>{{ lot.label }} </span>
+    <ui-select-choices repeat="lot as lot in row.entity.lots | filter: $select.search">
+      <span title="{{lot.expiration_date | date:grid.appScope.DATE_FMT}}">{{ lot.label }} ({{lot.expiration_date | date:grid.appScope.DATE_FMT}})</span>
     </ui-select-choices>
   </ui-select>
 </div>
