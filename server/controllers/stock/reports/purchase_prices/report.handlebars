@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  {{> head title="REPORT.PURCHASE_PRICES.TITLE" }}
+
+  <body class="container-fluid">
+    {{> header}}
+
+    <!-- body -->
+    <div class="row">
+      <div class="col-xs-12">
+        <!-- page title  -->
+        <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.PURCHASE_PRICES.TITLE'}}</h3>
+        <br>
+
+        <table class="table table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th colspan="8">{{ inventory.code }} - {{ inventory.text }}</th>
+              <th>{{currency inventory.price metadata.enterprise.currency_id}}</th>
+            </tr>
+            <tr class="text-capitalize text-bold">
+              <th>{{translate 'FORM.LABELS.DATE'}}</th>
+              <th>{{translate 'FORM.LABELS.USER'}}</th>
+              <th>{{translate 'STOCK.MOVEMENT'}}</th>
+              <th>{{translate 'STOCK.FLUX'}}</th>
+              <th>{{translate 'STOCK.LOT'}}</th>
+              <th>{{translate 'FORM.LABELS.QUANTITY_ENTRY'}}</th>
+              <th>{{translate 'FORM.LABELS.UNIT_PRICE'}}</th>
+              <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
+              <th>{{translate 'FORM.LABELS.MARGIN'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each entries as |movement| }}
+              <tr {{#if movement.negative}}class="bg-danger text-danger"{{/if}}>
+                <td>{{ date movement.date "DD/MM/YYYY HH:mm" }} </td>
+                <td>{{ movement.userName }} </td>
+                <td>{{ movement.hrReference }} </td>
+                <td>{{ translate movement.reason }} </td>
+                <td>{{ movement.lot_label }} </td>
+                <td class="text-right">{{ movement.quantity}} </td>
+                <td class="text-right">{{ currency movement.unit_cost ../metadata.enterprise.currency_id }} </td>
+                <td class="text-right">{{ currency movement.running_total ../metadata.enterprise.currency_id }} </td>
+                <td class="text-right">{{ currency movement.margin ../metadata.enterprise.currency_id }} ({{percentage movement.percent_margin}})</td>
+              </tr>
+            {{else}}
+              <tr>
+                <td class="text-center" colspan="8">{{translate "TABLE.COLUMNS.EMPTY"}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+          {{#if totals}}
+            <tfoot>
+              <tr>
+                <th colspan=5>{{totals.num_entries}} {{translate "FORM.INFO.ROWS"}}</th>
+                <th class="text-right">{{totals.quantity }}</th>
+                <th class="text-right">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_unit_cost metadata.enterprise.currency_id}}</th>
+                <th class="text-right">{{currency totals.cost metadata.enterprise.currency_id}}</th>
+                <th class="text-right">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_margin metadata.enterprise.currency_id}}</th>
+              </tr>
+            </tfoot>
+          {{/if}}
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
