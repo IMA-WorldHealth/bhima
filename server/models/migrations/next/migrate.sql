@@ -66,3 +66,15 @@ ALTER TABLE `purchase` MODIFY `cost` DECIMAL(19,8);
  * @description: If a medicine has only expired stock, we should consider it as "stock out" is enable_expired_stock_out
 */
 CALL add_column_if_missing('stock_setting', 'enable_expired_stock_out', 'TINYINT(1) NOT NULL DEFAULT 0');
+
+
+/*
+ * @author: jniles
+ * @date 2021-08-09
+ * @description: adds report on inventory prices
+ */
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+  ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE');
+
+INSERT IGNORE INTO `unit` VALUES
+  (298, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices');
