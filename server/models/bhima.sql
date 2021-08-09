@@ -170,8 +170,8 @@ INSERT INTO unit VALUES
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
-  (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
-
+  (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
+  (298, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -243,7 +243,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
-  ('rumer_report', 'REPORT.RUMER.TITLE');
+  ('rumer_report', 'REPORT.RUMER.TITLE'),
+  ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -434,7 +435,7 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
 INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
-  (3, 'fianance', 'DASHBOARD.FINANCE');
+  (3, 'finance', 'DASHBOARD.FINANCE');
 
 -- cron
 -- NOTE(@jniles): the cron syntax for month is 0-indexed, but the cron
