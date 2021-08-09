@@ -653,7 +653,7 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -1376 DAY), 100, 1.2000, 0, 201702, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, DATE_ADD(CURRENT_DATE, INTERVAL -1376 DAY), 75, 1.2000, 1, 201702, 1),
   (HUID('5c0e5c53-8437-4694-85af-4b3f2135243c'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('76d46d03-030f-49ec-80d9-c863aae1a407'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 0, 202009, 1),
-  (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 1, 202009, 1);
+  (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 11, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 1, 202009, 1);
 
 -- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES
@@ -1095,6 +1095,6 @@ INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `qua
 INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `quantity`) VALUES (0x0172864221A6EAD091888FC4B421A279, 0xF6556E729D0547998CBD0A03B1810185, 20);
 
 -- DATA FOR TAGS
-INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES 
+INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES
   (HUID('983a6291-be1f-11eb-84e7-fe335098a4d5'), 'Medicament Traceur', '#0000ff'),
   (HUID('27cfe424-be27-11eb-84e7-fe335098a4d5'), 'Virologie', '#00ff00');
