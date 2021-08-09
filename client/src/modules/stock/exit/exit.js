@@ -107,7 +107,7 @@ function StockExitController(
         cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
       }, {
         field : 'lot',
-        width : 150,
+        width : 250,
         displayName : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
