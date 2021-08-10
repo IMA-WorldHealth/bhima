@@ -56,6 +56,8 @@ async function report(req, res, next) {
       SUM(sm.quantity) AS quantity,
       AVG(inv.price - sm.unit_cost) AS avg_margin,
       AVG(sm.unit_cost) AS avg_unit_cost,
+      MIN(sm.unit_cost) AS min_price,
+      MAX(sm.unit_cost) AS max_price,
       COUNT(*) AS num_entries
     FROM stock_movement sm
       JOIN lot l ON l.uuid = sm.lot_uuid
