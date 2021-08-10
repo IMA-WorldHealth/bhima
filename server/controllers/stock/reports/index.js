@@ -155,6 +155,8 @@ exports.stockAssignReceipt = stockAssignReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchase_order_analysis');
 
+exports.purchasePrices = require('./purchase_prices');
+
 exports.stockChangesReport = stockChangesReport;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;
