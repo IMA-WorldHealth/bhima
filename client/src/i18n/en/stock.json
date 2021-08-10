@@ -240,6 +240,7 @@
       "STOCK_OUT_NOT_USABLE" : "Stock Out (Not usable)",
       "UNUSED_STOCK"  : "Unused stock"
     },
+    "STOCK_VALUE_WITH_WAC" : "End value of the stock with the unit cost of the company",
     "STOCK_MOVEMENT"  : "View Stock Movement",
     "STOCK_MOVEMENTS" : "View Stock Movements",
     "SUCCESS"         : "Successfully created a movement",
