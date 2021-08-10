@@ -12,7 +12,8 @@ before a release and the steps to creating a new release.
 6. Create a new folder in the `server/models/migrations/` directory to hold the migration file with the format `v1.A.B-v1.X.Y` where `1.A.B` is the current version and `v1.X.Y` is the next version.
 7. Move the `server/models/migrations/next/migrate.sql` file to the directory created in the above step.
 8. Create a blank `migrate.sql` file in `server/models/migrations/next/`.
-9. Run `yarn release` and follow the options.
+9. Commit updated files (git commit ...)
+10. Run `yarn release` and follow the options.
 
 
 (*) Optional, Best Practice: Test the latest database changes on a production database.
