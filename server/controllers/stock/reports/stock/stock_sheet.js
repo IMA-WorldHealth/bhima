@@ -3,6 +3,7 @@ const {
 } = require('../common');
 
 const PeriodService = require('../../../../lib/period');
+const Inventory = require('../../../inventory');
 
 /**
  * @method stockSheetReport
@@ -87,11 +88,19 @@ async function stockSheetReport(req, res, next) {
       header.value = 0;
     }
 
+    // get current WAC
+    const wacDetails = await Inventory.computeWac(options.inventory_uuid);
+
     data.totals = rows.totals;
     data.result = rows.result;
     data.header = header;
     data.dateFrom = options.dateFrom;
     data.dateTo = options.dateTo;
+
+    data.wacDetails = {
+      value : (rows.totals.entry - rows.totals.exit) * wacDetails.wac,
+      unit_cost : wacDetails.wac,
+    };
 
     const result = await report.render(data);
     res.set(result.headers).send(result.report);
