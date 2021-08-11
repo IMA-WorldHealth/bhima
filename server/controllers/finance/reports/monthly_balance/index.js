@@ -1,5 +1,3 @@
-
-const q = require('q');
 const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
 
@@ -23,51 +21,45 @@ const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
  * @param {*} options the report options
  * @param {*} session the session
  */
-function reporting(opts, session) {
+async function reporting(opts, session) {
   const params = opts;
-  params.currency_id = 2;
+
+  params.currency_id = session.enterprise.currency_id;
+
   params.allAccount = parseInt(params.allAccount, 10);
   const accountNumber = params.allAccount ? `` : params.accountNumber;
   const accountLabel = params.allAccount ? `` : params.accountLabel;
 
-  let docReport;
   const options = _.extend(opts, {
     filename : 'FORM.LABELS.MONTHLY_BALANCE',
     csvKey : 'rows',
     user : session.user,
   });
 
-  try {
-    docReport = new ReportManager(TEMPLATE, session, options);
-  } catch (e) {
-    throw e;
-  }
-
-  let queries;
-  let range;
+  const report = new ReportManager(TEMPLATE, session, options);
 
   const periods = {
     periodFrom : params.period_id,
     periodTo : params.period_id,
   };
 
-  return fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
-    range = dateRange;
-    const sqlParams = [
-      params.fiscal_id,
-      params.period_id,
-    ];
+  const range = await fiscal.getDateRangeFromPeriods(periods);
 
-    let filterByAccount;
-    if (accountNumber) {
-      filterByAccount = selectAccountParent(accountNumber);
-    } else {
-      filterByAccount = '';
-    }
+  const sqlParams = [
+    params.fiscal_id,
+    params.period_id,
+  ];
 
-    const sql = `
-      SELECT ac.id, ac.number, ac.label, ac.parent, s.debit, s.credit, s.amount, s.type_id
-      FROM account as ac LEFT JOIN (
+  let filterByAccount;
+  if (accountNumber) {
+    filterByAccount = selectAccountParent(accountNumber);
+  } else {
+    filterByAccount = '';
+  }
+
+  const sql = `
+    SELECT ac.id, ac.number, ac.label, ac.parent, s.debit, s.credit, s.amount, s.type_id
+    FROM account as ac LEFT JOIN (
       SELECT pt.debit, pt.credit, SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
       FROM period_total as pt
       JOIN account as a ON a.id = pt.account_id
@@ -76,43 +68,41 @@ function reporting(opts, session) {
       JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
       WHERE fy.id = ? AND pt.period_id = ?
       GROUP BY pt.account_id
-      )s ON ac.id = s.account_id
-      WHERE ac.locked = 0 ${filterByAccount}
-      ORDER BY ac.number;
-    `;
+    )s ON ac.id = s.account_id
+    WHERE ac.locked = 0 ${filterByAccount}
+    ORDER BY ac.number;
+  `;
 
-    const sqlSum = `
-      SELECT p.id, p.start_date, SUM(pt.debit) AS debit, SUM(pt.credit) AS credit
-      FROM period_total AS pt
-      JOIN fiscal_year AS f ON f.id = pt.fiscal_year_id
-      JOIN period AS p ON p.id = pt.period_id
-      WHERE pt.fiscal_year_id = ? AND pt.period_id = ?
-    `;
+  const sqlSum = `
+    SELECT p.id, p.start_date, SUM(pt.debit) AS debit, SUM(pt.credit) AS credit
+    FROM period_total AS pt
+    JOIN fiscal_year AS f ON f.id = pt.fiscal_year_id
+    JOIN period AS p ON p.id = pt.period_id
+    WHERE pt.fiscal_year_id = ? AND pt.period_id = ?
+  `;
 
-    queries = [
-      db.exec(sql, sqlParams),
-      db.one(sqlSum, sqlParams),
-    ];
+  const [exploitation, totalExploitation] = await Promise.all([
+    db.exec(sql, sqlParams),
+    db.one(sqlSum, sqlParams),
+  ]);
 
-    return q.all(queries);
-  })
-    .spread((exploitation, totalExploitation) => {
-      const context = {
-        exploitation : prepareTree(exploitation, 'amount', 'debit', 'credit'),
-        totalExploitation,
-        dateFrom : range.dateFrom,
-        dateTo : range.dateTo,
-        periodLabel : params.periodLabel,
-        currencyId : params.currency_id,
-        accountLabel,
-        accountNumber,
-        allAccount : params.allAccount,
-      };
+  const rows = exploitation.length === 0 ? [] : prepareTree(exploitation, 'amount', 'debit', 'credit');
 
-      formatData(context.exploitation, context.totalExploitation, DECIMAL_PRECISION);
+  const context = {
+    exploitation : rows,
+    totalExploitation,
+    dateFrom : range.dateFrom,
+    dateTo : range.dateTo,
+    periodLabel : params.periodLabel,
+    currencyId : params.currency_id,
+    accountLabel,
+    accountNumber,
+    allAccount : params.allAccount,
+  };
 
-      return docReport.render(context);
-    });
+  formatData(context.exploitation, context.totalExploitation, DECIMAL_PRECISION);
+
+  return report.render(context);
 }
 
 function document(req, res, next) {
@@ -120,8 +110,7 @@ function document(req, res, next) {
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function selectAccountParent(account) {
@@ -147,17 +136,11 @@ function selectAccountParent(account) {
 // create the tree structure, filter by property and sum nodes' summableProp
 function prepareTree(data, amount, debit, credit) {
   const tree = new Tree(data);
-
-  try {
-    tree.walk(Tree.common.sumOnProperty(amount), false);
-    tree.walk(Tree.common.sumOnProperty(debit), false);
-    tree.walk(Tree.common.sumOnProperty(credit), false);
-    tree.walk(Tree.common.computeNodeDepth);
-    return tree.toArray();
-  } catch (error) {
-    return [];
-  }
-
+  tree.walk(Tree.common.sumOnProperty(amount), false);
+  tree.walk(Tree.common.sumOnProperty(debit), false);
+  tree.walk(Tree.common.sumOnProperty(credit), false);
+  tree.walk(Tree.common.computeNodeDepth);
+  return tree.toArray();
 }
 
 // set the percentage of each amoun's row,
@@ -165,13 +148,10 @@ function prepareTree(data, amount, debit, credit) {
 function formatData(result, total, decimalPrecision) {
   const _total = (total === 0) ? 1 : total;
   return result.forEach(row => {
-
     row.title = (row.depth < 3);
-
     if (row.title) {
       row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
     }
-
     row.amount = util.roundDecimal(row.amount, decimalPrecision);
   });
 }
