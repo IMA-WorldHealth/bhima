@@ -6,7 +6,7 @@ angular.module('bhima.components')
       dateValue : '<', // one-way binding
       onChange : '&',
       minDate : '<?',
-      // required : '<?', // FIXME(@jniles) - finish this
+      required : '<?',
       maxDate : '<?',
       allowFutureDate : '<?',
       disabled : '<?',
@@ -52,10 +52,17 @@ function bhDateEditorController(bhConstants, Session, Fiscal) {
   $ctrl.$onInit = () => {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DATE';
     $ctrl.allowFutureDate = $ctrl.allowFutureDate || false;
+
     // options to be passed to datepicker-option
     $ctrl.options = {
       minDate : $ctrl.minDate,
     };
+
+    // if required is undefined, default to not being required
+    if (!angular.isDefined($ctrl.required)) {
+      $ctrl.required = false;
+    }
+
     if (!$ctrl.allowFutureDate) {
       $ctrl.options.maxDate = $ctrl.maxDate || new Date();
     }
