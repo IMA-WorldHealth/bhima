@@ -35,9 +35,11 @@ async function reporting(_options, session) {
 
   // Get inventories movemented
   const sqlGetInventories = `
-    SELECT DISTINCT(BUID(mov.inventory_uuid)) AS inventory_uuid, mov.text AS inventory_name
+    SELECT DISTINCT(BUID(mov.inventory_uuid)) AS inventory_uuid,
+      mov.text AS inventory_name, mov.code AS inventory_code, mov.inventory_price
     FROM(
-      SELECT inv.uuid AS inventory_uuid, inv.text, sm.date
+      SELECT inv.uuid AS inventory_uuid, inv.text, inv.code,
+        inv.price as inventory_price, sm.date
       FROM stock_movement AS sm
       JOIN lot AS l ON l.uuid = sm.lot_uuid
       JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
@@ -71,7 +73,7 @@ async function reporting(_options, session) {
     stock.movements = allMovements.filter(movement => (movement.inventory_uuid === stock.inventory_uuid));
   });
 
-  let stockTotal = 0;
+  let stockTotalValue = 0;
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
   const rate = exchangeRate.rate || 1;
 
@@ -95,10 +97,12 @@ async function reporting(_options, session) {
       item.weightedAverageUnitCost = weightedAverageUnitCost;
     });
 
-    stock.stockQtt = quantityInStock;
+    stock.stockQtyPurchased = quantityInStock;
     stock.stockUnitCost = weightedAverageUnitCost;
     stock.stockValue = (quantityInStock * weightedAverageUnitCost);
-    stockTotal += (stock.stockValue);
+    stockTotalValue += stock.stockValue;
+
+    stock.inventoryPrice = stock.inventory_price * rate;
   });
 
   const stockValueElements = options.exclude_zero_value
@@ -106,7 +110,7 @@ async function reporting(_options, session) {
 
   data.stockValues = stockValueElements || [];
 
-  data.stocktotal = stockTotal;
+  data.stockTotalValue = stockTotalValue;
   data.emptyResult = data.stockValues.length === 0;
 
   data.currency_id = options.currency_id;
