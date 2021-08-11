@@ -5,11 +5,12 @@ JournalLogController.$inject = [
   'JournalLogService', 'NotifyService', '$state', 'bhConstants',
   'LanguageService', 'uiGridConstants', 'GridExportService',
   '$httpParamSerializer', 'GridColumnService', 'LanguageService',
+  '$timeout',
 ];
 
 function JournalLogController(
   Journal, Notify, $state, bhConstants, Language, uiGridConstants,
-  GridExport, $httpParamSerializer, Columns, Languages,
+  GridExport, $httpParamSerializer, Columns, Languages, $timeout,
 ) {
   const vm = this;
 
@@ -141,7 +142,17 @@ function JournalLogController(
     exportation.run();
   };
 
+  vm.setStartDownload = () => {
+    vm.startDownload = true;
+    $timeout(() => {
+      vm.startDownload = false;
+    }, 5000);
+  };
+
   vm.downloadExcel = () => {
+    if (!vm.startDownload) { return '#'; }
+
+    const url = '/reports/finance/journal/log?';
     const displayNames = columnConfig.getDisplayNames();
     const filterOpts = Journal.filters.formatHTTP();
     const defaultOpts = {
@@ -151,8 +162,9 @@ function JournalLogController(
       displayNames,
     };
     // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-    return $httpParamSerializer(options);
+    const options = { ...defaultOpts, ...filterOpts };
+    // do not send multiple request to the server for nothing
+    return url.concat($httpParamSerializer(options));
   };
 
   startup();

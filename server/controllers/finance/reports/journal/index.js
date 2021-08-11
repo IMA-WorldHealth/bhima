@@ -81,13 +81,17 @@ async function journalLogExport(req, res, next) {
   try {
     const report = new ReportManager(REPORT_TEMPLATE, req.session, options);
     const { query, parameters } = Journal.findJournalLog(req.query);
-    const rowsRaw = await db.exec(query, [parameters]);
+    const rowsRaw = await db.exec(query, parameters);
 
     const rows = rowsRaw.map(row => {
       const value = JSON.parse(row.value);
-      row.description = value.description;
-      row.transaction = value.trans_id;
-      delete row.value;
+
+      if (value) {
+        row.description = value.description;
+        row.transId = value.trans_id;
+        delete row.value;
+      }
+
       return row;
     });
 

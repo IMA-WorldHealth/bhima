@@ -21,7 +21,7 @@
                 </a>
               </li>
               <li role="menuitem">
-                <a target='_blank' ng-href="/reports/finance/journal/log?{{JournalLogCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+                <a target='_blank' ng-click="JournalLogCtrl.setStartDownload()" ng-href="{{JournalLogCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
                   <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
                 </a>
               </li>
