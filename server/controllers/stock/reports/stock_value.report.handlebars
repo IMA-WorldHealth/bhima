@@ -27,7 +27,9 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color:#ddd;">
+              <th class="text-center">{{translate 'FORM.LABELS.CODE'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.INVENTORY'}}</th>
+              <th class="text-center">{{translate 'FORM.LABELS.INVENTORY_PRICE'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.QUANTITY'}}</th>
               <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.VALUE'}}</th>
@@ -36,8 +38,10 @@
           <tbody>
             {{#each stockValues}}
               <tr>
+                <td>{{inventory_code}}</td>
                 <td style="width:50%">{{inventory_name}}</td>
-                <td class="text-right">{{stockQtt}}</td>
+                <td class="text-right">{{currency inventoryPrice ../currency_id 4}}</td>
+                <td class="text-right">{{stockQtyPurchased}}</td>
                 <td class="text-right">{{currency stockUnitCost ../currency_id 4}}</td>
                 <td class="text-right">{{currency stockValue ../currency_id}}</td>
               </tr>
@@ -45,8 +49,8 @@
             {{> emptyTable columns=4}}
           {{/each}}
           <tr>
-            <th colspan="3" class="text-right">{{ translate "FORM.LABELS.TOTAL"}}</th>
-            <th class="text-right">{{ currency stocktotal currency_id }}</th>
+            <th colspan="4" class="text-right">{{ translate "FORM.LABELS.VALUE_IN_STOCK"}}</th>
+            <th class="text-right">{{ currency stockTotalValue currency_id }}</th>
           </tr>
           </tbody>
         </table>

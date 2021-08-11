@@ -3,7 +3,7 @@
     "ADDING_RATE" : "Adding an exchange Rate",
     "ADD_MISSING_RATES_FOR": "Please add missing exchange rates for:",
     "AT_THE_DATE": "at the date",
-    "CURRENCY_NOT_SUPPORTED": "Currency not supported!",
+    "CURRENCY_NOT_SUPPORTED": "Currency not supported or needs an exchange rate.",
     "CLICK_HERE_TO_FIX_RATES": "Click here to set missing currency exchange rates",
     "CURRENT_RATE" : "Current Exchange Rate",
     "DEFINE_EXCHANGE_RATE": "Please define the exchange rate for: {{name}} ({{symbol}})!",
