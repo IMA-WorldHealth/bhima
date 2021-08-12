@@ -699,13 +699,12 @@ BEGIN
     SELECT sm.quantity, sm.unit_cost, sm.is_exit
     FROM stock_movement AS sm
     JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = sm.depot_uuid
     WHERE
       d.is_cost_regulator = 1
-      AND inv.uuid = _inventory_uuid
+      AND l.inventory_uuid = _inventory_uuid
       AND DATE(sm.date) <= DATE(_date)
-    ORDER BY inv.text, DATE(sm.date), sm.created_at ASC;
+    ORDER BY DATE(sm.date), sm.created_at ASC;
   
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_all_movements_finished = 1;
 
@@ -724,10 +723,22 @@ BEGIN
       SET v_is_exit = 1;
     END IF;
 
+    /*
+      WAC calculation is performed for new entries
+
+      v_quantity_in_stock will contains cumulative quantity for our movements
+      in case of entry v_quantity_in_stock will be incremented else v_quantity_in_stock
+      will keep its last value, the v_quanitity_in_stock is initialized with 0
+
+      WAC = (current stock value + the value of the new entry) / the final quantity
+
+      Since all entry are made in enterprise currency we do not have to do
+      conversion here, so the wac is based on movement unit cose * 1
+    */
     IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN 
       SET v_wac = ((v_quantity_in_stock * v_wac) + (v_line_quantity * v_line_unit_cost)) / (v_line_quantity + v_quantity_in_stock);
     ELSEIF v_line_is_exit = 0 AND v_quantity_in_stock = 0 THEN
-      SET v_wac = (v_line_unit_cost * 1); /* we must use the exchange rate */
+      SET v_wac = (v_line_unit_cost * 1);
     END IF;
 
     SET v_quantity_in_stock = v_quantity_in_stock + (v_line_quantity * v_is_exit);
@@ -743,9 +754,8 @@ BEGIN
 
 END $$
 
-DROP PROCEDURE IF EXISTS RecomputeDepotStockValue$$
-CREATE PROCEDURE RecomputeDepotStockValue(
-  IN _depot_uuid BINARY(16),
+DROP PROCEDURE IF EXISTS RecomputeAllInventoriesValue$$
+CREATE PROCEDURE RecomputeAllInventoriesValue(
   IN _date DATE
 )
 BEGIN
@@ -787,9 +797,9 @@ CREATE PROCEDURE RecomputeStockValue(
 BEGIN 
 
   IF _date IS NOT NULL THEN 
-    CALL RecomputeDepotStockValue(NULL, _date);
+    CALL RecomputeAllInventoriesValue(_date);
   ELSE 
-    CALL RecomputeDepotStockValue(NULL, CURRENT_DATE());
+    CALL RecomputeAllInventoriesValue(CURRENT_DATE());
   END IF;
 
 END $$

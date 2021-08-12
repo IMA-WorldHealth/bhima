@@ -318,7 +318,7 @@ function StockDefineLotsModalController(
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.
     if (form.$invalid) {
-      return;
+      return null;
     }
 
     // Handle differences in selecting vs creating lots
@@ -330,28 +330,26 @@ function StockDefineLotsModalController(
       }
     });
 
-    if (vm.errors.length === 0) {
-
-      // Maybe update some lot expiration dates
-      const promises = [];
-      if (vm.editExpirationDates) {
-        vm.form.rows.forEach((row) => {
-          const existingLot = getExistingLot(row.lot);
-          if (existingLot && (row.expiration_date !== existingLot.expiration_date)) {
-            promises.push(Lots.update(existingLot.uuid, { expiration_date : row.expiration_date }));
-          }
-        });
-      }
-      Promise.all(promises)
-        .then(() => {
-          saveSetting();
-          Instance.close({
-            lots : vm.form.rows,
-            unit_cost : vm.stockLine.unit_cost,
-            quantity : vm.form.total(),
-          });
-        });
+    // Maybe update some lot expiration dates
+    const promises = [];
+    if (vm.editExpirationDates) {
+      vm.form.rows.forEach((row) => {
+        const existingLot = getExistingLot(row.lot);
+        if (existingLot && (row.expiration_date !== existingLot.expiration_date)) {
+          promises.push(Lots.update(existingLot.uuid, { expiration_date : row.expiration_date }));
+        }
+      });
     }
+    return Promise.all(promises)
+      .then(() => {
+        saveSetting();
+        Instance.close({
+          lots : vm.form.rows,
+          unit_cost : vm.stockLine.unit_cost,
+          quantity : vm.form.total(),
+        });
+      })
+      .catch(Notify.handleError);
   }
 
   function saveSetting() {
