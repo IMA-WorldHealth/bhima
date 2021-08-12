@@ -540,7 +540,7 @@ CALL PostInvoice(@fourth_invoice);
 
 -- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
-SET @cash_payment_2 = HUID('2e1332b7-3e23-411e-527d-42ac585ff517');
+SET @cash_payment_2 = HUID('25b69e1d-c9bc-46f2-98a5-5dd948de3636');
 
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
   (@cash_payment, 1, 1, (NOW() - INTERVAL 1 HOUR), HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 0),

@@ -8,7 +8,7 @@ const CashSearch = require('./cash.search');
 
 describe('(/cash) Cash Payments', () => {
   const NUM_CASH_PAYMENTS = 2;
-  const TO_DELETE_UUID = '2e1332b7-3e23-411e-527d-42ac585ff517';
+  const TO_DELETE_UUID = '25b69e1d-c9bc-46f2-98a5-5dd948de3636';
 
   // can't find undefined cash payments
   it('GET /cash/undefined returns an error', () => {
