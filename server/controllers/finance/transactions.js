@@ -99,8 +99,10 @@ function formatTransactionRecord(txnRecord) {
     const parsed = { ...row };
     parsed.uuid = luuid.stringify(row.uuid);
     parsed.record_uuid = luuid.stringify(row.record_uuid);
-    if (row.reference_uuid) { parsed.reference_uuid = luuid.stringify(row.reference_uuid); }
-    if (row.entity_uuid) { parsed.entity_uuid = luuid.stringify(row.entity_uuid); }
+    if (row.reference_uuid && row.reference_uuid !== null) {
+      parsed.reference_uuid = luuid.stringify(row.reference_uuid);
+    }
+    if (row.entity_uuid && row.entity_uuid !== null) { parsed.entity_uuid = luuid.stringify(row.entity_uuid); }
     return parsed;
   });
 }
