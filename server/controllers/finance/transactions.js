@@ -11,6 +11,7 @@
  * @requires controllers/finance/patientInvoice
  */
 const debug = require('debug')('bhima:controller:transactions');
+const luuid = require('uuid');
 const shared = require('./shared');
 const db = require('../../lib/db');
 const Unauthorized = require('../../lib/errors/Unauthorized');
@@ -93,6 +94,17 @@ function deleteRoute(req, res, next) {
     .catch(next);
 }
 
+function formatTransactionRecord(txnRecord) {
+  return txnRecord.map(row => {
+    const parsed = { ...row };
+    parsed.uuid = luuid.stringify(row.uuid);
+    parsed.record_uuid = luuid.stringify(row.record_uuid);
+    if (row.reference_uuid) { parsed.reference_uuid = luuid.stringify(row.reference_uuid); }
+    if (row.entity_uuid) { parsed.entity_uuid = luuid.stringify(row.entity_uuid); }
+    return parsed;
+  });
+}
+
 async function deleteTransaction(uuid, actions, userId) {
   const documentMap = await shared.getRecordTextByUuid(uuid);
 
@@ -114,12 +126,15 @@ async function deleteTransaction(uuid, actions, userId) {
   `, [db.bid(uuid)]);
 
   const INSERT_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
+
+  // properly parsethe transaction record before storing it
+
   const transactionHistory = {
     uuid : db.uuid(),
     record_uuid : db.bid(uuid),
     user_id : userId,
     action : 'deleted',
-    value : JSON.stringify(transactionRecord),
+    value : JSON.stringify(formatTransactionRecord(transactionRecord)),
   };
 
   await db.exec(INSERT_TRANSACTION_HISTORY, transactionHistory);

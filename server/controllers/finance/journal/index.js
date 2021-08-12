@@ -335,6 +335,7 @@ function editTransaction(req, res, next) {
   let _recordTableToEdit;
 
   rowsRemoved.forEach(row => {
+
     const deletedTransactionHistory = {
       uuid : db.bid(uuid()),
       record_uuid : db.bid(row.uuid),
@@ -342,6 +343,7 @@ function editTransaction(req, res, next) {
       action : 'deleted',
       value : JSON.stringify(row),
     };
+
     transaction.addQuery(UPDATE_TRANSACTION_HISTORY, deletedTransactionHistory);
     transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]);
   });

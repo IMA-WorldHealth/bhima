@@ -87,8 +87,11 @@ async function journalLogExport(req, res, next) {
       const value = JSON.parse(row.value);
 
       if (value) {
-        row.description = value.description;
-        row.transId = value.trans_id;
+        // value is an array in production
+        const item = Array.isArray(value) ? value[0] : value;
+        row.description = item.description;
+        row.transId = item.trans_id;
+        row.hrRecord = item.hrRecord;
         delete row.value;
       }
 
