@@ -469,7 +469,7 @@ async function getMovements(depotUuid, params) {
   `;
 
   const finalClause = 'GROUP BY document_uuid, is_exit';
-  const orderBy = 'ORDER BY d.text, m.date';
+  const orderBy = 'ORDER BY d.text, m.date DESC';
   const movements = await getLots(sql, params, finalClause, orderBy);
 
   return movements;
