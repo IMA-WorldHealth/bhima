@@ -33,7 +33,6 @@ router.get('/inventories/:inventoryUuid/sheet_wac', getInventorySheetWac);
 async function getInventoryWac(req, res, next) {
   try {
     const binaryInventoryUuid = db.bid(req.params.inventoryUuid);
-    const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?);';
     const querySelect = `
       SELECT 
         BUID(sv.inventory_uuid) inventory_uuid,
@@ -43,7 +42,6 @@ async function getInventoryWac(req, res, next) {
       WHERE inventory_uuid = ?;
     `;
 
-    await db.exec(queryRecompute, [binaryInventoryUuid, new Date()]);
     const data = await db.one(querySelect, [binaryInventoryUuid]);
     res.status(200).json(data);
   } catch (error) {

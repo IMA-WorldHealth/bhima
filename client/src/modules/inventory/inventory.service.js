@@ -44,7 +44,7 @@ function InventoryService(
 
   // return the global WAC for the given inventory
   service.inventoryWac = (uuid) => {
-    return service.$http.get(`/inventory/wac/${uuid}`)
+    return service.$http.get(`/inventory/${uuid}/wac`)
       .then(service.util.unwrapHttpResponse);
   };
 

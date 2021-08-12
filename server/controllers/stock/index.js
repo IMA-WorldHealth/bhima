@@ -143,7 +143,7 @@ async function createStock(req, res, next) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
     }
 
-    if (!isExit) {
+    if (!isExit && params.flux_id !== core.flux.FROM_OTHER_DEPOT) {
       transaction.addQuery('CALL RecomputeStockValue(NULL);');
     }
 
