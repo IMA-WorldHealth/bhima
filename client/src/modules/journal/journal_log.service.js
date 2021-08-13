@@ -27,6 +27,7 @@ function JournalLogService(Api, AppCache, Filters, Periods, Modal, bhConstants) 
     { key : 'hrRecord', label : 'TABLE.COLUMNS.RECORD' },
     { key : 'hrReference', label : 'TABLE.COLUMNS.REFERENCE' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
+    { key : 'action', label : 'TABLE.COLUMNS.ACTION' },
   ]);
 
   if (filterCache.filters) {
