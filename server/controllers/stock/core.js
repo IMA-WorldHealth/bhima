@@ -456,7 +456,7 @@ async function getMovements(depotUuid, params) {
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference,
     BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
-    u.display_name AS userName
+    u.display_name AS userName, IFNULL(em.text, IFNULL(serv.name, dp.text)) AS target
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -464,12 +464,16 @@ async function getMovements(depotUuid, params) {
     JOIN flux f ON f.id = m.flux_id
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN entity_map em ON em.uuid = m.entity_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
+    LEFT JOIN depot AS dp ON dp.uuid = m.entity_uuid
     LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
+
+
   `;
 
   const finalClause = 'GROUP BY document_uuid, is_exit';
-  const orderBy = 'ORDER BY d.text, m.date';
+  const orderBy = 'ORDER BY d.text, m.date DESC';
   const movements = await getLots(sql, params, finalClause, orderBy);
 
   return movements;
