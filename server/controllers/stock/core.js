@@ -456,7 +456,7 @@ async function getMovements(depotUuid, params) {
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference,
     BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
-    u.display_name AS userName, IFNULL(em.text, IFNULL(serv.name, dp.text)) AS target
+    u.display_name AS userName, IFNULL(em.text, IFNULL(serv.name, IFNULL(dm2.text, dp.text))) AS target
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -467,6 +467,7 @@ async function getMovements(depotUuid, params) {
     LEFT JOIN entity_map em ON em.uuid = m.entity_uuid
     LEFT JOIN service AS serv ON serv.uuid = m.entity_uuid
     LEFT JOIN depot AS dp ON dp.uuid = m.entity_uuid
+    LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
     LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
 
 

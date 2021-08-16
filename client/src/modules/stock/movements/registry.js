@@ -93,7 +93,6 @@ function StockMovementsController(
       field : 'fluxName',
       displayName : 'STOCK.FLUX',
       headerCellFilter : 'translate',
-      // cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
       field : 'cost',
       type : 'number',
