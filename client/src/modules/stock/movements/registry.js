@@ -90,10 +90,9 @@ function StockMovementsController(
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/io.cell.html',
     }, {
-      field : 'flux_id',
+      field : 'fluxName',
       displayName : 'STOCK.FLUX',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/movements/templates/flux.cell.html',
     }, {
       field : 'cost',
       type : 'number',
@@ -228,8 +227,10 @@ function StockMovementsController(
     // the column must be filtered on the translated text
     row.io = $translate.instant(row.is_exit === 0 ? 'STOCK.INPUT' : 'STOCK.OUTPUT');
 
+    const fluxName = $translate.instant(getFluxName(row.flux_id));
     // compute the fluxName from its ID
-    row.fluxName = getFluxName(row.flux_id);
+    row.fluxName = fluxName.concat(row.target ? ` - ${row.target}` : '').trim();
+
   }
 
   function toggleLoading() {
