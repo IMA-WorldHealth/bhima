@@ -65,4 +65,7 @@ mysql -u "$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" -e "Call z
 echo "[build] recalulcating stock_movement_status"
 mysql -u "$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" -e "CALL zRecomputeStockMovementStatus();" || { echo 'failed to recalculate stock movement status' ; exit 1; }
 
+echo "[build] recalulcating stock_value"
+mysql -u "$DB_USER" -p"$DB_PASS" -h"$DB_HOST" -P"$DB_PORT" "$DB_NAME" -e "CALL RecomputeStockValue(NULL);" || { echo 'failed to recalculate stock value' ; exit 1; }
+
 echo "[/build]"

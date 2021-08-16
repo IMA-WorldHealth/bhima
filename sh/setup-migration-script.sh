@@ -55,10 +55,10 @@ mysql -u $DB_USER --password=$DB_PASS -e "SELECT CONCAT('DROP ',ROUTINE_TYPE,' I
 echo "" >> $MIGRATION_FILE
 
 echo "[migrate] Adding latest triggers, functions, and procedures to $DATABASE."
-cat $BHIMA_PATH/server/models/functions.sql \
-  $BHIMA_PATH/server/models/procedures/*.sql \
-  $BHIMA_PATH/server/models/admin.sql \
-  $BHIMA_PATH/server/models/triggers.sql \
+cat "$BHIMA_PATH"/server/models/functions.sql \
+  "$BHIMA_PATH"/server/models/procedures/*.sql \
+  "$BHIMA_PATH"/server/models/admin.sql \
+  "$BHIMA_PATH"/server/models/triggers.sql \
   >> $MIGRATION_FILE
 
 echo "" >> $MIGRATION_FILE
@@ -66,10 +66,10 @@ echo "" >> $MIGRATION_FILE
 echo "[migrate] Finished creating script skeleton"
 echo "[migrate] Adding manual migrations from next/migrate.sql"
 
-cat $BHIMA_PATH/server/models/migrations/next/migrate.sql >> $MIGRATION_FILE
+cat "$BHIMA_PATH"/server/models/migrations/next/migrate.sql >> $MIGRATION_FILE
 
 # Add migration files specific to this production server
-for sitefile in `\ls $BHIMA_PATH/server/models/migrations/next/*$DATABASE*.sql 2>/dev/null`;
+for sitefile in `\ls "$BHIMA_PATH"/server/models/migrations/next/*$DATABASE*.sql 2>/dev/null`;
 do
     echo "[migrate] Adding site-specific migration file: $sitefile"
     cat $sitefile >> $MIGRATION_FILE

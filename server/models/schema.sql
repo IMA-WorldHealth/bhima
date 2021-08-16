@@ -465,6 +465,7 @@ CREATE TABLE `depot` (
   `parent_uuid` BINARY(16) NULL,
   `dhis2_uid` VARCHAR(150) DEFAULT NULL,
   `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0,
+  `is_cost_regulator` TINYINT(1) UNSIGNED NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
@@ -2050,6 +2051,17 @@ CREATE TABLE  `stock_movement_status` (
     INDEX `date` (`date`), -- add index on date
     CONSTRAINT `stock_movement_status__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stock_value`;
+CREATE TABLE  `stock_value` (
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `date` DATE NOT NULL,
+    `quantity` INT(11) NOT NULL,
+    `wac` DECIMAL(19,4) NOT NULL,
+    KEY `inventory_uuid` (`inventory_uuid`),
+    INDEX `date` (`date`),
+    CONSTRAINT `stock_value__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donor

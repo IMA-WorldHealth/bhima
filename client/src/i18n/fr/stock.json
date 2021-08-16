@@ -1,6 +1,8 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "USE_OF_STOCK_WAC" : "Utilisation de la valeur en stock du produit (Cout Unitaire Moyen Pondéré)",
+    "WAC_NOTIFICATION" : "La valeur actuelle du produit en stock est",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
     "ADJUSTMENT"      : "Ajustement",
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
@@ -238,6 +240,7 @@
       "STOCK_OUT_NOT_USABLE" : "Rupture de stock (non utilisable)",      
       "UNUSED_STOCK"  : "Produits non utilisé"
     },
+    "STOCK_VALUE_WITH_WAC" : "Valeur finale du stock avec le cout unitaire de l'entreprise",
     "STOCK_MOVEMENT"  : "Voir le mouvement de Stock",
     "STOCK_MOVEMENTS" : "Les Mouvements de Stock",
     "SUCCESS"         : "Mouvement realisé avec succès",
