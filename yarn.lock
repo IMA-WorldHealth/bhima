@@ -7549,10 +7549,10 @@ registry-url@^5.0.0:
   dependencies:
     rc "^1.2.8"
 
-release-it@^14.11.3:
-  version "14.11.3"
-  resolved "https://registry.yarnpkg.com/release-it/-/release-it-14.11.3.tgz#214fb624208381b05e7ff95d8f9d6cfa6f161a70"
-  integrity sha512-dE7x/p4BGVpEYQynwXFEPMCezH1XNGhXI3tczjlbX8rHNOnV8F08+q/SPaqmwfjca667/FGxbLbi1dIkc9qOPw==
+release-it@^14.11.5:
+  version "14.11.5"
+  resolved "https://registry.yarnpkg.com/release-it/-/release-it-14.11.5.tgz#1d705d458463ab55f86c286239ccf0303fcbab40"
+  integrity sha512-9BaPdq7ZKOwtzz3p1mRhg/tOH/cT/y2tUnPYzUwQiVdj42JaGI1Vo2l3WbgK8ICsbFyrhc0tri1+iqI8OvkI1A==
   dependencies:
     "@iarna/toml" "2.2.5"
     "@octokit/rest" "18.9.0"
@@ -7562,7 +7562,6 @@ release-it@^14.11.3:
     debug "4.3.2"
     deprecated-obj "2.0.0"
     execa "5.1.1"
-    find-up "5.0.0"
     form-data "4.0.0"
     git-url-parse "11.5.0"
     globby "11.0.4"
