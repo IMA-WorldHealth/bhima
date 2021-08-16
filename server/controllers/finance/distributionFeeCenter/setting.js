@@ -1,27 +1,31 @@
 /**
 * Distribution Fee Center Controller
 *
-* This function is used to set the various distribution keys of the ancillary cost centers to the Main center.
+* This function is used to set the various distribution keys of the auxiliary cost centers to the main cost center.
 */
 
 const db = require('../../../lib/db');
 
 function setting(req, res, next) {
   const { data } = req.body;
+
   const dataValues = data.values;
+
   data.user_id = req.session.user.id;
+
   const distributionKey = [];
 
-  Object.entries(dataValues).forEach(([principalCenterId, rateDistribution]) => {
-    if (rateDistribution) {
-      distributionKey.push([
-        data.auxiliary_fee_center_id,
-        principalCenterId,
-        rateDistribution,
-        data.user_id,
-      ]);
-    }
-  });
+  Object.entries(dataValues)
+    .forEach(([principalCenterId, rateDistribution]) => {
+      if (rateDistribution) {
+        distributionKey.push([
+          data.auxiliary_fee_center_id,
+          principalCenterId,
+          rateDistribution,
+          data.user_id,
+        ]);
+      }
+    });
 
   const delDistribution = `DELETE FROM distribution_key WHERE auxiliary_fee_center_id = ?`;
 
