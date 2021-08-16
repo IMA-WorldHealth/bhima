@@ -38,7 +38,12 @@ async function configuration(req, res, next) {
 
     // get max and min date from period ids.
     if (query.periodFrom && query.periodTo) {
-      const result = await fiscal.getDateRangeFromPeriods(query.periodFrom, query.periodTo);
+      const periods = {
+        periodFrom : query.periodFrom,
+        periodTo : query.periodTo,
+      }
+
+      const result = await fiscal.getDateRangeFromPeriods(periods);
       options.custom_period_start = result.dateFrom;
       options.custom_period_end = result.dateTo;
     }
