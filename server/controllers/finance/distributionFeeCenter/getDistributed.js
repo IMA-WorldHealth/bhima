@@ -22,7 +22,12 @@ async function getDistributed(req, res, next) {
     }
     // get max and min date from period ids.
     if (periodFrom && periodTo) {
-      const result = await fiscal.getDateRangeFromPeriods(periodFrom, periodTo);
+      const periods = {
+        periodFrom,
+        periodTo,
+      };
+
+      const result = await fiscal.getDateRangeFromPeriods(periods);
       options.custom_period_start = result.dateFrom;
       options.custom_period_end = result.dateTo;
     }
