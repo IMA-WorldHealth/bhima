@@ -68,6 +68,8 @@ async function auxilliary(params) {
 
   // Get the child of all accounts title definied in Account Reference Items
   accountsValids.forEach(item => {
+    item.label = item.label.replace(`'`, `''`);
+
     tabAccountsValids.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
   ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost, ${item.is_variable} AS is_variable,
   ${item.is_turnover} AS is_turnover, ${item.account_reference_id} AS account_reference_id,
@@ -83,6 +85,8 @@ async function auxilliary(params) {
   if (accountsExceptions.length) {
   // Get the child of all accounts title definied in Account Reference Items
     accountsExceptions.forEach(item => {
+      item.label = item.label.replace(`'`, `''`);
+
       tabAccountsExceptions.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
     ${item.is_principal} AS is_principal,
     ${item.account_reference_id} AS account_reference_id, account.id AS account_id,
