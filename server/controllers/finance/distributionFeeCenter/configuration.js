@@ -19,6 +19,7 @@ async function configuration(req, res, next) {
     };
 
     const accounts = await referenceAccount.auxilliary(params);
+
     const refAccounts = accounts;
     const accountsId = accounts.map(account => account.account_id);
 
