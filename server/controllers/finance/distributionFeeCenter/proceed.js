@@ -5,7 +5,7 @@
 * of a profit or a cost, of an auxiliary center towards the main centers
 */
 const db = require('../../../lib/db');
-const BadRequest = require('../../../lib/errors/BadRequest');
+const { BadRequest } = require('../../../lib/errors');
 
 function proceed(req, res, next) {
   const { data } = req.body;

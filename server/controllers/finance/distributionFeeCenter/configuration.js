@@ -12,6 +12,7 @@ const fiscal = require('../fiscal');
 async function configuration(req, res, next) {
   try {
     const { query } = req;
+
     const params = {
       typeFeeCenter : query.typeFeeCenter,
       fee_center_id : query.fee_center_id,
@@ -20,6 +21,11 @@ async function configuration(req, res, next) {
     const accounts = await referenceAccount.auxilliary(params);
     const refAccounts = accounts;
     const accountsId = accounts.map(account => account.account_id);
+
+    if (accountsId.length === 0) {
+      res.status(200).json([]);
+      return;
+    }
 
     const options = {
       accounts_id : accountsId,
@@ -40,6 +46,7 @@ async function configuration(req, res, next) {
     if (query.fee_center_id || query.trans_id) {
       delete options.limit;
     }
+
     const rows = await generalLedger.findTransactions(options);
 
     rows.forEach(item => {
