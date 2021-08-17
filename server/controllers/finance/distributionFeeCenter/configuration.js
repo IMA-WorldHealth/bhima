@@ -12,13 +12,13 @@ const fiscal = require('../fiscal');
 async function configuration(req, res, next) {
   try {
     const { query } = req;
-
     const params = {
       typeFeeCenter : query.typeFeeCenter,
       fee_center_id : query.fee_center_id,
     };
 
     const accounts = await referenceAccount.auxilliary(params);
+
     const refAccounts = accounts;
     const accountsId = accounts.map(account => account.account_id);
 
@@ -38,7 +38,12 @@ async function configuration(req, res, next) {
 
     // get max and min date from period ids.
     if (query.periodFrom && query.periodTo) {
-      const result = await fiscal.getDateRangeFromPeriods(query.periodFrom, query.periodTo);
+      const periods = {
+        periodFrom : query.periodFrom,
+        periodTo : query.periodTo,
+      };
+
+      const result = await fiscal.getDateRangeFromPeriods(periods);
       options.custom_period_start = result.dateFrom;
       options.custom_period_end = result.dateTo;
     }
