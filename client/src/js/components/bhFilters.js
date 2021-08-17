@@ -8,8 +8,9 @@ angular.module('bhima.components')
     },
   });
 
-bhFiltersController.$inject = ['$filter'];
-function bhFiltersController($filter) {
+bhFiltersController.$inject = ['$filter', '$translate'];
+
+function bhFiltersController($filter, $translate) {
   const $ctrl = this;
 
   // formats the $viewValue according to any filters passed in
@@ -26,9 +27,12 @@ function bhFiltersController($filter) {
 
   function mapDisplayValues(filter) {
     filter.displayValue = filter._displayValue || filter._value;
-
     if (filter._valueFilter) {
-      filter.displayValue = $filter(filter._valueFilter)(filter.displayValue);
+      if (filter._valueFilter === 'boolean') {
+        filter.displayValue = $translate.instant(filter._value ? 'FORM.LABELS.YES' : 'FORM.LABELS.NO');
+      } else {
+        filter.displayValue = $filter(filter._valueFilter)(filter.displayValue);
+      }
     }
   }
 }
