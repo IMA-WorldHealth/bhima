@@ -12,7 +12,6 @@ const fiscal = require('../fiscal');
 async function configuration(req, res, next) {
   try {
     const { query } = req;
-
     const params = {
       typeFeeCenter : query.typeFeeCenter,
       fee_center_id : query.fee_center_id,
