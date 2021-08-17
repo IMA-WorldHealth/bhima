@@ -12,12 +12,15 @@ const fiscal = require('../fiscal');
 async function configuration(req, res, next) {
   try {
     const { query } = req;
+
     const params = {
       typeFeeCenter : query.typeFeeCenter,
       fee_center_id : query.fee_center_id,
     };
 
     const accounts = await referenceAccount.auxilliary(params);
+    let rows;
+
     const refAccounts = accounts;
     const accountsId = accounts.map(account => account.account_id);
 
@@ -45,22 +48,28 @@ async function configuration(req, res, next) {
     if (query.fee_center_id || query.trans_id) {
       delete options.limit;
     }
-    const rows = await generalLedger.findTransactions(options);
 
-    rows.forEach(item => {
-      refAccounts.forEach(ref => {
-        if (ref.account_id === item.account_id) {
-          item.fee_center_id = ref.id;
-          item.fee_center_label = ref.label;
-          item.is_variable = ref.is_variable;
-          item.is_turnover = ref.is_turnover;
-          item.is_cost = ref.is_cost;
-        }
+    // Prevent processing in case the list of accounts is empty
+    if (accounts.length) {
+      rows = await generalLedger.findTransactions(options);
+
+      rows.forEach(item => {
+        refAccounts.forEach(ref => {
+          if (ref.account_id === item.account_id) {
+            item.fee_center_id = ref.id;
+            item.fee_center_label = ref.label;
+            item.is_variable = ref.is_variable;
+            item.is_turnover = ref.is_turnover;
+            item.is_cost = ref.is_cost;
+          }
+        });
+
+        item.amount = item.credit ? item.credit : item.debit;
+        item.amount_equiv = item.credit_equiv ? item.credit_equiv : item.debit_equiv;
       });
-
-      item.amount = item.credit ? item.credit : item.debit;
-      item.amount_equiv = item.credit_equiv ? item.credit_equiv : item.debit_equiv;
-    });
+    } else {
+      rows = [];
+    }
 
     res.status(200).json(rows);
   } catch (error) {
