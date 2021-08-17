@@ -224,18 +224,14 @@ function buildTransactionQuery(options, posted) {
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
-
-  if (options.accounts_id.length) {
-    filters.custom('accounts_id', 'p.account_id IN (?)', [options.accounts_id]);
-  }
-
+  filters.custom('accounts_id', 'p.account_id IN (?)', [options.accounts_id]);
   const { amount } = options;
   filters.custom(
     'amount', '(credit = ? OR debit = ? OR credit_equiv = ? OR debit_equiv = ?)',
     [amount, amount, amount, amount],
   );
 
-  filters.custom(`excludes_distributed`, `p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)`);
+  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
 
   return {
     sql : filters.applyQuery(sql),
