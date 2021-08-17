@@ -23,8 +23,8 @@ async function getDistributed(req, res, next) {
     // get max and min date from period ids.
     if (periodFrom && periodTo) {
       const periods = {
-        periodFrom : periodFrom,
-        periodTo : periodTo,
+        periodFrom,
+        periodTo,
       };
 
       const result = await fiscal.getDateRangeFromPeriods(periods);

@@ -38,7 +38,7 @@ async function configuration(req, res, next) {
       const periods = {
         periodFrom : query.periodFrom,
         periodTo : query.periodTo,
-      }
+      };
 
       const result = await fiscal.getDateRangeFromPeriods(periods);
       options.custom_period_start = result.dateFrom;
