@@ -133,7 +133,7 @@ function PatientInvoiceService(
     {
       key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
     },
-    { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
+    { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE', valueFilter : 'boolean' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },

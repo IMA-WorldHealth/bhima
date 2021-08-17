@@ -33,7 +33,7 @@ function AccountReferenceService(Api, Filters, $uibModal, AppCache) {
     { key : 'number', label : 'FORM.LABELS.ACCOUNT' },
     { key : 'description', label : 'ACCOUNT.REFERENCE.DESCRIPTION' },
     { key : 'reference_type_id', label : 'FORM.LABELS.TYPE' },
-    { key : 'is_exception', label : 'ACCOUNT.REFERENCE.EXCEPTION' },
+    { key : 'is_exception', label : 'ACCOUNT.REFERENCE.EXCEPTION', valueFilter : 'boolean' },
   ]);
 
   if (filterCache.filters) {
