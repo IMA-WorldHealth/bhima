@@ -133,7 +133,7 @@
     "p-retry": "^4.6.1",
     "q": "^1.5.1",
     "stream-to-promise": "^3.0.0",
-    "tempy": "^1.0.1",
+    "tempy": "^2.0.0",
     "typeface-open-sans": "^1.1.13",
     "ui-select": "0.17.1",
     "use-strict": "^1.0.1",
