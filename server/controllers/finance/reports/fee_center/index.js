@@ -25,7 +25,9 @@ const DEFAULT_PARAMS = {
  */
 function report(req, res, next) {
   const params = req.query;
-  const data = {};
+  const data = {
+    currencyId : params.currency_id,
+  };
   const display = {};
   let reporting;
 
