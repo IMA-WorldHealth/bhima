@@ -71,8 +71,6 @@ async function inventoryChanges(req, res, next) {
         AND ivl.text->"$.action" = "UPDATE"
       ORDER BY ivl.log_timestamp DESC;
     `;
-
-
     const inventories = await db.exec(inventorySql, [dateFrom, dateTo]);
     const logs = await db.exec(logsSql, [dateFrom, dateTo]);
 
@@ -112,6 +110,12 @@ function formatKeys(record) {
 
 function getValue(last, current, key) {
   const result = {};
+
+  if (key === 'tags') {
+    result.from = '[' + last.tags.map(tag => '"' + tag.name + '"').join(',  ') + ']' || '[]';
+    result.to = '[' + current.tags.map(tag => '"' + tag.name + '"').join(',  ') + ']' || '[]';
+    return result;
+  }
 
   if (key === 'inventoryGroup') {
     result.from = last.groupName || '';
