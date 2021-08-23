@@ -113,6 +113,12 @@ function formatKeys(record) {
 function getValue(last, current, key) {
   const result = {};
 
+  if (key === 'tags') {
+    result.from = last.tags.map(tag => tag.name) || [];
+    result.to = current.tags.map(tag => tag.name) || [];
+    return result;
+  }
+
   if (key === 'inventoryGroup') {
     result.from = last.groupName || '';
     result.to = current.inventoryGroup.name || '';
