@@ -1019,6 +1019,7 @@
             "PASSWORD_MATCH": "Mot de passe ne correspond pas",
             "REQUIRED": "Champ requis",
             "REQUIRED_EMAIL": "Email requis",
+            "TAG_NAME_ERROR": "Les noms des étiquettes ne peuvent pas contenir les caractères ';' ou '|'",
             "UNIQUE": "Ce champ doit être unique. Cette valeur a déjà été utilisée."
         },
         "WARNINGS": {

@@ -1019,6 +1019,7 @@
             "PASSWORD_MATCH": "The passwords do not match!",
             "REQUIRED": "This field cannot be empty.",
             "REQUIRED_EMAIL": "The email field is required.",
+            "TAG_NAME_ERROR": "Tag names may not contain the characters ';' or '|'",
             "UNIQUE": "This field must be unique. This value is already taken."
         },
         "WARNINGS": {
