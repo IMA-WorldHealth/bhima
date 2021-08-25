@@ -24,7 +24,7 @@
             </label>
             <input type="number" class="form-control" autocomplete="off" name="month_average_consumption"
               ng-model="StockSettingsCtrl.settings.month_average_consumption"
-              ng-change="StockSettingsCtrl.setMonthAverage(value)" min="1" bh-integer>
+              ng-change="StockSettingsCtrl.setMonthAverage(value)" min="0.00001">
               <span class="help-block" translate>
                 SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT
               </span>
@@ -42,7 +42,7 @@
             <input type="number" class="form-control" autocomplete="off"
               name="default_min_months_security_stock"
               ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
-              ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="1" bh-integer>
+              ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="0.00001">
             <span class="help-block" translate>
               SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT
             </span>
@@ -60,7 +60,7 @@
             <input type="number" class="form-control" autocomplete="off"
               name="min_delay"
               ng-model="StockSettingsCtrl.settings.min_delay"
-              ng-change="StockSettingsCtrl.setMinDelay(value)" min="1"
+              ng-change="StockSettingsCtrl.setMinDelay(value)" min="0.00001"
               placeholder="0.00">
             <span class="help-block" translate>
               SETTINGS.MIN_PURCHASE_DELAY_HELP_TEXT
@@ -79,7 +79,7 @@
             <input type="number" class="form-control" autocomplete="off"
               name="default_purchase_interval"
               ng-model="StockSettingsCtrl.settings.default_purchase_interval"
-              ng-change="StockSettingsCtrl.setPurchaseInterval(value)" min="0"
+              ng-change="StockSettingsCtrl.setPurchaseInterval(value)" min="0.00001"
               placeholder="0.00">
             <span class="help-block" translate>
               SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT
