@@ -2580,7 +2580,7 @@ CREATE TABLE `cost_center_aggregate` (
   `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `cost_center_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   KEY `cost_center_id` (`cost_center_id`),
   KEY `principal_center_id` (`principal_center_id`),
   KEY `period_id` (`period_id`),
