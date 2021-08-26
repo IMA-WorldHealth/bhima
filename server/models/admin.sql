@@ -260,5 +260,22 @@ CREATE PROCEDURE zMergeDepots(
   DELETE FROM depot WHERE uuid =  _old_uuid;
 END$$
 
+/*
+ zRecalculateCostCenterAggregates
+
+ Removes all data from the cost_center_aggregate table and rebuilds it.
+*/
+CREATE PROCEDURE zRecalculateCostCenterAggregates()
+BEGIN
+
+  -- wipe the cost_center_aggregate table
+  DELETE FROM cost_center_aggregate;
+
+  -- regenerate
+  INSERT INTO cost_center_aggregate (period_id, credit, debit, credit, cost_center_id, principal_center_id)
+    SELECT period_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) AS debit, cost_center_id, principal_center_id
+    FROM general_ledger
+    GROUP BY cost_center_id, principal_center_id, period_id;
+END $$
 
 DELIMITER ;
