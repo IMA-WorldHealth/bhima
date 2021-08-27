@@ -31,6 +31,11 @@
               period-id="ReportConfigCtrl.reportDetails.period_id"
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
             </bh-period-selection>
+
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.currency_id"
+              on-change="ReportConfigCtrl.onSelectCurrency(currency)" >
+            </bh-currency-select>
             <hr>
 
             <div class="checkbox">

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
+const Exchange = require('../../exchange');
 
 const TEMPLATE = './server/controllers/finance/reports/fee_center/report.handlebars';
 const AccountReference = require('../../accounts').references;
@@ -23,9 +24,13 @@ const DEFAULT_PARAMS = {
  * This function renders the balance of accounts references as report.  The account_reference report provides a view
  * of the balance of account_references for a given period of fiscal year.
  */
-function report(req, res, next) {
+async function report(req, res, next) {
   const params = req.query;
-  const data = {};
+  const exchange = await Exchange.getExchangeRate(req.session.enterprise.id, params.currency_id, new Date());
+  const data = {
+    currencyId : Number(params.currency_id),
+    exchangeRate : exchange.rate || 1,
+  };
   const display = {};
   let reporting;
 
@@ -115,6 +120,7 @@ function report(req, res, next) {
       const dataConfigured = setting.configuration(config);
 
       _.merge(data, dataConfigured);
+
       return reporting.render(data);
     })
     .then(result => {
