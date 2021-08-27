@@ -28,7 +28,6 @@ function InventorySelectController(Inventory, Notify) {
       ? { consumable : 1 }
       : {};
 
-
     // load all inventories
     Inventory.read(null, params)
       .then(inventories => {

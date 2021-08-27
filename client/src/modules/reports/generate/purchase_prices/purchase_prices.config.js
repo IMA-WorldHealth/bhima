@@ -1,16 +1,16 @@
 angular.module('bhima.controllers')
-  .controller('purchase_order_analysisController', purchaseOrderAnalysisController);
+  .controller('purchase_pricesController', purchasePricesController);
 
-purchaseOrderAnalysisController.$inject = [
+purchasePricesController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'reportData', '$state',
+  'reportData', '$state', 'AccountService', 'FormatTreeDataService',
 ];
 
-function purchaseOrderAnalysisController($sce, Notify, SavedReports, AppCache,
+function purchasePricesController($sce, Notify, SavedReports, AppCache,
   reportData, $state) {
   const vm = this;
-  const cache = new AppCache('purchase_order_analysis');
-  const reportUrl = '/reports/purchase_order_analysis';
+  const cache = new AppCache('purchase_prices');
+  const reportUrl = '/reports/purchase_prices';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -20,8 +20,8 @@ function purchaseOrderAnalysisController($sce, Notify, SavedReports, AppCache,
     vm.previewResult = null;
   };
 
-  vm.onChangeShowDetails = value => {
-    vm.reportDetails.shouldShowDetails = value;
+  vm.onSelectInventory = function onSelectInventory(inventory) {
+    vm.reportDetails.inventory_uuid = inventory.uuid;
   };
 
   vm.preview = function preview(form) {

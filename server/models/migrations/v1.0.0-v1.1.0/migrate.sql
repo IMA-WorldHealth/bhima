@@ -260,7 +260,7 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
 INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
-  (3, 'fianance', 'DASHBOARD.FINANCE');
+  (3, 'finance', 'DASHBOARD.FINANCE');
 
 -- dashbord folder
 INSERT INTO `unit` VALUES 
