@@ -67,9 +67,3 @@ This management requires certain prerequisites:
 - **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in depots
 
 - **The presence of users with the required permissions on the depots**: BHIMA has a permission policy on depots, that is to say that only authorized users can have access to a given repository
-
-### Stock Management & Accounting
-Stock management in BHIMA can be a standalone package or work in concert with the finance modules.  When automatic stock accounting
-is turned on, BHIMA will create writings in the appropriately configured accounts for these items.  If automatic stock accounting
-is turned off, the system will simply move stock around.
-
