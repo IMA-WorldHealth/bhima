@@ -43,6 +43,7 @@ const inventoryColsMap = {
   group_uuid : 'FORM.LABELS.GROUP',
   inventoryGroup : 'FORM.LABELS.GROUP',
   label : 'FORM.LABELS.LABEL',
+  tags : 'TAG.TAGS',
   text : 'FORM.LABELS.LABEL',
   note : 'FORM.INFO.NOTE',
   price : 'FORM.LABELS.UNIT_PRICE',
@@ -167,21 +168,24 @@ async function updateItemsMetadata(record, identifier, session) {
     transaction.addQuery(sql, [record, db.bid(identifier)]);
   }
 
-  if (tags && tags.length) {
-    tags.forEach(t => {
-      const binaryTagUuid = db.bid(t.uuid);
-      const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
-      const queryClearPreviousTags = 'DELETE FROM inventory_tag WHERE inventory_uuid = ?';
-      transaction.addQuery(queryClearPreviousTags, [db.bid(identifier)]);
-      transaction.addQuery(queryAddTags, [db.bid(identifier), binaryTagUuid]);
-    });
+  if (tags) {
+    const inventoryUuid = db.bid(identifier);
+    const queryClearPreviousTags = 'DELETE FROM inventory_tag WHERE inventory_uuid = ?';
+    transaction.addQuery(queryClearPreviousTags, [inventoryUuid]);
+    if (tags.length) {
+      tags.forEach(t => {
+        const binaryTagUuid = db.bid(t.uuid);
+        const queryAddTags = 'INSERT INTO inventory_tag(inventory_uuid, tag_uuid) VALUES (?, ?);';
+        transaction.addQuery(queryAddTags, [inventoryUuid, binaryTagUuid]);
+      });
+    }
   }
 
   // write into inventory log all changes
   if (!_.isEmpty(record) || tags.length) {
     const lastInfo = await getItemsMetadataById(identifier);
-    const othersKyes = await loadGroupAndType(record);
-    const current = _.extend({}, recordCopy, othersKyes);
+    const othersKeys = await loadGroupAndType(record);
+    const current = _.extend({}, recordCopy, othersKeys);
 
     transaction.addQuery(inventoryLogSql, {
       uuid : db.uuid(),
@@ -250,12 +254,11 @@ async function getItemsMetadata(params) {
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
-      inventory.importance, t.name AS tag_name, t.color AS tag_color,
+      inventory.importance, t.name IS NOT NULL AS has_tags,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
-      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND
-      inventory.unit_id = iu.id
+        inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND inventory.unit_id = iu.id
       LEFT JOIN inventory_tag itag ON itag.inventory_uuid = inventory.uuid
       LEFT JOIN tags t ON t.uuid = itag.tag_uuid`;
 
@@ -278,9 +281,35 @@ async function getItemsMetadata(params) {
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
   filters.setOrder('ORDER BY inventory.code ASC');
 
+  // The query above produces multiple rows for inventory items with more than one tag
+  // (due to the LEFT JOIN).  Therefore use a GROUP BY to reduce to one and add
+  // the tags via a subsequent query.
+  filters.setGroup('GROUP BY inventory.uuid');
+
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
   const response = await db.exec(query, parameters);
+
+  // Construct the tags for each inventory item
+  const queryTags = `
+    SELECT BUID(t.uuid) AS uuid, t.name, t.color
+    FROM tags t
+    JOIN inventory_tag it ON it.tag_uuid = t.uuid
+    WHERE it.inventory_uuid = ?;
+  `;
+  const qtpromises = [];
+  response.forEach(inv => {
+    if (!inv.has_tags) {
+      inv.tags = null;
+      return;
+    }
+    const qtp = db.exec(queryTags, [db.bid(inv.uuid)])
+      .then(tags => {
+        inv.tags = tags;
+      });
+    qtpromises.push(qtp);
+  });
+  await Promise.all(qtpromises);
 
   return response;
 }
@@ -311,17 +340,19 @@ async function getItemsMetadataById(uid) {
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.delay, i.purchase_interval,
       i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration,
-      i.importance, t.name AS tag_name, t.color AS tag_color
+      i.importance, t.name IS NOT NULL AS has_tags
     FROM inventory AS i JOIN inventory_type AS it
-      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
-      i.type_id = it.id AND i.group_uuid = ig.uuid AND
-      i.unit_id = iu.id
+      JOIN inventory_unit AS iu
+      JOIN inventory_group AS ig ON i.type_id = it.id
+        AND i.group_uuid = ig.uuid
+        AND i.unit_id = iu.id
       LEFT JOIN inventory_tag itag ON itag.inventory_uuid = i.uuid
       LEFT JOIN tags t ON t.uuid = itag.tag_uuid
-    WHERE i.uuid = ?;`;
+    WHERE i.uuid = ?
+    GROUP BY i.uuid;`;
 
   const queryTags = `
-    SELECT BUID(t.uuid) AS uuid, t.name, t.color 
+    SELECT BUID(t.uuid) AS uuid, t.name, t.color
     FROM tags t
     JOIN inventory_tag it ON it.tag_uuid = t.uuid
     WHERE it.inventory_uuid = ?;
