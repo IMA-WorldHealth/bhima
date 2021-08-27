@@ -15,7 +15,7 @@
 
 Depots are used to store articles.  We can not talk about stock without talking about depots. The depot forms
 a container for the enterprise's stock, and allows users to enter stock through [Stock Entry](./movement.entry.md), or dispense
-stock through [Stock Exit](./movement.exit.md). 
+stock through [Stock Exit](./movement.exit.md).
 
 To create a new depot, click on the **Add Depot** button in the top right corner of the module.  This opens a
 modal window to enter the depot information.
