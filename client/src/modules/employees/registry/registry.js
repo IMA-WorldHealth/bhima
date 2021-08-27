@@ -56,6 +56,12 @@ function EmployeeRegistryController(
       sort : { direction : uiGridConstants.ASC, priority : 1 },
     },
     {
+      field            : 'service_name',
+      displayName      : 'TABLE.COLUMNS.SERVICE',
+      headerCellFilter : 'translate',
+      sort : { direction : uiGridConstants.ASC, priority : 1 },
+    },
+    {
       field            : 'is_medical',
       displayName      : 'FORM.LABELS.MEDICAL_STAFF',
       headerCellFilter : 'translate',
