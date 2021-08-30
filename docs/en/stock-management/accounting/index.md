@@ -117,6 +117,47 @@ Variation of Goods | 603 |  25 |
 
 ## IFRS Stock Accounting
 
-_TODO_
+In the IFRS accounting, purchasing medicines is never considered an expense, but the transfer of assets via an accounts payable.  Generally, a supplier issues an invoice
+for goods and the enterprise pays the supplier by cash or by bank.  The goods are entered into stock from the supplier's account.  So there are two transactions to consider:
+the invoicing for goods by the supplier and the payment for the goods by the enterprise.  Finally, when stock is consumed/destroyed/removed, the value of the stock is written
+to a cost of goods sold (COGS) expense account.
 
-In the IFRS accounting, purchasing medicines
+Consider the following accounts:
+
+Number | Label | Type
+-- | -- | --
+30 | Stock | asset
+40 | Supplier | liability
+57 | Cash | asset
+62 | Cost of Goods Sold | expense
+
+### Purchasing Medications
+For medicines to be purchased, the payment happens either in advance of receipt of goods, after receiving the goods, or in multiple installments, depending on the contract.  For
+simplicity, consider the payment of medications after full delivery.
+
+First, medicines are delivered to the warehouse by a supplier.  This is a direct transaction between the supplier's account (40) and the stock account (30).
+
+Account Label | Number | Debit | Credit
+-- | -- | -- | --
+Stock | 30 | 250 |
+Supplier | 40 |  | 250
+
+This creates a creditor balance in the supplier account - a payable for the enterprise.  In order to balance this account out, the enterpise will pay from their cash account (57)
+to the supplier (40) for the value of goods received.
+
+Account Label | Number | Debit | Credit
+-- | -- | -- | --
+Cash | 57 | | 250
+Supplier | 40 | 250 |
+
+### Consumption of Medications
+For the consumption operation, a single transaction is recorded to remove the value of the assets from the stock account (30) and write an expense to the cost of goods sold
+account (62).  Assuming $25.00 of medication was consummed:
+
+Account Label | Number | Debit | Credit
+-- | -- | -- | --
+Stock | 30 | | $25
+Cost of Goods Sold | 62 | $25 |
+
+
+This completes the stock accounting process with IFRS accounting.
