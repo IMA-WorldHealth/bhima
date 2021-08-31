@@ -461,10 +461,10 @@ CREATE TABLE `depot` (
   `allow_exit_transfer` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_exit_loss` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `location_uuid` BINARY(16) NULL,
-  `min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
+  `min_months_security_stock` DECIMAL(19,4) NOT NULL DEFAULT 2,
   `parent_uuid` BINARY(16) NULL,
   `dhis2_uid` VARCHAR(150) DEFAULT NULL,
-  `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0,
+  `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
@@ -1878,7 +1878,7 @@ DROP TABLE IF EXISTS `stock_setting`;
 CREATE TABLE `stock_setting` (
   `enterprise_id`  SMALLINT(5) UNSIGNED NOT NULL UNIQUE,
   `month_average_consumption` SMALLINT(5) NOT NULL DEFAULT 6,
-  `default_min_months_security_stock` SMALLINT(5) NOT NULL DEFAULT 2,
+  `default_min_months_security_stock` DECIMAL(19,4) NOT NULL DEFAULT 2,
   `enable_auto_purchase_order_confirmation` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_strict_depot_permission` TINYINT(1) NOT NULL DEFAULT 0,
