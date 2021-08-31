@@ -464,7 +464,7 @@ CREATE TABLE `depot` (
   `min_months_security_stock` DECIMAL(19,4) NOT NULL DEFAULT 2,
   `parent_uuid` BINARY(16) NULL,
   `dhis2_uid` VARCHAR(150) DEFAULT NULL,
-  `default_purchase_interval` SMALLINT(5) NOT NULL DEFAULT 0,
+  `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`),
   INDEX `parent_uuid` (`parent_uuid`)
