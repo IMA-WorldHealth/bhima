@@ -16,7 +16,7 @@ In OHADA accounting, purchases are modeled as an expense.  When goods are delive
 with a credit to bring the sum of the expense back to zero.  Finally, the consumption of medicines decreases the value of goods
 in stock and creates an expense for the institution.
 
-These are the accounts used in the OHADA examples below:
+These are the families of accounts used in the OHADA examples below:
 
 Number | Label | Type
 -- | -- | --
@@ -25,6 +25,9 @@ Number | Label | Type
 57 | Cash | asset
 601 | Purchases of Goods | expense
 603 | Variation of Goods | expense
+
+The actual accounts may vary in practice with multiple sub accounts for taxes, shipping and handling, etc, but these accounts
+are representative for the examples that follow.
 
 ------
 
@@ -115,12 +118,18 @@ Account Label | Number | Debit | Credit
 Stock | 30 |  | 25
 Variation of Goods | 603 |  25 |
 
+### Computing the Cost of Goods Sold (COGS)
+Under OHADA accounting, the value of the cost of goods sold is not immediately available in the P&L statement like in IFRS accounting.  Instead, the value is
+spread out between the 601 and 603 accounts.  To recover the cost of goods sold, there can be no outstanding deliveries, and the 601 and 603 accounts must be summed
+to produce the cost of goods sold.  The sum should always be a debitor balance and treated as the cost of goods sold.
+
+
 ## IFRS Stock Accounting
 
 In the IFRS accounting, purchasing medicines is never considered an expense, but the transfer of assets via an accounts payable.  Generally, a supplier issues an invoice
 for goods and the enterprise pays the supplier by cash or by bank.  The goods are entered into stock from the supplier's account.  So there are two transactions to consider:
 the invoicing for goods by the supplier and the payment for the goods by the enterprise.  Finally, when stock is consumed/destroyed/removed, the value of the stock is written
-to a cost of goods sold (COGS) expense account.
+to a cost of goods sold (COGS) expense account.  This makes computing the cost of goods sold very easy - simply read the value of the COGS account.
 
 Consider the following accounts:
 
@@ -158,6 +167,5 @@ Account Label | Number | Debit | Credit
 -- | -- | -- | --
 Stock | 30 | | $25
 Cost of Goods Sold | 62 | $25 |
-
 
 This completes the stock accounting process with IFRS accounting.
