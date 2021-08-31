@@ -28,6 +28,14 @@ function TagsModalController(
       return false;
     }
 
+    // Do not allow semicolons or vertical bars in tag names since they will be
+    // used to separate the parts of the tags when retrieving them from the back end.
+    if (vm.tags.name.includes(';') || vm.tags.name.includes('|')) {
+      form.name.$invalid = true;
+      form.name.$valid = false;
+      return false;
+    }
+
     [].concat(vm.tags).forEach(tag => {
       delete tag.style;
     });

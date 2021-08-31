@@ -52,11 +52,16 @@ function InventoryListActionsModalController(
   /** submit data */
   function submit(form) {
     if (form.$invalid) { return null; }
-
     const record = util.filterFormElements(form, true);
 
-    if (vm.item) {
-      record.tags = vm.item.tags;
+    // Handle the tags specially
+    if ('TagForm' in record) {
+      if (vm.item && vm.item.tags) {
+        record.tags = vm.item.tags;
+      } else {
+        record.tags = [];
+      }
+      delete record.TagForm;
     }
 
     // if no changes were made, simply dismiss the modal
