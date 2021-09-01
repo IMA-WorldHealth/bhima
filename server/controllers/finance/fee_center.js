@@ -11,7 +11,15 @@ const FilterParser = require('../../lib/filter');
 // GET /fee_center
 async function lookupFeeCenter(id) {
   const sqlFeeCenter = `
-    SELECT id, label, is_principal, project_id FROM fee_center WHERE id = ?`;
+    SELECT fc.id, fc.label, fc.is_principal, fc.project_id,
+      fc.allocation_method, fc.allocation_basis_id,
+      cab.name AS allocation_basis_name,
+      cabval.quantity AS allocation_basis_quantity
+    FROM fee_center as fc
+    LEFT JOIN cost_center_basis_value AS cabval ON cabval.cost_center_id = fc.id
+    LEFT JOIN cost_center_basis AS cab ON cab.id = cabval.basis_id
+    WHERE id = ?
+    ORDER BY fc.label`;
 
   const sqlReferenceFeeCenter = `
     SELECT id, fee_center_id, account_reference_id, is_cost, is_variable, is_turnover
@@ -43,16 +51,26 @@ async function lookupFeeCenter(id) {
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'f' });
   const sql = `
-    SELECT f.id, f.label, f.is_principal, f.project_id, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs,
-    GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName
+    SELECT f.id, f.label, f.is_principal, f.project_id,
+      f.allocation_method, f.allocation_basis_id,
+      GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs,
+      GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName,
+      cab.name AS allocation_basis_name,
+      cabval.quantity AS allocation_basis_quantity
     FROM fee_center AS f
+    JOIN cost_center_basis as cab ON cab.id = f.allocation_basis_id
     LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_fee_center AS sf ON sf.fee_center_id = f.id
     LEFT JOIN service AS s ON s.uuid = sf.service_uuid
-    LEFT JOIN project AS p ON p.id = f.project_id`;
+    LEFT JOIN project AS p ON p.id = f.project_id
+    LEFT JOIN cost_center_basis_value AS cabval
+      ON cabval.cost_center_id = f.id AND cabval.basis_id = f.allocation_basis_id
+    `;
 
   filters.equals('is_principal');
+  filters.equals('allocation_method');
+  //  filters.equals('allocation_basis');
   filters.setGroup('GROUP BY f.id');
   filters.setOrder('ORDER BY f.is_principal DESC, f.label ASC');
 
@@ -92,6 +110,8 @@ async function create(req, res, next) {
       label : data.label,
       is_principal : data.is_principal,
       project_id : data.project_id,
+      allocation_method : data.allocation_method,
+      // TODO:  allocation_basis : data.allocation_basis,
     };
 
     const row = await db.exec(sql, [feeCenterData]);
@@ -142,6 +162,8 @@ async function update(req, res, next) {
       label : data.label,
       is_principal : data.is_principal,
       project_id : data.project_id,
+      allocation_method : data.allocation_method,
+      // TODO: allocation_basis : data.allocation_basis,
     };
 
     const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
@@ -232,3 +254,20 @@ exports.create = create;
 exports.update = update;
 // delete a feeCenter
 exports.delete = del;
+
+//
+// Support step-down cost allocation basis data
+//
+
+// Get the data about known allocation bases
+function listAllocationBases(req, res, next) {
+  const sql = 'SELECT * FROM cost_center_basis ORDER BY name ASC;';
+  db.exec(sql, [])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+exports.listAllocationBases = listAllocationBases;
