@@ -231,7 +231,7 @@ function buildTransactionQuery(options, posted) {
     [amount, amount, amount, amount],
   );
 
-  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
+  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM cost_center_allocation AS fc)');
 
   return {
     sql : filters.applyQuery(sql),

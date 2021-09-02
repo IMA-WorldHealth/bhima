@@ -13,7 +13,7 @@ function StepdownMethodUnitTests() {
    * Step down method with sample data from
    * @link: https://www.youtube.com/watch?v=yCxCF1PKVJQ
    */
-  it('#compute(): compute and allocate cost to services (fee centers)', (done) => {
+  it('#compute(): compute and allocate cost to services (cost centers)', (done) => {
     const services = Stepdown.compute(dataset.SAMPLE_5);
     const expectedCostDistribution = dataset.SAMPLE_5_DISTRIBUTION;
 
@@ -40,12 +40,12 @@ function StepdownMethodUnitTests() {
     }
 
     services.forEach((serv, index) => {
-      // distribute to each other services (fee centers) with correct values
+      // distribute to each other services (cost centers) with correct values
       if (!serv.principal) {
         expect(serv.toDist).to.be.deep.eq(expectedCostDistribution[index]);
       }
 
-      // total cost is coming correctly from other fee centers
+      // total cost is coming correctly from other cost centers
       if (serv.principal) {
         const finalCostFromAllocatedCosts = Number(cumulatedAllocatedCosts[index] + serv.directCost).toFixed(4);
         const finalCost = Number(serv.total).toFixed(4);

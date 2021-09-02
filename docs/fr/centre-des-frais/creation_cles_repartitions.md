@@ -6,11 +6,11 @@ Il est possible de pourvoir certains centres auxiliaires de clés de répartitio
 
 Voici un aperçu de l’interface des clés de répartitions avec  deux centres auxiliaires. 
 
-![Gestion des centres de frai](../../images/fee_centers/gestion_cles_repartition.jpg)
+![Gestion des centres de frai](../../images/cost_centers/gestion_cles_repartition.jpg)
 
 Pour définir les clés de répartitions, il suffit de cliquer sur le bouton Actions en suite sur le bouton <strong> Paramétrages </strong>, cette action affiche une fenêtre, l’interface de cette fenêtre liste l’ensemble des centres principaux, ainsi qu’une zone de saisie pour la clé de répartition.
 
-![clés de répartitions](../../images/fee_centers/cle_repartitions.jpg)
+![clés de répartitions](../../images/cost_centers/cle_repartitions.jpg)
 
 La procédure de création de clé de répartition est aussi la même pour mettre à jour les clés de répartition. Le bouton réinitialiser permet de supprimer les clés de répartitions d’un centre auxiliaires.
 
