@@ -8,11 +8,11 @@
  * The configuration function has only one parameter data,
  * data is a large object that has the following elements:
  *
- *  feeCenter,
+ *  costCenter,
  *  references,
  *  accountReferences,
  *  dataDistributions,
- *  distributionKey,
+ *  allocationKey,
  *  includeManual,
  * The fees Center, the account references, the values of the account references,
  * the different types of distribution key of the auxiliary centers to the main centers,
@@ -44,11 +44,11 @@ function configuration(data) {
     });
   });
 
-  configured.principal = data.feeCenter.filter(item => {
+  configured.principal = data.costCenter.filter(item => {
     return item.is_principal;
   });
 
-  configured.auxiliary = data.feeCenter.filter(item => {
+  configured.auxiliary = data.costCenter.filter(item => {
     return !item.is_principal;
   });
 
@@ -65,7 +65,7 @@ function configuration(data) {
     item.credit *= (-1);
   });
 
-  configured.principalFeeCenters = data.references.filter(item => {
+  configured.principalCostCenters = data.references.filter(item => {
     return item.is_principal;
   });
 
@@ -77,7 +77,7 @@ function configuration(data) {
     return item.is_principal && !item.is_cost;
   });
 
-  configured.auxiliaryFeeCenters = data.references.filter(item => {
+  configured.auxiliaryCostCenters = data.references.filter(item => {
     return !item.is_principal;
   });
 
@@ -103,7 +103,7 @@ function configuration(data) {
     // Retrieving Evaluated Auxiliary Cost Center Distributions to Main Cost Centers to Find the Distribution Rate
     if (includeManual) {
       configured.dataCostDistributions.forEach(cost => {
-        if ((cost.auxiliary_fee_center_id === aux.id)) {
+        if ((cost.auxiliary_cost_center_id === aux.id)) {
           total += (cost.debit - cost.credit);
         }
       });
@@ -114,8 +114,8 @@ function configuration(data) {
     aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
 
     if (aux.automaticTotal) {
-      data.distributionKey.forEach(item => {
-        if (item.auxiliary_fee_center_id === aux.id) {
+      data.allocationKey.forEach(item => {
+        if (item.auxiliary_cost_center_id === aux.id) {
           totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
         }
       });
@@ -138,7 +138,7 @@ function configuration(data) {
     // Retrieving Evaluated Auxiliary Profit Center Distributions to Main Profit Centers to Find the Distribution Rate
     if (includeManual) {
       configured.dataProfitDistributions.forEach(profit => {
-        if ((profit.auxiliary_fee_center_id === aux.id)) {
+        if ((profit.auxiliary_cost_center_id === aux.id)) {
           total += (profit.debit - profit.credit);
         }
       });
@@ -153,8 +153,8 @@ function configuration(data) {
     aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
 
     if (aux.automaticTotal) {
-      data.distributionKey.forEach(item => {
-        if (item.auxiliary_fee_center_id === aux.id) {
+      data.allocationKey.forEach(item => {
+        if (item.auxiliary_cost_center_id === aux.id) {
           totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
         }
       });
@@ -171,7 +171,7 @@ function configuration(data) {
     pr.balanceFixedCost = 0;
     pr.balanceTurnover = 0;
     pr.balanceOtherRevenue = 0;
-    configured.principalFeeCenters.forEach(princ => {
+    configured.principalCostCenters.forEach(princ => {
       if (pr.id === princ.id) {
         if (princ.is_cost === 1 && princ.is_variable === 1) {
           pr.balanceVariableCost = princ.balance;
@@ -186,15 +186,15 @@ function configuration(data) {
     });
     configured.auxiliaryCostCenters.forEach(aux => {
       let automaticValue = 0;
-      let distributionKey = [];
+      let allocationKey = [];
 
       if (aux.automaticTotal) {
-        distributionKey = data.distributionKey.filter(item => {
-          return ((item.auxiliary_fee_center_id === aux.id) && ((item.principal_fee_center_id === pr.id)));
+        allocationKey = data.allocationKey.filter(item => {
+          return ((item.auxiliary_cost_center_id === aux.id) && ((item.principal_cost_center_id === pr.id)));
         });
 
-        if (distributionKey.length && distributionKey[0].rate) {
-          automaticValue = (aux.automaticTotal * distributionKey[0].rate) / 100;
+        if (allocationKey.length && allocationKey[0].rate) {
+          automaticValue = (aux.automaticTotal * allocationKey[0].rate) / 100;
 
           if (automaticValue) {
             if (aux.is_cost === 1 && aux.is_variable === 1) {
@@ -212,7 +212,7 @@ function configuration(data) {
 
       if (includeManual) {
         configured.dataCostDistributions.forEach(cost => {
-          if ((cost.principal_fee_center_id === pr.id) && (cost.auxiliary_fee_center_id === aux.id)) {
+          if ((cost.principal_cost_center_id === pr.id) && (cost.auxiliary_cost_center_id === aux.id)) {
             if (cost.is_cost === 1 && cost.is_variable === 1) {
               pr.balanceVariableCost += (cost.debit - cost.credit);
             } else if (cost.is_cost === 1 && cost.is_variable === 0) {
@@ -224,15 +224,15 @@ function configuration(data) {
     });
     configured.auxiliaryProfitCenters.forEach(aux => {
       let automaticValue = 0;
-      let distributionKey = [];
+      let allocationKey = [];
 
       if (aux.automaticTotal) {
-        distributionKey = data.distributionKey.filter(item => {
-          return ((item.auxiliary_fee_center_id === aux.id) && ((item.principal_fee_center_id === pr.id)));
+        allocationKey = data.allocationKey.filter(item => {
+          return ((item.auxiliary_cost_center_id === aux.id) && ((item.principal_cost_center_id === pr.id)));
         });
 
-        if (distributionKey.length && distributionKey[0].rate) {
-          automaticValue = (aux.automaticTotal * distributionKey[0].rate) / 100;
+        if (allocationKey.length && allocationKey[0].rate) {
+          automaticValue = (aux.automaticTotal * allocationKey[0].rate) / 100;
 
           if (automaticValue) {
             if (aux.is_cost === 1 && aux.is_variable === 1) {
@@ -250,7 +250,7 @@ function configuration(data) {
 
       if (includeManual) {
         configured.dataProfitDistributions.forEach(profit => {
-          if ((profit.principal_fee_center_id === pr.id) && (profit.auxiliary_fee_center_id === aux.id)) {
+          if ((profit.principal_cost_center_id === pr.id) && (profit.auxiliary_cost_center_id === aux.id)) {
             if (profit.is_cost === 0 && profit.is_turnover === 1) {
               pr.balanceTurnover += (profit.debit - profit.credit);
             } else if (profit.is_cost === 0 && profit.is_turnover === 0) {

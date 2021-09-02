@@ -113,7 +113,7 @@
             "NUM_PIECE": "N° Piece",
             "ENTRY": "Entrée",
             "EXIT": "Sortie",
-            "FEE_CENTER" : "Centre de frais",
+            "COST_CENTER" : "Centre de frais",
             "FILTERING": {
                 "LABEL": "Filtre"
             },

@@ -1,0 +1,197 @@
+angular.module('bhima.controllers')
+  .controller('CostCenterModalController', CostCenterModalController);
+
+CostCenterModalController.$inject = [
+  '$state', 'CostCenterService', 'ModalService', 'NotifyService', 'appcache', 'params',
+];
+
+function CostCenterModalController($state, CostCenter, ModalService, Notify, AppCache, params) {
+  const vm = this;
+  vm.costCenter = {};
+  vm.referenceCostCenter = [];
+
+  const cache = AppCache('CostCenterModal');
+
+  if (params.isCreateState || params.id) {
+    cache.stateParams = params;
+    vm.stateParams = cache.stateParams;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+
+  vm.isCreateState = vm.stateParams.isCreateState;
+
+  // exposed methods
+  vm.submit = submit;
+  vm.auxiliaryFee = auxiliaryFee;
+  vm.costCenter = costCenter;
+  vm.onSelectAccountReference = onSelectAccountReference;
+  vm.onSelectProject = onSelectProject;
+
+  vm.onServicesChange = onServicesChange;
+  vm.clear = clear;
+  vm.reset = reset;
+
+  if (!vm.isCreateState) {
+    CostCenter.read(vm.stateParams.id)
+      .then((data) => {
+        [vm.costCenter] = data.costCenter;
+        if (data.services) {
+          vm.relatedServices = data.services.length ? 1 : 0;
+          vm.assignedProject = data.costCenter[0].project_id ? 1 : 0;
+          vm.services = data.services;
+        }
+
+        processReference(data.references);
+        vm.setting = true;
+      })
+      .catch(Notify.handleError);
+  }
+
+  function processReference(references) {
+    if (references) {
+      references.forEach((reference) => {
+        const costCenterReferenceBundle = {
+          account_reference_id : reference.account_reference_id,
+          is_cost : reference.is_cost,
+          is_variable : reference.is_variable,
+          is_turnover : reference.is_turnover,
+        };
+
+        if (reference.is_cost) {
+          if (vm.costCenter.is_principal) {
+            vm.hasCostCenter = 1;
+          } else {
+            vm.isCostCenter = 1;
+            vm.auxiliaryCenter = 1;
+          }
+          vm.costCenter.is_cost = reference.is_cost;
+
+          if (reference.is_variable) {
+            vm.costCenter.reference_cost_variable_id = reference.account_reference_id;
+            vm.variableCostCenterReference = costCenterReferenceBundle;
+          } else {
+            vm.costCenter.reference_cost_fixed_id = reference.account_reference_id;
+            vm.fixCostCenterReference = costCenterReferenceBundle;
+          }
+        }
+
+        if (!reference.is_cost) {
+          if (vm.costCenter.is_principal) {
+            vm.hasProfitCenter = 1;
+          } else {
+            vm.isProfitCenter = 1;
+            vm.auxiliaryCenter = 1;
+          }
+
+          if (reference.is_turnover) {
+            vm.costCenter.reference_profit_turnover_id = reference.account_reference_id;
+            vm.turnoverProfitCenterReference = costCenterReferenceBundle;
+          } else {
+            vm.costCenter.reference_other_profit_id = reference.account_reference_id;
+            vm.otherProfitCenterReference = costCenterReferenceBundle;
+          }
+        }
+      });
+    }
+  }
+
+  function clear(value, index) {
+    vm[value] = null;
+    vm.costCenter[index] = null;
+
+    delete vm[value];
+    delete vm.costCenter[index];
+  }
+
+  function reset(value) {
+    vm.costCenter[value] = null;
+  }
+
+  function auxiliaryFee(value) {
+    vm.auxiliaryCenter = value ? 1 : 0;
+    if (value) {
+      vm.hasProfitCenter = !value;
+      vm.hasCostCenter = !value;
+      vm.isCostCenter = 0;
+      vm.isProfitCenter = 0;
+    }
+  }
+
+  function onSelectAccountReference(accountReference, isCostCenter, isVariable, isTurnOver) {
+    const config = {
+      account_reference_id : accountReference.id,
+      is_cost : isCostCenter,
+      is_variable : isVariable,
+      is_turnover : isTurnOver,
+    };
+
+    if (isCostCenter && isVariable) {
+      vm.variableCostCenterReference = config;
+    } else if (isCostCenter && !isVariable) {
+      vm.fixCostCenterReference = config;
+    } else if (!isCostCenter && isTurnOver) {
+      vm.turnoverProfitCenterReference = config;
+    } else if (!isCostCenter && !isTurnOver) {
+      vm.otherProfitCenterReference = config;
+    }
+  }
+
+  function costCenter(value) {
+    vm.isCostCenter = value;
+    vm.isProfitCenter = !value;
+  }
+
+  function onServicesChange(services) {
+    vm.services = services;
+  }
+
+  function onSelectProject(project) {
+    vm.costCenter.project_id = project.id;
+  }
+
+  // submit the data to the server from all two forms (update, create)
+  function submit(costCenterForm) {
+    if (costCenterForm.$invalid) { return 0; }
+
+    if (vm.isCostCenter || vm.hasCostCenter) {
+      if (vm.variableCostCenterReference) {
+        vm.referenceCostCenter.push(vm.variableCostCenterReference);
+      }
+
+      if (vm.fixCostCenterReference) {
+        vm.referenceCostCenter.push(vm.fixCostCenterReference);
+      }
+    }
+
+    if (vm.isProfitCenter || vm.hasProfitCenter) {
+      if (vm.turnoverProfitCenterReference) {
+        vm.referenceCostCenter.push(vm.turnoverProfitCenterReference);
+      }
+
+      if (vm.otherProfitCenterReference) {
+        vm.referenceCostCenter.push(vm.otherProfitCenterReference);
+      }
+    }
+
+    const data = {
+      label : vm.costCenter.label,
+      is_principal : vm.costCenter.is_principal,
+      reference_cost_center : vm.referenceCostCenter,
+      services : vm.services,
+      project_id : vm.costCenter.project_id,
+    };
+
+    const promise = (vm.isCreateState)
+      ? CostCenter.create(data)
+      : CostCenter.update(vm.costCenter.id, data);
+
+    return promise
+      .then(() => {
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        Notify.success(translateKey);
+        $state.go('cost_center', null, { reload : true });
+      })
+      .catch(Notify.handleError);
+  }
+}
