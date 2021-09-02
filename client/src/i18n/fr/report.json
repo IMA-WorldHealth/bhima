@@ -91,7 +91,7 @@
     },
     "EXPENSE": "Charge",
     "EXPENSE_REPORT" : "Rapport des dépenses",
-    "FEE_CENTER": {
+    "COST_CENTER": {
       "TITLE": "Rapports des centres de frais"
     },
     "FEE_CENTER_STEPDOWN": {
