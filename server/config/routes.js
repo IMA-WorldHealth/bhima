@@ -115,15 +115,15 @@ const room = require('../controllers/medical/ward/room');
 const bed = require('../controllers/medical/ward/bed');
 const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
-const feeCenter = require('../controllers/finance/fee_center');
+const costCenter = require('../controllers/finance/cost_center');
 
-const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
-const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
-const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
-const distributionBreakDown = require('../controllers/finance/distributionFeeCenter/breakDown');
-const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
-const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
-const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
+const distributionConfiguration = require('../controllers/finance/allocationCostCenter/configuration');
+const distributionGetDistributed = require('../controllers/finance/allocationCostCenter/getDistributed');
+const distributionProceed = require('../controllers/finance/allocationCostCenter/proceed');
+const distributionBreakDown = require('../controllers/finance/allocationCostCenter/breakDown');
+const distributionAutomatic = require('../controllers/finance/allocationCostCenter/automatic');
+const distributionGetDistributionKey = require('../controllers/finance/allocationCostCenter/getDistributionKey');
+const setDistributionKey = require('../controllers/finance/allocationCostCenter/setting');
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
 const indicators = require('../controllers/finance/indicator');
@@ -441,11 +441,11 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_balance_sheet', financeReports.ohadaBalanceSheet.document);
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
-  app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
+  app.get('/reports/finance/cost_center', financeReports.costCenter.report);
   app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
   app.get('/reports/finance/employee_standing/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
-  app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
+  app.get('/reports/finance/break_even_cost_center', financeReports.breakEvenCostCenter.report);
   app.get('/reports/finance/operating', financeReports.operating.document);
   app.get('/reports/finance/debtor_summary', debtorSummaryReport.summaryReport);
   app.get('/reports/finance/client_debts', clientDebts.report);
@@ -917,21 +917,21 @@ exports.configure = function configure(app) {
   app.put('/tags/:uuid', tags.update);
 
   // Fees Centers API
-  app.get('/fee_center', feeCenter.list);
-  app.get('/fee_center/:id', feeCenter.detail);
-  app.post('/fee_center', feeCenter.create);
-  app.put('/fee_center/:id', feeCenter.update);
-  app.delete('/fee_center/:id', feeCenter.delete);
+  app.get('/cost_center', costCenter.list);
+  app.get('/cost_center/:id', costCenter.detail);
+  app.post('/cost_center', costCenter.create);
+  app.put('/cost_center/:id', costCenter.update);
+  app.delete('/cost_center/:id', costCenter.delete);
 
   // Distribution Fees Centers API
-  app.get('/distribution_fee_center', distributionConfiguration.configuration);
-  app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);
-  app.get('/distribution_fee_center/getDistributionKey', distributionGetDistributionKey.getDistributionKey);
-  app.post('/distribution_fee_center/proceed', distributionProceed.proceed);
-  app.post('/distribution_fee_center/breakDown', distributionBreakDown.breakDown);
-  app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
-  app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
-  app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
+  app.get('/allocation_cost_center', distributionConfiguration.configuration);
+  app.get('/allocation_cost_center/getDistributed', distributionGetDistributed.getDistributed);
+  app.get('/allocation_cost_center/getDistributionKey', distributionGetDistributionKey.getDistributionKey);
+  app.post('/allocation_cost_center/proceed', distributionProceed.proceed);
+  app.post('/allocation_cost_center/breakDown', distributionBreakDown.breakDown);
+  app.post('/allocation_cost_center/automatic', distributionAutomatic.automatic);
+  app.post('/allocation_cost_center/allocationKey', setDistributionKey.setting);
+  app.post('/allocation_cost_center/resetKey', setDistributionKey.resetKey);
 
   // ward management
   app.get('/wards', ward.read);

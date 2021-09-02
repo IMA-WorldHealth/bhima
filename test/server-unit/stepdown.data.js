@@ -223,7 +223,7 @@ function ex136() {
   ];
 }
 
-function distributionSample5() {
+function allocationSample5() {
   return [
     [
       50000,
@@ -266,7 +266,7 @@ function distributionSample5() {
 
 module.exports = {
   SAMPLE_5,
-  SAMPLE_5_DISTRIBUTION : distributionSample5(),
+  SAMPLE_5_DISTRIBUTION : allocationSample5(),
   SAMPLE_A4 : exA4(),
   SAMPLE_13_4 : ex134(),
   SAMPLE_13_5 : ex135(),
