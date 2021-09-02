@@ -3,6 +3,7 @@
     "ADD_FEE_CENTER" : "Ajouter un centre de frais",
     "DELETE": "Supprimer le Centre de frais",
     "EDIT_FEE_CENTER" : "Mise à jour des informations du centre de frais",
-    "TITLE" : "Centres de frais"
+    "TITLE" : "Centres de frais",
+    "AFTER_ALLOCATION": "Après les allocations"
   }
 }
