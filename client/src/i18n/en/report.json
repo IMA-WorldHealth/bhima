@@ -99,8 +99,8 @@
     },
     "EXPENSE_REPORT": "Expenses Report",
     "EXPENSE": "Expense",
-    "FEE_CENTER": {
-      "TITLE": "Fee Center Report"
+    "COST_CENTER": {
+      "TITLE": "Cost Center Report"
     },
     "GENERATED": "Generated Report",
     "INCOME": "Income",

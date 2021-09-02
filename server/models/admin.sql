@@ -167,7 +167,7 @@ CREATE PROCEDURE zMergeServices(
   UPDATE employee SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
   UPDATE patient_visit_service SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
   UPDATE ward SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
-  UPDATE service_fee_center SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
+  UPDATE service_cost_center SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
   UPDATE indicator SET service_uuid = to_service_uuid WHERE service_uuid = from_service_uuid;
   DELETE FROM service WHERE id = from_service_uuid;
 END $$

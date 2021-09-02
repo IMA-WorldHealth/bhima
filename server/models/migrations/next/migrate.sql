@@ -26,19 +26,41 @@ CREATE TABLE `cost_center_aggregate` (
   KEY `principal_center_id` (`principal_center_id`),
   KEY `period_id` (`period_id`),
   CONSTRAINT `cost_center_aggregate__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `cost_center_aggregate__principal_center_id` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`)
+  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_aggregate__principal_center_id` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 CALL add_column_if_missing('posting_journal', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('posting_journal', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
-ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE;
 
 
 CALL add_column_if_missing('general_ledger', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('general_ledger', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
-ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE;
+
+/**
+author: @jniles
+date: 2021-09-02
+description: rename all cost centers to cost centers
+*/
+RENAME TABLE fee_center TO cost_center,
+             reference_fee_center TO reference_cost_center,
+             fee_center_distribution TO cost_center_allocation,
+             allocation_key TO allocation_key,
+             service_fee_center TO service_cost_center;
+
+ALTER TABLE `reference_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_id`;
+ALTER TABLE `reference_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_id`;
+
+ALTER TABLE `cost_center_allocation` RENAME COLUMN `auxiliary_fee_center_id` TO `auxiliary_cost_center_id`;
+ALTER TABLE `cost_center_allocation` RENAME COLUMN `principal_fee_center_id` TO `principal_cost_center_id`;
+
+ALTER TABLE `service_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_id`;
+
+ALTER TABLE `allocation_key` RENAME COLUMN `auxiliary_fee_center_id` TO `auxiliary_cost_center_id`;
+ALTER TABLE `allocation_key` RENAME COLUMN `principal_fee_center_id` TO `principal_cost_center_id`;

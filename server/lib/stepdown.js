@@ -9,15 +9,15 @@ function computeRatios(method, contributions) {
 /**
  * @function compute
  * @param {array} services an array of services object
- * @desc perform the step down method on the given array of services (fee centers)
+ * @desc perform the step down method on the given array of services (cost centers)
  * Here is the structure of the array of object
  * [
  *  {
- *    name: 'Daycare',        // (required) the name of the fee center
- *    principal: false,       // (required) the fee center is principal or auxiliary
+ *    name: 'Daycare',        // (required) the name of the cost center
+ *    principal: false,       // (required) the cost center is principal or auxiliary
  *    directCost : 50000,     // (required) direct cost
- *    employees : 5,          // example of fee center index value to track in case of allocation
- *    computers : 2,          // example of fee center index value to track in case of allocation
+ *    employees : 5,          // example of cost center index value to track in case of allocation
+ *    computers : 2,          // example of cost center index value to track in case of allocation
  *    allocation : { method : 'proportion', field : 'employees' }, // the allocation method and field
  *  }
  * ]

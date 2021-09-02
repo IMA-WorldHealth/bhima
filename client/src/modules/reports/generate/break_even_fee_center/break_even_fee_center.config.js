@@ -1,17 +1,17 @@
 angular.module('bhima.controllers')
-  .controller('break_even_fee_centerController', breakEvenFeeCenterController);
+  .controller('break_even_cost_centerController', breakEvenCostCenterController);
 
-breakEvenFeeCenterController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'FeeCenterService',
+breakEvenCostCenterController.$inject = [
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'CostCenterService',
 ];
 
 
-function breakEvenFeeCenterController($sce, Notify, SavedReports, AppCache, reportData, $state, FeeCenters) {
+function breakEvenCostCenterController($sce, Notify, SavedReports, AppCache, reportData, $state, CostCenters) {
   const vm = this;
-  const cache = new AppCache('configure_break_even_fee_center');
-  const reportUrl = 'reports/finance/break_even_fee_center';
+  const cache = new AppCache('configure_break_even_cost_center');
+  const reportUrl = 'reports/finance/break_even_cost_center';
   vm.reportDetails = {};
-  vm.feeCenters = [];
+  vm.costCenters = [];
 
   vm.previewGenerated = false;
   checkCachedConfiguration();
@@ -30,8 +30,8 @@ function breakEvenFeeCenterController($sce, Notify, SavedReports, AppCache, repo
   vm.preview = function preview(form) {
     if (form.$invalid) { return null; }
 
-    if (!vm.reportDetails.defineFeeCenters) {
-      vm.reportDetails.feeCenters = [];
+    if (!vm.reportDetails.defineCostCenters) {
+      vm.reportDetails.costCenters = [];
     }
 
     // update cached configuration
@@ -50,9 +50,9 @@ function breakEvenFeeCenterController($sce, Notify, SavedReports, AppCache, repo
     vm.previewResult = null;
   };
 
-  FeeCenters.read(null, { is_principal : 1 })
+  CostCenters.read(null, { is_principal : 1 })
     .then((data) => {
-      vm.principalFeeCenter = data;
+      vm.principalCostCenter = data;
     })
     .catch(Notify.handleError)
     .finally(() => {
