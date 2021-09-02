@@ -1,8 +1,8 @@
 {
-  "FEE_CENTER" : {
-    "ADD_FEE_CENTER" : "Add a Fee Center",
-    "DELETE": "Delete This Fee Center",
-    "EDIT_FEE_CENTER" : "Update the Fee Center Information",
-    "TITLE" : "Fees Centers"
+  "COST_CENTER" : {
+    "ADD_COST_CENTER" : "Add a Cost Center",
+    "DELETE": "Delete This Cost Center",
+    "EDIT_COST_CENTER" : "Update the Cost Center Information",
+    "TITLE" : "Costs Centers"
   }
 }

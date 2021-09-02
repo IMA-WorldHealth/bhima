@@ -1,10 +1,10 @@
 angular.module('bhima.components')
-  .component('bhFeeCenterSelect', {
-    templateUrl : 'modules/templates/bhFeeCenterSelect.tmpl.html',
-    controller  : FeeCenterSelectController,
+  .component('bhCostCenterSelect', {
+    templateUrl : 'modules/templates/bhCostCenterSelect.tmpl.html',
+    controller  : CostCenterSelectController,
     transclude  : true,
     bindings    : {
-      feeCenterId      : '<',
+      costCenterId      : '<',
       filter           : '<',
       principal        : '<',
       onSelectCallback : '&',
@@ -12,33 +12,33 @@ angular.module('bhima.components')
     },
   });
 
-FeeCenterSelectController.$inject = ['FeeCenterService', 'NotifyService'];
+CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService'];
 
 /**
- * @function FeeCenterSelectionController
+ * @function CostCenterSelectionController
  *
  * @description
- * FeeCenter selection component
+ * CostCenter selection component
  */
-function FeeCenterSelectController(FeeCenters, Notify) {
+function CostCenterSelectController(CostCenters, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
-    FeeCenters.read(null)
-      .then(feeCenters => {
+    CostCenters.read(null)
+      .then(costCenters => {
 
         if ($ctrl.filter) {
-          $ctrl.feeCenters = feeCenters
+          $ctrl.costCenters = costCenters
             .filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal));
         } else {
-          $ctrl.feeCenters = feeCenters;
+          $ctrl.costCenters = costCenters;
         }
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = feeCenter => {
-    $ctrl.onSelectCallback({ feeCenter });
+  $ctrl.onSelect = costCenter => {
+    $ctrl.onSelectCallback({ costCenter });
   };
 }
