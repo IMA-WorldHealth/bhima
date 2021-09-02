@@ -8,7 +8,7 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 translate>TREE.BREAK_EVEN_FEE_CENTER_REPORT</h3>
+      <h3 translate>TREE.BREAK_EVEN_COST_CENTER_REPORT</h3>
     </div>
   </div>
 
@@ -74,16 +74,16 @@
             </div>
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.defineFeeCenters" ng-true-value="1" ng-false-value="0">
-                <span translate>FORM.INFO.CHECK_DEFINE_FEE_CENTERS</span>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.defineCostCenters" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.INFO.CHECK_DEFINE_COST_CENTERS</span>
               </label>
             </div>
             <hr>
 
-            <div ng-if="ReportConfigCtrl.reportDetails.defineFeeCenters" ng-repeat="fee in ReportConfigCtrl.principalFeeCenter">
+            <div ng-if="ReportConfigCtrl.reportDetails.defineCostCenters" ng-repeat="fee in ReportConfigCtrl.principalCostCenter">
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.feeCenters[fee.id]" ng-true-value="{{fee.id}}" ng-false-value="0">
+                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.costCenters[fee.id]" ng-true-value="{{fee.id}}" ng-false-value="0">
                   <span> {{fee.label}} </span>
                 </label>
               </div>
