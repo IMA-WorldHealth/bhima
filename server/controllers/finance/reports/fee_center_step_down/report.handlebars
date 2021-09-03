@@ -55,6 +55,31 @@
             </tr>
           </tfoot>
         </table>
+
+        <hr>
+
+        <p><i>{{translate 'FEE_CENTER.DISTRIBUTION_KEY_TABLE'}}</i></p>
+
+        <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>{{translate 'FEE_CENTER.DISTRIBUTION_KEY'}}</th>
+              {{#each feeCenterList as | value |}}
+                <th>{{ value }}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each feeCenterIndexes as | fcIndex |}}
+              <tr>
+                <td>{{ fcIndex.index }}</td>
+                {{#each fcIndex.distribution as | dist |}}
+                  <td>{{ dist.value }}</td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
