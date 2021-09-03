@@ -28,11 +28,6 @@
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
 
-            <bh-currency-select
-              currency-id="ReportConfigCtrl.reportDetails.currency_id"
-              on-change="ReportConfigCtrl.onSelectCurrency(currency)">
-            </bh-currency-select>
-
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
@@ -41,13 +36,5 @@
       </div>
     </div>
 
-    <!-- <div class="col-md-6">
-      <bh-cron-email-report
-        report-key="fee_center_step_down"
-        report-form="ConfigForm"
-        report-details="ReportConfigCtrl.reportDetails"
-        on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
-      </bh-cron-email-report>
-    </div> -->
   </div>
 </div>
