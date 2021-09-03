@@ -570,7 +570,14 @@ angular-translate-loader-url@^2.18.4:
   dependencies:
     angular-translate "~2.18.4"
 
-angular-translate@^2.18.4, angular-translate@~2.18.4:
+angular-translate@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.19.0.tgz#133c75ad64727b11d96bcbb8b53cf9c7c7a9fde4"
+  integrity sha512-Z/Fip5uUT2N85dPQ0sMEe1JdF5AehcDe4tg/9mWXNDVU531emHCg53ZND9Oe0dyNiGX5rWcJKmsL1Fujus1vGQ==
+  dependencies:
+    angular "^1.8.0"
+
+angular-translate@~2.18.4:
   version "2.18.4"
   resolved "https://registry.npmjs.org/angular-translate/-/angular-translate-2.18.4.tgz#8dba3921cc75d0601891c1f0e9d320aa7cef17bd"
   integrity sha512-KohNrkH6J9PK+VW0L/nsRTcg5Fw70Ajwwe3Jbfm54Pf9u9Fd+wuingoKv+h45mKf38eT+Ouu51FPua8VmZNoCw==
