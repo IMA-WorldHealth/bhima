@@ -77,6 +77,32 @@ async function buildReport(params, session) {
     return data[index].principal ? value : 0;
   });
 
+  const queryFeeCenterIndexesList = `
+    SELECT 
+      fci.id, 
+      fci.label AS fee_center_index_label, 
+      fciv.value, fc.label AS fee_center_label,
+      fc.step_order 
+    FROM fee_center fc 
+    JOIN fee_center_index_value fciv ON fciv.fee_center_id = fc.id 
+    JOIN fee_center_index fci ON fci.id = fciv.fee_center_index_id
+    ORDER BY fc.step_order ASC;
+  `;
+  const feeCenterIndexesList = await db.exec(queryFeeCenterIndexesList);
+
+  const indexes = _.groupBy(feeCenterIndexesList, 'fee_center_index_label');
+
+  const feeCenterList = [];
+  const feeCenterIndexes = _.keys(indexes).map((index, i) => {
+    const fcIndex = _.sortBy(indexes[index], 'step_order');
+    const line = { index, distribution : [] };
+    fcIndex.forEach((item) => {
+      if (i === 0) { feeCenterList.push(item.fee_center_label); }
+      line.distribution.push({ fee_center_label : item.fee_center_label, value : item.value });
+    });
+    return line;
+  });
+
   const context = {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
@@ -87,6 +113,8 @@ async function buildReport(params, session) {
     data,
     cumulatedAllocatedCosts,
     afterAllocations,
+    feeCenterIndexes,
+    feeCenterList,
   };
 
   return report.render(context);
