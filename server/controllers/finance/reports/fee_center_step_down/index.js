@@ -2,7 +2,6 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const Stepdown = require('../../../../lib/stepdown');
 const ReportManager = require('../../../../lib/ReportManager');
-const Exchange = require('../../exchange');
 const fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/fee_center_step_down/report.handlebars';
@@ -27,7 +26,6 @@ async function buildReport(params, session) {
   });
 
   const report = new ReportManager(TEMPLATE, session, options);
-  const enterpriseId = session.enterprise.id;
   const enterpriseCurrencyId = session.enterprise.currency_id;
 
   const periods = {
@@ -36,21 +34,6 @@ async function buildReport(params, session) {
   };
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
-
-  let lastRateUsed;
-  let firstCurrency;
-  let secondCurrency;
-
-  firstCurrency = enterpriseCurrencyId;
-  secondCurrency = params.currency_id;
-  lastRateUsed = exchangeRate.rate;
-
-  if (lastRateUsed && lastRateUsed < 1) {
-    lastRateUsed = (1 / lastRateUsed);
-    firstCurrency = params.currency_id;
-    secondCurrency = enterpriseCurrencyId;
-  }
 
   const query = 'CALL FeeCenterCostWithIndexes(?, ?);';
   const [feeCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
@@ -106,10 +89,7 @@ async function buildReport(params, session) {
   const context = {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
-    currencyId : params.currency_id,
-    firstCurrency,
-    secondCurrency,
-    rate : lastRateUsed,
+    currencyId : enterpriseCurrencyId,
     data,
     cumulatedAllocatedCosts,
     afterAllocations,
