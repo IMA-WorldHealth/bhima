@@ -556,12 +556,12 @@ angular-touch@^1.8.2:
   resolved "https://registry.npmjs.org/angular-touch/-/angular-touch-1.8.2.tgz#56c54df3f776246bb36f16bef2720a93ed5b8441"
   integrity sha512-tGoFNsONm/VHFcBW8gySVZvpCIYAvsAlEuHpJDugGn+3ENLxSDhpZ4ikev4KXfWr8ZNsYGoVSfsvJegkiC+9Ig==
 
-angular-translate-loader-static-files@^2.18.4:
-  version "2.18.4"
-  resolved "https://registry.npmjs.org/angular-translate-loader-static-files/-/angular-translate-loader-static-files-2.18.4.tgz#98245295ea163e43fd2310f832cf0ae0d8b25d71"
-  integrity sha512-/UFIuyDLyHUsWS523K1jIW96kOCdEPHUAEFnqcRf0PsXOpp9PR6NH7j5NEV4QImPhdjtvFwHDa2VpBgUDRJcxw==
+angular-translate-loader-static-files@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/angular-translate-loader-static-files/-/angular-translate-loader-static-files-2.19.0.tgz#409290e1a652dfd582cffdf97a21657856d90dff"
+  integrity sha512-B0LiFzn+rHGgL0okl+uAcQKtmySskTlhw6vsnQODUqARV0IcgMUi2tl9RhybgGy3MbGmdF1JjJFjITCbXzWZQA==
   dependencies:
-    angular-translate "~2.18.4"
+    angular-translate "~2.19.0"
 
 angular-translate-loader-url@^2.18.4:
   version "2.18.4"
@@ -570,7 +570,14 @@ angular-translate-loader-url@^2.18.4:
   dependencies:
     angular-translate "~2.18.4"
 
-angular-translate@^2.18.4, angular-translate@~2.18.4:
+angular-translate@^2.18.4, angular-translate@~2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/angular-translate/-/angular-translate-2.19.0.tgz#133c75ad64727b11d96bcbb8b53cf9c7c7a9fde4"
+  integrity sha512-Z/Fip5uUT2N85dPQ0sMEe1JdF5AehcDe4tg/9mWXNDVU531emHCg53ZND9Oe0dyNiGX5rWcJKmsL1Fujus1vGQ==
+  dependencies:
+    angular "^1.8.0"
+
+angular-translate@~2.18.4:
   version "2.18.4"
   resolved "https://registry.npmjs.org/angular-translate/-/angular-translate-2.18.4.tgz#8dba3921cc75d0601891c1f0e9d320aa7cef17bd"
   integrity sha512-KohNrkH6J9PK+VW0L/nsRTcg5Fw70Ajwwe3Jbfm54Pf9u9Fd+wuingoKv+h45mKf38eT+Ouu51FPua8VmZNoCw==
