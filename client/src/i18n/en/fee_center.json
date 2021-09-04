@@ -3,6 +3,9 @@
     "ADD_FEE_CENTER" : "Add a Fee Center",
     "DELETE": "Delete This Fee Center",
     "EDIT_FEE_CENTER" : "Update the Fee Center Information",
-    "TITLE" : "Fees Centers"
+    "TITLE" : "Fees Centers",
+    "AFTER_ALLOCATION": "After Allocations",
+    "DISTRIBUTION_KEY_TABLE": "Tableau of distribution key",
+    "DISTRIBUTION_KEY": "Distribution key"
   }
 }
