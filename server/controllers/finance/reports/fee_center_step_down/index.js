@@ -86,6 +86,14 @@ async function buildReport(params, session) {
     return line;
   });
 
+  const services = data.map(item => {
+    item.distribution = item.toDist.map((value, i) => {
+      const ratio = item.ratio ? item.ratio[i] : undefined;
+      return { value, ratio };
+    });
+    return item;
+  });
+
   const context = {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
@@ -95,6 +103,7 @@ async function buildReport(params, session) {
     afterAllocations,
     feeCenterIndexes,
     feeCenterList,
+    services,
   };
 
   return report.render(context);

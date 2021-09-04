@@ -26,16 +26,18 @@
             <tr>
               <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
               {{#each data as | service |}}
+                <th style="width: 4em;">%</th>
                 <th>{{ service.fee_center_label }}</th>
               {{/each}}
             </tr>
           </thead>
           <tbody>
-            {{#each data as | service |}}
-              <tr key="serv.name">
+            {{#each services as | service |}}
+              <tr>
                 <td>{{ service.fee_center_label }}</td>
-                {{#each service.toDist as | value |}}
-                    <td>{{debcred value ../../currencyId}}</td>
+                {{#each service.distribution as | distribution |}}
+                  <td class="text-right">{{#if distribution.ratio}}{{percentage distribution.ratio 2}}{{/if}}</td>
+                  <td class="text-right">{{debcred distribution.value ../../currencyId}}</td>
                 {{/each}}
               </tr>
             {{/each}}
@@ -44,13 +46,15 @@
             <tr>
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
               {{#each cumulatedAllocatedCosts as | value |}}
-                <td>{{debcred value ../currencyId}}</td>
+                <td></td>
+                <td class="text-right">{{debcred value ../currencyId}}</td>
               {{/each}}
             </tr>
             <tr>
               <th>{{translate 'FEE_CENTER.AFTER_ALLOCATION'}}</th>
               {{#each afterAllocations as | value |}}
-                <th>{{debcred value ../currencyId}}</th>
+                <th></th>
+                <th class="text-right">{{debcred value ../currencyId}}</th>
               {{/each}}
             </tr>
           </tfoot>
