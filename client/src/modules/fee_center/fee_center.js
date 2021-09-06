@@ -126,7 +126,7 @@ function feeCenterController(FeeCenters, ModalService, Notify, uiGridConstants, 
       .then((data) => {
         data.forEach(fc => {
           if (isTranslationToken(fc.allocation_basis_name)) {
-            fc.allocation_basis_name = $translate.instant(`FORM.LABELS.${fc.allocation_basis_name}`)
+            fc.allocation_basis_name = $translate.instant(`FORM.LABELS.${fc.allocation_basis_name}`);
           }
         });
         vm.gridOptions.data = data;
