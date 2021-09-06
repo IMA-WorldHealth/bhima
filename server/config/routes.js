@@ -923,6 +923,9 @@ exports.configure = function configure(app) {
   app.put('/fee_center/:id', feeCenter.update);
   app.delete('/fee_center/:id', feeCenter.delete);
 
+  // Allocation basis API
+  app.get('/fee_center_allocations/bases', feeCenter.listAllocationBases);
+
   // Distribution Fees Centers API
   app.get('/distribution_fee_center', distributionConfiguration.configuration);
   app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);

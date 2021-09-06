@@ -2182,8 +2182,12 @@ CREATE TABLE `fee_center` (
   `label` VARCHAR(100) NOT NULL,
   `is_principal` TINYINT(1) UNSIGNED DEFAULT 0,
   `project_id` SMALLINT(5) UNSIGNED NULL,
+  `allocation_method` VARCHAR(14) NOT NULL DEFAULT 'proportional',
+  `allocation_basis_id` MEDIUMINT(8) UNSIGNED,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `fee_center_1` (`label`)
+  UNIQUE KEY `fee_center_1` (`label`),
+  CONSTRAINT `fee_center__chk_allocation_method` CHECK (`allocation_method` in ('proportional', 'flat')),
+  CONSTRAINT `fee_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `reference_fee_center`;
@@ -2244,6 +2248,28 @@ CREATE TABLE `service_fee_center` (
   CONSTRAINT `service_fee_center__fee_center`  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `cost_center_basis`;
+CREATE TABLE `cost_center_basis` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,  -- Will be treated as a translation token
+  `description` TEXT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY  (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cost_center_basis_value`;
+CREATE TABLE `cost_center_basis_value` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `quantity` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `basis_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `cost_center_basis_value__fee_center` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_basis` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `tags`;
 CREATE TABLE `tags`(
   `uuid` BINARY(16) NOT NULL PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
