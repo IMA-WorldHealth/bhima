@@ -830,13 +830,15 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
 
 
 -- FEE CENTER
-INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
-  (1, 'Administration', 1),
-  (2, 'Principale TPA', 1),
-  (3, 'Principale TPB', 1),
-  (4, 'Auxiliary 1', 0),
-  (5, 'Auxiliary 2', 0),
-  (6, 'Auxiliary 3', 0);
+INSERT INTO `fee_center` (`id`, `label`, `is_principal`, `allocation_method`, `allocation_basis_id`) VALUES
+  (1, 'Administration', 1, 'proportional', 1),
+  (2, 'Principale TPA', 1, 'proportional', 2),
+  (3, 'Principale TPB', 1, 'proportional', 3),
+  (4, 'Auxiliary 1', 0, 'proportional', 2),
+  (5, 'Auxiliary 2', 0, 'proportional', 2),
+  (6, 'Auxiliary 3', 0, 'flat', 2);
+
+
 
 -- REFERENCE FEE CENTER
 INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES
