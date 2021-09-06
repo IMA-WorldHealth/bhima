@@ -1196,3 +1196,10 @@ table.lot-schedule .wrap {
 table.lot-schedule .right {
   text-align: right;
 }
+
+
+.allocationBasisColHeader * div {
+   overflow-wrap: normal;
+   overflow: visible;
+   white-space: normal;
+}
