@@ -29,6 +29,9 @@ function constantConfig() {
       EXPENSE : 5,
       TITLE : 6,
     },
+    stepDownAllocation : {
+      BASIS_OPTIONS : ['proportional', 'flat'],
+    },
     purchase : {
       GRID_HEIGHT : 200,
       TITLE       : 4,

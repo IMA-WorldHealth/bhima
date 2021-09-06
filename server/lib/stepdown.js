@@ -1,8 +1,9 @@
 function computeRatios(method, contributions) {
-  if (method === 'proportion') {
+  if (method === 'proportional') {
     const sum = contributions.reduce((csum, r) => { return csum + r; }, 0);
     return contributions.map(r => { return r / sum; });
   }
+  // TODO: Implement for 'flat' allocation
   return null;
 }
 
@@ -18,7 +19,7 @@ function computeRatios(method, contributions) {
  *    directCost : 50000,     // (required) direct cost
  *    employees : 5,          // example of fee center index value to track in case of allocation
  *    computers : 2,          // example of fee center index value to track in case of allocation
- *    allocation : { method : 'proportion', field : 'employees' }, // the allocation method and field
+ *    allocation : { method : 'proportional', field : 'employees' }, // the allocation method and field
  *  }
  * ]
  * @returns {array}
