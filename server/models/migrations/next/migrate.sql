@@ -41,3 +41,27 @@ CALL add_column_if_missing('general_ledger', 'principal_center_id', 'MEDIUMINT(8
 
 CALL add_constraint_if_missing('general_ledger', 'general_ledger__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
 CALL add_constraint_if_missing('general_ledger', 'general_ledger__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
+
+/**
+author: @jmcameron
+date: 2021-09-01
+description: adds allocation basis data to cost centers
+*/
+DROP TABLE IF EXISTS `cost_center_basis`;
+CREATE TABLE `cost_center_basis` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY  (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cost_center_basis_value`;
+CREATE TABLE `cost_center_basis_value` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `quantity` DECIMAL(19,4) NOT NULL DEFAULT 0,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `basis_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `cost_center_basis_value__fee_center` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
+  CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_basis` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

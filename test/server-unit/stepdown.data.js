@@ -5,7 +5,7 @@ const SAMPLE_5 = [
     directCost : 50000,
     employees : 5,
     computers : 2,
-    allocation : { method : 'proportion', field : 'employees' },
+    allocation : { method : 'proportional', field : 'employees' },
   },
   {
     name : 'HR',
@@ -13,7 +13,7 @@ const SAMPLE_5 = [
     directCost : 300000,
     employees : 4,
     computers : 5,
-    allocation : { method : 'proportion', field : 'employees' },
+    allocation : { method : 'proportional', field : 'employees' },
   },
   {
     name : 'IT',
@@ -21,7 +21,7 @@ const SAMPLE_5 = [
     directCost : 200000,
     employees : 9,
     computers : 10,
-    allocation : { method : 'proportion', field : 'computers' },
+    allocation : { method : 'proportional', field : 'computers' },
   },
   {
     name : 'Accounting',
@@ -29,7 +29,7 @@ const SAMPLE_5 = [
     directCost : 250000,
     employees : 8,
     computers : 10,
-    allocation : { method : 'proportion', field : 'directCost' },
+    allocation : { method : 'proportional', field : 'directCost' },
   },
   {
     name : 'Cuttings',
@@ -68,7 +68,7 @@ function exA4() {
       directCost : Cadmin,
       labWork : 0,
       operations : 0,
-      allocation : { method : 'proportion', field : 'directCost' },
+      allocation : { method : 'proportional', field : 'directCost' },
     // ratio : [0, R1, R2, R3, R4],
     },
     {
@@ -77,7 +77,7 @@ function exA4() {
       directCost : Clab,
       labWork : 0,
       operations : 0,
-      allocation : { method : 'proportion', field : 'labWork' },
+      allocation : { method : 'proportional', field : 'labWork' },
     // ratio : [0, 0, R5, R6, R7],
     },
     {
@@ -86,7 +86,7 @@ function exA4() {
       directCost : Ctheater,
       labWork : 10,
       operations : 0,
-      allocation : { method : 'proportion', field : 'operations' },
+      allocation : { method : 'proportional', field : 'operations' },
     // ratio : [0, 0, 0, R8, R9],
     },
     {
@@ -115,7 +115,7 @@ function ex134() {
       area : 50000,
       laundryVolume : 0,
       housekeepingHours : 150,
-      allocation : { method : 'proportion', field : 'laundryVolume' },
+      allocation : { method : 'proportional', field : 'laundryVolume' },
     },
     {
       name : 'Housekeeping',
@@ -124,7 +124,7 @@ function ex134() {
       area : 0,
       laundryVolume : 5,
       housekeepingHours : 0,
-      allocation : { method : 'proportion', field : 'housekeepingHours' },
+      allocation : { method : 'proportional', field : 'housekeepingHours' },
     },
     {
       name : 'Radiology',
@@ -154,7 +154,7 @@ function ex135() {
       area : 0,
       laundryVolume : 5,
       housekeepingHours : 0,
-      allocation : { method : 'proportion', field : 'housekeepingHours' },
+      allocation : { method : 'proportional', field : 'housekeepingHours' },
     },
     {
       name : 'Laundry',
@@ -163,7 +163,7 @@ function ex135() {
       area : 50000,
       laundryVolume : 0,
       housekeepingHours : 150,
-      allocation : { method : 'proportion', field : 'laundryVolume' },
+      allocation : { method : 'proportional', field : 'laundryVolume' },
     },
     {
       name : 'Radiology',
@@ -193,7 +193,7 @@ function ex136() {
       area : 0,
       laundryVolume : 5,
       housekeepingHours : 0,
-      allocation : { method : 'proportion', field : 'area' },
+      allocation : { method : 'proportional', field : 'area' },
     },
     {
       name : 'Laundry',
@@ -202,7 +202,7 @@ function ex136() {
       area : 50000,
       laundryVolume : 0,
       housekeepingHours : 150,
-      allocation : { method : 'proportion', field : 'laundryVolume' },
+      allocation : { method : 'proportional', field : 'laundryVolume' },
     },
     {
       name : 'Radiology',
