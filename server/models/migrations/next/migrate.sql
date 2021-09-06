@@ -33,15 +33,15 @@ CREATE TABLE `cost_center_aggregate` (
 CALL add_column_if_missing('posting_journal', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('posting_journal', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
-ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
+CALL add_constraint_if_missing('posting_journal', 'pg__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('posting_journal', 'pg__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
 
 
 CALL add_column_if_missing('general_ledger', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('general_ledger', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
-ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
+CALL add_constraint_if_missing('general_ledger', 'general_ledger__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('general_ledger', 'general_ledger__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
 
 
 /*
@@ -49,19 +49,17 @@ ALTER TABLE `general_ledger` ADD CONSTRAINT `general_ledger__cost_center_2` FORE
  * @date: 2021-09-02
  * @desc: fee center report tables and test data
  */
-ALTER TABLE `fee_center` ADD COLUMN `step_order` SMALLINT(5) NOT NULL DEFAULT 0;
-ALTER TABLE `fee_center` ADD COLUMN `default_fee_center_index_id` MEDIUMINT(8) UNSIGNED NULL;
+CALL add_column_if_missing('fee_center', 'step_order', 'SMALLINT(5) NOT NULL DEFAULT 0');
+CALL add_column_if_missing('fee_center', 'default_fee_center_index_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-DROP TABLE IF EXISTS `fee_center_index`;
-CREATE TABLE `fee_center_index` (
+CREATE TABLE IF NOT EXISTS `fee_center_index` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   `constant` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `fee_center_index_value`;
-CREATE TABLE `fee_center_index_value` (
+CREATE TABLE IF NOT EXISTS `fee_center_index_value` (
   `fee_center_index_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
