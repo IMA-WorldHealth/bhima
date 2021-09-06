@@ -708,6 +708,7 @@
             "SET_DATE": "Changer la Date",
             "SETTINGS": "Paramétrages",
             "SEX": "Sexe",
+            "STOCK_MOVEMENTS" : "Mouvements de stock",
             "SHIPPING_HANDLING_COST": "Frais d'expédition et de manutention",
             "INCLUDES_SHIPPING_HANDLING_COST": "Comprend les frais d'expédition et de manutention",
             "SHIPPING_HANDLING_COST_PARTIAL": "Frais d'expédition et de manutention (partielle)",
