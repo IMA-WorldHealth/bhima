@@ -93,8 +93,7 @@ DELIMITER ;
 --
 
 DELIMITER $$
-DROP FUNCTION IF EXISTS Constraint_exists;
-
+DROP FUNCTION IF EXISTS Constraint_exists$$
 CREATE FUNCTION Constraint_exists(
   theTable VARCHAR(64),
   theConstraintName VARCHAR(64)
@@ -111,6 +110,21 @@ CREATE FUNCTION Constraint_exists(
     AND  CONSTRAINT_NAME = theConstraintName
    );
   END $$
+
+DROP PROCEDURE IF EXISTS add_constraint_if_missing;
+CREATE PROCEDURE add_constraint_if_missing(
+  IN tname VARCHAR(64),
+  IN cname VARCHAR(64),
+  IN cdetails VARCHAR(128)
+)
+BEGIN
+  IF NOT Constraint_exists(tname, cname)
+  THEN
+    SET @add_constraint_if_missing = CONCAT("ALTER TABLE `", tname, "` ADD CONSTRAINT `", cname, "` ", cdetails);
+    PREPARE add_query FROM @add_constraint_if_missing;
+    EXECUTE add_query;
+  END IF;
+END $$
 DELIMITER ;
 
 DELIMITER $$
