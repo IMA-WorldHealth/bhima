@@ -36,7 +36,6 @@ CALL add_column_if_missing('posting_journal', 'principal_center_id', 'MEDIUMINT(
 ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
 ALTER TABLE `posting_journal` ADD CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE;
 
-
 CALL add_column_if_missing('general_ledger', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('general_ledger', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 

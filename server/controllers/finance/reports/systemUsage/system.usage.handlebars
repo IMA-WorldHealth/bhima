@@ -19,23 +19,37 @@
         <thead>
           <tr style="background-color:#ddd;">
             <th class="text-center">{{translate 'FORM.LABELS.HOUR'}}</th>
-             <th class="text-center text-capitalize">{{translate 'FORM.LABELS.PATIENT'}}</th>
+            <th class="text-center text-capitalize">{{translate 'FORM.INFO.PATIENTS'}}</th>
             <th class="text-center">{{translate 'FORM.LABELS.INVOICES'}}</th>
             <th class="text-center ">{{translate 'FORM.LABELS.CASH_PAYMENTS'}}</th>
+            <th class="text-center ">{{translate 'FORM.LABELS.STOCK_MOVEMENTS'}}</th>
+            <th class="text-center text-capitalize">{{translate 'USERS.ACTIVE_USERS'}}</th>
           </tr>
         </thead>
         <tbody>
           {{#each pivot as |row|}}
             <tr>
-              <td  class="text-right">{{ row.hour }}h</td>
-              <td  class="text-right">{{ row.patients }}</td>
-              <td  class="text-right">{{ row.invoices }}</td>
-              <td  class="text-right">{{ row.cashPayments }}</td>
+              <td class="text-right">{{ row.hour }}h</td>
+              <td class="text-right">{{ row.patients }}</td>
+              <td class="text-right">{{ row.invoices }}</td>
+              <td class="text-right">{{ row.cashPayments }}</td>
+              <td class="text-right">{{ row.stockMovements }}</td>
+              <td class="text-right">{{ row.users}}</td>
             </tr>
             {{else}}
-                {{> emptyTable columns=4 }}
+                {{> emptyTable columns=6 }}
             {{/each}}
         </tbody>
+        <tfoot>
+          <tr style="background-color:#ddd;">
+            <th>{{translate "FORM.LABELS.TOTAL"}}</th>
+            <th class="text-right">{{ aggregates.patients }}</th>
+            <th class="text-right">{{ aggregates.invoices }}</th>
+            <th class="text-right">{{ aggregates.cashPayments }}</th>
+            <th class="text-right">{{ aggregates.stockMovements }}</th>
+            <th></th>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
