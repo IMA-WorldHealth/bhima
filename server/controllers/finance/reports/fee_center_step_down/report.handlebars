@@ -20,42 +20,53 @@
           <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
         </h4>
 
-        {{!-- table with data --}}
+        {{!-- VIEW OF COST CENTER ALLOCATION --}}
+        <p>{{translate 'FEE_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
+        <p>P : {{translate 'FEE_CENTER.PRINCIPAL'}}</p>
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
             <tr>
               <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
+              <th>{{translate 'FEE_CENTER.DIRECT_COST'}}</th>
               {{#each data as | service |}}
-                <th style="width: 4em;">%</th>
                 <th>{{ service.fee_center_label }}</th>
+                <th style="width: 4em;">%</th>
               {{/each}}
+              <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
             </tr>
           </thead>
           <tbody>
-            {{#each services as | service |}}
+            {{#each hView as | service |}}
               <tr>
-                <td>{{ service.fee_center_label }}</td>
-                {{#each service.distribution as | distribution |}}
+                <td>
+                  {{#if service.principal}}
+                    <strong>{{ service.name }}</strong> <em>(P)</em>
+                  {{else}}
+                    {{ service.name }}
+                  {{/if}}
+                </td>
+                <td class="text-right">{{debcred service.direct ../currencyId}}</td>
+                {{#each service.values as | distribution |}}
+                  {{#if distribution.selfCenter}}
+                    <td class="text-right">{{debcred distribution.selfCenterValue ../../currencyId}}</td>
+                  {{else}}
+                    <td class="text-right">{{debcred distribution.value ../../currencyId}}</td>
+                  {{/if}}
                   <td class="text-right">{{#if distribution.ratio}}{{percentage distribution.ratio 2}}{{/if}}</td>
-                  <td class="text-right">{{debcred distribution.value ../../currencyId}}</td>
                 {{/each}}
+                <td class="text-right">{{debcred service.total ../currencyId}}</td>
               </tr>
             {{/each}}
           </tbody>
           <tfoot>
             <tr>
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+              <th class="text-right">{{debcred directCostTotal currencyId}}</th>
               {{#each cumulatedAllocatedCosts as | value |}}
-                <td></td>
-                <td class="text-right">{{debcred value ../currencyId}}</td>
-              {{/each}}
-            </tr>
-            <tr>
-              <th>{{translate 'FEE_CENTER.AFTER_ALLOCATION'}}</th>
-              {{#each afterAllocations as | value |}}
-                <th></th>
                 <th class="text-right">{{debcred value ../currencyId}}</th>
+                <th></th>
               {{/each}}
+              <th class="text-right">{{debcred totalAfterAllocation currencyId}}</th>
             </tr>
           </tfoot>
         </table>
