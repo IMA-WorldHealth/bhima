@@ -30,7 +30,7 @@ function constantConfig() {
       TITLE : 6,
     },
     stepDownAllocation : {
-      BASIS_OPTIONS : ['proportional', 'flat'],
+      METHOD_OPTIONS : ['proportional', 'flat'],
     },
     purchase : {
       GRID_HEIGHT : 200,

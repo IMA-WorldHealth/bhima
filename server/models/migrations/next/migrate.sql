@@ -63,3 +63,10 @@ CREATE TABLE IF NOT EXISTS `cost_center_basis_value` (
   CONSTRAINT `cost_center_basis_value__fee_center` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
   CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/**
+author: @jmcameron
+date: 2021-09-07
+description: Edit cost center allocation basis
+*/
+CALL add_column_if_missing('cost_center_basis', 'units', "VARCHAR(30) DEFAULT '' AFTER `name`)");
