@@ -2,13 +2,16 @@ angular.module('bhima.controllers')
   .controller('FeeCenterModalController', FeeCenterModalController);
 
 FeeCenterModalController.$inject = [
-  '$state', 'FeeCenterService', 'ModalService', 'NotifyService', 'appcache', 'params',
+  '$state', 'FeeCenterService', 'ModalService', 'NotifyService',
+  'appcache', 'bhConstants', 'params', '$translate',
 ];
 
-function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCache, params) {
+function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
+  AppCache, bhConstants, params, $translate) {
   const vm = this;
   vm.feeCenter = {};
   vm.referenceFeeCenter = [];
+  vm.allocationBasisOptions = bhConstants.stepDownAllocation.BASIS_OPTIONS;
 
   const cache = AppCache('FeeCenterModal');
 
@@ -31,6 +34,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   vm.onServicesChange = onServicesChange;
   vm.clear = clear;
   vm.reset = reset;
+  vm.translate = translateAllocationBasisOption;
 
   if (!vm.isCreateState) {
     FeeCenter.read(vm.stateParams.id)
@@ -150,6 +154,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     vm.feeCenter.project_id = project.id;
   }
 
+  function translateAllocationBasisOption(option) {
+    return $translate.instant(`FORM.LABELS.ALLOCATION_METHOD_${option.toUpperCase()}`);
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit(feeCenterForm) {
     if (feeCenterForm.$invalid) { return 0; }
@@ -180,6 +188,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       reference_fee_center : vm.referenceFeeCenter,
       services : vm.services,
       project_id : vm.feeCenter.project_id,
+      allocation_method : vm.feeCenter.allocation_method,
     };
 
     const promise = (vm.isCreateState)

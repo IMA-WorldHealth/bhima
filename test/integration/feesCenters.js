@@ -17,6 +17,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     label : 'Centre de Frais Test',
     is_principal : 1,
     project_id : 1,
+    allocation_method : 'proportional',
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -31,6 +32,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     label : 'Update Test',
     is_principal : 1,
     project_id : 3,
+    allocation_method : 'proportional',
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -44,6 +46,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
   const feeCenterUpt2 = {
     label : 'Update Test',
     is_principal : 0,
+    allocation_method : 'proportional',
     reference_fee_center : [{
       account_reference_id : 8,
       is_cost : 0,
