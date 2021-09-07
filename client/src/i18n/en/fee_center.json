@@ -6,6 +6,12 @@
     "TITLE" : "Fees Centers",
     "AFTER_ALLOCATION": "After Allocations",
     "DISTRIBUTION_KEY_TABLE": "Tableau of distribution key",
-    "DISTRIBUTION_KEY": "Distribution key"
+    "DISTRIBUTION_KEY": "Distribution key",
+    "DIRECT_COST": "Direct Cost",
+    "DISPLAY_HORIZONTALLY": "Horizontal View",
+    "DISPLAY_VERTICALLY": "Vertical View",
+    "PRINCIPAL": "Principal Cost Center",
+    "AUXILIARY": "Auxiliary Cost Center",
+    "ALLOCATION_BY_COST_CENTERS" : "Allocations by cost center according to the distribution keys"
   }
 }
