@@ -719,6 +719,7 @@
             "SET_DATE": "Change Date",
             "SETTINGS": "Settings",
             "SEX": "Sex",
+            "STOCK_MOVEMENTS" : "Stock Movements",
             "SHIPPING_HANDLING_COST": "Shipping and handling costs",
             "INCLUDES_SHIPPING_HANDLING_COST": "Includes shipping & handling costs",
             "SHIPPING_HANDLING_COST_PARTIAL": "Shipping and handling costs (partial)",

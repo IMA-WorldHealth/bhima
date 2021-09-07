@@ -2,6 +2,7 @@
   "USERS" : {
     "ADDING_USER" : "New User",
     "ADD_USER" : "Add a New User",
+    "ACTIVE_USERS" : "Active users",
     "CREATE" : "Create",
     "CREATED" : "Created",
     "DESCRIPTION" : "User management unit and rights",
