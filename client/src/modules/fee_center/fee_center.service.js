@@ -18,8 +18,13 @@ function FeeCenterService(Api) {
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
-
   service.getAllocationBases = getAllocationBases;
+
+  function isTranslationToken(str) {
+    const repat = /[A-Z_]+/;
+    return repat.test(str);
+  }
+  service.isTranslationToken = isTranslationToken;
 
   return service;
 }

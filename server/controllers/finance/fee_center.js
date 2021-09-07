@@ -13,11 +13,12 @@ async function lookupFeeCenter(id) {
   const sqlFeeCenter = `
     SELECT fc.id, fc.label, fc.is_principal, fc.project_id,
       fc.allocation_method, fc.allocation_basis_id,
-      cab.name AS allocation_basis_name,
+      cab.name AS allocation_basis_name, cab.units as allocation_basis_units,
       cabval.quantity AS allocation_basis_quantity
     FROM fee_center as fc
-    LEFT JOIN cost_center_basis_value AS cabval ON cabval.cost_center_id = fc.id
-    LEFT JOIN cost_center_basis AS cab ON cab.id = cabval.basis_id
+    JOIN cost_center_basis as cab ON cab.id = fc.allocation_basis_id
+    LEFT JOIN cost_center_basis_value AS cabval
+      ON cabval.cost_center_id = fc.id AND cabval.basis_id = fc.allocation_basis_id
     WHERE fc.id = ?
     ORDER BY fc.label`;
 
@@ -38,6 +39,19 @@ async function lookupFeeCenter(id) {
     db.exec(sqlServicesFeeCenter, [id]),
   ]);
 
+  // Collect the allocation basis data into one object
+  feeCenter.forEach(fc => {
+    fc.allocation_basis = {
+      id : fc.allocation_basis_id,
+      name : fc.allocation_basis_name,
+      units : fc.allocation_basis_units,
+      // quantity???
+    };
+    delete fc.allocation_basis_id;
+    delete fc.allocation_basis_name;
+    delete fc.allocation_basis_units;
+  });
+
   const data = {
     feeCenter,
     references,
@@ -55,7 +69,7 @@ function list(req, res, next) {
       f.allocation_method, f.allocation_basis_id,
       GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs,
       GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName,
-      cab.name AS allocation_basis_name,
+      cab.name AS allocation_basis_name, cab.units as allocation_basis_units,
       cabval.quantity AS allocation_basis_quantity
     FROM fee_center AS f
     JOIN cost_center_basis as cab ON cab.id = f.allocation_basis_id
@@ -79,6 +93,18 @@ function list(req, res, next) {
 
   db.exec(query, parameters)
     .then((rows) => {
+      // Collect the allocation basis data into one object
+      rows.forEach(fc => {
+        fc.allocation_basis = {
+          id : fc.allocation_basis_id,
+          name : fc.allocation_basis_name,
+          units : fc.allocation_basis_units,
+          // quantity???
+        };
+        delete fc.allocation_basis_id;
+        delete fc.allocation_basis_name;
+        delete fc.allocation_basis_units;
+      });
       res.status(200).json(rows);
     })
     .catch(next)
@@ -111,7 +137,7 @@ async function create(req, res, next) {
       is_principal : data.is_principal,
       project_id : data.project_id,
       allocation_method : data.allocation_method,
-      // TODO:  allocation_basis : data.allocation_basis,
+      allocation_basis_id : data.allocation_basis_id,
     };
 
     const row = await db.exec(sql, [feeCenterData]);
@@ -163,7 +189,7 @@ async function update(req, res, next) {
       is_principal : data.is_principal,
       project_id : data.project_id,
       allocation_method : data.allocation_method,
-      // TODO: allocation_basis : data.allocation_basis,
+      allocation_basis_id : data.allocation_basis_id,
     };
 
     const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
@@ -269,5 +295,4 @@ function listAllocationBases(req, res, next) {
     .catch(next)
     .done();
 }
-
 exports.listAllocationBases = listAllocationBases;

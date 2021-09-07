@@ -11,7 +11,7 @@ feeCenterController.$inject = [
  * This controller is about the Fee Center module in the admin zone
  * It's responsible for creating, editing and updating a Fee Center
  */
-function feeCenterController(FeeCenters, ModalService, Notify, uiGridConstants, $translate) {
+function feeCenterController(FeeCenter, ModalService, Notify, uiGridConstants, $translate) {
   const vm = this;
 
   // bind methods
@@ -99,35 +99,15 @@ function feeCenterController(FeeCenters, ModalService, Notify, uiGridConstants, 
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function isTranslationToken(str) {
-    const repat = /[A-Z_]+/;
-    return repat.test(str);
-  }
-
   function loadFeeCenters() {
     vm.loading = true;
-
-    FeeCenters.getAllocationBases()
-      .then((bases) => {
-        // Translate the basis terms, if possible
-        bases.forEach(base => {
-          if (isTranslationToken(base.name)) {
-            base.name = $translate.instant(`FORM.LABELS.${base.name}`);
-          }
-          if (isTranslationToken(base.description)) {
-            base.description = $translate.instant(`FORM.LABELS.${base.description}`);
-          }
-        });
-        vm.allocationBases = bases;
-      })
-      .catch(Notify.handleError);
-
-    FeeCenters.read()
+    FeeCenter.read()
       .then((data) => {
         data.forEach(fc => {
-          if (isTranslationToken(fc.allocation_basis_name)) {
-            fc.allocation_basis_name = $translate.instant(`FORM.LABELS.${fc.allocation_basis_name}`);
-          }
+          // Translate each cost center allocation basis name
+          fc.allocation_basis_name = FeeCenter.isTranslationToken(fc.allocation_basis.name)
+            ? $translate.instant(`FORM.LABELS.${fc.allocation_basis.name}`)
+            : fc.allocation_basis.name;
         });
         vm.gridOptions.data = data;
       })
@@ -143,7 +123,7 @@ function feeCenterController(FeeCenters, ModalService, Notify, uiGridConstants, 
       .then((bool) => {
         if (!bool) { return; }
 
-        FeeCenters.delete(feeCenter.id)
+        FeeCenter.delete(feeCenter.id)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadFeeCenters();
