@@ -35,7 +35,13 @@ async function buildReport(params, session) {
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
   const query = 'CALL FeeCenterCostWithIndexes(?, ?);';
-  const [feeCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
+  let [feeCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
+
+  if (feeCenters.length) {
+    const [single] = feeCenters;
+    feeCenters = single.error_message ? [] : feeCenters;
+  }
+
   const formattedFeeCenters = feeCenters.map(item => {
     item.principal = !!item.is_principal;
     item.auxiliary = !item.principal;

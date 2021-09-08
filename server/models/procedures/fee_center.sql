@@ -6,6 +6,14 @@ CREATE PROCEDURE FeeCenterCostWithIndexes(
   IN _dateTo DATE
 )
 BEGIN
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+      GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
+        @errno = MYSQL_ERRNO, @text = MESSAGE_TEXT;
+      SET @full_error = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
+      SELECT @full_error AS error_message;
+    END;
+
 
   DROP TEMPORARY TABLE IF EXISTS fee_center_costs_with_indexes;
   CREATE TEMPORARY TABLE fee_center_costs_with_indexes AS 
@@ -56,8 +64,7 @@ BEGIN
         cost_center_basis_label, '`'
       )
     ) INTO @sql
-  FROM
-    fee_center_costs_with_indexes;
+  FROM fee_center_costs_with_indexes;
 
   SET @sql = CONCAT('SELECT id, fee_center_label, is_principal, step_order, direct_cost, allocation_basis_id, ', @sql, ' FROM fee_center_costs_with_indexes GROUP BY id');
 
