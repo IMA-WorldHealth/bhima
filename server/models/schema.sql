@@ -2271,7 +2271,7 @@ CREATE TABLE `service_fee_center` (
 DROP TABLE IF EXISTS `cost_center_basis`;
 CREATE TABLE `cost_center_basis` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,  -- Will be treated as a translation token
+  `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token
   `units` VARCHAR(30) DEFAULT '',
   `description` TEXT DEFAULT NULL,
   PRIMARY KEY (`id`),
