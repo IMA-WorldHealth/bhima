@@ -27,10 +27,6 @@ function FeeCenterStepdownReportConfigController($sce, Notify, SavedReports, App
     vm.reportDetails.periodFrom = period.id;
   };
 
-  vm.onSelectCurrency = (currency) => {
-    vm.reportDetails.currency_id = currency.id;
-  };
-
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
     vm.reportDetails.periodTo = period.id;
   };
@@ -38,10 +34,6 @@ function FeeCenterStepdownReportConfigController($sce, Notify, SavedReports, App
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
-  };
-
-  vm.onSelectCronReport = report => {
-    vm.reportDetails = angular.copy(report);
   };
 
   vm.preview = function preview(form) {
