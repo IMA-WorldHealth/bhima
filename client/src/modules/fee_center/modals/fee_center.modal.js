@@ -11,7 +11,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
   const vm = this;
   vm.feeCenter = {};
   vm.referenceFeeCenter = [];
-  vm.allocationBasisOptions = bhConstants.stepDownAllocation.BASIS_OPTIONS;
+  vm.allocationMethodOptions = bhConstants.stepDownAllocation.METHOD_OPTIONS;
 
   const cache = AppCache('FeeCenterModal');
 
@@ -36,7 +36,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
   vm.reset = reset;
   vm.translate = translateAllocationBasisOption;
 
-  if (!vm.isCreateState) {
+  if (vm.isCreateState) {
+    // Use first allocation method as default
+    [vm.feeCenter.allocation_method] = vm.allocationMethodOptions;
+  } else {
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
         [vm.feeCenter] = data.feeCenter;
@@ -45,12 +48,29 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
           vm.assignedProject = data.feeCenter[0].project_id ? 1 : 0;
           vm.services = data.services;
         }
-
         processReference(data.references);
         vm.setting = true;
       })
       .catch(Notify.handleError);
   }
+
+  FeeCenter.getAllocationBases()
+    .then((bases) => {
+      // Translate the basis terms, if possible
+      bases.forEach(base => {
+        if (FeeCenter.isTranslationToken(base.name)) {
+          base.name = $translate.instant(`FORM.LABELS.${base.name}`);
+          if (base.units) {
+            base.name += ` (${base.units})`;
+          }
+        }
+        if (FeeCenter.isTranslationToken(base.description)) {
+          base.description = $translate.instant(`FORM.LABELS.${base.description}`);
+        }
+      });
+      vm.allocationBases = bases;
+    })
+    .catch(Notify.handleError);
 
   function processReference(references) {
     if (references) {
@@ -189,6 +209,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
       services : vm.services,
       project_id : vm.feeCenter.project_id,
       allocation_method : vm.feeCenter.allocation_method,
+      allocation_basis_id : vm.feeCenter.allocation_basis.id,
     };
 
     const promise = (vm.isCreateState)
