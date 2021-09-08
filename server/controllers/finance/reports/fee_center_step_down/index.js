@@ -40,8 +40,8 @@ async function buildReport(params, session) {
     item.principal = !!item.is_principal;
     item.auxiliary = !item.principal;
     item.directCost = item.direct_cost;
-    if (item.default_fee_center_index_id && !item.principal) {
-      item.allocation = { method : 'proportion', field : item.default_fee_center_index_id };
+    if (item.allocation_basis_id && !item.principal) {
+      item.allocation = { method : 'proportional', field : item.allocation_basis_id };
     }
     return item;
   });
@@ -49,24 +49,24 @@ async function buildReport(params, session) {
   const cumulatedAllocatedCosts = data.map((item, index, array) => (item.principal ? 0 : array[index].toDist[index]));
   const queryFeeCenterIndexesList = `
     SELECT 
-      fci.id, 
-      fci.label AS fee_center_index_label, 
-      fciv.value, fc.label AS fee_center_label,
+      ccb.id, 
+      ccb.name AS cost_center_basis_label, 
+      ccbv.quantity, fc.label AS fee_center_label,
       fc.step_order 
     FROM fee_center fc 
-    JOIN fee_center_index_value fciv ON fciv.fee_center_id = fc.id 
-    JOIN fee_center_index fci ON fci.id = fciv.fee_center_index_id
+    JOIN cost_center_basis_value ccbv ON ccbv.cost_center_id = fc.id 
+    JOIN cost_center_basis ccb ON ccb.id = ccbv.basis_id
     ORDER BY fc.step_order ASC;
   `;
   const feeCenterIndexesList = await db.exec(queryFeeCenterIndexesList);
-  const indexes = _.groupBy(feeCenterIndexesList, 'fee_center_index_label');
+  const indexes = _.groupBy(feeCenterIndexesList, 'cost_center_basis_label');
   const feeCenterList = [];
   const feeCenterIndexes = _.keys(indexes).map((index, i) => {
     const fcIndex = _.sortBy(indexes[index], 'step_order');
     const line = { index, distribution : [] };
     fcIndex.forEach((item) => {
       if (i === 0) { feeCenterList.push(item.fee_center_label); }
-      line.distribution.push({ fee_center_label : item.fee_center_label, value : item.value });
+      line.distribution.push({ fee_center_label : item.fee_center_label, value : item.quantity });
     });
     return line;
   });

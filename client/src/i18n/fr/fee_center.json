@@ -13,5 +13,8 @@
     "PRINCIPAL": "Centre de coût Principal",
     "AUXILIARY": "Centre de coût Auxiliaire",
     "ALLOCATION_BY_COST_CENTERS" : "Les allocations par centre de couts suivant les clés de repartition"
-  }
+  },
+  "ALLOCATION_BASIS_DIRECT_COST": "Cout direct ($)",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Nombre des employés",
+  "ALLOCATION_BASIS_AREA_USED": "Aires utilisés (m2)"
 }

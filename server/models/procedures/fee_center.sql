@@ -11,55 +11,55 @@ BEGIN
   CREATE TEMPORARY TABLE fee_center_costs_with_indexes AS 
     SELECT
         z.id, z.label AS fee_center_label,
-        z.default_fee_center_index_id,
+        z.allocation_basis_id,
         z.is_principal,
         z.step_order,
         z.`value` AS direct_cost,
-        fci.label AS fee_center_index_label,
-        fciv.value AS fee_center_index_value  
+        ccb.name AS cost_center_basis_label,
+        ccbv.quantity AS cost_center_basis_value  
     FROM 
     (
         (
           SELECT
-            fc.id, fc.label, fc.is_principal, fc.step_order, fci.label AS default_fee_center_index_id,
-            SUM(fct.debit - fct.credit) AS `value`
+            fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
+            SUM(cca.debit - cca.credit) AS `value`
           FROM fee_center AS fc
-          JOIN cost_center_aggregate fct ON fct.principal_center_id = fc.id
-          JOIN `period` p ON p.id = fct.period_id 
-          LEFT JOIN fee_center_index fci ON fci.id = fc.default_fee_center_index_id
+          JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
+          JOIN `period` p ON p.id = cca.period_id 
+          LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
-          GROUP BY fct.principal_center_id
+          GROUP BY cca.principal_center_id
         )
         UNION DISTINCT
         (
           SELECT
-            fc.id, fc.label, fc.is_principal, fc.step_order, fci.label AS default_fee_center_index_id,
-            SUM(fct.debit - fct.credit) AS `value`
+            fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
+            SUM(cca.debit - cca.credit) AS `value`
           FROM fee_center AS fc
-          JOIN cost_center_aggregate fct ON fct.cost_center_id = fc.id AND fct.principal_center_id IS NULL
-          JOIN `period` p ON p.id = fct.period_id 
-          LEFT JOIN fee_center_index fci ON fci.id = fc.default_fee_center_index_id
+          JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
+          JOIN `period` p ON p.id = cca.period_id 
+          LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
-          GROUP BY fct.cost_center_id
+          GROUP BY cca.cost_center_id
         )
     ) AS z 
-    JOIN fee_center_index_value fciv ON fciv.fee_center_id = z.id 
-    JOIN fee_center_index fci ON fci.id = fciv.fee_center_index_id 
+    JOIN cost_center_basis_value ccbv ON ccbv.cost_center_id = z.id 
+    JOIN cost_center_basis ccb ON ccb.id = ccbv.basis_id 
     ORDER by z.step_order ASC;
 
   SELECT
     GROUP_CONCAT(DISTINCT
       CONCAT(
-        'MAX(CASE WHEN fee_center_index_label = ''',
-        fee_center_index_label,
-        ''' then fee_center_index_value end) AS `',
-        fee_center_index_label, '`'
+        'MAX(CASE WHEN cost_center_basis_label = ''',
+        cost_center_basis_label,
+        ''' then cost_center_basis_value end) AS `',
+        cost_center_basis_label, '`'
       )
     ) INTO @sql
   FROM
     fee_center_costs_with_indexes;
 
-  SET @sql = CONCAT('SELECT id, fee_center_label, is_principal, step_order, direct_cost, default_fee_center_index_id, ', @sql, ' FROM fee_center_costs_with_indexes GROUP BY id');
+  SET @sql = CONCAT('SELECT id, fee_center_label, is_principal, step_order, direct_cost, allocation_basis_id, ', @sql, ' FROM fee_center_costs_with_indexes GROUP BY id');
 
   PREPARE stmt FROM @sql;
   EXECUTE stmt;
