@@ -13,5 +13,8 @@
     "PRINCIPAL": "Principal Cost Center",
     "AUXILIARY": "Auxiliary Cost Center",
     "ALLOCATION_BY_COST_CENTERS" : "Allocations by cost center according to the distribution keys"
-  }
+  },
+  "ALLOCATION_BASIS_DIRECT_COST": "Direct Cost ($)",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Number of employees",
+  "ALLOCATION_BASIS_AREA_USED": "Area Used (m2)"
 }

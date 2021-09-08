@@ -30,7 +30,7 @@
               <th>{{translate 'FEE_CENTER.DIRECT_COST'}}</th>
               {{#each data as | service |}}
                 <th>{{ service.fee_center_label }}</th>
-                <th style="width: 4em;">%</th>
+                <th style="width: 3em;">%</th>
               {{/each}}
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
             </tr>
@@ -52,7 +52,7 @@
                   {{else}}
                     <td class="text-right">{{debcred distribution.value ../../currencyId}}</td>
                   {{/if}}
-                  <td class="text-right">{{#if distribution.ratio}}{{percentage distribution.ratio 2}}{{/if}}</td>
+                  <td class="text-right">{{#if distribution.ratio}}{{percentage distribution.ratio 1}}{{/if}}</td>
                 {{/each}}
                 <td class="text-right">{{debcred service.total ../currencyId}}</td>
               </tr>
@@ -87,7 +87,7 @@
           <tbody>
             {{#each feeCenterIndexes as | fcIndex |}}
               <tr>
-                <td>{{ fcIndex.index }}</td>
+                <td>{{translate fcIndex.index }}</td>
                 {{#each fcIndex.distribution as | dist |}}
                   <td>{{ dist.value }}</td>
                 {{/each}}
