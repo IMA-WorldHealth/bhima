@@ -18,6 +18,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     is_principal : 1,
     project_id : 1,
     allocation_method : 'proportional',
+    allocation_basis_id : 1,
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -33,6 +34,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     is_principal : 1,
     project_id : 3,
     allocation_method : 'proportional',
+    allocation_basis_id : 2,
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -47,6 +49,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     label : 'Update Test',
     is_principal : 0,
     allocation_method : 'proportional',
+    allocation_basis_id : 3,
     reference_fee_center : [{
       account_reference_id : 8,
       is_cost : 0,
@@ -115,6 +118,8 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
         const response = res.body;
         expect(res).to.have.status(200);
         expect(response.feeCenter[0].label).to.equal('Update Test');
+        expect(response.feeCenter[0].allocation_basis.id).to.equal(2);
+        expect(response.feeCenter[0].allocation_basis.name).to.equal('ALLOCATION_BASIS_NUM_EMPLOYEES');
       })
       .catch(helpers.handler);
   });
