@@ -6,6 +6,10 @@ const fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/fee_center_step_down/report.handlebars';
 
+// REMOVE ME
+require('./mock_data').generate();
+// END REMOVE ME
+
 // expose to the API
 exports.report = document;
 
