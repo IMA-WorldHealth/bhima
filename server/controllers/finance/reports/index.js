@@ -30,6 +30,7 @@ exports.ohadaBalanceSheet = require('./ohada_balance_sheet');
 exports.ohadaProfitLoss = require('./ohada_profit_loss');
 exports.accountReference = require('./account_reference');
 exports.feeCenter = require('./fee_center');
+exports.feeCenterStepdown = require('./fee_center_step_down');
 exports.annualClientsReport = require('./debtors/annual_clients_report').annualClientsReport;
 exports.annualClientsReporting = require('./debtors/annual_clients_report').printing;
 exports.breakEven = require('./break_even');
