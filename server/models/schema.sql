@@ -2179,7 +2179,7 @@ CREATE TABLE `config_employee_item` (
 DROP TABLE IF EXISTS `fee_center`;
 CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(200) NOT NULL,
   `is_principal` TINYINT(1) UNSIGNED DEFAULT 0,
   `project_id` SMALLINT(5) UNSIGNED NULL,
   `allocation_method` VARCHAR(14) NOT NULL DEFAULT 'proportional',
