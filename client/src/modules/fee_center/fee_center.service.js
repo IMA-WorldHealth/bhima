@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('FeeCenterService', FeeCenterService);
 
-FeeCenterService.$inject = ['PrototypeApiService'];
+FeeCenterService.$inject = ['PrototypeApiService', '$uibModal'];
 
 /**
  * @class FeeCenterService
@@ -10,21 +10,22 @@ FeeCenterService.$inject = ['PrototypeApiService'];
  * @description
  * Encapsulates common requests to the /fee_center/ URL.
  */
-function FeeCenterService(Api) {
+function FeeCenterService(Api, $uibModal) {
   const service = new Api('/fee_center/');
 
-  function getAllocationBases() {
-    const url = '/fee_center_allocations/bases';
+  service.getAllocationBasisDetails = (id) => {
+    const url = `/fee_center_allocation_basis/${id}`;
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
-  }
-  service.getAllocationBases = getAllocationBases;
+  };
 
-  function isTranslationToken(str) {
-    const repat = /[A-Z_]+/;
-    return repat.test(str);
-  }
-  service.isTranslationToken = isTranslationToken;
+  service.createUpdateAllocationBasis = (id) => {
+    return $uibModal.open({
+      templateUrl : '/modules/fee_center/modals/createUpdateAllocationBasis.modal.html',
+      controller : 'AllocationBasisModalController as ModalCtrl',
+      resolve : { data : () => id },
+    });
+  };
 
   return service;
 }

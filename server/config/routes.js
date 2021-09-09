@@ -116,6 +116,7 @@ const bed = require('../controllers/medical/ward/bed');
 const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
 const feeCenter = require('../controllers/finance/fee_center');
+const costAllocationBasisCenter = require('../controllers/finance/stepDownCostAllocationBasis');
 
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
@@ -923,8 +924,12 @@ exports.configure = function configure(app) {
   app.put('/fee_center/:id', feeCenter.update);
   app.delete('/fee_center/:id', feeCenter.delete);
 
-  // Allocation basis API
-  app.get('/fee_center_allocations/bases', feeCenter.listAllocationBases);
+  // Step-down allocation basis API
+  app.get('/fee_center_allocation_basis', costAllocationBasisCenter.list);
+  app.get('/fee_center_allocation_basis/:id', costAllocationBasisCenter.read);
+  app.post('/fee_center_allocation_basis', costAllocationBasisCenter.create);
+  app.put('/fee_center_allocation_basis/:id', costAllocationBasisCenter.update);
+  app.delete('/fee_center_allocation_basis/:id', costAllocationBasisCenter.delete);
 
   // Distribution Fees Centers API
   app.get('/distribution_fee_center', distributionConfiguration.configuration);

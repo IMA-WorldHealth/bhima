@@ -180,6 +180,7 @@
             "PHONE": "Telephone",
             "POSITION": "Position",
             "PO_BOX": "Post Office Box",
+            "PREDEFINED": "Predefined",
             "PRICE": "Price",
             "PRICE_INVOICED": "Price Invoiced",
             "PRICE_LIST": "Price List",

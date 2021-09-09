@@ -14,6 +14,7 @@ async function lookupFeeCenter(id) {
     SELECT fc.id, fc.label, fc.is_principal, fc.project_id,
       fc.allocation_method, fc.allocation_basis_id,
       cab.name AS allocation_basis_name, cab.units as allocation_basis_units,
+      cab.is_predefined AS allocation_basis_is_predefined,
       cabval.quantity AS allocation_basis_quantity
     FROM fee_center as fc
     JOIN cost_center_basis as cab ON cab.id = fc.allocation_basis_id
@@ -45,11 +46,13 @@ async function lookupFeeCenter(id) {
       id : fc.allocation_basis_id,
       name : fc.allocation_basis_name,
       units : fc.allocation_basis_units,
+      is_predefined : fc.allocation_basis_is_predefined,
       // quantity???
     };
     delete fc.allocation_basis_id;
     delete fc.allocation_basis_name;
     delete fc.allocation_basis_units;
+    delete fc.allocation_basis_is_predefined;
   });
 
   const data = {
@@ -70,6 +73,7 @@ function list(req, res, next) {
       GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs,
       GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName,
       cab.name AS allocation_basis_name, cab.units as allocation_basis_units,
+      cab.is_predefined AS allocation_basis_is_predefined,
       cabval.quantity AS allocation_basis_quantity
     FROM fee_center AS f
     JOIN cost_center_basis as cab ON cab.id = f.allocation_basis_id
@@ -99,11 +103,13 @@ function list(req, res, next) {
           id : fc.allocation_basis_id,
           name : fc.allocation_basis_name,
           units : fc.allocation_basis_units,
+          is_predefined : fc.allocation_basis_is_predefined,
           // quantity???
         };
         delete fc.allocation_basis_id;
         delete fc.allocation_basis_name;
         delete fc.allocation_basis_units;
+        delete fc.allocation_basis_is_predefined;
       });
       res.status(200).json(rows);
     })
@@ -280,19 +286,3 @@ exports.create = create;
 exports.update = update;
 // delete a feeCenter
 exports.delete = del;
-
-//
-// Support step-down cost allocation basis data
-//
-
-// Get the data about known allocation bases
-function listAllocationBases(req, res, next) {
-  const sql = 'SELECT * FROM cost_center_basis ORDER BY name ASC;';
-  db.exec(sql, [])
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-}
-exports.listAllocationBases = listAllocationBases;

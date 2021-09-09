@@ -2254,6 +2254,7 @@ CREATE TABLE `cost_center_basis` (
   `name` VARCHAR(100) NOT NULL,  -- Will be treated as a translation token
   `units` VARCHAR(30) DEFAULT '',
   `description` TEXT DEFAULT NULL,
+  `is_predefined` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

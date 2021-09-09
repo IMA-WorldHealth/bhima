@@ -70,3 +70,10 @@ date: 2021-09-07
 description: Edit cost center allocation basis
 */
 CALL add_column_if_missing('cost_center_basis', 'units', "VARCHAR(30) DEFAULT '' AFTER `name`)");
+
+/**
+author: @jmcameron
+date: 2021-09-09
+description: Create cost basis items
+*/
+CALL add_column_if_missing('cost_center_basis', 'is_predefined', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `description`');
