@@ -7,7 +7,7 @@ const fiscal = require('../../fiscal');
 const TEMPLATE = './server/controllers/finance/reports/fee_center_step_down/report.handlebars';
 
 // REMOVE ME
-require('./mock_data').generate();
+const MOCK = require('./mock_data');
 // END REMOVE ME
 
 // expose to the API
@@ -23,6 +23,10 @@ exports.report = document;
  * @param {*} session the session
  */
 async function buildReport(params, session) {
+  // REMOVE ME
+  await MOCK.mount();
+  // END REMOVE ME
+
   const options = _.extend(params, {
     filename : 'TREE.FEE_CENTER_STEPDOWN',
     csvKey : 'rows',
@@ -140,6 +144,10 @@ async function buildReport(params, session) {
     totalAfterAllocation,
     hView,
   };
+
+  // REMOVE ME
+  await MOCK.unmount();
+  // END REMOVE ME
 
   return report.render(context);
 }

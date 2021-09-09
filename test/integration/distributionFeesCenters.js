@@ -207,7 +207,7 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
   it('GET /distribution_fee_center/getDistributionKey Obtaining the list of all defined distribution keys', () => {
     return agent.get('/distribution_fee_center/getDistributionKey')
       .then(res => {
-        helpers.api.listed(res, 11);
+        helpers.api.listed(res, 7);
       })
       .catch(helpers.handler);
   });

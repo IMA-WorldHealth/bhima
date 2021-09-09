@@ -139,7 +139,7 @@ function generateTestDataset() {
   return { feeCenters, costCenterAggregate, costCenterBasisValue };
 }
 
-function mount(feeCenters, costCenterBasisValue, costCenterAggregate) {
+function generate(feeCenters, costCenterBasisValue, costCenterAggregate) {
   const tx = db.transaction();
   feeCenters.forEach(item => {
     tx.addQuery('INSERT INTO fee_center SET ?;', item);
@@ -161,12 +161,12 @@ function unmount() {
   return tx.execute();
 }
 
-async function generate() {
+async function mount() {
   const { feeCenters, costCenterBasisValue, costCenterAggregate } = generateTestDataset();
   // clean database
   await unmount();
   // populate database
-  await mount(feeCenters, costCenterBasisValue, costCenterAggregate);
+  await generate(feeCenters, costCenterBasisValue, costCenterAggregate);
 }
 
-module.exports = { generate };
+module.exports = { mount, unmount };
