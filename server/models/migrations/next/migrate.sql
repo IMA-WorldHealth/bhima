@@ -84,3 +84,10 @@ INSERT IGNORE INTO `unit` VALUES
   (298, 'Fee Center Step-down','TREE.FEE_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/fee_center_step_down');
 
 ALTER TABLE `cost_center_basis` MODIFY COLUMN `name` VARCHAR(200) NOT NULL;
+
+/**
+author: @jmcameron
+date: 2021-09-09
+description: Create cost basis items
+*/
+CALL add_column_if_missing('cost_center_basis', 'is_predefined', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `description`');
