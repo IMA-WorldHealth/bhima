@@ -2191,25 +2191,6 @@ CREATE TABLE `fee_center` (
   CONSTRAINT `fee_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `fee_center_index`;
-CREATE TABLE `fee_center_index` (
-  `id` mediumINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
-  `constant` TINYINT(1) DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `fee_center_index_value`;
-CREATE TABLE `fee_center_index_value` (
-  `fee_center_index_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `value` decimal(19,4) UNSIGNED DEFAULT NULL,
-  KEY `fee_center_index_id` (`fee_center_index_id`),
-  KEY `fee_center_id` (`fee_center_id`),
-  CONSTRAINT `fc_index_value__fee_center_index_id`FOREIGN KEY (`fee_center_index_id`) REFERENCES `fee_center_index` (`id`),
-  CONSTRAINT `fc_index__fee_center`FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `reference_fee_center`;
 CREATE TABLE `reference_fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
