@@ -3,6 +3,18 @@
     "ADD_FEE_CENTER" : "Add a Fee Center",
     "DELETE": "Delete This Fee Center",
     "EDIT_FEE_CENTER" : "Update the Fee Center Information",
-    "TITLE" : "Fees Centers"
-  }
+    "TITLE" : "Fees Centers",
+    "AFTER_ALLOCATION": "After Allocations",
+    "DISTRIBUTION_KEY_TABLE": "Tableau of distribution key",
+    "DISTRIBUTION_KEY": "Distribution key",
+    "DIRECT_COST": "Direct Cost",
+    "DISPLAY_HORIZONTALLY": "Horizontal View",
+    "DISPLAY_VERTICALLY": "Vertical View",
+    "PRINCIPAL": "Principal Cost Center",
+    "AUXILIARY": "Auxiliary Cost Center",
+    "ALLOCATION_BY_COST_CENTERS" : "Allocations by cost center according to the distribution keys"
+  },
+  "ALLOCATION_BASIS_DIRECT_COST": "Direct Cost ($)",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Number of employees",
+  "ALLOCATION_BASIS_AREA_USED": "Area Used (m2)"
 }
