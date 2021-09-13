@@ -15,7 +15,6 @@ describe('cronEmailReport', () => {
       addDynamicDatesOptions = cronEmailReport.__get__('addDynamicDatesOptions');
     });
 
-
     it('#addDynamicDatesOptions() does nothing if cronId is unrecognized', () => {
       const options = { id : 1, label : 'Some ole options' };
       const processed = addDynamicDatesOptions(123, options);
@@ -46,7 +45,6 @@ describe('cronEmailReport', () => {
       expect(dateFrom.toDate().getDay()).to.equal(0);
       expect(dateTo.toDate().getDay()).to.equal(6);
     });
-
 
     it('#addDynamicDatesOptions() sets the MONTHLY schedule to the current month', () => {
       const options = { id : 1, label : 'A schedule' };
