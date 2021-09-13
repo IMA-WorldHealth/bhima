@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('FeeCenterModalController', FeeCenterModalController);
 
 FeeCenterModalController.$inject = [
-  '$state', 'FeeCenterService', 'ModalService', 'NotifyService',
+  '$state', 'FeeCenterService', 'AllocationBasisService', 'NotifyService',
   'appcache', 'bhConstants', 'params', '$translate',
 ];
 
-function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
+function FeeCenterModalController($state, FeeCenter, AllocationBasisService, Notify,
   AppCache, bhConstants, params, $translate) {
   const vm = this;
   vm.feeCenter = {};
@@ -54,18 +54,17 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify,
       .catch(Notify.handleError);
   }
 
-  FeeCenter.getAllocationBases()
+  AllocationBasisService.getAllocationBases()
     .then((bases) => {
       // Translate the basis terms, if possible
       bases.forEach(base => {
-        if (FeeCenter.isTranslationToken(base.name)) {
+        if (base.is_predefined) {
           base.name = $translate.instant(`FORM.LABELS.${base.name}`);
-          if (base.units) {
-            base.name += ` (${base.units})`;
-          }
-        }
-        if (FeeCenter.isTranslationToken(base.description)) {
           base.description = $translate.instant(`FORM.LABELS.${base.description}`);
+        }
+        if (base.units) {
+          // Note: Do not translate the units
+          base.name += ` (${base.units})`;
         }
       });
       vm.allocationBases = bases;
