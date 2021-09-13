@@ -79,13 +79,13 @@
           <thead>
             <tr>
               <th>{{translate 'COST_CENTER.DISTRIBUTION_KEY'}}</th>
-              {{#each feeCenterList as | value |}}
+              {{#each costCenterList as | value |}}
                 <th>{{ value }}</th>
               {{/each}}
             </tr>
           </thead>
           <tbody>
-            {{#each feeCenterIndexes as | fcIndex |}}
+            {{#each costCenterIndexes as | fcIndex |}}
               <tr>
                 <td>{{translate fcIndex.index }}</td>
                 {{#each fcIndex.distribution as | dist |}}
