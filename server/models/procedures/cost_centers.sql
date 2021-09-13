@@ -18,7 +18,7 @@ CREATE FUNCTION GetCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   RETURN (
-    SELECT fee_center_id FROM reference_fee_center WHERE account_reference_id IN (
+    SELECT cost_center_id FROM reference_cost_center WHERE account_reference_id IN (
       SELECT account_reference_id FROM account_reference_item WHERE account_reference_item.account_id = account_id
     )
   );
@@ -38,8 +38,8 @@ CREATE FUNCTION GetCostCenterByServiceUuid(service_uuid BINARY(16))
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   RETURN (
-    SELECT fee_center_id FROM service_fee_center
-    WHERE service_fee_center.service_uuid = service_uuid
+    SELECT cost_center_id FROM service_cost_center
+    WHERE service_cost_center.service_uuid = service_uuid
   );
 END $$
 
