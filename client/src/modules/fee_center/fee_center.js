@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('feeCenterController', feeCenterController);
 
 feeCenterController.$inject = [
-  'FeeCenterService', 'ModalService', 'NotifyService', 'uiGridConstants', '$translate',
+  'FeeCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
+  '$uibModal', '$translate',
 ];
 
 /**
@@ -11,12 +12,14 @@ feeCenterController.$inject = [
  * This controller is about the Fee Center module in the admin zone
  * It's responsible for creating, editing and updating a Fee Center
  */
-function feeCenterController(FeeCenter, ModalService, Notify, uiGridConstants, $translate) {
+function feeCenterController(FeeCenter, ModalService, Notify, uiGridConstants,
+  $uibModal, $translate) {
   const vm = this;
 
   // bind methods
   vm.deleteFeeCenter = deleteFeeCenter;
   vm.toggleFilter = toggleFilter;
+  vm.openEditAllocationBasisModal = openEditAllocationBasisModal;
 
   // global variables
   vm.gridApi = {};
@@ -105,10 +108,12 @@ function feeCenterController(FeeCenter, ModalService, Notify, uiGridConstants, $
       .then((data) => {
         data.forEach(fc => {
           // Translate each cost center allocation basis name
-          fc.allocation_basis_name = FeeCenter.isTranslationToken(fc.allocation_basis.name)
+          fc.allocation_basis_name = fc.allocation_basis.is_predefined
             ? $translate.instant(`FORM.LABELS.${fc.allocation_basis.name}`)
             : fc.allocation_basis.name;
+
           if (fc.allocation_basis.units) {
+            // Note: Do not translate the units
             fc.allocation_basis_name += ` (${fc.allocation_basis.units})`;
           }
         });
@@ -133,6 +138,14 @@ function feeCenterController(FeeCenter, ModalService, Notify, uiGridConstants, $
           })
           .catch(Notify.handleError);
       });
+  }
+
+  function openEditAllocationBasisModal() {
+    $uibModal.open({
+      templateUrl : 'modules/fee_center/modals/edit_allocation_basis.modal.html',
+      controller : 'AllocationBasisEditController as ModalCtrl',
+      size : 'lg',
+    }).result.catch(angular.noop);
   }
 
   loadFeeCenters();
