@@ -33,6 +33,7 @@
     "CONFIGURABLE_ANALYSIS_REPORT" : "Rapport d'analyse configurable",
     "CONFIGURATION_ANALYSIS_TOOLS" : "Configuration d'outils d'analyse",
     "COST_CENTER_MGMT":"Centres de coûts",
+    "COST_CENTER_ALLOCATION_REGISTRY" : "Centres de coûts allocations",
     "CREDITOR_GROUP":"Gestion des Groupes Créditeurs",
     "CREDIT_NOTE":"Note de Crédit",
     "CURRENCY":"Monnaie",
