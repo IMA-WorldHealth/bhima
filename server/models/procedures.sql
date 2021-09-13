@@ -86,4 +86,10 @@ SOURCE server/models/procedures/migration-process.sql
 */
 SOURCE server/models/procedures/fee_center.sql
 
+/*
+  Cost Center convenience functions:
+  GetCostCenterByServiceUuid, GetCostCenterByServiceUuid
+*/
+SOURCE server/models/procedures/cost_centers.sql
+
 DELIMITER ;
