@@ -119,7 +119,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
         expect(res).to.have.status(200);
         expect(response.feeCenter[0].label).to.equal('Update Test');
         expect(response.feeCenter[0].allocation_basis.id).to.equal(2);
-        expect(response.feeCenter[0].allocation_basis.name).to.equal('ALLOCATION_BASIS_NUM_EMPLOYEES');
+        expect(response.feeCenter[0].allocation_basis.name).to.equal('ALLOCATION_BASIS_AREA_USED');
       })
       .catch(helpers.handler);
   });

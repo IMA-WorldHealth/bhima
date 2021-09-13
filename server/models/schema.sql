@@ -2179,11 +2179,12 @@ CREATE TABLE `config_employee_item` (
 DROP TABLE IF EXISTS `fee_center`;
 CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(200) NOT NULL,
   `is_principal` TINYINT(1) UNSIGNED DEFAULT 0,
   `project_id` SMALLINT(5) UNSIGNED NULL,
   `allocation_method` VARCHAR(14) NOT NULL DEFAULT 'proportional',
   `allocation_basis_id` MEDIUMINT(8) UNSIGNED,
+  `step_order` SMALLINT(5) NOT NULL DEFAULT 100,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`),
   CONSTRAINT `fee_center__chk_allocation_method` CHECK (`allocation_method` in ('proportional', 'flat')),
@@ -2251,7 +2252,7 @@ CREATE TABLE `service_fee_center` (
 DROP TABLE IF EXISTS `cost_center_basis`;
 CREATE TABLE `cost_center_basis` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,  -- Will be treated as a translation token
+  `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token
   `units` VARCHAR(30) DEFAULT '',
   `description` TEXT DEFAULT NULL,
   `is_predefined` BOOLEAN NOT NULL DEFAULT 0,

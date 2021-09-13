@@ -443,6 +443,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
+  app.get('/reports/finance/fee_center_step_down', financeReports.feeCenterStepdown.report);
   app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
   app.get('/reports/finance/employee_standing/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);

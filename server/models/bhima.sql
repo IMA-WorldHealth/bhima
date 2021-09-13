@@ -170,7 +170,8 @@ INSERT INTO unit VALUES
   (294, 'Duplicate Lots','TREE.DUPLICATE_LOTS','The stock lots duplicates list', 160,'/stock/lots/duplicates'),
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
-  (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log');
+  (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
+  (298, 'Fee Center Step-down','TREE.FEE_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/fee_center_step_down');
 
 
 -- Reserved system account type
@@ -243,7 +244,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_expiration_report', 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'),
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
-  ('rumer_report', 'REPORT.RUMER.TITLE');
+  ('rumer_report', 'REPORT.RUMER.TITLE'),
+  ('fee_center_step_down', 'TREE.FEE_CENTER_STEPDOWN');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -485,5 +487,3 @@ INSERT INTO `cost_center_basis` (`id`, `name`, `units`, `description`, `is_prede
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
   (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
   (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1);
-
-
