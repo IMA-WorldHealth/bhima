@@ -254,6 +254,7 @@ exports.configure = function configure(app) {
   app.get('/services/:uuid', services.detail);
   app.put('/services/:uuid', services.update);
   app.delete('/services/:uuid', services.remove);
+  app.get('/services/:uuid/cost-centers', services.lookupCostCenter);
 
   // API for subsidies routes crud
   app.get('/subsidies', subsidies.list);
