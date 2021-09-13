@@ -48,9 +48,9 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /services/:uuid/cost-centers returns a cost center associated with the service', () => {
+  it('GET /services/:uuid/cost-center returns a cost center associated with the service', () => {
     const medicineInterne = 'e3988489-ef66-41df-88fa-8b8ed6aa03ac';
-    return agent.get(`/services/${medicineInterne}/cost-centers`)
+    return agent.get(`/services/${medicineInterne}/cost-center`)
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;

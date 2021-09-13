@@ -56,7 +56,6 @@ describe('(/accounts) Accounts', () => {
       .catch(helpers.handler);
   });
 
-
   it('GET /accounts returns the accounts in sorted order by number', () => {
     return agent.get('/accounts')
       .then(res => {
@@ -193,6 +192,18 @@ describe('(/accounts) Accounts', () => {
       .query({ hidden : 0 })
       .then(res => {
         helpers.api.listed(res, NUM_ACCOUNTS - 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /accounts/:id/cost-center will retrieve a cost center by account id', () => {
+    const accountId = 215;
+    const ccId = 4;
+    return agent.get(`/accounts/${accountId}/cost-center`)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.id).to.equal(ccId);
       })
       .catch(helpers.handler);
   });
