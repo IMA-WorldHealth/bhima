@@ -7,10 +7,10 @@ DistributionCenterUpdateService.$inject = ['PrototypeApiService', 'FilterService
  * @class DistributionCenterUpdateService
  *
  * @description
- * Encapsulates common requests to the /distribution_cost_center/ URL.
+ * Encapsulates common requests to the /allocation_cost_center/ URL.
  */
 function DistributionCenterUpdateService(Api, Filters, AppCache) {
-  const service = new Api('/distribution_cost_center/');
+  const service = new Api('/allocation_cost_center/');
   const distributionFilters = new Filters();
   const filterCache = new AppCache('distribution-center-update-filters');
 

@@ -8,10 +8,10 @@ DistributionCenterService.$inject = ['PrototypeApiService', 'FilterService', 'ap
  * @extends PrototypeApiService
  *
  * @description
- * Encapsulates common requests to the /distribution_cost_center/ URL.
+ * Encapsulates common requests to the /allocation_cost_center/ URL.
  */
 function DistributionCenterService(Api, Filters, AppCache, Modal) {
-  const service = new Api('/distribution_cost_center/');
+  const service = new Api('/allocation_cost_center/');
   const distributionFilters = new Filters();
   const filterCache = new AppCache('distribution-center-filters');
 
@@ -32,12 +32,12 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
 
   // get the auxiliary centers already distributed
   function getDistributed(params) {
-    return service.$http.get(`/distribution_cost_center/getDistributed`, { params })
+    return service.$http.get(`/allocation_cost_center/getDistributed`, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
   function getDistributionKey() {
-    return service.$http.get(`/distribution_cost_center/getDistributionKey`)
+    return service.$http.get(`/allocation_cost_center/getDistributionKey`)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -75,7 +75,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
    */
   function openSettingModal(filters) {
     return Modal.open({
-      templateUrl : 'modules/allocation_center/modals/setting_distribution.modal.html',
+      templateUrl : 'modules/allocation_center/modals/setting_allocation.modal.html',
       size : 'md',
       animation : false,
       keyboard : false,
@@ -94,7 +94,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
    */
   function openDistributionModal(data) {
     return Modal.open({
-      templateUrl : 'modules/allocation_center/modals/distribution.modal.html',
+      templateUrl : 'modules/allocation_center/modals/allocation.modal.html',
       size : 'md',
       animation : false,
       keyboard : false,
@@ -125,26 +125,25 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
     }).result;
   }
 
-
   /**
    * @function automatic Breakdown for Invoices
    * @description
    * This functions opens the distribution Modal form.
    */
   function automaticBreakdown(data) {
-    return service.$http.post(`/distribution_cost_center/automatic`, { data })
+    return service.$http.post(`/allocation_cost_center/automatic`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
   // Proceed Distribution Cost Center
   function proceedDistribution(data) {
-    return service.$http.post(`/distribution_cost_center/proceed`, { data })
+    return service.$http.post(`/allocation_cost_center/proceed`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
   // Proceed Break Down Cost Center in Percentage
   function proceedBreakDownPercent(data) {
-    return service.$http.post(`/distribution_cost_center/breakDown`, { data })
+    return service.$http.post(`/allocation_cost_center/breakDown`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -155,7 +154,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
    */
   function openDistributionKeyModal(data) {
     return Modal.open({
-      templateUrl : 'modules/allocation_center/modals/distribution_key.modal.html',
+      templateUrl : 'modules/allocation_center/modals/allocation_key.modal.html',
       size : 'md',
       animation : false,
       keyboard : false,
@@ -169,13 +168,13 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
 
   // initialization of the distribution keys of the auxiliary centers towards the main center
   function proceedDistributionKey(data) {
-    return service.$http.post(`/distribution_cost_center/distributionKey`, { data })
+    return service.$http.post(`/allocation_cost_center/distributionKey`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
   // reset of the distribution keys of the auxiliary centers towards the main center
   function resetDistributionKey(data) {
-    return service.$http.post(`/distribution_cost_center/resetKey`, { data })
+    return service.$http.post(`/allocation_cost_center/resetKey`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 

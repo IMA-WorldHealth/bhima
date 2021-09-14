@@ -105,11 +105,15 @@ description: rename all cost centers to cost centers
 RENAME TABLE fee_center TO cost_center,
              reference_fee_center TO reference_cost_center,
              fee_center_distribution TO cost_center_allocation,
-             service_fee_center TO service_cost_center;
+             service_fee_center TO service_cost_center,
+             distribution_key TO allocation_key;
 
 ALTER TABLE `cost_center_allocation` RENAME COLUMN `auxiliary_fee_center_id` TO `auxiliary_cost_center_id`;
 ALTER TABLE `cost_center_allocation` RENAME COLUMN `principal_fee_center_id` TO `principal_cost_center_id`;
 ALTER TABLE `service_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_id`;
+ALTER TABLE `reference_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_id`;
+ALTER TABLE `allocation_key` RENAME COLUMN `auxiliary_fee_center_id` TO `auxiliary_cost_center_id`;
+ALTER TABLE `allocation_key` RENAME COLUMN `principal_fee_center_id` TO `principal_cost_center_id`;
 
 /**
 author: mbayopanda
@@ -118,3 +122,17 @@ description: rename allocation tables
 */
 RENAME TABLE cost_center_basis TO cost_center_allocation_basis,
              cost_center_basis_value TO cost_center_allocation_basis_value;
+
+UPDATE `unit` SET `path` = '/cost_center', `key` = 'TREE.COST_CENTER_MANAGEMENT' WHERE id = 218;
+UPDATE `unit` SET `path` = '/cost_center', `key` = 'TREE.COST_CENTER' WHERE id = 219;
+UPDATE `unit` SET `path` = '/allocation_center' WHERE id = 220;
+UPDATE `unit` SET `path` = '/allocation_center/update' WHERE id = 221;
+UPDATE `unit` SET `path` = '/allocation_center/distribution_key' WHERE id = 223;
+UPDATE `unit` SET `path` = '/reports/cost_center', `key` = 'TREE.COST_CENTER_REPORT' WHERE id = 222;
+UPDATE `unit` SET `path` = '/reports/break_even_cost_center', `key` = 'TREE.BREAK_EVEN_COST_CENTER_REPORT' WHERE id = 232;
+UPDATE `unit` SET `path` = '/cost_center/reports' WHERE id = 286;
+UPDATE `unit` SET `path` = '/reports/cost_center_step_down', `key` = 'TREE.COST_CENTER_STEPDOWN'  WHERE id = 298;
+
+UPDATE `report` SET `report_key` = 'cost_center', `title_key` = 'REPORT.COST_CENTER.TITLE' WHERE `report_key` = 'fee_center' OR `report_key` = 'cost_center';
+UPDATE `report` SET `report_key` = 'break_even_cost_center', `title_key` = 'TREE.BREAK_EVEN_COST_CENTER_REPORT'  WHERE `report_key` = 'break_even_fee_center' OR `report_key` = 'break_even_cost_center';
+UPDATE `report` SET `report_key` = 'cost_center_step_down', `title_key` = 'TREE.COST_CENTER_STEPDOWN'  WHERE `report_key` = 'fee_center_step_down' OR `report_key` = 'cost_center_step_down';

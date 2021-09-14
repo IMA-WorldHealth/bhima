@@ -37,7 +37,6 @@ function SettingDistributionModalController($state, DistributionCenter, filters,
   // assign already defined custom filters to searchQueries object
   vm.distribution = util.maskObjectFromKeys(filters, settingOptions);
 
-
   vm.onSelectFiscal = function onSelectFiscal(fiscal) {
     vm.distribution.fiscal = fiscal;
   };

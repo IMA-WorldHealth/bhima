@@ -5,7 +5,6 @@ breakEvenCostCenterController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'CostCenterService',
 ];
 
-
 function breakEvenCostCenterController($sce, Notify, SavedReports, AppCache, reportData, $state, CostCenters) {
   const vm = this;
   const cache = new AppCache('configure_break_even_cost_center');
