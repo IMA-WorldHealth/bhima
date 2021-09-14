@@ -84,6 +84,6 @@ SOURCE server/models/procedures/migration-process.sql
 /*
   Fee Center procedures
 */
-SOURCE server/models/procedures/fee_center.sql
+SOURCE server/models/procedures/cost_center.sql
 
 DELIMITER ;
