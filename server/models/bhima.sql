@@ -171,7 +171,7 @@ INSERT INTO unit VALUES
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
-  (298, 'Fee Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down');
+  (298, 'Fee Center Step-down','TREE.COST_CENTER_STEPDOWN','The cost center report with step-down algorithm', 286,'/reports/cost_center_step_down');
 
 
 -- Reserved system account type
@@ -486,6 +486,10 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
 INSERT INTO `cost_center_allocation_basis` (`id`, `name`, `units`, `description`, `is_predefined`) VALUES
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
   (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
-  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1);
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
+  (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
+  (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
+  (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
+
 
 

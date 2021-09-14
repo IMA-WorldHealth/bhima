@@ -53,6 +53,8 @@
     "DEPOTS" : "Depots",
     "DEPOTS_REGISTRY" : "Depots Registry",
     "DISPLAY_METADATA": "Display Metadata",
+    "DISTRIBUTION_KEYS": "Allocation Keys",
+    "DITRIBUTION_AUX_FEES_CENTERS" : "Cost Center Allocation",
     "DUPLICATE_LOTS"  : "Find Duplicate Lots",
     "EMPLOYEE" : "Employee",
     "EMPLOYEE_REGISTRY" : "Employee Registry",
