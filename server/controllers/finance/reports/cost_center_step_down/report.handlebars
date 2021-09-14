@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-  {{> head title="REPORT.FEE_CENTER_STEPDOWN.TITLE"}}
+  {{> head title="REPORT.COST_CENTER_STEPDOWN.TITLE"}}
   <body>
   <div class="fluid container">
     {{> header}}
@@ -11,7 +11,7 @@
 
         <!-- page title  -->
         <h3 class="text-center text-uppercase">
-          <strong>{{translate 'REPORT.FEE_CENTER_STEPDOWN.TITLE'}}</strong>
+          <strong>{{translate 'REPORT.COST_CENTER_STEPDOWN.TITLE'}}</strong>
         </h3>
 
         <h4 class="text-center">
@@ -21,15 +21,15 @@
         </h4>
 
         {{!-- VIEW OF COST CENTER ALLOCATION --}}
-        <p>{{translate 'FEE_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
-        <p>P : {{translate 'FEE_CENTER.PRINCIPAL'}}</p>
+        <p>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
+        <p>P : {{translate 'COST_CENTER.PRINCIPAL'}}</p>
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
             <tr>
               <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
-              <th>{{translate 'FEE_CENTER.DIRECT_COST'}}</th>
+              <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
               {{#each data as | service |}}
-                <th>{{ service.fee_center_label }}</th>
+                <th>{{ service.cost_center_label }}</th>
                 <th style="width: 3em;">%</th>
               {{/each}}
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
@@ -73,12 +73,12 @@
 
         <hr>
 
-        <p><i>{{translate 'FEE_CENTER.DISTRIBUTION_KEY_TABLE'}}</i></p>
+        <p><i>{{translate 'COST_CENTER.DISTRIBUTION_KEY_TABLE'}}</i></p>
 
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
             <tr>
-              <th>{{translate 'FEE_CENTER.DISTRIBUTION_KEY'}}</th>
+              <th>{{translate 'COST_CENTER.DISTRIBUTION_KEY'}}</th>
               {{#each feeCenterList as | value |}}
                 <th>{{ value }}</th>
               {{/each}}

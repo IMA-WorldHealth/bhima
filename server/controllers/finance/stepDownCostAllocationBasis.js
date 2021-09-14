@@ -10,7 +10,7 @@ module.exports = {
 
 // add a new allocation basis
 //
-// POST /fee_center_allocation_basis
+// POST /cost_center_allocation_basis
 //
 function create(req, res, next) {
   const sql = `INSERT INTO cost_center_basis SET ?`;
@@ -25,7 +25,7 @@ function create(req, res, next) {
 
 // get details of specific allocation basis
 //
-// GET /fee_center_allocation_basis/:id
+// GET /cost_center_allocation_basis/:id
 //
 function read(req, res, next) {
   const sql = 'SELECT * FROM `cost_center_basis` WHERE id = ?';
@@ -37,7 +37,7 @@ function read(req, res, next) {
 
 // get details of all allocation bases
 //
-// GET /fee_center_allocation_basis
+// GET /cost_center_allocation_basis
 //
 function list(req, res, next) {
   const sql = 'SELECT * FROM cost_center_basis ORDER BY name ASC;';
@@ -51,7 +51,7 @@ function list(req, res, next) {
 
 // update allocation basis details
 //
-// PUT /fee_center_allocation_basis/:id
+// PUT /cost_center_allocation_basis/:id
 //
 function update(req, res, next) {
   const sql = 'UPDATE cost_center_basis SET ?  WHERE id = ?';
@@ -66,7 +66,7 @@ function update(req, res, next) {
 
 // Delete a allocation basis
 //
-// DELETE /fee_center_allocation_basis/:id
+// DELETE /cost_center_allocation_basis/:id
 //
 function remove(req, res, next) {
   const sql = 'DELETE FROM cost_center_basis WHERE id = ?';

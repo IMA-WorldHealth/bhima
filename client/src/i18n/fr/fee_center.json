@@ -2,7 +2,7 @@
   "COST_CENTER" : {
     "ADD_COST_CENTER" : "Ajouter un centre de frais",
     "DELETE": "Supprimer le Centre de frais",
-    "EDIT_FEE_CENTER" : "Mise à jour des informations du centre de frais",
+    "EDIT_COST_CENTER" : "Mise à jour des informations du centre de frais",
     "TITLE" : "Centres de frais",
     "AFTER_ALLOCATION": "Après les allocations",
     "DISTRIBUTION_KEY_TABLE": "Tableau des clés de repartition",
@@ -12,8 +12,7 @@
     "DISPLAY_VERTICALLY": "Présentation verticale",
     "PRINCIPAL": "Centre de coût Principal",
     "AUXILIARY": "Centre de coût Auxiliaire",
-    "ALLOCATION_BY_COST_CENTERS" : "Les allocations par centre de couts suivant les clés de repartition",
-    "EDIT_COST_CENTER" : "Mise à jour des informations du centre de frais"
+    "ALLOCATION_BY_COST_CENTERS" : "Les allocations par centre de couts suivant les clés de repartition"
   },
   "ALLOCATION_BASIS_DIRECT_COST": "Cout direct ($)",
   "ALLOCATION_BASIS_NUM_EMPLOYEES": "Nombre des employés",

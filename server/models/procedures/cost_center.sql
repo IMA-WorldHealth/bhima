@@ -1,7 +1,7 @@
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS FeeCenterCostWithIndexes$$
-CREATE PROCEDURE FeeCenterCostWithIndexes(
+DROP PROCEDURE IF EXISTS ComputeCostCenterAllocationByIndex$$
+CREATE PROCEDURE ComputeCostCenterAllocationByIndex(
   IN _dateFrom DATE,
   IN _dateTo DATE
 )
@@ -15,10 +15,10 @@ BEGIN
     END;
 
 
-  DROP TEMPORARY TABLE IF EXISTS fee_center_costs_with_indexes;
-  CREATE TEMPORARY TABLE fee_center_costs_with_indexes AS 
+  DROP TEMPORARY TABLE IF EXISTS cost_center_costs_with_indexes;
+  CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS 
     SELECT
-        z.id, z.label AS fee_center_label,
+        z.id, z.label AS cost_center_label,
         z.allocation_basis_id,
         z.is_principal,
         z.step_order,
@@ -31,7 +31,7 @@ BEGIN
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
             SUM(cca.debit - cca.credit) AS `value`
-          FROM fee_center AS fc
+          FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
           JOIN `period` p ON p.id = cca.period_id 
           LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
@@ -43,7 +43,7 @@ BEGIN
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
             SUM(cca.debit - cca.credit) AS `value`
-          FROM fee_center AS fc
+          FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
           JOIN `period` p ON p.id = cca.period_id 
           LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
@@ -64,9 +64,9 @@ BEGIN
         cost_center_basis_label, '`'
       )
     ) INTO @sql
-  FROM fee_center_costs_with_indexes;
+  FROM cost_center_costs_with_indexes;
 
-  SET @sql = CONCAT('SELECT id, fee_center_label, is_principal, step_order, direct_cost, allocation_basis_id, ', @sql, ' FROM fee_center_costs_with_indexes GROUP BY id');
+  SET @sql = CONCAT('SELECT id, cost_center_label, is_principal, step_order, direct_cost, allocation_basis_id, ', @sql, ' FROM cost_center_costs_with_indexes GROUP BY id');
 
   PREPARE stmt FROM @sql;
   EXECUTE stmt;

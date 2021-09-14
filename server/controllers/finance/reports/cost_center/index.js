@@ -13,7 +13,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'cost_center_report',
-  filename : 'TREE.FEE_CENTER_REPORT',
+  filename : 'TREE.COST_CENTER_REPORT',
   orientation : 'portrait',
 };
 

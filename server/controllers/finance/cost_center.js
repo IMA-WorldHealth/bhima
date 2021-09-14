@@ -8,7 +8,7 @@ const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
-// GET /fee_center
+// GET /cost_center
 async function lookupCostCenter(id) {
   const sqlCostCenter = `
     SELECT fc.id, fc.label, fc.is_principal, fc.project_id,
@@ -26,13 +26,13 @@ async function lookupCostCenter(id) {
   const sqlReferenceCostCenter = `
     SELECT id, cost_center_id, account_reference_id, is_cost, is_variable, is_turnover
     FROM reference_cost_center
-    WHERE fee_center_id = ?`;
+    WHERE cost_center_id = ?`;
 
   const sqlServicesCostCenter = `
     SELECT service_cost_center.cost_center_id, BUID(service_cost_center.service_uuid) AS uuid, service.name
     FROM service_cost_center
     JOIN service ON service.uuid = service_cost_center.service_uuid
-    WHERE fee_center_id = ?`;
+    WHERE cost_center_id = ?`;
 
   const [costCenter, references, services] = await Promise.all([
     db.exec(sqlCostCenter, [id]),
@@ -77,7 +77,7 @@ function list(req, res, next) {
       cabval.quantity AS allocation_basis_quantity
     FROM cost_center AS f
     JOIN cost_center_basis as cab ON cab.id = f.allocation_basis_id
-    LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
+    LEFT JOIN reference_cost_center AS r ON r.cost_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_cost_center AS sf ON sf.cost_center_id = f.id
     LEFT JOIN service AS s ON s.uuid = sf.service_uuid

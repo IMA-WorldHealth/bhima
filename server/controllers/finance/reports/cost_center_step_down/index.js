@@ -4,7 +4,7 @@ const Stepdown = require('../../../../lib/stepdown');
 const ReportManager = require('../../../../lib/ReportManager');
 const fiscal = require('../../fiscal');
 
-const TEMPLATE = './server/controllers/finance/reports/fee_center_step_down/report.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/cost_center_step_down/report.handlebars';
 
 // REMOVE ME
 const MOCK = require('./mock_data');
@@ -28,7 +28,7 @@ async function buildReport(params, session) {
   // END REMOVE ME
 
   const options = _.extend(params, {
-    filename : 'TREE.FEE_CENTER_STEPDOWN',
+    filename : 'TREE.COST_CENTER_STEPDOWN',
     csvKey : 'rows',
     user : session.user,
   });
@@ -42,7 +42,7 @@ async function buildReport(params, session) {
   };
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
-  const query = 'CALL FeeCenterCostWithIndexes(?, ?);';
+  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?);';
   let [feeCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
 
   if (feeCenters.length) {
@@ -65,9 +65,9 @@ async function buildReport(params, session) {
     SELECT 
       ccb.id, 
       ccb.name AS cost_center_basis_label, 
-      ccbv.quantity, fc.label AS fee_center_label,
+      ccbv.quantity, fc.label AS cost_center_label,
       fc.step_order 
-    FROM fee_center fc 
+    FROM cost_center fc 
     JOIN cost_center_basis_value ccbv ON ccbv.cost_center_id = fc.id 
     JOIN cost_center_basis ccb ON ccb.id = ccbv.basis_id
     ORDER BY fc.step_order ASC;
@@ -79,8 +79,8 @@ async function buildReport(params, session) {
     const fcIndex = _.sortBy(indexes[index], 'step_order');
     const line = { index, distribution : [] };
     fcIndex.forEach((item) => {
-      if (i === 0) { feeCenterList.push(item.fee_center_label); }
-      line.distribution.push({ fee_center_label : item.fee_center_label, value : item.quantity });
+      if (i === 0) { feeCenterList.push(item.cost_center_label); }
+      line.distribution.push({ cost_center_label : item.cost_center_label, value : item.quantity });
     });
     return line;
   });
@@ -104,7 +104,7 @@ async function buildReport(params, session) {
   for (let i = 0; i < data.length; i++) {
     const ei = data[i];
     const row = {
-      name : ei.fee_center_label,
+      name : ei.cost_center_label,
       principal : ei.principal,
       direct : ei.directCost,
       values : [],

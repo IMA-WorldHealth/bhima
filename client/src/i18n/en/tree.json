@@ -59,7 +59,7 @@
     "EMPLOYEE_STANDING_REPORT" : "Employee Standing Report",
     "ENTERPRISE" : "Enterprise",
     "EXCHANGE" : "Exchange Rate",
-    "FEE_CENTER_STEPDOWN": "Fee Center Allocations",
+    "COST_CENTER_STEPDOWN": "Fee Center Allocations",
     "FILL_FORM": "Fill Form",
     "FINANCE" : "Finance",
     "FISCAL_YEAR" : "Fiscal Year",

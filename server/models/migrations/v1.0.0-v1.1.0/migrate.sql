@@ -142,11 +142,11 @@ ALTER TABLE `reference_fee_center` ADD COLUMN `is_turnover` TINYINT(1) UNSIGNED 
 
 -- Break Even By Fee Center unit
 INSERT INTO unit VALUES
-(232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter');
+(232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_COST_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter');
 
 -- @lomamech 2019-02-21 Break Even
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
-('breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT');
+('breakEvenFeeCenter', 'TREE.BREAK_EVEN_COST_CENTER_REPORT');
 
 -- @lomamech 2019-02-25 fee center distribution
 ALTER TABLE `fee_center_distribution` ADD COLUMN `is_variable` TINYINT(1) UNSIGNED DEFAULT '0';

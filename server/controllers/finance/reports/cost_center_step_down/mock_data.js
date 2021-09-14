@@ -142,7 +142,7 @@ function generateTestDataset() {
 function generate(feeCenters, costCenterBasisValue, costCenterAggregate) {
   const tx = db.transaction();
   feeCenters.forEach(item => {
-    tx.addQuery('INSERT INTO fee_center SET ?;', item);
+    tx.addQuery('INSERT INTO cost_center SET ?;', item);
   });
   costCenterBasisValue.forEach(item => {
     tx.addQuery('INSERT INTO cost_center_basis_value SET ?;', item);
@@ -157,7 +157,7 @@ function unmount() {
   const tx = db.transaction();
   tx.addQuery('DELETE FROM cost_center_aggregate WHERE cost_center_id >= 10 AND cost_center_id <= 16;');
   tx.addQuery('DELETE FROM cost_center_basis_value WHERE cost_center_id >= 10 AND cost_center_id <= 16;');
-  tx.addQuery('DELETE FROM fee_center WHERE id >= 10 AND id <= 16;');
+  tx.addQuery('DELETE FROM cost_center WHERE id >= 10 AND id <= 16;');
   return tx.execute();
 }
 

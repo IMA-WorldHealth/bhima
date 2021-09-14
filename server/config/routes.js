@@ -443,7 +443,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/cost_center', financeReports.costCenter.report);
-  app.get('/reports/finance/fee_center_step_down', financeReports.feeCenterStepdown.report);
+  app.get('/reports/finance/cost_center_step_down', financeReports.costCenterStepdown.report);
   app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
   app.get('/reports/finance/employee_standing/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
@@ -926,11 +926,11 @@ exports.configure = function configure(app) {
   app.delete('/cost_center/:id', costCenter.delete);
 
   // Step-down allocation basis API
-  app.get('/fee_center_allocation_basis', costAllocationBasisCenter.list);
-  app.get('/fee_center_allocation_basis/:id', costAllocationBasisCenter.read);
-  app.post('/fee_center_allocation_basis', costAllocationBasisCenter.create);
-  app.put('/fee_center_allocation_basis/:id', costAllocationBasisCenter.update);
-  app.delete('/fee_center_allocation_basis/:id', costAllocationBasisCenter.delete);
+  app.get('/cost_center_allocation_basis', costAllocationBasisCenter.list);
+  app.get('/cost_center_allocation_basis/:id', costAllocationBasisCenter.read);
+  app.post('/cost_center_allocation_basis', costAllocationBasisCenter.create);
+  app.put('/cost_center_allocation_basis/:id', costAllocationBasisCenter.update);
+  app.delete('/cost_center_allocation_basis/:id', costAllocationBasisCenter.delete);
 
   // Distribution Fees Centers API
   app.get('/allocation_cost_center', distributionConfiguration.configuration);

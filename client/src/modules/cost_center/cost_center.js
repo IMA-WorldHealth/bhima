@@ -72,7 +72,7 @@ function costCenterController(CostCenters, ModalService, Notify, uiGridConstants
         headerCellFilter : 'translate',
         headerCellClass : 'allocationBasisColHeader',
         visible : true,
-        cellTemplate : '/modules/fee_center/templates/allocationBasis.tmpl.html',
+        cellTemplate : '/modules/cost_center/templates/allocationBasis.tmpl.html',
       },
       {
         field : 'allocation_basis_name',

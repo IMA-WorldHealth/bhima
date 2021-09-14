@@ -102,7 +102,7 @@
     "COST_CENTER": {
       "TITLE": "Cost Center Report"
     },
-    "FEE_CENTER_STEPDOWN": {
+    "COST_CENTER_STEPDOWN": {
       "TITLE": "Allocation of Fee Centers",
       "DESCRIPTION": "Displays the cost allocations from the auxiliary centers to the main centers with the 'Step-Down' method"
     },

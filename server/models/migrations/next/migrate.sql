@@ -81,7 +81,7 @@ CALL add_column_if_missing('fee_center', 'allocation_basis_id', 'MEDIUMINT(8) UN
 CALL add_column_if_missing('fee_center', 'allocation_method', "VARCHAR(14) NOT NULL DEFAULT 'proportional'");
 
 INSERT IGNORE INTO `unit` VALUES 
-  (298, 'Fee Center Step-down','TREE.FEE_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/fee_center_step_down');
+  (298, 'Fee Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/fee_center_step_down');
 
 ALTER TABLE `cost_center_basis` MODIFY COLUMN `name` VARCHAR(200) NOT NULL;
 

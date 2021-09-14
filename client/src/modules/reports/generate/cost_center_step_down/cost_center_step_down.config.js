@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-  .controller('fee_center_step_downController', FeeCenterStepdownReportConfigController);
+  .controller('cost_center_step_downController', FeeCenterStepdownReportConfigController);
 
 FeeCenterStepdownReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
@@ -9,12 +9,12 @@ FeeCenterStepdownReportConfigController.$inject = [
  * @function FeeCenterStepdownReportConfigController
  *
  * @description
- * This function renders the fee_center_step_down report.
+ * This function renders the cost_center_step_down report.
  */
 function FeeCenterStepdownReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('FeeCenterStepdownReport');
-  const reportUrl = 'reports/finance/fee_center_step_down';
+  const reportUrl = 'reports/finance/cost_center_step_down';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};

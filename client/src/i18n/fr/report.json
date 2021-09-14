@@ -94,7 +94,7 @@
     "COST_CENTER": {
       "TITLE": "Rapports des centres de frais"
     },
-    "FEE_CENTER_STEPDOWN": {
+    "COST_CENTER_STEPDOWN": {
       "TITLE": "Allocation des centres de frais",
       "DESCRIPTION": "Affiche les allocations des couts des centres auxiliaires vers les centres principaux avec la methode de 'Step-Down'"
     },
