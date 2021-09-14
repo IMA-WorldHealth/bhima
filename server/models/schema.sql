@@ -2188,7 +2188,7 @@ CREATE TABLE `cost_center` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `cost_center_1` (`label`),
   CONSTRAINT `cost_center__chk_allocation_method` CHECK (`allocation_method` in ('proportional', 'flat')),
-  CONSTRAINT `cost_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_basis` (`id`)
+  CONSTRAINT `cost_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `reference_cost_center`;
@@ -2249,8 +2249,8 @@ CREATE TABLE `service_cost_center` (
   CONSTRAINT `service_cost_center__cost_center`  FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `cost_center_basis`;
-CREATE TABLE `cost_center_basis` (
+DROP TABLE IF EXISTS `cost_center_allocation_basis`;
+CREATE TABLE `cost_center_allocation_basis` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token
   `units` VARCHAR(30) DEFAULT '',
@@ -2260,15 +2260,15 @@ CREATE TABLE `cost_center_basis` (
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `cost_center_basis_value`;
-CREATE TABLE `cost_center_basis_value` (
+DROP TABLE IF EXISTS `cost_center_allocation_basis_value`;
+CREATE TABLE `cost_center_allocation_basis_value` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `quantity` DECIMAL(19,4) NOT NULL DEFAULT 0,
   `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `basis_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `cost_center_basis_value__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
-  CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_basis` (`id`)
+  CONSTRAINT `cost_center_allocation_basis_value__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_allocation_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 

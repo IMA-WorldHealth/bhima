@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-  .controller('costCenterController', costCenterController);
+  .controller('CostCenterController', CostCenterController);
 
-costCenterController.$inject = [
-  'FeeCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
+CostCenterController.$inject = [
+  'CostCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
   '$uibModal', '$translate',
 ];
 
@@ -12,7 +12,7 @@ costCenterController.$inject = [
  * This controller is about the Cost Center module in the admin zone
  * It's responsible for creating, editing and updating a Cost Center
  */
-function costCenterController(CostCenters, ModalService, Notify, uiGridConstants,
+function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants,
   $uibModal, $translate) {
   const vm = this;
 

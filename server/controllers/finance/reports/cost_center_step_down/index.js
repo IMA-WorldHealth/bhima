@@ -64,16 +64,16 @@ async function buildReport(params, session) {
   const queryFeeCenterIndexesList = `
     SELECT 
       ccb.id, 
-      ccb.name AS cost_center_basis_label, 
+      ccb.name AS cost_center_allocation_basis_label, 
       ccbv.quantity, fc.label AS cost_center_label,
       fc.step_order 
     FROM cost_center fc 
-    JOIN cost_center_basis_value ccbv ON ccbv.cost_center_id = fc.id 
-    JOIN cost_center_basis ccb ON ccb.id = ccbv.basis_id
+    JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = fc.id 
+    JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id
     ORDER BY fc.step_order ASC;
   `;
   const feeCenterIndexesList = await db.exec(queryFeeCenterIndexesList);
-  const indexes = _.groupBy(feeCenterIndexesList, 'cost_center_basis_label');
+  const indexes = _.groupBy(feeCenterIndexesList, 'cost_center_allocation_basis_label');
   const feeCenterList = [];
   const feeCenterIndexes = _.keys(indexes).map((index, i) => {
     const fcIndex = _.sortBy(indexes[index], 'step_order');

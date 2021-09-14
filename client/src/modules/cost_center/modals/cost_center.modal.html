@@ -222,15 +222,15 @@
     <div class="radio">
       <p><strong translate>FORM.LABELS.STEP_DOWN_COST_ALLOCATION</strong></p>
       <label class="control-label" style="vertical-align: middle;" translate>FORM.LABELS.ALLOCATION_METHOD</label>:
-      <label class="radio-inline" ng-repeat="choice in FeeCenterModalCtrl.allocationMethodOptions">
+      <label class="radio-inline" ng-repeat="choice in CostCenterModalCtrl.allocationMethodOptions">
         <input
           type="radio"
           name="allocation_method"
           ng-value="choice"
-          ng-model="FeeCenterModalCtrl.costCenter.allocation_method"
+          ng-model="CostCenterModalCtrl.costCenter.allocation_method"
           id="allocation_method_{{choice}}"
           required>
-        <span>{{FeeCenterModalCtrl.translate(choice)}}</span>
+        <span>{{CostCenterModalCtrl.translate(choice)}}</span>
       </label>
     </div>
 
@@ -239,10 +239,10 @@
       <label class="control-label" translate>FORM.LABELS.SELECT_ALLOCATION_BASIS</label>
       <select class="form-control"
         name="allocation_basis"
-        ng-model="FeeCenterModalCtrl.costCenter.allocation_basis.id"
-        ng-options="allocationBasis.id as allocationBasis.name for allocationBasis in FeeCenterModalCtrl.allocationBases"
+        ng-model="CostCenterModalCtrl.costCenter.allocation_basis.id"
+        ng-options="allocationBasis.id as allocationBasis.name for allocationBasis in CostCenterModalCtrl.allocationBases"
         required>
-        <option value="" disabled ng-if="FeeCenterModalCtrl.isCreateState" translate>FORM.LABELS.SELECT_ONE</option>
+        <option value="" disabled ng-if="CostCenterModalCtrl.isCreateState" translate>FORM.LABELS.SELECT_ONE</option>
       </select>
       <div class="help-block" ng-messages="FeeCenterForm.allocation_basis.$error" ng-show="FeeCenterForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

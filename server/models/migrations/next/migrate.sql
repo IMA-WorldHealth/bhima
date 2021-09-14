@@ -69,7 +69,7 @@ author: @jmcameron
 date: 2021-09-07
 description: Edit cost center allocation basis
 */
-CALL add_column_if_missing('cost_center_basis', 'units', "VARCHAR(30) DEFAULT '' AFTER `name`)");
+CALL add_column_if_missing('cost_center_basis', 'units', "VARCHAR(30) DEFAULT '' AFTER `name`");
 
 /*
  * @author: mbayopanda
@@ -113,3 +113,12 @@ ALTER TABLE `service_cost_center` RENAME COLUMN `fee_center_id` TO `cost_center_
 
 ALTER TABLE `allocation_key` RENAME COLUMN `auxiliary_fee_center_id` TO `auxiliary_cost_center_id`;
 ALTER TABLE `allocation_key` RENAME COLUMN `principal_fee_center_id` TO `principal_cost_center_id`;
+
+/**
+author: mbayopanda
+date: 2021-09-14
+description: rename allocation tables
+*/
+RENAME TABLE cost_center_basis TO cost_center_allocation_basis,
+             cost_center_basis_value TO cost_center_allocation_basis_value;
+

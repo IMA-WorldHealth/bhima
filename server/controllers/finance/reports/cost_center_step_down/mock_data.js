@@ -145,7 +145,7 @@ function generate(feeCenters, costCenterBasisValue, costCenterAggregate) {
     tx.addQuery('INSERT INTO cost_center SET ?;', item);
   });
   costCenterBasisValue.forEach(item => {
-    tx.addQuery('INSERT INTO cost_center_basis_value SET ?;', item);
+    tx.addQuery('INSERT INTO cost_center_allocation_basis_value SET ?;', item);
   });
   costCenterAggregate.forEach(item => {
     tx.addQuery('INSERT INTO cost_center_aggregate SET ?;', item);
@@ -156,7 +156,7 @@ function generate(feeCenters, costCenterBasisValue, costCenterAggregate) {
 function unmount() {
   const tx = db.transaction();
   tx.addQuery('DELETE FROM cost_center_aggregate WHERE cost_center_id >= 10 AND cost_center_id <= 16;');
-  tx.addQuery('DELETE FROM cost_center_basis_value WHERE cost_center_id >= 10 AND cost_center_id <= 16;');
+  tx.addQuery('DELETE FROM cost_center_allocation_basis_value WHERE cost_center_id >= 10 AND cost_center_id <= 16;');
   tx.addQuery('DELETE FROM cost_center WHERE id >= 10 AND id <= 16;');
   return tx.execute();
 }

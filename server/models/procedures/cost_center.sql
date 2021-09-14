@@ -23,8 +23,8 @@ BEGIN
         z.is_principal,
         z.step_order,
         z.`value` AS direct_cost,
-        ccb.name AS cost_center_basis_label,
-        ccbv.quantity AS cost_center_basis_value  
+        ccb.name AS cost_center_allocation_basis_label,
+        ccbv.quantity AS cost_center_allocation_basis_value  
     FROM 
     (
         (
@@ -34,7 +34,7 @@ BEGIN
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
           JOIN `period` p ON p.id = cca.period_id 
-          LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
+          LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
           GROUP BY cca.principal_center_id
         )
@@ -46,22 +46,22 @@ BEGIN
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
           JOIN `period` p ON p.id = cca.period_id 
-          LEFT JOIN cost_center_basis ccb ON ccb.id = fc.allocation_basis_id
+          LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
           GROUP BY cca.cost_center_id
         )
     ) AS z 
-    JOIN cost_center_basis_value ccbv ON ccbv.cost_center_id = z.id 
-    JOIN cost_center_basis ccb ON ccb.id = ccbv.basis_id 
+    JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = z.id 
+    JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id 
     ORDER by z.step_order ASC;
 
   SELECT
     GROUP_CONCAT(DISTINCT
       CONCAT(
-        'MAX(CASE WHEN cost_center_basis_label = ''',
-        cost_center_basis_label,
-        ''' then cost_center_basis_value end) AS `',
-        cost_center_basis_label, '`'
+        'MAX(CASE WHEN cost_center_allocation_basis_label = ''',
+        cost_center_allocation_basis_label,
+        ''' then cost_center_allocation_basis_value end) AS `',
+        cost_center_allocation_basis_label, '`'
       )
     ) INTO @sql
   FROM cost_center_costs_with_indexes;
