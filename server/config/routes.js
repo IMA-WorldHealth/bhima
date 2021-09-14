@@ -116,8 +116,8 @@ const bed = require('../controllers/medical/ward/bed');
 const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
 const costCenter = require('../controllers/finance/cost_center');
-const costAllocationBasisCenter = require('../controllers/finance/stepDownCostAllocationBasis');
-
+const costAllocationBasis = require('../controllers/finance/stepDownCostAllocationBasis');
+const costAllocationBasisQuantity = require('../controllers/finance/stepDownCostAllocationQuantity.js');
 const distributionConfiguration = require('../controllers/finance/allocationCostCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/allocationCostCenter/getDistributed');
 const distributionProceed = require('../controllers/finance/allocationCostCenter/proceed');
@@ -926,11 +926,17 @@ exports.configure = function configure(app) {
   app.delete('/cost_center/:id', costCenter.delete);
 
   // Step-down allocation basis API
-  app.get('/cost_center_allocation_basis', costAllocationBasisCenter.list);
-  app.get('/cost_center_allocation_basis/:id', costAllocationBasisCenter.read);
-  app.post('/cost_center_allocation_basis', costAllocationBasisCenter.create);
-  app.put('/cost_center_allocation_basis/:id', costAllocationBasisCenter.update);
-  app.delete('/cost_center_allocation_basis/:id', costAllocationBasisCenter.delete);
+  app.get('/cost_center_allocation_basis', costAllocationBasis.list);
+  app.get('/cost_center_allocation_basis/:id', costAllocationBasis.read);
+  app.post('/cost_center_allocation_basis', costAllocationBasis.create);
+  app.put('/cost_center_allocation_basis/:id', costAllocationBasis.update);
+  app.delete('/cost_center_allocation_basis/:id', costAllocationBasis.delete);
+
+  // Step-down allocation basis quantity API
+  app.get('/cost_center_allocation_basis_quantity/:id?', costAllocationBasisQuantity.list);
+  app.post('/cost_center_allocation_basis_quantity', costAllocationBasisQuantity.create);
+  app.put('/cost_center_allocation_basis_quantity/:id', costAllocationBasisQuantity.update);
+  app.delete('/cost_center_allocation_basis_quantity/:id', costAllocationBasisQuantity.delete);
 
   // Distribution Fees Centers API
   app.get('/allocation_cost_center', distributionConfiguration.configuration);
