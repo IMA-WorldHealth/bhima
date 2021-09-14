@@ -8,7 +8,7 @@ AllocationBasisService.$inject = ['PrototypeApiService'];
  * @extends PrototypeApiService
  *
  * @description
- * Encapsulates common requests to the /cost_center/ URL.
+ * Encapsulates common requests to the /cost_center_allocation_basis/ URL.
  */
 function AllocationBasisService(Api) {
   const service = new Api('/cost_center_allocation_basis/');
