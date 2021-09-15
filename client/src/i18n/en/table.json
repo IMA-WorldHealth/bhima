@@ -114,7 +114,7 @@
             "NUM_PIECE": "Num Doc",
             "ENTRY": "Entry",
             "EXIT": "Exit",
-            "FEE_CENTER" : "Fee Center",
+            "COST_CENTER" : "Cost Center",
             "FILTERING": {
                 "LABEL": "Filter"
             },

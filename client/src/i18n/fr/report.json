@@ -91,11 +91,11 @@
     },
     "EXPENSE": "Charge",
     "EXPENSE_REPORT" : "Rapport des dépenses",
-    "FEE_CENTER": {
-      "TITLE": "Rapports des centres de frais"
+    "COST_CENTER": {
+      "TITLE": "Rapports des centres de coût"
     },
-    "FEE_CENTER_STEPDOWN": {
-      "TITLE": "Allocation des centres de frais",
+    "COST_CENTER_STEPDOWN": {
+      "TITLE": "Allocation des centres de coût",
       "DESCRIPTION": "Affiche les allocations des couts des centres auxiliaires vers les centres principaux avec la methode de 'Step-Down'"
     },
     "GENERATED" : "Rapport généré",

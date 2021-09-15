@@ -15,7 +15,7 @@ angular.module('bhima.routes')
       'cashflow_by_service',
       'cash_report',
       'employee_standing',
-      'fee_center',
+      'cost_center',
       'income_expense',
       'income_expense_by_month',
       'income_expense_by_year',
@@ -31,7 +31,7 @@ angular.module('bhima.routes')
       'stock_value',
       'unpaid_invoice_payments',
       'break_even',
-      'break_even_fee_center',
+      'break_even_cost_center',
       'indicators_report',
       'visit_report',
       'monthly_balance',
@@ -54,7 +54,7 @@ angular.module('bhima.routes')
       'stock_changes',
       'aggregated_stock_consumption',
       'rumer_report',
-      'fee_center_step_down',
+      'cost_center_step_down',
     ];
 
     function resolveReportData($stateParams, SavedReports) {
