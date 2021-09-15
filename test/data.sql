@@ -655,7 +655,7 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('5c0e5c53-8437-4694-85af-4b3f2135243c'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('76d46d03-030f-49ec-80d9-c863aae1a407'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 0, 202009, 1),
   (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 11, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 1, 202009, 1);
 
--- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
+-- This segment was added to simulate the allocation of drugs to patients as well as the loss of stock
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES
   (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 180, 0.8000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 201910),
   (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 80, 1.2000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 201910),
@@ -829,8 +829,8 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
   (15, 9, 220, 0, 0, 0);
 
 
--- FEE CENTER
-INSERT INTO `fee_center` (`id`, `label`, `is_principal`, `allocation_method`, `allocation_basis_id`) VALUES
+-- COST CENTER
+INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `allocation_method`, `allocation_basis_id`) VALUES
   (1, 'Administration', 1, 'proportional', 1),
   (2, 'Principale TPA', 1, 'proportional', 2),
   (3, 'Principale TPB', 1, 'proportional', 3),
@@ -841,7 +841,7 @@ INSERT INTO `fee_center` (`id`, `label`, `is_principal`, `allocation_method`, `a
 
 
 -- REFERENCE FEE CENTER
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES
+INSERT INTO `reference_cost_center` (`id`, `cost_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES
   (1, 1, 1, 1, 1, 0),
   (2, 1, 2, 0, 0, 1),
   (11, 5, 7, 0, 0, 1),
@@ -873,7 +873,7 @@ INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`
   (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, @prednisone, 40, 5.1200, 5.1200, 0.0000, 204.8000);
 
 -- SERVICE FEE CENTER
-INSERT INTO `service_fee_center` (`id`, `fee_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
+INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
@@ -949,8 +949,8 @@ INSERT INTO bed VALUES
   (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
 
--- Default Auxiliary Fee Center Distribution Key
-INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES
+-- Default Auxiliary Cost Center Distribution Key
+INSERT INTO `allocation_key` (`id`, `auxiliary_cost_center_id`, `principal_cost_center_id`, `rate`, `user_id`) VALUES
   (1, 4, 1, 60.00, 1),
   (2, 4, 2, 20.00, 1),
   (3, 4, 3, 20.00, 1);

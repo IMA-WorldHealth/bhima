@@ -3,23 +3,23 @@
 const helpers = require('./helpers');
 
 /*
- * The /fee_center  API endpoint
+ * The /cost_center  API endpoint
  *
- * This test suite implements full CRUD on the /fee_center  HTTP API endpoint.
+ * This test suite implements full CRUD on the /cost_center  HTTP API endpoint.
  */
-describe('(/fee_center) The /fee_center  API endpoint', () => {
-  // Fee Center we will add during this test suite.
+describe('(/cost_center) The /cost_center  API endpoint', () => {
+  // Cost Center we will add during this test suite.
 
   const { services } = helpers.data;
 
-  const feeCenter = {
+  const costCenter = {
     id : 10,
     label : 'Centre de Frais Test',
     is_principal : 1,
     project_id : 1,
     allocation_method : 'proportional',
     allocation_basis_id : 1,
-    reference_fee_center : [{
+    reference_cost_center : [{
       account_reference_id : 6,
       is_cost : 1,
     }, {
@@ -29,13 +29,13 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     services : [services.test, services.admin],
   };
 
-  const feeCenterUpt1 = {
+  const costCenterUpt1 = {
     label : 'Update Test',
     is_principal : 1,
     project_id : 3,
     allocation_method : 'proportional',
     allocation_basis_id : 2,
-    reference_fee_center : [{
+    reference_cost_center : [{
       account_reference_id : 6,
       is_cost : 1,
     }, {
@@ -45,32 +45,32 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     services : [],
   };
 
-  const feeCenterUpt2 = {
+  const costCenterUpt2 = {
     label : 'Update Test',
     is_principal : 0,
     allocation_method : 'proportional',
     allocation_basis_id : 3,
-    reference_fee_center : [{
+    reference_cost_center : [{
       account_reference_id : 8,
       is_cost : 0,
     }],
     services : [],
   };
 
-  const numFeeCenter = 6;
-  const feeCenterId = 7;
+  const numCostCenter = 6;
+  const costCenterId = 7;
 
-  it('GET /fee_center returns a list of Fees Centers', () => {
-    return agent.get('/fee_center')
+  it('GET /cost_center returns a list of Fees Centers', () => {
+    return agent.get('/cost_center')
       .then((res) => {
-        helpers.api.listed(res, numFeeCenter);
+        helpers.api.listed(res, numCostCenter);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /fee_center should create a new Fee Center', () => {
-    return agent.post('/fee_center')
-      .send(feeCenter)
+  it('POST /cost_center should create a new Cost Center', () => {
+    return agent.post('/cost_center')
+      .send(costCenter)
       .then((res) => {
         const response = res.body;
         expect(response.length).to.equal(2);
@@ -78,95 +78,95 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /fee_center/:ID result should be empty for an unknown id', () => {
-    return agent.get('/fee_center/123456789')
+  it('GET /cost_center/:ID result should be empty for an unknown id', () => {
+    return agent.get('/cost_center/123456789')
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
-        expect(response.feeCenter.length).to.equal(0);
+        expect(response.costCenter.length).to.equal(0);
         expect(response.references.length).to.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /fee_center/:ID result should be empty if the fee center id is a string', () => {
-    return agent.get('/fee_center/str')
+  it('GET /cost_center/:ID result should be empty if the cost center id is a string', () => {
+    return agent.get('/cost_center/str')
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
-        expect(response.feeCenter.length).to.equal(0);
+        expect(response.costCenter.length).to.equal(0);
         expect(response.references.length).to.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /fee_center/:ID result should be empty when the id is a string', () => {
-    return agent.get('/fee_center/str')
+  it('GET /cost_center/:ID result should be empty when the id is a string', () => {
+    return agent.get('/cost_center/str')
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
-        expect(response.feeCenter.length).to.equal(0);
+        expect(response.costCenter.length).to.equal(0);
         expect(response.references.length).to.equal(0);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /fee_center/:ID should update the Label for an existing Fee Center ', () => {
-    return agent.put('/fee_center/'.concat(feeCenterId))
-      .send(feeCenterUpt1)
+  it('PUT /cost_center/:ID should update the Label for an existing Cost Center ', () => {
+    return agent.put('/cost_center/'.concat(costCenterId))
+      .send(costCenterUpt1)
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
-        expect(response.feeCenter[0].label).to.equal('Update Test');
-        expect(response.feeCenter[0].allocation_basis.id).to.equal(2);
-        expect(response.feeCenter[0].allocation_basis.name).to.equal('ALLOCATION_BASIS_NUM_EMPLOYEES');
+        expect(response.costCenter[0].label).to.equal('Update Test');
+        expect(response.costCenter[0].allocation_basis.id).to.equal(2);
+        expect(response.costCenter[0].allocation_basis.name).to.equal('ALLOCATION_BASIS_NUM_EMPLOYEES');
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /fee_center/:ID should return 400 for an non-existing Fee Center ', () => {
-    return agent.put('/fee_center/4321')
-      .send(feeCenterUpt2)
+  it('PUT /cost_center/:ID should return 400 for an non-existing Cost Center ', () => {
+    return agent.put('/cost_center/4321')
+      .send(costCenterUpt2)
       .then((res) => {
         helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /fee_center should return 400 if the Fee Center id is a string ', () => {
-    return agent.put('/fee_center/str')
-      .send(feeCenterUpt2)
+  it('PUT /cost_center should return 400 if the Cost Center id is a string ', () => {
+    return agent.put('/cost_center/str')
+      .send(costCenterUpt2)
       .then((res) => {
         helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /fee_center  should update Fee Center Type, Reference fee Center for an existing Fee Center ', () => {
-    return agent.put('/fee_center/'.concat(feeCenterId))
-      .send(feeCenterUpt2)
+  it('PUT /cost_center  should update Cost Center Type, Reference fee Center for an existing Cost Center ', () => {
+    return agent.put('/cost_center/'.concat(costCenterId))
+      .send(costCenterUpt2)
       .then((res) => {
         const response = res.body;
         expect(res).to.have.status(200);
-        expect(response.feeCenter[0].is_principal).to.equal(feeCenterUpt2.is_principal);
+        expect(response.costCenter[0].is_principal).to.equal(costCenterUpt2.is_principal);
         expect(response.references[0].account_reference_id).to.equal(
-          feeCenterUpt2.reference_fee_center[0].account_reference_id,
+          costCenterUpt2.reference_cost_center[0].account_reference_id,
         );
-        expect(response.references[0].is_cost).to.equal(feeCenterUpt2.reference_fee_center[0].is_cost);
+        expect(response.references[0].is_cost).to.equal(costCenterUpt2.reference_cost_center[0].is_cost);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /fee_center/:id should delete a Fee Center', () => {
-    return agent.delete('/fee_center/'.concat(feeCenterId))
+  it('DELETE /cost_center/:id should delete a Cost Center', () => {
+    return agent.delete('/cost_center/'.concat(costCenterId))
       .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /fee_center/:id should return 404 for an unknown fee center', () => {
-    return agent.delete('/fee_center/'.concat(404))
+  it('DELETE /cost_center/:id should return 404 for an unknown cost center', () => {
+    return agent.delete('/cost_center/'.concat(404))
       .then((res) => {
         helpers.api.errored(res, 404);
       })

@@ -13,4 +13,4 @@ Le seuil de rentabilité ou Break-even en anglais, correspond au montant de chif
 4. [Illustration du calcul de la détermination du seuil de rentabilité](./illustration_sr)
 5. [Configuration du rapport seuil de rentabilité dans BHIMA 2X](./config_bhima)
 6. [Rapport du seuil de rentabilité](./rapport_seuil)
-7. [Rapport du seuil de rentabilité par centres de frais](./rapport_seuil_fee_center)
+7. [Rapport du seuil de rentabilité par centres de frais](./rapport_seuil_cost_center)
