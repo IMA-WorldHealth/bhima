@@ -1127,7 +1127,12 @@ td.center {
 ---------------------------------------------- */
 
 table.lot-schedule {
-  padding-left: 10px;
+  padding: 0 10px;
+}
+
+table.lot-schedule th,
+table.lot-schedule td {
+  border-right: 0;
 }
 
 table.lot-schedule th.year {
