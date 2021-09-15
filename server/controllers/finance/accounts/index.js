@@ -65,6 +65,26 @@ function create(req, res, next) {
 }
 
 /**
+ * @function lookupCostCenterByAccountId
+ *
+ * @description
+ * Retrieves a cost center by account id.
+ */
+async function lookupCostCenterByAccountId(id) {
+  const { cc } = await db.one('SELECT GetCostCenterByAccountId(?) AS cc;', [id]);
+  return cc;
+}
+
+async function lookupCostCenter(req, res, next) {
+  try {
+    const id = await lookupCostCenterByAccountId(req.params.id);
+    res.status(200).json({ id });
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
  * @method update
  *
  * @description
@@ -88,7 +108,6 @@ function update(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method remove
@@ -121,7 +140,6 @@ function remove(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method list
@@ -325,7 +343,6 @@ function getOpeningBalanceForPeriod(req, res, next) {
     .done();
 }
 
-
 /**
  * @method processAccountDepth
  * @description get the depth of an account
@@ -398,4 +415,5 @@ exports.categories = categories;
 exports.references = references;
 exports.processAccountDepth = processAccountDepth;
 exports.importing = importing;
+exports.lookupCostCenter = lookupCostCenter;
 exports.getAnnualBalance = getAnnualBalance;
