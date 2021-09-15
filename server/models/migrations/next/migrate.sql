@@ -80,8 +80,8 @@ CALL add_column_if_missing('fee_center', 'step_order', 'SMALLINT(5) NOT NULL DEF
 CALL add_column_if_missing('fee_center', 'allocation_basis_id', 'MEDIUMINT(8) UNSIGNED');
 CALL add_column_if_missing('fee_center', 'allocation_method', "VARCHAR(14) NOT NULL DEFAULT 'proportional'");
 
-INSERT IGNORE INTO `unit` VALUES 
-  (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down');
+INSERT IGNORE INTO `unit` VALUES
+  (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The cost center report with step-down algorithm', 286,'/reports/cost_center_step_down');
 
 ALTER TABLE `cost_center_basis` MODIFY COLUMN `name` VARCHAR(200) NOT NULL;
 
@@ -92,11 +92,6 @@ description: Create cost basis items
 */
 CALL add_column_if_missing('cost_center_basis', 'is_predefined', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `description`');
 
-/**
-author: @jniles
-date: 2021-09-02
-description: rename all cost centers to cost centers
-*/
 
 /**
  * THE USE OF RENAME IMPLY THAT TABLES EXISTS BEFORE TO RENAME
@@ -136,3 +131,14 @@ UPDATE `unit` SET `path` = '/reports/cost_center_step_down', `key` = 'TREE.COST_
 UPDATE `report` SET `report_key` = 'cost_center', `title_key` = 'REPORT.COST_CENTER.TITLE' WHERE `report_key` = 'fee_center' OR `report_key` = 'cost_center';
 UPDATE `report` SET `report_key` = 'break_even_cost_center', `title_key` = 'TREE.BREAK_EVEN_COST_CENTER_REPORT'  WHERE `report_key` = 'break_even_fee_center' OR `report_key` = 'break_even_cost_center';
 UPDATE `report` SET `report_key` = 'cost_center_step_down', `title_key` = 'TREE.COST_CENTER_STEPDOWN'  WHERE `report_key` = 'fee_center_step_down' OR `report_key` = 'cost_center_step_down';
+
+
+/**
+author: @jmcameron
+date: 2021-09-15
+description: Add cost basis items
+*/
+INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
+  (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
+  (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
+  (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);

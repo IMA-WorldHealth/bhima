@@ -17,8 +17,8 @@ function computeRatios(method, contributions) {
  *    name: 'Daycare',        // (required) the name of the cost center
  *    principal: false,       // (required) the cost center is principal or auxiliary
  *    directCost : 50000,     // (required) direct cost
- *    employees : 5,          // example of fee center index value to track in case of allocation
- *    computers : 2,          // example of fee center index value to track in case of allocation
+ *    employees : 5,          // example of cost center index value to track in case of allocation
+ *    computers : 2,          // example of cost center index value to track in case of allocation
  *    allocation : { method : 'proportional', field : 'employees' }, // the allocation method and field
  *  }
  * ]
