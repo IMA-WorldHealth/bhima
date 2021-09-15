@@ -72,7 +72,7 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM cost_center_allocation_basis WHERE id = ?';
   db.exec(sql, req.params.id)
     .then(() => {
-      res.sendStatus(200);
+      res.sendStatus(204);
     })
     .catch(next);
 }
