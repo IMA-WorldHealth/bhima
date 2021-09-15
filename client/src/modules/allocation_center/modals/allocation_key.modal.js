@@ -69,7 +69,7 @@ function DistributionKeyModalController(
       .then(() => {
         Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');
         cancel();
-        $state.go('distribution_key', null, { reload : true });
+        $state.go('allocation_key', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
@@ -83,7 +83,7 @@ function DistributionKeyModalController(
       .then(() => {
         Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');
         cancel();
-        $state.go('distribution_key', null, { reload : true });
+        $state.go('allocation_key', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
