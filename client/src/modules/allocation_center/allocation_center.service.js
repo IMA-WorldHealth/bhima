@@ -168,7 +168,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
 
   // initialization of the distribution keys of the auxiliary centers towards the main center
   function proceedDistributionKey(data) {
-    return service.$http.post(`/allocation_cost_center/distributionKey`, { data })
+    return service.$http.post(`/allocation_cost_center/allocationKey`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
