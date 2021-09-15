@@ -1,5 +1,5 @@
 /**
-* Distribution Fee Center Controller
+* Distribution Cost Center Controller
 *
 * This function searches all the distributions of the costs and profits made, in order to allow possible updates.
 */

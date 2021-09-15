@@ -105,7 +105,7 @@ INSERT INTO unit VALUES
   (220,'Distributions Fee Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','',218,'/allocation_center'),
   (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/allocation_center/update'),
   (222,'Fee Center Report','TREE.COST_CENTER_REPORT','Fee Center Report',286,'/reports/cost_center'),
-  (223,'Distribution keys','TREE.DISTRIBUTION_KEYS','Distribution keys',218,'/allocation_center/allocation_key'),
+  (223,'Distribution keys','TREE.ALLOCATION_KEYS','Distribution keys',218,'/allocation_center/allocation_key'),
   (225,'Stock Assignment','ASSIGN.STOCK_ASSIGN','',160,'/stock/assign'),
   (226,'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type',1,'/account_reference_type'),
   (227,'Ward Module','TREE.WARD','Ward folder',0,'/WARD_FOLDER'),

@@ -1,5 +1,5 @@
 /**
-* Distribution Fee Center Controller
+* Distribution Cost Center Controller
 *
 * This function is used to set the various distribution keys of the auxiliary cost centers to the main cost center.
 */

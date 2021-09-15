@@ -137,7 +137,7 @@ function configuration(data) {
     aux.ratio = ratio;
   });
   configured.principal.forEach(pr => {
-    // Set a number of case By Fee Center
+    // Set a number of case By Cost Center
     pr.numberOfCases = 0;
     data.encounters.forEach(encounter => {
       if (pr.id === encounter.cost_center_id) {

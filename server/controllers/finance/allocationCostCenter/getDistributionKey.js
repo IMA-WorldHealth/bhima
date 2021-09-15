@@ -1,5 +1,5 @@
 /**
-* Distribution Fee Center Get Distribution Keys.
+* Distribution Cost Center Get Distribution Keys.
 *
 * This function makes it possible to obtain the distribution keys of each auxiliary
 * center towards the main centers while reviewing the auxiliary centers which do not yet have distribution keys.

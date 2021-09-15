@@ -1,5 +1,5 @@
 /**
-* Distribution Fee Center Automatic Controller
+* Distribution Cost Center Automatic Controller
 *
 * This function allows automatic distribution of invoices whose services are linked to Principal cost centers
 */

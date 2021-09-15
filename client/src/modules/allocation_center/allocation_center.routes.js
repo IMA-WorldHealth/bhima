@@ -11,7 +11,7 @@ angular.module('bhima.routes')
       })
 
       .state('distribution_key', {
-        url : '/allocation_center/distribution_key',
+        url : '/allocation_center/allocation_key',
         controller  : 'DistributionKeyController as DistributionKeyCtrl',
         templateUrl : 'modules/allocation_center/allocation_key/allocation_key.html',
       })
