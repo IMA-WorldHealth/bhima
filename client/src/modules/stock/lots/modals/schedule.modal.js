@@ -106,11 +106,12 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
             const residualWidth = lot.residual_months * vm.monthWidth;
             const chartWidth = vm.monthWidth * vm.numMonths;
             lot.residual_truncated = false;
-            lot.residual_width_pixels = residualWidth;
+            lot.residual_width_pixels = Math.floor(residualWidth) + 2;
             if ((residualWidth > chartWidth - lot.residual_start_pixel)
               || (avgConsumption <= 0 && (lot.residual_months > 0))) {
               lot.residual_truncated = true;
-              lot.residual_width_pixels = chartWidth - lot.residual_start_pixel;
+              // Compensate for width of marker
+              lot.residual_width_pixels = Math.floor(chartWidth - lot.residual_start_pixel) - 4;
             }
 
             // If the CMM is 0, fix the exhaused date
