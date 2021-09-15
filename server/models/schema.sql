@@ -693,8 +693,8 @@ CREATE TABLE `general_ledger` (
   CONSTRAINT `general_ledger__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `general_ledger__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `general_ledger__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1338,8 +1338,8 @@ CREATE TABLE `posting_journal` (
   CONSTRAINT `pg__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `pg__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `pg__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project`;
@@ -2176,8 +2176,8 @@ CREATE TABLE `config_employee_item` (
   CONSTRAINT `config_employee_item__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `fee_center`;
-CREATE TABLE `fee_center` (
+DROP TABLE IF EXISTS `cost_center`;
+CREATE TABLE `cost_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(200) NOT NULL,
   `is_principal` TINYINT(1) UNSIGNED DEFAULT 0,
@@ -2186,29 +2186,29 @@ CREATE TABLE `fee_center` (
   `allocation_basis_id` MEDIUMINT(8) UNSIGNED,
   `step_order` SMALLINT(5) NOT NULL DEFAULT 100,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `fee_center_1` (`label`),
-  CONSTRAINT `fee_center__chk_allocation_method` CHECK (`allocation_method` in ('proportional', 'flat')),
-  CONSTRAINT `fee_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_basis` (`id`)
+  UNIQUE KEY `cost_center_1` (`label`),
+  CONSTRAINT `cost_center__chk_allocation_method` CHECK (`allocation_method` in ('proportional', 'flat')),
+  CONSTRAINT `cost_center__allocation_basis` FOREIGN KEY (`allocation_basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `reference_fee_center`;
-CREATE TABLE `reference_fee_center` (
+DROP TABLE IF EXISTS `reference_cost_center`;
+CREATE TABLE `reference_cost_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `is_cost` TINYINT(1) UNSIGNED DEFAULT 0,
   `is_variable` TINYINT(1) UNSIGNED DEFAULT 0,
   `is_turnover` TINYINT(1) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
-  KEY `fee_center_id` (`fee_center_id`),
+  UNIQUE KEY `reference_cost_center_1` (`account_reference_id`),
+  KEY `cost_center_id` (`cost_center_id`),
   KEY `account_reference_id` (`account_reference_id`),
-  CONSTRAINT `reference_fee_center__fee_center` FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `reference_fee_center__account_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
+  CONSTRAINT `reference_cost_center__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `reference_cost_center__account_ref` FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `fee_center_distribution`;
-CREATE TABLE `fee_center_distribution` (
+DROP TABLE IF EXISTS `cost_center_allocation`;
+CREATE TABLE `cost_center_allocation` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `row_uuid` BINARY(16) NOT NULL,
   `trans_id` VARCHAR(100) NOT NULL,
@@ -2216,8 +2216,8 @@ CREATE TABLE `fee_center_distribution` (
   `is_cost` TINYINT(1) UNSIGNED DEFAULT 0,
   `is_variable` TINYINT(1) UNSIGNED DEFAULT 0,
   `is_turnover` TINYINT(1) UNSIGNED DEFAULT 0,
-  `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `auxiliary_cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `principal_cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `date_distribution` DATETIME NOT NULL,
@@ -2227,30 +2227,30 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `row_uuid` (`row_uuid`),
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
-  INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
-  CONSTRAINT `fee_center_distribution__general_ledger` FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
-  CONSTRAINT `fee_center_distribution__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `fee_center_distribution__auxiliary_fee_center`  FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `fee_center_distribution__principal_fee_center`  FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `fee_center_distribution__user`  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  INDEX `auxiliary_cost_center_id` (`auxiliary_cost_center_id`),
+  INDEX `principal_cost_center_id` (`principal_cost_center_id`),
+  CONSTRAINT `cost_center_allocation__general_ledger` FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
+  CONSTRAINT `cost_center_allocation__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
+  CONSTRAINT `cost_center_allocation__auxiliary_cost_center`  FOREIGN KEY (`auxiliary_cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_allocation__principal_cost_center`  FOREIGN KEY (`principal_cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_allocation__user`  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `service_fee_center`;
-CREATE TABLE `service_fee_center` (
+DROP TABLE IF EXISTS `service_cost_center`;
+CREATE TABLE `service_cost_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `service_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `service_fee_center_1` (`service_uuid`),
-  KEY `fee_center_id` (`fee_center_id`),
+  UNIQUE KEY `service_cost_center_1` (`service_uuid`),
+  KEY `cost_center_id` (`cost_center_id`),
   KEY `service_uuid` (`service_uuid`),
-  CONSTRAINT `service_fee_center__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
-  CONSTRAINT `service_fee_center__fee_center`  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
+  CONSTRAINT `service_cost_center__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
+  CONSTRAINT `service_cost_center__cost_center`  FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `cost_center_basis`;
-CREATE TABLE `cost_center_basis` (
+DROP TABLE IF EXISTS `cost_center_allocation_basis`;
+CREATE TABLE `cost_center_allocation_basis` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token
   `units` VARCHAR(30) DEFAULT '',
@@ -2260,15 +2260,15 @@ CREATE TABLE `cost_center_basis` (
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `cost_center_basis_value`;
-CREATE TABLE `cost_center_basis_value` (
+DROP TABLE IF EXISTS `cost_center_allocation_basis_value`;
+CREATE TABLE `cost_center_allocation_basis_value` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `quantity` DECIMAL(19,4) NOT NULL DEFAULT 0,
   `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `basis_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `cost_center_basis_value__fee_center` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_basis` (`id`)
+  CONSTRAINT `cost_center_allocation_basis_value__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_allocation_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2280,19 +2280,19 @@ CREATE TABLE `tags`(
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `distribution_key`;
-CREATE TABLE `distribution_key` (
+DROP TABLE IF EXISTS `allocation_key`;
+CREATE TABLE `allocation_key` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `auxiliary_cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `principal_cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `rate` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
-  CONSTRAINT `distribution_key__auxiliary_fc` FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `distribution_key__principal_fc` FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `distribution_key__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+  INDEX `auxiliary_cost_center_id` (`auxiliary_cost_center_id`),
+  INDEX `principal_cost_center_id` (`principal_cost_center_id`),
+  CONSTRAINT `allocation_key__auxiliary_fc` FOREIGN KEY (`auxiliary_cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `allocation_key__principal_fc` FOREIGN KEY (`principal_cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `allocation_key__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_reference_type`;
@@ -2614,8 +2614,8 @@ CREATE TABLE `cost_center_aggregate` (
   KEY `principal_center_id` (`principal_center_id`),
   KEY `period_id` (`period_id`),
   CONSTRAINT `cost_center_aggregate__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`),
-  CONSTRAINT `cost_center_aggregate__principal_center_id` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`)
+  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
+  CONSTRAINT `cost_center_aggregate__principal_center_id` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
