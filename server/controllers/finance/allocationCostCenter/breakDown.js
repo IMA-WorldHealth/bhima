@@ -1,5 +1,5 @@
 /**
-  *Distribution Fee Center Controller
+  *Distribution Cost Center Controller
   *This function allows you to make the distributions of
   *one or more transactions at the same time while specifying the percentage distribution rate
 */

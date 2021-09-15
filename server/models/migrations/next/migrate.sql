@@ -127,7 +127,7 @@ UPDATE `unit` SET `path` = '/cost_center', `key` = 'TREE.COST_CENTER_MANAGEMENT'
 UPDATE `unit` SET `path` = '/cost_center', `key` = 'TREE.COST_CENTER' WHERE id = 219;
 UPDATE `unit` SET `path` = '/allocation_center' WHERE id = 220;
 UPDATE `unit` SET `path` = '/allocation_center/update' WHERE id = 221;
-UPDATE `unit` SET `path` = '/allocation_center/distribution_key' WHERE id = 223;
+UPDATE `unit` SET `path` = '/allocation_center/allocation_key', `key` = 'TREE.ALLOCATION_KEYS' WHERE id = 223;
 UPDATE `unit` SET `path` = '/reports/cost_center', `key` = 'TREE.COST_CENTER_REPORT' WHERE id = 222;
 UPDATE `unit` SET `path` = '/reports/break_even_cost_center', `key` = 'TREE.BREAK_EVEN_COST_CENTER_REPORT' WHERE id = 232;
 UPDATE `unit` SET `path` = '/cost_center/reports' WHERE id = 286;

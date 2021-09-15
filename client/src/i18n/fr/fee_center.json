@@ -1,9 +1,9 @@
 {
   "COST_CENTER" : {
-    "ADD_COST_CENTER" : "Ajouter un centre de frais",
-    "DELETE": "Supprimer le Centre de frais",
-    "EDIT_COST_CENTER" : "Mise à jour des informations du centre de frais",
-    "TITLE" : "Centres de frais",
+    "ADD_COST_CENTER" : "Ajouter un centre de coût",
+    "DELETE": "Supprimer le Centre de coût",
+    "EDIT_COST_CENTER" : "Mise à jour des informations du centre de coût",
+    "TITLE" : "Centres de coût",
     "AFTER_ALLOCATION": "Après les allocations",
     "DISTRIBUTION_KEY_TABLE": "Tableau des clés de repartition",
     "DISTRIBUTION_KEY": "Clés de repartition",

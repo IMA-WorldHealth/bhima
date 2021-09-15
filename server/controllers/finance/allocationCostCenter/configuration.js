@@ -1,5 +1,5 @@
 /**
-* Distribution Fee Center Configuration
+* Distribution Cost Center Configuration
 *
 * The configuration function first looks for accounts belonging to account references belonging to auxiliary
 * cost centers, then finds all existing transactions in the ledger

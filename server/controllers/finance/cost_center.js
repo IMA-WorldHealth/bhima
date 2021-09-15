@@ -1,7 +1,7 @@
 /**
-* Fee Center Controller
+* Cost Center Controller
 *
-* This controller exposes an API to the client for reading and writing Fee Center
+* This controller exposes an API to the client for reading and writing Cost Center
 */
 
 const db = require('../../lib/db');
@@ -267,7 +267,7 @@ function del(req, res, next) {
       const { affectedRows } = rows.pop();
       // if there was no cost_center to delete, let the client know via a 404 error
       if (affectedRows === 0) {
-        throw new NotFound(`Could not find a Fee Center with id ${costCenterId}.`);
+        throw new NotFound(`Could not find a Cost Center with id ${costCenterId}.`);
       }
 
       res.status(204).json();
