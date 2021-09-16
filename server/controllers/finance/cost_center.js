@@ -311,10 +311,9 @@ async function getAllCostCenterAccounts() {
             account_id : account.account_id,
             cost_center_id : accountCostCenter.cost_center_id,
             principal_center_id : accountCostCenter.is_principal ? accountCostCenter.cost_center_id : null,
-          }
-        ]);
+          }]);
       }
-    })
+    });
   });
 
   return accountConfigCostCenter;
