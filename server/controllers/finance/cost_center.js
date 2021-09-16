@@ -276,7 +276,8 @@ function del(req, res, next) {
     .done();
 }
 
-
+// This function searches for account membership at a cost center, 
+// and returns an object table that will allow when creating a transaction
 async function getAllCostCenterAccounts() {
   const accountConfigCostCenter = [];
 

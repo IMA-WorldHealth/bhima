@@ -91,6 +91,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
+  // Here we affect for the elements that will constitute the transaction 
+  // the identifiers of the main and auxiliary centers
   accountsCostCenter.forEach(refCostCenter => {
     if (accountPayroll === refCostCenter[0].account_id) {
       costCenterPayroll = refCostCenter[0].cost_center_id;

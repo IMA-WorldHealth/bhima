@@ -144,3 +144,132 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+/**
+author: @lomamech
+date: 2021-09-16
+description: Add column cost_center_id and principal_center_id in Voucher Item
+*/
+
+DROP PROCEDURE IF EXISTS PostVoucher;
+DELIMITER $$
+
+CREATE PROCEDURE PostVoucher(
+  IN uuid BINARY(16)
+)
+BEGIN
+  DECLARE enterprise_id INT;
+  DECLARE project_id INT;
+  DECLARE currency_id INT;
+  DECLARE date TIMESTAMP;
+
+  -- variables to store core set-up results
+  DECLARE fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 8) UNSIGNED;
+  DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE gain_account_id INT UNSIGNED;
+  DECLARE loss_account_id INT UNSIGNED;
+
+
+  DECLARE transIdNumberPart INT;
+  --
+  SELECT p.enterprise_id, p.id, v.currency_id, v.date
+    INTO enterprise_id, project_id, currency_id, date
+  FROM voucher AS v JOIN project AS p ON v.project_id = p.id
+  WHERE v.uuid = uuid;
+
+  -- populate core setup values
+  CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, fiscal_year_id, period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+
+  -- make sure the exchange rate is correct
+  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
+
+  SET transIdNumberPart = GetTransactionNumberPart(transaction_id, project_id);
+
+  -- POST to the posting journal
+  -- @TODO(sfount) transaction ID number reference should be fetched seperately from full transaction ID to model this relationship better
+  INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
+    trans_id, trans_id_reference_number, trans_date, record_uuid, description, account_id, debit,
+    credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
+    reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id)
+  SELECT
+    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, transIdNumberPart, v.date,
+    v.uuid, IF((vi.description IS NULL), v.description, vi.description), vi.account_id, vi.debit, vi.credit,
+    vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, vi.cost_center_id, vi.principal_center_id, v.user_id
+  FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
+  WHERE v.uuid = uuid;
+
+  -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
+END $$
+
+DROP PROCEDURE IF EXISTS PostToGeneralLedger;
+DELIMITER $$
+
+CREATE PROCEDURE PostToGeneralLedger()
+BEGIN
+
+  DECLARE isInvoice, isCash, isVoucher INT;
+
+  -- write into the posting journal
+  INSERT INTO general_ledger (
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date, posting_journal.record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id
+  FROM posting_journal JOIN stage_trial_balance_transaction AS staged
+    ON posting_journal.record_uuid = staged.record_uuid;
+
+  -- write into period_total
+  INSERT INTO period_total (
+    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
+  )
+  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
+    fiscal_year_id, project.enterprise_id, period_id
+  FROM posting_journal JOIN stage_trial_balance_transaction JOIN project
+    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
+    AND project_id = project.id
+  GROUP BY fiscal_year_id, period_id, account_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- write into cost_center_aggregate
+  INSERT INTO cost_center_aggregate (
+    period_id, debit, credit, cost_center_id, principal_center_id
+  )
+	SELECT period_id, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, cost_center_id, principal_center_id
+	FROM posting_journal
+	WHERE cost_center_id IS NOT NULL
+	GROUP BY period_id, cost_center_id, principal_center_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- remove from posting journal
+  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  -- Let specify that this invoice or the cash payment is posted
+  SELECT COUNT(uuid) INTO isInvoice  FROM invoice  WHERE invoice.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isCash  FROM cash  WHERE cash.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isVoucher  FROM voucher  WHERE voucher.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  -- NOTE(@jniles): DO NOT OPTIMIZE THESE QUERIES.
+  -- NOTE(@jniles): these queries look funny, like they could be optimized.  DO NOT DO IT.  They are purposefully nested
+  -- to defeat MySQL8's _really smart_ query optimizer that optimizes them into an invalid query that crashes the posting
+  -- proceedure.
+
+  IF isInvoice > 0 THEN
+    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
+  END IF;
+
+  IF isCash > 0 THEN
+    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
+  END IF;
+
+  IF isVoucher > 0 THEN
+    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT z.record_uuid FROM (SELECT record_uuid FROM stage_trial_balance_transaction) AS z);
+  END IF;
+
+END $$
