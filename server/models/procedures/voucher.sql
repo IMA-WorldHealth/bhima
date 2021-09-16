@@ -82,7 +82,7 @@ BEGIN
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, transIdNumberPart, v.date,
     v.uuid, IF((vi.description IS NULL), v.description, vi.description), vi.account_id, vi.debit, vi.credit,
     vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
-    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, cost_center_id, principal_center_id, v.user_id
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, vi.cost_center_id, vi.principal_center_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
 
