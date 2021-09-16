@@ -13,12 +13,15 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
   vm.close = close;
   vm.lotUuid = data.uuid; // The lot that invoked this modal
   vm.DATE_FMT = bhConstants.dates.format;
-  vm.labelWidth = 100; // pixels
-  vm.monthWidthPads = 3; // Left-right padding + left border width
+  // The following numbers are sensitive!
+  // If you change them, make sure you test with many inventory articles!
+  vm.labelWidth = 100; // Inventory name (text) - pixels
   vm.monthWidth = 21;
+  vm.monthWidthPads = 3; // Left-right padding + left border width
   vm.monthWidthInner = vm.monthWidth - vm.monthWidthPads;
-  vm.monthWidthPads = 4; // Left-right padding + left border width
   vm.numMonths = 36; // Number of table columns for months
+
+  const chartWidth = vm.monthWidth * vm.numMonths;
 
   // Start at the first day of this month and end numMonths later
   const today = new Date();
@@ -50,6 +53,25 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
         // runningDate is the date the last lot ran out
         // (Always start the first lot 00:00 AM of current date; ignore the past)
         let runningDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+        // Lot timeline display notes
+        // - We represent the timeline for a block with a green/red rectangular block
+        //   representing the timeline bar.
+        // - We always display the starting count at the beginning of the lot timeline bar
+        // - There are 3 possibilities for the display of the timeline for each lot:
+        //   1. The lot runs out within the chart period before expiring
+        //     - Show a green timeline bar ending at the date it runs out
+        //     - Insert a 0 (zero) at the end of the green block
+        //   2. The lot expires within the chart period
+        //      - Show a green timeline bar up to the time the lot expires
+        //      - Show a red timeline bar at the beginning of the red timeline bar
+        //      - Indicate the number of expired items inside and at the beginning of the red timeline bar
+        //      - Extend the red expired block to the point where it would have run out
+        //        if it had not expired.   If this point is beyond the end of the chart area
+        //        insert an ellipsis at the end of the red timeline bar.
+        //   3. The lot runs out or expires after the chart period ends
+        //     - Show a green timeline bar all the way to the end of the chart area
+        //     - Insert an ellipsis in the green timeline bar at its right end
 
         vm.lots.forEach(lot => {
           // Process the lots and determine sequential start/end dates and other info
@@ -93,8 +115,8 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
           // Compute the starting location for the lot in pixels
           lot.start_pixel = (Moment(lot.start_date).diff(Moment(vm.startChartDate), 'days') / 30.5) * vm.monthWidth + 1;
 
-          // Compute the width of the lot rectangle in pixels
-          lot.width_pixels = lot.num_months * vm.monthWidth;
+          // Compute the width of the lot rectangle in pixels (but not wider than the chart area)
+          lot.width_pixels = Math.min(lot.num_months * vm.monthWidth, chartWidth - lot.start_pixel - 1);
 
           // If the lot is exhausted prematurely, compute the width of the unusable RESIDUAL rectangle
           if (lot.premature_expiration) {
@@ -104,13 +126,17 @@ function LotsScheduleModalController(data, Instance, Stock, Lots,
 
             // Truncate the width of the residual area to the width of the chart so it does not wrap
             const residualWidth = lot.residual_months * vm.monthWidth;
-            const chartWidth = vm.monthWidth * vm.numMonths;
             lot.residual_truncated = false;
-            lot.residual_width_pixels = residualWidth;
+            lot.residual_width_pixels = Math.floor(residualWidth) + 2;
             if ((residualWidth > chartWidth - lot.residual_start_pixel)
               || (avgConsumption <= 0 && (lot.residual_months > 0))) {
               lot.residual_truncated = true;
-              lot.residual_width_pixels = chartWidth - lot.residual_start_pixel;
+              // Compensate for width of marker
+              lot.residual_width_pixels = Math.floor(chartWidth - lot.residual_start_pixel) - 3;
+              if (lot.residual_width_pixels < 0) {
+                // Expire date is out of the chart
+                lot.premature_expiration = false;
+              }
             }
 
             // If the CMM is 0, fix the exhaused date
