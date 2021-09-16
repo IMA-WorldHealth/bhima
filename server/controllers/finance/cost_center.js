@@ -276,7 +276,7 @@ function del(req, res, next) {
     .done();
 }
 
-// This function searches for account membership at a cost center, 
+// This function searches for account membership at a cost center,
 // and returns an object table that will allow when creating a transaction
 async function getAllCostCenterAccounts() {
   const accountConfigCostCenter = [];
@@ -302,14 +302,15 @@ async function getAllCostCenterAccounts() {
     db.exec(sqlGetAccountNotTitle),
   ]);
 
-  accountsCostCenter.forEach(account_cost_center => {
+  accountsCostCenter.forEach(accountCostCenter => {
     accountsNotTitle.forEach(account => {
-      if ((account_cost_center.is_exception === 0) && ((`${account.number}`.indexOf(`${account_cost_center.accountNumber}`, 0)) === 0)) {
+      if ((accountCostCenter.is_exception === 0)
+        && ((`${account.number}`.indexOf(`${accountCostCenter.accountNumber}`, 0)) === 0)) {
         accountConfigCostCenter.push([
           {
             account_id : account.account_id,
-            cost_center_id : account_cost_center.cost_center_id,
-            principal_center_id : account_cost_center.is_principal ? account_cost_center.cost_center_id : null,
+            cost_center_id : accountCostCenter.cost_center_id,
+            principal_center_id : accountCostCenter.is_principal ? accountCostCenter.cost_center_id : null,
           }
         ]);
       }

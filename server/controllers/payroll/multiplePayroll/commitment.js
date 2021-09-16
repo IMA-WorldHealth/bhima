@@ -20,7 +20,8 @@ const WITHHOLDING_TYPE_ID = 16;
 const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
-function commitments(employees, rubrics, rubricsConfig, account, projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
+function commitments(employees, rubrics, rubricsConfig, account,
+    projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
   const accountPayroll = account[0].account_id;
   let costCenterPayroll = null;
   let principalCenterId = null;
@@ -91,7 +92,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
-  // Here we affect for the elements that will constitute the transaction 
+  // Here we affect for the elements that will constitute the transaction
   // the identifiers of the main and auxiliary centers
   accountsCostCenter.forEach(refCostCenter => {
     if (accountPayroll === refCostCenter[0].account_id) {
@@ -253,7 +254,10 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     params : [voucherCommitment],
   }, {
     query : `INSERT INTO voucher_item
-      (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, cost_center_id, principal_center_id) VALUES ?`,
+      (
+        uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, 
+        cost_center_id, principal_center_id
+      ) VALUES ?`,
     params : [employeesBenefitsItem],
   }, {
     query : 'CALL PostVoucher(?);',
@@ -280,7 +284,10 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       params : [voucherWithholding],
     }, {
       query : `INSERT INTO voucher_item
-        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, cost_center_id, principal_center_id) VALUES ?`,
+        (
+          uuid, account_id, debit, credit, voucher_uuid, entity_uuid,
+          description, cost_center_id, principal_center_id
+        ) VALUES ?`,
       params : [employeesWithholdingItem],
     }, {
       query : 'CALL PostVoucher(?);',
