@@ -76,7 +76,7 @@ function list(req, res, next) {
       cab.is_predefined AS allocation_basis_is_predefined,
       cabval.quantity AS allocation_basis_quantity
     FROM cost_center AS f
-    JOIN cost_center_allocation_basis as cab ON cab.id = f.allocation_basis_id
+    LEFT JOIN cost_center_allocation_basis as cab ON cab.id = f.allocation_basis_id
     LEFT JOIN reference_cost_center AS r ON r.cost_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_cost_center AS sf ON sf.cost_center_id = f.id
@@ -276,6 +276,49 @@ function del(req, res, next) {
     .done();
 }
 
+// This function searches for account membership at a cost center,
+// and returns an object table that will allow when creating a transaction
+async function getAllCostCenterAccounts() {
+  const accountConfigCostCenter = [];
+
+  const sql = `
+    SELECT cc.id AS cost_center_id, cc.label AS cost_center_label, cc.is_principal, rfc.is_cost, a.id AS account_id,
+      a.label AS accountLabel, a.number As accountNumber, ritem.is_exception, a.type_id
+    FROM cost_center AS cc
+    JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
+    JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
+    JOIN account_reference_item AS ritem ON ritem.account_reference_id = ar.id
+    JOIN account AS a ON a.id = ritem.account_id;
+  `;
+
+  const sqlGetAccountNotTitle = `
+    SELECT a.id AS account_id, a.label, a.number
+    FROM account AS a
+    WHERE a.type_id <> 6;
+  `;
+
+  const [accountsCostCenter, accountsNotTitle] = await Promise.all([
+    db.exec(sql),
+    db.exec(sqlGetAccountNotTitle),
+  ]);
+
+  accountsCostCenter.forEach(accountCostCenter => {
+    accountsNotTitle.forEach(account => {
+      if ((accountCostCenter.is_exception === 0)
+        && ((`${account.number}`.indexOf(`${accountCostCenter.accountNumber}`, 0)) === 0)) {
+        accountConfigCostCenter.push([
+          {
+            account_id : account.account_id,
+            cost_center_id : accountCostCenter.cost_center_id,
+            principal_center_id : accountCostCenter.is_principal ? accountCostCenter.cost_center_id : null,
+          }]);
+      }
+    });
+  });
+
+  return accountConfigCostCenter;
+}
+
 // get list of costCenter
 exports.list = list;
 // get details of a costCenter
@@ -286,3 +329,5 @@ exports.create = create;
 exports.update = update;
 // delete a costCenter
 exports.delete = del;
+// get All Cost Center Accounts
+exports.getAllCostCenterAccounts = getAllCostCenterAccounts;
