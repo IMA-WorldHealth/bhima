@@ -87,11 +87,11 @@ ALTER TABLE `cost_center_basis` MODIFY COLUMN `name` VARCHAR(200) NOT NULL;
 
 /**
 author: @jmcameron
-date: 2021-09-09
+date: 2021-09-09, updated 2021-09-15
 description: Create cost basis items
 */
+CALL add_column_if_missing('cost_center_basis', 'description', 'TEXT DEFAULT NULL AFTER `name`');
 CALL add_column_if_missing('cost_center_basis', 'is_predefined', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `description`');
-
 
 /**
  * THE USE OF RENAME IMPLY THAT TABLES EXISTS BEFORE TO RENAME
