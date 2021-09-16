@@ -76,7 +76,7 @@ function list(req, res, next) {
       cab.is_predefined AS allocation_basis_is_predefined,
       cabval.quantity AS allocation_basis_quantity
     FROM cost_center AS f
-    JOIN cost_center_allocation_basis as cab ON cab.id = f.allocation_basis_id
+    LEFT JOIN cost_center_allocation_basis as cab ON cab.id = f.allocation_basis_id
     LEFT JOIN reference_cost_center AS r ON r.cost_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_cost_center AS sf ON sf.cost_center_id = f.id
