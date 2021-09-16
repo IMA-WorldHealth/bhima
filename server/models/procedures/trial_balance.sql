@@ -296,10 +296,10 @@ BEGIN
   INSERT INTO general_ledger (
     project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id
+    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id
   ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date, posting_journal.record_uuid,
     description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-    entity_uuid, reference_uuid, comment, transaction_type_id, user_id
+    entity_uuid, reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id
   FROM posting_journal JOIN stage_trial_balance_transaction AS staged
     ON posting_journal.record_uuid = staged.record_uuid;
 
