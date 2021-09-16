@@ -15,6 +15,7 @@ const db = require('../../../lib/db');
 const configurationData = require('./find');
 const transac = require('./commitment');
 const Exchange = require('../../finance/exchange');
+const FeeCenter = require('../../finance/fee_center');
 
 function config(req, res, next) {
   // Collection of employee references select
@@ -81,9 +82,11 @@ function config(req, res, next) {
         db.exec(sqlGetRubricConfig, [payrollConfigurationId]),
         db.exec(sqlGetAccountPayroll, [payrollConfigurationId]),
         Exchange.getCurrentExchangeRateByCurrency(),
+        FeeCenter.getAllCostCenterAccounts(),
       ]);
     })
-    .spread((rubricsEmployees, rubricsConfig, account, exchangeRates) => {
+    .spread((rubricsEmployees, rubricsConfig, account, exchangeRates, accountsCostCenter) => {
+
       const transactions = transac.commitments(
         data.employees,
         rubricsEmployees,
@@ -93,6 +96,7 @@ function config(req, res, next) {
         userId,
         exchangeRates,
         currencyId,
+        accountsCostCenter,
       );
 
       const postingJournal = db.transaction();
