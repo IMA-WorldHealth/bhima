@@ -1130,11 +1130,6 @@ table.lot-schedule {
   padding: 0 10px;
 }
 
-table.lot-schedule th,
-table.lot-schedule td {
-  border-right: 0;
-}
-
 table.lot-schedule th.year {
   border-bottom: 0;
 }
@@ -1150,6 +1145,7 @@ table.lot-schedule th.month {
 
 table.lot-schedule th.reorder {
   background-color: #ffaaaa;
+  border-right: 0;
 }
 
 table.lot-schedule tr.lot-schedule th {
@@ -1166,14 +1162,12 @@ table.lot-schedule div.lot-marker-exhausted {
   background-color: #aaffaa;
   font-weight: bold;
   font-size: 12px;
+  padding: 0;
 }
 
 table.lot-schedule div.lot-marker-exhausted {
-  border: 1px solid black;
   border-left: 0;
   background-color: #ffaaaa;
-  font-weight: bold;
-  font-size: 12px;
 }
 
 table.lot-schedule div.lot-marker span.start {
