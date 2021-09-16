@@ -276,6 +276,48 @@ function del(req, res, next) {
     .done();
 }
 
+
+async function getAllCostCenterAccounts() {
+  const accountConfigCostCenter = [];
+
+  const sql = `
+    SELECT cc.id AS cost_center_id, cc.label AS cost_center_label, cc.is_principal, rfc.is_cost, a.id AS account_id,
+      a.label AS accountLabel, a.number As accountNumber, ritem.is_exception, a.type_id
+    FROM cost_center AS cc
+    JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
+    JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
+    JOIN account_reference_item AS ritem ON ritem.account_reference_id = ar.id
+    JOIN account AS a ON a.id = ritem.account_id;
+  `;
+
+  const sqlGetAccountNotTitle = `
+    SELECT a.id AS account_id, a.label, a.number
+    FROM account AS a
+    WHERE a.type_id <> 6;
+  `;
+
+  const [accountsCostCenter, accountsNotTitle] = await Promise.all([
+    db.exec(sql),
+    db.exec(sqlGetAccountNotTitle),
+  ]);
+
+  accountsCostCenter.forEach(account_cost_center => {
+    accountsNotTitle.forEach(account => {
+      if ((account_cost_center.is_exception === 0) && ((`${account.number}`.indexOf(`${account_cost_center.accountNumber}`, 0)) === 0)) {
+        accountConfigCostCenter.push([
+          {
+            account_id : account.account_id,
+            cost_center_id : account_cost_center.cost_center_id,
+            principal_center_id : account_cost_center.is_principal ? account_cost_center.cost_center_id : null,
+          }
+        ]);
+      }
+    })
+  });
+
+  return accountConfigCostCenter;
+}
+
 // get list of costCenter
 exports.list = list;
 // get details of a costCenter
@@ -286,3 +328,5 @@ exports.create = create;
 exports.update = update;
 // delete a costCenter
 exports.delete = del;
+// get All Cost Center Accounts
+exports.getAllCostCenterAccounts = getAllCostCenterAccounts;
