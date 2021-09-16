@@ -63,6 +63,8 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
       voucherCommitmentUuid,
       db.bid(employee.creditor_uuid),
       `${descriptionCommitment} (${employee.display_name})`,
+      null,
+      null,
     ]);
 
     rubrics.forEach(rubric => {
@@ -89,6 +91,8 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
         voucherWithholdingUuid,
         db.bid(employee.creditor_uuid),
         `${descriptionWithholding} (${employee.display_name})`,
+        null,
+        null,
       ]);
 
       if (employeeWithholdings.length) {
@@ -102,6 +106,8 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
               voucherWithholdingUuid,
               db.bid(employee.creditor_uuid),
               `${descriptionWithholding} (${employee.display_name})`,
+              null,
+              null,
             ]);
           }
         });
