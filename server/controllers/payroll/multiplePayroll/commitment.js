@@ -21,7 +21,7 @@ const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
 function commitments(employees, rubrics, rubricsConfig, account,
-    projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
+  projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
   const accountPayroll = account[0].account_id;
   let costCenterPayroll = null;
   let principalCenterId = null;
