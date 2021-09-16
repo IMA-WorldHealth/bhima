@@ -315,6 +315,16 @@ BEGIN
   GROUP BY fiscal_year_id, period_id, account_id
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
+  -- write into cost_center_aggregate
+  INSERT INTO cost_center_aggregate (
+    period_id, debit, credit, cost_center_id, principal_center_id
+  )
+	SELECT period_id, SUM(debit_equiv) AS debit, SUM(credit_equiv) AS credit, cost_center_id, principal_center_id
+	FROM posting_journal
+	WHERE cost_center_id IS NOT NULL
+	GROUP BY period_id, cost_center_id, principal_center_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
   -- remove from posting journal
   DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
 
