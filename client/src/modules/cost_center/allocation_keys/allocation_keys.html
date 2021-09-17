@@ -1,0 +1,27 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.FINANCE </li>
+      <li class="static" translate> COST_CENTER.TITLE </li>
+      <li class="title" translate> COST_CENTER.ALLOCATION_KEYS </li>
+    </ol>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="cost-center-allocation-keys-grid"
+      ui-grid="CostCenterAllocationKeysCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="CostCenterAllocationKeysCtrl.loading"
+        empty-state="CostCenterAllocationKeysCtrl.gridOptions.data.length === 0"
+        error-state="CostCenterAllocationKeysCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

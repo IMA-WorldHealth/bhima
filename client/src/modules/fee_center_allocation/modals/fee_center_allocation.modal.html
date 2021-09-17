@@ -1,0 +1,263 @@
+<form name="FeeCenterAllocationForm" bh-submit="FeeCenterAllocationModalCtrl.submit(FeeCenterAllocationForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="FeeCenterAllocationModalCtrl.isCreateState" class="title">
+      <span translate> FEE_CENTER.ADD_FEE_CENTER </span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!FeeCenterAllocationModalCtrl.isCreateState" class="title">
+      <span translate> FEE_CENTER.EDIT_FEE_CENTER </span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : FeeCenterAllocationForm.$submitted && FeeCenterAllocationForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="FeeCenterAllocationModalCtrl.feeCenter.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="FeeCenterAllocationForm.label.$error" ng-show="FeeCenterAllocationForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error' : FeeCenterAllocationForm.$submitted && FeeCenterAllocationForm.is_principal.$invalid }">
+      <label translate>FORM.LABELS.TYPE</label>
+      <div class="radio">
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_principal"
+            ng-value="1"
+            ng-model="FeeCenterAllocationModalCtrl.feeCenter.is_principal"
+            ng-click="FeeCenterAllocationModalCtrl.auxiliaryFee(false)"
+            id="principal"
+            required
+            >
+          <span translate>FORM.LABELS.PRINCIPAL_2</span>
+        </label>
+
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_principal"
+            ng-value="0"
+            ng-model="FeeCenterAllocationModalCtrl.feeCenter.is_principal"
+            ng-click="FeeCenterAllocationModalCtrl.auxiliaryFee(true)"
+            id="auxiliary"
+            required
+            >
+          <span translate>FORM.LABELS.AUXILIARY</span>
+        </label>
+
+        <div class="help-block" ng-messages="FeeCenterAllocationForm.is_principal.$error" ng-show="FeeCenterAllocationForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <hr />
+
+    <div style="padding-left: 5%" class="form-group">
+      <div ng-if="FeeCenterAllocationModalCtrl.auxiliaryCenter" class="form-group">
+        <div class="radio">
+          <label class="radio-inline">
+            <input
+              type="radio"
+              name="auxiliary"
+              ng-value="1"
+              ng-model="FeeCenterAllocationModalCtrl.feeCenter.is_cost"
+              ng-click="FeeCenterAllocationModalCtrl.costCenter(true)"
+              id="is_cost"
+              >
+            <span translate>FORM.LABELS.COST_CENTER </span>
+          </label>
+
+          <label class="radio-inline">
+            <input
+              type="radio"
+              name="auxiliary"
+              ng-value="0"
+              ng-model="FeeCenterAllocationModalCtrl.feeCenter.is_cost"
+              ng-click="FeeCenterAllocationModalCtrl.costCenter(false)"
+              id="is_profit"
+              >
+            <span translate>FORM.LABELS.PROFIT_CENTER </span>
+          </label>
+        </div>
+      </div>
+
+      <div ng-if="FeeCenterAllocationModalCtrl.feeCenter.is_principal" class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="has_profit_center"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="FeeCenterAllocationModalCtrl.hasProfitCenter">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_PROFIT_CENTER
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="(FeeCenterAllocationModalCtrl.feeCenter.is_principal && FeeCenterAllocationModalCtrl.hasProfitCenter) || (FeeCenterAllocationModalCtrl.auxiliaryCenter && FeeCenterAllocationModalCtrl.isProfitCenter)">
+        <bh-account-reference-select
+          id="account_profit_turnover_id"
+          account-reference-id="FeeCenterAllocationModalCtrl.feeCenter.reference_profit_turnover_id"
+          label="FORM.LABELS.TURNOVER"
+          on-select-callback="FeeCenterAllocationModalCtrl.onSelectAccountReference(accountReference, 0, 0, 1)"
+          required="false">
+          <bh-clear on-clear="FeeCenterAllocationModalCtrl.clear('turnoverProfitCenterReference', 'reference_profit_turnover_id')"></bh-clear>
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_other_profit_reference_id"
+          account-reference-id="FeeCenterAllocationModalCtrl.feeCenter.reference_other_profit_id"
+          label="FORM.LABELS.OTHERS_PROFITS"
+          on-select-callback="FeeCenterAllocationModalCtrl.onSelectAccountReference(accountReference, 0, 0, 0)"
+          required="false">
+          <bh-clear on-clear="FeeCenterAllocationModalCtrl.clear('otherProfitCenterReference', 'reference_other_profit_id')"></bh-clear>
+        </bh-account-reference-select>
+      </div>
+
+      <span ng-if="FeeCenterAllocationModalCtrl.feeCenter.is_principal">
+        <hr />
+      </span>
+
+      <div ng-if="FeeCenterAllocationModalCtrl.feeCenter.is_principal" class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="has_cost_center"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="FeeCenterAllocationModalCtrl.hasCostCenter">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_COST_CENTER
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="(FeeCenterAllocationModalCtrl.feeCenter.is_principal && FeeCenterAllocationModalCtrl.hasCostCenter) || (FeeCenterAllocationModalCtrl.auxiliaryCenter && FeeCenterAllocationModalCtrl.isCostCenter)">
+        <bh-account-reference-select
+          id="account_cost_variable_reference_id"
+          account-reference-id="FeeCenterAllocationModalCtrl.feeCenter.reference_cost_variable_id"
+          label="FORM.LABELS.VARIABLE_CHARGE"
+          on-select-callback="FeeCenterAllocationModalCtrl.onSelectAccountReference(accountReference, 1, 1, 0)"
+          required="false">
+          <bh-clear on-clear="FeeCenterAllocationModalCtrl.clear('variableCostCenterReference', 'reference_cost_variable_id')"></bh-clear>
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_cost_fixed_reference_id"
+          account-reference-id="FeeCenterAllocationModalCtrl.feeCenter.reference_cost_fixed_id"
+          label="FORM.LABELS.FIXED_CHARGE"
+          on-select-callback="FeeCenterAllocationModalCtrl.onSelectAccountReference(accountReference, 1, 0, 0)"
+          required="false">
+          <bh-clear on-clear="FeeCenterAllocationModalCtrl.clear('fixCostCenterReference', 'reference_cost_fixed_id')"></bh-clear>
+        </bh-account-reference-select>
+      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="has_service"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="FeeCenterAllocationModalCtrl.relatedServices">
+        <span translate>
+          <strong>
+            FORM.INFO.SELECT_RELATED_SERVICES
+          </strong>
+        </span>
+      </label>
+    </div>
+    <div ng-if="FeeCenterAllocationModalCtrl.relatedServices">
+      <bh-services-multiple-select
+        id="services"
+        on-change="FeeCenterAllocationModalCtrl.onServicesChange(services)"
+        services-ids="FeeCenterAllocationModalCtrl.services"
+        required="true">
+      </bh-services-multiple-select>
+    </div>
+
+    <!-- Project -->
+    <div ng-if="FeeCenterAllocationModalCtrl.feeCenter.is_principal">
+      <hr>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="assigned_project"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="FeeCenterAllocationModalCtrl.assignedProject">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_PROJECT
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="FeeCenterAllocationModalCtrl.assignedProject">
+        <bh-project-select
+          id="project_id"
+          project-id="FeeCenterAllocationModalCtrl.feeCenter.project_id"
+          name="project_id"
+          on-select-callback="FeeCenterAllocationModalCtrl.onSelectProject(project)">
+          <bh-clear on-clear="FeeCenterAllocationModalCtrl.reset('project_id')"></bh-clear>
+        </bh-project-select>
+      </div>
+    </div>
+
+    <!-- Step-down allocation basis -->
+    <hr>
+    <div class="radio">
+      <p><strong translate>FORM.LABELS.STEP_DOWN_COST_ALLOCATION</strong></p>
+      <label class="control-label" style="vertical-align: middle;" translate>FORM.LABELS.ALLOCATION_METHOD</label>:
+      <label class="radio-inline" ng-repeat="choice in FeeCenterAllocationModalCtrl.allocationMethodOptions">
+        <input
+          type="radio"
+          name="allocation_method"
+          ng-value="choice"
+          ng-model="FeeCenterAllocationModalCtrl.feeCenter.allocation_method"
+          id="allocation_method_{{choice}}"
+          required>
+        <span>{{FeeCenterAllocationModalCtrl.translate(choice)}}</span>
+      </label>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : FeeCenterAllocationForm.$submitted && FeeCenterAllocationForm.allocation_basis.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.SELECT_ALLOCATION_BASIS</label>
+      <select class="form-control"
+        name="allocation_basis"
+        ng-model="FeeCenterAllocationModalCtrl.feeCenter.allocation_basis.id"
+        ng-options="allocationBasis.id as allocationBasis.name for allocationBasis in FeeCenterAllocationModalCtrl.allocationBases"
+        required>
+        <option value="" disabled ng-if="FeeCenterAllocationModalCtrl.isCreateState" translate>FORM.LABELS.SELECT_ONE</option>
+      </select>
+      <div class="help-block" ng-messages="FeeCenterAllocationForm.allocation_basis.$error" ng-show="FeeCenterAllocationForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="fee_center">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="FeeCenterAllocationForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

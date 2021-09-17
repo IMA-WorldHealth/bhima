@@ -142,3 +142,12 @@ INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
+  
+/*
+ * @author: mbayopanda
+ * @date: 2021-09-12
+ * @desc: cost center allocation registry
+ */
+INSERT IGNORE INTO `unit` VALUES 
+  (299, 'Allocation Keys','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation keys with values', 218,'/cost_center/allocation_keys'),
+  (300, 'Allocation Registry','TREE.COST_CENTER_ALLOCATION_REGISTRY','List cost center allocations in each principal cost center', 218,'/cost_center/allocation_registry');
