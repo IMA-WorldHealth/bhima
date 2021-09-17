@@ -86,7 +86,6 @@ function config(req, res, next) {
       ]);
     })
     .spread((rubricsEmployees, rubricsConfig, account, exchangeRates, accountsCostCenter) => {
-
       const transactions = transac.commitments(
         data.employees,
         rubricsEmployees,

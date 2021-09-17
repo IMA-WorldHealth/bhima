@@ -92,32 +92,32 @@ function commitments(employees, rubrics, rubricsConfig, account,
     item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
-  // Here we affect for the elements that will constitute the transaction
+  // Here we assign for the elements that will constitute the transaction
   // the identifiers of the main and auxiliary centers
   accountsCostCenter.forEach(refCostCenter => {
-    if (accountPayroll === refCostCenter[0].account_id) {
-      costCenterPayroll = refCostCenter[0].cost_center_id;
-      principalCenterId = refCostCenter[0].principal_center_id;
+    if (accountPayroll === refCostCenter.account_id) {
+      costCenterPayroll = refCostCenter.cost_center_id;
+      principalCenterId = refCostCenter.principal_center_id;
     }
 
     rubricsBenefits.forEach(rubric => {
-      if (rubric.expense_account_id === refCostCenter[0].account_id) {
-        rubric.cost_center_id = refCostCenter[0].cost_center_id;
-        rubric.principal_center_id = refCostCenter[0].principal_center_id;
+      if (rubric.expense_account_id === refCostCenter.account_id) {
+        rubric.cost_center_id = refCostCenter.cost_center_id;
+        rubric.principal_center_id = refCostCenter.principal_center_id;
       }
     });
 
     chargesRemunerations.forEach(chargeRemuneration => {
-      if (chargeRemuneration.expense_account_id === refCostCenter[0].account_id) {
-        chargeRemuneration.cost_center_id = refCostCenter[0].cost_center_id;
-        chargeRemuneration.principal_center_id = refCostCenter[0].principal_center_id;
+      if (chargeRemuneration.expense_account_id === refCostCenter.account_id) {
+        chargeRemuneration.cost_center_id = refCostCenter.cost_center_id;
+        chargeRemuneration.principal_center_id = refCostCenter.principal_center_id;
       }
     });
 
     rubricsWithholdingsNotAssociat.forEach(withholding => {
-      if (withholding.debtor_account_id === refCostCenter[0].account_id) {
-        withholding.cost_center_id = refCostCenter[0].cost_center_id;
-        withholding.principal_center_id = refCostCenter[0].principal_center_id;
+      if (withholding.debtor_account_id === refCostCenter.account_id) {
+        withholding.cost_center_id = refCostCenter.cost_center_id;
+        withholding.principal_center_id = refCostCenter.principal_center_id;
       }
     });
   });
