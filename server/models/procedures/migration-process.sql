@@ -151,8 +151,8 @@ date: 2021-09-16
 description: Add column cost_center_id and principal_center_id in Voucher Item
 */
 
-DROP PROCEDURE IF EXISTS PostVoucher;
 DELIMITER $$
+DROP PROCEDURE IF EXISTS PostVoucher;
 
 CREATE PROCEDURE PostVoucher(
   IN uuid BINARY(16)
@@ -206,12 +206,12 @@ BEGIN
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
 
-DROP PROCEDURE IF EXISTS PostToGeneralLedger;
+
 DELIMITER $$
+DROP PROCEDURE IF EXISTS PostToGeneralLedger;
 
 CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
-
   DECLARE isInvoice, isCash, isVoucher INT;
 
   -- write into the posting journal
