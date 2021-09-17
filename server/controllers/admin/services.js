@@ -160,6 +160,32 @@ function detail(req, res, next) {
 }
 
 /**
+ * @function lookupCostCenterByServiceUuid
+ *
+ * @description
+ * Looks up the cost center associated with a service by the service's uuid.
+ */
+async function lookupCostCenterByServiceUuid(uid) {
+  const { cc } = await db.one('SELECT GetCostCenterByServiceUuid(?) AS cc;', [uid]);
+  return cc;
+}
+
+/**
+ * @function lookupCostCenters
+ *
+ * @description
+ * An HTTP interface to the lookupCostCentersByServiceUuid function.
+ */
+async function lookupCostCenter(req, res, next) {
+  try {
+    const id = await lookupCostCenterByServiceUuid(db.bid(req.params.uuid));
+    res.status(200).json({ id });
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
  * @method lookupService
  *
  * @description
@@ -176,7 +202,8 @@ function lookupService(uid) {
     FROM
       service AS s LEFT JOIN project p ON p.id = s.project_id
     WHERE
-      s.uuid = ?;`;
+      s.uuid = ?;
+  `;
 
   return db.one(sql, db.bid(uid), uid, 'service');
 }
@@ -188,3 +215,5 @@ exports.remove = remove;
 exports.detail = detail;
 exports.countServiceByProject = countServiceByProject;
 exports.lookupService = lookupService;
+exports.lookupCostCenterByServiceUuid = lookupCostCenterByServiceUuid;
+exports.lookupCostCenter = lookupCostCenter;

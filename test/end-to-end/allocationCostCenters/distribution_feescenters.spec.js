@@ -1,5 +1,5 @@
 const helpers = require('../shared/helpers');
-const DistributionPage = require('./allocation_feescenters.page');
+const DistributionPage = require('./distribution_feescenters.page');
 
 describe('Distribution Auxiliary Cost Center', () => {
   // navigate to the page

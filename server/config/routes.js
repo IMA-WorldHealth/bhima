@@ -243,6 +243,7 @@ exports.configure = function configure(app) {
   app.get('/accounts/:id/balance', accounts.getBalance);
   app.get('/accounts/:id/balance/:fiscalYearId', accounts.getAnnualBalance);
   app.get('/accounts/:id/openingBalance', accounts.getOpeningBalanceForPeriod);
+  app.get('/accounts/:id/cost-center', accounts.lookupCostCenter);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
   app.delete('/accounts/:id', accounts.remove);
@@ -254,6 +255,7 @@ exports.configure = function configure(app) {
   app.get('/services/:uuid', services.detail);
   app.put('/services/:uuid', services.update);
   app.delete('/services/:uuid', services.remove);
+  app.get('/services/:uuid/cost-center', services.lookupCostCenter);
 
   // API for subsidies routes crud
   app.get('/subsidies', subsidies.list);

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const DistributionKeysPage = require('./allocation_key.page');
+const DistributionKeysPage = require('./distribution_key.page');
 const helpers = require('../shared/helpers');
 
 describe('Distribution keys Management', () => {
