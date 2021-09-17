@@ -276,47 +276,40 @@ function del(req, res, next) {
     .done();
 }
 
-// This function searches for account membership at a cost center,
-// and returns an object table that will allow when creating a transaction
-async function getAllCostCenterAccounts() {
-  const accountConfigCostCenter = [];
+/**
+ * @method getAllCostCenterAccounts
+ *
+ * @description
+ * This function returns the list of accounts (except title accounts)
+ * with their corresponding cost center, the cost_center_id parameter
+ * corresponds to the cost center reference, the principal_centre_id
+ * parameter is entered if and only if the cost center is a main center
+ *
+ *If, during the configuration of the account references, a security account has been configured,
+ * all the accounts which have the number of this account as index will be considered as belonging to this cost center.
+ *
+ * Eg. 61 belongs to the transport cost center,
+ * 6101100, 6101101 and 6100444 will also belong to the transport cost cente
+ */
+function getAllCostCenterAccounts() {
+  const accountTitle = 6;
 
   const sql = `
-    SELECT cc.id AS cost_center_id, cc.label AS cost_center_label, cc.is_principal, rfc.is_cost, a.id AS account_id,
-      a.label AS accountLabel, a.number As accountNumber, ritem.is_exception, a.type_id
+    SELECT aa.account_id, cc.id AS cost_center_id, IF(cc.is_principal, cost_center_id, NULL) AS principal_center_id
     FROM cost_center AS cc
     JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
     JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
     JOIN account_reference_item AS ritem ON ritem.account_reference_id = ar.id
-    JOIN account AS a ON a.id = ritem.account_id;
-  `;
-
-  const sqlGetAccountNotTitle = `
+    JOIN account AS a ON a.id = ritem.account_id
+    JOIN (
     SELECT a.id AS account_id, a.label, a.number
     FROM account AS a
-    WHERE a.type_id <> 6;
+    WHERE a.type_id <> ?
+    ) AS aa ON aa.number LIKE CONCAT(a.number ,'%')
+    WHERE ritem.is_exception = 0;
   `;
 
-  const [accountsCostCenter, accountsNotTitle] = await Promise.all([
-    db.exec(sql),
-    db.exec(sqlGetAccountNotTitle),
-  ]);
-
-  accountsCostCenter.forEach(accountCostCenter => {
-    accountsNotTitle.forEach(account => {
-      if ((accountCostCenter.is_exception === 0)
-        && ((`${account.number}`.indexOf(`${accountCostCenter.accountNumber}`, 0)) === 0)) {
-        accountConfigCostCenter.push([
-          {
-            account_id : account.account_id,
-            cost_center_id : accountCostCenter.cost_center_id,
-            principal_center_id : accountCostCenter.is_principal ? accountCostCenter.cost_center_id : null,
-          }]);
-      }
-    });
-  });
-
-  return accountConfigCostCenter;
+  return db.exec(sql, [accountTitle]);
 }
 
 // get list of costCenter
