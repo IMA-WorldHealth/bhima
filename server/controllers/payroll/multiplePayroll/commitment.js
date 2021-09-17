@@ -20,8 +20,12 @@ const WITHHOLDING_TYPE_ID = 16;
 const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
-function commitments(employees, rubrics, rubricsConfig, account, projectId, userId, exchangeRates, currencyId) {
+function commitments(employees, rubrics, rubricsConfig, account,
+  projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
   const accountPayroll = account[0].account_id;
+  let costCenterPayroll = null;
+  let principalCenterId = null;
+
   const periodPayroll = moment(account[0].dateTo).format('MM-YYYY');
   const datePeriodTo = moment(account[0].dateTo).format('YYYY-MM-DD');
   const labelPayroll = account[0].label;
@@ -88,6 +92,36 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
+  // Here we assign for the elements that will constitute the transaction
+  // the identifiers of the main and auxiliary centers
+  accountsCostCenter.forEach(refCostCenter => {
+    if (accountPayroll === refCostCenter.account_id) {
+      costCenterPayroll = refCostCenter.cost_center_id;
+      principalCenterId = refCostCenter.principal_center_id;
+    }
+
+    rubricsBenefits.forEach(rubric => {
+      if (rubric.expense_account_id === refCostCenter.account_id) {
+        rubric.cost_center_id = refCostCenter.cost_center_id;
+        rubric.principal_center_id = refCostCenter.principal_center_id;
+      }
+    });
+
+    chargesRemunerations.forEach(chargeRemuneration => {
+      if (chargeRemuneration.expense_account_id === refCostCenter.account_id) {
+        chargeRemuneration.cost_center_id = refCostCenter.cost_center_id;
+        chargeRemuneration.principal_center_id = refCostCenter.principal_center_id;
+      }
+    });
+
+    rubricsWithholdingsNotAssociat.forEach(withholding => {
+      if (withholding.debtor_account_id === refCostCenter.account_id) {
+        withholding.cost_center_id = refCostCenter.cost_center_id;
+        withholding.principal_center_id = refCostCenter.principal_center_id;
+      }
+    });
+  });
+
   chargesRemunerations.forEach(charge => {
     totalChargesRemuneration += charge.totals;
   });
@@ -131,6 +165,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     voucherCommitmentUuid,
     null,
     voucherCommitment.description,
+    costCenterPayroll,
+    principalCenterId,
   ]);
 
   if (rubricsBenefits.length) {
@@ -143,6 +179,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         voucherCommitmentUuid,
         null,
         voucherCommitment.description,
+        benefits.cost_center_id,
+        benefits.principal_center_id,
       ]);
     });
   }
@@ -168,6 +206,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         chargeRemuneration.totals,
         voucherChargeRemunerationUuid,
         null,
+        null,
+        null,
       ], [
         db.bid(util.uuid()),
         chargeRemuneration.expense_account_id,
@@ -175,6 +215,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         0,
         voucherChargeRemunerationUuid,
         null,
+        chargeRemuneration.cost_center_id,
+        chargeRemuneration.principal_center_id,
       ]);
     });
   }
@@ -200,6 +242,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
         voucherWithholdingUuid,
         null,
         voucherWithholding.description,
+        withholding.cost_center_id,
+        withholding.principal_center_id,
       ]);
     });
   }
@@ -210,7 +254,10 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     params : [voucherCommitment],
   }, {
     query : `INSERT INTO voucher_item
-      (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description) VALUES ?`,
+      (
+        uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, 
+        cost_center_id, principal_center_id
+      ) VALUES ?`,
     params : [employeesBenefitsItem],
   }, {
     query : 'CALL PostVoucher(?);',
@@ -223,7 +270,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       params : [voucherChargeRemuneration],
     }, {
       query : `INSERT INTO voucher_item
-        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?`,
+        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, cost_center_id, principal_center_id) VALUES ?`,
       params : [enterpriseChargeRemunerations],
     }, {
       query : 'CALL PostVoucher(?);',
@@ -237,7 +284,10 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       params : [voucherWithholding],
     }, {
       query : `INSERT INTO voucher_item
-        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description) VALUES ?`,
+        (
+          uuid, account_id, debit, credit, voucher_uuid, entity_uuid,
+          description, cost_center_id, principal_center_id
+        ) VALUES ?`,
       params : [employeesWithholdingItem],
     }, {
       query : 'CALL PostVoucher(?);',
