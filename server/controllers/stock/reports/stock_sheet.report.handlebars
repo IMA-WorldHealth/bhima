@@ -83,17 +83,18 @@
               <td style="border-left: 1px solid #000;">{{label}}</td>
 
               {{!-- entry --}}
-              <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td> <td class="text-right">{{#if entry.unit_cost}}{{currency entry.unit_cost currencyId 4}}{{/if}}</td>
+              <td class="text-right">{{#if entry.quantity}}{{entry.quantity}}{{/if}}</td>
+              <td class="text-right">{{#if entry.unit_cost}}{{currency entry.unit_cost ../currencyId 4}}{{/if}}</td>
               <td class="text-right" style="border-right: 1px solid #000;">{{#if entry.value}}{{currency entry.value ../currencyId}}{{/if}}</td>
 
               {{!-- exit --}}
               <td class="text-right">{{#if exit.quantity}}{{exit.quantity}}{{/if}}</td>
-              <td class="text-right">{{#if exit.unit_cost}}{{currency exit.unit_cost currencyId 4}}{{/if}}</td>
+              <td class="text-right">{{#if exit.unit_cost}}{{currency exit.unit_cost ../currencyId 4}}{{/if}}</td>
               <td class="text-right" style="border-right: 1px solid #000;">{{#if exit.value}}{{currency exit.value ../currencyId}}{{/if}}</td>
 
               {{!-- stock --}}
               <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{stock.quantity}}</td>
-              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{currency stock.unit_cost currencyId 4}}</td>
+              <td class="text-right" {{#unless hasNegativeValues}}style="background-color:#efefef;"{{/unless}}>{{currency stock.unit_cost ../currencyId 4}}</td>
               <td class="text-right" style="{{#unless hasNegativeValues}}background-color:#efefef;{{/unless}} border-right: 1px solid #000;">{{currency stock.value ../currencyId}}</td>
             </tr>
           {{/each}}
