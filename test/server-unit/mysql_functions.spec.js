@@ -124,10 +124,9 @@ function DatabaseUnitTests() {
   });
 
   before(async () => {
-    await db.exec(`DROP TABLE  IF EXISTS ${tableName1};`);
-    await db.exec(`DROP TABLE  IF EXISTS ${tableName2};`);
+    await db.exec(`DROP TABLE IF EXISTS ${tableName1};`);
+    await db.exec(`DROP TABLE IF EXISTS ${tableName2};`);
   });
-
 }
 
 describe('lib/db/function.sql.js', DatabaseUnitTests);

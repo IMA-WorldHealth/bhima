@@ -1,5 +1,5 @@
 const helpers = require('../shared/helpers');
-const CostCenterPage = require('./cost_center.page');
+const CostCenterPage = require('./fee_center.page');
 
 describe('Cost Center Management', () => {
   // navigate to the page

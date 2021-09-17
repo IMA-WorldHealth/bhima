@@ -1,6 +1,6 @@
 /* global expect, agent */
 
-const helpers = require('./helpers');
+const helpers = require('../helpers');
 
 /*
  * The /cost_center  API endpoint
