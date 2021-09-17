@@ -119,6 +119,8 @@ const costCenter = require('../controllers/finance/cost_center');
 const costAllocationBasis = require('../controllers/finance/stepDownCostAllocationBasis');
 const costAllocationBasisQuantity = require('../controllers/finance/stepDownCostAllocationQuantity');
 const costCenterAllocationKeys = require('../controllers/finance/cost_center_allocation_keys');
+const costCenterAllocationRegistry = require('../controllers/finance/cost_center_allocation_registry');
+
 const distributionConfiguration = require('../controllers/finance/allocationCostCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/allocationCostCenter/getDistributed');
 const distributionProceed = require('../controllers/finance/allocationCostCenter/proceed');
@@ -923,6 +925,7 @@ exports.configure = function configure(app) {
 
   // Cost Center Allocation Keys
   app.get('/cost_center/allocation_keys', costCenterAllocationKeys.list);
+  app.get('/cost_center/allocation_registry', costCenterAllocationRegistry.list);
 
   // Cost Centers API
   app.get('/cost_center', costCenter.list);
