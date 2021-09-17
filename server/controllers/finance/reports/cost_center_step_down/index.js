@@ -3,12 +3,9 @@ const db = require('../../../../lib/db');
 const Stepdown = require('../../../../lib/stepdown');
 const ReportManager = require('../../../../lib/ReportManager');
 const fiscal = require('../../fiscal');
+const ccAllocationKeys = require('../../cost_center_allocation_keys');
 
 const TEMPLATE = './server/controllers/finance/reports/cost_center_step_down/report.handlebars';
-
-// REMOVE ME
-const MOCK = require('./mock_data');
-// END REMOVE ME
 
 // expose to the API
 exports.report = document;
@@ -23,10 +20,6 @@ exports.report = document;
  * @param {*} session the session
  */
 async function buildReport(params, session) {
-  // REMOVE ME
-  await MOCK.mount();
-  // END REMOVE ME
-
   const options = _.extend(params, {
     filename : 'TREE.COST_CENTER_STEPDOWN',
     csvKey : 'rows',
@@ -61,29 +54,6 @@ async function buildReport(params, session) {
   });
   const data = Stepdown.compute(formattedFeeCenters);
   const cumulatedAllocatedCosts = data.map((item, index, array) => (item.principal ? 0 : array[index].toDist[index]));
-  const queryFeeCenterIndexesList = `
-    SELECT 
-      ccb.id, 
-      ccb.name AS cost_center_allocation_basis_label, 
-      ccbv.quantity, fc.label AS cost_center_label,
-      fc.step_order 
-    FROM cost_center fc 
-    JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = fc.id 
-    JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id
-    ORDER BY fc.step_order ASC;
-  `;
-  const feeCenterIndexesList = await db.exec(queryFeeCenterIndexesList);
-  const indexes = _.groupBy(feeCenterIndexesList, 'cost_center_allocation_basis_label');
-  const feeCenterList = [];
-  const feeCenterIndexes = _.keys(indexes).map((index, i) => {
-    const fcIndex = _.sortBy(indexes[index], 'step_order');
-    const line = { index, distribution : [] };
-    fcIndex.forEach((item) => {
-      if (i === 0) { feeCenterList.push(item.cost_center_label); }
-      line.distribution.push({ cost_center_label : item.cost_center_label, value : item.quantity });
-    });
-    return line;
-  });
   const auxiliaryIndexes = data.map((item, i) => (item.auxiliary ? i : null)).filter(item => !!item);
   const services = data.map(item => {
     item.distribution = item.toDist.map((value, i) => {
@@ -132,22 +102,21 @@ async function buildReport(params, session) {
     hView.push(row);
   }
 
+  // cost center allocation keys details
+  const { costCenterList, costCenterIndexes } = await ccAllocationKeys.fetch();
+
   const context = {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
     currencyId : enterpriseCurrencyId,
     data,
     cumulatedAllocatedCosts,
-    feeCenterIndexes,
-    feeCenterList,
+    costCenterIndexes,
+    costCenterList,
     directCostTotal,
     totalAfterAllocation,
     hView,
   };
-
-  // REMOVE ME
-  await MOCK.unmount();
-  // END REMOVE ME
 
   return report.render(context);
 }
