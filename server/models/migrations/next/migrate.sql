@@ -164,8 +164,8 @@ description: Add column cost_center_id and principal_center_id in Voucher Item
 CALL add_column_if_missing('voucher_item', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_column_if_missing('voucher_item', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 
-CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
-CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
 
 -- Update label in table account_reference_type 
 UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' WHERE art.id = 1;
