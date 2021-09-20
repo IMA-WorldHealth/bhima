@@ -7,7 +7,7 @@
 const db = require('../../lib/db');
 const Stepdown = require('../../lib/stepdown');
 const fiscal = require('./fiscal');
-const ccAllocationKeys = require('./cost_center_allocation_keys');
+const ccAllocationKeys = require('./cost_center_allocation_bases');
 
 async function fetch(session, params) {
   const defaultCurrentYear = new Date();

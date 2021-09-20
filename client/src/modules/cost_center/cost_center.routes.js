@@ -25,10 +25,10 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal],
       })
 
-      .state('cost_center_allocation_keys', {
-        url         : '/cost_center/allocation_keys',
-        controller  : 'CostCenterAllocationKeysController as CostCenterAllocationKeysCtrl',
-        templateUrl : 'modules/cost_center/allocation_keys/allocation_keys.html',
+      .state('cost_center_allocation_bases', {
+        url         : '/cost_center/allocation_bases',
+        controller  : 'CostCenterAllocationBasesController as CostCenterAllocationBasesCtrl',
+        templateUrl : 'modules/cost_center/allocation_bases/allocation_bases.html',
       })
 
       .state('cost_center_allocation_registry', {

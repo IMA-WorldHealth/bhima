@@ -28,7 +28,7 @@ function CostCenterService(Api, $uibModal) {
   };
 
   service.getAllocationKeys = () => {
-    const url = `/cost_center/allocation_keys`;
+    const url = `/cost_center/allocation_bases`;
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   };
