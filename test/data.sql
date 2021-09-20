@@ -826,7 +826,7 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
   (12, 8, 256, 0, 0, 0),
   (13, 1, 347, 0, 0, 0),
   (14, 9, 215, 0, 0, 0),
-  (15, 9, 220, 0, 0, 0);
+  (15, 9, 53, 0, 0, 0);
 
 
 -- COST CENTER
