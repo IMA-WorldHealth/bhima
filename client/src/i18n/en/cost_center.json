@@ -1,0 +1,7 @@
+{
+  "COST_CENTER" : {
+    "TITLE" : "Cost Center",
+    "ALLOCATION_REGISTRY" : "Cost Center Allocation Registry",
+    "ALLOCATION_KEYS" : "Allocation Keys"
+  }
+}

@@ -117,7 +117,10 @@ const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
 const costCenter = require('../controllers/finance/cost_center');
 const costAllocationBasis = require('../controllers/finance/stepDownCostAllocationBasis');
-const costAllocationBasisQuantity = require('../controllers/finance/stepDownCostAllocationQuantity.js');
+const costAllocationBasisQuantity = require('../controllers/finance/stepDownCostAllocationQuantity');
+const costCenterAllocationBases = require('../controllers/finance/cost_center_allocation_bases');
+const costCenterAllocationRegistry = require('../controllers/finance/cost_center_allocation_registry');
+
 const distributionConfiguration = require('../controllers/finance/allocationCostCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/allocationCostCenter/getDistributed');
 const distributionProceed = require('../controllers/finance/allocationCostCenter/proceed');
@@ -920,7 +923,11 @@ exports.configure = function configure(app) {
   app.delete('/tags/:uuid', tags.delete);
   app.put('/tags/:uuid', tags.update);
 
-  // Fees Centers API
+  // Cost Center Allocation Keys
+  app.get('/cost_center/allocation_bases', costCenterAllocationBases.list);
+  app.get('/cost_center/allocation_registry', costCenterAllocationRegistry.list);
+
+  // Cost Centers API
   app.get('/cost_center', costCenter.list);
   app.get('/cost_center/:id', costCenter.detail);
   app.post('/cost_center', costCenter.create);
