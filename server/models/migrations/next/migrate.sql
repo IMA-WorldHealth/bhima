@@ -142,3 +142,18 @@ INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
+
+
+/**
+author: @lomamech
+date: 2021-09-16
+description: Add column cost_center_id and principal_center_id in Voucher Item
+*/
+CALL add_column_if_missing('voucher_item', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+CALL add_column_if_missing('voucher_item', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
+
+-- Update label in table account_reference_type 
+UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' WHERE art.id = 1;
