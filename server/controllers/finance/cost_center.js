@@ -312,6 +312,29 @@ function getAllCostCenterAccounts() {
   return db.exec(sql, [accountTitle]);
 }
 
+/**
+ * @method assignCostCenterParams
+ *
+ * @description
+ * This function examines in the object in parameter, the parameter
+ * account_id and checks if this account corresponds to which cost
+ * center and returns the same object with two new
+ * parameters cost_center_id and principal_center_id
+ */
+function assignCostCenterParams(accountsCostCenter, rubrics, params) {
+
+  accountsCostCenter.forEach(refCostCenter => {
+    rubrics.forEach(rubric => {
+      if (rubric[params] === refCostCenter.account_id) {
+        rubric.cost_center_id = refCostCenter.cost_center_id;
+        rubric.principal_center_id = refCostCenter.principal_center_id;
+      }
+    });
+  });
+
+  return rubrics;
+}
+
 // get list of costCenter
 exports.list = list;
 // get details of a costCenter
@@ -324,3 +347,5 @@ exports.update = update;
 exports.delete = del;
 // get All Cost Center Accounts
 exports.getAllCostCenterAccounts = getAllCostCenterAccounts;
+// Assign Cost Center Params
+exports.assignCostCenterParams = assignCostCenterParams;
