@@ -14,6 +14,7 @@ const moment = require('moment');
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
 const commitmentFunction = require('./commitmentFunction');
+const CostCenter = require('../../finance/cost_center');
 
 const COMMITMENT_TYPE_ID = 15;
 const WITHHOLDING_TYPE_ID = 16;
@@ -22,6 +23,7 @@ const DECIMAL_PRECISION = 2;
 
 function commitments(employees, rubrics, rubricsConfig, account,
   projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
+
   const accountPayroll = account[0].account_id;
   let costCenterPayroll = null;
   let principalCenterId = null;
@@ -99,28 +101,18 @@ function commitments(employees, rubrics, rubricsConfig, account,
       costCenterPayroll = refCostCenter.cost_center_id;
       principalCenterId = refCostCenter.principal_center_id;
     }
-
-    rubricsBenefits.forEach(rubric => {
-      if (rubric.expense_account_id === refCostCenter.account_id) {
-        rubric.cost_center_id = refCostCenter.cost_center_id;
-        rubric.principal_center_id = refCostCenter.principal_center_id;
-      }
-    });
-
-    chargesRemunerations.forEach(chargeRemuneration => {
-      if (chargeRemuneration.expense_account_id === refCostCenter.account_id) {
-        chargeRemuneration.cost_center_id = refCostCenter.cost_center_id;
-        chargeRemuneration.principal_center_id = refCostCenter.principal_center_id;
-      }
-    });
-
-    rubricsWithholdingsNotAssociat.forEach(withholding => {
-      if (withholding.debtor_account_id === refCostCenter.account_id) {
-        withholding.cost_center_id = refCostCenter.cost_center_id;
-        withholding.principal_center_id = refCostCenter.principal_center_id;
-      }
-    });
   });
+
+  // Assign Cost Center Params
+  rubricsBenefits = CostCenter.assignCostCenterParams(accountsCostCenter, rubricsBenefits, 'expense_account_id');
+
+  chargesRemunerations = CostCenter.assignCostCenterParams(
+    accountsCostCenter, chargesRemunerations, 'expense_account_id',
+  );
+
+  rubricsWithholdingsNotAssociat = CostCenter.assignCostCenterParams(
+    accountsCostCenter, rubricsWithholdingsNotAssociat, 'debtor_account_id',
+  );
 
   chargesRemunerations.forEach(charge => {
     totalChargesRemuneration += charge.totals;
