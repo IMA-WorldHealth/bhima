@@ -9,7 +9,7 @@ const db = require('../../lib/db');
 async function fetch() {
   const queryCostCenterIndexesList = `
     SELECT 
-      ccb.id, 
+      fc.id, 
       ccb.name AS cost_center_allocation_basis_label, 
       ccbv.quantity, fc.label AS cost_center_label,
       fc.step_order 
@@ -26,7 +26,7 @@ async function fetch() {
     const line = { index, distribution : [] };
     fcIndex.forEach((item) => {
       if (i === 0) { costCenterList.push(item.cost_center_label); }
-      line.distribution.push({ cost_center_label : item.cost_center_label, value : item.quantity });
+      line.distribution.push({ id : item.id, cost_center_label : item.cost_center_label, value : item.quantity });
     });
     return line;
   });

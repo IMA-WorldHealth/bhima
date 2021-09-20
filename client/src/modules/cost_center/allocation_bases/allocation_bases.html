@@ -5,6 +5,14 @@
       <li class="static" translate> COST_CENTER.TITLE </li>
       <li class="title" translate> COST_CENTER.ALLOCATION_KEYS </li>
     </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" ui-sref="cost_center.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.LABELS.ADD</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -12,15 +20,15 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div id="cost-center-allocation-keys-grid"
-      ui-grid="CostCenterAllocationKeysCtrl.gridOptions"
+      ui-grid="CostCenterAllocationBasesCtrl.gridOptions"
       class="grid-full-height"
       ui-grid-auto-resize
       ui-grid-resize-columns>
 
       <bh-grid-loading-indicator
-        loading-state="CostCenterAllocationKeysCtrl.loading"
-        empty-state="CostCenterAllocationKeysCtrl.gridOptions.data.length === 0"
-        error-state="CostCenterAllocationKeysCtrl.hasError">
+        loading-state="CostCenterAllocationBasesCtrl.loading"
+        empty-state="CostCenterAllocationBasesCtrl.gridOptions.data.length === 0"
+        error-state="CostCenterAllocationBasesCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
   </div>
