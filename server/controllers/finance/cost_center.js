@@ -304,12 +304,12 @@ function getAllCostCenterAccounts() {
     JOIN (
     SELECT a.id AS account_id, a.label, a.number
     FROM account AS a
-    WHERE a.type_id <> ?
+    WHERE a.type_id <> ${accountTitle}
     ) AS aa ON aa.number LIKE CONCAT(a.number ,'%')
     WHERE ritem.is_exception = 0;
   `;
 
-  return db.exec(sql, [accountTitle]);
+  return db.exec(sql);
 }
 
 /**
@@ -320,6 +320,10 @@ function getAllCostCenterAccounts() {
  * account_id and checks if this account corresponds to which cost
  * center and returns the same object with two new
  * parameters cost_center_id and principal_center_id
+ * 
+ * @param {String} accountsCostCenter - Is the correspondence of accounts with cost centers
+ * @param {String} rubrics - The headings is a parameter which can be employee profits, social charges on remuneration or deduction
+  * @param {String} params - This is the element with which the comparison will be made for the list of accounts by cost center
  */
 function assignCostCenterParams(accountsCostCenter, rubrics, params) {
 
