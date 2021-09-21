@@ -124,9 +124,9 @@ function list(req, res, next) {
     JOIN cost_center_allocation_basis ab ON ab.id = abv.basis_id
   `;
   const filters = new FilterParser(req.query);
-  filters.equals('id');
-  filters.equals('basis_id');
-  filters.equals('cost_center_id');
+  filters.equals('id', 'id', 'abv');
+  filters.equals('basis_id', 'basis_id', 'abv');
+  filters.equals('cost_center_id', 'cost_center_id', 'abv');
   const query = filters.applyQuery(sql);
   const params = filters.parameters();
   return db.exec(query, params)
