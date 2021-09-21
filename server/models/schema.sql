@@ -2267,6 +2267,7 @@ CREATE TABLE `cost_center_allocation_basis_value` (
   `cost_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `basis_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_allocation_cost_center_basis` (`cost_center_id`, `basis_id`),
   CONSTRAINT `cost_center_basis_value__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
   CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
