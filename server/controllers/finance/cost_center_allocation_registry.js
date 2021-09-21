@@ -5,29 +5,28 @@
 */
 // const _ = require('lodash');
 const db = require('../../lib/db');
-const Stepdown = require('../../lib/stepdown');
+const stepdown = require('../../lib/stepdown');
 const fiscal = require('./fiscal');
 const ccAllocationKeys = require('./cost_center_allocation_bases');
 
 async function fetch(session, params) {
-  const defaultCurrentYear = new Date();
   const enterpriseCurrencyId = session.enterprise.currency_id;
 
   const periods = {
-    periodFrom : params.periodFrom || `${defaultCurrentYear.getFullYear()}01`,
-    periodTo : params.periodTo || `${defaultCurrentYear.getFullYear()}12`,
+    periodFrom : params.periodFrom,
+    periodTo : params.periodTo,
   };
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
   const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?);';
-  let [feeCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
+  let [costCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
 
-  if (feeCenters.length) {
-    const [single] = feeCenters;
-    feeCenters = single.error_message ? [] : feeCenters;
+  if (costCenters.length) {
+    const [single] = costCenters;
+    costCenters = single.error_message ? [] : costCenters;
   }
 
-  const formattedFeeCenters = feeCenters.map(item => {
+  const formattedCostCenters = costCenters.map(item => {
     item.principal = !!item.is_principal;
     item.auxiliary = !item.principal;
     item.directCost = item.direct_cost;
@@ -36,7 +35,7 @@ async function fetch(session, params) {
     }
     return item;
   });
-  const data = Stepdown.compute(formattedFeeCenters);
+  const data = stepdown.compute(formattedCostCenters);
   const cumulatedAllocatedCosts = data.map((item, index, array) => (item.principal ? 0 : array[index].toDist[index]));
   const auxiliaryIndexes = data.map((item, i) => (item.auxiliary ? i : null)).filter(item => !!item);
   const services = data.map(item => {

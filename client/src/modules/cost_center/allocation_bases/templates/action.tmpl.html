@@ -6,8 +6,13 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.label }}">
     <li>
-      <a data-method="edit-record" ng-click="grid.appScope.editAllocationBasis(row.entity.uuid)" href>
+      <a data-method="edit-record" ng-click="grid.appScope.editAllocationBasis(row.entity.id)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a style="color: #a94442;" data-method="edit-record" ng-click="grid.appScope.removeAllocationBasis(row.entity.id)" href>
+        <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
       </a>
     </li>
   </ul>

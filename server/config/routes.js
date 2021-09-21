@@ -941,6 +941,12 @@ exports.configure = function configure(app) {
   app.put('/cost_center_allocation_basis/:id', costAllocationBasis.update);
   app.delete('/cost_center_allocation_basis/:id', costAllocationBasis.delete);
 
+  // Bulk Step-down allocation basis quantity API
+  app.get('/cost_center_allocation_basis_quantity/bulk/:id', costAllocationBasisQuantity.bulkDetails);
+  app.post('/cost_center_allocation_basis_quantity/bulk', costAllocationBasisQuantity.bulkCreate);
+  app.put('/cost_center_allocation_basis_quantity/bulk/:id', costAllocationBasisQuantity.bulkUpdate);
+  app.delete('/cost_center_allocation_basis_quantity/bulk/:id', costAllocationBasisQuantity.bulkDelete);
+
   // Step-down allocation basis quantity API
   app.get('/cost_center_allocation_basis_quantity/:id?', costAllocationBasisQuantity.list);
   app.post('/cost_center_allocation_basis_quantity', costAllocationBasisQuantity.create);

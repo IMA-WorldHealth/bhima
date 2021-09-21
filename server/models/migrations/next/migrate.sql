@@ -149,5 +149,8 @@ INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
  * @desc: cost center allocation registry
  */
 INSERT IGNORE INTO `unit` VALUES 
-  (299, 'Allocation Keys','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation keys with values', 218,'/cost_center/allocation_keys'),
-  (300, 'Allocation Registry','TREE.COST_CENTER_ALLOCATION_REGISTRY','List cost center allocations in each principal cost center', 218,'/cost_center/allocation_registry');
+  (299, 'Allocation Keys','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation keys with values', 218,'/cost_center/allocation_keys');
+
+ALTER TABLE `cost_center_allocation_basis_value`
+  ADD CONSTRAINT unique_allocation_cost_center_basis UNIQUE (`cost_center_id`, `basis_id`);
+  

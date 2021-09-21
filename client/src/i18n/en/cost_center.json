@@ -2,6 +2,26 @@
   "COST_CENTER" : {
     "TITLE" : "Cost Center",
     "ALLOCATION_REGISTRY" : "Cost Center Allocation Registry",
-    "ALLOCATION_KEYS" : "Allocation Keys"
-  }
+    "ALLOCATION_KEYS" : "Allocation Keys",
+    "ADD_ALLOCATION_KEYS" : "Add Allocation Keys",
+    "EDIT_ALLOCATION_KEYS" : "Edit Allocation Keys"
+  },
+  "ALLOCATION_METHOD": "Allocation method",
+  "ALLOCATION_METHOD_FLAT": "Flat",
+  "ALLOCATION_METHOD_PROPORTIONAL": "Proportional",
+  "ALLOCATION_METHOD_TOOLTIP": "The selected allocation method and quantity will be used in cost-center step-down analysis to divide the costs of this center into other centers.",
+  "ALLOCATION_BASES": "Allocation bases",
+  "ALLOCATION_BASIS": "Allocation basis",
+  "ALLOCATION_BASIS_AREA_USED": "Area used",
+  "ALLOCATION_BASIS_AREA_USED_DESCRIPTION": "Area used by the service",
+  "ALLOCATION_BASIS_DIRECT_COST": "Direct cost",
+  "ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION": "Direct cost of the service",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED": "Electricity consumed",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION": "Electricity consumed by the service",
+  "ALLOCATION_BASIS_NUM_COMPUTERS": "Num. computers",
+  "ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION": "Number of computers in the service",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Num. employees",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION": "Number of employees of the service",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS": "Num. labor hours",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION": "Number of labor hours by the service"
 }

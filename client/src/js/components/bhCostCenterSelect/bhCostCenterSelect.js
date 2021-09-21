@@ -1,14 +1,15 @@
 angular.module('bhima.components')
   .component('bhCostCenterSelect', {
-    templateUrl : 'modules/templates/bhCostCenterSelect.tmpl.html',
+    templateUrl : 'js/components/bhCostCenterSelect/bhCostCenterSelect.html',
     controller  : CostCenterSelectController,
     transclude  : true,
     bindings    : {
-      costCenterId      : '<',
+      costCenterId     : '<',
       filter           : '<',
       principal        : '<',
       onSelectCallback : '&',
       required         : '<?',
+      disabled         : '<?',
     },
   });
 
@@ -23,21 +24,31 @@ CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService'];
 function CostCenterSelectController(CostCenters, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = () => {
-    CostCenters.read(null)
+  function loadCostCenters(ccId) {
+    CostCenters.read()
       .then(costCenters => {
+        $ctrl.costCenters = $ctrl.filter
+          ? costCenters.filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal))
+          : costCenters;
 
-        if ($ctrl.filter) {
-          $ctrl.costCenters = costCenters
-            .filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal));
-        } else {
-          $ctrl.costCenters = costCenters;
+        if (ccId) {
+          $ctrl.disabled = true;
         }
       })
       .catch(Notify.handleError);
+  }
+
+  $ctrl.$onInit = () => {
+    $ctrl.costCenterId = +$ctrl.costCenterId;
+    loadCostCenters();
   };
 
-  // fires the onSelectCallback bound to the component boundary
+  $ctrl.$onChanges = (changes) => {
+    if (changes.costCenterId && changes.costCenterId.currentValue) {
+      loadCostCenters(changes.costCenterId.currentValue);
+    }
+  };
+
   $ctrl.onSelect = costCenter => {
     $ctrl.onSelectCallback({ costCenter });
   };

@@ -31,10 +31,22 @@ angular.module('bhima.routes')
         templateUrl : 'modules/cost_center/allocation_bases/allocation_bases.html',
       })
 
-      .state('cost_center_allocation_registry', {
-        url         : '/cost_center/allocation_registry',
-        controller  : 'CostCenterAllocationRegistryController as CostCenterAllocationRegistryCtrl',
-        templateUrl : 'modules/cost_center/allocation_registry/allocation_registry.html',
+      .state('cost_center_allocation_bases.create', {
+        url : '/create',
+        params : {
+          isCreateState : { value : true },
+        },
+        onEnter : ['$uibModal', '$transition$', CCAllocationBasesModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('cost_center_allocation_bases.edit', {
+        url : '/:id/edit',
+        params : {
+          id : { value : null },
+        },
+        onEnter : ['$uibModal', '$transition$', CCAllocationBasesModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -42,6 +54,14 @@ function costCenterModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/cost_center/modals/cost_center.modal.html',
     controller : 'CostCenterModalController as CostCenterModalCtrl',
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
+}
+
+function CCAllocationBasesModal($modal, $transition) {
+  $modal.open({
+    templateUrl : 'modules/cost_center/allocation_bases/modals/action.modal.html',
+    controller : 'CCAllocationBasisModalController as CCAllocationBasisModalCtrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }

@@ -1,0 +1,28 @@
+<div ng-form="CostCenterForm" bh-cost-center-select>
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.costCenterId.$invalid }">
+
+    <label class="control-label" translate>
+      COST_CENTER.TITLE
+    </label>
+
+    <ui-select
+      name="costCenterId"
+      ng-model="$ctrl.costCenterId"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.COST_CENTER' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="cc.id as cc in $ctrl.costCenters | filter: { 'label': $select.search }">
+        <span ng-bind-html="cc.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="CostCenterForm.costCenterId.$error" ng-show="CostCenterForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

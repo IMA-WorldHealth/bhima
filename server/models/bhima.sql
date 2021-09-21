@@ -172,8 +172,7 @@ INSERT INTO unit VALUES
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
   (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
-  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
-  (300, 'Allocation Registry','TREE.COST_CENTER_ALLOCATION_REGISTRY','List cost center allocations in each principal cost center', 218,'/cost_center/allocation_registry');
+  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases');
 
 
 -- Reserved system account type
