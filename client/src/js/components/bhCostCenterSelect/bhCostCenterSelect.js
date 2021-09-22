@@ -24,16 +24,12 @@ CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService'];
 function CostCenterSelectController(CostCenters, Notify) {
   const $ctrl = this;
 
-  function loadCostCenters(ccId) {
+  function loadCostCenters() {
     CostCenters.read()
       .then(costCenters => {
         $ctrl.costCenters = $ctrl.filter
           ? costCenters.filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal))
           : costCenters;
-
-        if (ccId) {
-          $ctrl.disabled = true;
-        }
       })
       .catch(Notify.handleError);
   }
@@ -45,7 +41,7 @@ function CostCenterSelectController(CostCenters, Notify) {
 
   $ctrl.$onChanges = (changes) => {
     if (changes.costCenterId && changes.costCenterId.currentValue) {
-      loadCostCenters(changes.costCenterId.currentValue);
+      loadCostCenters();
     }
   };
 

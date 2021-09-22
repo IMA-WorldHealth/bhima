@@ -45,4 +45,23 @@ BEGIN
   );
 END $$
 
+/*
+@function GetCostCenterByInvoiceUuid(invoice_uuid)
+
+@params invoice_uuid BINARY(16) the invoice uuid
+
+@description
+Returns the cost center id for the invoice using the service_uuid in the invoice table
+*/
+CREATE FUNCTION GetCostCenterByInvoiceUuid(invoice_uuid BINARY(16))
+RETURNS MEDIUMINT(8) DETERMINISTIC
+BEGIN
+  RETURN (
+    SELECT GetCostCenterByServiceUuid(i.service_uuid)
+	FROM invoice i 
+	WHERE i.uuid = invoice_uuid
+  );
+END $$
+
+
 DELIMITER ;
