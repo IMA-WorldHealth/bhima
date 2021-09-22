@@ -171,7 +171,8 @@ INSERT INTO unit VALUES
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
-  (298, 'Fee Center Step-down','TREE.COST_CENTER_STEPDOWN','The cost center report with step-down algorithm', 286,'/reports/cost_center_step_down');
+  (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
+  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases');
 
 
 -- Reserved system account type

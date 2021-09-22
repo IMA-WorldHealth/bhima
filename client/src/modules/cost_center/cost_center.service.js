@@ -27,5 +27,17 @@ function CostCenterService(Api, $uibModal) {
     });
   };
 
+  service.getAllocationKeys = () => {
+    const url = `/cost_center/allocation_bases`;
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.getAllocationRegistry = (options) => {
+    const url = `/cost_center/allocation_registry`;
+    return service.$http.get(url, { params : options })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   return service;
 }
