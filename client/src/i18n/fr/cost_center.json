@@ -1,0 +1,27 @@
+{
+  "COST_CENTER" : {
+    "TITLE" : "Centre de coût",
+    "ALLOCATION_REGISTRY" : "Registre des allocations aux centres de coût",
+    "ALLOCATION_KEYS" : "Clés de répartitions",
+    "ADD_ALLOCATION_KEYS" : "Ajouter les clés de répartition",
+    "EDIT_ALLOCATION_KEYS" : "Modifier les clés de répartition"
+  },
+  "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
+  "ALLOCATION_METHOD_FLAT": "Uniform",
+  "ALLOCATION_METHOD_PROPORTIONAL": "Proportionnelle",
+  "ALLOCATION_METHOD_TOOLTIP": "La méthode d'allocation et la quantité sélectionnées seront utilisées dans l'analyse de réduction par centres de coûts pour diviser les coûts de ce centre en d'autres centres.",
+  "ALLOCATION_BASES": "Les bases d'allocation",
+  "ALLOCATION_BASIS": "Base d'allocation",
+  "ALLOCATION_BASIS_AREA_USED": "Arie utilisée",
+  "ALLOCATION_BASIS_AREA_USED_DESCRIPTION": "Surface utilisée par le service",
+  "ALLOCATION_BASIS_DIRECT_COST": "Coût direct",
+  "ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION": "Coût direct du service",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED": "Électricité consommée",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION": "Électricité consommée par le service",
+  "ALLOCATION_BASIS_NUM_COMPUTERS": "Nº d'ordinateurs",
+  "ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION": "Nombre d'ordinateurs du service",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Nº d'employés",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION": "Nombre d'employés du service",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS": "Nº d'heures de travail",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION": "Nombre d'heures de travail effectuées par le service"
+}

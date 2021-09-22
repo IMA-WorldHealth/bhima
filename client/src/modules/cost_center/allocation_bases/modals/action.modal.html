@@ -1,0 +1,42 @@
+<form name="CCAllocationBasisForm" bh-submit="CCAllocationBasisModalCtrl.submit(CCAllocationBasisForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="CCAllocationBasisModalCtrl.isCreateState" class="title">
+        <span translate>COST_CENTER.ADD_ALLOCATION_KEYS</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!CCAllocationBasisModalCtrl.isCreateState" class="title">
+        <span translate>COST_CENTER.EDIT_ALLOCATION_KEYS</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <bh-cost-center-select 
+      cost-center-id="CCAllocationBasisModalCtrl.costCenterId"
+      on-select-callback="CCAllocationBasisModalCtrl.onSelectCostCenter(costCenter)"
+      required="true">
+    </bh-cost-center-select>
+
+    <div ng-repeat="basis in CCAllocationBasisModalCtrl.allocationBases track by basis.id" class="form-group" ng-class="{ 'has-error' : CCAllocationBasisForm.$submitted && CCAllocationBasisForm.text.$invalid }">
+      <label class="control-label" translate>{{ basis.name }}</label>
+      <input name="text" ng-model="CCAllocationBasisModalCtrl.ccAllocation[basis.name]" autocomplete="off" class="form-control">
+      <div class="help-block" ng-messages="CCAllocationBasisForm[basis.name].$error" ng-show="CCAllocationBasisForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="cost_center_allocation_bases">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="CCAllocationBasisForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

@@ -17,7 +17,6 @@ function FiscalYearPeriodSelect() {
     $ctrl.selected = {};
   };
 
-
   /**
    * @method onSelectFiscalYear
    *
