@@ -29,28 +29,32 @@
             <tr style="background-color:#ddd;">
               <th class="text-center">{{translate 'FORM.LABELS.CODE'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.INVENTORY'}}</th>
-              <th class="text-center">{{translate 'FORM.LABELS.INVENTORY_PRICE'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.QUANTITY'}}</th>
               <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
               <th class="text-center">{{translate 'FORM.LABELS.VALUE'}}</th>
+              <th class="text-center">{{translate 'FORM.LABELS.INVENTORY_PRICE'}}</th>
+              <th class="text-center">{{translate 'FORM.LABELS.SALE_VALUE'}}</th>
             </tr>
           </thead>
           <tbody>
             {{#each stockValues}}
-              <tr>
+            <tr {{#if hasWarning}}class="text-danger bg-danger"{{/if}} >
                 <td>{{inventory_code}}</td>
                 <td style="width:50%">{{inventory_name}}</td>
-                <td class="text-right">{{currency inventoryPrice ../currency_id 4}}</td>
                 <td class="text-right">{{stockQtyPurchased}}</td>
                 <td class="text-right">{{currency stockUnitCost ../currency_id 4}}</td>
                 <td class="text-right">{{currency stockValue ../currency_id}}</td>
+                <td class="text-right">{{currency inventoryPrice ../currency_id 4}}</td>
+                <td class="text-right">{{currency saleValue ../currency_id 4}}</td>
               </tr>
           {{else}}
-            {{> emptyTable columns=4}}
+            {{> emptyTable columns=7}}
           {{/each}}
           <tr>
             <th colspan="4" class="text-right">{{ translate "FORM.LABELS.VALUE_IN_STOCK"}}</th>
-            <th class="text-right">{{ currency stockTotalValue currency_id }}</th>
+            <th class="text-right">{{currency stockTotalValue currency_id 4}}</th>
+            <th class="text-right">{{ translate "FORM.LABELS.SALE_VALUE"}}</th>
+            <th class="text-right">{{ currency stockTotalSaleValue currency_id 4}}</th>
           </tr>
           </tbody>
         </table>
