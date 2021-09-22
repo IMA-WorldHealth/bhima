@@ -1,0 +1,98 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 translate>REPORT.LOST_STOCK_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.LOST_STOCK_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+
+        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+
+          <!-- select depot -->
+          <bh-depot-select
+            depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
+            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+            required="true">
+          </bh-depot-select>
+
+          <div class="form-group">
+            <label class="control-label" translate>REPORT.LOST_STOCK_REPORT.DEPOT_ROLE</label>
+            <div class="radio" style="margin-top: 0">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="depot_mode"
+                  value="destination"
+                  ng-model="ReportConfigCtrl.reportDetails.depotRole"
+                  ng-click="ReportConfigCtrl.onSelectDepotMode('destination')"
+                  id="depot_is_destination"
+                  required>
+                <span translate>REPORT.LOST_STOCK_REPORT.DESTINATION</span>
+              </label>
+
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="depot_mode"
+                  value="source"
+                  ng-model="ReportConfigCtrl.reportDetails.depotRole"
+                  ng-click="ReportConfigCtrl.onSelectDepotMode('source')"
+                  id="depot_is_source"
+                  required>
+                <span translate>REPORT.LOST_STOCK_REPORT.SOURCE</span>
+              </label>
+
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="depot_mode"
+                  value="either"
+                  ng-model="ReportConfigCtrl.reportDetails.depotRole"
+                  ng-click="ReportConfigCtrl.onSelectDepotMode('either')"
+                  id="depot_is_eithere"
+                  required>
+                <span translate>REPORT.LOST_STOCK_REPORT.EITHER</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- date interval -->
+          <bh-date-interval
+            date-from="ReportConfigCtrl.reportDetails.dateFrom"
+            date-to="ReportConfigCtrl.reportDetails.dateTo"
+            limit-min-fiscal
+            required="true">
+          </bh-date-interval>
+
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.reportDetails.currencyId"
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)"
+            required="true">
+          </bh-currency-select>
+
+           <!-- preview -->
+          <bh-loading-button loading-state="ConfigForm.$loading">
+            <span translate>REPORT.UTIL.PREVIEW</span>
+          </bh-loading-button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

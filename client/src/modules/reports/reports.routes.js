@@ -21,6 +21,7 @@ angular.module('bhima.routes')
       'income_expense_by_year',
       'stock_sheet',
       'inventory_report',
+      'lost_stock_report',
       'ohada_balance_sheet_report',
       'ohada_profit_loss',
       'open_debtors',
