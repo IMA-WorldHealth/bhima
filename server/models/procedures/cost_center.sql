@@ -16,7 +16,7 @@ BEGIN
 
 
   DROP TEMPORARY TABLE IF EXISTS cost_center_costs_with_indexes;
-  CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS 
+  CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS
     SELECT
         z.id, z.label AS cost_center_label,
         z.allocation_basis_id,
@@ -24,8 +24,8 @@ BEGIN
         z.step_order,
         z.`value` AS direct_cost,
         ccb.name AS cost_center_allocation_basis_label,
-        ccbv.quantity AS cost_center_allocation_basis_value  
-    FROM 
+        ccbv.quantity AS cost_center_allocation_basis_value
+    FROM
     (
         (
           SELECT
@@ -33,7 +33,7 @@ BEGIN
             SUM(cca.debit - cca.credit) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
-          JOIN `period` p ON p.id = cca.period_id 
+          JOIN `period` p ON p.id = cca.period_id
           LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
           GROUP BY cca.principal_center_id
@@ -45,14 +45,14 @@ BEGIN
             SUM(cca.debit - cca.credit) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
-          JOIN `period` p ON p.id = cca.period_id 
+          JOIN `period` p ON p.id = cca.period_id
           LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
           WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
           GROUP BY cca.cost_center_id
         )
-    ) AS z 
-    JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = z.id 
-    JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id 
+    ) AS z
+    JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = z.id
+    JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id
     ORDER by z.step_order ASC;
 
   SELECT

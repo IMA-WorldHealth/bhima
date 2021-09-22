@@ -318,6 +318,16 @@ function JournalController(
     headerCellFilter : 'translate',
     visible : false,
   }, {
+    field : 'costCenterLabel',
+    displayName : 'FORM.LABELS.COST_CENTER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
+    field : 'principalCenterLabel',
+    displayName : 'FORM.LABELS.PRINCIPAL_COST_CENTER',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
     field : 'comment',
     displayName : 'FORM.LABELS.COMMENT',
     headerCellFilter : 'translate',
