@@ -715,6 +715,7 @@
             "SALE_ID": "Sale ID",
             "SALE_RESPONSIBLE": "Seller",
             "SALE": "Sale",
+            "SALE_VALUE" : "Sale Value",
             "SEARCH_QUERIES": "Search Queries",
             "SEARCH": "Search",
             "SECOND_NAME": "Last Name",

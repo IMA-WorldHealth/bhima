@@ -74,6 +74,7 @@ async function reporting(_options, session) {
   });
 
   let stockTotalValue = 0;
+  let stockTotalSaleValue = 0;
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
   const rate = exchangeRate.rate || 1;
 
@@ -97,12 +98,19 @@ async function reporting(_options, session) {
       item.weightedAverageUnitCost = weightedAverageUnitCost;
     });
 
+    stock.inventoryPrice = stock.inventory_price * rate;
+
     stock.stockQtyPurchased = quantityInStock;
     stock.stockUnitCost = weightedAverageUnitCost;
     stock.stockValue = (quantityInStock * weightedAverageUnitCost);
-    stockTotalValue += stock.stockValue;
+    stock.saleValue = (quantityInStock * stock.inventoryPrice);
 
-    stock.inventoryPrice = stock.inventory_price * rate;
+    // warn the user if the stock sales price is equivalent or _lower_ than the value of the stock
+    // the enterprise will not make money on this stock.
+    stock.hasWarning = stock.inventoryPrice <= weightedAverageUnitCost;
+
+    stockTotalValue += stock.stockValue;
+    stockTotalSaleValue += stock.saleValue;
   });
 
   const stockValueElements = options.exclude_zero_value
@@ -111,10 +119,12 @@ async function reporting(_options, session) {
   data.stockValues = stockValueElements || [];
 
   data.stockTotalValue = stockTotalValue;
+  data.stockTotalSaleValue = stockTotalSaleValue;
   data.emptyResult = data.stockValues.length === 0;
 
   data.currency_id = options.currency_id;
   data.exclude_zero_value = options.exclude_zero_value;
+
   return report.render(data);
 }
 
