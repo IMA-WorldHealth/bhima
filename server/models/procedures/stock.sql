@@ -87,7 +87,7 @@ BEGIN
         projectId as project_id, currencyId as currency_id,
         CONCAT(ig.name, ' - ', m.quantity, ' ', iu.text, ' of ', i.text , ' (', l.label, ')') AS item_description,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
-        ig.cogs_account, ig.stock_account, m.invoice_uuid 
+        ig.cogs_account, ig.stock_account, m.invoice_uuid, m.entity_uuid 
       FROM stock_movement m
       JOIN depot d ON d.uuid = m.depot_uuid
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -135,12 +135,22 @@ BEGIN
   END IF;
 
   /* EXIT TO PATIENT : get cost_center_id */
-  IF (sm_flux_id = TO_PATIENT_FLUX_ID) THEN 
+  IF (sm_flux_id = TO_PATIENT_FLUX_ID AND v_is_exit = 1) THEN 
     SET voucher_item_cost_center_id = (
       SELECT GetCostCenterByInvoiceUuid(invoice_uuid) FROM stage_stock_movement
       WHERE invoice_uuid IS NOT NULL 
       LIMIT 1
-    )
+    );
+  END IF;
+
+  /* EXIT TO SERVICE : get cost_center_id */
+  IF (sm_flux_id = TO_SERVICE_FLUX_ID AND v_is_exit = 1) THEN 
+    SET voucher_item_cost_center_id = (
+      SELECT GetCostCenterByServiceUuid(sm.entity_uuid) FROM stage_stock_movement sm 
+      JOIN service s ON s.uuid = sm.entity_uuid
+      WHERE sm.entity_uuid IS NOT NULL 
+      LIMIT 1
+    );
   END IF;
 
   -- insert into voucher
@@ -179,8 +189,9 @@ BEGIN
     END IF;
 
     -- insert debit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description)
-      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid, v_item_description);
+    -- insert cost center id only for debit (exploitation account in case of stock exit)
+    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, description, cost_center_id)
+      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid, v_item_description, voucher_item_cost_center_id);
 
     -- insert credit into temporary table for later aggregation.
     INSERT INTO tmp_voucher_credit_item (account_id, debit, credit)
