@@ -666,6 +666,7 @@
             "PRICE": "Prix",
             "PRINCIPAL_2": "Principal",
             "PRINCIPAL": "Principale",
+            "PRINCIPAL_COST_CENTER" : "Principale centre de coûts",
             "PRINT": "Imprimer",
             "PRINT_ORIENTATION_LANDSCAPE":"Paysage",
             "PRINT_ORIENTATION":"Orientation d'impression",
