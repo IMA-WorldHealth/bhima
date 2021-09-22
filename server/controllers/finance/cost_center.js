@@ -276,6 +276,71 @@ function del(req, res, next) {
     .done();
 }
 
+/**
+ * @method getAllCostCenterAccounts
+ *
+ * @description
+ * This function returns the list of accounts (except title accounts)
+ * with their corresponding cost center, the cost_center_id parameter
+ * corresponds to the cost center reference, the principal_centre_id
+ * parameter is entered if and only if the cost center is a main center
+ *
+ *If, during the configuration of the account references, a security account has been configured,
+ * all the accounts which have the number of this account as index will be considered as belonging to this cost center.
+ *
+ * Eg. 61 belongs to the transport cost center,
+ * 6101100, 6101101 and 6100444 will also belong to the transport cost cente
+ */
+function getAllCostCenterAccounts() {
+  const accountTitle = 6;
+
+  const sql = `
+    SELECT aa.account_id, cc.id AS cost_center_id, IF(cc.is_principal, cost_center_id, NULL) AS principal_center_id
+    FROM cost_center AS cc
+    JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
+    JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
+    JOIN account_reference_item AS ritem ON ritem.account_reference_id = ar.id
+    JOIN account AS a ON a.id = ritem.account_id
+    JOIN (
+    SELECT a.id AS account_id, a.label, a.number
+    FROM account AS a
+    WHERE a.type_id <> ${accountTitle}
+    ) AS aa ON aa.number LIKE CONCAT(a.number ,'%')
+    WHERE ritem.is_exception = 0;
+  `;
+
+  return db.exec(sql);
+}
+
+/**
+ * @method assignCostCenterParams
+ *
+ * @description
+ * This function examines in the object in parameter, the parameter
+ * account_id and checks if this account corresponds to which cost
+ * center and returns the same object with two new
+ * parameters cost_center_id and principal_center_id
+ *
+ * @param {String} accountsCostCenter - Is the correspondence of accounts with cost centers
+ * @param {String} rubrics - The headings is a parameter which can be employee profits,
+      * social charges on remuneration or deduction
+@param {String} key - This is the element with which the comparison
+      * will be made for the list of accounts by cost center
+ */
+function assignCostCenterParams(accountsCostCenter, rubrics, key) {
+
+  accountsCostCenter.forEach(refCostCenter => {
+    rubrics.forEach(rubric => {
+      if (rubric[key] === refCostCenter.account_id) {
+        rubric.cost_center_id = refCostCenter.cost_center_id;
+        rubric.principal_center_id = refCostCenter.principal_center_id;
+      }
+    });
+  });
+
+  return rubrics;
+}
+
 // get list of costCenter
 exports.list = list;
 // get details of a costCenter
@@ -286,3 +351,7 @@ exports.create = create;
 exports.update = update;
 // delete a costCenter
 exports.delete = del;
+// get All Cost Center Accounts
+exports.getAllCostCenterAccounts = getAllCostCenterAccounts;
+// Assign Cost Center Params
+exports.assignCostCenterParams = assignCostCenterParams;
