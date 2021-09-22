@@ -135,7 +135,7 @@ BEGIN
   END IF;
 
   /* EXIT TO PATIENT : get cost_center_id */
-  IF (sm_flux_id = TO_PATIENT_FLUX_ID AND v_is_exit = 1) THEN 
+  IF (sm_flux_id = TO_PATIENT_FLUX_ID AND isExit = 1) THEN 
     SET voucher_item_cost_center_id = (
       SELECT GetCostCenterByInvoiceUuid(invoice_uuid) FROM stage_stock_movement
       WHERE invoice_uuid IS NOT NULL 
@@ -144,7 +144,7 @@ BEGIN
   END IF;
 
   /* EXIT TO SERVICE : get cost_center_id */
-  IF (sm_flux_id = TO_SERVICE_FLUX_ID AND v_is_exit = 1) THEN 
+  IF (sm_flux_id = TO_SERVICE_FLUX_ID AND isExit = 1) THEN 
     SET voucher_item_cost_center_id = (
       SELECT GetCostCenterByServiceUuid(sm.entity_uuid) FROM stage_stock_movement sm 
       JOIN service s ON s.uuid = sm.entity_uuid
