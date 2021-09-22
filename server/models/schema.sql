@@ -1863,13 +1863,18 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `document_uuid`   BINARY(16) default null,
   `entity_uuid`     BINARY(16) default null,
   `description`     TEXT NULL,
+  `cost_center_id`  MEDIUMINT(8) UNSIGNED NULL,
+  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL, 
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
   INDEX (`document_uuid`),
   INDEX (`entity_uuid`),
   CONSTRAINT `voucher_item__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  CONSTRAINT `voucher_item__voucher` FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
+  CONSTRAINT `voucher_item__voucher` FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `voucher_item__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `voucher_item__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE
+
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- stock tables

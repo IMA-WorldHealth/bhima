@@ -154,3 +154,15 @@ INSERT IGNORE INTO `unit` VALUES
 ALTER TABLE `cost_center_allocation_basis_value`
   ADD CONSTRAINT unique_allocation_cost_center_basis UNIQUE (`cost_center_id`, `basis_id`);
   
+
+
+/**
+author: @lomamech
+date: 2021-09-16
+description: Add column cost_center_id and principal_center_id in Voucher Item
+*/
+CALL add_column_if_missing('voucher_item', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+CALL add_column_if_missing('voucher_item', 'principal_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
+CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `fee_center` (`id`) ON UPDATE CASCADE');
