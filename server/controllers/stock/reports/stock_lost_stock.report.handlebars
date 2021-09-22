@@ -1,0 +1,79 @@
+{{> head title="REPORT.LOST_STOCK_REPORT.TITLE" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+    <!-- body  -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <h2 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.LOST_STOCK_REPORT.TITLE'}}</strong> <br>
+          <small>{{date dateFrom}} - {{date dateTo}}</small>
+        </h2>
+
+        <h3 class="text-center">
+          {{#if isDestDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}: {{depotName}}{{/if}}
+          {{#if isSrcDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}: {{depotName}}{{/if}}
+        </h3>
+
+        <br>
+
+        <!-- list of data  -->
+        <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color:#ddd;">
+              <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+              <th>{{translate 'STOCK.CODE'}}</th>
+              <th>{{translate 'STOCK.INVENTORY'}}</th>
+              <th>{{translate 'STOCK.LOT'}}</th>
+              <th>{{translate 'STOCK.EXPIRATION'}}</th>
+              <th>{{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}</th>
+              <th>{{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}</th>
+              <th>{{translate 'STOCK.QUANTITY_SENT'}}</th>
+              <th>{{translate 'STOCK.QUANTITY_RECEIVED'}}</th>
+              <th>{{translate 'STOCK.QUANTITY_DIFFERENCE'}}</th>
+              <th>{{translate 'STOCK.UNIT_COST'}}</th>
+              <th class="text-center">{{translate 'REPORT.LOST_STOCK_REPORT.LOSS'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each rows}}
+            <tr {{#if hasWarning}}class="text-danger bg-danger"{{/if}} >
+              <td class="text-right">{{date date}}</td>
+              <td>{{inventory_code}}</td>
+              <td>{{inventory_name}}</td>
+              <td>{{lotLabel}}</td>
+              <td class="text-right">{{date expirationDate}}</td>
+              <td>{{destDepot}}</td>
+              <td>{{srcDepot}}</td>
+              <td class="text-right">{{quantitySent}}</td>
+              <td class="text-right">{{quantityRecd}}</td>
+              <td class="text-right">{{quantityDifference}}</td>
+              <td class="text-right">{{currency unit_cost ../currencyId 4}}</td>
+              <td class="text-right">{{currency loss ../currencyId 2}}</td>
+            </tr>
+            {{else}}
+              {{> emptyTable columns=12}}
+            {{/each}}
+          </tbody>
+          <tfoot>
+            <tr style="font-weight: bold;">
+              <td colspan="9">
+                 <span class="pull-right">{{translate 'REPORT.TOTALS'}}</span>
+              </td>
+              <td class="text-right">
+                {{totalMissing}}
+              </td>
+              <td></td>
+              <td class="text-right">{{currency totalLoss currencyId 2}}</td>
+            </tr>
+          </tfoot>
+          </table>
+
+      </div>
+    </div>
+  </div>
+</body>
+
