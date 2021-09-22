@@ -9,10 +9,11 @@ DELIMITER $$
 
 @description
 Retrieves the cost center id for an account by using its account_id. Each account should
-have one and only one cost center.
+have one and only one cost center.  If an account does not have a cost center, NULL will be
+returned.
 
-NOTE(@jniles) - Currently, BHIMA does not guarantee this, but when we do make guarantees,
-we will be able to modify this function to do it.
+NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with an
+account, but when we do make guarantees, we will be able to modify this function to do it.
 */
 CREATE FUNCTION GetCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
@@ -29,10 +30,11 @@ END $$
 
 @description
 Retrieves the cost center id for a service using its service_uuid.  Each service should have one
-and only one cost center assocaited with it.
+and only one cost center assocaited with it.  If a service does not have a cost center, NULL will
+be returned.
 
-NOTE(@jniles) - Currently, BHIMA does not guarantee this, but when we do make guarantees,
-we will be able to modify this function to do it.
+NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with a
+service, but when we do make guarantees, we will be able to modify this function to do it.
 */
 CREATE FUNCTION GetCostCenterByServiceUuid(service_uuid BINARY(16))
 RETURNS MEDIUMINT(8) DETERMINISTIC
