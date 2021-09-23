@@ -16,7 +16,7 @@ function AccountService(Api, bhConstants, HttpCache) {
   const baseUrl = '/accounts/';
   const service = new Api(baseUrl);
 
-  // debounce the read() method by 250 milliseconds to avoid needless GET requests
+  // debounce the read() method by 250 milliseconds to avoid needless GET requests service.read = read;
   service.read = read;
   service.label = label;
 
@@ -27,6 +27,7 @@ function AccountService(Api, bhConstants, HttpCache) {
   service.filterAccountByType = filterAccountsByType;
   service.downloadAccountsTemplate = downloadAccountsTemplate;
   service.redCreditCell = redCreditCell;
+  service.isIncomeOrExpenseAccountTypeId = isIncomeOrExpenseAccountTypeId;
 
   /**
    * @method getOpeningBalance
@@ -100,6 +101,11 @@ function AccountService(Api, bhConstants, HttpCache) {
     return accounts.filter(account => {
       return account.type_id !== type;
     });
+  }
+
+  // return true if the account is an income or expense
+  function isIncomeOrExpenseAccountTypeId(typeId) {
+    return [bhConstants.accounts.INCOME, bhConstants.accounts.EXPENSE].includes(typeId);
   }
 
   /**
