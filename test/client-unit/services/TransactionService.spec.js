@@ -2,7 +2,7 @@
 /* eslint no-unused-expressions:off */
 describe('TransactionService', () => {
 
-  beforeEach(module('angularMoment', 'bhima.services', 'ui.bootstrap'));
+  beforeEach(module('angularMoment', 'bhima.services', 'ui.bootstrap', 'bhima.constants'));
 
   let Transactions;
   beforeEach(inject(TransactionService => {
@@ -223,7 +223,6 @@ describe('TransactionService', () => {
     const message = Transactions.offlineValidation(rows);
     expect(message).to.equal('TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION');
   });
-
 
   it('#offlineValidation() should error if there is not a transaction type per row', () => {
     const rows = angular.copy(dataset);
