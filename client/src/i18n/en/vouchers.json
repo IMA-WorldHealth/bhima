@@ -15,6 +15,7 @@
       "ERROR_TOTALS": "The totals are not balanced",
       "ERROR_PRECISION": "The amounts entered cannot have more than 4 decimal places in precision",
       "ERROR_NEGATIVE_NUMBERS": "There are negative numbers detected",
+      "ERROR_COST_CENTER_ON_OTHER_ACCOUNT" : "There are cost centers on non-income/expense accounts",
       "INVALID_VALUES": "There are invalid values detected",
       "PATIENT_INVOICE": "Patient Invoice",
       "REFERENCE": "Reference",
