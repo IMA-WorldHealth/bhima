@@ -6,40 +6,39 @@ uiGridEditAccount.$inject = ['uiGridEditConstants', 'AccountService', 'uiGridCon
 function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $timeout) {
   return {
     restrict : 'A',
-    template : function () {
-      var templ =
-        '<div style="display: table; margin-right: auto; margin-left: auto; width:95%">' +
-        '  <input type="text" autofocus ' +
-        '    style="width:100%" ' +
-        '    ng-model="accountInputValue" ' +
-        '    uib-typeahead="account.id as account.hrlabel for account in accounts | filter:{\'hrlabel\':$viewValue} | limitTo:8" ' +
-        '    typeahead-min-length="1" ' +
-        '    typeahead-editable ="false" ' +
-        '    typeahead-append-to-body="true" ' +
-        '    typeahead-on-select="setAccountOnRow(row.entity, $item)" />' +
-        '</div>';
+    template() {
+      const templ = '<div style="display: table; margin-right: auto; margin-left: auto; width:95%">'
+        + '  <input type="text" autofocus '
+        + '    style="width:100%" '
+        + '    ng-model="accountInputValue" '
+        + '    uib-typeahead="account.id as account.hrlabel for account in accounts | filter:{\'hrlabel\':$viewValue} | limitTo:8" '
+        + '    typeahead-min-length="1" '
+        + '    typeahead-editable ="false" '
+        + '    typeahead-append-to-body="true" '
+        + '    typeahead-on-select="setAccountOnRow(row.entity, $item)" />'
+        + '</div>';
 
       return templ;
     },
     require : ['?^uiGrid', '?^uiGridRenderContainer'],
     scope   : true,
-    compile : function () {
+    compile() {
       return {
-        post : function ($scope, $elm, $attrs, controllers) {
-          var uiGridCtrl = controllers[0];
-          var renderContainerCtrl = controllers[1];
+        post($scope, $elm, $attrs, controllers) {
+          const uiGridCtrl = controllers[0];
+          const renderContainerCtrl = controllers[1];
 
           Accounts.read()
-            .then(function (accounts) {
+            .then((accounts) => {
               $scope.accounts = Accounts.filterTitleAccounts(accounts);
             });
 
           // checks to see if a click landed in a dropdown menu - if so, it's probably the typeahead's.
           // if not, it is external and we should end the edit session
-          var onWindowClick = function (evt) {
-            var classNamed = angular.element(evt.target).attr('class');
+          const onWindowClick = function (evt) {
+            const classNamed = angular.element(evt.target).attr('class');
             if (classNamed) {
-              var isAccountTypeaheadElement = (classNamed.indexOf('dropdown-menu') > -1);
+              const isAccountTypeaheadElement = (classNamed.indexOf('dropdown-menu') > -1);
               if (!isAccountTypeaheadElement && evt.target.nodeName !== 'INPUT') {
                 $scope.stopEdit(evt);
               }
@@ -53,11 +52,11 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
             $scope.stopEdit(evt);
           };
 
-          $scope.stopEdit = function(evt) {
+          $scope.stopEdit = function (evt) {
             $scope.$emit(uiGridEditConstants.events.END_CELL_EDIT);
           };
 
-          $scope.$on('$destroy', function () {
+          $scope.$on('$destroy', () => {
             angular.element(window).off('click', onWindowClick);
           });
 
@@ -66,13 +65,14 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
             row.account_name = account.label;
             row.account_number = account.number;
             row.account_label = account.label;
+            row.account_type_id = account.type_id;
           };
 
-          $scope.$on(uiGridEditConstants.events.BEGIN_CELL_EDIT, function () {
+          $scope.$on(uiGridEditConstants.events.BEGIN_CELL_EDIT, () => {
             $scope.accountInputValue = '';
 
             if (uiGridCtrl.grid.api.cellNav) {
-              uiGridCtrl.grid.api.cellNav.on.navigate($scope, function (newRowCol, oldRowCol) {
+              uiGridCtrl.grid.api.cellNav.on.navigate($scope, (newRowCol, oldRowCol) => {
                 $scope.stopEdit();
               });
             } else {
@@ -84,16 +84,16 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
           });
 
           function focusTypeaheadInput() {
-            var $input = $elm.querySelectorAll('input')[0];
+            const $input = $elm.querySelectorAll('input')[0];
             $input.focus();
           }
 
-          $elm.on('keydown', function(evt) {
+          $elm.on('keydown', (evt) => {
             switch (evt.keyCode) {
-              case uiGridConstants.keymap.ESC:
-                evt.stopPropagation();
-                $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
-                break;
+            case uiGridConstants.keymap.ESC:
+              evt.stopPropagation();
+              $scope.$emit(uiGridEditConstants.events.CANCEL_CELL_EDIT);
+              break;
             }
 
             if (uiGridCtrl && uiGridCtrl.grid.api.cellNav) {
@@ -118,4 +118,3 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
     },
   };
 }
-
