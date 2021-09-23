@@ -8,7 +8,7 @@ AccountReferenceModalController.$inject = [
 
 function AccountReferenceModalController(
   $state, Accounts, AccountReferences,
-  Notify, AppCache, FormatTreeData, params
+  Notify, AppCache, FormatTreeData, params,
 ) {
   const vm = this;
   const cache = AppCache('AccountReferenceModal');

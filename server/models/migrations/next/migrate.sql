@@ -169,3 +169,10 @@ CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'F
 
 -- Update label in table account_reference_type 
 UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' WHERE art.id = 1;
+
+/**
+ * @author: mbayopanda
+ * @desc: extend column for account_reference table
+ */
+ALTER TABLE `account_reference` MODIFY COLUMN `abbr` VARCHAR(200) NOT NULL;
+ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NULL;
