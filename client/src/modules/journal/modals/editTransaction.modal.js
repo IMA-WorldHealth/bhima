@@ -5,6 +5,7 @@ JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
   'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout',
+  'CostCenterService', 'AccountService',
 ];
 
 /**
@@ -18,7 +19,8 @@ JournalEditTransactionController.$inject = [
  */
 function JournalEditTransactionController(
   Journal, Store, Transactions, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout,
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout, CostCenters,
+  Accounts,
 ) {
   const vm = this;
   let gridApi = {};
@@ -118,6 +120,34 @@ function JournalEditTransactionController(
     enableCellEdit : !vm.readOnly,
     allowCellFocus : !vm.readOnly,
     visible          : true,
+  }, {
+    field           : 'cost_center_id',
+    displayName     : 'FORM.LABELS.COST_CENTER',
+    cellTemplate : `
+      <div class="ui-grid-cell-contents">{{grid.appScope.costCenterMap[row.entity.cost_center_id]}}</div>
+    `,
+    headerCellFilter : 'translate',
+    editableCellTemplate : 'ui-grid/dropdownEditor',
+    editDropdownOptionsFunction : getCostCentersDropdown,
+    editDropdownValueLabel : 'label',
+    cellEditableCondition : shouldEditCostCenters,
+    enableCellEdit  : !vm.readOnly,
+    allowCellFocus  : !vm.readOnly,
+    visible         : true,
+  }, {
+    field             : 'principal_center_id',
+    displayName       : 'FORM.LABELS.PRINCIPAL_COST_CENTER',
+    headerCellFilter  : 'translate',
+    cellTemplate : `
+      <div class="ui-grid-cell-contents">{{grid.appScope.costCenterMap[row.entity.principal_center_id]}}</div>
+    `,
+    editableCellTemplate : 'ui-grid/dropdownEditor',
+    editDropdownOptionsFunction : getCostCentersDropdown,
+    editDropdownValueLabel : 'label',
+    enableCellEdit  : !vm.readOnly,
+    allowCellFocus  : !vm.readOnly,
+    cellEditableCondition : shouldEditCostCenters,
+    visible           : true,
   }];
 
   vm.gridOptions = {
@@ -158,6 +188,36 @@ function JournalEditTransactionController(
       vm.transactionTypes.setData(typeResults);
     });
 
+  function shouldEditCostCenters(scope) {
+    if (!scope) return false;
+    return !vm.readOnly
+      && Accounts.isIncomeOrExpenseAccountTypeId(scope.row.entity.account_type_id);
+  }
+
+  function loadCostCenters() {
+    return CostCenters.read()
+      .then(costCenters => {
+        // the top should be an empty cost center to serve as a "delete" cost center
+        // sets the ID to null
+        vm.costCenters = [{ id : null, label : '' }, ...costCenters];
+        vm.costCenterMap = vm.costCenters.reduce((map, cc) => { map[cc.id] = cc.label; return map; });
+        return vm.costCenters;
+      });
+  }
+
+  loadCostCenters();
+
+  /**
+   * @function getCostCentersDropdown
+   *
+   * @description
+   * Load the costCenters on demand for editing.
+  */
+  function getCostCentersDropdown() {
+    if (vm.costCenters) { return vm.costCenters; }
+    return loadCostCenters();
+  }
+
   // this is completely optional - it is just for decoration and interest.
   Journal.getTransactionEditHistory(transactionUuid)
     .then(editHistory => {
@@ -184,7 +244,6 @@ function JournalEditTransactionController(
 
       cache.gridQuery = transaction;
       setupGridRows(cache.gridQuery);
-
     })
     .catch(() => {
       vm.hasError = true;
@@ -387,6 +446,13 @@ function JournalEditTransactionController(
       if (isOriginalRow) {
         changes[rowEntity.uuid] = changes[rowEntity.uuid] || {};
         changes[rowEntity.uuid][colDef.field] = newValue;
+      }
+
+      // if a user has editted the account_number, remove all associated cost centers to
+      // prevent confusion and accidentally associated cost centers with non-income/expense accounts
+      if (colDef.field === 'account_number') {
+        delete rowEntity.cost_center_id;
+        delete rowEntity.principal_center_id;
       }
     }
   }
