@@ -52,8 +52,8 @@ CREATE TABLE `account_type` (
 DROP TABLE IF EXISTS `account_reference`;
 CREATE TABLE `account_reference` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `abbr` VARCHAR(35) NOT NULL,
-  `description` VARCHAR(100) NOT NULL,
+  `abbr` VARCHAR(200) NOT NULL,
+  `description` VARCHAR(200) NOT NULL,
   `parent` MEDIUMINT(8) UNSIGNED NULL,
   `reference_type_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
