@@ -14,8 +14,6 @@
  * @requires lib/errors/BadRequest
  */
 
-const _ = require('lodash');
-
 const util = require('../../lib/util');
 const db = require('../../lib/db');
 
@@ -267,7 +265,7 @@ function create(req, res, next) {
 }
 
 function createVoucher(voucherDetails, userId, projectId) {
-  let items = voucherDetails.items || [];
+  const items = voucherDetails.items || [];
 
   const voucherType = voucherDetails.type_id;
   const updatesPaiementData = [];
@@ -328,23 +326,32 @@ function createVoucher(voucherDetails, userId, projectId) {
     item = db.convert(item, ['uuid', 'voucher_uuid', 'document_uuid', 'entity_uuid']);
   });
 
-  // map items into an array of arrays
-  items = _.map(
-    items,
-    util.take('uuid', 'account_id', 'debit', 'credit', 'voucher_uuid', 'document_uuid', 'entity_uuid'),
-  );
-
   // initialise the transaction handler
   const transaction = db.transaction();
 
   // build the SQL query
-  transaction
-    .addQuery('INSERT INTO voucher SET ?', [voucherDetails])
-    .addQuery(
-      'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
-      [items],
-    )
-    .addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
+  transaction.addQuery('INSERT INTO voucher SET ?', [voucherDetails]);
+
+  items.forEach(item => {
+    // lookup for cost_center_id from account_id if not given
+    transaction.addQuery(
+      `INSERT INTO voucher_item (
+        uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid, cost_center_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ${item.cost_center_id ? '?' : 'GetCostCenterByAccountId(?)'})`,
+      [
+        item.uuid,
+        item.account_id,
+        item.debit,
+        item.credit,
+        item.voucher_uuid,
+        item.document_uuid,
+        item.entity_uuid,
+        item.cost_center_id ? item.cost_center_id : item.account_id,
+      ],
+    );
+  });
+
+  transaction.addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
 
   // Only for Employee Salary Paiement
   if (voucherType === 7) {
