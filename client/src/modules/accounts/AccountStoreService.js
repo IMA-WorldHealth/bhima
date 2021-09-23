@@ -17,7 +17,6 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
   let initTypeLoad = true;
   service.accounts = accountStore;
   service.types = typeStore;
-
   const accounts = new Store();
   const accountTypes = new Store();
 

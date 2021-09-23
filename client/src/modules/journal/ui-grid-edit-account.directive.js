@@ -66,6 +66,7 @@ function uiGridEditAccount(uiGridEditConstants, Accounts, uiGridConstants, $time
             row.account_name = account.label;
             row.account_number = account.number;
             row.account_label = account.label;
+            row.account_type_id = account.type_id;
           };
 
           $scope.$on(uiGridEditConstants.events.BEGIN_CELL_EDIT, function () {
