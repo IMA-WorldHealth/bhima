@@ -21,6 +21,7 @@ function StockSettingsController(
 
   // bind methods
   vm.submit = submit;
+  vm.onSelectCostCenter = onSelectCostCenter;
 
   // fired on startup
   function startup() {
@@ -45,6 +46,11 @@ function StockSettingsController(
 
     // load algorithms for Average Consumption
     vm.algorithms = bhConstants.average_consumption_algo;
+  }
+
+  function onSelectCostCenter(cc) {
+    const ccKey = 'default_cost_center_for_loss';
+    vm.settings[ccKey] = cc.id;
   }
 
   // form submission

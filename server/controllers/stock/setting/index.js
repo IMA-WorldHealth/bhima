@@ -24,7 +24,8 @@ exports.list = function list(req, res, next) {
       enable_auto_purchase_order_confirmation, enable_auto_stock_accounting,
       enable_strict_depot_permission, enable_supplier_credit,
       enable_strict_depot_distribution, average_consumption_algo,
-      min_delay, default_purchase_interval, enable_expired_stock_out
+      min_delay, default_purchase_interval, enable_expired_stock_out,
+      default_cost_center_for_loss
     FROM stock_setting
     WHERE enterprise_id = ? LIMIT 1;
     `;

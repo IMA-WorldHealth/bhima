@@ -1893,6 +1893,7 @@ CREATE TABLE `stock_setting` (
   `min_delay` DECIMAL(19,4) NOT NULL DEFAULT 1, -- minimum number of months for inventory delay)
   `default_purchase_interval` DECIMAL(19,4) NOT NULL DEFAULT 0, -- default minimum purchase order intervall)
   `enable_expired_stock_out` TINYINT(1) NOT NULL DEFAULT 0,
+  `default_cost_center_for_loss` MEDIUMINT(8) NULL,
   CONSTRAINT `stock_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
