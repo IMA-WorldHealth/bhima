@@ -69,7 +69,8 @@ function ConfigIndicePaiementModalController(
   function load(filters) {
     MultiplePayroll.read(null, filters)
       .then((result) => {
-        // Correction of the error when configuring data linked to an employee with the payroll module with indice
+        // Correction of the error when configuring data linked
+        // to an employee with the payroll module with indice
         result.employees.forEach(item => {
           if (item.uuid === params.uuid) {
             vm.employee = item;
