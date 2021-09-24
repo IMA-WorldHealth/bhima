@@ -20,6 +20,9 @@ function ConfigIndicePaiementModalController(
 
   const cache = AppCache('multiple-indice-payroll-grid');
 
+  console.log('PARAM_UUID:::_');
+  console.log(params.uuid);
+
   if (params.isCreateState || params.uuid) {
     cache.stateParams = params;
     vm.stateParams = cache.stateParams;
@@ -66,22 +69,12 @@ function ConfigIndicePaiementModalController(
   function load(filters) {
     MultiplePayroll.read(null, filters)
       .then((result) => {
-        // console.log('LES_RESULTATSSSSssssss');
-        // console.log(result);
-        // console.log('+ + + + _ _ _ _ _ _ _ _ _ + + + +');
-
-        // console.log('THE_MAPSSSSSs');
-        // console.log(rubricsMap);
-        console.log('TraBZanSporRRRRRRRRRRRRRrrrrrrrr');
-        console.log(rubricsMap);
-
-        // rubricsMap.forEach(map => {
-        //   if (map.value) {
-        //     console.log(map);
-        //   }
-        // });
-
-        vm.employee = result.employees[0] || {};
+        // Correction of the error when configuring data linked to an employee with the payroll module with indice
+        result.employees.forEach(item => {
+          if (item.uuid === params.uuid) {
+            vm.employee = item;
+          }
+        });
 
         vm.employee.rubrics.forEach(r => {
           vm.selectedRubrics[r.rubric_id] = r.rubric_value;
