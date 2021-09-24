@@ -20,9 +20,6 @@ function ConfigIndicePaiementModalController(
 
   const cache = AppCache('multiple-indice-payroll-grid');
 
-  console.log('PARAM_UUID:::_');
-  console.log(params.uuid);
-
   if (params.isCreateState || params.uuid) {
     cache.stateParams = params;
     vm.stateParams = cache.stateParams;
