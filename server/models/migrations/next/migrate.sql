@@ -155,7 +155,6 @@ ALTER TABLE `cost_center_allocation_basis_value`
   ADD CONSTRAINT unique_allocation_cost_center_basis UNIQUE (`cost_center_id`, `basis_id`);
   
 
-
 /**
 author: @lomamech
 date: 2021-09-16
@@ -176,3 +175,9 @@ UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' W
  */
 ALTER TABLE `account_reference` MODIFY COLUMN `abbr` VARCHAR(200) NOT NULL;
 ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NULL;
+
+/**
+ * @author: mbayopanda
+ * @desc: stock setting for cost center to use in case of stock loss
+ */
+ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL;
