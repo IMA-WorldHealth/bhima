@@ -203,3 +203,12 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
 UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
+
+/**
+ * @author: mbayopanda
+ * @desc: add predefined allocation basis
+ */
+INSERT INTO `cost_center_allocation_basis` (`id`, `name`, `units`, `description`, `is_predefined`) VALUES
+  (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
+  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1);
