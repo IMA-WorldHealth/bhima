@@ -195,3 +195,11 @@ INSERT IGNORE INTO `unit` VALUES
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
    ('lost_stock_report', 'LOST_STOCK_REPORT');
+   
+/**
+ * @author: mbayopanda
+ * @desc: fix allocation bases link and report
+ */
+UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
