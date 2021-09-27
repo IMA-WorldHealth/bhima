@@ -176,3 +176,11 @@ UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' W
  */
 ALTER TABLE `account_reference` MODIFY COLUMN `abbr` VARCHAR(200) NOT NULL;
 ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NULL;
+
+/**
+ * @author: mbayopanda
+ * @desc: fix allocation bases link and report
+ */
+UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
