@@ -181,3 +181,11 @@ ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NUL
  * @desc: stock setting for cost center to use in case of stock loss
  */
 ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL;
+
+/**
+ * @author: mbayopanda
+ * @desc: fix allocation bases link and report
+ */
+UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
