@@ -235,7 +235,7 @@
     </div>
 
     <div class="form-group"
-      ng-class="{ 'has-error' : FeeCenterForm.$submitted && FeeCenterForm.allocation_basis.$invalid }">
+      ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.allocation_basis.$invalid }">
       <label class="control-label" translate>FORM.LABELS.SELECT_ALLOCATION_BASIS</label>
       <select class="form-control"
         name="allocation_basis"
@@ -244,7 +244,7 @@
         required>
         <option value="" disabled ng-if="CostCenterModalCtrl.isCreateState" translate>FORM.LABELS.SELECT_ONE</option>
       </select>
-      <div class="help-block" ng-messages="FeeCenterForm.allocation_basis.$error" ng-show="FeeCenterForm.$submitted">
+      <div class="help-block" ng-messages="CostCenterForm.allocation_basis.$error" ng-show="CostCenterForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
