@@ -17,7 +17,7 @@ async function lookupCostCenter(id) {
       cab.is_predefined AS allocation_basis_is_predefined,
       cabval.quantity AS allocation_basis_quantity
     FROM cost_center as fc
-    JOIN cost_center_allocation_basis as cab ON cab.id = fc.allocation_basis_id
+    LEFT JOIN cost_center_allocation_basis as cab ON cab.id = fc.allocation_basis_id
     LEFT JOIN cost_center_allocation_basis_value AS cabval
       ON cabval.cost_center_id = fc.id AND cabval.basis_id = fc.allocation_basis_id
     WHERE fc.id = ?
