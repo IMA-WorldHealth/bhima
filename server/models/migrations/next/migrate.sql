@@ -139,10 +139,14 @@ date: 2021-09-15
 description: Add cost basis items
 */
 INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
+  (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
+  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'm�', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
-  
+
+
 /*
  * @author: mbayopanda
  * @date: 2021-09-12
@@ -153,7 +157,7 @@ INSERT IGNORE INTO `unit` VALUES
 
 ALTER TABLE `cost_center_allocation_basis_value`
   ADD CONSTRAINT unique_allocation_cost_center_basis UNIQUE (`cost_center_id`, `basis_id`);
-  
+
 
 /**
 author: @lomamech
@@ -181,3 +185,14 @@ ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NUL
  * @desc: stock setting for cost center to use in case of stock loss
  */
 ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL;
+
+/**
+* author: @jmcameron
+* date: 2021-09-24
+* description: Add lost stock report menu item
+*/
+INSERT IGNORE INTO `unit` VALUES
+  (300, 'Lost Stock Report', 'TREE.LOST_STOCK_REPORT', 'Report on stock lost during depot transfers', 282, '/reports/lost_stock_report');
+
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+   ('lost_stock_report', 'LOST_STOCK_REPORT');
