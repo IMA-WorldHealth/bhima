@@ -43,6 +43,7 @@ BEGIN
   DECLARE FROM_PURCHASE_FLUX_ID INT(11) DEFAULT 1;
   DECLARE TO_PATIENT_FLUX_ID INT(11) DEFAULT 9;
   DECLARE TO_SERVICE_FLUX_ID INT(11) DEFAULT 10;
+  DECLARE TO_LOSS_FLUX_ID INT(11) DEFAULT 11;
 
   -- transaction type
   DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
@@ -150,6 +151,13 @@ BEGIN
       JOIN service s ON s.uuid = sm.entity_uuid
       WHERE sm.entity_uuid IS NOT NULL 
       LIMIT 1
+    );
+  END IF;
+
+  /* EXIT TO LOSS : get cost_center_id */
+  IF (sm_flux_id = TO_LOSS_FLUX_ID AND isExit = 1) THEN 
+    SET voucher_item_cost_center_id = (
+      SELECT default_cost_center_for_loss FROM stock_setting LIMIT 1
     );
   END IF;
 
