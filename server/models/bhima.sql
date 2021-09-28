@@ -172,7 +172,8 @@ INSERT INTO unit VALUES
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
   (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
-  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases');
+  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
+  (300, 'Lost Stock Reprot','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report');
 
 
 -- Reserved system account type
@@ -246,7 +247,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
-  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
+  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
+  ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
