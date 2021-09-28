@@ -512,10 +512,12 @@ function listLostStock(params) {
   const { depotRole } = params;
   delete params.depotRole;
 
-  params.fake_field = true;
+  // Define the pseudo parameter 'enable_quantity_check' to enable the custom quantity check
+  params.enable_quantity_check = true;
+
   const filters = new FilterParser(params, { tableAlias : 'dest' });
 
-  filters.custom('fake_field', 'dest.flux_id = (?) AND IFNULL((ex.quantity - dest.quantity), 0) <> 0',
+  filters.custom('enable_quantity_check', 'dest.flux_id = (?) AND IFNULL((ex.quantity - dest.quantity), 0) <> 0',
     flux.FROM_OTHER_DEPOT);
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');

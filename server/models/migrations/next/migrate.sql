@@ -188,4 +188,4 @@ INSERT IGNORE INTO `unit` VALUES
   (300, 'Lost Stock Report', 'TREE.LOST_STOCK_REPORT', 'Report on stock lost during depot transfers', 282, '/reports/lost_stock_report');
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
-   ('lost_stock_report', 'LOST_STOCK_REPORT');
+   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
