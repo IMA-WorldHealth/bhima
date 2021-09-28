@@ -10,6 +10,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       required         : '<?',
       disabled         : '<?',
+      label            : '@?',
     },
   });
 
@@ -35,6 +36,7 @@ function CostCenterSelectController(CostCenters, Notify) {
   }
 
   $ctrl.$onInit = () => {
+    $ctrl.label = $ctrl.label || 'COST_CENTER.TITLE';
     $ctrl.costCenterId = +$ctrl.costCenterId;
     loadCostCenters();
   };

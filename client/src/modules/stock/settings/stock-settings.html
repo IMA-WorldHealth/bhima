@@ -157,6 +157,23 @@
             </div>
           </div>
 
+          <!-- default cost center for stock loss -->
+          <div class="form-group"
+            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_cost_center_for_loss.$invalid }">
+            <bh-cost-center-select 
+              label="SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS"
+              cost-center-id="StockSettingsCtrl.settings.default_cost_center_for_loss"
+              on-select-callback="StockSettingsCtrl.onSelectCostCenter(costCenter)">
+            </bh-cost-center-select>
+            <span class="help-block" translate>
+              SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS_HELP_TEXT
+            </span>
+            <div class="help-block" ng-messages="StockSettingsForm.default_cost_center_for_loss.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
         </div>
 
         <div class="panel-footer" id="submission">

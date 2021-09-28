@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.costCenterId.$invalid }">
 
     <label class="control-label" translate>
-      COST_CENTER.TITLE
+      {{ $ctrl.label }}
     </label>
 
     <ui-select
