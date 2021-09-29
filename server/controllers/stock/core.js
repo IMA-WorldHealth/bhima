@@ -49,6 +49,7 @@ module.exports = {
   getLotsDepot,
   getLotsMovements,
   listStatus,
+  listLostStock,
   // stock consumption
   getInventoryQuantityAndConsumption,
   getInventoryMovements,
@@ -469,8 +470,6 @@ async function getMovements(depotUuid, params) {
     LEFT JOIN depot AS dp ON dp.uuid = m.entity_uuid
     LEFT JOIN document_map dm2 ON dm2.uuid = m.entity_uuid
     LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
-
-
   `;
 
   const finalClause = 'GROUP BY document_uuid, is_exit';
@@ -478,6 +477,61 @@ async function getMovements(depotUuid, params) {
   const movements = await getLots(sql, params, finalClause, orderBy);
 
   return movements;
+}
+
+/**
+ * @function listLostStock
+ *
+ * This function returns a list of stock lost between purchase and delivery
+ */
+function listLostStock(params) {
+  const sql = `
+    SELECT
+      BUID(dest.uuid) as uuid, dest.date, dest.description, dest.period_id,
+      dest.document_uuid, dest.depot_uuid, dest.unit_cost,
+      dd.text AS destDepot, od.text AS srcDepot,
+      dest.quantity AS quantityRecd, ex.quantity AS quantitySent,
+      IFNULL((ex.quantity - dest.quantity), 0) AS quantityDifference,
+      i.code AS inventory_code, i.text AS inventory_name,
+      l.label AS lotLabel, l.expiration_date AS expirationDate,
+      dest.unit_cost, (dest.quantity * dest.unit_cost) AS total_cost
+    FROM stock_movement dest
+    JOIN depot dd ON dd.uuid = dest.depot_uuid
+    JOIN depot od ON od.uuid = dest.entity_uuid
+    JOIN lot l ON l.uuid = dest.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN (
+      SELECT m.document_uuid, m.lot_uuid, m.quantity, m.unit_cost
+      FROM stock_movement m
+      WHERE m.is_exit = 1 AND m.flux_id = ${flux.TO_OTHER_DEPOT}
+    ) ex ON ex.document_uuid = dest.document_uuid AND ex.lot_uuid = dest.lot_uuid
+  `;
+
+  db.convert(params, ['depot_uuid']);
+
+  const { depotRole } = params;
+  delete params.depotRole;
+
+  // Define the pseudo parameter 'enable_quantity_check' to enable the custom quantity check
+  params.enable_quantity_check = true;
+
+  const filters = new FilterParser(params, { tableAlias : 'dest' });
+
+  filters.custom('enable_quantity_check', 'dest.flux_id = (?) AND IFNULL((ex.quantity - dest.quantity), 0) <> 0',
+    flux.FROM_OTHER_DEPOT);
+  filters.dateFrom('dateFrom', 'date');
+  filters.dateTo('dateTo', 'date');
+  if (depotRole === 'destination') {
+    filters.equals('depot_uuid');
+  } else if (depotRole === 'source') {
+    filters.equals('depot_uuid', 'uuid', 'od');
+  }
+  filters.setOrder('ORDER BY dest.date, destDepot');
+
+  const query = filters.applyQuery(sql);
+  const queryParams = filters.parameters();
+
+  return db.exec(query, queryParams);
 }
 
 /**
