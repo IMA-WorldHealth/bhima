@@ -97,6 +97,7 @@
     "IPR_TAX_CONFIGURATION": "Configuration de la taxe IPR",
     "JOURNAL_VOUCHER":"Ajout Transactions",
     "LOCATION":"Localisations",
+    "LOST_STOCK_REPORT": "Rapport sur les stocks perdus",
     "MONTHLY_BALANCE": "Analyse mensuel de la Balance",
     "MONTHLY_CONSUMPTION" : "[Stock] Consommations mensuelles",
     "MULTI_PAYROLL" : "Payroll Multiple",

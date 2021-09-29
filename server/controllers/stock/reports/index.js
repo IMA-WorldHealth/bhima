@@ -23,6 +23,7 @@ const stockInlineMovementsReport = require('./stock/inline_movements_report');
 const stockInventoriesReport = require('./stock/inventories_report');
 const stockSheetReport = require('./stock/stock_sheet');
 const stockAggregatedConsumptionReport = require('./stock/aggregated_consumption_report');
+const lostStockReport = require('./stock/lost_stock_report');
 
 const stockExitPatientReceipt = require('./stock/exit_patient_receipt');
 const stockExitDepotReceipt = require('./stock/exit_depot_receipt');
@@ -155,6 +156,7 @@ exports.stockAssignReceipt = stockAssignReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchase_order_analysis');
 
+exports.lostStockReport = lostStockReport;
 exports.stockChangesReport = stockChangesReport;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;

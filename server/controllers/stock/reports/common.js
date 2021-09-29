@@ -25,6 +25,7 @@ const STOCK_AGGREGATE_CONSUMPTION_TEMPLATE = `${BASE_PATH}/stock_aggregate_consu
 // reports
 const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
 const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
+const STOCK_LOST_STOCK_REPORT_TEMPLATE = `${BASE_PATH}/stock_lost_stock.report.handlebars`;
 const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
 const STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_inline_movements.report.handlebars`;
@@ -55,7 +56,7 @@ const { formatFilters } = require('../../finance/reports/shared');
  * @param {string} documentUuid
  * @param {object} enterprise
  * @param {boolean} isExit
- * @description return depot movement informations
+ * @description return depot movements information
  * @return {object} data
  */
 async function getDepotMovement(documentUuid, enterprise, isExit) {
@@ -205,6 +206,7 @@ module.exports = {
   STOCK_ADJUSTMENT_TEMPLATE,
   STOCK_EXIT_REPORT_TEMPLATE,
   STOCK_ENTRY_REPORT_TEMPLATE,
+  STOCK_LOST_STOCK_REPORT_TEMPLATE,
   STOCK_LOTS_REPORT_TEMPLATE,
   STOCK_MOVEMENTS_REPORT_TEMPLATE,
   STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE,

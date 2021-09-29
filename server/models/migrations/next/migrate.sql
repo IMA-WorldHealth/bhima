@@ -186,6 +186,17 @@ ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NUL
 CALL add_column_if_missing('stock_setting', 'default_cost_center_for_loss', 'MEDIUMINT(8) DEFAULT NULL');
 /* WAS: ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL; */
 
+/**
+* author: @jmcameron
+* date: 2021-09-24
+* description: Add lost stock report menu item
+*/
+INSERT IGNORE INTO `unit` VALUES
+  (300, 'Lost Stock Report', 'TREE.LOST_STOCK_REPORT', 'Report on stock lost during depot transfers', 282, '/reports/lost_stock_report');
+
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+   ('lost_stock_report', 'LOST_STOCK_REPORT');
+   
 /*
  * @author: jmcameron
  * @date: 2021-09-29

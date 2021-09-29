@@ -140,6 +140,17 @@
       "TITLE" : "Inventory Changes Report",
       "DESCRIPTION": "This reports shows changes occured on inventory items during a period."
     },
+    "LOST_STOCK_REPORT": {
+      "TITLE": "Lost Stock Report",
+      "DEPOT_ROLE": "List stock transfer losses for this depot as",
+      "DESCRIPTION": "This report lists stock that was lost while transferring stock from one depot to another",
+      "DESTINATION": "Destination",
+      "DESTINATION_DEPOT" : "Destination Depot",
+      "EITHER": "Either",
+      "LOSS": "Loss",
+      "SOURCE": "Source",
+      "SOURCE_DEPOT" : "Source Depot"
+    },
     "MONTHLY_CONSUMPTION" : {
       "TITLE": "Monthly consumption",
       "DESCRIPTION": "Monthly consumption report by deposit for a given period"
@@ -186,12 +197,10 @@
       "TITLE" : "Stock Consumption's graph report",
       "DESCRIPTION" : "This report graphically shows the consumption of stock during a period for a depot or inventory"
     },
-
     "STOCK_MOVEMENT_REPORT" : {
       "TITLE" : "Stock Movement Graph",
       "DESCRIPTION" : "This report displays a graph of stock movements made during a period"
     },
-
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
@@ -203,6 +212,7 @@
     "NULL" : "Null",
     "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "TOTALS": "Totals",
     "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",
     "VIEW_INVOICE": "View Invoices",
@@ -275,7 +285,7 @@
       "EXIT_REPORT": "Stock Exit Report",
       "EXIT_REPORT_DESCRIPTION": "This report shows stock exits which had occurred in different depots",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Include aggregate consumption",
-	  "INCLUDE_INFORMATION": "Information to include",
+      "INCLUDE_INFORMATION": "Information to include",
       "INCLUDE_PATIENT_EXIT": "Include stock exit to patient",
       "INCLUDE_SERVICE_EXIT": "Include stock exit to service",
       "INCLUDE_GROUPED_SERVICE_EXIT" : "Include stock exit grouped by services",

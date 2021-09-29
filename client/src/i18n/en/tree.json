@@ -98,6 +98,7 @@
     "JOURNAL_LOG":"Journal Log",
     "JOURNAL_VOUCHER" : "Journal Voucher",
     "LOCATION" : "Location Management",
+    "LOST_STOCK_REPORT" : "Lost Stock Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "MONTHLY_CONSUMPTION" : "[Stock] Monthly consumption",
     "MULTI_PAYROLL_INDICE" : "Multiple Payroll (index-based)",
