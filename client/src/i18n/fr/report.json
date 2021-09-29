@@ -95,7 +95,7 @@
       "TITLE": "Rapports des centres de coût"
     },
     "COST_CENTER_STEPDOWN": {
-      "TITLE": "Allocation des centres de coût",
+      "TITLE": "Allocation des coûts par étapes",
       "DESCRIPTION": "Affiche les allocations des couts des centres auxiliaires vers les centres principaux avec la methode de 'Step-Down'"
     },
     "GENERATED" : "Rapport généré",

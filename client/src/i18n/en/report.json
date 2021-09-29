@@ -103,7 +103,7 @@
       "TITLE": "Cost Center Report"
     },
     "COST_CENTER_STEPDOWN": {
-      "TITLE": "Allocation of Cost Centers",
+      "TITLE": "Step-Down Allocation of Cost Centers",
       "DESCRIPTION": "Displays the cost allocations from the auxiliary centers to the main centers with the 'Step-Down' method"
     },
     "GENERATED": "Generated Report",

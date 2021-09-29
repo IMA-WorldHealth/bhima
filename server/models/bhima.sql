@@ -102,18 +102,18 @@ INSERT INTO unit VALUES
   (217,'Tags','TREE.TAGS','',1,'/tags'),
   (218,'Fee Center Management','TREE.COST_CENTER_MANAGEMENT','',0,'/cost_center'),
   (219,'Fee Center Management','TREE.COST_CENTER','',218,'/cost_center'),
-  (220,'Distributions Fee Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','',218,'/allocation_center'),
-  (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/allocation_center/update'),
-  (222,'Fee Center Report','TREE.COST_CENTER_REPORT','Fee Center Report',286,'/reports/cost_center'),
-  (223,'Distribution keys','TREE.ALLOCATION_KEYS','Distribution keys',218,'/allocation_center/allocation_key'),
+  -- (220,'Distributions Fee Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','',218,'/allocation_center'),
+  -- (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/allocation_center/update'),
+  -- (222,'Fee Center Report','TREE.COST_CENTER_REPORT','Fee Center Report',286,'/reports/cost_center'),
+  -- (223,'Distribution keys','TREE.DISTRIBUTION_KEYS_MANAGEMENT','Distribution keys',218,'/allocation_center/allocation_key'),
   (225,'Stock Assignment','ASSIGN.STOCK_ASSIGN','',160,'/stock/assign'),
   (226,'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type',1,'/account_reference_type'),
   (227,'Ward Module','TREE.WARD','Ward folder',0,'/WARD_FOLDER'),
   (228,'Ward Configurations','TREE.WARD_CONFIGURATION','Ward configuration module',227,'/ward/configuration'),
   (229,'Visits Registry','TREE.VISITS_REGISTRY','Visits registry',12,'/patients/visits'),
-  (230,'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference',1,'/break_even_reference'),
-  (231,'Break Even Report','TREE.BREAK_EVEN_REPORT','Break-even Report',286,'/reports/break_even'),
-  (232,'Break Even By Fee Center','TREE.BREAK_EVEN_COST_CENTER_REPORT','Break-even By Fee Center Report',286,'/reports/break_even_cost_center'),
+  -- (230,'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference',1,'/break_even_reference'),
+  -- (231,'Break Even Report','TREE.BREAK_EVEN_REPORT','Break-even Report',286,'/reports/break_even'),
+  -- (232,'Break Even By Fee Center','TREE.BREAK_EVEN_COST_CENTER_REPORT','Break-even By Fee Center Report',286,'/reports/break_even_cost_center'),
   (233,'Dashboards Folder','TREE.DASHBOARDS.TITLE','Tableaux de bord',0,'/DASHBOARDS_FOLDER'),
   (234,'Indicators Files Registry','TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY','Registre des fiches des indicateurs',233,'/dashboards/indicators_files_registry'),
   (235,'Hospitalization dashboard','TREE.DASHBOARDS.HOSPITALIZATION','Tableau de bord des hospitalisations',233,'/dashboards/hospitalization'),
@@ -484,13 +484,21 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);
 
 -- Cost Center basis info
-INSERT INTO `cost_center_allocation_basis` (`id`, `name`, `units`, `description`, `is_predefined`) VALUES
-  (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
-  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
-  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
-  (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
-  (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
-  (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
+INSERT INTO `cost_center_allocation_basis`
+  (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`)
+  VALUES
+  (1, 'ALLOCATION_BASIS_DIRECT_COST', '',
+      'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1, 1, 2),
+  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '',
+      'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1, 0, 0),
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'ALLOCATION_BASIS_AREA_USED_UNITS',
+      'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1, 0, 1),
+  (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS',
+      'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1, 0, 1),
+  (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '',
+      'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1, 0, 0),
+  (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS',
+      'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1, 0, 1);
 
 
 
