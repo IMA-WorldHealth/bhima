@@ -33,7 +33,7 @@ END $$
 
 @description
 Retrieves the principal center id for an account by using its account_id. Each account should
-have one and only one cost center.  If an account does not have a cost center, NULL will be
+have one and only one cost center.  If an account does not have a principal center, NULL will be
 returned.
 
 NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with an
