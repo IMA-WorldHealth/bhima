@@ -68,6 +68,7 @@ function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal
     field : 'name',
     displayName : 'TABLE.COLUMNS.NAME',
     headerCellFilter : 'translate',
+    cellFilter : 'translate',
     width : '25%',
   }, {
     field : 'description',
