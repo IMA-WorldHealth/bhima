@@ -141,7 +141,7 @@ description: Add cost basis items
 INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
   (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
-  (3, 'ALLOCATION_BASIS_AREA_USED', 'm�', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
@@ -195,7 +195,7 @@ INSERT IGNORE INTO `unit` VALUES
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
    ('lost_stock_report', 'LOST_STOCK_REPORT');
-   
+
 /**
  * @author: mbayopanda
  * @desc: fix allocation bases link and report
@@ -203,12 +203,3 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
 UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
-
-/**
- * @author: mbayopanda
- * @desc: add predefined allocation basis
- */
-INSERT INTO `cost_center_allocation_basis` (`id`, `name`, `units`, `description`, `is_predefined`) VALUES
-  (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
-  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
-  (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1);
