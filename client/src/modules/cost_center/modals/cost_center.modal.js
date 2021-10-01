@@ -27,7 +27,7 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
   // exposed methods
   vm.submit = submit;
   vm.auxiliaryFee = auxiliaryFee;
-  vm.costCenter = costCenter;
+  vm.setCostCenterMeta = setCostCenterMeta;
   vm.onSelectAccountReference = onSelectAccountReference;
   vm.onSelectProject = onSelectProject;
 
@@ -42,10 +42,11 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
   } else {
     CostCenter.read(vm.stateParams.id)
       .then((data) => {
-        [vm.costCenter] = data.costCenter;
+        const costCenterInfoExists = !!(data.costCenter && data.costCenter.length >= 0 && data.costCenter[0]);
+        vm.costCenter = costCenterInfoExists ? data.costCenter[0] : {};
         if (data.services) {
           vm.relatedServices = data.services.length ? 1 : 0;
-          vm.assignedProject = data.costCenter[0].project_id ? 1 : 0;
+          vm.assignedProject = data.costCenter && data.costCenter[0] && data.costCenter[0].project_id ? 1 : 0;
           vm.services = data.services;
         }
         processReference(data.references);
@@ -56,18 +57,15 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
 
   AllocationBasisService.getAllocationBases()
     .then((bases) => {
-      // Translate the basis terms, if possible
-      bases.forEach(base => {
+      // Translate the basis terms
+      vm.allocationBases = bases.map(base => {
         if (base.is_predefined) {
           base.name = $translate.instant(base.name);
           base.description = $translate.instant(base.description);
           base.units = base.units ? $translate.instant(base.units) : '';
         }
-        if (base.units) {
-          base.name += ` (${base.units})`;
-        }
+        return base;
       });
-      vm.allocationBases = bases;
     })
     .catch(Notify.handleError);
 
@@ -160,7 +158,7 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
     }
   }
 
-  function costCenter(value) {
+  function setCostCenterMeta(value) {
     vm.isCostCenter = value;
     vm.isProfitCenter = !value;
   }
