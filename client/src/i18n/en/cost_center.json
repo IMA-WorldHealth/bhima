@@ -1,10 +1,23 @@
 {
   "COST_CENTER" : {
-    "TITLE" : "Cost Center",
-    "ALLOCATION_REGISTRY" : "Cost Center Allocation Registry",
-    "ALLOCATION_KEYS" : "Allocation Keys",
+    "TITLE" : "Cost Centers",
     "ADD_ALLOCATION_KEYS" : "Add Allocation Keys",
-    "EDIT_ALLOCATION_KEYS" : "Edit Allocation Keys"
+    "ADD_COST_CENTER" : "Add a Cost Center",
+    "ALLOCATION_BASES":"Allocation Bases",
+    "ALLOCATION_BASIS": "Allocation basis",
+    "ALLOCATION_BASIS_TABLE": "Table of allocation bases",
+    "ALLOCATION_BY_COST_CENTERS" : "Allocations by cost center according to the allocation bases",
+    "ALLOCATION_KEYS" : "Allocation Bases",
+    "ALLOCATION_REGISTRY" : "Cost Center Allocation Registry",
+    "AUXILIARY": "Auxiliary Cost Center",
+    "DELETE": "Delete This Cost Center",
+    "DIRECT_COST": "Direct Cost",
+    "EDIT_ALLOCATION_BASIS": "Edit allocation basis",
+    "EDIT_ALLOCATION_KEYS" : "Edit Allocation Keys",
+    "EDIT_COST_CENTER" : "Update the Cost Center Information",
+    "PRINCIPAL": "Principal Cost Center",
+    "SELECT_ALLOCATION_BASIS": "Select allocation basis",
+    "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation"
   },
   "ALLOCATION_METHOD": "Allocation method",
   "ALLOCATION_METHOD_FLAT": "Flat",
@@ -14,14 +27,17 @@
   "ALLOCATION_BASIS": "Allocation basis",
   "ALLOCATION_BASIS_AREA_USED": "Area used",
   "ALLOCATION_BASIS_AREA_USED_DESCRIPTION": "Area used by the service",
+  "ALLOCATION_BASIS_AREA_USED_UNITS": "m²",
   "ALLOCATION_BASIS_DIRECT_COST": "Direct cost",
   "ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION": "Direct cost of the service",
   "ALLOCATION_BASIS_ELECTRICITY_CONSUMED": "Electricity consumed",
   "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION": "Electricity consumed by the service",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS": "kWh",
   "ALLOCATION_BASIS_NUM_COMPUTERS": "Num. computers",
   "ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION": "Number of computers in the service",
   "ALLOCATION_BASIS_NUM_EMPLOYEES": "Num. employees",
   "ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION": "Number of employees of the service",
   "ALLOCATION_BASIS_NUM_LABOR_HOURS": "Num. labor hours",
-  "ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION": "Number of labor hours by the service"
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION": "Number of labor hours by the service",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS": "hours"
 }

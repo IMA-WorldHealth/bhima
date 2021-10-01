@@ -57,16 +57,13 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
 
   AllocationBasisService.getAllocationBases()
     .then((bases) => {
-      // Translate the basis terms, if possible
+      // Translate the basis terms
       vm.allocationBases = bases.map(base => {
-        base.name = $translate.instant(`${base.name}`);
-        base.description = $translate.instant(`${base.description}`);
-
-        if (base.units) {
-          // Note: Do not translate the units
-          base.name += ` (${base.units})`;
+        if (base.is_predefined) {
+          base.name = $translate.instant(base.name);
+          base.description = $translate.instant(base.description);
+          base.units = base.units ? $translate.instant(base.units) : '';
         }
-
         return base;
       });
     })
@@ -175,7 +172,7 @@ function CostCenterModalController($state, CostCenter, AllocationBasisService, N
   }
 
   function translateAllocationBasisOption(option) {
-    return $translate.instant(`FORM.LABELS.ALLOCATION_METHOD_${option.toUpperCase()}`);
+    return $translate.instant(`ALLOCATION_METHOD_${option.toUpperCase()}`);
   }
 
   // submit the data to the server from all two forms (update, create)

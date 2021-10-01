@@ -22,8 +22,8 @@ function AllocationBasisModalController(data, CostCenter, AllocationBasisService
     AllocationBasisService.read(data.id)
       .then(details => {
         if (details.is_predefined) {
-          details.name = $translate.instant(`FORM.LABELS.${details.name}`);
-          details.description = $translate.instant(`FORM.LABELS.${details.description}`);
+          details.name = $translate.instant(details.name);
+          details.description = $translate.instant(details.description);
         }
         vm.details = details;
       })

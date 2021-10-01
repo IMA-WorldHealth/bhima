@@ -67,8 +67,8 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
       },
       {
         field : 'allocation_method',
-        displayName : 'FORM.LABELS.ALLOCATION_METHOD',
-        headerToolTip : 'FORM.LABELS.ALLOCATION_METHOD_TOOLTIP',
+        displayName : 'ALLOCATION_METHOD',
+        headerToolTip : 'ALLOCATION_METHOD_TOOLTIP',
         headerCellFilter : 'translate',
         headerCellClass : 'allocationBasisColHeader',
         visible : true,
@@ -76,7 +76,7 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
       },
       {
         field : 'allocation_basis_name',
-        displayName : 'FORM.LABELS.ALLOCATION_BASIS',
+        displayName : 'ALLOCATION_BASIS',
         headerCellFilter : 'translate',
         headerCellClass : 'allocationBasisColHeader',
         visible : true,
@@ -108,13 +108,15 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
       .then((data) => {
         data.forEach(fc => {
           // Translate each cost center allocation basis name
-          fc.allocation_basis_name = fc.allocation_basis.is_predefined
-            ? $translate.instant(`FORM.LABELS.${fc.allocation_basis.name}`)
-            : fc.allocation_basis.name;
-
-          if (fc.allocation_basis.units) {
-            // Note: Do not translate the units
-            fc.allocation_basis_name += ` (${fc.allocation_basis.units})`;
+          if (fc.allocation_basis.is_predefined) {
+            fc.allocation_basis_name = $translate.instant(fc.allocation_basis.name);
+            fc.allocation_basis_units = fc.allocation_basis.units ? $translate.instant(fc.allocation_basis.units) : '';
+          } else {
+            fc.allocation_basis_name = fc.allocation_basis.name;
+            fc.allocation_basis_units = fc.allocation_basis.units;
+          }
+          if (fc.allocation_basis_units) {
+            fc.allocation_basis_name += ` (${fc.allocation_basis_units})`;
           }
         });
         vm.gridOptions.data = data;
