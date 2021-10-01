@@ -1,16 +1,16 @@
 <form name="CostCenterForm" bh-submit="CostCenterModalCtrl.submit(CostCenterForm)" novalidate>
   <div class="modal-header">
-  <ol class="headercrumb">
-    <li ng-if="CostCenterModalCtrl.isCreateState" class="title">
-      <span translate> COST_CENTER.ADD_COST_CENTER </span>
-      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-    </li>
-    <li ng-if="!CostCenterModalCtrl.isCreateState" class="title">
-      <span translate> COST_CENTER.EDIT_COST_CENTER </span>
-      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
-    </li>
-  </ol>
-</div>
+    <ol class="headercrumb">
+      <li ng-if="CostCenterModalCtrl.isCreateState" class="title">
+        <span translate> COST_CENTER.ADD_COST_CENTER </span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!CostCenterModalCtrl.isCreateState" class="title">
+        <span translate> COST_CENTER.EDIT_COST_CENTER </span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
 
   <div class="modal-body">
     <div class="form-group" ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.label.$invalid }">
@@ -220,8 +220,8 @@
     <!-- Step-down allocation basis -->
     <hr>
     <div class="radio">
-      <p><strong translate>FORM.LABELS.STEP_DOWN_COST_ALLOCATION</strong></p>
-      <label class="control-label" style="vertical-align: middle;" translate>FORM.LABELS.ALLOCATION_METHOD</label>:
+      <p><strong translate>COST_CENTER.STEP_DOWN_COST_ALLOCATION</strong></p>
+      <label class="control-label" style="vertical-align: middle;" translate>ALLOCATION_METHOD</label>:
       <label class="radio-inline" ng-repeat="choice in CostCenterModalCtrl.allocationMethodOptions">
         <input
           type="radio"
@@ -236,7 +236,7 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.allocation_basis.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.SELECT_ALLOCATION_BASIS</label>
+      <label class="control-label" translate>COST_CENTER.SELECT_ALLOCATION_BASIS</label>
       <select class="form-control"
         name="allocation_basis"
         ng-model="CostCenterModalCtrl.costCenter.allocation_basis.id"

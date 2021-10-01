@@ -145,13 +145,13 @@ INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'kWh', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '', 'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'h', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1);
-  
+
 /*
  * @author: mbayopanda
  * @date: 2021-09-12
  * @desc: cost center allocation registry
  */
-INSERT IGNORE INTO `unit` VALUES 
+INSERT IGNORE INTO `unit` VALUES
   (299, 'Allocation Keys','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation keys with values', 218,'/cost_center/allocation_keys');
 
 ALTER TABLE `cost_center_allocation_basis_value`
@@ -169,7 +169,7 @@ CALL add_column_if_missing('voucher_item', 'principal_center_id', 'MEDIUMINT(8) 
 CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_1', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
 CALL add_constraint_if_missing('voucher_item', 'voucher_item__cost_center_2', 'FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE');
 
--- Update label in table account_reference_type 
+-- Update label in table account_reference_type
 UPDATE account_reference_type AS art SET art.label = 'FORM.LABELS.COST_CENTER' WHERE art.id = 1;
 
 /**
@@ -183,7 +183,8 @@ ALTER TABLE `account_reference` MODIFY COLUMN `description` VARCHAR(200) NOT NUL
  * @author: mbayopanda
  * @desc: stock setting for cost center to use in case of stock loss
  */
-ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL;
+CALL add_column_if_missing('stock_setting', 'default_cost_center_for_loss', 'MEDIUMINT(8) DEFAULT NULL');
+/* WAS: ALTER TABLE `stock_setting` ADD COLUMN `default_cost_center_for_loss` MEDIUMINT(8) NULL; */
 
 /**
 * author: @jmcameron
@@ -203,3 +204,21 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
 UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
+
+   
+/*
+ * @author: jmcameron
+ * @date: 2021-09-29
+ * @desc: improvements to cost center allocation basis items
+ */
+CALL add_column_if_missing('cost_center_allocation_basis', 'is_currency', 'BOOLEAN DEFAULT 0 AFTER `is_predefined`');
+CALL add_column_if_missing('cost_center_allocation_basis', 'decimal_places', 'TINYINT(2) DEFAULT 0 AFTER `is_currency`');
+ALTER TABLE `cost_center_allocation_basis` MODIFY COLUMN `units` VARCHAR(200) DEFAULT '';
+
+UPDATE `cost_center_allocation_basis` SET `decimal_places` = 2, `is_currency` = 1 WHERE id = 1;
+UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_AREA_USED_UNITS' WHERE id = 3;
+UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS' WHERE id = 4;
+UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS',  WHERE id = 6;
+
+UPDATE `unit` SET `key` = 'TREE.DISTRIBUTION_KEYS_MANAGEMENT' WHERE id = 223;
+UPDATE `unit` SET `name` = 'Allocation Bases', `key` = 'TREE.COST_CENTER_ALLOCATION_KEYS', `description` = 'List cost center allocation bases with values' WHERE `id` = 299;

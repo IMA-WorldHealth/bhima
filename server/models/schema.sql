@@ -1864,7 +1864,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `entity_uuid`     BINARY(16) default null,
   `description`     TEXT NULL,
   `cost_center_id`  MEDIUMINT(8) UNSIGNED NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL, 
+  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
@@ -2258,10 +2258,12 @@ CREATE TABLE `service_cost_center` (
 DROP TABLE IF EXISTS `cost_center_allocation_basis`;
 CREATE TABLE `cost_center_allocation_basis` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token
-  `units` VARCHAR(30) DEFAULT '',
-  `description` TEXT DEFAULT NULL,
+  `name` VARCHAR(200) NOT NULL,  -- Will be treated as a translation token (if predefined)
+  `units` VARCHAR(200) DEFAULT '', -- Will be treated as a translation token (if predefined)
+  `description` TEXT DEFAULT NULL, -- Will be treated as a translation token (if predefined)
   `is_predefined` BOOLEAN NOT NULL DEFAULT 0,
+  `is_currency` BOOLEAN NOT NULL DEFAULT 0,
+  `decimal_places` TINYINT(2) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

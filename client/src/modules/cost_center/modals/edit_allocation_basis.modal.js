@@ -52,8 +52,9 @@ function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal
         // Translate the basis terms for predefined terms
         bases.forEach(base => {
           if (base.is_predefined) {
-            base.name = $translate.instant(`FORM.LABELS.${base.name}`);
-            base.description = $translate.instant(`FORM.LABELS.${base.description}`);
+            base.name = $translate.instant(base.name);
+            base.description = $translate.instant(base.description);
+            base.units = base.units ? $translate.instant(base.units) : '';
           }
         });
         vm.gridOptions.data = bases;
