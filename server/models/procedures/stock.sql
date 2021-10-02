@@ -674,13 +674,13 @@ CREATE PROCEDURE GetAMC(
 END $$
 
 /* 
- * RecomputeInventoryStockValue
- * This procedure recompute the stock value for a given inventory
+ * ComputeInventoryStockValue
+ * This procedure compute the stock value for a given inventory
  * and update value in the database, the value is computed
  * in the enterprise currency
  */
-DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue$$
-CREATE PROCEDURE RecomputeInventoryStockValue(
+DROP PROCEDURE IF EXISTS ComputeInventoryStockValue$$
+CREATE PROCEDURE ComputeInventoryStockValue(
   IN _inventory_uuid BINARY(16),
   IN _date DATE
 )
@@ -751,6 +751,21 @@ BEGIN
   /* write the line in the database */
   DELETE FROM `stock_value` WHERE `inventory_uuid` = _inventory_uuid;
   INSERT INTO `stock_value` VALUES (_inventory_uuid, _date, v_quantity_in_stock, v_wac);
+
+END $$
+
+DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue$$
+CREATE PROCEDURE RecomputeInventoryStockValue(
+  IN _inventory_uuid BINARY(16),
+  IN _date DATE
+)
+BEGIN 
+
+  IF _date IS NOT NULL THEN 
+    CALL ComputeInventoryStockValue(_inventory_uuid, _date);
+  ELSE 
+    CALL ComputeInventoryStockValue(_inventory_uuid, CURRENT_DATE());
+  END IF;
 
 END $$
 

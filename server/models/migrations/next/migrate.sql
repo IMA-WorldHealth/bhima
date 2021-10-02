@@ -252,5 +252,5 @@ CALL RecomputeStockValue(NULL);
 /* author: mbayopanda
  * @date: 2021-08-05
  */
-CALL add_column_if_missing('depot', 'is_cost_regulator', ' TINYINT(1) UNSIGNED NULL DEFAULT 0');
+CALL add_column_if_missing('depot', 'is_cost_regulator', ' TINYINT(1) UNSIGNED NULL DEFAULT 1');
 
