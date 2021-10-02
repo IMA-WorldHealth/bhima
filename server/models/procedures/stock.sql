@@ -702,9 +702,7 @@ BEGIN
     JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN depot d ON d.uuid = sm.depot_uuid
     WHERE
-      d.is_cost_regulator = 1
-      AND l.inventory_uuid = _inventory_uuid
-      AND DATE(sm.date) <= DATE(_date)
+      l.inventory_uuid = _inventory_uuid AND DATE(sm.date) <= DATE(_date)
     ORDER BY DATE(sm.date), sm.created_at ASC;
   
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_all_movements_finished = 1;
