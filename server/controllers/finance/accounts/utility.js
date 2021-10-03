@@ -18,7 +18,7 @@ function lookupAccount(id) {
   let sql = `
     SELECT a.id, a.enterprise_id, a.locked, a.created,
       a.reference_id, a.number, a.label, a.parent, a.type_id, at.type,
-      at.translation_key
+      at.translation_key, a.cost_center_id
     FROM account AS a JOIN account_type AS at ON a.type_id = at.id `;
 
   // Added the restriction to prevent the display when downloading the chart

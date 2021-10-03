@@ -11,6 +11,7 @@ angular.module('bhima.components')
       required         : '<?',
       disabled         : '<?',
       label            : '@?',
+      helpText         : '@?',
     },
   });
 

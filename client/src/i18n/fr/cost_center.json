@@ -17,7 +17,8 @@
     "EDIT_COST_CENTER" : "Mise à jour des informations du centre de coût",
     "PRINCIPAL": "Centre de coût Principal",
     "SELECT_ALLOCATION_BASIS": "Sélectionnez la base d'allocation",
-    "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts"
+    "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
+    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte"
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
   "ALLOCATION_METHOD_FLAT": "Uniform",
