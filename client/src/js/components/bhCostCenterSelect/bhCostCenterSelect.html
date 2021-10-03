@@ -7,6 +7,11 @@
       {{ $ctrl.label }}
     </label>
 
+    <p ng-if="$ctrl.helpText" class="text-info">
+      <i class="fa fa-info-circle"></i>&nbsp;
+      <span translate>{{ $ctrl.helpText }}</span>
+    </p>
+
     <ui-select
       name="costCenterId"
       ng-model="$ctrl.costCenterId"

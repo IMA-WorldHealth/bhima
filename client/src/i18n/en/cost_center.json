@@ -17,7 +17,8 @@
     "EDIT_COST_CENTER" : "Update the Cost Center Information",
     "PRINCIPAL": "Principal Cost Center",
     "SELECT_ALLOCATION_BASIS": "Select allocation basis",
-    "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation"
+    "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation",
+    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Only for operating accounts (income and expenses). For others accounts, the cost center will not be considered"
   },
   "ALLOCATION_METHOD": "Allocation method",
   "ALLOCATION_METHOD_FLAT": "Flat",

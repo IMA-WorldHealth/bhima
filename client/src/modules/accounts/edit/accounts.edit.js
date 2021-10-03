@@ -95,6 +95,8 @@ function AccountEditController(
    * account store is not updated on creation or update
    */
   function setAccount() {
+    vm.showCostCenterSelect = !!vm.isCreateState;
+
     if (angular.isDefined(id)) {
       // account has been specified; set up updating this account
       loadAccountDetails(id);
@@ -102,6 +104,12 @@ function AccountEditController(
       // no account specified - a new account will be created
       defineNewAccount();
     }
+  }
+
+  function checkExploitationAccount(typeId) {
+    const isExpense = typeId === Constants.accounts.EXPENSE;
+    const isIncome = typeId === Constants.accounts.INCOME;
+    return !!(isExpense || isIncome);
   }
 
   function loadAccountDetails(accountId) {
@@ -120,9 +128,7 @@ function AccountEditController(
     vm.account.parent = accountStore.get(accountParentId);
 
     // show cost center select only for income or expense accounts
-    const isExpense = vm.account.type_id === Constants.accounts.EXPENSE;
-    const isIncome = vm.account.type_id === Constants.accounts.INCOME;
-    vm.showCostCenterSelect = !!(isIncome || isExpense);
+    vm.showCostCenterSelect = checkExploitationAccount(vm.account.type_id);
 
     // cast to string to match type options
     vm.account.type_id = String(vm.account.type_id);
@@ -216,6 +222,9 @@ function AccountEditController(
           submit.type = element.type;
         }
       });
+
+      const isExploitation = checkExploitationAccount(+submit.type_id);
+      submit.cost_center_id = isExploitation ? submit.cost_center_id : undefined;
 
       return Accounts.create(submit)
         .then(handleAccountCreateResult)
