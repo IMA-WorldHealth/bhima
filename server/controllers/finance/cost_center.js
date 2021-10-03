@@ -295,7 +295,7 @@ function getAllCostCenterAccounts() {
   const accountTitle = 6;
 
   const sql = `
-    SELECT aa.account_id, cc.id AS cost_center_id, IF(cc.is_principal, cost_center_id, NULL) AS principal_center_id
+    SELECT aa.account_id, cc.id AS cost_center_id, IF(cc.is_principal, rfc.cost_center_id, NULL) AS principal_center_id
     FROM cost_center AS cc
     JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
     JOIN account_reference AS ar ON ar.id = rfc.account_reference_id

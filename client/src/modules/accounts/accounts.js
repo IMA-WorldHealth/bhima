@@ -95,6 +95,12 @@ function AccountsController(
         width : 150,
       },
       {
+        field : 'cost_center_label',
+        displayName : 'COST_CENTER.TITLE',
+        headerCellFilter : 'translate',
+        width : 180,
+      },
+      {
         name : 'actions',
         enableFiltering : false,
         displayName : '',

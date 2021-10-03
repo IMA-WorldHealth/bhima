@@ -61,6 +61,10 @@ function AccountEditController(
   setupPage()
     .then(setAccount);
 
+  vm.onCostCenterSelect = cc => {
+    vm.account.cost_center_id = cc.id;
+  };
+
   /**
    * @method setupPage
    *
@@ -114,6 +118,11 @@ function AccountEditController(
     vm.account = angular.copy(account);
     const accountParentId = vm.account.parent.id || vm.account.parent;
     vm.account.parent = accountStore.get(accountParentId);
+
+    // show cost center select only for income or expense accounts
+    const isExpense = vm.account.type_id === Constants.accounts.EXPENSE;
+    const isIncome = vm.account.type_id === Constants.accounts.INCOME;
+    vm.showCostCenterSelect = !!(isIncome || isExpense);
 
     // cast to string to match type options
     vm.account.type_id = String(vm.account.type_id);
@@ -183,6 +192,11 @@ function AccountEditController(
 
     // this will return all elements if requireDirty is set to false
     const submit = util.filterFormElements(accountForm, requireDirty);
+
+    // handle cost center
+    if (vm.account.cost_center_id) {
+      submit.cost_center_id = vm.account.cost_center_id;
+    }
 
     // filter parent
     if (submit.parent) {
