@@ -24,9 +24,11 @@ CREATE TABLE `account` (
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `reference_id` (`reference_id`),
+  KEY `cost_center_id` (`cost_center_id`),
   CONSTRAINT `account__account_type` FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
   CONSTRAINT `account__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
+  CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`),
+  CONSTRAINT `account__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_category`;

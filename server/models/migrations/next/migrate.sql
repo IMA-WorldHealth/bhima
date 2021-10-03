@@ -228,3 +228,4 @@ UPDATE `unit` SET `name` = 'Allocation Bases', `key` = 'TREE.COST_CENTER_ALLOCAT
  * @desc: cost_center_id column in the account table
  */
 CALL add_column_if_missing('account', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+CALL add_constraint_if_missing('account', 'account__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)');

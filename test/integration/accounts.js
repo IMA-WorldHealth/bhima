@@ -153,6 +153,20 @@ describe('(/accounts) Accounts', () => {
       .catch(helpers.handler);
   });
 
+  it('PUT /accounts/:id updates the account cost center', () => {
+    const updateInfo = { cost_center_id : 1 };
+    return agent.put(`/accounts/${newAccount.id}`)
+      .send(updateInfo)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.id).to.equal(newAccount.id);
+        expect(res.body.cost_center_id).to.equal(updateInfo.cost_center_id);
+        expect(res.body).to.have.all.keys(responseKeys);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /accounts/:id returns a 404 for unknown account id', () => {
     const updateInfo = { label : 'updated value for testing account unknown ' };
     return agent.put('/accounts/undefined')
