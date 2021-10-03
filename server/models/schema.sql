@@ -18,6 +18,7 @@ CREATE TABLE `account` (
   `hidden` TINYINT(1) UNSIGNED DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
   KEY `type_id` (`type_id`),
