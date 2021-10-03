@@ -27,6 +27,7 @@ describe('(/accounts) Accounts', () => {
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'created', 'reference_id',
     'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
+    'cost_center_id',
   ];
 
   it('GET /accounts?detailed=1 returns the full list of account', () => {
