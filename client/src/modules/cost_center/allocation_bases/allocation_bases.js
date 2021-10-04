@@ -22,6 +22,7 @@ function CostCenterAllocationBasesController(
   vm.gridApi = {};
   vm.editAllocationBasis = editAllocationBasis;
   vm.removeAllocationBasis = removeAllocationBasis;
+  vm.updateComputableQuantities = updateComputableQuantities;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -47,6 +48,18 @@ function CostCenterAllocationBasesController(
       .then(() => {
         Notify.success('FORM.INFO.DELETE_SUCCESS');
         $state.go('cost_center_allocation_bases', null, { reload : true });
+      });
+  }
+
+  function updateComputableQuantities() {
+    vm.loading = true;
+    AllocationBasisQuantity.updateQuantities()
+      .then(() => {
+        Notify.success('FORM.INFO.SUCCESS');
+        $state.go('cost_center_allocation_bases', null, { reload : true });
+      })
+      .finally(() => {
+        vm.loading = false;
       });
   }
 
