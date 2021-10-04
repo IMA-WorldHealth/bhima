@@ -75,11 +75,11 @@ describe('(/accounts/references) Accounts References', () => {
   });
 
   it('GET /accounts/references/ with \'reference_type_id\' parameter', () => {
-    const conditions = { reference_type_id : '1' };
+    const conditions = { reference_type_id : '5' };
     return agent.get('/accounts/references')
       .query(conditions)
       .then((res) => {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
