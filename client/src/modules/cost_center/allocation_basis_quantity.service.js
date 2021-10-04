@@ -17,6 +17,7 @@ function AllocationBasisQuantityService(Api) {
   service.bulkInsert = bulkInsert;
   service.bulkDelete = bulkDelete;
   service.bulkUpdate = bulkUpdate;
+  service.updateQuantities = updateQuantities;
 
   function bulkDetails(id) {
     const url = `/cost_center_allocation_basis_quantity/bulk/${id}`;
@@ -39,6 +40,12 @@ function AllocationBasisQuantityService(Api) {
   function bulkDelete(id) {
     const url = `/cost_center_allocation_basis_quantity/bulk/${id}`;
     return service.$http.delete(url)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function updateQuantities() {
+    const url = `/cost_center_allocation_basis_quantities_update`;
+    return service.$http.put(url)
       .then(service.util.unwrapHttpResponse);
   }
 
