@@ -159,8 +159,11 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT a.id, a.enterprise_id, a.locked, a.created, a.reference_id, a.number,
-        a.label, a.parent, a.type_id, at.type, at.translation_key, a.hidden
-      FROM account AS a JOIN account_type AS at ON a.type_id = at.id
+        a.label, a.parent, a.type_id, at.type, at.translation_key, a.hidden,
+        a.cost_center_id, cc.label AS cost_center_label
+      FROM account AS a 
+      JOIN account_type AS at ON a.type_id = at.id
+      LEFT JOIN cost_center AS cc ON a.cost_center_id = cc.id
     `;
   }
 

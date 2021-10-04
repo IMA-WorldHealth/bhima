@@ -222,3 +222,10 @@ UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOC
 
 UPDATE `unit` SET `key` = 'TREE.DISTRIBUTION_KEYS_MANAGEMENT' WHERE id = 223;
 UPDATE `unit` SET `name` = 'Allocation Bases', `key` = 'TREE.COST_CENTER_ALLOCATION_KEYS', `description` = 'List cost center allocation bases with values' WHERE `id` = 299;
+
+/*
+ * @author: mbayopanda
+ * @desc: cost_center_id column in the account table
+ */
+CALL add_column_if_missing('account', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
+CALL add_constraint_if_missing('account', 'account__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)');

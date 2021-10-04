@@ -18,14 +18,17 @@ CREATE TABLE `account` (
   `hidden` TINYINT(1) UNSIGNED DEFAULT 0,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
+  `cost_center_id` MEDIUMINT(8) UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
   KEY `reference_id` (`reference_id`),
+  KEY `cost_center_id` (`cost_center_id`),
   CONSTRAINT `account__account_type` FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
   CONSTRAINT `account__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
+  CONSTRAINT `account__reference` FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`),
+  CONSTRAINT `account__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_category`;
