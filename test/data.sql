@@ -317,6 +317,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
 -- set one hidden account 52121010 - BCDC USD
 UPDATE account set hidden = 1 WHERE id = 184;
 
+
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 
@@ -838,6 +839,8 @@ INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `allocation_method`, `
   (5, 'Auxiliary 2', 0, 'proportional', 2),
   (6, 'Auxiliary 3', 0, 'flat', 2);
 
+-- set test cost center
+UPDATE account set cost_center_id = 4 WHERE id = 215;
 
 
 -- REFERENCE FEE CENTER

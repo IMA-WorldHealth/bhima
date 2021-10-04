@@ -19,12 +19,7 @@ CREATE FUNCTION GetCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   RETURN (
-    SELECT cost_center_id FROM reference_cost_center WHERE account_reference_id IN (
-      SELECT account_reference_id FROM account_reference_item JOIN account_reference
-        ON account_reference_item.account_reference_id = account_reference.id
-        WHERE account_reference_item.account_id = account_id
-          and account_reference.reference_type_id =  1 -- reference_type_id 1 is cost center
-    )
+    SELECT cost_center_id FROM account WHERE account.id = account_id
   );
 END $$
 
@@ -43,15 +38,9 @@ CREATE FUNCTION GetPrincipalCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   RETURN (
-    SELECT id FROM cost_center WHERE is_principal = 1 AND id = (
-      SELECT cost_center_id FROM reference_cost_center
-      WHERE account_reference_id IN (
-        SELECT account_reference_id FROM account_reference_item JOIN account_reference
-          ON account_reference_item.account_reference_id = account_reference.id
-          WHERE account_reference_item.account_id = account_id
-            and account_reference.reference_type_id =  1 -- reference_type_id 1 is cost center
-      )
-    )
+    SELECT cost_center_id FROM account
+      JOIN cost_center ON account.cost_center_id = cost_center.id
+    WHERE account.id = account_id AND cost_center.is_principal = 1
   );
 END $$
 
