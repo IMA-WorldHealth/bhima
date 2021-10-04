@@ -980,7 +980,6 @@ CREATE TABLE `price_list_item` (
 
 -- TODO write schema change (transactions) INTo SQL update script
 DROP TABLE IF EXISTS `patient`;
-
 CREATE TABLE `patient` (
   `uuid`                 BINARY(16) NOT NULL,
   `project_id`           SMALLINT(5) UNSIGNED NOT NULL,
@@ -2264,6 +2263,7 @@ CREATE TABLE `cost_center_allocation_basis` (
   `is_predefined` BOOLEAN NOT NULL DEFAULT 0,
   `is_currency` BOOLEAN NOT NULL DEFAULT 0,
   `decimal_places` TINYINT(2) NOT NULL DEFAULT 0,
+  `is_computed` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

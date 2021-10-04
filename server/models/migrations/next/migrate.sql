@@ -138,7 +138,7 @@ author: @jmcameron
 date: 2021-09-15
 description: Add cost basis items
 */
-INSERT IGNORE INTO `cost_center_allocation_basis` VALUES
+INSERT IGNORE INTO `cost_center_allocation_basis` (`id`, `name`, `units`, `description`, `is_predefined`) VALUES
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '', 'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1),
   (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '', 'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1),
   (3, 'ALLOCATION_BASIS_AREA_USED', 'm²', 'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1),
@@ -205,7 +205,7 @@ UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
 
-   
+
 /*
  * @author: jmcameron
  * @date: 2021-09-29
@@ -218,7 +218,16 @@ ALTER TABLE `cost_center_allocation_basis` MODIFY COLUMN `units` VARCHAR(200) DE
 UPDATE `cost_center_allocation_basis` SET `decimal_places` = 2, `is_currency` = 1 WHERE id = 1;
 UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_AREA_USED_UNITS' WHERE id = 3;
 UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS' WHERE id = 4;
-UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS',  WHERE id = 6;
+UPDATE `cost_center_allocation_basis` SET `decimal_places` = 1, `units` = 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS'  WHERE id = 6;
 
 UPDATE `unit` SET `key` = 'TREE.DISTRIBUTION_KEYS_MANAGEMENT' WHERE id = 223;
 UPDATE `unit` SET `name` = 'Allocation Bases', `key` = 'TREE.COST_CENTER_ALLOCATION_KEYS', `description` = 'List cost center allocation bases with values' WHERE `id` = 299;
+
+
+/*
+ * @author: jmcameron
+ * @date: 2021-10-01
+ * @desc: auto generation of number of employees
+ */
+CALL add_column_if_missing('cost_center_allocation_basis', 'is_computed', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `decimal_places`');
+UPDATE `cost_center_allocation_basis` SET `is_computed` = 1 WHERE id = 2;

@@ -417,14 +417,30 @@ INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/1/Patient'),
   (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]'),
-  (HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Bad Patient Doublon');
+  (HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Bad Patient Doublon'),
+  (HUID('bf6e75bd-f5ae-4339-bd79-eee41618e290'), HUID('66f03607-bfbc-4b23-aa929-321ca0ff586'), 'Debiteur [Joann Bloe]');
 
 -- Patients
+   -- (uuid, project_id, reference, debtor_uuid, display_name, dob, dob_unknown_date, father_name, mother_name,
+   --  profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status,
+   --  phone, email, address_1, address_2, origin_location_id, current_location_id, registration_date,
+   --  title, notes, hospital_no, avatar, user_id, created_at, health_zone`, health_area)
 INSERT INTO `patient` VALUES
-  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
-  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
-  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL),
-  (HUID('0f2ddc0e-686b-47c0-ad80-989671aa9f1f'), 1, 5, HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), 'Bad Patient Doublon', '2017-08-24 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1110', '', 1, '2015-11-14 07:04:49', NULL, NULL);
+  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL,
+     NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),
+     (NOW() - INTERVAL 1 HOUR), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
+  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL,
+     NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),
+     NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
+  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL,
+     NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),
+     '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL),
+  (HUID('0f2ddc0e-686b-47c0-ad80-989671aa9f1f'), 1, 5, HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), 'Bad Patient Doublon', '2017-08-24 00:00:00', FALSE, NULL, NULL,
+     NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),
+     (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
+  (HUID('576576b6-6576-492d-a8a4a-7ef65e25dc9'), 1, 6, HUID('bf6e75bd-f5ae-4339-bd79e-ee41618e290'), 'Joann Bloe', '1987-06-16 00:00:00', FALSE, NULL, NULL,
+     NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1F162A10-9F67-4788-9EFF-C1FEA42FCC9B'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),
+     (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1111', '', 1, '2021-11-14 07:04:49', NULL, NULL);
 
 -- Patient Visits
 INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_uuid`) VALUES
@@ -445,7 +461,8 @@ INSERT INTO `creditor_group` VALUES
 INSERT INTO `creditor` VALUES
   (HUID('42d3756a-7770-4bb8-a899-7953cd859892'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Test 2 Patient]'),
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL'),
-  (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Employee Test 1]');
+  (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Employee Test 1]'),
+  (HUID('817be21a-17b9-45ffb3b90-b2a62c4f370'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Employee Joann Bloe');
 
 -- Supplier
 INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
@@ -459,8 +476,8 @@ INSERT INTO `grade` VALUES
 
 INSERT INTO `staffing_grade_indice` (`uuid`, `value`, `grade_uuid`) VALUES
  (HUID(UUID()), 125.0000, HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0')),
-(HUID(UUID()), 60.0000, HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0')),
-(HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 10.0000, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'));
+ (HUID(UUID()), 60.0000, HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0')),
+ (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 10.0000, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'));
 
 
 -- Offday
@@ -477,9 +494,14 @@ INSERT INTO `reference` VALUES
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
   (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
 
-INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
-  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB','1201-3456-5423-03', 1, @medicineInterneService, HUID('42d3756a-7770-4bb8-a899-7953cd859892'), NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
-  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, @testService, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 0);
+INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`,
+  `bank`, `bank_account`, `fonction_id`, `service_uuid`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
+  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,
+    'TMB','1201-3456-5423-03', 1, @medicineInterneService, HUID('42d3756a-7770-4bb8-a899-7953cd859892'), NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
+  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0,
+    'BCOL', '00-99-88-77', 1, @testService, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 0),
+  (HUID('ac4c326b-d56d-46bd-af4d-c88182b6e5e4'), '2222', NULL, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 0, 2, 4000,
+    'BCOL', '00-99-88-88', 2, @adminService, HUID('817be21a-17b9-45ffb3b90-b2a62c4f370'), NULL,  HUID('576576b6-6576-492d-a8a4-a7ef65e25dc9'), 1);
 
 -- invoicing fee configuration
 
@@ -873,7 +895,10 @@ INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`
   (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, @prednisone, 40, 5.1200, 5.1200, 0.0000, 204.8000);
 
 -- SERVICE FEE CENTER
-INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
+INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES
+ (1, 2, @medicineInterneService),
+ (2, 1, @adminService),
+ (3, 3, @testService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
