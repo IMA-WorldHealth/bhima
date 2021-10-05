@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 CostCenterController.$inject = [
   'CostCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
-  '$uibModal', '$translate',
+  '$uibModal', '$translate', 'GridStateService', '$state',
 ];
 
 /**
@@ -13,8 +13,10 @@ CostCenterController.$inject = [
  * It's responsible for creating, editing and updating a Cost Center
  */
 function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants,
-  $uibModal, $translate) {
+  $uibModal, $translate, GridState, $state) {
   const vm = this;
+
+  const cacheKey = 'CostCenterRegistry';
 
   // bind methods
   vm.deleteCostCenter = deleteCostCenter;
@@ -141,6 +143,13 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
           .catch(Notify.handleError);
       });
   }
+
+  const state = new GridState(vm.gridOptions, cacheKey);
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   function openEditAllocationBasisModal() {
     $uibModal.open({
