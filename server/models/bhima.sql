@@ -486,21 +486,20 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);
 
 -- Cost Center basis info
+-- NOTE: 'id' field must match values assigned to the corresponding allocation
+--       basis items in server/config/constants.js (search for allocationBasis)
 INSERT INTO `cost_center_allocation_basis`
-  (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`)
+  (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`, `is_computed`)
   VALUES
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '',
-      'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1, 1, 2),
+      'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1, 1, 2, 0),
   (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '',
-      'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1, 0, 0),
+      'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1, 0, 0, 1),
   (3, 'ALLOCATION_BASIS_AREA_USED', 'ALLOCATION_BASIS_AREA_USED_UNITS',
-      'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1, 0, 1),
+      'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1, 0, 1, 0),
   (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS',
-      'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1, 0, 1),
+      'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1, 0, 1, 0),
   (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '',
-      'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1, 0, 0),
+      'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1, 0, 0, 0),
   (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS',
-      'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1, 0, 1);
-
-
-
+      'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1, 0, 1, 0);

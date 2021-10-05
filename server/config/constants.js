@@ -21,6 +21,15 @@ module.exports = {
     EXPENSE : 5,
     TITLE : 6,
   },
+  allocationBasis : {
+    /* NOTE: Must match values in bhima.sql */
+    ALLOCATION_BASIS_DIRECT_COST : 1,
+    ALLOCATION_BASIS_NUM_EMPLOYEES : 2,
+    ALLOCATION_BASIS_AREA_USED : 3,
+    ALLOCATION_BASIS_ELECTRICITY_CONSUMED : 4,
+    ALLOCATION_BASIS_NUM_COMPUTERS : 5,
+    ALLOCATION_BASIS_NUM_LABOR_HOURS : 6,
+  },
   settings : {
     CONTACT_EMAIL : 'developers@imaworldhealth.org',
   },
