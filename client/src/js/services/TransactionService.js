@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('TransactionService', TransactionService);
 
-TransactionService.$inject = ['$http', 'util', '$uibModal'];
+TransactionService.$inject = ['$http', 'util', '$uibModal', 'AccountService'];
 
-function TransactionService($http, util, Modal) {
+function TransactionService($http, util, Modal, Accounts) {
   const service = this;
   const baseUrl = '/transactions/';
 
@@ -79,6 +79,7 @@ function TransactionService($http, util, Modal) {
   const ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
   const ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
   const ERROR_NEGATIVE_NUMBERS = 'VOUCHERS.COMPLEX.ERROR_NEGATIVE_NUMBERS';
+  const ERROR_COST_CENTER_ON_OTHER_ACCOUNT = 'VOUCHERS.COMPLEX.ERROR_COST_CENTER_ON_OTHER_ACCOUNT';
 
   /**
    * @function offlineValidation
@@ -122,6 +123,11 @@ function TransactionService($http, util, Modal) {
       const hasSingleNumericValue = !util.xor(Boolean(row.debit), Boolean(row.credit));
       if (hasSingleNumericValue) {
         return ERROR_INVALID_DEBITS_AND_CREDITS;
+      }
+
+      const hasCostCenters = row.cost_center_id || row.principal_center_id;
+      if (hasCostCenters && !Accounts.isIncomeOrExpenseAccountTypeId(row.account_type_id)) {
+        return ERROR_COST_CENTER_ON_OTHER_ACCOUNT;
       }
 
       credits += row.credit;

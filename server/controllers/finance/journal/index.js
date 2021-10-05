@@ -185,8 +185,8 @@ function buildTransactionQuery(options, posted) {
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.transaction_type_id, p.user_id, pro.abbr,
       pro.name AS project_name, tp.text AS transaction_type_text,
-      a.number AS account_number, a.label AS account_label, p.trans_id_reference_number,
-      p.cost_center_id, cc.label as costCenterLabel,
+      a.number AS account_number, a.type_id AS account_type_id, a.label AS account_label,
+      p.trans_id_reference_number, p.cost_center_id, cc.label as costCenterLabel,
       p.principal_center_id, cp.label as principalCenterLabel,
       u.display_name ${includeExchangeRate}
     FROM ${table} p

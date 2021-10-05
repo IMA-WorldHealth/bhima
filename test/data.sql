@@ -317,6 +317,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
 -- set one hidden account 52121010 - BCDC USD
 UPDATE account set hidden = 1 WHERE id = 184;
 
+
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 
@@ -824,16 +825,16 @@ INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `valu
   (11, @paymentUuid, 11, 1.1, NULL);
 
 -- ACCOUNT REFERENCE
-INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES
-  (1, 'c_admin', 'Section Administration', NULL, 0),
-  (2, 'p_admin', 'Profit Administration', NULL, 0),
-  (3, 'p_test_1', 'Profit Test 1', NULL, 0),
-  (4, 'p_test_2', 'Profit Test 2', NULL, 0),
-  (5, 'c_test_1', 'Cost Test 1', NULL, 0),
-  (6, 'c_test_2', 'Cost Test 2', NULL, 0),
-  (7, 'p_test_3', 'Profit Test 3', NULL, 0),
-  (8, 'p_test_4', 'Profit Test 4', NULL, 0),
-  (9, 'c_test_3', 'Cost Test 3', NULL, 0);
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`, `reference_type_id`) VALUES
+  (1, 'c_admin', 'Section Administration', NULL, 0, 1),
+  (2, 'p_admin', 'Profit Administration', NULL, 0, 1),
+  (3, 'p_test_1', 'Profit Test 1', NULL, 0, 1),
+  (4, 'p_test_2', 'Profit Test 2', NULL, 0, 1),
+  (5, 'c_test_1', 'Cost Test 1', NULL, 0, 1),
+  (6, 'c_test_2', 'Cost Test 2', NULL, 0, 1),
+  (7, 'p_test_3', 'Profit Test 3', NULL, 0, 1),
+  (8, 'p_test_4', 'Profit Test 4', NULL, 0, 1),
+  (9, 'c_test_3', 'Cost Test 3', NULL, 0, 1);
 
 -- ACCOUNT REFERENCE ITEM
 INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES
@@ -860,6 +861,8 @@ INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `allocation_method`, `
   (5, 'Auxiliary 2', 0, 'proportional', 2),
   (6, 'Auxiliary 3', 0, 'flat', 2);
 
+-- set test cost center
+UPDATE account set cost_center_id = 4 WHERE id = 215;
 
 
 -- REFERENCE FEE CENTER
