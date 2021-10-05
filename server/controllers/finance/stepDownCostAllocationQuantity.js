@@ -43,6 +43,7 @@ async function bulkDetails(req, res, next) {
   `;
   try {
     const data = await db.exec(sql, [+req.params.id]);
+    console.log('data:', data);
     res.status(200).json(data);
   } catch (error) {
     next(error);
@@ -81,8 +82,9 @@ function bulkUpdate(req, res, next) {
   const tx = db.transaction();
 
   tx.addQuery('DELETE FROM cost_center_allocation_basis_value WHERE cost_center_id = ?;', [ccId]);
+
   data.forEach(item => {
-    tx.addQuery(sql, item);
+    tx.addQuery(sql, { cost_center_id : ccId, ...item });
   });
 
   tx.execute()
@@ -129,6 +131,7 @@ function list(req, res, next) {
   filters.equals('cost_center_id', 'cost_center_id', 'abv');
   const query = filters.applyQuery(sql);
   const params = filters.parameters();
+
   return db.exec(query, params)
     .then((rows) => {
       res.status(200).json(rows);
