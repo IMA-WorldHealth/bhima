@@ -1,6 +1,7 @@
 {
   "TRANSACTIONS":{
     "NO_COST_CENTER_TRANSACTION": "Transactions without cost center",
+    "ONLY_EXPLOITATION_ACCOUNTS": "Only for income and expense accounts",
     "SHOW_ONLY_TRANSACTION_WITH_NULL_COST_CENTER": "Only display transactions that do not have a cost center",
     "VERIFIED_TRANSACTIONS": "Verified Transactions",
     "VIEW_TRANSACTIONS" : "View Transactions",
