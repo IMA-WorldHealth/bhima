@@ -2073,6 +2073,17 @@ CREATE TABLE  `stock_movement_status` (
     CONSTRAINT `stock_movment_status__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `stock_value`;
+CREATE TABLE  `stock_value` (
+    `inventory_uuid` BINARY(16) NOT NULL,
+    `date` DATE NOT NULL,
+    `quantity` INT(11) NOT NULL,
+    `wac` DECIMAL(19,4) NOT NULL,
+    KEY `inventory_uuid` (`inventory_uuid`),
+    INDEX `date` (`date`),
+    CONSTRAINT `stock_value__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 -- donor
 DROP TABLE IF EXISTS `donor`;
 CREATE TABLE `donor` (
