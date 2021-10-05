@@ -13,7 +13,6 @@
   </div>
 
   <div class="modal-body">
-
     <bh-cost-center-select
       cost-center-id="CCAllocationBasisModalCtrl.costCenterId"
       on-select-callback="CCAllocationBasisModalCtrl.onSelectCostCenter(costCenter)"
@@ -28,11 +27,10 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
-
   </div>
 
   <div class="modal-footer">
-    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="cost_center_allocation_bases">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="CCAllocationBasisModalCtrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 

@@ -62,7 +62,7 @@ function CCAllocationBasesModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/cost_center/allocation_bases/modals/action.modal.html',
     controller : 'CCAllocationBasisModalController as CCAllocationBasisModalCtrl',
-    resolve : { params : () => $transition.params('to') },
+    resolve : { parameters : () => ({ params : $transition.params('to'), fromState : $transition.from().name }) },
   }).result.catch(angular.noop);
 }
 
