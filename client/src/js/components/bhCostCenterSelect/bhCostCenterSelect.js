@@ -37,8 +37,9 @@ function CostCenterSelectController(CostCenters, Notify) {
   }
 
   $ctrl.$onInit = () => {
+    $ctrl.required = !!($ctrl.required);
     $ctrl.label = $ctrl.label || 'COST_CENTER.TITLE';
-    $ctrl.costCenterId = +$ctrl.costCenterId;
+    $ctrl.costCenterId = $ctrl.costCenterId ? +$ctrl.costCenterId : null;
     loadCostCenters();
   };
 

@@ -1,5 +1,8 @@
 {
   "TRANSACTIONS": {
+    "NO_COST_CENTER_TRANSACTION": "Transactions sans centre de coût",
+    "ONLY_EXPLOITATION_ACCOUNTS": "Seulement pour les comptes de produit et de charge",
+    "SHOW_ONLY_TRANSACTION_WITH_NULL_COST_CENTER": "Afficher uniquement les transactions n'ayant pas de centre de coût",
     "VERIFIED_TRANSACTIONS": "Transactions Postées",
     "VIEW_TRANSACTIONS" : "Voir les transactions",
     "INCLUDE_POSTED_TRANSACTIONS_DETAIL": "Inclure les transactions postées dans la recherche",
