@@ -8,6 +8,11 @@ const db = require('../../lib/db');
 const stepdown = require('../../lib/stepdown');
 const fiscal = require('./fiscal');
 const ccAllocationKeys = require('./cost_center_allocation_bases');
+const ccAllocationRegistry = require('./cost_center_allocation_registry');
+const constants = require('../../config/constants.js');
+const { format } = require('../../lib/db');
+const { result } = require('lodash');
+
 
 async function fetch(session, params) {
   const enterpriseCurrencyId = session.enterprise.currency_id;
@@ -35,6 +40,35 @@ async function fetch(session, params) {
     }
     return item;
   });
+
+  // Get the allocation bases that are computable
+  const cabQuery = 'SELECT id, name FROM cost_center_allocation_basis WHERE is_computed = 1';
+  const computables = await db.exec(cabQuery);
+
+  // Compute and set each computable allocation basis quantity
+  const missingCenters = [];
+  for (let i = 0; i < computables.length; i++) {
+    const basis = computables[i];
+    const data = await allocationQuantities(basis.id);
+    formattedCostCenters.forEach(fcc => {
+      // Find the match data item for this cost center
+      const newData = data.find(item => item.cost_center_id === fcc.id);
+      if (newData) {
+        // Update the quantity
+        fcc[basis.name] = newData[basis.name];
+        // console.log("FOUND Updating ", fcc);
+      } else {
+        // console.log("MISSING Pushing");
+        missingCenters.push({ basis : basis.name, id: fcc.id, name: fcc.cost_center_label });
+      }
+    });
+  };
+
+  // Todo do something useful with the missing centers
+  if (missingCenters) {
+    console.log("No data for these cost centers: ", missingCenters);
+  }
+
   const data = stepdown.compute(formattedCostCenters);
   const cumulatedAllocatedCosts = data.map((item, index, array) => (item.principal ? 0 : array[index].toDist[index]));
   const auxiliaryIndexes = data.map((item, i) => (item.auxiliary ? i : null)).filter(item => !!item);
@@ -110,6 +144,32 @@ async function list(req, res, next) {
     next(error);
   }
 }
+
+/**
+ * Get cost allocation basis quantities
+ *
+ * This function returns a set of values for the specified
+ * allocation_basis_id for each cost center.
+ *
+ * @param {Number} allocation_basis_id
+ */
+function allocationQuantities(allocationBasisId) {
+  let query = null;
+  if (allocationBasisId === constants.allocationBasis.ALLOCATION_BASIS_NUM_EMPLOYEES) {
+    // Set up the query for number of employees
+    query = `
+      SELECT BUID(service.uuid) AS service_uuid, service.name AS service_name,
+        COUNT(employee.uuid) AS ALLOCATION_BASIS_NUM_EMPLOYEES,
+        GetCostCenterByServiceUuid(service.uuid) as cost_center_id
+      FROM service JOIN employee ON service.uuid = employee.service_uuid
+      GROUP BY service.uuid;
+  `;
+  } else {
+    return [];
+  }
+  return db.exec(query);
+}
+
 
 exports.fetch = fetch;
 exports.list = list;
