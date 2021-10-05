@@ -68,9 +68,9 @@ function CostCenterAllocationBasesController(
         }];
 
         // Build other columns for ui-grid
-        const otherColumns = rows.costCenterIndexes.map((item, idx) => {
+        const otherColumns = rows.costCenterIndexes.map((item) => {
           return {
-            field : `idx${idx}`,
+            field : item.index,
             displayName : item.index,
             type : 'number',
             headerCellFilter : 'translate',
@@ -92,35 +92,16 @@ function CostCenterAllocationBasesController(
          *    1. Get all cost centers by allocation basis -> return an array of arrays
          *    2. Format this array of array into an array of objects which fit to ui-grid data format
          */
-        const line = [];
-        const data = [];
+        const data = rows.costCenterList.map(label => ({ label }));
 
-        // First step: Get all cost centers by allocation basis -> return an array of arrays
-        for (let i = 0; i < rows.costCenterIndexes.length; i++) {
-          const base = rows.costCenterIndexes[i];
-          line[i] = [];
-          for (let j = 0; j < base.distribution.length; j++) {
-            const item = base.distribution[j];
-            const value = { id : item.id, label : item.cost_center_label };
-            value[`idx${i}`] = item.value;
-            line[i].push(value);
-          }
-        }
-
-        // Second step: Format this array of arrays into an array of objects which fit to ui-grid data format
-        for (let i = 0; i < rows.costCenterList.length; i++) {
-          let value = {};
-          for (let j = 0; j < line.length; j++) {
-            /**
-             * Pick each i element from each array (line[j])
-             * to build an object based on only i th element of each array
-             */
-            const item = line[j];
-            value = { ...value, ...item[i] };
-          }
-          // Combine all these object for having an array (which fit to ui-grid data format)
-          data.push(value);
-        }
+        // populate the data matrix with the cost center indexes
+        rows.costCenterIndexes.forEach(base => {
+          base.distribution.forEach(item => {
+            const row = data.find(cc => cc.label === item.cost_center_label);
+            row[base.index] = item.value;
+            row.id = item.id;
+          });
+        });
 
         const actionColumn = {
           field : 'action',
