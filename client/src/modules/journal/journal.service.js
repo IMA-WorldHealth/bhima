@@ -121,6 +121,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     { key : 'comment', label : 'FORM.LABELS.COMMENT' },
     { key : 'stockReference', label : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT' },
     { key : 'showOnlyNullCostCenter', label : 'TRANSACTIONS.NO_COST_CENTER_TRANSACTION' },
+    { key : 'cost_center_id', label : 'COST_CENTER.TITLE' },
+    { key : 'principal_center_id', label : 'COST_CENTER.PRINCIPAL' },
   ]);
 
   if (filterCache.filters) {
