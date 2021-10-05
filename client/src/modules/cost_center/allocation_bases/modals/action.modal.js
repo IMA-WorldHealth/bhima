@@ -3,14 +3,16 @@ angular.module('bhima.controllers')
 
 CCAllocationBasisModalController.$inject = [
   '$state', 'AllocationBasisService', 'AllocationBasisQuantityService',
-  'NotifyService', 'params', 'appcache',
+  'NotifyService', 'parameters', 'appcache',
 ];
 
 function CCAllocationBasisModalController(
   $state, AllocationBasis, AllocationBasisQuantity,
-  Notify, params, AppCache,
+  Notify, parameters, AppCache,
 ) {
   const vm = this;
+
+  const { params, fromState } = parameters;
 
   const cache = AppCache('CostCenterAllocationBasisModal');
 
@@ -29,6 +31,8 @@ function CCAllocationBasisModalController(
 
   vm.onSelectCostCenter = onSelectCostCenter;
   vm.submit = submit;
+
+  vm.cancel = () => { $state.go(fromState || '^'); };
 
   function onSelectCostCenter(cc) {
     vm.costCenter = cc;
@@ -87,7 +91,7 @@ function CCAllocationBasisModalController(
     request
       .then(() => {
         Notify.success(vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
-        $state.go('cost_center_allocation_bases', null, { reload : true });
+        $state.go(fromState, null, { reload : true });
       })
       .catch(Notify.handleError);
   }
