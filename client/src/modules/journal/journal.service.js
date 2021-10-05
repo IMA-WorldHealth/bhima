@@ -120,6 +120,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     { key : 'hrEntity', label : 'TABLE.COLUMNS.RECIPIENT' },
     { key : 'comment', label : 'FORM.LABELS.COMMENT' },
     { key : 'stockReference', label : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT' },
+    { key : 'showOnlyNullCostCenter', label : 'TRANSACTIONS.NO_COST_CENTER_TRANSACTION' },
   ]);
 
   if (filterCache.filters) {

@@ -22,7 +22,7 @@ function JournalSearchModalController(
   const searchQueryOptions = [
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
     'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
-    'hrReference', 'currency_id',
+    'hrReference', 'currency_id', 'showOnlyNullCostCenter',
   ];
 
   const changes = new Store({ identifier : 'key' });
