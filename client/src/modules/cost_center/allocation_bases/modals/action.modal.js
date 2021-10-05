@@ -12,7 +12,7 @@ function CCAllocationBasisModalController(
 ) {
   const vm = this;
 
-  const cache = AppCache('CostCenterModal');
+  const cache = AppCache('CostCenterAllocationBasisModal');
 
   if (params.isCreateState || params.id) {
     cache.stateParams = params;
@@ -23,8 +23,10 @@ function CCAllocationBasisModalController(
 
   vm.costCenterId = params.id;
   vm.costCenter = {};
+
   vm.isCreateState = vm.stateParams.isCreateState;
   vm.ccAllocation = {};
+
   vm.onSelectCostCenter = onSelectCostCenter;
   vm.submit = submit;
 
@@ -34,20 +36,17 @@ function CCAllocationBasisModalController(
   }
 
   function load() {
-    if (!vm.isCreateState) {
-      loadAllocationBasis()
-        .then(loadAllocationBasisQuantity)
-        .catch(Notify.handleError);
-    } else {
-      loadAllocationBasis()
-        .catch(Notify.handleError);
-    }
+    loadAllocationBasis()
+      .then(() => {
+        if (!vm.isCreateState) { loadAllocationBasisQuantity(); }
+      })
+      .catch(Notify.handleError);
   }
 
   function loadAllocationBasis() {
     return AllocationBasis.read(null, { cost_center_id : vm.costCenterId })
       .then(result => {
-        vm.allocationBases = result;
+        vm.allocationBases = result || {};
       });
   }
 
@@ -66,14 +65,14 @@ function CCAllocationBasisModalController(
       current[item.name] = item.id;
       return current;
     }, {});
-    const insert = Object.keys(vm.ccAllocation).map((key) => {
-      const record = {
+
+    const insert = Object.keys(vm.ccAllocation)
+      .map((key) => ({
         cost_center_id : vm.costCenterId,
         basis_id : baseMap[key],
         quantity : vm.ccAllocation[key],
-      };
-      return record;
-    });
+      }));
+
     return insert;
   }
 
