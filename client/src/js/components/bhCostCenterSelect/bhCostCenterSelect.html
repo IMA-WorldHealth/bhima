@@ -1,4 +1,4 @@
-<div ng-form="CostCenterForm" bh-cost-center-select>
+<div ng-form="CostCenterForm" bh-cost-center-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
     ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.costCenterId.$invalid }">

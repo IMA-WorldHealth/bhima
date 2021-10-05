@@ -148,6 +148,20 @@
           </div>
         </div>
 
+        <!-- cost center -->
+        <bh-cost-center-select
+          label="COST_CENTER.TITLE"
+          cost-center-id="ModalCtrl.searchQueries.cost_center_id"
+          on-select-callback="ModalCtrl.onCostCenterSelect(costCenter)">
+        </bh-cost-center-select>
+
+        <!-- principal center -->
+        <bh-cost-center-select
+          label="COST_CENTER.PRINCIPAL"
+          cost-center-id="ModalCtrl.searchQueries.principal_center_id"
+          on-select-callback="ModalCtrl.onPrincipalCenterSelect(costCenter)">
+        </bh-cost-center-select>
+
         <bh-currency-select
           required="false"
           currency-id="ModalCtrl.searchQueries.currency_id"
