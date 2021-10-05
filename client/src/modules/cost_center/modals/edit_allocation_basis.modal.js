@@ -6,8 +6,10 @@ AllocationBasisEditController.$inject = [
   '$uibModalInstance', 'uiGridConstants', '$translate',
 ];
 
-function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal, Notify, Instance,
-  uiGridConstants, $translate) {
+function AllocationBasisEditController(
+  CostCenter, AllocationBasisService, Modal, Notify, Instance,
+  uiGridConstants, $translate,
+) {
   const vm = this;
 
   vm.loading = false;
