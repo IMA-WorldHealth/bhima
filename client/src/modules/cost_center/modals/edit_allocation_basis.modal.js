@@ -6,8 +6,10 @@ AllocationBasisEditController.$inject = [
   '$uibModalInstance', 'uiGridConstants', '$translate',
 ];
 
-function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal, Notify, Instance,
-  uiGridConstants, $translate) {
+function AllocationBasisEditController(
+  CostCenter, AllocationBasisService, Modal, Notify, Instance,
+  uiGridConstants, $translate,
+) {
   const vm = this;
 
   vm.loading = false;
@@ -51,11 +53,14 @@ function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal
       .then((bases) => {
         // Translate the basis terms for predefined terms
         bases.forEach(base => {
+
           if (base.is_predefined) {
             base.name = $translate.instant(base.name);
             base.description = $translate.instant(base.description);
             base.units = base.units ? $translate.instant(base.units) : '';
           }
+
+          console.log('base:', base);
         });
         vm.gridOptions.data = bases;
       })
@@ -101,7 +106,6 @@ function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal
     cellTemplate : '/modules/cost_center/templates/action_edit_allocation_basis.tmpl.html',
   }];
 
-  // ng-click="
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
