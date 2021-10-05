@@ -1,20 +1,21 @@
 <div class="ui-grid-cell-contents text-right"
-  ng-show="!row.entity.is_predefined"
+  ng-if="row.entity.is_editable"
   uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
   <a href data-action="open-dropdown-menu">
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{rowRenderIndex}}"
-    class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="bh-dropdown-header">{{row.entity.label}}</li>
-    <li ng-show="!row.entity.is_predefined">
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.name}}</li>
+
+    <li ng-if="row.entity.is_editable">
       <a data-method="edit-allocation-basis"
         ng-click="grid.appScope.editAllocationBasis(row.entity.id)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
       </a>
     </li>
+
     <li ng-show="!row.entity.is_predefined">
       <a data-method="delete-record" ng-click="grid.appScope.deleteAllocationBasis(row.entity.id)" href>
         <span class="text-danger">
