@@ -205,7 +205,7 @@ UPDATE `unit` SET `path` = '/cost_center/allocation_bases' WHERE id = 299;
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN');
 
-   
+
 /*
  * @author: jmcameron
  * @date: 2021-09-29
@@ -229,3 +229,10 @@ UPDATE `unit` SET `name` = 'Allocation Bases', `key` = 'TREE.COST_CENTER_ALLOCAT
  */
 CALL add_column_if_missing('account', 'cost_center_id', 'MEDIUMINT(8) UNSIGNED NULL');
 CALL add_constraint_if_missing('account', 'account__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)');
+
+/**
+ * @author: jniles
+ * @desc: is_editable column to control editing
+ * @date: 2021-10-05
+ */
+CALL add_column_if_missing('cost_center_allocation_basis', 'is_editable', 'BOOLEAN NOT NULL DEFAULT 1');
