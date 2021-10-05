@@ -9,7 +9,7 @@
   <ul data-action="{{rowRenderIndex}}"
     class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.label}}</li>
-    <li ng-show="!row.entity.is_predefined">
+    <li ng-show="!row.entity.is_predefined && row.entity.is_editable">
       <a data-method="edit-allocation-basis"
         ng-click="grid.appScope.editAllocationBasis(row.entity.id)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
