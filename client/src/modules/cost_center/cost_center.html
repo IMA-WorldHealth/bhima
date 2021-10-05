@@ -21,6 +21,21 @@
                 <i class="fa fa-table"></i> <span translate>ALLOCATION_BASES</span>
               </a>
             </li>
+
+            <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="CostCenterCtrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="CostCenterCtrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </div>
@@ -47,6 +62,7 @@
       ui-grid="CostCenterCtrl.gridOptions"
       class="grid-full-height"
       ui-grid-auto-resize
+      ui-grid-save-state
       ui-grid-resize-columns>
 
       <bh-grid-loading-indicator
