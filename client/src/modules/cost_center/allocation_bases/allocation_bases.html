@@ -8,8 +8,18 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" ui-sref="cost_center_allocation_bases.create" data-method="create">
+        <button class="btn btn-default text-capitalize"
+          ui-sref="cost_center_allocation_bases.create"
+          uib-tooltip="{{'COST_CENTER.ADD_ALLOCATION_BASIS_TOOLTIP' | translate}}"
+          tooltip-append-to-body="true" tooltip-placement="left"
+          data-method="create">
           <span class="fa fa-plus"></span> <span translate>FORM.LABELS.ADD</span>
+        </button>
+        <button class="btn btn-default text-capitalize"
+          uib-tooltip="{{'COST_CENTER.UPDATE_ALLOCATION_QUANTITIES_TOOLTIP' | translate}}"
+          tooltip-append-to-body="true" tooltip-placement="left"
+          ng-click="CostCenterAllocationBasesCtrl.updateComputableQuantities()">
+          <span class="fa fa-plus"></span> <span translate>COST_CENTER.UPDATE_ALLOCATION_QUANTITIES</span>
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
+const constants = require('../../config/constants');
 
 module.exports = {
   create,
@@ -10,6 +11,7 @@ module.exports = {
   bulkCreate,
   bulkDelete,
   bulkUpdate,
+  updateQuantities,
 };
 
 // add a new allocation basis quantity
@@ -33,7 +35,7 @@ function create(req, res, next) {
 //
 async function bulkDetails(req, res, next) {
   const sql = `
-    SELECT 
+    SELECT
       abv.id, abv.quantity, abv.cost_center_id, abv.basis_id,
       cc.label AS cost_center_label, ab.name AS allocation_basis_label, ab.units AS allocation_basis_units
     FROM cost_center_allocation_basis_value abv
@@ -117,7 +119,7 @@ function bulkDelete(req, res, next) {
 //
 function list(req, res, next) {
   const sql = `
-    SELECT 
+    SELECT
       abv.id, abv.quantity, abv.cost_center_id, abv.basis_id,
       cc.label AS cost_center_label, ab.name AS allocation_basis_label, ab.units AS allocation_basis_units
     FROM cost_center_allocation_basis_value abv
@@ -165,4 +167,93 @@ function remove(req, res, next) {
       res.sendStatus(204);
     })
     .catch(next);
+}
+
+// Update computable allocation basis quantities
+//
+// UPDATE /cost_center_allocation_basis_quantities_update
+//
+
+async function updateQuantities(req, res, next) {
+
+  try {
+    // Get the full list of cost center IDs
+    const costCentersQuery = 'SELECT id, label AS name from cost_center';
+    const costCenters = await db.exec(costCentersQuery);
+
+    // Get the allocation bases that are computable
+    const cabQuery = 'SELECT id, name FROM cost_center_allocation_basis WHERE is_computed = 1';
+    const computables = await db.exec(cabQuery);
+
+    // Queries to update the quantity records
+    const findQRec = 'SELECT id FROM `cost_center_allocation_basis_value` '
+      + 'WHERE `cost_center_id` = ? AND `basis_id` = ?';
+    const updateQRec = 'UPDATE `cost_center_allocation_basis_value` '
+      + 'SET `quantity` = ? WHERE `id` = ?';
+    const insertQRec = 'INSERT INTO `cost_center_allocation_basis_value` '
+      + '(`cost_center_id`, `basis_id`, `quantity`) VALUES (?, ?, ?)';
+
+    // Compute and set each computable allocation basis quantity
+    const unUpdatedCenters = [];
+
+    /* eslint-disable no-await-in-loop */
+    for (let i = 0; i < computables.length; i++) {
+      const basis = computables[i];
+      const data = await allocationQuantities(basis.id);
+
+      // Update quantities for each cost center
+      for (let k = 0; k < costCenters.length; k++) {
+        const cc = costCenters[k];
+
+        // Get the data for this cost center (if any)
+        const ccData = data.find(item => item.cost_center_id === cc.id);
+        if (ccData) {
+          const newQuantity = ccData[basis.name];
+          // See if there is an existing quantity
+          const qRecordId = await db.exec(findQRec, [cc.id, basis.id]);
+          if (qRecordId.length > 0) {
+            // console.log("Updating: ", newQuantity, qRecordId[0].id);
+            await db.exec(updateQRec, [newQuantity, qRecordId[0].id]);
+          } else {
+            // console.log("Inserting: ", cc.id, basis.id, newQuantity);
+            await db.exec(insertQRec, [cc.id, basis.id, newQuantity]);
+          }
+        } else {
+          // TODO:  Do we want to zero out the others here?
+          unUpdatedCenters.push({ cc });
+        }
+      }
+    }
+
+    // TODO: Do something with upUpdateCenters to inform the user
+    // console.log("Centers not updated: ", unUpdatedCenters);
+    res.sendStatus(200);
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
+ * Get cost allocation basis quantities
+ *
+ * This function returns a set of values for the specified
+ * allocation_basis_id for each cost center.
+ *
+ * @param {Number} allocation_basis_id
+ */
+function allocationQuantities(allocationBasisId) {
+  let query = null;
+  if (allocationBasisId === constants.allocationBasis.ALLOCATION_BASIS_NUM_EMPLOYEES) {
+    // Set up the query for number of employees
+    query = `
+      SELECT BUID(service.uuid) AS service_uuid, service.name AS service_name,
+        COUNT(employee.uuid) AS ALLOCATION_BASIS_NUM_EMPLOYEES,
+        GetCostCenterByServiceUuid(service.uuid) as cost_center_id
+      FROM service JOIN employee ON service.uuid = employee.service_uuid
+      GROUP BY service.uuid;
+  `;
+  } else {
+    return [];
+  }
+  return db.exec(query);
 }

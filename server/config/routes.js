@@ -953,6 +953,7 @@ exports.configure = function configure(app) {
   app.post('/cost_center_allocation_basis_quantity', costAllocationBasisQuantity.create);
   app.put('/cost_center_allocation_basis_quantity/:id', costAllocationBasisQuantity.update);
   app.delete('/cost_center_allocation_basis_quantity/:id', costAllocationBasisQuantity.delete);
+  app.put('/cost_center_allocation_basis_quantities_update', costAllocationBasisQuantity.updateQuantities);
 
   // Distribution Fees Centers API
   app.get('/allocation_cost_center', distributionConfiguration.configuration);
