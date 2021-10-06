@@ -17,7 +17,7 @@ function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, Ap
   const reportUrl = 'reports/finance/cost_center_step_down';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+  vm.reportDetails = { include_revenue : false };
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
@@ -29,6 +29,10 @@ function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, Ap
 
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
     vm.reportDetails.periodTo = period.id;
+  };
+
+  vm.onToggleRevenueCenter = function onToggleRevenueCenter(bool) {
+    vm.reportDetails.include_revenue = bool;
   };
 
   vm.clearPreview = function clearPreview() {
