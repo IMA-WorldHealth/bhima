@@ -35,24 +35,35 @@ async function fetch(session, params) {
     }
     return item;
   });
+
   const data = stepdown.compute(formattedCostCenters);
-  const cumulatedAllocatedCosts = data.map((item, index, array) => (item.principal ? 0 : array[index].toDist[index]));
+
+  const cumulatedAllocatedCosts = data
+    .map((item, index, array) => (item.principal ? 'principal' : array[index].toDist[index]))
+    .filter(item => item !== 'principal');
+
   const auxiliaryIndexes = data.map((item, i) => (item.auxiliary ? i : null)).filter(item => !!item);
   const services = data.map(item => {
     item.distribution = item.toDist.map((value, i) => {
       const ratio = item.ratio ? item.ratio[i] : undefined;
       return { value, ratio };
     });
+
     item.auxiliaryDistribution = item.distribution.map((value, i) => {
       return auxiliaryIndexes.includes(i) ? value : null;
     }).filter(value => !!value);
+
     return item;
   });
+
   const directCostTotal = services.reduce((prev, curr) => { return curr.directCost + prev; }, 0);
 
   // horizontal view
   const hView = [];
   let totalAfterAllocation = 0;
+
+  // heck to get the correct number of colums
+  const numAuxiliaryCenters = data.filter(value => !value.is_principal).length;
 
   for (let i = 0; i < data.length; i++) {
     const ei = data[i];
@@ -63,7 +74,8 @@ async function fetch(session, params) {
       values : [],
       total : 0,
     };
-    for (let z = 0; z < data.length; z++) {
+
+    for (let z = 0; z < numAuxiliaryCenters; z++) {
       const value = data[z].toDist[i];
       const ratio = data[z].ratio ? data[z].ratio[i] : 0;
       const selfCenter = !!(i === z);
@@ -76,6 +88,7 @@ async function fetch(session, params) {
         selfCenterValue,
       });
     }
+
     // the total is the direct cost plus all allocations
     row.total += ei.directCost;
     // auxiliary cost center distribute all of their value
