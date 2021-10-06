@@ -29,8 +29,10 @@
               <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
               <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
               {{#each data as | service |}}
+                {{#unless service.is_principal}}
                 <th>{{ service.cost_center_label }}</th>
                 <th style="width: 3em;">%</th>
+                {{/unless}}
               {{/each}}
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
             </tr>
