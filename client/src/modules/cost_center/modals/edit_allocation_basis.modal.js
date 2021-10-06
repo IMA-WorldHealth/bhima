@@ -3,11 +3,12 @@ angular.module('bhima.controllers')
 
 AllocationBasisEditController.$inject = [
   'CostCenterService', 'AllocationBasisService', 'ModalService', 'NotifyService',
-  '$uibModalInstance', 'uiGridConstants', '$translate',
+  '$uibModalInstance', '$translate',
 ];
 
-function AllocationBasisEditController(CostCenter, AllocationBasisService, Modal, Notify, Instance,
-  uiGridConstants, $translate) {
+function AllocationBasisEditController(
+  CostCenter, AllocationBasisService, Modal, Notify, Instance, $translate,
+) {
   const vm = this;
 
   vm.loading = false;
