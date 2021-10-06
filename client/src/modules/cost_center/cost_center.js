@@ -22,6 +22,7 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
   vm.deleteCostCenter = deleteCostCenter;
   vm.toggleFilter = toggleFilter;
   vm.openEditAllocationBasisModal = openEditAllocationBasisModal;
+  vm.editAllocationStepOrder = editAllocationStepOrder;
 
   // global variables
   vm.gridApi = {};
@@ -156,6 +157,14 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
       templateUrl : 'modules/cost_center/modals/edit_allocation_basis.modal.html',
       controller : 'AllocationBasisEditController as ModalCtrl',
       size : 'lg',
+    }).result.catch(angular.noop);
+  }
+
+  function editAllocationStepOrder() {
+    $uibModal.open({
+      templateUrl : 'modules/cost_center/modals/edit_allocation_step_order.modal.html',
+      controller : 'AllocationEditStepOrderController as ModalCtrl',
+      // size : 'lg',
     }).result.catch(angular.noop);
   }
 

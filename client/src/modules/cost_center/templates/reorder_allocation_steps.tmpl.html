@@ -1,0 +1,13 @@
+<div class="ui-grid-cell-contents text-center">
+  <button type="button" class="btn btn-sm" style="padding-top: 0"
+    ng-hide="row.entity.step_order === 1"
+    ng-click="grid.appScope.moveStepUp(row.entity)">
+    <span class="fa fa-arrow-up"></span>
+  </button>
+
+  <button type="button" class="btn btn-sm" style="padding-top: 0"
+    ng-hide="row.entity.step_order === grid.appScope.data.length"
+    ng-click="grid.appScope.moveStepDown(row.entity)">
+    <span class="fa fa-arrow-down"></span>
+  </button>
+</div>

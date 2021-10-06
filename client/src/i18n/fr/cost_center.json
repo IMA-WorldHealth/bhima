@@ -16,10 +16,12 @@
     "EDIT_ALLOCATION_BASIS": "Modifier le base d'allocation",
     "EDIT_ALLOCATION_KEYS" : "Modifier les clés de répartition",
     "EDIT_COST_CENTER" : "Mise à jour des informations du centre de coût",
+    "EDIT_STEP_ORDER" : "Modifier l'ordre des étapes de l'allocation des coûts",
     "PRINCIPAL": "Centre de coût Principal",
     "NO_COST_CENTER_DEFINED": "** Aucun centre de cout **",
     "SELECT_ALLOCATION_BASIS": "Sélectionnez la base d'allocation",
     "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
+    "STEP_ORDER": "Ordre des étapes de l'allocation",
     "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte",
     "UPDATE_ALLOCATION_QUANTITIES": "Mettre à jour",
     "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système"
