@@ -22,7 +22,9 @@
     "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
     "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte",
     "UPDATE_ALLOCATION_QUANTITIES": "Mettre à jour",
-    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système"
+    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système",
+    "INCLUDE_REVENUE_CENTERS" : "Ajouter les recettes?",
+    "INCLUDE_REVENUE_CENTERS_HELP_TEXT" : "Cette option inclurera les recettes avec les couts pour chaque centre."
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
   "ALLOCATION_METHOD_FLAT": "Uniform",
