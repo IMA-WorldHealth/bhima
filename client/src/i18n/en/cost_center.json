@@ -3,6 +3,7 @@
     "TITLE" : "Cost Centers",
     "ADD_ALLOCATION_KEYS" : "Add Allocation Keys",
     "ADD_COST_CENTER" : "Add a Cost Center",
+    "ADD_ALLOCATION_BASIS_TOOLTIP": "Add a new cost allocation basis",
     "ALLOCATION_BASES":"Allocation Bases",
     "ALLOCATION_BASIS": "Allocation basis",
     "ALLOCATION_BASIS_TABLE": "Table of allocation bases",
@@ -19,7 +20,9 @@
     "NO_COST_CENTER_DEFINED": "** Cost Center Not Defined **",
     "SELECT_ALLOCATION_BASIS": "Select allocation basis",
     "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation",
-    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Only for operating accounts (income and expenses). For others accounts, the cost center will not be considered"
+    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Only for operating accounts (income and expenses). For others accounts, the cost center will not be considered",
+    "UPDATE_ALLOCATION_QUANTITIES": "Update",
+    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Update system-computed cost center allocation quantities"
   },
   "ALLOCATION_METHOD": "Allocation method",
   "ALLOCATION_METHOD_FLAT": "Flat",

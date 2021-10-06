@@ -3,6 +3,7 @@
     "TITLE" : "Centres de coût",
     "ADD_ALLOCATION_KEYS" : "Ajouter les clés de répartition",
     "ADD_COST_CENTER" : "Ajouter un centre de coût",
+    "ADD_ALLOCATION_BASIS_TOOLTIP": "Ajouter une nouvelle base d'allocation",
     "ALLOCATION_BASES":"Les bases d'allocation",
     "ALLOCATION_BASIS": "Base d'allocation",
     "ALLOCATION_BASIS_TABLE": "Tableau des bases d'allocation'",
@@ -19,7 +20,9 @@
     "NO_COST_CENTER_DEFINED": "** Aucun centre de cout **",
     "SELECT_ALLOCATION_BASIS": "Sélectionnez la base d'allocation",
     "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
-    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte"
+    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte",
+    "UPDATE_ALLOCATION_QUANTITIES": "Mettre à jour",
+    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système"
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
   "ALLOCATION_METHOD_FLAT": "Uniform",
