@@ -12,10 +12,11 @@ angular.module('bhima.components')
       disabled         : '<?',
       label            : '@?',
       helpText         : '@?',
+      enableNull       : '<?',
     },
   });
 
-CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService'];
+CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService', '$translate'];
 
 /**
  * @function CostCenterSelectionController
@@ -23,7 +24,7 @@ CostCenterSelectController.$inject = ['CostCenterService', 'NotifyService'];
  * @description
  * CostCenter selection component
  */
-function CostCenterSelectController(CostCenters, Notify) {
+function CostCenterSelectController(CostCenters, Notify, $translate) {
   const $ctrl = this;
 
   function loadCostCenters() {
@@ -32,6 +33,14 @@ function CostCenterSelectController(CostCenters, Notify) {
         $ctrl.costCenters = $ctrl.filter
           ? costCenters.filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal))
           : costCenters;
+
+        if ($ctrl.enableNull) {
+          const nullCC = {
+            id : -1,
+            label : $translate.instant('COST_CENTER.NO_COST_CENTER_DEFINED'),
+          };
+          $ctrl.costCenters = [nullCC].concat($ctrl.costCenters);
+        }
       })
       .catch(Notify.handleError);
   }

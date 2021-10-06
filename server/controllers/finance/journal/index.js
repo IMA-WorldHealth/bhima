@@ -215,8 +215,18 @@ function buildTransactionQuery(options, posted) {
   filters.equals('record_uuid');
   filters.equals('reference_uuid');
   filters.equals('currency_id');
-  filters.equals('cost_center_id');
-  filters.equals('principal_center_id');
+
+  if (options.cost_center_id > -1) {
+    filters.equals('cost_center_id');
+  } else {
+    filters.custom('cost_center_id', 'p.cost_center_id IS NULL', 'p');
+  }
+
+  if (options.principal_center_id > -1) {
+    filters.equals('principal_center_id');
+  } else {
+    filters.custom('principal_center_id', 'p.principal_center_id IS NULL', 'p');
+  }
 
   filters.equals('comment');
   filters.equals('hrEntity', 'text', 'em');
