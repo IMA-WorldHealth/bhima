@@ -77,8 +77,8 @@ RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   RETURN (
     SELECT GetCostCenterByServiceUuid(i.service_uuid)
-	FROM invoice i
-	WHERE i.uuid = invoice_uuid
+    FROM invoice i
+    WHERE i.uuid = invoice_uuid
   );
 END $$
 
@@ -97,17 +97,16 @@ BEGIN
       SELECT @full_error AS error_message;
     END;
 
-
   DROP TEMPORARY TABLE IF EXISTS cost_center_costs_with_indexes;
   CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS
     SELECT
-        z.id, z.label AS cost_center_label,
-        z.allocation_basis_id,
-        z.is_principal,
-        z.step_order,
-        z.`value` AS direct_cost,
-        ccb.name AS cost_center_allocation_basis_label,
-        ccbv.quantity AS cost_center_allocation_basis_value
+      z.id, z.label AS cost_center_label,
+      z.allocation_basis_id,
+      z.is_principal,
+      z.step_order,
+      z.`value` AS direct_cost,
+      ccb.name AS cost_center_allocation_basis_label,
+      ccbv.quantity AS cost_center_allocation_basis_value
     FROM
     (
         (
