@@ -7,6 +7,11 @@
   <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.label}}</li>
     <li>
+      <a data-method="view-transaction" ui-sref="journal({ filters : [{ key: 'cost_center_id', value : row.entity.id, displayValue: row.entity.label}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})" href>
+        <span class="fa fa-info-circle"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
+    <li>
       <a data-method="edit-record" ui-sref="cost_center.edit({id : row.entity.id})" href>
         <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
       </a>
