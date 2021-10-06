@@ -13,6 +13,7 @@
     "AUXILIARY": "Auxiliary Cost Center",
     "DELETE": "Delete This Cost Center",
     "DIRECT_COST": "Direct Cost",
+    "ADD_ALLOCATION_BASIS": "Add allocation basis",
     "EDIT_ALLOCATION_BASIS": "Edit allocation basis",
     "EDIT_ALLOCATION_KEYS" : "Edit Allocation Keys",
     "EDIT_COST_CENTER" : "Update the Cost Center Information",
@@ -22,7 +23,8 @@
     "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation",
     "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Only for operating accounts (income and expenses). For others accounts, the cost center will not be considered",
     "UPDATE_ALLOCATION_QUANTITIES": "Update",
-    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Update system-computed cost center allocation quantities"
+    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Update system-computed cost center allocation quantities",
+    "SET_ALLOCATION_QUANTITIES_TOOLTIP": "Define cost center allocation quantities"
   },
   "ALLOCATION_METHOD": "Allocation method",
   "ALLOCATION_METHOD_FLAT": "Flat",
