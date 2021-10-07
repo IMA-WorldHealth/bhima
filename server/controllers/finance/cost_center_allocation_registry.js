@@ -18,8 +18,8 @@ async function fetch(session, params) {
   };
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
-  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?);';
-  let [costCenters] = await db.exec(query, [range.dateFrom, range.dateTo]);
+  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?);';
+  let [costCenters] = await db.exec(query, [range.dateFrom, range.dateTo, params.include_revenue]);
 
   if (costCenters.length) {
     const [single] = costCenters;
