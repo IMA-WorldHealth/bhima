@@ -236,8 +236,8 @@ function buildTransactionQuery(options, posted) {
   filters.equals('stockReference', 'reference_uuid', 'p');
   filters.custom('currency_id', 'c.id=?');
 
-  // null cost center for only income and expense accounts
-  const nullCC = 'p.cost_center_id IS NULL AND p.principal_center_id IS NULL AND (a.type_id IN (4, 5))';
+  // null cost center for only expense accounts
+  const nullCC = 'p.cost_center_id IS NULL AND p.principal_center_id IS NULL AND (a.type_id = 5)';
   filters.custom('showOnlyNullCostCenter', nullCC, 'p');
 
   filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
