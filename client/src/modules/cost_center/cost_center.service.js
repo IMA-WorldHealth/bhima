@@ -45,5 +45,11 @@ function CostCenterService(Api, $uibModal) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.setAllocationStepOrder = (options) => {
+    const url = `/cost_center/step_order/multi`;
+    return service.$http.put(url, { params : options })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   return service;
 }
