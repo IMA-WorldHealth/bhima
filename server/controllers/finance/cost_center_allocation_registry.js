@@ -22,6 +22,7 @@ async function fetch(session, params) {
   const range = await fiscal.getDateRangeFromPeriods(periods);
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
 
+  // get information about currencies and exchange rate
   let firstCurrency = enterpriseCurrencyId;
   let secondCurrency = params.currency_id;
   let lastRateUsed = exchangeRate.rate;
@@ -32,14 +33,13 @@ async function fetch(session, params) {
     secondCurrency = enterpriseCurrencyId;
   }
 
-  const rate = exchangeRate.rate || 1;
-
-  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?);';
+  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?, ?);';
   let [costCenters] = await db.exec(query, [
     range.dateFrom,
     range.dateTo,
     params.include_revenue,
-    rate,
+    enterpriseId,
+    params.currency_id,
   ]);
 
   if (costCenters.length) {

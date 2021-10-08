@@ -88,7 +88,8 @@ CREATE PROCEDURE ComputeCostCenterAllocationByIndex(
   IN _dateFrom DATE,
   IN _dateTo DATE,
   IN _includeRevenue BOOLEAN,
-  IN _rate DECIMAL(19, 4)
+  IN _enterpriseId SMALLINT,
+  IN _currencyId TINYINT
 )
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -106,7 +107,7 @@ BEGIN
       z.allocation_basis_id,
       z.is_principal,
       z.step_order,
-      z.`value` * _rate AS direct_cost,
+      z.`value` * IFNULL(GetExchangeRate(_enterpriseId, _currencyId, _dateTo), 1) AS direct_cost,
       ccb.name AS cost_center_allocation_basis_label,
       ccbv.quantity AS cost_center_allocation_basis_value
     FROM
