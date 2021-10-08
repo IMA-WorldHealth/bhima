@@ -86,7 +86,8 @@ END $$
 DROP PROCEDURE IF EXISTS ComputeCostCenterAllocationByIndex$$
 CREATE PROCEDURE ComputeCostCenterAllocationByIndex(
   IN _dateFrom DATE,
-  IN _dateTo DATE
+  IN _dateTo DATE,
+  IN _includeRevenue BOOLEAN
 )
 BEGIN
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -112,7 +113,7 @@ BEGIN
         (
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
-            SUM(cca.debit - cca.credit) AS `value`
+            SUM(IF(_includeRevenue, cca.debit - cca.credit, cca.debit)) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
           JOIN `period` p ON p.id = cca.period_id
@@ -124,7 +125,7 @@ BEGIN
         (
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
-            SUM(cca.debit - cca.credit) AS `value`
+            SUM(IF(_includeRevenue, cca.debit - cca.credit, cca.debit)) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
           JOIN `period` p ON p.id = cca.period_id

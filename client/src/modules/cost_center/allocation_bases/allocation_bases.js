@@ -7,6 +7,7 @@ CostCenterAllocationBasesController.$inject = [
   'AllocationBasisQuantityService',
   'uiGridConstants',
   'NotifyService',
+  '$uibModal',
 ];
 
 function CostCenterAllocationBasesController(
@@ -15,6 +16,7 @@ function CostCenterAllocationBasesController(
   AllocationBasisQuantity,
   uiGridConstants,
   Notify,
+  $modal,
 ) {
   const vm = this;
 
@@ -23,6 +25,7 @@ function CostCenterAllocationBasesController(
   vm.editAllocationBasis = editAllocationBasis;
   vm.removeAllocationBasis = removeAllocationBasis;
   vm.updateComputableQuantities = updateComputableQuantities;
+  vm.showAllocationBasesTable = showAllocationBasesTable;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -61,6 +64,14 @@ function CostCenterAllocationBasesController(
       .finally(() => {
         vm.loading = false;
       });
+  }
+
+  function showAllocationBasesTable() {
+    $modal.open({
+      templateUrl : 'modules/cost_center/modals/edit_allocation_basis.modal.html',
+      controller : 'AllocationBasisEditController as ModalCtrl',
+      size : 'lg',
+    }).result.catch(angular.noop);
   }
 
   function load() {
