@@ -144,7 +144,6 @@ function formatData(result, total, decimalPrecision) {
       row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
     }
 
-
     row.amount = util.roundDecimal(row.amount, decimalPrecision);
   });
 }
