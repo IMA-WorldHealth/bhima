@@ -20,6 +20,14 @@
           <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
         </h4>
 
+        <h5 class="text-center">
+          {{#if this.rate}}
+            {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
+            {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
+            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
+          {{/if}}
+        </h5>
+
         {{!-- VIEW OF COST CENTER ALLOCATION --}}
         <p>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
         <p>P : {{translate 'COST_CENTER.PRINCIPAL'}}</p>

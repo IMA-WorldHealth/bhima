@@ -8,8 +8,10 @@ const db = require('../../lib/db');
 const stepdown = require('../../lib/stepdown');
 const fiscal = require('./fiscal');
 const ccAllocationKeys = require('./cost_center_allocation_bases');
+const Exchange = require('./exchange');
 
 async function fetch(session, params) {
+  const enterpriseId = session.enterprise.id;
   const enterpriseCurrencyId = session.enterprise.currency_id;
 
   const periods = {
@@ -18,8 +20,27 @@ async function fetch(session, params) {
   };
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
-  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?);';
-  let [costCenters] = await db.exec(query, [range.dateFrom, range.dateTo, params.include_revenue]);
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
+
+  let firstCurrency = enterpriseCurrencyId;
+  let secondCurrency = params.currency_id;
+  let lastRateUsed = exchangeRate.rate;
+
+  if (lastRateUsed && lastRateUsed < 1) {
+    lastRateUsed = (1 / lastRateUsed);
+    firstCurrency = params.currency_id;
+    secondCurrency = enterpriseCurrencyId;
+  }
+
+  const rate = exchangeRate.rate || 1;
+
+  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?);';
+  let [costCenters] = await db.exec(query, [
+    range.dateFrom,
+    range.dateTo,
+    params.include_revenue,
+    rate,
+  ]);
 
   if (costCenters.length) {
     const [single] = costCenters;
@@ -104,7 +125,7 @@ async function fetch(session, params) {
   return {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
-    currencyId : enterpriseCurrencyId,
+    currencyId : params.currency_id,
     data,
     cumulatedAllocatedCosts,
     costCenterIndexes,
@@ -112,6 +133,9 @@ async function fetch(session, params) {
     directCostTotal,
     totalAfterAllocation,
     hView,
+    firstCurrency,
+    secondCurrency,
+    rate : lastRateUsed,
   };
 }
 
