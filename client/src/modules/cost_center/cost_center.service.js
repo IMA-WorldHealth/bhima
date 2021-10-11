@@ -39,7 +39,7 @@ function CostCenterService(Api, $uibModal) {
       .then(service.util.unwrapHttpResponse);
   };
 
-  service.getAllocationQuantities = (options) => {
+  service.getcomputedAllocationQuantities = (options) => {
     const url = `/cost_center/allocation_quantities`;
     return service.$http.get(url, { params : options })
       .then(service.util.unwrapHttpResponse);
