@@ -14,21 +14,6 @@ module.exports = {
   updateQuantities,
 };
 
-// add a new allocation basis quantity
-//
-// POST /cost_center_allocation_basis_quantity
-//
-function create(req, res, next) {
-  const sql = `INSERT INTO cost_center_allocation_basis_value SET ?`;
-  const data = req.body;
-  db.exec(sql, data)
-    .then(() => {
-      res.sendStatus(201);
-    })
-    .catch(next)
-    .done();
-}
-
 // get details of all allocation base quantities for a given cost center
 //
 // GET /cost_center_allocation_basis_quantity/bulk/:id
@@ -141,6 +126,21 @@ function list(req, res, next) {
     .done();
 }
 
+// add a new allocation basis quantity
+//
+// POST /cost_center_allocation_basis_quantity
+//
+function create(req, res, next) {
+  const sql = `INSERT INTO cost_center_allocation_basis_value SET ?`;
+  const data = req.body;
+  db.exec(sql, data)
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
+}
+
 // update allocation basis quantity details
 //
 // PUT /cost_center_allocation_basis_quantity/:id
@@ -173,9 +173,7 @@ function remove(req, res, next) {
 //
 // UPDATE /cost_center_allocation_basis_quantities_update
 //
-
 async function updateQuantities(req, res, next) {
-
   try {
     // Get the full list of cost center IDs
     const costCentersQuery = 'SELECT id, label AS name from cost_center';
@@ -186,48 +184,36 @@ async function updateQuantities(req, res, next) {
     const computables = await db.exec(cabQuery);
 
     // Queries to update the quantity records
-    const findQRec = 'SELECT id FROM `cost_center_allocation_basis_value` '
+    const delQRec = 'DELETE FROM `cost_center_allocation_basis_value` '
       + 'WHERE `cost_center_id` = ? AND `basis_id` = ?';
-    const updateQRec = 'UPDATE `cost_center_allocation_basis_value` '
-      + 'SET `quantity` = ? WHERE `id` = ?';
     const insertQRec = 'INSERT INTO `cost_center_allocation_basis_value` '
       + '(`cost_center_id`, `basis_id`, `quantity`) VALUES (?, ?, ?)';
 
-    // Compute and set each computable allocation basis quantity
-    const unUpdatedCenters = [];
-
     /* eslint-disable no-await-in-loop */
     for (let i = 0; i < computables.length; i++) {
+      const transaction = db.transaction();
       const basis = computables[i];
-      const data = await allocationQuantities(basis.id);
+      const data = await computedAllocationQuantities(basis.id);
 
       // Update quantities for each cost center
       for (let k = 0; k < costCenters.length; k++) {
         const cc = costCenters[k];
-
         // Get the data for this cost center (if any)
         const ccData = data.find(item => item.cost_center_id === cc.id);
-        if (ccData) {
-          const newQuantity = ccData[basis.name];
-          // See if there is an existing quantity
-          const qRecordId = await db.exec(findQRec, [cc.id, basis.id]);
-          if (qRecordId.length > 0) {
-            // console.log("Updating: ", newQuantity, qRecordId[0].id);
-            await db.exec(updateQRec, [newQuantity, qRecordId[0].id]);
-          } else {
-            // console.log("Inserting: ", cc.id, basis.id, newQuantity);
-            await db.exec(insertQRec, [cc.id, basis.id, newQuantity]);
-          }
-        } else {
-          // TODO:  Do we want to zero out the others here?
-          unUpdatedCenters.push({ cc });
-        }
+        const newQuantity = ccData ? ccData[basis.name] : 0;
+
+        // First delete the old record first
+        transaction.addQuery(delQRec, [cc.id, basis.id]);
+        // The add a new entry for the updated quantity
+        transaction.addQuery(insertQRec, [cc.id, basis.id, newQuantity]);
       }
+
+      await transaction.execute();
     }
 
-    // TODO: Do something with upUpdateCenters to inform the user
-    // console.log("Centers not updated: ", unUpdatedCenters);
+    // Success!
     res.sendStatus(200);
+
   } catch (e) {
     next(e);
   }
@@ -241,7 +227,7 @@ async function updateQuantities(req, res, next) {
  *
  * @param {Number} allocation_basis_id
  */
-function allocationQuantities(allocationBasisId) {
+function computedAllocationQuantities(allocationBasisId) {
   let query = null;
   if (allocationBasisId === constants.allocationBasis.ALLOCATION_BASIS_NUM_EMPLOYEES) {
     // Set up the query for number of employees

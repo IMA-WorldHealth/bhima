@@ -89,6 +89,8 @@ function CostCenterAllocationBasesController(
           cellFilter : 'translate',
           aggregationHideLabel : true,
           aggregationType : uiGridConstants.aggregationTypes.count,
+          enableSorting : true,
+          sort: { direction: uiGridConstants.ASC, priority: 0 },
         }];
 
         // Build other columns for ui-grid
@@ -102,6 +104,7 @@ function CostCenterAllocationBasesController(
             footerCellClass : 'text-right',
             cellFilter : 'number: 2',
             footerCellFilter : 'number:2',
+            enableSorting : true,
             aggregationHideLabel : true,
             aggregationType : uiGridConstants.aggregationTypes.sum,
           };
