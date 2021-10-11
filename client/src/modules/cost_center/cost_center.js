@@ -41,6 +41,8 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
         field : 'label',
         displayName : 'FORM.LABELS.DESIGNATION',
         headerCellFilter : 'translate',
+        enableSorting : true,
+        sort: { direction: uiGridConstants.ASC, priority: 0 },
       },
       {
         field : 'abbrs',
