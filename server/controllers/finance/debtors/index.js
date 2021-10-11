@@ -208,7 +208,7 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
   //       it currently uses 5 sub queries - this should be improved
   const sql = `
     SELECT BUID(i.uuid) AS uuid, dm.text AS reference, credit, debit, balance,
-      BUID(entity_uuid) AS entity_uuid, invoice.date
+      BUID(entity_uuid) AS entity_uuid, invoice.date, invoice.description
     FROM (
       SELECT uuid, SUM(debit) AS debit, SUM(credit) AS credit, SUM(debit-credit) AS balance, entity_uuid
       FROM (
