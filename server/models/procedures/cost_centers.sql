@@ -88,10 +88,10 @@ CREATE PROCEDURE ComputeCostCenterAllocationByIndex(
   IN _dateFrom DATE,
   IN _dateTo DATE,
   IN _includeRevenue BOOLEAN,
-  IN _enterpriseId SMALLINT,
   IN _currencyId TINYINT
 )
 BEGIN
+  DECLARE _enterpriseId SMALLINT;
   DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
       GET DIAGNOSTICS CONDITION 1 @sqlstate = RETURNED_SQLSTATE,
@@ -99,6 +99,8 @@ BEGIN
       SET @full_error = CONCAT("ERROR ", @errno, " (", @sqlstate, "): ", @text);
       SELECT @full_error AS error_message;
     END;
+
+  SET _enterpriseId = (SELECT id FROM enterprise LIMIT 1);
 
   DROP TEMPORARY TABLE IF EXISTS cost_center_costs_with_indexes;
   CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS

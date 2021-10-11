@@ -33,12 +33,11 @@ async function fetch(session, params) {
     secondCurrency = enterpriseCurrencyId;
   }
 
-  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?, ?);';
+  const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?);';
   let [costCenters] = await db.exec(query, [
     range.dateFrom,
     range.dateTo,
     params.include_revenue,
-    enterpriseId,
     params.currency_id,
   ]);
 
