@@ -14,57 +14,48 @@
   </div>
 
   <div class="modal-body">
-    <bh-find-patient
-      patient-uuid="$ctrl.selected.uuid"
-      suppress-reset="false"
-      on-search-complete="$ctrl.setPatient(patient)">
-    </bh-find-patient>
 
-    <div ng-if="$ctrl.selected.uuid" class="form-group">
-      <div class="checkbox">
-        <label>
-          <input
-            type="checkbox"
-            name="join_invoice"
-            ng-true-value="1"
-            ng-false-value="0"
-            ng-model="$ctrl.joinInvoice"
-            ng-click="$ctrl.getLastInvoice()">
-          <span translate>STOCK.JOIN_INVOICE</span>
-        </label>
-      </div>
+    <fieldset ng-disabled="$ctrl.loading">
+      <bh-find-patient
+        patient-uuid="$ctrl.selected.uuid"
+        suppress-reset="false"
+        on-search-complete="$ctrl.setPatient(patient)">
+      </bh-find-patient>
 
-      <div ng-if="$ctrl.joinInvoice">
-        <bh-find-invoice
-          patient-uuid="$ctrl.selected.uuid"
-          invoice-uuid="$ctrl.scannedInvoice.uuid"
-          on-search-complete="$ctrl.setInvoice(invoice)"
-          disabled="!$ctrl.selected.uuid">
-        </bh-find-invoice>
-      </div>
+      <bh-find-invoice
+        patient-uuid="$ctrl.selected.uuid"
+        invoice-uuid="$ctrl.scannedInvoice.uuid"
+        on-search-complete="$ctrl.setInvoice(invoice)"
+        disabled="!$ctrl.selected.uuid">
+      </bh-find-invoice>
 
-      <div ng-if="$ctrl.patientInvoices.length && $ctrl.joinInvoice && !$ctrl.invoiceSelected">
-        <div translate> FORM.INFO.THE_LAST_5_INVOICES </div>
+      <div ng-if="$ctrl.patientInvoices.length">
+        <div translate>FORM.INFO.THE_LAST_5_INVOICES</div>
         <div ng-repeat="invoice in $ctrl.patientInvoices" class="radio">
           <label>
             <input
               type="radio"
               ng-click="$ctrl.findDetailInvoice(invoice)"
               name="invoice">
-            <span><strong>{{ invoice.reference }}: {{ invoice.debit | currency: $ctrl.enterprise.currency_id }}</strong> - ({{ invoice.date | date:'dd/MM/yyyy, hh:mm' }})</span>
+            <span>
+              <strong>{{ invoice.reference }}: {{ invoice.debit | currency: $ctrl.enterprise.currency_id }}</strong>
+              - ({{ invoice.date | date:'dd/MM/yyyy, hh:mm' }})
+            </span>
+            <p>{{invoice.description}}</p>
           </label>
         </div>
       </div>
-      <div class="text-warning" ng-if="!$ctrl.patientInvoices.length && $ctrl.joinInvoice">
-        <i class="fa fa-warning"></i> <span translate> FORM.INFO.THIS_PATIENT_NOT_BILLED </span>
+      <div class="text-warning" ng-if="$ctrl.selected.uuid && $ctrl.loading && !$ctrl.patientInvoices.length">
+        <i class="fa fa-warning"></i> <span translate>FORM.INFO.THIS_PATIENT_NOT_BILLED</span>
       </div>
-    </div>
 
-    <div class="form-group">
-      <a href="" ng-click="$ctrl.openBarcodeScanner()">
-        <i class="fa fa-barcode"></i> <span translate>BARCODE.SCAN</span>
-      </a>
-    </div>
+      <div class="form-group">
+        <a href="" ng-click="$ctrl.openBarcodeScanner()">
+          <i class="fa fa-barcode"></i> <span translate>BARCODE.SCAN</span>
+        </a>
+      </div>
+    </fieldset>
+
   </div>
 
   <div class="modal-footer">
@@ -72,7 +63,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="FindForm.$loading">
+    <bh-loading-button loading-state="FindForm.$loading" disabled="!$ctrl.invoice">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
