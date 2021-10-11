@@ -1,4 +1,4 @@
-<form data-find-invoice name="FindInvoiceForm" novalidate>
+<ng-form data-find-invoice name="FindInvoiceForm" novalidate>
   <div class="form-group"
     ng-class="{ 'has-success' : $ctrl.invoiceFound && FindInvoiceForm.$submitted, 'has-error' : !$ctrl.invoiceFound && FindInvoiceForm.$submitted }">
     <label class="control-label" translate>FORM.LABELS.ENTER_INVOICE_ID</label>
@@ -42,4 +42,4 @@
       <li ng-repeat="item in $ctrl.invoiceItems track by $index">{{ item }}</li>
     </ul>
   </div>
-</form>
+</ng-form>
