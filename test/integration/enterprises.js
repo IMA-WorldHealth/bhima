@@ -57,7 +57,7 @@ describe('(/enterprises) Enterprises API', () => {
   const responseKeys = [
     'id', 'name', 'abbr', 'email', 'po_box', 'helpdesk', 'phone',
     'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id',
-    'settings', 'address', 'base_index_growth_rate',
+    'settings', 'address',
   ];
 
   it('POST /enterprises will register a valid enterprises', () => {
