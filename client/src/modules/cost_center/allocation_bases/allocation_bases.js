@@ -7,7 +7,9 @@ CostCenterAllocationBasesController.$inject = [
   'AllocationBasisQuantityService',
   'uiGridConstants',
   'NotifyService',
+  'SessionService',
   '$uibModal',
+  '$translate',
 ];
 
 function CostCenterAllocationBasesController(
@@ -16,9 +18,13 @@ function CostCenterAllocationBasesController(
   AllocationBasisQuantity,
   uiGridConstants,
   Notify,
+  Session,
   $modal,
+  $translate,
 ) {
   const vm = this;
+
+  vm.enterprise = Session.enterprise;
 
   // global variables
   vm.gridApi = {};
@@ -95,17 +101,24 @@ function CostCenterAllocationBasesController(
 
         // Build other columns for ui-grid
         const otherColumns = rows.costCenterIndexes.map((item) => {
+
+          let label = $translate.instant(item.index);
+          if (item.units) {
+            label += ` (${$translate.instant(item.units)})`;
+          }
+
           return {
             field : item.index,
-            displayName : item.index,
+            displayName : label,
             type : 'number',
-            headerCellFilter : 'translate',
             cellClass : 'text-right',
             footerCellClass : 'text-right',
-            cellFilter : 'number: 2',
-            footerCellFilter : 'number:2',
+            cellFilter : `number: ${item.decimal_places}`,
+            footerCellFilter : `number: ${item.decimal_places}`,
             enableSorting : true,
             aggregationHideLabel : true,
+            cellTemplate : item.is_currency && item.index == 'ALLOCATION_BASIS_DIRECT_COST'
+              ? '/modules/cost_center/allocation_bases/templates/direct_cost.tmpl.html' : null,
             aggregationType : uiGridConstants.aggregationTypes.sum,
           };
         });
