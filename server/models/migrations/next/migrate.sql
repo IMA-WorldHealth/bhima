@@ -277,3 +277,13 @@ CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__serv
 CALL drop_foreign_key('service_cost_center', 'service_fee_center__fee_center');   -- old constraint name
 CALL drop_foreign_key('service_cost_center', 'service_cost_center__cost_center');
 CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE');
+
+/*
+ * @author: mbayopanda
+ * @date: 2021-10-12
+ */
+INSERT INTO `unit` VALUES 
+  (301, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
