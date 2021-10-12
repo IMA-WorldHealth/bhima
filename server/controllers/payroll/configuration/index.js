@@ -53,17 +53,17 @@ function create(req, res, next) {
   const sql = `INSERT INTO payroll_configuration SET ?`;
   const data = req.body;
   let insertedId = null;
+
   db.exec(sql, [data])
     .then((row) => {
       insertedId = row.insertId;
-      return db.exec(`CALL UpdateStaffingIndices(?, ?)`, [data.dateFrom, data.dateTo]);
+      return db.exec(`CALL UpdateStaffingIndices(?, ?, ?)`, [data.dateFrom, data.dateTo, insertedId]);
     }).then(() => {
       res.status(201).json({ id : insertedId });
     })
     .catch(next)
     .done();
 }
-
 
 // PUT /PAYROLL_CONFIG /:ID
 function update(req, res, next) {

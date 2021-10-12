@@ -239,3 +239,10 @@ CALL add_constraint_if_missing('account', 'account__cost_center', 'FOREIGN KEY (
  */
 CALL add_column_if_missing('cost_center_allocation_basis', 'is_computed', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `decimal_places`');
 UPDATE `cost_center_allocation_basis` SET `is_computed` = 1 WHERE id = 2;
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-11
+ * @desc: base_index_growth_rate column in the enterprise_setting table
+ */
+CALL add_column_if_missing('enterprise_setting', 'base_index_growth_rate', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 0');
