@@ -23,7 +23,7 @@ describe('(/cost_center_allocation_basis) The cost center step-down allocation b
 
   let newBasisId = null;
 
-  const numPredefined = 6;
+  const numPredefined = 8;
 
   it('GET /cost_center_allocation_basis returns a list of allocation basis items', () => {
     return agent.get('/cost_center_allocation_basis')
