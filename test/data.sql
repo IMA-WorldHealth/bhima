@@ -779,7 +779,7 @@ INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1),
 (2, 'Juin 2019', '2019-06-01', '2019-06-30', 2, 1, 1, 1, 1);
 
-CALL UpdateStaffingIndices('2019-06-01', '2019-06-30');
+CALL UpdateStaffingIndices('2019-06-01', '2019-06-30', 2);
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
