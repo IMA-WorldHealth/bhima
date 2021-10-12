@@ -250,3 +250,13 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
 VALUES
   (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '', 'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '', 'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/*
+ * @author: mbayopanda
+ * @date: 2021-10-12
+ */
+INSERT INTO `unit` VALUES 
+  (301, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
