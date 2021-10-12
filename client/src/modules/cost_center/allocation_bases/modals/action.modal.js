@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 CCAllocationBasisModalController.$inject = [
   '$state', 'AllocationBasisService', 'AllocationBasisQuantityService',
-  'NotifyService', 'parameters', 'appcache',
+  'NotifyService', 'parameters', 'appcache', '$translate',
 ];
 
 function CCAllocationBasisModalController(
   $state, AllocationBasis, AllocationBasisQuantity,
-  Notify, parameters, AppCache,
+  Notify, parameters, AppCache, $translate,
 ) {
   const vm = this;
 
@@ -37,6 +37,7 @@ function CCAllocationBasisModalController(
   function onSelectCostCenter(cc) {
     vm.costCenter = cc;
     vm.costCenterId = cc.id;
+    loadAllocationBasisQuantity();
   }
 
   function load() {
@@ -50,6 +51,13 @@ function CCAllocationBasisModalController(
   function loadAllocationBasis() {
     return AllocationBasis.read(null, { cost_center_id : vm.costCenterId })
       .then(result => {
+        // Process the labels
+        result.forEach(item => {
+          item.label = $translate.instant(item.name);
+          if (item.units) {
+            item.label += ` (${$translate.instant(item.units)})`;
+          }
+        });
         vm.allocationBases = result || {};
       });
   }
