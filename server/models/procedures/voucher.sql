@@ -105,6 +105,7 @@ invoice.
 Once the procedure has finished, the corresponding cash or invoice record will
 have the "reversed" column set to "1".
 */
+DROP PROCEDURE IF EXISTS ReverseTransaction $$
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
@@ -158,13 +159,13 @@ BEGIN
     LIMIT 1;
 
   -- NOTE: the debits and credits are swapped on purpose here
-  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid)
-    SELECT HUID(UUID()), zz.account_id, zz.credit_equiv, zz.debit_equiv, voucher_uuid, zz.reference_uuid, zz.entity_uuid
+  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid, cost_center_id, principal_center_id)
+    SELECT HUID(UUID()), zz.account_id, zz.credit_equiv, zz.debit_equiv, voucher_uuid, zz.reference_uuid, zz.entity_uuid, zz.cost_center_id, zz.principal_center_id
     FROM (
-      SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid
+      SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid, pj.cost_center_id, pj.principal_center_id
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL
-      SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid
+      SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid, gl.cost_center_id, gl.principal_center_id
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 
