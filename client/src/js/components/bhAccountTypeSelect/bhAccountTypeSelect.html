@@ -1,0 +1,35 @@
+<div ng-form="AccountTypeForm" bh-cost-center-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : AccountTypeForm.$submitted && AccountTypeForm.accountTypeId.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ng-transclude></ng-transclude>
+
+    <p ng-if="$ctrl.helpText" class="text-info">
+      <i class="fa fa-info-circle"></i>&nbsp;
+      <span translate>{{ $ctrl.helpText }}</span>
+    </p>
+
+    <ui-select
+      name="accountTypeId"
+      ng-model="$ctrl.accountTypeId"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT_TYPE' | translate }}">
+        <span translate>{{$select.selected.hrType}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.accountTypes | filter: { 'hrType': $select.search }">
+        <span ng-bind-html="type.hrType | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountTypeForm.accountTypeId.$error" ng-show="AccountTypeForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

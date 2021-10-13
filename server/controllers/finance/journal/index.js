@@ -210,6 +210,7 @@ function buildTransactionQuery(options, posted) {
 
   filters.equals('user_id');
   filters.equals('account_id');
+  filters.equals('account_type_id', 'type_id', 'a');
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('record_uuid');
