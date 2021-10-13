@@ -17,7 +17,7 @@
     </bh-cost-center-select>
 
     <div ng-repeat="basis in CCAllocationBasisModalCtrl.allocationBases track by basis.id" class="form-group" ng-class="{ 'has-error' : CCAllocationBasisForm.$submitted && CCAllocationBasisForm.text.$invalid }">
-      <label class="control-label" translate>{{ basis.name }}</label>
+      <label class="control-label">{{ basis.label }}</label>
       <input name="text" ng-model="CCAllocationBasisModalCtrl.ccAllocation[basis.name]" autocomplete="off" class="form-control">
       <div class="help-block" ng-messages="CCAllocationBasisForm[basis.name].$error" ng-show="CCAllocationBasisForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

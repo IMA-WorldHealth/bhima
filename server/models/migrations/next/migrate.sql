@@ -239,3 +239,14 @@ CALL add_constraint_if_missing('account', 'account__cost_center', 'FOREIGN KEY (
  */
 CALL add_column_if_missing('cost_center_allocation_basis', 'is_computed', 'BOOLEAN NOT NULL DEFAULT 0 AFTER `decimal_places`');
 UPDATE `cost_center_allocation_basis` SET `is_computed` = 1 WHERE id = 2;
+
+/*
+ * @author: jmcameron
+ * @date: 2021-10-12
+ * @desc: Added more predefined cost center allocation basis items
+ */
+INSERT IGNORE INTO `cost_center_allocation_basis`
+  (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`, `is_computed`)
+VALUES
+  (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '', 'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
+  (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '', 'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
