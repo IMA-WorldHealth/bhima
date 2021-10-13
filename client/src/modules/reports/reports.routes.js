@@ -56,6 +56,7 @@ angular.module('bhima.routes')
       'aggregated_stock_consumption',
       'rumer_report',
       'cost_center_step_down',
+      'cost_center_accounts',
     ];
 
     function resolveReportData($stateParams, SavedReports) {
