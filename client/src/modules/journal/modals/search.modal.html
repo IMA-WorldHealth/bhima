@@ -50,6 +50,12 @@
           </bh-account-select>
         </div>
 
+        <!-- account type filter -->
+        <bh-account-type-select
+          on-select-callback="ModalCtrl.onSelectAccountTypeChange(accountType)"
+          account-type-id="ModalCtrl.searchQueries.account_type_id">
+        </bh-account-type-select>
+
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrRecord.$invalid }">
           <label class="control-label" translate>TABLE.COLUMNS.RECORD</label>
           <bh-clear on-clear="ModalCtrl.clear('hrRecord')"></bh-clear>
