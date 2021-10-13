@@ -35,6 +35,10 @@ function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, Ap
     vm.reportDetails.include_revenue = bool;
   };
 
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currency_id = currency.id;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
