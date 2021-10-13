@@ -9,16 +9,11 @@ StockFindPatientModalController.$inject = [
 function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCache, Barcodes, Debtors,
   PatientInvoice, Session) {
   const vm = this;
-  const cache = new AppCache('StockFindPatient');
-
-  cache.joinInvoice = cache.joinInvoice || 0;
-
-  // join invoice as default behavior
-  vm.joinInvoice = cache.joinInvoice;
 
   // global
   vm.selected = {};
   vm.patientInvoices = [];
+  vm.loading = false;
 
   // bind methods
   vm.setPatient = setPatient;
@@ -26,34 +21,34 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
   vm.submit = submit;
   vm.cancel = cancel;
   vm.openBarcodeScanner = openBarcodeScanner;
-  vm.getLastInvoice = getLastInvoice;
-  vm.invoiceSelected = false;
   vm.enterprise = Session.enterprise;
 
   vm.findDetailInvoice = findDetailInvoice;
 
   if (Data.entity_uuid) {
+    vm.loading = true;
     Patients.read(Data.entity_uuid)
       .then(patient => {
-        setPatient(patient);
+        return setPatient(patient);
       })
       .catch(err => {
+        // do not show error if
         if (err.statusCode === 404) {
           setPatient({});
         } else {
           Notify.handleError(err);
         }
-      });
+      })
+      .finally(() => { vm.loading = false; });
   }
 
   // set patient
   function setPatient(patient) {
-    vm.joinInvoice = false;
-    vm.invoiceSelected = false;
     vm.selected = patient;
+    return loadRecentInvoices();
   }
 
-  function getLastInvoice() {
+  function loadRecentInvoices() {
     // load debtor invoices
     Debtors.invoices(vm.selected.debtor_uuid, { descLimit5 : 1 })
       .then((invoices) => {
@@ -79,7 +74,6 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
 
   function setInvoice(invoice) {
     vm.invoice = invoice;
-    vm.invoiceSelected = true;
   }
 
   // submit
@@ -102,6 +96,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
    */
   function openBarcodeScanner() {
     let invoice;
+    vm.loading = true;
 
     Barcodes.modal()
       .then(record => {
@@ -113,10 +108,10 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
 
         // we need to wait for the bh-find-invoice component to call the setInvoice()
         // since the invoice details have to be formatted in a particular way.
-        vm.joinInvoice = 1;
         vm.scannedInvoice = invoice;
       })
-      .catch(angular.noop);
+      .catch(angular.noop)
+      .finally(() => { vm.loading = false; });
   }
 
 }
