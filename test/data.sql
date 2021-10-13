@@ -10,8 +10,8 @@ INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL, NULL);
 
 INSERT INTO `enterprise_setting` (
-  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report) VALUES
-  (1, 0, 1, 1);
+  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report, base_index_growth_rate) VALUES
+  (1, 0, 1, 1, 5);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -779,7 +779,7 @@ INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1),
 (2, 'Juin 2019', '2019-06-01', '2019-06-30', 2, 1, 1, 1, 1);
 
-CALL UpdateStaffingIndices('2019-06-01', '2019-06-30');
+CALL UpdateStaffingIndices('2019-06-01', '2019-06-30', 2);
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');

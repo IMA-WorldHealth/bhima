@@ -250,3 +250,10 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
 VALUES
   (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '', 'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '', 'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-11
+ * @desc: base_index_growth_rate column in the enterprise_setting table
+ */
+CALL add_column_if_missing('enterprise_setting', 'base_index_growth_rate', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 0');

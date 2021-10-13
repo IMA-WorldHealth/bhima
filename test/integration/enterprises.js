@@ -29,7 +29,7 @@ describe('(/enterprises) Enterprises API', () => {
     phone : '00904940950932016',
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     currency_id : 1,
-    settings : { enable_price_lock : 0, enable_barcodes : 1 },
+    settings : { enable_price_lock : 0, enable_barcodes : 1, base_index_growth_rate : 5 },
   };
 
   const updateDefaultEnterprise = {
