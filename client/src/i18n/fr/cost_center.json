@@ -21,6 +21,7 @@
     "PRINCIPAL": "Centre de coût Principal",
     "NO_COST_CENTER_DEFINED": "** Aucun centre de cout **",
     "SELECT_ALLOCATION_BASIS": "Sélectionnez la base d'allocation",
+    "SELECT_COST_CENTER": "Sélectionnez le centre de coût",
     "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
     "STEP_ORDER": "Ordre des étapes de l'allocation",
     "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte",

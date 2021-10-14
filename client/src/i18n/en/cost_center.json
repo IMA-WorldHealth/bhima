@@ -21,6 +21,7 @@
     "PRINCIPAL": "Principal Cost Center",
     "NO_COST_CENTER_DEFINED": "** Cost Center Not Defined **",
     "SELECT_ALLOCATION_BASIS": "Select allocation basis",
+    "SELECT_COST_CENTER": "Select Cost Center",
     "STEP_DOWN_COST_ALLOCATION": "Step-down cost allocation",
     "STEP_ORDER": "Allocation Step Order",
     "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Only for operating accounts (income and expenses). For others accounts, the cost center will not be considered",
