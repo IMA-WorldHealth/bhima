@@ -172,6 +172,10 @@
       "DESCRIPTION": "This report shows the difference between what we purchase with what we have entered in the stock.",
       "TITLE": "Purchase Order Analysis"
     },
+    "PURCHASE_PRICES": {
+      "DESCRIPTION": "This report shows the purchase value of a medicine over time, eachtime it was entered into stock.  It also shows the margin over the current inventory price.",
+      "TITLE": "Purchase Price Analysis"
+    },
     "RUMER": {
       "CONDENSED_REPORT": "Condensed report",
       "DESCRIPTION": "Drug Usage and Recipe Register",

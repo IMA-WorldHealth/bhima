@@ -171,6 +171,7 @@ INSERT INTO unit VALUES
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
+  (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
   (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
   (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
   (300, 'Lost Stock Reprot','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report');
@@ -247,6 +248,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
+  ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE');
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
 
@@ -439,7 +441,7 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
 INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
-  (3, 'fianance', 'DASHBOARD.FINANCE');
+  (3, 'finance', 'DASHBOARD.FINANCE');
 
 -- cron
 -- NOTE(@jniles): the cron syntax for month is 0-indexed, but the cron
