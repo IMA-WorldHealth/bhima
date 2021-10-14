@@ -1,14 +1,14 @@
 const helpers = require('../shared/helpers');
-const FeeCenterPage = require('./fee_center.page');
+const CostCenterPage = require('./fee_center.page');
 
-describe('Fee Center Management', () => {
+describe('Cost Center Management', () => {
   // navigate to the page
-  before(() => helpers.navigate('#!/fee_center'));
+  before(() => helpers.navigate('#!/cost_center'));
 
-  const Page = new FeeCenterPage();
+  const Page = new CostCenterPage();
 
-  const feeCenter = {
-    label : 'Special Fee Center',
+  const costCenter = {
+    label : 'Special Cost Center',
     is_principal : 1,
     has_profit_center : 1,
     reference_profit_id : 'Cost Test 2',
@@ -20,12 +20,12 @@ describe('Fee Center Management', () => {
     project_id : 'Test Project C',
   };
 
-  const updateFeeCenter = {
-    label : 'Updated Fee Center',
+  const updateCostCenter = {
+    label : 'Updated Cost Center',
   };
 
   const updateAuxiliary = {
-    label : 'Updated Fee Center',
+    label : 'Updated Cost Center',
     is_principal : 0,
     is_update_reference : 1,
     is_profit : 1,
@@ -33,13 +33,13 @@ describe('Fee Center Management', () => {
   };
 
   const updateProfitToCost = {
-    label : 'Updated Fee Center',
+    label : 'Updated Cost Center',
     is_update_reference : 1,
     is_profit : 0,
     reference_cost_id : 'Cost Test 2',
   };
 
-  const ErrorfeeCenterUpdate = {
+  const ErrorcostCenterUpdate = {
     label : 'Principale TPA',
     is_principal : 0,
     is_update_reference : 1,
@@ -47,8 +47,8 @@ describe('Fee Center Management', () => {
     reference_cost_id : 'Cost Test 3',
   };
 
-  const ErrorfeeCenterInsert = {
-    label : 'Special Fee Center',
+  const ErrorcostCenterInsert = {
+    label : 'Special Cost Center',
     is_principal : 1,
     has_profit_center : 1,
     reference_profit_id : 'Profit Administration',
@@ -56,31 +56,31 @@ describe('Fee Center Management', () => {
     reference_cost_id : 'Cost Test 1',
   };
 
-  it('creates a new Fee Center', async () => {
-    await Page.createFeeCenter(feeCenter);
+  it('creates a new Cost Center', async () => {
+    await Page.createCostCenter(costCenter);
   });
 
-  it('edits a Fee Center label', async () => {
-    await Page.editFeeCenter(feeCenter.label, updateFeeCenter);
+  it('edits a Cost Center label', async () => {
+    await Page.editCostCenter(costCenter.label, updateCostCenter);
   });
 
-  it('change of the Principal Fee Center to Auxiliary and the modification of the expense center', async () => {
-    await Page.editFeeCenter(updateAuxiliary.label, updateAuxiliary);
+  it('change of the Principal Cost Center to Auxiliary and the modification of the expense center', async () => {
+    await Page.editCostCenter(updateAuxiliary.label, updateAuxiliary);
   });
 
-  it('deletes a Fee Center', async () => {
-    await Page.deleteFeeCenter(updateProfitToCost.label);
+  it('deletes a Cost Center', async () => {
+    await Page.deleteCostCenter(updateProfitToCost.label);
   });
 
   it('unable to assign an expense center a reference already used during creation', async () => {
-    await Page.errorCreateFeeCenter(ErrorfeeCenterInsert);
+    await Page.errorCreateCostCenter(ErrorcostCenterInsert);
   });
 
   it('unable to assign an expense center a reference already used during update', async () => {
-    await Page.errorEditFeeCenter(ErrorfeeCenterUpdate.label, ErrorfeeCenterUpdate);
+    await Page.errorEditCostCenter(ErrorcostCenterUpdate.label, ErrorcostCenterUpdate);
   });
 
-  it('does not create a Fee Center with incorrect information', async () => {
-    await Page.errorOnCreateFeeCenter();
+  it('does not create a Cost Center with incorrect information', async () => {
+    await Page.errorOnCreateCostCenter();
   });
 });

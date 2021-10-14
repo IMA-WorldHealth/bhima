@@ -12,7 +12,7 @@ function JournalSearchLogModalController(
   const vm = this;
   const displayValues = {};
   const changes = new Store({ identifier : 'key' });
-  const searchQueryOptions = ['user_id', 'record_uuid', 'trans_id', 'hrRecord', 'description'];
+  const searchQueryOptions = ['user_id', 'record_uuid', 'trans_id', 'hrRecord', 'description', 'action'];
   const lastDisplayValues = Journal.filters.getDisplayValueMap();
 
   vm.filters = data;
@@ -40,6 +40,11 @@ function JournalSearchLogModalController(
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
     displayValues.user_id = user.display_name;
+  };
+
+  vm.onActionSelect = function onActionSelect(action) {
+    vm.searchQueries.action = action;
+    displayValues.action = action;
   };
 
   vm.clear = function clear(key) {

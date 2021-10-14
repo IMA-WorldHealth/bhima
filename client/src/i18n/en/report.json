@@ -99,8 +99,12 @@
     },
     "EXPENSE_REPORT": "Expenses Report",
     "EXPENSE": "Expense",
-    "FEE_CENTER": {
-      "TITLE": "Fee Center Report"
+    "COST_CENTER": {
+      "TITLE": "Cost Center Report"
+    },
+    "COST_CENTER_STEPDOWN": {
+      "TITLE": "Step-Down Allocation of Cost Centers",
+      "DESCRIPTION": "Displays the cost allocations from the auxiliary centers to the main centers with the 'Step-Down' method"
     },
     "GENERATED": "Generated Report",
     "INCOME": "Income",
@@ -114,7 +118,7 @@
     },
     "SYSTEM_USAGE_STAT" : {
       "TITLE" : "System Usage Statistics",
-      "DESCRIPTION" : " This report  produce, for a given period, stats of, Total of patients recorded by hour of the day, Total of invoices made by hour of the day and total of cash payments made by hour of the day"
+      "DESCRIPTION" : " This report produces statistics on the total patients, invoices, and cash payments made by hour of the day for a given date."
     },
     "OPEN_DEBTORS": {
       "DESCRIPTION": "This report shows the debtors that have a standing debt with the institution, and gives some control over the sort order.  For advanced analysis, the report can add in the last invoice date and last payment date, as well as limit the scope of the search by a date.",
@@ -135,6 +139,17 @@
     "INVENTORY_CHANGE" : {
       "TITLE" : "Inventory Changes Report",
       "DESCRIPTION": "This reports shows changes occured on inventory items during a period."
+    },
+    "LOST_STOCK_REPORT": {
+      "TITLE": "Lost Stock Report",
+      "DEPOT_ROLE": "List stock transfer losses for this depot as",
+      "DESCRIPTION": "This report lists stock that was lost while transferring stock from one depot to another",
+      "DESTINATION": "Destination",
+      "DESTINATION_DEPOT" : "Destination Depot",
+      "EITHER": "Either",
+      "LOSS": "Loss",
+      "SOURCE": "Source",
+      "SOURCE_DEPOT" : "Source Depot"
     },
     "MONTHLY_CONSUMPTION" : {
       "TITLE": "Monthly consumption",
@@ -186,12 +201,10 @@
       "TITLE" : "Stock Consumption's graph report",
       "DESCRIPTION" : "This report graphically shows the consumption of stock during a period for a depot or inventory"
     },
-
     "STOCK_MOVEMENT_REPORT" : {
       "TITLE" : "Stock Movement Graph",
       "DESCRIPTION" : "This report displays a graph of stock movements made during a period"
     },
-
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
@@ -203,6 +216,7 @@
     "NULL" : "Null",
     "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "TOTALS": "Totals",
     "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",
     "VIEW_INVOICE": "View Invoices",
@@ -275,7 +289,7 @@
       "EXIT_REPORT": "Stock Exit Report",
       "EXIT_REPORT_DESCRIPTION": "This report shows stock exits which had occurred in different depots",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Include aggregate consumption",
-	  "INCLUDE_INFORMATION": "Information to include",
+      "INCLUDE_INFORMATION": "Information to include",
       "INCLUDE_PATIENT_EXIT": "Include stock exit to patient",
       "INCLUDE_SERVICE_EXIT": "Include stock exit to service",
       "INCLUDE_GROUPED_SERVICE_EXIT" : "Include stock exit grouped by services",

@@ -49,9 +49,24 @@ exports.getTransactionEditHistory = getTransactionEditHistory;
 exports.editTransaction = editTransaction;
 exports.count = count;
 exports.log = log;
+exports.findJournalLog = findJournalLog;
 
 async function log(req, res, next) {
   const options = req.query;
+  const { query, parameters } = findJournalLog(options);
+  try {
+    const rows = await db.exec(query, parameters);
+    const data = rows.map(item => {
+      item.value = JSON.parse(item.value);
+      return item;
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+function findJournalLog(options) {
   db.convert(options, ['record_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'th' });
 
@@ -85,17 +100,7 @@ async function log(req, res, next) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-
-  try {
-    const rows = await db.exec(query, parameters);
-    const data = rows.map(item => {
-      item.value = JSON.parse(item.value);
-      return item;
-    });
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
+  return { query, parameters };
 }
 
 /**
@@ -180,7 +185,9 @@ function buildTransactionQuery(options, posted) {
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.transaction_type_id, p.user_id, pro.abbr,
       pro.name AS project_name, tp.text AS transaction_type_text,
-      a.number AS account_number, a.label AS account_label, p.trans_id_reference_number,
+      a.number AS account_number, a.type_id AS account_type_id, a.label AS account_label,
+      p.trans_id_reference_number, p.cost_center_id, cc.label as costCenterLabel,
+      p.principal_center_id, cp.label as principalCenterLabel,
       u.display_name ${includeExchangeRate}
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
@@ -188,6 +195,8 @@ function buildTransactionQuery(options, posted) {
       LEFT JOIN transaction_type tp ON tp.id = p.transaction_type_id
       JOIN user u ON u.id = p.user_id
       JOIN currency c ON c.id = p.currency_id
+      LEFT JOIN cost_center cc ON cc.id = p.cost_center_id
+      LEFT JOIN cost_center cp ON cp.id = p.principal_center_id
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
@@ -207,6 +216,18 @@ function buildTransactionQuery(options, posted) {
   filters.equals('reference_uuid');
   filters.equals('currency_id');
 
+  if (options.cost_center_id > -1) {
+    filters.equals('cost_center_id');
+  } else {
+    filters.custom('cost_center_id', 'p.cost_center_id IS NULL', 'p');
+  }
+
+  if (options.principal_center_id > -1) {
+    filters.equals('principal_center_id');
+  } else {
+    filters.custom('principal_center_id', 'p.principal_center_id IS NULL', 'p');
+  }
+
   filters.equals('comment');
   filters.equals('hrEntity', 'text', 'em');
   filters.equals('hrRecord', 'text', 'dm1');
@@ -215,8 +236,11 @@ function buildTransactionQuery(options, posted) {
   filters.equals('stockReference', 'reference_uuid', 'p');
   filters.custom('currency_id', 'c.id=?');
 
-  filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
+  // null cost center for only expense accounts
+  const nullCC = 'p.cost_center_id IS NULL AND p.principal_center_id IS NULL AND (a.type_id = 5)';
+  filters.custom('showOnlyNullCostCenter', nullCC, 'p');
 
+  filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
   filters.custom('accounts_id', 'p.account_id IN (?)', [options.accounts_id]);
@@ -225,8 +249,6 @@ function buildTransactionQuery(options, posted) {
     'amount', '(credit = ? OR debit = ? OR credit_equiv = ? OR debit_equiv = ?)',
     [amount, amount, amount, amount],
   );
-
-  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
 
   return {
     sql : filters.applyQuery(sql),
@@ -330,6 +352,7 @@ function editTransaction(req, res, next) {
   let _recordTableToEdit;
 
   rowsRemoved.forEach(row => {
+
     const deletedTransactionHistory = {
       uuid : db.bid(uuid()),
       record_uuid : db.bid(row.uuid),
@@ -337,6 +360,7 @@ function editTransaction(req, res, next) {
       action : 'deleted',
       value : JSON.stringify(row),
     };
+
     transaction.addQuery(UPDATE_TRANSACTION_HISTORY, deletedTransactionHistory);
     transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]);
   });

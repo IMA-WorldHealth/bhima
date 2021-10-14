@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  {{> head title="REPORT.COST_CENTER_STEPDOWN.TITLE"}}
+  <body>
+  <div class="fluid container">
+    {{> header}}
+
+    <!-- body -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- page title  -->
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'REPORT.COST_CENTER_STEPDOWN.TITLE'}}</strong>
+        </h3>
+
+        <h4 class="text-center">
+          <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
+           -
+          <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
+        </h4>
+
+        <h5 class="text-center">
+          {{#if this.rate}}
+            {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
+            {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
+            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
+          {{/if}}
+        </h5>
+
+        {{!-- VIEW OF COST CENTER ALLOCATION --}}
+        <p>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
+        <p>P : {{translate 'COST_CENTER.PRINCIPAL'}}</p>
+        <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
+              <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
+              {{#each data as | service |}}
+                {{#unless service.is_principal}}
+                <th>{{ service.cost_center_label }}</th>
+                <th style="width: 3em;">%</th>
+                {{/unless}}
+              {{/each}}
+              <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each hView as | service |}}
+              <tr>
+                <td>
+                  {{#if service.principal}}
+                    <strong>{{ service.name }}</strong> <em>(P)</em>
+                  {{else}}
+                    {{ service.name }}
+                  {{/if}}
+                </td>
+                <td class="text-right">{{debcred service.direct ../currencyId}}</td>
+                {{#each service.values as | distribution |}}
+                  {{#if distribution.selfCenter}}
+                    <td class="text-right">{{debcred distribution.selfCenterValue ../../currencyId}}</td>
+                  {{else}}
+                    <td class="text-right">{{debcred distribution.value ../../currencyId}}</td>
+                  {{/if}}
+                  <td class="text-right">{{#if distribution.ratio}}{{percentage distribution.ratio 1}}{{/if}}</td>
+                {{/each}}
+                <td class="text-right">{{debcred service.total ../currencyId}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+              <th class="text-right">{{debcred directCostTotal currencyId}}</th>
+              {{#each cumulatedAllocatedCosts as | value |}}
+                <th class="text-right">{{debcred value ../currencyId}}</th>
+                <th></th>
+              {{/each}}
+              <th class="text-right">{{debcred totalAfterAllocation currencyId}}</th>
+            </tr>
+          </tfoot>
+        </table>
+
+        <hr>
+
+        <p><i>{{translate 'COST_CENTER.ALLOCATION_BASIS_TABLE'}}</i></p>
+
+        <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>{{translate 'COST_CENTER.ALLOCATION_BASIS'}}</th>
+              {{#each costCenterList as | value |}}
+                <th>{{ value }}</th>
+              {{/each}}
+            </tr>
+          </thead>
+          <tbody>
+            {{#each costCenterIndexes as | fcIndex |}}
+              <tr>
+                <td>{{translate fcIndex.index }}</td>
+                {{#each fcIndex.distribution as | dist |}}
+                  <td class="text-right">{{ dist.value }}</td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

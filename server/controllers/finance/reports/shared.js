@@ -48,6 +48,7 @@ const filters = [{
 }, {
   field : 'is_caution',
   displayName : 'FORM.LABELS.CAUTION',
+  valueFilter : 'boolean',
 }, {
   field : 'supplier_uuid',
   displayName : 'FORM.LABELS.SUPPLIER',
@@ -125,6 +126,7 @@ const filters = [{
 }, {
   field : 'is_exit',
   displayName : 'STOCK.OUTPUT',
+  valueFilter : 'boolean',
 }, {
   field : 'label',
   displayName : 'STOCK.LOT',
@@ -181,6 +183,7 @@ const filters = [{
 }, {
   field : 'reversed',
   displayName : 'CASH.REGISTRY.REVERSED_RECORDS',
+  valueFilter : 'boolean',
 }, {
   field : 'limit',
   displayName : 'FORM.LABELS.LIMIT',

@@ -3,11 +3,14 @@ angular.module('bhima.controllers')
 
 JournalLogController.$inject = [
   'JournalLogService', 'NotifyService', '$state', 'bhConstants',
-  'LanguageService', 'uiGridConstants',
+  'LanguageService', 'uiGridConstants', 'GridExportService',
+  '$httpParamSerializer', 'GridColumnService', 'LanguageService',
+  '$timeout',
 ];
 
 function JournalLogController(
   Journal, Notify, $state, bhConstants, Language, uiGridConstants,
+  GridExport, $httpParamSerializer, Columns, Languages, $timeout,
 ) {
   const vm = this;
 
@@ -45,7 +48,7 @@ function JournalLogController(
     displayName : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter : 'translate',
   }, {
-    field : 'transaction',
+    field : 'transId',
     displayName : 'TABLE.COLUMNS.TRANSACTION',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/journal/templates/log.transaction.html',
@@ -67,6 +70,9 @@ function JournalLogController(
     columnDefs,
     gridFooterTemplate : '/modules/journal/templates/log.footer.html',
   };
+
+  const columnConfig = new Columns(vm.gridOptions, 'journal-log');
+  const exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
 
   function load(filters) {
     Journal.read(null, filters)
@@ -131,6 +137,35 @@ function JournalLogController(
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }
+
+  vm.exportFile = function exportFile() {
+    exportation.run();
+  };
+
+  vm.setStartDownload = () => {
+    vm.startDownload = true;
+    $timeout(() => {
+      vm.startDownload = false;
+    }, 5000);
+  };
+
+  vm.downloadExcel = () => {
+    if (!vm.startDownload) { return '#'; }
+
+    const url = '/reports/finance/journal/log?';
+    const displayNames = columnConfig.getDisplayNames();
+    const filterOpts = Journal.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames,
+    };
+    // combine options
+    const options = { ...defaultOpts, ...filterOpts };
+    // do not send multiple request to the server for nothing
+    return url.concat($httpParamSerializer(options));
+  };
 
   startup();
 }

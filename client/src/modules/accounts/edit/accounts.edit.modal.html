@@ -100,6 +100,14 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <div ng-if="AccountEditCtrl.showCostCenterSelect">
+      <bh-cost-center-select
+        help-text="COST_CENTER.ONLY_FOR_EXPLOITATION_ACCOUNTS"
+        cost-center-id="AccountEditCtrl.account.cost_center_id"
+        on-select-callback="AccountEditCtrl.onCostCenterSelect(costCenter)">
+      </bh-cost-center-select>
+    </div>
   </div>
 </div>
 

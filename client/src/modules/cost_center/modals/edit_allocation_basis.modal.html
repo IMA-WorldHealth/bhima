@@ -1,0 +1,53 @@
+<form
+  name="ModalForm"
+  class="NoSubmitButton"
+  data-modal="allocation-bases"
+  novalidate>
+
+  <div class="modal-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>COST_CENTER.TITLE</li>
+        <li class="title" translate>ALLOCATION_BASES</li>
+      </ol>
+
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <button class="btn btn-default text-capitalize" ng-click="ModalCtrl.createAllocationBasis()" data-method="create">
+            <span class="fa fa-plus"></span> <span translate>FORM.LABELS.ADD</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div
+        id="allocation-bases-grid"
+        class="modal-grid"
+        style="height: 200px;"
+        ui-grid="ModalCtrl.gridOptions"
+        ui-grid-resize-columns
+        ui-grid-move-columns>
+        <bh-grid-loading-indicator
+          loading-state="ModalCtrl.loading">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button"
+      class="btn btn-default"
+      ng-click="ModalCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+    </bh-loading-button>
+  </div>
+
+</form>

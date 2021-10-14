@@ -123,6 +123,7 @@ function InventoryService(
   {
     key : 'consumable',
     label : 'FORM.LABELS.CONSUMABLE',
+    valueFilter : 'boolean',
   },
   {
     key : 'locked',

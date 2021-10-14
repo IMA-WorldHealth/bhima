@@ -29,6 +29,9 @@ function constantConfig() {
       EXPENSE : 5,
       TITLE : 6,
     },
+    stepDownAllocation : {
+      METHOD_OPTIONS : ['proportional', 'flat'],
+    },
     purchase : {
       GRID_HEIGHT : 200,
       TITLE       : 4,
@@ -141,7 +144,7 @@ function constantConfig() {
     },
     defaultFilters : [
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'includeEmptyLot', label : 'STOCK.INCLUDE_EMPTY_LOTS' },
+      { key : 'includeEmptyLot', label : 'STOCK.INCLUDE_EMPTY_LOTS', valueFilter : 'boolean' },
       {
         key : 'custom_period_start',
         label : 'PERIODS.START',

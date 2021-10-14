@@ -1,0 +1,44 @@
+<form
+  name="ModalForm"
+  bh-submit="ModalCtrl.submit()"
+  data-modal="allocation-bases"
+  novalidate>
+
+  <div class="modal-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.FINANCE</li>
+        <li class="static" translate>COST_CENTER.TITLE</li>
+        <li class="title" translate>COST_CENTER.EDIT_STEP_ORDER</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="container-fluid">
+      <div
+        id="allocation-bases-grid"
+        class="modal-grid"
+        style="height: 200px;"
+        ui-grid="ModalCtrl.gridOptions"
+        ui-grid-resize-columns
+        ui-grid-move-columns>
+        <bh-grid-loading-indicator
+          loading-state="ModalCtrl.loading">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default"
+      ng-click="ModalCtrl.cancel()" data-method="close">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+
+</form>

@@ -2,6 +2,7 @@
   "USERS" : {
     "ADDING_USER" : "Ajout utilisateur",
     "ADD_USER" : "Ajouter utilisateur",
+    "ACTIVE_USERS" : "Utilisateurs actifs",
     "CREATE" : "Créer",
     "CREATED" : "Crée avec succés",
     "DESCRIPTION" : "Module de gestion des utilisateur et leurs droits",

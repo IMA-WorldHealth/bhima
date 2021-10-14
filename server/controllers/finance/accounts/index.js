@@ -65,6 +65,26 @@ function create(req, res, next) {
 }
 
 /**
+ * @function lookupCostCenterByAccountId
+ *
+ * @description
+ * Retrieves a cost center by account id.
+ */
+async function lookupCostCenterByAccountId(id) {
+  const { cc } = await db.one('SELECT GetCostCenterByAccountId(?) AS cc;', [id]);
+  return cc;
+}
+
+async function lookupCostCenter(req, res, next) {
+  try {
+    const id = await lookupCostCenterByAccountId(req.params.id);
+    res.status(200).json({ id });
+  } catch (e) {
+    next(e);
+  }
+}
+
+/**
  * @method update
  *
  * @description
@@ -88,7 +108,6 @@ function update(req, res, next) {
     .catch(next)
     .done();
 }
-
 
 /**
  * @method remove
@@ -122,7 +141,6 @@ function remove(req, res, next) {
     .done();
 }
 
-
 /**
  * @method list
  *
@@ -141,8 +159,11 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT a.id, a.enterprise_id, a.locked, a.created, a.reference_id, a.number,
-        a.label, a.parent, a.type_id, at.type, at.translation_key, a.hidden
-      FROM account AS a JOIN account_type AS at ON a.type_id = at.id
+        a.label, a.parent, a.type_id, at.type, at.translation_key, a.hidden,
+        a.cost_center_id, cc.label AS cost_center_label
+      FROM account AS a 
+      JOIN account_type AS at ON a.type_id = at.id
+      LEFT JOIN cost_center AS cc ON a.cost_center_id = cc.id
     `;
   }
 
@@ -325,7 +346,6 @@ function getOpeningBalanceForPeriod(req, res, next) {
     .done();
 }
 
-
 /**
  * @method processAccountDepth
  * @description get the depth of an account
@@ -398,4 +418,5 @@ exports.categories = categories;
 exports.references = references;
 exports.processAccountDepth = processAccountDepth;
 exports.importing = importing;
+exports.lookupCostCenter = lookupCostCenter;
 exports.getAnnualBalance = getAnnualBalance;

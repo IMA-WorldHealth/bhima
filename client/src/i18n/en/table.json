@@ -114,7 +114,7 @@
             "NUM_PIECE": "Num Doc",
             "ENTRY": "Entry",
             "EXIT": "Exit",
-            "FEE_CENTER" : "Fee Center",
+            "COST_CENTER" : "Cost Center",
             "FILTERING": {
                 "LABEL": "Filter"
             },
@@ -180,6 +180,7 @@
             "PHONE": "Telephone",
             "POSITION": "Position",
             "PO_BOX": "Post Office Box",
+            "PREDEFINED": "Predefined",
             "PRICE": "Price",
             "PRICE_INVOICED": "Price Invoiced",
             "PRICE_LIST": "Price List",

@@ -2,14 +2,11 @@ angular.module('bhima.controllers')
   .controller('ConfigIndicePaiementModalController', ConfigIndicePaiementModalController);
 
 ConfigIndicePaiementModalController.$inject = [
-  '$state', 'NotifyService', 'appcache', 'EmployeeService',
-  'MultipleIndicesPayrollService', 'PayrollConfigurationService',
-  'ExchangeRateService', 'SessionService', 'params',
+  '$state', 'NotifyService', 'appcache', 'MultipleIndicesPayrollService', 'SessionService', 'params',
 ];
 
 function ConfigIndicePaiementModalController(
-  $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
-  Exchange, Session, params,
+  $state, Notify, AppCache, MultiplePayroll, Session, params,
 ) {
   const vm = this;
   vm.config = {};
@@ -69,7 +66,13 @@ function ConfigIndicePaiementModalController(
   function load(filters) {
     MultiplePayroll.read(null, filters)
       .then((result) => {
-        vm.employee = result.employees[0] || {};
+        // Correction of the error when configuring data linked
+        // to an employee with the payroll module with indice
+        result.employees.forEach(item => {
+          if (item.uuid === params.uuid) {
+            vm.employee = item;
+          }
+        });
 
         vm.employee.rubrics.forEach(r => {
           vm.selectedRubrics[r.rubric_id] = r.rubric_value;

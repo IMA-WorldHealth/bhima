@@ -1,0 +1,32 @@
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href data-action="open-dropdown-menu">
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.label}}</li>
+    <li>
+      <a data-method="view-transaction" ui-sref="journal({ filters : [{ key: 'cost_center_id', value : row.entity.id, displayValue: row.entity.label}, { key : 'period', value : 'allTime' }, { key : 'includeNonPosted', value : 1 }]})" href>
+        <span class="fa fa-info-circle"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-record" ui-sref="cost_center.edit({id : row.entity.id})" href>
+        <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-allocation-bases" ui-sref="cost_center_allocation_bases.edit({id : row.entity.id})" href>
+        <span class="fa fa-edit"></span> <span translate>COST_CENTER.EDIT_ALLOCATION_BASIS</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteCostCenter(row.entity)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>COST_CENTER.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

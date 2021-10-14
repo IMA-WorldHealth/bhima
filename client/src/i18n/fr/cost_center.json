@@ -1,0 +1,66 @@
+{
+  "COST_CENTER" : {
+    "TITLE" : "Centres de coût",
+    "ADD_ALLOCATION_KEYS" : "Ajouter les clés de répartition",
+    "ADD_COST_CENTER" : "Ajouter un centre de coût",
+    "ADD_ALLOCATION_BASIS_TOOLTIP": "Ajouter une nouvelle base d'allocation",
+    "ALLOCATION_BASES":"Les bases d'allocation",
+    "ALLOCATION_BASIS": "Base d'allocation",
+    "ALLOCATION_BASIS_TABLE": "Tableau des bases d'allocation",
+    "ALLOCATION_BY_COST_CENTERS" : "Les allocations par centre de couts suivant les bases des repartitions",
+    "ALLOCATION_KEYS" : "Clés de répartitions",
+    "ALLOCATION_REGISTRY" : "Registre des allocations aux centres de coût",
+    "AUXILIARY": "Centre de coût Auxiliaire",
+    "DELETE": "Supprimer le Centre de coût",
+    "DIRECT_COST": "Cout direct",
+    "ADD_ALLOCATION_BASIS": "Ajouter une base d'allocation",
+    "EDIT_ALLOCATION_BASIS": "Modifier la base d'allocation",
+    "EDIT_ALLOCATION_KEYS" : "Modifier les clés de répartition",
+    "EDIT_COST_CENTER" : "Mise à jour des informations du centre de coût",
+    "EDIT_STEP_ORDER" : "Modifier l'ordre des étapes de l'allocation des coûts",
+    "PRINCIPAL": "Centre de coût Principal",
+    "NO_COST_CENTER_DEFINED": "** Aucun centre de cout **",
+    "SELECT_ALLOCATION_BASIS": "Sélectionnez la base d'allocation",
+    "STEP_DOWN_COST_ALLOCATION": "Allocation séquentielle des coûts",
+    "STEP_ORDER": "Ordre des étapes de l'allocation",
+    "ONLY_FOR_EXPLOITATION_ACCOUNTS": "Uniquement pour les comptes d'exploitations (produits et charges). Pour les autres comptes, le centre de cout ne sera pas pris en compte",
+    "UPDATE_ALLOCATION_QUANTITIES": "Mettre à jour",
+    "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système",
+    "SET_ALLOCATION_QUANTITIES_TOOLTIP": "Definir les quantités d'allocation pour un centre de coût",
+    "INCLUDE_REVENUE_CENTERS" : "Ajouter les recettes?",
+    "INCLUDE_REVENUE_CENTERS_HELP_TEXT" : "Cette option inclurera les recettes avec les couts pour chaque centre."
+  },
+  "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
+  "ALLOCATION_METHOD_FLAT": "Uniform",
+  "ALLOCATION_METHOD_PROPORTIONAL": "Proportionnelle",
+  "ALLOCATION_METHOD_TOOLTIP": "La méthode d'allocation et la quantité sélectionnées seront utilisées dans l'analyse de réduction par centres de coûts pour diviser les coûts de ce centre en d'autres centres.",
+  "ALLOCATION_BASES": "Les bases d'allocation",
+  "ALLOCATION_BASIS": "Base d'allocation",
+
+  "ALLOCATION_BASIS_AREA_USED": "Arie utilisée",
+  "ALLOCATION_BASIS_AREA_USED_DESCRIPTION": "Surface utilisée par le service",
+  "ALLOCATION_BASIS_AREA_USED_UNITS": "m²",
+
+  "ALLOCATION_BASIS_DIRECT_COST": "Coût direct",
+  "ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION": "Coût direct du service",
+
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED": "Électricité consommée",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION": "Électricité consommée par le service",
+  "ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS": "kWh",
+
+  "ALLOCATION_BASIS_NUM_COMPUTERS": "Nº d'ordinateurs",
+  "ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION": "Nombre d'ordinateurs du service",
+
+  "ALLOCATION_BASIS_NUM_EMPLOYEES": "Nº d'employés",
+  "ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION": "Nombre d'employés du service",
+
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS": "Nº d'heures de travail",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION": "Nombre d'heures de travail effectuées par le service",
+  "ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS": "heures",
+
+  "ALLOCATION_BASIS_NUM_PATIENTS": "Nº de patients",
+  "ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION": "Nombre de patients pris en charge par le service",
+
+  "ALLOCATION_BASIS_NUM_LAB_TESTS": "Nº de tests de laboratoire",
+  "ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION": "Nombre d'analyses de laboratoire effectuées pour le service"
+}

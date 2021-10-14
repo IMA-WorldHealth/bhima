@@ -27,6 +27,7 @@ describe('(/accounts) Accounts', () => {
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'created', 'reference_id',
     'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
+    'cost_center_id',
   ];
 
   it('GET /accounts?detailed=1 returns the full list of account', () => {
@@ -55,7 +56,6 @@ describe('(/accounts) Accounts', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('GET /accounts returns the accounts in sorted order by number', () => {
     return agent.get('/accounts')
@@ -153,6 +153,20 @@ describe('(/accounts) Accounts', () => {
       .catch(helpers.handler);
   });
 
+  it('PUT /accounts/:id updates the account cost center', () => {
+    const updateInfo = { cost_center_id : 1 };
+    return agent.put(`/accounts/${newAccount.id}`)
+      .send(updateInfo)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.id).to.equal(newAccount.id);
+        expect(res.body.cost_center_id).to.equal(updateInfo.cost_center_id);
+        expect(res.body).to.have.all.keys(responseKeys);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /accounts/:id returns a 404 for unknown account id', () => {
     const updateInfo = { label : 'updated value for testing account unknown ' };
     return agent.put('/accounts/undefined')
@@ -193,6 +207,18 @@ describe('(/accounts) Accounts', () => {
       .query({ hidden : 0 })
       .then(res => {
         helpers.api.listed(res, NUM_ACCOUNTS - 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /accounts/:id/cost-center will retrieve a cost center by account id', () => {
+    const accountId = 215;
+    const ccId = 4;
+    return agent.get(`/accounts/${accountId}/cost-center`)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.id).to.equal(ccId);
       })
       .catch(helpers.handler);
   });

@@ -1127,7 +1127,7 @@ td.center {
 ---------------------------------------------- */
 
 table.lot-schedule {
-  padding-left: 10px;
+  padding: 0 10px;
 }
 
 table.lot-schedule th.year {
@@ -1145,6 +1145,7 @@ table.lot-schedule th.month {
 
 table.lot-schedule th.reorder {
   background-color: #ffaaaa;
+  border-right: 0;
 }
 
 table.lot-schedule tr.lot-schedule th {
@@ -1161,14 +1162,12 @@ table.lot-schedule div.lot-marker-exhausted {
   background-color: #aaffaa;
   font-weight: bold;
   font-size: 12px;
+  padding: 0;
 }
 
 table.lot-schedule div.lot-marker-exhausted {
-  border: 1px solid black;
   border-left: 0;
   background-color: #ffaaaa;
-  font-weight: bold;
-  font-size: 12px;
 }
 
 table.lot-schedule div.lot-marker span.start {
@@ -1195,4 +1194,14 @@ table.lot-schedule .wrap {
 
 table.lot-schedule .right {
   text-align: right;
+}
+
+.allocationBasisColHeader * div {
+   overflow-wrap: normal;
+   overflow: visible;
+   white-space: normal;
+}
+
+form.NoSubmitButton div.modal-footer button.btn-primary {
+  display: none;
 }

@@ -29,6 +29,18 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
       } else {
         const updatedKeys = Object.keys(current);
         updatedKeys.forEach(col => {
+          if (col === 'tags') {
+            const oldTags = last[col];
+            const newTags = current[col];
+            if (oldTags.length === newTags.length) {
+              if (newTags.length === 0) {
+                return;
+              }
+              if (JSON.stringify(oldTags) === JSON.stringify(newTags)) {
+                return;
+              }
+            }
+          }
           vm.logs.push({
             col : Inventory.columnsMap(col),
             value : getValue(last, current, col),
@@ -55,6 +67,12 @@ function InventoryLogModalController(data, Instance, Inventory, LanguageService)
 
   function getValue(last, current, key) {
     const result = {};
+
+    if (key === 'tags') {
+      result.from = last.tags.map(tag => tag.name) || [];
+      result.to = current.tags.map(tag => tag.name) || [];
+      return result;
+    }
 
     if (key === 'inventoryGroup') {
       result.from = last.groupName || '';

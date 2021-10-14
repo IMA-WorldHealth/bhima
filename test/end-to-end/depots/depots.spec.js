@@ -13,7 +13,7 @@ describe('Depots Management', () => {
    * The implementation of the E2E test of the assignment of a Depot
    * to a user is added in the E2E test of the Depot and not in the
    * user test because the E2E test on the users runs after the Depot test.
-   * @todo Add tests for distribution depots which require enterprise settings enabled
+   * @todo Add tests for allocation depots which require enterprise settings enabled
    */
   const userPage = new UserPage();
 

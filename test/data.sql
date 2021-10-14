@@ -317,6 +317,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
 -- set one hidden account 52121010 - BCDC USD
 UPDATE account set hidden = 1 WHERE id = 184;
 
+
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 
@@ -540,7 +541,7 @@ CALL PostInvoice(@fourth_invoice);
 
 -- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
-SET @cash_payment_2 = HUID('2e1332b7-3e23-411e-527d-42ac585ff517');
+SET @cash_payment_2 = HUID('25b69e1d-c9bc-46f2-98a5-5dd948de3636');
 
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
   (@cash_payment, 1, 1, (NOW() - INTERVAL 1 HOUR), HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 0),
@@ -653,9 +654,9 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -1376 DAY), 100, 1.2000, 0, 201702, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, DATE_ADD(CURRENT_DATE, INTERVAL -1376 DAY), 75, 1.2000, 1, 201702, 1),
   (HUID('5c0e5c53-8437-4694-85af-4b3f2135243c'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('76d46d03-030f-49ec-80d9-c863aae1a407'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 0, 202009, 1),
-  (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 1, 202009, 1);
+  (HUID('ec78f1ab-e339-41a8-8545-436ebdde358d'), HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), HUID('61a151fc-f6e8-41ec-b7a4-f70d6766f8f3'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 11, DATE_ADD(CURRENT_DATE, INTERVAL -66 DAY), 10, 3.1800, 1, 202009, 1);
 
--- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
+-- This segment was added to simulate the allocation of drugs to patients as well as the loss of stock
 INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `invoice_uuid`, `created_at`, `period_id`) VALUES
   (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 180, 0.8000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 201910),
   (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 80, 1.2000, 1, 1, NULL, DATE_ADD(CURRENT_DATE, INTERVAL -378 DAY), 201910),
@@ -802,16 +803,16 @@ INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `valu
   (11, @paymentUuid, 11, 1.1, NULL);
 
 -- ACCOUNT REFERENCE
-INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES
-  (1, 'c_admin', 'Section Administration', NULL, 0),
-  (2, 'p_admin', 'Profit Administration', NULL, 0),
-  (3, 'p_test_1', 'Profit Test 1', NULL, 0),
-  (4, 'p_test_2', 'Profit Test 2', NULL, 0),
-  (5, 'c_test_1', 'Cost Test 1', NULL, 0),
-  (6, 'c_test_2', 'Cost Test 2', NULL, 0),
-  (7, 'p_test_3', 'Profit Test 3', NULL, 0),
-  (8, 'p_test_4', 'Profit Test 4', NULL, 0),
-  (9, 'c_test_3', 'Cost Test 3', NULL, 0);
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`, `reference_type_id`) VALUES
+  (1, 'c_admin', 'Section Administration', NULL, 0, 1),
+  (2, 'p_admin', 'Profit Administration', NULL, 0, 1),
+  (3, 'p_test_1', 'Profit Test 1', NULL, 0, 1),
+  (4, 'p_test_2', 'Profit Test 2', NULL, 0, 1),
+  (5, 'c_test_1', 'Cost Test 1', NULL, 0, 1),
+  (6, 'c_test_2', 'Cost Test 2', NULL, 0, 1),
+  (7, 'p_test_3', 'Profit Test 3', NULL, 0, 1),
+  (8, 'p_test_4', 'Profit Test 4', NULL, 0, 1),
+  (9, 'c_test_3', 'Cost Test 3', NULL, 0, 1);
 
 -- ACCOUNT REFERENCE ITEM
 INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES
@@ -826,20 +827,24 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
   (12, 8, 256, 0, 0, 0),
   (13, 1, 347, 0, 0, 0),
   (14, 9, 215, 0, 0, 0),
-  (15, 9, 220, 0, 0, 0);
+  (15, 9, 53, 0, 0, 0);
 
 
--- FEE CENTER
-INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
-  (1, 'Administration', 1),
-  (2, 'Principale TPA', 1),
-  (3, 'Principale TPB', 1),
-  (4, 'Auxiliary 1', 0),
-  (5, 'Auxiliary 2', 0),
-  (6, 'Auxiliary 3', 0);
+-- COST CENTER
+INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `allocation_method`, `allocation_basis_id`) VALUES
+  (1, 'Administration', 1, 'proportional', 1),
+  (2, 'Principale TPA', 1, 'proportional', 2),
+  (3, 'Principale TPB', 1, 'proportional', 3),
+  (4, 'Auxiliary 1', 0, 'proportional', 2),
+  (5, 'Auxiliary 2', 0, 'proportional', 2),
+  (6, 'Auxiliary 3', 0, 'flat', 2);
+
+-- set test cost center
+UPDATE account set cost_center_id = 4 WHERE id = 215;
+
 
 -- REFERENCE FEE CENTER
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES
+INSERT INTO `reference_cost_center` (`id`, `cost_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES
   (1, 1, 1, 1, 1, 0),
   (2, 1, 2, 0, 0, 1),
   (11, 5, 7, 0, 0, 1),
@@ -871,7 +876,7 @@ INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`
   (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, @prednisone, 40, 5.1200, 5.1200, 0.0000, 204.8000);
 
 -- SERVICE FEE CENTER
-INSERT INTO `service_fee_center` (`id`, `fee_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
+INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
@@ -947,8 +952,8 @@ INSERT INTO bed VALUES
   (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
 
--- Default Auxiliary Fee Center Distribution Key
-INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES
+-- Default Auxiliary Cost Center Distribution Key
+INSERT INTO `allocation_key` (`id`, `auxiliary_cost_center_id`, `principal_cost_center_id`, `rate`, `user_id`) VALUES
   (1, 4, 1, 60.00, 1),
   (2, 4, 2, 20.00, 1),
   (3, 4, 3, 20.00, 1);

@@ -91,8 +91,12 @@
     },
     "EXPENSE": "Charge",
     "EXPENSE_REPORT" : "Rapport des dépenses",
-    "FEE_CENTER": {
-      "TITLE": "Rapports des centres de frais"
+    "COST_CENTER": {
+      "TITLE": "Rapports des centres de coût"
+    },
+    "COST_CENTER_STEPDOWN": {
+      "TITLE": "Allocation des coûts par étapes",
+      "DESCRIPTION": "Affiche les allocations des couts des centres auxiliaires vers les centres principaux avec la methode de 'Step-Down'"
     },
     "GENERATED" : "Rapport généré",
     "INCOME": "Produit",
@@ -132,7 +136,17 @@
       "TITLE" : "Rapport de changement d'inventaire",
       "DESCRIPTION": "Ce rapport montre les changements survenus sur les articles en stock au cours d'une période"
     },
-
+    "LOST_STOCK_REPORT": {
+      "TITLE": "Rapport sur les stocks perdus",
+      "DEPOT_ROLE": "Lister les pertes de transfert de stock pour ce dépôt comme",
+      "DESCRIPTION": "Ce rapport répertorie les stocks perdus lors du transfert de stock d'un dépôt à un autre.",
+      "DESTINATION": "Destination",
+      "DESTINATION_DEPOT" : "Dépôt de destination",
+      "EITHER": "L'un ou l'autre",
+      "LOSS": "Perte",
+      "SOURCE": "Source",
+      "SOURCE_DEPOT" : "Dépôt de source"
+    },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
       "LAST_TRANSACTION": "Date de la dernière transaction",
@@ -197,6 +211,7 @@
     "SINCE": "Depuis",
     "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
     "THIRTY_TO_SIXTY_DAYS": "30 a 60 jours",
+    "TOTALS": "Totaux",
     "VIEW_ACCOUNT_STATEMENT": "Voir le Rélevé de Compte",
     "VIEW_CREDIT_NOTE": "Voir la note de credit",
     "VIEW_INVOICE": "Voir les factures",

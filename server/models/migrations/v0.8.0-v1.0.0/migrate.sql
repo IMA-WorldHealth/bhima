@@ -926,16 +926,16 @@ CREATE TABLE `service_fee_center` (
 
 -- units
 INSERT INTO `unit` VALUES
-  (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
-  (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
+  (218, 'Fee Center Management','TREE.COST_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
+  (219, 'Fee Center Management','TREE.COST_CENTER','', 218,'/modules/fee_center','/fee_center'),
   (220, 'Distributions fees Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','', 218,'/modules/distribution_center','/distribution_center'),
   (221, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 218,'/modules/distribution_center/update','/distribution_center/update'),
-  (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
+  (222, 'Fee Center Report', 'TREE.COST_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
   (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key');
 
 -- core BHIMA reports
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
-  ('feeCenter', 'REPORT.FEE_CENTER.TITLE');
+  ('feeCenter', 'REPORT.COST_CENTER.TITLE');
 
 DROP TABLE IF EXISTS `distribution_key`;
 CREATE TABLE `distribution_key` (
@@ -1045,7 +1045,7 @@ ALTER TABLE account_reference ADD COLUMN `reference_type_id` MEDIUMINT(8) UNSIGN
 
 -- Default Account Reference Type
 INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
-(1, 'FORM.LABELS.FEE_CENTER', 1),
+(1, 'FORM.LABELS.COST_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1),
 (4, 'FORM.LABELS.BREAK_EVEN', 1);

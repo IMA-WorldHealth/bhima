@@ -133,7 +133,7 @@ function CashService(
 
   cashFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
+    { key : 'is_caution', label : 'FORM.LABELS.CAUTION', valueFilter : 'boolean' },
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
@@ -146,7 +146,7 @@ function CashService(
       key : 'dateTo', label : 'FORM.LABELS.DATE_TO', comparitor : '<', valueFilter : 'date',
     },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
-    { key : 'reversed', label : 'CASH.REGISTRY.REVERSED_RECORDS' },
+    { key : 'reversed', label : 'CASH.REGISTRY.REVERSED_RECORDS', valueFilter : 'boolean' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },

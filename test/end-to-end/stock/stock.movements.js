@@ -79,20 +79,20 @@ function StockMovementsRegistryTests() {
     await GU.expectRowCount(gridId, 4 + depotGroupingRow);
   });
 
-  it('find by lots reasons for distribution to patient', async () => {
+  it('find by lots reasons for allocation to patient', async () => {
     // to patient
     await modal.setMovementReason(['Vers un patient']);
     await modal.submit();
     await GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
-  it('find by lots reasons for distribution to depot', async () => {
+  it('find by lots reasons for allocation to depot', async () => {
     await modal.setMovementReason(['Vers un dépôt']);
     await modal.submit();
     await GU.expectRowCount(gridId, 4 + depotGroupingRow);
   });
 
-  it('find by lots reasons for distribution from depot', async () => {
+  it('find by lots reasons for allocation from depot', async () => {
     await modal.setMovementReason(['En provenance d\'un dépôt']);
     await modal.submit();
     await GU.expectRowCount(gridId, 1 + depotGroupingRow);

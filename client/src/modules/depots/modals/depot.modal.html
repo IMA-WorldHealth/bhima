@@ -129,8 +129,7 @@
         FORM.LABELS.MIN_MONTHS_SECURITY_STOCK
       </label>
       <input name="min_months_security_stock" class="form-control"
-        ng-model="DepotModalCtrl.depot.min_months_security_stock" type="number" min="1" autocomplete="off" required
-        bh-integer>
+        ng-model="DepotModalCtrl.depot.min_months_security_stock" type="number" min="0.00001" autocomplete="off" required>
       <div class="help-block" ng-show="DepotForm.$submitted" ng-messages="DepotForm.min_months_security_stock.$error">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -142,10 +141,9 @@
         FORM.LABELS.DEFAULT_PURCHASE_ORDER_INTERVAL
       </label>
       <input name="default_purchase_interval" class="form-control"
-        ng-model="DepotModalCtrl.depot.default_purchase_interval" type="number" min="0" autocomplete="off"
+        ng-model="DepotModalCtrl.depot.default_purchase_interval" type="number" min="0.00001" autocomplete="off"
         placeholder="{{ 'FORM.PLACEHOLDERS.DEFAULT_PURCHASE_ORDER_INTERVAL' | translate }}"
-        required
-        bh-integer>
+        required>
       <div class="help-block" ng-show="DepotForm.$submitted" ng-messages="DepotForm.default_purchase_interval.$error">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>

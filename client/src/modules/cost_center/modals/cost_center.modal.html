@@ -1,0 +1,263 @@
+<form name="CostCenterForm" bh-submit="CostCenterModalCtrl.submit(CostCenterForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="CostCenterModalCtrl.isCreateState" class="title">
+        <span translate> COST_CENTER.ADD_COST_CENTER </span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!CostCenterModalCtrl.isCreateState" class="title">
+        <span translate> COST_CENTER.EDIT_COST_CENTER </span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="CostCenterModalCtrl.costCenter.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="CostCenterForm.label.$error" ng-show="CostCenterForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error' : CostCenterForm.$submitted && CostCenterForm.is_principal.$invalid }">
+      <label translate>FORM.LABELS.TYPE</label>
+      <div class="radio">
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_principal"
+            ng-value="1"
+            ng-model="CostCenterModalCtrl.costCenter.is_principal"
+            ng-click="CostCenterModalCtrl.auxiliaryFee(false)"
+            id="principal"
+            required
+            >
+          <span translate>FORM.LABELS.PRINCIPAL_2</span>
+        </label>
+
+        <label class="radio-inline">
+          <input
+            type="radio"
+            name="is_principal"
+            ng-value="0"
+            ng-model="CostCenterModalCtrl.costCenter.is_principal"
+            ng-click="CostCenterModalCtrl.auxiliaryFee(true)"
+            id="auxiliary"
+            required
+            >
+          <span translate>FORM.LABELS.AUXILIARY</span>
+        </label>
+
+        <div class="help-block" ng-messages="CostCenterForm.is_principal.$error" ng-show="CostCenterForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <hr />
+
+    <div style="padding-left: 5%" class="form-group">
+      <div ng-if="CostCenterModalCtrl.auxiliaryCenter" class="form-group">
+        <div class="radio">
+          <label class="radio-inline">
+            <input
+              type="radio"
+              name="auxiliary"
+              ng-value="1"
+              ng-model="CostCenterModalCtrl.costCenter.is_cost"
+              ng-click="CostCenterModalCtrl.setCostCenterMeta(true)"
+              id="is_cost"
+              >
+            <span translate>FORM.LABELS.COST_CENTER </span>
+          </label>
+
+          <label class="radio-inline">
+            <input
+              type="radio"
+              name="auxiliary"
+              ng-value="0"
+              ng-model="CostCenterModalCtrl.costCenter.is_cost"
+              ng-click="CostCenterModalCtrl.setCostCenterMeta(false)"
+              id="is_profit"
+              >
+            <span translate>FORM.LABELS.PROFIT_CENTER </span>
+          </label>
+        </div>
+      </div>
+
+      <div ng-if="CostCenterModalCtrl.costCenter.is_principal" class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="has_profit_center"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="CostCenterModalCtrl.hasProfitCenter">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_PROFIT_CENTER
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="(CostCenterModalCtrl.costCenter.is_principal && CostCenterModalCtrl.hasProfitCenter) || (CostCenterModalCtrl.auxiliaryCenter && CostCenterModalCtrl.isProfitCenter)">
+        <bh-account-reference-select
+          id="account_profit_turnover_id"
+          account-reference-id="CostCenterModalCtrl.costCenter.reference_profit_turnover_id"
+          label="FORM.LABELS.TURNOVER"
+          on-select-callback="CostCenterModalCtrl.onSelectAccountReference(accountReference, 0, 0, 1)"
+          required="false">
+          <bh-clear on-clear="CostCenterModalCtrl.clear('turnoverProfitCenterReference', 'reference_profit_turnover_id')"></bh-clear>
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_other_profit_reference_id"
+          account-reference-id="CostCenterModalCtrl.costCenter.reference_other_profit_id"
+          label="FORM.LABELS.OTHERS_PROFITS"
+          on-select-callback="CostCenterModalCtrl.onSelectAccountReference(accountReference, 0, 0, 0)"
+          required="false">
+          <bh-clear on-clear="CostCenterModalCtrl.clear('otherProfitCenterReference', 'reference_other_profit_id')"></bh-clear>
+        </bh-account-reference-select>
+      </div>
+
+      <span ng-if="CostCenterModalCtrl.costCenter.is_principal">
+        <hr />
+      </span>
+
+      <div ng-if="CostCenterModalCtrl.costCenter.is_principal" class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="has_cost_center"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="CostCenterModalCtrl.hasCostCenter">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_COST_CENTER
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="(CostCenterModalCtrl.costCenter.is_principal && CostCenterModalCtrl.hasCostCenter) || (CostCenterModalCtrl.auxiliaryCenter && CostCenterModalCtrl.isCostCenter)">
+        <bh-account-reference-select
+          id="account_cost_variable_reference_id"
+          account-reference-id="CostCenterModalCtrl.costCenter.reference_cost_variable_id"
+          label="FORM.LABELS.VARIABLE_CHARGE"
+          on-select-callback="CostCenterModalCtrl.onSelectAccountReference(accountReference, 1, 1, 0)"
+          required="false">
+          <bh-clear on-clear="CostCenterModalCtrl.clear('variableCostCenterReference', 'reference_cost_variable_id')"></bh-clear>
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_cost_fixed_reference_id"
+          account-reference-id="CostCenterModalCtrl.costCenter.reference_cost_fixed_id"
+          label="FORM.LABELS.FIXED_CHARGE"
+          on-select-callback="CostCenterModalCtrl.onSelectAccountReference(accountReference, 1, 0, 0)"
+          required="false">
+          <bh-clear on-clear="CostCenterModalCtrl.clear('fixCostCenterReference', 'reference_cost_fixed_id')"></bh-clear>
+        </bh-account-reference-select>
+      </div>
+    </div>
+
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="has_service"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="CostCenterModalCtrl.relatedServices">
+        <span translate>
+          <strong>
+            FORM.INFO.SELECT_RELATED_SERVICES
+          </strong>
+        </span>
+      </label>
+    </div>
+    <div ng-if="CostCenterModalCtrl.relatedServices">
+      <bh-services-multiple-select
+        id="services"
+        on-change="CostCenterModalCtrl.onServicesChange(services)"
+        services-ids="CostCenterModalCtrl.services"
+        required="true">
+      </bh-services-multiple-select>
+    </div>
+
+    <!-- Project -->
+    <div ng-if="CostCenterModalCtrl.costCenter.is_principal">
+      <hr>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="assigned_project"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="CostCenterModalCtrl.assignedProject">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_PROJECT
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="CostCenterModalCtrl.assignedProject">
+        <bh-project-select
+          id="project_id"
+          project-id="CostCenterModalCtrl.costCenter.project_id"
+          name="project_id"
+          on-select-callback="CostCenterModalCtrl.onSelectProject(project)">
+          <bh-clear on-clear="CostCenterModalCtrl.reset('project_id')"></bh-clear>
+        </bh-project-select>
+      </div>
+    </div>
+
+    <!-- Step-down allocation basis -->
+    <hr>
+    <div class="radio">
+      <p><strong translate>COST_CENTER.STEP_DOWN_COST_ALLOCATION</strong></p>
+      <label class="control-label" style="vertical-align: middle; padding-left:0" translate>ALLOCATION_METHOD</label>:
+      <label class="radio-inline" ng-repeat="choice in CostCenterModalCtrl.allocationMethodOptions">
+        <input
+          type="radio"
+          name="allocation_method"
+          ng-value="choice"
+          ng-model="CostCenterModalCtrl.costCenter.allocation_method"
+          id="allocation_method_{{choice}}"
+          required>
+        <span>{{CostCenterModalCtrl.translate(choice)}}</span>
+      </label>
+    </div>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : CostCenterForm.$submitted && CostCenterForm.allocation_basis.$invalid }">
+      <label class="control-label" translate>COST_CENTER.SELECT_ALLOCATION_BASIS</label>
+      <select class="form-control"
+        name="allocation_basis"
+        ng-model="CostCenterModalCtrl.costCenter.allocation_basis.id"
+        ng-options="allocationBasis.id as allocationBasis.name for allocationBasis in CostCenterModalCtrl.allocationBases"
+        required>
+        <option value="" disabled ng-if="CostCenterModalCtrl.isCreateState" translate>FORM.LABELS.SELECT_ONE</option>
+      </select>
+      <div class="help-block" ng-messages="CostCenterForm.allocation_basis.$error" ng-show="CostCenterForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="cost_center">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="CostCenterForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

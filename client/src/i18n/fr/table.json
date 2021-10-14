@@ -113,7 +113,7 @@
             "NUM_PIECE": "N° Piece",
             "ENTRY": "Entrée",
             "EXIT": "Sortie",
-            "FEE_CENTER" : "Centre de frais",
+            "COST_CENTER" : "Centre de frais",
             "FILTERING": {
                 "LABEL": "Filtre"
             },
@@ -180,6 +180,7 @@
             "PHONE": "Téléphone",
             "POSITION": "Position",
             "PO_BOX": "Boîte postale",
+            "PREDEFINED": "Prédéfini",
             "PRICE": "Prix",
             "PRICE_INVOICED": "Prix facturé",
             "PRICE_LIST": "Liste de prix",

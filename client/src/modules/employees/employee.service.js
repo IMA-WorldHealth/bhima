@@ -49,7 +49,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'fonction_id', label : 'FORM.LABELS.PROFESSION' },
     { key : 'service_uuid', label : 'FORM.LABELS.SERVICE' },
-    { key : 'is_medical', label : 'FORM.LABELS.MEDICAL_STAFF' },
+    { key : 'is_medical', label : 'FORM.LABELS.MEDICAL_STAFF', valueFilter : 'boolean' },
   ]);
 
   if (filterCache.filters) {

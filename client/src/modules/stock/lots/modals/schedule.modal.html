@@ -47,9 +47,9 @@
     </table>
   </div>
 
-  <div ng-show="$ctrl.lots.length">
+  <div ng-show="$ctrl.lots.length" style="padding: 0 10px">
     <table class="table table-condensed table-bordered lot-schedule"
-      style="table-layout: fixed; display: block; overflow-x: auto;">
+      style="table-layout: fixed; display: block; overflow-x: auto; padding: 0;">
       <thead>
         <tr>
           <th class="year" style="width: {{$ctrl.labelWidth}}px">&nbsp;</th>
@@ -70,28 +70,27 @@
       </thead>
       <tbody>
         <tr ng-repeat="lot in $ctrl.lots" class="{{lot.selected}}">
-          <td>{{lot.label}}</td>
-          <td colspan="{{$ctrl.numMonths}}" style="margin: 0; padding-left: 0; padding-right: 0">
-            <div
+          <td>{{lot.label}}</td><!-- run html tags together below to avoid extra spaces -->
+          <td colspan="{{$ctrl.numMonths}}" style="margin: 0; padding-left: 0; padding-right: 0"><div
               class="lot-marker"
-              style="display: block; float: left; margin-left: {{lot.start_pixel}}px !important; width: {{lot.width_pixels}}px !important;"
+              style="display: block; float: left; margin-left: {{lot.start_pixel}}px !important; width: {{lot.width_pixels}}px !important; border-right: {{lot.width_pixels ? 1 : 0}};"
               uib-tooltip="{{lot.tooltip}}" tooltip-append-to-body="true"
-            ><span class="start">{{lot.quantity}}</span>
-            <span ng-if="!lot.premature_expiration && !lot.truncated" style="float: right; margin-left: 4px;">0</span>
-            <span ng-if="!lot.premature_expiration && lot.truncated" class="fa fa-ellipsis-h fa-pull-right ellipsis"></span>
-            </div>
-            <div
+            ><span class="start">{{lot.quantity}}</span><span
+              ng-if="!lot.premature_expiration && !lot.truncated" style="float: right; margin-left: 4px;">0</span><span
+              ng-if="!lot.premature_expiration && lot.truncated" class="fa fa-ellipsis-h fa-pull-right ellipsis"></span></div><div
               ng-if="lot.premature_expiration"
               class="lot-marker-exhausted"
               style="display: block; float: left; margin-left: 0px !important; width: {{lot.residual_width_pixels}}px !important;"
               uib-tooltip="{{lot.tooltip}}" tooltip-append-to-body="true"
-            ><span class="wasted">{{lot.quantity_wasted}}</span><span ng-if="lot.residual_truncated" class="fa fa-ellipsis-h fa-pull-right ellipsis"></span></div>
+            ><span class="wasted">{{lot.quantity_wasted}}</span><span
+              ng-if="lot.residual_truncated" class="fa fa-ellipsis-h fa-pull-right ellipsis"></span>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <!-- <span class="wasted" style="float: right">{{lot.quantity_wasted}}</span> -->
+
   <div class="modal-body" ng-show="!$ctrl.lots.length">
     <b translate>LOTS_SCHEDULE.NO_LOTS_FOUND</b>
   </div>

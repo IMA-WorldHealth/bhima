@@ -47,7 +47,7 @@ function VoucherService(
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'reversed', label : 'VOUCHERS.GLOBAL.REVERSED_RECORDS' },
+    { key : 'reversed', label : 'VOUCHERS.GLOBAL.REVERSED_RECORDS', valueFilter : 'boolean' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
     { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },

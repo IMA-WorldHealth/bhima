@@ -43,7 +43,7 @@ describe('(/depots) The depots API ', () => {
     default_purchase_interval : 0,
   };
 
-  // depot with distribution depots
+  // depot with allocation depots
   const newDepotWithDistribution = {
     text : 'Depot With Distribution Restriction',
     enterprise_id : 1,
@@ -98,7 +98,7 @@ describe('(/depots) The depots API ', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /depots create a new depot with distribution restriction ', () => {
+  it('POST /depots create a new depot with allocation restriction ', () => {
     return agent.post('/depots')
       .send(newDepotWithDistribution)
       .then((res) => {

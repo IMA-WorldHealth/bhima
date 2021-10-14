@@ -20,7 +20,7 @@
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.abbr.$invalid }">
       <label class="control-label" translate>ACCOUNT.REFERENCE.REFERENCE</label>
       <div>
-        <input name="abbr" ng-model="AccountReferenceModalCtrl.accountReference.abbr" autocomplete="off" ng-maxlength="10" class="form-control" required>
+        <input name="abbr" ng-model="AccountReferenceModalCtrl.accountReference.abbr" autocomplete="off" class="form-control" required>
         <div class="help-block" ng-messages="AccountReferenceForm.abbr.$error" ng-show="AccountReferenceForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>

@@ -10,7 +10,7 @@ Les centres principaux sont ceux qui génèrent des profits mais aussi des coût
 
 L’interface principale permettant de la création des centres de frais se présente de la manière suivante.
 
-![Gestion des centres de frai](../../images/fee_centers/tableau_fee_center.jpg)
+![Gestion des centres de frai](../../images/cost_centers/tableau_cost_center.jpg)
 
 Il existe à l’extrême droit le bouton <strong>+ Centres de frais</strong>, qui permet d’ajouter un centre de frais. 
 Voici les éléments à fournir pour enregistrer un employé :
@@ -27,7 +27,7 @@ Il existe aussi deux catégories de références liées aux centres de profits :
 -	Chiffre d’affaire
 -	Autres profits (par exemple les subventions, etc…)
 
-![Création des centres de frais](../../images/fee_centers/form_fee_center.jpg)
+![Création des centres de frais](../../images/cost_centers/form_cost_center.jpg)
 
 
 

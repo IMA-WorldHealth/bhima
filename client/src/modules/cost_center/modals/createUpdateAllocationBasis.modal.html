@@ -1,0 +1,61 @@
+<form name="AllocationBasisForm"
+  bh-submit="ModalCtrl.submit(AllocationBasisForm)"
+  novalidate>
+
+  <div class="modal-header">
+
+    <ol class="headercrumb">
+      <li ng-if="ModalCtrl.isCreation">
+        <span translate>COST_CENTER.ADD_ALLOCATION_BASIS</span>
+        <label class="label label-success text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+      <li ng-if="!ModalCtrl.isCreation">
+        <span translate>COST_CENTER.EDIT_ALLOCATION_BASIS</span>
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group clearfix" ng-class="{ 'has-error' : AllocationBasisForm.name.$invalid && AllocationBasisForm.$submitted }">
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
+      <input type="text" class="form-control col-md-9" name="name" ng-model="ModalCtrl.details.name" required>
+      <div class="help-block" ng-messages="AllocationBasisForm.name.$error" ng-show="AllocationBasisForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group clearfix" ng-class="{ 'has-error' : AllocationBasisForm.units.$invalid && AllocationBasisForm.$submitted }">
+      <label class="control-label" translate>FORM.LABELS.UNITS</label>
+      <input type="text" class="form-control col-md-9" name="units" ng-model="ModalCtrl.details.units">
+      <div class="help-block" ng-messages="AllocationBasisForm.units.$error" ng-show="AllocationBasisForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group clearfix" ng-class="{ 'has-error' : AllocationBasisForm.description.$invalid && AllocationBasisForm.$submitted }">
+      <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+      <input type="text" class="form-control col-md-9" name="description" ng-model="ModalCtrl.details.description">
+      <div class="help-block" ng-messages="AllocationBasisForm.description.$error" ng-show="AllocationBasisForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="cancel"
+      ng-click="ModalCtrl.close()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="AllocationBasisForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

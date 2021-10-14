@@ -25,11 +25,10 @@ function systemUsageStatController($sce, Notify, SavedReports, AppCache, reportD
   };
 
   vm.preview = (form) => {
-    if (form.$invalid) {
+    if (form.$invalid || !vm.reportDetails.date) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return 0;
     }
-
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);

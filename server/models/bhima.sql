@@ -100,20 +100,20 @@ INSERT INTO unit VALUES
   (214,'[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',281,'/reports/ohada_profit_loss'),
   (216,'Profit & Loss by Year','REPORT.PROFIT_AND_LOSS_BY_YEAR','The report of income and expenses',281,'/reports/income_expense_by_year'),
   (217,'Tags','TREE.TAGS','',1,'/tags'),
-  (218,'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','',0,'/fee_center'),
-  (219,'Fee Center Management','TREE.FEE_CENTER','',218,'/fee_center'),
-  (220,'Distributions Fee Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','',218,'/distribution_center'),
-  (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/distribution_center/update'),
-  (222,'Fee Center Report','TREE.FEE_CENTER_REPORT','Fee Center Report',286,'/reports/fee_center'),
-  (223,'Distribution keys','TREE.DISTRIBUTION_KEYS','Distribution keys',218,'/distribution_center/distribution_key'),
+  (218,'Fee Center Management','TREE.COST_CENTER_MANAGEMENT','',0,'/cost_center'),
+  (219,'Fee Center Management','TREE.COST_CENTER','',218,'/cost_center'),
+  -- (220,'Distributions Fee Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','',218,'/allocation_center'),
+  -- (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/allocation_center/update'),
+  -- (222,'Fee Center Report','TREE.COST_CENTER_REPORT','Fee Center Report',286,'/reports/cost_center'),
+  -- (223,'Distribution keys','TREE.DISTRIBUTION_KEYS_MANAGEMENT','Distribution keys',218,'/allocation_center/allocation_key'),
   (225,'Stock Assignment','ASSIGN.STOCK_ASSIGN','',160,'/stock/assign'),
   (226,'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type',1,'/account_reference_type'),
   (227,'Ward Module','TREE.WARD','Ward folder',0,'/WARD_FOLDER'),
   (228,'Ward Configurations','TREE.WARD_CONFIGURATION','Ward configuration module',227,'/ward/configuration'),
   (229,'Visits Registry','TREE.VISITS_REGISTRY','Visits registry',12,'/patients/visits'),
-  (230,'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference',1,'/break_even_reference'),
-  (231,'Break Even Report','TREE.BREAK_EVEN_REPORT','Break-even Report',286,'/reports/break_even'),
-  (232,'Break Even By Fee Center','TREE.BREAK_EVEN_FEE_CENTER_REPORT','Break-even By Fee Center Report',286,'/reports/break_even_fee_center'),
+  -- (230,'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference',1,'/break_even_reference'),
+  -- (231,'Break Even Report','TREE.BREAK_EVEN_REPORT','Break-even Report',286,'/reports/break_even'),
+  -- (232,'Break Even By Fee Center','TREE.BREAK_EVEN_COST_CENTER_REPORT','Break-even By Fee Center Report',286,'/reports/break_even_cost_center'),
   (233,'Dashboards Folder','TREE.DASHBOARDS.TITLE','Tableaux de bord',0,'/DASHBOARDS_FOLDER'),
   (234,'Indicators Files Registry','TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY','Registre des fiches des indicateurs',233,'/dashboards/indicators_files_registry'),
   (235,'Hospitalization dashboard','TREE.DASHBOARDS.HOSPITALIZATION','Tableau de bord des hospitalisations',233,'/dashboards/hospitalization'),
@@ -159,7 +159,7 @@ INSERT INTO unit VALUES
   (283,'HR Reports','TREE.REPORTS','reports for the HR/Payroll modules',57,'/PAYROLL_FOLDER/reports'),
   (284,'Data Kit Reports','TREE.REPORTS','reports for the data collection modules',254,'/data_collection/reports'),
   (285,'Purchase Reports','TREE.REPORTS','reports for the purchasing modules',154,'/PURCHASE_FOLDER/reports'),
-  (286,'Fee Center Reports','TREE.REPORTS','reports for the fee center modules',218,'/fee_center/reports'),
+  (286,'Fee Center Reports','TREE.REPORTS','reports for the cost center modules',218,'/cost_center/reports'),
   (287,'Inventory Reports','TREE.REPORTS','reports for the inventory modules', 138,'/inventory/reports'),
   (288, '[Stock] Movement Report','TREE.STOCK_MOVEMENT_REPORT','Stock Movement Report', 282,'/reports/stock_movement_report'),
   (289, '[Stock] Expiration report','TREE.STOCK_EXPIRATION_REPORT','Stock expiration report', 282,'/reports/stock_expiration_report'),
@@ -171,7 +171,11 @@ INSERT INTO unit VALUES
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
-  (298, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices');
+  (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
+  (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
+  (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
+  (300, 'Lost Stock Reprot','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -217,9 +221,9 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_value', 'TREE.STOCK_VALUE'),
   ('ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
   ('income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
-  ('fee_center', 'REPORT.FEE_CENTER.TITLE'),
+  ('cost_center', 'REPORT.COST_CENTER.TITLE'),
   ('break_even', 'TREE.BREAK_EVEN_REPORT'),
-  ('break_even_fee_center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
+  ('break_even_cost_center', 'TREE.BREAK_EVEN_COST_CENTER_REPORT'),
   ('indicators_report', 'TREE.INDICATORS_REPORT'),
   ('visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
   ('stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
@@ -245,6 +249,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
   ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE');
+  ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
+  ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -407,7 +413,7 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
 
 -- Default Account Reference Type
 INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
-(1, 'FORM.LABELS.FEE_CENTER', 1),
+(1, 'FORM.LABELS.COST_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1),
 (4, 'FORM.LABELS.BREAK_EVEN', 1),
@@ -480,3 +486,26 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
   ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
   ('FORM.LABELS.ANALYSIS_TOOLS.DEBTS', 1, 1);
+
+-- Cost Center basis info
+-- NOTE: 'id' field must match values assigned to the corresponding allocation
+--       basis items in server/config/constants.js (search for allocationBasis)
+INSERT INTO `cost_center_allocation_basis`
+  (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`, `is_computed`)
+  VALUES
+  (1, 'ALLOCATION_BASIS_DIRECT_COST', '',
+      'ALLOCATION_BASIS_DIRECT_COST_DESCRIPTION', 1, 1, 2, 0),
+  (2, 'ALLOCATION_BASIS_NUM_EMPLOYEES', '',
+      'ALLOCATION_BASIS_NUM_EMPLOYEES_DESCRIPTION', 1, 0, 0, 1),
+  (3, 'ALLOCATION_BASIS_AREA_USED', 'ALLOCATION_BASIS_AREA_USED_UNITS',
+      'ALLOCATION_BASIS_AREA_USED_DESCRIPTION', 1, 0, 1, 0),
+  (4, 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED', 'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_UNITS',
+      'ALLOCATION_BASIS_ELECTRICITY_CONSUMED_DESCRIPTION', 1, 0, 1, 0),
+  (5, 'ALLOCATION_BASIS_NUM_COMPUTERS', '',
+      'ALLOCATION_BASIS_NUM_COMPUTERS_DESCRIPTION', 1, 0, 0, 0),
+  (6, 'ALLOCATION_BASIS_NUM_LABOR_HOURS', 'ALLOCATION_BASIS_NUM_LABOR_HOURS_UNITS',
+      'ALLOCATION_BASIS_NUM_LABOR_HOURS_DESCRIPTION', 1, 0, 1, 0),
+  (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '',
+      'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
+  (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '',
+      'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
