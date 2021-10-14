@@ -17,6 +17,11 @@ function ServiceModalController(
   vm.submit = submit;
   vm.closeModal = closeModal;
 
+  vm.onCostCenterSelect = cc => {
+    vm.service.cost_center_id = cc.id;
+    vm.service.cost_center_name = cc.label;
+  };
+
   vm.onSelectProject = project => {
     vm.service.project_id = project.id;
   };

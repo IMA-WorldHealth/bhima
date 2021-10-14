@@ -21,6 +21,13 @@
       </div>
     </div>
 
+    <bh-cost-center-select
+      label="COST_CENTER.SELECT_COST_CENTER"
+      cost-center-id="ServiceModalCtrl.service.cost_center_id"
+      on-select-callback="ServiceModalCtrl.onCostCenterSelect(costCenter)"
+      required="true">
+    </bh-cost-center-select>
+
     <bh-project-select
       project-id="ServiceModalCtrl.service.project_id"
       on-select-callback="ServiceModalCtrl.onSelectProject(project)"
