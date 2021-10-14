@@ -248,7 +248,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('stock_changes', 'REPORT.STOCK_CHANGES.TITLE'),
   ('aggregated_stock_consumption', 'REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE'),
   ('rumer_report', 'REPORT.RUMER.TITLE'),
-  ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE');
+  ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE'),
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
 
