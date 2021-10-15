@@ -87,7 +87,7 @@ DROP PROCEDURE IF EXISTS ComputeCostCenterAllocationByIndex$$
 CREATE PROCEDURE ComputeCostCenterAllocationByIndex(
   IN _dateFrom DATE,
   IN _dateTo DATE,
-  IN _includeRevenue BOOLEAN,
+  IN _useRevenue BOOLEAN,
   IN _currencyId TINYINT
 )
 BEGIN
@@ -102,6 +102,8 @@ BEGIN
 
   SET _enterpriseId = (SELECT id FROM enterprise LIMIT 1);
 
+  SET _useRevenue = (SELECT IF(_useRevenue, 1, 0));
+
   DROP TEMPORARY TABLE IF EXISTS cost_center_costs_with_indexes;
   CREATE TEMPORARY TABLE cost_center_costs_with_indexes AS
     SELECT
@@ -109,7 +111,7 @@ BEGIN
       z.allocation_basis_id,
       z.is_principal,
       z.step_order,
-      z.`value` * IFNULL(GetExchangeRate(_enterpriseId, _currencyId, _dateTo), 1) AS direct_cost,
+      SUM(z.`value` * IFNULL(GetExchangeRate(_enterpriseId, _currencyId, _dateTo), 1)) AS direct_cost,
       ccb.name AS cost_center_allocation_basis_label,
       ccbv.quantity AS cost_center_allocation_basis_value
     FROM
@@ -117,29 +119,32 @@ BEGIN
         (
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
-            SUM(IF(_includeRevenue, cca.debit - cca.credit, cca.debit)) AS `value`
+            SUM(cca.debit - cca.credit) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.principal_center_id = fc.id
           JOIN `period` p ON p.id = cca.period_id
           LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
-          WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
+          WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo) 
+            AND cca.is_income = _useRevenue
           GROUP BY cca.principal_center_id
         )
-        UNION DISTINCT
+        UNION ALL
         (
           SELECT
             fc.id, fc.label, fc.is_principal, fc.step_order, ccb.name AS allocation_basis_id,
-            SUM(IF(_includeRevenue, cca.debit - cca.credit, cca.debit)) AS `value`
+            SUM(cca.debit - cca.credit) AS `value`
           FROM cost_center AS fc
           JOIN cost_center_aggregate cca ON cca.cost_center_id = fc.id AND cca.principal_center_id IS NULL
           JOIN `period` p ON p.id = cca.period_id
           LEFT JOIN cost_center_allocation_basis ccb ON ccb.id = fc.allocation_basis_id
-          WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo)
+          WHERE DATE(p.start_date) >= DATE(_dateFrom) AND DATE(p.end_date) <= DATE(_dateTo) 
+            AND cca.is_income = _useRevenue
           GROUP BY cca.cost_center_id
         )
     ) AS z
     JOIN cost_center_allocation_basis_value ccbv ON ccbv.cost_center_id = z.id
     JOIN cost_center_allocation_basis ccb ON ccb.id = ccbv.basis_id
+    GROUP BY z.id, ccb.name 
     ORDER by z.step_order ASC;
 
   SELECT
