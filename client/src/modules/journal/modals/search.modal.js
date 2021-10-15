@@ -23,7 +23,7 @@ function JournalSearchModalController(
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
     'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
     'hrReference', 'currency_id', 'showOnlyNullCostCenter', 'cost_center_id',
-    'principal_center_id',
+    'principal_center_id', 'account_type_id',
   ];
 
   const changes = new Store({ identifier : 'key' });
@@ -83,6 +83,11 @@ function JournalSearchModalController(
   vm.onSelectAccount = function onSelectAccount(account) {
     vm.searchQueries.account_id = account.id;
     displayValues.account_id = String(account.number).concat(' - ', account.label);
+  };
+
+  vm.onSelectAccountTypeChange = type => {
+    vm.searchQueries.account_type_id = type.id;
+    displayValues.account_type_id = $translate.instant(type.translation_key);
   };
 
   // custom filter user_id - assign the value to the searchQueries object
