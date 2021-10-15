@@ -58,13 +58,13 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
     PatientInvoice.findConsumableInvoicePatient(parameters)
       .then(invoice => {
 
-        if (!invoice.details) {
+        // trigger form validation for the invoice search input
+        form.$setSubmitted();
+
+        if (!invoice || !invoice.details) {
           $ctrl.invoiceFound = false;
           return;
         }
-
-        // trigger form validation for the invoice search input
-        form.$setSubmitted();
 
         // select invoice and fetch articles and services in the invoice
         selectInvoice(invoice);
@@ -87,7 +87,7 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
     PatientInvoice.findConsumableInvoicePatient(parameters)
       .then(invoice => {
 
-        if (!invoice.details) {
+        if (!invoice || !invoice.details) {
           $ctrl.invoiceFound = false;
           return;
         }
