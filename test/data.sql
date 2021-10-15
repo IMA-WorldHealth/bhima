@@ -10,8 +10,8 @@ INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL, NULL);
 
 INSERT INTO `enterprise_setting` (
-  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report) VALUES
-  (1, 0, 1, 1);
+  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report, base_index_growth_rate) VALUES
+  (1, 0, 1, 1, 5);
 
 -- Project
 INSERT INTO `project` VALUES
