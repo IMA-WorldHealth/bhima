@@ -8,7 +8,6 @@ exports.update = update;
 exports.delete = remove;
 exports.lookUp = lookUp;
 
-
 // retrieve all staffing indexes
 function list(req, res, next) {
   lookUp(req.query)
@@ -16,7 +15,6 @@ function list(req, res, next) {
       res.json(staffingGradeIndices);
     }).catch(next);
 }
-
 
 function detail(req, res, next) {
   const sql = `
@@ -28,7 +26,6 @@ function detail(req, res, next) {
     res.status(200).json(staffingGradeIndice);
   }).catch(next);
 }
-
 
 // create a new staffing_grade_indice
 function create(req, res, next) {
@@ -46,7 +43,6 @@ function create(req, res, next) {
     })
     .catch(next);
 }
-
 
 // update a staffing_grade_indice
 function update(req, res, next) {
@@ -77,13 +73,12 @@ function remove(req, res, next) {
     .catch(next);
 }
 
-
 function lookUp(options = {}) {
   const sql = `
     SELECT HEX(s.uuid) as uuid, s.value, HEX(s.grade_uuid) as grade_uuid
        ,g1.code as grade_code, g1.text as grade_text, g1.basic_salary as grade_basic_salary
     FROM staffing_grade_indice AS s 
-    JOIN grade as g1 ON g1.uuid = s.grade_uuid 
+    JOIN grade as g1 ON g1.uuid = s.grade_uuid
   `;
 
   db.convert(options, ['uuid', 'grade_uuid']);
@@ -95,6 +90,7 @@ function lookUp(options = {}) {
   filters.equals('uuid');
   filters.equals('value');
   filters.equals('grade_uuid');
+  filters.setOrder('ORDER BY g1.text ASC');
 
   return db.exec(filters.applyQuery(sql), filters.parameters());
 }
