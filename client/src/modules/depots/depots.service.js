@@ -89,6 +89,18 @@ function DepotService(Api, Modal, HttpCache) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  /**
+   * @function getExpiredStockForDate
+   *
+   * @description
+   * Returns lots that are expired in the depot at a given date.
+   */
+  service.getExpiredStockForDate = function getExpiredStock(depotUuid, date) {
+    const target = `/depots/${depotUuid}/flags/expired`;
+    return service.$http.get(target, { params : { date } })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   service.clean = depot => {
     delete depot.country_name;
     delete depot.province_name;
