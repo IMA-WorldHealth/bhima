@@ -11,7 +11,6 @@ exports.lookUp = lookUp;
 exports.functionIndices = require('./functionIndice');
 exports.gradeIndices = require('./gradeIndice');
 
-
 function lookUp(options = {}) {
   const sql = `
     SELECT BUID(s.uuid) as uuid, BUID(g.uuid) as grade_uuid,
@@ -34,7 +33,7 @@ function lookUp(options = {}) {
 
   filters.equals('fontion_id');
   filters.equals('employee_uuid');
-  filters.setOrder('ORDER BY s.created_at, g.text, f.fonction_txt ASC');
+  filters.setOrder('ORDER BY s.created_at, p.display_name, g.text, f.fonction_txt ASC');
 
   return db.exec(filters.applyQuery(sql), filters.parameters());
 }
@@ -47,7 +46,6 @@ function list(req, res, next) {
     }).catch(next)
     .done();
 }
-
 
 function detail(req, res, next) {
   const sql = `
@@ -75,7 +73,6 @@ function create(req, res, next) {
     })
     .catch(next);
 }
-
 
 // update a staffing index
 function update(req, res, next) {

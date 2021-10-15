@@ -19,7 +19,7 @@
       <div class="col-lg-6" style="margin-top: 16px">
         <div
         ng-show ="(rubConfigured.indice_to_grap && rubConfigured.is_indice)"
-        ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics | orderBy:'label'" class="form-group">
 
         <bh-input-text
           ng-if="!rubConfigured.is_monetary_value"
@@ -33,7 +33,7 @@
       </div>
       <div class="col-lg-6">
         <div
-        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics | orderBy:'label'" class="form-group">
         <bh-currency-input
           data-payment-currency-input
           ng-if="rubConfigured.is_monetary_value && rubConfigured.is_indice "
