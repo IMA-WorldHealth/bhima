@@ -277,3 +277,9 @@ CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__serv
 CALL drop_foreign_key('service_cost_center', 'service_fee_center__fee_center');   -- old constraint name
 CALL drop_foreign_key('service_cost_center', 'service_cost_center__cost_center');
 CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE');
+
+/*
+ * @author: mbayopanda
+ * @desc: add is_income column in the cost_center_aggregate table
+ */
+CALL add_column_if_missing('cost_center_aggregate', 'is_income', 'TINYINT(1) NOT NULL DEFAULT 0');
