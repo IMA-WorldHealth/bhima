@@ -8,7 +8,6 @@ exports.update = update;
 exports.delete = remove;
 exports.lookUp = lookUp;
 
-
 // retrieve all staffing indexes
 function list(req, res, next) {
   lookUp(req.query)
@@ -16,7 +15,6 @@ function list(req, res, next) {
       res.json(staffingFunctionIndices);
     }).catch(next);
 }
-
 
 function detail(req, res, next) {
   const sql = `
@@ -28,7 +26,6 @@ function detail(req, res, next) {
     res.status(200).json(staffingFunctionIndice);
   }).catch(next);
 }
-
 
 // create a new staffing_function_indice
 function create(req, res, next) {
@@ -42,7 +39,6 @@ function create(req, res, next) {
     })
     .catch(next);
 }
-
 
 // update a staffing_function_indice
 function update(req, res, next) {
@@ -73,7 +69,6 @@ function remove(req, res, next) {
     .catch(next);
 }
 
-
 function lookUp(options = {}) {
   const sql = `
     SELECT HEX(s.uuid) as uuid, s.value, s.fonction_id, f.fonction_txt
@@ -90,6 +85,7 @@ function lookUp(options = {}) {
   filters.equals('uuid');
   filters.equals('value');
   filters.equals('fonction_id');
+  filters.setOrder('ORDER BY f.fonction_txt ASC');
 
   return db.exec(filters.applyQuery(sql), filters.parameters());
 }

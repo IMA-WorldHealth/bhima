@@ -91,10 +91,13 @@ function ConfigIndicePaiementModalController(
   function formatRubrics(object) {
     const keys = Object.keys(vm.selectedRubrics);
     return keys.map(k => {
+      // For the case where the object is not defined
+      const checkMonetaryValue = rubricsMap[k] ? rubricsMap[k].is_monetary_value : 0;
+
       return {
         id : k,
         value : object[k],
-        is_monetary : rubricsMap[k].is_monetary_value,
+        is_monetary : checkMonetaryValue,
       };
     });
   }

@@ -197,7 +197,7 @@ async function loadSessionInformation(user) {
   //   the current project
   sql = `
     SELECT e.id, e.name, e.abbr, e.phone, e.email, e.address, BUID(e.location_id) as location_id, e.currency_id,
-      c.symbol AS currencySymbol, c.name AS currencyName, e.po_box, e.helpdesk, e.logo,
+      c.symbol AS currencySymbol, c.name AS currencyName, c.min_monentary_unit, e.po_box, e.helpdesk, e.logo,
       CONCAT_WS(' / ', village.name, sector.name, province.name) AS location
     FROM enterprise AS e
       JOIN currency AS c ON e.currency_id = c.id
