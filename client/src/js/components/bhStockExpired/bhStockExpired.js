@@ -52,14 +52,8 @@ function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
     const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
 
-    Stock.inventories.read(null, {
-      is_expired : 1,
-      depot_uuid : $ctrl.depotUuid,
-      includeEmptyLot : 0,
-      skipTags : 1,
-      dateTo,
-    })
-      .then(inventories => {
+    Depot.getExpiredStockForDate($ctrl.depotUuid, dateTo)
+      .then((inventories) => {
         inventories.forEach(inventory => {
           inventory.expiration_date_raw = $date(inventory.expiration_date);
           inventory.expiration_date_parsed = moment(inventory.expiration_date).fromNow();
