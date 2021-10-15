@@ -13,7 +13,6 @@ exports.lookUp = lookUp;
 exports.parameters = require('./paramter.config');
 exports.reports = require('./report');
 
-
 // retrieve indice's value for employee(s)
 async function read(req, res, next) {
   lookUp(req.query).then(rows => {
@@ -27,6 +26,7 @@ function create(req, res, next) {
   const payrollConfigurationId = req.body.payroll_configuration_id;
   const employeeUuid = req.body.employee_uuid;
   const { rubrics } = req.body;
+  const minMonentaryUnit = req.session.enterprise.min_monentary_unit;
 
   const monataryRubrics = rubrics.filter(r => {
     return r.is_monetary === 1;
@@ -36,6 +36,8 @@ function create(req, res, next) {
   transaction.addQuery(`DELETE FROM employee_advantage WHERE employee_uuid = ?`, [db.bid(employeeUuid)]);
 
   monataryRubrics.forEach(r => {
+    r.value = minMonentaryUnit * Math.round(r.value / minMonentaryUnit);
+
     transaction.addQuery('INSERT INTO employee_advantage SET ?', {
       employee_uuid : db.bid(employeeUuid),
       rubric_payroll_id : r.id,
@@ -64,7 +66,6 @@ function create(req, res, next) {
   }).catch(next);
 }
 
-
 // retrieve indice's value for employee(s)
 async function lookUp(options) {
 
@@ -80,6 +81,7 @@ async function lookUp(options) {
     JOIN patient pt ON pt.uuid = emp.patient_uuid
     WHERE pc.id = ? 
     ${employeeUuid ? ` AND emp.uuid = ?` : ''}
+    ORDER BY pt.display_name ASC
   `;
 
   const stagePaymentIndiceSql = `
