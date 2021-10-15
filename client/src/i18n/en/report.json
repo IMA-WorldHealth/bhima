@@ -173,7 +173,7 @@
       "TITLE": "Purchase Order Analysis"
     },
     "PURCHASE_PRICES": {
-      "DESCRIPTION": "This report shows the purchase value of a medicine over time, eachtime it was entered into stock.  It also shows the margin over the current inventory price.",
+      "DESCRIPTION": "This report shows the purchase value of a medicine over time, each time it was entered into stock.  It also shows the margin over the current inventory price.",
       "TITLE": "Purchase Price Analysis"
     },
     "RUMER": {

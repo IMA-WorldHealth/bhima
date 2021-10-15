@@ -33,9 +33,6 @@ async function report(req, res, next) {
       sm.unit_cost, sm.quantity,
       l.label AS lot_label,
       flux.label AS reason,
-      (inv.price - sm.unit_cost) AS margin,
-      ((inv.price - sm.unit_cost) / sm.unit_cost) AS percent_margin,
-      ((inv.price - sm.unit_cost) < 0) AS negative,
       SUM(sm.unit_cost * sm.quantity) OVER (ORDER BY sm.date ROWS UNBOUNDED PRECEDING) AS running_total,
       sm.user_id, user.display_name AS userName
     FROM stock_movement sm
@@ -54,7 +51,6 @@ async function report(req, res, next) {
     SELECT
       SUM(sm.unit_cost * sm.quantity) AS cost,
       SUM(sm.quantity) AS quantity,
-      AVG(inv.price - sm.unit_cost) AS avg_margin,
       AVG(sm.unit_cost) AS avg_unit_cost,
       MIN(sm.unit_cost) AS min_price,
       MAX(sm.unit_cost) AS max_price,

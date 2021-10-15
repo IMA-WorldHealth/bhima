@@ -34,8 +34,6 @@
               <th>{{translate 'FORM.LABELS.QUANTITY_ENTRY'}}</th>
               <th>{{translate 'FORM.LABELS.UNIT_PRICE'}}</th>
               <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
-              <th>{{translate 'FORM.LABELS.MARGIN'}}</th>
-              <th>{{translate 'FORM.LABELS.PERCENTAGE'}}</th>
             </tr>
           </thead>
           <tbody>
@@ -49,12 +47,10 @@
                 <td class="text-right">{{ movement.quantity}} </td>
                 <td class="text-right">{{ currency movement.unit_cost ../metadata.enterprise.currency_id 4 }} </td>
                 <td class="text-right">{{ currency movement.running_total ../metadata.enterprise.currency_id 4 }} </td>
-                <td class="text-right">{{ currency movement.margin ../metadata.enterprise.currency_id 4 }}</td>
-                <td class="text-right">{{percentage movement.percent_margin}}</td>
               </tr>
             {{else}}
               <tr>
-                <td class="text-center" colspan="10">{{translate "TABLE.COLUMNS.EMPTY"}}</td>
+                <td class="text-center" colspan="8">{{translate "TABLE.COLUMNS.EMPTY"}}</td>
               </tr>
             {{/each}}
           </tbody>
@@ -65,7 +61,6 @@
                 <th class="text-right">{{totals.quantity }}</th>
                 <th class="text-right">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_unit_cost metadata.enterprise.currency_id 4}}</th>
                 <th class="text-right">{{currency totals.cost metadata.enterprise.currency_id 4}}</th>
-                <th class="text-right {{#lt totals.avg_margin 0}}text-danger{{/lt}}">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_margin metadata.enterprise.currency_id 4}}</th>
                 <th></th>
               </tr>
             </tfoot>
