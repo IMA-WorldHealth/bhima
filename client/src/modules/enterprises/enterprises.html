@@ -299,6 +299,9 @@
                   <input class="form-control" value="0" min="0" type="number" name="base_index_growth_rate" ng-model="EnterpriseCtrl.enterprise.settings.base_index_growth_rate" required>
                   <span class="input-group-addon"> % </span>
                 </div>
+                <span class="help-block" translate>
+                  SETTINGS.BASE_INDEX_GROWTH_RATE_HELP_TEXT
+                </span>                
                 <div class="help-block" ng-messages="EnterpriseForm.base_index_growth_rate.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
