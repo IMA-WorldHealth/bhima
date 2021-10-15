@@ -56,6 +56,7 @@ function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
       is_expired : 1,
       depot_uuid : $ctrl.depotUuid,
       includeEmptyLot : 0,
+      skipTags : 1,
       dateTo,
     })
       .then(inventories => {
