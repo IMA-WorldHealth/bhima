@@ -272,11 +272,18 @@ BEGIN
   DELETE FROM cost_center_aggregate;
 
   -- regenerate
-  INSERT INTO cost_center_aggregate (period_id, credit, debit, cost_center_id, principal_center_id)
-    SELECT period_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) AS debit, cost_center_id, principal_center_id
-    FROM general_ledger
-    WHERE cost_center_id IS NOT NULL
-    GROUP BY cost_center_id, principal_center_id, period_id;
+  INSERT INTO cost_center_aggregate (period_id, credit, debit, cost_center_id, principal_center_id, is_income)
+    SELECT 
+      gl.period_id, 
+      SUM(gl.credit_equiv) AS credit, 
+      SUM(gl.debit_equiv) AS debit, 
+      gl.cost_center_id, 
+      gl.principal_center_id,
+      IF(a.type_id = 4, 1, 0) AS is_income
+    FROM general_ledger gl 
+    JOIN account a ON a.id = gl.account_id 
+    WHERE (gl.cost_center_id IS NOT NULL OR gl.principal_center_id IS NOT NULL)
+    GROUP BY gl.cost_center_id, gl.principal_center_id, gl.period_id, a.type_id;
 END $$
 
 DELIMITER ;

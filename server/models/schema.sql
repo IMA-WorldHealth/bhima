@@ -2622,6 +2622,7 @@ CREATE TABLE `cost_center_aggregate` (
   `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `cost_center_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
+  `is_income`       TINYINT(1) NOT NULL DEFAULT 0,
   KEY `cost_center_id` (`cost_center_id`),
   KEY `principal_center_id` (`principal_center_id`),
   KEY `period_id` (`period_id`),
