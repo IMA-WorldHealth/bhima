@@ -640,7 +640,7 @@ INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, 
   (HUID('6f80748b-1d94-4247-804e-d4be99e827d2'), 'QUININE-B', 200, 0.8000, DATE_ADD(CURRENT_DATE, INTERVAL 1 MONTH),  @quinine),
   (HUID('ae735e99-8faf-417b-aa63-9b404fca99ac'), 'QUININE-A', 100, 1.2000, '2017-04-30', @quinine),
   (HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), 'QUININE-C', 50, 2.0000, DATE_ADD(CURRENT_DATE, INTERVAL 2 YEAR), @quinine),
-  (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A',	0,	3.1800,	DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine);
+  (HUID('aca917fe-5320-4c3c-bea6-590e48cfa26b'), 'ERYTHRO-A', 0,  3.1800, DATE_ADD(CURRENT_DATE, INTERVAL 3 MONTH), @erythromycine);
 
 -- stock settings (go with defaults)
 INSERT INTO `stock_setting` (`enterprise_id`, `enable_auto_stock_accounting`, `month_average_consumption`, `average_consumption_algo`, `default_purchase_interval`) VALUES (1, 0, 6, 'algo_msh', 0);
@@ -1076,7 +1076,6 @@ INSERT INTO `sector` (`uuid`, `name`, `province_uuid`) VALUES (0x5B4FBED5763743A
 
 INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0x03C1C626183A4B549C2DB01434D44867, 'Merge village 2', 0x0AA4E8785ACB4E0CBE0B8E7B61CAE782, NULL, NULL);
 INSERT INTO `village` (`uuid`, `name`, `sector_uuid`, `longitude`, `latitude`) VALUES (0xB472A67F24624EFC9CB52201530CCBD4, 'Merge Village 1', 0x5B4FBED5763743A090048FB053B17593, NULL, NULL);
-
 
 INSERT INTO `donor`(`id`, `display_name`) VALUES(1, 'Jeremie LODI');
 
