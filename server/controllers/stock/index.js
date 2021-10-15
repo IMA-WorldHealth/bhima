@@ -889,8 +889,8 @@ async function listLotsDepot(req, res, next) {
   try {
     const data = await core.getLotsDepot(null, params);
 
-    // if we have an empty set, do not query tags.
-    if (data.length !== 0) {
+    // if we have an empty set, do not query tags.  Alternatively, if skipTags is set
+    if (data.length !== 0 && !params.skipTags) {
       const queryTags = `
         SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
         FROM tags t

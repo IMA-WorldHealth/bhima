@@ -295,6 +295,7 @@ function StockExitController(
     Stock.inventories.read(null, {
       depot_uuid : depot.uuid,
       dateTo,
+      skipTags : 1,
       is_expired : loadExpiredOnlyForLoss,
     })
       .then(inventories => {
@@ -315,7 +316,7 @@ function StockExitController(
 
   function loadCurrentInventories(depot, dateTo = new Date()) {
     vm.loading = true;
-    Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo })
+    Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : 1 })
       .then(lots => {
         vm.currentInventories = lots.filter(item => item.quantity > 0);
       })
