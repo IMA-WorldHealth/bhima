@@ -3,6 +3,7 @@ angular.module('bhima.controllers')
 
 CostCenterStepdownReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  'SessionService',
 ];
 
 /**
@@ -11,13 +12,16 @@ CostCenterStepdownReportConfigController.$inject = [
  * @description
  * This function renders the cost_center_step_down report.
  */
-function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('CostCenterStepdownReport');
   const reportUrl = 'reports/finance/cost_center_step_down';
 
   vm.previewGenerated = false;
-  vm.reportDetails = { include_revenue : false };
+  vm.reportDetails = {
+    include_revenue : false,
+    currency_id : Session.enterprise.currency_id,
+  };
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
