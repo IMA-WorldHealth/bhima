@@ -90,7 +90,9 @@ async function fetch(session, params) {
     const row = {
       name : ei.cost_center_label,
       principal : ei.principal,
+      auxiliary : ei.auxiliary,
       direct : ei.directCost,
+      allocation_basis : ei.allocation_basis_id,
       values : [],
       total : 0,
     };
