@@ -122,6 +122,8 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
         const basicSalary = util.roundDecimal(totalCosts * enterpriseExchangeRate, DECIMAL_PRECISION);
         if (rubricData.length) {
           rubricData.forEach(rubric => {
+            rubric.result = 0;
+
             if (advantagesEmployee.length) {
               advantagesEmployee.forEach(advantage => {
                 if (rubric.rubric_payroll_id === advantage.rubric_payroll_id) {
@@ -195,6 +197,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
             }
           });
         }
+
         const baseIpr = ((baseTaxable - membershipFeeEmployee) * (iprExchangeRate / enterpriseExchangeRate));
         // Annual cumulation of Base IPR
         const annualCumulation = baseIpr * 12;
@@ -213,14 +216,20 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
               if (taxContribution.is_ipr) {
                 taxContribution.result = iprValue;
               }
-              // Calculation of the sum of taxes and membership fee borne by the employee
-              if (taxContribution.is_employee) {
-                sumTaxContributionEmp += taxContribution.result;
-              }
-              allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
             });
           }
         }
+
+        if (taxesContributions.length) {
+          taxesContributions.forEach(taxContribution => {
+            // Calculation of the sum of taxes and membership fee borne by the employee
+            if (taxContribution.is_employee) {
+              sumTaxContributionEmp += taxContribution.result;
+            }
+            allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
+          });
+        }
+
         const netSalary = grossSalary - sumTaxContributionEmp;
         const paiementData = {
           uuid : uid,
@@ -249,6 +258,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
           query : setPaiementData,
           params : [paiementData],
         }];
+
         if (allRubrics.length) {
           allTransactions.push({
             query : setRubricPaiementData,

@@ -36,6 +36,7 @@
             <tr>
               <th>{{translate 'FORM.LABELS.SERVICE'}}</th>
               <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
+              <th>{{translate 'COST_CENTER.ALLOCATION_BASIS'}}</th>
               {{#each data as | service |}}
                 {{#unless service.is_principal}}
                 <th>{{ service.cost_center_label }}</th>
@@ -56,6 +57,11 @@
                   {{/if}}
                 </td>
                 <td class="text-right">{{debcred service.direct ../currencyId}}</td>
+                <td>
+                  {{#if service.auxiliary}}
+                    {{translate service.allocation_basis}}
+                  {{/if}}
+                </td>
                 {{#each service.values as | distribution |}}
                   {{#if distribution.selfCenter}}
                     <td class="text-right">{{debcred distribution.selfCenterValue ../../currencyId}}</td>
@@ -72,6 +78,7 @@
             <tr>
               <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
               <th class="text-right">{{debcred directCostTotal currencyId}}</th>
+              <th></th>
               {{#each cumulatedAllocatedCosts as | value |}}
                 <th class="text-right">{{debcred value ../currencyId}}</th>
                 <th></th>

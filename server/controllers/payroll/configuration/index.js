@@ -64,7 +64,6 @@ function create(req, res, next) {
     .done();
 }
 
-
 // PUT /PAYROLL_CONFIG /:ID
 function update(req, res, next) {
   const sql = `UPDATE payroll_configuration SET ? WHERE id = ?;`;
