@@ -1,7 +1,7 @@
 DELIMITER $$
 
 -- post stock movement into vouchers
-DROP PROCEDURE IF EXISTS PostStockMovement;
+DROP PROCEDURE IF EXISTS PostStockMovement$$
 CREATE PROCEDURE PostStockMovement (
   IN documentUuid BINARY(16),
   IN isExit TINYINT(1),
@@ -88,7 +88,7 @@ BEGIN
         projectId as project_id, currencyId as currency_id,
         CONCAT(ig.name, ' - ', m.quantity, ' ', iu.text, ' of ', i.text , ' (', l.label, ')') AS item_description,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
-        ig.cogs_account, ig.stock_account, m.invoice_uuid, m.entity_uuid 
+        ig.cogs_account, ig.stock_account, m.invoice_uuid, m.entity_uuid
       FROM stock_movement m
       JOIN depot d ON d.uuid = m.depot_uuid
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -100,7 +100,7 @@ BEGIN
     );
 
   -- define voucher variables
-  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity) 
+  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity)
     INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount
   FROM stage_stock_movement;
 
@@ -136,26 +136,26 @@ BEGIN
   END IF;
 
   /* EXIT TO PATIENT : get cost_center_id */
-  IF (sm_flux_id = TO_PATIENT_FLUX_ID AND isExit = 1) THEN 
+  IF (sm_flux_id = TO_PATIENT_FLUX_ID AND isExit = 1) THEN
     SET voucher_item_cost_center_id = (
       SELECT GetCostCenterByInvoiceUuid(invoice_uuid) FROM stage_stock_movement
-      WHERE invoice_uuid IS NOT NULL 
+      WHERE invoice_uuid IS NOT NULL
       LIMIT 1
     );
   END IF;
 
   /* EXIT TO SERVICE : get cost_center_id */
-  IF (sm_flux_id = TO_SERVICE_FLUX_ID AND isExit = 1) THEN 
+  IF (sm_flux_id = TO_SERVICE_FLUX_ID AND isExit = 1) THEN
     SET voucher_item_cost_center_id = (
-      SELECT GetCostCenterByServiceUuid(sm.entity_uuid) FROM stage_stock_movement sm 
+      SELECT GetCostCenterByServiceUuid(sm.entity_uuid) FROM stage_stock_movement sm
       JOIN service s ON s.uuid = sm.entity_uuid
-      WHERE sm.entity_uuid IS NOT NULL 
+      WHERE sm.entity_uuid IS NOT NULL
       LIMIT 1
     );
   END IF;
 
   /* EXIT TO LOSS : get cost_center_id */
-  IF (sm_flux_id = TO_LOSS_FLUX_ID AND isExit = 1) THEN 
+  IF (sm_flux_id = TO_LOSS_FLUX_ID AND isExit = 1) THEN
     SET voucher_item_cost_center_id = (
       SELECT default_cost_center_for_loss FROM stock_setting LIMIT 1
     );
@@ -229,7 +229,7 @@ END $$
   Import Stock Procedure
   ---------------------------------------------------
 */
-DROP PROCEDURE IF EXISTS ImportStock;
+DROP PROCEDURE IF EXISTS ImportStock$$
 CREATE PROCEDURE ImportStock (
   IN operationDate DATE,
   IN enterpriseId SMALLINT(5),
@@ -335,6 +335,7 @@ ComputeStockStatus() stored procedure.  The idea is to allow the database to use
 JOIN to group the calculation upon the stock_movement table.
 
 */
+DROP PROCEDURE IF EXISTS StageInventoryForAMC$$
 CREATE PROCEDURE StageInventoryForAMC(
   IN _inventory_uuid BINARY(16)
 ) BEGIN
@@ -342,7 +343,7 @@ CREATE PROCEDURE StageInventoryForAMC(
   INSERT INTO stage_inventory_for_amc SET stage_inventory_for_amc.inventory_uuid = _inventory_uuid;
 END $$
 
-
+DROP PROCEDURE IF EXISTS ComputeStockStatusForStagedInventory$$
 CREATE PROCEDURE ComputeStockStatusForStagedInventory(
   IN _start_date DATE,
   IN _depot_uuid BINARY(16)
