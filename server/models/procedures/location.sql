@@ -21,6 +21,7 @@ A "location" is synonymous with a village.uuid.  The first parameter is the
 village to remove, and the second is the new village uuid.  A user might want to
 do this when there are duplicated locations.
 */
+DROP PROCEDURE IF EXISTS MergeLocations$$
 CREATE PROCEDURE MergeLocations(
   IN beforeUuid BINARY(16),
   IN afterUuid BINARY(16)

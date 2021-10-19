@@ -111,7 +111,7 @@ CREATE FUNCTION Constraint_exists(
    );
   END $$
 
-DROP PROCEDURE IF EXISTS add_constraint_if_missing;
+DROP PROCEDURE IF EXISTS add_constraint_if_missing$$
 CREATE PROCEDURE add_constraint_if_missing(
   IN tname VARCHAR(64),
   IN cname VARCHAR(64),

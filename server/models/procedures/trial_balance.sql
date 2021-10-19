@@ -56,6 +56,7 @@ CALL StageTrialBalanceTransaction()
 DESCRIPTION
 Copies the transaction into a staging table to be quickly operated on.
 */
+DROP PROCEDURE IF EXISTS StageTrialBalanceTransaction$$
 CREATE PROCEDURE StageTrialBalanceTransaction(
   IN record_uuid BINARY(16)
 )
@@ -92,6 +93,7 @@ the following table will be emitted.
 
 USAGE: CALL TrialBalanceErrors()
 */
+DROP PROCEDURE IF EXISTS TrialBalanceErrors$$
 CREATE PROCEDURE TrialBalanceErrors()
 BEGIN
   DECLARE title_account_id INT UNSIGNED DEFAULT NULL;
@@ -287,6 +289,7 @@ This procedure uses the same staging code as the Trial Balance to stage and then
 from the posting_journal table to the General Ledger table.
 
 */
+DROP PROCEDURE IF EXISTS PostToGeneralLedger$$
 CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
 

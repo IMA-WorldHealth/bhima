@@ -8,7 +8,7 @@ DELIMITER $$
   by creating one and performing a stock integration
   if necessary.
 */
-DROP PROCEDURE IF EXISTS ImportInventory;
+DROP PROCEDURE IF EXISTS ImportInventory$$
 CREATE PROCEDURE ImportInventory (
   IN enterpriseId SMALLINT(5),
   IN inventoryGroupName VARCHAR(100),

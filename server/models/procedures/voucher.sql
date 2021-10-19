@@ -37,6 +37,7 @@ This function posts a voucher that has already been written to the vouchers
 table.  The route will convert currencies from the given currency into the
 enterprise currency directly as it writes the values into the posting_journal.
 */
+DROP PROCEDURE IF EXISTS PostVoucher$$
 CREATE PROCEDURE PostVoucher(
   IN uuid BINARY(16)
 )
@@ -105,6 +106,7 @@ invoice.
 Once the procedure has finished, the corresponding cash or invoice record will
 have the "reversed" column set to "1".
 */
+DROP PROCEDURE IF EXISTS ReverseTransaction$$
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
@@ -204,6 +206,7 @@ operation that depends on reversal has failed
               be preferred - new financial entities would have to be added to both
               this function and to ReverseTransaction
 */
+DROP PROCEDURE IF EXISTS UndoEntityReversal$$
 CREATE PROCEDURE UndoEntityReversal(
   IN uuid BINARY(16)
 )
