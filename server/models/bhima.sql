@@ -171,10 +171,11 @@ INSERT INTO unit VALUES
   (295, 'Rumer report','TREE.RUMER_REPORT','The rumer reports', 282,'/reports/rumer_report'),
   (296, 'Agg. Stock Consumption Report','REPORT.AGGREGATED_STOCK_CONSUMPTION.TITLE','Aggregated consumption', 282, '/reports/aggregated_stock_consumption'),
   (297, 'Journal Log','TREE.JOURNAL_LOG','The Journal log module', 5,'/journal/log'),
-  (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
   (298, 'Cost Center Step-down','TREE.COST_CENTER_STEPDOWN','The fee center report with step-down algorithm', 286,'/reports/cost_center_step_down'),
   (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
-  (300, 'Lost Stock Reprot','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report');
+  (300, 'Lost Stock Report','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report'),
+  (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
+  (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
 
 
 -- Reserved system account type
@@ -250,7 +251,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('rumer_report', 'REPORT.RUMER.TITLE'),
   ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE'),
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
-  ('lost_stock_report', 'TREE.LOST_STOCK_REPORT');
+  ('lost_stock_report', 'TREE.LOST_STOCK_REPORT'),
+  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
