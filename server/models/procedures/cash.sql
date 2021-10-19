@@ -154,6 +154,7 @@ writing the transaction lines.  It also contains the algorithm for cycling
 through all the invoices, crediting each one the appropriate amount and writing
 the remaining balance to the gain or loss account.
 */
+DROP PROCEDURE IF EXISTS PostCash$$
 CREATE PROCEDURE PostCash(
   IN cashUuid binary(16)
 )
@@ -384,6 +385,7 @@ This procedure exists solely to transfer data between JS and SQL. Since JS is
 dynamically typed, but SQL is static, we have to define the order and types of
 each variable below.  It is called at the beginning of the posting process.
 */
+DROP PROCEDURE IF EXISTS StageCash$$
 CREATE PROCEDURE StageCash(
   IN amount DECIMAL(19,4) UNSIGNED,
   IN currency_id TINYINT(3),
@@ -424,6 +426,7 @@ dynamically typed, but SQL is static, we have to define the order and types of
 each variable below.  Like StageCash() it is called for each cash_item at the
 beginning of the posting process, after StageCash().
 */
+DROP PROCEDURE IF EXISTS StageCashItem$$
 CREATE PROCEDURE StageCashItem(
   IN uuid BINARY(16),
   IN cash_uuid BINARY(16),
@@ -455,6 +458,7 @@ This procedure creates the temporary tables for cash payments in case they do
 not exist.  It is used internally to avoid errors about tables not existing or
 strange JOINs against nonexistent tables.
 */
+DROP PROCEDURE IF EXISTS VerifyCashTemporaryTables$$
 CREATE PROCEDURE VerifyCashTemporaryTables()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_cash_records (
@@ -483,6 +487,7 @@ Gathers all invoices that the cash payment is attempting to pay and computes
 their current balances.  This ensures that all the cash payments will be able
 to correctly allocate the total payment to each invoice.
 */
+DROP PROCEDURE IF EXISTS CalculateCashInvoiceBalances$$
 CREATE PROCEDURE CalculateCashInvoiceBalances(
   IN cashUuid BINARY(16)
 )
@@ -571,6 +576,7 @@ attempting to pay, plus the min currency monetary unit.  Put another way, the
 difference between the payment amount and the total cost of all invoices should
 not be greater than the min monetary unit.
 */
+DROP PROCEDURE IF EXISTS WriteCashItems$$
 CREATE PROCEDURE WriteCashItems(
   IN cashUuid BINARY(16)
 )
@@ -664,6 +670,7 @@ DESCRIPTION
 This procedure simply copies the cash values out of the staging tables and
 writes them to the cash table.
 */
+DROP PROCEDURE IF EXISTS WriteCash$$
 CREATE PROCEDURE WriteCash(
   IN cashUuid BINARY(16)
 )

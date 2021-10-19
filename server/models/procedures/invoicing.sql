@@ -22,6 +22,7 @@ DELIMITER $$
 /*
   Prepare the record to be written to the `invoice` table.
 */
+DROP PROCEDURE IF EXISTS StageInvoice$$
 CREATE PROCEDURE StageInvoice(
   IN date DATETIME,
   IN cost DECIMAL(19, 4) UNSIGNED,
@@ -55,6 +56,7 @@ END $$
 /*
   Prepare record(s) to be written to the `invoice_item` table.
 */
+DROP PROCEDURE IF EXISTS StageInvoiceItem$$
 CREATE PROCEDURE StageInvoiceItem(
   IN uuid BINARY(16),
   IN inventory_uuid BINARY(16),
@@ -89,6 +91,7 @@ BEGIN
 END $$
 
 
+DROP PROCEDURE IF EXISTS StageInvoicingFee$$
 CREATE PROCEDURE StageInvoicingFee(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
@@ -98,6 +101,7 @@ BEGIN
   INSERT INTO stage_invoicing_fee (SELECT id, invoice_uuid);
 END $$
 
+DROP PROCEDURE IF EXISTS StageSubsidy$$
 CREATE PROCEDURE StageSubsidy(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
@@ -110,6 +114,7 @@ END $$
 -- create a temporary staging table for the subsidies, this is done via a helper
 -- method to ensure it has been created as sale writing time (subsidies are an
 -- optional entity that may or may not have been called for staging)
+DROP PROCEDURE IF EXISTS VerifySubsidyStageTable$$
 CREATE PROCEDURE VerifySubsidyStageTable()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_subsidy (
@@ -118,6 +123,7 @@ BEGIN
   );
 END $$
 
+DROP PROCEDURE IF EXISTS VerifyInvoicingFeeStageTable$$
 CREATE PROCEDURE VerifyInvoicingFeeStageTable()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_invoicing_fee (
@@ -143,6 +149,7 @@ END $$
   cost of the invoice.  In the posting journal, the invoice...
 */
 
+DROP PROCEDURE IF EXISTS WriteInvoice$$
 CREATE PROCEDURE WriteInvoice(
   IN uuid BINARY(16)
 )
@@ -233,6 +240,7 @@ END $$
   posting journal.  It also performs basic checks for data integrity - that
   every account is properly defined.
 */
+DROP PROCEDURE IF EXISTS PostInvoice$$
 CREATE PROCEDURE PostInvoice(
   IN uuid binary(16)
 )
@@ -296,7 +304,7 @@ BEGIN
 
 END $$
 
-
+DROP PROCEDURE IF EXISTS PostingSetupUtil$$
 CREATE PROCEDURE PostingSetupUtil(
   IN date DATETIME,
   IN enterprise_id SMALLINT(5),
@@ -345,6 +353,7 @@ BEGIN
 END $$
 
 -- detects MySQL Posting Journal Errors
+DROP PROCEDURE IF EXISTS PostingJournalErrorHandler$$
 CREATE PROCEDURE PostingJournalErrorHandler(
   enterprise INT,
   project INT,
@@ -393,6 +402,7 @@ END
 $$
 
 -- Credit For Cautions
+DROP PROCEDURE IF EXISTS CopyInvoiceToPostingJournal$$
 CREATE PROCEDURE CopyInvoiceToPostingJournal(
   iuuid BINARY(16),  -- the UUID of the patient invoice
   transId TEXT,
@@ -622,6 +632,7 @@ OR
  2. Halt once all cash payments have been assigned to the invoice. There may or
 may not be a remaining balance on the invoice.
 */
+DROP PROCEDURE IF EXISTS LinkPrepaymentsToInvoice$$
 CREATE PROCEDURE LinkPrepaymentsToInvoice(
   IN invoice_uuid BINARY(16),
   IN debtor_uuid BINARY(16),
@@ -717,6 +728,7 @@ BEGIN
   CALL PostVoucher(vUuid);
 END $$
 
+DROP PROCEDURE IF EXISTS VerifyPrepaymentTemporaryTables$$
 CREATE PROCEDURE VerifyPrepaymentTemporaryTables()
 BEGIN
   CREATE TEMPORARY TABLE IF NOT EXISTS stage_payment_records (
@@ -735,6 +747,7 @@ BEGIN
   );
 END $$
 
+DROP PROCEDURE IF EXISTS CalculatePrepaymentBalances$$
 CREATE PROCEDURE CalculatePrepaymentBalances(
   IN debtor_uuid BINARY(16)
 )
