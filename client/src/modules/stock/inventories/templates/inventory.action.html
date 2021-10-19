@@ -58,6 +58,15 @@
     </li>
 
     <li>
+      <a
+        data-method="inventory-purchase-prices"
+        target="_blank"
+        ng-href="/reports/purchase_prices?inventory_uuid={{row.entity.inventory_uuid}}&lang=en&renderer=pdf&reportId=60&saveReport=0">
+        <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.PURCHASE_PRICES.TITLE</span>
+      </a>
+    </li>
+
+    <li>
       <a data-method="lot-schedule" ng-click="grid.appScope.openLotScheduleModal(null, row.entity.inventory_uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-info-circle"></i> <span translate>LOTS.SHOW_LOT_SCHEDULE</span>
       </a>
