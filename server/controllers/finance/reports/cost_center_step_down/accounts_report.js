@@ -25,7 +25,7 @@ async function buildAccountsReport(params, session) {
   });
 
   // Account type 5 is for expense
-  const ACCOUNT_TYPE = 5;
+  const ACCOUNT_TYPE = +options.include_revenue ? [4, 5] : [5];
 
   const report = new ReportManager(TEMPLATE_ACCOUNTS, session, options);
 
@@ -46,30 +46,32 @@ async function buildAccountsReport(params, session) {
     SELECT
       a.number,
       a.label,
+      at.translation_key,
       z.label as cc_label,
       SUM(z.debit_equiv * IFNULL(GetExchangeRate(?, ?, ?), 1)) debit,
       SUM(z.credit_equiv * IFNULL(GetExchangeRate(?, ?, ?), 1)) credit,
       SUM((z.debit_equiv - z.credit_equiv) * IFNULL(GetExchangeRate(?, ?, ?), 1)) solde
     FROM account a 
+    JOIN account_type at ON at.id = a.type_id
     JOIN (
       SELECT cc.label, gl.debit_equiv , gl.credit_equiv , gl.principal_center_id AS ccId, gl.account_id 
       FROM general_ledger gl 
       JOIN account a ON a.id = gl.account_id 
       JOIN cost_center cc ON cc.id = gl.principal_center_id
-      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id = ?
+      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id IN (?)
         AND gl.principal_center_id = ?
       UNION ALL
       SELECT cc.label, gl.debit_equiv , gl.credit_equiv , gl.cost_center_id AS ccId, gl.account_id 
       FROM general_ledger gl 
       JOIN cost_center cc ON cc.id = gl.cost_center_id AND gl.principal_center_id IS NULL 
       JOIN account a ON a.id = gl.account_id 
-      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id = ?
+      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id IN (?)
         AND gl.cost_center_id = ?
     )z on z.account_id = a.id 
 `;
 
   const query = `
-    ${queryTemplate} GROUP BY z.ccId, a.id;
+    ${queryTemplate} GROUP BY z.ccId, a.id ORDER BY a.number;
   `;
 
   const queryTotals = `
