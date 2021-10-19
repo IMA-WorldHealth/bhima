@@ -260,3 +260,20 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
 VALUES
   (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '', 'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '', 'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/*
+ * @author: jmcameron
+ * @date: 2021-10-15
+ * @desc: Delete service_cost_center entries when referenced service or cost_center is deleted
+ * NOTE: Had to to use drop_foreign_key() since it will not delete a constraint if it does not exist.
+ *       Older databases might have used the old table name 'fee_center' instead of 'cost_center',
+ *       so to be safe, we delete both the old and new names before re-adding the modified constraint.
+ */
+
+CALL drop_foreign_key('service_cost_center', 'service_fee_center__service');   -- old constraint name
+CALL drop_foreign_key('service_cost_center', 'service_cost_center__service');
+CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__service', 'FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`) ON DELETE CASCADE');
+
+CALL drop_foreign_key('service_cost_center', 'service_fee_center__fee_center');   -- old constraint name
+CALL drop_foreign_key('service_cost_center', 'service_cost_center__cost_center');
+CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__cost_center', 'FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE');

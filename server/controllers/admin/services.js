@@ -35,10 +35,14 @@ function list(req, res, next) {
   if (req.query.full === '1') {
     sql = `
       SELECT s.name, s.enterprise_id, BUID(s.uuid) AS uuid, s.hidden,
-      e.name AS enterprise_name, e.abbr, p.id AS project_id, p.name AS project_name
+      e.name AS enterprise_name, e.abbr, p.id AS project_id, p.name AS project_name,
+      cc.id AS cost_center_id, cc.label AS cost_center_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN project AS p ON s.project_id = p.id`;
+      LEFT JOIN project AS p ON s.project_id = p.id
+      LEFT JOIN service_cost_center AS scc ON scc.service_uuid = s.uuid
+      LEFT JOIN cost_center AS cc ON cc.id = scc.cost_center_id
+      `;
   }
 
   const params = db.convert(req.query, ['uuid']);
@@ -83,6 +87,10 @@ function countServiceByProject(req, res, next) {
  */
 function create(req, res, next) {
   const record = req.body;
+  const costCenterId = record.cost_center_id;
+  delete record.cost_center_id;
+  delete record.cost_center_name;
+
   const sql = `INSERT INTO service SET ?`;
 
   // add contextual information
@@ -93,6 +101,12 @@ function create(req, res, next) {
   record.uuid = db.bid(uid);
 
   db.exec(sql, [record])
+    .then(() => {
+      if (costCenterId) {
+        return setServiceCostCenter(record.uuid, costCenterId);
+      }
+      return null;
+    })
     .then(() => {
       res.status(201).json({ uuid : uid });
     })
@@ -114,16 +128,25 @@ function create(req, res, next) {
 */
 function update(req, res, next) {
   const queryData = req.body;
+  delete queryData.uuid;
+  const serviceUuid = db.bid(req.params.uuid);
+
+  const costCenterId = queryData.cost_center_id;
+  delete queryData.cost_center_id;
+
   const sql = `UPDATE service SET ? WHERE uuid = ?;`;
 
-  delete queryData.uuid;
-
-  db.exec(sql, [queryData, db.bid(req.params.uuid)])
+  db.exec(sql, [queryData, serviceUuid])
     .then((result) => {
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with uuid ${req.params.uuid}.`);
       }
-
+      if (costCenterId) {
+        return setServiceCostCenter(serviceUuid, costCenterId);
+      }
+      return null;
+    })
+    .then(() => {
       return lookupService(req.params.uuid);
     })
     .then((service) => {
@@ -208,6 +231,27 @@ function lookupService(uid) {
   return db.one(sql, db.bid(uid), uid, 'service');
 }
 
+/**
+ * @method setServiceCostCenter
+ *
+ * @description
+ * Set the cost center for a service.
+ * Assumes both parameters exist!
+ *
+ * @param {String} service_uuid - the uuid of a service
+ * @param {number} cost_center_id - the id of the cost center
+ * @returns {Promise} - returns the result of the database query
+ */
+function setServiceCostCenter(serviceUuid, costCenterId) {
+  const delOld = 'DELETE FROM service_cost_center WHERE service_uuid = ?';
+  const addNew = 'INSERT INTO service_cost_center (service_uuid, cost_center_id) VALUES (?, ?)';
+
+  return db.transaction()
+    .addQuery(delOld, [serviceUuid]) // Always delete any old version
+    .addQuery(addNew, [serviceUuid, costCenterId])
+    .execute();
+}
+
 exports.list = list;
 exports.create = create;
 exports.update = update;
@@ -217,3 +261,4 @@ exports.countServiceByProject = countServiceByProject;
 exports.lookupService = lookupService;
 exports.lookupCostCenterByServiceUuid = lookupCostCenterByServiceUuid;
 exports.lookupCostCenter = lookupCostCenter;
+exports.setServiceCostCenter = setServiceCostCenter;

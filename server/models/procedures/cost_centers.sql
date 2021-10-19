@@ -15,6 +15,7 @@ returned.
 NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with an
 account, but when we do make guarantees, we will be able to modify this function to do it.
 */
+DROP FUNCTION IF EXISTS GetCostCenterByAccountId$$
 CREATE FUNCTION GetCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
@@ -34,6 +35,7 @@ returned.
 NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with an
 account, but when we do make guarantees, we will be able to modify this function to do it.
 */
+DROP FUNCTION IF EXISTS GetPrincipalCostCenterByAccountId$$
 CREATE FUNCTION GetPrincipalCostCenterByAccountId(account_id INT)
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
@@ -55,6 +57,7 @@ be returned.
 NOTE(@jniles) - Currently, BHIMA does not guarantee that only one cost center is associated with a
 service, but when we do make guarantees, we will be able to modify this function to do it.
 */
+DROP FUNCTION IF EXISTS GetCostCenterByServiceUuid$$
 CREATE FUNCTION GetCostCenterByServiceUuid(service_uuid BINARY(16))
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
@@ -72,6 +75,7 @@ END $$
 @description
 Returns the cost center id for the invoice using the service_uuid in the invoice table
 */
+DROP FUNCTION IF EXISTS GetCostCenterByInvoiceUuid$$
 CREATE FUNCTION GetCostCenterByInvoiceUuid(invoice_uuid BINARY(16))
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN

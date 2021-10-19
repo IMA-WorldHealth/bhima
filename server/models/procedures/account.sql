@@ -7,7 +7,7 @@
 */
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS ImportAccount;
+DROP PROCEDURE IF EXISTS ImportAccount$$
 CREATE PROCEDURE ImportAccount (
   IN enterpriseId SMALLINT(5),
   IN accountNumber INT(11),
