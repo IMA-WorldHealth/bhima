@@ -2253,8 +2253,8 @@ CREATE TABLE `service_cost_center` (
   UNIQUE KEY `service_cost_center_1` (`service_uuid`),
   KEY `cost_center_id` (`cost_center_id`),
   KEY `service_uuid` (`service_uuid`),
-  CONSTRAINT `service_cost_center__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`),
-  CONSTRAINT `service_cost_center__cost_center`  FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
+  CONSTRAINT `service_cost_center__service` FOREIGN KEY (`service_uuid`) REFERENCES `service` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `service_cost_center__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cost_center_allocation_basis`;

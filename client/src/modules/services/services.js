@@ -32,6 +32,11 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
         headerCellFilter : 'translate',
       },
       {
+        field : 'cost_center_name',
+        displayName : 'TABLE.COLUMNS.COST_CENTER',
+        headerCellFilter : 'translate',
+      },
+      {
         field : 'project_name',
         displayName : 'FORM.LABELS.PROJECT',
         headerCellFilter : 'translate',
