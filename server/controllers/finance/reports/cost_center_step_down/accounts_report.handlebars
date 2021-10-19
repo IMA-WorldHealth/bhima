@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  {{> head title="COST_CENTER.REPORT.COST_CENTER_BY_ACCOUNTS"}}
+  <body>
+  <div class="fluid-container">
+    {{> header}}
+
+    <!-- body -->
+    <div class="row">
+      <div class="col-xs-12">
+
+        <!-- page title  -->
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'COST_CENTER.REPORT.COST_CENTER_BY_ACCOUNTS'}}</strong><br>
+          <strong>{{ costCenterDetails.label }}</strong>
+        </h3>
+
+        <h4 class="text-center">
+          <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
+           -
+          <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
+        </h4>
+
+        <h5 class="text-center">
+          {{#if this.lastRateUsed}}
+            {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
+            {{currency 1 this.firstCurrency}} = {{currency this.lastRateUsed this.secondCurrency}}
+            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
+          {{/if}}
+        </h5>
+
+        {{!-- VIEW OF COST CENTER ALLOCATION --}}
+        <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
+          <thead>
+            <tr>
+              <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+              <th>{{translate 'FORM.LABELS.ACCOUNT'}}</th>
+              <th>{{translate 'FORM.LABELS.DEBIT'}}</th>
+              <th>{{translate 'FORM.LABELS.CREDIT'}}</th>
+              <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each data as | account |}}
+              <tr>
+                <td>{{ account.number }}</td>
+                <td>{{ account.label }}</td>
+                <td class="text-right">{{debcred account.debit ../currencyId}}</td>
+                <td class="text-right">{{debcred account.credit ../currencyId}}</td>
+                <td class="text-right">{{debcred account.solde ../currencyId}}</td>
+              </tr>
+            {{else}}
+              {{> emptyTable columns=5}}
+            {{/each}}
+          </tbody>
+          <tfoot>
+            {{#each totals as | total |}}
+              <tr>
+                <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
+                <th class="text-right">{{debcred total.debit ../currencyId}}</th>
+                <th class="text-right">{{debcred total.credit ../currencyId}}</th>
+                <th class="text-right">{{debcred total.solde ../currencyId}}</th>
+              </tr>
+            {{/each}}
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
