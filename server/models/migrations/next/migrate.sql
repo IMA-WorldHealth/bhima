@@ -250,3 +250,9 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
 VALUES
   (7, 'ALLOCATION_BASIS_NUM_PATIENTS', '', 'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '', 'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/*
+ * @author: mbayopanda
+ * @desc: add is_income column in the cost_center_aggregate table
+ */
+CALL add_column_if_missing('cost_center_aggregate', 'is_income', 'TINYINT(1) NOT NULL DEFAULT 0');
