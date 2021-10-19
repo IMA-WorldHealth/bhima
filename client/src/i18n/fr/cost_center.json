@@ -28,8 +28,10 @@
     "UPDATE_ALLOCATION_QUANTITIES": "Mettre à jour",
     "UPDATE_ALLOCATION_QUANTITIES_TOOLTIP": "Mettre à jour les quantités d'allocation des centres de coûts calculées par le système",
     "SET_ALLOCATION_QUANTITIES_TOOLTIP": "Definir les quantités d'allocation pour un centre de coût",
-    "INCLUDE_REVENUE_CENTERS" : "Ajouter les recettes?",
-    "INCLUDE_REVENUE_CENTERS_HELP_TEXT" : "Cette option inclurera les recettes avec les couts pour chaque centre."
+    "INCLUDE_REVENUE_CENTERS" : "Ajouter les recettes ?",
+    "INCLUDE_REVENUE_CENTERS_HELP_TEXT" : "Cette option inclurera les recettes avec les couts pour chaque centre.",
+    "USE_REVENUE_CENTERS" : "Afficher le rapport des recettes ?",
+    "USE_REVENUE_CENTERS_HELP_TEXT" : "Cette option affichera la partie des recettes pour chaque centre."
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
   "ALLOCATION_METHOD_FLAT": "Uniform",
