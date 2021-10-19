@@ -32,6 +32,8 @@
     "INCLUDE_REVENUE_CENTERS_HELP_TEXT" : "Cette option inclurera les recettes avec les couts pour chaque centre.",
     "USE_REVENUE_CENTERS" : "Afficher le rapport des recettes ?",
     "USE_REVENUE_CENTERS_HELP_TEXT" : "Cette option affichera la partie des recettes pour chaque centre.",
+    "INCLUDE_REVENUE_ACCOUNTS" : "Inclure les comptes de recette ?",
+    "INCLUDE_REVENUE_ACCOUNTS_HELP_TEXT" : "Cela inclura également la liste des comptes de revenus à des comptes de dépenses",
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Centre de coût par comptes",
       "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout par comptes"

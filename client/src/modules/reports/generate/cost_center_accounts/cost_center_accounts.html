@@ -33,7 +33,14 @@
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
 
-            <!-- currency selection -->
+            <bh-yes-no-radios
+              label="COST_CENTER.INCLUDE_REVENUE_ACCOUNTS"
+              value="ReportConfigCtrl.reportDetails.include_revenue"
+              name="include_revenue"
+              help-text="COST_CENTER.INCLUDE_REVENUE_ACCOUNTS_HELP_TEXT"
+              on-change-callback="ReportConfigCtrl.onToggleRevenueCenter(value)">
+            </bh-yes-no-radios>
+
             <bh-currency-select
               currency-id="ReportConfigCtrl.reportDetails.currency_id"
               on-change="ReportConfigCtrl.onSelectCurrency(currency)">
