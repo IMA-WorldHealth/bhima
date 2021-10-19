@@ -35,6 +35,7 @@
             <tr>
               <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
               <th>{{translate 'FORM.LABELS.ACCOUNT'}}</th>
+              <th>{{translate 'FORM.LABELS.ACCOUNT_TYPE'}}</th>
               <th>{{translate 'FORM.LABELS.DEBIT'}}</th>
               <th>{{translate 'FORM.LABELS.CREDIT'}}</th>
               <th>{{translate 'COST_CENTER.DIRECT_COST'}}</th>
@@ -45,18 +46,19 @@
               <tr>
                 <td>{{ account.number }}</td>
                 <td>{{ account.label }}</td>
+                <td>{{translate account.translation_key }}</td>
                 <td class="text-right">{{debcred account.debit ../currencyId}}</td>
                 <td class="text-right">{{debcred account.credit ../currencyId}}</td>
                 <td class="text-right">{{debcred account.solde ../currencyId}}</td>
               </tr>
             {{else}}
-              {{> emptyTable columns=5}}
+              {{> emptyTable columns=6}}
             {{/each}}
           </tbody>
           <tfoot>
             {{#each totals as | total |}}
               <tr>
-                <th colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
+                <th colspan="3">{{translate 'FORM.LABELS.TOTAL'}}</th>
                 <th class="text-right">{{debcred total.debit ../currencyId}}</th>
                 <th class="text-right">{{debcred total.credit ../currencyId}}</th>
                 <th class="text-right">{{debcred total.solde ../currencyId}}</th>
