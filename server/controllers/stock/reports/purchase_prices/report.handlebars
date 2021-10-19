@@ -16,7 +16,7 @@
         <h4 class="text-center">
           <strong>{{ inventory.code }} - {{ inventory.text }}</strong>
           <br/>
-          <span>{{translate "FORM.LABELS.SALE_PRICE"}}: <u>{{currency inventory.price metadata.enterprise.currency_id 4}}</u></span>
+          <span>{{translate "FORM.LABELS.SALE_PRICE"}}: <u>{{currency inventory.price metadata.enterprise.currency_id 2}}</u></span>
         </h4>
       </div>
     </div>
@@ -46,7 +46,7 @@
                 <td>{{ movement.lot_label }} </td>
                 <td class="text-right">{{ movement.quantity}} </td>
                 <td class="text-right">{{ currency movement.unit_cost ../metadata.enterprise.currency_id 4 }} </td>
-                <td class="text-right">{{ currency movement.running_total ../metadata.enterprise.currency_id 4 }} </td>
+                <td class="text-right">{{ currency movement.running_total ../metadata.enterprise.currency_id 2 }} </td>
               </tr>
             {{else}}
               <tr>
@@ -59,8 +59,8 @@
               <tr>
                 <th colspan=5>{{totals.num_entries}} {{translate "FORM.INFO.ROWS"}}</th>
                 <th class="text-right">{{totals.quantity }}</th>
-                <th class="text-right">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_unit_cost metadata.enterprise.currency_id 4}}</th>
-                <th class="text-right">{{currency totals.cost metadata.enterprise.currency_id 4}}</th>
+                <th class="text-right">{{translate "FORM.LABELS.AVERAGE"}} {{currency totals.avg_unit_cost metadata.enterprise.currency_id 2}}</th>
+                <th class="text-right">{{currency totals.cost metadata.enterprise.currency_id 2}}</th>
                 <th></th>
               </tr>
             </tfoot>
@@ -77,11 +77,11 @@
           <tbody>
             <tr>
               <th>{{translate 'FORM.LABELS.MAX_PRICE'}}</th>
-              <td class="text-right">{{currency totals.max_price metadata.enterprise.currency_id 4}}</td>
+              <td class="text-right">{{currency totals.max_price metadata.enterprise.currency_id 2}}</td>
             </tr>
             <tr>
               <th>{{translate 'FORM.LABELS.MIN_PRICE'}}</th>
-              <td class="text-right">{{currency totals.min_price metadata.enterprise.currency_id 4}}</td>
+              <td class="text-right">{{currency totals.min_price metadata.enterprise.currency_id 2}}</td>
             </tr>
           </tbody>
         </table>

@@ -30,7 +30,7 @@
         ui-sref="stockInventories({ filters : [
           { key : 'inventory_uuid', value : row.entity.uuid, displayValue : row.entity.label, cacheable: false },
           { key : 'limit', value : 1000, cacheable: false }
-        ]})" href>
+        ]})">
         <i class="fa fa-th-list"></i> <span translate>INVENTORY.VIEW_ARTICLES_IN_STOCK</span>
       </a>
     </li>
@@ -41,8 +41,19 @@
         ui-sref="stockMovements({ filters : [
           { key : 'inventory_uuid', value : row.entity.uuid, displayValue : row.entity.label, cacheable: false },
           { key : 'limit', value : 1000, cacheable: false }
-        ]})" href>
+        ]})">
         <i class="fa fa-arrows-h"></i> <span translate>PATIENT_REGISTRY.STOCK_MOVEMENTS</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <li>
+      <a
+        data-method="inventory-purchase-prices"
+        target="_blank"
+        ng-href="/reports/purchase_prices?inventory_uuid={{row.entity.uuid}}&lang=en&renderer=pdf&reportId=60&saveReport=0">
+        <i class="fa fa-file-pdf-o"></i> <span translate>REPORT.PURCHASE_PRICES.TITLE</span>
       </a>
     </li>
 
