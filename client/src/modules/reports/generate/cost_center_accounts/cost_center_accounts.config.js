@@ -14,7 +14,7 @@ CostCenterAccountsReportConfigController.$inject = [
 function CostCenterAccountsReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('CostCenterAccountsReport');
-  const reportUrl = 'reports/finance/cost_center_step_down';
+  const reportUrl = 'reports/finance/cost_center_accounts';
 
   vm.previewGenerated = false;
   vm.reportDetails = { include_revenue : false };
@@ -33,6 +33,14 @@ function CostCenterAccountsReportConfigController($sce, Notify, SavedReports, Ap
 
   vm.onToggleRevenueCenter = function onToggleRevenueCenter(bool) {
     vm.reportDetails.include_revenue = bool;
+  };
+
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currency_id = currency.id;
+  };
+
+  vm.onCostCenterSelect = cc => {
+    vm.reportDetails.cost_center_id = cc.id;
   };
 
   vm.clearPreview = function clearPreview() {

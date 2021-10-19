@@ -1,17 +1,19 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const ccAllocations = require('../../cost_center_allocation_registry');
+const costCenterValueByAccounts = require('./accounts_report');
 
 const TEMPLATE = './server/controllers/finance/reports/cost_center_step_down/report.handlebars';
 
 // expose to the API
 exports.report = document;
+exports.costCenterValueByAccountsReport = costCenterValueByAccounts.report;
 
 /**
  * @function reporting
  *
  * @description
- * Renders the fee center report
+ * Renders the cost center allocation report
  *
  * @param {*} options the report options
  * @param {*} session the session
