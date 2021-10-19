@@ -149,7 +149,7 @@ CREATE   PROCEDURE `updateIndices`( IN _payroll_configuration_id INT)
 BEGIN
 
 	DECLARE _employee_uuid BINARY(16);
-	DECLARE _employee_grade_indice, _sumTotalCode,  _function_indice DECIMAL(19, 4);
+	DECLARE _employee_grade_indice, _sumTotalCode,  _function_indice, _min_monentary_unit DECIMAL(19, 4);
 
 	DECLARE done BOOLEAN;
 	DECLARE curs1 CURSOR FOR
@@ -168,6 +168,8 @@ BEGIN
 
 
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+	SELECT c.min_monentary_unit INTO _min_monentary_unit FROM enterprise AS e JOIN currency AS c ON c.id = e.currency_id LIMIT 1;
 
 	OPEN curs1;
 		read_loop: LOOP
@@ -241,8 +243,10 @@ BEGIN
 
 			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_pay_rate', @envelopPaie/_sumTotalCode);
 			-- sal de base
-			SET @sal_de_base = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_total_code')*
-				getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_pay_rate');
+			-- Rounding from the minimum value of the monetary unit
+            SET @sal_de_base = ROUND((getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_total_code')*
+                getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_pay_rate')) / _min_monentary_unit) * _min_monentary_unit;
+
 
 			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_gross_salary', IFNULL(@sal_de_base, 0));
 
