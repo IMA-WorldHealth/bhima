@@ -35,6 +35,7 @@
     "COST_CENTER_MANAGEMENT": "Cost Center Management",
     "COST_CENTER_MGMT" : "Cost Center Management",
     "COST_CENTER_REPORT": "Cost Center Report",
+    "COST_CENTER_ACCOUNTS_REPORT": "Cost centers by accounts",
     "COST_CENTER_ALLOCATION_KEYS" : "Allocation Keys",
     "COST_CENTER_ALLOCATION_REGISTRY" : "Allocation Registry",
     "CREDITOR_GROUP" : "Creditor Group Management",
