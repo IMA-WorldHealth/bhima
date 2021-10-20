@@ -134,20 +134,6 @@ function JournalEditTransactionController(
     enableCellEdit  : !vm.readOnly,
     allowCellFocus  : !vm.readOnly,
     visible         : true,
-  }, {
-    field             : 'principal_center_id',
-    displayName       : 'FORM.LABELS.PRINCIPAL_COST_CENTER',
-    headerCellFilter  : 'translate',
-    cellTemplate : `
-      <div class="ui-grid-cell-contents">{{grid.appScope.costCenterMap[row.entity.principal_center_id]}}</div>
-    `,
-    editableCellTemplate : 'ui-grid/dropdownEditor',
-    editDropdownOptionsFunction : getCostCentersDropdown,
-    editDropdownValueLabel : 'label',
-    enableCellEdit  : !vm.readOnly,
-    allowCellFocus  : !vm.readOnly,
-    cellEditableCondition : shouldEditCostCenters,
-    visible           : true,
   }];
 
   vm.gridOptions = {
@@ -452,7 +438,6 @@ function JournalEditTransactionController(
       // prevent confusion and accidentally associated cost centers with non-income/expense accounts
       if (colDef.field === 'account_number') {
         delete rowEntity.cost_center_id;
-        delete rowEntity.principal_center_id;
       }
     }
   }

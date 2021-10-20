@@ -23,7 +23,7 @@ function JournalSearchModalController(
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
     'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
     'hrReference', 'currency_id', 'showOnlyNullCostCenter', 'cost_center_id',
-    'principal_center_id', 'account_type_id',
+    'account_type_id',
   ];
 
   const changes = new Store({ identifier : 'key' });
@@ -130,11 +130,6 @@ function JournalSearchModalController(
   vm.onCostCenterSelect = cc => {
     vm.searchQueries.cost_center_id = cc.id;
     displayValues.cost_center_id = cc.label;
-  };
-
-  vm.onPrincipalCenterSelect = cc => {
-    vm.searchQueries.principal_center_id = cc.id;
-    displayValues.principal_center_id = cc.label;
   };
 
   // default filter limit - directly write to changes list

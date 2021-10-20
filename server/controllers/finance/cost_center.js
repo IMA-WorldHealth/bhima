@@ -282,8 +282,8 @@ function del(req, res, next) {
  * @description
  * This function returns the list of accounts (except title accounts)
  * with their corresponding cost center, the cost_center_id parameter
- * corresponds to the cost center reference, the principal_centre_id
- * parameter is entered if and only if the cost center is a main center
+ * corresponds to the cost center reference parameter is entered if
+ * and only if the cost center is a main center
  *
  *If, during the configuration of the account references, a security account has been configured,
  * all the accounts which have the number of this account as index will be considered as belonging to this cost center.
@@ -295,7 +295,7 @@ function getAllCostCenterAccounts() {
   const accountTitle = 6;
 
   const sql = `
-    SELECT aa.account_id, cc.id AS cost_center_id, IF(cc.is_principal, rfc.cost_center_id, NULL) AS principal_center_id
+    SELECT aa.account_id, cc.id AS cost_center_id
     FROM cost_center AS cc
     JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
     JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
@@ -319,7 +319,7 @@ function getAllCostCenterAccounts() {
  * This function examines in the object in parameter, the parameter
  * account_id and checks if this account corresponds to which cost
  * center and returns the same object with two new
- * parameters cost_center_id and principal_center_id
+ * parameters cost_center_id
  *
  * @param {String} accountsCostCenter - Is the correspondence of accounts with cost centers
  * @param {String} rubrics - The headings is a parameter which can be employee profits,
@@ -333,14 +333,12 @@ function assignCostCenterParams(accountsCostCenter, rubrics, key) {
     rubrics.forEach(rubric => {
       if (rubric[key] === refCostCenter.account_id) {
         rubric.cost_center_id = refCostCenter.cost_center_id;
-        rubric.principal_center_id = refCostCenter.principal_center_id;
       }
     });
   });
 
   return rubrics;
 }
-
 
 // PUT /cost_center/step_order/multi
 function setAllocationStepOrder(req, res, next) {

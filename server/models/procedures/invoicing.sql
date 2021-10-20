@@ -566,12 +566,12 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id, principal_center_id
+    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id
   )
    SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     CONCAT(dm.text,': ', inv.text) as txt, ig.sales_account, ii.debit, ii.credit, ii.debit, ii.credit,
-    currencyId, 11, i.user_id, IFNULL(GetCostCenterByAccountId(ig.sales_account), serviceCostCenterId), GetPrincipalCostCenterByAccountId(ig.sales_account)
+    currencyId, 11, i.user_id, IFNULL(GetCostCenterByAccountId(ig.sales_account), serviceCostCenterId)
   FROM invoice AS i JOIN invoice_item AS ii JOIN inventory as inv JOIN inventory_group AS ig JOIN document_map as dm ON
     i.uuid = ii.invoice_uuid AND
     ii.inventory_uuid = inv.uuid AND
@@ -583,11 +583,11 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id, principal_center_id
+    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 11,
-    i.user_id,  IFNULL(GetCostCenterByAccountId(su.account_id), serviceCostCenterId), GetPrincipalCostCenterByAccountId(su.account_id)
+    i.user_id,  IFNULL(GetCostCenterByAccountId(su.account_id), serviceCostCenterId)
   FROM invoice AS i JOIN invoice_subsidy AS isu JOIN subsidy AS su ON
     i.uuid = isu.invoice_uuid AND
     isu.subsidy_id = su.id
@@ -597,11 +597,11 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id, principal_center_id
+    credit_equiv, currency_id, transaction_type_id, user_id, cost_center_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,
-    i.user_id, IFNULL(GetCostCenterByAccountId(b.account_id), serviceCostCenterId), GetPrincipalCostCenterByAccountId(b.account_id)
+    i.user_id, IFNULL(GetCostCenterByAccountId(b.account_id), serviceCostCenterId)
   FROM invoice AS i JOIN invoice_invoicing_fee AS ib JOIN invoicing_fee AS b ON
     i.uuid = ib.invoice_uuid AND
     ib.invoicing_fee_id = b.id
