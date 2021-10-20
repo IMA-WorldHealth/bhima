@@ -330,6 +330,7 @@
             "BALANCE_SHEET": "Balance Sheet",
             "BANK_ACCOUNT": "Bank Account",
             "BANK": "Bank",
+            "BASE_INDEX_GROWTH_RATE": "Base index growth rate",
             "BASIC_SALARY": "Basic Salary",
             "BEGINNING_VIEW_BALANCE" : "Beginning View Balance",
             "BILLING_DATE": "Billing Date",

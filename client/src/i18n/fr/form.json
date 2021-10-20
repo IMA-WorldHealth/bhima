@@ -333,6 +333,7 @@
             "BALANCE_SHEET": "Bilan",
             "BANK_ACCOUNT": "Compte Bancaire",
             "BANK": "Banque",
+            "BASE_INDEX_GROWTH_RATE": "Taux d'accroissement l'indice de base",
             "BASIC_SALARY": "Salaire de base",
             "BEGINNING_VIEW_BALANCE" : "Solde Début du Grid",
             "BILLING_DATE": "Date Facturation",
