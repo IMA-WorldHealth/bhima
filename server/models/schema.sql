@@ -589,6 +589,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
+  `base_index_growth_rate` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

@@ -283,3 +283,10 @@ CALL add_constraint_if_missing('service_cost_center', 'service_cost_center__cost
  * @desc: add is_income column in the cost_center_aggregate table
  */
 CALL add_column_if_missing('cost_center_aggregate', 'is_income', 'TINYINT(1) NOT NULL DEFAULT 0');
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-20
+ * @desc: base_index_growth_rate column in the enterprise_setting table
+ */
+CALL add_column_if_missing('enterprise_setting', 'base_index_growth_rate', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 0');

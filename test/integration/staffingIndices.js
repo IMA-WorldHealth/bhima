@@ -64,7 +64,7 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
-        expect(res.body).to.have.length(5);
+        expect(res.body).to.have.length(4);
       })
       .catch(helpers.handler);
   });
