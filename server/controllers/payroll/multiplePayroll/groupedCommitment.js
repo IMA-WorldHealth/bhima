@@ -1,9 +1,9 @@
 /**
- * @method commitment
+ * @method groupedCommitment
  *
- * This method allows you to browse the list of employees as well as the different Rubrics
- * associated with its employees to return transactions to executes in order to pass
- * the accounting transactions for the wage commitments.
+ * This method makes it possible to edit the transactions relating to the payroll of the employees
+ * while grouping the expense accounts by Cost Center,
+ * with this method the system will generate only three transactions for the whole institution.
  *
  * @requires lib/util
  * @requires lib/db
@@ -21,11 +21,10 @@ const WITHHOLDING_TYPE_ID = 16;
 const CHARGES_TYPE_ID = 17;
 const DECIMAL_PRECISION = 2;
 
-function commitments(employees, rubrics, rubricsConfig, configuration,
-  projectId, userId, exchangeRates, currencyId, accountsCostCenter) {
+function groupedCommitments(employees, rubrics, rubricsConfig, configuration,
+  projectId, userId, exchangeRates, currencyId, accountsCostCenter, costBreakDown, SalaryByCostCenter) {
 
   const accountPayroll = configuration[0].account_id;
-  let costCenterPayroll = null;
 
   const periodPayroll = moment(configuration[0].dateTo).format('MM-YYYY');
   const datePeriodTo = moment(configuration[0].dateTo).format('YYYY-MM-DD');
@@ -56,7 +55,6 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
   let voucherChargeRemuneration = {};
   let voucherWithholding = {};
   let totalCommitments = 0;
-  let totalBasicSalaries = 0;
   let totalChargesRemuneration = 0;
   let totalWithholdings = 0;
 
@@ -93,14 +91,6 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
     item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0),
   );
 
-  // Here we assign for the elements that will constitute the transaction
-  // the identifiers of the main and auxiliary centers
-  accountsCostCenter.forEach(refCostCenter => {
-    if (accountPayroll === refCostCenter.account_id) {
-      costCenterPayroll = refCostCenter.cost_center_id;
-    }
-  });
-
   // Assign Cost Center Params
   rubricsBenefits = CostCenter.assignCostCenterParams(accountsCostCenter, rubricsBenefits, 'expense_account_id');
 
@@ -134,7 +124,6 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
   } = dataCommitment;
 
   totalCommitments = util.roundDecimal(dataCommitment.totalCommitments, DECIMAL_PRECISION);
-  totalBasicSalaries = util.roundDecimal(dataCommitment.totalBasicSalaries, DECIMAL_PRECISION);
 
   const voucherCommitment = {
     uuid : voucherCommitmentUuid,
@@ -147,16 +136,18 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
     amount : totalCommitments,
   };
 
-  employeesBenefitsItem.push([
-    db.bid(util.uuid()),
-    accountPayroll,
-    totalBasicSalaries,
-    0,
-    voucherCommitmentUuid,
-    null,
-    voucherCommitment.description,
-    costCenterPayroll,
-  ]);
+  SalaryByCostCenter.forEach(item => {
+    employeesBenefitsItem.push([
+      db.bid(util.uuid()),
+      accountPayroll,
+      util.roundDecimal(item.salary_service, DECIMAL_PRECISION),
+      0,
+      voucherCommitmentUuid,
+      null,
+      voucherCommitment.description,
+      item.cost_center_id,
+    ]);
+  });
 
   if (rubricsBenefits.length) {
     rubricsBenefits.forEach(benefits => {
@@ -195,16 +186,23 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
         voucherChargeRemunerationUuid,
         null,
         null,
-      ], [
-        db.bid(util.uuid()),
-        chargeRemuneration.expense_account_id,
-        chargeRemuneration.totals,
-        0,
-        voucherChargeRemunerationUuid,
-        null,
-        chargeRemuneration.cost_center_id,
       ]);
     });
+
+    costBreakDown.forEach(item => {
+      if (item.value_cost_center_id) {
+        enterpriseChargeRemunerations.push([
+          db.bid(util.uuid()),
+          item.account_expense_id,
+          item.value_cost_center_id,
+          0,
+          voucherChargeRemunerationUuid,
+          null,
+          item.cost_center_id,
+        ]);
+      }
+    });
+
   }
 
   if (rubricsWithholdings.length) {
@@ -282,4 +280,4 @@ function commitments(employees, rubrics, rubricsConfig, configuration,
   return transactions;
 }
 
-exports.commitments = commitments;
+exports.groupedCommitments = groupedCommitments;

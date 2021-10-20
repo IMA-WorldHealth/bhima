@@ -1,0 +1,71 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.PAYROLL_SETTINGS</li>
+    </ol>
+  </div>
+</div>
+<div class="flex-content">
+  <div class="container-fluid">
+    <form name="PayrollSettingsForm" bh-submit="PayrollSettingsCtrl.submit(PayrollSettingsForm)"
+      ng-model-options="{ updateOn: 'blur' }" novalidate>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-cogs"></i> <span translate>TREE.PAYROLL_SETTINGS</span>
+        </div>
+        <div class="panel-body">
+          <!-- Posting Payroll Cost Center Mode -->
+          <div id="posting_payroll_cost_center_mode" class="form-group"
+            ng-class="{'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.posting_payroll_cost_center_mode.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.POSTING_PAYROLL_COST_CENTER</label>
+            <div ng-repeat="mode in PayrollSettingsCtrl.postingPayrollCostCenterMode" class="form-indent">
+              <label class="radio-inline">
+                <input type="radio" name="posting_payroll_cost_center_mode" id="{{mode.name}}" ng-value="mode.name" ng-model="PayrollSettingsCtrl.enterprise.settings.posting_payroll_cost_center_mode" required>
+                <span class="text-bold" translate>{{ mode.label }}</span>
+              </label>
+              <span class="help-block" translate>
+                {{mode.comment}}
+              </span>
+            </div>
+            <div class="help-block" ng-messages="PayrollSettingsForm.posting_payroll_cost_center_mode.$error"posting_types
+              ng-show="PayrollSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.base_index_growth_rate.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.BASE_INDEX_GROWTH_RATE
+            </label>
+            <div class="input-group">
+              <input class="form-control" value="0" min="0" type="number" name="base_index_growth_rate" ng-model="PayrollSettingsCtrl.enterprise.settings.base_index_growth_rate" required>
+              <span class="input-group-addon"> % </span>
+            </div>
+            <span class="help-block" translate>
+              SETTINGS.BASE_INDEX_GROWTH_RATE_HELP_TEXT
+            </span>                
+            <div class="help-block" ng-messages="PayrollSettingsForm.base_index_growth_rate.$error" ng-show="PayrollSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <bh-yes-no-radios
+            label="PAYROLL_SETTINGS.ENABLE_INDEX_PAYMENT_SYSTEM"
+            value="PayrollSettingsCtrl.enterprise.settings.enable_index_payment_system"
+            name="enable_index_payment_system"
+            on-change-callback="PayrollSettingsCtrl.enableIndexPaymentSetting(value)">
+          </bh-yes-no-radios>
+
+        </div>
+
+        <div class="panel-footer" id="submission">
+          <bh-loading-button loading-state="PayrollSettingsForm.$loading">
+            <span translate>FORM.BUTTONS.UPDATE</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

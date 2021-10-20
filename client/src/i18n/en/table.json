@@ -172,7 +172,7 @@
             "PATIENT_NAME": "Patient Name",
             "PATIENT_ID": "ID Patient",
             "PAYSLIP": "Payslip",
-            "PAYROLL_BULLETINS": "Payroll Bulletins",
+            "PAYROLL_BULLETINS": "Payroll Payslips",
             "PAYMENT_ID" : "Payment ID",
             "PAYMENT_INVOICE": "payment made against this invoice",
             "PERCENT": "Percentage",
