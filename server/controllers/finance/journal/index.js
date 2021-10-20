@@ -187,7 +187,6 @@ function buildTransactionQuery(options, posted) {
       pro.name AS project_name, tp.text AS transaction_type_text,
       a.number AS account_number, a.type_id AS account_type_id, a.label AS account_label,
       p.trans_id_reference_number, p.cost_center_id, cc.label as costCenterLabel,
-      p.principal_center_id, cp.label as principalCenterLabel,
       u.display_name ${includeExchangeRate}
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
@@ -196,7 +195,6 @@ function buildTransactionQuery(options, posted) {
       JOIN user u ON u.id = p.user_id
       JOIN currency c ON c.id = p.currency_id
       LEFT JOIN cost_center cc ON cc.id = p.cost_center_id
-      LEFT JOIN cost_center cp ON cp.id = p.principal_center_id
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
       LEFT JOIN document_map dm1 ON dm1.uuid = p.record_uuid
       LEFT JOIN document_map dm2 ON dm2.uuid = p.reference_uuid
@@ -223,12 +221,6 @@ function buildTransactionQuery(options, posted) {
     filters.custom('cost_center_id', 'p.cost_center_id IS NULL', 'p');
   }
 
-  if (options.principal_center_id > -1) {
-    filters.equals('principal_center_id');
-  } else {
-    filters.custom('principal_center_id', 'p.principal_center_id IS NULL', 'p');
-  }
-
   filters.equals('comment');
   filters.equals('hrEntity', 'text', 'em');
   filters.equals('hrRecord', 'text', 'dm1');
@@ -238,7 +230,7 @@ function buildTransactionQuery(options, posted) {
   filters.custom('currency_id', 'c.id=?');
 
   // null cost center for only expense accounts
-  const nullCC = 'p.cost_center_id IS NULL AND p.principal_center_id IS NULL AND (a.type_id = 5)';
+  const nullCC = 'p.cost_center_id IS NULL AND (a.type_id = 5)';
   filters.custom('showOnlyNullCostCenter', nullCC, 'p');
 
   filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);

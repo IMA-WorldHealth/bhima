@@ -8,82 +8,67 @@ describe('payroll/multiplePayroll/datelogic.js', () => {
     {
       account_id : 215,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 220,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 242,
       cost_center_id : 1,
-      principal_center_id : 1,
     },
     {
       account_id : 243,
       cost_center_id : 6,
-      principal_center_id : null,
     },
     {
       account_id : 246,
       cost_center_id : 1,
-      principal_center_id : 1,
     },
     {
       account_id : 249,
       cost_center_id : 1,
-      principal_center_id : 1,
     },
     {
       account_id : 256,
       cost_center_id : 5,
-      principal_center_id : null,
     },
     {
       account_id : 258,
       cost_center_id : 3,
-      principal_center_id : 3,
     },
     {
       account_id : 343,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 345,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 347,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 347,
       cost_center_id : 1,
-      principal_center_id : 1,
     },
     {
       account_id : 350,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 353,
       cost_center_id : 4,
-      principal_center_id : null,
     },
     {
       account_id : 354,
       cost_center_id : 4,
-      principal_center_id : null,
+      rincipal_center_id : null,
     },
     {
       account_id : 355,
       cost_center_id : 4,
-      principal_center_id : null,
     },
   ];
 
@@ -180,7 +165,6 @@ describe('payroll/multiplePayroll/datelogic.js', () => {
   it('#assignCostCenterParams() Check if the account has been associated with a cost center', () => {
     const rubricsAssigned = CostCenter.assignCostCenterParams(accountsCostCenter, rubrics, 'expense_account_id');
     expect(rubricsAssigned[1].cost_center_id).to.equal(4);
-    expect(rubricsAssigned[1].principal_center_id).to.equal(null);
     expect(rubricsAssigned[2].cost_center_id).to.equal(4);
   });
 });

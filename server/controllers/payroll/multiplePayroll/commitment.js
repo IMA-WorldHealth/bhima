@@ -26,7 +26,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
 
   const accountPayroll = account[0].account_id;
   let costCenterPayroll = null;
-  let principalCenterId = null;
 
   const periodPayroll = moment(account[0].dateTo).format('MM-YYYY');
   const datePeriodTo = moment(account[0].dateTo).format('YYYY-MM-DD');
@@ -99,7 +98,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
   accountsCostCenter.forEach(refCostCenter => {
     if (accountPayroll === refCostCenter.account_id) {
       costCenterPayroll = refCostCenter.cost_center_id;
-      principalCenterId = refCostCenter.principal_center_id;
     }
   });
 
@@ -158,7 +156,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
     null,
     voucherCommitment.description,
     costCenterPayroll,
-    principalCenterId,
   ]);
 
   if (rubricsBenefits.length) {
@@ -172,7 +169,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
         null,
         voucherCommitment.description,
         benefits.cost_center_id,
-        benefits.principal_center_id,
       ]);
     });
   }
@@ -199,7 +195,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
         voucherChargeRemunerationUuid,
         null,
         null,
-        null,
       ], [
         db.bid(util.uuid()),
         chargeRemuneration.expense_account_id,
@@ -208,7 +203,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
         voucherChargeRemunerationUuid,
         null,
         chargeRemuneration.cost_center_id,
-        chargeRemuneration.principal_center_id,
       ]);
     });
   }
@@ -235,7 +229,6 @@ function commitments(employees, rubrics, rubricsConfig, account,
         null,
         voucherWithholding.description,
         withholding.cost_center_id,
-        withholding.principal_center_id,
       ]);
     });
   }
@@ -248,7 +241,7 @@ function commitments(employees, rubrics, rubricsConfig, account,
     query : `INSERT INTO voucher_item
       (
         uuid, account_id, debit, credit, voucher_uuid, entity_uuid, description, 
-        cost_center_id, principal_center_id
+        cost_center_id
       ) VALUES ?`,
     params : [employeesBenefitsItem],
   }, {
@@ -262,7 +255,7 @@ function commitments(employees, rubrics, rubricsConfig, account,
       params : [voucherChargeRemuneration],
     }, {
       query : `INSERT INTO voucher_item
-        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, cost_center_id, principal_center_id) VALUES ?`,
+        (uuid, account_id, debit, credit, voucher_uuid, entity_uuid, cost_center_id) VALUES ?`,
       params : [enterpriseChargeRemunerations],
     }, {
       query : 'CALL PostVoucher(?);',
@@ -275,10 +268,9 @@ function commitments(employees, rubrics, rubricsConfig, account,
       query : 'INSERT INTO voucher SET ?',
       params : [voucherWithholding],
     }, {
-      query : `INSERT INTO voucher_item
-        (
+      query : `INSERT INTO voucher_item (
           uuid, account_id, debit, credit, voucher_uuid, entity_uuid,
-          description, cost_center_id, principal_center_id
+          description, cost_center_id
         ) VALUES ?`,
       params : [employeesWithholdingItem],
     }, {
