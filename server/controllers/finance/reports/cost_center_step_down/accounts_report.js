@@ -24,25 +24,26 @@ async function buildAccountsReport(params, session) {
     user : session.user,
   });
 
-  // Account type 5 is for expense
-  const ACCOUNT_TYPE = +options.include_revenue ? [4, 5] : [5];
-
   const report = new ReportManager(TEMPLATE_ACCOUNTS, session, options);
 
-  const metadata = await currencies.metadata(session, params);
+  // Account type 4 for income and 5 for expense
+  const accountTypes = +options.include_revenue ? [4, 5] : [5];
+
+  // get exchange information for multi currency report
+  const exchangeInformation = await currencies.getExchangeInformationForReports(session, params);
 
   const {
+    dateFrom,
+    dateTo,
     enterpriseId,
     firstCurrency,
     secondCurrency,
     lastRateUsed,
-  } = metadata;
-
-  const { dateFrom, dateTo } = metadata.range;
+  } = exchangeInformation;
 
   const costCenterDetails = await db.one('SELECT label FROM cost_center WHERE id = ?', [options.cost_center_id]);
 
-  const queryTemplate = `
+  const queryTotals = `
     SELECT
       a.number,
       a.label,
@@ -58,28 +59,24 @@ async function buildAccountsReport(params, session) {
       FROM general_ledger gl 
       JOIN account a ON a.id = gl.account_id 
       JOIN cost_center cc ON cc.id = gl.principal_center_id
-      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id IN (?)
+      WHERE (gl.period_id >= ? AND gl.period_id <= ?) AND a.type_id IN (?)
         AND gl.principal_center_id = ?
       UNION ALL
       SELECT cc.label, gl.debit_equiv , gl.credit_equiv , gl.cost_center_id AS ccId, gl.account_id 
       FROM general_ledger gl 
       JOIN cost_center cc ON cc.id = gl.cost_center_id AND gl.principal_center_id IS NULL 
       JOIN account a ON a.id = gl.account_id 
-      WHERE gl.trans_date >= DATE(?) AND gl.trans_date <= DATE(?) AND a.type_id IN (?)
+      WHERE (gl.period_id >= ? AND gl.period_id <= ?) AND a.type_id IN (?)
         AND gl.cost_center_id = ?
     )z on z.account_id = a.id 
 `;
 
   const query = `
-    ${queryTemplate} GROUP BY z.ccId, a.id ORDER BY a.number;
-  `;
-
-  const queryTotals = `
-    ${queryTemplate};
+    ${queryTotals} GROUP BY z.ccId, a.id ORDER BY a.number;
   `;
 
   const getExchangeRateParams = [enterpriseId, options.currency_id, dateTo];
-  const glQueryParams = [dateFrom, dateTo, ACCOUNT_TYPE, options.cost_center_id];
+  const glQueryParams = [options.periodFrom, options.periodTo, accountTypes, options.cost_center_id];
 
   const parameters = [
     ...getExchangeRateParams,

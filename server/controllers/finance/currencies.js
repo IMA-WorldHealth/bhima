@@ -51,7 +51,7 @@ exports.detail = function detail(req, res, next) {
 };
 
 /** get currencies information related to exchange rate */
-exports.metadata = async (session, params) => {
+exports.getExchangeInformationForReports = async (session, params) => {
   const enterpriseId = session.enterprise.id;
   const enterpriseCurrencyId = session.enterprise.currency_id;
 
@@ -75,9 +75,10 @@ exports.metadata = async (session, params) => {
   }
 
   return {
+    dateFrom : range.dateFrom,
+    dateTo : range.dateTo,
     enterpriseId,
     enterpriseCurrencyId,
-    range,
     firstCurrency,
     secondCurrency,
     lastRateUsed,
