@@ -55,16 +55,9 @@ async function buildAccountsReport(params, session) {
     FROM account a 
     JOIN account_type at ON at.id = a.type_id
     JOIN (
-      SELECT cc.label, gl.debit_equiv , gl.credit_equiv , gl.principal_center_id AS ccId, gl.account_id 
+      SELECT gl.cost_center_id, cc.label, gl.debit_equiv , gl.credit_equiv, gl.account_id 
       FROM general_ledger gl 
-      JOIN account a ON a.id = gl.account_id 
-      JOIN cost_center cc ON cc.id = gl.principal_center_id
-      WHERE (gl.period_id >= ? AND gl.period_id <= ?) AND a.type_id IN (?)
-        AND gl.principal_center_id = ?
-      UNION ALL
-      SELECT cc.label, gl.debit_equiv , gl.credit_equiv , gl.cost_center_id AS ccId, gl.account_id 
-      FROM general_ledger gl 
-      JOIN cost_center cc ON cc.id = gl.cost_center_id AND gl.principal_center_id IS NULL 
+      JOIN cost_center cc ON cc.id = gl.cost_center_id
       JOIN account a ON a.id = gl.account_id 
       WHERE (gl.period_id >= ? AND gl.period_id <= ?) AND a.type_id IN (?)
         AND gl.cost_center_id = ?
@@ -72,7 +65,7 @@ async function buildAccountsReport(params, session) {
 `;
 
   const query = `
-    ${queryTotals} GROUP BY z.ccId, a.id ORDER BY a.number;
+    ${queryTotals} GROUP BY z.cost_center_id, a.id ORDER BY a.number;
   `;
 
   const getExchangeRateParams = [enterpriseId, options.currency_id, dateTo];

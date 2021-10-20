@@ -78,12 +78,12 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_id_reference_number, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    reference_uuid, comment, transaction_type_id, cost_center_id, principal_center_id, user_id)
+    reference_uuid, comment, transaction_type_id, cost_center_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, transIdNumberPart, v.date,
     v.uuid, IF((vi.description IS NULL), v.description, vi.description), vi.account_id, vi.debit, vi.credit,
     vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
-    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, vi.cost_center_id, vi.principal_center_id, v.user_id
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, vi.cost_center_id, v.user_id
   FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
   WHERE v.uuid = uuid;
 
@@ -160,13 +160,13 @@ BEGIN
     LIMIT 1;
 
   -- NOTE: the debits and credits are swapped on purpose here
-  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid, cost_center_id, principal_center_id)
-    SELECT HUID(UUID()), zz.account_id, zz.credit_equiv, zz.debit_equiv, voucher_uuid, zz.reference_uuid, zz.entity_uuid, zz.cost_center_id, zz.principal_center_id
+  INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid, cost_center_id)
+    SELECT HUID(UUID()), zz.account_id, zz.credit_equiv, zz.debit_equiv, voucher_uuid, zz.reference_uuid, zz.entity_uuid, zz.cost_center_id
     FROM (
-      SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid, pj.cost_center_id, pj.principal_center_id
+      SELECT pj.account_id, pj.credit_equiv, pj.debit_equiv, pj.reference_uuid, pj.entity_uuid, pj.cost_center_id
       FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL
-      SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid, gl.cost_center_id, gl.principal_center_id
+      SELECT gl.account_id, gl.credit_equiv, gl.debit_equiv, gl.reference_uuid, gl.entity_uuid, gl.cost_center_id
       FROM general_ledger AS gl WHERE gl.record_uuid = uuid
     ) AS zz;
 

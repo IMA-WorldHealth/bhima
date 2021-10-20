@@ -673,7 +673,6 @@ CREATE TABLE `general_ledger` (
   `transaction_type_id`   TINYINT(3) UNSIGNED NULL,
   `user_id`               SMALLINT(5) UNSIGNED NOT NULL,
   `cost_center_id`      MEDIUMINT(8) UNSIGNED NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -683,7 +682,6 @@ CREATE TABLE `general_ledger` (
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   KEY `cost_center_id` (`cost_center_id`),
-  KEY `principal_center_id` (`principal_center_id`),
   INDEX `trans_date` (`trans_date`),
   INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
@@ -697,8 +695,7 @@ CREATE TABLE `general_ledger` (
   CONSTRAINT `general_ledger__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `general_ledger__account`  FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `general_ledger__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `general_ledger__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `general_ledger__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1317,7 +1314,6 @@ CREATE TABLE `posting_journal` (
   `transaction_type_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cost_center_id`      MEDIUMINT(8) UNSIGNED NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1327,7 +1323,6 @@ CREATE TABLE `posting_journal` (
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   KEY `cost_center_id` (`cost_center_id`),
-  KEY `principal_center_id` (`principal_center_id`),
   INDEX `trans_date` (`trans_date`),
   INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
@@ -1341,8 +1336,7 @@ CREATE TABLE `posting_journal` (
   CONSTRAINT `pg__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `pg__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `pg__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `pg__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `pg__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project`;
@@ -1867,7 +1861,6 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `entity_uuid`     BINARY(16) default null,
   `description`     TEXT NULL,
   `cost_center_id`  MEDIUMINT(8) UNSIGNED NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
@@ -1875,9 +1868,7 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   INDEX (`entity_uuid`),
   CONSTRAINT `voucher_item__account` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   CONSTRAINT `voucher_item__voucher` FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE,
-  CONSTRAINT `voucher_item__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `voucher_item__cost_center_2` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
-
+  CONSTRAINT `voucher_item__cost_center_1` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- stock tables
@@ -2622,14 +2613,11 @@ CREATE TABLE `cost_center_aggregate` (
   `debit`           DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `credit`          DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `cost_center_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
-  `principal_center_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_income`       TINYINT(1) NOT NULL DEFAULT 0,
   KEY `cost_center_id` (`cost_center_id`),
-  KEY `principal_center_id` (`principal_center_id`),
   KEY `period_id` (`period_id`),
   CONSTRAINT `cost_center_aggregate__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
-  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
-  CONSTRAINT `cost_center_aggregate__principal_center_id` FOREIGN KEY (`principal_center_id`) REFERENCES `cost_center` (`id`)
+  CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
