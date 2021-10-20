@@ -24,6 +24,7 @@ angular.module('bhima.routes')
       'configurable_analysis_report',
       'cost_center',
       'cost_center_accounts',
+      'cost_center_profit_and_expense',
       'cost_center_step_down',
       'data_kit',
       'debtor_summary',
