@@ -23,6 +23,7 @@ angular.module('bhima.routes')
       'client_support',
       'configurable_analysis_report',
       'cost_center',
+      'cost_center_accounts',
       'cost_center_step_down',
       'data_kit',
       'debtor_summary',

@@ -290,3 +290,13 @@ CALL add_column_if_missing('cost_center_aggregate', 'is_income', 'TINYINT(1) NOT
  * @desc: base_index_growth_rate column in the enterprise_setting table
  */
 CALL add_column_if_missing('enterprise_setting', 'base_index_growth_rate', 'TINYINT(3) UNSIGNED NOT NULL DEFAULT 0');
+
+/*
+ * @author: mbayopanda
+ * @date: 2021-10-12
+ */
+INSERT INTO `unit` VALUES 
+  (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');

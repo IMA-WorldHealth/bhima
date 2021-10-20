@@ -7,6 +7,8 @@
  */
 
 const db = require('../../lib/db');
+const fiscal = require('./fiscal');
+const exchange = require('./exchange');
 
 exports.lookupCurrencyById = lookupCurrencyById;
 
@@ -46,4 +48,39 @@ exports.detail = function detail(req, res, next) {
     })
     .catch(next)
     .done();
+};
+
+/** get currencies information related to exchange rate */
+exports.getExchangeInformationForReports = async (session, params) => {
+  const enterpriseId = session.enterprise.id;
+  const enterpriseCurrencyId = session.enterprise.currency_id;
+
+  const periods = {
+    periodFrom : params.periodFrom,
+    periodTo : params.periodTo,
+  };
+
+  const range = await fiscal.getDateRangeFromPeriods(periods);
+  const exchangeRate = await exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
+
+  // get information about currencies and exchange rate
+  let firstCurrency = enterpriseCurrencyId;
+  let secondCurrency = params.currency_id;
+  let lastRateUsed = exchangeRate.rate;
+
+  if (lastRateUsed && lastRateUsed < 1) {
+    lastRateUsed = (1 / lastRateUsed);
+    firstCurrency = params.currency_id;
+    secondCurrency = enterpriseCurrencyId;
+  }
+
+  return {
+    dateFrom : range.dateFrom,
+    dateTo : range.dateTo,
+    enterpriseId,
+    enterpriseCurrencyId,
+    firstCurrency,
+    secondCurrency,
+    lastRateUsed,
+  };
 };
