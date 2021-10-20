@@ -36,7 +36,9 @@
     "INCLUDE_REVENUE_ACCOUNTS_HELP_TEXT" : "This will include also the revenues accounts to expenses accounts list",
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Cost center value by accounts",
-      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "This report displays cost center value by accounts"
+      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "This report displays cost center value by accounts",
+      "COST_CENTER_PROFIT_AND_EXPENSE" : "Cost center profit and expense",
+      "COST_CENTER_PROFIT_AND_EXPENSE_DESCRIPTION" : "This report displays cost centers values according their profit and expense"
     }
   },
   "ALLOCATION_METHOD": "Allocation method",

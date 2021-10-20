@@ -36,7 +36,9 @@
     "INCLUDE_REVENUE_ACCOUNTS_HELP_TEXT" : "Cela inclura également la liste des comptes de revenus à des comptes de dépenses",
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Centre de coût par comptes",
-      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout par comptes"
+      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout par comptes",
+      "COST_CENTER_PROFIT_AND_EXPENSE" : "Centre de coût profit et depense",
+      "COST_CENTER_PROFIT_AND_EXPENSE_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout selon leur profit et depense"
     }
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
