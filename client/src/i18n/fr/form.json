@@ -333,7 +333,11 @@
             "BALANCE_SHEET": "Bilan",
             "BANK_ACCOUNT": "Compte Bancaire",
             "BANK": "Banque",
+<<<<<<< HEAD
             "BASE_INDEX_GROWTH_RATE": "Taux d'accroissement l'indice de base en (%) / an",
+=======
+            "BASE_INDEX_GROWTH_RATE": "Taux d'accroissement l'indice de base",
+>>>>>>> 2ebee3b4a (Fix and resolve conflict)
             "BASIC_SALARY": "Salaire de base",
             "BEGINNING_VIEW_BALANCE" : "Solde Début du Grid",
             "BILLING_DATE": "Date Facturation",
