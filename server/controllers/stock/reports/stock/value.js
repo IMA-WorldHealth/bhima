@@ -35,7 +35,7 @@ async function reporting(_options, session) {
 
   // Get inventories movemented
   const sqlGetInventories = `
-    SELECT DISTINCT(BUID(mov.inventory_uuid)) AS inventory_uuid,
+    SELECT DISTINCT(BUID(mov.inventory_uuid)) AS inventory_uuid, mov.inventory_uuid AS uuid,
       mov.text AS inventory_name, mov.code AS inventory_code, mov.inventory_price
     FROM(
       SELECT inv.uuid AS inventory_uuid, inv.text, inv.code,
@@ -51,18 +51,26 @@ async function reporting(_options, session) {
   /*
    * Here we first search for all the products that have
    * been stored in stock in a warehouse,
-   * then we collect all the movements of stocks linked to a warehouse,
-   * then we calculate the unit cost weighted average for each product
+   * then we collect all the movements of stocks linked to a warehouse
   */
   const stockValues = await db.exec(sqlGetInventories, [db.bid(options.depot_uuid), options.dateTo]);
 
+  // Compute stock value only for concerned inventories for having updated wac
+  const mapRecomputeInventoryStockValue = stockValues.map(inventory => {
+    return db.exec('CALL RecomputeInventoryStockValue(?, NULL);', [inventory.uuid]);
+  });
+
+  await Promise.all(mapRecomputeInventoryStockValue);
+
   const sqlGetMovementByDepot = `
     SELECT sm.document_uuid, sm.depot_uuid, sm.lot_uuid, sm.quantity, sm.unit_cost, sm.date, sm.is_exit,
-    sm.created_at, BUID(inv.uuid) AS inventory_uuid, inv.text AS inventory_text, map.text AS docRef
+    sm.created_at, BUID(inv.uuid) AS inventory_uuid, inv.text AS inventory_text, map.text AS docRef,
+    sv.wac
     FROM stock_movement AS sm
     JOIN lot AS l ON l.uuid = sm.lot_uuid
     JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
     JOIN document_map AS map ON map.uuid = sm.document_uuid
+    JOIN stock_value AS sv ON sv.inventory_uuid = inv.uuid
     WHERE sm.depot_uuid = ? AND DATE(sm.date) <= DATE(?)
     ORDER BY inv.text, DATE(sm.date), sm.created_at ASC
   `;
@@ -78,24 +86,16 @@ async function reporting(_options, session) {
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
   const rate = exchangeRate.rate || 1;
 
+  // calculate quantity in stock since wac is globally calculated
   stockValues.forEach(stock => {
     let quantityInStock = 0;
     let weightedAverageUnitCost = 0;
 
     stock.movements.forEach(item => {
       const isExit = item.is_exit ? (-1) : 1;
-
-      if (!item.is_exit && (quantityInStock > 0)) {
-        weightedAverageUnitCost = (
-          (quantityInStock * weightedAverageUnitCost) + (item.quantity * (item.unit_cost * rate))
-        ) / (item.quantity + quantityInStock);
-      } else if (!item.is_exit && (quantityInStock === 0)) {
-        weightedAverageUnitCost = (item.unit_cost * rate);
-      }
-
       quantityInStock += (item.quantity * isExit);
       item.quantityInStock = quantityInStock;
-      item.weightedAverageUnitCost = weightedAverageUnitCost;
+      weightedAverageUnitCost = item.wac;
     });
 
     stock.inventoryPrice = stock.inventory_price * rate;
