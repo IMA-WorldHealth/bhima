@@ -39,7 +39,7 @@ function AllocationEditStepOrderController(CostCenters, Notify, Instance, uiGrid
         field : 'step_order',
         displayName : 'COST_CENTER.STEP_ORDER',
         headerCellFilter : 'translate',
-        headerCellClass : 'allocationBasisColHeader',
+        headerCellClass : 'wrappingColHeader',
         defaultSort : { direction : uiGridConstants.ASC, priority : 1 },
         type : 'number',
         visible : true,
