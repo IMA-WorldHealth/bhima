@@ -54,7 +54,7 @@ async function buildAccountsReport(params, session) {
       FROM general_ledger gl 
       JOIN cost_center cc ON cc.id = gl.cost_center_id
       JOIN account a ON a.id = gl.account_id 
-      WHERE gl.period_id >= ? AND gl.period_id <= ? AND a.type_id = 5
+      WHERE gl.period_id >= ? AND gl.period_id <= ?
       GROUP BY cc.id
     )z
   `;
