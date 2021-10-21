@@ -175,7 +175,8 @@ INSERT INTO unit VALUES
   (299, 'Allocation Bases','TREE.COST_CENTER_ALLOCATION_KEYS','List cost center allocation bases with values', 218,'/cost_center/allocation_bases'),
   (300, 'Lost Stock Report','TREE.LOST_STOCK_REPORT','Report on stock lost during depot transfers', 282,'/reports/lost_stock_report'),
   (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
-  (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
+  (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts'),
+  (303, 'Cost Centers Balance Report','TREE.COST_CENTER_PROFIT_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense');
 
 
 -- Reserved system account type
@@ -252,7 +253,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('purchase_prices', 'REPORT.PURCHASE_PRICES.TITLE'),
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT'),
-  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
+  ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT'),
+  ('cost_center_income_and_expense', 'TREE.COST_CENTER_PROFIT_EXPENSE_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

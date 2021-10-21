@@ -287,3 +287,13 @@ INSERT INTO `unit` VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
+
+/*
+ * @author: mbayopanda
+ * @date: 2021-10-21
+ */
+INSERT INTO `unit` VALUES 
+  (303, 'Cost Centers Balance Report','TREE.COST_CENTER_PROFIT_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense');
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('cost_center_income_and_expense', 'TREE.COST_CENTER_PROFIT_EXPENSE_REPORT');
