@@ -1,6 +1,10 @@
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
+const {
+  FROM_PURCHASE,
+  FROM_INTEGRATION,
+} = require('../../../../config/constants').flux;
 
 const TEMPLATE = './server/controllers/stock/reports/purchase_prices/report.handlebars';
 exports.report = report;
@@ -20,10 +24,6 @@ const DEFAULT_PARAMS = {
  */
 async function report(req, res, next) {
   const params = req.query;
-
-  // only consider these flux IDs
-  const FROM_PURCHASE = 1;
-  const FROM_INTEGRATION = 3;
 
   const inventorySQL = `SELECT code, text, price FROM inventory WHERE uuid = ?;`;
 
@@ -76,6 +76,14 @@ async function report(req, res, next) {
       db.one(totalsSQL, [inventoryUuid]),
       db.exec(entriesSQL, [inventoryUuid]),
     ]);
+
+    // Compute the median unit cost
+    const unitCosts = entries.map(item => Number(item.unit_cost)).sort();
+    const count = unitCosts.length;
+    const medianUnitCost = count % 2 === 0
+      ? (unitCosts[count / 2 - 1] + unitCosts[count / 2]) / 2
+      : unitCosts[(count - 1) / 2];
+    totals.median_price = medianUnitCost;
 
     const result = await reporting.render({ inventory, entries, totals });
     res.set(result.headers).send(result.report);

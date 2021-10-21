@@ -55,7 +55,7 @@
           min="0"
           ng-change="$ctrl.onChangeUnitCost()"
           ng-model="$ctrl.stockLine.unit_cost"
-          ng-model-options="{ '*' : '$inherit' }">
+          ng-model-options="{ updateOn: 'blur', '*' : '$inherit' }">
         <span class="input-group-addon">{{ $ctrl.currency.symbol }}</span>
       </div>
     </div>
