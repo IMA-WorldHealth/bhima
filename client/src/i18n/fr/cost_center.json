@@ -37,7 +37,9 @@
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Centre de coût par comptes",
       "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout par comptes"
-    }
+    },
+    "SHOW_ALLOCATIONS_TABLE" : "Afficher le tableau des allocations ?",
+    "SHOW_ALLOCATIONS_TABLE_HELP_TEXT" : "Afficher le tableau des valeurs de la base d'allocations pour chaque centre de coûts"
   },
   "ALLOCATION_METHOD": "Méthode d'allocation séquentielle des coûts",
   "ALLOCATION_METHOD_FLAT": "Uniform",
