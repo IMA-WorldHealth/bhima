@@ -70,9 +70,10 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html',
   }, {
     field : 'unit_price',
-    width : 100,
-    displayName : 'TABLE.COLUMNS.PURCHASE_PRICE',
+    width : 105,
+    displayName : 'TABLE.COLUMNS.PURCHASE_UNIT_PRICE',
     headerCellFilter : 'translate',
+    headerCellClass : 'wrappingColHeader',
     cellTemplate : 'modules/purchases/create/templates/price.tmpl.html',
   }, {
     field : 'amount',
@@ -82,7 +83,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
     cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html',
   }, {
     field : 'actions',
-    width : 25,
+    width : 30,
     cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html',
   }];
 
