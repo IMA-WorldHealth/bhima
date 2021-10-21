@@ -45,6 +45,8 @@
       "LOCKED_DEBTOR_GROUP_ACCOUNT" : "These transactions use an account of a locked debtor group and may have been made in error.  To correct this, either modify the transactions or unlock the debtor group.",
       "LOCKED_PERIOD" : "An accountant has locked the periods used in these transactions. To correct this error, please unlock the periods in the fiscal year module.",
       "MISSING_ACCOUNTS" : "Accounts omitted",
+      "MISSING_COST_CENTER" : "Transaction concerns an income or expense account that does not have an associated cost center.",
+      "INVALID_COST_CENTER" : "Cost centers are associated with accounts that are not income or expense accounts.",
       "MISSING_DATES" : "Missing Dates",
       "MISSING_DESCRIPTION" : "Descriptions omitted",
       "MISSING_DOCUMENT_ID" : "Records without document ID",
