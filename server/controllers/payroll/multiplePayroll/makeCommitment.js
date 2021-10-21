@@ -41,7 +41,7 @@ function config(req, res, next) {
   `;
 
   /*
-    * The following requests to retrieve the list of Topics configured
+    * The following requests to retrieve the list of Rubrics configured
     * for a payment period but also the values of the corresponding data corresponding to each employee
   */
 
@@ -52,6 +52,7 @@ function config(req, res, next) {
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
+    AND rubric_payroll.debtor_account_id IS NOT NULL AND rubric_payroll.expense_account_id IS NOT NULL
   `;
 
   const sqlGetRubricPayroll = `
