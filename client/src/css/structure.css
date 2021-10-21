@@ -1196,7 +1196,7 @@ table.lot-schedule .right {
   text-align: right;
 }
 
-.allocationBasisColHeader * div {
+.wrappingColHeader * div {
    overflow-wrap: normal;
    overflow: visible;
    white-space: normal;

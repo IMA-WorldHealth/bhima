@@ -19,6 +19,10 @@ const units = require('./inventory/units');
 const importing = require('./import');
 const util = require('../../lib/util');
 const db = require('../../lib/db');
+const {
+  FROM_PURCHASE,
+  FROM_INTEGRATION,
+} = require('../../config/constants').flux;
 
 const xlsx = require('../../lib/renderers/xlsx');
 const ReportManager = require('../../lib/ReportManager');
@@ -52,6 +56,8 @@ exports.detailsInventoryUnits = detailsInventoryUnits;
 exports.deleteInventoryUnits = deleteInventoryUnits;
 
 exports.deleteInventory = deleteInventory;
+
+exports.getInventoryUnitCosts = getInventoryUnitCosts;
 
 // expose routes for import
 exports.importing = importing;
@@ -219,6 +225,60 @@ function getInventoryItemsById(req, res, next) {
     .catch((error) => {
       core.errorHandler(error, req, res, next);
     });
+}
+
+/**
+* GET /inventory/:uuid/unit_cost
+* Returns a list of unit purchase costs for this inventory item
+*
+* @function getInventoryUnitCosts
+*/
+function getInventoryUnitCosts(req, res, next) {
+  try {
+    const { uuid } = req.params;
+
+    const costListQuery = `
+      SELECT
+        sm.unit_cost, sm.quantity, sm.date, sm.flux_id
+      FROM stock_movement sm
+      JOIN lot l ON l.uuid = sm.lot_uuid
+      JOIN inventory inv ON inv.uuid = l.inventory_uuid
+      WHERE l.inventory_uuid = ?
+      AND sm.is_exit = 0
+      AND sm.flux_id IN (${FROM_PURCHASE}, ${FROM_INTEGRATION})
+      ORDER BY sm.date;
+    `;
+
+    const costStatsQuery = `
+      SELECT
+        AVG(sm.unit_cost) AS avg_unit_cost,
+        MIN(sm.unit_cost) AS min_price,
+        MAX(sm.unit_cost) AS max_price,
+        COUNT(*) AS num_entries
+      FROM stock_movement sm
+      JOIN lot l ON l.uuid = sm.lot_uuid
+      JOIN inventory inv ON inv.uuid = l.inventory_uuid
+      WHERE l.inventory_uuid = ?
+        AND sm.is_exit = 0
+        AND sm.flux_id IN (${FROM_PURCHASE}, ${FROM_INTEGRATION})
+      ORDER BY sm.date;
+    `;
+
+    Promise.all([
+      db.exec(costListQuery, [db.bid(uuid)]),
+      db.one(costStatsQuery, [db.bid(uuid)]),
+    ])
+      .then(([costs, stats]) => {
+        // Compute the median unit cost
+        const unitCosts = costs.map(item => Number(item.unit_cost));
+        stats.median_unit_cost = util.median(unitCosts);
+
+        const data = { costs, stats };
+        res.status(200).json(data);
+      });
+  } catch (error) {
+    core.errorHandler(error, req, res, next);
+  }
 }
 
 /**
