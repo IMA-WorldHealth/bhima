@@ -25,6 +25,8 @@ function PayrollSettingsController(
 
   // fired on startup
   function startup() {
+    console.log('EVERY BODY GOT PRICE');
+    console.log(bhConstants.posting_payroll_cost_center);
 
     // load enterprises
     Enterprises.read()
@@ -44,8 +46,12 @@ function PayrollSettingsController(
       })
       .catch(Notify.handleError);
 
-    // load algorithms for Average Consumption
-    vm.algorithms = bhConstants.average_consumption_algo;
+    // load type of posting payroll cost center
+    vm.postingTypes = bhConstants.posting_payroll_cost_center;
+
+    console.log('NEW_DATA_BASEEEEEEEEEEEE');
+    console.log(vm.postingTypes);
+
   }
 
   function onSelectCostCenter(cc) {

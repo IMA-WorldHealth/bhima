@@ -51,5 +51,13 @@
     "GROSS_SALARY" : "Gross salary",
     "IS_NUMBER_OF_DAYS" : "This rubric is the number of days",
     "NUMBER_OF_DAYS" : "Number of days"
+  },
+  "PAYROLL_SETTINGS" : {
+    "DEFAULT" : "Default",
+    "DEFAULT_HELP_TEXT" : "With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center",
+    "GROUP_BY_COST_CENTERS" : "Group by cost centers",
+    "GROUP_BY_COST_CENTERS_HELP_TEXT": "With this option the transactions related to the payment of the employees are done by group compared to the related cost centers of the employees.",
+    "INDIVIDUALLY_PER_EMPLOYEE" : "Individually per employee",
+    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "With this option, transactions related to the payment of employee salaries are done individually by employee"
   }
 }
