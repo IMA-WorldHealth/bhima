@@ -3,10 +3,10 @@ const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const currencies = require('../../currencies');
 
-const TEMPLATE_ACCOUNTS = './server/controllers/finance/reports/cost_center_step_down/profit_and_expense.handlebars';
+const TEMPLATE_ACCOUNTS = './server/controllers/finance/reports/cost_center_step_down/income_and_expense.handlebars';
 
 // expose to the API
-exports.report = profitAndExpenseReport;
+exports.report = incomeAndExpenseReport;
 
 /**
  * @function reporting
@@ -41,23 +41,20 @@ async function buildAccountsReport(params, session) {
   const queryTotals = `
     SELECT
       z.label, 
-      SUM(z.profit * IFNULL(GetExchangeRate(?, ?, ?), 1)) profit, 
+      SUM(z.income * IFNULL(GetExchangeRate(?, ?, ?), 1)) income, 
       SUM(z.expense * IFNULL(GetExchangeRate(?, ?, ?), 1)) expense, 
-      SUM((z.profit - expense) * IFNULL(GetExchangeRate(?, ?, ?), 1)) AS balance
+      SUM((z.income - expense) * IFNULL(GetExchangeRate(?, ?, ?), 1)) AS balance
     FROM
     (
-      SELECT cc.label, 0 AS profit, SUM(gl.debit_equiv - gl.credit_equiv) expense, gl.cost_center_id AS ccId
+      SELECT
+        cc.label,
+        SUM(IF(a.type_id = 4, gl.credit_equiv - gl.debit_equiv, 0)) AS income,
+        SUM(IF(a.type_id = 5, gl.debit_equiv - gl.credit_equiv, 0)) AS expense,
+        gl.cost_center_id AS ccId
       FROM general_ledger gl 
       JOIN cost_center cc ON cc.id = gl.cost_center_id
       JOIN account a ON a.id = gl.account_id 
       WHERE gl.period_id >= ? AND gl.period_id <= ? AND a.type_id = 5
-      GROUP BY cc.id
-      UNION ALL 
-      SELECT cc.label, SUM(gl.credit_equiv - gl.debit_equiv) profit, 0 AS expense, gl.cost_center_id AS ccId
-      FROM general_ledger gl 
-      JOIN cost_center cc ON cc.id = gl.cost_center_id
-      JOIN account a ON a.id = gl.account_id 
-      WHERE gl.period_id >= ? AND gl.period_id <= ? AND a.type_id = 4
       GROUP BY cc.id
     )z
   `;
@@ -94,7 +91,7 @@ async function buildAccountsReport(params, session) {
   return report.render(context);
 }
 
-function profitAndExpenseReport(req, res, next) {
+function incomeAndExpenseReport(req, res, next) {
   buildAccountsReport(req.query, req.session)
     .then((result) => {
       res.set(result.headers).send(result.report);
