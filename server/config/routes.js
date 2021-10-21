@@ -328,6 +328,7 @@ exports.configure = function configure(app) {
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
   app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
+  app.get('/inventory/unit_cost/:uuid', inventory.getInventoryUnitCosts);
 
   app.get('/inventory/log/:uuid', inventory.logs);
   app.get('/inventory/download/log/:uuid', inventory.logDownLoad);
