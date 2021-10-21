@@ -78,6 +78,8 @@ correctness.  The follow assertions are made:
  4. All affected accounts are unlocked.
  5. All transactions are balanced.
  6. All transactions have at least two lines (required for double-entry accounting)
+ 7. All transactions with an income/expense account have a cost center.
+ 8. All liens with a cost center are income/expense accounts
 
 Please be sure to stage all transactions for use via the StageTrialBalanceTransaction()
 call.
@@ -96,10 +98,9 @@ USAGE: CALL TrialBalanceErrors()
 DROP PROCEDURE IF EXISTS TrialBalanceErrors$$
 CREATE PROCEDURE TrialBalanceErrors()
 BEGIN
-  DECLARE title_account_id INT UNSIGNED DEFAULT NULL;
-
-  -- @const the account type for title accounts is 6.
-  SET title_account_id = 6;
+  DECLARE title_account_id INT UNSIGNED DEFAULT 6;
+  DECLARE income_account_id INT UNSIGNED DEFAULT 4;
+  DECLARE expense_account_id INT UNSIGNED DEFAULT 5;
 
   DROP TEMPORARY TABLE IF EXISTS stage_trial_balance_errors;
 
@@ -118,6 +119,24 @@ BEGIN
       JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
       JOIN account a ON pj.account_id = a.id
     WHERE a.type_id = title_account_id GROUP BY pj.record_uuid;
+
+  -- check that all lines with income/expense accounts also have cost centers
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(a.number,' - ', a.label) as error_description, 'POSTING_JOURNAL.ERRORS.MISSING_COST_CENTER' AS code
+    FROM posting_journal AS pj
+      JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
+      JOIN account a ON pj.account_id = a.id
+    WHERE a.type_id IN (income_account_id, expense_account_id) AND pj.cost_center_id IS NULL
+    GROUP BY pj.record_uuid;
+
+  -- check that all lines with cost centers also concern income/expense accounts.
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(a.number,' - ', a.label) as error_description, 'POSTING_JOURNAL.ERRORS.INVALID_COST_CENTER' AS code
+    FROM posting_journal AS pj
+      JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
+      JOIN account a ON pj.account_id = a.id
+    WHERE a.type_id NOT IN (income_account_id, expense_account_id) AND pj.cost_center_id IS NOT NULL
+    GROUP BY pj.record_uuid;
 
   -- check if dates are in the correct period
   INSERT INTO stage_trial_balance_errors
