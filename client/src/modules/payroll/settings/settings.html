@@ -1,0 +1,63 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.PAYROLL_SETTINGS</li>
+    </ol>
+  </div>
+</div>
+<div class="flex-content">
+  <div class="container-fluid">
+    <form name="PayrollSettingsForm" bh-submit="PayrollSettingsCtrl.submit(PayrollSettingsForm)"
+      ng-model-options="{ updateOn: 'blur' }" novalidate>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <i class="fa fa-cogs"></i> <span translate>TREE.PAYROLL_SETTINGS</span>
+        </div>
+        <div class="panel-body">
+          <!-- average_consumption_algo -->
+          <div id="average_consumption_algo" class="form-group"
+            ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
+            <div ng-repeat="algo in StockSettingsCtrl.algorithms" class="form-indent">
+              <label class="radio-inline">
+                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
+                <span class="text-bold" translate>{{ algo.label }}</span>
+              </label>
+              <span class="help-block" translate>
+                {{algo.comment}}
+              </span>
+            </div>
+            <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
+              ng-show="StockSettingsForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.base_index_growth_rate.$invalid }">
+            <label class="control-label" translate>
+              FORM.LABELS.BASE_INDEX_GROWTH_RATE
+            </label>
+            <div class="input-group">
+              <input class="form-control" value="0" min="0" type="number" name="base_index_growth_rate" ng-model="EnterpriseCtrl.enterprise.settings.base_index_growth_rate" required>
+              <span class="input-group-addon"> % </span>
+            </div>
+            <span class="help-block" translate>
+              SETTINGS.BASE_INDEX_GROWTH_RATE_HELP_TEXT
+            </span>                
+            <div class="help-block" ng-messages="EnterpriseForm.base_index_growth_rate.$error" ng-show="EnterpriseForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer" id="submission">
+          <bh-loading-button loading-state="EnterpriseForm.$loading">
+            <span translate>FORM.BUTTONS.UPDATE</span>
+          </bh-loading-button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
