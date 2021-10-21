@@ -110,4 +110,26 @@ describe('util.js', () => {
         });
       });
   });
+
+  it('#median() should return the median of an array', () => {
+    // Odd number of entries
+    const array1 = [1, 2, 1, 3, 4]; // Note non-sorted
+    const med1 = util.median(array1);
+    expect(med1).to.equal(2);
+
+    // Even number of entries
+    const array2 = [1, 3, 1, 4, 2, 6];
+    // Sorted: 1, 1, 2, 3, 4, 6 = median = 2.5
+    const med2 = util.median(array2);
+    expect(med2).to.equal(2.5);
+
+    // Check 0 len array
+    const med3 = util.median([]);
+    expect(med3).to.equal(null);
+
+    // Check 1 len array
+    const array4 = [3];
+    const med4 = util.median(array4);
+    expect(med4).to.equal(array4[0]);
+  });
 });

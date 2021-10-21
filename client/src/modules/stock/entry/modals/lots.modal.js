@@ -2,15 +2,15 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
-  'SessionService', 'CurrencyService', 'NotifyService', 'StockEntryModalForm',
-  'bhConstants', '$translate', 'focus',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService', 'InventoryService',
+  'SessionService', 'CurrencyService', 'NotifyService', 'ModalService',
+  'StockEntryModalForm', 'bhConstants', '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
-  AppCache, Instance, uiGridConstants, Data, Lots,
-  Session, Currencies, Notify, EntryForm,
-  bhConstants, $translate, Focus,
+  AppCache, Instance, uiGridConstants, Data, Lots, Inventory,
+  Session, Currencies, Notify, Modal,
+  EntryForm, bhConstants, $translate, Focus,
 ) {
   const vm = this;
 
@@ -18,6 +18,8 @@ function StockDefineLotsModalController(
 
   // initialize the form instance
   const tracking = Data.stockLine.tracking_expiration;
+  Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
+
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
     unit_cost : Data.stockLine.unit_cost,
@@ -39,6 +41,13 @@ function StockDefineLotsModalController(
     ? Data.currency_id : vm.enterprise.currency_id;
   vm.currency = null;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
+
+  // Get the status for this inventory article
+  Inventory.getInventoryUnitCosts(Data.stockLine.inventory_uuid)
+    .then(({ stats }) => {
+      // Save the stats for later checks
+      vm.stockLine.stats = stats;
+    });
 
   // exposing method to the view
   vm.submit = submit;
@@ -159,6 +168,7 @@ function StockDefineLotsModalController(
   // Handle the extra validation for expired lot labels
   function validateForm() {
     vm.errors = vm.form.validate(vm.entryDate);
+
     vm.form.rows.forEach((row) => {
       if (!row.lot) {
         // Ignore corner case where the user clicks elsewhere
@@ -247,6 +257,7 @@ function StockDefineLotsModalController(
 
   function onChanges() {
     validateForm();
+
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
@@ -267,6 +278,37 @@ function StockDefineLotsModalController(
   }
 
   function onChangeUnitCost() {
+    // Sanity check on new unit cost
+    const medianUnitCost = Number(vm.stockLine.stats.median_unit_cost);
+    const prevUnitCost = Number(vm.stockLine.prev_unit_cost);
+    const newUnitCost = Number(vm.stockLine.unit_cost);
+    const allowableMinChange = 0.5; // Warn about entries that are less than half the previous unit cost
+    const allowableMaxChange = 2.0; // Warn entries that more than double the previous unit cost
+    const lowerUnitCostBound = (medianUnitCost * allowableMinChange);
+    const upperUnitCostBound = (medianUnitCost * allowableMaxChange);
+    if ((newUnitCost < lowerUnitCostBound) || (newUnitCost > upperUnitCostBound)) {
+      const msgParams = { newUnitCost, medianUnitCost, curr : vm.currency.symbol };
+      const errMsg1 = newUnitCost > upperUnitCostBound
+        ? $translate.instant('WARNINGS.WARN_UNIT_COST_TOO_HIGH', msgParams)
+        : $translate.instant('WARNINGS.WARN_UNIT_COST_TOO_LOW', msgParams);
+      const errMsg = errMsg1
+        .concat($translate.instant('WARNINGS.WARN_UNIT_COST_REASON'))
+        .concat($translate.instant('WARNINGS.WARN_UNIT_COST_CONFIRM'));
+      Modal.confirm(errMsg)
+        .then(() => {
+          // Accept the new unit cost into the form
+          vm.form.setUnitCost(vm.stockLine.unit_cost);
+          onChanges();
+        })
+        .catch(() => {
+          // Revert to the previous unit cost in the form and display the warning
+          vm.stockLine.unit_cost = prevUnitCost;
+          vm.form.setUnitCost(vm.stockLine.unit_cost);
+          vm.errors = [errMsg1];
+          vm.form.$invalid = true;
+        });
+      return;
+    }
     vm.form.setUnitCost(vm.stockLine.unit_cost);
     onChanges();
   }
