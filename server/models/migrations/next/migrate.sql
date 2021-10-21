@@ -312,7 +312,7 @@ CALL RecomputeStockValue(NULL);
  * @date: 2021-10-21
  */
 INSERT INTO `unit` VALUES 
-  (303, 'Cost Centers Balance Report','TREE.COST_CENTER_PROFIT_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_profit_and_expense');
+  (303, 'Cost Centers Balance Report','TREE.COST_CENTER_PROFIT_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense');
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
-  ('cost_center_profit_and_expense', 'TREE.COST_CENTER_PROFIT_EXPENSE_REPORT');
+  ('cost_center_income_and_expense', 'TREE.COST_CENTER_PROFIT_EXPENSE_REPORT');
