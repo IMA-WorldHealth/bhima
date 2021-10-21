@@ -1,20 +1,20 @@
 angular.module('bhima.controllers')
-  .controller('cost_center_profit_and_expenseController', CostCenterProfitAndExpenseReportConfigController);
+  .controller('cost_center_income_and_expenseController', CostCenterIncomeAndExpenseReportConfigController);
 
-CostCenterProfitAndExpenseReportConfigController.$inject = [
+CostCenterIncomeAndExpenseReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
 /**
- * @function CostCenterProfitAndExpenseReportConfigController
+ * @function CostCenterIncomeAndExpenseReportConfigController
  *
  * @description
- * This function renders the cost_center_profit_and_expense report.
+ * This function renders the cost_center_income_and_expense report.
  */
-function CostCenterProfitAndExpenseReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function CostCenterIncomeAndExpenseReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
-  const cache = new AppCache('CostCenterProfitAndExpenseReport');
-  const reportUrl = 'reports/finance/cost_center_profit_and_expense';
+  const cache = new AppCache('CostCenterIncomeAndExpenseReport');
+  const reportUrl = 'reports/finance/cost_center_income_and_expense';
 
   vm.reportDetails = {};
   vm.previewGenerated = false;

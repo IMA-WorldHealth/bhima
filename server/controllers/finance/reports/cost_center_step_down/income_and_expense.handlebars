@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-  {{> head title="COST_CENTER.REPORT.COST_CENTER_PROFIT_AND_EXPENSE"}}
+  {{> head title="COST_CENTER.REPORT.COST_CENTER_INCOME_AND_EXPENSE"}}
   <body>
   <div class="container">
     {{> header}}
@@ -11,7 +11,7 @@
 
         <!-- page title  -->
         <h3 class="text-center text-uppercase">
-          <strong>{{translate 'COST_CENTER.REPORT.COST_CENTER_PROFIT_AND_EXPENSE'}}</strong>
+          <strong>{{translate 'COST_CENTER.REPORT.COST_CENTER_INCOME_AND_EXPENSE'}}</strong>
         </h3>
 
         <h4 class="text-center">
@@ -32,7 +32,7 @@
           <thead>
             <tr>
               <th>{{translate 'FORM.LABELS.COST_CENTER'}}</th>
-              <th>{{translate 'FORM.LABELS.PROFIT'}}</th>
+              <th>{{translate 'FORM.LABELS.INCOME'}}</th>
               <th>{{translate 'FORM.LABELS.EXPENSE'}}</th>
               <th>{{translate 'FORM.LABELS.BALANCE'}}</th>
             </tr>
@@ -41,7 +41,7 @@
             {{#each data as | item |}}
               <tr>
                 <td>{{ item.label }}</td>
-                <td class="text-right">{{debcred item.profit ../currencyId}}</td>
+                <td class="text-right">{{debcred item.income ../currencyId}}</td>
                 <td class="text-right">{{debcred item.expense ../currencyId}}</td>
                 <td class="text-right">{{debcred item.balance ../currencyId}}</td>
               </tr>
@@ -53,7 +53,7 @@
             {{#each totals as | total |}}
               <tr>
                 <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
-                <th class="text-right">{{debcred total.profit ../currencyId}}</th>
+                <th class="text-right">{{debcred total.income ../currencyId}}</th>
                 <th class="text-right">{{debcred total.expense ../currencyId}}</th>
                 <th class="text-right">{{debcred total.balance ../currencyId}}</th>
               </tr>

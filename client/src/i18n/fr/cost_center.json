@@ -37,8 +37,8 @@
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Centre de coût par comptes",
       "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout par comptes",
-      "COST_CENTER_PROFIT_AND_EXPENSE" : "Centre de coût profit et depense",
-      "COST_CENTER_PROFIT_AND_EXPENSE_DESCRIPTION" : "Ce rapport affiche la valeur des centres de cout selon leur profit et depense"
+      "COST_CENTER_INCOME_AND_EXPENSE" : "Centre de coût revenu et dépense direct",
+      "COST_CENTER_INCOME_AND_EXPENSE_DESCRIPTION" : "Ce rapport affiche les revenus directs et les coûts associés à chaque centre de coûts. Pour obtenir le total des coûts et des revenus par centre de coûts générateur de revenus, veuillez consulter le rapport d'analyse par étapes"
     },
     "SHOW_ALLOCATIONS_TABLE" : "Afficher le tableau des allocations ?",
     "SHOW_ALLOCATIONS_TABLE_HELP_TEXT" : "Afficher le tableau des valeurs de la base d'allocations pour chaque centre de coûts"
