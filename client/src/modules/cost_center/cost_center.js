@@ -75,7 +75,7 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
         displayName : 'ALLOCATION_METHOD',
         headerToolTip : 'ALLOCATION_METHOD_TOOLTIP',
         headerCellFilter : 'translate',
-        headerCellClass : 'allocationBasisColHeader',
+        headerCellClass : 'wrappingColHeader',
         visible : true,
         cellTemplate : '/modules/cost_center/templates/allocationBasis.tmpl.html',
       },
@@ -83,7 +83,7 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
         field : 'allocation_basis_name',
         displayName : 'ALLOCATION_BASIS',
         headerCellFilter : 'translate',
-        headerCellClass : 'allocationBasisColHeader',
+        headerCellClass : 'wrappingColHeader',
         visible : true,
       },
       {

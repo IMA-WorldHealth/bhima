@@ -59,5 +59,11 @@
     "ER_ACCESS_DENIED_ERROR" : "Access denied for the current user",
     "ER_NO_DB_ERROR" : "No database selected",
     "ER_TOO_MANY_FIELDS" : "There are many more columns"
-  }
+  },
+  "WARNINGS" : {
+    "WARN_UNIT_COST_PROBLEM_TOO_HIGH" : "The new unit cost of {{newUnitCost}} {{curr}} is much higher than the typical unit cost of {{medianUnitCost}} {{curr}}.",
+    "WARN_UNIT_COST_PROBLEM_TOO_LOW" : "The new unit cost of {{newUnitCost}} {{curr}} is much less than the typical unit cost of {{medianUnitCost}} {{curr}}.",
+    "WARN_UNIT_COST_REASON"  : " This may indicate a misunderstanding about the quantity or units of packaging for the purchase order.",
+    "WARN_UNIT_COST_CONFIRM" : " Press \"Confirm\" to accept this change or \"Cancel\" to correct the Entry"
+    }
 }
