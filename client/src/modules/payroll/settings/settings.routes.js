@@ -4,7 +4,7 @@ angular.module('bhima.routes')
     $stateProvider.state('payroll_settings', {
       url : '/payroll/setting',
       templateUrl : 'modules/payroll/settings/settings.html',
-      controller : 'StockSettingsController as PayrollSettingsCtrl',
+      controller : 'PayrollSettingsController as PayrollSettingsCtrl',
       params : { filters : [] },
     });
   }]);

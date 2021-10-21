@@ -333,11 +333,7 @@
             "BALANCE_SHEET": "Bilan",
             "BANK_ACCOUNT": "Compte Bancaire",
             "BANK": "Banque",
-<<<<<<< HEAD
             "BASE_INDEX_GROWTH_RATE": "Taux d'accroissement l'indice de base en (%) / an",
-=======
-            "BASE_INDEX_GROWTH_RATE": "Taux d'accroissement l'indice de base",
->>>>>>> 2ebee3b4a (Fix and resolve conflict)
             "BASIC_SALARY": "Salaire de base",
             "BEGINNING_VIEW_BALANCE" : "Solde Début du Grid",
             "BILLING_DATE": "Date Facturation",
@@ -649,6 +645,7 @@
             "PO_BOX": "BP",
             "POSITION": "Position",
             "POSTING_JOURNAL": "Journal",
+            "POSTING_PAYROLL_COST_CENTER": "Choisissez les différents types de manière de posté les données du Payroll dans le posting journal ainsi que l'assignation aux centres des couts ",
             "POST_OFFICE_BOX": "Boîte Postale",
             "PREFIX": "Prefix",
             "PREVIOUS_DATE": "Date precedente",

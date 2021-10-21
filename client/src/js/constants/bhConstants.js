@@ -204,5 +204,23 @@ function constantConfig() {
         comment : 'STOCK.MONTHLY_CONSUMPTION.ALGORITHM_MSH_COMMENT',
       },
     ],
+    posting_payroll_cost_center : [
+      {
+        name : 'default',
+        label : 'PAYROLL_SETTINGS.DEFAULT',
+        comment : 'PAYROLL_SETTINGS.DEFAULT_HELP_TEXT',
+      },
+      {
+        name : 'grouped',
+        label : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS',
+        comment : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS_HELP_TEXT',
+      },
+      {
+        name : 'individually',
+        label : 'PAYROLL_SETTINGS.INDIVIDUALLY_PER_EMPLOYEE',
+        comment : 'PAYROLL_SETTINGS.INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT',
+      },
+    ],
+
   };
 }

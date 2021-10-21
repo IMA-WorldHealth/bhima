@@ -16,44 +16,44 @@
           <i class="fa fa-cogs"></i> <span translate>TREE.PAYROLL_SETTINGS</span>
         </div>
         <div class="panel-body">
-          <!-- average_consumption_algo -->
-          <div id="average_consumption_algo" class="form-group"
-            ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
-            <div ng-repeat="algo in StockSettingsCtrl.algorithms" class="form-indent">
+          <!-- Type of Posting payroll cost center -->
+          <div id="posting_types" class="form-group"
+            ng-class="{'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.average_consumption_algo.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.POSTING_PAYROLL_COST_CENTER</label>
+            <div ng-repeat="type in PayrollSettingsCtrl.postingTypes" class="form-indent">
               <label class="radio-inline">
-                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
-                <span class="text-bold" translate>{{ algo.label }}</span>
+                <input type="radio" name="posting_types" id="{{type.name}}" ng-value="type.name" ng-model="PayrollSettingsCtrl.settings.posting_types" required>
+                <span class="text-bold" translate>{{ type.label }}</span>
               </label>
               <span class="help-block" translate>
-                {{algo.comment}}
+                {{type.comment}}
               </span>
             </div>
-            <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
-              ng-show="StockSettingsForm.$submitted">
+            <div class="help-block" ng-messages="PayrollSettingsForm.posting_types.$error"posting_types
+              ng-show="PayrollSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
-          <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.base_index_growth_rate.$invalid }">
+          <div class="form-group" ng-class="{ 'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.base_index_growth_rate.$invalid }">
             <label class="control-label" translate>
               FORM.LABELS.BASE_INDEX_GROWTH_RATE
             </label>
             <div class="input-group">
-              <input class="form-control" value="0" min="0" type="number" name="base_index_growth_rate" ng-model="EnterpriseCtrl.enterprise.settings.base_index_growth_rate" required>
+              <input class="form-control" value="0" min="0" type="number" name="base_index_growth_rate" ng-model="PayrollSettingsCtrl.enterprise.settings.base_index_growth_rate" required>
               <span class="input-group-addon"> % </span>
             </div>
             <span class="help-block" translate>
               SETTINGS.BASE_INDEX_GROWTH_RATE_HELP_TEXT
             </span>                
-            <div class="help-block" ng-messages="EnterpriseForm.base_index_growth_rate.$error" ng-show="EnterpriseForm.$submitted">
+            <div class="help-block" ng-messages="PayrollSettingsForm.base_index_growth_rate.$error" ng-show="PayrollSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
         </div>
 
         <div class="panel-footer" id="submission">
-          <bh-loading-button loading-state="EnterpriseForm.$loading">
+          <bh-loading-button loading-state="PayrollSettingsForm.$loading">
             <span translate>FORM.BUTTONS.UPDATE</span>
           </bh-loading-button>
         </div>
