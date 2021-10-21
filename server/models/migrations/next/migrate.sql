@@ -316,3 +316,11 @@ INSERT INTO `unit` VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-19
+ * @desc: Payroll Settings
+ */
+INSERT IGNORE INTO `unit` VALUES
+  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/stock/setting');
