@@ -20,6 +20,7 @@ function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, Ap
   vm.previewGenerated = false;
   vm.reportDetails = {
     include_revenue : false,
+    show_allocations_table : true,
     currency_id : Session.enterprise.currency_id,
   };
 
@@ -37,6 +38,10 @@ function CostCenterStepdownReportConfigController($sce, Notify, SavedReports, Ap
 
   vm.onToggleRevenueCenter = function onToggleRevenueCenter(bool) {
     vm.reportDetails.include_revenue = bool;
+  };
+
+  vm.onToggleShowAllocationsTable = function onToggleShowAllocationsTable(bool) {
+    vm.reportDetails.show_allocations_table = bool;
   };
 
   vm.onSelectCurrency = (currency) => {
