@@ -432,6 +432,19 @@ function StockEntryController(
         .then((lots) => {
           item.availableLots = lots;
           item.candidateLots = lots.filter(lot => !lot.expired);
+          return Inventory.inventoryWac(item.inventory_uuid);
+        })
+        .then(inventoryWacDetails => {
+          if (!inventoryWacDetails) { return; }
+          item.wacValue = inventoryWacDetails.wac;
+
+          // in case of transfer reception
+          // we force the movement to be made with current WAC
+          // since there is no way to edit the unit cost in this case
+          if (vm.movement.entity.type === 'transfer_reception') {
+            item.unit_cost = inventoryWacDetails.wac;
+            item.cost = item.quantity * item.unit_cost;
+          }
         });
 
       if (vm.movement.entity.type === 'transfer_reception') {
@@ -676,24 +689,32 @@ function StockEntryController(
    * @description [grid] initialize each cell of defined rows with value
    */
   function buildStockLine(line) {
-    const inventory = inventoryStore.get(line.inventory_uuid);
-    const entryDate = vm.movement.date || Date();
-    line.code = inventory.code;
-    line.label = inventory.label;
-    line.unit_cost = inventory.price;
-    line.quantity = 0;
-    line.cost = line.quantity * line.unit_cost;
-    line.expiration_date = entryDate;
-    line.unit = inventory.unit;
-    line.tracking_expiration = inventory.tracking_expiration;
-    setInitialized(line);
 
     // Store the non-expired candidate lots for this inventory code
     Lots.candidates({ inventory_uuid : line.inventory_uuid, date : vm.movement.date })
       .then((lots) => {
         line.availableLots = lots;
         line.candidateLots = lots.filter(lot => !lot.expired);
-      });
+
+        const inventory = inventoryStore.get(line.inventory_uuid);
+        const entryDate = vm.movement.date || Date();
+        line.code = inventory.code;
+        line.label = inventory.label;
+        line.unit_cost = inventory.price;
+        line.quantity = 0;
+        line.cost = line.quantity * line.unit_cost;
+        line.expiration_date = entryDate;
+        line.unit = inventory.unit;
+        line.tracking_expiration = inventory.tracking_expiration;
+        setInitialized(line);
+
+        return Inventory.inventoryWac(line.inventory_uuid);
+      })
+      .then(inventoryWacDetails => {
+        if (!inventoryWacDetails) { return; }
+        line.wac = inventoryWacDetails.wac;
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

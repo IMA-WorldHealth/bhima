@@ -110,6 +110,13 @@
             <th class="text-right">{{currency result.stock.unit_cost currencyId 4}}</th>
             <th class="text-right">{{currency result.stock.value currencyId}}</th>
           </tr>
+
+          <tr class="text-right" style="font-weight: bold; border-top: 1px solid #000;">
+            <th class="text-center" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}}><b>{{translate 'STOCK.STOCK_VALUE_WITH_WAC'}}</b></th>
+            <th class="text-right">{{result.stock.quantity}}</th>
+            <th class="text-right">{{currency wacDetails.unit_cost currencyId 4}}</th>
+            <th class="text-right">{{currency wacDetails.value currencyId}}</th>
+          </tr>
         </tfoot>
       </table>
     </div>
