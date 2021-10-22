@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('PurchaseOrderController', PurchaseOrderController);
 
 PurchaseOrderController.$inject = [
-  'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
+  'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService', 'ModalService',
   'SessionService', 'util', 'ReceiptModal', 'bhConstants', 'StockService',
-  'CurrencyService', 'ExchangeRateService', '$state', '$q',
+  'CurrencyService', 'ExchangeRateService', '$state', '$translate', '$q',
 ];
 
 /**
@@ -14,9 +14,10 @@ PurchaseOrderController.$inject = [
  * The controller binds the functionality of the PurchaseOrderForm to the purchase
  * order create/update modules.
  */
-function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
+function PurchaseOrderController(
+  Purchases, PurchaseOrder, Notify, Modal,
   Session, util, Receipts, bhConstants, Stock,
-  Currencies, Exchange, $state, $q) {
+  Currencies, Exchange, $state, $translate, $q) {
   const vm = this;
 
   vm.bhConstants = bhConstants;
@@ -32,7 +33,9 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   vm.loadingState = false;
   vm.optimalPurchase = optimalPurchase;
   vm.optimalPO = false;
+  vm.selectInventoryArticle = selectInventoryArticle;
   vm.handleChange = handleUIGridChange;
+  vm.onChangeUnitCost = onChangeUnitCost;
   vm.$invalid = false;
 
   vm.format = Currencies.format;
@@ -112,6 +115,42 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify,
   vm.onChangeShippingHandling = () => {
     vm.order.digest();
   };
+
+  function selectInventoryArticle(item) {
+    vm.order.configureItem(item);
+  }
+
+  function onChangeUnitCost(item) {
+    // Sanity check on new unit cost
+    const medianUnitCost = Number(item.stats.median_unit_cost);
+    const newUnitCost = Number(item.unit_price);
+    const allowableMinChange = 0.5; // Warn about entries that are less than half the previous unit cost
+    const allowableMaxChange = 2.0; // Warn entries that more than double the previous unit cost
+    const lowerUnitCostBound = (medianUnitCost * allowableMinChange);
+    const upperUnitCostBound = (medianUnitCost * allowableMaxChange);
+    if ((newUnitCost < lowerUnitCostBound) || (newUnitCost > upperUnitCostBound)) {
+      const msgParams = { newUnitCost, medianUnitCost, curr : vm.rate.currency.symbol };
+      const errMsg1 = newUnitCost > upperUnitCostBound
+        ? $translate.instant('WARNINGS.WARN_UNIT_COST_TOO_HIGH', msgParams)
+        : $translate.instant('WARNINGS.WARN_UNIT_COST_TOO_LOW', msgParams);
+      const errMsg = errMsg1
+        .concat($translate.instant('WARNINGS.WARN_UNIT_COST_REASON'))
+        .concat($translate.instant('WARNINGS.WARN_UNIT_COST_CONFIRM'));
+      Modal.confirm(errMsg)
+        .then(() => {
+          // Accept the new unit cost into the form
+        })
+        .catch(() => {
+          // Revert to the zero unit cost in the form and display the warning
+          item.unit_price = 0;
+          vm.errors = [errMsg1];
+          vm.form.$invalid = true;
+        });
+      return;
+    }
+
+    vm.order.digest();
+  }
 
   // this function will be called whenever items change in the grid.
   function handleUIGridChange() {
