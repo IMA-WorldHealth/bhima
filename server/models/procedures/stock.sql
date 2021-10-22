@@ -676,7 +676,7 @@ END $$
 
 /* 
  * ComputeInventoryStockValue
- * This procedure compute the stock value for a given inventory
+ * This procedure computes the stock value for a given inventory
  * and update value in the database, the value is computed
  * in the enterprise currency
  */
@@ -732,7 +732,8 @@ BEGIN
       WAC = (current stock value + the value of the new entry) / the final quantity
 
       Since all entry are made in enterprise currency we do not have to do
-      conversion here, so the wac is based on movement unit cose * 1
+      conversion here, so the wac is based on movement unit_cost * 1
+      (in other word wac is based on movement cost which is in the enterprise currency)
     */
     IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN 
       SET v_wac = ((v_quantity_in_stock * v_wac) + (v_line_quantity * v_line_unit_cost)) / (v_line_quantity + v_quantity_in_stock);
@@ -747,7 +748,7 @@ BEGIN
 
   CLOSE cursor_all_movements;
 
-  /* write the line in the database */
+  /* update the line in the database */
   DELETE FROM `stock_value` WHERE `inventory_uuid` = _inventory_uuid;
   INSERT INTO `stock_value` VALUES (_inventory_uuid, _date, v_quantity_in_stock, v_wac);
 

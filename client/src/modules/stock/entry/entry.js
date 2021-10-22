@@ -443,6 +443,7 @@ function StockEntryController(
           // since there is no way to edit the unit cost in this case
           if (vm.movement.entity.type === 'transfer_reception') {
             item.unit_cost = inventoryWacDetails.wac;
+            item.cost = item.quantity * item.unit_cost;
           }
         });
 
