@@ -13,10 +13,10 @@
  */
 
 const _ = require('lodash');
-const q = require('q');
 const debug = require('debug')('app');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
+const central = require('./odk/central');
 
 // POST /auth/login
 exports.login = loginRoute;
@@ -114,17 +114,19 @@ async function login(username, password, projectId) {
  *
  * Destroys the server side session and sets the user as inactive.
  */
-function logout(req, res, next) {
+async function logout(req, res, next) {
   const sql = 'UPDATE user SET user.active = 0 WHERE user.id = ?;';
 
-  db.exec(sql, [req.session.user.id])
-    .then(() => {
-      // destroy the session
-      req.session.destroy();
-      res.sendStatus(200);
-    })
-    .catch(next)
-    .done();
+  try {
+    const token = req.session.odk && req.session.odk.token ? req.session.odk.token : null;
+    await db.exec(sql, [req.session.user.id]);
+    await central.loggingOut(token);
+    // destroy the session
+    req.session.destroy();
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
@@ -244,6 +246,8 @@ async function loadSessionInformation(user) {
   }
 
   [session.project] = projects;
+
+  session.odk = await central.loggingIn();
 
   return session;
 }
