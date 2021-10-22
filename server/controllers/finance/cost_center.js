@@ -47,7 +47,6 @@ async function lookupCostCenter(id) {
       name : fc.allocation_basis_name,
       units : fc.allocation_basis_units,
       is_predefined : fc.allocation_basis_is_predefined,
-      // quantity???
     };
     delete fc.allocation_basis_id;
     delete fc.allocation_basis_name;
@@ -104,7 +103,6 @@ function list(req, res, next) {
           name : fc.allocation_basis_name,
           units : fc.allocation_basis_units,
           is_predefined : fc.allocation_basis_is_predefined,
-          // quantity???
         };
         delete fc.allocation_basis_id;
         delete fc.allocation_basis_name;

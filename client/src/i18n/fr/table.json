@@ -193,7 +193,7 @@
             "PROFIT_CENTER_OPERATIONS": "Exploitation par centre de profits",
             "PROJECT": "Projet",
             "PROVINCE": "Province",
-            "PURCHASE_PRICE" : "Prix d'achat",
+            "PURCHASE_UNIT_PRICE" : "Prix d'achat unitaire",
             "QUANTITY": "Quantité",
             "QUANTITY_DIFFERENCE": "Quantity Difference",
             "QUANTITY_DISTRIBUTED": "Quantité distribuée",
