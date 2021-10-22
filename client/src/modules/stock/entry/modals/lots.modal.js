@@ -285,8 +285,11 @@ function StockDefineLotsModalController(
 
   function onChangeUnitCost() {
     // Sanity check on new unit cost
-    const medianUnitCost = Number(vm.stockLine.stats.median_unit_cost);
+    const prevPurchases = vm.stockLine.stats.median_unit_cost !== null;
+    // NOTE: If there are no previous purchases, there is no purchase history to rely on
+    // for sanity checks so use the unit cost was from the purchase order for the sanity check
     const prevUnitCost = Number(vm.stockLine.prev_unit_cost);
+    const medianUnitCost = prevPurchases ? Number(vm.stockLine.stats.median_unit_cost) : prevUnitCost;
     const newUnitCost = Number(vm.stockLine.unit_cost);
     const allowableMinChange = 0.5; // Warn about entries that are less than half the previous unit cost
     const allowableMaxChange = 2.0; // Warn entries that more than double the previous unit cost
