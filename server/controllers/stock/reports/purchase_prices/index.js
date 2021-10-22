@@ -79,6 +79,7 @@ async function report(req, res, next) {
     ]);
 
     // Compute the median unit cost
+    // Note: the median_price will be 'null' if there is no purchase history
     const unitCosts = entries.map(item => Number(item.unit_cost));
     totals.median_price = util.median(unitCosts);
 
