@@ -44,6 +44,13 @@ describe('PurchaseOrderForm', () => {
 
     httpBackend.when('GET', '/inventory/metadata/?locked=0')
       .respond(200, Mocks.inventories());
+
+    httpBackend.when('GET', '/inventory/d03e7870-0c8e-47d4-a7a8-a17a9924b3f4/unit_cost')
+      .respond(200, { stats : { median_unit_price : 1.0 } });
+    httpBackend.when('GET', '/inventory/5bcfb8b5-1ac0-49fa-8668-dad254a7de3d/unit_cost')
+      .respond(200, { stats : { median_unit_price : 1.0 } });
+    httpBackend.when('GET', '/inventory/d2f7ef71-6f3e-44bd-8056-378c5ca26e20/unit_cost')
+      .respond(200, { stats : { median_unit_price : 1.0 } });
   }));
 
   beforeEach(() => {
@@ -104,6 +111,7 @@ describe('PurchaseOrderForm', () => {
     const item = form.addItem();
     item.inventory_uuid = form.inventory.available.data[0].uuid;
     form.configureItem(item);
+    httpBackend.flush();
 
     // Now that we have added the item, the count should be 1
     expect(form.store.data.length).to.equal(1);
@@ -126,6 +134,7 @@ describe('PurchaseOrderForm', () => {
     const item1 = form.addItem();
     item1.inventory_uuid = uuid1;
     form.configureItem(item1);
+    httpBackend.flush();
     item1.quantity = 2;
     item1.unit_price = 2.30;
     item1._hasValidAccounts = true;
@@ -139,6 +148,7 @@ describe('PurchaseOrderForm', () => {
     const item2 = form.addItem();
     item2.inventory_uuid = uuid2;
     form.configureItem(item2);
+    httpBackend.flush();
     item2.quantity = 3;
     item2.unit_price = 3.50;
     item2._hasValidAccounts = true;
@@ -179,6 +189,7 @@ describe('PurchaseOrderForm', () => {
     item1._valid = true;
     item1._invalid = !item1._valid;
     form.configureItem(item1);
+    httpBackend.flush();
     item1.quantity = quantity1;
     item1._hasValidAccounts = true;
     item1._initialised = true;
@@ -205,6 +216,7 @@ describe('PurchaseOrderForm', () => {
     item2._valid = true;
     item2._invalid = !item1._valid;
     form.configureItem(item2);
+    httpBackend.flush();
     item2.quantity = quantity2;
     item2._hasValidAccounts = true;
     item2._initialised = true;

@@ -64,6 +64,6 @@
     "WARN_UNIT_COST_TOO_HIGH" : "Le nouveau coût unitaire de {{newUnitCost}} {{curr}} est beaucoup plus élevé que le coût unitaire typique de {{medianUnitCost}} {{curr}}.",
     "WARN_UNIT_COST_TOO_LOW" : "Le nouveau coût unitaire de {{newUnitCost}} {{curr}} est beaucoup moins élevé que le coût unitaire typique de {{medianUnitCost}} {{curr}}.",
     "WARN_UNIT_COST_REASON"  : " Cela peut indiquer un malentendu sur la quantité ou les unités d'emballage pour le bon de commande.",
-    "WARN_UNIT_COST_CONFIRM" : " Appuyez sur \"Confirmer\" pour accepter ce changement ou sur \"Annuler\" pour corriger l'entrée."
+    "WARN_UNIT_COST_CONFIRM" : " Appuyez sur \"Confirmer\" pour accepter ce changement ou sur \"Annuler\" pour corriger la valeur."
     }
 }
