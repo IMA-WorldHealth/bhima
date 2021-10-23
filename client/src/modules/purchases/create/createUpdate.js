@@ -17,7 +17,8 @@ PurchaseOrderController.$inject = [
 function PurchaseOrderController(
   Purchases, PurchaseOrder, Notify, Modal,
   Session, util, Receipts, bhConstants, Stock,
-  Currencies, Exchange, $state, $translate, $q) {
+  Currencies, Exchange, $state, $translate, $q,
+) {
   const vm = this;
 
   vm.bhConstants = bhConstants;
