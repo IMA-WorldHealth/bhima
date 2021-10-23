@@ -36,7 +36,9 @@
     "INCLUDE_REVENUE_ACCOUNTS_HELP_TEXT" : "This will include also the revenues accounts to expenses accounts list",
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Cost center value by accounts",
-      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "This report displays cost center value by accounts"
+      "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "This report displays cost center value by accounts",
+      "COST_CENTER_INCOME_AND_EXPENSE" : "Cost center direct revenue and expense",
+      "COST_CENTER_INCOME_AND_EXPENSE_DESCRIPTION" : "This report displays the direct revenue and costs associated with each cost center. To get the total costs and revenue by revenue-generating cost center, please see the step-down analysis report"
     },
     "SHOW_ALLOCATIONS_TABLE" : "Show allocations table?",
     "SHOW_ALLOCATIONS_TABLE_HELP_TEXT" : "Show the table of allocation basis values for each cost center"
