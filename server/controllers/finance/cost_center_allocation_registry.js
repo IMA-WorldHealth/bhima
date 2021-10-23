@@ -82,7 +82,7 @@ async function fetch(session, params) {
   const hView = [];
   let totalAfterAllocation = 0;
 
-  // heck to get the correct number of colums
+  // heck to get the correct number of columns
   const numAuxiliaryCenters = data.filter(value => !value.is_principal).length;
 
   for (let i = 0; i < data.length; i++) {
@@ -123,14 +123,25 @@ async function fetch(session, params) {
   // cost center allocation keys details
   const { costCenterList, costCenterIndexes } = await ccAllocationKeys.fetch();
 
+  // Transpose the allocation columns
+  const allocationColumns = costCenterIndexes.map(item => item.index);
+  const allocationRows = [];
+  costCenterList.forEach((cName, i) => {
+    allocationRows.push({
+      centerName : cName,
+      allocationValues : costCenterIndexes.map(item => (item.distribution ? item.distribution[i].value : null)),
+    });
+  });
+
   return {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
     currencyId : params.currency_id,
+    showAllocationsTable : Number(params.show_allocations_table),
     data,
     cumulatedAllocatedCosts,
-    costCenterIndexes,
-    costCenterList,
+    allocationColumns,
+    allocationRows,
     directCostTotal,
     totalAfterAllocation,
     hView,

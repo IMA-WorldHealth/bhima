@@ -20,16 +20,16 @@
           <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
         </h4>
 
+        {{#if this.rate}}
         <h5 class="text-center">
-          {{#if this.rate}}
             {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
             {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
             <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
-          {{/if}}
         </h5>
+        {{/if}}
 
         {{!-- VIEW OF COST CENTER ALLOCATION --}}
-        <p>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</p>
+        <p><strong>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</strong></p>
         <p>P : {{translate 'COST_CENTER.PRINCIPAL'}}</p>
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
@@ -88,30 +88,32 @@
           </tfoot>
         </table>
 
+        {{#if this.showAllocationsTable}}
         <hr>
 
-        <p><i>{{translate 'COST_CENTER.ALLOCATION_BASIS_TABLE'}}</i></p>
+        <p><strong>{{translate 'COST_CENTER.ALLOCATION_BASIS_TABLE'}}</strong></p>
 
-        <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
+        <table style="width: auto; page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
             <tr>
-              <th>{{translate 'COST_CENTER.ALLOCATION_BASIS'}}</th>
-              {{#each costCenterList as | value |}}
-                <th>{{ value }}</th>
+              <th>{{translate 'COST_CENTER.TITLE'}}</th>
+              {{#each allocationColumns as | value |}}
+                <th>{{translate value }}</th>
               {{/each}}
             </tr>
           </thead>
           <tbody>
-            {{#each costCenterIndexes as | fcIndex |}}
+            {{#each allocationRows as | row |}}
               <tr>
-                <td>{{translate fcIndex.index }}</td>
-                {{#each fcIndex.distribution as | dist |}}
-                  <td class="text-right">{{ dist.value }}</td>
+                <td>{{translate row.centerName }}</td>
+                {{#each row.allocationValues as | value |}}
+                  <td class="text-right">{{ value }}</td>
                 {{/each}}
               </tr>
             {{/each}}
           </tbody>
         </table>
+        {{/if}}
       </div>
     </div>
   </div>

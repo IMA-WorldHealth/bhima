@@ -36,6 +36,14 @@
               on-change-callback="ReportConfigCtrl.onToggleRevenueCenter(value)">
             </bh-yes-no-radios>
 
+            <bh-yes-no-radios
+              label="COST_CENTER.SHOW_ALLOCATIONS_TABLE"
+              value="ReportConfigCtrl.reportDetails.show_allocations_table"
+              name="show_allocations_table"
+              help-text="COST_CENTER.SHOW_ALLOCATIONS_TABLE_HELP_TEXT"
+              on-change-callback="ReportConfigCtrl.onToggleShowAllocationsTable(value)">
+            </bh-yes-no-radios>
+
             <!-- currency selection -->
             <bh-currency-select
               currency-id="ReportConfigCtrl.reportDetails.currency_id"
