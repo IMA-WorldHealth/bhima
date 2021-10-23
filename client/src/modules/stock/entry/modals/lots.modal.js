@@ -17,6 +17,10 @@ function StockDefineLotsModalController(
   const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
+  if (Data.stockLine.wac) {
+    Data.stockLine.unit_cost = Data.stockLine.wac;
+  }
+
   const tracking = Data.stockLine.tracking_expiration;
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
 
@@ -127,6 +131,8 @@ function StockDefineLotsModalController(
       .then((currencies) => {
         vm.currency = currencies.find(curr => curr.id === vm.currencyId);
         vm.currency.label = Currencies.format(vm.currencyId);
+        const rate = ExchangeRate.getExchangeRate(vm.currencyId, new Date());
+        vm.wacValue = rate * Data.stockLine.wacValue;
       })
       .catch(Notify.handleError);
 
@@ -354,7 +360,7 @@ function StockDefineLotsModalController(
     // on the quantity, since the "min" property is set on the input.  So, we
     // need to through a generic error here.
     if (form.$invalid) {
-      return 0;
+      return null;
     }
 
     // Handle differences in selecting vs creating lots
@@ -366,28 +372,26 @@ function StockDefineLotsModalController(
       }
     });
 
-    if (vm.errors.length === 0) {
-
-      // Maybe update some lot expiration dates
-      const promises = [];
-      if (vm.editExpirationDates) {
-        vm.form.rows.forEach((row) => {
-          const existingLot = getExistingLot(row.lot);
-          if (existingLot && (row.expiration_date !== existingLot.expiration_date)) {
-            promises.push(Lots.update(existingLot.uuid, { expiration_date : row.expiration_date }));
-          }
-        });
-      }
-      return Promise.all(promises)
-        .then(() => {
-          saveSetting();
-          Instance.close({
-            lots : vm.form.rows,
-            unit_cost : vm.stockLine.unit_cost,
-            quantity : vm.form.total(),
-          });
-        });
+    // Maybe update some lot expiration dates
+    const promises = [];
+    if (vm.editExpirationDates) {
+      vm.form.rows.forEach((row) => {
+        const existingLot = getExistingLot(row.lot);
+        if (existingLot && (row.expiration_date !== existingLot.expiration_date)) {
+          promises.push(Lots.update(existingLot.uuid, { expiration_date : row.expiration_date }));
+        }
+      });
     }
+    return Promise.all(promises)
+      .then(() => {
+        saveSetting();
+        Instance.close({
+          lots : vm.form.rows,
+          unit_cost : vm.stockLine.unit_cost,
+          quantity : vm.form.total(),
+        });
+      })
+      .catch(Notify.handleError);
   }
 
   function saveSetting() {

@@ -674,4 +674,149 @@ CREATE PROCEDURE GetAMC(
     _initial_quantity AS quantity_at_beginning;
 END $$
 
+/* 
+ * ComputeInventoryStockValue
+ * This procedure computes the stock value for a given inventory
+ * and update value in the database, the value is computed
+ * in the enterprise currency
+ */
+DROP PROCEDURE IF EXISTS ComputeInventoryStockValue$$
+CREATE PROCEDURE ComputeInventoryStockValue(
+  IN _inventory_uuid BINARY(16),
+  IN _date DATE
+)
+BEGIN 
+  DECLARE v_cursor_all_movements_finished INTEGER DEFAULT 0;
+  
+  DECLARE v_quantity_in_stock INT(11) DEFAULT 0;
+  DECLARE v_wac DECIMAL(19, 4) DEFAULT 0;
+  DECLARE v_is_exit TINYINT(1) DEFAULT 0;
+
+  DECLARE v_line_quantity INT(11);
+  DECLARE v_line_unit_cost DECIMAL(19, 4);
+  DECLARE v_line_is_exit TINYINT(1);
+
+  DECLARE cursor_all_movements CURSOR FOR
+    SELECT sm.quantity, sm.unit_cost, sm.is_exit
+    FROM stock_movement AS sm
+    JOIN lot AS l ON l.uuid = sm.lot_uuid
+    JOIN depot d ON d.uuid = sm.depot_uuid
+    WHERE
+      l.inventory_uuid = _inventory_uuid AND DATE(sm.date) <= DATE(_date)
+    ORDER BY DATE(sm.date), sm.created_at ASC;
+  
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_all_movements_finished = 1;
+
+  OPEN cursor_all_movements;
+
+  loop_cursor_all_movements : LOOP
+    FETCH cursor_all_movements INTO v_line_quantity, v_line_unit_cost, v_line_is_exit;
+
+    IF v_cursor_all_movements_finished = 1 THEN
+      LEAVE loop_cursor_all_movements;
+    END IF;
+
+    IF v_line_is_exit <> 0 THEN 
+      SET v_is_exit = -1;
+    ELSE 
+      SET v_is_exit = 1;
+    END IF;
+
+    /*
+      WAC calculation is performed for new entries
+
+      v_quantity_in_stock will contains cumulative quantity for our movements
+      in case of entry v_quantity_in_stock will be incremented else v_quantity_in_stock
+      will keep its last value, the v_quanitity_in_stock is initialized with 0
+
+      WAC = (current stock value + the value of the new entry) / the final quantity
+
+      Since all entry are made in enterprise currency we do not have to do
+      conversion here, so the wac is based on movement unit_cost * 1
+      (in other word wac is based on movement cost which is in the enterprise currency)
+    */
+    IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN 
+      SET v_wac = ((v_quantity_in_stock * v_wac) + (v_line_quantity * v_line_unit_cost)) / (v_line_quantity + v_quantity_in_stock);
+    ELSEIF v_line_is_exit = 0 AND v_quantity_in_stock = 0 THEN
+      SET v_wac = (v_line_unit_cost * 1);
+    END IF;
+
+    SET v_quantity_in_stock = v_quantity_in_stock + (v_line_quantity * v_is_exit);
+    SET v_line_quantity = v_quantity_in_stock;
+
+  END LOOP loop_cursor_all_movements;
+
+  CLOSE cursor_all_movements;
+
+  /* update the line in the database */
+  DELETE FROM `stock_value` WHERE `inventory_uuid` = _inventory_uuid;
+  INSERT INTO `stock_value` VALUES (_inventory_uuid, _date, v_quantity_in_stock, v_wac);
+
+END $$
+
+DROP PROCEDURE IF EXISTS RecomputeInventoryStockValue$$
+CREATE PROCEDURE RecomputeInventoryStockValue(
+  IN _inventory_uuid BINARY(16),
+  IN _date DATE
+)
+BEGIN 
+
+  IF _date IS NOT NULL THEN 
+    CALL ComputeInventoryStockValue(_inventory_uuid, _date);
+  ELSE 
+    CALL ComputeInventoryStockValue(_inventory_uuid, CURRENT_DATE());
+  END IF;
+
+END $$
+
+DROP PROCEDURE IF EXISTS RecomputeAllInventoriesValue$$
+CREATE PROCEDURE RecomputeAllInventoriesValue(
+  IN _date DATE
+)
+BEGIN
+  DECLARE v_cursor_finished INTEGER DEFAULT 0;
+
+  DECLARE v_inventory_uuid BINARY(16);
+
+  DECLARE cursor_all_inventories CURSOR FOR
+    SELECT inv.uuid AS inventory_uuid
+    FROM stock_movement AS sm
+    JOIN lot AS l ON l.uuid = sm.lot_uuid
+    JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
+    JOIN document_map AS map ON map.uuid = sm.document_uuid
+    WHERE DATE(sm.date) <= DATE(_date)
+    GROUP BY inv.uuid;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_finished = 1;
+
+  OPEN cursor_all_inventories;
+
+  loop_cursor_all_inventories : LOOP 
+    FETCH cursor_all_inventories INTO v_inventory_uuid;
+
+    IF v_cursor_finished = 1 THEN
+      LEAVE loop_cursor_all_inventories;
+    END IF;
+
+    CALL RecomputeInventoryStockValue(v_inventory_uuid, _date);
+
+  END LOOP;
+
+  CLOSE cursor_all_inventories;
+END $$
+
+DROP PROCEDURE IF EXISTS RecomputeStockValue$$
+CREATE PROCEDURE RecomputeStockValue(
+  IN _date DATE
+)
+BEGIN 
+
+  IF _date IS NOT NULL THEN 
+    CALL RecomputeAllInventoriesValue(_date);
+  ELSE 
+    CALL RecomputeAllInventoriesValue(CURRENT_DATE());
+  END IF;
+
+END $$
+
 DELIMITER ;

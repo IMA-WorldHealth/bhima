@@ -46,6 +46,8 @@
       "LOCKED_DEBTOR_GROUP_ACCOUNT" : "Ces transactions utilisent un compte d'un groupe de débiteurs verrouillé et peuvent avoir été faites par erreur. Pour corriger cela, modifiez les transactions ou déverrouillez le groupe de débiteurs.",
       "LOCKED_PERIOD" : "Periodes(s) verrouille(s)",
       "MISSING_ACCOUNTS" : "Compte(s) omis",
+      "MISSING_COST_CENTER" : "L'opération concerne un compte de produits ou de charges qui n'a pas de centre de coûts associé.",
+      "INVALID_COST_CENTER" : "Les centres de coûts sont associés à des comptes qui ne sont pas des comptes de revenus ou de dépenses.",
       "MISSING_DATES" : "Date(s) manquante(s)",
       "MISSING_DESCRIPTION" : "Descriptions omises",
       "MISSING_DOCUMENT_ID" : "Ligne(s) sans ID Document",
