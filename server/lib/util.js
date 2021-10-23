@@ -40,6 +40,9 @@ exports.formatCsvToJson = formatCsvToJson;
 exports.createDirectory = createDirectory;
 
 exports.getRandomColor = getRandomColor;
+
+exports.median = median;
+
 /**
  * @function take
  *
@@ -251,6 +254,40 @@ function getRandomColor() {
   const b = Math.floor(Math.random() * 255);
   return `rgb(${r},${g},${b})`;
 }
+
+/**
+ * @function median
+ *
+ * @description
+ * Returns the median of the values in an array.
+ * The median off an array is the middle value of the
+ * sorted array (or average of the two values bracketing
+ * the middle of an array with an even number of entries).
+ *
+ * If the array is empty, return null!
+ *
+ * @param {Array} arrayIn - the array of values (not changed)
+ *
+ * @return {number} returns the median value of the array
+ */
+function median(arrayIn) {
+  if (arrayIn.length === 0) {
+    return null;
+  }
+  const array = [...arrayIn].sort(); // Make a sorted of the input array
+  const len = array.length;
+  if (len % 2 === 0) {
+    const center = (len / 2) - 1;
+    return (array[center] + array[center + 1]) / 2;
+  }
+  const center = (len - 1) / 2;
+  return array[center];
+}
+
+// const count = unitCosts.length;
+// const medianUnitCost = count % 2 === 0
+//   ? (unitCosts[count / 2 - 1] + unitCosts[count / 2]) / 2
+//   : unitCosts[(count - 1) / 2];
 
 /**
  * @function uuid
