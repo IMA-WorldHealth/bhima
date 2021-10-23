@@ -37,7 +37,9 @@
     "REPORT" : {
       "COST_CENTER_BY_ACCOUNTS" : "Cost center value by accounts",
       "COST_CENTER_BY_ACCOUNTS_DESCRIPTION" : "This report displays cost center value by accounts"
-    }
+    },
+    "SHOW_ALLOCATIONS_TABLE" : "Show allocations table?",
+    "SHOW_ALLOCATIONS_TABLE_HELP_TEXT" : "Show the table of allocation basis values for each cost center"
   },
   "ALLOCATION_METHOD": "Allocation method",
   "ALLOCATION_METHOD_FLAT": "Flat",
