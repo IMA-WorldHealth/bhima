@@ -63,6 +63,8 @@ exports.getInventoryUnitCosts = getInventoryUnitCosts;
 exports.importing = importing;
 
 exports.logs = inventoryLog;
+exports.wac = getInventoryWac;
+exports.computeWac = computeWac;
 exports.logDownLoad = logDownLoad;
 
 // ======================= inventory metadata =============================
@@ -98,6 +100,35 @@ function inventoryLog(req, res, next) {
   core.inventoryLog(req.params.uuid).then(logs => {
     res.status(200).json(logs);
   }).catch(next);
+}
+
+/**
+ * return inventory WAC from stock_value table
+ */
+async function getInventoryWac(req, res, next) {
+  try {
+    const data = await computeWac(req.params.uuid);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function computeWac(inventoryUuid) {
+  const binaryInventoryUuid = db.bid(inventoryUuid);
+  const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?);';
+  const querySelect = `
+    SELECT 
+      BUID(sv.inventory_uuid) inventory_uuid,
+      i.text, sv.date, sv.quantity, sv.wac
+    FROM stock_value sv
+    JOIN inventory i ON i.uuid = sv.inventory_uuid
+    WHERE sv.inventory_uuid = ?;
+  `;
+
+  await db.exec(queryRecompute, [binaryInventoryUuid, new Date()]);
+  const data = await db.exec(querySelect, [binaryInventoryUuid]);
+  return data[0];
 }
 
 // get inventory log as excel

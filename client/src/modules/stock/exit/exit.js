@@ -572,7 +572,7 @@ function StockExitController(
       inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
       uuid : row.lot.uuid,
       quantity : row.quantity,
-      unit_cost : row.lot.unit_cost,
+      unit_cost : row.inventory.wac,
     };
   }
 
