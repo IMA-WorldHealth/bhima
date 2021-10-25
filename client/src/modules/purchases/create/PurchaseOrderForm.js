@@ -324,6 +324,13 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     // so we need to fix the unit price.
     item.unit_price = inventoryItem.price * this.currentExchangeRate;
 
+    // Look up the stats for this article of inventory
+    Inventory.getInventoryUnitCosts(item.inventory_uuid)
+      .then(({ stats }) => {
+        // Save the stats for later checks
+        item.stats = stats;
+      });
+
     // make sure to validate and calculate new totals
     this.digest();
   };

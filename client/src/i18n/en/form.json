@@ -561,6 +561,7 @@
             "MAX_CREDIT": "Max Credit",
             "MAX_PRICE" : "Max Price",
             "MAX_UNIT_PRICE" : "Max Unit Price",
+            "MEDIAN_UNIT_PRICE": "Median Unit Price",
             "MEDICAL_NONMEDICAL_STAFF": "Medical and Non-Medical Staff",
             "MEDICAL_SHEETS": "Medical Sheets",
             "MEDICAL_STAFF": "Medical Staff",
