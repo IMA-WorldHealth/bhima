@@ -64,7 +64,7 @@
     "COST_CENTER_MANAGEMENT": "Gestion des centres de coût",
     "COST_CENTER_REPORT": "Rapport des centres de coût",
     "COST_CENTER_ACCOUNTS_REPORT": "Centres de coût par comptes",
-    "COST_CENTER_PROFIT_EXPENSE_REPORT": "Centres de coût profit et charge",
+    "COST_CENTER_INCOME_EXPENSE_REPORT": "Centres de coût récette et charge",
     "COST_CENTER_STEPDOWN": "Allocations des centres de coût",
     "FILL_FORM": "Remplir le formulaire",
     "FINANCE":"Finances",

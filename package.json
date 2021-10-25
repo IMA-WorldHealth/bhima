@@ -98,7 +98,7 @@
     "angular-ui-grid": "^4.11.0",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.0",
-    "chart.js": "^3.5.1",
+    "chart.js": "^3.6.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "connect-redis": "^6.0.0",
     "cron": "^1.7.1",

@@ -20,13 +20,7 @@
           <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
         </h4>
 
-        <h5 class="text-center">
-          {{#if this.lastRateUsed}}
-            {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
-            {{currency 1 this.firstCurrency}} = {{currency this.lastRateUsed this.secondCurrency}}
-            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
-          {{/if}}
-        </h5>
+        {{> exchangeRate lastRateUsed=lastRateUsed firstCurrency=firstCurrency secondCurrency=secondCurrency dateTo=dateTo}}
 
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>
