@@ -22,7 +22,7 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
 
   vm.today = new Date();
 
-  vm.primaryExchange = {};
+  vm.primaryExchange = [];
 
   // this limits the number of places that the page displays for the exchange rate
   vm.EXCHANGE_RATE_DISPLAY_SIZE = 6;
@@ -31,13 +31,6 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
   vm.project = Session.project;
   vm.user = Session.user;
   vm.enterprise = Session.enterprise;
-  /*
-    vm.isFirstCurencyLabel is used to check the exchange Rate
-    is lower then 1  the program show display something
-    much better for reading
-  */
-  vm.isFirstCurencyLabel = false;
-
   // load exchange rates
   Currencies.read(true)
     .then((currencies) => {
@@ -51,24 +44,20 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
     })
     .then(() => {
       vm.currencies.forEach((currency) => {
+        /*
+          currency.isFirstCurencyLabel is used to check the exchange Rate
+          is lower then 1  the program show display something
+          much better for reading
+        */
+        currency.isFirstCurencyLabel = false;
         const exchange = Rates.getCurrentExchange(currency.id);
         currency.rate = exchange.rate;
         currency.date = exchange.date;
-        /*
-          Let check is the currency rate is lower the 1
-          so that we could format it in a readable way
-        */
-
-        if (currency.rate < 1) {
-          currency.rate = (1 / currency.rate);
-          vm.isFirstCurencyLabel = true;
-        }
-
         currency.formattedDate = new Moment(currency.date).format('LL');
       });
 
       // @TODO Method for selecting primary exchange
-      [vm.primaryExchange] = vm.currencies;
+      vm.primaryExchange = vm.currencies;
 
     })
     .catch(err => {
