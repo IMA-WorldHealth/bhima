@@ -201,6 +201,11 @@ function InventoryService(
     return $httpParamSerializer(options);
   };
 
+  service.getInventoryUnitCosts = function getInventoryUnitCosts(uuid) {
+    return service.$http.get(`/inventory/${uuid}/unit_cost`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   // delete an inventory
   function remove(uuid) {
     return service.$http.delete('/inventory/metadata/'.concat(uuid));
