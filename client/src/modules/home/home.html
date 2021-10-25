@@ -62,22 +62,20 @@
       <div class="col-md-4">
 
         <div class="panel panel-default segment ima-stat-card">
-          <div class="panel-body text-center">
+          <div class="panel-body text-center" style="min-height: 124px;">
             <div class="segment-title" translate>TABLE.COLUMNS.EXCHANGE_RATE</div>
-            <div class="ui huge statistic" title="{{ HomeCtrl.primaryExchange.rate}} ({{ HomeCtrl.primaryExchange.symbol }})">
+            <div 
+              ng-repeat="currency in HomeCtrl.primaryExchange"
+              class="col-sm-12" title="{{ HomeCtrl.primaryExchange.rate}} ({{ currency.symbol }})">
 
-              <div class="value" ng-show ='!HomeCtrl.isFirstCurencyLabel'>
-                {{ HomeCtrl.primaryExchange.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }}({{ HomeCtrl.primaryExchange.symbol }})</div>
-
-                <div class="value" style='font-size:45px !important; padding-top:16px' ng-show ='HomeCtrl.isFirstCurencyLabel'>
-
-               1{{HomeCtrl.primaryExchange.symbol}} = {{ HomeCtrl.primaryExchange.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }}({{ HomeCtrl.enterprise.currencySymbol }})
-
+              <div class="exchange-rate" ng-show ='!currency.isFirstCurencyLabel'>
+               1{{HomeCtrl.enterprise.currencySymbol}} = {{ currency.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }}{{ currency.symbol }}
               </div>
 
-
-
-              <div class="uilabel"><span translate>HOME.EXCHANGE_SET</span> {{ HomeCtrl.primaryExchange.formattedDate }}</div>
+              <div class="exchange-rate" ng-show ='currency.isFirstCurencyLabel'>
+                1{{currency.symbol}} = {{ currency.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }}{{ HomeCtrl.enterprise.currencySymbol }}
+               </div>
+              <div><span translate>HOME.EXCHANGE_SET</span> {{ currency.formattedDate }}</div>
             </div>
           </div>
         </div>
