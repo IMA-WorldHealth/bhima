@@ -16,20 +16,20 @@
           <i class="fa fa-cogs"></i> <span translate>TREE.PAYROLL_SETTINGS</span>
         </div>
         <div class="panel-body">
-          <!-- Type of Posting payroll cost center -->
-          <div id="posting_types" class="form-group"
-            ng-class="{'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.average_consumption_algo.$invalid }">
+          <!-- Posting Payroll Cost Center Mode -->
+          <div id="posting_payroll_cost_center_mode" class="form-group"
+            ng-class="{'has-error' : PayrollSettingsForm.$submitted && PayrollSettingsForm.posting_payroll_cost_center_mode.$invalid }">
             <label class="control-label" translate>FORM.LABELS.POSTING_PAYROLL_COST_CENTER</label>
-            <div ng-repeat="type in PayrollSettingsCtrl.postingTypes" class="form-indent">
+            <div ng-repeat="mode in PayrollSettingsCtrl.postingPayrollCostCenterMode" class="form-indent">
               <label class="radio-inline">
-                <input type="radio" name="posting_types" id="{{type.name}}" ng-value="type.name" ng-model="PayrollSettingsCtrl.settings.posting_types" required>
-                <span class="text-bold" translate>{{ type.label }}</span>
+                <input type="radio" name="posting_payroll_cost_center_mode" id="{{mode.name}}" ng-value="mode.name" ng-model="PayrollSettingsCtrl.enterprise.settings.posting_payroll_cost_center_mode" required>
+                <span class="text-bold" translate>{{ mode.label }}</span>
               </label>
               <span class="help-block" translate>
-                {{type.comment}}
+                {{mode.comment}}
               </span>
             </div>
-            <div class="help-block" ng-messages="PayrollSettingsForm.posting_types.$error"posting_types
+            <div class="help-block" ng-messages="PayrollSettingsForm.posting_payroll_cost_center_mode.$error"posting_types
               ng-show="PayrollSettingsForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
@@ -50,6 +50,14 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
+
+          <bh-yes-no-radios
+            label="PAYROLL_SETTINGS.ENABLE_INDEX_PAYMENT_SYSTEM"
+            value="PayrollSettingsCtrl.enterprise.settings.enable_index_payment_system"
+            name="enable_index_payment_system"
+            on-change-callback="PayrollSettingsCtrl.enableIndexPaymentSetting(value)">
+          </bh-yes-no-radios>
+
         </div>
 
         <div class="panel-footer" id="submission">
