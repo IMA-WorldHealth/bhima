@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PayrollSettingsController', PayrollSettingsController);
 
 PayrollSettingsController.$inject = [
-  'PayrollSettingsService', 'EnterpriseService', 'util', 'NotifyService', 'SessionService', 'bhConstants',
+  'EnterpriseService', 'NotifyService', 'SessionService', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ PayrollSettingsController.$inject = [
  * This module is a for getting/updating the parameters/settings related to Payroll
  */
 function PayrollSettingsController(
-  PayrollSettings, Enterprises, util, Notify, Session, bhConstants,
+  Enterprises, Notify, Session, bhConstants,
 ) {
   const vm = this;
 
