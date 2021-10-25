@@ -1023,9 +1023,10 @@ td.center {
 /* -------------------------------------
     Segment Statistic Card
 --------------------------------------- */
-.ima-stat-card .ui.statistic > .value {
+.ima-stat-card .ui.statistic > .value, .exchange-rate {
   color: var(--ima-blue);
 }
+
 .ima-stat-card .ui.statistic > .ui-hidable-label {
   color: black;
 }
@@ -1038,6 +1039,9 @@ td.center {
   color: white;
 }
 
+.exchange-rate {
+  font-size: 19px !important;
+}
 .voucher-tools-top-spacer {
   margin-top: 20px;
 }
