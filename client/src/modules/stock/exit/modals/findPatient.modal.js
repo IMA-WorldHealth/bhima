@@ -59,7 +59,7 @@ function StockFindPatientModalController(Instance, Patients, Notify, Data, AppCa
 
   function findDetailInvoice(invoice) {
     const parameters = {
-      invoiceReference : invoice.reference,
+      invoiceUuid : invoice.uuid,
       patientUuid : vm.selected.uuid,
     };
 
