@@ -42,27 +42,22 @@ module.exports = {
     documentPath : '/reports/finance/financial_patient/',
     redirectPath : '/#!/patients/?',
   },
-  DOCUMENT : {
-    key : 'DO',
-  },
   STOCK_ASSIGN : {
     key : 'SA',
     table : 'stock_assign',
   },
-  STOCK_ENTRY : {
-    key : 'SN',
-  },
-  STOCK_EXIT : {
-    key : 'SX',
-  },
+  STOCK_ENTRY : { key : 'SN' }, // TODO - make these both just SM
+  STOCK_EXIT : { key : 'SX' }, // TODO - make these both just SM
   STOCK_MOVEMENT : {
     key : 'SM',
     table : 'stock_movement',
     documentPath : '/receipts/stock/',
     redirectPath : '/#/stock/movements',
   },
-  STOCK_LOT : {
-    key : 'SL',
+  LOT : {
+    key : 'LT',
+    table : 'lot',
+    redirectPath : '/#/stock/lots',
   },
   INVENTORY_ITEM : {
     key   : 'II',
