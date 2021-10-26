@@ -1,15 +1,16 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
     <div class="modal-header">
       <ol class="headercrumb">
+        <li class="static" translate>TREE.STOCK</li>
         <li class="static" translate>LOTS.DETAILS</li>
-        <li class="title">{{$ctrl.model.inventory_code}} - {{$ctrl.model.inventory_text}}</li>
+        <li class="title">{{$ctrl.model.inventory_code}} - {{$ctrl.model.inventory_name}}</li>
       </ol>
     </div>
 
     <div class="modal-body">
       <div class="form-group">
         <label class="control-label" translate>FORM.LABELS.INVENTORY</label>
-        <p>{{$ctrl.model.inventory_text}}</p>
+        <p>{{$ctrl.model.inventory_code}} - {{$ctrl.model.inventory_name}}</p>
       </div>
 
       <div class="form-group"
