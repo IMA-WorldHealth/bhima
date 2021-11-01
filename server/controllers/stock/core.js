@@ -54,6 +54,7 @@ module.exports = {
   getInventoryQuantityAndConsumption,
   getInventoryMovements,
   getDailyStockConsumption,
+  lookupLotByUuid,
 };
 
 /**
@@ -162,6 +163,11 @@ function getLotFilters(parameters) {
   filters.equals('user_id', 'user_id', 'm');
 
   return filters;
+}
+
+async function lookupLotByUuid(uid) {
+  const [lot] = await getLots(null, { uuid : uid });
+  return lot;
 }
 
 /**
