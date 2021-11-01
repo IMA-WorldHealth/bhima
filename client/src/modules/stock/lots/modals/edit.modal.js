@@ -19,7 +19,6 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
   vm.trackingExpiration = true;
 
   function startup() {
-
     Lots.read(Data.uuid)
       .then(lot => {
         vm.model = lot;
@@ -39,8 +38,9 @@ function EditLotModalController(Data, Session, Lots, Inventory, Notify, Instance
   }
 
   function submit(form) {
-    if (form.$invalid) { return; }
-    Lots.update(Data.uuid, vm.model)
+    if (form.$invalid) { return 0; }
+
+    return Lots.update(Data.uuid, vm.model)
       .then(() => {
         Notify.success('LOTS.SUCCESSFULLY_EDITED');
         Instance.close(true);
