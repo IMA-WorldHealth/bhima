@@ -64,30 +64,34 @@ const forms = async (projectId) => {
  * @returns {object}
  */
 const submissions = async (projectId, formId) => {
-  const response = await axios.get(`${api.projects}/${projectId}/forms/${formId}.svc/Submissions`, config);
+  const options = { ...config, params : { $expand : '*' } };
+  const response = await axios.get(
+    `${api.projects}/${projectId}/forms/${formId}.svc/Submissions`,
+    options,
+  );
   return response.data;
 };
 
-// init for test
-exports.init = async (req, res, next) => {
-  const NUTRITION_ID = 2;
-  const FORM_ID = 'ima_nutrition_gardens_4';
+// For test only
+// In the browser type: /odk/central to see results
+async function init(req, res, next) {
+  const NUTRITION_ID = 16;
+  const FORM_ID = 'pcima_enregistrement_boite_cdr_cedimet';
   try {
-    // const current = await currentUserDetails();
-    // const projects = await currentUserProjects();
-    // const nutritionForms = await forms(NUTRITION_ID);
-    const foyerSubmissions = await submissions(NUTRITION_ID, FORM_ID);
+    const nutrition = await submissions(NUTRITION_ID, FORM_ID);
     const data = {
-      // current,
-      // projects,
-      // nutritionForms,
-      foyerSubmissions,
+      nutrition : nutrition.value || nutrition,
     };
     res.status(200).json(data);
   } catch (error) {
     next(error);
   }
-};
+}
 
+exports.forms = forms;
+exports.currentUserDetails = currentUserDetails;
+exports.currentUserProjects = currentUserProjects;
+exports.submissions = submissions;
 exports.loggingIn = loggingIn;
 exports.loggingOut = loggingOut;
+exports.init = init;
