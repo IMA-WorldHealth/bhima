@@ -211,16 +211,15 @@ function constantConfig() {
         comment : 'PAYROLL_SETTINGS.DEFAULT_HELP_TEXT',
       },
       {
-        name : 'grouped',
-        label : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS',
-        comment : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS_HELP_TEXT',
-      },
-      {
         name : 'individually',
         label : 'PAYROLL_SETTINGS.INDIVIDUALLY_PER_EMPLOYEE',
         comment : 'PAYROLL_SETTINGS.INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT',
       },
+      {
+        name : 'grouped',
+        label : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS',
+        comment : 'PAYROLL_SETTINGS.GROUP_BY_COST_CENTERS_HELP_TEXT',
+      },
     ],
-
   };
 }

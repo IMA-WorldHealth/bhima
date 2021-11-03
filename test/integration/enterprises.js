@@ -21,7 +21,6 @@ describe('(/enterprises) Enterprises API', () => {
     location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     logo : null,
     currency_id : 2,
-    posting_payroll_cost_center_mode : 'grouped',
   };
 
   const updateEnterprise = {
@@ -63,7 +62,7 @@ describe('(/enterprises) Enterprises API', () => {
   const responseKeys = [
     'id', 'name', 'abbr', 'email', 'po_box', 'helpdesk', 'phone',
     'location_id', 'logo', 'currency_id', 'gain_account_id', 'loss_account_id',
-    'settings', 'address', 'base_index_growth_rate',
+    'settings', 'address',
   ];
 
   it('POST /enterprises will register a valid enterprises', () => {
