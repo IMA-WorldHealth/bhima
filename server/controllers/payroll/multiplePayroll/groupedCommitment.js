@@ -1,9 +1,9 @@
 /**
  * @method groupedCommitment
  *
- * This method allows you to browse the list of employees as well as the different Rubrics
- * associated with its employees to return transactions to executes in order to pass
- * the accounting transactions for the wage commitments.
+ * This method makes it possible to edit the transactions relating to the payroll of the employees
+ * while grouping the expense accounts by Cost Center,
+ * with this method the system will generate only three transactions for the whole institution.
  *
  * @requires lib/util
  * @requires lib/db

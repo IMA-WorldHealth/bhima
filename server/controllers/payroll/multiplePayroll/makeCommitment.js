@@ -35,7 +35,10 @@ function config(req, res, next) {
 
   const data = {};
 
-  // Obtaining the expense account for the remuneration of employees' salaries,
+  /*
+    * With this request we retrieve the identifier of the configuration period,
+    * the label, the account that was used for the configuration, the fiscal year as well as the period
+  */
   const sqlGetAccountPayroll = `
     SELECT payroll_configuration.id, payroll_configuration.label, payroll_configuration.config_accounting_id,
     payroll_configuration.dateFrom, payroll_configuration.dateTo, config_accounting.account_id,
@@ -50,7 +53,6 @@ function config(req, res, next) {
     * The following requests to retrieve the list of Rubrics configured
     * for a payment period but also the values of the corresponding data corresponding to each employee
   */
-
   const sqlGetRubricConfig = `
     SELECT config_rubric_item.id AS configId, config_rubric_item.config_rubric_id,
     config_rubric_item.rubric_payroll_id, payroll_configuration.label AS PayrollConfig, rubric_payroll.*
@@ -61,6 +63,10 @@ function config(req, res, next) {
     AND rubric_payroll.debtor_account_id IS NOT NULL AND rubric_payroll.expense_account_id IS NOT NULL
   `;
 
+  /*
+    * With this request, we retrieve the data configured for the payroll for each employee
+    * while taking the characteristics of items
+  */
   const sqlGetRubricPayroll = `
     SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, 
     BUID(paiement.employee_uuid) AS employee_uuid, 
@@ -75,6 +81,10 @@ function config(req, res, next) {
     WHERE paiement.employee_uuid IN (?) AND paiement.payroll_configuration_id = ?  AND rubric_paiement.value > 0
     `;
 
+  /*
+   * With this request, we break down all the expense accounts for the employer's share by cost center
+   * linked to the service assigned to each employee.
+  */
   const sqlCostBreakdownByCostCenter = `
     SELECT rp.paiement_uuid,  SUM(rp.value) AS value_cost_center_id,
       cc.id AS cost_center_id, a_exp.id AS account_expense_id
@@ -92,13 +102,16 @@ function config(req, res, next) {
     GROUP BY cc.id;
   `;
 
+  /*
+   * With this query we try to break down the basic salaries of employees by cost center.
+  */
   const sqlSalaryByCostCenter = `
     SELECT emp.code, SUM(emp.individual_salary) AS salary_service, cc.id AS cost_center_id, cc.label AS costCenterLabel
       FROM employee AS emp
     JOIN service_cost_center AS scc ON scc.service_uuid = emp.service_uuid
     JOIN cost_center AS cc ON cc.id = scc.cost_center_id
     WHERE emp.uuid IN (?)
-    GROUP BY cc.id;  
+    GROUP BY cc.id;
   `;
 
   const options = {

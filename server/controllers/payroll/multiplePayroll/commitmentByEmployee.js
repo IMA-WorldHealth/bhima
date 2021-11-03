@@ -1,9 +1,9 @@
 /**
  * @method commitmentByEmployee
  *
- * This method allows you to browse the list of employees as well as the different Rubrics
- * associated with its employees to return transactions to executes in order to pass
- * the accounting transactions for the wage commitments.
+ * This method makes it possible to edit the transactions relating to the payroll of employees
+ * individually by employee, these are the transactions below the engagement,
+ * the withholding as well as the social charges on the remuneration.
  *
  * @requires lib/util
  * @requires lib/db
