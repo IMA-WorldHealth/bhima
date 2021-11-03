@@ -2,14 +2,15 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService', 'InventoryService',
-  'SessionService', 'CurrencyService', 'NotifyService', 'ModalService',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
+  'InventoryService', 'SessionService', 'CurrencyService', 'NotifyService',
+  'ExchangeRateService', 'ModalService', 'BarcodeService',
   'StockEntryModalForm', 'bhConstants', '$translate', 'focus',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Lots, Inventory,
-  Session, Currencies, Notify, Modal,
+  Session, Currencies, Notify, ExchangeRate, Modal, Barcode,
   EntryForm, bhConstants, $translate, Focus,
 ) {
   const vm = this;
@@ -63,6 +64,7 @@ function StockDefineLotsModalController(
   vm.onExpDateEditable = onExpDateEditable;
   vm.onChangeUnitCost = onChangeUnitCost;
   vm.onDateChange = onDateChange;
+  vm.enterLotByBarcode = enterLotByBarcode;
 
   vm.onSelectLot = onSelectLot;
 
@@ -83,9 +85,15 @@ function StockDefineLotsModalController(
     aggregationHideLabel : true,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
   }, {
+    field : 'barcode',
+    displayName : 'BARCODE.BARCODE',
+    headerCellFilter : 'translate',
+    width : 110,
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+  }, {
     field : 'quantity',
     type : 'number',
-    width : 150,
+    width : 120,
     displayName : 'TABLE.COLUMNS.QUANTITY',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
@@ -328,6 +336,25 @@ function StockDefineLotsModalController(
       onChanges();
     }
   }
+
+  /**
+   * @method enterLotByBarcode
+   *
+   * @description
+   * Pops up modal to scan the lot barcode
+   *
+   * @param {object} row the affected row
+   */
+  function enterLotByBarcode(row) {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        if (record.uuid) {
+          row.lot = record.uuid.toUpperCase();
+          onChanges();
+        }
+      });
+  }
+
 
   /**
    * @method onSelectLot
