@@ -1,6 +1,8 @@
 {
   "BARCODE" : {
-    "SCAN" : "Scan Document Barcode",
+    "BARCODE": "Barcode",
+    "SCAN": "Scan",
+    "SCAN_BARCODE" : "Scan Document Barcode",
     "AWAITING_INPUT" : "Waiting for Input",
     "AWAITING_HTTP" : "Barcode Read!  Looking up Record...",
     "READ_SUCCESS" : "Found Record",
