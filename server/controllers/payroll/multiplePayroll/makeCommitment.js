@@ -13,7 +13,10 @@
 const q = require('q');
 const db = require('../../../lib/db');
 const configurationData = require('./find');
-const transac = require('./commitment');
+const defaultMode = require('./commitment');
+const groupedMode = require('./groupedCommitment');
+const individuallyMode = require('./commitmentByEmployee');
+
 const Exchange = require('../../finance/exchange');
 const CostCenter = require('../../finance/cost_center');
 
@@ -28,15 +31,18 @@ function config(req, res, next) {
   const projectId = req.session.project.id;
   const userId = req.session.user.id;
   const currencyId = req.session.enterprise.currency_id;
+  const postingPayrollCostCenterMode = req.session.enterprise.settings.posting_payroll_cost_center_mode;
 
   const data = {};
 
   // Obtaining the expense account for the remuneration of employees' salaries,
   const sqlGetAccountPayroll = `
     SELECT payroll_configuration.id, payroll_configuration.label, payroll_configuration.config_accounting_id,
-    payroll_configuration.dateFrom, payroll_configuration.dateTo, config_accounting.account_id
+    payroll_configuration.dateFrom, payroll_configuration.dateTo, config_accounting.account_id,
+    period.fiscal_year_id, period.id AS period_id
     FROM payroll_configuration
     JOIN config_accounting ON config_accounting.id = payroll_configuration.config_accounting_id
+    JOIN period ON period.start_date <= payroll_configuration.dateTo AND period.end_date >= payroll_configuration.dateTo
     WHERE payroll_configuration.id = ?
   `;
 
@@ -69,6 +75,32 @@ function config(req, res, next) {
     WHERE paiement.employee_uuid IN (?) AND paiement.payroll_configuration_id = ?  AND rubric_paiement.value > 0
     `;
 
+  const sqlCostBreakdownByCostCenter = `
+    SELECT rp.paiement_uuid,  SUM(rp.value) AS value_cost_center_id,
+      cc.id AS cost_center_id, a_exp.id AS account_expense_id
+    FROM rubric_paiement AS rp
+    JOIN rubric_payroll AS rb ON rb.id = rp.rubric_payroll_id
+    JOIN paiement AS paie ON paie.uuid = rp.paiement_uuid
+    JOIN employee AS emp ON emp.uuid = paie.employee_uuid
+    JOIN patient AS pat ON pat.uuid = emp.patient_uuid
+    JOIN service AS ser ON ser.uuid = emp.service_uuid
+    JOIN service_cost_center AS s_cost ON s_cost.service_uuid = ser.uuid
+    JOIN cost_center AS cc ON cc.id = s_cost.cost_center_id
+    JOIN account AS a_deb ON a_deb.id = rb.debtor_account_id
+    JOIN account AS a_exp ON a_exp.id = rb.expense_account_id
+    WHERE rb.is_employee = 0 AND rb.is_discount = 1  AND paie.payroll_configuration_id = ?
+    GROUP BY cc.id;
+  `;
+
+  const sqlSalaryByCostCenter = `
+    SELECT emp.code, SUM(emp.individual_salary) AS salary_service, cc.id AS cost_center_id, cc.label AS costCenterLabel
+      FROM employee AS emp
+    JOIN service_cost_center AS scc ON scc.service_uuid = emp.service_uuid
+    JOIN cost_center AS cc ON cc.id = scc.cost_center_id
+    WHERE emp.uuid IN (?)
+    GROUP BY cc.id;  
+  `;
+
   const options = {
     payroll_configuration_id : payrollConfigurationId,
     employeesUuid,
@@ -82,28 +114,76 @@ function config(req, res, next) {
         db.exec(sqlGetRubricPayroll, [employeesUuid, payrollConfigurationId]),
         db.exec(sqlGetRubricConfig, [payrollConfigurationId]),
         db.exec(sqlGetAccountPayroll, [payrollConfigurationId]),
+        db.exec(sqlCostBreakdownByCostCenter, [payrollConfigurationId]),
+        db.exec(sqlSalaryByCostCenter, [employeesUuid]),
         Exchange.getCurrentExchangeRateByCurrency(),
         CostCenter.getAllCostCenterAccounts(),
       ]);
     })
-    .spread((rubricsEmployees, rubricsConfig, account, exchangeRates, accountsCostCenter) => {
-      const transactions = transac.commitments(
-        data.employees,
-        rubricsEmployees,
-        rubricsConfig,
-        account,
-        projectId,
-        userId,
-        exchangeRates,
-        currencyId,
-        accountsCostCenter,
-      );
-
+    .spread((rubricsEmployees, rubricsConfig, configuration,
+      costBreakDown, SalaryByCostCenter, exchangeRates, accountsCostCenter) => {
+      let transactions;
       const postingJournal = db.transaction();
 
-      transactions.forEach(item => {
-        postingJournal.addQuery(item.query, item.params);
-      });
+      const sessionParams = {
+        project_id : req.session.project.id,
+        project_abbr : req.session.project.abbr,
+        fiscal_year_id : configuration[0].fiscal_year_id,
+        period_id : configuration[0].period_id,
+        user_id :  req.session.user.id,
+      };
+
+      if (postingPayrollCostCenterMode === 'default') {
+        transactions = defaultMode.commitments(
+          data.employees,
+          rubricsEmployees,
+          rubricsConfig,
+          configuration,
+          projectId,
+          userId,
+          exchangeRates,
+          currencyId,
+          accountsCostCenter,
+        );
+
+        transactions.forEach(item => {
+          postingJournal.addQuery(item.query, item.params);
+        });
+
+      } else if (postingPayrollCostCenterMode === 'grouped') {
+        transactions = groupedMode.groupedCommitments(
+          data.employees,
+          rubricsEmployees,
+          rubricsConfig,
+          configuration,
+          projectId,
+          userId,
+          exchangeRates,
+          currencyId,
+          accountsCostCenter,
+          costBreakDown,
+          SalaryByCostCenter,
+        );
+
+        transactions.forEach(item => {
+          postingJournal.addQuery(item.query, item.params);
+        });
+      } else if (postingPayrollCostCenterMode === 'individually') {
+        transactions = individuallyMode.commitmentByEmployee(
+          data.employees,
+          rubricsEmployees,
+          configuration,
+          projectId,
+          userId,
+          exchangeRates,
+          currencyId,
+          sessionParams,
+        );
+
+        transactions.forEach(item => {
+          postingJournal.addQuery(item.query, item.params);
+        });
+      }
 
       return postingJournal.execute();
     })
