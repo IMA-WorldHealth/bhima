@@ -62,6 +62,7 @@ function StockDefineLotsModalController(
   vm.cancel = cancel;
 
   vm.onLotBlur = onLotBlur;
+  vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.onChanges = onChanges;
   vm.onChangeQuantity = onChangeQuantity;
@@ -275,6 +276,13 @@ function StockDefineLotsModalController(
   function removeItem(rowRenderIndex) {
     vm.form.removeItem(rowRenderIndex);
     vm.errors = vm.form.validate(vm.entryDate);
+  }
+
+  function addItems(n) {
+    const defaultValues = vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate
+      ? { expiration_date : vm.globalExpirationDate }
+      : {};
+    vm.form.addItems(n, defaultValues);
   }
 
   function getFirstEmptyLot() {
