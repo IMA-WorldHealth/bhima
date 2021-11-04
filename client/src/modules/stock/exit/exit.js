@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate',
-  'moment', 'GridExportService', 'Store',
+  'moment', 'GridExportService', 'Store', 'BarcodeService',
   'PatientService', 'PatientInvoiceService', 'ServiceService',
 ];
 
@@ -19,7 +19,7 @@ StockExitController.$inject = [
 function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, Stock, StockModal, uiGridConstants, $translate,
-  moment, GridExportService, Store,
+  moment, GridExportService, Store, Barcode,
   PatientService, PatientInvoiceService, ServiceService,
 ) {
   const vm = this;
@@ -68,6 +68,7 @@ function StockExitController(
   vm.submit = submit;
   vm.checkValidity = checkValidity;
   vm.onLotSelect = onLotSelect;
+  vm.getLotByBarcode = getLotByBarcode;
 
   const mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
@@ -248,7 +249,6 @@ function StockExitController(
 
     checkValidity();
     refreshSelectedLotsList();
-
   }
 
   // configure item
@@ -332,6 +332,47 @@ function StockExitController(
 
     checkValidity();
     refreshSelectedLotsList(row);
+  }
+
+  function getLotByBarcode() {
+    Barcode.modal({ shouldSearch: false })
+      .then(record => {
+        if (record.uuid) {
+          Stock.lots.read(null, {
+            depot_uuid : vm.depot.uuid,
+            label : record.uuid.toUpperCase(),
+            dateTo : vm.movement.date,
+          })
+            .then(lots => {
+              console.log("LOTS: ", lots);
+              if (lots.length <= 0) {
+                Notify.danger('STOCK.LOT_NOT_FOUND', 10000);
+                return;
+              }
+              if (lots.length > 1) {
+                Notify.danger('STOCK.DUPLICATE_LOTS', 10000);
+                return;
+              }
+
+              // The lot is unique, construct a grid entry for it
+              const lot = lots[0];
+              const inventory = vm.mapSelectableInventories.get(lot.inventory_uuid);
+              if (inventory) {
+                const row = vm.stockForm.addItems(1);
+                row.inventory = inventory;
+                row.inventory_uuid = lot.inventory_uuid;
+                row.quantity = 1;
+                row.lot = lot;
+                configureItem(row);
+                checkValidity();
+                refreshSelectedLotsList(row);
+              } else {
+                vm.inventoryNotAvailable.push(item.text);
+              }
+
+            });
+        }
+      });
   }
 
   // update the list of selected lots

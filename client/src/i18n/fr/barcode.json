@@ -1,6 +1,8 @@
 {
   "BARCODE" : {
-    "SCAN" : "Scanner le code-barres du document",
+    "BARCODE": "Code-barre",
+    "SCAN": "Scanner",
+    "SCAN_DOCUMENT" : "Scanner le code-barres du document",
     "AWAITING_INPUT" : "En Attente d'Entrée",
     "AWAITING_HTTP" : "Code-barres lu! Recherche l'enregistrement....",
     "READ_SUCCESS" : "Enregistrement trouvé",
