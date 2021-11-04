@@ -177,6 +177,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
           unit_cost : line.unit_cost,
           expiration_date : lot.expiration_date,
           inventory_uuid : line.inventory_uuid,
+          description : lot.description || '',
         };
       }).concat(current);
     }, []);
