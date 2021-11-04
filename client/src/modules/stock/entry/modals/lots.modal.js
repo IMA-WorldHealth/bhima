@@ -5,12 +5,13 @@ StockDefineLotsModalController.$inject = [
   'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService', 'InventoryService',
   'SessionService', 'CurrencyService', 'NotifyService', 'ModalService',
   'StockEntryModalForm', 'bhConstants', '$translate', 'focus',
+  'ExchangeRateService',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Lots, Inventory,
   Session, Currencies, Notify, Modal,
-  EntryForm, bhConstants, $translate, Focus,
+  EntryForm, bhConstants, $translate, Focus, ExchangeRate,
 ) {
   const vm = this;
 
@@ -37,6 +38,9 @@ function StockDefineLotsModalController(
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
 
+  vm.globalExpirationDate = new Date();
+  vm.enableGlobalDescriptionAndExpiration = false;
+
   vm.enterprise = Session.enterprise;
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
@@ -58,13 +62,15 @@ function StockDefineLotsModalController(
   vm.cancel = cancel;
 
   vm.onLotBlur = onLotBlur;
+  vm.removeItem = removeItem;
   vm.onChanges = onChanges;
   vm.onChangeQuantity = onChangeQuantity;
   vm.onExpDateEditable = onExpDateEditable;
   vm.onChangeUnitCost = onChangeUnitCost;
-  vm.onDateChange = onDateChange;
-
   vm.onSelectLot = onSelectLot;
+  vm.onDateChange = onDateChange;
+  vm.onGlobalDateChange = onGlobalDateChange;
+  vm.toggleExpirationColumn = toggleExpirationColumn;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
@@ -103,6 +109,7 @@ function StockDefineLotsModalController(
     cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
   }, {
     field : 'actions',
+    displayName : '',
     width : 25,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
   }];
@@ -147,6 +154,12 @@ function StockDefineLotsModalController(
 
   function onRegisterApi(api) {
     vm.gridApi = api;
+  }
+
+  function toggleExpirationColumn(value) {
+    const EXPIRATION_DATE_COLUMN = 3;
+    cols[EXPIRATION_DATE_COLUMN].visible = !!value;
+    vm.gridApi.grid.refresh();
   }
 
   function lookupLotByLabel(label) {
@@ -217,14 +230,16 @@ function StockDefineLotsModalController(
       return;
     }
 
+    vm.errors = vm.form.validate(vm.entryDate);
+
     // First make sure that if the entered lot label exists
     // that it is not expired
 
     const rowLotLabel = typeof rowLot === 'string' ? rowLot : rowLot.label;
     const existingLot = vm.stockLine.availableLots
       .find(l => l.label.toUpperCase() === rowLotLabel.toUpperCase());
+
     if (rowLot && existingLot && existingLot.expired) {
-      vm.errors = vm.form.validate(vm.entryDate);
       vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
         { label : existingLot.label }));
       vm.form.$invalid = true;
@@ -236,15 +251,30 @@ function StockDefineLotsModalController(
       const emptyLotRow = getFirstEmptyLot();
 
       if (emptyLotRow) {
+
+        if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
+          emptyLotRow.expiration_date = vm.globalExpirationDate;
+        }
+
         // don't add new row but focus on the empty lot row
         Focus(emptyLotRow.identifier);
       } else {
         // add a new row
         const newLotRow = vm.form.addItem();
+
+        if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
+          newLotRow.expiration_date = vm.globalExpirationDate;
+        }
+
         // set the focus on the new row
         Focus(newLotRow.identifier);
       }
     }
+  }
+
+  function removeItem(rowRenderIndex) {
+    vm.form.removeItem(rowRenderIndex);
+    vm.errors = vm.form.validate(vm.entryDate);
   }
 
   function getFirstEmptyLot() {
@@ -329,6 +359,18 @@ function StockDefineLotsModalController(
     }
   }
 
+  function onGlobalDateChange(date) {
+    if (date) {
+      vm.globalExpirationDate = date;
+
+      vm.form.rows.forEach((row) => {
+        row.expiration_date = vm.globalExpirationDate;
+      });
+
+      onChanges();
+    }
+  }
+
   /**
    * @method onSelectLot
    *
@@ -372,6 +414,10 @@ function StockDefineLotsModalController(
         const { label, uuid } = row.lot;
         row.lot = label;
         row.uuid = uuid;
+      }
+
+      if (vm.enableGlobalDescriptionAndExpiration && vm.description) {
+        row.description = vm.description;
       }
     });
 

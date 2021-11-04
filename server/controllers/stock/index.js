@@ -104,6 +104,7 @@ async function createStock(req, res, next) {
           label : lot.label,
           quantity : lot.quantity,
           unit_cost : lot.unit_cost,
+          description : lot.description,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
         };
@@ -215,6 +216,7 @@ async function insertNewStock(session, params) {
         label : lot.label,
         quantity : lot.quantity,
         unit_cost : lot.unit_cost,
+        description : lot.description,
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
       });
