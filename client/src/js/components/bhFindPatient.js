@@ -63,7 +63,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
 
     if (Session.isSettingEnabled('barcodes')) {
       $ctrl.options.findByBarcode = {
-        label : 'BARCODE.SCAN',
+        label : 'BARCODE.SCAN_BARCODE',
       };
     }
 
