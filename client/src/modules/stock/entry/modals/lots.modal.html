@@ -65,7 +65,7 @@
       <div ng-if="$ctrl.stockLine.wac" class="text-primary"><i class="fa fa-info-circle"></i>&nbsp;<span translate>STOCK.USE_OF_STOCK_WAC</span></div>
     </div>
 
-    <div style="margin-bottom: 5px;">
+    <div class="form-group">
       <div class="checkbox">
         <label>
           <input
@@ -78,26 +78,65 @@
         </label>
         <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
       </div>
-
-      <div style="margin-bottom: 5px;" bh-has-permission="$ctrl.bhConstants.actions.EDIT_LOT">
-        <div class="checkbox">
-          <label>
-            <input
-              id="editExpirationDates"
-              type="checkbox"
-              ng-model="$ctrl.editExpirationDates"
-              ng-change="$ctrl.onExpDateEditable()"
-              ng-true-value="1"
-              ng-false-value="0">
-            <span translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES</span>
-          </label>
-          <p class="help-block" translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES_DESCRIPTION</p>
-        </div>
-
-        <bh-add-item callback="$ctrl.form.addItem()" disable="true">
-      </bh-add-item>
     </div>
 
+    <div class="form-group" bh-has-permission="$ctrl.bhConstants.actions.EDIT_LOT">
+      <div class="checkbox">
+        <label>
+          <input
+            id="editExpirationDates"
+            type="checkbox"
+            ng-model="$ctrl.editExpirationDates"
+            ng-change="$ctrl.onExpDateEditable()"
+            ng-true-value="1"
+            ng-false-value="0">
+          <span translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES</span>
+        </label>
+        <p class="help-block" translate>LOTS.ENABLE_CORRECTING_LOT_EXPIRATION_DATES_DESCRIPTION</p>
+      </div>
+    </div>
+
+    <div ng-if="!$ctrl.isTransfer" class="form-group">
+      <div class="checkbox">
+        <label>
+          <input
+            id="enableGlobalDescriptionAndExpiration"
+            ng-model="$ctrl.enableGlobalDescriptionAndExpiration"
+            ng-click="$ctrl.toggleExpirationColumn($ctrl.enableGlobalDescriptionAndExpiration)"
+            type="checkbox"
+            ng-true-value="1"
+            ng-false-value="0">
+          <span translate>LOTS.ENABLE_GLOBAL_DESCRIPTION_AND_EXPIRATION</span>
+        </label>
+        <p class="help-block" translate>LOTS.ENABLE_GLOBAL_DESCRIPTION_AND_EXPIRATION_DESCRIPTION</p>
+      </div>
+    </div>
+
+    <div ng-if="$ctrl.enableGlobalDescriptionAndExpiration" class="form-group row">
+      <div class="col-xs-6">
+        <label for="lot-description" translate>STOCK.GLOBAL_LOT_DESCRIPTION</label>
+        <input
+          class="form-control"
+          placeholder="FORM.LABELS.DESCRIPTION"
+          translate-attr="{ 'placeholder' : 'FORM.LABELS.DESCRIPTION'}"
+          type="text"
+          ng-model="$ctrl.description">
+      </div>
+      <div class="col-xs-6">
+        <label for="global-expiration-date" translate>STOCK.GLOBAL_EXPIRATION_DATE</label>
+        <bh-date-picker
+          date="$ctrl.globalExpirationDate"
+          required="true"
+          on-change="$ctrl.onGlobalDateChange(date)">
+        </bh-date-picker>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <bh-add-item callback="$ctrl.addItems(numItem)" disable="true">
+      </bh-add-item>
+    </div>
+    
     <div class="row">
       <div class="col-xs-12">
         <div

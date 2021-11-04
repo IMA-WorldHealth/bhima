@@ -44,9 +44,22 @@ function StockEntryModalForm(uuid) {
     }
   }
 
-  StockForm.prototype.addItem = function addItem() {
-    const lot = new Lot();
+  StockForm.prototype.addItem = function addItem(defaultValue = {}) {
+    const lot = new Lot(defaultValue);
     this.rows.push(lot);
+    return lot;
+  };
+
+  StockForm.prototype.addItems = function addItems(n, defaultValue = {}) {
+    let lot;
+    let i = n;
+
+    // will repeat will n > 0
+    while (i--) {
+      lot = new Lot(defaultValue);
+      this.rows.push(lot);
+    }
+
     return lot;
   };
 
