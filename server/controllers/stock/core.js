@@ -248,7 +248,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label,
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
