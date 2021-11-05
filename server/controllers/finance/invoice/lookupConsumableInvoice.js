@@ -24,7 +24,8 @@ async function lookupConsumableInvoicePatient(req, res, next) {
     filters.equals('invoiceReference', 'text', 'dm');
     filters.equals('invoiceUuid', 'uuid', 'invoice');
 
-    const invoiceDetailQuery = `SELECT
+    const invoiceDetailQuery = `
+      SELECT
         BUID(invoice.uuid) as uuid, dm.text AS reference,
         invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
         patient.display_name AS debtor_name, BUID(patient.uuid) as patient_uuid,
@@ -36,7 +37,8 @@ async function lookupConsumableInvoicePatient(req, res, next) {
       JOIN user ON user.id = invoice.user_id
       JOIN document_map AS dm ON dm.uuid = invoice.uuid`;
 
-    const invoiceItemsQuery = `SELECT
+    const invoiceItemsQuery = `
+      SELECT
         BUID(invoice_item.uuid) as uuid, invoice_item.quantity,
           invoice_item.inventory_price, invoice_item.transaction_price,
         BUID(inventory.uuid) as inventory_uuid, inventory.code, inventory.text,
