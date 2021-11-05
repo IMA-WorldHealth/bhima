@@ -15,6 +15,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   const { saveAsEmployee } = $state.params;
 
   vm.enterprise = Session.enterprise;
+
   vm.isUpdating = $state.params.uuid;
   vm.origin = '';
 
@@ -154,13 +155,15 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     vm.functions = data;
   }).catch(Notify.handleError);
 
-
   // submit the data to the server
   function submit(employeeForm) {
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
     let promise;
 
     if (!vm.employee.is_patient) {
+      vm.employee.current_location_id = vm.employee.current_location_id || Session.enterprise.location_id;
+      vm.employee.origin_location_id = vm.employee.origin_location_id || Session.enterprise.location_id;
+
       promise = (!referenceUuid)
         ? Employees.create(vm.employee)
         : Employees.update(referenceUuid, vm.employee);
@@ -175,10 +178,14 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         employeeForm.$setUntouched();
         vm.employee = {};
 
+        vm.employee.current_location_id = Session.enterprise.location_id;
+        vm.employee.origin_location_id = Session.enterprise.location_id;
+
         if (!referenceUuid) {
           Receipts.patient(feedBack.patient_uuid, true);
         } else {
           Notify.success('FORM.INFO.UPDATE_SUCCESS');
+
           $state.go('employeeRegistry', null, { reload : true });
         }
       })
