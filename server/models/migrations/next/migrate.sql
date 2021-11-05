@@ -316,3 +316,14 @@ INSERT INTO `unit` VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-19
+ * @desc: Payroll Settings
+ */
+INSERT IGNORE INTO `unit` VALUES
+  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/stock/setting');
+
+-- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
+CALL add_column_if_missing('enterprise_setting', 'posting_payroll_cost_center_mode', 'VARCHAR(100) NOT NULL DEFAULT "default"');
