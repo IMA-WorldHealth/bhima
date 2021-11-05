@@ -50,7 +50,7 @@ exports.list = function list(req, res, next) {
             'enable_auto_email_report',
             'enable_index_payment_system',
             'base_index_growth_rate',
-			'posting_payroll_cost_center_mode',
+            'posting_payroll_cost_center_mode',
           ];
 
           row.settings = _.pick(row, settings);
