@@ -283,28 +283,12 @@ function del(req, res, next) {
  * corresponds to the cost center reference parameter is entered if
  * and only if the cost center is a main center
  *
- *If, during the configuration of the account references, a security account has been configured,
- * all the accounts which have the number of this account as index will be considered as belonging to this cost center.
- *
- * Eg. 61 belongs to the transport cost center,
- * 6101100, 6101101 and 6100444 will also belong to the transport cost cente
  */
 function getAllCostCenterAccounts() {
-  const accountTitle = 6;
-
   const sql = `
-    SELECT aa.account_id, cc.id AS cost_center_id
+    SELECT a.id AS account_id, cc.id AS cost_center_id
     FROM cost_center AS cc
-    JOIN reference_cost_center AS rfc ON rfc.cost_center_id = cc.id
-    JOIN account_reference AS ar ON ar.id = rfc.account_reference_id
-    JOIN account_reference_item AS ritem ON ritem.account_reference_id = ar.id
-    JOIN account AS a ON a.id = ritem.account_id
-    JOIN (
-    SELECT a.id AS account_id, a.label, a.number
-    FROM account AS a
-    WHERE a.type_id <> ${accountTitle}
-    ) AS aa ON aa.number LIKE CONCAT(a.number ,'%')
-    WHERE ritem.is_exception = 0;
+    JOIN account AS a ON a.cost_center_id = cc.id
   `;
 
   return db.exec(sql);
@@ -326,7 +310,6 @@ function getAllCostCenterAccounts() {
       * will be made for the list of accounts by cost center
  */
 function assignCostCenterParams(accountsCostCenter, rubrics, key) {
-
   accountsCostCenter.forEach(refCostCenter => {
     rubrics.forEach(rubric => {
       if (rubric[key] === refCostCenter.account_id) {

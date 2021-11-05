@@ -10,8 +10,8 @@ INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL, NULL);
 
 INSERT INTO `enterprise_setting` (
-  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report, base_index_growth_rate) VALUES
-  (1, 0, 1, 1, 5);
+  enterprise_id, enable_price_lock, enable_password_validation, enable_auto_email_report, base_index_growth_rate, posting_payroll_cost_center_mode) VALUES
+  (1, 0, 1, 1, 5, 'default');
 
 -- Project
 INSERT INTO `project` VALUES
@@ -22,12 +22,17 @@ INSERT INTO `project` VALUES
 SET @testService = HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e');
 SET @adminService = HUID('b1816006-5558-45f9-93a0-c222b5efa6cb');
 SET @medicineInterneService = HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac');
+SET @newService =  HUID('029263E99A29436BB12EE9730A70C515');
+SET @newService2 =  HUID('63E9029299A26B43B21EE973051A70C5');
+
 
 -- Services
 INSERT INTO `service` (uuid, enterprise_id, project_id, name) VALUES
   (@testService, 1, 1, 'Test Service'),
   (@adminService, 1, 1, 'Administration'),
-  (@medicineInterneService, 1, 1, 'Medecine Interne');
+  (@medicineInterneService, 1, 1, 'Medecine Interne'),
+  (@newService, 1, 1, 'New Service 1'),
+  (@newService2, 1, 1, 'New Service 2');
 
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `created`, `reference_id`) VALUES
@@ -877,6 +882,7 @@ INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`
 
 -- SERVICE FEE CENTER
 INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
+INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (2, 3, @adminService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
