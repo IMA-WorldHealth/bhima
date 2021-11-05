@@ -30,6 +30,7 @@ async function report(req, res, next) {
   const params = req.query;
 
   params.exclude_out_stock = parseInt(params.exclude_out_stock, 10);
+  params.include_daily_balances = parseInt(params.include_daily_balances, 10);
   params.consensed_report = parseInt(params.consensed_report, 10);
 
   const template = params.consensed_report ? TEMPLATE2 : TEMPLATE1;
@@ -72,15 +73,16 @@ async function report(req, res, next) {
 
     const sqlDailyConsumption = `
       SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text,
-      (sms.out_quantity_consumption + sms.out_quantity_exit) AS quantity, sms.date
-        FROM stock_movement_status AS sms
-        JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
+        (sms.out_quantity_consumption + sms.out_quantity_exit) AS quantity,
+        sms.in_quantity, sms.quantity_delta, sms.date
+      FROM stock_movement_status AS sms
+      JOIN inventory AS inv ON inv.uuid = sms.inventory_uuid
       WHERE sms.depot_uuid = ? AND sms.date >= DATE(?) AND sms.date <= DATE(?)
     `;
 
     const sqlMonthlyConsumption = `
       SELECT BUID(sms.inventory_uuid) AS uuid, inv.code, inv.text AS inventory_text, sms.date,
-        SUM(sms.out_quantity_consumption + sms.out_quantity_exit) AS quantityTotalExit, 
+        SUM(sms.out_quantity_consumption + sms.out_quantity_exit) AS quantityTotalExit,
         SUM(sms.in_quantity) AS quantityTotalEntry,
         SUM(sms.out_quantity_consumption) AS outQuantityConsumption,
         SUM(sms.out_quantity_exit) AS outQuantityExit
@@ -116,32 +118,7 @@ async function report(req, res, next) {
     });
 
     configurationData.forEach(inventory => {
-      const dailyConsumption = [];
-      for (let i = startDate; i <= endDate; i++) {
-        dailyConsumption.push({ value : 0, index : i });
-      }
-
-      inventoriesConsumed.forEach(consumed => {
-        if (inventory.inventoryUuid === consumed.uuid) {
-          const dateConsumption = parseInt(moment(consumed.date).format('DD'), 10);
-          dailyConsumption.forEach(d => {
-            if (d.index === dateConsumption) {
-              d.value = consumed.quantity;
-            }
-          });
-        }
-      });
-
-      inventory.dailyConsumption = dailyConsumption;
-
-      if (inventoriesOpening.length) {
-        inventoriesOpening.forEach(opening => {
-          if (inventory.inventoryUuid === opening.inventory_uuid) {
-            inventory.quantityOpening = opening.quantity;
-          }
-        });
-      }
-
+      // First populate the monthly stats
       if (monthlyConsumption.length) {
         monthlyConsumption.forEach(row => {
           if (inventory.inventoryUuid === row.uuid) {
@@ -152,6 +129,51 @@ async function report(req, res, next) {
           }
         });
       }
+      // Add the opening balance for each inventory article
+      if (inventoriesOpening.length) {
+        inventoriesOpening.forEach(opening => {
+          if (inventory.inventoryUuid === opening.inventory_uuid) {
+            inventory.quantityOpening = opening.quantity;
+          }
+        });
+      }
+
+      const dailyConsumption = [];
+      for (let i = startDate; i <= endDate; i++) {
+        dailyConsumption.push({ index : i, consumed : 0 });
+      }
+
+      // Construct a consumed inventories data set for this inventory item
+      // to simplify the logic for constructing balances.
+      const invDailyConsumed = inventoriesConsumed.filter(item => item.uuid === inventory.inventoryUuid);
+      invDailyConsumed.forEach(item => {
+        item.dayNum = parseInt(moment(item.date).format('DD'), 10);
+      });
+      invDailyConsumed.sort((a, b) => a.date > b.date);
+      let lastBalance = inventory.quantityOpening;
+      let numStockOutDays = 0;
+      dailyConsumption.forEach(d => {
+        const consumed = invDailyConsumed.find(item => item.dayNum === d.index);
+        if (consumed) {
+          d.consumed = consumed.quantity;
+          d.incoming = consumed.in_quantity;
+          d.balance = lastBalance + consumed.quantity_delta;
+        } else {
+          d.balance = lastBalance;
+        }
+
+        // Save the balance for the next day
+        lastBalance = d.balance;
+
+        if (d.balance === 0) {
+          numStockOutDays += 1;
+        }
+      });
+
+      inventory.numStockOutDays = numStockOutDays;
+      inventory.percentStockOut = Number(100 * (numStockOutDays / dailyConsumption.length)).toFixed(1);
+
+      inventory.dailyConsumption = dailyConsumption;
     });
 
     data.configurationData = configurationData;
