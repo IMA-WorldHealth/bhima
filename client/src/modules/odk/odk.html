@@ -1,0 +1,23 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.STOCK </li>
+      <li class="title" translate> ODK.LOAD_FOSA_DATA </li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div style="display: flex; align-items: center; justify-content: center; height: calc(100vh - 200px);">
+    <form name="OdkForm" bh-submit="OdkCtrl.loadNutritionReceptions(OdkForm)" novalidate>
+      <bh-loading-button loading-state="OdkForm.$loading">
+        <span translate>ODK.LOAD_FOSA_DATA</span>
+      </bh-loading-button>
+
+      <p style="margin-top: 1rem; text-align: center;" ng-if="OdkCtrl.totalFound">
+        <span translate>ODK.TOTAL_FOUND</span>&nbsp;:&nbsp;
+        <strong>{{ OdkCtrl.totalFound }}</strong>
+      </p>
+    </form>
+  </div>
+</div>

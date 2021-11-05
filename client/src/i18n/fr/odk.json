@@ -1,0 +1,8 @@
+{
+  "ODK" : {
+    "LOAD_FOSA_DATA" : "Chargement des données des FOSA",
+    "TOTAL_FOUND" : "Total des enregistrements trouvés",
+    "NO_RECORD_FOUND" : "Aucun enregistrement trouvé",
+    "IMPORTED_SUCCESSFULLY" : "Données importées avec succès"
+  }
+}

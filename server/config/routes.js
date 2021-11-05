@@ -159,7 +159,7 @@ const displayMetadataReport = require('../controllers/admin/metadataReport');
 const configurationAnalysisTools = require('../controllers/finance/configurationAnalysisTools');
 
 // ODK CENTRAL
-const odk = require('../controllers/odk/central');
+const odkImport = require('../controllers/odk/import');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -1106,5 +1106,5 @@ exports.configure = function configure(app) {
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 
   // ODK CENTRAL HANDLER
-  app.get('/odk/central', odk.init);
+  app.get('/odk/central/projects/:projectId/forms/:formId', odkImport.loadData);
 };

@@ -72,26 +72,9 @@ const submissions = async (projectId, formId) => {
   return response.data;
 };
 
-// For test only
-// In the browser type: /odk/central to see results
-async function init(req, res, next) {
-  const NUTRITION_ID = 16;
-  const FORM_ID = 'pcima_enregistrement_boite_cdr_cedimet';
-  try {
-    const nutrition = await submissions(NUTRITION_ID, FORM_ID);
-    const data = {
-      nutrition : nutrition.value || nutrition,
-    };
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
-}
-
 exports.forms = forms;
 exports.currentUserDetails = currentUserDetails;
 exports.currentUserProjects = currentUserProjects;
 exports.submissions = submissions;
 exports.loggingIn = loggingIn;
 exports.loggingOut = loggingOut;
-exports.init = init;
