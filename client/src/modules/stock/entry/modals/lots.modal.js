@@ -2,16 +2,16 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService', 'InventoryService',
-  'SessionService', 'CurrencyService', 'NotifyService', 'ModalService',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
+  'InventoryService', 'SessionService', 'CurrencyService', 'NotifyService',
+  'ExchangeRateService', 'ModalService', 'BarcodeService',
   'StockEntryModalForm', 'bhConstants', '$translate', 'focus',
-  'ExchangeRateService',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Lots, Inventory,
-  Session, Currencies, Notify, Modal,
-  EntryForm, bhConstants, $translate, Focus, ExchangeRate,
+  Session, Currencies, Notify, ExchangeRate, Modal, Barcode,
+  EntryForm, bhConstants, $translate, Focus,
 ) {
   const vm = this;
 
@@ -68,8 +68,10 @@ function StockDefineLotsModalController(
   vm.onChangeQuantity = onChangeQuantity;
   vm.onExpDateEditable = onExpDateEditable;
   vm.onChangeUnitCost = onChangeUnitCost;
+
   vm.onSelectLot = onSelectLot;
   vm.onDateChange = onDateChange;
+  vm.enterLotByBarcode = enterLotByBarcode;
   vm.onGlobalDateChange = onGlobalDateChange;
   vm.toggleExpirationColumn = toggleExpirationColumn;
 
@@ -90,9 +92,15 @@ function StockDefineLotsModalController(
     aggregationHideLabel : true,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
   }, {
+    field : 'barcode',
+    displayName : 'BARCODE.BARCODE',
+    headerCellFilter : 'translate',
+    width : 110,
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+  }, {
     field : 'quantity',
     type : 'number',
-    width : 150,
+    width : 120,
     displayName : 'TABLE.COLUMNS.QUANTITY',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
@@ -367,6 +375,30 @@ function StockDefineLotsModalController(
     }
   }
 
+  /**
+   * @method enterLotByBarcode
+   *
+   * @description
+   * Pops up modal to scan the lot barcode
+   *
+   * @param {object} row the affected row
+   */
+  function enterLotByBarcode(row) {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        if (record.uuid) {
+          row.lot = record.uuid.toUpperCase();
+          if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
+            row.expiration_date = vm.globalExpirationDate;
+          }
+          onChanges();
+          if (vm.enableFastInsert) {
+            vm.form.addItem();
+          }
+        }
+      });
+  }
+
   function onGlobalDateChange(date) {
     if (date) {
       vm.globalExpirationDate = date;
@@ -378,7 +410,6 @@ function StockDefineLotsModalController(
       onChanges();
     }
   }
-
   /**
    * @method onSelectLot
    *
