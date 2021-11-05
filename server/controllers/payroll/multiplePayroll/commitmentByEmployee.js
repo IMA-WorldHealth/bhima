@@ -183,7 +183,7 @@ function commitmentByEmployee(employees, rubrics, configuration,
 
       voucherChargeRemuneration = {
         uuid : db.bid(util.uuid()),
-        date : new Date(),
+        date : datePeriodTo,
         project_id : projectId,
         currency_id : employee.currency_id,
         user_id : userId,

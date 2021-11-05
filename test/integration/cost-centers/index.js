@@ -26,7 +26,7 @@ describe('(/cost_center) The /cost_center  API endpoint', () => {
       account_reference_id : 8,
       is_cost : 0,
     }],
-    services : [services.test, services.admin],
+    services : [services.newService, services.newService2],
   };
 
   const costCenterUpt1 = {
