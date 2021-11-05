@@ -52,6 +52,11 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerTooltip : 'STOCK.LOT',
       headerCellFilter : 'translate',
     }, {
+      field : 'lot_description',
+      displayName : 'FORM.LABELS.DESCRIPTION',
+      headerTooltip : 'FORM.LABELS.DESCRIPTION',
+      headerCellFilter : 'translate',
+    }, {
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
       headerTooltip : 'STOCK.QUANTITY',
