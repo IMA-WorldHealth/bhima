@@ -51,6 +51,13 @@
 
           <div class="checkbox">
             <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.include_daily_balances" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.RUMER.INCLUDE_DAILY_BALANCES</span>
+            </label>
+          </div>
+
+          <div class="checkbox">
+            <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.consensed_report" ng-true-value="1" ng-false-value="0">
               <span translate>REPORT.RUMER.CONDENSED_REPORT</span>
             </label>
