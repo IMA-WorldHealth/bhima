@@ -93,9 +93,9 @@ function config(req, res, next) {
     JOIN paiement AS paie ON paie.uuid = rp.paiement_uuid
     JOIN employee AS emp ON emp.uuid = paie.employee_uuid
     JOIN patient AS pat ON pat.uuid = emp.patient_uuid
-    JOIN service AS ser ON ser.uuid = emp.service_uuid
-    JOIN service_cost_center AS s_cost ON s_cost.service_uuid = ser.uuid
-    JOIN cost_center AS cc ON cc.id = s_cost.cost_center_id
+    LEFT JOIN service AS ser ON ser.uuid = emp.service_uuid
+    LEFT JOIN service_cost_center AS s_cost ON s_cost.service_uuid = ser.uuid
+    LEFT JOIN cost_center AS cc ON cc.id = s_cost.cost_center_id
     JOIN account AS a_deb ON a_deb.id = rb.debtor_account_id
     JOIN account AS a_exp ON a_exp.id = rb.expense_account_id
     WHERE rb.is_employee = 0 AND rb.is_discount = 1  AND paie.payroll_configuration_id = ?
@@ -108,8 +108,8 @@ function config(req, res, next) {
   const sqlSalaryByCostCenter = `
     SELECT emp.code, SUM(emp.individual_salary) AS salary_service, cc.id AS cost_center_id, cc.label AS costCenterLabel
       FROM employee AS emp
-    JOIN service_cost_center AS scc ON scc.service_uuid = emp.service_uuid
-    JOIN cost_center AS cc ON cc.id = scc.cost_center_id
+    LEFT JOIN service_cost_center AS scc ON scc.service_uuid = emp.service_uuid
+    LEFT JOIN cost_center AS cc ON cc.id = scc.cost_center_id
     WHERE emp.uuid IN (?)
     GROUP BY cc.id;
   `;
