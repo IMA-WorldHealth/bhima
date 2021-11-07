@@ -23,16 +23,61 @@ async function loadData(req, res, next) {
   }
 }
 
+// fetch all depots
+async function fetchAllDepots() {
+  return db.exec('SELECT uuid, BUID(uuid) hrUuid, text FROM depot;');
+}
+
+// fetch all lots
+async function fetchAllLots() {
+  const query = `
+    SELECT uuid, BUID(uuid) hr_uuid, unit_cost, BUID(inventory_uuid) inventory_uuid, label, description FROM lot;
+  `;
+  return db.exec(query);
+}
+
+// fetch all movements
+async function fetchAllMovements() {
+  const query = `
+    SELECT
+      document_uuid, depot_uuid, BUID(depot_uuid) hr_depot_uuid,
+      entity_uuid, BUID(entity_uuid) hr_entity_uuid,
+      lot_uuid, BUID(lot_uuid) hr_lot_uuid, is_exit
+    FROM stock_movement;
+  `;
+  return db.exec(query);
+}
+
 /**
  * Import stock movements from odk
  */
 async function loadFosaData(projectId, formId, session) {
   const submissions = await central.submissions(projectId, formId);
   const values = submissions.value;
+  const processed = [];
   const transaction = db.transaction();
 
+  // MINIMIZE ALL FETCHING DATA FROM DB FUNCTIONS IN LOOP
+  // extract data for not using call to database in loop
+  // all good alternative for not crashing the server on error are welcome
+  const allDepots = await fetchAllDepots();
+  const allLots = await fetchAllLots();
+  const allMovements = await fetchAllMovements();
+  const updateStockData = [];
+  const inventoryUuids = [];
+
+  // extract periods from loop
+  // const periods = values.map(async line => {
+  //   const period = {};
+  //   period[line.date] = await Fiscal.lookupFiscalYearByDate(line.date);
+  //   return period;
+  // });
+
+  // CLEAN ALL PREVIOUS IMPORTED DATA
+  await db.exec('DELETE FROM stock_movement WHERE description LIKE "[ODK] RECEPTION FOSA"');
+
   // process each line as a separated document
-  return values.map(async line => {
+  values.forEach(async line => {
     let depotPattern;
 
     const operationDate = new Date(line.date);
@@ -53,11 +98,12 @@ async function loadFosaData(projectId, formId, session) {
     }
 
     // look for the depot
-    const qDepot = await db.exec('SELECT uuid FROM depot WHERE `text` LIKE ? LIMIT 1;', [depotPattern]);
+    const qDepot = allDepots.filter(depot => depot.text === depotPattern);
     const depotUuid = qDepot.length ? qDepot[0].uuid : undefined;
+    const depotHrUuid = qDepot.length ? qDepot[0].hrUuid : undefined;
 
     // get the fiscal year period information
-    const period = await Fiscal.lookupFiscalYearByDate(operationDate);
+    const period = await Fiscal.lookupFiscalYearByDate(line.date);
 
     const lots = line.boite_barcode_repeat.map(lot => {
       return {
@@ -75,22 +121,15 @@ async function loadFosaData(projectId, formId, session) {
     });
 
     lots.forEach(async item => {
-      // lot details
-      const lotSelector = `
-        SELECT uuid, unit_cost, inventory_uuid FROM lot 
-        WHERE label = ? AND description = ? LIMIT 1;
-      `;
-      const qLot = await db.exec(lotSelector, [item.barcode, item.batchNumber]);
-      const lotUuid = qLot.length ? qLot[0].uuid : undefined;
-      const lotUnitCost = qLot.length ? qLot[0].unit_cost : undefined;
-      item.inventoryUuid = qLot.length ? qLot[0].inventory_uuid : undefined;
 
-      // origin details
-      const originSelector = `
-        SELECT document_uuid, depot_uuid FROM stock_movement 
-        WHERE lot_uuid = ? AND is_exit = 1 AND entity_uuid = ? LIMIT 1;
-      `;
-      const qOrigin = await db.exec(originSelector, [lotUuid, depotUuid]);
+      const qLot = allLots.filter(lot => lot.label === item.barcode && lot.description === item.batchNumber);
+      const lotUuid = qLot.length ? qLot[0].uuid : undefined;
+      const lotHrUuid = qLot.length ? qLot[0].hr_uuid : undefined;
+      const lotUnitCost = qLot.length ? qLot[0].unit_cost : undefined;
+      const inventoryUuid = qLot.length ? qLot[0].inventory_uuid : undefined;
+
+      const qOrigin = allMovements
+        .filter(mov => +mov.is_exit === 1 && mov.hr_lot_uuid === lotHrUuid && mov.hr_entity_uuid === depotHrUuid);
       const originDocumentUuid = qOrigin.length ? qOrigin[0].document_uuid : undefined;
       const originDepotUuid = qOrigin.length ? qOrigin[0].depot_uuid : undefined;
 
@@ -107,24 +146,42 @@ async function loadFosaData(projectId, formId, session) {
           quantity : 1,
           unit_cost : lotUnitCost,
           date : operationDate,
-          description : 'RECEPTION FOSA',
+          description : '[ODK] RECEPTION FOSA',
           user_id : session.user.id,
           period_id : period.id,
         };
         transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
+        processed.push(item);
+
+        // gather inventory uuids for later quantity in stock calculation updates
+        inventoryUuids.push(inventoryUuid);
       }
     });
 
-    // gather inventory uuids for later quantity in stock calculation updates
-    const inventoryUuids = lots.map(lot => lot.inventoryUuid);
-    const uniqueInventoryUuid = inventoryUuids.map((item, index, arr) => arr.indexOf(item) === index);
-
-    transaction.addQuery('CALL RecomputeStockValue(NULL);');
-    // execute the movement
-    await transaction.execute();
     // update the quantity in stock as needed
-    await updateQuantityInStockAfterMovement(uniqueInventoryUuid, operationDate, depotUuid);
+    if (inventoryUuids.length) {
+      const uniqueInventoryUuids = inventoryUuids.filter((item, index, arr) => arr.indexOf(item) === index);
+      const dataToUpdate = {
+        inventories : uniqueInventoryUuids,
+        date : operationDate,
+        depot : depotHrUuid,
+      };
+      updateStockData.push(dataToUpdate);
 
-    return line;
+      // add transaction to recompute stock value
+      transaction.addQuery('CALL RecomputeStockValue(NULL);');
+    }
   });
+
+  // execute the movement
+  await transaction.execute();
+
+  // update stock quantities
+  const dbPromise = updateStockData
+    .map(data => updateQuantityInStockAfterMovement(data.inventories, data.date, data.depot));
+  await Promise.all(dbPromise);
+
+  console.log('processed : ', processed);
+  // for the client
+  return processed;
 }

@@ -14,21 +14,13 @@ function OdkController(Odk, Notify) {
   function loadNutritionReceptions() {
     return Odk.loadNutritionReceptions()
       .then(result => {
-        console.log(result);
-        let total = 0;
-        if (result.length) {
-          total = result.reduce((current, item) => {
-            return current + item.boite_barcode_repeat.length;
-          }, 0);
-        }
+        vm.totalFound = result.length || 0;
 
-        if (total > 0) {
+        if (vm.totalFound > 0) {
           Notify.success('ODK.IMPORTED_SUCCESSFULLY');
         } else {
           Notify.info('ODK.NO_RECORD_FOUND');
         }
-
-        vm.totalFound = total;
       })
       .catch(Notify.handleError);
   }
