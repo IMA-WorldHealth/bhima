@@ -46,6 +46,7 @@ exports.requisition = requisition;
 exports.requestorType = requestorType;
 exports.createInventoryAdjustment = createInventoryAdjustment;
 exports.createAggregatedConsumption = createAggregatedConsumption;
+exports.updateQuantityInStockAfterMovement = updateQuantityInStockAfterMovement;
 
 exports.listStatus = core.listStatus;
 // stock consumption
