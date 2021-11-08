@@ -13,7 +13,8 @@ const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 const Exchange = require('../../finance/exchange');
 
-const templatePayslip = './server/controllers/payroll/reports/payslipGenerator.handlebars';
+const templatePayslipDefault = './server/controllers/payroll/reports/payslipGenerator.handlebars';
+const templatePayslipIndex = './server/controllers/payroll/reports/payslipGeneratorIndex.handlebars';
 const templatePayrollReport = './server/controllers/payroll/reports/payrollReportGenerator.handlebars';
 const templateSocialCharge = './server/controllers/payroll/reports/payrollReportSocialCharge.handlebars';
 const PayrollConfig = require('../configuration');
@@ -27,6 +28,9 @@ const DEFAULT_OPTS = {
 
 function build(req, res, next) {
   const options = _.clone(req.query);
+  const paymentIndexSystem = req.session.enterprise.settings.enable_index_payment_system;
+
+  const templatePayslip = paymentIndexSystem ? templatePayslipIndex : templatePayslipDefault;
 
   options.employees = [].concat(options.employees);
   options.employees = options.employees.map(uid => db.bid(uid));
@@ -142,7 +146,7 @@ function build(req, res, next) {
 
       return PayrollConfig.payrollReportElements(options.idPeriod, options.employees, employeesPaiementUuid);
     })
-    .spread((rubrics, holidays, offDays, rubEmployees, rubEnterprises) => {
+    .spread((rubrics, holidays, offDays, rubEmployees, rubEnterprises, rubricsIndexes) => {
       let TotalChargeEnterprise = 0;
       rubrics.forEach(item => {
         data.exchangeRatesByCurrency.forEach(exchange => {
@@ -189,6 +193,18 @@ function build(req, res, next) {
         let somChargeEmployee = 0;
         let somChargeEnterprise = 0;
 
+        if (paymentIndexSystem) {
+          employee.otherProfits = [];
+
+          rubricsIndexes.forEach(item => {
+            if (item.indice_type === 'is_other_profits') {
+              employee.otherProfits.push({ value : item.rubric_value, label : item.rubric_label });
+            } else {
+              employee[item.indice_type] = { value : item.rubric_value, label : item.rubric_label };
+            }
+          });
+        }
+
         rubrics.forEach(item => {
           if (employee.employee_uuid === item.employee_uuid) {
             item.ratePercentage = item.is_percent ? item.value : 0;
@@ -217,6 +233,7 @@ function build(req, res, next) {
             }
           }
         });
+
         employee.somRubTaxable = somRubTaxable;
         employee.somRubNonTaxable = somRubNonTaxable;
         employee.somChargeEnterprise = somChargeEnterprise;
