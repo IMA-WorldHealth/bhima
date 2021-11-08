@@ -30,12 +30,12 @@ function config(req, res, next) {
 
   const { iprScales, employee } = data;
   const payrollConfigurationId = req.params.id;
-  const paiementUuid = util.uuid();
+  const paymentUuid = util.uuid();
 
   // End Date of Payroll Period
   const { periodDateTo } = data;
 
-  const uid = db.bid(paiementUuid);
+  const uid = db.bid(paymentUuid);
 
   const allRubrics = [];
   const holidaysElements = [];
@@ -112,7 +112,8 @@ function config(req, res, next) {
         FROM config_rubric_item
         JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
         JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
-        WHERE payroll_configuration.id = ?;
+        WHERE payroll_configuration.id = ?  AND (rubric_payroll.debtor_account_id IS NOT NULL)
+        AND (rubric_payroll.expense_account_id IS NOT NULL);
       `;
 
       db.exec(sql, [payrollConfigurationId])
@@ -254,7 +255,7 @@ function config(req, res, next) {
 
           const netSalary = grossSalary - sumTaxContributionEmp;
 
-          const paiementData = {
+          const paymentData = {
             uuid : uid,
             employee_uuid : db.bid(employee.uuid),
             payroll_configuration_id : payrollConfigurationId,
@@ -270,29 +271,29 @@ function config(req, res, next) {
             status_id : 2,
           };
 
-          const deletePaiementData = 'DELETE FROM paiement WHERE employee_uuid = ? AND payroll_configuration_id = ?';
-          const setPaiementData = 'INSERT INTO paiement SET ?';
-          const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value)
+          const deletePaymentData = 'DELETE FROM payment WHERE employee_uuid = ? AND payroll_configuration_id = ?';
+          const setPaymentData = 'INSERT INTO payment SET ?';
+          const setRubricPaymentData = `INSERT INTO rubric_payment (payment_uuid, rubric_payroll_id, value)
             VALUES ?`;
-          const setHolidayPaiement = `INSERT INTO holiday_paiement
-            (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?`;
-          const setOffDayPaiement = `INSERT INTO offday_paiement
-            (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
+          const setHolidayPayment = `INSERT INTO holiday_payment
+            (holiday_id, holiday_nbdays, holiday_percentage, payment_uuid, label, value) VALUES ?`;
+          const setOffDayPayment = `INSERT INTO offday_payment
+            (offday_id, offday_percentage, payment_uuid, label, value) VALUES ?`;
 
           transaction
-            .addQuery(deletePaiementData, [db.bid(employee.uuid), payrollConfigurationId])
-            .addQuery(setPaiementData, [paiementData]);
+            .addQuery(deletePaymentData, [db.bid(employee.uuid), payrollConfigurationId])
+            .addQuery(setPaymentData, [paymentData]);
 
           if (allRubrics.length) {
-            transaction.addQuery(setRubricPaiementData, [allRubrics]);
+            transaction.addQuery(setRubricPaymentData, [allRubrics]);
           }
 
           if (holidaysElements.length) {
-            transaction.addQuery(setHolidayPaiement, [holidaysElements]);
+            transaction.addQuery(setHolidayPayment, [holidaysElements]);
           }
 
           if (offDaysElements.length) {
-            transaction.addQuery(setOffDayPaiement, [offDaysElements]);
+            transaction.addQuery(setOffDayPayment, [offDaysElements]);
           }
 
           return transaction.execute();
@@ -305,5 +306,5 @@ function config(req, res, next) {
     });
 }
 
-// Configure Paiement for Employee
+// Configure Payment for Employee
 exports.config = config;

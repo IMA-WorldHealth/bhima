@@ -17,8 +17,8 @@ DROP TABLE `config_tax`;
 DROP TABLE `config_tax_item`;
 
 DROP TABLE `cotisation`;
-DROP TABLE `cotisation_paiement`;
-DROP TABLE `paiement_period`;
+DROP TABLE `cotisation_payment`;
+DROP TABLE `payment_period`;
 
 DROP TABLE `rubric`;
 DROP TABLE `rubric_paiement`;

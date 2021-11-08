@@ -47,13 +47,13 @@ function MultiPayrollIndiceSearchModalController(
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
   // load all Paiement Status
-  Payroll.paiementStatus()
-    .then((paiementStatus) => {
-      paiementStatus.forEach((item) => {
+  Payroll.paymentStatus()
+    .then((paymentStatus) => {
+      paymentStatus.forEach((item) => {
         item.plainText = $translate.instant(item.text);
       });
 
-      vm.paiementStatus = paiementStatus;
+      vm.paymentStatus = paymentStatus;
     })
     .catch(Notify.handleError);
 
@@ -70,11 +70,11 @@ function MultiPayrollIndiceSearchModalController(
     vm.searchQueries.currency_id = currency.id;
   };
 
-  vm.onPayrollStatusChange = function onPayrollStatusChange(paiementStatus) {
-    vm.searchQueries.status_id = paiementStatus;
+  vm.onPayrollStatusChange = function onPayrollStatusChange(paymentStatus) {
+    vm.searchQueries.status_id = paymentStatus;
 
-    paiementStatus.forEach((statusId) => {
-      vm.paiementStatus.forEach((status) => {
+    paymentStatus.forEach((statusId) => {
+      vm.paymentStatus.forEach((status) => {
         if (statusId === status.id) {
           statusText += `${status.plainText} / `;
         }

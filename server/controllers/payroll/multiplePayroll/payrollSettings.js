@@ -76,8 +76,8 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
         const allRubrics = [];
         const holidaysElements = [];
         const offDaysElements = [];
-        const paiementUuid = util.uuid();
-        const uid = db.bid(paiementUuid);
+        const paymentUuid = util.uuid();
+        const uid = db.bid(paymentUuid);
         // Calcul Daily Salary
         const dailySalary = employee.individual_salary
           ? (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
@@ -231,7 +231,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
         }
 
         const netSalary = grossSalary - sumTaxContributionEmp;
-        const paiementData = {
+        const paymentData = {
           uuid : uid,
           employee_uuid : db.bid(employee.employee_uuid),
           payroll_configuration_id : payrollConfigurationId,
@@ -246,34 +246,34 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
           amount_paid : 0,
           status_id : 2,
         };
-        const setPaiementData = 'INSERT INTO paiement SET ?';
-        const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value)
+        const setPaymentData = 'INSERT INTO payment SET ?';
+        const setRubricPaymentData = `INSERT INTO rubric_payment (payment_uuid, rubric_payroll_id, value)
             VALUES ?`;
-        const setHolidayPaiement = `INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage,
-           paiement_uuid, label, value) VALUES ?`;
-        const setOffDayPaiement = `INSERT INTO offday_paiement
-            (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
+        const setHolidayPayment = `INSERT INTO holiday_payment (holiday_id, holiday_nbdays, holiday_percentage,
+           payment_uuid, label, value) VALUES ?`;
+        const setOffDayPayment = `INSERT INTO offday_payment
+            (offday_id, offday_percentage, payment_uuid, label, value) VALUES ?`;
           // initialise All transactions handler
         allTransactions = [{
-          query : setPaiementData,
-          params : [paiementData],
+          query : setPaymentData,
+          params : [paymentData],
         }];
 
         if (allRubrics.length) {
           allTransactions.push({
-            query : setRubricPaiementData,
+            query : setRubricPaymentData,
             params : [allRubrics],
           });
         }
         if (holidaysElements.length) {
           allTransactions.push({
-            query : setHolidayPaiement,
+            query : setHolidayPayment,
             params : [holidaysElements],
           });
         }
         if (offDaysElements.length) {
           allTransactions.push({
-            query : setOffDayPaiement,
+            query : setOffDayPayment,
             params : [offDaysElements],
           });
         }

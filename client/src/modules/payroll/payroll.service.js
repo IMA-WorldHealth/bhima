@@ -13,10 +13,10 @@ PayrollConfigurationService.$inject = ['PrototypeApiService'];
 function PayrollConfigurationService(Api) {
   const service = new Api('/payroll_config/');
 
-  service.paiementStatus = paiementStatus;
+  service.paymentStatus = paymentStatus;
 
-  function paiementStatus() {
-    const url = ''.concat('paiementStatus');
+  function paymentStatus() {
+    const url = ''.concat('paymentStatus');
     return Api.read.call(service, url);
   }
 
