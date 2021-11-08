@@ -181,7 +181,6 @@ async function loadFosaData(projectId, formId, session) {
     .map(data => updateQuantityInStockAfterMovement(data.inventories, data.date, data.depot));
   await Promise.all(dbPromise);
 
-  console.log('processed : ', processed);
   // for the client
   return processed;
 }
