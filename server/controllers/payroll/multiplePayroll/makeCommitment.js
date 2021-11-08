@@ -68,17 +68,17 @@ function config(req, res, next) {
     * while taking the characteristics of items
   */
   const sqlGetRubricPayroll = `
-    SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, 
-    BUID(paiement.employee_uuid) AS employee_uuid, 
-    paiement.base_taxable, paiement.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, 
+    SELECT payment.payroll_configuration_id, BUID(payment.uuid) AS uuid, payment.basic_salary, 
+    BUID(payment.employee_uuid) AS employee_uuid, 
+    payment.base_taxable, payment.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, 
     rubric_payroll.label, rubric_payroll.id, rubric_payroll.is_tax, rubric_payroll.is_social_care,
     rubric_payroll.is_membership_fee, rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id,
-    rubric_paiement.value, rubric_payroll.is_associated_employee, employee.reference
-    FROM paiement
-    JOIN rubric_paiement ON rubric_paiement.paiement_uuid = paiement.uuid
-    JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
-    JOIN employee ON employee.uuid = paiement.employee_uuid
-    WHERE paiement.employee_uuid IN (?) AND paiement.payroll_configuration_id = ?  AND rubric_paiement.value > 0
+    rubric_payment.value, rubric_payroll.is_associated_employee, employee.reference
+    FROM payment
+    JOIN rubric_payment ON rubric_payment.payment_uuid = payment.uuid
+    JOIN rubric_payroll ON rubric_payroll.id = rubric_payment.rubric_payroll_id
+    JOIN employee ON employee.uuid = payment.employee_uuid
+    WHERE payment.employee_uuid IN (?) AND payment.payroll_configuration_id = ?  AND rubric_payment.value > 0
     `;
 
   /*
@@ -86,11 +86,11 @@ function config(req, res, next) {
    * linked to the service assigned to each employee.
   */
   const sqlCostBreakdownByCostCenter = `
-    SELECT rp.paiement_uuid,  SUM(rp.value) AS value_cost_center_id,
+    SELECT rp.payment_uuid,  SUM(rp.value) AS value_cost_center_id,
       cc.id AS cost_center_id, a_exp.id AS account_expense_id
-    FROM rubric_paiement AS rp
+    FROM rubric_payment AS rp
     JOIN rubric_payroll AS rb ON rb.id = rp.rubric_payroll_id
-    JOIN paiement AS paie ON paie.uuid = rp.paiement_uuid
+    JOIN payment AS paie ON paie.uuid = rp.payment_uuid
     JOIN employee AS emp ON emp.uuid = paie.employee_uuid
     JOIN patient AS pat ON pat.uuid = emp.patient_uuid
     LEFT JOIN service AS ser ON ser.uuid = emp.service_uuid
@@ -207,5 +207,5 @@ function config(req, res, next) {
     .done();
 }
 
-// Make commitment of paiement
+// Make commitment of payment
 exports.config = config;

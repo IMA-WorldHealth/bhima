@@ -323,7 +323,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
  * @desc: Payroll Settings
  */
 INSERT IGNORE INTO `unit` VALUES
-  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/stock/setting');
+  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting');
 
 -- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
 CALL add_column_if_missing('enterprise_setting', 'posting_payroll_cost_center_mode', 'VARCHAR(100) NOT NULL DEFAULT "default"');

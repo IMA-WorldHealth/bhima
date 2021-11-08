@@ -726,34 +726,34 @@ CREATE TABLE `holiday` (
   CONSTRAINT `holiday__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `holiday_paiement`;
+DROP TABLE IF EXISTS `holiday_payment`;
 
-CREATE TABLE `holiday_paiement` (
+CREATE TABLE `holiday_payment` (
   `holiday_id` INT(10) UNSIGNED NOT NULL,
   `holiday_nbdays` INT(10) UNSIGNED NOT NULL,
   `holiday_percentage` float DEFAULT 0,
-  `paiement_uuid` BINARY(16) NOT NULL,
+  `payment_uuid` BINARY(16) NOT NULL,
   `label` VARCHAR(100) NOT NULL,
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
-  KEY `paiement_uuid` (`paiement_uuid`),
+  KEY `payment_uuid` (`payment_uuid`),
   KEY `holiday_id` (`holiday_id`),
-  CONSTRAINT `holiday_paiement__paiment` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `holiday_paiement__holiday` FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
+  CONSTRAINT `holiday_payment__paiment` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `holiday_payment__holiday` FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `offday_paiement`;
+DROP TABLE IF EXISTS `offday_payment`;
 
-CREATE TABLE `offday_paiement` (
+CREATE TABLE `offday_payment` (
   `offday_id` INT(10) UNSIGNED NOT NULL,
   `offday_percentage` float DEFAULT 0,
-  `paiement_uuid` BINARY(16) NOT NULL,
+  `payment_uuid` BINARY(16) NOT NULL,
   `label` VARCHAR(100) NOT NULL,
   `value` decimal(19,4) UNSIGNED DEFAULT NULL,
-  KEY `paiement_uuid` (`paiement_uuid`),
+  KEY `payment_uuid` (`payment_uuid`),
   KEY `offday_id` (`offday_id`),
-  CONSTRAINT `offday_paiement__paiment` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `offday_paiement__offday` FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`)
+  CONSTRAINT `offday_payment__paiment` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `offday_payment__offday` FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `icd10`;
@@ -872,13 +872,13 @@ CREATE TABLE `offday` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `paiement`;
-CREATE TABLE `paiement` (
+DROP TABLE IF EXISTS `payment`;
+CREATE TABLE `payment` (
   `uuid` BINARY(16) NOT NULL,
   `employee_uuid` BINARY(16) NOT NULL,
   `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
   `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
-  `paiement_date` date DEFAULT NULL,
+  `payment_date` date DEFAULT NULL,
   `total_day` INT(10) UNSIGNED DEFAULT 0,
   `working_day` INT(10) UNSIGNED DEFAULT 0,
   `basic_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
@@ -889,26 +889,26 @@ CREATE TABLE `paiement` (
   `amount_paid` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `status_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `paiement_1` (`employee_uuid`, `payroll_configuration_id`),
+  UNIQUE KEY `payment_1` (`employee_uuid`, `payroll_configuration_id`),
   KEY `employee_uuid` (`employee_uuid`),
   KEY `payroll_configuration_id` (`payroll_configuration_id`),
   KEY `currency_id` (`currency_id`),
   KEY `status_id` (`status_id`),
-  CONSTRAINT `paiement__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
-  CONSTRAINT `paiement__payroll_configuration`  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
-  CONSTRAINT `paiement__currency`  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
-  CONSTRAINT `paiement__pay_status`  FOREIGN KEY (`status_id`) REFERENCES `paiement_status` (`id`)
+  CONSTRAINT `payment__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  CONSTRAINT `payment__payroll_configuration`  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
+  CONSTRAINT `payment__currency`  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
+  CONSTRAINT `payment__pay_status`  FOREIGN KEY (`status_id`) REFERENCES `payment_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 
-DROP TABLE IF EXISTS `paiement_status`;
+DROP TABLE IF EXISTS `payment_status`;
 
-CREATE TABLE `paiement_status` (
+CREATE TABLE `payment_status` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `paiement_status` (`id`, `text`)
+  UNIQUE KEY `payment_status` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stage_payment_indice`;
@@ -920,7 +920,7 @@ CREATE TABLE `stage_payment_indice` (
   `rubric_id` INT(10)  UNSIGNED NOT NULL,
   `rubric_value`  DECIMAL(19,4) NOT NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `paiement_1` (`employee_uuid`, `rubric_id`, `payroll_configuration_id`),
+  UNIQUE KEY `payment_1` (`employee_uuid`, `rubric_id`, `payroll_configuration_id`),
   KEY `employee_uuid` (`employee_uuid`),
   KEY `payroll_configuration_id` (`payroll_configuration_id`),
   KEY `currency_id` (`currency_id`),
@@ -931,20 +931,20 @@ CREATE TABLE `stage_payment_indice` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `rubric_paiement`;
+DROP TABLE IF EXISTS `rubric_payment`;
 
-CREATE TABLE `rubric_paiement` (
+CREATE TABLE `rubric_payment` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `paiement_uuid` BINARY(16) NOT NULL,
+  `payment_uuid` BINARY(16) NOT NULL,
   `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
   `value` FLOAT DEFAULT '0',
   `posted` TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `paiement_uuid` (`paiement_uuid`),
+  KEY `payment_uuid` (`payment_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),
-  CONSTRAINT  `rubric_paiement__paiement` FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT  `rubric_paiement__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+  UNIQUE KEY `rubric_payment_1` (`payment_uuid`, `rubric_payroll_id`),
+  CONSTRAINT  `rubric_payment__payment` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT  `rubric_payment__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `price_list`;

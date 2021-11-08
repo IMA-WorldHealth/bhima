@@ -788,13 +788,13 @@ CALL UpdateStaffingIndices('2019-06-01', '2019-06-30', 2);
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
--- Paiement DATA
+-- payment DATA
 
-INSERT INTO `paiement` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `paiement_date`, `total_day`, `working_day`, `basic_salary`, `daily_salary`, `base_taxable`, `gross_salary`, `net_salary`, `amount_paid`, `status_id`)
+INSERT INTO `payment` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `payment_date`, `total_day`, `working_day`, `basic_salary`, `daily_salary`, `base_taxable`, `gross_salary`, `net_salary`, `amount_paid`, `status_id`)
 VALUES (@paymentUuid, @employeeUuid, 1, 2, NULL, 20, 20, 500.0000, 25.0000, 550.0000, 730.0000, 614.0700, 0.0000, 2);
 
--- rubric_paiement DATA
-INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES
+-- rubric_payment DATA
+INSERT INTO `rubric_payment` (`id`, `payment_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES
   (1, @paymentUuid, 5, 20, NULL),
   (2, @paymentUuid, 9, 150, NULL),
   (3, @paymentUuid, 10, 10, NULL),

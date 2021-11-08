@@ -29,11 +29,11 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
   const employeesWithholdingItem = [];
 
   employees.forEach(employee => {
-    const paiementUuid = db.bid(employee.paiement_uuid);
+    const paymentUuid = db.bid(employee.payment_uuid);
 
     transactions.push({
-      query : 'UPDATE paiement set status_id = 3 WHERE uuid = ?',
-      params : [paiementUuid],
+      query : 'UPDATE payment set status_id = 3 WHERE uuid = ?',
+      params : [paymentUuid],
     });
 
     // Exchange Rate if the employee.currency is equal enterprise currency
@@ -52,7 +52,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     totalCommitments += employee.gross_salary / exchangeRate;
     totalBasicSalaries += employee.basic_salary / exchangeRate;
 
-    const rubricsPaiement = [];
+    const rubricsPayment = [];
     let employeeWithholdings = [];
 
     employeesBenefitsItem.push([
@@ -68,15 +68,15 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
 
     rubrics.forEach(rubric => {
       if (employee.employee_uuid === rubric.employee_uuid) {
-        rubricsPaiement.push(rubric);
+        rubricsPayment.push(rubric);
       }
     });
 
     let totalEmployeeWithholding = 0;
 
-    if (rubricsPaiement.length) {
+    if (rubricsPayment.length) {
       // Get Expenses borne by the employee
-      employeeWithholdings = rubricsPaiement.filter(item => (item.is_discount && item.is_employee));
+      employeeWithholdings = rubricsPayment.filter(item => (item.is_discount && item.is_employee));
 
       employeeWithholdings.forEach(withholding => {
         totalEmployeeWithholding += util.roundDecimal(withholding.value, 2);

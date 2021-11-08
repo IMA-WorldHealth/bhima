@@ -51,11 +51,11 @@ function commitmentByEmployee(employees, rubrics, configuration,
     let voucherWithholding;
     let voucherChargeRemuneration;
 
-    const paiementUuid = db.bid(employee.paiement_uuid);
+    const paymentUuid = db.bid(employee.payment_uuid);
 
     transactions.push({
-      query : 'UPDATE paiement SET status_id = 3 WHERE uuid = ?',
-      params : [paiementUuid],
+      query : 'UPDATE payment SET status_id = 3 WHERE uuid = ?',
+      params : [paymentUuid],
     });
 
     const descriptionCommitment = `ENGAGEMENT DE PAIE [${periodPayroll}]/ ${labelPayroll}/ ${employee.display_name}`;

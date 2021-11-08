@@ -54,7 +54,7 @@
   },
   "PAYROLL_SETTINGS" : {
     "DEFAULT" : "Default",
-    "DEFAULT_HELP_TEXT" : "With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center",
+    "DEFAULT_HELP_TEXT" : "With this option, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center",
     "ENABLE_INDEX_PAYMENT_SYSTEM" : "Enabling index payment system",
     "GROUP_BY_COST_CENTERS" : "Group by cost centers",
     "GROUP_BY_COST_CENTERS_HELP_TEXT": "With this option the transactions related to the payment of the employees are done by group compared to the related cost centers of the employees.",
