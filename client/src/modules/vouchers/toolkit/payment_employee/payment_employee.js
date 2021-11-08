@@ -52,12 +52,12 @@ function PaymentEmployeeKitController(
       };
 
       MultiplePayroll.read(null, params)
-        .then((paiements) => {
+        .then((payments) => {
 
           // total amount
-          const totals = paiements.reduce(aggregate, 0);
+          const totals = payments.reduce(aggregate, 0);
 
-          vm.gridOptions.data = paiements || [];
+          vm.gridOptions.data = payments || [];
 
           // make sure we are always within precision
           vm.totalNetSalary = Number.parseFloat(totals.toFixed(MAX_DECIMAL_PRECISION));
@@ -74,7 +74,7 @@ function PaymentEmployeeKitController(
     const rows = [];
 
     const supportAccountId = result.account_id;
-    const { paiements } = result;
+    const { payments } = result;
     const supportRow = ToolKits.getBlankVoucherRow();
 
     rows.typeId = bhConstants.transactionType.SALARY_PAYMENT;
@@ -86,15 +86,15 @@ function PaymentEmployeeKitController(
     rows.push(supportRow);
 
     // then loop through each selected item and credit it with the Supported account
-    paiements.forEach((paiement) => {
+    payments.forEach((payment) => {
       const row = ToolKits.getBlankVoucherRow();
 
-      row.account_id = paiement.account_id;
-      row.document_uuid = paiement.paiement_uuid;
-      row.debit = paiement.balance;
+      row.account_id = payment.account_id;
+      row.document_uuid = payment.payment_uuid;
+      row.debit = payment.balance;
 
       // this is needed for a nice display in the grid
-      row.entity = { label : paiement.display_name, type : 'C', uuid : paiement.creditor_uuid };
+      row.entity = { label : payment.display_name, type : 'C', uuid : payment.creditor_uuid };
 
       // add the row in to the
       rows.push(row);
@@ -158,7 +158,7 @@ function PaymentEmployeeKitController(
     const selected = vm.gridApi.selection.getSelectedRows();
     const bundle = generateTransactionRows({
       account_id : vm.account_id,
-      paiements  : selected,
+      payments  : selected,
     });
 
     const msg = $translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES', {

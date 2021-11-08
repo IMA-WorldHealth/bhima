@@ -370,7 +370,7 @@ INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (6,  'PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY');
 
 -- Paiement Status
-INSERT INTO `paiement_status` (`id`, `text`) VALUES
+INSERT INTO `payment_status` (`id`, `text`) VALUES
   (1,  'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION'),
   (2,  'PAYROLL_STATUS.CONFIGURED'),
   (3,  'PAYROLL_STATUS.WAITING_FOR_PAYMENT'),

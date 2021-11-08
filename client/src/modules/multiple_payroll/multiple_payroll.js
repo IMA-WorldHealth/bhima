@@ -205,7 +205,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employeesUuid)
+        MultiplePayroll.paymentCommitment(idPeriod, employeesUuid)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;
