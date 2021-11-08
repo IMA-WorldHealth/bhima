@@ -6,6 +6,10 @@
     background-color: #f2dede !important;
     border-color: #ebccd1 !important;
   }
+  td.bg-danger-out-of-stock {
+    color: #a94442 !important;
+    background-color: #f2dede !important;
+  }
 </style>
 
 <body class="container-fluid">
@@ -24,7 +28,7 @@
       <h3 class="text-center">{{params.depot_text}}</h3>
       <h4 class="text-center">{{translate params.translate_key}} - {{params.year}} </h4>
 
-      <table class="table table-striped table-condensed table-report table-bordered">
+      <table class="table table-condensed {{#if params.include_daily_balances}}{{else}}table-striped{{/if}} table-report table-bordered">
         <thead>
           <tr style="background-color:#ddd;">
             <th style="min-width:100px;">{{translate 'FORM.LABELS.INVENTORY'}}</th>
@@ -35,23 +39,44 @@
             {{/each}}
             <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.TOTAL_EXITS'}} </th>
             <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.STOCK_END'}}</th>
+            <th style="width: 7.5%;" class="text-center">{{translate 'STOCK.DAYS_OF_STOCK_OUT'}}</th>
+            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.PERCENT_STOCK_OUT'}}</th>
           </tr>
         </thead>
 
           <tbody>
             {{#each configurationData}}
-              <tr {{#lt quantityEnding 0 }}class="bg-danger-important"{{/lt}}>
-              <td> {{ inventoryText }} </td>
-              <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
-              <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
-              {{#each dailyConsumption }}
+              <tr {{#lt quantityEnding 0 }}class="bg-danger-important"{{/lt}}
+                {{#if ../params.include_daily_balances}}style="background-color: #f9f9f9; border-bottom: 1px solid gray;"{{/if}}>
+                <td> {{ inventoryText }} </td>
+                <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
+                <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
+                {{#each dailyConsumption }}
                 <td class="text-right">
-                {{#if value}} {{ value }} {{/if}}
+                  {{#if consumed}} {{ consumed }} {{/if}}
                 </td>
-              {{/each}}
-              <td class="text-right"><strong> {{ quantityTotalExit }} </strong></td>
-              <td class="text-right"><strong> {{ quantityEnding }} </strong></td>
-            </tr>
+                {{/each}}
+                <td class="text-right"><strong> {{ quantityTotalExit }} </strong></td>
+                <td class="text-right"><strong> {{ quantityEnding }} </strong></td>
+                <td class="text-right"><strong> {{ numStockOutDays }} </strong></td>
+                <td class="text-right"><strong> {{ percentStockOut }}% </strong></td>
+              </tr>
+              {{#if ../params.include_daily_balances}}
+              <tr style="border-top: 0; border-bottom: 0;">
+                <td class="text-right" colspan="3">{{translate 'REPORT.RUMER.ENTRIES'}}</td>
+                {{#each dailyConsumption }}
+                <td class="text-right"> {{#if incoming}} {{ incoming }} {{/if}} </td>
+                {{/each}}
+                <td colspan="4"></td>
+              </tr>
+              <tr style="border-top: 0; border-bottom: 2px solid black;">
+                <td class="text-right" colspan="3">{{translate 'REPORT.RUMER.BALANCE'}}</td>
+                {{#each dailyConsumption }}
+                <td {{#lt balance 1 }}class="text-right bg-danger-out-of-stock"{{else}}class="text-right"{{/lt}}> {{ balance }} </td>
+                {{/each}}
+                <td colspan="4"></td>
+              </tr>
+              {{/if}}
             {{/each}}
           </tbody>
       </table>

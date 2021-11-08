@@ -36,6 +36,14 @@ function rumerReportController($sce, Notify, SavedReports, AppCache, reportData,
     vm.reportDetails.year = period.year;
   };
 
+  vm.onDailyBalances = () => {
+    vm.reportDetails.condensed_report = false;
+  };
+
+  vm.onCondensedReport = () => {
+    vm.reportDetails.include_daily_balances = false;
+  };
+
   vm.clear = key => {
     delete vm[key];
   };

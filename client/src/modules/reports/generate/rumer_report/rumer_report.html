@@ -51,7 +51,20 @@
 
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.consensed_report" ng-true-value="1" ng-false-value="0">
+              <input type="checkbox"
+                ng-model="ReportConfigCtrl.reportDetails.include_daily_balances"
+                ng-change="ReportConfigCtrl.onDailyBalances()"
+                ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.RUMER.INCLUDE_DAILY_BALANCES</span>
+            </label>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"
+                ng-model="ReportConfigCtrl.reportDetails.condensed_report"
+                ng-change="ReportConfigCtrl.onCondensedReport()"
+                ng-true-value="1" ng-false-value="0">
               <span translate>REPORT.RUMER.CONDENSED_REPORT</span>
             </label>
           </div>
