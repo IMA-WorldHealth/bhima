@@ -882,7 +882,7 @@ INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`
 
 -- SERVICE FEE CENTER
 INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (1, 2, @medicineInterneService);
-INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (2, 3, @adminService);
+INSERT INTO `service_cost_center` (`id`, `cost_center_id`, `service_uuid`) VALUES (2, 3, @testService);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
@@ -1108,3 +1108,9 @@ INSERT INTO `stock_requisition_item` (`requisition_uuid`, `inventory_uuid`, `qua
 INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES
   (HUID('983a6291-be1f-11eb-84e7-fe335098a4d5'), 'Medicament Traceur', '#0000ff'),
   (HUID('27cfe424-be27-11eb-84e7-fe335098a4d5'), 'Virologie', '#00ff00');
+
+
+-- DATA FOR CHECK PAYROLL
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (4, 'Payroll sample 1', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 2, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (5, 'Payroll sample 2', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 1, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (6, 'Payroll sample 3', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 2, 1, 1);
