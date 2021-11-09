@@ -33,7 +33,8 @@ function config(req, res, next) {
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
-    WHERE payroll_configuration.id = ?;
+    WHERE payroll_configuration.id = ?  AND (rubric_payroll.debtor_account_id IS NOT NULL)
+    AND (rubric_payroll.expense_account_id IS NOT NULL);
   `;
   const queries = q.all([
     db.exec(getPeriodData, [payrollConfigurationId]),
