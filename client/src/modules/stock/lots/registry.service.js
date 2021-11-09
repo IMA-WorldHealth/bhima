@@ -52,6 +52,12 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerTooltip : 'STOCK.LOT',
       headerCellFilter : 'translate',
     }, {
+      field : 'lot_description',
+      displayName : 'FORM.LABELS.DESCRIPTION',
+      headerTooltip : 'FORM.LABELS.DESCRIPTION',
+      headerCellFilter : 'translate',
+      visible : false,
+    }, {
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
       headerTooltip : 'STOCK.QUANTITY',
@@ -97,6 +103,7 @@ function LotsRegistryService(uiGridConstants, Session) {
       headerTooltip : 'TAG.LABEL',
       headerCellFilter : 'translate',
       cellTemplate     : 'modules/stock/lots/templates/tags.cell.html',
+      visible : false,
     }, {
       field : 'action',
       displayName : '',
