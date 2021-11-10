@@ -154,7 +154,7 @@
     "cssnano": "^4.1.11",
     "del": "^6.0.0",
     "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.2",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
