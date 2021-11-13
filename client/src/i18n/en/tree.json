@@ -11,6 +11,7 @@
     "AGED_DEBTORS" : "Aged Debtors Report",
     "AGGREGATED_STOCK_CONSUMPTION" : "Compute Aggregate Stock Consumption",
     "ALLOCATION_AUX_FEES_CENTERS" : "Allocation of Auxiliary Cost Centers",
+    "AVERAGE_MED_COST_REPORT" : "Average Medication Costs Per Patient",
     "BALANCE" : "Balance",
     "BALANCE_REPORT" : "Balance of Accounts",
     "BALANCE_SHEET" : "Balance Sheet",

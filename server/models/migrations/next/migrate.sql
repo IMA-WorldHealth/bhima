@@ -282,12 +282,12 @@ CALL add_column_if_missing('enterprise_setting', 'base_index_growth_rate', 'TINY
  * @author: mbayopanda
  * @date: 2021-10-12
  */
-INSERT INTO `unit` VALUES 
+INSERT IGNORE INTO `unit` VALUES
   (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts');
 
-INSERT INTO `report` (`report_key`, `title_key`) VALUES
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT');
-  
+
 /**
  * @author: mbayopanda
  * @date: 2021-06-23
@@ -311,8 +311,20 @@ CALL RecomputeStockValue(NULL);
  * @author: mbayopanda
  * @date: 2021-10-21
  */
-INSERT INTO `unit` VALUES 
+INSERT IGNORE INTO `unit` VALUES
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense');
 
-INSERT INTO `report` (`report_key`, `title_key`) VALUES
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+
+
+/*
+ * @author: jmcameron
+ * @date: 2021-11-12
+ */
+INSERT IGNORE INTO `unit` VALUES
+  (305, 'Average Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
+
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+  ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
+

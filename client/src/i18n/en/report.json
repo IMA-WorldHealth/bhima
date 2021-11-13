@@ -40,6 +40,13 @@
       "TARGET": "Target",
       "TRANSFER_PRINCIPAL": "Transfer Account to Principal Cashbox"
     },
+    "AVG_MED_COST_PER_PATIENT" : {
+      "TITLE" : "Average Medication Costs Per Patient",
+      "DESCRIPTION" : "This report shows the average medication costs per patient over a specified time period.",
+      "AVG_MEDICATION_COSTS" : "Average Medication Costs",
+      "GRAND_TOTAL": "Grand Total",
+      "MEDICATION_COSTS" : "Medication Costs"
+    },
     "BY_ASC": "By Ascending Order",
     "BY_DESC": "By Descending Order",
     "BALANCE": "Balance Report",
