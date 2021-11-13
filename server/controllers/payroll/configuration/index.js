@@ -147,6 +147,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 0 OR (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 1))
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;
@@ -159,6 +160,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 0)
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;

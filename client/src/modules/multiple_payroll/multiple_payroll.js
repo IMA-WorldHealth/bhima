@@ -56,12 +56,14 @@ function MultiplePayrollController(
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
     cellClass : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
     cellClass : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'status_id',
