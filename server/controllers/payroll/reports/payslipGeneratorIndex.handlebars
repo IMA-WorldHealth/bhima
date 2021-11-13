@@ -1,0 +1,237 @@
+{{> head title="FORM.LABELS.PAYSLIP"}}
+<body>
+  <!-- body  -->
+  {{#each dataEmployees}}
+
+    <div style="page-break-after: always">
+      <header class="row">
+        <div class="col-xs-6">
+          <h3 style="margin: 0px;"> {{../enterprise.name}} </h3>
+          <address style="margin-bottom: 0px;">
+            {{../enterprise.location}}
+          </address>
+          <div>{{../enterprise.email}}</div>
+          <div>{{../enterprise.phone}}</div>
+        </div>
+        <div class="col-xs-6 text-right">
+          <div> <b>{{translate "FORM.LABELS.NAME"}} :</b> {{display_name}} </div>
+          <div> <b>{{translate "FORM.LABELS.GENDER"}} :</b> {{sex}} </div>
+          <div> <b>{{translate "FORM.LABELS.CODE"}} :</b> {{code}} </div>
+          <div> <b>{{translate "FORM.LABELS.REFERENCE"}} :</b> {{hrreference}} </div>
+          <div> <b>{{translate "FORM.LABELS.GRADE"}} :</b> {{text}} </div>
+          <div> <b>{{translate "FORM.LABELS.NB_CHILD"}} :</b> {{nb_enfant}} </div>
+        </div>
+      </header>
+  
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TABLE.COLUMNS.PAYSLIP'}} : {{ ../payrollPeriod.label }} </strong>
+      </h3>
+
+      <table class="table table-condensed table-bordered table-report" style="margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">  
+        <tr>
+          <td class="col-xs-6 text-center" colspan="4">
+            <table class="table table-condensed table-bordered table-report" style="width: 100%;">
+              <th style="background-color:#efefef;" colspan="2"><strong> {{translate 'PAYROLL_RUBRIC.INDEXES'}} </strong></th>
+              {{#if is_base_index.value}}
+                <tr>
+                  <td> {{ is_base_index.label }} </td>
+                  <td class="text-right"> {{ is_base_index.value }} </td>
+                </tr>
+              {{/if}}
+
+              {{#if is_day_worked.value}}
+                <tr>
+                  <td> {{ is_day_worked.label }} </td>
+                  <td class="text-right"> {{ is_day_worked.value }} </td>
+                </tr>
+              {{/if}}
+              
+              {{#if is_extra_day.value}}
+                <tr>
+                  <td> {{ is_extra_day.label }} </td>
+                  <td class="text-right"> {{ is_extra_day.value }} </td>
+                </tr>
+              {{/if}}
+              
+              {{#if is_extra_day.value}}
+                <tr>
+                  <td><strong>{{ is_total_days.label }}</strong></td>
+                  <td class="text-right"> <strong>{{ is_total_days.value }}</strong></td>
+                </tr>
+              {{/if}}
+
+              {{#if is_day_index.value}}
+                <tr>
+                  <td> {{ is_day_index.label }} </td>
+                  <td class="text-right"> {{ is_day_index.value }} </td>
+                </tr>
+              {{/if}}
+
+              {{#if is_reagistered_index.value}}
+                <tr>
+                  <td> {{ is_reagistered_index.label }} </td>
+                  <td class="text-right"> {{ is_reagistered_index.value }} </td>
+                </tr>
+              {{/if}}
+
+              {{#each otherProfits}}
+                {{#if value}}
+                  <tr>
+                    <td> {{ label }} </td>
+                    <td class="text-right"> {{ value }} </td>
+                  </tr>
+                {{/if}}                
+              {{/each}}
+
+              {{#if is_total_code.value}}
+                <tr>
+                  <td><strong>{{ is_total_code.label }}</strong></td>
+                  <td class="text-right"><strong>{{ is_total_code.value }}</strong></td>
+                </tr>
+              {{/if}}
+
+              {{#if is_pay_rate.value}}
+                <tr>
+                  <td><strong>{{ is_pay_rate.label }}</strong></td>
+                  <td class="text-right"> <strong>{{ is_pay_rate.value }}</strong></td>
+                </tr>
+              {{/if}}
+
+
+            <tr style="background-color:#efefef;">
+              <td><strong>{{translate 'TABLE.COLUMNS.BASE'}}</strong></td>
+              <td class="text-right"> <strong> {{currency (multiply basic_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}  </strong></td>
+            </tr>
+
+            <tr style="background-color:#efefef;">
+              <td colspan="2">
+                <strong> {{translate 'TABLE.COLUMNS.TAXABLE'}} </strong></tr>
+              </td>
+            </tr>
+            {{#each rubricTaxable}}
+              <tr>
+                <td class="text-right" style="width: 50%;">
+                  {{ label }}
+                  {{#if ratePercentage}}
+                    ({{ ratePercentage }} %)
+                  {{/if}}
+                </td>
+                <td style=" width: 50%;" class="text-right">
+                  {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
+                </td>
+              </tr>
+            {{/each}}
+            <tr class="text-right" style="text-transform: uppercase;">
+              <td> <strong> {{translate 'TABLE.COLUMNS.NET_TAXABLE'}} </strong> </td>
+              <td class="text-right">
+                <strong>
+                  {{currency (multiply somRubTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                </strong>
+              </td>
+            </tr>
+
+            <tr style="background-color:#efefef;">
+              <td colspan="2">
+                <strong> {{translate 'TABLE.COLUMNS.NON_TAXABLE'}} </strong></tr>
+              </td>
+            </tr>              
+            {{#each rubricNonTaxable}}
+              <tr>
+                <td class="text-right" style="width: 50%;">
+                  {{ label }}
+                  {{#if ratePercentage}}
+                    ({{ ratePercentage }} %)
+                  {{/if}}
+                </td>
+                <td style=" width: 50%;" class="text-right">
+                  {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
+                </td>
+              </tr>
+            {{/each}}
+            <tr style="text-transform: uppercase;">
+              <td class="text-right"> <strong> {{translate 'TABLE.COLUMNS.NET_NON_TAXABLE'}} </strong> </td>
+              <td class="text-right">
+                <strong>
+                  {{currency (multiply somRubNonTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                </strong>
+              </td>
+            </tr>
+
+
+            <tr style="background-color:#efefef; text-transform: uppercase;">
+              <td class="text-right"> <strong> {{translate 'TABLE.COLUMNS.GROSS_SALARY'}} </strong> </td>
+              <td class="text-right">
+                <strong>
+                  {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                </strong>
+              </td>
+            </tr>
+
+            </table>
+          </td>
+          <td class="col-xs-6 text-center" colspan="4">
+            <table class="table table-condensed table-bordered table-report" style="width: 100%;">
+              <tr>
+                <th style="background-color:#efefef;" class="text-center" colspan="8"> <strong> {{translate "TABLE.COLUMNS.DEDUCTIONS"}}  </strong></th>
+              </tr>
+              {{#each rubricsChargeEmployee}}
+                <tr>
+                  <td style="width: 50%;">
+                    {{ label }}
+                    {{#if ratePercentage}}
+                      ({{ ratePercentage }} %)
+                    {{/if}}
+                  </td>
+                  <td style=" width: 50%;" class="text-right">
+                    {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
+                  </td>
+                </tr>
+              {{/each}}
+              <tr style="text-transform: uppercase;">
+                <td> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong> </td>
+                <td class="text-right">
+                  <strong> {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong>({{translate 'TABLE.COLUMNS.GROSS_SALARY'}}) - ({{translate "TABLE.COLUMNS.CONTRIBUTION_DEDUCTIONS"}})</strong>
+          </td>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong> {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} - 
+              {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-6 text-right" style="vertical-align : 'top'" rowspan="2" colspan="4">
+            <strong>{{translate 'TABLE.COLUMNS.NET_SALARY'}}</strong>
+          </td>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong>
+              {{currency (multiply net_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+            </strong>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong>
+              {{numberToText (multiply net_salary ../payrollPeriod.exchangeRate) ../lang '.'  }} 
+            </strong>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-xs-12 text-right" colspan="8">
+            <strong>
+              <i>
+                * {{translate 'EXCHANGE.EXCHANGE_RATES'}} : {{currency ../payrollPeriod.exchangeRate ../payrollPeriod.currency}}
+              </i>
+            </strong>
+          </td>
+        </tr>
+     </table>
+    </div>
+  {{/each}}
+</body>
