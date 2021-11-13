@@ -11,6 +11,7 @@ angular.module('bhima.routes')
       'aggregated_stock_consumption',
       'analysis_auxiliary_cashboxes',
       'annual_clients_report',
+      'avg_med_costs_per_patient',
       'balance_report',
       'balance_sheet_report',
       'break_even',

@@ -23,6 +23,7 @@ const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handleb
 const STOCK_AGGREGATE_CONSUMPTION_TEMPLATE = `${BASE_PATH}/stock_aggregate_consumption.receipt.handlebars`;
 
 // reports
+const STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE = `${BASE_PATH}/stock_avg_med_costs_per_patient.report.handlebars`;
 const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
 const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
 const STOCK_LOST_STOCK_REPORT_TEMPLATE = `${BASE_PATH}/stock_lost_stock.report.handlebars`;
@@ -199,6 +200,7 @@ module.exports = {
   STOCK_EXIT_LOSS_TEMPLATE,
   POS_STOCK_EXIT_LOSS_TEMPLATE,
   STOCK_ASSIGN_TEMPLATE,
+  STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE,
   STOCK_ENTRY_DEPOT_TEMPLATE,
   STOCK_ENTRY_PURCHASE_TEMPLATE,
   STOCK_ENTRY_INTEGRATION_TEMPLATE,

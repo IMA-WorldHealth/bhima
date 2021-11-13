@@ -11,6 +11,7 @@ const BadRequest = require('../../../lib/errors/BadRequest');
 const db = require('../../../lib/db');
 const Stock = require('../core');
 
+const stockAvgMedCostsPerPatientReport = require('./stock/avg_med_costs_per_patient_report');
 const stockExitReport = require('./stock/exit_report');
 const stockEntryReport = require('./stock/entry_report');
 const consumptionGraph = require('./stock/consumption_graph');
@@ -137,6 +138,7 @@ async function renderStockReceipt(req, res, next) {
 exports.renderStockReceipt = renderStockReceipt;
 
 // expose to the api
+exports.stockAvgMedCostsPerPatientReport = stockAvgMedCostsPerPatientReport;
 exports.stockExitReport = stockExitReport;
 exports.stockEntryReport = stockEntryReport;
 exports.consumptionGraph = consumptionGraph;
