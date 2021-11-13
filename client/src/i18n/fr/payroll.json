@@ -52,5 +52,14 @@
     "IS_NUMBER_OF_DAYS" : "Cette rubrique est le nombre de jours",
     "NUMBER_OF_DAYS" : "Nombre de jours"
 
+  },
+  "PAYROLL_SETTINGS" : {
+    "DEFAULT" : "Par défaut",
+    "DEFAULT_HELP_TEXT" : "Avec cette option les transactions liés aux paiement des employés se font en bloc et nécessite à ce que chaque comptes des charges soient réliées à un centre de coût",
+    "ENABLE_INDEX_PAYMENT_SYSTEM" : "Activer le systeme de payement par indice",
+    "GROUP_BY_COST_CENTERS" : "Régrouper par centres des frais",
+    "GROUP_BY_COST_CENTERS_HELP_TEXT": "Avec cette option les transactions liées au paiement des employés se font par groupe par rapport aux centres des coûts rélatives des employés ",
+    "INDIVIDUALLY_PER_EMPLOYEE" : "Individuellement par employé",
+    "INDIVIDUALLY_PER_EMPLOYEE_HELP_TEXT" : "Avec cette option les transactions liées au paiement des employés se font individuellement par employée"
   }
 }

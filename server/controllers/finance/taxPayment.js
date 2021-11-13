@@ -9,7 +9,7 @@ exports.availablePaymentPeriod = function availablePaymentPeriod(req, res, next)
       p.label, p.dateFrom, p.dateTo, r.label AS RUBRIC, t.label AS TAX, a.label AS account,
       c.label AS cotisation
     FROM
-      paiement_period p, config_rubric r, config_tax t, config_accounting a,
+      payment_period p, config_rubric r, config_tax t, config_accounting a,
       config_cotisation c
     WHERE p.config_tax_id = t.id
       AND p.config_rubric_id = r.id
@@ -28,9 +28,9 @@ exports.availablePaymentPeriod = function availablePaymentPeriod(req, res, next)
 
 exports.setTaxPayment = function setTaxPayment(req, res, next) {
   const sql = `
-    UPDATE tax_paiement SET posted = 1 ' +
-    WHERE tax_paiement.paiement_uuid=${db.escape(req.body.paiement_uuid)}
-      AND tax_paiement.tax_id = ${db.escape(req.body.tax_id)};
+    UPDATE tax_payment SET posted = 1 ' +
+    WHERE tax_payment.payment_uuid=${db.escape(req.body.payment_uuid)}
+      AND tax_payment.tax_id = ${db.escape(req.body.tax_id)};
   `;
 
   db.exec(sql)

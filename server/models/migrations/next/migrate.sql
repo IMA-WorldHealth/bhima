@@ -316,3 +316,87 @@ INSERT INTO `unit` VALUES
 
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+
+/*
+ * @author: lomamech
+ * @date: 2021-10-19
+ * @desc: Payroll Settings
+ */
+INSERT IGNORE INTO `unit` VALUES
+  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting');
+
+-- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
+CALL add_column_if_missing('enterprise_setting', 'posting_payroll_cost_center_mode', 'VARCHAR(100) NOT NULL DEFAULT "default"');
+
+
+/*
+ * @author: lomamech
+ * @date: 2021-11-08
+ * @desc: Update label and key and constraint Use payment instead paiement
+ */
+RENAME TABLE holiday_paiement TO holiday_payment,
+  offday_paiement TO offday_payment,
+  paiement TO payment,
+  paiement_status TO payment_status,
+  rubric_paiement TO rubric_payment;
+  
+
+ALTER TABLE `holiday_payment` RENAME COLUMN `paiement_uuid` TO `payment_uuid`;
+ALTER TABLE `offday_payment` RENAME COLUMN `paiement_uuid` TO `payment_uuid`;
+ALTER TABLE `payment` RENAME COLUMN `paiement_date` TO `payment_date`;
+ALTER TABLE `rubric_payment` RENAME COLUMN `paiement_uuid` TO `payment_uuid`;
+
+-- HOLIDAY PAYMENT
+ALTER TABLE `holiday_payment`
+	DROP INDEX `paiement_uuid`,
+	ADD INDEX `payment_uuid` (`payment_uuid`) USING BTREE;
+
+ALTER TABLE `holiday_payment`
+	DROP FOREIGN KEY `holiday_paiement__holiday`,
+	DROP FOREIGN KEY `holiday_paiement__paiment`;
+ALTER TABLE `holiday_payment`
+	ADD CONSTRAINT `holiday_payment__holiday` FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	ADD CONSTRAINT `holiday_payment__paiment` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+-- OFFDAY - PAYMENT
+ALTER TABLE `offday_payment`
+	DROP INDEX `paiement_uuid`,
+	ADD INDEX `payment_uuid` (`payment_uuid`) USING BTREE;
+
+ALTER TABLE `offday_payment`
+	DROP FOREIGN KEY `offday_paiement__offday`,
+	DROP FOREIGN KEY `offday_paiement__paiment`;
+ALTER TABLE `offday_payment`
+	ADD CONSTRAINT `offday_payment__offday` FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	ADD CONSTRAINT `offday_payment__paiment` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- PAYMENT
+ALTER TABLE `payment`
+	DROP INDEX `paiement_1`,
+	ADD UNIQUE INDEX `payment_1` (`employee_uuid`, `payroll_configuration_id`) USING BTREE;
+
+ALTER TABLE `payment`
+	DROP FOREIGN KEY `paiement__currency`,
+	DROP FOREIGN KEY `paiement__employee`,
+	DROP FOREIGN KEY `paiement__payroll_configuration`,
+	DROP FOREIGN KEY `paiement__pay_status`;
+ALTER TABLE `payment`
+	ADD CONSTRAINT `payment__currency` FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	ADD CONSTRAINT `payment__employee` FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	ADD CONSTRAINT `payment__payroll_configuration` FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+	ADD CONSTRAINT `payment__pay_status` FOREIGN KEY (`status_id`) REFERENCES `payment_status` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+-- RUBRIC PAYMENT
+ALTER TABLE `rubric_payment`
+	DROP FOREIGN KEY `rubric_paiement__paiement`,
+	DROP FOREIGN KEY `rubric_paiement__rubric_payroll`;
+ALTER TABLE `rubric_payment`
+	ADD CONSTRAINT `rubric_payment__paiement` FOREIGN KEY (`payment_uuid`) REFERENCES `payment` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
+	ADD CONSTRAINT `rubric_payment__rubric_payroll` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+ALTER TABLE `rubric_payment`
+	DROP INDEX `rubric_paiement_1`,
+	ADD UNIQUE INDEX `rubric_payment_1` (`payment_uuid`, `rubric_payroll_id`) USING BTREE,
+	DROP INDEX `paiement_uuid`,
+	ADD INDEX `payment_uuid` (`payment_uuid`) USING BTREE;

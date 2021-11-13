@@ -36,7 +36,7 @@ function MultipleIndicesPayrollService(
   service.download = download;
   service.getConfiguration = getConfiguration;
   service.setConfiguration = setConfiguration;
-  service.paiementCommitment = paiementCommitment;
+  service.paymentCommitment = paymentCommitment;
   service.configurations = configurations;
 
   // loads the Payroll Configuration
@@ -61,7 +61,7 @@ function MultipleIndicesPayrollService(
    *Put Employees on the Payment Agreement List
    *Transfer of the entries in accountants for the commitment of payment
   */
-  function paiementCommitment(id, data) {
+  function paymentCommitment(id, data) {
     return service.$http.post(`/multiple_payroll/${id}/commitment`, { data })
       .then(service.util.unwrapHttpResponse);
   }

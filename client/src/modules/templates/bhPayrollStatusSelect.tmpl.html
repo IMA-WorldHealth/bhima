@@ -1,14 +1,14 @@
 <div ng-form="PayrollStatusForm" bh-payroll-status-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : PayrollStatusForm.$submitted && PayrollStatusForm.paiementStatus.$invalid }">
+    ng-class="{ 'has-error' : PayrollStatusForm.$submitted && PayrollStatusForm.paymentStatus.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
 
     <ui-select
       multiple
-      name="paiementStatus"
+      name="paymentStatus"
       ng-model="$ctrl.selectedPayrollStatus"
       on-select="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
       on-remove="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
@@ -19,7 +19,7 @@
         <span>{{ $item.plainText }}</span>
       </ui-select-match>
 
-      <ui-select-choices ui-select-focus-patch repeat="status.id as status in ($ctrl.paiementStatus | filter: { plainText : $select.search } | orderBy: 'plainText')">
+      <ui-select-choices ui-select-focus-patch repeat="status.id as status in ($ctrl.paymentStatus | filter: { plainText : $select.search } | orderBy: 'plainText')">
         <span ng-bind-html="status.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
