@@ -5,6 +5,7 @@ angular.module('bhima.components')
     bindings    : {
       callback    : '&',
       disable     : '<?',
+      barcode     : '<?',
     },
   });
 

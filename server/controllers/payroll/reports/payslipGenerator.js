@@ -141,10 +141,10 @@ function build(req, res, next) {
       data.total_net_salary = totalNetSalary;
       data.total_non_taxable = totalGrossSalary - totalBaseTaxable;
       data.total_deduction = totalGrossSalary - totalNetSalary;
-      // Get paiement_uuid for Selected Employee
-      const employeesPaiementUuid = dataEmployees.map(emp => db.bid(emp.paiement_uuid));
+      // Get payment_uuid for Selected Employee
+      const employeesPaymentUuid = dataEmployees.map(emp => db.bid(emp.payment_uuid));
 
-      return PayrollConfig.payrollReportElements(options.idPeriod, options.employees, employeesPaiementUuid);
+      return PayrollConfig.payrollReportElements(options.idPeriod, options.employees, employeesPaymentUuid);
     })
     .spread((rubrics, holidays, offDays, rubEmployees, rubEnterprises, rubricsIndexes) => {
       let TotalChargeEnterprise = 0;
@@ -252,13 +252,13 @@ function build(req, res, next) {
         });
         TotalChargeEnterprise += somChargeEnterprise;
         holidays.forEach(holiday => {
-          if (employee.paiement_uuid === holiday.paiement_uuid) {
+          if (employee.payment_uuid === holiday.payment_uuid) {
             holiday.dailyRate = holiday.value / holiday.holiday_nbdays;
             employee.holidaysPaid.push(holiday);
           }
         });
         offDays.forEach(offDay => {
-          if (employee.paiement_uuid === offDay.paiement_uuid) {
+          if (employee.payment_uuid === offDay.payment_uuid) {
             employee.offDaysPaid.push(offDay);
           }
         });

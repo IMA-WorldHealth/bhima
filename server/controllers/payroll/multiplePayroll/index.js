@@ -3,7 +3,7 @@
  *
  * @description
  * This controller is responsible for implementing all operation on the
- * paiement table through the `/multiple_payroll` endpoint.
+ * payment table through the `/multiple_payroll` endpoint.
  * The /multiple_payroll HTTP API endpoint
  *
  *
