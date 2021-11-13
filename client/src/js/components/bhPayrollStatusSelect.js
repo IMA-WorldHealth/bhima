@@ -29,16 +29,16 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
     $ctrl.selectedPayrollStatus = $ctrl.statusIds || [];
 
     // load all Payroll status
-    Payroll.paiementStatus()
+    Payroll.paymentStatus()
       .then((status) => {
         status.forEach((item) => {
           item.plainText = $translate.instant(item.text);
         });
-        $ctrl.paiementStatus = status;
+        $ctrl.paymentStatus = status;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = paiementStatus => $ctrl.onChange({ paiementStatus });
+  $ctrl.handleChange = paymentStatus => $ctrl.onChange({ paymentStatus });
 }
