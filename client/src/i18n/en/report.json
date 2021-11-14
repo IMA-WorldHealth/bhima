@@ -177,9 +177,13 @@
       "TITLE": "Purchase Price Analysis"
     },
     "RUMER": {
+      "BALANCE": "Balance",
       "CONDENSED_REPORT": "Condensed report",
       "DESCRIPTION": "Drug Usage and Recipe Register",
+      "ENTRIES": "Entries",
       "EXCLUDE_OUT_STOCK_ITEMS": "Exclude inventories without movements and out of stock",
+      "INCLUDE_DAILY_BALANCES": "Include daily stock balances and out-of-stock percentage",
+      "PERCENT_STOCK_OUT": "% Stock Out",
       "STOCK_BEGINNING": "Stock at the beginning of the month",
       "STOCK_END": "Stock at the end of the month",
       "TITLE": "RUMER",
