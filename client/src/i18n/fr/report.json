@@ -40,6 +40,13 @@
       "TARGET": "Cible",
       "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
     },
+    "AVG_MED_COST_PER_PATIENT" : {
+      "TITLE" : "Coût moyen des médicaments par patient",
+      "DESCRIPTION" : "Ce rapport indique le coût moyen des médicaments par patient sur une période donnée.",
+      "AVG_MEDICATION_COSTS" : "Coût moyen des médicaments",
+      "GRAND_TOTAL": "Total général",
+      "MEDICATION_COSTS" : "Coûts des médicaments"
+    },
     "BY_ASC": "Par ordre croissant",
     "BY_DESC": "Par ordre décroissant",
     "BALANCE": "Rapport de la Balance",
