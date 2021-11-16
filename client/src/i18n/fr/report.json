@@ -168,9 +168,14 @@
       "TOTAL_ALL_STOCK_MOV": "Total de tous les mouvements de stocks"
     },
     "RUMER": {
+      "BALANCE": "Solde",
       "CONDENSED_REPORT": "Rapport condensé",
       "DESCRIPTION": "Registre d’utilisation des médicaments et recettes",
+      "ENTRIES": "Entrées",
       "EXCLUDE_OUT_STOCK_ITEMS": "Exclure les inventaires sans mouvements et en rupture de stock",
+      "INCLUDE_DAILY_BALANCES": "Inclure les soldes quotidiens des stocks et le pourcentage de rupture de stock",
+      "INCOMING": "Entrant",
+      "PERCENT_STOCK_OUT": "% de rupture de stock",
       "STOCK_BEGINNING": "Stock au début du mois",
       "STOCK_END": "Stock à la fin du mois",
       "TITLE": "RUMER",

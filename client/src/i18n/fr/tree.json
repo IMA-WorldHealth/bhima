@@ -127,6 +127,7 @@
     "PAYROLL_EMP_CONFIGURATION" : "Configuration des employés",
     "PAYROLL_RUB_CONFIGURATION" : "Configuration des rubriques de paie",
     "PAYROLL_RUB_MANAGEMENT" : "Gestion des rubriques de paie",
+    "PAYROLL_SETTINGS" : "Paramètres du système de paie",
     "PHARMACY":"Gestion de pharmacies",
     "POSTING_JOURNAL":"Journal",
     "PRICE_LIST":"Liste des Prix",

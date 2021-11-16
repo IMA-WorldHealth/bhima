@@ -180,7 +180,6 @@ INSERT INTO unit VALUES
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
 
-
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -256,7 +255,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT'),
   ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT'),
-  ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+  ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT'),
+  ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -371,7 +371,7 @@ INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (6,  'PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY');
 
 -- Paiement Status
-INSERT INTO `paiement_status` (`id`, `text`) VALUES
+INSERT INTO `payment_status` (`id`, `text`) VALUES
   (1,  'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION'),
   (2,  'PAYROLL_STATUS.CONFIGURED'),
   (3,  'PAYROLL_STATUS.WAITING_FOR_PAYMENT'),

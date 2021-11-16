@@ -303,11 +303,11 @@ function createVoucher(voucherDetails, userId, projectId) {
     if (voucherType === SALARY_PAYMENT_VOUCHER_TYPE_ID) {
       if (item.document_uuid) {
         const updatePaiement = `
-          UPDATE paiement SET
-            status_id = IF (((paiement.net_salary - paiement.amount_paid) = ?), 5, 4),
-            paiement.amount_paid = amount_paid + ?,
-            paiement.paiement_date = ?
-          WHERE paiement.uuid = ? `;
+          UPDATE payment SET
+            status_id = IF (((payment.net_salary - payment.amount_paid) = ?), 5, 4),
+            payment.amount_paid = amount_paid + ?,
+            payment.payment_date = ?
+          WHERE payment.uuid = ? `;
 
         updatesPaiementData.push({
           query : updatePaiement,
