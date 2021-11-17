@@ -113,14 +113,19 @@
     </div>
 
     <div ng-if="$ctrl.enableGlobalDescriptionAndExpiration" class="form-group row">
-      <div class="col-xs-6">
+      <div class="col-xs-6" ng-class="{ 'has-error' : FindForm.$submitted && FindForm.lotDescription.$invalid }">
         <label for="lot-description" translate>STOCK.GLOBAL_LOT_DESCRIPTION</label>
         <input
+          name="lotDescription"
           class="form-control"
           placeholder="FORM.LABELS.DESCRIPTION"
           translate-attr="{ 'placeholder' : 'FORM.LABELS.DESCRIPTION'}"
           type="text"
-          ng-model="$ctrl.description">
+          ng-model="$ctrl.description"
+          required>
+        <div class="help-block" ng-messages="FindForm.lotDescription.$error" ng-show="FindForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
       </div>
       <div class="col-xs-6">
         <label for="global-expiration-date" translate>STOCK.GLOBAL_EXPIRATION_DATE</label>

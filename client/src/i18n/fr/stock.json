@@ -1,6 +1,7 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "REQUIRED_GLOBAL_LOT_DESCRIPTION" : "La description du lot est réquise",
     "USE_OF_STOCK_WAC" : "Utilisation de la valeur en stock du produit (Cout Unitaire Moyen Pondéré)",
     "WAC_NOTIFICATION" : "La valeur actuelle du produit en stock est",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
