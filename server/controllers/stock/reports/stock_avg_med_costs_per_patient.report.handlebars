@@ -1,0 +1,66 @@
+{{> head title="REPORT.AVG_MED_COST_PER_PATIENT.TITLE" }}
+
+<body class="container-fluid">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.AVG_MED_COST_PER_PATIENT.TITLE'}}
+      </h2>
+      {{#if depotOrService}}
+      <h4 class="text-center">
+        {{#if depotName}}
+          <span class="text-uppercase">{{ depotName }}</span>{{#if depotAndService}}, {{/if}}
+        {{/if}}
+        {{#if serviceName}}
+          {{translate 'STOCK.SERVICE'}}: {{ serviceName }}
+        {{/if}}
+      </h4>
+      {{/if}}
+      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
+
+      <table class="table table-striped table-condensed table-report table-bordered">
+      <thead>
+        <tr>
+          <th>{{translate 'STOCK.DEPOT'}}</th>
+          <th>{{translate 'STOCK.SERVICE'}}</th>
+          <th class="text-center">{{translate 'REPORT.AVG_MED_COST_PER_PATIENT.MEDICATION_COSTS'}}</th>
+          <th class="text-center">{{translate 'TABLE.AGGREGATES.NUM_PATIENTS'}}</th>
+          <th class="text-center">{{translate 'REPORT.AVG_MED_COST_PER_PATIENT.AVG_MEDICATION_COSTS'}}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {{#each rows}}
+        <tr>
+          <td>{{ depot_name }}</td>
+          <td>{{ service_name }}</td>
+          <td class="text-right">{{currency srvTotal ../currencyId 2}}</td>
+          <td class="text-right">{{ srvPatCount }}</td>
+          <td class="text-right">{{currency srvAvgCost ../currencyId 2}}</td>
+        </tr>
+        {{else}}
+          {{> emptyTable columns=5}}
+        {{/each}}
+        {{#if rows}}
+        <tr>
+          <td colspan="5"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-right"><strong>{{translate 'REPORT.AVG_MED_COST_PER_PATIENT.GRAND_TOTAL'}}:</strong></td>
+          <td class="text-right"><strong>{{currency totalMedCosts currencyId 2}}</strong></td>
+          <td class="text-right"><strong>{{totalNumPatients}}</strong></td>
+          <td class="text-right"><strong>{{currency avgMedCosts currencyId 2}}</strong></td>
+        </tr>
+        {{/if}}
+      </tbody>
+
+    </div>
+  </div>
+</body>
