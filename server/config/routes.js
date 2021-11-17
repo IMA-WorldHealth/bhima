@@ -1106,5 +1106,5 @@ exports.configure = function configure(app) {
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 
   // ODK CENTRAL HANDLER
-  app.get('/odk/central/projects/:projectId/forms/:formId', odkImport.loadData);
+  app.get('/odk/central/forms/:formId', odkImport.loadData);
 };

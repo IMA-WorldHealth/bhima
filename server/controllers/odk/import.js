@@ -9,7 +9,8 @@ exports.loadData = loadData;
 
 // Perfoms actions based on project and form id
 async function loadData(req, res, next) {
-  const { projectId, formId } = req.params;
+  const { formId } = req.params;
+  const projectId = process.env.ODK_CENTRAL_PROJECT_ID;
 
   const mapActions = {
     pcima_pv_reception : loadFosaData,
