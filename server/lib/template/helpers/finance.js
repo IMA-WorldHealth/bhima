@@ -36,7 +36,13 @@ function currency(value = 0, currencyId, digit) {
   } else {
     // usage with custom digits for precision
     const format = JSON.parse(JSON.stringify(fmt));
-    format.precision = digit;
+
+    /*
+      * lomamech : there had been a problem with the display of digit after the decimal
+      * point after investigation, I realized that the value "digit" was undefined
+    */
+    // format.precision = digit;
+
     output = new Handlebars.SafeString(accountingjs.formatMoney(value, format));
   }
 
