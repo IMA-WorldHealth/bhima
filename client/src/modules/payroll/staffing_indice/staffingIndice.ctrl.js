@@ -87,12 +87,14 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
-
     },
     {
       field : 'display_name',
       displayName : 'FORM.LABELS.EMPLOYEE_NAME',
       headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true,
+      footerCellClass : 'text-center',
     },
     {
       field : 'text',
@@ -129,6 +131,7 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
+    showColumnFooter  : true,
     columnDefs : columns,
     enableSorting : true,
     data : [],
