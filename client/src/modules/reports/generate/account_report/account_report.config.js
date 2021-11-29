@@ -8,7 +8,7 @@ AccountReportConfigController.$inject = [
 
 function AccountReportConfigController(
   $sce, Notify, SavedReports, AppCache, reportData, $state,
-  Moment, Session
+  Moment, Session,
 ) {
   const vm = this;
   const cache = new AppCache('configure_account_report');
