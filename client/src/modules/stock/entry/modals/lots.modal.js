@@ -2,16 +2,16 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService', 'InventoryService',
-  'SessionService', 'CurrencyService', 'NotifyService', 'ModalService',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data', 'LotService',
+  'InventoryService', 'SessionService', 'CurrencyService', 'NotifyService',
+  'ExchangeRateService', 'ModalService', 'BarcodeService',
   'StockEntryModalForm', 'bhConstants', '$translate', 'focus',
-  'ExchangeRateService',
 ];
 
 function StockDefineLotsModalController(
   AppCache, Instance, uiGridConstants, Data, Lots, Inventory,
-  Session, Currencies, Notify, Modal,
-  EntryForm, bhConstants, $translate, Focus, ExchangeRate,
+  Session, Currencies, Notify, ExchangeRate, Modal, Barcode,
+  EntryForm, bhConstants, $translate, Focus,
 ) {
   const vm = this;
 
@@ -37,6 +37,8 @@ function StockDefineLotsModalController(
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
+  vm.hasDuplicateLotInvent = false;
+  vm.hasDuplicateLotOrder = false;
 
   vm.globalExpirationDate = new Date();
   vm.enableGlobalDescriptionAndExpiration = false;
@@ -68,10 +70,12 @@ function StockDefineLotsModalController(
   vm.onChangeQuantity = onChangeQuantity;
   vm.onExpDateEditable = onExpDateEditable;
   vm.onChangeUnitCost = onChangeUnitCost;
+
   vm.onSelectLot = onSelectLot;
   vm.onDateChange = onDateChange;
+  vm.enterLotByBarcode = enterLotByBarcode;
   vm.onGlobalDateChange = onGlobalDateChange;
-  vm.toggleExpirationColumn = toggleExpirationColumn;
+  vm.toggleGlobalDescExpColumn = toggleGlobalDescExpColumn;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
@@ -90,9 +94,15 @@ function StockDefineLotsModalController(
     aggregationHideLabel : true,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
   }, {
+    field : 'barcode',
+    displayName : 'BARCODE.BARCODE',
+    headerCellFilter : 'translate',
+    width : 110,
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+  }, {
     field : 'quantity',
     type : 'number',
-    width : 150,
+    width : 120,
     displayName : 'TABLE.COLUMNS.QUANTITY',
     headerCellFilter : 'translate',
     aggregationType : uiGridConstants.aggregationTypes.sum,
@@ -157,8 +167,8 @@ function StockDefineLotsModalController(
     vm.gridApi = api;
   }
 
-  function toggleExpirationColumn(value) {
-    const EXPIRATION_DATE_COLUMN = 3;
+  function toggleGlobalDescExpColumn(value) {
+    const EXPIRATION_DATE_COLUMN = 4;
     cols[EXPIRATION_DATE_COLUMN].visible = !!value;
     vm.gridApi.grid.refresh();
   }
@@ -367,6 +377,65 @@ function StockDefineLotsModalController(
     }
   }
 
+  function lotMatch(row, label) {
+    if (row.lot === null) {
+      return false;
+    }
+    if (typeof row.lot === 'string') {
+      return row.lot.toUpperCase() === label;
+    }
+    if (typeof row.lot.label === 'string') {
+      return row.lot.label.toUpperCase() === label;
+    }
+    return false;
+  }
+
+  function lookupLotInForm(label) {
+    return vm.form.rows.find(row => lotMatch(row, label));
+  }
+
+  /**
+   * @method enterLotByBarcode
+   *
+   * @description
+   * Pops up modal to scan the lot barcode
+   *
+   * @param {object} row the affected row
+   */
+  function enterLotByBarcode(row) {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        if (record.uuid) {
+          const newLotLabel = record.uuid.toUpperCase();
+
+          if (vm.enableGlobalDescriptionAndExpiration) {
+            // In this mode, the new lot IDs must not already be known or in already entered
+            // TODO: Make this a separate user check box option?
+            if (lookupLotByLabel(record.uuid)) {
+              vm.errors.push($translate.instant('STOCK.DUPLICATE_LOT_INVENTORY'));
+              vm.form.$invalid = true;
+              return;
+            }
+            if (lookupLotInForm(newLotLabel)) {
+              vm.errors.push($translate.instant('STOCK.DUPLICATE_LOT_ORDER'));
+              vm.form.$invalid = true;
+              return;
+            }
+          }
+
+          // Save the new lot!
+          row.lot = newLotLabel;
+          if (vm.enableGlobalDescriptionAndExpiration && vm.globalExpirationDate) {
+            row.expiration_date = vm.globalExpirationDate;
+          }
+          onChanges();
+          if (vm.enableFastInsert) {
+            vm.form.addItem();
+          }
+        }
+      });
+  }
+
   function onGlobalDateChange(date) {
     if (date) {
       vm.globalExpirationDate = date;
@@ -378,7 +447,6 @@ function StockDefineLotsModalController(
       onChanges();
     }
   }
-
   /**
    * @method onSelectLot
    *

@@ -31,7 +31,7 @@ describe('(/services) The Service API', () => {
   it('GET /services returns a list of services', () => {
     return agent.get('/services')
       .then((res) => {
-        helpers.api.listed(res, 4);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });

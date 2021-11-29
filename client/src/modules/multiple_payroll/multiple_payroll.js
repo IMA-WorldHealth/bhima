@@ -56,12 +56,14 @@ function MultiplePayrollController(
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
     cellClass : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
     cellClass : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'status_id',
@@ -205,7 +207,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employeesUuid)
+        MultiplePayroll.paymentCommitment(idPeriod, employeesUuid)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;

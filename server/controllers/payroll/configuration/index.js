@@ -89,10 +89,10 @@ function del(req, res, next) {
   );
 }
 
-function paiementStatus(req, res, next) {
+function paymentStatus(req, res, next) {
   const sql = `
-    SELECT paiement_status.id, paiement_status.text
-    FROM paiement_status
+    SELECT payment_status.id, payment_status.text
+    FROM payment_status
   `;
 
   db.exec(sql)
@@ -110,33 +110,33 @@ function paiementStatus(req, res, next) {
   * The summation of the expenses of the employees
   * The summation of the rubrics in the expenses of the company
 */
-function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
+function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
   const sql = `
-    SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result,
-    BUID(paiement.employee_uuid) AS employee_uuid, rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label,
+    SELECT rubric_payment.payment_uuid, rubric_payment.value AS result,
+    BUID(payment.employee_uuid) AS employee_uuid, rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label,
     rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount,
-    rubric_payroll.is_social_care, rubric_payroll.is_employee, paiement.currency_id
-    FROM rubric_paiement
-    JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
-    JOIN employee ON employee.uuid = paiement.employee_uuid
-    JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
-    WHERE paiement.payroll_configuration_id = ? AND employee.uuid IN (?)
+    rubric_payroll.is_social_care, rubric_payroll.is_employee, payment.currency_id
+    FROM rubric_payment
+    JOIN payment ON payment.uuid = rubric_payment.payment_uuid
+    JOIN employee ON employee.uuid = payment.employee_uuid
+    JOIN rubric_payroll ON rubric_payroll.id = rubric_payment.rubric_payroll_id
+    WHERE payment.payroll_configuration_id = ? AND employee.uuid IN (?)
     AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
   `;
 
-  const sqlHolidayPaiement = `
-    SELECT holiday_paiement.holiday_nbdays, holiday_paiement.holiday_nbdays, holiday_paiement.holiday_percentage,
-    holiday_paiement.label, holiday_paiement.value, BUID(holiday_paiement.paiement_uuid) AS paiement_uuid
-    FROM holiday_paiement
-    WHERE holiday_paiement.paiement_uuid IN (?)
+  const sqlHolidayPayment = `
+    SELECT holiday_payment.holiday_nbdays, holiday_payment.holiday_nbdays, holiday_payment.holiday_percentage,
+    holiday_payment.label, holiday_payment.value, BUID(holiday_payment.payment_uuid) AS payment_uuid
+    FROM holiday_payment
+    WHERE holiday_payment.payment_uuid IN (?)
   `;
 
-  const sqlOffDayPaiement = `
-    SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid,
-    offday_paiement.label, offday_paiement.value
-    FROM offday_paiement
-    WHERE offday_paiement.paiement_uuid IN (?)
+  const sqlOffDayPayment = `
+    SELECT offday_payment.offday_percentage, BUID(offday_payment.payment_uuid) AS payment_uuid,
+    offday_payment.label, offday_payment.value
+    FROM offday_payment
+    WHERE offday_payment.payment_uuid IN (?)
   `;
 
   const getRubricPayrollEmployee = `
@@ -147,6 +147,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 0 OR (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 1))
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;
@@ -159,16 +160,28 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ?
     AND (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 0)
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
     rubric_payroll.label ASC;
   `;
 
+  const sqlRubricPayrollIndice = `
+    SELECT spi.employee_uuid, spi.payroll_configuration_id, spi.rubric_id, spi.rubric_value,
+    rub.is_indice, rub.is_monetary_value, rub.label AS rubric_label, rub.indice_type
+    FROM stage_payment_indice AS spi
+    JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
+    WHERE spi.payroll_configuration_id = ? AND spi.employee_uuid IN (?)
+    AND rub.is_indice = 1 AND rub.is_monetary_value = 0
+    ORDER BY rub.label ASC;
+  `;
+
   return q.all([
     db.exec(sql, [idPeriod, employees]),
-    db.exec(sqlHolidayPaiement, [employeesPaiementUuid]),
-    db.exec(sqlOffDayPaiement, [employeesPaiementUuid]),
+    db.exec(sqlHolidayPayment, [employeesPaymentUuid]),
+    db.exec(sqlOffDayPayment, [employeesPaymentUuid]),
     db.exec(getRubricPayrollEmployee, [idPeriod]),
     db.exec(getRubricPayrollEnterprise, [idPeriod]),
+    db.exec(sqlRubricPayrollIndice, [idPeriod, employees]),
   ]);
 }
 
@@ -187,8 +200,8 @@ exports.update = update;
 // Delete a Payroll configuration
 exports.delete = del;
 
-// get list of Paiement Status
-exports.paiementStatus = paiementStatus;
+// get list of Payment Status
+exports.paymentStatus = paymentStatus;
 
 exports.lookupPayrollConfig = lookupPayrollConfig;
 

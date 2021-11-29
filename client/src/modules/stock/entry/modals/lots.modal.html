@@ -102,7 +102,7 @@
           <input
             id="enableGlobalDescriptionAndExpiration"
             ng-model="$ctrl.enableGlobalDescriptionAndExpiration"
-            ng-click="$ctrl.toggleExpirationColumn($ctrl.enableGlobalDescriptionAndExpiration)"
+            ng-click="$ctrl.toggleGlobalDescExpColumn($ctrl.enableGlobalDescriptionAndExpiration)"
             type="checkbox"
             ng-true-value="1"
             ng-false-value="0">
@@ -136,7 +136,7 @@
       <bh-add-item callback="$ctrl.addItems(numItem)" disable="true">
       </bh-add-item>
     </div>
-    
+
     <div class="row">
       <div class="col-xs-12">
         <div

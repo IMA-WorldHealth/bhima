@@ -217,7 +217,7 @@ BEGIN
             SET @indiceBase = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_base_index');
             -- A revoir le calcul
             -- SET @indiceJour = maxBaseIndice(_payroll_configuration_id)/@nbrJour;
-            SET @indiceJour = IFNULL(@indiceBase/@nbrJour, 0);
+            SET @indiceJour = IFNULL((@indiceBase + @responsabilite)/@nbrJour, 0);
 
             CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'is_day_index', @indiceJour);
             CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'is_number_of_days', @nbrJour);
@@ -232,7 +232,7 @@ BEGIN
 
 
             CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id, 'is_total_code',
-                @indice_reajust  + @responsabilite  + @otherProfits
+                @indice_reajust + @otherProfits
             );
 
         END LOOP;
