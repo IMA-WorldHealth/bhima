@@ -91,6 +91,14 @@
                 refresh="PatientEditCtrl.refreshDebtorGroupHistory"
                 limit="5">
               </bh-debtor-group-history>
+
+              <div class="form-group">
+                <button
+                  data-update-group-patient
+                  class="btn btn-warning btn-block"
+                  ui-sref="patientRecord({ patientUuid : PatientEditCtrl.medical.uuid })"><span translate>PATIENT_RECORDS.VISITS.PATIENT_INFO</span>
+                </button>
+              </div>
             </form>
           </div>
         </div>

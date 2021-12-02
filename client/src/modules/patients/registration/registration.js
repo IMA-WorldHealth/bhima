@@ -19,7 +19,7 @@ PatientRegistrationController.$inject = [
  */
 function PatientRegistrationController(
   Patients, Session, util, Notify,
-  Receipts, ScrollTo, bhConstants
+  Receipts, ScrollTo, bhConstants,
 ) {
   const vm = this;
 
