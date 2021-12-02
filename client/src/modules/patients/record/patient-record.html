@@ -105,13 +105,21 @@
                   <span translate>FORM.LABELS.TAKE_A_PICTURE</span>
                 </a>
 
-                <a
+                <a ng-if="!PatientRecordCtrl.patient.employee_uuid"
                   data-method="convert-to-employee"
                   ui-sref="patientAsEmployee({ uuid : PatientRecordCtrl.patient.uuid })"
                   class="btn btn-default btn-block">
                   <span class="fa fa-street-view"></span>
                   <span translate>FORM.LABELS.REGISTER_EMPLOYEE_PATIENT</span>
                 </a>
+
+                <span ng-if="PatientRecordCtrl.patient.employee_uuid && !PatientRecordCtrl.patient.locked" class="btn btn-success btn-block" translate>
+                  EMPLOYEE.ACTIVE_EMPLOYEE
+                </span>
+
+                <span ng-if="PatientRecordCtrl.patient.employee_uuid && PatientRecordCtrl.patient.locked" class="btn btn-warning btn-block" translate>
+                  EMPLOYEE.INACTIVE_EMPLOYEE
+                </span>
               </div>
             </div>
           </div>
