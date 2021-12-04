@@ -18,11 +18,6 @@ function TrialBalanceErrorsController(TrialBalance, Notify, $state) {
   // FIXME(@jniles): why doesn't ui-sref work here?
   vm.goToOverviewView = () => $state.go('TrialBalanceOverview');
 
-  // links the errors to the posting journal via their record uuid
-  const link = `<div class="ui-grid-cell-contents">
-      <bh-journal-link record-uuid="row.entity.record_uuid" display="{{row.entity.trans_id}}"></bh-journal-link>
-    </div>`;
-
   const columns = [{
     field            : 'code',
     displayName      : 'TABLE.COLUMNS.ERROR_TYPE',
@@ -36,7 +31,6 @@ function TrialBalanceErrorsController(TrialBalance, Notify, $state) {
     headerCellFilter : 'translate',
     headerCellClass  : 'ui-grid-header-cell-error',
   }];
-
 
   vm.gridOptions = {
     appScopeProvider : vm,
