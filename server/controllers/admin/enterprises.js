@@ -26,7 +26,7 @@ exports.list = function list(req, res, next) {
         gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
         enable_password_validation, enable_balance_on_invoice_receipt, enable_barcodes,
         enable_auto_email_report, enable_index_payment_system, base_index_growth_rate,
-        posting_payroll_cost_center_mode
+        posting_payroll_cost_center_mode, enable_require_cost_center_for_posting
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -51,6 +51,7 @@ exports.list = function list(req, res, next) {
             'enable_index_payment_system',
             'base_index_growth_rate',
             'posting_payroll_cost_center_mode',
+            'enable_require_cost_center_for_posting',
           ];
 
           row.settings = _.pick(row, settings);
