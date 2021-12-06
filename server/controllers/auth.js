@@ -5,7 +5,6 @@
  * This controller is responsible for managing user authentication and
  * authorization to the entire application stack.
  *
- * @requires q
  * @requires lodash
  * @requires debug
  * @requires lib/db
@@ -13,7 +12,6 @@
  */
 
 const _ = require('lodash');
-const q = require('q');
 const debug = require('debug')('app');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
