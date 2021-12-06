@@ -126,6 +126,9 @@ BEGIN
     FROM posting_journal AS pj
       JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
       JOIN account a ON pj.account_id = a.id
+      JOIN project proj ON proj.id = pj.project_id
+      JOIN enterprise e ON e.id = proj.enterprise_id 
+      JOIN enterprise_setting es ON es.enterprise_id = e.id AND es.enable_require_cost_center_for_posting = 1 
     WHERE a.type_id IN (income_account_id, expense_account_id) AND pj.cost_center_id IS NULL
     GROUP BY pj.record_uuid;
 
@@ -135,6 +138,9 @@ BEGIN
     FROM posting_journal AS pj
       JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
       JOIN account a ON pj.account_id = a.id
+      JOIN project proj ON proj.id = pj.project_id
+      JOIN enterprise e ON e.id = proj.enterprise_id 
+      JOIN enterprise_setting es ON es.enterprise_id = e.id AND es.enable_require_cost_center_for_posting = 1 
     WHERE a.type_id NOT IN (income_account_id, expense_account_id) AND pj.cost_center_id IS NOT NULL
     GROUP BY pj.record_uuid;
 
