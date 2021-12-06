@@ -112,10 +112,10 @@ async function stockAvgMedCostsPerPatientReport(req, res, next) {
 
       results.forEach(row => {
         if (row.service_name === null) {
-          row.service_name = 'None'; // ??? TRANSLATE!
-          row.srvTotal *= rate;
-          row.srvAvgCost *= rate;
+          row.service_name = 'INVENTORY.NONE';
         }
+        row.srvTotal *= rate;
+        row.srvAvgCost *= rate;
       });
 
       if (results.length > 0) {
