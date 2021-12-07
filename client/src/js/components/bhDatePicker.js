@@ -24,6 +24,12 @@ DatePickerController.$inject = ['$uibModal', 'bhConstants'];
 function DatePickerController(Modal, bhConstants) {
   const vm = this;
 
+  vm.$onInit = () => {
+    if (vm.date) {
+      vm.date = new Date(vm.date);
+    }
+  };
+
   const modalParameters = {
     size         : 'sm',
     backdrop     : 'static',
@@ -57,9 +63,7 @@ function DatePickerController(Modal, bhConstants) {
 
   function openDatePicker() {
     const params = angular.extend(modalParameters, {
-      resolve : {
-        data : function dataProvider() { return {}; },
-      },
+      resolve : { data : () => ({}) },
     });
     const instance = Modal.open(params);
     return instance.result;

@@ -12,7 +12,7 @@ function systemUsageStatController($sce, Notify, SavedReports, AppCache, reportD
   const reportUrl = 'reports/finance/system_usage_stat';
 
   vm.previewGenerated = false;
-  vm.reportDetails = { };
+  vm.reportDetails = {};
   vm.today = new Date();
 
   vm.clearPreview = () => {
@@ -21,6 +21,13 @@ function systemUsageStatController($sce, Notify, SavedReports, AppCache, reportD
   };
 
   vm.onDateChange = (date) => {
+    // NOTE(@jniles) - set the timezone offsets correctly so that
+    // report behaves the same in all localities.
+    // Should we do this for all dates?
+    date.setHours(vm.today.getHours());
+    date.setMinutes(vm.today.getMinutes());
+    date.setMilliseconds(vm.today.getMilliseconds());
+
     vm.reportDetails.date = date;
   };
 
