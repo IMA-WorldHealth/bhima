@@ -849,6 +849,7 @@ exports.configure = function configure(app) {
   app.put('/stock/setting/:id', stockSetting.update);
 
   // stock reports API
+  app.get('/reports/stock/avg_med_costs_per_patient', stockReports.stockAvgMedCostsPerPatientReport);
   app.get('/reports/stock/exit', stockReports.stockExitReport);
   app.get('/reports/stock/entry', stockReports.stockEntryReport);
   app.get('/reports/stock/consumption_graph', stockReports.consumptionGraph);
