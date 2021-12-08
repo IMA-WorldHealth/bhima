@@ -177,8 +177,8 @@ INSERT INTO unit VALUES
   (301, 'Purchase Prices Report','REPORT.PURCHASE_PRICES.TITLE','Report on purchase prices over time', 285,'/reports/purchase_prices'),
   (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts'),
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense'),
-  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting');
-
+  (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
+  (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -255,7 +255,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('cost_center_step_down', 'TREE.COST_CENTER_STEPDOWN'),
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT'),
   ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT'),
-  ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT');
+  ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT'),
+  ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
