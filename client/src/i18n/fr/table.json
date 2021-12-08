@@ -115,7 +115,6 @@
             "NUM_PIECE": "N° Piece",
             "ENTRY": "Entrée",
             "EXIT": "Sortie",
-            "COST_CENTER" : "Centre de frais",
             "FILTERING": {
                 "LABEL": "Filtre"
             },
@@ -223,6 +222,7 @@
             "RESULTS": "Résultats",
             "RESULT_ACCOUNT_SCT": "Section Compte Résultat",
             "RUBRICS": "Rubriques",
+            "SEE_SITUATION_ALL_EMPLOYEES": "Voir la situation global de tous les employés",
             "SECTOR": "Secteur",
             "SERVICE": "Service",
             "SOLD": "Solde",
