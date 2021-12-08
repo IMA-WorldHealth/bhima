@@ -224,7 +224,8 @@ async function lookupPatient(patientUuid) {
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
-      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area
+      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area, BUID(emp.uuid) AS employee_uuid,
+      emp.locked
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
@@ -232,6 +233,7 @@ async function lookupPatient(patientUuid) {
       JOIN user AS u ON p.user_id = u.id
       JOIN account AS a ON a.id = dg.account_id
       JOIN entity_map AS em ON p.uuid = em.uuid
+      LEFT JOIN employee AS emp ON emp.patient_uuid = p.uuid
     WHERE p.uuid = ?;
   `;
 
