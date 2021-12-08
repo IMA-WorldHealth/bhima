@@ -22,14 +22,22 @@
 
       <div class="panel-body">
         <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.allEmployee" ng-true-value="1" ng-false-value="0">
+              <span translate>TABLE.COLUMNS.SEE_SITUATION_ALL_EMPLOYEES</span>
+            </label>
+          </div>
 
           <!--select the Employee -->
-          <bh-employee-select
-            employee-uuid="ReportConfigCtrl.reportDetails.employee_uuid"
-            on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
-            required="true">
-          </bh-employee-select>
-           
+          <div ng-if="ReportConfigCtrl.reportDetails.allEmployee">
+            <bh-employee-select
+              employee-uuid="ReportConfigCtrl.reportDetails.employee_uuid"
+              on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
+              required="true">
+            </bh-employee-select>
+          </div>
+
           <hr>
           <div class="checkbox">
             <label>
