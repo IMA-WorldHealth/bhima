@@ -113,11 +113,11 @@
                   <span translate>FORM.LABELS.REGISTER_EMPLOYEE_PATIENT</span>
                 </a>
 
-                <p ng-if="PatientRecordCtrl.patient.employee_uuid && !PatientRecordCtrl.patient.locked" class="badge badge-success" translate>
+                <p ng-if="PatientRecordCtrl.patient.employee_uuid && !PatientRecordCtrl.patient.locked" class="badge badge-success" style="margin-top: 5px;" translate>
                   EMPLOYEE.ACTIVE_EMPLOYEE
                 </p>
 
-                <p ng-if="PatientRecordCtrl.patient.employee_uuid && PatientRecordCtrl.patient.locked" class="badge badge-warning" translate>
+                <p ng-if="PatientRecordCtrl.patient.employee_uuid && PatientRecordCtrl.patient.locked" class="badge badge-warning" style="margin-top: 5px;" translate>
                   EMPLOYEE.INACTIVE_EMPLOYEE
                 </p>
               </div>
