@@ -4,10 +4,24 @@
 
 /*
  * @author: jmcameron
- * @date: 2021-11-12
+ * @description: Add new menu item
+ * @date: 2021-12-11
  */
 INSERT IGNORE INTO `unit` VALUES
   (305, 'Average Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
+
+/*
+ * @author: jmcameron
+ * @description: Hide old cost center menu items
+ * @date: 2021-12-09
+ */
+DELETE FROM role_unit WHERE unit_id IN (220, 221, 222, 223, 230, 231, 232);
+DELETE FROM report WHERE report_key IN (
+  'cost_center',
+  'break_even',
+  'break_even_cost_center'
+);
+DELETE FROM unit WHERE id IN (220, 221, 222, 223, 230, 231, 232);
