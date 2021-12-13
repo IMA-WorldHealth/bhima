@@ -3,8 +3,9 @@
     class="form-group"
     ng-class="{ 'has-error' : InventoryForm.$submitted && InventoryForm.inventory_uuid.$invalid }">
 
-    <label class="control-label" translate>
-      FORM.LABELS.INVENTORY
+    <label class="control-label">
+      <span ng-if="$ctrl.required" translate>FORM.LABELS.INVENTORY</span>
+      <span ng-if="!$ctrl.required" translate>FORM.LABELS.INVENTORY_OPTIONAL</span>
     </label>
 
     <ng-transclude></ng-transclude>

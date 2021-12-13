@@ -5,7 +5,10 @@
 
   <div class="form-group"
       ng-class="{ 'has-error' : FiscalYearSelectForm.$submitted && FiscalYearSelectForm.fiscal.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
+      <label class="control-label">
+        <span ng-if="$ctrl.required" translate>FORM.LABELS.FISCAL_YEAR</span>
+        <span ng-if="!$ctrl.required" translate>FORM.LABELS.FISCAL_YEAR_OPTIONAL</span>
+      </label>
 
       <ng-transclude></ng-transclude>
       <select

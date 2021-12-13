@@ -23,8 +23,8 @@
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <bh-purchase-order-select
               purchase-uuid="ReportConfigCtrl.reportDetails.purchase_uuid"
-              on-select-callback="ReportConfigCtrl.onSelectPurchase(purchase)">
-              <bh-clear on-clear="ReportConfigCtrl.onClear(purchase_uuid)"></bh-clear>
+              on-select-callback="ReportConfigCtrl.onSelectPurchase(purchase)"
+              required="true">
             </bh-purchase-order-select>
 
             <!-- show details -->
@@ -35,7 +35,7 @@
               id="shouldShowDetails"
               value="ReportConfigCtrl.reportDetails.shouldShowDetails"
               on-change-callback="ReportConfigCtrl.onChangeShowDetails(value)">
-            </bh-yes-no-radios>            
+            </bh-yes-no-radios>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
