@@ -3,8 +3,10 @@
     class="form-group"
     ng-class="{ 'has-error' : ServiceForm.$submitted && ServiceForm.service_uuid.$invalid }">
 
-    <label class="control-label" translate>
-      {{ $ctrl.label }}
+    <label class="control-label">
+      <span ng-if="$ctrl.label==='FORM.LABELS.SERVICE' && $ctrl.required" translate>FORM.LABELS.SERVICE</span>
+      <span ng-if="$ctrl.label==='FORM.LABELS.SERVICE' && !$ctrl.required" translate>FORM.LABELS.SERVICE_OPTIONAL</span>
+      <span ng-if="$ctrl.label!=='FORM.LABELS.SERVICE'" translate>{{ $ctrl.label }}</span>
     </label>
 
     <ng-transclude></ng-transclude>

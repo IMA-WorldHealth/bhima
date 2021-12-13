@@ -3,8 +3,12 @@
     class="form-group"
     ng-class="{ 'has-error' : AccountForm.$submitted && AccountForm.account_id.$invalid }">
 
-    <label class="control-label" translate>
-      {{ ::$ctrl.label }}
+    <label class="control-label">
+      <span ng-if="$ctrl.label==='FORM.LABELS.ACCOUNT' && $ctrl.required" translate>FORM.LABELS.ACCOUNT</span>
+      <span ng-if="$ctrl.label==='FORM.LABELS.ACCOUNT' && !$ctrl.required" translate>FORM.LABELS.ACCOUNT_OPTIONAL</span>
+      <span ng-if="$ctrl.label==='FORM.SELECT.ACCOUNT' && $ctrl.required" translate>FORM.SELECT.ACCOUNT</span>
+      <span ng-if="$ctrl.label==='FORM.SELECT.ACCOUNT' && !$ctrl.required" translate>FORM.SELECT.ACCOUNT_OPTIONAL</span>
+      <span ng-if="$ctrl.label!=='FORM.LABELS.ACCOUNT' && $ctrl.label!=='FORM.SELECT.ACCOUNT'" translate>{{ ::$ctrl.label }}</span>
     </label>
 
     <ng-transclude></ng-transclude>
