@@ -100,8 +100,15 @@
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",
     "EMPLOYEE_STANDING": {
+      "AGGREGATE_REPORT": "Aggregate report",
       "DESCRIPTION": "This report shows the financial situation of an employee",
+      "DETAILED_REPORT": "Detailed report",
+      "EXTRACT_EMPLOYEE_STANDING": "View extract of the employee's standing by date range",
+      "FINANCIAL_SITUATION_EMPLOYEES": "Financial situation of employees",
+      "INCLUDE_MEDICAL_CARE_EMPLOYEE": "Include medical care provided to the employee",
       "REPORT": "Employee Standing Report",
+      "SEE_SITUATION_ALL_EMPLOYEES": "See the overall situation of all employees",
+      "SYNTHETIC": "Synthetic report",
       "TITLE": "Employee Standing Report"
     },
     "EXPENSE_REPORT": "Expenses Report",

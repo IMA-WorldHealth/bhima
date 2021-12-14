@@ -25,12 +25,57 @@
           <div class="checkbox">
             <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.allEmployee" ng-true-value="1" ng-false-value="0">
-              <span translate>TABLE.COLUMNS.SEE_SITUATION_ALL_EMPLOYEES</span>
+              <span translate>REPORT.EMPLOYEE_STANDING.SEE_SITUATION_ALL_EMPLOYEES</span>
             </label>
           </div>
 
+          <div ng-if="ReportConfigCtrl.reportDetails.allEmployee" class="panel-body">
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeRepport"
+                  value="aggregate"
+                  ng-model="ReportConfigCtrl.reportDetails.modeRepport"
+                  ng-click="ReportConfigCtrl.onSelectMode('aggregate')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.AGGREGATE_REPORT
+                </span>
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeRepport"
+                  value="synthetic"
+                  ng-model="ReportConfigCtrl.reportDetails.modeRepport"
+                  ng-click="ReportConfigCtrl.onSelectMode('synthetic')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.SYNTHETIC
+                </span>
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeRepport"
+                  value="detailled"
+                  ng-model="ReportConfigCtrl.reportDetails.modeRepport"
+                  ng-click="ReportConfigCtrl.onSelectMode('detailled')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.DETAILED_REPORT
+                </span>
+              </label>
+            </div>
+          </div>
+
           <!--select the Employee -->
-          <div ng-if="ReportConfigCtrl.reportDetails.allEmployee">
+          <div ng-if="!ReportConfigCtrl.reportDetails.allEmployee">
             <bh-employee-select
               employee-uuid="ReportConfigCtrl.reportDetails.employee_uuid"
               on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
@@ -42,9 +87,10 @@
           <div class="checkbox">
             <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.extractEmployee" ng-true-value="1" ng-false-value="0">
-              <span translate>TABLE.COLUMNS.EXTRACT_EMPLOYEE_STANDING</span>
+              <span translate>REPORT.EMPLOYEE_STANDING.EXTRACT_EMPLOYEE_STANDING</span>
             </label>
           </div>
+
           <div ng-if="ReportConfigCtrl.reportDetails.extractEmployee">
             <!-- date interval -->
             <bh-date-interval
@@ -55,10 +101,10 @@
             </bh-date-interval>
           </div>
           <hr>
-          <div class="checkbox">
+          <div ng-if="!ReportConfigCtrl.reportDetails.allEmployee" class="checkbox">
             <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeMedicalCare" ng-true-value="1" ng-false-value="0">
-              <span translate>TABLE.COLUMNS.INCLUDE_MEDICAL_CARE_EMPLOYEE</span>
+              <span translate>REPORT.EMPLOYEE_STANDING.INCLUDE_MEDICAL_CARE_EMPLOYEE</span>
             </label>
           </div>
 
