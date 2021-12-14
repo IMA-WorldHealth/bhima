@@ -13,6 +13,7 @@
     "START" : "Début",
     "END" : "Fin",
     "PERIOD_LIMIT" : "Limite de Période",
+    "PERIOD_LIMIT_OPTIONAL" : "Limite de Période (optinnel)",
     "CUSTOM_FROM" : "de",
     "CUSTOM_TO" : "à",
     "SELECT_PERIOD" : "Choisir une Période",

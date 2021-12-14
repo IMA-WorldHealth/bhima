@@ -13,6 +13,7 @@
     "START" : "P. Start",
     "END" : "P. End",
     "PERIOD_LIMIT" : "Period Limit",
+    "PERIOD_LIMIT_OPTIONAL" : "Period Limit (optional)",
     "CUSTOM_FROM" : "Custom From",
     "CUSTOM_TO" : "Custom To",
     "SELECT_PERIOD" : "Select Period",
