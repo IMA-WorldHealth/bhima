@@ -1,9 +1,9 @@
 /**
  * @name bhDateInterval
  * @description
- * The `bhDateInterval` component provide a mean to select dates plage between
- * two dates. The dates values returned are send to dates models given in
- * date-from and date-to attributes.
+ * The `bhDateInterval` component provide a means to select a date range
+ * between two dates. The dates values returned are sent to dates models
+ * given in date-from and date-to attributes.
  *
  * An optional flag `limit-min-fiscal` can be provided that limits the from and
  * to date inputs to not allow dates before the start of the first enterprise
@@ -48,6 +48,8 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
   // expose to the view
   $ctrl.search = search;
   $ctrl.clear = clear;
+  $ctrl.lastDateFrom = null;
+  $ctrl.lastDateTo = null;
 
   $ctrl.$onInit = () => {
     // specify if clear button can be displayed
@@ -90,6 +92,11 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
     if ($ctrl.onChange) {
       $ctrl.onChange({ dateFrom : $ctrl.dateFrom, dateTo : $ctrl.dateTo });
     }
+    if ($ctrl.dateFrom !== $ctrl.lastDateFrom || $ctrl.dateTo !== $ctrl.lastDateTo) {
+      delete $ctrl.selected;
+      $ctrl.lastDateFrom = $ctrl.dateFrom;
+      $ctrl.lastDateTo = $ctrl.dateTo;
+    }
   };
 
   function search(selection) {
@@ -101,6 +108,8 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
   function setDateInterval(key) {
     $ctrl.dateFrom = new Date(PeriodService.index[key].limit.start());
     $ctrl.dateTo = new Date(PeriodService.index[key].limit.end());
+    $ctrl.lastDateFrom = $ctrl.dateFrom;
+    $ctrl.lastDateTo = $ctrl.dateTo;
   }
 
   function day() {
@@ -133,6 +142,8 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
     delete $ctrl.dateFrom;
     delete $ctrl.dateTo;
     delete $ctrl.selected;
+    $ctrl.lastDateFrom = null;
+    $ctrl.lastDateTo = null;
   }
 
   function startup() {
