@@ -5,8 +5,10 @@
 
   <div class="form-group"
     ng-class="{ 'has-error' : PeriodForm.$submitted && PeriodForm.period.$invalid }">
-    <label class="control-label" translate>
-      {{ $ctrl.label }}
+    <label class="control-label">
+      <span ng-if="$ctrl.label==='FORM.LABELS.PERIOD' && $ctrl.required" translate>FORM.LABELS.PERIOD</span>
+      <span ng-if="$ctrl.label==='FORM.LABELS.PERIOD' && !$ctrl.required" translate>FORM.LABELS.PERIOD_OPTIONAL</span>
+      <span ng-if="$ctrl.label!=='FORM.LABELS.PERIOD'" translate>{{ $ctrl.label }}</span>
     </label>
 
     <ng-transclude></ng-transclude>

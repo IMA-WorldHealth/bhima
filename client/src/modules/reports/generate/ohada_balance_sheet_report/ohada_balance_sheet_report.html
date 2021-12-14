@@ -25,7 +25,8 @@
 
             <bh-fiscal-year-select
               fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
-              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)"
+              required="true">
             </bh-fiscal-year-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">

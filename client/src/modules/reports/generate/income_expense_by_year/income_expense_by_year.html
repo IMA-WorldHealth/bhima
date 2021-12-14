@@ -24,7 +24,8 @@
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <bh-fiscal-year-select
               fiscal-id="ReportConfigCtrl.reportDetails.fiscalYearId"
-              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscalYear)"
+              required="true">
             </bh-fiscal-year-select>
 
             <bh-yes-no-radios

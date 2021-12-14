@@ -23,7 +23,10 @@
 
   <!-- service -->
   <div ng-if="AdmitCtrl.isAdmission">
-    <bh-service-select on-select-callback="AdmitCtrl.onServiceSelect(service)" required="true"></bh-service-select>
+    <bh-service-select
+      on-select-callback="AdmitCtrl.onServiceSelect(service)"
+      required="true">
+    </bh-service-select>
   </div>
 
   <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">
@@ -63,11 +66,11 @@
     </p>
     <div class="radio">
       <label>
-        <input 
-          type="radio" 
-          name="is_new_case" 
-          id="yes" 
-          ng-value="1" 
+        <input
+          type="radio"
+          name="is_new_case"
+          id="yes"
+          ng-value="1"
           ng-model="AdmitCtrl.visit.is_new_case"
           ng-change="AdmitCtrl.onChangeCase()">
         <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
@@ -75,11 +78,11 @@
     </div>
     <div class="radio">
       <label>
-        <input 
-          type="radio" 
-          name="is_new_case" 
-          id="no" 
-          ng-value="0" 
+        <input
+          type="radio"
+          name="is_new_case"
+          id="no"
+          ng-value="0"
           ng-model="AdmitCtrl.visit.is_new_case"
           ng-change="AdmitCtrl.onChangeCase()">
         <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
@@ -92,10 +95,10 @@
         <strong translate>PATIENT_RECORDS.VISITS.REFERED</strong>
       </p>
       <label>
-        <input 
-          type="checkbox" 
-          ng-true-value="1" 
-          ng-false-value="0" 
+        <input
+          type="checkbox"
+          ng-true-value="1"
+          ng-false-value="0"
           ng-model="AdmitCtrl.visit.is_refered"> <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
       </label>
     </div>
@@ -107,10 +110,10 @@
           <strong translate>PATIENT_RECORDS.VISITS.PREGNANT</strong>
         </p>
         <label>
-          <input 
-            type="checkbox" 
-            ng-true-value="1" 
-            ng-false-value="0" 
+          <input
+            type="checkbox"
+            ng-true-value="1"
+            ng-false-value="0"
             ng-model="AdmitCtrl.visit.is_pregnant"> <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
         </label>
       </div>
@@ -122,11 +125,11 @@
     </p>
     <div class="radio">
       <label>
-        <input 
-          type="radio" 
-          name="inside_health_zone" 
-          id="yes" 
-          ng-value="1" 
+        <input
+          type="radio"
+          name="inside_health_zone"
+          id="yes"
+          ng-value="1"
           ng-model="AdmitCtrl.visit.inside_health_zone"
           ng-change="AdmitCtrl.onChangeHZ()" checked>
         <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
@@ -134,11 +137,11 @@
     </div>
     <div class="radio">
       <label>
-        <input 
-          type="radio" 
-          name="inside_health_zone" 
-          id="no" 
-          ng-value="0" 
+        <input
+          type="radio"
+          name="inside_health_zone"
+          id="no"
+          ng-value="0"
           ng-model="AdmitCtrl.visit.inside_health_zone"
           ng-change="AdmitCtrl.onChangeHZ()">
         <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
@@ -169,7 +172,7 @@
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>
-  
+
   <!-- ward and bed -->
   <div ng-if="AdmitCtrl.isAdmission && AdmitCtrl.visit.hospitalized">
     <hr>

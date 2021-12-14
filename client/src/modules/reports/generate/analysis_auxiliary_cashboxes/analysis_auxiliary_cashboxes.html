@@ -24,20 +24,24 @@
 
             <bh-fiscal-year-select
               fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
-              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)"
+              required="true">
             </bh-fiscal-year-select>
 
             <bh-period-selection
               fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
               period-id="ReportConfigCtrl.reportDetails.period_id"
-              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)"
+              disable="!ReportConfigCtrl.reportDetails.fiscal_id"
+              required="true">
             </bh-period-selection>
 
             <bh-cashbox-select
               cashbox-id="ReportConfigCtrl.reportDetails.cashboxId"
               on-select-callback="ReportConfigCtrl.onSelectCashbox(cashbox)"
               restrict-to-user="false"
-              is-auxiliary="true">
+              is-auxiliary="true"
+              required="true">
             </bh-cashbox-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
