@@ -24,6 +24,10 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
     vm.reportDetails = angular.copy(report);
   };
 
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
+  };
+
   vm.onClear = () => {
     delete vm.reportDetails.debtorGroupName;
     delete vm.reportDetails.debtorGroupUuid;
