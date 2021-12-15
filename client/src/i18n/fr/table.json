@@ -111,11 +111,9 @@
             "EXCHANGE_RATE": "Taux de change",
             "EXPIRATION_DATE": "Date d'expiration",
             "EXPIRE_IN" : "Expire Dans",
-            "EXTRACT_EMPLOYEE_STANDING": "Voir l'extrait de la situation financière de l'employé par rapport à une plage de dates",
             "NUM_PIECE": "N° Piece",
             "ENTRY": "Entrée",
             "EXIT": "Sortie",
-            "COST_CENTER" : "Centre de frais",
             "FILTERING": {
                 "LABEL": "Filtre"
             },

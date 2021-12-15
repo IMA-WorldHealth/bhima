@@ -116,7 +116,6 @@
             "NUM_PIECE": "Num Doc",
             "ENTRY": "Entry",
             "EXIT": "Exit",
-            "COST_CENTER" : "Cost Center",
             "FILTERING": {
                 "LABEL": "Filter"
             },
@@ -223,6 +222,7 @@
             "RESULTS": "Results",
             "RESULT_ACCOUNT_SCT": "Result Account section",
             "RUBRICS": "Rubrics",
+            "SEE_SITUATION_ALL_EMPLOYEES": "See the overall situation of all employees",
             "SECTOR": "Sector",
             "SERVICE": "Service",
             "SOLD": "Balance",
