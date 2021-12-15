@@ -35,26 +35,26 @@
                 <input
                   type="radio"
                   name="modeRepport"
-                  value="aggregate"
+                  value="summary"
                   ng-model="ReportConfigCtrl.reportDetails.modeRepport"
-                  ng-click="ReportConfigCtrl.onSelectMode('aggregate')"
+                  ng-click="ReportConfigCtrl.onSelectMode('summary')"
                   required>
                 <span translate>
-                  REPORT.EMPLOYEE_STANDING.AGGREGATE_REPORT
+                  REPORT.EMPLOYEE_STANDING.SUMMARY_REPORT
                 </span>
               </label>
-            </div>
+            </div>            
             <div class="radio">
               <label class="radio-inline">
                 <input
                   type="radio"
                   name="modeRepport"
-                  value="synthetic"
+                  value="normal"
                   ng-model="ReportConfigCtrl.reportDetails.modeRepport"
-                  ng-click="ReportConfigCtrl.onSelectMode('synthetic')"
+                  ng-click="ReportConfigCtrl.onSelectMode('normal')"
                   required>
                 <span translate>
-                  REPORT.EMPLOYEE_STANDING.SYNTHETIC
+                  REPORT.EMPLOYEE_STANDING.NORMAL_REPORT
                 </span>
               </label>
             </div>
@@ -86,12 +86,12 @@
           <hr>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.extractEmployee" ng-true-value="1" ng-false-value="0">
-              <span translate>REPORT.EMPLOYEE_STANDING.EXTRACT_EMPLOYEE_STANDING</span>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.limitTimeInterval" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.EMPLOYEE_STANDING.LIMIT_TO_TIME_INTERVAL</span>
             </label>
           </div>
 
-          <div ng-if="ReportConfigCtrl.reportDetails.extractEmployee">
+          <div ng-if="ReportConfigCtrl.reportDetails.limitTimeInterval">
             <!-- date interval -->
             <bh-date-interval
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
