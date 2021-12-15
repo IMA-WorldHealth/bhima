@@ -66,6 +66,7 @@ async function getUnbalancedInvoices(options) {
   const params = [
     new Date(options.dateFrom),
     new Date(options.dateTo),
+    +options.currencyId,
   ];
 
   const { debtorGroupName, serviceUuid } = options;
@@ -78,7 +79,7 @@ async function getUnbalancedInvoices(options) {
   }
 
   const rows = await db.transaction()
-    .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
+    .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?, ?);', params)
     .addQuery(`CALL Pivot(
         "unbalanced_invoices",
         "debtorGroupName,debtorUuid",
