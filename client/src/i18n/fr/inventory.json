@@ -48,6 +48,7 @@
         "PREVIOUS_VALUE" : "Valeur Précédente",
         "UPDATED_VALUE" : "Nouvelle Valeur",
         "CHANGES" : "Changements",
+        "NUM_CHANGES": "# Changements",
         "IMPORTANCE_LEVEL":"Niveau d'importance",
         "IMPORTANCE_LEVEL_SELECT":"Choisir le niveau d'importance",
         "LOW":"Faible",

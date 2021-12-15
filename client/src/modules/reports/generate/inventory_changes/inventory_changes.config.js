@@ -2,17 +2,21 @@ angular.module('bhima.controllers')
   .controller('inventory_changesController', inventoryChangesController);
 
 inventoryChangesController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService',
-  'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
+  'reportData', '$state', 'SessionService',
 ];
 
-function inventoryChangesController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function inventoryChangesController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('inventory_changes_report');
   const reportUrl = 'reports/inventory/changes/';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
+  };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
@@ -55,6 +59,11 @@ function inventoryChangesController($sce, Notify, SavedReports, AppCache, report
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currencyId = Session.enterprise.currency_id;
     }
   }
 }

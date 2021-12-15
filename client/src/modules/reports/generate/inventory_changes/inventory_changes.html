@@ -29,6 +29,12 @@
               limit-min-fiscal>
             </bh-date-interval>
 
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currencyId"
+              on-change="ReportConfigCtrl.onSelectCurrency(currency)"
+              required="true">
+            </bh-currency-select>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
