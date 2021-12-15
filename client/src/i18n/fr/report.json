@@ -92,15 +92,15 @@
     "DELETE" : "Supprimer un rapport",
     "DOWNLOAD" : "Télécharger",
     "EMPLOYEE_STANDING" : {
-      "AGGREGATE_REPORT": "Rapport agrégé",
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un employé",
       "DETAILED_REPORT": "Rapport détaillé",
-      "EXTRACT_EMPLOYEE_STANDING": "Voir l'extrait de la situation financière par rapport à une plage de dates",
       "FINANCIAL_SITUATION_EMPLOYEES": "Situation financière des employés",
       "INCLUDE_MEDICAL_CARE_EMPLOYEE": "Inclure les soins médicaux accordé à l'employé",
+      "LIMIT_TO_TIME_INTERVAL": "Limiter à l'intervalle de temps",    
+      "NORMAL_REPORT": "Rapport simple",      
       "REPORT": "Situation financière de l'employé",
       "SEE_SITUATION_ALL_EMPLOYEES": "Voir la situation global de tous les employés",
-      "SYNTHETIC": "Rapport synthétique",
+      "SUMMARY_REPORT": "Rapport synthétique",
       "TITLE": "Situation financière d'un employé"
     },
     "EXPENSE": "Charge",

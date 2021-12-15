@@ -32,9 +32,9 @@ const PDF_OPTIONS = {
 async function build(req, res, next) {
   const options = req.query;
   let report;
-  options.extractEmployee = parseInt(options.extractEmployee, 10);
+  options.limitTimeInterval = parseInt(options.limitTimeInterval, 10);
 
-  if (!options.extractEmployee) {
+  if (!options.limitTimeInterval) {
     options.dateFrom = ``;
     options.dateTo = ``;
   }
@@ -85,7 +85,7 @@ async function build(req, res, next) {
     // provides the latest element of the table,
     // as the request is ordered by date, the last line item will
     // also be the employee's balance for the search period
-    if (options.extractEmployee) {
+    if (options.limitTimeInterval) {
 
       const lastTxn = _.last(creditorOperations.transactions);
       data.lastTransaction = lastTxn || { cumsum : 0 };
@@ -100,8 +100,8 @@ async function build(req, res, next) {
 
     // employee balance
     data.includeMedicalCare = parseInt(options.includeMedicalCare, 10) === 1;
-    data.extractEmployee = options.extractEmployee === 1;
-    data.employeeStandingReport = !data.extractEmployee;
+    data.limitTimeInterval = options.limitTimeInterval === 1;
+    data.employeeStandingReport = !data.limitTimeInterval;
 
     // For the Employee Standing report, it must be mentioned if the employee has a credit or debit balance
     data.balanceCreditorText = data.creditorAggregates.balance >= 0

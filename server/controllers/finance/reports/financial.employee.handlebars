@@ -5,7 +5,7 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase">
-    <span style="text-decoration-line: underline">
+    <span>
       <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
     </span>
   </h3>
@@ -43,7 +43,7 @@
         </tr>
       </thead>
       <tbody>
-        {{#if extractEmployee}}
+        {{#if limitTimeInterval}}
           <tr>
             <td colspan="4" class="text-right"><b>{{translate "TABLE.COLUMNS.BALANCE_AT" }} {{date dates.dateFrom }} </b></td>
             <td class="text-right">
@@ -93,7 +93,7 @@
           </th>
         </tr>
         {{/if}}
-        {{#if extractEmployee}}
+        {{#if limitTimeInterval}}
         <tr>
           <td colspan="6" class="text-right"><b>{{translate "FORM.LABELS.EXTRACT_EMPLOYEE_STANDING" }} ({{date dates.dateFrom }} - {{date dates.dateTo }}) </b></th>
           <th class="text-right">
