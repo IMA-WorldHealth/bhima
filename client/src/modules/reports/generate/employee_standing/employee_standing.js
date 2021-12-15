@@ -81,6 +81,6 @@ function EmployeeStandingController($state, $sce, Notify, BaseReportService, App
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
 
-    vm.reportDetails.modeRepport = 'aggregate';
+    vm.reportDetails.modeRepport = 'summary';
   }
 }

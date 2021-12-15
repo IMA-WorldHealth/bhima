@@ -5,12 +5,12 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase">
-    <span style="text-decoration-line: underline">
+    <span>
       <b> {{translate "REPORT.EMPLOYEE_STANDING.FINANCIAL_SITUATION_EMPLOYEES"}} </b>
     </span>
   </h3>
 
-  {{#if extractEmployee}}
+  {{#if limitTimeInterval}}
     <div class="text-center">
       <strong>
         {{translate "FORM.LABELS.EXTRACT_EMPLOYEES_STANDING" }} ({{date dates.dateFrom }} - {{date dates.dateTo }})
@@ -20,7 +20,7 @@
 
   <section>
     <table class="table table-condensed table-bordered table-report">
-    {{#if synthetic}}
+    {{#if summary}}
       <thead>
         <tr class="text-uppercase text-center" style="background-color: #ddd;" >
           <th></th>
@@ -129,7 +129,7 @@
       </tfoot>
     {{/if}}
 
-    {{#if aggregate}}
+    {{#if normal}}
       <thead>
         <tr class="text-uppercase text-center" style="background-color: #ddd;" >
           <th style="width: 2%;"></th>
@@ -185,9 +185,6 @@
         </tr>
       </tfoot>
     {{/if}}
-
     </table>
-
   </section>
-
 </body>

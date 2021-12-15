@@ -34,9 +34,9 @@ async function build(req, res, next) {
   let filterBydateLegder = ``;
 
   let report;
-  options.extractEmployee = parseInt(options.extractEmployee, 10);
+  options.limitTimeInterval = parseInt(options.limitTimeInterval, 10);
 
-  if (options.extractEmployee && options.dateFrom && options.dateTo) {
+  if (options.limitTimeInterval && options.dateFrom && options.dateTo) {
     const transDateFrom = moment(options.dateFrom).format('YYYY-MM-DD');
     const transDateTo = moment(options.dateTo).format('YYYY-MM-DD');
 
@@ -60,8 +60,8 @@ async function build(req, res, next) {
     const data = {};
     let sql;
 
-    if (options.modeRepport === 'synthetic') {
-      data.synthetic = 1;
+    if (options.modeRepport === 'summary') {
+      data.summary = 1;
 
       sql = `
         SELECT SUM(aggr.debit) AS debit, SUM(aggr.credit) AS credit,
@@ -120,8 +120,8 @@ async function build(req, res, next) {
         GROUP BY aggr.employee_uuid, aggr.account_id
         ORDER BY aggr.employee_name, aggr.number ASC
       `;
-    } else if (options.modeRepport === 'aggregate') {
-      data.aggregate = 1;
+    } else if (options.modeRepport === 'normal') {
+      data.normal = 1;
 
       sql = `
         SELECT SUM(aggr.debit) AS debit, SUM(aggr.credit) AS credit,
@@ -176,9 +176,9 @@ async function build(req, res, next) {
     data.sumDebit = sumDebit;
     data.sumCredit = sumCredit;
     data.sumBalance = sumBalance;
-    data.extractEmployee = options.extractEmployee === 1;
+    data.limitTimeInterval = options.limitTimeInterval === 1;
 
-    if (options.extractEmployee) {
+    if (options.limitTimeInterval) {
       data.dates = {
         dateFrom : options.dateFrom,
         dateTo : options.dateTo,
