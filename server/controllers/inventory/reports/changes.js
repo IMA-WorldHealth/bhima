@@ -44,6 +44,8 @@ async function inventoryChanges(req, res, next) {
   const params = _.clone(req.query);
   const metadata = _.clone(req.session);
 
+  const currencyId = req.session.enterprise.currency_id;
+
   try {
     const report = new ReportManager(TEMPLATE, metadata, params);
     const { dateFrom, dateTo } = params;
@@ -83,6 +85,17 @@ async function inventoryChanges(req, res, next) {
     // attach logs to each inventory item
     inventories.forEach(inventory => {
       inventory.logs = changeMap[inventory.uuid];
+      // Note whether the item is a unit price so we can format it in the handlebars file
+      if (inventory.logs) {
+        inventory.logs.forEach(log => {
+          if (log.col === 'FORM.LABELS.UNIT_PRICE' && typeof log.value.to === 'number') {
+            log.is_unit_price = true;
+          }
+          if (log.col === 'FORM.LABELS.UNIT_PRICE' && typeof log.value.from === 'number') {
+            log.is_unit_price = true;
+          }
+        });
+      }
     });
 
     // calculate the number of changes by user.
@@ -94,7 +107,7 @@ async function inventoryChanges(req, res, next) {
       .value();
 
     const renderResult = await report.render({
-      inventories, dateFrom, dateTo, userChanges,
+      inventories, dateFrom, dateTo, userChanges, currencyId,
     });
     res.set(renderResult.headers).send(renderResult.report);
   } catch (e) {
