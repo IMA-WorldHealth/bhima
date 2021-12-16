@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('employee_standingController', EmployeeStandingController);
 
 EmployeeStandingController.$inject = [
-  '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'BaseReportService', 'reportData',
+  '$state', '$sce', 'NotifyService', 'AppCache',
+  'BaseReportService', 'reportData', 'SessionService',
 ];
 
 /**
@@ -12,7 +12,7 @@ EmployeeStandingController.$inject = [
  * @description
 
  */
-function EmployeeStandingController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
+function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports, reportData, Session) {
 
   const vm = this;
   const cache = new AppCache('configure_employee_standing');
@@ -21,9 +21,15 @@ function EmployeeStandingController($state, $sce, Notify, BaseReportService, App
 
   checkCachedConfiguration();
 
+  vm.reportDetails.currency_id = Session.enterprise.currency_id;
+
   // custom filter employee_uuid
   vm.onSelectEmployee = function onSelectEmployee(employee) {
     vm.reportDetails.employee_uuid = employee.uuid;
+  };
+
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   let reportUrl;

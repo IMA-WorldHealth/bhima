@@ -38,13 +38,13 @@
               <strong> {{ this.accountNumbelLabel }} </strong>
             </td>
             <td class="text-right">
-              {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{debcred this.solde ../metadata.enterprise.currency_id}}
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
             </td>
           </tr>
           <tr>
@@ -56,13 +56,13 @@
         <tr class="text-uppercase">
           <td colspan="2" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }}</b></th>
           <td class="text-right">
-            <span><strong> {{currency sumDebit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{currency sumCredit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{debcred sumBalance metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
           </td>
         </tr>
       </tfoot>
@@ -99,13 +99,13 @@
               <strong> {{ this.accountNumbelLabel }} </strong>
             </td>
             <td class="text-right">
-              {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{debcred this.solde ../metadata.enterprise.currency_id}}
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
             </td>
           </tr>
           <tr>
@@ -117,13 +117,13 @@
         <tr class="text-uppercase">
           <td colspan="5" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }} </b></th>
           <td class="text-right">
-            <span><strong> {{currency sumDebit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{currency sumCredit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{debcred sumBalance metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
           </td>
         </tr>
       </tfoot>
@@ -156,13 +156,13 @@
             </td>
 
             <td class="text-right">
-              {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{debcred this.solde ../metadata.enterprise.currency_id}}
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
             </td>
           </tr>
           <tr>
@@ -174,13 +174,13 @@
         <tr class="text-uppercase">
           <td colspan="4" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }} </b></th>
           <td class="text-right">
-            <span><strong> {{currency sumDebit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{currency sumCredit metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
           </td>
           <td class="text-right">
-            <span><strong> {{debcred sumBalance metadata.enterprise.currency_id}} </strong></span>
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
           </td>
         </tr>
       </tfoot>

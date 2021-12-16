@@ -12,6 +12,7 @@ const moment = require('moment');
 
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
+const Exchange = require('../exchange');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employees.handlebars';
 
@@ -32,8 +33,9 @@ async function build(req, res, next) {
 
   let filterBydatePosting = ``;
   let filterBydateLegder = ``;
-
   let report;
+  let exchange;
+
   options.limitTimeInterval = parseInt(options.limitTimeInterval, 10);
 
   if (options.limitTimeInterval && options.dateFrom && options.dateTo) {
@@ -44,6 +46,10 @@ async function build(req, res, next) {
       AND DATE(pj.trans_date) <= DATE('${transDateTo}'))`;
     filterBydateLegder = ` WHERE (DATE(gl.trans_date) >= DATE('${transDateFrom}')
       AND DATE(gl.trans_date) <= DATE('${transDateTo}'))`;
+
+    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), transDateFrom);
+  } else {
+    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), new Date());
   }
 
   _.defaults(options, PDF_OPTIONS);
@@ -58,6 +64,9 @@ async function build(req, res, next) {
   try {
 
     const data = {};
+    data.exchangeRate = exchange.rate || 1;
+    data.currencyId = options.currency_id;
+
     let sql;
 
     if (options.modeRepport === 'summary') {
