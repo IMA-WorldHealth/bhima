@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('employee_standingController', EmployeeStandingController);
 
 EmployeeStandingController.$inject = [
-  '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'BaseReportService', 'reportData',
+  '$state', '$sce', 'NotifyService', 'AppCache',
+  'BaseReportService', 'reportData', 'SessionService',
 ];
 
 /**
@@ -12,20 +12,27 @@ EmployeeStandingController.$inject = [
  * @description
 
  */
-function EmployeeStandingController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
+function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports, reportData, Session) {
 
   const vm = this;
   const cache = new AppCache('configure_employee_standing');
-  const reportUrl = '/reports/finance/employee_standing';
 
   vm.reportDetails = {};
 
   checkCachedConfiguration();
 
+  vm.reportDetails.currency_id = Session.enterprise.currency_id;
+
   // custom filter employee_uuid
   vm.onSelectEmployee = function onSelectEmployee(employee) {
     vm.reportDetails.employee_uuid = employee.uuid;
   };
+
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
+  };
+
+  let reportUrl;
 
   vm.requestSaveAs = function requestSaveAs() {
     const options = {
@@ -41,10 +48,22 @@ function EmployeeStandingController($state, $sce, Notify, BaseReportService, App
       .catch(Notify.handleError);
   };
 
+  vm.onSelectMode = function onSelectMode(modeRepport) {
+    vm.reportDetails.modeRepport = modeRepport;
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
       return 0;
+    }
+
+    if (vm.reportDetails.allEmployee) {
+      delete vm.reportDetails.employee_uuid;
+      delete vm.reportDetails.includeMedicalCare;
+      reportUrl = '/reports/finance/employees_standing';
+    } else if (!vm.reportDetails.allEmployee && vm.reportDetails.employee_uuid) {
+      reportUrl = '/reports/finance/employee_standing';
     }
 
     // update cached configuration
@@ -67,5 +86,7 @@ function EmployeeStandingController($state, $sce, Notify, BaseReportService, App
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+
+    vm.reportDetails.modeRepport = 'summary';
   }
 }

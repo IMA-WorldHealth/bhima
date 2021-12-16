@@ -101,7 +101,15 @@
     "DOWNLOAD": "Download",
     "EMPLOYEE_STANDING": {
       "DESCRIPTION": "This report shows the financial situation of an employee",
+      "DETAILED_REPORT": "Detailed report",
+      "FINANCIAL_SITUATION_EMPLOYEE": "Financial situation of employee",
+	  "FINANCIAL_SITUATION_EMPLOYEES": "Financial situation of employees",
+      "INCLUDE_MEDICAL_CARE_EMPLOYEE": "Include medical care provided to the employee",
+      "LIMIT_TO_TIME_INTERVAL": "Limit to time interval",
+      "NORMAL_REPORT": "Normal Report",      
       "REPORT": "Employee Standing Report",
+      "SEE_SITUATION_ALL_EMPLOYEES": "See the overall situation of all employees",
+      "SUMMARY_REPORT": "Summary report",
       "TITLE": "Employee Standing Report"
     },
     "EXPENSE_REPORT": "Expenses Report",

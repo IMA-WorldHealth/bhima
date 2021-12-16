@@ -1,0 +1,190 @@
+{{> head title="REPORT.EMPLOYEE_STANDING.FINANCIAL_SITUATION_EMPLOYEES" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center text-uppercase">
+    <span>
+      <b> {{translate "REPORT.EMPLOYEE_STANDING.FINANCIAL_SITUATION_EMPLOYEES"}} </b>
+    </span>
+  </h3>
+
+  {{#if limitTimeInterval}}
+    <div class="text-center">
+      <strong>
+        {{translate "FORM.LABELS.EXTRACT_EMPLOYEES_STANDING" }} ({{date dates.dateFrom }} - {{date dates.dateTo }})
+      </strong>
+    </div>
+  {{/if}}
+
+  <section>
+    <table class="table table-condensed table-bordered table-report">
+    {{#if summary}}
+      <thead>
+        <tr class="text-uppercase text-center" style="background-color: #ddd;" >
+          <th></th>
+          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each financialData}}
+          <tr>
+            <td class="text-right"> {{add @index 1}} </td>
+            <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">
+              <strong> {{ this.accountNumbelLabel }} </strong>
+            </td>
+            <td class="text-right">
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
+            </td>
+          </tr>
+          <tr>
+        {{else}}
+          {{>emptyTable columns=5}}
+        {{/each}}
+      </tbody>
+      <tfoot style="background-color: #ddd;">
+        <tr class="text-uppercase">
+          <td colspan="2" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }}</b></th>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
+          </td>
+        </tr>
+      </tfoot>
+    {{/if}}
+
+    {{#if detailled}}
+      <thead>
+        <tr class="text-uppercase text-center" style="background-color: #ddd;" >
+          <th style="width: 2%;"></th>
+          <th>{{translate "FORM.LABELS.EMPLOYEE_NAME" }}</th>
+          <th>{{translate "FORM.LABELS.REFERENCE" }}</th>
+          <th>{{translate "FORM.LABELS.REGISTRATION_NUMBER" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each financialData}}
+          <tr>
+            <td class="text-right"> {{add @index 1}} </td>
+            <td>
+              <strong> {{ this.employee_name }} </strong>
+            </td>
+            <td>
+              {{ this.reference }}
+            </td>
+            <td>
+              {{ this.code }}
+            </td>
+
+            <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">
+              <strong> {{ this.accountNumbelLabel }} </strong>
+            </td>
+            <td class="text-right">
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
+            </td>
+          </tr>
+          <tr>
+        {{else}}
+          {{>emptyTable columns=8}}
+        {{/each}}
+      </tbody>
+      <tfoot style="background-color: #ddd;">
+        <tr class="text-uppercase">
+          <td colspan="5" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }} </b></th>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
+          </td>
+        </tr>
+      </tfoot>
+    {{/if}}
+
+    {{#if normal}}
+      <thead>
+        <tr class="text-uppercase text-center" style="background-color: #ddd;" >
+          <th style="width: 2%;"></th>
+          <th>{{translate "FORM.LABELS.EMPLOYEE_NAME" }}</th>
+          <th>{{translate "FORM.LABELS.REFERENCE" }}</th>
+          <th>{{translate "FORM.LABELS.REGISTRATION_NUMBER" }}</th g>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each financialData}}
+          <tr>
+            <td class="text-right"> {{add @index 1}} </td>
+            <td>
+              <strong> {{ this.employee_name }} </strong>
+            </td>
+            <td>
+              {{ this.reference }}
+            </td>
+            <td>
+              {{ this.code }}
+            </td>
+
+            <td class="text-right">
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
+            </td>
+            <td class="text-right">
+              {{debcred (multiply this.solde ../exchangeRate) ../currencyId}}
+            </td>
+          </tr>
+          <tr>
+        {{else}}
+          {{>emptyTable columns=7}}
+        {{/each}}
+      </tbody>
+      <tfoot style="background-color: #ddd;">
+        <tr class="text-uppercase">
+          <td colspan="4" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }} </b></th>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumDebit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{currency (multiply sumCredit exchangeRate) currencyId}} </strong></span>
+          </td>
+          <td class="text-right">
+            <span><strong> {{debcred (multiply sumBalance exchangeRate) currencyId}} </strong></span>
+          </td>
+        </tr>
+      </tfoot>
+    {{/if}}
+    </table>
+  </section>
+</body>
