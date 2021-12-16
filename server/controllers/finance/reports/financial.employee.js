@@ -14,6 +14,7 @@ const Employee = require('../../payroll/employees');
 const Creditors = require('../creditors');
 const Debtors = require('../debtors');
 const db = require('../../../lib/db');
+const Exchange = require('../exchange');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';
 
@@ -32,11 +33,19 @@ const PDF_OPTIONS = {
 async function build(req, res, next) {
   const options = req.query;
   let report;
+  let exchange;
+
+  options.currency_id = options.currency_id || req.session.enterprise.currency_id;
+
   options.limitTimeInterval = parseInt(options.limitTimeInterval, 10);
 
   if (!options.limitTimeInterval) {
     options.dateFrom = ``;
     options.dateTo = ``;
+
+    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), new Date());
+  } else {
+    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), options.dateFrom);
   }
 
   _.defaults(options, PDF_OPTIONS);
@@ -49,8 +58,10 @@ async function build(req, res, next) {
   }
 
   try {
-
     const data = {};
+    data.exchangeRate = exchange.rate || 1;
+    data.currencyId = options.currency_id;
+
     const sql = `
       SELECT BUID(p.debtor_uuid) as debtor_uuid
       FROM patient p
