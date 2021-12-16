@@ -58,10 +58,10 @@
         </div>
         <div class="col-xs-10">
           <div class="input-group">
-            <!-- Improve me Prevent exchange rate equal 0 -->
             <input class="form-control" min="0.000000000001" type="number" name="rate" ng-model="ModalCtrl.rate.rate" required>
             <span class="input-group-addon">{{ ModalCtrl.symbol(ModalCtrl.rate.currency.id) }}</span>
           </div>
+          <p><em translate>EXCHANGE.FRACTIONAL_RATE_HINT</em></p>
         </div>
       </div>
       <div class="help-block" ng-messages="ModalForm.rate.$error" ng-show="ModalForm.$submitted">
