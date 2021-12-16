@@ -25,3 +25,27 @@ DELETE FROM report WHERE report_key IN (
   'break_even_cost_center'
 );
 DELETE FROM unit WHERE id IN (220, 221, 222, 223, 230, 231, 232);
+
+/*
+ * @author: jmcameron
+ * @description: Increase precision of exchange rate
+ * @date: 2021-12-16
+ */
+ALTER TABLE `exchange_rate` MODIFY `rate` DOUBLE NOT NULL;
+
+DELIMITER $$
+DROP FUNCTION IF EXISTS `GetExchangeRate`$$
+CREATE FUNCTION `GetExchangeRate`(
+  enterpriseId INT,
+  currencyId INT,
+  date TIMESTAMP
+)
+RETURNS DOUBLE DETERMINISTIC
+BEGIN
+  RETURN (
+    SELECT e.rate FROM exchange_rate AS e
+    WHERE e.enterprise_id = enterpriseId AND e.currency_id = currencyId AND e.date <= date
+    ORDER BY e.date DESC LIMIT 1
+  );
+END$$
+DELIMITER ;
