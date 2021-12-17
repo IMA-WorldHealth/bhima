@@ -51,7 +51,6 @@ function getGeneralLedgerSQL(options) {
 
   // get the underlying table for posted/unposted
   const subquery = getSubquery(options);
-
   const sql = `
     SELECT trans_id, description, trans_date, document_reference, debit, credit, posted, created_at,
       transaction_type_id, debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,

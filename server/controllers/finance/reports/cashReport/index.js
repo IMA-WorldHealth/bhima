@@ -45,7 +45,7 @@ function getCashboxByAccountId(accountId) {
     WHERE cac.account_id = ?;
   `;
 
-  return db.one(sql, [accountId]);
+  return db.exec(sql, [accountId]);
 }
 
 const templates = {
@@ -91,7 +91,12 @@ async function document(req, res, next) {
     context.hasExpense = ['ENTRY_AND_EXIT', 'EXIT'].includes(params.type);
     context.hasBoth = context.hasIncome && context.hasExpense;
 
-    const cashbox = await getCashboxByAccountId(params.account_id);
+    let cashbox = await getCashboxByAccountId(params.account_id);
+    if (cashbox.length === 1) {
+      [cashbox] = cashbox;
+    } else if (cashbox.length > 1) {
+      throw new BadRequest('too many cashboxes per account', 'TOO_MANY_CASHBOXES_PER_ACCOUNT');
+    }
     _.merge(context, { cashbox });
 
     // determine the currency rendering
