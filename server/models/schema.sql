@@ -608,7 +608,7 @@ CREATE TABLE `exchange_rate` (
   `id`    MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `enterprise_id`   SMALLINT(5) UNSIGNED NOT NULL,
   `currency_id`   TINYINT(3) UNSIGNED NOT NULL,
-  `rate`    DECIMAL(19,8) UNSIGNED NOT NULL,
+  `rate`    DOUBLE NOT NULL,
   `date`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `enterprise_id` (`enterprise_id`),

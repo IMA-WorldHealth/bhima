@@ -25,3 +25,10 @@ DELETE FROM report WHERE report_key IN (
   'break_even_cost_center'
 );
 DELETE FROM unit WHERE id IN (220, 221, 222, 223, 230, 231, 232);
+
+/*
+ * @author: jmcameron
+ * @description: Increase precision of exchange rate
+ * @date: 2021-12-16
+ */
+ALTER TABLE `exchange_rate` MODIFY `rate` DOUBLE NOT NULL;
