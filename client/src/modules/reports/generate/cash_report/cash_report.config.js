@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('cash_reportController', CashReportConfigController);
 
 CashReportConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', '$translate',
 ];
 
-function CashReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function CashReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, $translate) {
   const vm = this;
   const cache = new AppCache('configure_cash_report');
   const reportUrl = 'reports/finance/cash_report';
@@ -44,11 +44,19 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
-      .catch(Notify.handleError);
+      .catch(err => {
+        if (err.data.code && err.data.code === 'TOO_MANY_CASHBOXES_PER_ACCOUNT') {
+          // Work-around to construct a more detailed error message
+          err.data.code = $translate.instant('CASHBOX.TOO_MANY_CASHBOXES_PER_ACCOUNT',
+            { cashboxName : vm.cashboxName });
+        }
+        Notify.handleError(err);
+      });
   };
 
   vm.onSelectCashbox = function onSelectCashbox(cashbox) {
     vm.reportDetails.account_id = cashbox.account_id;
+    vm.cashboxName = cashbox.hrlabel;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
