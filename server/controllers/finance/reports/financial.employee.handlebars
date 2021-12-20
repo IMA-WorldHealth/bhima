@@ -17,6 +17,13 @@
       {{translate balanceCreditorText}} = {{debcred (multiply ./creditorAggregates.balance exchangeRate) currencyId}}
     </b>
   </h4>
+
+  {{#unless isEnterpriseCurrency}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+    </div>
+  {{/unless}}
+
   {{#if includeMedicalCare }}
     <h5 class="text-uppercase" style="background-color: #efefef;">
       <em>

@@ -14,7 +14,7 @@ const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 const Exchange = require('../exchange');
 
-const TEMPLATE = './server/controllers/finance/reports/financial.employees.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/financial.all_employees.handlebars';
 
 const PDF_OPTIONS = {
   filename : 'FORM.LABELS.FINANCIAL_STATUS',
@@ -34,7 +34,7 @@ async function build(req, res, next) {
   let filterBydatePosting = ``;
   let filterBydateLegder = ``;
   let report;
-  let exchange;
+  let dateExchangeRate;
 
   options.limitTimeInterval = parseInt(options.limitTimeInterval, 10);
 
@@ -47,9 +47,9 @@ async function build(req, res, next) {
     filterBydateLegder = ` WHERE (DATE(gl.trans_date) >= DATE('${transDateFrom}')
       AND DATE(gl.trans_date) <= DATE('${transDateTo}'))`;
 
-    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), transDateFrom);
+    dateExchangeRate = transDateTo;
   } else {
-    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), new Date());
+    dateExchangeRate = new Date();
   }
 
   _.defaults(options, PDF_OPTIONS);
@@ -57,19 +57,12 @@ async function build(req, res, next) {
   // set up the report with report manager
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
-  } catch (e) {
-    return next(e);
-  }
-
-  try {
 
     const data = {};
-    data.exchangeRate = exchange.rate || 1;
-    data.currencyId = options.currency_id;
 
     let sql;
 
-    if (options.modeRepport === 'summary') {
+    if (options.modeReport === 'summary') {
       data.summary = 1;
 
       sql = `
@@ -96,8 +89,8 @@ async function build(req, res, next) {
         GROUP BY aggr.account_id
         ORDER BY aggr.number ASC
       `;
-    } else if (options.modeRepport === 'detailled') {
-      data.detailled = 1;
+    } else if (options.modeReport === 'detailed') {
+      data.detailed = 1;
 
       sql = `
         SELECT SUM(aggr.debit) AS debit, SUM(aggr.credit) AS credit,
@@ -129,7 +122,7 @@ async function build(req, res, next) {
         GROUP BY aggr.employee_uuid, aggr.account_id
         ORDER BY aggr.employee_name, aggr.number ASC
       `;
-    } else if (options.modeRepport === 'normal') {
+    } else if (options.modeReport === 'normal') {
       data.normal = 1;
 
       sql = `
@@ -164,9 +157,18 @@ async function build(req, res, next) {
       `;
     }
 
-    const [financialData] = await Promise.all([
+    const [financialData, exchange] = await Promise.all([
       db.exec(sql),
+      Exchange.getExchangeRate(
+        req.session.enterprise.id,
+        Number(options.currency_id),
+        dateExchangeRate,
+      ),
     ]);
+
+    data.exchangeRate = exchange.rate || 1;
+    data.currencyId = options.currency_id;
+    data.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(options.currency_id);
 
     let sumDebit = 0;
     let sumCredit = 0;
@@ -198,9 +200,10 @@ async function build(req, res, next) {
     const result = await report.render(data);
     return res.set(result.headers).send(result.report);
 
-  } catch (error) {
-    return next(error);
+  } catch (e) {
+    return next(e);
   }
+
 }
 
 exports.report = build;
