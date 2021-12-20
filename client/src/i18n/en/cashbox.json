@@ -10,6 +10,7 @@
     "TITLE":"Cashbox Management",
     "NO_SUPPORTED_CURRENCIES":"This cashbox does not have any supported currencies.",
     "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox.",
+    "TOO_MANY_CASHBOXES_PER_ACCOUNT": "CONFIGURATION ERROR: The account associated with cashbox '{{ cashboxName }}' has other cashboxes associated with it!",
     "USERS": {
       "TITLE": "Cashbox Users",
       "SUBTITLE": "Users with access to this cash box:",
