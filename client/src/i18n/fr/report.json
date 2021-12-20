@@ -93,7 +93,15 @@
     "DOWNLOAD" : "Télécharger",
     "EMPLOYEE_STANDING" : {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un employé",
+      "DETAILED_REPORT": "Rapport détaillé",
+      "FINANCIAL_SITUATION_EMPLOYEE": "Situation financière de l'employé",
+	  "FINANCIAL_SITUATION_EMPLOYEES": "Situation financière des employés",
+      "INCLUDE_MEDICAL_CARE_EMPLOYEE": "Inclure les soins médicaux accordé à l'employé",
+      "LIMIT_TO_TIME_INTERVAL": "Limiter à l'intervalle de temps",    
+      "NORMAL_REPORT": "Rapport simple",      
       "REPORT": "Situation financière de l'employé",
+      "SEE_SITUATION_ALL_EMPLOYEES": "Voir la situation global de tous les employés",
+      "SUMMARY_REPORT": "Rapport synthétique",
       "TITLE": "Situation financière d'un employé"
     },
     "EXPENSE": "Charge",

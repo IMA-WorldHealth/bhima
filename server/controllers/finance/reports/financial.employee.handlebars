@@ -5,7 +5,7 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase">
-    <span style="text-decoration-line: underline">
+    <span>
       <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
     </span>
   </h3>
@@ -14,13 +14,20 @@
   <h5>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
   <h4 class="text-uppercase" style="background-color: #efefef;">
     <b>
-      {{translate balanceCreditorText}} = {{debcred ./creditorAggregates.balance metadata.enterprise.currency_id}}
+      {{translate balanceCreditorText}} = {{debcred (multiply ./creditorAggregates.balance exchangeRate) currencyId}}
     </b>
   </h4>
+
+  {{#unless isEnterpriseCurrency}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+    </div>
+  {{/unless}}
+
   {{#if includeMedicalCare }}
     <h5 class="text-uppercase" style="background-color: #efefef;">
       <em>
-        {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} = {{debcred ./debtorAggregates.balance metadata.enterprise.currency_id}}
+        {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} = {{debcred (multiply ./debtorAggregates.balance exchangeRate) currencyId}}
       </em>
     </h5>
   {{/if}}
@@ -43,17 +50,17 @@
         </tr>
       </thead>
       <tbody>
-        {{#if extractEmployee}}
+        {{#if limitTimeInterval}}
           <tr>
             <td colspan="4" class="text-right"><b>{{translate "TABLE.COLUMNS.BALANCE_AT" }} {{date dates.dateFrom }} </b></td>
             <td class="text-right">
-              {{debcred creditorOpeningBalance.debit metadata.enterprise.currency_id}}
+              {{debcred (multiply creditorOpeningBalance.debit exchangeRate) currencyId}}
             </td>
             <td class="text-right">
-              {{debcred creditorOpeningBalance.credit metadata.enterprise.currency_id}}
+              {{debcred (multiply creditorOpeningBalance.credit exchangeRate) currencyId}}
             </td>
             <td class="text-right">
-              <span> {{debcred creditorOpeningBalance.balance metadata.enterprise.currency_id}} </span>
+              <span> {{debcred (multiply creditorOpeningBalance.balance exchangeRate) currencyId}} </span>
             </td>
           </tr>
         {{/if}}
@@ -65,13 +72,13 @@
             <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
             <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right">
-              {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+              {{debcred (multiply this.cumsum ../exchangeRate) ../currencyId}}
             </td>
           </tr>
         {{else}}
@@ -83,21 +90,21 @@
         <tr>
           <td colspan="4" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }}</b></th>
           <th class="text-right">
-            <span>{{currency creditorAggregates.debit metadata.enterprise.currency_id}}</span>
+            <span>{{currency (multiply creditorAggregates.debit exchangeRate) currencyId}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency creditorAggregates.credit metadata.enterprise.currency_id}}</span>
+            <span>{{currency (multiply creditorAggregates.credit exchangeRate) currencyId}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency creditorAggregates.balance metadata.enterprise.currency_id}}</span>
+            <span>{{debcred (multiply creditorAggregates.balance exchangeRate) currencyId}}</span>
           </th>
         </tr>
         {{/if}}
-        {{#if extractEmployee}}
+        {{#if limitTimeInterval}}
         <tr>
           <td colspan="6" class="text-right"><b>{{translate "FORM.LABELS.EXTRACT_EMPLOYEE_STANDING" }} ({{date dates.dateFrom }} - {{date dates.dateTo }}) </b></th>
           <th class="text-right">
-            <span><em>{{translate  extratCreditorText }}</em> : {{debcred lastTransaction.cumsum metadata.enterprise.currency_id}} </span>
+            <span><em>{{translate  extratCreditorText }}</em> : {{debcred (multiply lastTransaction.cumsum exchangeRate) currencyId}} </span>
           </th>
         </tr>
         {{/if}}
@@ -126,13 +133,13 @@
             <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
             <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right">
-              {{currency this.debit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.debit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{currency this.credit ../metadata.enterprise.currency_id}}
+              {{currency (multiply this.credit ../exchangeRate) ../currencyId}}
             </td>
             <td class="text-right">
-              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+              {{debcred (multiply this.cumsum ../exchangeRate) ../currencyId}}
             </td>
           </tr>
         {{else}}
@@ -143,18 +150,17 @@
         <tr>
           <td colspan="4" class="text-right"><b>{{translate "FORM.LABELS.TOTAL" }}</b></th>
           <th class="text-right">
-            <span>{{currency debtorAggregates.debit metadata.enterprise.currency_id}}</span>
+            <span>{{currency (multiply debtorAggregates.debit exchangeRate) currencyId}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency debtorAggregates.credit metadata.enterprise.currency_id}}</span>
+            <span>{{currency (multiply debtorAggregates.credit exchangeRate) currencyId}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency debtorAggregates.balance metadata.enterprise.currency_id}}</span>
+            <span>{{debcred (multiply debtorAggregates.balance exchangeRate) currencyId}}</span>
           </th>
         </tr>
       </tfoot>
     </table>
     {{/if}}
   </section>
-
 </body>
