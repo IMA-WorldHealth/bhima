@@ -22,7 +22,8 @@ function DepotSelectController(Depots, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
-    $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
+    $ctrl.label = $ctrl.label
+      || $ctrl.required ? 'FORM.LABELS.DEPOT' : 'FORM.LABELS.DEPOT_OPTIONAL';
     if ($ctrl.depotUuid) {
       if ($ctrl.depotUuid === '0') { return; }
       loadDepotByUuid($ctrl.depotUuid);

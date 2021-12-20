@@ -159,7 +159,7 @@
       "SOURCE_DEPOT" : "Source Depot"
     },
     "MONTHLY_CONSUMPTION" : {
-      "TITLE": "Monthly consumption",
+      "TITLE": "Monthly Consumption",
       "DESCRIPTION": "Monthly consumption report by deposit for a given period"
     },
     "OPENING_BALANCE": "Opening Balance",

@@ -26,14 +26,17 @@
 
             <bh-fiscal-year-select
               fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
-              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)"
+              required="true">
             </bh-fiscal-year-select>
 
             <bh-period-selection
               fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
               period-id="ReportConfigCtrl.reportDetails.period_id"
               disable="!ReportConfigCtrl.reportDetails.fiscal_id"
-              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)"
+              disable="!ReportConfigCtrl.reportDetails.fiscal_id"
+              required="true">
             </bh-period-selection>
 
             <!-- select depot -->
