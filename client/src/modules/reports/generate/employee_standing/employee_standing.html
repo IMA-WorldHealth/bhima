@@ -22,22 +22,76 @@
 
       <div class="panel-body">
         <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.allEmployee" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.EMPLOYEE_STANDING.SEE_SITUATION_ALL_EMPLOYEES</span>
+            </label>
+          </div>
+
+          <div ng-if="ReportConfigCtrl.reportDetails.allEmployee" class="panel-body">
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeReport"
+                  value="summary"
+                  ng-model="ReportConfigCtrl.reportDetails.modeReport"
+                  ng-click="ReportConfigCtrl.onSelectMode('summary')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.SUMMARY_REPORT
+                </span>
+              </label>
+            </div>            
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeReport"
+                  value="normal"
+                  ng-model="ReportConfigCtrl.reportDetails.modeReport"
+                  ng-click="ReportConfigCtrl.onSelectMode('normal')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.NORMAL_REPORT
+                </span>
+              </label>
+            </div>
+            <div class="radio">
+              <label class="radio-inline">
+                <input
+                  type="radio"
+                  name="modeReport"
+                  value="detailed"
+                  ng-model="ReportConfigCtrl.reportDetails.modeReport"
+                  ng-click="ReportConfigCtrl.onSelectMode('detailed')"
+                  required>
+                <span translate>
+                  REPORT.EMPLOYEE_STANDING.DETAILED_REPORT
+                </span>
+              </label>
+            </div>
+          </div>
 
           <!--select the Employee -->
-          <bh-employee-select
-            employee-uuid="ReportConfigCtrl.reportDetails.employee_uuid"
-            on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
-            required="true">
-          </bh-employee-select>
-           
+          <div ng-if="!ReportConfigCtrl.reportDetails.allEmployee">
+            <bh-employee-select
+              employee-uuid="ReportConfigCtrl.reportDetails.employee_uuid"
+              on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
+              required="true">
+            </bh-employee-select>
+          </div>
+
           <hr>
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.extractEmployee" ng-true-value="1" ng-false-value="0">
-              <span translate>TABLE.COLUMNS.EXTRACT_EMPLOYEE_STANDING</span>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.limitTimeInterval" ng-true-value="1" ng-false-value="0">
+              <span translate>REPORT.EMPLOYEE_STANDING.LIMIT_TO_TIME_INTERVAL</span>
             </label>
           </div>
-          <div ng-if="ReportConfigCtrl.reportDetails.extractEmployee">
+
+          <div ng-if="ReportConfigCtrl.reportDetails.limitTimeInterval">
             <!-- date interval -->
             <bh-date-interval
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
@@ -47,12 +101,17 @@
             </bh-date-interval>
           </div>
           <hr>
-          <div class="checkbox">
+          <div ng-if="!ReportConfigCtrl.reportDetails.allEmployee" class="checkbox">
             <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeMedicalCare" ng-true-value="1" ng-false-value="0">
-              <span translate>TABLE.COLUMNS.INCLUDE_MEDICAL_CARE_EMPLOYEE</span>
+              <span translate>REPORT.EMPLOYEE_STANDING.INCLUDE_MEDICAL_CARE_EMPLOYEE</span>
             </label>
           </div>
+
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.reportDetails.currency_id"
+            on-change="ReportConfigCtrl.setCurrency(currency)">
+          </bh-currency-select>
 
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
