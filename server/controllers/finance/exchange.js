@@ -94,7 +94,6 @@ exports.create = function create(req, res, next) {
     .done();
 };
 
-
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
   let sql = 'UPDATE exchange_rate SET ? WHERE id = ?;';
