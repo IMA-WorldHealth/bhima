@@ -10,6 +10,12 @@
     </span>
   </h3>
 
+  {{#unless isEnterpriseCurrency}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+    </div>
+  {{/unless}}
+
   {{#if limitTimeInterval}}
     <div class="text-center">
       <strong>
@@ -68,7 +74,7 @@
       </tfoot>
     {{/if}}
 
-    {{#if detailled}}
+    {{#if detailed}}
       <thead>
         <tr class="text-uppercase text-center" style="background-color: #ddd;" >
           <th style="width: 2%;"></th>

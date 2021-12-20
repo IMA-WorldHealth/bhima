@@ -21,7 +21,8 @@ function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports
 
   checkCachedConfiguration();
 
-  vm.reportDetails.currency_id = Session.enterprise.currency_id;
+  vm.reportDetails.currency_id = vm.reportDetails?.currency_id || Session.enterprise.currency_id;
+
 
   // custom filter employee_uuid
   vm.onSelectEmployee = function onSelectEmployee(employee) {
@@ -48,8 +49,8 @@ function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports
       .catch(Notify.handleError);
   };
 
-  vm.onSelectMode = function onSelectMode(modeRepport) {
-    vm.reportDetails.modeRepport = modeRepport;
+  vm.onSelectMode = function onSelectMode(modeReport) {
+    vm.reportDetails.modeReport = modeReport;
   };
 
   vm.preview = function preview(form) {
@@ -61,7 +62,7 @@ function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports
     if (vm.reportDetails.allEmployee) {
       delete vm.reportDetails.employee_uuid;
       delete vm.reportDetails.includeMedicalCare;
-      reportUrl = '/reports/finance/employees_standing';
+      reportUrl = '/reports/finance/all_employees_standing';
     } else if (!vm.reportDetails.allEmployee && vm.reportDetails.employee_uuid) {
       reportUrl = '/reports/finance/employee_standing';
     }
@@ -87,6 +88,6 @@ function EmployeeStandingController($state, $sce, Notify, AppCache, SavedReports
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
 
-    vm.reportDetails.modeRepport = 'summary';
+    vm.reportDetails.modeReport = 'summary';
   }
 }

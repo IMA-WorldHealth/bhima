@@ -457,7 +457,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cost_center_income_and_expense', financeReports.costCenterStepdown.incomeAndExpenseReport);
   app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
   app.get('/reports/finance/employee_standing/', financeReports.employee);
-  app.get('/reports/finance/employees_standing/', financeReports.employees);
+  app.get('/reports/finance/all_employees_standing/', financeReports.allEmployees);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_cost_center', financeReports.breakEvenCostCenter.report);
   app.get('/reports/finance/operating', financeReports.operating.document);

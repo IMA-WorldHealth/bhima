@@ -33,7 +33,7 @@ const PDF_OPTIONS = {
 async function build(req, res, next) {
   const options = req.query;
   let report;
-  let exchange;
+  let dateExchangeRate;
 
   options.currency_id = options.currency_id || req.session.enterprise.currency_id;
 
@@ -43,9 +43,9 @@ async function build(req, res, next) {
     options.dateFrom = ``;
     options.dateTo = ``;
 
-    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), new Date());
+    dateExchangeRate = new Date();
   } else {
-    exchange = await Exchange.getExchangeRate(req.session.enterprise.id, Number(options.currency_id), options.dateFrom);
+    dateExchangeRate = options.dateTo;
   }
 
   _.defaults(options, PDF_OPTIONS);
@@ -53,14 +53,11 @@ async function build(req, res, next) {
   // set up the report with report manager
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
-  } catch (e) {
-    return next(e);
-  }
 
-  try {
     const data = {};
-    data.exchangeRate = exchange.rate || 1;
+
     data.currencyId = options.currency_id;
+    data.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(options.currency_id);
 
     const sql = `
       SELECT BUID(p.debtor_uuid) as debtor_uuid
@@ -68,10 +65,17 @@ async function build(req, res, next) {
       JOIN employee em ON p.uuid = em.patient_uuid
       WHERE em.uuid = ?`;
 
-    const [employee, patient] = await Promise.all([
+    const [employee, patient, exchange] = await Promise.all([
       Employee.lookupEmployee(options.employee_uuid),
       db.one(sql, db.bid(options.employee_uuid)),
+      Exchange.getExchangeRate(
+        req.session.enterprise.id,
+        Number(options.currency_id),
+        dateExchangeRate,
+      ),
     ]);
+
+    data.exchangeRate = exchange.rate || 1;
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
@@ -121,10 +125,10 @@ async function build(req, res, next) {
     // let render
     const result = await report.render(data);
     return res.set(result.headers).send(result.report);
-
-  } catch (error) {
-    return next(error);
+  } catch (e) {
+    return next(e);
   }
+
 }
 
 exports.report = build;
