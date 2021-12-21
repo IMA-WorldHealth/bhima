@@ -222,7 +222,7 @@ async function getInventoryItems(req, res, next) {
     `;
 
     // if we have an empty set, do not query tags.
-    if (data.length !== 0) {
+    if (data.length !== 0 && !params.skipTags) {
       const inventoryUuids = data.map(row => db.bid(row.uuid));
       const tags = await db.exec(queryTags, [inventoryUuids]);
 
@@ -249,7 +249,7 @@ async function getInventoryItems(req, res, next) {
 function getInventoryItemsById(req, res, next) {
   const { uuid } = req.params;
 
-  core.getItemsMetadataById(uuid)
+  core.getItemsMetadataById(uuid, req.query)
     .then((row) => {
       res.status(200).json(row);
     })
