@@ -4,11 +4,11 @@
   <!-- header  -->
  {{> header}}
 
+  <h2 class="text-center">
+    {{ translate 'REPORT.INVENTORY_CHANGE.TITLE' }}
+  </h2>
   <h3 class="text-center">
-    <u>{{ translate 'REPORT.INVENTORY_CHANGE.TITLE' }} </u>
-  </h3>
-  <h3 class="text-center">
-    <small>{{date dateFrom }} - {{date dateTo}}</small>
+    {{date dateFrom }} - {{date dateTo}}
   </h3>
 
   <table class="table table-report table-condensed">
