@@ -275,7 +275,7 @@ function StockEntryController(
   function loadInventories() {
     setupStock();
 
-    Inventory.read(null, { consumable : 1 })
+    Inventory.read(null, { consumable : 1, skipTags : true })
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });

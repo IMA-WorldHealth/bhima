@@ -910,6 +910,7 @@ async function listLotsDepot(req, res, next) {
     // if no data is returned or if the skipTags flag is set, we don't need to do any processing
     // of tags.  Skip the SQL query and JS loops.
     if (data.length !== 0 && !params.skipTags) {
+
       const queryTags = `
         SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
         FROM tags t

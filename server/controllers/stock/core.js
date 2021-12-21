@@ -114,11 +114,13 @@ function getLotFilters(parameters) {
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
   // filter on the underlying voucher t
-  filters.custom('voucherReference',
+  filters.custom(
+    'voucherReference',
     `document_uuid = (
       SELECT DISTINCT vi.document_uuid FROM voucher_item AS vi
       WHERE vi.voucher_uuid = (SELECT uuid FROM document_map WHERE document_map.text = ?)
-    )`);
+    )`,
+  );
 
   // depot permission check
   filters.custom(
@@ -131,14 +133,18 @@ function getLotFilters(parameters) {
 
   // NOTE(@jniles)
   // is_expired is based off the server time, not off the client time.
-  filters.custom('is_expired',
-    'IF(DATE(l.expiration_date) < DATE(NOW()), 1, 0) = ?');
+  filters.custom(
+    'is_expired',
+    'IF(DATE(l.expiration_date) < DATE(NOW()), 1, 0) = ?',
+  );
 
   // NOTE(@jniles):
   // this filters the lots on the entity_uuid associated with the text reference.  It is
   // an "IN" filter because the patient could have a patient_uuid or debtor_uuid specified.
-  filters.custom('patientReference',
-    'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)');
+  filters.custom(
+    'patientReference',
+    'entity_uuid IN (SELECT uuid FROM entity_map WHERE text = ?)',
+  );
 
   filters.period('defaultPeriod', 'date', 'm');
   filters.period('period', 'date', 'm');
@@ -323,8 +329,13 @@ async function getLotsDepot(depotUuid, params, finalClause) {
  * inventory/depot pairings in the array.  It then creates a mapping for the CMMs in memory and uses
  * those to compute the relevant indicators.
  */
-async function getBulkInventoryCMM(lots, monthAverageConsumption, averageConsumptionAlgo, defaultPurchaseInterval,
-  stockParams) {
+async function getBulkInventoryCMM(
+  lots,
+  monthAverageConsumption,
+  averageConsumptionAlgo,
+  defaultPurchaseInterval,
+  stockParams,
+) {
 
   if (!lots.length) return [];
 
@@ -527,8 +538,11 @@ function listLostStock(params) {
 
   const filters = new FilterParser(params, { tableAlias : 'dest' });
 
-  filters.custom('enable_quantity_check', 'dest.flux_id = (?) AND IFNULL((ex.quantity - dest.quantity), 0) <> 0',
-    flux.FROM_OTHER_DEPOT);
+  filters.custom(
+    'enable_quantity_check',
+    'dest.flux_id = (?) AND IFNULL((ex.quantity - dest.quantity), 0) <> 0',
+    flux.FROM_OTHER_DEPOT,
+  );
   filters.dateFrom('dateFrom', 'date');
   filters.dateTo('dateTo', 'date');
   if (depotRole === 'destination') {
@@ -602,7 +616,9 @@ function computeInventoryIndicators(inventories) {
     // Here we are looking for the maximum order interval defined either
     // at the level of the company, the depot or the inventory
     const purchaseInterval = Math.max(
-      inventory.enterprisePurchaseInterval, inventory.default_purchase_interval, inventory.purchase_interval,
+      inventory.enterprisePurchaseInterval,
+      inventory.default_purchase_interval,
+      inventory.purchase_interval,
     );
 
     inventory.S_MAX = (CMM * purchaseInterval) + inventory.S_MIN; // stock maximum
@@ -802,8 +818,11 @@ async function getInventoryQuantityAndConsumption(params) {
 
   // add the CMM
   filteredRows = await getBulkInventoryCMM(
-    filteredRows, opts.month_average_consumption, opts.average_consumption_algo,
-    opts.default_purchase_interval, params,
+    filteredRows,
+    opts.month_average_consumption,
+    opts.average_consumption_algo,
+    opts.default_purchase_interval,
+    params,
   );
 
   if (_status) {

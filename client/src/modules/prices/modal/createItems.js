@@ -8,7 +8,7 @@ PriceListItemsModalController.$inject = [
 
 function PriceListItemsModalController(
   data, Instance, Inventory, util,
-  Notify, AppCache, PriceList, Modal
+  Notify, AppCache, PriceList, Modal,
 ) {
   const vm = this;
 
@@ -29,7 +29,7 @@ function PriceListItemsModalController(
 
   function startUp() {
     init();
-    Inventory.read()
+    Inventory.read(null, { skipTags : true })
       .then((inventory) => {
         // gather all used uuids in a flat array
         inventory.forEach(item => {
@@ -106,7 +106,6 @@ function PriceListItemsModalController(
   vm.gridOptions.onRegisterApi = gridApi => {
     vm.gridApi = gridApi;
   };
-
 
   // check if the price list item is valid
   function isValidItem() {
