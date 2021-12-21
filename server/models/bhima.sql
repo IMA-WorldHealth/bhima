@@ -130,7 +130,7 @@ INSERT INTO unit VALUES
   (246,'Client Debts Report','TREE.CLIENT_DEBTS_REPORT','Client debts report',281,'/reports/client_debts'),
   (247,'Client Support Report','TREE.CLIENT_SUPPORT_REPORT','Client support report',281,'/reports/client_support'),
   (248,'Analysis of Cashboxes','REPORT.ANALYSIS_AUX_CASHBOXES.TITLE','Analysis of auxiliary cashboxes',281,'/reports/analysis_auxiliary_cashboxes'),
-  (249,'Realized Profit Report','TREE.REALIZED_PROFIT_REPORT','Realized profit report',281,'/reports/realized_profit'),
+  (249,'Realized Profit Report','TREE.REALIZED_PROFIT_REPORT','Realized profit report / Collection on Invoicies',281,'/reports/realized_profit'),
   (250,'System Usage Statistics','REPORT.SYSTEM_USAGE_STAT.TITLE','System usage statistics',280,'/reports/system_usage_stat'),
   (251,'Indexes','TREE.INDEXES','The payroll index',57,'/PAYROLL_INDEX_FOLDER'),
   (252,'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251,'/staffing_indices'),
