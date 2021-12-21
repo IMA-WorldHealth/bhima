@@ -6,14 +6,16 @@
   <!-- body -->
   <div class="row">
     <div class="col-xs-12">
+
       <!-- page title  -->
       <h3 class="text-center text-uppercase">
         <strong>{{translate 'TREE.OPERATING_ACCOUNT'}}</strong>
       </h3>
 
-      <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
         {{date this.dateFrom}} - {{date this.dateTo}}
-      </h5>
+      </h4>
+
       <h5 class="text-center">
         {{#if this.rate}}
           {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
