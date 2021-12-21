@@ -15,8 +15,15 @@ PurchaseOrderService.$inject = [
  * Connects client controllers with the purchase order backend.
  */
 function PurchaseOrderService(
-  $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
-  Languages, bhConstants, Session,
+  $uibModal,
+  Filters,
+  AppCache,
+  Periods,
+  Api,
+  $httpParamSerializer,
+  Languages,
+  bhConstants,
+  Session,
 ) {
   const baseUrl = '/purchases/';
   const service = new Api(baseUrl);
