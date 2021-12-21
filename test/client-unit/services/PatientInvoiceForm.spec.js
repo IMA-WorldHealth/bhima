@@ -60,7 +60,7 @@ describe('PatientInvoiceForm', () => {
     httpBackend.when('GET', '/services/')
       .respond(200, Mocks.services());
 
-    httpBackend.when('GET', '/inventory/metadata/?detailed=1&locked=0')
+    httpBackend.when('GET', '/inventory/metadata/?detailed=1&locked=0&skipTags=true')
       .respond(200, Mocks.inventories());
 
     form = new PatientInvoiceForm('InvoiceTestKey');
