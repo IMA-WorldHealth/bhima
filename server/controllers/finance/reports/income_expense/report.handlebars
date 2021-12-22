@@ -1,4 +1,4 @@
-{{> head title="REPORT.PROIFT_AND_LOSS" }}
+{{> head title="REPORT.PROFIT_AND_LOSS" }}
 
 <div class="container">
   {{> header}}
@@ -11,9 +11,9 @@
         <strong>{{translate "REPORT.PROFIT_AND_LOSS"}}</strong>
       </h3>
 
-      <h5 style="margin-bottom:15px;" class="text-center text-capitalize">
+      <h4 style="margin-bottom:15px;" class="text-center text-capitalize">
         {{date periodFrom.start_date "MMMM"}} - {{date periodTo.end_date "MMMM"}} ({{fiscalYear.label }})
-      </h5>
+      </h4>
 
       {{#if profits}}
       <table class="table table-condensed table-report">
