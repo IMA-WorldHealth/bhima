@@ -14,6 +14,8 @@
     "array-bracket-spacing" : "warn",
     "prefer-arrow-callback" : "warn",
     "class-methods-use-this" : "off",
+    "function-call-argument-newline" : "off",
+    "function-paren-newline" : "off",
     "indent" : ["error", 2],
     "comma-dangle" : ["error", "always-multiline"],
     "key-spacing" : ["warn", {

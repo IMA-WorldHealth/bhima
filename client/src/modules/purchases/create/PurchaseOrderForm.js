@@ -42,7 +42,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this._ready = $q.defer();
 
     // set up the inventory
-    Inventory.read(null, { locked : 0 })
+    Inventory.read(null, { locked : 0, skipTags : true })
       .then((data) => {
 
         // zero out price so that users don't automatically use the sale price.
