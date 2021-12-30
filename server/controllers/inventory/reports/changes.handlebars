@@ -13,23 +13,28 @@
 
   <table class="table table-report table-condensed">
     <thead>
-      <tr>
+      <tr style="background-color: #CCCCCC;">
         <th>{{translate "FORM.LABELS.DATE"}}</th>
         <th>{{translate "FORM.LABELS.USER"}}</th>
         <th>{{translate "FORM.LABELS.LABEL"}}</th>
         <th>{{translate "INVENTORY.PREVIOUS_VALUE"}}</th>
         <th>{{translate "INVENTORY.UPDATED_VALUE"}}</th>
+        <th>{{translate "INVENTORY.NUM_CHANGES"}}</th>
       </tr>
     </thead>
 
     {{#each ./inventories as | inventory |}}
       <tbody>
-        <tr>
-          <th colspan="4">
+        <tr style="background-color: #EEEEEE;">
+          <th colspan="5">
             {{inventory.group_name}} <span>&#x7c;</span> {{inventory.code}} - {{inventory.label}}
           </th>
           <th colspan="1" class="text-right">
-            ({{inventory.logs.length}} {{translate "INVENTORY.CHANGES"}})
+            {{#if inventory.logs.length}}
+            {{inventory.logs.length}}
+            {{else}}
+            {{translate "INVENTORY.NONE"}}
+            {{/if}}
           </th>
         </tr>
 
@@ -38,14 +43,27 @@
             <td>{{timestamp log.date}}</td>
             <td>{{log.userName}}</td>
             <td>{{translate log.col}}</td>
-            <td class="text-right">{{log.value.from}}</td>
-            <td class="text-right">{{log.value.to}}</td>
+            <td class="text-right">
+              {{#if log.is_unit_price}}
+              {{currency log.value.from ../../currencyId 4}}
+              {{else}}
+              {{ log.value.from }}
+              {{/if}}
+            </td>
+            <td class="text-right">
+              {{#if log.is_unit_price}}
+              {{currency log.value.to ../../currencyId 4}}
+              {{else}}
+              {{ log.value.to }}
+              {{/if}}
+            </td>
+            <td></td>
           </tr>
         {{/each}}
       </tbody>
     {{else}}
       <tbody>
-        {{> emptyTable columns=5 }}
+        {{> emptyTable columns=6 }}
       </tbody>
     {{/each}}
   </table>
