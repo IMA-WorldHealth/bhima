@@ -330,7 +330,7 @@ function remove(_uuid) {
 * @param {String} uuid The inventory item identifier
 * @return {Promise} Returns a database query promise
 */
-async function getItemsMetadataById(uid) {
+async function getItemsMetadataById(uid, query = {}) {
   const sql = `
     SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
@@ -354,8 +354,11 @@ async function getItemsMetadataById(uid) {
   `;
 
   const response = await db.one(sql, [db.bid(uid), uid, 'inventory']);
-  const tags = await db.exec(queryTags, [db.bid(uid)]);
-  response.tags = tags;
+
+  if (!query.skipTags) {
+    response.tags = await db.exec(queryTags, [db.bid(uid)]);
+  }
+
   return response;
 }
 

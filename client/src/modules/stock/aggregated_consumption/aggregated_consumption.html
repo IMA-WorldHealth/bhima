@@ -33,13 +33,16 @@
 
           <bh-fiscal-year-select
             fiscal-id="StockCtrl.movement.fiscal_id"
-            on-select-fiscal-callback="StockCtrl.onSelectFiscalYear(fiscalYear)">
+            on-select-fiscal-callback="StockCtrl.onSelectFiscalYear(fiscalYear)"
+            required="true">
           </bh-fiscal-year-select>
 
           <bh-period-selection
             fiscal-year-id="StockCtrl.movement.fiscal_id"
             period-id="StockCtrl.movement.period_id"
-            on-select-callback="StockCtrl.onSelectPeriod(period)">
+            on-select-callback="StockCtrl.onSelectPeriod(period)"
+            disable="!StockCtrl.movement.fiscal_id"
+            required="true">
           </bh-period-selection>
 
           <!-- note -->

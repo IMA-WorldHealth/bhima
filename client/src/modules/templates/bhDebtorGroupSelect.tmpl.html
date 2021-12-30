@@ -2,8 +2,10 @@
   <div
     class="form-group"
     ng-class="{ 'has-error' : DebtorForm.$submitted && DebtorForm.debtor_group_uuid.$invalid }">
-    <label class="control-label" translate>
-      {{ $ctrl.label }}
+    <label class="control-label">
+      <span ng-if="$ctrl.label==='FORM.LABELS.DEBTOR_GROUP' && $ctrl.required" translate>{{ $ctrl.label }}</span>
+      <span ng-if="$ctrl.label==='FORM.LABELS.DEBTOR_GROUP' && !$ctrl.required" translate>FORM.LABELS.DEBTOR_GROUP_OPTIONAL</span>
+      <span ng-if="$ctrl.label!=='FORM.LABELS.DEBTOR_GROUP'" translate>{{ $ctrl.label }}</span>
     </label>
     <ng-transclude></ng-transclude>
     <ui-select

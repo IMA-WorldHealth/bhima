@@ -9,8 +9,8 @@
     "DESCRIPTION":"Ce module est responsable de la gestion des caisses",
     "NO_SUPPORTED_CURRENCIES":"Aucune monnaie n'est configuré pour cette caisse.",
     "SET_CURRENCY_ACCOUNTS":"Définir la configuration des comptes des monnaie pour cette caisse.",
+    "TOO_MANY_CASHBOXES_PER_ACCOUNT": "ERREUR DE CONFIGURATION : Le compte associé à la caisse '{{ cashboxName }}' est associé à d'autres caisses !",
     "TITLE":"Gestion des caisses",
-
     "USERS": {
       "TITLE": "Utilisateurs de cette caisse",
       "SUBTITLE": "Utilisateurs ayant accès à cette caisse:",

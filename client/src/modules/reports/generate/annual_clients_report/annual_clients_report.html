@@ -26,7 +26,8 @@
           <!--select the period by a date-->
           <bh-fiscal-year-select
             fiscal-id="ReportConfigCtrl.reportDetails.fiscalId"
-            on-select-fiscal-callback ="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
+            on-select-fiscal-callback ="ReportConfigCtrl.onSelectFiscal(fiscalYear)"
+            required="true">
           </bh-fiscal-year-select>
 
           <bh-currency-select

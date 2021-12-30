@@ -4,6 +4,7 @@ const Tree = require('@ima-worldhealth/tree');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const ReportManager = require('../../../../lib/ReportManager');
+const Exchange = require('../../../finance/exchange');
 
 const fiscal = require('../../fiscal');
 
@@ -24,11 +25,13 @@ const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 async function reporting(opts, session) {
   const params = opts;
 
-  params.currency_id = session.enterprise.currency_id;
-
   params.allAccount = parseInt(params.allAccount, 10);
   const accountNumber = params.allAccount ? `` : params.accountNumber;
   const accountLabel = params.allAccount ? `` : params.accountLabel;
+
+  const enterpriseId = session.enterprise.id;
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currencyId, new Date());
+  const rate = exchangeRate.rate || 1;
 
   const options = _.extend(opts, {
     filename : 'FORM.LABELS.MONTHLY_BALANCE',
@@ -86,6 +89,21 @@ async function reporting(opts, session) {
     db.one(sqlSum, sqlParams),
   ]);
 
+  // Do the currency conversions
+  exploitation.forEach(row => {
+    if (typeof row.credit === 'number') {
+      row.credit *= rate;
+    }
+    if (typeof row.debit === 'number') {
+      row.debit *= rate;
+    }
+    if (typeof row.amount === 'number') {
+      row.amount *= rate;
+    }
+  });
+  totalExploitation.credit *= rate;
+  totalExploitation.debit *= rate;
+
   const rows = exploitation.length === 0 ? [] : prepareTree(exploitation, 'amount', 'debit', 'credit');
 
   const context = {
@@ -94,7 +112,7 @@ async function reporting(opts, session) {
     dateFrom : range.dateFrom,
     dateTo : range.dateTo,
     periodLabel : params.periodLabel,
-    currencyId : params.currency_id,
+    currencyId : params.currencyId,
     accountLabel,
     accountNumber,
     allAccount : params.allAccount,

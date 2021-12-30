@@ -41,15 +41,15 @@
       on-change="ModalCtrl.onDateChange(date)">
     </bh-date-editor>
 
-    <div>
+    <div style="margin-bottom: 0.5em;">
       <span translate>EXCHANGE.CURRENT_RATE</span>:
-        <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
-        <i><span translate>FORM.INFO.PER</span> {{ModalCtrl.enterprise.currencySymbol}}</i>
+      <i>{{ ModalCtrl.currentExchangeRate }} {{ ModalCtrl.rate.currency.symbol }}</i>
+      <i><span translate>FORM.INFO.PER</span> {{ModalCtrl.enterprise.currencySymbol}}</i>
     </div>
 
     <div class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.EXCHANGE_RATE</label>
+      <label class="control-label" translate>FORM.LABELS.NEW_EXCHANGE_RATE</label>
       <div class="row">
         <div class="col-xs-2">
           <p class="form-control-static text-right" ng-class="{ 'text-danger' : ModalForm.$submitted && ModalForm.rate.$invalid }">
@@ -58,10 +58,10 @@
         </div>
         <div class="col-xs-10">
           <div class="input-group">
-            <!-- Improve me Prevent exchange rate equal 0 -->
             <input class="form-control" min="0.000000000001" type="number" name="rate" ng-model="ModalCtrl.rate.rate" required>
             <span class="input-group-addon">{{ ModalCtrl.symbol(ModalCtrl.rate.currency.id) }}</span>
           </div>
+          <p><em translate>EXCHANGE.FRACTIONAL_RATE_HINT</em></p>
         </div>
       </div>
       <div class="help-block" ng-messages="ModalForm.rate.$error" ng-show="ModalForm.$submitted">

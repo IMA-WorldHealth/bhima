@@ -2,16 +2,18 @@ angular.module('bhima.controllers')
   .controller('monthly_balanceController', monthlyBalanceController);
 
 monthlyBalanceController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'SessionService',
 ];
 
-function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('monthly_balance');
   const reportUrl = 'reports/finance/monthly_balance';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    allAccount : 1,
+  };
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
@@ -20,6 +22,10 @@ function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportDa
   vm.onSelectPeriod = (period) => {
     vm.reportDetails.period_id = period.id;
     vm.reportDetails.periodLabel = period.hrLabel;
+  };
+
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.clearPreview = function clearPreview() {
@@ -80,5 +86,11 @@ function monthlyBalanceController($sce, Notify, SavedReports, AppCache, reportDa
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currencyId = Session.enterprise.currency_id;
+    }
+
   }
 }

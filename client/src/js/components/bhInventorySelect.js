@@ -24,9 +24,11 @@ function InventorySelectController(Inventory, Notify) {
   $ctrl.$onInit = function onInit() {
     // fired when an inventory has been selected
 
-    const params = $ctrl.onlyConsumable
-      ? { consumable : 1 }
-      : {};
+    const params = { skipTags : true };
+
+    if ($ctrl.onlyConsumable) {
+      Object.assign(params, { consumable : 1 });
+    }
 
     // load all inventories
     Inventory.read(null, params)

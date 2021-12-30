@@ -6,8 +6,9 @@
   <div class="form-group"
        ng-class="{ 'has-error' : EmployeeForm.$submitted && EmployeeForm.employee_uuid.$invalid }">
 
-    <label class="control-label" translate>
-      FORM.LABELS.EMPLOYEE_NAME
+    <label class="control-label">
+      <span ng-if="$ctrl.required" translate>FORM.LABELS.EMPLOYEE_NAME</span>
+      <span ng-if="!$ctrl.required" translate>FORM.LABELS.EMPLOYEE_NAME_OPTIONAL</span>
     </label>
 
     <ng-transclude></ng-transclude>

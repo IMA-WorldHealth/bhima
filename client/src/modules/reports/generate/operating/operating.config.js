@@ -2,14 +2,18 @@ angular.module('bhima.controllers')
   .controller('operatingController', OperatingConfigController);
 
 OperatingConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'SessionService',
 ];
 
-function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('configure_operating');
   const reportUrl = 'reports/finance/operating';
-  vm.reportDetails = {};
+
+  vm.reportDetails = {
+    currency_id : Session.enterprise.currency_id,
+  };
+
   vm.previewGenerated = false;
   checkCachedConfiguration();
 
@@ -21,12 +25,12 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
     vm.reportDetails.periodFrom = period.id;
   };
 
-  vm.onSelectCurrency = (currency) => {
-    vm.reportDetails.currency_id = currency.id;
-  };
-
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
     vm.reportDetails.periodTo = period.id;
+  };
+
+  vm.onSelectCurrency = (currency) => {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   vm.onSelectCronReport = report => {

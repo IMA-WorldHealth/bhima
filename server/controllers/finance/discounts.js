@@ -12,7 +12,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const db = require('../../lib/db');
 
 /**
- * @desc Looks up a discount in the database by its id.  Throws a prmoise error
+ * @desc Looks up a discount in the database by its id.  Throws a promise error
  * if the record does not exist, otherwise returns the record.
  *
  * @param {number} id

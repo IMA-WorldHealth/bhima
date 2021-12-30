@@ -102,7 +102,7 @@ function PatientInvoiceFormService(
       });
 
     // set up the inventory
-    Inventory.read(null, { detailed : 1, locked : 0 })
+    Inventory.read(null, { detailed : 1, locked : 0, skipTags : true })
       .then(data => {
         if (data.length === 0) {
           Notify.danger('INVENTORY.NO_INVENTORY_REGISTERED');

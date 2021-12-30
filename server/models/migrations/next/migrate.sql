@@ -25,3 +25,19 @@ DELETE FROM report WHERE report_key IN (
   'break_even_cost_center'
 );
 DELETE FROM unit WHERE id IN (220, 221, 222, 223, 230, 231, 232);
+
+/*
+ * @author: jmcameron
+ * @description: Increase precision of exchange rate
+ * @date: 2021-12-16
+ */
+ALTER TABLE `exchange_rate` MODIFY `rate` DOUBLE NOT NULL;
+
+
+/**
+ * @author: jniles
+ * @description: add realized_profit report if it doesn't exist
+ * @date: 2021-12-21
+*/
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+  ('realized_profit', 'REPORT.REALIZED_PROFIT.TITLE');

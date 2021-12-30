@@ -8,6 +8,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       periodId : '<?',
       disable : '<?',
+      required : '<?',
       label  : '@?',
     },
   });
