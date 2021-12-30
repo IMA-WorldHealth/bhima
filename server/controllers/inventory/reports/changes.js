@@ -14,6 +14,8 @@ const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 const core = require('../inventory/core');
 
+const Exchange = require('../../finance/exchange');
+
 module.exports = inventoryChanges;
 
 const TEMPLATE = './server/controllers/inventory/reports/changes.handlebars';
@@ -43,6 +45,11 @@ function processChangeLog(records) {
 async function inventoryChanges(req, res, next) {
   const params = _.clone(req.query);
   const metadata = _.clone(req.session);
+
+  const enterpriseId = req.session.enterprise.id;
+  const { currencyId } = params;
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
+  const rate = exchangeRate.rate || 1;
 
   try {
     const report = new ReportManager(TEMPLATE, metadata, params);
@@ -83,6 +90,19 @@ async function inventoryChanges(req, res, next) {
     // attach logs to each inventory item
     inventories.forEach(inventory => {
       inventory.logs = changeMap[inventory.uuid];
+      // Apply exchange rate
+      if (inventory.logs) {
+        inventory.logs.forEach(log => {
+          if (log.col === 'FORM.LABELS.UNIT_PRICE' && typeof log.value.to === 'number') {
+            log.value.to *= rate;
+            log.is_unit_price = true;
+          }
+          if (log.col === 'FORM.LABELS.UNIT_PRICE' && typeof log.value.from === 'number') {
+            log.value.from *= rate;
+            log.is_unit_price = true;
+          }
+        });
+      }
     });
 
     // calculate the number of changes by user.
@@ -94,7 +114,7 @@ async function inventoryChanges(req, res, next) {
       .value();
 
     const renderResult = await report.render({
-      inventories, dateFrom, dateTo, userChanges,
+      inventories, dateFrom, dateTo, userChanges, currencyId,
     });
     res.set(renderResult.headers).send(renderResult.report);
   } catch (e) {
