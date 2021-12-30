@@ -29,7 +29,7 @@ function HolidayManagementController(Holidays, ModalService, Notify, uiGridConst
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
       { field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date:"mediumDate"', headerCellFilter : 'translate' },
       { field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date:"mediumDate"', headerCellFilter : 'translate' },
-      { field : 'percentage', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
+      { field : 'percentage', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate', type : 'number' },
       { field : 'action',
         width : 80,
         displayName : '',

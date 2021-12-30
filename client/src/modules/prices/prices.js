@@ -48,6 +48,7 @@ function PriceListController(
       displayName : 'FORM.LABELS.ITEMS',
       headerCellFilter : 'translate',
       cellTemplate : `/modules/prices/templates/itemsNumber.cell.html`,
+      type : 'number',
     },
     {
       field : 'subcribedGroupsNumber',

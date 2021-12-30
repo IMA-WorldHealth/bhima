@@ -36,6 +36,7 @@ function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Sess
         field : 'nb_beds',
         displayName : 'BED.NB_BEDS',
         headerCellFilter : 'translate',
+        type : 'number',
       },
       {
         field : 'ward_name',
