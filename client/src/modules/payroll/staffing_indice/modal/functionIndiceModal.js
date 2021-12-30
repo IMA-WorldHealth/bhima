@@ -24,6 +24,7 @@ function FunctionIndiceModalController($state, StaffingIndice, Notify, Instance,
       displayName : 'FORM.LABELS.VALUE',
       headerCellFilter : 'translate',
       cellClass : 'text-right',
+      type : 'number',
     },
     {
       field : 'actions',

@@ -51,6 +51,7 @@ function StockFindPurchaseModalController(
       headerCellFilter : 'translate',
       cellFilter       : `currency:row.entity.currency_id`,
       cellClass        : 'text-right',
+      type             : 'number',
     }, {
       field            : 'author',
       displayName      : 'TABLE.COLUMNS.BY',
