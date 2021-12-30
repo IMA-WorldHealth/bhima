@@ -72,6 +72,7 @@ function PurchaseOrderController(
     displayName : 'TABLE.COLUMNS.QUANTITY',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html',
+    type : 'number',
   }, {
     field : 'unit_price',
     width : 105,
@@ -79,12 +80,14 @@ function PurchaseOrderController(
     headerCellFilter : 'translate',
     headerCellClass : 'wrappingColHeader',
     cellTemplate : 'modules/purchases/create/templates/price.tmpl.html',
+    type : 'number',
   }, {
     field : 'amount',
     width : 100,
     displayName : 'TABLE.COLUMNS.AMOUNT',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html',
+    type : 'number',
   }, {
     field : 'actions',
     width : 30,
