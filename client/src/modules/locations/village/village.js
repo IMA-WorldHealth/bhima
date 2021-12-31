@@ -68,11 +68,13 @@ function VillageController($state, locationService, util, Notify,
     field : 'longitude',
     displayName : 'FORM.LABELS.LONGITUDE',
     headerCellFilter : 'translate',
+    type : 'number',
   },
   {
     field : 'latitude',
     displayName : 'FORM.LABELS.LATITUDE',
     headerCellFilter : 'translate',
+    type : 'number',
   },
   {
     field : 'actions',

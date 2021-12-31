@@ -63,16 +63,19 @@ function PatientInvoiceController(
       displayName : 'TABLE.COLUMNS.QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/invoices/templates/grid/quantity.tmpl.html',
+      type : 'number',
     }, {
       field : 'transaction_price',
       displayName : 'FORM.LABELS.UNIT_PRICE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/invoices/templates/grid/unit.tmpl.html',
+      type : 'number',
     }, {
       field : 'amount',
       displayName : 'TABLE.COLUMNS.AMOUNT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/invoices/templates/grid/amount.tmpl.html',
+      type : 'number',
     }, {
       field : 'actions',
       width : 25,

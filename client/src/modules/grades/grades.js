@@ -41,6 +41,7 @@ function GradeManagementController(Grades, Modals, Notify, uiGridConstants, $sta
       displayName : 'FORM.LABELS.BASIC_SALARY',
       headerCellFilter : 'translate',
       cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+      type : 'number',
     }, {
       field : 'action',
       width : 80,

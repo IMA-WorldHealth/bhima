@@ -82,14 +82,15 @@ function PurchaseRegistryController(
     footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
+    type : 'number',
   }, {
     field : 'author',
     displayName : 'FORM.LABELS.AUTHOR',
     headerCellFilter : 'translate',
   }, {
-    cellTemplate : '/modules/purchases/templates/cellStatus.tmpl.html',
     field : 'status',
     displayName : 'FORM.LABELS.STATUS',
+    cellTemplate : '/modules/purchases/templates/cellStatus.tmpl.html',
     headerCellFilter : 'translate',
     enableFiltering : false,
     enableSorting : false,

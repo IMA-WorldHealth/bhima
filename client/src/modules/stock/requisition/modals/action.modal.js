@@ -40,6 +40,7 @@ function ActionRequisitionModalController(
       displayName : 'FORM.LABELS.QUANTITY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/requisition/templates/quantity.cell.html',
+      type : 'number',
     },
 
     {

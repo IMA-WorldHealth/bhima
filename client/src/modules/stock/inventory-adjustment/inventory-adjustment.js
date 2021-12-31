@@ -100,6 +100,7 @@ function StockInventoryAdjustmentController(
       cellTemplate : 'modules/stock/inventory-adjustment/templates/quantity.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
       enableFiltering : false,
+      type : 'number',
     }, {
       field : 'difference',
       width : 150,
@@ -108,6 +109,7 @@ function StockInventoryAdjustmentController(
       headerCellFilter : 'translate',
       enableFiltering : false,
       enableSorting : true,
+      type : 'number',
     },
     {
       field : 'expiration_date',

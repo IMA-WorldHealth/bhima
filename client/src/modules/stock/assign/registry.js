@@ -63,6 +63,7 @@ function StockLotsAssignController(
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
       headerCellFilter : 'translate',
+      type : 'number',
     },
 
     {
@@ -83,7 +84,7 @@ function StockLotsAssignController(
 
   const gridFooterTemplate = `
     <div style="padding-left: 10px;">
-      <b>{{ grid.appScope.countGridRows() }}</b> 
+      <b>{{ grid.appScope.countGridRows() }}</b>
       <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
   `;
