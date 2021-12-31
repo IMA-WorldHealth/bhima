@@ -248,7 +248,7 @@ function InventoryListController(
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
   }
-  // delete an invetory from the database
+  // delete an inventory from the database
   function remove(uuid) {
     Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((yes) => {
