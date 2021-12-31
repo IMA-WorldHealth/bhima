@@ -109,8 +109,14 @@ function StockMovementsController(
       type : 'date',
       displayName : 'FORM.LABELS.DATE',
       headerCellFilter : 'translate',
-      cellFilter : 'date',
-      cellClass : 'text-right',
+      cellTemplate : 'modules/stock/movements/templates/date.cell.html',
+    }, {
+      field : 'created_at',
+      type : 'date',
+      displayName : 'FORM.LABELS.SERVER_DATE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/created_at.cell.html',
+      visible : false,
     }, {
       field : 'userName',
       displayName : 'FORM.LABELS.USER',
