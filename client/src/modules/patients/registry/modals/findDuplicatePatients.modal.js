@@ -53,6 +53,7 @@ function FindDuplicatePatientsModalController(Patients, Instance) {
     field : 'num_patients',
     displayName : 'TABLE.COLUMNS.TOTAL',
     headerCellFilter : 'translate',
+    type : 'number',
   }, {
     field : 'display_name',
     displayName : 'TABLE.COLUMNS.NAME',

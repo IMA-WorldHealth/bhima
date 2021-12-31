@@ -23,21 +23,44 @@ function HolidayManagementController(Holidays, ModalService, Notify, uiGridConst
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
-    [
-      { field : 'display_name', displayName : 'FORM.LABELS.EMPLOYEE_NAME', headerCellFilter : 'translate' },
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date:"mediumDate"', headerCellFilter : 'translate' },
-      { field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date:"mediumDate"', headerCellFilter : 'translate' },
-      { field : 'percentage', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
-      { field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/holidays/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  const gridColumn = [
+    {
+      field : 'display_name',
+      displayName : 'FORM.LABELS.EMPLOYEE_NAME',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'label',
+      displayName : 'FORM.LABELS.DESIGNATION',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'dateFrom',
+      displayName : 'FORM.LABELS.DATE_FROM',
+      cellFilter : 'date:"mediumDate"',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'dateTo',
+      displayName : 'FORM.LABELS.DATE_TO',
+      cellFilter : 'date:"mediumDate"',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'percentage',
+      displayName : 'FORM.LABELS.PERCENTAGE',
+      headerCellFilter : 'translate',
+      type : 'number',
+    },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/holidays/templates/action.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {

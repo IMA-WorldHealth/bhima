@@ -24,6 +24,7 @@ function GradeIndiceModalController($state, StaffingIndice, Notify, Instance, Mo
       displayName : 'FORM.LABELS.VALUE',
       headerCellFilter : 'translate',
       cellClass : 'text-right',
+      type : 'number',
     },
     {
       field : 'actions',

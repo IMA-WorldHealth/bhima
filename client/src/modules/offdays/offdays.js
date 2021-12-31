@@ -28,7 +28,9 @@ function OffdayManagementController(Offdays, ModalService, Notify, uiGridConstan
     {
       field : 'date', displayName : 'FORM.LABELS.DATE', cellFilter : 'date', headerCellFilter : 'translate',
     },
-    { field : 'percent_pay', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
+    {
+      field : 'percent_pay', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate', type : 'number',
+    },
     {
       field : 'action',
       width : 80,

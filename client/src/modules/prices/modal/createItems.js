@@ -86,6 +86,7 @@ function PriceListItemsModalController(
     displayName : 'FORM.LABELS.VALUE',
     headerCellFilter : 'translate',
     cellTemplate : `/modules/prices/templates/price_item_value.tmpl.html`,
+    type : 'number',
     width : 70,
   }, {
     field : 'actions',
