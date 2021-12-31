@@ -37,6 +37,7 @@ function SubsidyController(Subsidy, ModalService, Notify, uiGridConstants, $stat
         field : 'value',
         displayName : 'TABLE.COLUMNS.VALUE',
         headerCellFilter : 'translate',
+        type : 'number',
       },
       {
         field : 'number',

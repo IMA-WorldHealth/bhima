@@ -39,6 +39,7 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
     headerCellFilter : 'translate',
     cellFilter : 'percentage',
     cellClass : 'text-right',
+    type : 'number',
   }, {
     field : 'created_at',
     displayName : 'TABLE.COLUMNS.DATE',

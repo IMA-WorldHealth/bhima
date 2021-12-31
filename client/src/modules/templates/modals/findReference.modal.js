@@ -97,6 +97,7 @@ function FindReferenceModalController(
     headerCellFilter : 'translate',
     cellFilter: 'currency:'.concat(Session.enterprise.currency_id),
     cellClass : 'text-right',
+    type : 'number',
   }];
 
   // this function extends the columns list by splicing in the accounts

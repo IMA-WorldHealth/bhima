@@ -58,6 +58,7 @@ function MultiplePayrollController(
     cellClass : 'text-right',
     aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
+    type : 'number',
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
@@ -65,6 +66,7 @@ function MultiplePayrollController(
     cellClass : 'text-right',
     aggregationType  : uiGridConstants.aggregationTypes.sum,
     cellFilter : 'currency:row.entity.currency_id',
+    type : 'number',
   }, {
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
