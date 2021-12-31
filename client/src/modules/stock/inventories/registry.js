@@ -137,12 +137,13 @@ function StockInventoriesController(
   ];
 
   vm.gridOptions = {
-    appScopeProvider  : vm,
-    enableColumnMenus : false,
-    columnDefs        : columns,
-    enableSorting     : true,
-    fastWatch         : true,
-    flatEntityAccess  : true,
+    appScopeProvider   : vm,
+    enableColumnMenus  : false,
+    columnDefs         : columns,
+    enableSorting      : true,
+    fastWatch          : true,
+    flatEntityAccess   : true,
+    showGridFooter     : true,
     onRegisterApi,
   };
 
