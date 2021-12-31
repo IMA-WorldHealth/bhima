@@ -473,7 +473,8 @@ async function getMovements(depotUuid, params) {
   SELECT
     m.description,
     d.text AS depot_text, IF(is_exit = 1, "OUT", "IN") AS io,
-    BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
+    BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, m.created_at,
+    BUID(m.document_uuid) AS document_uuid,
     m.flux_id, BUID(m.entity_uuid) AS entity_uuid, SUM(m.unit_cost * m.quantity) AS cost,
     f.label AS flux_label, BUID(m.invoice_uuid) AS invoice_uuid, dm.text AS documentReference,
     BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
@@ -703,7 +704,7 @@ async function getDailyStockConsumption(params) {
       d.text AS depot_name,
       BUID(d.uuid) AS depot_uuid,
       f.id AS flux_id,
-      m.is_exit, 
+      m.is_exit,
       sv.wac
     FROM stock_movement m
     JOIN flux f ON m.flux_id = f.id
