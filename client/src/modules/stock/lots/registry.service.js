@@ -115,24 +115,24 @@ function LotsRegistryService(uiGridConstants, Session) {
   service.gridFooterTemplate = `
     <div class="ui-grid-cell-contents">
       <b>{{ grid.appScope.countGridRows() }}</b>
-      <span translate>TABLE.AGGREGATES.ROWS</span>
+      <span style="margin-right: 1em;" translate>TABLE.AGGREGATES.ROWS</span>
 
-      <span class="fa fa-circle icon-expired legend"></span>
+      <span class="fa fa-circle icon-expired legend" style="margin-left: 1em;"></span>
       <strong>
         <span translate>STOCK.EXPIRED</span>: {{grid.appScope.totals.expired}}
       </strong>
 
-      <span class="fa fa-circle icon-at-risk-of-expiring legend"></span>
+      <span class="fa fa-circle icon-at-risk-of-expiring legend" style="margin-left: 1em;"></span>
       <strong>
         <span translate>STOCK.RISK_OF_EXPIRATION</span>: {{grid.appScope.totals['at-risk-of-expiring']}}
       </strong>
 
-      <span class="fa fa-circle icon-at-risk-of-stock-out legend"></span>
+      <span class="fa fa-circle icon-at-risk-of-stock-out legend" style="margin-left: 1em;"></span>
       <strong>
         <span translate>STOCK.RISK_OF_STOCK_OUT</span>: {{grid.appScope.totals['at-risk-of-stock-out']}}
       </strong>
 
-      <span class="fa fa-circle icon-out-of-stock legend"></span>
+      <span class="fa fa-circle icon-out-of-stock legend" style="margin-left: 1em;"></span>
       <strong>
         <span translate>STOCK.STATUS.STOCK_OUT</span>: {{grid.appScope.totals['out-of-stock']}}
       </strong>
