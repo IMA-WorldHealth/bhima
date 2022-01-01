@@ -41,3 +41,13 @@ ALTER TABLE `exchange_rate` MODIFY `rate` DOUBLE NOT NULL;
 */
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('realized_profit', 'REPORT.REALIZED_PROFIT.TITLE');
+
+UPDATE `unit` SET name = 'Stock Movement Report' WHERE name = '[Stock] Movement Report';
+UPDATE `unit` SET name = 'Stock Consumption Graph' WHERE name = '[Stock] Consumption Graph';
+UPDATE `unit` SET name = 'OHADA Bilan' WHERE name = '[OHADA] Bilan';
+UPDATE `unit` SET name = 'OHADA Compte de resultat' WHERE name = '[OHADA] Compte de resultat';
+UPDATE `unit` SET name = 'Stock Entry Report' WHERE name = '[Stock] Stock Entry Report';
+UPDATE `unit` SET name = 'Stock Consumption Graph' WHERE name = '[Stock] Consumption Graph';
+UPDATE `unit` SET name = 'Stock Expiration Report' WHERE name = '[Stock] Expiration report';
+UPDATE `unit` SET name = 'Stock Dashboard' WHERE name = '[Stock] Dashboard';
+UPDATE `unit` SET name = 'Stock Changes Report' WHERE name = '[Stock] Changes Report';
