@@ -35,98 +35,96 @@ const DEFAULT_PARAMS = {
 // expose to the API
 exports.document = document;
 
-function document(req, res, next) {
-  let report;
-
+async function document(req, res, next) {
   const options = _.defaults(req.query, DEFAULT_PARAMS);
 
   try {
-    report = new ReportManager(TEMPLATE, req.session, options);
+    const report = new ReportManager(TEMPLATE, req.session, options);
+    const { periodFromId, periodToId, fiscalYearId } = options;
+    const data = {};
+
+    const [periodFrom, periodTo, fiscalYear] = await Promise.all([
+      getPeriodById(periodFromId),
+      getPeriodById(periodToId),
+      Fiscal.lookupFiscalYear(fiscalYearId),
+    ]);
+
+    if (periodFrom.start_date > periodTo.start_date) {
+      throw new BadRequest('The date range is inverted.', 'ERRORS.BAD_DATE_INTERVAL');
+    }
+
+    _.extend(data, { periodFrom, periodTo, fiscalYear });
+
+    // retrieve both the current balances and the previous year balances
+    const [currentBalances, previousBalances, previousFiscalYear] = await Promise.all([
+      getAccountBalances(fiscalYear.id, periodFrom.number, periodTo.number),
+      getAccountBalances(fiscalYear.previous_fiscal_year_id, periodFrom.number, periodTo.number),
+      Fiscal.lookupFiscalYear(fiscalYear.previous_fiscal_year_id),
+    ]);
+
+    const dataset = combineIntoSingleDataset(currentBalances, previousBalances);
+    const tree = constructAndPruneTree(dataset);
+
+    const root = tree.getRootNode();
+
+    if (!Array.isArray(root.children) || root.children.length < 2) {
+      throw new BadRequest(
+        'Could not find both income and expense accounts for the time period',
+        'ERRORS.NO_DATA_FOUND',
+      );
+    }
+
+    // console.log('tree:', tree);
+
+    const isIncomeFirstElement = root.children[0].isIncomeAccount;
+
+    // console.log('root', JSON.stringify(root));
+
+    let income = {};
+    let expense = {};
+    if (isIncomeFirstElement) {
+      [income, expense] = root.children;
+    } else {
+      [expense, income] = root.children;
+    }
+
+    const profits = [];
+    const losses = [];
+
+    tree.walk(node => profits.push(node), true, income);
+    tree.walk(node => losses.push(node), true, expense);
+
+    // calculate totals and profit
+    const emptyTotal = { balance : 0, previousBalance : 0, difference : 0 };
+    const totals = {
+      income :  profits[0] || emptyTotal,
+      expense : losses[0] || emptyTotal,
+    };
+
+    // compute the difference between the income and expense
+    totals.result = totals.income.balance + totals.expense.balance;
+
+    // computes the variance on the income/expense
+    profits.forEach(account => {
+      account.variance = variance(account.balance, account.previousBalance);
+    });
+
+    losses.forEach(account => {
+      account.variance = variance(account.balance, account.previousBalance);
+    });
+
+    _.extend(data, {
+      profits, losses, previousFiscalYear, totals,
+    });
+
+    const result = await report.render(data);
+    res.set(result.headers).send(result.report);
+
   } catch (e) {
     next(e);
-    return;
+
   }
 
-  const { periodFromId, periodToId, fiscalYearId } = options;
-  const data = {};
-
-  Promise.all([
-    getPeriodById(periodFromId),
-    getPeriodById(periodToId),
-    Fiscal.lookupFiscalYear(fiscalYearId),
-  ])
-    .then(([periodFrom, periodTo, fiscalYear]) => {
-      if (periodFrom.start_date > periodTo.start_date) {
-        throw new BadRequest('The date range is inverted.', 'ERRORS.BAD_DATE_INTERVAL');
-      }
-
-      _.extend(data, { periodFrom, periodTo, fiscalYear });
-
-      // retrieve both the current balances and the previous year balances
-      return Promise.all([
-        getAccountBalances(fiscalYear.id, periodFrom.number, periodTo.number),
-        getAccountBalances(fiscalYear.previous_fiscal_year_id, periodFrom.number, periodTo.number),
-        Fiscal.lookupFiscalYear(fiscalYear.previous_fiscal_year_id),
-      ]);
-    })
-    .then(([currentBalances, previousBalances, previousFiscalYear]) => {
-      const dataset = combineIntoSingleDataset(currentBalances, previousBalances);
-      const tree = constructAndPruneTree(dataset);
-
-      const root = tree.getRootNode();
-
-      if (!Array.isArray(root.children) || root.children.length < 2) {
-        throw new BadRequest(
-          'Could not find both income and expense accounts for the time period',
-          'ERRORS.NO_DATA_FOUND',
-        );
-      }
-
-      const isIncomeFirstElement = root.children[0].isIncomeAccount;
-
-      let income = {};
-      let expense = {};
-      if (isIncomeFirstElement) {
-        [income, expense] = root.children;
-      } else {
-        [expense, income] = root.children;
-      }
-
-      const profits = [];
-      const losses = [];
-
-      tree.walk(node => profits.push(node), true, income);
-      tree.walk(node => losses.push(node), true, expense);
-
-      // calculate totals and profit
-      const emptyTotal = { balance : 0, previousBalance : 0, difference : 0 };
-      const totals = {
-        income :  profits[0] || emptyTotal,
-        expense : losses[0] || emptyTotal,
-      };
-
-      // compute the difference between the income and expense
-      totals.result = totals.income.balance + totals.expense.balance;
-
-      // computes the variance on the income/expense
-      profits.forEach(account => {
-        account.variance = variance(account.balance, account.previousBalance);
-      });
-
-      losses.forEach(account => {
-        account.variance = variance(account.balance, account.previousBalance);
-      });
-
-      _.extend(data, {
-        profits, losses, previousFiscalYear, totals,
-      });
-
-      return report.render(data);
-    })
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next);
 }
 
 function variance(current, previous) {
@@ -227,7 +225,7 @@ function combineIntoSingleDataset(currentBalances, previousBalances) {
  * Receives a dataset of balances and creates the account tree.
  */
 function constructAndPruneTree(dataset) {
-  const tree = new Tree(dataset);
+  let tree = new Tree(dataset);
 
   const properties = [
     'balance', 'previousBalance', 'difference', 'variance',
@@ -243,7 +241,7 @@ function constructAndPruneTree(dataset) {
   tree.walk(bulkSumFn, false);
 
   // prune tree until all unused unused leaves fall off.
-  pruneTree(tree);
+  tree = pruneTree(tree);
 
   // label income/expense branches
   tree.walk((node, parentNode) => {
@@ -257,7 +255,8 @@ function constructAndPruneTree(dataset) {
   return tree;
 }
 
-const MAX_ITERATIONS = 25;
+const MAX_ITERATIONS = 35;
+
 /**
  * @function PruneTree
  *
@@ -265,8 +264,6 @@ const MAX_ITERATIONS = 25;
  * Prunes the tree until there are no more values to remove.
  */
 function pruneTree(tree, removeUnusedAccounts = true) {
-  let removed = 0;
-
   const nodesWithNoChildrenFn = node => node.isTitleAccount && node.children.length === 0;
   const nodesWithNoBalance = node => (node.previousBalance + node.balance) === 0;
 
@@ -280,9 +277,17 @@ function pruneTree(tree, removeUnusedAccounts = true) {
   };
 
   let i = 0;
+  const sizeBeforePrune = tree.size();
+  let sizeAfterPrune = sizeBeforePrune;
+
+  let pruned = tree;
+
   do {
     // remove parents that do not have children
-    removed = tree.prune(pruneFn);
+    pruned = new Tree(pruned.prune(pruneFn));
+    sizeAfterPrune = pruned.size();
     i++;
-  } while (removed > 0 || i === MAX_ITERATIONS);
+  } while (sizeBeforePrune !== sizeAfterPrune && i < MAX_ITERATIONS);
+
+  return pruned;
 }
