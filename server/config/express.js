@@ -63,7 +63,7 @@ exports.configure = function configure(app) {
   const sess = {
     store : new RedisStore({
       disableTTL,
-      client : new Redis(),
+      client : new Redis({ host : process.env.REDIS_HOST }),
     }),
     secret            : process.env.SESS_SECRET,
     resave            : false,
