@@ -6,6 +6,9 @@ services:
     restart: unless-stopped
     ports:
       - $PORT:$PORT
+    environment:
+      - REDIS_HOST=redis
+      - DB_HOST=mysql
     depends_on:
       - mysql
       - redis
@@ -17,7 +20,7 @@ services:
       - --sql-mode=STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION
     volumes:
       - mysqldata:/var/lib/mysql/
-      - "./temp/data.sql:/docker-entrypoint-initdb.d/bhima.sql"
+      - "./temp/docker-build.sql:/docker-entrypoint-initdb.d/bhima.sql"
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=1
       - MYSQL_USER=$DB_USER
