@@ -114,7 +114,7 @@
     "express-session": "^1.17.2",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.7.7",
-    "helmet": "^4.6.0",
+    "helmet": "^5.0.0",
     "inline-source": "^7.1.0",
     "ioredis": "^4.28.0",
     "jaro-winkler": "^0.2.8",
