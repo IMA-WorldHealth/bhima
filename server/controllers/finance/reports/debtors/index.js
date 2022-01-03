@@ -24,8 +24,8 @@ const db = require('../../../../lib/db');
 const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 
 const DEFAULT_OPTIONS = {
-  csvKey : 'debtors',
-  orientation : 'landscape',
+  csvKey: 'debtors',
+  orientation: 'landscape',
 };
 
 /**
@@ -40,6 +40,7 @@ function agedDebtorReport(req, res, next) {
   const metadata = _.clone(req.session);
 
   let report;
+  let previousFyLocked;
 
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
@@ -70,7 +71,7 @@ function agedDebtorReport(req, res, next) {
 /**
  * @method queryContext
  *
- * @param {Object} params Parameters passed in to customise the report - these
+ * @param {Object} params Parameters passed in to customize the report - these
  *                        are usually passed in through the query string
  * @description
  * The HTTP interface which actually creates the report.
@@ -85,6 +86,13 @@ async function queryContext(params = {}) {
   const data = {};
   const currencyId = db.escape(params.currency_id);
   const enterpriseId = db.escape(params.enterprise_id);
+
+  const fySql = `
+    SELECT locked FROM fiscal_year
+    WHERE ID = (SELECT previous_FISCAL_year_id from fiscal_year where id = ?)
+  `;
+
+  const previousFy = await db.one(fySql, [params.fiscal_id]);
 
   const groupByMonthColumns = `
     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, (gl.debit_equiv - gl.credit_equiv)*
@@ -152,6 +160,7 @@ async function queryContext(params = {}) {
 
   data.debtors = debtors;
   data.dateUntil = params.date;
+  data.previousFyClosed = previousFy.locked;
 
   // this is specific to grouping by months
   data.firstMonth = params.date;
