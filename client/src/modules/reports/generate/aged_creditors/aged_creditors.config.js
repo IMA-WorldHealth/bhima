@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('aged_creditorsController', AgedCreditorsConfigController);
 
 AgedCreditorsConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'SessionService',
 ];
 
-function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('configure_aged_creditors');
   const reportUrl = 'reports/finance/creditors/aged';
@@ -18,6 +18,10 @@ function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+  };
+
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
   };
 
   vm.onSelectFiscalYear = (fiscalYear) => {
@@ -59,6 +63,11 @@ function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, rep
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currency_id = Session.enterprise.currency_id;
     }
   }
 }

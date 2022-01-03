@@ -8,11 +8,18 @@
       <strong>{{translate "REPORT.AGED_DEBTORS.TITLE"}}</strong>
     </h3>
 
-    <h5 class="text-center">
+    <h4 class="text-center">
       <strong>
         <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span> <span class="text-capitalize"> {{date dateUntil "MMMM YYYY"}} </span>
       </strong>
-    </h5>
+    </h4>
+
+    {{#unless previousFyClosed}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.WARN_PREV_FY_NOT_CLOSED"}}</p>
+    </div>
+    {{/unless}}
+
     <!-- margin is the cell size -->
     <section>
       <table class="table table-condensed table-report table-bordered">
