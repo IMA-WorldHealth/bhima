@@ -97,8 +97,8 @@
       "FINANCIAL_SITUATION_EMPLOYEE": "Situation financière de l'employé",
 	  "FINANCIAL_SITUATION_EMPLOYEES": "Situation financière des employés",
       "INCLUDE_MEDICAL_CARE_EMPLOYEE": "Inclure les soins médicaux accordé à l'employé",
-      "LIMIT_TO_TIME_INTERVAL": "Limiter à l'intervalle de temps",    
-      "NORMAL_REPORT": "Rapport simple",      
+      "LIMIT_TO_TIME_INTERVAL": "Limiter à l'intervalle de temps",
+      "NORMAL_REPORT": "Rapport simple",
       "REPORT": "Situation financière de l'employé",
       "SEE_SITUATION_ALL_EMPLOYEES": "Voir la situation global de tous les employés",
       "SUMMARY_REPORT": "Rapport synthétique",
@@ -242,6 +242,7 @@
     "VIEW_RECEIPT": "Voir le document",
     "VIEW_REQUISITION": "Voir la réquisition",
     "VIEW_VOUCHER": "Voir les bordereaux",
+    "WARN_PREV_FY_NOT_CLOSED": "Attention ! L'année fiscale précédente n'est pas clôturée. Les résultats de ce rapport peuvent ne pas être exacts tant qu'il n'est pas clôturé !",
     "ZERO_TO_THIRTY_DAYS": "Moins de 30 jours",
     "REPORT_ACCOUNTS": {
       "TITLE": "Rapport de comptes",

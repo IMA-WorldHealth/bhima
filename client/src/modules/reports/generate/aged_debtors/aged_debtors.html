@@ -44,11 +44,6 @@
               </label>
             </div>
 
-            <bh-currency-select
-              on-change="ReportConfigCtrl.setCurrency(currency)"
-              currency-id="ReportConfigCtrl.reportDetails.currency_id">
-            </bh-currency-select>
-
             <!-- included Total Zeros  -->
             <div class="checkbox">
               <label>
@@ -56,6 +51,11 @@
                 <span translate>FORM.LABELS.INCLUDE_ZEROES</span>
               </label>
             </div>
+
+            <bh-currency-select
+              on-change="ReportConfigCtrl.setCurrency(currency)"
+              currency-id="ReportConfigCtrl.reportDetails.currency_id">
+            </bh-currency-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
