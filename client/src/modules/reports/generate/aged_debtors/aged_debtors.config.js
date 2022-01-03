@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('aged_debtorsController', AgedDebtorsConfigController);
 
 AgedDebtorsConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'SessionService',
 ];
 
-function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('configure_aged_debtors');
   const reportUrl = 'reports/finance/debtors/aged';
@@ -64,6 +64,11 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currency_id = Session.enterprise.currency_id;
     }
   }
 }

@@ -24,8 +24,8 @@ const db = require('../../../../lib/db');
 const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 
 const DEFAULT_OPTIONS = {
-  csvKey : 'debtors',
-  orientation : 'landscape',
+  csvKey: 'debtors',
+  orientation: 'landscape',
 };
 
 /**
@@ -70,7 +70,7 @@ function agedDebtorReport(req, res, next) {
 /**
  * @method queryContext
  *
- * @param {Object} params Parameters passed in to customise the report - these
+ * @param {Object} params Parameters passed in to customize the report - these
  *                        are usually passed in through the query string
  * @description
  * The HTTP interface which actually creates the report.
@@ -86,32 +86,33 @@ async function queryContext(params = {}) {
   const currencyId = db.escape(params.currency_id);
   const enterpriseId = db.escape(params.enterprise_id);
 
+  const fySql = `
+    SELECT locked FROM fiscal_year
+    WHERE ID = (SELECT previous_FISCAL_year_id from fiscal_year where id = ?)
+  `;
+
+  const previousFy = await db.one(fySql, [params.fiscal_id]);
+
   const groupByMonthColumns = `
-    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, (gl.debit_equiv - gl.credit_equiv)*
-     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
-
-     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, (gl.debit_equiv - gl.credit_equiv)*
-     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
-
-     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, (gl.debit_equiv - gl.credit_equiv)*
-     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
-
-     SUM(IF(MONTH(?) - MONTH(gl.trans_date) > 2, (gl.debit_equiv - gl.credit_equiv)*
-     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, (gl.debit_equiv - gl.credit_equiv) *
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, (gl.debit_equiv - gl.credit_equiv) *
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, (gl.debit_equiv - gl.credit_equiv) *
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) > 2, (gl.debit_equiv - gl.credit_equiv) *
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
   `;
 
   const groupByRangeColumns = `
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, (gl.debit_equiv - gl.credit_equiv) *
-    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
-
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, (gl.debit_equiv - gl.credit_equiv) *
-    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
-
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, (gl.debit_equiv - gl.credit_equiv) *
-    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
-
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, (gl.debit_equiv - gl.credit_equiv) *
-    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
   `;
 
   // switch between grouping by month and grouping by period
@@ -124,7 +125,7 @@ async function queryContext(params = {}) {
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
       ${columns}
       SUM((gl.debit_equiv - gl.credit_equiv) *
-      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1)) AS total
+        IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1)) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
@@ -140,7 +141,7 @@ async function queryContext(params = {}) {
     SELECT
       ${columns}
       SUM((gl.debit_equiv - gl.credit_equiv)*
-      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1))AS total
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1)) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     WHERE DATE(gl.trans_date) <= DATE(?)
@@ -152,6 +153,7 @@ async function queryContext(params = {}) {
 
   data.debtors = debtors;
   data.dateUntil = params.date;
+  data.previousFyClosed = previousFy.locked;
 
   // this is specific to grouping by months
   data.firstMonth = params.date;
