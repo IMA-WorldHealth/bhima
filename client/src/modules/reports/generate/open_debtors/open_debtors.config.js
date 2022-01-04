@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('open_debtorsController', OpenDebtorsConfigController);
 
 OpenDebtorsConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'OpenDebtorsReportService',
-  'bhConstants',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'SessionService', 'reportData',
+  '$state', 'OpenDebtorsReportService', 'bhConstants',
 ];
 
 
@@ -15,8 +15,8 @@ OpenDebtorsConfigController.$inject = [
  * to see debtors with unpaid debts.
  */
 function OpenDebtorsConfigController(
-  $sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports,
-  bhConstants
+  $sce, Notify, SavedReports, AppCache, Session, reportData,
+  $state, OpenDebtorsReports, bhConstants,
 ) {
   const vm = this;
   const cache = new AppCache('configure_open_debtors');
@@ -45,14 +45,16 @@ function OpenDebtorsConfigController(
   vm.ASC = OpenDebtorsReports.ASC;
   vm.DESC = OpenDebtorsReports.DESC;
 
-  // the date input is hidden by default
-  vm.showDateLimit = false;
-
   checkCachedConfiguration();
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
+    vm.reportDetails.currencySymbol = currency.symbol;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
@@ -91,5 +93,11 @@ function OpenDebtorsConfigController(
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currencyId = Session.enterprise.currency_id;
+    }
+    vm.reportDetails.enterpriseCurrencyId = Session.enterprise.currency_id;
   }
 }
