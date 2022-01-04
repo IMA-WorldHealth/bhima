@@ -43,6 +43,7 @@ exports.configure = function configure(app) {
   // helmet guards
   app.use(helmet({
     contentSecurityPolicy : {
+      useDefaults : false,
       directives : {
         defaultSrc : ['\'self\'', '\'unsafe-inline\'', 'blob:'],
         fontSrc : ['\'self\'', 'https://fonts.gstatic.com'],
