@@ -121,7 +121,7 @@ function CashController(
     // if the this is not a caution payment, but no invoices are selected,
     // raise an error.
     if (!isCaution && !hasInvoices) {
-      return Notify.danger('CASH.VOUCHER.NO_INVOICES_ASSIGNED');
+      return Notify.danger('CASH.VOUCHER.CASHBOXES.NO_INVOICES_ASSIGNED');
     }
 
     return $q.resolve()
