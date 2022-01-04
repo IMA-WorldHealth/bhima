@@ -38,7 +38,7 @@
             <th colspan={{#if depot.text}}"4"{{else}}"5"{{/if}}></th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.ENTRIES'}}</th>
             <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.EXITS'}}</th>
-            <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.STOCKS'}}</th>
+            <th class="text-center" colspan="3">{{translate 'REPORT.STOCK.STOCK_ON_HAND'}}</th>
           </tr>
           <tr style="background-color:#ddd;">
             <th class="text-center" style="border-right: 1px solid #000;">{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
@@ -65,7 +65,7 @@
         <tbody>
           {{#if header}}
             <tr {{#if header.hasNegativeValues}}class="bg-danger text-danger"{{/if}}>
-              <td style="border-left: 1px solid #000; border-right:1px solid #000; border-bottom: 1px solid #000;" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}} class="text-center"><b>{{translate 'REPORT.OPENING_BALANCE'}}</b></td>
+              <td style="border-left: 1px solid #000; border-right:1px solid #000; border-bottom: 1px solid #000;" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}} class="text-right"><b>{{translate 'REPORT.OPENING_BALANCE'}}</b></td>
               <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;"{{/unless}}><b>{{header.quantity}}</b></td>
               <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;"{{/unless}}><b>{{currency header.unit_cost currencyId 4}}</b></td>
               <td style="border-right: 1px solid #000; border-bottom: 1px solid #000;" class="text-right" {{#unless header.hasNegativeValues}}style="background-color:#efefef;border-right: 1px solid #000;"{{/unless}}><b>{{currency header.value currencyId}}</b></td>
@@ -112,7 +112,7 @@
           </tr>
 
           <tr class="text-right" style="font-weight: bold; border-top: 1px solid #000;">
-            <th class="text-center" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}}><b>{{translate 'STOCK.STOCK_VALUE_WITH_WAC'}}</b></th>
+            <th class="text-right" colspan={{#if depot.text}}"10"{{else}}"11"{{/if}}><b>{{translate 'STOCK.STOCK_VALUE_WITH_WAC'}}</b></th>
             <th class="text-right">{{result.stock.quantity}}</th>
             <th class="text-right">{{currency wacDetails.unit_cost currencyId 4}}</th>
             <th class="text-right">{{currency wacDetails.value currencyId}}</th>

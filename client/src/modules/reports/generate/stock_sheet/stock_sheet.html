@@ -24,14 +24,6 @@
 
         <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-          <!-- select depot -->
-          <bh-depot-select
-            depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
-            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
-            required="false">
-            <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
-          </bh-depot-select>
-
           <!-- select inventory -->
           <bh-inventory-select
             inventory-uuid="ReportConfigCtrl.reportDetails.inventory_uuid"
@@ -40,6 +32,14 @@
             only-consumable="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
+
+          <!-- select depot -->
+          <bh-depot-select
+            depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
+            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+            required="false">
+            <bh-clear on-clear="ReportConfigCtrl.clear('depot_uuid')"></bh-clear>
+          </bh-depot-select>
 
           <!-- sort by real movement date -->
           <bh-yes-no-radios

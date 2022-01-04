@@ -305,7 +305,7 @@
       "VALUE": "Value",
       "ENTRIES": "Entries",
       "EXITS": "Exits",
-      "STOCKS": "Stocks",
+      "STOCK_ON_HAND": "Stock on Hand",
       "EXIT_REPORT": "Stock Exit Report",
       "EXIT_REPORT_DESCRIPTION": "This report shows stock exits which had occurred in different depots",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Include aggregate consumption",
