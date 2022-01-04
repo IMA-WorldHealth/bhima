@@ -57,6 +57,9 @@ function build(req, res, next) {
 
   const metadata = _.clone(req.session);
 
+  qs.enterpriseId = metadata.enterprise.id;
+  qs.enterpriseCurrencySymbol = metadata.enterprise.currencySymbol;
+
   let report;
 
   try {
@@ -82,14 +85,24 @@ function build(req, res, next) {
 function requestOpenDebtors(params) {
   const verifiedSource = 'general_ledger';
 
+
+
   // parameter parsing
   const showDetailedView = convertToBoolean(params.showDetailedView);
   const showUnverifiedTransactions = convertToBoolean(params.showUnverifiedTransactions);
   const limitDate = convertToBoolean(params.limitDate);
   const reportDateLimit = new Date(params.reportDateLimit);
+  const currencyId = parseInt(params.currencyId, 10);
+  const enterpriseId = parseInt(params.enterpriseId, 10);
+  const enterpriseCurrencyId = parseInt(params.enterpriseCurrencyId, 10);
+  const enterpriseCurrency = params.currencyId === params.enterpriseCurrencyId;
 
   // TODO(@jniles) respect the ordering in the open debtors field.
   const ordering = parseOrdering(params.order);
+
+  const exchangeRateQuery = `
+    SELECT GetExchangeRate(?, ?, NOW()) AS rate
+  `;
 
   const unverifiedSource = `
     (SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
@@ -118,9 +131,20 @@ function requestOpenDebtors(params) {
       limitDate,
       reportDateLimit,
     },
+    currencyId,
+    currencySymbol : params.currencySymbol,
+    enterpriseCurrencyId,
+    enterpriseCurrencySymbol : params.enterpriseCurrencySymbol,
+    enterpriseCurrency,
   };
 
-  return db.exec(debtorQuery)
+  return db.one(exchangeRateQuery, [enterpriseId, currencyId])
+    .then((exRate) => {
+      debtorReport.rate = exRate.rate ? exRate.rate : 1;
+      debtorReport.reciprocalRate = 1.0 / debtorReport.rate;
+      debtorReport.showReciprocalRate = debtorReport.rate < 1.0;
+      return db.exec(debtorQuery);
+    })
     .then((debtorsDebts) => {
       debtorReport.debtors = debtorsDebts;
       return db.one(aggregateQuery);
