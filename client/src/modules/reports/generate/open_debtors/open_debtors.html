@@ -57,7 +57,12 @@
             <div class="checkbox"
               ng-class="{'has-error' : ConfigForm.limitDate.$invalid && ConfigForm.$submitted}">
               <label class="control-label">
-                <input type="checkbox" name="limitDate" ng-model="ReportConfigCtrl.reportDetails.limitDate" ng-true-value="1" ng-false-value="0">
+                <input
+                  type="checkbox"
+                  name="limitDate"
+                  ng-model="ReportConfigCtrl.reportDetails.limitDate"
+                  ng-true-value="1"
+                  ng-false-value="0">
                 <span translate>REPORT.OPEN_DEBTORS.SHOW_DATE_LIMIT</span>
               </label>
             </div>
@@ -118,6 +123,11 @@
             </div>
 
             <p class="help-block" translate>REPORT.OPEN_DEBTORS.SHOW_UNVERIFIED_TRANSACTIONS_HELP</p>
+
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currencyId"
+              on-change="ReportConfigCtrl.onSelectCurrency(currency)" >
+            </bh-currency-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
