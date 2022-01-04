@@ -246,6 +246,7 @@
     "VIEW_RECEIPT": "View Receipt",
     "VIEW_REQUISITION": "View requisition",
     "VIEW_VOUCHER": "View Vouchers",
+    "WARN_PREV_FY_NOT_CLOSED": "Attention! The previous Fiscal Year is not closed. The results in this report may not be accurate until is it closed! ",
     "ZERO_TO_THIRTY_DAYS": "Less Than 30 Days",
     "REPORT_ACCOUNTS": {
       "TITLE": "Account Report",
