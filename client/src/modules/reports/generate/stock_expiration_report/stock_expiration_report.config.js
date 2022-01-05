@@ -12,7 +12,7 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
   const reportUrl = 'reports/stock/expiration_report';
 
   // default values
-  vm.reportDetails = { currencyId : Session.enterprise.currency_id };
+  vm.reportDetails = { };
   vm.previewGenerated = false;
 
   // check cached configuration
@@ -89,5 +89,10 @@ function StockExpirationReportConfigCtrl($sce, Notify, SavedReports, AppCache, r
 
   function checkCachedConfiguration() {
     vm.reportDetails = angular.copy(cache.reportDetails || {});
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currency_id = Session.enterprise.currency_id;
+    }
   }
 }
