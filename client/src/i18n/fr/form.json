@@ -292,6 +292,7 @@
             "AMOUNT_PAID" : "Montant Payé",
             "ARTICLES":"Articles",
             "CASHBOXES": "Caisses",
+            "DEBTOR_GROUP_OPTIONAL": "Groupe débiteur (optionel)",
             "SELECT_ALL_LOTS": "Sélectionner tous les lots",
             "MERGE_LOCATIONS": "Fusionner les localisations",
             "MERGE_LOCATIONS_TO_ONE":"Fusionner les localisations en une seule localisation",
