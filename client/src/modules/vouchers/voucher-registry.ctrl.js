@@ -81,6 +81,17 @@ function VoucherController(
     type : 'date',
     cellTemplate : 'modules/vouchers/templates/date.cell.html',
   }, {
+    field : 'created_at',
+    type : 'date',
+    displayName : 'FORM.LABELS.SERVER_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/created_at.cell.html',
+    visible : false,
+  }, {
+    name : 'patientName',
+    displayName : 'TABLE.COLUMNS.PATIENT',
+    headerCellFilter : 'translate',
+  }, {
     field : 'description',
     displayName : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter : 'translate',

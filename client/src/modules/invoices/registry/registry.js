@@ -60,6 +60,13 @@ function InvoiceRegistryController(
     type : 'date',
     cellTemplate : '/modules/invoices/registry/templates/date.cell.html',
   }, {
+    field : 'created_at',
+    type : 'date',
+    displayName : 'FORM.LABELS.SERVER_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/created_at.cell.html',
+    visible : false,
+  }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.PATIENT',
     headerCellFilter : 'translate',

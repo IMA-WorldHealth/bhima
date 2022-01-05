@@ -15,7 +15,7 @@ const SELECT_QUERY = `
     sr.requestor_type_id, sr.description, sr.date, sr.user_id, sr.project_id, sr.status_id,
     u.display_name AS user_display_name, d.text AS depot_text,
     s.name service_requestor, dd.text depot_requestor,
-    dm.text reference, stat.title_key, stat.status_key, stat.class_style
+    dm.text reference, stat.title_key, stat.status_key, stat.class_style, sr.created_at
   FROM stock_requisition sr
   JOIN user u ON u.id = sr.user_id
   JOIN depot d ON d.uuid = sr.depot_uuid
@@ -305,10 +305,11 @@ exports.deleteRequisition = async (req, res, next) => {
     const transaction = db.transaction();
     const uuid = db.bid(req.params.uuid);
 
-    transaction.addQuery('DELETE FROM stock_requisition_item WHERE requisition_uuid = ?;', [uuid]);
-    transaction.addQuery('DELETE FROM stock_requisition WHERE uuid = ?;', [uuid]);
+    await transaction
+      .addQuery('DELETE FROM stock_requisition_item WHERE requisition_uuid = ?;', [uuid])
+      .addQuery('DELETE FROM stock_requisition WHERE uuid = ?;', [uuid])
+      .execute();
 
-    await transaction.execute();
     res.sendStatus(204);
   } catch (error) {
     next(error);

@@ -237,7 +237,8 @@ function find(options) {
       patient.display_name as patientName, invoice.cost, invoice.description,
       BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
       em.text AS patientReference, service.name as serviceName, proj.name AS project_name,
-      user.display_name, invoice.user_id, invoice.reversed, invoice.edited, invoice.posted
+      user.display_name, invoice.user_id, invoice.reversed, invoice.edited, invoice.posted,
+      invoice.created_at
     FROM invoice
     JOIN patient FORCE INDEX(debtor_uuid) ON invoice.debtor_uuid = patient.debtor_uuid
     ${debtorJoin}

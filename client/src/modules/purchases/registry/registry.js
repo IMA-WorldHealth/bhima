@@ -67,6 +67,16 @@ function PurchaseRegistryController(
     headerCellFilter : 'translate',
     cellFilter : 'date',
   }, {
+    field : 'created_at',
+    type : 'date',
+    displayName : 'FORM.LABELS.SERVER_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/created_at.cell.html',
+    visible : false,
+    name : 'patientName',
+    displayName : 'TABLE.COLUMNS.PATIENT',
+    headerCellFilter : 'translate',
+  }, {
     field : 'supplier',
     displayName : 'FORM.LABELS.SUPPLIER',
     headerCellFilter : 'translate',

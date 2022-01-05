@@ -135,7 +135,7 @@ function find(options) {
       cash.date, cash.created_at,  BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id,
       cash.amount, cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
       cash.reversed, d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
-      p.display_name AS patientName, em.text AS patientReference, cash.edited
+      p.display_name AS patientName, em.text AS patientReference, cash.edited, cash.created_at
     FROM cash
       JOIN document_map dm ON dm.uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
