@@ -18,6 +18,8 @@ async function build(req, res, next) {
 
   const metadata = _.clone(req.session);
 
+  qs.isEnterpriseCurrency = !!(parseInt(qs.currencyId, 10) === metadata.enterprise.currency_id);
+
   let report;
   let results;
 
@@ -36,6 +38,14 @@ async function build(req, res, next) {
 
     // provide empty data for the report to render
     results = { dataset : [], totals : {}, services : [] };
+  }
+
+  if (results.services.length === 1) {
+    [qs.uniqueService] = results.services;
+    // remove last column of total in the report rendered
+    if (results.totals && results.totals.Total) {
+      delete results.totals.Total;
+    }
   }
 
   const data = _.extend({}, qs, results);
@@ -66,6 +76,7 @@ async function getUnbalancedInvoices(options) {
   const params = [
     new Date(options.dateFrom),
     new Date(options.dateTo),
+    parseInt(options.currencyId, 10),
   ];
 
   const { debtorGroupName, serviceUuid } = options;
@@ -78,7 +89,7 @@ async function getUnbalancedInvoices(options) {
   }
 
   const rows = await db.transaction()
-    .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
+    .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?, ?);', params)
     .addQuery(`CALL Pivot(
         "unbalanced_invoices",
         "debtorGroupName,debtorUuid",
@@ -120,6 +131,7 @@ async function getUnbalancedInvoices(options) {
   dataset.forEach(row => {
     if (!row.debtorUuid) {
       row.isTotalRow = true;
+      row.hideTotalRow = !!(debtorGroupName && row.isTotalRow);
     }
 
     if (!row.debtorGroupName) {

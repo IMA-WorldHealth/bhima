@@ -905,8 +905,13 @@ END$$
 DROP PROCEDURE IF EXISTS UnbalancedInvoicePaymentsTable$$
 CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   IN dateFrom DATE,
-  IN dateTo DATE
+  IN dateTo DATE,
+  IN currencyId INT
 ) BEGIN
+
+  DECLARE exchangeRate DECIMAL(19, 8) UNSIGNED;
+  DECLARE _enterpriseId SMALLINT;
+  SET _enterpriseId = (SELECT id FROM enterprise LIMIT 1);
 
   -- this holds all the invoices that were made during the period
   -- two copies are needed for the UNION ALL query.
@@ -976,15 +981,19 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   -- even though this column is called "balance", it is actually the amount remaining
   -- on the invoice.
 
+  SET exchangeRate = (SELECT IFNULL(GetExchangeRate(_enterpriseId, currencyId, dateTo), 1));
+
   DROP TEMPORARY TABLE IF EXISTS unbalanced_invoices;
   CREATE TEMPORARY TABLE `unbalanced_invoices` AS (
     SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName,
       BUID(debtor.uuid) as debtorUuid,
-      balances.debit_equiv AS debit,
-      balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
+      (balances.debit_equiv * exchangeRate) AS debit,
+      (balances.credit_equiv  * exchangeRate) AS credit,
+      (balances.balance * exchangeRate) AS balance,
+      iv.date AS creation_date,
       dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
       s.name as 'serviceName', s.uuid as 'serviceUuid',
-      ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage
+      ((balances.credit_equiv * exchangeRate / IF(balances.debit_equiv = 0, 1, balances.debit_equiv * exchangeRate)) * 100) AS paymentPercentage
     FROM tmp_invoices_1 AS iv
         JOIN invoice ivc ON ivc.uuid = iv.uuid
         JOIN service s On s.uuid = ivc.service_uuid
