@@ -28,7 +28,6 @@ function rumerReportController($sce, Notify, SavedReports, AppCache, reportData,
   };
 
   vm.onSelectPeriod = (period) => {
-
     vm.reportDetails.period_id = period.id;
     vm.reportDetails.end_date = period.end_date;
     vm.reportDetails.start_date = period.start_date;
