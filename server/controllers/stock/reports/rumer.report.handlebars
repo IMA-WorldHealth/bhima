@@ -19,13 +19,11 @@
   <div class="row">
     <div class="col-xs-12">
       <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'REPORT.RUMER.TITLE'}}
-      </h2>
+      <h3 class="text-center text-bold">
+        <span class="text-uppercase">{{translate 'REPORT.RUMER.TITLE'}}</span> - {{translate 'REPORT.RUMER.DESCRIPTION'}}
+      </h3>
 
-      <h5 class="text-center">{{translate 'REPORT.RUMER.DESCRIPTION'}}</h5>
-
-      <h3 class="text-center">{{params.depot_text}}</h3>
+      <h4 class="text-center">{{params.depot_text}}</h4>
       <h4 class="text-center">{{translate params.translate_key}} - {{params.year}} </h4>
 
       <table class="table table-condensed {{#if params.include_daily_balances}}{{else}}table-striped{{/if}} table-report table-bordered">
@@ -37,10 +35,10 @@
             {{#each header as | key |}}
               <th style="min-width:20px;" class="text-center">{{key}}</th>
             {{/each}}
-            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.TOTAL_EXITS'}} </th>
-            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.STOCK_END'}}</th>
-            <th style="width: 7.5%;" class="text-center">{{translate 'STOCK.DAYS_OF_STOCK_OUT'}}</th>
-            <th style="width: 7.5%;" class="text-center">{{translate 'REPORT.RUMER.PERCENT_STOCK_OUT'}}</th>
+            <th style="width: 5%;" class="text-center">{{translate 'REPORT.RUMER.TOTAL_EXITS'}} </th>
+            <th style="width: 5%;" class="text-center">{{translate 'REPORT.RUMER.STOCK_END'}}</th>
+            <th style="width: 5%;" class="text-center">{{translate 'STOCK.DAYS_OF_STOCK_OUT'}}</th>
+            <th style="width: 5%;" class="text-center">{{translate 'REPORT.RUMER.PERCENT_STOCK_OUT'}}</th>
           </tr>
         </thead>
 

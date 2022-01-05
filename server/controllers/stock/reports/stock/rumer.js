@@ -21,8 +21,8 @@ const DEFAULT_PARAMS = {
  * @method report
  *
  * @description
- * This method builds the RUMER (Drug Usage and Recipe Register) report by month JSON, PDF, or HTML
- * file to be sent to the client.
+ * This method builds the RUMER (Registre d’Utilisation des Médicaments Et Recettes) report
+ * by month JSON, PDF, or HTML file to be sent to the client.
  *
  * GET /reports/stock/rumer_report
  */
@@ -180,7 +180,7 @@ async function report(req, res, next) {
 
     if (params.exclude_out_stock) {
       data.configurationData = data.configurationData.filter(item => {
-        return ((item.quantityOpening !== 0 && item.quantityEnding !== 0)) || (item.quantityTotalExit);
+        return item.quantityEnding > 0 && ((item.quantityTotalEntry > 0 && item.quantityTotalExit > 0));
       });
     }
 
