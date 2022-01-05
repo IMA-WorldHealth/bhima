@@ -65,38 +65,40 @@
     <table class="table table-condensed table-bordered table-report">
       <thead>
         <tr>
-          <th width="34%">{{translate 'STOCK.INVENTORY'}}</th>
-          <th width="12%">{{translate 'STOCK.LOT'}}</th>
-          <th width="8%">{{translate 'STOCK.EXPIRATION'}}</th>
-          <th width="6%">{{translate 'STOCK.CMM'}}</th>
-          <th width="6%">{{translate 'STOCK.CURRENT_QUANTITY'}}</th>
-          <th width="6%">{{translate 'STOCK.RISK_QUANTITY'}}</th>
-          <th width="6%">{{translate 'TABLE.COLUMNS.UNIT'}}</th>
+          <th width="30%">{{translate 'STOCK.INVENTORY'}}</th>
+          <th width="10%">{{translate 'STOCK.CODE'}}</th>
+          <th width="10%">{{translate 'STOCK.LOT'}}</th>
+          <th width="5%">{{translate 'STOCK.EXPIRATION'}}</th>
+          <th width="5%">{{translate 'STOCK.CMM'}}</th>
+          <th width="5%">{{translate 'STOCK.CURRENT_QUANTITY'}}</th>
+          <th width="5%">{{translate 'STOCK.RISK_QUANTITY'}}</th>
+          <th width="5%">{{translate 'TABLE.COLUMNS.UNIT'}}</th>
           <th width="5%">{{translate 'REPORT.STOCK.UNIT_COST'}}</th>
           <th width="5%">{{translate 'STOCK.RISK_VALUE'}}</th>
-          <th width="12%">{{translate 'STOCK.STATUS.LABEL'}}</th>
+          <th width="15%">{{translate 'STOCK.STATUS.LABEL'}}</th>
         </tr>
       </thead>
 
       <tbody>
         {{#each depot.rows as |lot| }}
           <tr>
-            <td width="34%">{{lot.text}}</td>
-            <td width="12%">{{lot.label}}</td>
-            <td width="8%">{{date lot.expiration_date}}</td>
-            <td width="6%" class="text-right">{{lot.avg_consumption}}</td>
-            <td width="6%" class="text-right">{{lot.quantity}}</td>
-            <td width="6%" class="text-right">{{lot.quantity_at_risk}}</td>
-            <td width="6%">{{lot.unit_type}}</td>
-            <td width="5%" class="text-right">{{currency lot.unit_cost ../../currencyId}}</td>
-            <td width="5%" class="text-right">{{currency lot.value ../../currencyId}}</td>
-            <td width="12%" class="{{lot.classKey}}">{{translate lot.statusKey}}</td>
+            <td>{{lot.text}}</td>
+            <td>{{lot.code}}</td>
+            <td>{{lot.label}}</td>
+            <td>{{date lot.expiration_date}}</td>
+            <td class="text-right">{{lot.avg_consumption}}</td>
+            <td class="text-right">{{lot.quantity}}</td>
+            <td class="text-right">{{lot.quantity_at_risk}}</td>
+            <td>{{lot.unit_type}}</td>
+            <td class="text-right">{{currency lot.unit_cost ../../currencyId}}</td>
+            <td class="text-right">{{currency lot.value ../../currencyId}}</td>
+            <td class="{{lot.classKey}}">{{translate lot.statusKey}}</td>
           </tr>
         {{/each}}
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="8">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+          <th class="text-right" style="margin-right: 0.5em;" colspan="9">{{translate 'TABLE.COLUMNS.TOTAL'}}:</th>
           <th class="text-right">{{currency depot.total ../currencyId}}</th>
           <td></td>
         </tr>
