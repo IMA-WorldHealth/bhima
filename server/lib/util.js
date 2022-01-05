@@ -134,7 +134,6 @@ function execp(cmd) {
   return deferred.promise;
 }
 
-
 /**
  * @function roundDecimal
  *
@@ -145,7 +144,7 @@ function execp(cmd) {
  * @param {Number} precision
  */
 function roundDecimal(number, precision = 4) {
-  const base = Math.pow(10, precision);
+  const base = 10 ** precision;
   return Math.round(number * base) / base;
 }
 
@@ -240,13 +239,11 @@ function calculateAge(dob) {
   return moment().diff(dob, 'years');
 }
 
-
 function createDirectory(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath);
   }
 }
-
 
 function getRandomColor() {
   const r = Math.floor(Math.random() * 255);

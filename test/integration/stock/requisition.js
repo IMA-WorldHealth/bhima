@@ -9,6 +9,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
     'uuid', 'requestor_uuid', 'requestor_type_id', 'description', 'date',
     'user_id', 'project_id', 'user_display_name', 'depot_uuid', 'depot_text', 'service_requestor',
     'depot_requestor', 'reference', 'items', 'status_key', 'title_key', 'class_style', 'status_id',
+    'created_at',
   ];
 
   // create new stock requisition on "Depot Principal" from a servicedelete stock requisition
