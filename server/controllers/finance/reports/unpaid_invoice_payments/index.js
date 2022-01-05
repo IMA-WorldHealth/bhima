@@ -18,6 +18,8 @@ async function build(req, res, next) {
 
   const metadata = _.clone(req.session);
 
+  qs.isEnterpriseCurrency = !!(parseInt(qs.currencyId, 10) === metadata.enterprise.currency_id);
+
   let report;
   let results;
 

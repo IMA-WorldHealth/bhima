@@ -21,6 +21,12 @@
     {{date dateFrom "DD/MM/YYYY"}} - {{date dateTo "DD/MM/YYYY"}}
   </h4>
 
+  {{#unless isEnterpriseCurrency}} 
+    <div class="alert alert-warning"> 
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p> 
+    </div> 
+  {{/unless}}
+
   <table class="table table-condensed table-report table-header-rotated">
     <thead>
       <tr class="text-center">
