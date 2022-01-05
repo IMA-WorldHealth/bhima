@@ -59,15 +59,18 @@ function StockRequisitionController(
       displayName : 'FORM.LABELS.DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date: \'dd MMM yyyy - HH:mm:ss\'',
-    },
-
-    {
+    }, {
+      field : 'created_at',
+      type : 'date',
+      displayName : 'FORM.LABELS.SERVER_DATE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/movements/templates/created_at.cell.html',
+      visible : false,
+    }, {
       field : 'user_display_name',
       displayName : 'FORM.LABELS.USER',
       headerCellFilter : 'translate',
-    },
-
-    {
+    }, {
       field : 'status_key',
       displayName : 'FORM.LABELS.STATUS',
       headerCellFilter : 'translate',

@@ -186,7 +186,7 @@ function buildTransactionQuery(options, posted) {
       p.comment, p.transaction_type_id, p.user_id, pro.abbr,
       pro.name AS project_name, tp.text AS transaction_type_text,
       a.number AS account_number, a.type_id AS account_type_id, a.label AS account_label,
-      p.trans_id_reference_number, p.cost_center_id, cc.label as costCenterLabel,
+      p.trans_id_reference_number, p.cost_center_id, cc.label as costCenterLabel, p.created_at,
       u.display_name ${includeExchangeRate}
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id

@@ -60,6 +60,13 @@ function CashPaymentRegistryController(
     cellTemplate : '/modules/cash/payments/templates/date.cell.html',
     type : 'date',
   }, {
+    field : 'created_at',
+    type : 'date',
+    displayName : 'FORM.LABELS.SERVER_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/created_at.cell.html',
+    visible : false,
+  }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.CLIENT',
     headerCellFilter : 'translate',
