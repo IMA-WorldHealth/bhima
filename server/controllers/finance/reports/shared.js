@@ -201,6 +201,10 @@ const filters = [{
   displayName : 'PERIODS.END',
   isDate : true,
   comparitor : '<',
+}, {
+  field : 'created_at',
+  displayName : 'FORM.LABELS.SERVER_DATE',
+  isDate : true,
 }];
 
 // translation key mappings for dynamic filters

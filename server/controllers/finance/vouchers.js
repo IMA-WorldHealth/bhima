@@ -131,7 +131,7 @@ function find(options) {
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       dm.text AS reference, v.edited, BUID(v.reference_uuid) AS reference_uuid,
-      p.name AS project_name, v.reversed
+      p.name AS project_name, v.reversed, v.created_at
     FROM voucher v
     JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id

@@ -135,7 +135,7 @@ class FilterParser {
     }
   }
 
-  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias, isArray) {
+  equals(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias, isArray = false) {
     const tableString = this._formatTableAlias(tableAlias);
 
     if (this._filters[filterKey]) {

@@ -815,7 +815,7 @@ function patientEntityQuery(detailed) {
       BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.dob_unknown_date, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
+      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name, p.created_at,
       originProvince.name as originProvinceName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
