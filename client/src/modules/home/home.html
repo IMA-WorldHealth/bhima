@@ -59,25 +59,27 @@
         </div>
       </div>
 
+      
       <div class="col-md-4">
 
         <div class="panel panel-default segment ima-stat-card">
           <div class="panel-body text-center" style="min-height: 124px;">
             <div class="segment-title" translate>TABLE.COLUMNS.EXCHANGE_RATE</div>
             <div 
-              ng-repeat="currency in HomeCtrl.primaryExchange"
+              ng-repeat="row in HomeCtrl.correctDisplay"
               class="col-sm-12" title="{{ HomeCtrl.primaryExchange.rate}} ({{ currency.symbol }})">
 
               <div class="exchange-rate">
-              {{ currency.rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }} {{ currency.symbol }} = 
-              1 {{HomeCtrl.enterprise.currencySymbol}}
+              {{ row.curerency_rate | limitTo:HomeCtrl.EXCHANGE_RATE_DISPLAY_SIZE }} {{ row.curerency_symbol }} = 
+               {{row.entreprice_currency}} {{row.entreprice_currency_symbol}}
               </div>
 
-              <div><span translate>HOME.EXCHANGE_SET</span> {{ currency.formattedDate }}</div>
+              <div><span translate>HOME.EXCHANGE_SET</span> {{ row.curerency_date }}</div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <div class="row">
