@@ -18,6 +18,8 @@ services:
     command:
       - --default-authentication-plugin=mysql_native_password
       - --sql-mode=STRICT_ALL_TABLES,NO_UNSIGNED_SUBTRACTION
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - mysqldata:/var/lib/mysql/
       - "./temp/docker-build.sql:/docker-entrypoint-initdb.d/bhima.sql"
