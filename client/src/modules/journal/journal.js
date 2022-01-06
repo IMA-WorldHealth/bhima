@@ -332,6 +332,13 @@ function JournalController(
     displayName : 'FORM.LABELS.COMMENT',
     headerCellFilter : 'translate',
     visible : false,
+  }, {
+    field : 'created_at',
+    type : 'date',
+    displayName : 'FORM.LABELS.SERVER_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/created_at.cell.html',
+    visible : false,
   }];
 
   vm.gridOptions.columnDefs = columns;

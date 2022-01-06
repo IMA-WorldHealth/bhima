@@ -448,7 +448,7 @@ function find(options) {
         p.cost, p.shipping_handling, p.date, s.display_name  AS supplier,
         p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.currency_id, p.status_id, ps.text AS status
+        p.currency_id, p.status_id, ps.text AS status, p.created_at
       FROM purchase AS p
       JOIN document_map dm ON p.uuid = dm.uuid
       JOIN supplier AS s ON s.uuid = p.supplier_uuid

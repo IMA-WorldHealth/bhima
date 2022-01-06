@@ -15,7 +15,6 @@ const { find, headers, setValue } = require('./xlsx');
 
 const i18n = require('../helpers/translate');
 
-
 exports.render = render;
 exports.find = find;
 exports.extension = '.xlsx';

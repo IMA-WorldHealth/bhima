@@ -53,7 +53,6 @@ async function report(req, res, next) {
   }
 }
 
-
 async function reporting(_options, session) {
   const filters = shared.formatFilters(_options);
   _.extend(_options, {
@@ -120,7 +119,6 @@ function receipt(req, res, next) {
   const currencyId = options.currency || req.session.enterprise.currency_id;
   const invoiceResponse = {};
   invoiceResponse.lang = options.lang;
-
 
   let template = RECEIPT_TEMPLATE;
 
