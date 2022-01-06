@@ -1,0 +1,16 @@
+# ignore node modules
+node_modules
+
+# ignore loggin utilities
+npm-debug.log
+yarn-error.log
+
+# ignore documentation
+*.md
+
+# ignore unnecessary folders
+docs
+temp
+test
+sh
+bin
