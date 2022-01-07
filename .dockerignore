@@ -1,5 +1,6 @@
 # ignore node modules
 node_modules
+.git
 
 # ignore loggin utilities
 npm-debug.log
