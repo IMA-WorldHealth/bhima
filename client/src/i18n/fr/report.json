@@ -181,7 +181,7 @@
       "DESCRIPTION": "Registre d’utilisation des médicaments et recettes",
       "ENTRIES": "Entrées",
       "EXCLUDE_OUT_STOCK_ITEMS": "Exclure les inventaires sans mouvements et en rupture de stock",
-      "INCLUDE_DAILY_BALANCES": "Inclure les soldes quotidiens des stocks et le pourcentage de rupture de stock",
+      "INCLUDE_DAILY_BALANCES": "Inclure les détails du bilan quotidien des stocks",
       "INCOMING": "Entrant",
       "PERCENT_STOCK_OUT": "% de rupture de stock",
       "STOCK_BEGINNING": "Stock au début du mois",
