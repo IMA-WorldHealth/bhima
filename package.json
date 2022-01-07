@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.21.5",
+  "version": "1.22.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -17,7 +17,7 @@
     "build:db": "cross-env ./sh/build-database.sh",
     "build:clean": "cross-env ./sh/build-init-database.sh",
     "build:stock": "cross-env ./sh/build-stock-database.sh",
-    "build:docker" : "cross-env ./sh/docker-init.sh",
+    "build:docker": "cross-env ./sh/docker-init.sh",
     "migrate": "cross-env ./sh/setup-migration-script.sh",
     "watch": "cross-env ./node_modules/.bin/gulp watch",
     "release": "release-it --disable-metrics"
