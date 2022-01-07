@@ -9,20 +9,17 @@
       <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
     </span>
   </h3>
-  <h4> {{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
-  <h4>{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
-  <h5>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
-  <h4 class="text-uppercase" style="background-color: #efefef;">
+
+  <h4 class="text-center">{{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
+  <h4 class="text-center">{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
+  <h5 class="text-center">{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
+  <h4 class="text-center text-uppercase" style="background-color: #efefef; margin-bottom: 1em;">
     <b>
       {{translate balanceCreditorText}} = {{debcred (multiply ./creditorAggregates.balance exchangeRate) currencyId}}
     </b>
   </h4>
 
-  {{#unless isEnterpriseCurrency}}
-    <div class="alert alert-warning">
-      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
-    </div>
-  {{/unless}}
+  {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateExchangeRate}}
 
   {{#if includeMedicalCare }}
     <h5 class="text-uppercase" style="background-color: #efefef;">
@@ -30,8 +27,8 @@
         {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} = {{debcred (multiply ./debtorAggregates.balance exchangeRate) currencyId}}
       </em>
     </h5>
-  {{/if}}
   <hr/>
+  {{/if}}
 
   <section>
     {{#if includeMedicalCare }}

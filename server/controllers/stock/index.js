@@ -358,7 +358,7 @@ async function createInventoryAdjustment(req, res, next) {
 
       if (difference < 0) {
         // we have to do a stock exit movement
-        // we must substract the |difference| to the current quantity
+        // we must subtract the |difference| to the current quantity
         countNeedDecrease++;
         adjustmentMovement.is_exit = 1;
       } else {

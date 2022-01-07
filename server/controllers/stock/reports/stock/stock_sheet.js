@@ -4,6 +4,7 @@ const {
 
 const PeriodService = require('../../../../lib/period');
 const Inventory = require('../../../inventory');
+const Exchange = require('../../../finance/exchange');
 
 /**
  * @method stockSheetReport
@@ -46,14 +47,11 @@ async function stockSheetReport(req, res, next) {
 
     const report = new ReportManager(STOCK_SHEET_REPORT_TEMPLATE, req.session, optionReport);
 
-    const [{ rate }] = await db.exec(
-      'SELECT GetExchangeRate(?, ?, NOW()) as rate;', [req.session.enterprise.id, options.currencyId],
-    );
+    const exchangeRate = await Exchange.getExchangeRate(req.session.enterprise.id, options.currencyId, new Date());
 
     const data = {};
 
-    data.isEnterpriseCurrency = options.currencyId === req.session.enterprise.currency_id;
-    data.exchangeRate = data.isEnterpriseCurrency ? 1 : rate;
+    data.exchangeRate = exchangeRate.rate || 1;
     data.currencyId = options.currencyId;
 
     options.exchangeRate = data.exchangeRate;

@@ -12,11 +12,7 @@
       {{ fiscalYear.label }}
     </h4>
 
-    {{#unless isEnterpriseCurrency}}
-      <div class="alert alert-warning">
-        <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
-      </div>
-    {{/unless}}
+    {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
     <section>
       <table class="table table-condensed table-report table-bordered">
