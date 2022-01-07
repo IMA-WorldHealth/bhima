@@ -2,6 +2,8 @@ const {
   _, db, util, ReportManager, STOCK_EXIT_REPORT_TEMPLATE,
 } = require('../common');
 
+const Exchange = require('../../../finance/exchange');
+
 const StockExitToPatient = require('./exit/exitToPatient');
 const StockExitToService = require('./exit/exitToService');
 const StockExitToDepot = require('./exit/exitToDepot');
@@ -29,13 +31,12 @@ async function stockExitReport(req, res, next) {
   try {
     const report = new ReportManager(STOCK_EXIT_REPORT_TEMPLATE, req.session, optionReport);
 
-    const [depot, [{ rate }]] = await Promise.all([
+    const [depot, exchange] = await Promise.all([
       fetchDepotDetails(params.depotUuid),
-      db.exec('SELECT GetExchangeRate(?, ?, NOW()) as rate;', [req.session.enterprise.id, params.currencyId]),
+      Exchange.getExchangeRate(req.session.enterprise.id, params.currencyId, new Date()),
     ]);
 
-    params.isEnterpriseCurrency = params.currencyId === req.session.enterprise.currency_id;
-    params.exchangeRate = params.isEnterpriseCurrency ? 1 : rate;
+    params.exchangeRate = exchange.rate || 1;
 
     params.depotName = depot.text;
     const collection = await collect(params);

@@ -2,12 +2,16 @@ function add(a, b) {
   return a + b;
 }
 
-function substract(a, b) {
+function subtract(a, b) {
   return a - b;
 }
 
 function multiply(a, b) {
   return (a * b) || 0;
+}
+
+function divide(a, b) {
+  return (a / b) || 0;
 }
 
 /**
@@ -37,6 +41,7 @@ function sum(array, column, ponderation) {
 }
 
 exports.multiply = multiply;
+exports.divide = divide;
 exports.add = add;
 exports.sum = sum;
-exports.substract = substract;
+exports.subtract = subtract;

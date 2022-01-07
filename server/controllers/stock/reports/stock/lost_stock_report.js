@@ -14,12 +14,13 @@ const Exchange = require('../../../finance/exchange');
  * GET /reports/stock/lost
  */
 async function lostStockReport(req, res, next) {
-
   const params = req.query;
-  const { depotRole } = params;
+  const { depotRole } = req.query;
+  const { enterprise } = req.session;
+  const currencyId = Number(params.currencyId);
 
-  const enterpriseId = req.session.enterprise.id;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currencyId, new Date());
+  const enterpriseId = enterprise.id;
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
   const rate = exchangeRate.rate || 1;
 
   // set up the report with report manager
@@ -31,6 +32,7 @@ async function lostStockReport(req, res, next) {
       const data = {};
       const [key] = rows;
       data.currencyId = Number(params.currencyId);
+      data.exchangeRate = rate;
       data.dateTo = params.dateTo;
       data.dateFrom = params.dateFrom;
       data.isDestDepot = null;
