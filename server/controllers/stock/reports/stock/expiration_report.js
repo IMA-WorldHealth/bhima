@@ -3,6 +3,7 @@ const {
 } = require('../common');
 
 const stockCore = require('../../core');
+const Exchange = require('../../../finance/exchange');
 
 function exchange(rows, exchangeRate) {
 
@@ -44,14 +45,8 @@ async function stockExpirationReport(req, res, next) {
       depot = await db.one(depotSql, db.bid(options.depot_uuid));
     }
 
-    const isEnterpriseCurrency = currencyId === req.session.enterprise.currency_id;
-
-    const [{ rate }] = await db.exec(
-      'SELECT GetExchangeRate(?, ?, NOW()) AS rate;',
-      [req.session.enterprise.id, currencyId],
-    );
-
-    const exchangeRate = isEnterpriseCurrency ? 1 : rate;
+    const exRate = await Exchange.getExchangeRate(req.session.enterprise.id, currencyId, new Date());
+    const exchangeRate = exRate.rate || 1;
 
     // clean off the label if it exists so it doesn't mess up the PDF export
     delete options.label;
@@ -113,8 +108,8 @@ async function stockExpirationReport(req, res, next) {
 
     const reportResult = await report.render({
       result : values,
-      isEnterpriseCurrency,
       currencyId,
+      exchangeRate,
       depot,
       totals,
       today,

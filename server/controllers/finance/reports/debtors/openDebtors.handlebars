@@ -12,17 +12,8 @@
       {{#if details.limitDate}}{{date details.reportDateLimit}} - {{/if}}
       {{date this.timestamp }}
     </h4>
-    {{#unless enterpriseCurrency}}
-      {{#if showReciprocalRate}}
-      <h5 class="text-center">
-        {{ translate 'FORM.LABELS.EXCHANGE_RATE' }}:  {{currency reciprocalRate enterpriseCurrencyId}} {{translate 'FORM.INFO.PER'}} {{ currencySymbol }}
-      </h5>
-      {{else}}
-      <h5 class="text-center">
-        {{ translate 'FORM.LABELS.EXCHANGE_RATE' }}:  {{currency rate currencyId}} {{translate 'FORM.INFO.PER'}} {{ enterpriseCurrencySymbol }}
-      </h5>
-      {{/if}}
-    {{/unless}}
+
+    {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
     <!-- margin is the cell size -->
     <section>

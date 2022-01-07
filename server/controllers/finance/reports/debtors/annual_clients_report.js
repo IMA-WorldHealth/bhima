@@ -11,20 +11,19 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/annual_clients_re
 exports.annualClientsReport = annualClientsReport;
 exports.reporting = reporting;
 
-async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
+async function setupAnnualClientsReport(options, enterprise) {
   const {
-    fiscalId, currencyId, hideLockedClients, includeCashClients,
+    fiscalId, hideLockedClients, includeCashClients,
   } = options;
+  const currencyId = Number(options.currencyId);
 
   // convert to an integer
   const shouldHideLockedClients = Number(hideLockedClients);
   const shouldIncludeCashClients = Number(includeCashClients);
 
-  const isEnterpriseCurrency = parseInt(currencyId, 10) === enterpriseCurrencyId;
-
   const [fiscalYear, exchange] = await Promise.all([
     Fiscal.lookupFiscalYear(fiscalId),
-    Exchange.getExchangeRate(enterpriseCurrencyId, currencyId, new Date()),
+    Exchange.getExchangeRate(enterprise.id, currencyId, new Date()),
   ]);
 
   const rate = exchange.rate || 1;
@@ -35,7 +34,7 @@ async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
   ]);
 
   return {
-    rows, footer, fiscalYear, rate, isEnterpriseCurrency,
+    rows, footer, fiscalYear, exchangeRate : rate, currencyId,
   };
 }
 
@@ -54,7 +53,7 @@ async function annualClientsReport(req, res, next) {
 
   try {
     const reportManager = new ReportManager(TEMPLATE, req.session, options);
-    const data = await setupAnnualClientsReport(req.query, req.session.enterprise.currency_id);
+    const data = await setupAnnualClientsReport(req.query, req.session.enterprise);
     const { headers, report } = await reportManager.render(data);
     res.set(headers).send(report);
   } catch (e) {

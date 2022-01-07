@@ -1,8 +1,8 @@
-const Exchange = require('../../../finance/exchange');
-
 const {
   _, db, ReportManager, STOCK_VALUE_REPORT_TEMPLATE,
 } = require('../common');
+
+const Exchange = require('../../../finance/exchange');
 
 /**
  * @method stockInventoryReport
@@ -32,6 +32,7 @@ async function reporting(_options, session) {
   const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options.params;
   data.dateTo = options.dateTo;
   data.depot = await db.one('SELECT * FROM depot WHERE uuid=?', [db.bid(options.depot_uuid)]);
+  const currencyId = Number(options.currency_id);
 
   // Get inventories movemented
   const sqlGetInventories = `
@@ -83,7 +84,7 @@ async function reporting(_options, session) {
 
   let stockTotalValue = 0;
   let stockTotalSaleValue = 0;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
   const rate = exchangeRate.rate || 1;
 
   // calculate quantity in stock since wac is globally calculated
@@ -122,8 +123,10 @@ async function reporting(_options, session) {
   data.stockTotalSaleValue = stockTotalSaleValue;
   data.emptyResult = data.stockValues.length === 0;
 
-  data.currency_id = options.currency_id;
   data.exclude_zero_value = options.exclude_zero_value;
+
+  data.currencyId = currencyId;
+  data.exchangeRate = rate;
 
   return report.render(data);
 }
