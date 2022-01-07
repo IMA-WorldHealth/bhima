@@ -11,18 +11,25 @@
         {{translate 'REPORT.AVG_MED_COST_PER_PATIENT.TITLE'}}
       </h2>
       {{#if depotOrService}}
-      <h4 class="text-center">
+      <h3 class="text-center">
         {{#if depotName}}
           <span class="text-uppercase">{{ depotName }}</span>{{#if depotAndService}}, {{/if}}
         {{/if}}
         {{#if serviceName}}
           {{translate 'STOCK.SERVICE'}}: {{ serviceName }}
         {{/if}}
-      </h4>
+      </h3>
       {{/if}}
       <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
         {{date dateFrom}} - {{date dateTo}}
       </h4>
+
+      {{{ exchangeRateMsg }}}
+      {{#unless isEnterpriseCurrency}}
+        <div class="alert alert-warning">
+          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+        </div>
+      {{/unless}}
 
       <table class="table table-striped table-condensed table-report table-bordered">
       <thead>

@@ -3,6 +3,7 @@ const {
 } = require('../common');
 
 const stockCore = require('../../core');
+const Exchange = require('../../../finance/exchange');
 
 function exchange(rows, exchangeRate) {
 
@@ -21,6 +22,7 @@ function exchange(rows, exchangeRate) {
  */
 async function stockExpirationReport(req, res, next) {
   const today = new Date();
+  const { lang } = req.query;
 
   try {
     const options = { trackingExpiration : 1, includeEmptyLot : 0, ...req.query };
@@ -111,9 +113,13 @@ async function stockExpirationReport(req, res, next) {
       };
     });
 
+    const exchangeRateMsg = await Exchange.exchangeRateMsg(currencyId,
+      exchangeRate, req.session.enterprise, lang);
+
     const reportResult = await report.render({
       result : values,
       isEnterpriseCurrency,
+      exchangeRateMsg,
       currencyId,
       depot,
       totals,

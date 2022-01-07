@@ -12,16 +12,12 @@
       {{#if details.limitDate}}{{date details.reportDateLimit}} - {{/if}}
       {{date this.timestamp }}
     </h4>
-    {{#unless enterpriseCurrency}}
-      {{#if showReciprocalRate}}
-      <h5 class="text-center">
-        {{ translate 'FORM.LABELS.EXCHANGE_RATE' }}:  {{currency reciprocalRate enterpriseCurrencyId}} {{translate 'FORM.INFO.PER'}} {{ currencySymbol }}
-      </h5>
-      {{else}}
-      <h5 class="text-center">
-        {{ translate 'FORM.LABELS.EXCHANGE_RATE' }}:  {{currency rate currencyId}} {{translate 'FORM.INFO.PER'}} {{ enterpriseCurrencySymbol }}
-      </h5>
-      {{/if}}
+
+    {{{ exchangeRateMsg }}}
+    {{#unless isEnterpriseCurrency}}
+      <div class="alert alert-warning">
+        <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+      </div>
     {{/unless}}
 
     <!-- margin is the cell size -->
@@ -43,7 +39,7 @@
               <td>{{debtor.display_name }}</td>
               {{#if ../details.showDetailedView}}<td>{{date debtor.latestInvoiceDate}}</td>{{/if}}
               {{#if ../details.showDetailedView}}<td>{{date debtor.latestCashDate}}</td>{{/if}}
-              <td class="text-right">{{currency debtor.balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency (multiply debtor.balance ../rate) ../currencyId}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=5}}
@@ -54,7 +50,7 @@
             <tr style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}} {{aggregates.numDebtors}} {{translate "TABLE.AGGREGATES.RECORDS"}}</th>
               {{#if details.showDetailedView}}<th colspan="2"></th>{{/if}}
-              <th class="text-right">{{currency aggregates.balance metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency (multiply aggregates.balance rate) currencyId}}</th>
             </tr>
           </tfoot>
         {{/if}}

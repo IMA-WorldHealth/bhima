@@ -15,9 +15,11 @@ const Exchange = require('../../../finance/exchange');
  * GET /reports/stock/avg_med_costs_per_patient'
  */
 async function stockAvgMedCostsPerPatientReport(req, res, next) {
-  let report;
+  const { enterprise } = req.session;
+
   const options = req.query;
   const {
+    lang,
     dateFrom, dateTo,
     depotUuid, depotName,
     serviceUuid, serviceName,
@@ -28,11 +30,17 @@ async function stockAvgMedCostsPerPatientReport(req, res, next) {
     title : 'REPORT.AVG_MED_COST_PER_PATIENT.TITLE',
   });
 
+  let report;
+
   const data = {};
 
-  const enterpriseId = req.session.enterprise.id;
+  const enterpriseId = enterprise.id;
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currencyId, new Date());
   const rate = exchangeRate.rate || 1;
+
+  const isEnterpriseCurrency = Number(options.currencyId) === enterprise.currency_id;
+  const exchangeRateMsg = await Exchange.exchangeRateMsg(options.currencyId,
+    rate, req.session.enterprise, lang);
 
   try {
     report = new ReportManager(STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE, req.session, reportOptions);
@@ -98,6 +106,8 @@ async function stockAvgMedCostsPerPatientReport(req, res, next) {
   return db.exec(sql, params)
     .then((results) => {
       data.currencyId = Number(options.currencyId);
+      data.isEnterpriseCurrency = isEnterpriseCurrency;
+      data.exchangeRateMsg = exchangeRateMsg;
       data.dateFrom = dateFrom;
       data.dateTo = dateTo;
       data.depotName = depotName;

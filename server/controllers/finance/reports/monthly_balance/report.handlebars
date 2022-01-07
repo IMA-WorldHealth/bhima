@@ -13,6 +13,13 @@
         <h4 class="text-center">{{this.accountNumber}}: {{this.accountLabel}}</h4>
       {{/if}}
 
+      {{{ exchangeRateMsg }}}
+      {{#unless isEnterpriseCurrency}}
+        <div class="alert alert-warning">
+          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+        </div>
+      {{/unless}}
+
       <table class="table table-condensed table-report table-bordered">
         <thead>
           <th width="10%">{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>

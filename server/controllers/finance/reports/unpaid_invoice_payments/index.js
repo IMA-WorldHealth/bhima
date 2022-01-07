@@ -1,7 +1,10 @@
 const _ = require('lodash');
-const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
+const Exchange = require('../../exchange');
+
+const ReportManager = require('../../../../lib/ReportManager');
+
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/unpaid_invoice_payments/report.handlebars';
 
@@ -14,11 +17,14 @@ exports.document = build;
 exports.reporting = reporting;
 
 async function build(req, res, next) {
+  const { currencyId, lang, dateTo } = req.query;
+  const { enterprise } = req.session;
+
   const qs = _.extend(req.query, DEFAULT_OPTIONS);
 
   const metadata = _.clone(req.session);
 
-  qs.isEnterpriseCurrency = !!(parseInt(qs.currencyId, 10) === metadata.enterprise.currency_id);
+  qs.isEnterpriseCurrency = parseInt(qs.currencyId, 10) === enterprise.currency_id;
 
   let report;
   let results;
@@ -49,6 +55,13 @@ async function build(req, res, next) {
   }
 
   const data = _.extend({}, qs, results);
+
+  const exchangeRate = await Exchange.getExchangeRate(enterprise.id, currencyId, new Date(dateTo));
+  const rate = exchangeRate.rate || 1;
+
+  data.isEnterpriseCurrency = Number(currencyId) === enterprise.currency_id;
+  data.exchangeRateMsg = await Exchange.exchangeRateMsg(currencyId,
+    rate, enterprise, lang, dateTo);
 
   const compiled = await report.render(data);
   res.set(compiled.headers).send(compiled.report);
