@@ -6,12 +6,15 @@
  */
 
 const db = require('../../lib/db');
-const NotFound = require('../../lib/errors/NotFound');
+const i18n = require('../../lib/helpers/translate');
+const dates = require('../../lib/template/helpers/dates');
 const util = require('../../lib/util');
+const NotFound = require('../../lib/errors/NotFound');
 
 exports.getExchangeRate = getExchangeRate;
 exports.formatExchangeRateForDisplay = formatExchangeRateForDisplay;
 exports.getCurrentExchangeRateByCurrency = getCurrentExchangeRateByCurrency;
+exports.exchangeRateMsg = exchangeRateMsg;
 
 // uses the mysql function getExchangeRate() to find
 // the correct exchange rate
@@ -22,9 +25,45 @@ function getExchangeRate(enterpriseId, currencyId, date) {
     .then(rows => rows[0]);
 }
 
-// gets a positive number for the exchange rate display.
+// gets a non-fractional number for the exchange rate display.
 function formatExchangeRateForDisplay(value) {
   return (value < 1) ? util.roundDecimal(1 / value, 2) : value;
+}
+
+// Construct the HTML string to show the exchange rate in a nice format
+function exchangeRateMsg(currencyId, rate, enterprise, lang, date) {
+
+  // Emit no message if we are using the enterprise currency
+  if (Number(currencyId) === Number(enterprise.currency_id)) {
+    return '';
+  }
+
+  // Get the selected currency symbol
+  const sql = 'SELECT symbol FROM currency WHERE id = ?';
+  return db.one(sql, [currencyId])
+    .then(symb => {
+      const currencySymbol = symb.symbol;
+
+      const atDate = date
+        ? `<i>(<span>${i18n(lang)('EXCHANGE.AT_THE_DATE')}</span> ${dates.date(date)})</i>` : '';
+
+      if (rate < 1) {
+        return `
+          <h5 class="text-center">
+            ${i18n(lang)('FORM.LABELS.EXCHANGE_RATE')}: ${(1.0 / rate).toFixed(4)} ${enterprise.currencySymbol}
+            ${i18n(lang)('FORM.INFO.PER')} ${currencySymbol} ${atDate}
+          </h5>
+        `;
+      }
+
+      return `
+      <h5 class="text-center">
+        ${i18n(lang)('FORM.LABELS.EXCHANGE_RATE')}: ${rate.toFixed(4)} ${currencySymbol}
+        ${i18n(lang)('FORM.INFO.PER')} ${enterprise.currencySymbol} ${atDate}
+      </h5>
+      `;
+    });
+
 }
 
 /**

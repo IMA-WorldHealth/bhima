@@ -16,7 +16,7 @@
       margin-bottom: 5px;
     }
     .card .value {
-      font-size: 3em;
+      font-size: 2em;
     }
   </style>
 
@@ -29,10 +29,13 @@
     <h4 class="text-center">{{depot.text}}</h4>
   {{/if}}
 
-  <h4 class="text-center">
+  <h3 class="text-center">
     {{date today}}
-  </h4>
+  </h3>
 
+  <br/>
+
+  {{{ exchangeRateMsg }}}
   {{#unless isEnterpriseCurrency}}
     <div class="alert alert-warning">
       <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>

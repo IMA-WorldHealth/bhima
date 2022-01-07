@@ -14,13 +14,17 @@ const Exchange = require('../../../finance/exchange');
  * GET /reports/stock/lost
  */
 async function lostStockReport(req, res, next) {
-
   const params = req.query;
-  const { depotRole } = params;
+  const { currencyId, depotRole, lang } = req.query;
+  const { enterprise } = req.session;
 
-  const enterpriseId = req.session.enterprise.id;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currencyId, new Date());
+  const enterpriseId = enterprise.id;
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
   const rate = exchangeRate.rate || 1;
+
+  const isEnterpriseCurrency = Number(enterprise.currency_id) === Number(currencyId);
+  const exchangeRateMsg = await Exchange.exchangeRateMsg(currencyId,
+    rate, enterprise, lang);
 
   // set up the report with report manager
   const optionReport = _.extend(params, { filename : 'TREE.LOST_STOCK_REPORT' });
@@ -31,6 +35,8 @@ async function lostStockReport(req, res, next) {
       const data = {};
       const [key] = rows;
       data.currencyId = Number(params.currencyId);
+      data.isEnterpriseCurrency = isEnterpriseCurrency;
+      data.exchangeRateMsg = exchangeRateMsg;
       data.dateTo = params.dateTo;
       data.dateFrom = params.dateFrom;
       data.isDestDepot = null;

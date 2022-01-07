@@ -3,10 +3,10 @@ const Tree = require('@ima-worldhealth/tree');
 
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
-const ReportManager = require('../../../../lib/ReportManager');
+const fiscal = require('../../fiscal');
 const Exchange = require('../../../finance/exchange');
 
-const fiscal = require('../../fiscal');
+const ReportManager = require('../../../../lib/ReportManager');
 
 const TEMPLATE = './server/controllers/finance/reports/monthly_balance/report.handlebars';
 
@@ -24,14 +24,20 @@ const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
  */
 async function reporting(opts, session) {
   const params = opts;
+  const { currencyId, lang } = opts;
+  const { enterprise } = session;
 
   params.allAccount = parseInt(params.allAccount, 10);
   const accountNumber = params.allAccount ? `` : params.accountNumber;
   const accountLabel = params.allAccount ? `` : params.accountLabel;
 
-  const enterpriseId = session.enterprise.id;
+  const enterpriseId = enterprise.id;
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currencyId, new Date());
   const rate = exchangeRate.rate || 1;
+
+  const isEnterpriseCurrency = Number(currencyId) === enterprise.currency_id;
+  const exchangeRateMsg = await Exchange.exchangeRateMsg(currencyId,
+    rate, enterprise, lang);
 
   const options = _.extend(opts, {
     filename : 'FORM.LABELS.MONTHLY_BALANCE',
@@ -116,6 +122,8 @@ async function reporting(opts, session) {
     accountLabel,
     accountNumber,
     allAccount : params.allAccount,
+    isEnterpriseCurrency,
+    exchangeRateMsg,
   };
 
   formatData(context.exploitation, context.totalExploitation, DECIMAL_PRECISION);

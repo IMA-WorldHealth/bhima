@@ -31,6 +31,7 @@ const PDF_OPTIONS = {
  * GET /reports/finance/employee_standing/:uuid
  */
 async function build(req, res, next) {
+  const { lang } = req.query;
   const options = req.query;
   let report;
   let dateExchangeRate;
@@ -57,7 +58,7 @@ async function build(req, res, next) {
     const data = {};
 
     data.currencyId = options.currency_id;
-    data.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(options.currency_id);
+    data.isEnterpriseCurrency = Number(req.session.enterprise.currency_id) === Number(options.currency_id);
 
     const sql = `
       SELECT BUID(p.debtor_uuid) as debtor_uuid
@@ -76,6 +77,9 @@ async function build(req, res, next) {
     ]);
 
     data.exchangeRate = exchange.rate || 1;
+
+    data.exchangeRateMsg = await Exchange.exchangeRateMsg(data.currencyId,
+      data.exchangeRate, req.session.enterprise, lang);
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
