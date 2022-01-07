@@ -27,7 +27,6 @@ COPY . .
 RUN yarn --frozen-lockfile && yarn build
 
 # yarn build creates the bin/ folder
-
 COPY .env bin/
 
 # change directory to the bin diretory
