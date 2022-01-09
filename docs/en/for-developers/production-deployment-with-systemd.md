@@ -141,10 +141,10 @@ The final touch for deployment is setting up automatic start on boot.  This is d
 
 ```bash
 # start the nodejs server
-systemd start bhima@3001
+systemctl start bhima@3001
 
 # enable start on boot.
-systemd enable bhima@3001
+systemctl enable bhima@3001
 ```
 
 When you curl `http://localhost`, you should now get to the BHIMA server though nginx.
