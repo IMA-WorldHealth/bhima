@@ -141,7 +141,7 @@
     "uuid": "^8.3.2",
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
-    "winston": "^3.3.3"
+    "winston": "^3.3.4"
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
@@ -152,7 +152,7 @@
     "chai-http": "^4.3.0",
     "chai-spies": "^1.0.0",
     "chai-spies-next": "^0.9.3",
-    "cssnano": "^5.0.14",
+    "cssnano": "^5.0.15",
     "del": "^6.0.0",
     "eslint": "^8.6.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -169,7 +169,7 @@
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.1",
-    "karma": "^6.3.9",
+    "karma": "^6.3.10",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
