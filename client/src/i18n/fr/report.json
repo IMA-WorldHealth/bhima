@@ -27,8 +27,8 @@
       "QUANTITY_DISTRIBUTED_TO_PATIENTS": "Quantité distribuée aux patients",
       "AVG_DISTRIBUTION_PER_PATIENT": "Distribution moyenne par patient"
     },
-    "ANALYSIS_AUX_CASHBOXES": {
-      "TITLE": "Analyse des caisses auxiliaires",
+    "ANALYSIS_AUX_CASHBOX": {
+      "TITLE": "Analyse de la caisse auxiliaire",
       "AUXILIARY_TRANSFERT": "Caisse auxiliaire vers compte de transfert",
       "DESCRIPTION": "Ce rapport permet de faire la suivie mensuel des encaissements et décaissements des caisses auxilliaires",
       "STATUS": {
