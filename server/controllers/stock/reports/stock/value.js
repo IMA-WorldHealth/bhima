@@ -1,8 +1,8 @@
-const Exchange = require('../../../finance/exchange');
-
 const {
   _, db, ReportManager, STOCK_VALUE_REPORT_TEMPLATE,
 } = require('../common');
+
+const Exchange = require('../../../finance/exchange');
 
 /**
  * @method stockInventoryReport
@@ -20,6 +20,7 @@ function stockValue(req, res, next) {
 }
 
 async function reporting(_options, session) {
+  const { lang } = _options;
   const data = {};
   const enterpriseId = session.enterprise.id;
 
@@ -122,8 +123,12 @@ async function reporting(_options, session) {
   data.stockTotalSaleValue = stockTotalSaleValue;
   data.emptyResult = data.stockValues.length === 0;
 
-  data.currency_id = options.currency_id;
   data.exclude_zero_value = options.exclude_zero_value;
+
+  data.currency_id = options.currency_id;
+  data.isEnterpriseCurrency = Number(options.currency_id) === session.enterprise.currency_id;
+  data.exchangeRateMsg = await Exchange.exchangeRateMsg(data.currency_id,
+    rate, session.enterprise, lang);
 
   return report.render(data);
 }

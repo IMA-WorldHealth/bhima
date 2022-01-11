@@ -2,6 +2,8 @@ const {
   _, db, util, ReportManager, STOCK_ENTRY_REPORT_TEMPLATE,
 } = require('../common');
 
+const Exchange = require('../../../finance/exchange');
+
 const StockEntryFromPurchase = require('./entry/entryFromPurchase');
 const StockEntryFromIntegration = require('./entry/entryFromIntegration');
 const StockEntryFromDonation = require('./entry/entryFromDonation');
@@ -18,6 +20,8 @@ const StockEntryFromTransfer = require('./entry/entryFromTransfer');
    */
 // function stockEntryReport(req, res, next) {
 async function stockEntryReport(req, res, next) {
+
+  const { lang } = req.query;
 
   const params = util.convertStringToNumber(req.query);
 
@@ -36,6 +40,9 @@ async function stockEntryReport(req, res, next) {
 
     params.isEnterpriseCurrency = params.currencyId === req.session.enterprise.currency_id;
     params.exchangeRate = params.isEnterpriseCurrency ? 1 : rate;
+
+    params.exchangeRateMsg = await Exchange.exchangeRateMsg(params.currencyId,
+      params.exchangeRate, req.session.enterprise, lang);
 
     params.depotName = depot.text;
     const collection = await collect(params);

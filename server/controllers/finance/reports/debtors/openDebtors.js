@@ -33,6 +33,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
@@ -51,6 +52,8 @@ function convertToBoolean(numberString) {
  * Actually builds the open debtor report.
  */
 function build(req, res, next) {
+  const { lang } = req.query;
+
   const qs = _.extend(req.query, {
     csvKey : 'debtors',
   });
@@ -61,15 +64,15 @@ function build(req, res, next) {
   qs.enterpriseCurrencySymbol = metadata.enterprise.currencySymbol;
 
   let report;
-
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
+    // Note: this removes 'lang' from req.query
   } catch (e) {
     return next(e);
   }
 
   // If any query values are not passed from the client, default values will be used
-  return requestOpenDebtors(req.query)
+  return requestOpenDebtors(req.query, req.session.enterprise, lang)
     .then((openDebtorsContext) => {
       return report.render(openDebtorsContext);
     })
@@ -82,7 +85,7 @@ function build(req, res, next) {
 
 // @TODO If unverifiedSource will continue to be used the where conditions should be put on each individual select
 //       MySQL is not able to optimise indexed columns from a generic SELECT
-function requestOpenDebtors(params) {
+function requestOpenDebtors(params, enterprise, lang) {
   const verifiedSource = 'general_ledger';
 
   // parameter parsing
@@ -92,8 +95,6 @@ function requestOpenDebtors(params) {
   const reportDateLimit = new Date(params.reportDateLimit);
   const currencyId = parseInt(params.currencyId, 10);
   const enterpriseId = parseInt(params.enterpriseId, 10);
-  const enterpriseCurrencyId = parseInt(params.enterpriseCurrencyId, 10);
-  const enterpriseCurrency = params.currencyId === params.enterpriseCurrencyId;
 
   // TODO(@jniles) respect the ordering in the open debtors field.
   const ordering = parseOrdering(params.order);
@@ -130,17 +131,16 @@ function requestOpenDebtors(params) {
       reportDateLimit,
     },
     currencyId,
-    currencySymbol : params.currencySymbol,
-    enterpriseCurrencyId,
-    enterpriseCurrencySymbol : params.enterpriseCurrencySymbol,
-    enterpriseCurrency,
+    isEnterpriseCurrency : currencyId === enterprise.currency_id,
   };
 
   return db.one(exchangeRateQuery, [enterpriseId, currencyId])
     .then((exRate) => {
       debtorReport.rate = exRate.rate ? exRate.rate : 1;
-      debtorReport.reciprocalRate = 1.0 / debtorReport.rate;
-      debtorReport.showReciprocalRate = debtorReport.rate < 1.0;
+      return Exchange.exchangeRateMsg(currencyId, debtorReport.rate, enterprise, lang);
+    })
+    .then(msg => {
+      debtorReport.exchangeRateMsg = msg;
       return db.exec(debtorQuery);
     })
     .then((debtorsDebts) => {

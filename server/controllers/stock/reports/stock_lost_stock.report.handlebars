@@ -13,12 +13,17 @@
           <small>{{date dateFrom}} - {{date dateTo}}</small>
         </h2>
 
-        <h3 class="text-center">
+        <h3 class="text-center" style="margin-bottom: 1em;">
           {{#if isDestDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}: {{depotName}}{{/if}}
           {{#if isSrcDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}: {{depotName}}{{/if}}
         </h3>
 
-        <br>
+        {{{ exchangeRateMsg }}}
+        {{#unless isEnterpriseCurrency}}
+          <div class="alert alert-warning">
+            <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+          </div>
+        {{/unless}}
 
         <!-- list of data  -->
         <table class="table table-condensed table-report">

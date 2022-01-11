@@ -30,11 +30,6 @@
             required="true">
           </bh-fiscal-year-select>
 
-          <bh-currency-select
-            currency-id="ReportConfigCtrl.reportDetails.currencyId"
-            on-change="ReportConfigCtrl.onSelectCurrency(currency)">
-          </bh-currency-select>
-
           <bh-yes-no-radios
             label="REPORT.CLIENTS.HIDE_LOCKED_CLIENTS"
             value="ReportConfigCtrl.reportDetails.hideLockedClients"
@@ -50,6 +45,11 @@
             help-text="REPORT.CLIENTS.INCLUDE_CASH_CLIENTS_HELP_TEXT"
             on-change-callback="ReportConfigCtrl.onIncludeCashClientsToggle(value)">
           </bh-yes-no-radios>
+
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.reportDetails.currencyId"
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)">
+          </bh-currency-select>
 
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
