@@ -12,21 +12,22 @@
         {{translate 'REPORT.STOCK.EXIT_REPORT'}}
       </h2>
 
-      <h1 class="text-center">
+      <h3 class="text-center">
         {{ depotName }}
-      </h1>
+      </h3>
 
       <h4 class="text-center">
         {{date dateFrom}} - {{date dateTo}}
       </h4>
 
+      <br/>
+
+      {{{ exchangeRateMsg }}}
       {{#unless isEnterpriseCurrency}}
         <div class="alert alert-warning">
           <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
         </div>
       {{/unless}}
-
-      <br/>
 
       <!-- stock exit to patient -->
       {{#if includePatientExit}}
@@ -73,9 +74,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock exit to service -->
       {{#if includeServiceExit}}
@@ -118,9 +118,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock exit to service grouped by service -->
       {{#if includeGroupedServiceExit}}
@@ -172,9 +171,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock exit to other depot -->
       {{#if includeDepotExit}}
@@ -217,9 +215,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock exit as loss -->
       {{#if includeLossExit}}
@@ -262,9 +259,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br>
       {{/if}}
-
-      <br>
 
       <!-- stock exit aggregate consumption -->
       {{#if includeAggregateConsumption}}
@@ -307,9 +303,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br>
       {{/if}}
-
-      <br>
 
       <p>*<em>{{translate 'STOCK.STOCK_COST_DESCRIPTION'}}</em></p>
       <p>*<em>{{translate 'STOCK.STOCK_UNIT_COST_ROUNDED'}}</em></p>

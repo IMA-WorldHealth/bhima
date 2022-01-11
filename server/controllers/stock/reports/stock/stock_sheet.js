@@ -4,6 +4,7 @@ const {
 
 const PeriodService = require('../../../../lib/period');
 const Inventory = require('../../../inventory');
+const Exchange = require('../../../finance/exchange');
 
 /**
  * @method stockSheetReport
@@ -15,6 +16,7 @@ const Inventory = require('../../../inventory');
  * GET /reports/stock/sheet
  */
 async function stockSheetReport(req, res, next) {
+  const { lang } = req.query;
   const optionReport = {
     ...req.query,
     filename : 'REPORT.STOCK.INVENTORY_REPORT',
@@ -101,6 +103,9 @@ async function stockSheetReport(req, res, next) {
       value : (rows.totals.entry - rows.totals.exit) * wacDetails.wac,
       unit_cost : wacDetails.wac,
     };
+
+    data.exchangeRateMsg = await Exchange.exchangeRateMsg(data.currencyId,
+      data.exchangeRate, req.session.enterprise, lang);
 
     const result = await report.render(data);
     res.set(result.headers).send(result.report);

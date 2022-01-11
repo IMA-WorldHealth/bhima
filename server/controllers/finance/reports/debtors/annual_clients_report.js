@@ -11,7 +11,7 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/annual_clients_re
 exports.annualClientsReport = annualClientsReport;
 exports.reporting = reporting;
 
-async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
+async function setupAnnualClientsReport(options, enterprise, lang) {
   const {
     fiscalId, currencyId, hideLockedClients, includeCashClients,
   } = options;
@@ -20,14 +20,16 @@ async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
   const shouldHideLockedClients = Number(hideLockedClients);
   const shouldIncludeCashClients = Number(includeCashClients);
 
-  const isEnterpriseCurrency = parseInt(currencyId, 10) === enterpriseCurrencyId;
+  const isEnterpriseCurrency = parseInt(currencyId, 10) === enterprise.currency_id;
 
   const [fiscalYear, exchange] = await Promise.all([
     Fiscal.lookupFiscalYear(fiscalId),
-    Exchange.getExchangeRate(enterpriseCurrencyId, currencyId, new Date()),
+    Exchange.getExchangeRate(enterprise.id, currencyId, new Date()),
   ]);
 
   const rate = exchange.rate || 1;
+
+  const exchangeRateMsg = await Exchange.exchangeRateMsg(currencyId, rate, enterprise, lang);
 
   const [rows, footer] = await Promise.all([
     getDebtorGroupMovements(fiscalYear.id, currencyId, rate, shouldHideLockedClients, shouldIncludeCashClients),
@@ -35,7 +37,7 @@ async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
   ]);
 
   return {
-    rows, footer, fiscalYear, rate, isEnterpriseCurrency,
+    rows, footer, fiscalYear, rate, isEnterpriseCurrency, exchangeRateMsg,
   };
 }
 
@@ -46,6 +48,7 @@ async function setupAnnualClientsReport(options, enterpriseCurrencyId) {
  * The HTTP interface which actually creates the report.
  */
 async function annualClientsReport(req, res, next) {
+  const { lang } = req.query;
   const options = _.extend(req.query, {
     filename : 'REPORT.CLIENTS.TITLE',
     orientation : 'portrait',
@@ -54,7 +57,7 @@ async function annualClientsReport(req, res, next) {
 
   try {
     const reportManager = new ReportManager(TEMPLATE, req.session, options);
-    const data = await setupAnnualClientsReport(req.query, req.session.enterprise.currency_id);
+    const data = await setupAnnualClientsReport(req.query, req.session.enterprise, lang);
     const { headers, report } = await reportManager.render(data);
     res.set(headers).send(report);
   } catch (e) {

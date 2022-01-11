@@ -23,8 +23,7 @@
         {{#if dateTo}}{{date dateTo}}{{/if}}
       </h4>
 
-      <br>
-
+      {{{ exchangeRateMsg }}}
       {{#unless isEnterpriseCurrency}}
         <div class="alert alert-warning">
           <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>

@@ -2,6 +2,8 @@ const {
   _, db, util, ReportManager, STOCK_EXIT_REPORT_TEMPLATE,
 } = require('../common');
 
+const Exchange = require('../../../finance/exchange');
+
 const StockExitToPatient = require('./exit/exitToPatient');
 const StockExitToService = require('./exit/exitToService');
 const StockExitToDepot = require('./exit/exitToDepot');
@@ -18,6 +20,8 @@ const StockExitAggregateConsumption = require('./exit/exitAggregateConsumption')
  * GET /reports/stock/exit
  */
 async function stockExitReport(req, res, next) {
+
+  const { lang } = req.query;
 
   const params = util.convertStringToNumber(req.query);
 
@@ -36,6 +40,9 @@ async function stockExitReport(req, res, next) {
 
     params.isEnterpriseCurrency = params.currencyId === req.session.enterprise.currency_id;
     params.exchangeRate = params.isEnterpriseCurrency ? 1 : rate;
+
+    params.exchangeRateMsg = await Exchange.exchangeRateMsg(params.currencyId,
+      params.exchangeRate, req.session.enterprise, lang);
 
     params.depotName = depot.text;
     const collection = await collect(params);
