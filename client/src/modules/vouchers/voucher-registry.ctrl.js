@@ -72,7 +72,6 @@ function VoucherController(
     displayName : 'TABLE.COLUMNS.TYPE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/templates/grid/voucherType.tmpl.html',
-    aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
   }, {
     field : 'date',
@@ -99,7 +98,6 @@ function VoucherController(
     field : 'amount',
     displayName : 'TABLE.COLUMNS.AMOUNT',
     headerCellFilter : 'translate',
-    aggregationType      : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
     footerCellClass : 'text-right',
     type : 'number',
