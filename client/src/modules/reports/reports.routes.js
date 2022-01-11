@@ -9,7 +9,7 @@ angular.module('bhima.routes')
       'aged_creditors',
       'aged_debtors',
       'aggregated_stock_consumption',
-      'analysis_auxiliary_cashboxes',
+      'analysis_auxiliary_cashbox',
       'annual_clients_report',
       'avg_med_costs_per_patient',
       'balance_report',
