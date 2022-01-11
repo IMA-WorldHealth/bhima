@@ -216,7 +216,6 @@ async function report(req, res, next) {
           GROUP BY ledger.trans_date;
       `;
 
-
     const [transactions, transfers, primaryTransfers] = await Promise.all([
       db.exec(sqlCashBox, cashboxParams),
       db.exec(sqlTransfertAccount, transfertParams),

@@ -400,8 +400,8 @@ SET @CaisseAux = 2;
 INSERT INTO `cash_box_account_currency` (id, currency_id, cash_box_id, account_id, transfer_account_id) VALUES
   (1, @USD, @CaissePrincipale, 190, 195),
   (2, @FC, @CaissePrincipale, 187, 198),
-  (3, @USD, @CaisseAux, 191, 194),
-  (4, @FC, @CaisseAux, 188, 197);
+  (3, @FC, @CaisseAux, 191, 194),
+  (4, @USD, @CaisseAux, 188, 197);
 
 -- Set Cashbox Management By User
 INSERT INTO cashbox_permission (user_id, cashbox_id) VALUES
