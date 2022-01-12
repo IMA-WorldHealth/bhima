@@ -61,12 +61,18 @@
                       <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
                       <input
                         type="file"
+                        name="logo"
                         accept="image/*"
                         ng-model="EnterpriseCtrl.file"
                         ngf-max-size="2MB"
                         ngf-select="EnterpriseCtrl.setThumbnail($file)"
                         style="display: none;">
                     </label>
+                  </div>
+                  <div class="help-block text-center form-warning" data-error-message
+                    ng-show="EnterpriseForm.logo.$error.maxSize">
+                    <i class="fa fa-warning"></i>
+                    <span translate translate-values="{ limit : '2MB'}">FORM.VALIDATION.UPLOAD_TOO_LARGE</span>
                   </div>
                 </div>
 
