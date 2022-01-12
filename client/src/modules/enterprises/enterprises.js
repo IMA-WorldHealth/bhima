@@ -20,6 +20,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.length50 = util.length50;
   vm.length100 = util.length100;
   vm.hasEnterprise = false;
+  vm.maxLogoFileSize = '2MB';
 
   let $touched = false;
 
