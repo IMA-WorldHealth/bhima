@@ -181,7 +181,7 @@
     "postcss": "^8.4.5",
     "protractor": "^7.0.0",
     "protractor-console-plugin": "^0.1.1",
-    "qs": "^6.10.2",
+    "qs": "^6.10.3",
     "release-it": "^14.12.1",
     "sinon": "^12.0.1",
     "standard-version": "^9.3.2",
