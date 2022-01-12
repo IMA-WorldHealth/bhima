@@ -47,6 +47,7 @@ exports.configure = function configure(app) {
       directives : {
         defaultSrc : ['\'self\'', '\'unsafe-inline\'', 'blob:'],
         fontSrc : ['\'self\'', 'https://fonts.gstatic.com'],
+        imgSrc : ['\'self\'', 'blob:', 'data:'],
       },
     },
   }));
