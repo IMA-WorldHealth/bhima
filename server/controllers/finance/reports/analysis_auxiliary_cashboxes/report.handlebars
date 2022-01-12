@@ -15,6 +15,11 @@
     <!-- body -->
     <div class="row">
       <div class="col-xs-12">
+        <!-- page title  -->
+        <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.ANALYSIS_AUX_CASHBOX.TITLE'}}</h3>
+        <h3 class="text-center text-bold text-uppercase">{{ report.cashboxLabel }}</h3>
+        <h4 class="text-center text-bold text-uppercase">{{ report.periodLabel }}</h4>
+
         <table style="float: right; margin-bottom: 1em; margin-top: 10px;">
           <tr>
             <td colspan="2" width="90%">&nbsp;<strong>{{translate 'FORM.LABELS.LEGEND'}}</strong></td>
@@ -33,14 +38,9 @@
           </tr>
           <tr>
             <td width="10%" style="background-color: #d9534f; color:white; text-align:center"> ▼ </td>
-            <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_LOWWER'}}</strong></td>
+            <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOX.STATUS.TRANSFERT_LOWWER'}}</strong></td>
           </tr>
         </table>
-
-        <!-- page title  -->
-        <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.ANALYSIS_AUX_CASHBOX.TITLE'}}</h3>
-        <h3 class="text-center text-bold text-uppercase">{{ report.cashboxLabel }}</h3>
-        <h4 class="text-center text-bold text-uppercase">{{ report.periodLabel }}</h4>
 
         <table class="table table-striped table-condensed table-report table-bordered">
           <thead>
