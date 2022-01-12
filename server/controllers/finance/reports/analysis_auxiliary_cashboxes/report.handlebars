@@ -2,12 +2,20 @@
 <html>
   {{> head title="REPORT.ANALYSIS_AUX_CASHBOX.TITLE" }}
   <body class="container">
-    {{> header}}
+    <header class="row">
+      {{> enterpriseDetails }}
+      <div class="col-xs-5">
+        <div class="text-right">
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.display_name}}
+        </div>
+      </div>
+    </header>
 
     <!-- body -->
     <div class="row">
       <div class="col-xs-12">
-        <table style="width: 50%; float: right; margin-bottom: 1.5%">
+        <table style="float: right; margin-bottom: 1em; margin-top: 10px;">
           <tr>
             <td colspan="2" width="90%">&nbsp;<strong>{{translate 'FORM.LABELS.LEGEND'}}</strong></td>
           </tr>
@@ -25,12 +33,9 @@
           </tr>
           <tr>
             <td width="10%" style="background-color: #d9534f; color:white; text-align:center"> ▼ </td>
-            <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOX.STATUS.TRANSFERT_LOWWER'}}</strong></td>
+            <td width="90%">&nbsp;<strong>{{translate 'REPORT.ANALYSIS_AUX_CASHBOXES.STATUS.TRANSFERT_LOWWER'}}</strong></td>
           </tr>
         </table>
-      </div>
-
-      <div class="col-xs-12">
 
         <!-- page title  -->
         <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.ANALYSIS_AUX_CASHBOX.TITLE'}}</h3>
