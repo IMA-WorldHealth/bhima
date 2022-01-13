@@ -33,6 +33,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/openDebtors.handlebars';
@@ -61,7 +62,6 @@ function build(req, res, next) {
   qs.enterpriseCurrencySymbol = metadata.enterprise.currencySymbol;
 
   let report;
-
   try {
     report = new ReportManager(TEMPLATE, metadata, qs);
   } catch (e) {
@@ -92,15 +92,9 @@ function requestOpenDebtors(params) {
   const reportDateLimit = new Date(params.reportDateLimit);
   const currencyId = parseInt(params.currencyId, 10);
   const enterpriseId = parseInt(params.enterpriseId, 10);
-  const enterpriseCurrencyId = parseInt(params.enterpriseCurrencyId, 10);
-  const enterpriseCurrency = params.currencyId === params.enterpriseCurrencyId;
 
   // TODO(@jniles) respect the ordering in the open debtors field.
   const ordering = parseOrdering(params.order);
-
-  const exchangeRateQuery = `
-    SELECT GetExchangeRate(?, ?, NOW()) AS rate
-  `;
 
   const unverifiedSource = `
     (SELECT entity_uuid, reference_uuid, trans_date, credit_equiv, debit_equiv from general_ledger
@@ -130,17 +124,11 @@ function requestOpenDebtors(params) {
       reportDateLimit,
     },
     currencyId,
-    currencySymbol : params.currencySymbol,
-    enterpriseCurrencyId,
-    enterpriseCurrencySymbol : params.enterpriseCurrencySymbol,
-    enterpriseCurrency,
   };
 
-  return db.one(exchangeRateQuery, [enterpriseId, currencyId])
+  return Exchange.getExchangeRate(enterpriseId, currencyId, new Date())
     .then((exRate) => {
-      debtorReport.rate = exRate.rate ? exRate.rate : 1;
-      debtorReport.reciprocalRate = 1.0 / debtorReport.rate;
-      debtorReport.showReciprocalRate = debtorReport.rate < 1.0;
+      debtorReport.exchangeRate = exRate.rate ? exRate.rate : 1;
       return db.exec(debtorQuery);
     })
     .then((debtorsDebts) => {

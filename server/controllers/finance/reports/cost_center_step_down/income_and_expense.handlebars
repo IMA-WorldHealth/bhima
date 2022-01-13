@@ -20,7 +20,7 @@
           <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
         </h4>
 
-        {{> exchangeRate lastRateUsed=lastRateUsed firstCurrency=firstCurrency secondCurrency=secondCurrency dateTo=dateTo}}
+        {{> exchangeRate rate=lastRateUsed currencyId=currencyId date=dateTo}}
 
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">
           <thead>

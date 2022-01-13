@@ -23,13 +23,7 @@
         {{#if dateTo}}{{date dateTo}}{{/if}}
       </h4>
 
-      <br>
-
-      {{#unless isEnterpriseCurrency}}
-        <div class="alert alert-warning">
-          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
-        </div>
-      {{/unless}}
+      {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
       <!-- list of data  -->
       <table class="table table-condensed table-report">
