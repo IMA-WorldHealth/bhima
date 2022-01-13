@@ -40,9 +40,9 @@ async function buildAccountsReport(params, session) {
 
   const queryTotals = `
     SELECT
-      z.label, 
-      SUM(z.income * IFNULL(GetExchangeRate(?, ?, ?), 1)) income, 
-      SUM(z.expense * IFNULL(GetExchangeRate(?, ?, ?), 1)) expense, 
+      z.label,
+      SUM(z.income * IFNULL(GetExchangeRate(?, ?, ?), 1)) income,
+      SUM(z.expense * IFNULL(GetExchangeRate(?, ?, ?), 1)) expense,
       SUM((z.income - expense) * IFNULL(GetExchangeRate(?, ?, ?), 1)) AS balance
     FROM
     (
@@ -51,9 +51,9 @@ async function buildAccountsReport(params, session) {
         SUM(IF(a.type_id = 4, gl.credit_equiv - gl.debit_equiv, 0)) AS income,
         SUM(IF(a.type_id = 5, gl.debit_equiv - gl.credit_equiv, 0)) AS expense,
         gl.cost_center_id AS ccId
-      FROM general_ledger gl 
+      FROM general_ledger gl
       JOIN cost_center cc ON cc.id = gl.cost_center_id
-      JOIN account a ON a.id = gl.account_id 
+      JOIN account a ON a.id = gl.account_id
       WHERE gl.period_id >= ? AND gl.period_id <= ?
       GROUP BY cc.id
     )z
@@ -78,7 +78,7 @@ async function buildAccountsReport(params, session) {
   const totals = await db.exec(queryTotals, parameters);
 
   const context = {
-    currencyId : options.currency_id,
+    currencyId : Number(options.currency_id),
     dateFrom,
     dateTo,
     data,

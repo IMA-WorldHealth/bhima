@@ -157,18 +157,20 @@ async function build(req, res, next) {
       `;
     }
 
+    const currencyId = Number(options.currency_id);
+
     const [financialData, exchange] = await Promise.all([
       db.exec(sql),
       Exchange.getExchangeRate(
         req.session.enterprise.id,
-        Number(options.currency_id),
+        currencyId,
         dateExchangeRate,
       ),
     ]);
 
+    data.currencyId = currencyId;
     data.exchangeRate = exchange.rate || 1;
-    data.currencyId = options.currency_id;
-    data.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(options.currency_id);
+    data.dateExchangeRate = dateExchangeRate;
 
     let sumDebit = 0;
     let sumCredit = 0;

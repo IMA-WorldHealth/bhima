@@ -15,7 +15,8 @@ const Exchange = require('../../../finance/exchange');
  * GET /reports/stock/avg_med_costs_per_patient'
  */
 async function stockAvgMedCostsPerPatientReport(req, res, next) {
-  let report;
+  const { enterprise } = req.session;
+
   const options = req.query;
   const {
     dateFrom, dateTo,
@@ -28,10 +29,12 @@ async function stockAvgMedCostsPerPatientReport(req, res, next) {
     title : 'REPORT.AVG_MED_COST_PER_PATIENT.TITLE',
   });
 
+  let report;
+
   const data = {};
 
-  const enterpriseId = req.session.enterprise.id;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currencyId, new Date());
+  const currencyId = Number(options.currencyId);
+  const exchangeRate = await Exchange.getExchangeRate(enterprise.id, currencyId, new Date());
   const rate = exchangeRate.rate || 1;
 
   try {
@@ -97,7 +100,8 @@ async function stockAvgMedCostsPerPatientReport(req, res, next) {
 
   return db.exec(sql, params)
     .then((results) => {
-      data.currencyId = Number(options.currencyId);
+      data.currencyId = currencyId;
+      data.exchangeRate = rate;
       data.dateFrom = dateFrom;
       data.dateTo = dateTo;
       data.depotName = depotName;

@@ -56,8 +56,7 @@ async function build(req, res, next) {
 
     const data = {};
 
-    data.currencyId = options.currency_id;
-    data.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(options.currency_id);
+    const currencyId = Number(options.currency_id);
 
     const sql = `
       SELECT BUID(p.debtor_uuid) as debtor_uuid
@@ -70,12 +69,14 @@ async function build(req, res, next) {
       db.one(sql, db.bid(options.employee_uuid)),
       Exchange.getExchangeRate(
         req.session.enterprise.id,
-        Number(options.currency_id),
+        currencyId,
         dateExchangeRate,
       ),
     ]);
 
+    data.currencyId = currencyId;
     data.exchangeRate = exchange.rate || 1;
+    data.dateExchangeRate = dateExchangeRate;
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
