@@ -12,21 +12,15 @@
         {{translate 'REPORT.STOCK.ENTRY_REPORT'}}
       </h2>
 
-      <h1 class="text-center">
+      <h3 class="text-center">
         {{ depotName }}
-      </h1>
+      </h3>
 
-      <h4 class="text-center">
+      <h4 class="text-center" style="margin-bottom: 0.5em;">
         {{date dateFrom}} - {{date dateTo}}
       </h4>
 
-      {{#unless isEnterpriseCurrency}}
-        <div class="alert alert-warning">
-          <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
-        </div>
-      {{/unless}}
-
-      <br/>
+      {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
       <!-- stock entry from purchase -->
       {{#if includePurchaseEntry}}
@@ -73,9 +67,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock entry from integration -->
       {{#if includeIntegrationEntry}}
@@ -122,9 +115,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock entry from donation -->
       {{#if includeDonationEntry}}
@@ -167,9 +159,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
 
       <!-- stock entry to other depot -->
       {{#if includeTransferEntry}}
@@ -212,10 +203,8 @@
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
+        <br/>
       {{/if}}
-
-      <br/>
-
 
       <p>*<em>{{translate 'STOCK.STOCK_COST_DESCRIPTION'}}</em></p>
       <p>*<em>{{translate 'STOCK.STOCK_UNIT_COST_ROUNDED'}}</em></p>
