@@ -27,7 +27,7 @@ function document(req, res, next) {
   const params = req.query;
   params.user = req.session.user;
   params.enterprise_id = req.session.enterprise.id;
-  params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
+  params.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(params.currency_id);
   params.includeUnpostedValues = params.includeUnpostedValues ? Number(params.includeUnpostedValues) : 0;
 
   try {
