@@ -54,7 +54,6 @@ function OpenDebtorsConfigController(
 
   vm.onSelectCurrency = currency => {
     vm.reportDetails.currencyId = currency.id;
-    vm.reportDetails.currencySymbol = currency.symbol;
   };
 
   vm.requestSaveAs = function requestSaveAs() {

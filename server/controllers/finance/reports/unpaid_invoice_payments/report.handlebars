@@ -21,11 +21,7 @@
     {{date dateFrom "DD/MM/YYYY"}} - {{date dateTo "DD/MM/YYYY"}}
   </h4>
 
-  {{#unless isEnterpriseCurrency}} 
-    <div class="alert alert-warning"> 
-      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p> 
-    </div> 
-  {{/unless}}
+  {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateTo}}
 
   <table class="table table-condensed table-report table-header-rotated">
     <thead>
@@ -64,7 +60,7 @@
               <td class="text-right">{{debcred (look row service) ../../currencyId}}</td>
             {{/each}}
           {{/unless}}
-          
+
           <td class="text-right">{{debcred row.Total ../currencyId}}</td>
         </tr>
         {{/unless}}

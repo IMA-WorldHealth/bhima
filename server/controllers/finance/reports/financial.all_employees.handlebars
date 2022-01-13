@@ -10,12 +10,6 @@
     </span>
   </h3>
 
-  {{#unless isEnterpriseCurrency}}
-    <div class="alert alert-warning">
-      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
-    </div>
-  {{/unless}}
-
   {{#if limitTimeInterval}}
     <div class="text-center">
       <strong>
@@ -23,6 +17,8 @@
       </strong>
     </div>
   {{/if}}
+
+  {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateExchangeRate}}
 
   <section>
     <table class="table table-condensed table-bordered table-report">

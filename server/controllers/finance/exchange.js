@@ -6,8 +6,8 @@
  */
 
 const db = require('../../lib/db');
-const NotFound = require('../../lib/errors/NotFound');
 const util = require('../../lib/util');
+const NotFound = require('../../lib/errors/NotFound');
 
 exports.getExchangeRate = getExchangeRate;
 exports.formatExchangeRateForDisplay = formatExchangeRateForDisplay;
@@ -22,7 +22,7 @@ function getExchangeRate(enterpriseId, currencyId, date) {
     .then(rows => rows[0]);
 }
 
-// gets a positive number for the exchange rate display.
+// gets a non-fractional number for the exchange rate display.
 function formatExchangeRateForDisplay(value) {
   return (value < 1) ? util.roundDecimal(1 / value, 2) : value;
 }
