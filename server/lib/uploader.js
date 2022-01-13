@@ -43,6 +43,7 @@ if (path.isAbsolute(dir) || dir.startsWith('..')) {
 }
 const rootDir = path.resolve(`${__dirname}/../..`);
 const fsdir = path.join(rootDir, dir); // global path
+debug('ROOT dir: ', rootDir);
 debug('UPLOAD_DIR: ', dir);
 debug('UPLOAD_DIR Abs dir: ', fsdir);
 
@@ -74,7 +75,7 @@ const mkdirp = (dpath) => fs.promises.mkdir(dpath, { recursive : true });
 function Uploader(prefix, fields) {
   // format the upload directory.  Add a trailing slash for consistency
   const hasTrailingSlash = (prefix[prefix.length - 1] === '/');
-  const directory = path.join(dir, hasTrailingSlash ? prefix : `${prefix}/`);
+  const linkDirectory = path.join(dir, hasTrailingSlash ? prefix : `${prefix}/`);
 
   // configure the storage space using multer's diskStorage.  This will allow
   const storage = multer.diskStorage({
@@ -82,7 +83,7 @@ function Uploader(prefix, fields) {
 
       try {
         // NOTE: need absolute path here for mkdirp
-        const fullFolderPath = path.join(fsdir, directory);
+        const fullFolderPath = path.join(fsdir, hasTrailingSlash ? prefix : `${prefix}/`);
         debug(`creating upload directory ${fullFolderPath}.`);
         await mkdirp(fullFolderPath);
         cb(null, fullFolderPath);
@@ -94,7 +95,7 @@ function Uploader(prefix, fields) {
       const id = uuid();
 
       // ensure that a link is passed to the req.file object
-      file.link = `${directory}${id}`;
+      file.link = `${linkDirectory}${id}`;
       debug(`Storing file in ${file.link}.`);
       cb(null, id);
     },
