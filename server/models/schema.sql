@@ -592,6 +592,7 @@ CREATE TABLE `enterprise_setting` (
   `base_index_growth_rate` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `posting_payroll_cost_center_mode` VARCHAR(100) NOT NULL DEFAULT 'default', -- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
   `enable_require_cost_center_for_posting` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_odk_central_integration` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -2632,5 +2633,17 @@ CREATE TABLE `cost_center_aggregate` (
   CONSTRAINT `cost_center_aggregate__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `odk_central_integration`;
+CREATE TABLE `odk_central_integration` (
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `odk_central_url` TEXT NOT NULL,
+  `odk_admin_user` TEXT NOT NULL,
+  `odk_admin_password` TEXT NOT NULL,
+  `odk_project_id` INTEGER UNSIGNED NOT NULL,
+  KEY `enterprise_id` (`enterprise_id`),
+  CONSTRAINT `odk_central__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 SET foreign_key_checks = 1;

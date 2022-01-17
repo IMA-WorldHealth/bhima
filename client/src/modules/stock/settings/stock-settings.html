@@ -2,184 +2,259 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title" translate>TREE.STOCK_SETTINGS</li>
+      <li class="title" translate>TREE.SETTINGS</li>
     </ol>
   </div>
 </div>
+
 <div class="flex-content">
   <div class="container-fluid">
-    <form name="StockSettingsForm" bh-submit="StockSettingsCtrl.submit(StockSettingsForm)"
+
+    <form
+      name="StockSettingsForm"
+      bh-submit="StockSettingsCtrl.submit(StockSettingsForm)"
       ng-model-options="{ updateOn: 'blur' }" novalidate>
 
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <i class="fa fa-cogs"></i> <span translate>TREE.STOCK_SETTINGS</span>
-        </div>
-        <div class="panel-body">
-
-          <div class="form-group"
-            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.month_average_consumption.$invalid }">
-            <label class="control-label" translate>
-              SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION
-            </label>
-            <input type="number" class="form-control" autocomplete="off" name="month_average_consumption"
-              ng-model="StockSettingsCtrl.settings.month_average_consumption"
-              ng-change="StockSettingsCtrl.setMonthAverage(value)" min="0.00001">
-              <span class="help-block" translate>
-                SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT
-              </span>
-              <div class="help-block" ng-messages="StockSettingsForm.month_average_consumption.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
+      <div class="col-xs-12 col-md-6 col-lg-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <i class="fa fa-cogs"></i> <span translate>SETTINGS.CONSUMPTION_AND_REORDER_SETTINGS</span>
           </div>
 
-          <div class="form-group"
-            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_min_months_security_stock.$invalid }">
-            <label class="control-label" translate>
-              SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
-            </label>
-            <input type="number" class="form-control" autocomplete="off"
-              name="default_min_months_security_stock"
-              ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
-              ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="0.00001">
-            <span class="help-block" translate>
-              SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT
-            </span>
-            <div class="help-block" ng-messages="StockSettingsForm.default_min_months_security_stock.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <div class="form-group"
-            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.min_delay.$invalid }">
-            <label class="control-label" translate>
-              SETTINGS.MIN_PURCHASE_DELAY
-            </label>
-            <input type="number" class="form-control" autocomplete="off"
-              name="min_delay"
-              ng-model="StockSettingsCtrl.settings.min_delay"
-              ng-change="StockSettingsCtrl.setMinDelay(value)" min="0.00001"
-              placeholder="0.00">
-            <span class="help-block" translate>
-              SETTINGS.MIN_PURCHASE_DELAY_HELP_TEXT
-            </span>
-            <div class="help-block" ng-messages="StockSettingsForm.min_delay.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <div class="form-group"
-            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_purchase_interval.$invalid }">
-            <label class="control-label" translate>
-              SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL
-            </label>
-            <input type="number" class="form-control" autocomplete="off"
-              name="default_purchase_interval"
-              ng-model="StockSettingsCtrl.settings.default_purchase_interval"
-              ng-change="StockSettingsCtrl.setPurchaseInterval(value)" min="0.00001"
-              placeholder="0.00">
-            <span class="help-block" translate>
-              SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT
-            </span>
-            <div class="help-block" ng-messages="StockSettingsForm.default_purchase_interval.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
-            value="StockSettingsCtrl.settings.enable_auto_purchase_order_confirmation"
-            name="enable_auto_purchase_order_confirmation"
-            id="enable_auto_purchase_order_confirmation"
-            help-text="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
-          </bh-yes-no-radios>
-
-          <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
-            value="StockSettingsCtrl.settings.enable_strict_depot_permission"
-            name="enable_strict_depot_permission"
-            id="enable_strict_depot_permission"
-            help-text="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableStrictDepotPermission(value)">
-          </bh-yes-no-radios>
-
-          <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
-            value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
-            name="enable_auto_stock_accounting"
-            id="enable_auto_stock_accounting"
-            help-text="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableAutoStockAccounting(value)">
-          </bh-yes-no-radios>
-
-          <bh-yes-no-radios label="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
-            value="StockSettingsCtrl.settings.enable_supplier_credit"
-            name="enable_supplier_credit"
-            id="enable_supplier_credit"
-            help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
-            on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
-          </bh-yes-no-radios>
-
-          <bh-yes-no-radios
-            label="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION"
-            help-text="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT"
-            value="StockSettingsCtrl.settings.enable_strict_depot_distribution"
-            name="enable_strict_depot_distribution"
-            on-change-callback="StockSettingsCtrl.enableStrictDepotDistribution(value)">
-          </bh-yes-no-radios>
-
-          <bh-yes-no-radios
-            label="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT"
-            help-text="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT_HELP_TEXT"
-            value="StockSettingsCtrl.settings.enable_expired_stock_out"
-            name="enable_expired_stock_out"
-            on-change-callback="StockSettingsCtrl.enableExpiredStockOut(value)">
-          </bh-yes-no-radios>
-
-          <!-- average_consumption_algo -->
-          <div id="average_consumption_algo" class="form-group"
-            ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
-            <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
-            <div ng-repeat="algo in StockSettingsCtrl.algorithms" class="form-indent">
-              <label class="radio-inline">
-                <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
-                <span class="text-bold" translate>{{ algo.label }}</span>
+          <div class="panel-body">
+            <div class="form-group"
+              ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.month_average_consumption.$invalid }">
+              <label class="control-label" translate>
+                SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION
               </label>
+              <input type="number" class="form-control" autocomplete="off" name="month_average_consumption"
+                ng-model="StockSettingsCtrl.settings.month_average_consumption"
+                ng-change="StockSettingsCtrl.setMonthAverage(value)" min="0.00001">
+                <span class="help-block" translate>
+                  SETTINGS.DEFINE_MONTH_AVERAGE_CONSUMPTION_HELP_TEXT
+                </span>
+                <div class="help-block" ng-messages="StockSettingsForm.month_average_consumption.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group"
+              ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_min_months_security_stock.$invalid }">
+              <label class="control-label" translate>
+                SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK
+              </label>
+              <input type="number" class="form-control" autocomplete="off"
+                name="default_min_months_security_stock"
+                ng-model="StockSettingsCtrl.settings.default_min_months_security_stock"
+                ng-change="StockSettingsCtrl.setDefaultMinMonthsSecurityStock(value)" min="0.00001">
               <span class="help-block" translate>
-                {{algo.comment}}
+                SETTINGS.DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT
               </span>
+              <div class="help-block" ng-messages="StockSettingsForm.default_min_months_security_stock.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
             </div>
-            <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+
+            <div class="form-group"
+              ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.min_delay.$invalid }">
+              <label class="control-label" translate>
+                SETTINGS.MIN_PURCHASE_DELAY
+              </label>
+              <input type="number" class="form-control" autocomplete="off"
+                name="min_delay"
+                ng-model="StockSettingsCtrl.settings.min_delay"
+                ng-change="StockSettingsCtrl.setMinDelay(value)" min="0.00001"
+                placeholder="0.00">
+              <span class="help-block" translate>
+                SETTINGS.MIN_PURCHASE_DELAY_HELP_TEXT
+              </span>
+              <div class="help-block" ng-messages="StockSettingsForm.min_delay.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group"
+              ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_purchase_interval.$invalid }">
+              <label class="control-label" translate>
+                SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL
+              </label>
+              <input type="number" class="form-control" autocomplete="off"
+                name="default_purchase_interval"
+                ng-model="StockSettingsCtrl.settings.default_purchase_interval"
+                ng-change="StockSettingsCtrl.setPurchaseInterval(value)" min="0.00001"
+                placeholder="0.00">
+              <span class="help-block" translate>
+                SETTINGS.DEFAULT_PURCHASE_ORDER_INTERVAL_TEXT
+              </span>
+              <div class="help-block" ng-messages="StockSettingsForm.default_purchase_interval.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <!-- average_consumption_algo -->
+            <div id="average_consumption_algo" class="form-group"
+              ng-class="{'has-error' : StockSettingsForm.$submitted && StockSettingsForm.average_consumption_algo.$invalid }">
+              <label class="control-label" translate>FORM.LABELS.ALGO_MONTHLY_CONSUMPTION</label>
+              <div ng-repeat="algo in StockSettingsCtrl.algorithms" class="form-indent">
+                <label class="radio-inline">
+                  <input type="radio" name="average_consumption_algo" id="{{algo.name}}" ng-value="algo.name" ng-model="StockSettingsCtrl.settings.average_consumption_algo" required>
+                  <span class="text-bold" translate>{{ algo.label }}</span>
+                </label>
+                <span class="help-block" translate>
+                  {{algo.comment}}
+                </span>
+              </div>
+              <div class="help-block" ng-messages="StockSettingsForm.average_consumption_algo.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
             </div>
           </div>
-
-          <!-- default cost center for stock loss -->
-          <div class="form-group"
-            ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_cost_center_for_loss.$invalid }">
-            <bh-cost-center-select 
-              label="SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS"
-              cost-center-id="StockSettingsCtrl.settings.default_cost_center_for_loss"
-              on-select-callback="StockSettingsCtrl.onSelectCostCenter(costCenter)">
-            </bh-cost-center-select>
-            <span class="help-block" translate>
-              SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS_HELP_TEXT
-            </span>
-            <div class="help-block" ng-messages="StockSettingsForm.default_cost_center_for_loss.$error"
-              ng-show="StockSettingsForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
+          <div class="panel-footer" id="submission">
+            <bh-loading-button loading-state="StockSettingsForm.$loading">
+              <span translate>FORM.BUTTONS.UPDATE</span>
+            </bh-loading-button>
           </div>
-
         </div>
+      </div>
 
-        <div class="panel-footer" id="submission">
-          <bh-loading-button loading-state="EnterpriseForm.$loading">
-            <span translate>FORM.BUTTONS.UPDATE</span>
-          </bh-loading-button>
+      <div class="col-xs-12 col-md-6 col-lg-4">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <i class="fa fa-address-book-o"></i>
+            <span translate>SETTINGS.ACCOUNTING_INTEGRATION_SETTINGS</span>
+          </div>
+          <div class="panel-body">
+            <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
+              value="StockSettingsCtrl.settings.enable_auto_stock_accounting"
+              name="enable_auto_stock_accounting"
+              id="enable_auto_stock_accounting"
+              help-text="SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
+              on-change-callback="StockSettingsCtrl.enableAutoStockAccounting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios label="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_LABEL"
+              value="StockSettingsCtrl.settings.enable_auto_purchase_order_confirmation"
+              name="enable_auto_purchase_order_confirmation"
+              id="enable_auto_purchase_order_confirmation"
+              help-text="SETTINGS.ENABLE_AUTO_PURCHASE_ORDER_CONFIRMATION_HELP_TEXT"
+              on-change-callback="StockSettingsCtrl.enableAutoPurchaseOrderConfirmation(value)">
+            </bh-yes-no-radios>
+
+
+            <bh-yes-no-radios label="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY"
+              value="StockSettingsCtrl.settings.enable_supplier_credit"
+              name="enable_supplier_credit"
+              id="enable_supplier_credit"
+              help-text="SETTINGS.ENABLE_SUPPLIER_CREDIT_ON_STOCK_ENTRY_HELP_TEXT"
+              on-change-callback="StockSettingsCtrl.enableSupplierCredit(value)">
+            </bh-yes-no-radios>
+
+
+            <!-- default cost center for stock loss -->
+            <div class="form-group"
+              ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.default_cost_center_for_loss.$invalid }">
+              <bh-cost-center-select
+                label="SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS"
+                cost-center-id="StockSettingsCtrl.settings.default_cost_center_for_loss"
+                on-select-callback="StockSettingsCtrl.onSelectCostCenter(costCenter)">
+              </bh-cost-center-select>
+              <span class="help-block" translate>
+                SETTINGS.DEFAULT_COST_CENTER_FOR_STOCK_LOSS_HELP_TEXT
+              </span>
+              <div class="help-block" ng-messages="StockSettingsForm.default_cost_center_for_loss.$error"
+                ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-6 col-lg-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-info"></i>
+            <span translate>SETTINGS.OTHER_SETTINGS</span>
+          </div>
+          <div class="panel-body">
+            <bh-yes-no-radios label="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION"
+              value="StockSettingsCtrl.settings.enable_strict_depot_permission"
+              name="enable_strict_depot_permission"
+              id="enable_strict_depot_permission"
+              help-text="SETTINGS.ENABLE_STRICT_DEPOT_PERMISSION_HELP_TEXT"
+              on-change-callback="StockSettingsCtrl.enableStrictDepotPermission(value)">
+            </bh-yes-no-radios>
+            <bh-yes-no-radios
+              label="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION"
+              help-text="SETTINGS.ENABLE_STRICT_DEPOT_DISTRIBUTION_HELP_TEXT"
+              value="StockSettingsCtrl.settings.enable_strict_depot_distribution"
+              name="enable_strict_depot_distribution"
+              on-change-callback="StockSettingsCtrl.enableStrictDepotDistribution(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT"
+              help-text="SETTINGS.ENABLE_CONSIDERATION_EXPIRED_STOCK_OUT_HELP_TEXT"
+              value="StockSettingsCtrl.settings.enable_expired_stock_out"
+              name="enable_expired_stock_out"
+              on-change-callback="StockSettingsCtrl.enableExpiredStockOut(value)">
+            </bh-yes-no-radios>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-6 col-lg-4">
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <i class="fa fa-server"></i>
+            <span translate>SETTINGS.ODK_INTEGRATION_SETTINGS</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_central_url.$invalid }">
+              <label class="control-label" translate>ODK.ODK_CENTRAL_URL</label>
+              <input
+                type="text"
+                class="form-control"
+                name="odk_central_url"
+                ng-model="StockSettingsCtrl.settings.odk.odk_central_url"
+                autocomplete="off">
+              <div class="help-block" ng-messages="StockSettingsForm.odk_central_url.$error" ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_admin_user.$invalid }">
+              <label class="control-label" translate>ODK.ODK_ADMIN_USER</label>
+              <input
+                type="email"
+                class="form-control"
+                name="odk_admin_user"
+                ng-model="StockSettingsCtrl.settings.odk.odk_admin_user"
+                autocomplete="off">
+              <div class="help-block" ng-messages="StockSettingsForm.odk_admin_user.$error" ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_admin_password.$invalid }">
+              <label class="control-label" translate>ODK.ODK_ADMIN_PASSWORD</label>
+              <input
+                type="password"
+                class="form-control"
+                name="odk_admin_password"
+                ng-model="StockSettingsCtrl.settings.odk.odk_admin_password"
+                autocomplete="off">
+              <div class="help-block" ng-messages="StockSettingsForm.odk_admin_password.$error" ng-show="StockSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </form>

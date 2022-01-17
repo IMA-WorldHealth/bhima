@@ -15,7 +15,7 @@ function StockSettingsController(
   const vm = this;
 
   vm.enterprise = {};
-  vm.settings = {};
+  vm.settings = { odk : {} };
 
   let $touched = false;
 
