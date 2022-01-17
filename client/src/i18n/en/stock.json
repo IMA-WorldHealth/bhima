@@ -265,6 +265,10 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date."
   },
   "SETTINGS" : {
+    "CONSUMPTION_AND_REORDER_SETTINGS" : "Stock Consumption and Reorder Settings",
+    "ACCOUNTING_INTEGRATION_SETTINGS" : "Stock Accounting Integration",
+    "ODK_INTEGRATION_SETTINGS" : "ODK Integration Settings",
+    "OTHER_SETTINGS" : "Other Settings",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "The stock supply should provide at least this many months of stock for the depot involved.",
     "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Default Purchase order interval (In Month)",
