@@ -1925,6 +1925,18 @@ CREATE TABLE `lot_tag` (
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `lot_asset`;
+CREATE TABLE `lot_asset` (
+  `lot_uuid`           BINARY(16) NOT NULL,
+  `abt_inventory_no`   VARCHAR(191) NOT NULL,
+  `origin`             VARCHAR(191) NOT NULL,
+  `purchase_order`     VARCHAR(191) NOT NULL,
+  `vendor`             VARCHAR(191) NOT NULL,
+  `condition`          VARCHAR(191) NOT NULL,
+  KEY `lot_uuid` (`lot_uuid`),
+  CONSTRAINT `lot_asset__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `inventory_tag`;
 CREATE TABLE `inventory_tag` (
   `inventory_uuid`          BINARY(16) NOT NULL,
