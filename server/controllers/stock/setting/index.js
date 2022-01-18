@@ -6,15 +6,7 @@
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-
-
-let central;
-
-// because the ODK Central API is ESM, we must use a dynamic import()
-// instead of require().
-(async () => {
-  central = await import('@ima-worldhealth/odk-central-api');
-})();
+const central = require('../../admin/odk-central');
 
 // GET /stock/setting
 //
@@ -85,8 +77,7 @@ exports.update = async function update(req, res, next) {
       await db.exec('DELETE FROM odk_central_integration WHERE enterprise_id = ?', [req.params.id]);
       await db.exec('INSERT INTO odk_central_integration SET ?;', [{ ...odk, enterprise_id : req.params.id }]);
 
-      // attempt to log in with the ODK api
-      await setupODKCentralConnection(odk.odk_central_url, odk.odk_admin_user, odk.odk_admin_password);
+      central.loadODKCentralSettingsFromDatabase();
     }
 
     res.status(200).json(updatedSettings);
@@ -94,10 +85,3 @@ exports.update = async function update(req, res, next) {
     next(e);
   }
 };
-
-async function setupODKCentralConnection(serverUrl, userEmail, userPassword) {
-  central.auth.setConfig(serverUrl, userEmail, userPassword);
-
-  const details = await central.api.users.getCurrentUserDetails();
-
-}

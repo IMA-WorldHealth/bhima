@@ -41,8 +41,6 @@ function StockSettingsController(
         if (settings.length > 0) {
           [vm.settings] = settings;
         }
-
-        console.log('settings:', settings);
       })
       .catch(Notify.handleError);
 
