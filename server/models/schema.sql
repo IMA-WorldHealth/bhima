@@ -794,6 +794,7 @@ CREATE TABLE `inventory` (
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH' ,
+  `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
