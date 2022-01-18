@@ -1,12 +1,11 @@
 /**
  * @module odk-central
- *
+ *api.
  * @description
  * This module contains the ODK Central API.
- *
- *
  */
 
+const router = require('express').Router();
 const debug = require('debug')('bhima:plugins:odk-central');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
@@ -66,51 +65,46 @@ async function loadODKCentralSettingsFromDatabase() {
 async function syncUsersWithCentral() {
   debug('Syncing BHIMA users with ODK Central users.');
 
-  try {
-
-    // look for all users with depot permissions in the database
-    const users = await db.exec(`
+  // look for all users with depot permissions in the database
+  const users = await db.exec(`
     SELECT user.id, user.display_name, user.email
-    FROM user WHERE user.deactivate <> 1 AND user.id NOT IN (
+    FROM user WHERE user.deactivated <> 1 AND user.id NOT IN (
       SELECT bhima_user_id FROM odk_user
     ) AND user.id IN (SELECT user_id FROM depot_permission);
   `);
 
-    const enterprise = await db.one('SELECT * FROM enterprise');
+  const enterprise = await db.one('SELECT * FROM enterprise');
 
-    debug(`There are ${users.length} users available in BHIMA.`);
+  debug(`There are ${users.length} users available in BHIMA.`);
 
-    // pull the latest users from ODK Central.
-    const centralUsers = await central.users.listAllUsers();
+  // pull the latest users from ODK Central.
+  const centralUsers = await central.users.listAllUsers();
 
-    debug(`There are ${centralUsers.length} users available in ODK Central.`);
+  debug(`There are ${centralUsers.length} users available in ODK Central.`);
 
-    // get only central email addresses to use as a filter mask
-    const centralEmails = centralUsers.map(user => unformatEmailAddr(user.email));
+  // get only central email addresses to use as a filter mask
+  const centralEmails = centralUsers.map(user => unformatEmailAddr(user.email));
 
-    debug(`Filtering out existing ODK Central users.`);
+  debug(`Filtering out existing ODK Central users.`);
 
-    // filter out all users who already have an email address in central
-    const usersToCreate = users.filter(user => centralEmails.includes(formatEmailAddr(user.email, enterprise.label)));
+  // filter out all users who already have an email address in central
+  const usersToCreate = users.filter(user => centralEmails.includes(formatEmailAddr(user.email, enterprise.label)));
 
-    debug(`Found ${usersToCreate.length} users to create.`);
+  debug(`Found ${usersToCreate.length} users to create.`);
 
-    // loop through users and create them in ODK Central.
+  // loop through users and create them in ODK Central.
     for (const user of usersToCreate) { // eslint-disable-line
-      const password = util.uuid();
-      const email = formatEmailAddr(user.email, enterprise.name);
-      debug(`Creating user ${email}.`);
-      // eslint-disable-next-line
+    const password = util.uuid();
+    const email = formatEmailAddr(user.email, enterprise.name);
+    debug(`Creating user ${email}.`);
+    // eslint-disable-next-line
       const centralUser = await central.users.createUserWithPassword(email, password);
-      // eslint-disable-next-line
+    // eslint-disable-next-line
       await db.exec('INSERT INTO `odk_user` VALUES (?, ?, ?);', [centralUser.id, password, user.id]);
-      debug(`Finished with user ${email}.`);
-    }
-
-    debug(`Created ${usersToCreate.length} users in ODK Central.`);
-  } catch (e) {
-    debug('An error occurred:', e);
+    debug(`Finished with user ${email}.`);
   }
+
+  debug(`Created ${usersToCreate.length} users in ODK Central.`);
 }
 
 /**
@@ -118,26 +112,25 @@ async function syncUsersWithCentral() {
  */
 async function syncEnterpriseWithCentral() {
   debug('Synchronizing BHIMA enterprise with ODK Central');
-  try {
-    const settings = await db.exec('SELECT * FROM odk_central_integration WHERE odk_project_id IS NULL;');
+  const settings = await db.exec('SELECT * FROM odk_central_integration WHERE odk_project_id IS NULL;');
 
-    if (!settings.length) {
-      debug('Nothing to sync.  Ignoring');
-      return;
-    }
-
-    const [enterprise] = await db.exec('SELECT * FROM enterprise;');
-
-    debug(`Creating a project on ODK Central for ${enterprise.name}.`);
-
-    const result = await central.project.createProject(enterprise.name);
-
-    debug(`Created project on central with id: ${result.id}.`);
-
-    await db.exec('UPDATE odk_central_integration SET odk_project_id = ? WHERE enterprise_id = ?;', [result.id, enterprise.id]);
-  } catch (e) {
-    debug('An error occured:', e);
+  if (!settings.length) {
+    debug('Nothing to sync.  Ignoring');
+    return;
   }
+
+  const [enterprise] = await db.exec('SELECT * FROM enterprise;');
+
+  debug(`Creating a project on ODK Central for ${enterprise.name}.`);
+
+  const result = await central.api.projects.createProject(enterprise.name);
+
+  debug(`Created project on central with id: ${result.id}.`);
+
+  await db.exec(
+    'UPDATE odk_central_integration SET odk_project_id = ? WHERE enterprise_id = ?;',
+    [result.id, enterprise.id],
+  );
 
   debug(`Finished synchronizing projects and enterprises.`);
 }
@@ -148,9 +141,7 @@ async function syncEnterpriseWithCentral() {
  * @description
  * This creates a stock entry and stock exit form for each depot in the application.
  */
-async function syncDepotsWithCentral() {
-
-}
+async function syncDepotsWithCentral() { }
 
 /**
  *
@@ -159,7 +150,61 @@ async function syncDepotsWithCentral() {
  */
 async function pullStockMovementsFromCentral() { }
 
-exports.syncUsersWithCentral = syncUsersWithCentral;
-exports.syncDepotsWithCentral = syncDepotsWithCentral;
-exports.syncEnterpriseWithCentral = syncEnterpriseWithCentral;
+router.get('/', async (req, res, next) => {
+  try {
+    const settings = await db.exec(
+      'SELECT * FROM odk_central_integration WHERE enterprise_id = ?;',
+      [req.session.enterprise.id],
+    );
+    res.status(200).json(settings);
+  } catch (e) { next(e); }
+});
+
+router.post('/', async (req, res, next) => {
+  const { enterprise } = req.session;
+  const odk = req.body;
+
+  try {
+    await db.exec('DELETE FROM odk_central_integration WHERE enterprise_id = ?', [enterprise.id]);
+    await db.exec('INSERT INTO odk_central_integration SET ?;', [{ ...odk, enterprise_id : enterprise.id }]);
+
+    loadODKCentralSettingsFromDatabase();
+
+    res.sendStatus(201);
+  } catch (e) {
+    next(e);
+  }
+});
+
+// add routes
+// @jniles - I'm using GET because I'm lazy
+router.post('/sync-users', async (req, res, next) => {
+  try {
+    await syncUsersWithCentral();
+    res.sendStatus(201);
+  } catch (e) { next(e); }
+});
+
+router.post('/sync-enterprise', async (req, res, next) => {
+  try {
+    await syncEnterpriseWithCentral();
+    res.sendStatus(201);
+  } catch (e) { next(e); }
+});
+
+router.post('/sync-depots', async (req, res, next) => {
+  try {
+    await syncDepotsWithCentral();
+    res.sendStatus(201);
+  } catch (e) { next(e); }
+});
+
+router.post('/sync-stock-movements', async (req, res, next) => {
+  try {
+    await pullStockMovementsFromCentral();
+    res.sendStatus(201);
+  } catch (e) { next(e); }
+});
+
+exports.router = router;
 exports.loadODKCentralSettingsFromDatabase = loadODKCentralSettingsFromDatabase;

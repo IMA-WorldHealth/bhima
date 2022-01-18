@@ -2,7 +2,6 @@
 
 ALTER TABLE `enterprise_setting` ADD COLUMN `enable_odk_central_integration` BOOLEAN NOT NULL DEFAULT FALSE;
 
-
 DROP TABLE IF EXISTS `odk_central_integration`;
 CREATE TABLE `odk_central_integration` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -23,3 +22,6 @@ CREATE TABLE `odk_user` (
   `bhima_user_id` SMALLINT(5) UNSIGNED NOT NULL,
   CONSTRAINT `odk_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT INTO unit VALUES
+  (306, '[SETTINGS] ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings');

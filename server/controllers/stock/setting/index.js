@@ -6,7 +6,6 @@
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-const central = require('../../admin/odk-central');
 
 // GET /stock/setting
 //
@@ -36,13 +35,6 @@ exports.list = async function list(req, res, next) {
 
     const [settings] = rows;
 
-    const odkSettings = await db.exec('SELECT * FROM odk_central_integration WHERE enterprise_id = ?;', [enterpriseId]);
-
-    // merge in the settings if they are defined
-    if (odkSettings.length > 0) {
-      settings.odk = odkSettings.pop();
-    }
-
     res.status(200).json([settings]);
   } catch (e) {
     next(e);
@@ -56,12 +48,8 @@ exports.list = async function list(req, res, next) {
 exports.update = async function update(req, res, next) {
   const sql = 'UPDATE stock_setting SET ? WHERE enterprise_id = ?';
   const { settings } = req.body;
-  const { odk } = settings;
-
-  delete settings.odk;
 
   try {
-
     const { affectedRows } = await db.exec(sql, [settings, req.params.id]);
 
     if (!affectedRows) {
@@ -71,14 +59,6 @@ exports.update = async function update(req, res, next) {
     const updatedSettings = await db.exec(
       'UPDATE stock_setting SET ? WHERE enterprise_id = ?',
       [settings, req.params.id]);
-
-    // update the ODK settings
-    if (odk) {
-      await db.exec('DELETE FROM odk_central_integration WHERE enterprise_id = ?', [req.params.id]);
-      await db.exec('INSERT INTO odk_central_integration SET ?;', [{ ...odk, enterprise_id : req.params.id }]);
-
-      central.loadODKCentralSettingsFromDatabase();
-    }
 
     res.status(200).json(updatedSettings);
   } catch (e) {

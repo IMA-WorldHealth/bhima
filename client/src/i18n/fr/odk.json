@@ -6,6 +6,10 @@
     "IMPORTED_SUCCESSFULLY" : "Données importées avec succès",
     "ODK_CENTRAL_URL" : "URL du serveur ODK Central",
     "ODK_ADMIN_USER" : "Adressse mail de l'administrateur",
-    "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur"
+    "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur",
+    "SYNC_ENTERPRISE" : "Synchronize enterprise settings",
+    "SYNC_USERS" : "Synchronize users",
+    "SYNC_DEPOTS" : "Synchronize depots",
+    "SYNC_SUBMISSIONS" : "Synchronize form submissions"
   }
 }

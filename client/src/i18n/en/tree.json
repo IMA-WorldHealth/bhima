@@ -168,6 +168,7 @@
     "STOCK_REPORT" : "Stock Inventories",
     "STOCK_REQUISITION":"Requisition",
     "STOCK_SETTINGS": "Stock Settings",
+    "ODK_SETTINGS" : "ODK Settings",
     "STOCK" : "Stock",
     "STOCK_VALUE" : "Stock Value Report",
     "SUBSIDY" : "Subsidy Management",

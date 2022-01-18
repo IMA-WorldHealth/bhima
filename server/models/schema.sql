@@ -2653,4 +2653,5 @@ CREATE TABLE `odk_user` (
   CONSTRAINT `odk_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+
 SET foreign_key_checks = 1;
