@@ -71,9 +71,9 @@ async function syncUsersWithCentral() {
     // look for all users with depot permissions in the database
     const users = await db.exec(`
     SELECT user.id, user.display_name, user.email
-    FROM user WHERE user.id NOT IN (
+    FROM user WHERE user.deactivate <> 1 AND user.id NOT IN (
       SELECT bhima_user_id FROM odk_user
-    ) AND user.deactivated <> 1;
+    ) AND user.id IN (SELECT user_id FROM depot_permission);
   `);
 
     const enterprise = await db.one('SELECT * FROM enterprise');
