@@ -2,7 +2,7 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li class="title" translate>TREE.SETTINGS</li>
+      <li class="title" translate>TREE.STOCK_SETTINGS</li>
     </ol>
   </div>
 </div>
@@ -204,58 +204,6 @@
               name="enable_expired_stock_out"
               on-change-callback="StockSettingsCtrl.enableExpiredStockOut(value)">
             </bh-yes-no-radios>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xs-12 col-md-6 col-lg-4">
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <i class="fa fa-server"></i>
-            <span translate>SETTINGS.ODK_INTEGRATION_SETTINGS</span>
-          </div>
-          <div class="panel-body">
-            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_central_url.$invalid }">
-              <label class="control-label" translate>ODK.ODK_CENTRAL_URL</label>
-              <input
-                type="text"
-                class="form-control"
-                name="odk_central_url"
-                ng-model="StockSettingsCtrl.settings.odk.odk_central_url"
-                autocomplete="off">
-              <div class="help-block" ng-messages="StockSettingsForm.odk_central_url.$error" ng-show="StockSettingsForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_admin_user.$invalid }">
-              <label class="control-label" translate>ODK.ODK_ADMIN_USER</label>
-              <input
-                type="email"
-                class="form-control"
-                name="odk_admin_user"
-                ng-model="StockSettingsCtrl.settings.odk.odk_admin_user"
-                autocomplete="off"
-                ng-required="!!StockSettings.settings.odk.odk_central_url">
-              <div class="help-block" ng-messages="StockSettingsForm.odk_admin_user.$error" ng-show="StockSettingsForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
-            <div class="form-group" ng-class="{ 'has-error' : StockSettingsForm.$submitted && StockSettingsForm.odk_admin_password.$invalid }">
-              <label class="control-label" translate>ODK.ODK_ADMIN_PASSWORD</label>
-              <input
-                type="password"
-                class="form-control"
-                name="odk_admin_password"
-                ng-model="StockSettingsCtrl.settings.odk.odk_admin_password"
-                autocomplete="off"
-                ng-required="!!StockSettings.settings.odk.odk_admin_user">
-              <div class="help-block" ng-messages="StockSettingsForm.odk_admin_password.$error" ng-show="StockSettingsForm.$submitted">
-                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-              </div>
-            </div>
-
           </div>
         </div>
       </div>
