@@ -794,6 +794,7 @@ CREATE TABLE `inventory` (
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH' ,
+  `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1922,6 +1923,18 @@ CREATE TABLE `lot_tag` (
   `tag_uuid`          BINARY(16) NOT NULL,
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `lot_asset`;
+CREATE TABLE `lot_asset` (
+  `lot_uuid`           BINARY(16) NOT NULL,
+  `abt_inventory_no`   VARCHAR(191) NOT NULL,
+  `origin`             VARCHAR(191) NOT NULL,
+  `purchase_order`     VARCHAR(191) NOT NULL,
+  `vendor`             VARCHAR(191) NOT NULL,
+  `condition`          VARCHAR(191) NOT NULL,
+  KEY `lot_uuid` (`lot_uuid`),
+  CONSTRAINT `lot_asset__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory_tag`;
