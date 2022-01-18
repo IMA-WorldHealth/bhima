@@ -7,15 +7,6 @@
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
-
-let central;
-
-// because the ODK Central API is ESM, we must use a dynamic import()
-// instead of require().
-(async () => {
-  central = await import('@ima-worldhealth/odk-central-api');
-})();
-
 // GET /stock/setting
 //
 // Get the current stock settings for the Enterprise
@@ -44,13 +35,6 @@ exports.list = async function list(req, res, next) {
 
     const [settings] = rows;
 
-    const odkSettings = await db.exec('SELECT * FROM odk_central_integration WHERE enterprise_id = ?;', [enterpriseId]);
-
-    // merge in the settings if they are defined
-    if (odkSettings.length > 0) {
-      settings.odk = odkSettings.pop();
-    }
-
     res.status(200).json([settings]);
   } catch (e) {
     next(e);
@@ -64,12 +48,8 @@ exports.list = async function list(req, res, next) {
 exports.update = async function update(req, res, next) {
   const sql = 'UPDATE stock_setting SET ? WHERE enterprise_id = ?';
   const { settings } = req.body;
-  const { odk } = settings;
-
-  delete settings.odk;
 
   try {
-
     const { affectedRows } = await db.exec(sql, [settings, req.params.id]);
 
     if (!affectedRows) {
@@ -80,24 +60,8 @@ exports.update = async function update(req, res, next) {
       'UPDATE stock_setting SET ? WHERE enterprise_id = ?',
       [settings, req.params.id]);
 
-    // update the ODK settings
-    if (odk) {
-      await db.exec('DELETE FROM odk_central_integration WHERE enterprise_id = ?', [req.params.id]);
-      await db.exec('INSERT INTO odk_central_integration SET ?;', [{ ...odk, enterprise_id : req.params.id }]);
-
-      // attempt to log in with the ODK api
-      await setupODKCentralConnection(odk.odk_central_url, odk.odk_admin_user, odk.odk_admin_password);
-    }
-
     res.status(200).json(updatedSettings);
   } catch (e) {
     next(e);
   }
 };
-
-async function setupODKCentralConnection(serverUrl, userEmail, userPassword) {
-  central.auth.setConfig(serverUrl, userEmail, userPassword);
-
-  const details = await central.api.users.getCurrentUserDetails();
-
-}

@@ -6,6 +6,11 @@
     "IMPORTED_SUCCESSFULLY" : "Records successfully imported",
     "ODK_CENTRAL_URL" : "ODK Central Server URL",
     "ODK_ADMIN_USER" : "ODK Central Admin Email",
-    "ODK_ADMIN_PASSWORD" : "ODK Central Admin Password"
+    "ODK_ADMIN_PASSWORD" : "ODK Central Admin Password",
+    "SYNC_SETTINGS" : "Synchronization Settings",
+    "SYNC_ENTERPRISE" : "Synchronize enterprise settings",
+    "SYNC_USERS" : "Synchronize users",
+    "SYNC_DEPOTS" : "Synchronize depots",
+    "SYNC_SUBMISSIONS" : "Synchronize form submissions"
   }
 }
