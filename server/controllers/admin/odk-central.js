@@ -12,25 +12,19 @@ const { json2csvAsync } = require('json-2-csv');
 const tempy = require('tempy');
 const fs = require('fs/promises');
 
+const central = require('@ima-worldhealth/odk-central-api-cjs');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
 const core = require('../stock/core');
 const { generate } = require('../../lib/barcode');
 const { LOT } = require('../../config/identifiers');
 
-let central;
-
-// because the ODK Central API is ESM, we must use a dynamic import()
-// instead of require().
-
 setupODKCentralConnection();
 async function setupODKCentralConnection() {
   debug('initializing ODK Central link.');
 
-  central = await import('@ima-worldhealth/odk-central-api');
   // load the configuration from database if it exists
   await loadODKCentralSettingsFromDatabase();
-
 }
 
 // utility function to format email addresses
@@ -195,7 +189,7 @@ async function syncDepotsWithCentral() {
 
   //
 
-  console.log('data:', csv);
+  debug('data:', csv);
   debug(`Wrote ${data.length} lots to temporary file: ${tmpfile}`);
 
   debug(`Creating draft form for odk`);
