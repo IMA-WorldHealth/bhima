@@ -265,6 +265,10 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption"
   },
   "SETTINGS" : {
+    "CONSUMPTION_AND_REORDER_SETTINGS" : "Consommation de stock et de réapprovisionnement",
+    "ACCOUNTING_INTEGRATION_SETTINGS" : "Intégration de la comptabilité des stocks",
+    "ODK_INTEGRATION_SETTINGS" : "Paramètres d'intégration ODK",
+    "OTHER_SETTINGS" : "Autres paramètres",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
     "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Intervalle de commande par défaut (En mois)",
