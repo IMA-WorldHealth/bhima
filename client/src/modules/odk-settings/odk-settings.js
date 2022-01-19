@@ -32,6 +32,12 @@ function ODKSettingsController(
       .catch(Notify.handleError);
   };
 
+  vm.syncDepots = () => {
+    ODKSettings.syncDepots()
+      .then(() => { $state.reload(); })
+      .catch(Notify.handleError);
+  };
+
   // fired on startup
   function startup() {
     ODKSettings.read()

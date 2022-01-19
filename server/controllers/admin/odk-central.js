@@ -7,22 +7,30 @@
 
 const router = require('express').Router();
 const debug = require('debug')('bhima:plugins:odk-central');
+const _ = require('lodash');
+const { json2csvAsync } = require('json-2-csv');
+const tempy = require('tempy');
+const fs = require('fs/promises');
+
 const db = require('../../lib/db');
 const util = require('../../lib/util');
+const core = require('../stock/core');
+const { generate } = require('../../lib/barcode');
+const { LOT } = require('../../config/identifiers');
 
 let central;
 
 // because the ODK Central API is ESM, we must use a dynamic import()
 // instead of require().
+
 setupODKCentralConnection();
 async function setupODKCentralConnection() {
   debug('initializing ODK Central link.');
 
-  // eslint-disable-next-line
-  central = await import('@ima-worldhealth/odk-central-api'); 
-
+  central = await import('@ima-worldhealth/odk-central-api');
   // load the configuration from database if it exists
   await loadODKCentralSettingsFromDatabase();
+
 }
 
 // utility function to format email addresses
@@ -140,16 +148,70 @@ async function syncEnterpriseWithCentral() {
  * @function syncDepotsWithCentral
  *
  * @description
- * This creates a stock entry and stock exit form for each depot in the application.
+ * This creates a stock exit form for each depot in the application.
+ * The strategy is to upload an XLSX form that
+ *
  */
-async function syncDepotsWithCentral() { }
+async function syncDepotsWithCentral() {
+  debug('Synchronizing depots with ODK Central');
+
+  const depots = await db.exec('SELECT buid(uuid) as uuid, depot.text FROM depot;');
+
+  debug(`Located ${depots.length} depots locally...`);
+
+  const data = [];
+
+  /**
+   * Create a CSV file full of lots
+   */
+
+  // eslint-disable-next-line
+  for (const depot of depots) {
+    debug(`Pulling lots for ${depot.text}`);
+    const lots = await core.getLotsDepot(depot.uuid, { // eslint-disable-line
+      includeEmptyLot : 0,
+      month_average_consumption : 6,
+      average_consumption_algo : 'msh',
+    });
+
+    debug(`Found ${lots.length} lots.`);
+
+    data.push(...lots
+      .map(lot => { lot.barcode = generate(LOT.key, lot.uuid); return lot; })
+      .map(
+        lot => _.pick(lot, [
+          'barcode',
+          'uuid', 'lot_description', 'label', 'depot_text', 'depot_uuid',
+          'text', 'unit_type', 'group_name', 'quantity', 'code', 'invenetory_uuid',
+        ]),
+      ),
+    );
+  }
+
+  // generate a CSV and store it in a temporary file so we can upload to ODK Central
+  const csv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
+  const tmpfile = tempy.file({ name : 'lots.csv' });
+  await fs.writeFile(tmpfile, csv);
+
+  //
+
+  console.log('data:', csv);
+  debug(`Wrote ${data.length} lots to temporary file: ${tmpfile}`);
+
+  debug(`Creating draft form for odk`);
+  // now we need to create a draft form on ODK Central
+
+  // now lets upload the latest lots to our draft
+
+  // now lets publish our draft
+
+}
 
 /**
  *
  *
  *
  */
-async function pullStockMovementsFromCentral() { }
 
 router.get('/', async (req, res, next) => {
   try {
@@ -196,13 +258,6 @@ router.post('/sync-enterprise', async (req, res, next) => {
 router.post('/sync-depots', async (req, res, next) => {
   try {
     await syncDepotsWithCentral();
-    res.sendStatus(201);
-  } catch (e) { next(e); }
-});
-
-router.post('/sync-stock-movements', async (req, res, next) => {
-  try {
-    await pullStockMovementsFromCentral();
     res.sendStatus(201);
   } catch (e) { next(e); }
 });
