@@ -25,8 +25,11 @@ function StockLotsController(
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
 
-  // barcode scanner
+  // barcode scanner for inventories
   vm.openBarcodeScanner = openBarcodeScanner;
+
+  // barcode scanner
+  vm.openLotBarcodeScanner = openLotBarcodeScanner;
 
   // show lot barcode
   vm.openLotBarcodeModal = openLotBarcodeModal;
@@ -287,6 +290,18 @@ function StockLotsController(
       .then(record => {
         stockLotFilters.replaceFilters([
           { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(stockLotFilters.formatHTTP(true));
+        vm.latestViewFilters = stockLotFilters.formatView();
+      });
+  }
+
+  function openLotBarcodeScanner() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        stockLotFilters.replaceFilters([
+          { key : 'barcode', value : record.uuid, displayValue : record.uuid },
         ]);
 
         load(stockLotFilters.formatHTTP(true));

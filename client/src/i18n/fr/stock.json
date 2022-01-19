@@ -68,6 +68,9 @@
     "AND_MORE" : "... et {{left}} autres",
     "TRACK_CONSUMPTION":"Suivre la consommation",
     "TRACK_EXPIRATION":"Suivre l'expiration",
+    "SCAN_BARCODE_LOT": "Scanner le code-barre de lot",
+    "SCAN_BARCODE_INVENTORY": "Scanner le code-barre d'inventaire",
+    "SCAN_SYSTEM_BARCODE": "Scanner le code système",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",

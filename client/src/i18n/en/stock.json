@@ -68,6 +68,9 @@
     "AND_MORE" : "... and {{left}} more",
     "TRACK_CONSUMPTION":"Track consumption",
     "TRACK_EXPIRATION":"Track expiration",
+    "SCAN_BARCODE_LOT": "Scan barcode for lot",
+    "SCAN_BARCODE_INVENTORY": "Scan barcode for inventory",
+    "SCAN_SYSTEM_BARCODE": "Scan the system barcode",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
       "MISSING_LOT_NAME" : "Missing Lot Identifier",

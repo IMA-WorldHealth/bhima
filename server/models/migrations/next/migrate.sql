@@ -44,3 +44,10 @@ CREATE TABLE `lot_asset` (
   KEY `lot_uuid` (`lot_uuid`),
   CONSTRAINT `lot_asset__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * Add barcode in the lot table
+ * @author: mbayopanda
+ * @date: 2022-01-19
+ */
+CALL add_column_if_missing('lot', 'barcode', 'VARCHAR(191) NULL AFTER `is_assigned`');
