@@ -1,0 +1,15 @@
+{
+  "ODK" : {
+    "LOAD_FOSA_DATA" : "Chargement des données des FOSA",
+    "TOTAL_FOUND" : "Total des enregistrements trouvés",
+    "NO_RECORD_FOUND" : "Aucun enregistrement trouvé",
+    "IMPORTED_SUCCESSFULLY" : "Données importées avec succès",
+    "ODK_CENTRAL_URL" : "URL du serveur ODK Central",
+    "ODK_ADMIN_USER" : "Adressse mail de l'administrateur",
+    "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur",
+    "SYNC_ENTERPRISE" : "Synchronize enterprise settings",
+    "SYNC_USERS" : "Synchronize users",
+    "SYNC_DEPOTS" : "Synchronize depots",
+    "SYNC_SUBMISSIONS" : "Synchronize form submissions"
+  }
+}

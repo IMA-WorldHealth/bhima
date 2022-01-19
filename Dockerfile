@@ -16,6 +16,7 @@ ENV YARN_VERSION 1.22.17
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1
 RUN yarn policies set-version $YARN_VERSION
 ENV CHROME_BIN /usr/bin/chromium
+ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 
 # define working directory inside the container
 WORKDIR /usr/src/app
