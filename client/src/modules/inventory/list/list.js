@@ -65,6 +65,11 @@ function InventoryListController(
     headerCellFilter : 'translate',
     cellTemplate : '/modules/inventory/list/templates/inventory.cell.html',
   }, {
+    field : 'is_asset',
+    displayName : 'FORM.LABELS.ASSET',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/asset.cell.tmpl.html',
+  }, {
     field : 'price',
     displayName : 'FORM.LABELS.UNIT_PRICE',
     headerCellFilter : 'translate',
