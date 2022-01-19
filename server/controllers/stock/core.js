@@ -186,7 +186,7 @@ async function lookupLotByUuid(uid) {
  * @param {object} parameters - A request query object
  * @param {string} finalClauseParameter - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
-function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
+function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
   const sql = sqlQuery || `
       SELECT
         BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
@@ -343,7 +343,11 @@ async function getBulkInventoryCMM(
   // NOTE(@jniles) - this is a developer sanity check. Fail _hard_ if the query is underspecified
   // Throw an error if we don't have the monthAverageConsumption or averageConsumptionAlgo passed in.
   if (!monthAverageConsumption || !averageConsumptionAlgo) {
-    throw new Error('Cannot calculate the AMC without consumption parameters!');
+    throw new Error(
+      `Cannot calculate the AMC without consumption parameters!
+      Month Average Consumption: ${monthAverageConsumption},
+      Average Consumption Algorithm: ${averageConsumptionAlgo}`,
+    );
   }
 
   // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
