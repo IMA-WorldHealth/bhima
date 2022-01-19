@@ -181,6 +181,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.lotBarcodeReceipt = lotBarcodeReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAggregateConsumptionReceipt = stockAggregateConsumptionReceipt;
@@ -209,6 +210,13 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   function stockAssignReceipt(uuid, options) {
     options.posReceipt = service.posReceipt;
     const route = '/receipts/stock/assign/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // lot barcode
+  function lotBarcodeReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = '/receipts/stock/lot_barcode/'.concat(uuid);
     return fetch(route, options);
   }
 
