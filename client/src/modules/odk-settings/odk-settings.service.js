@@ -21,14 +21,22 @@ function ODKSettingsService(Api) {
 
   //
   service.syncDepots = () => {
-    return service.$http.post(baseUrl.concat('sync-depots'))
-      .then(service.util.unwrapHttpResponse);
+    return service.$http.post(baseUrl.concat('sync-depots')).then(service.util.unwrapHttpResponse);
   };
 
   //
   service.syncStockMovements = () => {
     return service.$http.post(baseUrl.concat('sync-stock-movements'))
       .then(service.util.unwrapHttpResponse);
+  };
+
+  service.getProjectSettings = () => {
+    return service.$http.get(baseUrl.concat('project-settings'))
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.getUserSettings = () => {
+    // todo
   };
 
   return service;
