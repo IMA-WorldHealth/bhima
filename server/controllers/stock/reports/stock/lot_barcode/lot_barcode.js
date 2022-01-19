@@ -8,7 +8,7 @@ const {
  * @description
  * This method displays the lot barcode
  *
- * GET /receipts/stock/lot_barcode/:uuid
+ * GET /receipts/stock/lots/:uuid/barcode
  */
 function lotBarcodeReceipt(req, res, next) {
   let report;

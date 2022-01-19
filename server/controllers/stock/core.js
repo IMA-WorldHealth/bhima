@@ -257,7 +257,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description, l.barcode,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
@@ -291,11 +291,9 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   const resultFromProcess = await db.exec(query, queryParameters);
 
-  // add minumum delay and barcode
-  const { key } = identifiers.LOT;
+  // add minumum delay
   resultFromProcess.forEach(row => {
     row.min_delay = params.min_delay;
-    row.barcode = barcode.generate(key, row.uuid);
   });
 
   // calulate the CMM and add inventory flags.

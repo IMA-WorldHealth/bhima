@@ -51,6 +51,7 @@ function LotsRegistryService(uiGridConstants, Session) {
       displayName : 'LOTS.BARCODE',
       headerTooltip : 'LOTS.BARCODE',
       headerCellFilter : 'translate',
+      visible : false,
     }, {
       field : 'label',
       displayName : 'STOCK.LOT',
