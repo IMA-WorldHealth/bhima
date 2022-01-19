@@ -50,10 +50,10 @@ async function loadODKCentralSettingsFromDatabase() {
   if (!odk) {
     debug('No odk_central_configuration found.');
   } else {
+    debug(`configuring ODK Central with url: ${odk.odk_central_url}`);
     central.auth.setConfig(odk.odk_central_url, odk.odk_admin_user, odk.odk_admin_password);
     debug('ODK Central link configured');
   }
-
 }
 
 /**
@@ -204,6 +204,27 @@ router.post('/sync-stock-movements', async (req, res, next) => {
     await pullStockMovementsFromCentral();
     res.sendStatus(201);
   } catch (e) { next(e); }
+});
+
+// gets the project settings from central
+router.get('/project-settings', async (req, res, next) => {
+  try {
+    const config = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
+
+    const projectId = config.length && config[0].odk_project_id;
+
+    //  if no configuration, return an empty object
+    if (!projectId) {
+      res.status(200).json({});
+      return;
+    }
+
+    const project = await central.api.projects.getProjectById(projectId);
+
+    res.status(200).json(project);
+
+  } catch (e) { next(e); }
+
 });
 
 exports.router = router;

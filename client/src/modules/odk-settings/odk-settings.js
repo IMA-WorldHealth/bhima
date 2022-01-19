@@ -41,6 +41,21 @@ function ODKSettingsController(
         }
       })
       .catch(Notify.handleError);
+
+    vm.loading = true;
+
+    ODKSettings.getProjectSettings()
+      .then(project => {
+        vm.project = project;
+      })
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+
+    // ODKSettings.getUserSettings()
+    //   .then(users => {
+    //     vm.users = users;
+    //   })
+    //   .catch(Notify.handleError);
   }
 
   // form submission
