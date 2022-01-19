@@ -216,7 +216,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   // lot barcode
   function lotBarcodeReceipt(uuid, options) {
     options.posReceipt = service.posReceipt;
-    const route = '/receipts/stock/lot_barcode/'.concat(uuid);
+    const route = `/receipts/stock/lots/${uuid}/barcode`;
     return fetch(route, options);
   }
 
