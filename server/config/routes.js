@@ -875,6 +875,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
   app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
+  app.get('/receipts/stock/lots/:uuid/barcode', stockReports.lotBarcodeReceipt);
 
   // stock consumption API
   app.get('/stock/consumptions/average/:periodId', stock.getStockConsumptionAverage);
@@ -1003,6 +1004,7 @@ exports.configure = function configure(app) {
   app.post('/lots/:uuid/merge', lots.merge);
   app.post('/lots/merge/auto', lots.autoMerge);
   app.post('/lots/merge/autoZero', lots.autoMergeZero);
+  app.post('/lots/barcodes/refresh', lots.refreshBarcodes);
   app.get('/inventory/:uuid/lot_candidates', lots.getCandidates);
   app.get('/lots_dupes/:label?/:entry_date?/:expiration_date?/:inventory_uuid?', lots.getDupes);
   app.get('/lots_all_dupes', lots.getAllDupes);

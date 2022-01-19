@@ -15,6 +15,10 @@ const debug = require('debug')('bhima:lots');
 const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
+const identifiers = require('../../config/identifiers');
+const barcode = require('../../lib/barcode');
+
+const lotKey = identifiers.LOT.key;
 
 const detailsQuery = `
   SELECT
@@ -37,6 +41,7 @@ exports.getAllDupes = getAllDupes;
 exports.merge = merge;
 exports.autoMerge = autoMerge;
 exports.autoMergeZero = autoMergeZero;
+exports.refreshBarcodes = refreshBarcodes;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -441,4 +446,31 @@ function assignments(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * POST /lots/barcodes/refresh
+ *
+ * @description
+ * Updates all lots by setting their system barcode
+ */
+async function refreshBarcodes(req, res, next) {
+
+  try {
+    const query = `SELECT BUID(l.uuid) AS uuid FROM lot l;`;
+    const lots = await db.exec(query);
+
+    const updateLotQuery = `UPDATE lot SET barcode = ? WHERE uuid = ?`;
+    const tx = db.transaction();
+
+    lots.forEach(lot => {
+      tx.addQuery(updateLotQuery, [barcode.generate(lotKey, lot.uuid), db.bid(lot.uuid)]);
+    });
+
+    await tx.execute();
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+
 }
