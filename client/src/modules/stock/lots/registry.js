@@ -193,6 +193,10 @@ function StockLotsController(
             totals['out-of-stock'] += 1;
           }
 
+          if (lot.status in Stock.stockStatusLabelKeys) {
+            lot.status = Stock.stockStatusLabelKeys[lot.status];
+          }
+
           // serialize tag names for filters
           lot.tagNames = lot.tags.map(tag => tag.name).join(',');
           lot.tags.forEach(addColorStyle);
