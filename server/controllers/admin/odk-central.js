@@ -73,12 +73,13 @@ async function syncUsersWithCentral() {
     ) AND user.id IN (SELECT user_id FROM depot_permission);
   `);
 
-  const enterprise = await db.one('SELECT * FROM enterprise');
+  // TODO(@jniles) LIMIT 1 is a hack.
+  const enterprise = await db.one('SELECT * FROM enterprise LIMIT 1');
 
   debug(`There are ${users.length} users available in BHIMA.`);
 
   // pull the latest users from ODK Central.
-  const centralUsers = await central.users.listAllUsers();
+  const centralUsers = await central.api.users.listAllUsers();
 
   debug(`There are ${centralUsers.length} users available in ODK Central.`);
 
@@ -98,7 +99,7 @@ async function syncUsersWithCentral() {
     const email = formatEmailAddr(user.email, enterprise.name);
     debug(`Creating user ${email}.`);
     // eslint-disable-next-line
-      const centralUser = await central.users.createUserWithPassword(email, password);
+      const centralUser = await central.api.users.createUserWithPassword(email, password);
     // eslint-disable-next-line
       await db.exec('INSERT INTO `odk_user` VALUES (?, ?, ?);', [centralUser.id, password, user.id]);
     debug(`Finished with user ${email}.`);
@@ -220,11 +221,8 @@ router.get('/project-settings', async (req, res, next) => {
     }
 
     const project = await central.api.projects.getProjectById(projectId);
-
     res.status(200).json(project);
-
   } catch (e) { next(e); }
-
 });
 
 exports.router = router;
