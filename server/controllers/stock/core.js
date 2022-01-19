@@ -16,6 +16,8 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
+const identifiers = require('../../config/identifiers');
+const barcode = require('../../lib/barcode');
 
 const flux = {
   FROM_PURCHASE    : 1,
@@ -288,9 +290,11 @@ async function getLotsDepot(depotUuid, params, finalClause) {
 
   const resultFromProcess = await db.exec(query, queryParameters);
 
-  // add minumum delay
+  // add minumum delay and barcode
+  const { key } = identifiers.LOT;
   resultFromProcess.forEach(row => {
     row.min_delay = params.min_delay;
+    row.barcode = barcode.generate(key, row.uuid);
   });
 
   // calulate the CMM and add inventory flags.
