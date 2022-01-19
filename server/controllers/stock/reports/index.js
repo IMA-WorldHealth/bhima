@@ -40,6 +40,7 @@ const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 const stockChangesReport = require('./stock/stock_changes/stock_changes');
+const lotBarcodeReceipt = require('./stock/lot_barcode/lot_barcode');
 
 /**
  * @function determineReceiptType
@@ -162,6 +163,7 @@ exports.purchasePrices = require('./purchase_prices');
 
 exports.lostStockReport = lostStockReport;
 exports.stockChangesReport = stockChangesReport;
+exports.lotBarcodeReceipt = lotBarcodeReceipt;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;
 exports.monthlyConsumption = require('./stock/monthly_consumption');

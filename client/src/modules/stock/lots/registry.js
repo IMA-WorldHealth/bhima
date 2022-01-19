@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 StockLotsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  'BarcodeService', 'LotService', 'LotsRegistryService', 'moment', 'bhConstants',
+  'BarcodeService', 'LotsRegistryService', 'moment', 'bhConstants', 'ReceiptModal',
 ];
 
 /**
@@ -14,7 +14,7 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Grouping, GridState, Columns, $state, $httpParamSerializer,
-  Barcode, LotService, LotsRegistry, moment, bhConstants,
+  Barcode, LotsRegistry, moment, bhConstants, Receipts,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -25,8 +25,14 @@ function StockLotsController(
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
 
-  // barcode scanner
+  // barcode scanner for inventories
   vm.openBarcodeScanner = openBarcodeScanner;
+
+  // barcode scanner
+  vm.openLotBarcodeScanner = openLotBarcodeScanner;
+
+  // show lot barcode
+  vm.openLotBarcodeModal = openLotBarcodeModal;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -289,6 +295,26 @@ function StockLotsController(
         load(stockLotFilters.formatHTTP(true));
         vm.latestViewFilters = stockLotFilters.formatView();
       });
+  }
+
+  function openLotBarcodeScanner() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        stockLotFilters.replaceFilters([
+          { key : 'barcode', value : record.uuid, displayValue : record.uuid },
+        ]);
+
+        load(stockLotFilters.formatHTTP(true));
+        vm.latestViewFilters = stockLotFilters.formatView();
+      });
+  }
+
+  /**
+   * @description display the barcode of the lot in a modal
+   * @param {string} uuid the lot uuid
+   */
+  function openLotBarcodeModal(uuid) {
+    return Receipts.lotBarcodeReceipt(uuid);
   }
 
   startup();

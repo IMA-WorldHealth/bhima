@@ -16,6 +16,8 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
+const identifiers = require('../../config/identifiers');
+const barcode = require('../../lib/barcode');
 
 const flux = {
   FROM_PURCHASE    : 1,
@@ -102,6 +104,7 @@ function getLotFilters(parameters) {
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('barcode', 'barcode', 'l');
   filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
@@ -254,7 +257,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description, l.barcode,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
