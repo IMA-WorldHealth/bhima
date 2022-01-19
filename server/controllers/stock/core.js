@@ -887,12 +887,13 @@ function computeLotIndicators(inventories) {
       const today = moment().endOf('day').toDate();
 
       _.forEach(orderedInventoryLots, (lot) => {
+
         if (!lot.tracking_expiration) {
           lot.expiration_date = '';
         }
 
         lot.exhausted = lot.quantity <= 0;
-        lot.expired = !lot.exhausted && (lot.expiration_date < today);
+        lot.expired = !lot.exhausted && (lot.expiration_date < today && lot.tracking_expiration);
 
         // algorithm for tracking the stock consumption by day
         if (lot.tracking_consumption && !lot.exhausted && !lot.expired) {
