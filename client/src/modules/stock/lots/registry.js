@@ -5,6 +5,7 @@ StockLotsController.$inject = [
   'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
   'BarcodeService', 'LotsRegistryService', 'moment', 'bhConstants', 'ReceiptModal',
+  'LotService',
 ];
 
 /**
@@ -14,7 +15,7 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify, uiGridConstants, Modal, Languages,
   Grouping, GridState, Columns, $state, $httpParamSerializer,
-  Barcode, LotsRegistry, moment, bhConstants, Receipts,
+  Barcode, LotsRegistry, moment, bhConstants, Receipts, Lots,
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -33,6 +34,9 @@ function StockLotsController(
 
   // show lot barcode
   vm.openLotBarcodeModal = openLotBarcodeModal;
+
+  // refresh system lot barcodes
+  vm.refreshBarcodes = refreshBarcodes;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -304,6 +308,14 @@ function StockLotsController(
           { key : 'barcode', value : record.uuid, displayValue : record.uuid },
         ]);
 
+        load(stockLotFilters.formatHTTP(true));
+        vm.latestViewFilters = stockLotFilters.formatView();
+      });
+  }
+
+  function refreshBarcodes() {
+    Lots.refreshBarcodes()
+      .then(() => {
         load(stockLotFilters.formatHTTP(true));
         vm.latestViewFilters = stockLotFilters.formatView();
       });

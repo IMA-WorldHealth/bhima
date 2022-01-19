@@ -71,6 +71,7 @@
     "SCAN_BARCODE_LOT": "Scanner le code-barre de lot",
     "SCAN_BARCODE_INVENTORY": "Scanner le code-barre d'inventaire",
     "SCAN_SYSTEM_BARCODE": "Scanner le code système",
+    "REFRESH_SYSTEM_BARCODES": "Rafraichir les codes-barres du système",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",

@@ -16,8 +16,6 @@ const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const util = require('../../lib/util');
-const identifiers = require('../../config/identifiers');
-const barcode = require('../../lib/barcode');
 
 const flux = {
   FROM_PURCHASE    : 1,
