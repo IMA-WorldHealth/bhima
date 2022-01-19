@@ -169,6 +169,7 @@
     "STOCK_REQUISITION":"Réquisition",
     "STOCK_MOVEMENT_REPORT": "Rapport graphique des mouvements",
     "STOCK_SETTINGS": "Paramètres de stock",
+    "ODK_SETTINGS" : "Paramètres de l'ODK",
     "SUBSIDY":"Gestion des subventions",
     "TAGS" : "Gestion des étiquettes",
     "TRANSACTION_TYPE":"Types de Transaction",

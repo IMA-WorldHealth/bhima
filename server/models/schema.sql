@@ -592,6 +592,7 @@ CREATE TABLE `enterprise_setting` (
   `base_index_growth_rate` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `posting_payroll_cost_center_mode` VARCHAR(100) NOT NULL DEFAULT 'default', -- With this function, transactions related to employee payment are done in bulk and require that each expense account be linked to a cost center
   `enable_require_cost_center_for_posting` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_odk_central_integration` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY (`enterprise_id`),
   CONSTRAINT `enterprise_setting__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -793,6 +794,7 @@ CREATE TABLE `inventory` (
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH' ,
+  `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1910,6 +1912,7 @@ CREATE TABLE `lot` (
   `expiration_date`   DATE NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
+  `barcode`           VARCHAR(191) NULL,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
@@ -1921,6 +1924,18 @@ CREATE TABLE `lot_tag` (
   `tag_uuid`          BINARY(16) NOT NULL,
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`tag_uuid`) REFERENCES `tags` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `lot_asset`;
+CREATE TABLE `lot_asset` (
+  `lot_uuid`           BINARY(16) NOT NULL,
+  `abt_inventory_no`   VARCHAR(191) NOT NULL,
+  `origin`             VARCHAR(191) NOT NULL,
+  `purchase_order`     VARCHAR(191) NOT NULL,
+  `vendor`             VARCHAR(191) NOT NULL,
+  `condition`          VARCHAR(191) NOT NULL,
+  KEY `lot_uuid` (`lot_uuid`),
+  CONSTRAINT `lot_asset__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory_tag`;
@@ -2632,5 +2647,25 @@ CREATE TABLE `cost_center_aggregate` (
   CONSTRAINT `cost_center_aggregate__period` FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   CONSTRAINT `cost_center_aggregate__cost_center_id` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `odk_central_integration`;
+CREATE TABLE `odk_central_integration` (
+  `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `odk_central_url` TEXT NOT NULL,
+  `odk_admin_user` TEXT NOT NULL,
+  `odk_admin_password` TEXT NOT NULL,
+  `odk_project_id` INTEGER UNSIGNED NULL,
+  KEY `enterprise_id` (`enterprise_id`),
+  CONSTRAINT `odk_central__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `odk_user`;
+CREATE TABLE `odk_user` (
+  `odk_user_id` INT UNSIGNED NOT NULL,
+  `odk_user_password` TEXT NOT NULL,
+  `bhima_user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  CONSTRAINT `odk_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 SET foreign_key_checks = 1;

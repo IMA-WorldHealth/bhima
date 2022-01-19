@@ -68,6 +68,10 @@
     "AND_MORE" : "... et {{left}} autres",
     "TRACK_CONSUMPTION":"Suivre la consommation",
     "TRACK_EXPIRATION":"Suivre l'expiration",
+    "SCAN_BARCODE_LOT": "Scanner le code-barre de lot",
+    "SCAN_BARCODE_INVENTORY": "Scanner le code-barre d'inventaire",
+    "SCAN_SYSTEM_BARCODE": "Scanner le code système",
+    "REFRESH_SYSTEM_BARCODES": "Rafraichir les codes-barres du système",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",
@@ -265,6 +269,10 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption"
   },
   "SETTINGS" : {
+    "CONSUMPTION_AND_REORDER_SETTINGS" : "Consommation de stock et de réapprovisionnement",
+    "ACCOUNTING_INTEGRATION_SETTINGS" : "Intégration de la comptabilité des stocks",
+    "ODK_INTEGRATION_SETTINGS" : "Paramètres d'intégration ODK",
+    "OTHER_SETTINGS" : "Autres paramètres",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
     "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Intervalle de commande par défaut (En mois)",
@@ -321,7 +329,10 @@
     "DETAILS":"Information sur le lot",
     "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
     "MERGE_DUPLICATE_LOTS" : "fusionner des lots en double",
+    "BARCODE": "Code-barre",
     "SHOW_LOT_SCHEDULE": "Montrer le calendrier de consommation des lots",
+    "SHOW_BARCODE": "Afficher le code-barre",
+    "BARCODE_FOR_LOT": "Code-barre pour le lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
     "ASSIGNMENT_CURRENT":"En cours",
