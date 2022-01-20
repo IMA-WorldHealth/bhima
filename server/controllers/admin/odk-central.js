@@ -10,6 +10,7 @@ const debug = require('debug')('bhima:plugins:odk-central');
 const _ = require('lodash');
 const { json2csvAsync } = require('json-2-csv');
 const tempy = require('tempy');
+const path = require('path');
 const fs = require('fs/promises');
 const qrcode = require('qrcode');
 const pako = require('pako');
@@ -18,8 +19,6 @@ const central = require('@ima-worldhealth/odk-central-api-cjs');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
 const core = require('../stock/core');
-const { generate } = require('../../lib/barcode');
-const { LOT } = require('../../config/identifiers');
 
 const odkCentralRoles = {
   admin : 1,
@@ -74,8 +73,7 @@ function unformatEmailAddr(email) {
 
 async function defineUserAsDataCollector(userId) {
   const odkProject = await db.one('SELECT odk_project_id AS id FROM odk_central_integration LIMIT 1;');
-
-  await central.api.users.assingUserToProjectRole(odkProject.id, odkCentralRoles.dataCollector, userId);
+  await central.api.users.assignUserToProjectRole(odkProject.id, odkCentralRoles.dataCollector, userId);
 }
 
 /**
@@ -247,21 +245,28 @@ async function syncEnterpriseWithCentral() {
 async function syncDepotsWithCentral() {
   debug('Synchronizing depots with ODK Central');
 
+  const integration = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
+  if (!integration.length) {
+    debug('No odk_project_id found!  ODK Central integration not set up.  Exiting early.');
+    return;
+  }
+
+  const odkProjectId = integration[0].odk_project_id;
+
   const depots = await db.exec('SELECT buid(uuid) as uuid, depot.text FROM depot;');
 
   debug(`Located ${depots.length} depots locally...`);
 
   const data = [];
 
-  /**
-   * Create a CSV file full of lots
-   */
+  // Here, we pull out the current quantity in stock every depot, including lot numbers
+  // to create a lots.csv that will be uploaded to ODK Central to show inventory items as
+  // they are scanned.
 
   // eslint-disable-next-line
   for (const depot of depots) {
     debug(`Pulling lots for ${depot.text}`);
     const lots = await core.getLotsDepot(depot.uuid, { // eslint-disable-line
-      includeEmptyLot : 0,
       month_average_consumption : 6,
       average_consumption_algo : 'msh',
     });
@@ -269,7 +274,6 @@ async function syncDepotsWithCentral() {
     debug(`Found ${lots.length} lots.`);
 
     data.push(...lots
-      .map(lot => { lot.barcode = generate(LOT.key, lot.uuid); return lot; })
       .map(
         lot => _.pick(lot, [
           'barcode',
@@ -280,31 +284,87 @@ async function syncDepotsWithCentral() {
     );
   }
 
-  // generate a CSV and store it in a temporary file so we can upload to ODK Central
-  const csv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
-  const tmpfile = tempy.file({ name : 'lots.csv' });
-  await fs.writeFile(tmpfile, csv);
+  // generate a CSV and store it in a temporary file so we can upload to ODK Central later
+  const lotsCsv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
+  const tmpLotsFile = tempy.file({ name : 'lots.csv' });
+  await fs.writeFile(tmpLotsFile, lotsCsv);
 
-  //
+  debug(`Wrote ${data.length} lots to temporary file: ${tmpLotsFile}`);
 
-  debug('data:', csv);
-  debug(`Wrote ${data.length} lots to temporary file: ${tmpfile}`);
+  // now we need to pull out the transfers out of depots to other depots
+  // this will power a selection menu in ODK Collect application.
 
-  debug(`Creating draft form for odk`);
+  const toOtherDepotFluxId = 8;
+
+  // get all stock exits to other depots
+  const allStockExitDocuments = await db.exec(`
+    SELECT BUID(document_uuid) as document_uuid,
+      dm.text AS documentReference,
+      BUID(depot_uuid) AS origin_depot_uuid,
+      BUID(entity_uuid) AS target_depot_uuid,
+      depot.text AS depot_text,
+      CONCAT(dm.text, " (", DATE_FORMAT(MAX(date), "%Y-%m-%d"), ") - ", COUNT(*), " produits") AS label
+    FROM stock_movement
+      JOIN document_map dm ON stock_movement.document_uuid = dm.uuid
+      JOIN depot ON depot.uuid = stock_movement.depot_uuid
+    WHERE stock_movement.flux_id = ${toOtherDepotFluxId}
+    GROUP BY document_uuid;
+  `);
+
+  const documentsCsv = await json2csvAsync(allStockExitDocuments, { trimHeaderFields : true, trimFieldValues : true });
+  const tmpDocumentsFile = tempy.file({ name : 'transfers.csv' });
+  await fs.writeFile(tmpDocumentsFile, documentsCsv);
+  debug(`Wrote ${allStockExitDocuments.length} transfer documents to temporary file: ${tmpDocumentsFile}`);
+
+  debug(`Creating draft form for ODK`);
+
+  const xlsxFormPath = path.join(__dirname, '../../../client/assets/pv-reception.xlsx');
+
+  debug('Uploading', xlsxFormPath, 'to ODK Central.');
+
+  const xmlFormId = 'bhima_pv_reception';
+
+  // first, check if this form exists, and clear the form if it exists
+  const hasForm = await central.api.getFormByProjectIdAndFormId(odkProjectId, xmlFormId);
+  if (hasForm) {
+    debug('Found an existing form.  Deleting it...');
+    await central.api.forms.deleteForm(odkProjectId, xmlFormId);
+  }
+
   // now we need to create a draft form on ODK Central
+  const draft = await central.api.forms.createFormFromXLSX(odkProjectId, xlsxFormPath, xmlFormId);
 
-  // now lets upload the latest lots to our draft
+  debug(`Created draft form "${draft.name}" (id: ${draft.xmlFormId}, version: ${draft.version}).  `);
+
+  // let's add in the two attachments
+  let result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, tmpDocumentsFile);
+  debug(`Uploaded ${tmpDocumentsFile} with result success: ${result.success}`);
+
+  result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, tmpLotsFile);
+  debug(`Uploaded ${tmpLotsFile} with result success: ${result.success}`);
+
+  // add the IMA icon to the form
+  const srcIconFile = path.join(__dirname, '../../../client/assets/icon.png');
+  result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, srcIconFile);
+  debug(`Uploaded ${srcIconFile} with result success: ${result.success}`);
 
   // now lets publish our draft
+  const published = await central.api.forms.publishDraftForm(odkProjectId, xmlFormId);
+  debug(`Published with result success: ${published.success}`);
+
+  // now lets give all app-users access to this form
+  const allAppUsers = await central.api.users.listAllAppUsers(odkProjectId);
+  for (const user of allAppUsers) { // eslint-disable-line
+    debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
+    await defineUserAsDataCollector(user.id); // eslint-disable-line
+  }
 
 }
 
 /**
  *
  *
- *
  */
-
 router.get('/', async (req, res, next) => {
   try {
     const settings = await db.exec(

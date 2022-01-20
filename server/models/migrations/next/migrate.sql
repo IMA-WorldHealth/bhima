@@ -61,3 +61,6 @@ CREATE TABLE `lot_asset` (
  * @date: 2022-01-19
  */
 CALL add_column_if_missing('lot', 'barcode', 'VARCHAR(191) NULL AFTER `is_assigned`');
+
+-- regenerate barcodes for lots
+UPDATE lot SET barcode = CONCAT('LT', LEFT(HEX(lot.uuid), 8));
