@@ -13,10 +13,12 @@ const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.h
 const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
 const STOCK_MOVEMENT_REPORT_TEMPLATE = `${BASE_PATH}/stock_movement_report.handlebars`;
+const LOT_BARCODE_TEMPLATE = `${BASE_PATH}/stock/lot_barcode/lot_barcode.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
 const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
+const STOCK_ENTRY_ASSET_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_asset_integration.receipt.handlebars`;
 const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt.handlebars`;
 const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
 
@@ -173,6 +175,19 @@ const stockFluxReceipt = {
   15 : { key : 'INVENTORY_ADJUSTMENT', path : 'adjustment' },
 };
 
+
+// Stock status label keys
+// WARNING: Must match stockStatusLabelKeys in client StockService
+const stockStatusLabelKeys = {
+  stock_out         : 'STOCK.STATUS.STOCK_OUT',
+  in_stock          : 'STOCK.STATUS.IN_STOCK',
+  security_reached  : 'STOCK.STATUS.SECURITY',
+  minimum_reached   : 'STOCK.STATUS.MINIMUM',
+  over_maximum      : 'STOCK.STATUS.OVER_MAX',
+  unused_stock      : 'STOCK.STATUS.UNUSED_STOCK',
+};
+
+
 // Exports
 module.exports = {
   _,
@@ -191,6 +206,7 @@ module.exports = {
   getDepotMovement,
   getVoucherReferenceForStockMovement,
   pdfOptions,
+  stockStatusLabelKeys,
   STOCK_EXIT_PATIENT_TEMPLATE,
   POS_STOCK_EXIT_PATIENT_TEMPLATE,
   STOCK_EXIT_SERVICE_TEMPLATE,
@@ -204,6 +220,7 @@ module.exports = {
   STOCK_ENTRY_DEPOT_TEMPLATE,
   STOCK_ENTRY_PURCHASE_TEMPLATE,
   STOCK_ENTRY_INTEGRATION_TEMPLATE,
+  STOCK_ENTRY_ASSET_INTEGRATION_TEMPLATE,
   STOCK_ENTRY_DONATION_TEMPLATE,
   STOCK_ADJUSTMENT_TEMPLATE,
   STOCK_EXIT_REPORT_TEMPLATE,
@@ -220,4 +237,5 @@ module.exports = {
   STOCK_EXPIRATION_REPORT_TEMPLATE,
   STOCK_AGGREGATE_CONSUMPTION_TEMPLATE,
   STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE,
+  LOT_BARCODE_TEMPLATE,
 };

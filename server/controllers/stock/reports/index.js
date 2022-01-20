@@ -34,12 +34,14 @@ const stockExitServiceReceipt = require('./stock/exit_service_receipt');
 const stockExitLossReceipt = require('./stock/exit_loss_receipt');
 const stockEntryPurchaseReceipt = require('./stock/entry_purchase_receipt');
 const stockEntryIntegrationReceipt = require('./stock/entry_integration_receipt');
+const stockEntryAssetIntegrationReceipt = require('./stock/entry_asset_integration_receipt');
 const stockEntryDonationReceipt = require('./stock/entry_donation_receipt');
 const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
 const stockAssignReceipt = require('./stock/assign_receipt');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 const stockChangesReport = require('./stock/stock_changes/stock_changes');
+const lotBarcodeReceipt = require('./stock/lot_barcode/lot_barcode');
 
 /**
  * @function determineReceiptType
@@ -123,6 +125,10 @@ async function renderStockReceipt(req, res, next) {
       renderer = stockExitAggregateConsumptionReceipt;
       break;
 
+    case Stock.flux.FROM_ASSET_INTEGRATION:
+      renderer = stockEntryAssetIntegrationReceipt;
+      break;
+
     default:
       throw new BadRequest('Could not determine stock receipt.');
     }
@@ -162,6 +168,7 @@ exports.purchasePrices = require('./purchase_prices');
 
 exports.lostStockReport = lostStockReport;
 exports.stockChangesReport = stockChangesReport;
+exports.lotBarcodeReceipt = lotBarcodeReceipt;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
 exports.stockExitAggregateConsumptionReceipt = stockExitAggregateConsumptionReceipt;
 exports.monthlyConsumption = require('./stock/monthly_consumption');

@@ -178,7 +178,8 @@ INSERT INTO unit VALUES
   (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts'),
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense'),
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
-  (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
+  (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
+  (306, '[SETTINGS] ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -346,7 +347,8 @@ INSERT INTO `flux` VALUES
   (13, 'STOCK_FLUX.FROM_INTEGRATION'),
   (14, 'STOCK_FLUX.INVENTORY_RESET'),
   (15, 'STOCK_FLUX.INVENTORY_ADJUSTMENT'),
-  (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
+  (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION'),
+  (17, 'STOCK_FLUX.FROM_ASSET_INTEGRATION');
 
 -- Roles Actions
 

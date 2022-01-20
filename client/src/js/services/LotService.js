@@ -82,6 +82,11 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
+  lots.refreshBarcodes = () => {
+    return $http.post(`/lots/barcodes/refresh`, {})
+      .then(util.unwrapHttpResponse);
+  };
+
   /**
   * @function computeLotWarningFlags()
   *  @description

@@ -28,7 +28,13 @@
     </li>
     <li>
       <a data-method="assign_roles" ng-click="grid.appScope.editRoles(row.entity)" href>
-        <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_ROLE</span>
+        <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT_ROLE</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="qrcode" ng-click="grid.appScope.showQRCode(row.entity.id)" href>
+        <i class="fa fa-qrcode"></i> <span translate>ODK.QRCODE</span>
       </a>
     </li>
     <li class="divider"></li>

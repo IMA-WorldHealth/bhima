@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 /**
  * @module stock/core
  *
@@ -34,6 +35,7 @@ const flux = {
   INVENTORY_RESET  : 14,
   INVENTORY_ADJUSTMENT : 15,
   AGGREGATE_CONSUMPTION : 16,
+  FROM_ASSET_INTEGRATION : 17,
 };
 
 // const fluxLabel = {};
@@ -102,6 +104,7 @@ function getLotFilters(parameters) {
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('barcode', 'barcode', 'l');
   filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
@@ -185,7 +188,7 @@ async function lookupLotByUuid(uid) {
  * @param {object} parameters - A request query object
  * @param {string} finalClauseParameter - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
-function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
+function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
   const sql = sqlQuery || `
       SELECT
         BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
@@ -254,7 +257,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
   }
 
   const sql = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description, l.barcode,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
       d.text AS depot_text, l.unit_cost, l.expiration_date,
@@ -265,7 +268,8 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac
+      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
+      ast.abt_inventory_no, ast.origin, ast.purchase_order, ast.vendor, ast.condition
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -276,6 +280,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
       LEFT JOIN tags t ON t.uuid = lt.tag_uuid
+      LEFT JOIN lot_asset AS ast ON ast.lot_uuid = l.uuid
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;
@@ -342,7 +347,11 @@ async function getBulkInventoryCMM(
   // NOTE(@jniles) - this is a developer sanity check. Fail _hard_ if the query is underspecified
   // Throw an error if we don't have the monthAverageConsumption or averageConsumptionAlgo passed in.
   if (!monthAverageConsumption || !averageConsumptionAlgo) {
-    throw new Error('Cannot calculate the AMC without consumption parameters!');
+    throw new Error(
+      `Cannot calculate the AMC without consumption parameters!
+      Month Average Consumption: ${monthAverageConsumption},
+      Average Consumption Algorithm: ${averageConsumptionAlgo}`,
+    );
   }
 
   // create a list of unique depot/inventory_uuid combinations to avoid querying the server multiple
@@ -887,12 +896,13 @@ function computeLotIndicators(inventories) {
       const today = moment().endOf('day').toDate();
 
       _.forEach(orderedInventoryLots, (lot) => {
+
         if (!lot.tracking_expiration) {
           lot.expiration_date = '';
         }
 
         lot.exhausted = lot.quantity <= 0;
-        lot.expired = !lot.exhausted && (lot.expiration_date < today);
+        lot.expired = !lot.exhausted && (lot.expiration_date < today && lot.tracking_expiration);
 
         // algorithm for tracking the stock consumption by day
         if (lot.tracking_consumption && !lot.exhausted && !lot.expired) {

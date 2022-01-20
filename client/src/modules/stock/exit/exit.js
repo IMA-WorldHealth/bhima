@@ -69,6 +69,7 @@ function StockExitController(
   vm.checkValidity = checkValidity;
   vm.onLotSelect = onLotSelect;
   vm.getLotByBarcode = getLotByBarcode;
+  vm.getBarcode = getBarcode;
 
   const mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
@@ -341,6 +342,44 @@ function StockExitController(
           Stock.lots.read(null, {
             depot_uuid : vm.depot.uuid,
             label : record.uuid.toUpperCase(),
+            dateTo : vm.movement.date,
+            includeEmptyLot : 0,
+          })
+            .then(lots => {
+              if (lots.length <= 0) {
+                Notify.danger('STOCK.LOT_NOT_FOUND', 20000);
+                return;
+              }
+              if (lots.length > 1) {
+                Notify.danger('STOCK.DUPLICATE_LOTS', 20000);
+                return;
+              }
+
+              // The lot is unique, construct a new row for it
+              const lot = lots[0];
+              const inventory = vm.mapSelectableInventories.get(lot.inventory_uuid);
+              if (inventory) {
+                const row = vm.stockForm.addItems(1);
+                row.inventory = inventory;
+                row.inventory_uuid = lot.inventory_uuid;
+                row.quantity = 1;
+                row.lot = lot;
+                configureItem(row);
+                checkValidity();
+                refreshSelectedLotsList(row);
+              }
+            });
+        }
+      });
+  }
+
+  function getBarcode() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        if (record.uuid) {
+          Stock.lots.read(null, {
+            depot_uuid : vm.depot.uuid,
+            barcode : record.uuid,
             dateTo : vm.movement.date,
             includeEmptyLot : 0,
           })

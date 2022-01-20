@@ -1,6 +1,18 @@
 {
   "STOCK" : {
     "ALERT" : "Alert",
+    "ASSET" : {
+      "ABT_INVENTORY_NO" : "Abt Inventory No",
+      "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Damaged",
+        "GOOD" : "Good",
+        "LOST" : "lost"
+      },
+      "ORIGIN" : "Origin",
+      "PURCHASE_ORDER" : "Purchase Order",
+      "VENDOR" : "Vendor"
+    },
     "USE_OF_STOCK_WAC" : "Use of the value in stock of the product (Weighted Average Cost)",
     "WAC_NOTIFICATION" : "The current value of the product in stock is",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"Does not exist because the movement of stock was made before the implementation of stock accounting",
@@ -38,6 +50,7 @@
       "PRODUCTS_IN_OVERSTOCK" : "Products in overstock"
     },
     "DAYS_OF_STOCK_OUT" : "# Days of Stock Out",
+    "DAYS_UNTIL_STOCK_OUT" : "Days until stock out",
     "DECREASE"        : "Decrease",
     "DECREASE_HELP"   : "Adjust stock by decreasing the quantity of lots of products in stock",
     "DEPOT"           : "Depot",
@@ -51,6 +64,7 @@
     "DUPLICATE_LOT_ORDER": "A lot with this label has already been added",
     "EMPTY"           : "You do not have any stock in your depot",
     "ENTRY"           : "Stock Entry",
+    "ENTRY_ASSET_INTEGRATION" : "Asset",
     "ENTRY_DATE"      : "Entry Date",
     "ENTRY_DATE_TOOLTIP" : "Date of earliest entry",
     "ENTRY_DOCUMENT"  : "Entry Document",
@@ -68,6 +82,10 @@
     "AND_MORE" : "... and {{left}} more",
     "TRACK_CONSUMPTION":"Track consumption",
     "TRACK_EXPIRATION":"Track expiration",
+    "SCAN_BARCODE_LOT": "Scan barcode for lot",
+    "SCAN_BARCODE_INVENTORY": "Scan barcode for inventory",
+    "SCAN_SYSTEM_BARCODE": "Scan the system barcode",
+    "REFRESH_SYSTEM_BARCODES": "Refresh system barcodes",
     "ERRORS" : {
       "NO_ROWS" : "Must have at least one row in the grid.",
       "MISSING_LOT_NAME" : "Missing Lot Identifier",
@@ -132,7 +150,7 @@
       "UPLOAD_SUCCESS" : "Stock imported successfully",
       "UPLOAD_DATE_REQUIRED" : "Define the importation date please"
     },
-    "CMM"             : "CMM",
+    "CMM"             : "AMC",
     "CURRENT_QUANTITY" : "Current Quantity",
     "INPUT"           : "Input",
     "INTEGRATION"     : "Integration",
@@ -148,6 +166,8 @@
     "LOT_NOT_FOUND"   : "That lot was not found!",
     "MAXIMUM"         : "Maximum Stock",
     "MINIMUM"         : "Minimum Stock",
+    "MAX_STOCK_DATE"  : "Last date stock is usable",
+    "MIN_STOCK_DATE"  : "First date to use stock",
     "MONTH"           : "Stock Months",
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
     "MONTH_OF_STOCK"  : "Stock Months - Months until Stock Out",
@@ -179,6 +199,7 @@
     "DIRECTION": " Movement direction",
     "LOSS_DISTRIBUTION" : "Stock Loss",
     "MIN_MONTHS_SECURITY_STOCK" : "Min Months Security Stock",
+    "MONTHS_REMAINING": "Months Remaining",
     "MOTIF"           : "Motive",
     "MOVEMENT"        : "Movement",
     "MOVEMENTS"       : "Movements",
@@ -209,6 +230,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
       "AGGREGATE_CONSUMPTION" : "Stock exit - Aggregate consumption",
+      "ENTRY_ASSET_INTEGRATION" : "Stock Entry - Asset Integration",
       "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
@@ -221,10 +243,12 @@
       "EXIT_LOSS"      : "Stock exit to loss"
     },
     "RECEIVER"        : "Receiver",
+    "RECEPTION_ASSET_INTEGRATION" : "Asset Entry by Integration",
     "RECEPTION_TRANSFER" : "Transfer",
     "RECEPTION_DESCRIPTION" : "Stock Reception",
     "RECEPTION_INTEGRATION" : "Stock Entry by Integration",
     "RECEPTION_DONATION" : "Stock Entry from a donation",
+    "REFILL_QUANTITY" : "Refill Quantity",
     "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
     "RISK_OF_EXPIRATION" : "Risk of expiration",
@@ -262,9 +286,14 @@
     "TOGGLE_EXPIRED_STOCK" : "Show expired lots?",
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired.",
     "TOGGLE_EXPIRY_RISKS" : "Show the lots with expiry risks?",
-    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date."
+    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date.",
+    "WAC" : "Weighted Avgerage Cost"
   },
   "SETTINGS" : {
+    "CONSUMPTION_AND_REORDER_SETTINGS" : "Stock Consumption and Reorder Settings",
+    "ACCOUNTING_INTEGRATION_SETTINGS" : "Stock Accounting Integration",
+    "ODK_INTEGRATION_SETTINGS" : "ODK Integration Settings",
+    "OTHER_SETTINGS" : "Other Settings",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "The stock supply should provide at least this many months of stock for the depot involved.",
     "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Default Purchase order interval (In Month)",
@@ -291,6 +320,7 @@
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "All Destinations",
     "AGGREGATE_CONSUMPTION" : "Aggregate consumption",
+    "FROM_ASSET_INTEGRATION" : "Asset Integration",
     "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
     "FROM_ADJUSTMENT"  : "Adjustment (Positive)",
@@ -322,6 +352,9 @@
     "FIND_DUPLICATE_LOTS" : "Find duplicate lots",
     "MERGE_DUPLICATE_LOTS" : "Merge duplicate lots",
     "SHOW_LOT_SCHEDULE": "Show lot consumption schedule",
+    "BARCODE": "Barcode",
+    "SHOW_BARCODE": "Show barcode",
+    "BARCODE_FOR_LOT": "Barcode for the lot",
     "SUCCESSFULLY_EDITED":"Lot updated with success",
     "ASSIGNMENT_HISTORIC":"Assignment History",
     "ASSIGNMENT_CURRENT":"Current",

@@ -78,23 +78,20 @@ function StockInventoriesController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/inventories/templates/status.cell.html',
   }, {
-    field           : 'avg_consumption',
-    displayName     : 'CMM',
-    enableFiltering : false,
-    enableSorting   : true,
-    cellClass       : 'text-right',
-    type : 'number',
-    cellTemplate     : 'modules/stock/inventories/templates/cmm.cell.html',
-  }, {
-    field            : 'S_MONTH',
-    displayName      : 'MS',
+    field            : 'avg_consumption',
+    displayName      : 'STOCK.CMM',
+    headerTooltip    : 'STOCK.MONTHLY_CONSUMPTION.AVERAGE_MONTHLY_CONSUMPTION',
+    headerCellFilter : 'translate',
     enableFiltering  : false,
-    enableSorting    : false,
+    enableSorting    : true,
     cellClass        : 'text-right',
-    type : 'number',
+    type             : 'number',
+    cellTemplate     : 'modules/stock/inventories/templates/cmm.cell.html',
   }, {
     field           : 'S_SEC',
     displayName     : 'SS',
+    headerCellFilter : 'translate',
+    headerTooltip   : 'STOCK.SECURITY',
     enableFiltering : false,
     enableSorting   : false,
     cellClass       : 'text-right',
@@ -102,6 +99,8 @@ function StockInventoriesController(
   }, {
     field           : 'S_MIN',
     displayName     : 'MIN',
+    headerCellFilter : 'translate',
+    headerTooltip   : 'STOCK.MINIMUM',
     enableFiltering : false,
     enableSorting   : false,
     cellClass       : 'text-right',
@@ -109,6 +108,8 @@ function StockInventoriesController(
   }, {
     field           : 'S_MAX',
     displayName     : 'MAX',
+    headerCellFilter : 'translate',
+    headerTooltip   : 'STOCK.MAXIMUM',
     enableFiltering : false,
     enableSorting   : false,
     cellClass       : 'text-right',
@@ -116,14 +117,30 @@ function StockInventoriesController(
   }, {
     field            : 'S_Q',
     displayName      : 'STOCK.ORDERS',
+    headerTooltip    : 'STOCK.REFILL_QUANTITY',
     headerCellFilter : 'translate',
     enableFiltering  : false,
     enableSorting    : true,
     type             : 'number',
     cellClass        : 'text-right',
     cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html',
-  },
-  {
+  }, {
+    field            : 'lifetime',
+    displayName      : 'STOCK.DAYS_UNTIL_STOCK_OUT',
+    headerTooltip    : 'STOCK.DAYS_UNTIL_STOCK_OUT',
+    headerCellFilter : 'translate',
+    type             : 'number',
+    visible          : false,
+  }, {
+    field            : 'wac',
+    displayName      : 'STOCK.WAC',
+    headerTooltip    : 'STOCK.WAC',
+    headerCellFilter : 'translate',
+    cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
+    cellClass        : 'text-right',
+    type             : 'number',
+    visible          : false,
+  }, {
     field            : 'action',
     displayName      : '',
     enableFiltering  : false,
@@ -301,7 +318,7 @@ function StockInventoriesController(
   vm.downloadExcel = () => {
     const filterOpts = stockInventoryFilters.formatHTTP();
     const defaultOpts = {
-      renderer : 'xlsxReport',
+      renderer : 'xlsx',
       lang : Languages.key,
       renameKeys : true,
       displayNames : gridColumns.getDisplayNames(),
