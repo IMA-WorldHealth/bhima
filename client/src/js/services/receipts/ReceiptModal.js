@@ -332,6 +332,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.lotBarcodeReceipt = lotBarcodeReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.getReceiptFnByFluxId = getReceiptFnByFluxId;
 
@@ -370,6 +371,17 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   function stockAssignReceipt(uuid, notifyCreated) {
     const opts = { title : 'ASSIGN.STOCK_ASSIGN', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockAssignReceipt(uuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method lotBarcodeReceipt
+   * @param {string} uuid
+   * @param {boolean} notifyCreated
+   */
+  function lotBarcodeReceipt(uuid, notifyCreated) {
+    const opts = { title : 'LOTS.BARCODE_FOR_LOT', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.lotBarcodeReceipt(uuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 
