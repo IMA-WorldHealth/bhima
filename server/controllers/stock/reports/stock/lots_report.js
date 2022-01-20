@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE,
+  _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
 
 const i18n = require('../../../../lib/helpers/translate');
@@ -18,7 +18,6 @@ function stockLotsReport(req, res, next) {
   let options = {};
   let display = {};
   let filters;
-
   const data = {};
   let hasFilter = false;
   let report;
@@ -66,22 +65,10 @@ function stockLotsReport(req, res, next) {
 
   const dateKeys = ['min_stock_date', 'max_stock_date'];
 
-  // stock status label keys
-  // WARNING: Must match stockStatusLabelKeys in client StockService
-  // TODO: Move to shared constants file for client and server sides
-  const stockStatusLabelKeys = {
-    stock_out         : 'STOCK.STATUS.STOCK_OUT',
-    in_stock          : 'STOCK.STATUS.IN_STOCK',
-    security_reached  : 'STOCK.STATUS.SECURITY',
-    minimum_reached   : 'STOCK.STATUS.MINIMUM',
-    over_maximum      : 'STOCK.STATUS.OVER_MAX',
-    unused_stock      : 'STOCK.STATUS.UNUSED_STOCK',
-  };
-
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
-      // Purge unneeded fields from the row
       rows.forEach(row => {
+        // Purge unneeded fields from the row
         purgeKeys.forEach(key => {
           delete row[key];
         });

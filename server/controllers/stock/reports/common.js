@@ -175,6 +175,17 @@ const stockFluxReceipt = {
   15 : { key : 'INVENTORY_ADJUSTMENT', path : 'adjustment' },
 };
 
+// Stock status label keys
+// WARNING: Must match stockStatusLabelKeys in client StockService
+const stockStatusLabelKeys = {
+  stock_out         : 'STOCK.STATUS.STOCK_OUT',
+  in_stock          : 'STOCK.STATUS.IN_STOCK',
+  security_reached  : 'STOCK.STATUS.SECURITY',
+  minimum_reached   : 'STOCK.STATUS.MINIMUM',
+  over_maximum      : 'STOCK.STATUS.OVER_MAX',
+  unused_stock      : 'STOCK.STATUS.UNUSED_STOCK',
+};
+
 // Exports
 module.exports = {
   _,
@@ -193,6 +204,7 @@ module.exports = {
   getDepotMovement,
   getVoucherReferenceForStockMovement,
   pdfOptions,
+  stockStatusLabelKeys,
   STOCK_EXIT_PATIENT_TEMPLATE,
   POS_STOCK_EXIT_PATIENT_TEMPLATE,
   STOCK_EXIT_SERVICE_TEMPLATE,
