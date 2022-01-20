@@ -18,8 +18,6 @@ const central = require('@ima-worldhealth/odk-central-api-cjs');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
 const core = require('../stock/core');
-const { generate } = require('../../lib/barcode');
-const { LOT } = require('../../config/identifiers');
 
 const odkCentralRoles = {
   admin : 1,
@@ -247,21 +245,28 @@ async function syncEnterpriseWithCentral() {
 async function syncDepotsWithCentral() {
   debug('Synchronizing depots with ODK Central');
 
+  const integration = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
+  if (!integration.length) {
+    debug('No odk_project_id found!  ODK Central integration not set up.  Exiting early.');
+    return;
+  }
+
+  const odkProjectId = integration[0].odk_project_id;
+
   const depots = await db.exec('SELECT buid(uuid) as uuid, depot.text FROM depot;');
 
   debug(`Located ${depots.length} depots locally...`);
 
   const data = [];
 
-  /**
-   * Create a CSV file full of lots
-   */
+  // Here, we pull out the current quantity in stock every depot, including lot numbers
+  // to create a lots.csv that will be uploaded to ODK Central to show inventory items as
+  // they are scanned.
 
   // eslint-disable-next-line
   for (const depot of depots) {
     debug(`Pulling lots for ${depot.text}`);
     const lots = await core.getLotsDepot(depot.uuid, { // eslint-disable-line
-      includeEmptyLot : 0,
       month_average_consumption : 6,
       average_consumption_algo : 'msh',
     });
@@ -269,7 +274,6 @@ async function syncDepotsWithCentral() {
     debug(`Found ${lots.length} lots.`);
 
     data.push(...lots
-      .map(lot => { lot.barcode = generate(LOT.key, lot.uuid); return lot; })
       .map(
         lot => _.pick(lot, [
           'barcode',
@@ -280,17 +284,42 @@ async function syncDepotsWithCentral() {
     );
   }
 
-  // generate a CSV and store it in a temporary file so we can upload to ODK Central
-  const csv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
-  const tmpfile = tempy.file({ name : 'lots.csv' });
-  await fs.writeFile(tmpfile, csv);
+  // generate a CSV and store it in a temporary file so we can upload to ODK Central later
+  const lotsCsv = await json2csvAsync(data, { trimHeaderFields : true, trimFieldValues : true });
+  const tmpLotsFile = tempy.file({ name : 'lots.csv' });
+  await fs.writeFile(tmpLotsFile, lotsCsv);
 
-  //
+  debug(`Wrote ${data.length} lots to temporary file: ${tmpLotsFile}`);
 
-  debug('data:', csv);
-  debug(`Wrote ${data.length} lots to temporary file: ${tmpfile}`);
+  // now we need to pull out the transfers out of depots to other depots
+  // this will power a selection menu in ODK Collect application.
 
-  debug(`Creating draft form for odk`);
+  const toOtherDepotFluxId = 8;
+
+  // get all stock exits to other depots
+  const allStockExitDocuments = await db.exec(`
+    SELECT BUID(document_uuid) as document_uuid,
+      dm.text AS documentReference,
+      BUID(depot_uuid) AS origin_depot_uuid,
+      BUID(entity_uuid) AS target_depot_uuid,
+      depot.text AS depot_text,
+      CONCAT(dm.text, " (", DATE_FORMAT(MAX(date), "%Y-%m-%d"), ") - ", COUNT(*), " produits") AS label
+    FROM stock_movement
+      JOIN document_map dm ON stock_movement.document_uuid = dm.uuid
+      JOIN depot ON depot.uuid = stock_movement.depot_uuid
+    WHERE stock_movement.flux_id = ${toOtherDepotFluxId}
+    GROUP BY document_uuid;
+  `);
+
+  const documentsCsv = await json2csvAsync(allStockExitDocuments, { trimHeaderFields : true, trimFieldValues : true });
+  const tmpDocumentsFile = tempy.file({ name : 'transfers.csv' });
+  await fs.writeFile(tmpDocumentsFile, documentsCsv);
+  debug(`Wrote ${allStockExitDocuments.length} transfer documents to temporary file: ${tmpDocumentsFile}`);
+
+  debug(`Creating draft form for ODK`);
+
+  // central.api.forms.createFormFromXLSXFile(odkProjectId);
+
   // now we need to create a draft form on ODK Central
 
   // now lets upload the latest lots to our draft
@@ -302,9 +331,7 @@ async function syncDepotsWithCentral() {
 /**
  *
  *
- *
  */
-
 router.get('/', async (req, res, next) => {
   try {
     const settings = await db.exec(
