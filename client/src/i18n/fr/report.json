@@ -312,6 +312,7 @@
       "STOCK_ON_HAND" : "Stock disponible",
       "EXIT_REPORT" : "Rapport des sorties de stocks",
       "EXIT_REPORT_DESCRIPTION" : "Ce rapport affiche les sorties de stock qui ont eu lieu dans different dépôts",
+      "INCLUDE_ASSET_INTEGRATION_ENTRY": "Inclure les intégrations des actifs",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Inclure les consommations agrégées",
       "INCLUDE_INFORMATION" : "Information à inclure",
       "INCLUDE_PATIENT_EXIT" : "Inclure les distributions vers les patients",
