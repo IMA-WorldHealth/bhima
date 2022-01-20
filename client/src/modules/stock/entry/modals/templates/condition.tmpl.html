@@ -1,11 +1,10 @@
-<div class="ui-grid-cell-contents">
-  <input
-    min="0"
-    type="text"
+<div>
+  <select
     class="form-control"
-    style="padding-left : 5px !important; text-align: right;"
     ng-model="row.entity.condition"
-    ng-model-options="{ 'debounce' : '$inherit' }"
-    ng-change="grid.appScope.onChanges()"
-    required>
+    name="condition"
+    ng-required="true">
+    <option value="" disabled translate>FORM.PLACEHOLDERS.CONDITION</option>
+    <option ng-repeat="condition in grid.appScope.conditions" value="{{condition.label}}" data-key="{{condition.label}}" translate>{{condition.label}}</option>
+  </select>
 </div>

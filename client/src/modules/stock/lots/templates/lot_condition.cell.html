@@ -1,0 +1,16 @@
+<div class="ui-grid-cell-contents">
+  <span ng-if="row.entity.condition === 'STOCK.ASSET.CONDITION_TYPE.DAMAGED'">
+    <span class="text-danger fa fa-exclamation-triangle"></span>
+    <span translate>STOCK.ASSET.CONDITION_TYPE.DAMAGED</span>
+  </span>
+
+  <span ng-if="row.entity.condition === 'STOCK.ASSET.CONDITION_TYPE.GOOD'">
+    <span class="text-success fa fa-check-circle"></span>
+    <span translate>STOCK.ASSET.CONDITION_TYPE.GOOD</span>
+  </span>
+
+  <span ng-if="row.entity.condition === 'STOCK.ASSET.CONDITION_TYPE.LOST'">
+    <span class="text-dark fa fa-window-close"></span>
+    <span translate>STOCK.ASSET.CONDITION_TYPE.LOST</span>
+  </span>
+</div>

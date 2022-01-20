@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 /**
  * @module stock/core
  *
@@ -34,6 +35,7 @@ const flux = {
   INVENTORY_RESET  : 14,
   INVENTORY_ADJUSTMENT : 15,
   AGGREGATE_CONSUMPTION : 16,
+  FROM_ASSET_INTEGRATION : 17,
 };
 
 // const fluxLabel = {};
@@ -266,7 +268,8 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac
+      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
+      ast.abt_inventory_no, ast.origin, ast.purchase_order, ast.vendor, ast.condition
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -277,6 +280,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
       LEFT JOIN tags t ON t.uuid = lt.tag_uuid
+      LEFT JOIN lot_asset AS ast ON ast.lot_uuid = l.uuid
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;

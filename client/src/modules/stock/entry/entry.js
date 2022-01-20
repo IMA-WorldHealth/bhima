@@ -655,19 +655,19 @@ function StockEntryController(
       entity_uuid : null,
       date        : vm.movement.date,
       description : vm.movement.description,
-      flux_id     : bhConstants.flux.FROM_INTEGRATION,
+      flux_id     : bhConstants.flux.FROM_ASSET_INTEGRATION,
       user_id     : vm.stockForm.details.user_id,
     };
 
     const entry = {
-      lots : Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
+      lots : Stock.processAssetsFromStore(vm.stockForm.store.data, movement.entity_uuid),
       movement,
     };
 
     return Stock.assetIntegration.create(entry)
       .then(document => {
         vm.reset();
-        ReceiptModal.stockEntryAssetIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+        ReceiptModal.stockEntryAssetIntegrationReceipt(document.uuid, bhConstants.flux.FROM_ASSET_INTEGRATION);
       })
       .catch(Notify.handleError);
   }

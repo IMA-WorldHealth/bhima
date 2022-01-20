@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * @module stock
  *
@@ -52,6 +53,7 @@ exports.requisition = requisition;
 exports.requestorType = requestorType;
 exports.createInventoryAdjustment = createInventoryAdjustment;
 exports.createAggregatedConsumption = createAggregatedConsumption;
+exports.createAssetIntegration = createAssetIntegration;
 
 exports.listStatus = core.listStatus;
 // stock consumption
@@ -228,6 +230,18 @@ async function insertNewStock(session, params) {
         inventory_uuid : db.bid(lot.inventory_uuid),
         barcode : barcode.generate(lotKey, lotUuid),
       });
+
+      // For Asset Integration
+      if (params.movement.flux_id === 17) {
+        transaction.addQuery(`INSERT INTO lot_asset SET ?`, {
+          lot_uuid : db.bid(lotUuid),
+          abt_inventory_no : lot.abt_inventory_no,
+          origin : lot.origin,
+          purchase_order : lot.purchase_order,
+          vendor : lot.vendor,
+          condition : lot.condition,
+        });
+      }
     }
 
     // adding a movement insertion query into the transaction
@@ -271,6 +285,18 @@ async function insertNewStock(session, params) {
  * create a new integration entry
  */
 function createIntegration(req, res, next) {
+  insertNewStock(req.session, req.body)
+    .then(documentUuid => {
+      res.status(201).json({ uuid : documentUuid });
+    })
+    .catch(next);
+}
+
+/**
+ * POST /stock/asset_integration
+ * create a new asset integration entry
+ */
+function createAssetIntegration(req, res, next) {
   insertNewStock(req.session, req.body)
     .then(documentUuid => {
       res.status(201).json({ uuid : documentUuid });

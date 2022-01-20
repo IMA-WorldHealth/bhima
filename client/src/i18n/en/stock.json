@@ -4,6 +4,11 @@
     "ASSET" : {
       "ABT_INVENTORY_NO" : "Abt Inventory No",
       "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Damaged",
+        "GOOD" : "Good",
+        "LOST" : "lost"
+      },
       "ORIGIN" : "Origin",
       "PURCHASE_ORDER" : "Purchase Order",
       "VENDOR" : "Vendor"
@@ -224,6 +229,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
       "AGGREGATE_CONSUMPTION" : "Stock exit - Aggregate consumption",
+      "ENTRY_ASSET_INTEGRATION" : "Stock Entry - Asset Integration",
       "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
