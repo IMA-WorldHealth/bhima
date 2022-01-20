@@ -20,6 +20,8 @@ const db = require('../../lib/db');
 const util = require('../../lib/util');
 const core = require('../stock/core');
 
+const { flux } = require('../../config/constants');
+
 const odkCentralRoles = {
   admin : 1,
   projectManager : 5,
@@ -234,7 +236,51 @@ async function syncEnterpriseWithCentral() {
   debug(`Finished synchronizing projects and enterprises.`);
 }
 
-async function syncSubmissionsWithCentral() {
+function getPeriodIdForDate(date) {
+  const month = date.getMonth() + 1;
+  const monthStr = month.toString().length === 1
+    ? `0${month}` : `${month}`;
+
+  const periodId = `${date.getFullYear()}${monthStr}`;
+  return periodId;
+}
+
+function importODKSubmission(submission, user) {
+  // this is the depot targeted
+
+  const transaction = db.transaction();
+
+  const date = new Date(submission.date);
+  const periodId = getPeriodIdForDate(date);
+
+  const record = {
+    depot_uuid : db.bid(submission.depot_uuid),
+    entity_uuid : db.bid(submission.entity_uuid),
+    is_exit : 0,
+    flux_id : flux.FROM_OTHER_DEPOT,
+    document_uuid : db.bid(submission.document_uuid),
+    date,
+    description : submission.description,
+    user_id : user.id,
+    period_id : periodId,
+  };
+
+  for (const row of submission.barcode_repeat) { // eslint-disable-line
+    debug('processing:', JSON.stringify(row));
+    const line = { ...record };
+    line.uuid = db.bid(util.uuid());
+    line.lot_uuid = db.bid(row.lot_uuid);
+    line.unit_cost = row.unit_cost;
+    line.quantity = 1;
+
+    transaction.addQuery('INSERT INTO stock_movement SET ?', [line]);
+  }
+
+  return transaction.execute();
+
+}
+
+async function syncSubmissionsWithCentral(user) {
   debug('Synchronizing submissions with ODK Central');
 
   const integration = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
@@ -246,25 +292,15 @@ async function syncSubmissionsWithCentral() {
   const odkProjectId = integration[0].odk_project_id;
   const xmlFormId = 'bhima_pv_reception';
 
-  // const client = await central.auth.client();
-
-  // TODO(@jniles) - use the real ODK api for this.
-  // const searchParams = { $expand : '*', $count : true };
-  // const submissions = await client.get(`projects/${odkProjectId}/forms/${xmlFormId}.svc/Submissions`, { searchParams }).json();
-
   const submissions = await central.api.getSubmissionsJSONByProjectIdAndFormId(odkProjectId, xmlFormId);
-  console.log('submissions:', submissions);
 
   debug(`Got ${submissions.length} submission for ${xmlFormId}.`);
 
+  // import the submissions
+
   for (const submission of submissions) { // eslint-disable-line
-    // eslint-disable-next-line
-    const record = await central.api.getSubmissionByProjectIdAndFormId(odkProjectId, xmlFormId, submission.instanceId);
-    debug('record:', JSON.stringify(record));
-
+    await importODKSubmission(submission, user); // eslint-disable-line
   }
-
-  // console.log('submissions:', submissions);
 
   debug(`Finished synchronizing submissions.`);
 }
@@ -312,7 +348,7 @@ async function syncFormsWithCentral() {
       .map(
         lot => _.pick(lot, [
           'barcode',
-          'uuid', 'lot_description', 'label', 'depot_text', 'depot_uuid',
+          'uuid', 'lot_description', 'label', 'depot_text', 'depot_uuid', 'unit_cost',
           'text', 'unit_type', 'group_name', 'quantity', 'code', 'invenetory_uuid',
         ]),
       ),
@@ -337,11 +373,13 @@ async function syncFormsWithCentral() {
       dm.text AS documentReference,
       BUID(depot_uuid) AS origin_depot_uuid,
       BUID(entity_uuid) AS target_depot_uuid,
-      depot.text AS depot_text,
+      depot.text AS origin_depot_text,
+      dd.text AS target_depot_text,
       CONCAT(dm.text, " (", DATE_FORMAT(MAX(date), "%Y-%m-%d"), ") - ", COUNT(*), " produits") AS label
     FROM stock_movement
       JOIN document_map dm ON stock_movement.document_uuid = dm.uuid
       JOIN depot ON depot.uuid = stock_movement.depot_uuid
+      LEFT JOIN depot AS dd ON dd.uuid = stock_movement.entity_uuid
     WHERE stock_movement.flux_id = ${toOtherDepotFluxId}
     GROUP BY document_uuid;
   `);
@@ -445,7 +483,7 @@ router.post('/sync-users', async (req, res, next) => {
 
 router.post('/sync-submissions', async (req, res, next) => {
   try {
-    await syncSubmissionsWithCentral();
+    await syncSubmissionsWithCentral(req.session.user);
     res.sendStatus(201);
   } catch (e) { next(e); }
 });
