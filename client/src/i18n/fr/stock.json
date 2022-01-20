@@ -4,6 +4,11 @@
     "ASSET" : {
       "ABT_INVENTORY_NO" : "Nr Inventaire",
       "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Endommagé",
+        "GOOD" : "Bon",
+        "LOST" : "Perdu"
+      },
       "ORIGIN" : "Origine",
       "PURCHASE_ORDER" : "Commande d'achat",
       "VENDOR" : "Fournisseur"
@@ -225,6 +230,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Ajustement",
       "AGGREGATE_CONSUMPTION" : "Consommation de stock agrégée",
+      "ENTRY_ASSET_INTEGRATION" : "Entree de Stock - Intégration des actifs",
       "ENTRY_DEPOT"    : "Entrée en provenance d'autres dépots",
       "ENTRY_DONATION" : "Entree de Stock - Donation",
       "ENTRY_PURCHASE" : "Entree de Stock - Achat",
