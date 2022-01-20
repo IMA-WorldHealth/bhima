@@ -26,10 +26,13 @@ function ODKSettingsService(Api) {
   };
 
   //
-  service.syncDepots = () => {
-    return service.$http.post(baseUrl.concat('sync-depots')).then(service.util.unwrapHttpResponse);
+  service.syncForms = () => {
+    return service.$http.post(baseUrl.concat('sync-forms')).then(service.util.unwrapHttpResponse);
   };
 
+  service.syncSubmissions = () => {
+    return service.$http.post(baseUrl.concat('sync-submissions')).then(service.util.unwrapHttpResponse);
+  };
   //
   service.syncStockMovements = () => {
     return service.$http.post(baseUrl.concat('sync-stock-movements'))

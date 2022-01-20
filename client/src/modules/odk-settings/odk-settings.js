@@ -33,8 +33,14 @@ function ODKSettingsController(
       .catch(Notify.handleError);
   };
 
-  vm.syncDepots = () => {
-    ODKSettings.syncDepots()
+  vm.syncForms = () => {
+    ODKSettings.syncForms()
+      .then(() => { $state.reload(); })
+      .catch(Notify.handleError);
+  };
+
+  vm.syncSubmissions = () => {
+    ODKSettings.syncSubmissions()
       .then(() => { $state.reload(); })
       .catch(Notify.handleError);
   };

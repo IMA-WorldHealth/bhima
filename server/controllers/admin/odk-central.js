@@ -234,16 +234,51 @@ async function syncEnterpriseWithCentral() {
   debug(`Finished synchronizing projects and enterprises.`);
 }
 
+async function syncSubmissionsWithCentral() {
+  debug('Synchronizing submissions with ODK Central');
+
+  const integration = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
+  if (!integration.length) {
+    debug('No odk_project_id found!  ODK Central integration not set up.  Exiting early.');
+    return;
+  }
+
+  const odkProjectId = integration[0].odk_project_id;
+  const xmlFormId = 'bhima_pv_reception';
+
+  // const client = await central.auth.client();
+
+  // TODO(@jniles) - use the real ODK api for this.
+  // const searchParams = { $expand : '*', $count : true };
+  // const submissions = await client.get(`projects/${odkProjectId}/forms/${xmlFormId}.svc/Submissions`, { searchParams }).json();
+
+  const submissions = await central.api.getSubmissionsJSONByProjectIdAndFormId(odkProjectId, xmlFormId);
+  console.log('submissions:', submissions);
+
+  debug(`Got ${submissions.length} submission for ${xmlFormId}.`);
+
+  for (const submission of submissions) { // eslint-disable-line
+    // eslint-disable-next-line
+    const record = await central.api.getSubmissionByProjectIdAndFormId(odkProjectId, xmlFormId, submission.instanceId);
+    debug('record:', JSON.stringify(record));
+
+  }
+
+  // console.log('submissions:', submissions);
+
+  debug(`Finished synchronizing submissions.`);
+}
+
 /**
- * @function syncDepotsWithCentral
+ * @function syncFormsWithCentral
  *
  * @description
  * This creates a stock exit form for each depot in the application.
  * The strategy is to upload an XLSX form that
  *
  */
-async function syncDepotsWithCentral() {
-  debug('Synchronizing depots with ODK Central');
+async function syncFormsWithCentral() {
+  debug('Synchronizing forms with ODK Central');
 
   const integration = await db.exec('SELECT odk_project_id FROM odk_central_integration;');
   if (!integration.length) {
@@ -325,10 +360,15 @@ async function syncDepotsWithCentral() {
   const xmlFormId = 'bhima_pv_reception';
 
   // first, check if this form exists, and clear the form if it exists
-  const hasForm = await central.api.getFormByProjectIdAndFormId(odkProjectId, xmlFormId);
-  if (hasForm) {
-    debug('Found an existing form.  Deleting it...');
-    await central.api.forms.deleteForm(odkProjectId, xmlFormId);
+  try {
+    const hasForm = await central.api.getFormByProjectIdAndFormId(odkProjectId, xmlFormId);
+    if (hasForm) {
+      debug('Found an existing form.  Deleting it...');
+      await central.api.forms.deleteForm(odkProjectId, xmlFormId);
+    }
+  } catch (e) {
+    // ignore
+    debug('No existing form found.');
   }
 
   // now we need to create a draft form on ODK Central
@@ -356,7 +396,11 @@ async function syncDepotsWithCentral() {
   const allAppUsers = await central.api.users.listAllAppUsers(odkProjectId);
   for (const user of allAppUsers) { // eslint-disable-line
     debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
+    try {
     await defineUserAsDataCollector(user.id); // eslint-disable-line
+    } catch (e) {
+      debug('User already defined.');
+    }
   }
 
 }
@@ -392,10 +436,16 @@ router.post('/', async (req, res, next) => {
 });
 
 // add routes
-// @jniles - I'm using GET because I'm lazy
 router.post('/sync-users', async (req, res, next) => {
   try {
     await syncUsersWithCentral();
+    res.sendStatus(201);
+  } catch (e) { next(e); }
+});
+
+router.post('/sync-submissions', async (req, res, next) => {
+  try {
+    await syncSubmissionsWithCentral();
     res.sendStatus(201);
   } catch (e) { next(e); }
 });
@@ -414,9 +464,9 @@ router.post('/sync-enterprise', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-router.post('/sync-depots', async (req, res, next) => {
+router.post('/sync-forms', async (req, res, next) => {
   try {
-    await syncDepotsWithCentral();
+    await syncFormsWithCentral();
     res.sendStatus(201);
   } catch (e) { next(e); }
 });
