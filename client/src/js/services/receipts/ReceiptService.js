@@ -185,6 +185,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAggregateConsumptionReceipt = stockAggregateConsumptionReceipt;
+  service.stockEntryAssetIntegrationReceipt = stockEntryAssetIntegrationReceipt;
 
   // stock requisition receipt
   function stockRequisitionReceipt(uuid, options) {
@@ -264,6 +265,11 @@ function ReceiptService($http, util, Language, AppCache, Session) {
 
   // stock adjustment receipt
   function stockAdjustmentReceipt(uuid, options) {
+    return genericStockReceipt(uuid, options);
+  }
+
+  // stock entry asset integration receipt
+  function stockEntryAssetIntegrationReceipt(uuid, options) {
     return genericStockReceipt(uuid, options);
   }
 

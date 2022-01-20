@@ -1,11 +1,10 @@
-<div class="ui-grid-cell-contents">
-  <input
-    min="0"
-    type="text"
+<div>
+  <select
     class="form-control"
-    style="padding-left : 5px !important; text-align: right;"
     ng-model="row.entity.origin"
-    ng-model-options="{ 'debounce' : '$inherit' }"
-    ng-change="grid.appScope.onChanges()"
-    required>
+    name="origin"
+    ng-required="true">
+    <option value="" disabled translate>FORM.PLACEHOLDERS.ORIGIN</option>
+    <option ng-repeat="origin in grid.appScope.origins" value="{{origin.label}}" data-key="{{origin.label}}" translate>{{origin.label}}</option>
+  </select>
 </div>

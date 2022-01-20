@@ -33,6 +33,22 @@ function StockDefineLotsModalController(
     rows : Data.stockLine.lots,
   });
 
+  vm.origins = [
+    {
+      label : 'Home office',
+    }, {
+      label : 'Field Office',
+    },
+  ];
+
+  vm.conditions = [{
+    label : 'STOCK.ASSET.CONDITION_TYPE.DAMAGED',
+  }, {
+    label : 'STOCK.ASSET.CONDITION_TYPE.GOOD',
+  }, {
+    label : 'STOCK.ASSET.CONDITION_TYPE.LOST',
+  }];
+
   vm.bhConstants = bhConstants;
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
