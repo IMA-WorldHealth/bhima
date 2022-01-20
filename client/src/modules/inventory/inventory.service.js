@@ -155,6 +155,10 @@ function InventoryService(
     key : 'tags',
     label : 'TAG.TAGS',
   },
+  {
+    key : 'is_asset',
+    label : 'FORM.LABELS.ASSET',
+  },
   ]);
 
   if (filterCache.filters) {
