@@ -38,11 +38,14 @@ async function setupODKCentralConnection() {
 async function buildQRCode(url, token, projectId, projectName) {
   const data = {
     general : {
+      protocol : 'odk_default',
       server_url : `${url}/v1/key/${token}/projects/${projectId}`,
-      constraint_behavior : 'on_finalize',
+      constraint_behavior : 'on_swipe',
     },
     admin : {
       edit_saved : false,
+      send_finalized : true,
+      automatic_update : true,
     },
     project : {
       name : projectName,
