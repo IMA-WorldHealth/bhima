@@ -250,10 +250,10 @@ async function syncSubmissionsWithCentral() {
 
   // TODO(@jniles) - use the real ODK api for this.
   // const searchParams = { $expand : '*', $count : true };
-  // const submissions = await client.get(`projects/${odkProjectId}/forms/${xmlFormId}.svc/Submissions`, { searchParams }).json();
+  // const submissions =
+  // await client.get(`projects/${odkProjectId}/forms/${xmlFormId}.svc/Submissions`, { searchParams }).json();
 
   const submissions = await central.api.getSubmissionsJSONByProjectIdAndFormId(odkProjectId, xmlFormId);
-  console.log('submissions:', submissions);
 
   debug(`Got ${submissions.length} submission for ${xmlFormId}.`);
 
