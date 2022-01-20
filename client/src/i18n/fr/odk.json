@@ -9,7 +9,7 @@
     "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur",
     "SYNC_ENTERPRISE" : "Synchroniser les paramètres d'entreprise",
     "SYNC_USERS" : "Synchroniser les utilisateurs",
-    "SYNC_DEPOTS" : "Synchroniser les dépôts",
+    "SYNC_FORMS" : "Synchroniser les formulaires",
     "SYNC_SUBMISSIONS" : "Synchroniser les soumissions des formulaires",
     "SYNC_SETTINGS" : "Synchroniser les paramètres",
     "CONFIG_SETTINGS" : "ODK Central Configuration",
