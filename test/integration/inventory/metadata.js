@@ -29,6 +29,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     default_quantity : 12,
     group_uuid : shared.inventoryGroup.uuid,
     consumable : 0,
+    is_asset : 1,
   };
 
   const metadataSearch = {

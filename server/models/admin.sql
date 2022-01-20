@@ -285,4 +285,14 @@ BEGIN
     GROUP BY gl.cost_center_id, gl.period_id, a.type_id;
 END $$
 
+/*
+  zRecomputeLotBarcodes()
+
+  Recomputes the lot barcodes from the base data.
+*/
+CREATE PROCEDURE zRecomputeLotBarcodes()
+BEGIN
+  UPDATE lot SET barcode = CONCAT('LT', LEFT(HEX(lot.uuid), 8));
+END $$
+
 DELIMITER ;
