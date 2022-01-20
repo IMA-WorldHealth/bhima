@@ -20,6 +20,9 @@ const db = require('../../lib/db');
 const { BadRequest, Unauthorized } = require('../../lib/errors');
 const { DELETE_STOCK_MOVEMENT } = require('../../config/constants').actions;
 
+const identifiers = require('../../config/identifiers');
+const barcode = require('../../lib/barcode');
+
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
@@ -27,6 +30,9 @@ const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
 const vouchers = require('../finance/vouchers');
+
+// barcode identifier key
+const lotKey = identifiers.LOT.key;
 
 // expose to the API
 exports.createStock = createStock;
@@ -107,6 +113,7 @@ async function createStock(req, res, next) {
           description : lot.description,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
+          barcode : barcode.generate(lotKey, lotUuid),
         };
 
         // adding a lot insertion query into the transaction
@@ -219,6 +226,7 @@ async function insertNewStock(session, params) {
         description : lot.description,
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
+        barcode : barcode.generate(lotKey, lotUuid),
       });
     }
 
