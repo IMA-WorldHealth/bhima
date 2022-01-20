@@ -251,7 +251,7 @@ async function getItemsMetadata(params) {
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.unique_item,
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
-      inventory.note,  inventory.unit_weight, inventory.unit_volume,
+      inventory.note,  inventory.unit_weight, inventory.unit_volume, inventory.is_asset,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
@@ -276,6 +276,7 @@ async function getItemsMetadata(params) {
   filters.equals('code');
   filters.equals('price');
   filters.equals('consumable');
+  filters.equals('is_asset');
   filters.equals('locked');
   filters.equals('label');
   filters.equals('sellable');
@@ -332,7 +333,7 @@ function remove(_uuid) {
 */
 async function getItemsMetadataById(uid, query = {}) {
   const sql = `
-    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
+    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, i.is_asset, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,

@@ -21,6 +21,7 @@ const units = require('../controllers/units');
 const system = require('../controllers/system');
 const report = require('../controllers/report');
 const install = require('../controllers/install');
+const odk = require('../controllers/admin/odk-central');
 
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
@@ -874,6 +875,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
   app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
+  app.get('/receipts/stock/lots/:uuid/barcode', stockReports.lotBarcodeReceipt);
 
   // stock consumption API
   app.get('/stock/consumptions/average/:periodId', stock.getStockConsumptionAverage);
@@ -1002,6 +1004,7 @@ exports.configure = function configure(app) {
   app.post('/lots/:uuid/merge', lots.merge);
   app.post('/lots/merge/auto', lots.autoMerge);
   app.post('/lots/merge/autoZero', lots.autoMergeZero);
+  app.post('/lots/barcodes/refresh', lots.refreshBarcodes);
   app.get('/inventory/:uuid/lot_candidates', lots.getCandidates);
   app.get('/lots_dupes/:label?/:entry_date?/:expiration_date?/:inventory_uuid?', lots.getDupes);
   app.get('/lots_all_dupes', lots.getAllDupes);
@@ -1103,4 +1106,6 @@ exports.configure = function configure(app) {
   app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
   app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
+
+  app.use('/admin/odk-settings', odk.router);
 };
