@@ -37,6 +37,11 @@ function StockEntryExitTypeService() {
     descriptionKey : 'STOCK_FLUX.FROM_INTEGRATION',
     allowedKey : 'allow_entry_integration',
   }, {
+    label : 'asset_integration',
+    labelKey : 'STOCK.ENTRY_ASSET_INTEGRATION',
+    descriptionKey : 'STOCK_FLUX.FROM_ASSET_INTEGRATION',
+    allowedKey : 'allow_entry_asset_integration',
+  }, {
     label : 'donation',
     labelKey : 'STOCK.DONATION',
     descriptionKey : 'STOCK_FLUX.FROM_DONATION',

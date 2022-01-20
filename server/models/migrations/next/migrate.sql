@@ -37,7 +37,7 @@ INSERT INTO unit VALUES
   (306, '[SETTINGS] ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings');
 
  /*
-  * Hack: Assets as Lots #6287
+  * Issue: Hack Assets as Lots #6287
   * @author: lomamech
   * @date: 2022-01-18
   */
@@ -55,6 +55,7 @@ CREATE TABLE `lot_asset` (
   CONSTRAINT `lot_asset__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+<<<<<<< HEAD
 /*
  * Add barcode in the lot table
  * @author: mbayopanda
@@ -64,3 +65,13 @@ CALL add_column_if_missing('lot', 'barcode', 'VARCHAR(191) NULL AFTER `is_assign
 
 -- regenerate barcodes for lots
 UPDATE lot SET barcode = CONCAT('LT', LEFT(HEX(lot.uuid), 8));
+=======
+ /*
+  * Issue: Hack: Add "Asset Integration" as another form of stock entry #6288
+  * @author: lomamech
+  * @date: 2022-01-18
+  */
+CALL add_column_if_missing('depot', 'allow_entry_asset_integration', 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `allow_entry_integration`');
+
+INSERT INTO `flux` VALUES (17, 'STOCK_FLUX.FROM_ASSET_INTEGRATION');
+>>>>>>> cec355c58 (feature(Asset Integration))

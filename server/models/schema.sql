@@ -458,6 +458,7 @@ CREATE TABLE `depot` (
   `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_donation` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_entry_integration` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_entry_asset_integration` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,  
   `allow_entry_transfer` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_exit_debtor` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `allow_exit_service` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
