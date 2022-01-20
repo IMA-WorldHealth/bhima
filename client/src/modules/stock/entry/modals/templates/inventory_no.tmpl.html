@@ -1,0 +1,11 @@
+<div class="ui-grid-cell-contents">
+  <input
+    min="0"
+    type="text"
+    class="form-control"
+    style="padding-left : 5px !important;"
+    ng-model="row.entity.abt_inventory_no"
+    ng-model-options="{ 'debounce' : '$inherit' }"
+    ng-change="grid.appScope.onChanges()"
+    required>
+</div>
