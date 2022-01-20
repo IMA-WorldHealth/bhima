@@ -176,8 +176,8 @@ function LotsRegistryService(uiGridConstants, Session) {
       visible : false,
     }, {
       field : 'avg_consumption',
-      displayName : 'FORM.LABELS.AVG_CONSUMPTION',
-      headerTooltip : 'FORM.LABELS.AVG_CONSUMPTION',
+      displayName : 'STOCK.CMM',
+      headerTooltip : 'STOCK.MONTHLY_CONSUMPTION.AVERAGE_MONTHLY_CONSUMPTION',
       headerCellFilter : 'translate',
       type : 'number',
       visible : false,
@@ -197,8 +197,8 @@ function LotsRegistryService(uiGridConstants, Session) {
       visible : false,
     }, {
       field : 'documentReference',
-      displayName : 'STOCK.DOCUMENT',
-      headerTooltip : 'STOCK.DOCUMENT',
+      displayName : 'TABLE.COLUMNS.REFERENCE',
+      headerTooltip : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
       visible : false,

@@ -200,6 +200,7 @@
     "DIRECTION": "Direction du  movement",
     "LOSS_DISTRIBUTION" : "Perte de Stock",
     "MIN_MONTHS_SECURITY_STOCK" : "Mois minimum stock de sécurité",
+    "MONTHS_REMAINING": "Mois restants",
     "MOTIF"           : "Motif",
     "MOVEMENT"        : "Mouvement",
     "MOVEMENTS"       : "Mouvements",
@@ -243,7 +244,7 @@
       "EXIT_LOSS"      : "Perte de stock"
     },
     "RECEIVER"        : "Recepteur",
-    "RECEPTION_ASSET_INTEGRATION" : "Entrée des actifs par intégration",    
+    "RECEPTION_ASSET_INTEGRATION" : "Entrée des actifs par intégration",
     "RECEPTION_TRANSFER" : "Transfert",
     "RECEPTION_DESCRIPTION" : "Reception de stock",
     "RECEPTION_INTEGRATION" : "Entrée de stock par intégration",
@@ -286,7 +287,8 @@
     "TOGGLE_EXPIRED_STOCK" : "Afficher le stock expiré?",
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "Ceci ajoutera un filtre sur les lots arrivés à expiration.",
     "TOGGLE_EXPIRY_RISKS" : "Afficher les lots présentant des risques d'expiration?",
-    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption"
+    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption",
+    "WAC" : "Cout Unitaire Moyen Pondéré"
   },
   "SETTINGS" : {
     "CONSUMPTION_AND_REORDER_SETTINGS" : "Consommation de stock et de réapprovisionnement",
