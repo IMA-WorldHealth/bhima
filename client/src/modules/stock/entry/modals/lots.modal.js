@@ -80,50 +80,127 @@ function StockDefineLotsModalController(
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
   vm.editExpirationDates = false;
+  let cols;
 
-  const cols = [{
-    field : 'status',
-    width : 25,
-    displayName : '',
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html',
-  }, {
-    field : 'lot',
-    displayName : 'TABLE.COLUMNS.LOT',
-    headerCellFilter : 'translate',
-    aggregationType : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
-  }, {
-    field : 'barcode',
-    displayName : 'BARCODE.BARCODE',
-    headerCellFilter : 'translate',
-    width : 110,
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
-  }, {
-    field : 'quantity',
-    type : 'number',
-    width : 120,
-    displayName : 'TABLE.COLUMNS.QUANTITY',
-    headerCellFilter : 'translate',
-    aggregationType : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
-    footerCellClass : 'text-right',
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html',
-  }, {
-    field : 'expiration_date',
-    type : 'date',
-    cellFilter : `date:"${bhConstants.dates.format}"`,
-    width : 150,
-    visible : tracking,
-    displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
-  }, {
-    field : 'actions',
-    displayName : '',
-    width : 25,
-    cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
-  }];
+  if (Data.entry_type === 'asset_integration') {
+    cols = [{
+      field : 'status',
+      width : 25,
+      displayName : '',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html',
+    }, {
+      field : 'lot',
+      displayName : 'TABLE.COLUMNS.LOT',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
+    }, {
+      field : 'abt_inventory_no',
+      displayName : 'STOCK.ASSET.ABT_INVENTORY_NO',
+      headerCellFilter : 'translate',
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/inventory_no.tmpl.html',
+    }, {
+      field : 'origin',
+      displayName : 'STOCK.ASSET.ORIGIN',
+      headerCellFilter : 'translate',
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/origin.tmpl.html',
+    }, {
+      field : 'purchase_order',
+      displayName : 'STOCK.ASSET.PURCHASE_ORDER',
+      headerCellFilter : 'translate',
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/purchase_order.tmpl.html',
+    }, {
+      field : 'vendor',
+      displayName : 'STOCK.ASSET.VENDOR',
+      headerCellFilter : 'translate',
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/vendor.tmpl.html',
+    }, {
+      field : 'condition',
+      displayName : 'STOCK.ASSET.CONDITION',
+      headerCellFilter : 'translate',
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/condition.tmpl.html',
+    }, {
+      field : 'barcode',
+      displayName : 'BARCODE.BARCODE',
+      headerCellFilter : 'translate',
+      width : 110,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+    }, {
+      field : 'quantity',
+      type : 'number',
+      width : 120,
+      displayName : 'TABLE.COLUMNS.QUANTITY',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
+      footerCellClass : 'text-right',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html',
+    }, {
+      field : 'expiration_date',
+      type : 'date',
+      cellFilter : `date:"${bhConstants.dates.format}"`,
+      width : 150,
+      visible : tracking,
+      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
+    }, {
+      field : 'actions',
+      displayName : '',
+      width : 25,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
+    }];
+  } else {
+    cols = [{
+      field : 'status',
+      width : 25,
+      displayName : '',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html',
+    }, {
+      field : 'lot',
+      displayName : 'TABLE.COLUMNS.LOT',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
+    }, {
+      field : 'barcode',
+      displayName : 'BARCODE.BARCODE',
+      headerCellFilter : 'translate',
+      width : 110,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.barcode.tmpl.html',
+    }, {
+      field : 'quantity',
+      type : 'number',
+      width : 120,
+      displayName : 'TABLE.COLUMNS.QUANTITY',
+      headerCellFilter : 'translate',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
+      footerCellClass : 'text-right',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html',
+    }, {
+      field : 'expiration_date',
+      type : 'date',
+      cellFilter : `date:"${bhConstants.dates.format}"`,
+      width : 150,
+      visible : tracking,
+      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
+    }, {
+      field : 'actions',
+      displayName : '',
+      width : 25,
+      cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
+    }];
+  }
 
   vm.gridOptions = {
     appScopeProvider : vm,

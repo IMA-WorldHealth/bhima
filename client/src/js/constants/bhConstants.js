@@ -108,6 +108,7 @@ function constantConfig() {
       INVENTORY_RESET  : 14,
       INVENTORY_ADJUSTMENT : 15,
       AGGREGATED_CONSUMPTION : 16,
+      FROM_ASSET_INTEGRATION : 17,
     },
     stockRequisition : {
       completed_status : 6,
