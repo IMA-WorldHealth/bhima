@@ -10,6 +10,7 @@ const debug = require('debug')('bhima:plugins:odk-central');
 const _ = require('lodash');
 const { json2csvAsync } = require('json-2-csv');
 const tempy = require('tempy');
+const path = require('path');
 const fs = require('fs/promises');
 const qrcode = require('qrcode');
 const pako = require('pako');
@@ -72,8 +73,7 @@ function unformatEmailAddr(email) {
 
 async function defineUserAsDataCollector(userId) {
   const odkProject = await db.one('SELECT odk_project_id AS id FROM odk_central_integration LIMIT 1;');
-
-  await central.api.users.assingUserToProjectRole(odkProject.id, odkCentralRoles.dataCollector, userId);
+  await central.api.users.assignUserToProjectRole(odkProject.id, odkCentralRoles.dataCollector, userId);
 }
 
 /**
@@ -318,13 +318,46 @@ async function syncDepotsWithCentral() {
 
   debug(`Creating draft form for ODK`);
 
-  // central.api.forms.createFormFromXLSXFile(odkProjectId);
+  const xlsxFormPath = path.join(__dirname, '../../../client/assets/pv-reception.xlsx');
+
+  debug('Uploading', xlsxFormPath, 'to ODK Central.');
+
+  const xmlFormId = 'bhima_pv_reception';
+
+  // first, check if this form exists, and clear the form if it exists
+  const hasForm = await central.api.getFormByProjectIdAndFormId(odkProjectId, xmlFormId);
+  if (hasForm) {
+    debug('Found an existing form.  Deleting it...');
+    await central.api.forms.deleteForm(odkProjectId, xmlFormId);
+  }
 
   // now we need to create a draft form on ODK Central
+  const draft = await central.api.forms.createFormFromXLSX(odkProjectId, xlsxFormPath, xmlFormId);
 
-  // now lets upload the latest lots to our draft
+  debug(`Created draft form "${draft.name}" (id: ${draft.xmlFormId}, version: ${draft.version}).  `);
+
+  // let's add in the two attachments
+  let result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, tmpDocumentsFile);
+  debug(`Uploaded ${tmpDocumentsFile} with result success: ${result.success}`);
+
+  result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, tmpLotsFile);
+  debug(`Uploaded ${tmpLotsFile} with result success: ${result.success}`);
+
+  // add the IMA icon to the form
+  const srcIconFile = path.join(__dirname, '../../../client/assets/icon.png');
+  result = await central.api.forms.addAttachmentToDraftForm(odkProjectId, xmlFormId, srcIconFile);
+  debug(`Uploaded ${srcIconFile} with result success: ${result.success}`);
 
   // now lets publish our draft
+  const published = await central.api.forms.publishDraftForm(odkProjectId, xmlFormId);
+  debug(`Published with result success: ${published.success}`);
+
+  // now lets give all app-users access to this form
+  const allAppUsers = await central.api.users.listAllAppUsers(odkProjectId);
+  for (const user of allAppUsers) { // eslint-disable-line
+    debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
+    await defineUserAsDataCollector(user.id); // eslint-disable-line
+  }
 
 }
 
