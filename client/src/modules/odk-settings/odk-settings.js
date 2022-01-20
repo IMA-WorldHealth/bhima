@@ -28,6 +28,7 @@ function ODKSettingsController(
 
   vm.syncUsers = () => {
     ODKSettings.syncUsers()
+      .then(() => ODKSettings.syncAppUsers())
       .then(() => { $state.reload(); })
       .catch(Notify.handleError);
   };
@@ -53,6 +54,13 @@ function ODKSettingsController(
     ODKSettings.getProjectSettings()
       .then(project => {
         vm.project = project;
+      })
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+
+    ODKSettings.getAppUsers()
+      .then(appUsers => {
+        vm.appUsers = appUsers;
       })
       .catch(Notify.handleError)
       .finally(() => { vm.loading = false; });
