@@ -36,7 +36,7 @@ async function setupODKCentralConnection() {
 }
 
 // BUILD QRCODE
-async function buildQRCode(url, token, projectId) {
+async function buildQRCode(url, token, projectId, projectName) {
   const data = {
     general : {
       server_url : `${url}/v1/key/${token}/projects/${projectId}`,
@@ -44,6 +44,11 @@ async function buildQRCode(url, token, projectId) {
     },
     admin : {
       edit_saved : false,
+    },
+    project : {
+      name : projectName,
+      icon : 'P',
+      color : '#ff0000',
     },
   };
 
@@ -390,7 +395,7 @@ router.get('/app-users/:userId/qrcode', async (req, res, next) => {
     );
     const { token } = userDetails;
 
-    const data = await buildQRCode(url, token, projectId);
+    const data = await buildQRCode(url, token, projectId, req.session.enterprise.name);
     res.status(200).send(data);
   } catch (error) {
     next(error);
