@@ -33,10 +33,6 @@ function DepotModalController($state, Depots, Notify, Session, params) {
     if (!vm.identifier) { return; }
     Depots.read(vm.identifier)
       .then(depot => {
-        console.log('DEPOOOOOOOOOOOOOOooooooooo');
-        console.log(depot);
-        console.log('NIIIIIIIiiiiiiiiiiiiiiiii');
-
         depot.allowed_distribution_depots.forEach(depotDist => {
           vm.depots.forEach(d => {
             if (d.uuid === depotDist) {
