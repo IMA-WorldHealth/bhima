@@ -1,6 +1,18 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "ASSET" : {
+      "ABT_INVENTORY_NO" : "Nr Inventaire",
+      "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Endommagé",
+        "GOOD" : "Bon",
+        "LOST" : "Perdu"
+      },
+      "ORIGIN" : "Origine",
+      "PURCHASE_ORDER" : "Commande d'achat",
+      "VENDOR" : "Fournisseur"
+    },
     "USE_OF_STOCK_WAC" : "Utilisation de la valeur en stock du produit (Cout Unitaire Moyen Pondéré)",
     "WAC_NOTIFICATION" : "La valeur actuelle du produit en stock est",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
@@ -38,6 +50,7 @@
       "PRODUCTS_IN_OVERSTOCK" : "Produits en surstock"
     },
     "DAYS_OF_STOCK_OUT" : "N. jours de rupture de stock",
+    "DAYS_UNTIL_STOCK_OUT" : "N. jours avant la rupture de stock",
     "DECREASE"        : "Diminution",
     "DECREASE_HELP"   : "Ajustement de stock en reduisant la quantité des lots des produits en stock",
     "DEPOT"           : "Dépôt",
@@ -51,6 +64,7 @@
     "DUPLICATE_LOT_ORDER": "Un lot avec ce label a déjà été ajouté",
     "EMPTY"           : "Vous n'avez aucun stock dans votre dépôt",
     "ENTRY"           : "Entrée de stock",
+    "ENTRY_ASSET_INTEGRATION" : "Actifs",
     "ENTRY_DATE"      : "Date d'entrée",
     "ENTRY_DATE_TOOLTIP" : "Date de la première entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",
@@ -68,6 +82,10 @@
     "AND_MORE" : "... et {{left}} autres",
     "TRACK_CONSUMPTION":"Suivre la consommation",
     "TRACK_EXPIRATION":"Suivre l'expiration",
+    "SCAN_BARCODE_LOT": "Scanner le code-barre de lot",
+    "SCAN_BARCODE_INVENTORY": "Scanner le code-barre d'inventaire",
+    "SCAN_SYSTEM_BARCODE": "Scanner le code système",
+    "REFRESH_SYSTEM_BARCODES": "Rafraichir les codes-barres du système",
     "ERRORS" : {
       "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
       "MISSING_LOT_NAME" : "Identifiant de lot manquant",
@@ -149,6 +167,8 @@
     "LOT_NOT_FOUND"   : "Ce lot n'a pas été trouvé !",
     "MAXIMUM"         : "Stock maximum",
     "MINIMUM"         : "Stock minimum",
+    "MAX_STOCK_DATE"  : "Dernière date d'utilisation du stock",
+    "MIN_STOCK_DATE"  : "Première date d'utilisation du stock",
     "MONTH"           : "Mois de stock",
     "MONTHLY_CONSUM"  : "Consommation Mensuelle Moyenne",
     "MONTH_OF_STOCK"  : "Mois de stock - Nombre de mois avant epuisement du stock",
@@ -179,6 +199,7 @@
     "DEPOT_DISTRIBUTION" : "Distribution au dépôt",
     "DIRECTION": "Direction du  movement",
     "LOSS_DISTRIBUTION" : "Perte de Stock",
+    "MIN_MONTHS_SECURITY_STOCK" : "Mois minimum stock de sécurité",
     "MOTIF"           : "Motif",
     "MOVEMENT"        : "Mouvement",
     "MOVEMENTS"       : "Mouvements",
@@ -209,6 +230,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Ajustement",
       "AGGREGATE_CONSUMPTION" : "Consommation de stock agrégée",
+      "ENTRY_ASSET_INTEGRATION" : "Entree de Stock - Intégration des actifs",
       "ENTRY_DEPOT"    : "Entrée en provenance d'autres dépots",
       "ENTRY_DONATION" : "Entree de Stock - Donation",
       "ENTRY_PURCHASE" : "Entree de Stock - Achat",
@@ -221,10 +243,12 @@
       "EXIT_LOSS"      : "Perte de stock"
     },
     "RECEIVER"        : "Recepteur",
+    "RECEPTION_ASSET_INTEGRATION" : "Entrée des actifs par intégration",    
     "RECEPTION_TRANSFER" : "Transfert",
     "RECEPTION_DESCRIPTION" : "Reception de stock",
     "RECEPTION_INTEGRATION" : "Entrée de stock par intégration",
     "RECEPTION_DONATION" : "Entrée de stock en provenance d'une donation",
+    "REFILL_QUANTITY" : "Quantité de recharge",
     "REQUIRES_PO"     : "Nécessitant une commande d'achat",
     "RESPONSIBLE"     : "Gestionnaire du stock",
     "RISK_OF_EXPIRATION" : "Risque de péremption",
@@ -265,6 +289,10 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption"
   },
   "SETTINGS" : {
+    "CONSUMPTION_AND_REORDER_SETTINGS" : "Consommation de stock et de réapprovisionnement",
+    "ACCOUNTING_INTEGRATION_SETTINGS" : "Intégration de la comptabilité des stocks",
+    "ODK_INTEGRATION_SETTINGS" : "Paramètres d'intégration ODK",
+    "OTHER_SETTINGS" : "Autres paramètres",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
     "DEFAULT_PURCHASE_ORDER_INTERVAL" : "Intervalle de commande par défaut (En mois)",
@@ -291,6 +319,7 @@
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "Toutes les destinations",
     "AGGREGATE_CONSUMPTION" : "Consommation agrégée",
+    "FROM_ASSET_INTEGRATION" : "Intégration des actifs",
     "FROM_PURCHASE"    : "Commande d'achat",
     "FROM_OTHER_DEPOT" : "En provenance d'un dépôt",
     "FROM_ADJUSTMENT"  : "Ajustement (Positif)",
@@ -321,7 +350,10 @@
     "DETAILS":"Information sur le lot",
     "FIND_DUPLICATE_LOTS" : "Trouver lots en double",
     "MERGE_DUPLICATE_LOTS" : "fusionner des lots en double",
+    "BARCODE": "Code-barre",
     "SHOW_LOT_SCHEDULE": "Montrer le calendrier de consommation des lots",
+    "SHOW_BARCODE": "Afficher le code-barre",
+    "BARCODE_FOR_LOT": "Code-barre pour le lot",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
     "ASSIGNMENT_CURRENT":"En cours",
