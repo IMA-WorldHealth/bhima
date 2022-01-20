@@ -142,8 +142,10 @@
         <div
           id="LotsGrid"
           ui-grid="$ctrl.gridOptions"
+          ui-grid-exporter
           ui-grid-auto-resize
-          ui-grid-resize-columns>
+          ui-grid-resize-columns
+          ui-grid-edit>
         </div>
         <bh-grid-loading-indicator
           loading-state="$ctrl.loading"

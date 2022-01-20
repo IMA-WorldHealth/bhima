@@ -1,6 +1,18 @@
 {
   "STOCK" : {
     "ALERT" : "Alert",
+    "ASSET" : {
+      "ABT_INVENTORY_NO" : "Abt Inventory No",
+      "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Damaged",
+        "GOOD" : "Good",
+        "LOST" : "lost"
+      },
+      "ORIGIN" : "Origin",
+      "PURCHASE_ORDER" : "Purchase Order",
+      "VENDOR" : "Vendor"
+    },
     "USE_OF_STOCK_WAC" : "Use of the value in stock of the product (Weighted Average Cost)",
     "WAC_NOTIFICATION" : "The current value of the product in stock is",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"Does not exist because the movement of stock was made before the implementation of stock accounting",
@@ -52,6 +64,7 @@
     "DUPLICATE_LOT_ORDER": "A lot with this label has already been added",
     "EMPTY"           : "You do not have any stock in your depot",
     "ENTRY"           : "Stock Entry",
+    "ENTRY_ASSET_INTEGRATION" : "Asset",
     "ENTRY_DATE"      : "Entry Date",
     "ENTRY_DATE_TOOLTIP" : "Date of earliest entry",
     "ENTRY_DOCUMENT"  : "Entry Document",
@@ -216,6 +229,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Adjustment",
       "AGGREGATE_CONSUMPTION" : "Stock exit - Aggregate consumption",
+      "ENTRY_ASSET_INTEGRATION" : "Stock Entry - Asset Integration",
       "ENTRY_DEPOT"    : "Stock Entry from another depot",
       "ENTRY_DONATION" : "Stock Entry - Donation",
       "ENTRY_PURCHASE" : "Stock Entry - Purchase",
@@ -228,6 +242,7 @@
       "EXIT_LOSS"      : "Stock exit to loss"
     },
     "RECEIVER"        : "Receiver",
+    "RECEPTION_ASSET_INTEGRATION" : "Asset Entry by Integration",
     "RECEPTION_TRANSFER" : "Transfer",
     "RECEPTION_DESCRIPTION" : "Stock Reception",
     "RECEPTION_INTEGRATION" : "Stock Entry by Integration",
@@ -303,6 +318,7 @@
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "All Destinations",
     "AGGREGATE_CONSUMPTION" : "Aggregate consumption",
+    "FROM_ASSET_INTEGRATION" : "Asset Integration",
     "FROM_PURCHASE"    : "From Purchase Order",
     "FROM_OTHER_DEPOT" : "From Depot",
     "FROM_ADJUSTMENT"  : "Adjustment (Positive)",
