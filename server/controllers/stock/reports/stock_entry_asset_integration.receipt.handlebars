@@ -1,0 +1,117 @@
+{{> head title="STOCK.RECEIPT.ENTRY_ASSET_INTEGRATION" }}
+
+<!-- body  -->
+<div class="container" style="font-size: 0.9em;">
+
+  <header>
+    <!-- headings  -->
+    {{> stockReceiptHeader
+      title="STOCK.RECEIPT.ENTRY_ASSET_INTEGRATION"
+      entity=details.depot_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
+
+    <!-- summary  -->
+    <div class="row receipt-summary">
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.FROM'}}: {{translate 'STOCK.ENTRY_INTEGRATION'}}</h4>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}}<br>
+        <span class="text-capitalize">{{translate 'STOCK.INVENTORY'}}</span>: {{rows.length}} {{translate 'STOCK.ITEMS'}} <br>
+        <span class="text-capitalize">{{translate "TABLE.COLUMNS.CREATED_BY"}}</span>: {{details.user_display_name}} <br>
+      </div>
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.TO'}}</h4>
+        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{details.document_reference}}</strong> <br>
+        {{#if details.autoStockAccountingEnabled}}
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+          {{#if details.voucher_reference}}
+            <strong>{{details.voucher_reference}}</strong>
+          {{else}}
+            <i>{{translate 'STOCK.DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP'}}</i>
+          {{/if}}
+          <br>
+        {{/if}}
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date details.date}} <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.COST'}}</span>: {{currency (sum rows 'total') enterprise.currency_id}} <br>
+      </div>
+    </div>
+  </header>
+
+  {{#if details.description}}
+  <div class="receipt-summary">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
+    {{details.description}}
+  </div>
+  {{/if}}
+
+  <!-- list of data  -->
+  <table class="table table-condensed table-bordered table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'STOCK.CODE'}}</th>
+        <th>{{translate 'STOCK.INVENTORY'}}</th>
+        <th>{{translate 'STOCK.LOT'}}</th>
+        <th>{{translate 'STOCK.ASSET.ABT_INVENTORY_NO'}}</th>
+        <th>{{translate 'STOCK.EXPIRATION'}}</th>
+        <th>{{translate 'STOCK.ASSET.ORIGIN'}}</th>
+        <th>{{translate 'STOCK.ASSET.PURCHASE_ORDER'}}</th>
+        <th>{{translate 'STOCK.ASSET.VENDOR'}}</th>
+        <th>{{translate 'STOCK.ASSET.CONDITION'}}</th>
+        <th>{{translate 'STOCK.QUANTITY'}}</th>
+        <th>{{translate 'STOCK.UNIT_COST'}}</th>
+        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rows}}
+        <tr>
+          <td>{{code}}</td>
+          <td>{{text}}</td>
+          <td>{{label}}</td>
+          <td>{{abt_inventory_no}}</td>
+          {{#if expires}}
+            <td>{{date expiration_date}}</td>
+          {{else}}
+            <td></td>
+          {{/if}}
+          <td class="text-right">{{origin}}</td>
+          <td class="text-right">{{purchase_order}}</td>
+          <td class="text-right">{{vendor}}</td>
+          <td class="text-right">{{translate condition}}</td>
+          <td class="text-right">{{quantity}}</td>
+          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=12}}
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr style="font-weight: bold;">
+        <td colspan="11">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <br>
+
+  <footer>
+    <div class="row">
+      <div class="col-xs-6">
+        <h4 class="text-center">{{translate 'REPORT.FOOTER.APPROVED_BY'}}</h4>
+        <hr>
+      </div>
+
+      <div class="col-xs-6">
+        <h4 class="text-center">{{translate 'REPORT.FOOTER.DEPOT_MANAGER'}}</h4>
+        <hr>
+      </div>
+    </div>
+  </footer>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
+</div>

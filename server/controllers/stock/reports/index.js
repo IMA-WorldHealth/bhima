@@ -34,6 +34,7 @@ const stockExitServiceReceipt = require('./stock/exit_service_receipt');
 const stockExitLossReceipt = require('./stock/exit_loss_receipt');
 const stockEntryPurchaseReceipt = require('./stock/entry_purchase_receipt');
 const stockEntryIntegrationReceipt = require('./stock/entry_integration_receipt');
+const stockEntryAssetIntegrationReceipt = require('./stock/entry_asset_integration_receipt');
 const stockEntryDonationReceipt = require('./stock/entry_donation_receipt');
 const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
@@ -122,6 +123,10 @@ async function renderStockReceipt(req, res, next) {
 
     case Stock.flux.AGGREGATE_CONSUMPTION:
       renderer = stockExitAggregateConsumptionReceipt;
+      break;
+
+    case Stock.flux.FROM_ASSET_INTEGRATION:
+      renderer = stockEntryAssetIntegrationReceipt;
       break;
 
     default:
