@@ -12,7 +12,13 @@
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
       </a>
     </li>
-
+    <li role="separator" class="divider"></li>
+    <li>
+      <a data-method="lot-schedule" ng-click="grid.appScope.openLotBarcodeModal(row.entity.uuid)" href>
+        <i class="fa fa-barcode"></i> <span translate>LOTS.SHOW_BARCODE</span>
+      </a>
+    </li>
+    <li role="separator" class="divider"></li>
     <li>
       <a data-method="view-stock-articles" ui-sref= "inventory.list(
         { filters : [{
