@@ -7,9 +7,18 @@
     "ODK_CENTRAL_URL" : "URL du serveur ODK Central",
     "ODK_ADMIN_USER" : "Adressse mail de l'administrateur",
     "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur",
-    "SYNC_ENTERPRISE" : "Synchronize enterprise settings",
-    "SYNC_USERS" : "Synchronize users",
-    "SYNC_DEPOTS" : "Synchronize depots",
-    "SYNC_SUBMISSIONS" : "Synchronize form submissions"
+    "SYNC_ENTERPRISE" : "Synchroniser les paramètres d'entreprise",
+    "SYNC_USERS" : "Synchroniser les utilisateurs",
+    "SYNC_DEPOTS" : "Synchroniser les dépôts",
+    "SYNC_SUBMISSIONS" : "Synchroniser les soumissions des formulaires",
+    "SYNC_SETTINGS" : "Synchroniser les paramètres",
+    "CONFIG_SETTINGS" : "ODK Central Configuration",
+    "PROJECT_DETAILS" : "Détails du projet",
+    "PROJECT_ID" : "ID Projet",
+    "PROJECT_FORMS" : "Nombre de formulaire",
+    "PROJECT_NAME" : "Nom du projet",
+    "QRCODE" : "ODK QR Code",
+    "SHOW_QRCODE" : "Afficher QR Code",
+    "TOTAL_APP_USERS" : "Nombre des utilisateurs mobiles"
   }
 }

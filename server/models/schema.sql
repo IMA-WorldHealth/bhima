@@ -2667,5 +2667,14 @@ CREATE TABLE `odk_user` (
   CONSTRAINT `odk_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `odk_app_user`;
+CREATE TABLE `odk_app_user` (
+  `odk_app_user_id` INT UNSIGNED NOT NULL,
+  `odk_app_user_token` TEXT NOT NULL,
+  `display_name` TEXT NOT NULL,
+  `bhima_user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  CONSTRAINT `odk_app_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 SET foreign_key_checks = 1;

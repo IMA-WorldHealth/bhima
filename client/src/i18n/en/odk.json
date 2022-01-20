@@ -16,6 +16,9 @@
     "PROJECT_DETAILS" : "Project Details",
     "PROJECT_ID" : "Project ID",
     "PROJECT_FORMS" : "Number of Forms",
-    "PROJECT_NAME" : "Project Name"
+    "PROJECT_NAME" : "Project Name",
+    "QRCODE" : "ODK QR Code",
+    "SHOW_QRCODE" : "Show QR Code",
+    "TOTAL_APP_USERS" : "Number of App Users"
   }
 }

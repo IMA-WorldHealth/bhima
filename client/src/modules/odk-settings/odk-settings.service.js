@@ -20,6 +20,12 @@ function ODKSettingsService(Api) {
   };
 
   //
+  service.syncAppUsers = () => {
+    return service.$http.post(baseUrl.concat('sync-app-users'))
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  //
   service.syncDepots = () => {
     return service.$http.post(baseUrl.concat('sync-depots')).then(service.util.unwrapHttpResponse);
   };
@@ -32,6 +38,16 @@ function ODKSettingsService(Api) {
 
   service.getProjectSettings = () => {
     return service.$http.get(baseUrl.concat('project-settings'))
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.getAppUsers = () => {
+    return service.$http.get(baseUrl.concat('app-users'))
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.getAppUserQRCode = (userId) => {
+    return service.$http.get(baseUrl.concat(`app-users/${userId}/qrcode`))
       .then(service.util.unwrapHttpResponse);
   };
 
