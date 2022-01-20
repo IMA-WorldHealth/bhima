@@ -18,6 +18,7 @@ const LOT_BARCODE_TEMPLATE = `${BASE_PATH}/stock/lot_barcode/lot_barcode.handleb
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
 const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
+const STOCK_ENTRY_ASSET_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_asset_integration.receipt.handlebars`;
 const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt.handlebars`;
 const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
 
@@ -205,6 +206,7 @@ module.exports = {
   STOCK_ENTRY_DEPOT_TEMPLATE,
   STOCK_ENTRY_PURCHASE_TEMPLATE,
   STOCK_ENTRY_INTEGRATION_TEMPLATE,
+  STOCK_ENTRY_ASSET_INTEGRATION_TEMPLATE,
   STOCK_ENTRY_DONATION_TEMPLATE,
   STOCK_ADJUSTMENT_TEMPLATE,
   STOCK_EXIT_REPORT_TEMPLATE,

@@ -1,6 +1,18 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
+    "ASSET" : {
+      "ABT_INVENTORY_NO" : "Nr Inventaire",
+      "CONDITION" : "Condition",
+      "CONDITION_TYPE" : {
+        "DAMAGED" : "Endommagé",
+        "GOOD" : "Bon",
+        "LOST" : "Perdu"
+      },
+      "ORIGIN" : "Origine",
+      "PURCHASE_ORDER" : "Commande d'achat",
+      "VENDOR" : "Fournisseur"
+    },
     "USE_OF_STOCK_WAC" : "Utilisation de la valeur en stock du produit (Cout Unitaire Moyen Pondéré)",
     "WAC_NOTIFICATION" : "La valeur actuelle du produit en stock est",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
@@ -52,6 +64,7 @@
     "DUPLICATE_LOT_ORDER": "Un lot avec ce label a déjà été ajouté",
     "EMPTY"           : "Vous n'avez aucun stock dans votre dépôt",
     "ENTRY"           : "Entrée de stock",
+    "ENTRY_ASSET_INTEGRATION" : "Actifs",
     "ENTRY_DATE"      : "Date d'entrée",
     "ENTRY_DATE_TOOLTIP" : "Date de la première entrée",
     "ENTRY_DOCUMENT"  : "Document d'entrée",
@@ -217,6 +230,7 @@
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Ajustement",
       "AGGREGATE_CONSUMPTION" : "Consommation de stock agrégée",
+      "ENTRY_ASSET_INTEGRATION" : "Entree de Stock - Intégration des actifs",
       "ENTRY_DEPOT"    : "Entrée en provenance d'autres dépots",
       "ENTRY_DONATION" : "Entree de Stock - Donation",
       "ENTRY_PURCHASE" : "Entree de Stock - Achat",
@@ -229,6 +243,7 @@
       "EXIT_LOSS"      : "Perte de stock"
     },
     "RECEIVER"        : "Recepteur",
+    "RECEPTION_ASSET_INTEGRATION" : "Entrée des actifs par intégration",    
     "RECEPTION_TRANSFER" : "Transfert",
     "RECEPTION_DESCRIPTION" : "Reception de stock",
     "RECEPTION_INTEGRATION" : "Entrée de stock par intégration",
@@ -304,6 +319,7 @@
   "STOCK_FLUX" : {
     "ALL_DESTINATION"  : "Toutes les destinations",
     "AGGREGATE_CONSUMPTION" : "Consommation agrégée",
+    "FROM_ASSET_INTEGRATION" : "Intégration des actifs",
     "FROM_PURCHASE"    : "Commande d'achat",
     "FROM_OTHER_DEPOT" : "En provenance d'un dépôt",
     "FROM_ADJUSTMENT"  : "Ajustement (Positif)",

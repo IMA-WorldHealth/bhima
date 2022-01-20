@@ -8,6 +8,7 @@ const StockEntryFromPurchase = require('./entry/entryFromPurchase');
 const StockEntryFromIntegration = require('./entry/entryFromIntegration');
 const StockEntryFromDonation = require('./entry/entryFromDonation');
 const StockEntryFromTransfer = require('./entry/entryFromTransfer');
+const StockEntryFromAssetIntegration = require('./entry/entryFromAssetIntegration');
 
 /**
    * @method stockEntryReport
@@ -75,6 +76,9 @@ function groupCollection(entryCollection) {
   // get stock entry from integration
   collection.entryFromIntegration = formatAndCombine(entryCollection.entryFromIntegration);
 
+  // get stock entry from integration
+  collection.entryFromAssetIntegration = formatAndCombine(entryCollection.entryFromAssetIntegration);
+
   // get stock entry from donation
   collection.entryFromDonation = formatAndCombine(entryCollection.entryFromDonation);
 
@@ -123,7 +127,8 @@ function formatEntry(value, key) {
 /**
  * @function collect
  * @param {object} params query parameters
- * @return {promise} { entryFromPurchase: [], entryFromIntegration: [], entryFromDonation: [], entryFromTransfer: [] }
+ * @return {promise} { entryFromPurchase: [], entryFromIntegration: [],  entryFromAssetIntegration: [],
+ *  entryFromDonation: [], entryFromTransfer: [] }
  */
 async function collect(params) {
   const {
@@ -133,6 +138,7 @@ async function collect(params) {
     showDetails,
     includePurchaseEntry,
     includeIntegrationEntry,
+    includeAssetIntegrationEntry,
     includeDonationEntry,
     includeTransferEntry,
     exchangeRate,
@@ -158,6 +164,13 @@ async function collect(params) {
   if (includeIntegrationEntry) {
     data.entryFromIntegration = exchange(
       await StockEntryFromIntegration.fetch(depotUuid, dateFrom, dateTo, showDetails),
+    );
+  }
+
+  // get stock entry from asset integration
+  if (includeAssetIntegrationEntry) {
+    data.entryFromAssetIntegration = exchange(
+      await StockEntryFromAssetIntegration.fetch(depotUuid, dateFrom, dateTo, showDetails),
     );
   }
 
