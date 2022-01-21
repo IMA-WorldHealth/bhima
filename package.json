@@ -79,7 +79,7 @@
     "jeremielodi"
   ],
   "dependencies": {
-    "@ima-worldhealth/coral": "^2.9.0",
+    "@ima-worldhealth/coral": "^2.9.2",
     "@ima-worldhealth/tree": "^2.5.1",
     "@types/angular": "^1.8.4",
     "@uirouter/angularjs": "^1.0.29",
@@ -185,7 +185,7 @@
     "release-it": "^14.12.3",
     "sinon": "^12.0.1",
     "standard-version": "^9.3.2",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   },
   "homepage": "https://docs.bhi.ma",
   "engines": {
