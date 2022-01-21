@@ -71,10 +71,10 @@
   resolved "https://registry.npmjs.org/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^2.9.0":
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.9.0.tgz#9e828a4b3794b6e29dbaededb11ce3e5cb78eb0e"
-  integrity sha512-bFUAOOoAj0XwdYLWMHH4HsvcOddrNQZ7xf96ud3dWYuFpesfo5/jt/AGDCYn9xWZ3AkOsm7OY/VDPV6vF/aF8g==
+"@ima-worldhealth/coral@^2.9.2":
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.9.2.tgz#08dae4665ddcf83fdf9f1d4a5ab5039726b516b1"
+  integrity sha512-RFUsALntuSN5EcCRRKoHzVapyDO42pcgq4UOcdO8PS9HyGaRSMXMFURWRjqJHTM/q03feVMZ7UOUX0O83r0ztg==
   dependencies:
     debug "^4.1.1"
     inline-source "^7.2.0"
