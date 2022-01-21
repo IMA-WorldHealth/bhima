@@ -94,6 +94,18 @@ function StockMovementsController(
       displayName : 'STOCK.FLUX',
       headerCellFilter : 'translate',
     }, {
+      field : 'description',
+      displayName : 'TABLE.COLUMNS.DESCRIPTION',
+      headerTooltip : 'TABLE.COLUMNS.DESCRIPTION',
+      headerCellFilter : 'translate',
+      visible : false,
+    }, {
+      field : 'target',
+      displayName : 'FORM.LABELS.TARGET',
+      headerTooltip : 'FORM.LABELS.TARGET',
+      headerCellFilter : 'translate',
+      visible : false,
+    }, {
       field : 'cost',
       type : 'number',
       displayName : 'STOCK.COST',
@@ -104,6 +116,15 @@ function StockMovementsController(
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       aggregationHideLabel : true,
       aggregationType : aggregateCostColumn,
+    }, {
+      field            : 'wac',
+      displayName      : 'STOCK.WAC',
+      headerTooltip    : 'STOCK.WAC',
+      headerCellFilter : 'translate',
+      cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
+      cellClass        : 'text-right',
+      type             : 'number',
+      visible          : false,
     }, {
       field : 'date',
       type : 'date',
@@ -116,6 +137,12 @@ function StockMovementsController(
       displayName : 'FORM.LABELS.SERVER_DATE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/movements/templates/created_at.cell.html',
+      visible : false,
+    }, {
+      field : 'document_requisition',
+      displayName : 'REQUISITION.STOCK_REQUISITION',
+      headerTooltip : 'REQUISITION.STOCK_REQUISITION',
+      headerCellFilter : 'translate',
       visible : false,
     }, {
       field : 'userName',

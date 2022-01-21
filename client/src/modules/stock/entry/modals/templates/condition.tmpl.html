@@ -1,0 +1,10 @@
+<div>
+  <select
+    class="form-control"
+    ng-model="row.entity.condition"
+    name="condition"
+    ng-required="true">
+    <option value="" disabled translate>FORM.PLACEHOLDERS.CONDITION</option>
+    <option ng-repeat="condition in grid.appScope.conditions" value="{{condition.label}}" data-key="{{condition.label}}" translate>{{condition.label}}</option>
+  </select>
+</div>
