@@ -43,6 +43,7 @@ async function buildQRCode(url, token, projectId, projectName) {
       protocol : 'odk_default',
       server_url : `${url}/v1/key/${token}/projects/${projectId}`,
       constraint_behavior : 'on_swipe',
+      autosend : 'wifi_and_cellular',
     },
     admin : {
       edit_saved : false,
