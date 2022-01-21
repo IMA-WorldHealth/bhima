@@ -181,9 +181,11 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAssignReceipt = stockAssignReceipt;
+  service.lotBarcodeReceipt = lotBarcodeReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAggregateConsumptionReceipt = stockAggregateConsumptionReceipt;
+  service.stockEntryAssetIntegrationReceipt = stockEntryAssetIntegrationReceipt;
 
   // stock requisition receipt
   function stockRequisitionReceipt(uuid, options) {
@@ -209,6 +211,13 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   function stockAssignReceipt(uuid, options) {
     options.posReceipt = service.posReceipt;
     const route = '/receipts/stock/assign/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // lot barcode
+  function lotBarcodeReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = `/receipts/stock/lots/${uuid}/barcode`;
     return fetch(route, options);
   }
 
@@ -256,6 +265,11 @@ function ReceiptService($http, util, Language, AppCache, Session) {
 
   // stock adjustment receipt
   function stockAdjustmentReceipt(uuid, options) {
+    return genericStockReceipt(uuid, options);
+  }
+
+  // stock entry asset integration receipt
+  function stockEntryAssetIntegrationReceipt(uuid, options) {
     return genericStockReceipt(uuid, options);
   }
 

@@ -128,6 +128,7 @@ function StockEntryController(
       donation : { find : handleDonationSelection, submit : submitDonation },
       integration : { find : handleIntegrationSelection, submit : submitIntegration },
       transfer_reception : { find : findTransfer, submit : submitTransferReception },
+      asset_integration : { find : handleAssetIntegrationSelection, submit : submitAssetIntegration },
     };
   }
 
@@ -336,6 +337,7 @@ function StockEntryController(
       donation : 'STOCK.RECEPTION_DONATION',
       integration : 'STOCK.RECEPTION_INTEGRATION',
       transfer_reception : 'STOCK.RECEPTION_DESCRIPTION',
+      asset_integration : 'RECEPTION_ASSET_INTEGRATION',
     };
 
     if (!entity || !entity.uuid) { return; }
@@ -383,6 +385,18 @@ function StockEntryController(
    */
   function handleIntegrationSelection() {
     const description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
+    initSelectedEntity(description);
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
+  }
+
+  /**
+   * @method handleAssetIntegrationSelection
+   * @description reset the form for a new integration entry
+   */
+  function handleAssetIntegrationSelection() {
+    const description = $translate.instant('STOCK.RECEPTION_ASSET_INTEGRATION');
     initSelectedEntity(description);
     if (vm.gridOptions.data.length === 0) {
       vm.addItems(1);
@@ -627,6 +641,33 @@ function StockEntryController(
       .then(document => {
         vm.reset();
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+      })
+      .catch(Notify.handleError);
+  }
+
+  /**
+   * @method submitAssetIntegration
+   * @description prepare the stock movement and send data to the server as new stock Asset integration
+   */
+  function submitAssetIntegration() {
+    const movement = {
+      depot_uuid  : vm.depot.uuid,
+      entity_uuid : null,
+      date        : vm.movement.date,
+      description : vm.movement.description,
+      flux_id     : bhConstants.flux.FROM_ASSET_INTEGRATION,
+      user_id     : vm.stockForm.details.user_id,
+    };
+
+    const entry = {
+      lots : Stock.processAssetsFromStore(vm.stockForm.store.data, movement.entity_uuid),
+      movement,
+    };
+
+    return Stock.assetIntegration.create(entry)
+      .then(document => {
+        vm.reset();
+        ReceiptModal.stockEntryAssetIntegrationReceipt(document.uuid, bhConstants.flux.FROM_ASSET_INTEGRATION);
       })
       .catch(Notify.handleError);
   }

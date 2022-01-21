@@ -57,6 +57,13 @@
 
             <div class="checkbox">
               <label>
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includeAssetIntegrationEntry">
+                <span translate>REPORT.STOCK.INCLUDE_ASSET_INTEGRATION_ENTRY</span>
+              </label>
+            </div>
+
+            <div class="checkbox">
+              <label>
                 <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includeDonationEntry">
                 <span translate>REPORT.STOCK.INCLUDE_DONATION_ENTRY</span>
               </label>

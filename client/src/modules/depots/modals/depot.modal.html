@@ -49,6 +49,13 @@
         </div>
         <div class="checkbox">
           <label>
+            <input type="checkbox" name="allow_entry_asset_integration" ng-true-value="1" ng-false-value="0"
+              ng-model="DepotModalCtrl.depot.allow_entry_asset_integration">
+            <span translate>STOCK.ENTRY_ASSET_INTEGRATION</span>
+          </label>
+        </div>        
+        <div class="checkbox">
+          <label>
             <input type="checkbox" name="allow_entry_transfer" ng-true-value="1" ng-false-value="0"
               ng-model="DepotModalCtrl.depot.allow_entry_transfer">
             <span translate>STOCK.ENTRY_TRANSFER</span>
