@@ -33,6 +33,9 @@ COPY .env bin/
 # change directory to the bin diretory
 WORKDIR /usr/src/app/bin/
 
+# make sure the node user is the owner of all the underlying files.
+RUN chown -R node:node *
+
 # ensure this container runs as the user "node"
 USER node
 
