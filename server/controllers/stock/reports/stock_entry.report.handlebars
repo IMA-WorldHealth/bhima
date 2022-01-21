@@ -111,7 +111,56 @@
           {{/each}}
 
           <!-- no data -->
-          {{#if entryFromPurchase.isEmpty}}
+          {{#if entryFromIntegration.isEmpty}}
+            <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+        <br/>
+      {{/if}}
+
+
+      <!-- stock entry from asset integration -->
+      {{#if includeAssetIntegrationEntry}}
+        <table class="table table-condensed table-report">
+          <thead>
+            <tr style="background-color: #EFEFEF;">
+              <th colspan="5">{{translate 'STOCK.RECEIPT.ENTRY_ASSET_INTEGRATION'}}</th>
+              <th colspan="2" class="text-right">{{currency entryFromAssetIntegration.cost currencyId}}</th>
+            </tr>
+          </thead>
+          {{#each entryFromAssetIntegration.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th colspan="2" class="text-right">{{ data.inventory_stock_entry_quantity }} {{ data.inventory_unit }}</th>
+                <th colspan="2" class="text-right">{{currency data.inventory_stock_entry_cost ../currencyId}}</th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">{{ description }}</td>
+                    <td class="text-left" style="border:none; width: 15%">
+                      {{#if invoice_reference}}
+                        {{translate 'FORM.LABELS.INVOICE' }}: <b>{{ invoice_reference }}</b>
+                      {{/if}}
+                    </td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} {{ unit_text }}</td>
+                    <td class="text-right" style="border:none;">{{currency unit_cost ../../currencyId}}</td>
+                    <td class="text-right" style="border:none;">{{currency cost ../../currencyId}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryFromAssetIntegration.isEmpty}}
             <tr><th colspan="7" class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
           {{/if}}
         </table>
