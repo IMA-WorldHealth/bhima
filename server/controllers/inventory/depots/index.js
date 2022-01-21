@@ -246,8 +246,8 @@ async function update(req, res, next) {
 
     const sql = `
       SELECT BUID(uuid) as uuid, text, description, enterprise_id, is_warehouse,
-        allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-        allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
+        allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_asset_integration,
+        allow_entry_transfer, allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
         min_months_security_stock, IF(parent_uuid IS NULL, 0, BUID(parent_uuid)) as parent_uuid,
         dhis2_uid, default_purchase_interval
       FROM depot WHERE uuid = ?`;
@@ -291,7 +291,7 @@ function list(req, res, next) {
     SELECT
       BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
       GROUP_CONCAT(DISTINCT u.display_name ORDER BY u.display_name DESC SEPARATOR ', ') AS users,
-      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration, d.allow_entry_asset_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
       d.min_months_security_stock, d.default_purchase_interval,
@@ -370,7 +370,7 @@ function searchByName(req, res, next) {
   const sql = `
     SELECT
       BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
-      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration, d.allow_entry_asset_integration,
       d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
       d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
       IF(parent_uuid, BUID(parent_uuid), 0) as parent_uuid, d.dhis2_uid,
@@ -417,8 +417,9 @@ async function detail(req, res, next) {
   const sql = `
     SELECT
       BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
-      allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-      allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
+      allow_entry_purchase, allow_entry_donation, allow_entry_integration,
+      allow_entry_asset_integration, allow_entry_transfer, allow_exit_debtor, allow_exit_service,
+      allow_exit_transfer, allow_exit_loss,
       BUID(parent_uuid) parent_uuid, dhis2_uid,
       min_months_security_stock, default_purchase_interval
     FROM depot AS d

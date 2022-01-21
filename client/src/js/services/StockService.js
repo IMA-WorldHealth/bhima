@@ -55,6 +55,9 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // API for stock integration
   const integration = new Api('/stock/integration');
 
+  // API for stock asset integration
+  const assetIntegration = new Api('/stock/asset_integration');
+
   // API for stock transfer
   const transfers = new Api('/stock/transfers');
 
@@ -183,6 +186,36 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     }, []);
   }
 
+  /**
+   * @function processAssetsFromStore
+   *
+   * @description
+   * This function loops through the store's contents mapping them into a flat
+   * array of lots.
+   *
+   * @returns {Array} - lots in an array.
+ */
+  function processAssetsFromStore(data) {
+    return data.reduce((current, line) => {
+      return line.lots.map((lot) => {
+        return {
+          uuid : lot.uuid || null,
+          label : lot.lot,
+          quantity : lot.quantity,
+          unit_cost : line.unit_cost,
+          expiration_date : lot.expiration_date,
+          inventory_uuid : line.inventory_uuid,
+          description : lot.description || '',
+          abt_inventory_no : lot.abt_inventory_no,
+          origin : lot.origin,
+          purchase_order : lot.purchase_order,
+          vendor : lot.vendor,
+          condition : lot.condition,
+        };
+      }).concat(current);
+    }, []);
+  }
+
   /** Get label for purchase Status */
   function statusLabelMap(_status_) {
     return stockStatusLabelKeys[_status_];
@@ -214,13 +247,16 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     inlineMovements,
     inventories,
     integration,
+    assetIntegration,
     transfers,
     filter : stockFilter,
     uniformSelectedEntity,
     processLotsFromStore,
+    processAssetsFromStore,
     statusLabelMap,
     downloadTemplate,
     status,
+    stockStatusLabelKeys,
     aggregatedConsumption,
   };
 }

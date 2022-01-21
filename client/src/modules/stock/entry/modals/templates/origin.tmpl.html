@@ -1,0 +1,10 @@
+<div>
+  <select
+    class="form-control"
+    ng-model="row.entity.origin"
+    name="origin"
+    ng-required="true">
+    <option value="" disabled translate>FORM.PLACEHOLDERS.ORIGIN</option>
+    <option ng-repeat="origin in grid.appScope.origins" value="{{origin.label}}" data-key="{{origin.label}}" translate>{{origin.label}}</option>
+  </select>
+</div>
