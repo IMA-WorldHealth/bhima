@@ -17,6 +17,7 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
     includeTransferEntry : 0,
     includeDonationEntry : 0,
     includeIntegrationEntry : 0,
+    includeAssetIntegrationEntry : 0,
   };
 
   vm.previewGenerated = false;
@@ -90,6 +91,7 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
     // be sure at least one checkbox is checked
     const sum = vm.reportDetails.includePurchaseEntry
       || vm.reportDetails.includeIntegrationEntry
+      || vm.reportDetails.includeAssetIntegrationEntry
       || vm.reportDetails.includeDonationEntry
       || vm.reportDetails.includeTransferEntry;
     vm.hasOneChecked = !!sum;

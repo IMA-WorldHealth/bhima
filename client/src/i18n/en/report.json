@@ -309,6 +309,7 @@
       "EXIT_REPORT": "Stock Exit Report",
       "EXIT_REPORT_DESCRIPTION": "This report shows stock exits which had occurred in different depots",
       "INCLUDE_AGGREGATE_CONSUMPTION": "Include aggregate consumption",
+      "INCLUDE_ASSET_INTEGRATION_ENTRY": "Include entries from assets integrations",
       "INCLUDE_INFORMATION": "Information to include",
       "INCLUDE_PATIENT_EXIT": "Include stock exit to patient",
       "INCLUDE_SERVICE_EXIT": "Include stock exit to service",
