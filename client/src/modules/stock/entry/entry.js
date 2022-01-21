@@ -706,6 +706,9 @@ function StockEntryController(
         line.expiration_date = entryDate;
         line.unit = inventory.unit;
         line.tracking_expiration = inventory.tracking_expiration;
+        line.candidateLots.forEach(lot => {
+          lot.tracking_expiration = line.tracking_expiration;
+        });
         setInitialized(line);
 
         return Inventory.inventoryWac(line.inventory_uuid);

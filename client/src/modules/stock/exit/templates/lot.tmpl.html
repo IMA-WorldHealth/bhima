@@ -8,7 +8,8 @@
       <span>{{$select.selected.label}}</span>
     </ui-select-match>
     <ui-select-choices repeat="lot as lot in row.entity.lots | filter: $select.search">
-      <span title="{{lot.expiration_date | date:grid.appScope.DATE_FMT}}">{{ lot.label }} ({{ "LOTS_SCHEDULE.LOT_EXPIRES" | translate }} {{lot.expiration_date | date:grid.appScope.DATE_FMT}})</span>
+      <span ng-if="lot.tracking_expiration" title="{{lot.expiration_date | date:grid.appScope.DATE_FMT}}">{{ lot.label }} ({{ "LOTS_SCHEDULE.LOT_EXPIRES" | translate }} {{lot.expiration_date | date:grid.appScope.DATE_FMT}})</span>
+      <span ng-if="!lot.tracking_expiration">{{ lot.label }}</span>
     </ui-select-choices>
   </ui-select>
 </div>
