@@ -35,17 +35,17 @@
             </li>
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockCtrl.getQueryString('lot', 'pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
+              <a ng-href="/reports/stock/assign/?{{ StockCtrl.getQueryString('pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/lots/?{{ StockCtrl.getQueryString('lot', 'csv') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
+              <a ng-href="/reports/stock/assign/?{{ StockCtrl.getQueryString('csv') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
             <li role="menuitem">
-              <a target='_blank' ng-href="/reports/stock/lots/?{{StockCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+              <a target='_blank' ng-href="/reports/stock/assign/?{{StockCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>

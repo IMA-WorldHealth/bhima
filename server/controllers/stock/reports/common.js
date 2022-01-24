@@ -10,7 +10,8 @@ const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handleb
 const POS_STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.pos.handlebars`;
 const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
 const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.handlebars`;
-const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
+const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.receipt.handlebars`;
+const STOCK_ASSIGN_REGISTRY_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.registry.handlebars`;
 const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
 const STOCK_MOVEMENT_REPORT_TEMPLATE = `${BASE_PATH}/stock_movement_report.handlebars`;
 
@@ -173,6 +174,17 @@ const stockFluxReceipt = {
   15 : { key : 'INVENTORY_ADJUSTMENT', path : 'adjustment' },
 };
 
+// Stock status label keys
+// WARNING: Must match stockStatusLabelKeys in client StockService
+const stockStatusLabelKeys = {
+  stock_out         : 'STOCK.STATUS.STOCK_OUT',
+  in_stock          : 'STOCK.STATUS.IN_STOCK',
+  security_reached  : 'STOCK.STATUS.SECURITY',
+  minimum_reached   : 'STOCK.STATUS.MINIMUM',
+  over_maximum      : 'STOCK.STATUS.OVER_MAX',
+  unused_stock      : 'STOCK.STATUS.UNUSED_STOCK',
+};
+
 // Exports
 module.exports = {
   _,
@@ -191,6 +203,7 @@ module.exports = {
   getDepotMovement,
   getVoucherReferenceForStockMovement,
   pdfOptions,
+  stockStatusLabelKeys,
   STOCK_EXIT_PATIENT_TEMPLATE,
   POS_STOCK_EXIT_PATIENT_TEMPLATE,
   STOCK_EXIT_SERVICE_TEMPLATE,
@@ -200,6 +213,7 @@ module.exports = {
   STOCK_EXIT_LOSS_TEMPLATE,
   POS_STOCK_EXIT_LOSS_TEMPLATE,
   STOCK_ASSIGN_TEMPLATE,
+  STOCK_ASSIGN_REGISTRY_TEMPLATE,
   STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE,
   STOCK_ENTRY_DEPOT_TEMPLATE,
   STOCK_ENTRY_PURCHASE_TEMPLATE,

@@ -5,16 +5,22 @@ const db = require('../../lib/db');
 const util = require('../../lib/util');
 const FilterParser = require('../../lib/filter');
 
+// exports the find function
+exports.find = params => {
+  const sa = getStockAssignment(binarize(params));
+  return db.exec(sa.query, sa.queryParameters);
+};
+
 exports.detail = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlDetail = `
-    SELECT 
-      BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
-      BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
-      sa.quantity, sa.created_at, sa.description, sa.is_active
-    FROM stock_assign sa
-    WHERE sa.uuid = ?;
-  `;
+     SELECT 
+       BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
+       BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
+       sa.quantity, sa.created_at, sa.description, sa.is_active
+     FROM stock_assign sa
+     WHERE sa.uuid = ?;
+   `;
   db.one(sqlDetail, [uuid])
     .then(detail => res.status(200).json(detail))
     .catch(next)
@@ -49,12 +55,12 @@ exports.create = (req, res, next) => {
 };
 
 /**
- * TODO: This feature need to be implemented on the client side
- * in a good way.
- * Since implementing this feature can be a source of lack of information
- * we do not implemented it for now.
- * Stock assignment can just be created (assignment) or unassignment
- */
+  * TODO: This feature need to be implemented on the client side
+  * in a good way.
+  * Since implementing this feature can be a source of lack of information
+  * we do not implemented it for now.
+  * Stock assignment can just be created (assignment) or unassignment
+  */
 exports.update = (req, res, next) => {
   const params = binarize(req.body);
   const uuid = db.bid(req.params.uuid);
@@ -64,8 +70,8 @@ exports.update = (req, res, next) => {
   }
 
   const fetchOriginalAssignment = `
-    SELECT lot_uuid FROM stock_assign WHERE uuid = ?;
-  `;
+     SELECT lot_uuid FROM stock_assign WHERE uuid = ?;
+   `;
   db.one(fetchOriginalAssignment, [uuid])
     .then(previousAssignment => {
       const transaction = db.transaction();
@@ -80,10 +86,10 @@ exports.update = (req, res, next) => {
 };
 
 /**
- * removeAssign() allow to unassign stock to en entity, which is different to just
- * delete assignment, the deletion may be a source of lack of information
- * for tracking historic of lot assignment
- */
+  * removeAssign() allow to unassign stock to en entity, which is different to just
+  * delete assignment, the deletion may be a source of lack of information
+  * for tracking historic of lot assignment
+  */
 exports.removeAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';
@@ -102,8 +108,8 @@ exports.removeAssign = (req, res, next) => {
 };
 
 /**
- * deleteAssign() allow to delete the assign record in the database
- */
+  * deleteAssign() allow to delete the assign record in the database
+  */
 exports.deleteAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';
@@ -122,14 +128,14 @@ exports.deleteAssign = (req, res, next) => {
 };
 
 /**
- * @function binarize
- *
- * @description
- * returns binary version of given identifiers (uuids)
- *
- * @param {object} params an object which contains identifiers in string format
- * @returns {object} params with binary identifiers
- */
+  * @function binarize
+  *
+  * @description
+  * returns binary version of given identifiers (uuids)
+  *
+  * @param {object} params an object which contains identifiers in string format
+  * @returns {object} params with binary identifiers
+  */
 function binarize(params) {
   return db.convert(params, [
     'uuid',
@@ -141,29 +147,29 @@ function binarize(params) {
 }
 
 /**
- * @function getStockAssignment
- *
- * @description
- * build the query for getting stock assignment based on
- * a given parameters
- *
- * @param {object} params
- * @returns {object} { query:..., queryParameters:... }
- */
+  * @function getStockAssignment
+  *
+  * @description
+  * build the query for getting stock assignment based on
+  * a given parameters
+  *
+  * @param {object} params
+  * @returns {object} { query:..., queryParameters:... }
+  */
 function getStockAssignment(params) {
   const sql = `
-    SELECT 
-      BUID(sa.uuid) AS uuid, sa.description, sa.created_at, sa.quantity,
-      BUID(l.uuid) AS lot_uuid, l.label,
-      BUID(i.uuid) AS inventory_uuid, i.text, i.code,
-      BUID(e.uuid) AS entity_uuid, e.display_name,
-      BUID(d.uuid) AS depot_uuid, d.text AS depot_text
-    FROM stock_assign sa
-    JOIN lot l ON l.uuid = sa.lot_uuid AND sa.is_active = 1
-    JOIN entity e ON e.uuid = sa.entity_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN depot d ON d.uuid = sa.depot_uuid 
-  `;
+     SELECT 
+       BUID(sa.uuid) AS uuid, sa.description, sa.created_at, sa.quantity,
+       BUID(l.uuid) AS lot_uuid, l.label,
+       BUID(i.uuid) AS inventory_uuid, i.text, i.code,
+       BUID(e.uuid) AS entity_uuid, e.display_name,
+       BUID(d.uuid) AS depot_uuid, d.text AS depot_text
+     FROM stock_assign sa
+     JOIN lot l ON l.uuid = sa.lot_uuid AND sa.is_active = 1
+     JOIN entity e ON e.uuid = sa.entity_uuid
+     JOIN inventory i ON i.uuid = l.inventory_uuid
+     JOIN depot d ON d.uuid = sa.depot_uuid 
+   `;
 
   const filters = new FilterParser(params);
   filters.equals('uuid', 'uuid', 'l');
