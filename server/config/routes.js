@@ -868,6 +868,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/aggregated_consumption_report', stockReports.stockAggregatedConsumptionReport);
   app.get('/reports/stock/monthly_consumption', stockReports.monthlyConsumption.report);
   app.get('/reports/stock/rumer_report', stockReports.rumer.report);
+  app.get('/reports/stock/assign', stockReports.stockAssignReport);
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);
