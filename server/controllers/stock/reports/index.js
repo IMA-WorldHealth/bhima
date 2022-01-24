@@ -37,17 +37,18 @@ const stockEntryIntegrationReceipt = require('./stock/entry_integration_receipt'
 const stockEntryDonationReceipt = require('./stock/entry_donation_receipt');
 const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
-const stockAssignReceipt = require('./stock/assign_receipt');
+const stockAssignReceipt = require('./stock/assignment/stock_assign.receipt');
+const stockAssignReport = require('./stock/assignment/stock_assign.registry');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 const stockChangesReport = require('./stock/stock_changes/stock_changes');
 
 /**
- * @function determineReceiptType
- *
- * @description
- * Figures out the type of stock receipt from the document uuid.  This allows
- * a uniform API for rendering all stock receipts.
- */
+  * @function determineReceiptType
+  *
+  * @description
+  * Figures out the type of stock receipt from the document uuid.  This allows
+  * a uniform API for rendering all stock receipts.
+  */
 async function determineReceiptType(uuid, isDepotTransferExit = -1) {
 
   // this is only used when you are rendering receipt for transfering between depots
@@ -56,10 +57,10 @@ async function determineReceiptType(uuid, isDepotTransferExit = -1) {
     ? `AND is_exit = ${isDepotTransferExit}` : '';
 
   const sql = `
-    SELECT document_uuid, flux_id FROM stock_movement
-    WHERE document_uuid = ? ${directionality}
-    LIMIT 1;
-  `;
+     SELECT document_uuid, flux_id FROM stock_movement
+     WHERE document_uuid = ? ${directionality}
+     LIMIT 1;
+   `;
 
   const row = await db.one(sql, db.bid(uuid));
   return row.flux_id;
@@ -150,6 +151,7 @@ exports.stockInlineMovementsReport = stockInlineMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;
 exports.stockSheetReport = stockSheetReport;
 exports.stockAggregatedConsumptionReport = stockAggregatedConsumptionReport;
+exports.stockAssignReport = stockAssignReport;
 
 exports.stockValue = stockValue.document;
 exports.stockValueReporting = stockValue.reporting;
