@@ -27,8 +27,8 @@
       "QUANTITY_DISTRIBUTED_TO_PATIENTS": "Quantity distributed to patients",
       "AVG_DISTRIBUTION_PER_PATIENT": "Avg distribution per patient"
     },
-    "ANALYSIS_AUX_CASHBOXES": {
-      "TITLE": "Analysis of Auxiliary Cashboxes",
+    "ANALYSIS_AUX_CASHBOX": {
+      "TITLE": "Analysis of Auxiliary Cashbox",
       "AUXILIARY_TRANSFERT": "Auxiliary Cashbox to transfer account",
       "DESCRIPTION": "This report makes it possible to track the monthly payments and disbursements of the auxiliary cashboxes",
       "STATUS": {
