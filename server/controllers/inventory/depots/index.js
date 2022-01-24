@@ -416,7 +416,7 @@ async function detail(req, res, next) {
 
   const sql = `
     SELECT
-      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse,
+      BUID(d.uuid) as uuid, d.text, d.description, d.is_warehouse, BUID(d.location_uuid) AS location_uuid,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss,
       BUID(parent_uuid) parent_uuid, dhis2_uid,
