@@ -13,9 +13,10 @@ RUN apt-get update && apt-get install -y \
 
 # ENV NODE_ENV=production
 ENV YARN_VERSION 1.22.17
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1
+#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD 1
 RUN yarn policies set-version $YARN_VERSION
-ENV CHROME_BIN /usr/bin/chromium
+#ENV CHROME_BIN /usr/bin/chromium
+#ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium
 
 # define working directory inside the container
 WORKDIR /usr/src/app
@@ -31,6 +32,9 @@ COPY .env bin/
 
 # change directory to the bin diretory
 WORKDIR /usr/src/app/bin/
+
+# make sure the node user is the owner of all the underlying files.
+RUN chown -R node:node *
 
 # ensure this container runs as the user "node"
 USER node

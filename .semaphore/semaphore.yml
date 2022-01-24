@@ -53,7 +53,7 @@ blocks:
             - nvm install $NODEJS_VERSION
             - checkout
             - 'echo "Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
-            - yarn
+            - yarn --ignore-engines
             - 'yarn build:db'
             - yarn build
             - 'yarn test:server-unit'
@@ -66,9 +66,9 @@ blocks:
                 - '8'
             - env_var: NODEJS_VERSION
               values:
-                - '12'
                 - '14'
                 - '16'
+                - 'node'
 
   - name: Install Testing Matrix
     dependencies: ["Update Dependencies"]
@@ -109,7 +109,7 @@ blocks:
             - nvm install $NODEJS_VERSION
             - checkout
             - 'echo "[Installation] Testing node:$NODEJS_VERSION on mysql:$MYSQL_VERSION"'
-            - yarn
+            - yarn --ignore-engines
             - yarn build
             - bash ./sh/install-tests.sh
           matrix:
@@ -118,6 +118,6 @@ blocks:
                 - '8'
             - env_var: NODEJS_VERSION
               values:
-                - '12'
                 - '14'
                 - '16'
+                - 'node'
