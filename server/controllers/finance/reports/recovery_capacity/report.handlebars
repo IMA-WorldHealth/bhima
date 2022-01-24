@@ -10,11 +10,14 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate 'REPORT.RECOVERY_CAPACITY.TITLE'}}</strong> <br>
+      <h3 class="text-center">
+        <strong>{{translate 'REPORT.RECOVERY_CAPACITY.TITLE'}}</strong>
         {{#if includeUnpostedValues}}<strong>({{translate 'REPORT.PROVISIONARY'}})</strong><br>{{/if}}
-        <small>{{date dateFrom}} - {{date dateTo}}</small>
       </h3>
+
+      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
 
       <table class="table table-condensed" style="margin-bottom:16px; border:0px;">
         <tr>
