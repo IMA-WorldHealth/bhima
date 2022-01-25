@@ -1,0 +1,142 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>TREE.ODK_SETTINGS</li>
+    </ol>
+  </div>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div class="col-xs-12 col-md-6 col-lg-4">
+      <form
+        name="ODKSettingsForm"
+        bh-submit="ODKSettingsCtrl.submit(ODKSettingsForm)"
+        ng-model-options="{ updateOn: 'blur' }" novalidate>
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <i class="fa fa-server"></i>
+            <span translate>ODK.ODK_INTEGRATION_SETTINGS</span>
+          </div>
+          <div class="panel-body">
+            <div class="form-group" ng-class="{ 'has-error' : ODKSettingsForm.$submitted && ODKSettingsForm.odk_central_url.$invalid }">
+              <label class="control-label" translate>ODK.ODK_CENTRAL_URL</label>
+              <input
+                type="text"
+                class="form-control"
+                name="odk_central_url"
+                ng-model="ODKSettingsCtrl.settings.odk_central_url"
+                autocomplete="off">
+              <div class="help-block" ng-messages="ODKSettingsForm.odk_central_url.$error" ng-show="ODKSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : ODKSettingsForm.$submitted && ODKSettingsForm.odk_admin_user.$invalid }">
+              <label class="control-label" translate>ODK.ODK_ADMIN_USER</label>
+              <input
+                type="email"
+                class="form-control"
+                name="odk_admin_user"
+                ng-model="ODKSettingsCtrl.settings.odk_admin_user"
+                autocomplete="off"
+                ng-required="!!ODKSettingsCtrl.settings.odk_central_url">
+              <div class="help-block" ng-messages="ODKSettingsForm.odk_admin_user.$error" ng-show="ODKSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : ODKSettingsForm.$submitted && ODKSettingsForm.odk_admin_password.$invalid }">
+              <label class="control-label" translate>ODK.ODK_ADMIN_PASSWORD</label>
+              <input
+                type="password"
+                class="form-control"
+                name="odk_admin_password"
+                ng-model="ODKSettingsCtrl.settings.odk_admin_password"
+                autocomplete="off"
+                ng-required="!!ODKSettingsCtrl.settings.odk_admin_user">
+              <div class="help-block" ng-messages="ODKSettingsForm.odk_admin_password.$error" ng-show="ODKSettingsForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-footer text-right">
+            <bh-loading-button loading-state="ODKSettingsForm.$loading">
+              <span translate>FORM.BUTTONS.UPDATE</span>
+            </bh-loading-button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+
+    <div class="col-xs-12 col-md-6 col-lg-4">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          <i class="fa fa-cloud-upload"></i>
+          <span translate>ODK.SYNC_SETTINGS</span>
+        </div>
+
+        <div class="panel-body">
+          <fieldset ng-disabled="ODKSettingsCtrl.loading">
+          <div class="form-group">
+            <label class="control-label" translate>ODK.SYNC_ENTERPRISE</label>
+            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncEnterprise()" translate>FORM.BUTTONS.SYNC</button>
+          </div>
+
+          <hr>
+
+          <div class="form-group">
+            <label class="control-label" translate>ODK.SYNC_USERS</label>
+            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncUsers()" translate>FORM.BUTTONS.SYNC</button>
+          </div>
+
+
+          <hr>
+
+          <div class="form-group">
+            <label class="control-label" translate>ODK.SYNC_FORMS</label>
+            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncForms()" translate>FORM.BUTTONS.SYNC</button>
+          </div>
+
+          <hr>
+
+          <div class="form-group">
+            <label class="control-label" translate>ODK.SYNC_SUBMISSIONS</label>
+            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncSubmissions()" translate>FORM.BUTTONS.SYNC</button>
+          </div>
+
+          </fieldset>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-md-6 col-lg-4">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <i class="fa fa-cogs"></i>
+          <span translate>ODK.CONFIG_SETTINGS</span>
+        </div>
+
+        <div class="panel-body">
+          <div ng-show="ODKSettingsCtrl.loading" class="text-center">
+            <loading-indicator></loading-indicator>
+          </div>
+          <dl ng-hide="ODKSettingsCtrl.loading">
+            <dt translate>ODK.PROJECT_DETAILS</dt>
+            <dd><span translate>ODK.PROJECT_NAME</span>: {{ODKSettingsCtrl.project.name}} </dd>
+            <dd><span translate>ODK.PROJECT_ID</span>: {{ODKSettingsCtrl.project.id}} </dd>
+            <dd><span translate>ODK.PROJECT_FORMS</span>: {{ODKSettingsCtrl.project.forms}} </dd>
+            <dd><span translate>FORM.LABELS.CREATED</span>: {{ODKSettingsCtrl.project.createdAt | date}} </dd>
+            <dd><span translate>ODK.TOTAL_APP_USERS</span>: {{ODKSettingsCtrl.appUsers.length | number}} </dd>
+          </dl>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
