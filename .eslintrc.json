@@ -46,5 +46,8 @@
   "globals" : {
     "Chart" : true,
     "angular" : true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
   }
 }
