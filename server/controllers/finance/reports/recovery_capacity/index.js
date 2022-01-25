@@ -7,6 +7,7 @@ const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
 
 module.exports.report = report;
 
@@ -28,6 +29,9 @@ async function report(req, res, next) {
     const qs = _.extend(req.query, DEFAULT_OPTIONS);
     const { dateFrom, dateTo } = req.query;
     const metadata = _.clone(req.session);
+
+    const { enterprise } = req.session;
+    const currencyId = Number(req.query.currencyId);
 
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
@@ -158,10 +162,14 @@ async function report(req, res, next) {
 
     const rows = await db.exec(query, parameters);
     const totals = await db.one(queryTotals, parameters);
+    const getExchangeRateData = await Exchange.getExchangeRate(enterprise.id, currencyId, new Date(dateTo));
+    const exchangeRate = getExchangeRateData.rate || 1;
 
     const result = await rpt.render({
       dateFrom,
       dateTo,
+      currencyId,
+      exchangeRate,
       rows,
       totals,
       includeUnpostedValues,

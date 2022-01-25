@@ -19,6 +19,8 @@
         {{date dateFrom}} - {{date dateTo}}
       </h4>
 
+      {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateTo}}
+
       <table class="table table-condensed" style="margin-bottom:16px; border:0px;">
         <tr>
           <td style="border: 0px;">
@@ -52,9 +54,9 @@
           <tr>
             <td>{{date row.date}}</td>
             <td style="width: 10em;" class="text-right">{{row.registrations}}</td>
-            <td class="text-right">{{debcred row.total_invoiced ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.avg_cost ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.total_paid ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred (multiply row.total_invoiced ../exchangeRate) ../currencyId}}</td>
+            <td class="text-right">{{debcred (multiply row.avg_cost ../exchangeRate) ../currencyId}}</td>
+            <td class="text-right">{{debcred (multiply row.total_paid ../exchangeRate) ../currencyId}}</td>
             <td
               style="width: 15em;"
               {{#if row.has_data}}
@@ -73,9 +75,9 @@
           <tr>
             <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
             <th style="width: 10em;" class="text-right">{{totals.registrations}}</th>
-            <th class="text-right">{{debcred totals.total_invoiced metadata.enterprise.currency_id}}</th>
-            <th class="text-right">{{debcred totals.avg_cost metadata.enterprise.currency_id}}</th>
-            <th class="text-right">{{debcred totals.total_paid metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred (multiply totals.total_invoiced exchangeRate) currencyId}}</th>
+            <th class="text-right">{{debcred (multiply totals.avg_cost exchangeRate) currencyId}}</th>
+            <th class="text-right">{{debcred (multiply totals.total_paid exchangeRate) currencyId}}</th>
             <th
               style="width: 15em;"
               {{#gt totals.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
@@ -86,9 +88,7 @@
           </tr>
         </tfoot>
       </table>
-
     </div>
   </div>
-
 </div>
 </body>
