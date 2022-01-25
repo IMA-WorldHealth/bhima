@@ -1,6 +1,7 @@
 {
   "ODK" : {
     "CONFIG_SETTINGS" : "ODK Central Configuration",
+    "NO_CONFIGURATION_SET" : "Aucune configuration ODK Central n'est configurée. Pour commencer, ajoutez un nom d'utilisateur, un mot de passe et l'URL d'ODK Central.",
     "IMPORTED_SUCCESSFULLY" : "Données importées avec succès",
     "LOAD_FOSA_DATA" : "Chargement des données des FOSA",
     "NO_RECORD_FOUND" : "Aucun enregistrement trouvé",

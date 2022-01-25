@@ -80,35 +80,33 @@
 
         <div class="panel-body">
           <fieldset ng-disabled="ODKSettingsCtrl.loading">
-          <div class="form-group">
-            <label class="control-label" translate>ODK.SYNC_ENTERPRISE</label>
-            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncEnterprise()" translate>FORM.BUTTONS.SYNC</button>
-          </div>
+            <div class="form-group">
+              <label class="control-label" translate>ODK.SYNC_ENTERPRISE</label>
+              <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncEnterprise()" translate>FORM.BUTTONS.SYNC</button>
+            </div>
 
-          <hr>
+            <hr>
 
-          <div class="form-group">
-            <label class="control-label" translate>ODK.SYNC_USERS</label>
-            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncUsers()" translate>FORM.BUTTONS.SYNC</button>
-          </div>
+            <div class="form-group">
+              <label class="control-label" translate>ODK.SYNC_USERS</label>
+              <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncUsers()" translate>FORM.BUTTONS.SYNC</button>
+            </div>
 
 
-          <hr>
+            <hr>
 
-          <div class="form-group">
-            <label class="control-label" translate>ODK.SYNC_FORMS</label>
-            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncForms()" translate>FORM.BUTTONS.SYNC</button>
-          </div>
+            <div class="form-group">
+              <label class="control-label" translate>ODK.SYNC_FORMS</label>
+              <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncForms()" translate>FORM.BUTTONS.SYNC</button>
+            </div>
 
-          <hr>
+            <hr>
 
-          <div class="form-group">
-            <label class="control-label" translate>ODK.SYNC_SUBMISSIONS</label>
-            <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncSubmissions()" translate>FORM.BUTTONS.SYNC</button>
-          </div>
-
+            <div class="form-group">
+              <label class="control-label" translate>ODK.SYNC_SUBMISSIONS</label>
+              <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncSubmissions()" translate>FORM.BUTTONS.SYNC</button>
+            </div>
           </fieldset>
-
         </div>
       </div>
     </div>
@@ -124,7 +122,8 @@
           <div ng-show="ODKSettingsCtrl.loading" class="text-center">
             <loading-indicator></loading-indicator>
           </div>
-          <dl ng-hide="ODKSettingsCtrl.loading">
+
+          <dl ng-hide="ODKSettingsCtrl.loading && ODKSettingsCtrl.hasODKConfiguration">
             <dt translate>ODK.PROJECT_DETAILS</dt>
             <dd><span translate>ODK.PROJECT_NAME</span>: {{ODKSettingsCtrl.project.name}} </dd>
             <dd><span translate>ODK.PROJECT_ID</span>: {{ODKSettingsCtrl.project.id}} </dd>
@@ -132,11 +131,12 @@
             <dd><span translate>FORM.LABELS.CREATED</span>: {{ODKSettingsCtrl.project.createdAt | date}} </dd>
             <dd><span translate>ODK.TOTAL_APP_USERS</span>: {{ODKSettingsCtrl.appUsers.length | number}} </dd>
           </dl>
-        </div>
 
+          <p ng-if="!ODKSettingsCtrl.loading && !ODKSettingsCtrl.hasODKConfiguration" translate>
+            ODK.NO_CONFIGURATION_SET
+          </p>
+        </div>
       </div>
     </div>
-
-
   </div>
 </div>
