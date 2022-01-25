@@ -221,6 +221,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     statusLabelMap,
     downloadTemplate,
     status,
+    stockStatusLabelKeys,
     aggregatedConsumption,
   };
 }

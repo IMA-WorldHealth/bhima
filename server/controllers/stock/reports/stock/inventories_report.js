@@ -1,6 +1,8 @@
 const {
-  _, ReportManager, formatFilters, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE,
+  _, ReportManager, formatFilters, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
+
+const i18n = require('../../../../lib/helpers/translate');
 
 /**
  * @method stockInventoriesReport
@@ -12,6 +14,7 @@ const {
  * GET /reports/stock/inventories
  */
 async function stockInventoriesReport(req, res, next) {
+  const { lang } = req.query;
   const monthAverageConsumption = req.session.stock_settings.month_average_consumption;
   const averageConsumptionAlgo = req.session.stock_settings.average_consumption_algo;
 
@@ -36,10 +39,30 @@ async function stockInventoriesReport(req, res, next) {
     const report = new ReportManager(STOCK_INVENTORIES_REPORT_TEMPLATE, req.session, optionReport);
     const rows = await Stock.getInventoryQuantityAndConsumption(...inventoriesParameters);
 
+    const purgeKeys = ['uuid', 'cmms', 'default_purchase_interval', 'delay', 'depot_uuid',
+      'documentReference', 'enterprisePurchaseInterval', 'enterprise_id', 'entry_date',
+      'expiration_date', 'group_uuid', 'inventory_uuid', 'last_movement_date', 'label',
+      'min_delay', 'min_months_security_stock', 'NO_CONSUMPTION', 'purchase_interval',
+      'S_MONTH', 'tag_color', 'tag_name', 'tracking_consumption', 'tracking_expiration',
+      'unit_cost'];
+
     rows.forEach(row => {
-      // remove the CMM object to prevent MS Excel from complaining
-      delete row.cmms;
-      delete row.NO_CONSUMPTION;
+      // Get the quantity out of CMMS
+      row.quantity = row.cmms.quantity_in_stock;
+
+      // Purge unneeded fields from the row
+      purgeKeys.forEach(key => {
+        delete row[key];
+      });
+
+      // translate the status field
+      if (row.status in stockStatusLabelKeys) {
+        row.status = i18n(lang)(stockStatusLabelKeys[row.status]);
+      }
+
+      // Capitalize status column header
+      row.Status = row.status;
+      delete row.status;
     });
 
     data.rows = rows;
