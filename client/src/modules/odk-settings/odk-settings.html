@@ -41,7 +41,7 @@
                 name="odk_admin_user"
                 ng-model="ODKSettingsCtrl.settings.odk_admin_user"
                 autocomplete="off"
-                ng-required="!!ODKSettings.settings.odk_central_url">
+                ng-required="!!ODKSettingsCtrl.settings.odk_central_url">
               <div class="help-block" ng-messages="ODKSettingsForm.odk_admin_user.$error" ng-show="ODKSettingsForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
@@ -55,7 +55,7 @@
                 name="odk_admin_password"
                 ng-model="ODKSettingsCtrl.settings.odk_admin_password"
                 autocomplete="off"
-                ng-required="!!ODKSettings.settings.odk_admin_user">
+                ng-required="!!ODKSettingsCtrl.settings.odk_admin_user">
               <div class="help-block" ng-messages="ODKSettingsForm.odk_admin_password.$error" ng-show="ODKSettingsForm.$submitted">
                 <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
               </div>
@@ -79,6 +79,7 @@
         </div>
 
         <div class="panel-body">
+          <fieldset ng-disabled="ODKSettingsCtrl.loading">
           <div class="form-group">
             <label class="control-label" translate>ODK.SYNC_ENTERPRISE</label>
             <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncEnterprise()" translate>FORM.BUTTONS.SYNC</button>
@@ -105,6 +106,8 @@
             <label class="control-label" translate>ODK.SYNC_SUBMISSIONS</label>
             <button type="button" class="btn btn-default btn-xs pull-right" ng-click="ODKSettingsCtrl.syncSubmissions()" translate>FORM.BUTTONS.SYNC</button>
           </div>
+
+          </fieldset>
 
         </div>
       </div>
