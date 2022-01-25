@@ -20,47 +20,11 @@ function ODKSettingsController(
 
   vm.loading = false;
 
-  // bind methods
-  vm.submit = submit;
-  vm.syncEnterprise = () => {
-    vm.loading = true;
-    ODKSettings.syncEnterprise()
-      .then(() => { $state.reload(); })
-      .catch(Notify.handleError)
-      .finally(() => { vm.loading = false; });
-  };
-
-  vm.syncUsers = () => {
-    vm.loading = true;
-    ODKSettings.syncUsers()
-      .then(() => ODKSettings.syncAppUsers())
-      .then(() => { $state.reload(); })
-      .catch(Notify.handleError)
-      .finally(() => { vm.loading = false; });
-  };
-
-  vm.syncForms = () => {
-    vm.loading = true;
-    ODKSettings.syncForms()
-      .then(() => { $state.reload(); })
-      .catch(Notify.handleError)
-      .finally(() => { vm.loading = false; });
-  };
-
-  vm.syncSubmissions = () => {
-    vm.loading = true;
-    ODKSettings.syncSubmissions()
-      .then(() => { $state.reload(); })
-      .catch(Notify.handleError)
-      .finally(() => { vm.loading = false; });
-  };
-
-  // fired on startup
-  function startup() {
-
+  function refreshSettings() {
     const settingsPromise = ODKSettings.read()
       .then(settings => {
-        if (settings.length > 0) {
+        vm.hasODKConfiguration = settings.length > 0;
+        if (vm.hasODKConfiguration) {
           [vm.settings] = settings;
         }
       });
@@ -81,6 +45,50 @@ function ODKSettingsController(
       .finally(() => { vm.loading = false; });
   }
 
+  // bind methods
+  vm.submit = submit;
+  vm.syncEnterprise = () => {
+    vm.loading = true;
+    ODKSettings.syncEnterprise()
+      .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
+      .then(() => refreshSettings())
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+  };
+
+  vm.syncUsers = () => {
+    vm.loading = true;
+    ODKSettings.syncUsers()
+      .then(() => ODKSettings.syncAppUsers())
+      .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
+      .then(() => refreshSettings())
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+  };
+
+  vm.syncForms = () => {
+    vm.loading = true;
+    ODKSettings.syncForms()
+      .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
+      .then(() => refreshSettings())
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+  };
+
+  vm.syncSubmissions = () => {
+    vm.loading = true;
+    ODKSettings.syncSubmissions()
+      .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
+      .then(() => refreshSettings())
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
+  };
+
+  // fired on startup
+  function startup() {
+    refreshSettings();
+  }
+
   // form submission
   function submit(form) {
     vm.loading = true;
@@ -99,7 +107,7 @@ function ODKSettingsController(
 
     return ODKSettings.create(changes)
       .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
-      .then(() => $state.reload())
+      .then(() => refreshSettings())
       .catch(Notify.handleError)
       .finally(() => { vm.loading = false; });
   }
