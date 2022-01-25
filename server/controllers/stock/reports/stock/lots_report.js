@@ -1,6 +1,8 @@
 const {
-  _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE,
+  _, ReportManager, Stock, formatFilters, STOCK_LOTS_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
+
+const i18n = require('../../../../lib/helpers/translate');
 
 /**
  * @method stockLotsReport
@@ -12,10 +14,10 @@ const {
  * GET /reports/stock/lots
  */
 function stockLotsReport(req, res, next) {
+  const { lang } = req.query;
   let options = {};
   let display = {};
   let filters;
-
   const data = {};
   let hasFilter = false;
   let report;
@@ -52,8 +54,36 @@ function stockLotsReport(req, res, next) {
   options.month_average_consumption = req.session.stock_settings.month_average_consumption;
   options.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
 
+  const purgeKeys = ['NO_CONSUMPTION', 'S_MONTH', 'S_RISK', 'S_RISK_QUANTITY',
+    'at_risk_of_stock_out', 'cmms', 'color',
+    'default_purchase_interval', 'delay', 'depot_uuid',
+    'enterprisePurchaseInterval', 'exhausted', 'expired',
+    'inventory_uuid', 'lifetime_lot', 'min_delay',
+    'min_months_security_stock', 'mvt_quantity', 'near_expiration',
+    'purchase_interval', 'tag_name', 'tracking_consumption',
+    'tracking_expiration', 'wac'];
+
+  const dateKeys = ['min_stock_date', 'max_stock_date'];
+
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
+      rows.forEach(row => {
+        // Purge unneeded fields from the row
+        purgeKeys.forEach(key => {
+          delete row[key];
+        });
+        // Sanitize invalid dates
+        dateKeys.forEach(key => {
+          if (JSON.stringify(row[key]) === 'null') {
+            row[key] = '';
+          }
+        });
+        // translate the status field
+        if (row.status in stockStatusLabelKeys) {
+          row.status = i18n(lang)(stockStatusLabelKeys[row.status]);
+        }
+      });
+
       data.rows = rows;
       data.hasFilter = hasFilter;
       data.filters = filters;

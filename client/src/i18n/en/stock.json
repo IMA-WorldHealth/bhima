@@ -38,6 +38,7 @@
       "PRODUCTS_IN_OVERSTOCK" : "Products in overstock"
     },
     "DAYS_OF_STOCK_OUT" : "# Days of Stock Out",
+    "DAYS_UNTIL_STOCK_OUT" : "Days until stock out",
     "DECREASE"        : "Decrease",
     "DECREASE_HELP"   : "Adjust stock by decreasing the quantity of lots of products in stock",
     "DEPOT"           : "Depot",
@@ -132,7 +133,7 @@
       "UPLOAD_SUCCESS" : "Stock imported successfully",
       "UPLOAD_DATE_REQUIRED" : "Define the importation date please"
     },
-    "CMM"             : "CMM",
+    "CMM"             : "AMC",
     "CURRENT_QUANTITY" : "Current Quantity",
     "INPUT"           : "Input",
     "INTEGRATION"     : "Integration",
@@ -148,6 +149,8 @@
     "LOT_NOT_FOUND"   : "That lot was not found!",
     "MAXIMUM"         : "Maximum Stock",
     "MINIMUM"         : "Minimum Stock",
+    "MAX_STOCK_DATE"  : "Last date stock is usable",
+    "MIN_STOCK_DATE"  : "First date to use stock",
     "MONTH"           : "Stock Months",
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
     "MONTH_OF_STOCK"  : "Stock Months - Months until Stock Out",
@@ -179,6 +182,7 @@
     "DIRECTION": " Movement direction",
     "LOSS_DISTRIBUTION" : "Stock Loss",
     "MIN_MONTHS_SECURITY_STOCK" : "Min Months Security Stock",
+    "MONTHS_REMAINING": "Months Remaining",
     "MOTIF"           : "Motive",
     "MOVEMENT"        : "Movement",
     "MOVEMENTS"       : "Movements",
@@ -225,6 +229,7 @@
     "RECEPTION_DESCRIPTION" : "Stock Reception",
     "RECEPTION_INTEGRATION" : "Stock Entry by Integration",
     "RECEPTION_DONATION" : "Stock Entry from a donation",
+    "REFILL_QUANTITY" : "Refill Quantity",
     "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
     "RISK_OF_EXPIRATION" : "Risk of expiration",
@@ -262,7 +267,8 @@
     "TOGGLE_EXPIRED_STOCK" : "Show expired lots?",
     "TOGGLE_EXPIRED_STOCK_HELP_TEXT" : "This will add a filter on lots that are expired.",
     "TOGGLE_EXPIRY_RISKS" : "Show the lots with expiry risks?",
-    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date."
+    "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date.",
+    "WAC" : "Weighted Avgerage Cost"
   },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
