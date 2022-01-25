@@ -1,6 +1,7 @@
 {
   "ODK" : {
     "CONFIG_SETTINGS" : "ODK Central Configuration",
+    "NO_CONFIGURATION_SET" : "There is no ODK Central configuration set up. To get started, add a username, password, and the ODK Central URL.",
     "IMPORTED_SUCCESSFULLY" : "Records successfully imported",
     "LOAD_FOSA_DATA" : "Load data of FOSA",
     "NO_RECORD_FOUND" : "No record found",
