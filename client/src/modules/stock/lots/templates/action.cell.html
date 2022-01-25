@@ -7,6 +7,16 @@
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.label}} - {{row.entity.text}}</li>
 
+    <li role="separator" class="divider"></li>
+    
+    <li>
+      <a data-method="lot-schedule" ng-click="grid.appScope.openLotBarcodeModal(row.entity.uuid)" href>
+        <i class="fa fa-barcode"></i> <span translate>BARCODE.BARCODE</span>
+      </a>
+    </li>
+
+    <li role="separator" class="divider"></li>
+
     <li bh-has-permission="grid.appScope.bhConstants.actions.EDIT_LOT">
       <a data-method="edit" ng-click="grid.appScope.openLotModal(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
