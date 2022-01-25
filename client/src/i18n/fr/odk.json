@@ -1,0 +1,25 @@
+{
+  "ODK" : {
+    "CONFIG_SETTINGS" : "ODK Central Configuration",
+    "IMPORTED_SUCCESSFULLY" : "Données importées avec succès",
+    "LOAD_FOSA_DATA" : "Chargement des données des FOSA",
+    "NO_RECORD_FOUND" : "Aucun enregistrement trouvé",
+    "ODK_ADMIN_PASSWORD" : "Mot de passe de l'administrateur",
+    "ODK_ADMIN_USER" : "Adressse mail de l'administrateur",
+    "ODK_CENTRAL_URL" : "URL du serveur ODK Central",
+    "ODK_INTEGRATION_SETTINGS" : "Paramètres d'intégration ODK",
+    "PROJECT_DETAILS" : "Détails du projet",
+    "PROJECT_FORMS" : "Nombre de formulaire",
+    "PROJECT_ID" : "ID Projet",
+    "PROJECT_NAME" : "Nom du projet",
+    "QRCODE" : "ODK QR Code",
+    "SHOW_QRCODE" : "Afficher QR Code",
+    "SYNC_ENTERPRISE" : "Synchroniser les paramètres d'entreprise",
+    "SYNC_FORMS" : "Synchroniser les formulaires",
+    "SYNC_SETTINGS" : "Synchroniser les paramètres",
+    "SYNC_SUBMISSIONS" : "Synchroniser les soumissions des formulaires",
+    "SYNC_USERS" : "Synchroniser les utilisateurs",
+    "TOTAL_APP_USERS" : "Nombre des utilisateurs mobiles",
+    "TOTAL_FOUND" : "Total des enregistrements trouvés"
+  }
+}
