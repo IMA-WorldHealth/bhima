@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('ODKSettingsController', ODKSettingsController);
 
 ODKSettingsController.$inject = [
-  'ODKSettingsService', 'util', 'NotifyService', 'SessionService', '$state',
+  'ODKSettingsService', 'util', 'NotifyService', 'SessionService', '$state', '$q',
 ];
 
 /**
@@ -11,75 +11,79 @@ ODKSettingsController.$inject = [
  * Provides configuration parameters for the link to ODK.
  */
 function ODKSettingsController(
-  ODKSettings, util, Notify, Session, $state,
+  ODKSettings, util, Notify, Session, $state, $q,
 ) {
   const vm = this;
 
   vm.enterprise = Session.enterprise;
   vm.settings = { };
 
+  vm.loading = false;
+
   // bind methods
   vm.submit = submit;
   vm.syncEnterprise = () => {
+    vm.loading = true;
     ODKSettings.syncEnterprise()
       .then(() => { $state.reload(); })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
   };
 
   vm.syncUsers = () => {
+    vm.loading = true;
     ODKSettings.syncUsers()
       .then(() => ODKSettings.syncAppUsers())
       .then(() => { $state.reload(); })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
   };
 
   vm.syncForms = () => {
+    vm.loading = true;
     ODKSettings.syncForms()
       .then(() => { $state.reload(); })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
   };
 
   vm.syncSubmissions = () => {
+    vm.loading = true;
     ODKSettings.syncSubmissions()
       .then(() => { $state.reload(); })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
   };
 
   // fired on startup
   function startup() {
-    ODKSettings.read()
+
+    const settingsPromise = ODKSettings.read()
       .then(settings => {
         if (settings.length > 0) {
           [vm.settings] = settings;
         }
-      })
-      .catch(Notify.handleError);
+      });
 
-    vm.loading = true;
-
-    ODKSettings.getProjectSettings()
+    const projectPromise = ODKSettings.getProjectSettings()
       .then(project => {
         vm.project = project;
-      })
-      .catch(Notify.handleError)
-      .finally(() => { vm.loading = false; });
+      });
 
-    ODKSettings.getAppUsers()
+    const appUsersPromise = ODKSettings.getAppUsers()
       .then(appUsers => {
         vm.appUsers = appUsers;
-      })
+      });
+
+    vm.loading = true;
+    $q.all([settingsPromise, projectPromise, appUsersPromise])
       .catch(Notify.handleError)
       .finally(() => { vm.loading = false; });
-
-    // ODKSettings.getUserSettings()
-    //   .then(users => {
-    //     vm.users = users;
-    //   })
-    //   .catch(Notify.handleError);
   }
 
   // form submission
   function submit(form) {
+    vm.loading = true;
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return 0;
@@ -95,8 +99,9 @@ function ODKSettingsController(
 
     return ODKSettings.create(changes)
       .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
-      .then(() => $state.reload()) // Should we just refresh the stock settings in the Session?
-      .catch(Notify.handleError);
+      .then(() => $state.reload())
+      .catch(Notify.handleError)
+      .finally(() => { vm.loading = false; });
   }
 
   startup();
