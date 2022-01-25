@@ -184,6 +184,14 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
   service.stockAggregateConsumptionReceipt = stockAggregateConsumptionReceipt;
+  service.lotBarcodeReceipt = lotBarcodeReceipt;
+
+  // lot barcode
+  function lotBarcodeReceipt(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = `/receipts/stock/lots/${uuid}/barcode`;
+    return fetch(route, options);
+  }
 
   // stock requisition receipt
   function stockRequisitionReceipt(uuid, options) {

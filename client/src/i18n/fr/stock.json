@@ -309,6 +309,7 @@
     "INVENTORY_ADJUSTMENT" : "Ajustement de stock"
   },
   "LOTS" : {
+    "BARCODE_FOR_LOT" : "Code-barre pour le lot",
     "REGISTRY" : "Registre des lots",
     "MERGED_LOTS_AUTOMATICALLY": "{{NumLots}} lots fusionnés automatiquement pour {{numInventories}} articles d'inventaire",
     "ENABLE_CORRECTING_LOT_EXPIRATION_DATES": "Permettre la correction des dates d'expiration des lots",
