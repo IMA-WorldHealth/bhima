@@ -114,7 +114,8 @@ async function syncUsersWithCentral() {
     SELECT user.id, user.display_name, user.email
     FROM user WHERE user.deactivated <> 1 AND user.id NOT IN (
       SELECT bhima_user_id FROM odk_user
-    ) AND user.id IN (SELECT user_id FROM depot_permission);
+    ) AND user.id IN (SELECT user_id FROM depot_permission)
+      AND user.email IS NOT NULL;
   `);
 
   // TODO(@jniles) LIMIT 1 is a hack.
