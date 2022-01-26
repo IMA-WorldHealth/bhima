@@ -1,0 +1,80 @@
+{{> head title="ASSIGN.STOCK_ASSIGN" }}
+
+<!-- body  -->
+<div class="container" style="font-size: 0.9em;">
+
+  <header>
+    <!-- headings  -->
+    {{> stockReceiptHeader 
+      title="ASSIGN.STOCK_ASSIGN" 
+      entity=details.entity_display_name
+      reference=details.document_reference
+      barcode=details.barcode
+    }}
+
+    <!-- summary  -->
+    <div class="row receipt-summary">
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.FROM'}}</h4>
+        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
+      </div>
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.TO'}}</h4>
+        <span class="text-capitalize">{{translate 'ASSIGN.RECEIVER'}}</span>: <strong>{{details.entity_display_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: <strong>{{date details.created_at}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AUTHOR'}}</span>: <strong>{{details.user_display_name}}</strong> <br>
+      </div>
+    </div>
+  </header>
+
+  {{#if details.description}}
+  <div class="receipt-summary">
+    <strong>{{translate 'FORM.LABELS.NOTE'}}</strong><br>
+    {{details.description}}
+  </div>
+  {{/if}}
+
+  <!-- list of data  -->
+  <table class="table table-condensed table-bordered table-report">
+    <thead>
+      <tr>
+        <th>{{translate 'STOCK.CODE'}}</th>
+        <th>{{translate 'STOCK.INVENTORY'}}</th>
+        <th>{{translate 'STOCK.LOT'}}</th>
+        <th>{{translate 'STOCK.QUANTITY'}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#if details}}
+        <tr>
+          <td>{{details.code}}</td>
+          <td>{{details.inventory_text}}</td>
+          <td>{{details.lot_name}}</td>
+          <td>{{details.quantity}}</td>
+        </tr>
+      {{else}}
+        {{> emptyTable columns=4}}
+      {{/if}}
+    </tbody>
+  </table>
+
+  <br>
+
+  <footer>
+    <div class="row">
+      <div class="col-xs-6">
+        <h4>{{translate 'STOCK.RESPONSIBLE'}}</h4>
+        <hr>
+      </div>
+
+      <div class="col-xs-6 text-center">
+        <h4>{{translate 'ASSIGN.RECEIVER'}}</h4>
+        <hr>
+        (<strong>{{details.entity_display_name}}</strong>)
+      </div>
+    </div>
+  </footer>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
+</div>
