@@ -197,7 +197,7 @@ async function report(req, res, next) {
         greenAbove70 += 1;
       }
 
-      if (row.recovery_capacity >= 0.6 && row.recovery_capacity < 7) {
+      if (row.recovery_capacity >= 0.6 && row.recovery_capacity < 0.7) {
         yellowBetwen60And70 += 1;
       }
 
