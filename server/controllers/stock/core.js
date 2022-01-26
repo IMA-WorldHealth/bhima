@@ -113,6 +113,12 @@ function getLotFilters(parameters) {
   filters.equals('trackingExpiration', 'tracking_expiration');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
 
+  // barcode
+  filters.custom(
+    'barcode',
+    `CONCAT('LT', LEFT(HEX(l.uuid), 8)) = ?`,
+  );
+
   // filter on the underlying voucher t
   filters.custom(
     'voucherReference',
@@ -185,7 +191,7 @@ async function lookupLotByUuid(uid) {
  * @param {object} parameters - A request query object
  * @param {string} finalClauseParameter - An optional final clause (GROUP BY, HAVING, ...) to add to query built
  */
-function getLots(sqlQuery, parameters, finalClause = '', orderBy) {
+function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
   const sql = sqlQuery || `
       SELECT
         BUID(l.uuid) AS uuid, l.label, l.unit_cost, l.expiration_date,
@@ -265,7 +271,8 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
-      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac
+      dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
+      CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -892,7 +899,7 @@ function computeLotIndicators(inventories) {
         }
 
         lot.exhausted = lot.quantity <= 0;
-        lot.expired = !lot.exhausted && (lot.expiration_date < today);
+        lot.expired = !lot.exhausted && (lot.expiration_date < today && lot.tracking_expiration);
 
         // algorithm for tracking the stock consumption by day
         if (lot.tracking_consumption && !lot.exhausted && !lot.expired) {
@@ -949,6 +956,8 @@ function computeLotIndicators(inventories) {
         // TODO(@jniles): does this make sense?
         lot.at_risk_of_stock_out = !lot.expired
           && (lot.status === 'minimum_reached' || lot.status === 'security_reached');
+
+        lot.near_expiration = !!(lot.near_expiration && lot.tracking_expiration);
 
         flattenLots.push(lot);
       });
