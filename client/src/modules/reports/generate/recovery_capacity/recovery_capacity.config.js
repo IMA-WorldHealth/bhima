@@ -3,19 +3,23 @@ angular.module('bhima.controllers')
 
 recoveryCapacityController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
-  'AppCache', 'reportData', '$state',
+  'AppCache', 'reportData', '$state', 'SessionService',
 ];
 
-function recoveryCapacityController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function recoveryCapacityController($sce, Notify, SavedReports, AppCache, reportData, $state, Session) {
   const vm = this;
   const cache = new AppCache('recovery_capacity');
   const reportUrl = 'reports/finance/recovery_capacity';
 
   vm.previewGenerated = false;
-  vm.reportDetails = { includeUnpostedValues : 0 };
+  vm.reportDetails = { includeUnpostedValues : 0, currencyId : Session.enterprise.currency_id };
 
   vm.onChangeUnpostedValues = value => {
     vm.reportDetails.includeUnpostedValues = value;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.clearPreview = function clearPreview() {

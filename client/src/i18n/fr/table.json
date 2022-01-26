@@ -118,6 +118,7 @@
                 "LABEL": "Filtre"
             },
             "FIRST_NAME": "Prénom",
+            "FREQUENCY": "Fréquence",
             "FIXED_CHARGES": "Charges fixes",
             "PROFESSION": "Profession",
             "GENDER": "Genre",
@@ -234,6 +235,7 @@
             },
             "SOURCE": "Source",
             "STATUS": "État",
+            "SUMMARY": "Sommaire",
             "SUPPLIER": "Fournisseur",
             "TAXABLE": "Imposable",
             "TAXABLE_BASE_SALARY": "Base Imposable",
