@@ -296,3 +296,21 @@ function median(arrayIn) {
  * @returns {String} - a version 4 UUID
  */
 exports.uuid = () => uuid().toUpperCase().replace(/-/g, '');
+
+/**
+ * @function getPeriodIdForDate
+ *
+ * @description
+ * This function gets the BHIMA formated period given a date object and
+ * returns it.  Since periods can be zero-prefixed, it is a string.
+ *
+ * @returns {String} the period_id
+ */
+exports.getPeriodIdForDate = (date) => {
+  const month = date.getMonth() + 1;
+  const monthStr = month.toString().length === 1
+    ? `0${month}` : `${month}`;
+
+  const periodId = `${date.getFullYear()}${monthStr}`;
+  return periodId;
+};

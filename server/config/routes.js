@@ -21,6 +21,7 @@ const units = require('../controllers/units');
 const system = require('../controllers/system');
 const report = require('../controllers/report');
 const install = require('../controllers/install');
+const odk = require('../controllers/admin/odk-central');
 
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
@@ -1104,4 +1105,6 @@ exports.configure = function configure(app) {
   app.post('/configuration_analysis_tools', configurationAnalysisTools.create);
   app.put('/configuration_analysis_tools/:id', configurationAnalysisTools.update);
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
+
+  app.use('/admin/odk-settings', odk.router);
 };
