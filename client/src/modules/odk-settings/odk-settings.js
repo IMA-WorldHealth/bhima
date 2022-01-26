@@ -56,10 +56,10 @@ function ODKSettingsController(
       .finally(() => { vm.loading = false; });
   };
 
-  vm.syncUsers = () => {
+  vm.syncAppUsers = () => {
     vm.loading = true;
-    ODKSettings.syncUsers()
-      .then(() => ODKSettings.syncAppUsers())
+
+    ODKSettings.syncAppUsers()
       .then(() => Notify.success('FORM.INFO.UPDATE_SUCCESS'))
       .then(() => refreshSettings())
       .catch(Notify.handleError)

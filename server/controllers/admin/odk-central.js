@@ -12,16 +12,18 @@ const { json2csvAsync } = require('json-2-csv');
 const tempy = require('tempy');
 const path = require('path');
 const fs = require('fs/promises');
-const qrcode = require('qrcode');
-const pako = require('pako');
 
 const central = require('@ima-worldhealth/odk-central-api-cjs');
+
+const { getPeriodIdForDate } = require('../../lib/util');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
 const core = require('../stock/core');
 
 const { flux } = require('../../config/constants');
 
+// NOTE(@jniles) - it is not clear how long these roles will be valid. ODK Central may
+// begin asking users to create their own roles/permissions.
 const odkCentralRoles = {
   admin : 1,
   projectManager : 5,
@@ -34,46 +36,6 @@ async function setupODKCentralConnection() {
 
   // load the configuration from database if it exists
   await loadODKCentralSettingsFromDatabase();
-}
-
-// BUILD QRCODE
-async function buildQRCode(url, token, projectId, projectName) {
-  const data = {
-    general : {
-      protocol : 'odk_default',
-      server_url : `${url}/v1/key/${token}/projects/${projectId}`,
-      constraint_behavior : 'on_swipe',
-    },
-    admin : {
-      edit_saved : false,
-      send_finalized : true,
-      automatic_update : true,
-    },
-    project : {
-      name : projectName,
-      icon : 'P',
-      color : '#ff0000',
-    },
-  };
-
-  const Uint8Array = new TextEncoder('utf-8').encode(JSON.stringify(data));
-  const compressedSettings = pako.deflate(Uint8Array, { to : 'string' });
-  const encodedS64 = Buffer.from(compressedSettings).toString('base64');
-
-  return qrcode.toDataURL(encodedS64);
-}
-// END BUILD QRCODE
-
-// utility function to format email addresses
-function formatEmailAddr(email, enterpriseLabel) {
-  const [username, host] = email.split('@');
-  return `${username}+${enterpriseLabel}@${host}`;
-}
-
-function unformatEmailAddr(email) {
-  const [username, host] = email.split('@');
-  const [prefix] = username.split('+');
-  return `${prefix}@${host}`;
 }
 
 async function defineUserAsDataCollector(userId) {
@@ -101,71 +63,12 @@ async function loadODKCentralSettingsFromDatabase() {
 }
 
 /**
- * @function syncUsersWithCentral
+ * @function syncAppUsersWithCentral
  *
  * @description
  * This function synchronizes user accounts with ODK Central if a configuration exists.
  */
-async function syncUsersWithCentral() {
-  debug('Syncing BHIMA users with ODK Central users.');
-
-  // look for all users with depot permissions in the database
-  const users = await db.exec(`
-    SELECT user.id, user.display_name, user.email
-    FROM user WHERE user.deactivated <> 1 AND user.id NOT IN (
-      SELECT bhima_user_id FROM odk_user
-    ) AND user.id IN (SELECT user_id FROM depot_permission)
-      AND user.email IS NOT NULL;
-  `);
-
-  // TODO(@jniles) LIMIT 1 is a hack.
-  const enterprise = await db.one('SELECT * FROM enterprise LIMIT 1');
-
-  debug(`There are ${users.length} users available in BHIMA.`);
-
-  // pull the latest users from ODK Central.
-  const centralUsers = await central.api.users.listAllUsers();
-
-  debug(`There are ${centralUsers.length} users available in ODK Central.`);
-
-  // get only central email addresses to use as a filter mask
-  const centralEmails = centralUsers.map(user => unformatEmailAddr(user.email));
-
-  debug(`Filtering out existing ODK Central users.`);
-
-  // filter out all users who already have an email address in central
-  const usersToCreate = users.filter(user => !centralEmails.includes(formatEmailAddr(user.email, enterprise.label)));
-
-  debug(`Found ${usersToCreate.length} users to create.`);
-
-  // loop through users and create them in ODK Central.
-  for (const user of usersToCreate) { // eslint-disable-line
-    const password = util.uuid();
-    const email = formatEmailAddr(user.email, enterprise.name);
-    debug(`Creating user ${email}.`);
-    // only for web user
-    // eslint-disable-next-line
-    const centralUser = await central.api.users.createUserWithPassword(email, password);
-
-    // only for web user
-    // eslint-disable-next-line
-    await defineUserAsDataCollector(centralUser.id);
-
-    // eslint-disable-next-line
-    await db.exec('INSERT INTO `odk_user` VALUES (?, ?, ?);', [centralUser.id, password, user.id]);
-    debug(`Finished with user ${email}.`);
-  }
-
-  debug(`Created ${usersToCreate.length} users in ODK Central.`);
-}
-
-/**
- * @function syncUsersWithCentral
- *
- * @description
- * This function synchronizes user accounts with ODK Central if a configuration exists.
- */
-async function syncAppUsers() {
+async function syncAppUsersWithCentral() {
   debug('Syncing BHIMA users with ODK Central app users.');
 
   // look for all users with depot permissions in the database
@@ -173,7 +76,8 @@ async function syncAppUsers() {
     SELECT user.id, user.display_name, user.email
     FROM user WHERE user.deactivated <> 1 AND user.id NOT IN (
       SELECT bhima_user_id FROM odk_app_user
-    ) AND user.id IN (SELECT user_id FROM depot_permission);
+    ) AND user.id IN (SELECT user_id FROM depot_permission)
+    AND user.email IS NOT NULL;
   `);
 
   const config = await db.exec('SELECT odk_project_id FROM odk_central_integration LIMIT 1;');
@@ -182,7 +86,7 @@ async function syncAppUsers() {
   debug(`There are ${users.length} users available in BHIMA.`);
 
   // pull the latest app users from ODK Central.
-  const centralUsers = await central.api.users.listAllAppUsers(projectId);
+  const centralUsers = await central.api['app-users'].listAllAppUsers(projectId);
 
   debug(`There are ${centralUsers.length} app-users available in ODK Central.`);
 
@@ -202,10 +106,10 @@ async function syncAppUsers() {
     debug(`Creating app-user ${user.display_name}.`);
 
     // eslint-disable-next-line
-    const centralAppUser = await central.api.users.createAppUser(projectId, user.display_name);
+    const centralAppUser = await central.api['app-users'].createAppUser(projectId, user.display_name);
 
     // eslint-disable-next-line
-    await db.exec('INSERT INTO `odk_app_user` VALUES (?, ?, ?, ?);', [centralAppUser.id, centralAppUser.token, user.display_name, user.id]);
+    await db.exec('INSERT INTO `odk_app_user` VALUES (?, ?, ?);', [centralAppUser.id, user.display_name, user.id]);
     debug(`Finished with user ${user.display_name}.`);
   }
 
@@ -238,15 +142,6 @@ async function syncEnterpriseWithCentral() {
   );
 
   debug(`Finished synchronizing projects and enterprises.`);
-}
-
-function getPeriodIdForDate(date) {
-  const month = date.getMonth() + 1;
-  const monthStr = month.toString().length === 1
-    ? `0${month}` : `${month}`;
-
-  const periodId = `${date.getFullYear()}${monthStr}`;
-  return periodId;
 }
 
 function importODKSubmission(submission, user) {
@@ -442,7 +337,7 @@ async function syncFormsWithCentral() {
   debug(`Published with result success: ${published.success}`);
 
   // now lets give all app-users access to this form
-  const allAppUsers = await central.api.users.listAllAppUsers(odkProjectId);
+  const allAppUsers = await central.api['app-users'].listAllAppUsers(odkProjectId);
   for (const user of allAppUsers) { // eslint-disable-line
     debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
     try {
@@ -484,14 +379,6 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// add routes
-router.post('/sync-users', async (req, res, next) => {
-  try {
-    await syncUsersWithCentral();
-    res.sendStatus(201);
-  } catch (e) { next(e); }
-});
-
 router.post('/sync-submissions', async (req, res, next) => {
   try {
     await syncSubmissionsWithCentral(req.session.user);
@@ -501,7 +388,7 @@ router.post('/sync-submissions', async (req, res, next) => {
 
 router.post('/sync-app-users', async (req, res, next) => {
   try {
-    await syncAppUsers();
+    await syncAppUsersWithCentral();
     res.sendStatus(201);
   } catch (e) { next(e); }
 });
@@ -532,29 +419,26 @@ router.get('/app-users', async (req, res, next) => {
       return;
     }
 
-    const appUsers = await central.api.users.listAllAppUsers(projectId);
+    const appUsers = await central.api['app-users'].listAllAppUsers(projectId);
     res.status(200).json(appUsers);
-
   } catch (e) {
     next(e);
   }
 });
 
-// get user qr code
+// get user QR code
 router.get('/app-users/:userId/qrcode', async (req, res, next) => {
   try {
     const { userId } = req.params;
-
     const config = await db.exec('SELECT odk_project_id, odk_central_url FROM odk_central_integration;');
     const projectId = config.length && config[0].odk_project_id;
-    const url = config.length && config[0].odk_central_url;
 
     const userDetails = await db.one(
-      'SELECT odk_app_user_token AS token FROM odk_app_user WHERE bhima_user_id = ?', [userId],
+      'SELECT odk_app_user_id AS odkAppUserId FROM odk_app_user WHERE bhima_user_id = ?', [userId],
     );
-    const { token } = userDetails;
 
-    const data = await buildQRCode(url, token, projectId, req.session.enterprise.name);
+    const { odkAppUserId } = userDetails;
+    const data = await central.api['app-users'].getQRCode(projectId, odkAppUserId);
     res.status(200).send(data);
   } catch (error) {
     next(error);
