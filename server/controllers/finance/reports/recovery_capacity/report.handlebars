@@ -52,7 +52,7 @@
         <tbody>
           {{#each rows as | row |}}
           <tr>
-            <td>{{date row.date}}</td>
+            <td>{{translate dayOfWeek}}, {{date row.date}}</td>
             <td style="width: 10em;" class="text-right">{{row.registrations}}</td>
             <td class="text-right">{{debcred (multiply row.total_invoiced ../exchangeRate) ../currencyId}}</td>
             <td class="text-right">{{debcred (multiply row.avg_cost ../exchangeRate) ../currencyId}}</td>
@@ -87,6 +87,50 @@
             </th>
           </tr>
         </tfoot>
+      </table>
+      <br>
+      <table class="table table-striped table-condensed table-report table-bordered" style="width: 50%; float: right; margin-bottom: 1.5%">
+        <tr>
+          <th colspan="3">{{translate 'TABLE.COLUMNS.SUMMARY'}}</th>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <span>
+              <strong> {{translate 'TABLE.COLUMNS.PERCENT'}} </strong>
+            </span>
+          </td>
+          <td>
+            <span>
+              <strong> {{translate 'TABLE.COLUMNS.FREQUENCY'}} </strong>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td width="60%">
+            <span>
+              <strong> {{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &gt; 70% </strong>
+            </span>
+          </td>
+          <td width="20%"> {{ summary.greenAbove70 }} </td>
+          <td class="bg-success text-success text-right" width="20%">
+            <strong>{{ percentage summary.greenAbove70Percent }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong><span>60% &lt; {{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 70%</span></strong>
+          </td>
+          <td> {{ summary.yellowBetwen60And70 }} </td>
+          <td class="bg-warning text-warning text-right"> <strong>{{ percentage summary.yellowBetwen60And70Percent  }}</strong> </td>
+        </tr>
+        <tr>
+          <td>
+            <strong><span>{{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 60%</span></strong>
+          </td>
+          <td> {{ summary.redLess60 }} </td>
+          <td class="bg-danger text-danger text-right"> {{ percentage summary.redLess60Percent  }} </td>
+        </tr>
       </table>
     </div>
   </div>
