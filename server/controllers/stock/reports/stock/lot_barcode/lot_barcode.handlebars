@@ -3,7 +3,8 @@
 <!-- body  -->
 <div class="text-center">
   {{#if metadata.enterprise.settings.enable_barcodes}}
-    <small>{{ details.inventory_text }} - {{ details.label }}</small><br>
+    <small>{{ details.inventory_text }}</small><br>
+    <small>{{translate 'FORM.LABELS.CODE'}}: {{ details.code }}, {{translate 'FORM.LABELS.LOT'}}: {{ details.label }}</small><br>
     <span>{{> barcode value=barcode}}</span><br>
     <small><strong>{{ barcode }}</strong></small>
 
