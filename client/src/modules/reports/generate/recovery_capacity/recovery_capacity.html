@@ -29,6 +29,11 @@
               limit-min-fiscal>
             </bh-date-interval>
 
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currencyId"
+              on-change="ReportConfigCtrl.onSelectCurrency(currency)">
+            </bh-currency-select>
+
             <bh-yes-no-radios
               value="ReportConfigCtrl.reportDetails.includeUnpostedValues"
               name="includeUnpostedValues"

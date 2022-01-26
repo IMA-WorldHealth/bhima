@@ -10,11 +10,16 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate 'REPORT.RECOVERY_CAPACITY.TITLE'}}</strong> <br>
+      <h3 class="text-center">
+        <strong>{{translate 'REPORT.RECOVERY_CAPACITY.TITLE'}}</strong>
         {{#if includeUnpostedValues}}<strong>({{translate 'REPORT.PROVISIONARY'}})</strong><br>{{/if}}
-        <small>{{date dateFrom}} - {{date dateTo}}</small>
       </h3>
+
+      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
+
+      {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateTo}}
 
       <table class="table table-condensed" style="margin-bottom:16px; border:0px;">
         <tr>
@@ -47,11 +52,11 @@
         <tbody>
           {{#each rows as | row |}}
           <tr>
-            <td>{{date row.date}}</td>
+            <td>{{translate dayOfWeek}}, {{date row.date}}</td>
             <td style="width: 10em;" class="text-right">{{row.registrations}}</td>
-            <td class="text-right">{{debcred row.total_invoiced ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.avg_cost ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred row.total_paid ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred (multiply row.total_invoiced ../exchangeRate) ../currencyId}}</td>
+            <td class="text-right">{{debcred (multiply row.avg_cost ../exchangeRate) ../currencyId}}</td>
+            <td class="text-right">{{debcred (multiply row.total_paid ../exchangeRate) ../currencyId}}</td>
             <td
               style="width: 15em;"
               {{#if row.has_data}}
@@ -70,9 +75,9 @@
           <tr>
             <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
             <th style="width: 10em;" class="text-right">{{totals.registrations}}</th>
-            <th class="text-right">{{debcred totals.total_invoiced metadata.enterprise.currency_id}}</th>
-            <th class="text-right">{{debcred totals.avg_cost metadata.enterprise.currency_id}}</th>
-            <th class="text-right">{{debcred totals.total_paid metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred (multiply totals.total_invoiced exchangeRate) currencyId}}</th>
+            <th class="text-right">{{debcred (multiply totals.avg_cost exchangeRate) currencyId}}</th>
+            <th class="text-right">{{debcred (multiply totals.total_paid exchangeRate) currencyId}}</th>
             <th
               style="width: 15em;"
               {{#gt totals.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
@@ -83,9 +88,51 @@
           </tr>
         </tfoot>
       </table>
-
+      <br>
+      <table class="table table-striped table-condensed table-report table-bordered" style="width: 50%; float: right; margin-bottom: 1.5%">
+        <tr>
+          <th colspan="3">{{translate 'TABLE.COLUMNS.SUMMARY'}}</th>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <span>
+              <strong> {{translate 'TABLE.COLUMNS.PERCENT'}} </strong>
+            </span>
+          </td>
+          <td>
+            <span>
+              <strong> {{translate 'TABLE.COLUMNS.FREQUENCY'}} </strong>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td width="60%">
+            <span>
+              <strong> {{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &gt; 70% </strong>
+            </span>
+          </td>
+          <td width="20%"> {{ summary.greenAbove70 }} </td>
+          <td class="bg-success text-success text-right" width="20%">
+            <strong>{{ percentage summary.greenAbove70Percent }}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <strong><span>60% &lt; {{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 70%</span></strong>
+          </td>
+          <td> {{ summary.yellowBetwen60And70 }} </td>
+          <td class="bg-warning text-warning text-right"> <strong>{{ percentage summary.yellowBetwen60And70Percent  }}</strong> </td>
+        </tr>
+        <tr>
+          <td>
+            <strong><span>{{translate 'REPORT.RECOVERY_CAPACITY.RECOVERY_CAPACITY'}} &lt;&equals; 60%</span></strong>
+          </td>
+          <td> {{ summary.redLess60 }} </td>
+          <td class="bg-danger text-danger text-right"> {{ percentage summary.redLess60Percent  }} </td>
+        </tr>
+      </table>
     </div>
   </div>
-
 </div>
 </body>

@@ -7,6 +7,7 @@ const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
 
 module.exports.report = report;
 
@@ -29,6 +30,9 @@ async function report(req, res, next) {
     const { dateFrom, dateTo } = req.query;
     const metadata = _.clone(req.session);
 
+    const { enterprise } = req.session;
+    const currencyId = Number(req.query.currencyId);
+
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
     const CASH_PAYMENT_TRANSACTION_TYPE = 2;
@@ -38,6 +42,16 @@ async function report(req, res, next) {
 
     const formatedDateFrom = moment(dateFrom).format('YYYY-MM-DD');
     const formatedDateTo = moment(dateTo).format('YYYY-MM-DD');
+
+    const daysWeek = [
+      'FORM.LABELS.WEEK_DAYS.SUNDAY',
+      'FORM.LABELS.WEEK_DAYS.MONDAY',
+      'FORM.LABELS.WEEK_DAYS.TUESDAY',
+      'FORM.LABELS.WEEK_DAYS.WEDNESDAY',
+      'FORM.LABELS.WEEK_DAYS.THURSDAY',
+      'FORM.LABELS.WEEK_DAYS.FRIDAY',
+      'FORM.LABELS.WEEK_DAYS.SATURDAY',
+    ];
 
     const includeUnpostedValues = qs.includeUnpostedValues ? Number(qs.includeUnpostedValues) : 0;
 
@@ -158,13 +172,63 @@ async function report(req, res, next) {
 
     const rows = await db.exec(query, parameters);
     const totals = await db.one(queryTotals, parameters);
+    const getExchangeRateData = await Exchange.getExchangeRate(enterprise.id, currencyId, new Date(dateTo));
+    const exchangeRate = getExchangeRateData.rate || 1;
+
+    // Get the day of the week
+    // Get summary of recover indicating %
+    let rowLength = 0;
+
+    let greenAbove70 = 0;
+    let yellowBetwen60And70 = 0;
+    let redLess60 = 0;
+
+    let greenAbove70Percent = 0;
+    let yellowBetwen60And70Percent = 0;
+    let redLess60Percent = 0;
+
+    rows.forEach(row => {
+      const numDays = moment(row.date).day();
+      row.dayOfWeek = daysWeek[numDays];
+
+      rowLength += 1;
+
+      if (row.recovery_capacity >= 0.7) {
+        greenAbove70 += 1;
+      }
+
+      if (row.recovery_capacity >= 0.6 && row.recovery_capacity < 7) {
+        yellowBetwen60And70 += 1;
+      }
+
+      if (row.recovery_capacity < 0.6) {
+        redLess60 += 1;
+      }
+    });
+
+    greenAbove70Percent = greenAbove70 / rowLength;
+    yellowBetwen60And70Percent = yellowBetwen60And70 / rowLength;
+    redLess60Percent = redLess60 / rowLength;
+
+    const summary = {
+      greenAbove70,
+      yellowBetwen60And70,
+      redLess60,
+      greenAbove70Percent,
+      yellowBetwen60And70Percent,
+      redLess60Percent,
+      rowLength,
+    };
 
     const result = await rpt.render({
       dateFrom,
       dateTo,
+      currencyId,
+      exchangeRate,
       rows,
       totals,
       includeUnpostedValues,
+      summary,
     });
 
     res.set(result.headers).send(result.report);
