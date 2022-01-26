@@ -108,7 +108,7 @@ function StockLotsAssignController(
 
   // expose to the view model
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', false, true);
-  vm.getQueryString = Stock.getQueryString;
+  vm.getQueryString = getQueryString;
   vm.clearGridState = clearGridState;
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;
@@ -116,6 +116,10 @@ function StockLotsAssignController(
   vm.saveGridState = state.saveGridState;
   vm.removeAssign = removeAssign;
   vm.showReceipt = showReceipt;
+
+  function getQueryString(type) {
+    return stockAssignFilters.getQueryString(type);
+  }
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
