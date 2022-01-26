@@ -14,12 +14,6 @@ function ODKSettingsService(Api) {
   };
 
   //
-  service.syncUsers = () => {
-    return service.$http.post(baseUrl.concat('sync-users'))
-      .then(service.util.unwrapHttpResponse);
-  };
-
-  //
   service.syncAppUsers = () => {
     return service.$http.post(baseUrl.concat('sync-app-users'))
       .then(service.util.unwrapHttpResponse);

@@ -82,13 +82,15 @@
     puppeteer-cluster "^0.22.0"
 
 "@ima-worldhealth/odk-central-api-cjs@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.npmjs.org/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.2.3.tgz#f8a1a63f202403f1a774ec057e86c4144a55f16b"
-  integrity sha512-JGXAWWG1GpZZNWsPwUZPGCSrOBnTnf+cH3SamfrNH+FYReny45P80jewGe16Ia1dfqpB0MwL21S1prx9gJma1g==
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.3.0.tgz#4bd22e4b6b06ef48da274b1e1e1284f25548fc3e"
+  integrity sha512-UxqwwtNJ33q9xwNn2fhkbUH9fWjf+lvgEKOC2S5+O2ymCN2eEhIJob1Ro46PzrFgxO1pjjCy2rOiCcVmoidzJw==
   dependencies:
     debug "^4.3.3"
     dotenv "^14.2.0"
     got-cjs "^12.0.1"
+    pako "^2.0.4"
+    qrcode "^1.5.0"
 
 "@ima-worldhealth/rewire@^4.1.0":
   version "4.1.0"
@@ -232,9 +234,9 @@
   integrity sha512-9NET910DNaIPngYnLLPeg+Ogzqsi9uM4mSboU5y6p8S5DzMTVEsJZrawi+BoDNUVBa2DhJqQYUFvMDfgU062LQ==
 
 "@sindresorhus/is@^4.0.0", "@sindresorhus/is@^4.2.0":
-  version "4.3.0"
-  resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-4.3.0.tgz#344fd9bf808a84567ba563d00cc54b2f428dbab1"
-  integrity sha512-wwOvh0eO3PiTEivGJWiZ+b946SlMSb4pe+y+Ur/4S87cwo09pYi+FWHHnbrM3W9W7cBYKDqQXcrFYjYUCOJUEQ==
+  version "4.4.0"
+  resolved "https://registry.npmjs.org/@sindresorhus/is/-/is-4.4.0.tgz#e277e5bdbdf7cb1e20d320f02f5e2ed113cd3185"
+  integrity sha512-QppPM/8l3Mawvh4rn9CNEYIU9bxpXUCRMaX9yUpvBk1nMKusLKpfXGDEKExKaPhLzcn3lzil7pR6rnJ11HgeRQ==
 
 "@sinonjs/commons@^1.6.0", "@sinonjs/commons@^1.7.0", "@sinonjs/commons@^1.8.3":
   version "1.8.3"
@@ -1290,9 +1292,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001286:
-  version "1.0.30001301"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz#ebc9086026534cab0dab99425d9c3b4425e5f450"
-  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
+  version "1.0.30001302"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001302.tgz#da57ce61c51177ef3661eeed7faef392d3790aaa"
+  integrity sha512-YYTMO+tfwvgUN+1ZnRViE53Ma1S/oETg+J2lISsqi/ZTNThj3ZYBOKP2rHwJc37oCsPqAzJ3w2puZHn0xlLPPw==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -1342,14 +1344,15 @@ chai-spies@^1.0.0:
   integrity sha512-elF2ZUczBsFoP07qCfMO/zeggs8pqCf3fZGyK5+2X4AndS8jycZYID91ztD9oQ7d/0tnS963dPkd0frQEThDsg==
 
 chai@>1.9.0, chai@^4.3.4:
-  version "4.3.4"
-  resolved "https://registry.npmjs.org/chai/-/chai-4.3.4.tgz#b55e655b31e1eac7099be4c08c21964fce2e6c49"
-  integrity sha512-yS5H68VYOCtN1cjfwumDSuzn/9c+yza4f3reKXlE5rUg7SFcCEy90gJvydNgOYtblyf4Zi6jIWRnXOgErta0KA==
+  version "4.3.5"
+  resolved "https://registry.npmjs.org/chai/-/chai-4.3.5.tgz#784cf398a30cd45b8980181ba1a8c866c225b5df"
+  integrity sha512-0gKhNDL29PUlmwz1CG42p/OaBf1v0YD3oH4//YMS1niT7rLH9tC+lqTgk+SvdbhMLd7ToTtxA61orNBmpSO/DA==
   dependencies:
     assertion-error "^1.1.0"
     check-error "^1.0.2"
     deep-eql "^3.0.1"
     get-func-name "^2.0.0"
+    loupe "^2.3.0"
     pathval "^1.1.1"
     type-detect "^4.0.5"
 
@@ -1950,11 +1953,11 @@ cookiejar@^2.1.0, cookiejar@^2.1.1, cookiejar@^2.1.2:
   integrity sha512-JxbCBUdrfr6AQjOXrxoTvAMJO4HBTUIlBzslcJPAz+/KT8yk53fXun51u+RenNYvad/+Vc2DIz5o9UxlCDymFQ==
 
 copy-anything@^2.0.1:
-  version "2.0.4"
-  resolved "https://registry.npmjs.org/copy-anything/-/copy-anything-2.0.4.tgz#3b62865d0ced54d64bfee63b7f95f269f4a1b44a"
-  integrity sha512-ZRQMQ6oHTUAHDvGb1UNRL7LAIKhdy+FahwetyNKEAIKK0H+AFU9Lrt/7EkHq1EjgPyG0c/Dd8UTT2VDKKYj1TQ==
+  version "2.0.6"
+  resolved "https://registry.npmjs.org/copy-anything/-/copy-anything-2.0.6.tgz#092454ea9584a7b7ad5573062b2a87f5900fc480"
+  integrity sha512-1j20GZTsvKNkc4BY3NpMOM8tt///wY3FpIzozTOFO2ffuZcV61nojHXVKIy3WM+7ADCy5FVhdZYHYDdgTU0yJw==
   dependencies:
-    is-what "^4.1.1"
+    is-what "^3.14.1"
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
@@ -2570,9 +2573,9 @@ dot-prop@^5.1.0, dot-prop@^5.2.0:
     is-obj "^2.0.0"
 
 dotenv@^14.0.0, dotenv@^14.2.0:
-  version "14.3.0"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-14.3.0.tgz#40f537fe90e229d35361c66cf432903e0db49001"
-  integrity sha512-PCTcOQSXVo9FI1dB7AichJXMEvmiGCq0gnCpjfDUc8505uR+2MeLXWe+Ue4PN5UXa2isHSa78sr7L59fk+2mnQ==
+  version "14.3.2"
+  resolved "https://registry.npmjs.org/dotenv/-/dotenv-14.3.2.tgz#7c30b3a5f777c79a3429cb2db358eef6751e8369"
+  integrity sha512-vwEppIphpFdvaMCaHfCEv9IgwcxMljMw2TnAQBB4VWPvzXQLTb82jwmdOKzlEVUL3gNFT4l4TPKO+Bn+sqcrVQ==
 
 dotgitignore@^2.1.0:
   version "2.1.0"
@@ -2629,9 +2632,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.4.17:
-  version "1.4.52"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.52.tgz#ce44c6d6cc449e7688a4356b8c261cfeafa26833"
-  integrity sha512-JGkh8HEh5PnVrhU4HbpyyO0O791dVY6k7AdqfDeqbcRMeoGxtNHWT77deR2nhvbLe4dKpxjlDEvdEwrvRLGu2Q==
+  version "1.4.53"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.53.tgz#5d80a91c399b44952ef485857fb5b9d4387d2e60"
+  integrity sha512-rFveSKQczlcav+H3zkKqykU6ANseFwXwkl855jOIap5/0gnEcuIhv2ecz6aoTrXavF6I/CEBeRnBnkB51k06ew==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -4979,10 +4982,10 @@ is-weakref@^1.0.1:
   dependencies:
     call-bind "^1.0.2"
 
-is-what@^4.1.1:
-  version "4.1.3"
-  resolved "https://registry.npmjs.org/is-what/-/is-what-4.1.3.tgz#df0eea7577c87de4572fb7c5e0ea33657b4871dd"
-  integrity sha512-xSuZO6NrT8Dso0CgDW9O77GWD1RqUfc5ReoBTLl2pJuXj7K5zdYorOMEiGeEu2dgyPMvDCkP2eYPQaPjN2hp1w==
+is-what@^3.14.1:
+  version "3.14.1"
+  resolved "https://registry.npmjs.org/is-what/-/is-what-3.14.1.tgz#e1222f46ddda85dead0fd1c9df131760e77755c1"
+  integrity sha512-sNxgpk9793nzSs7bA6JQJGeIuRBQhAaNGG77kzYQgMkrID+lS6SlK07K5LaptscDlSaIgH+GPFzf+d75FVxozA==
 
 is-windows@^1.0.1, is-windows@^1.0.2:
   version "1.0.2"
@@ -5098,9 +5101,9 @@ jsbn@~0.1.0:
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
 json-2-csv@^3.16.0:
-  version "3.16.0"
-  resolved "https://registry.npmjs.org/json-2-csv/-/json-2-csv-3.16.0.tgz#3af1fea559883108179bfa2ea4a080a94893f05d"
-  integrity sha512-bWZ4KkZPwr69K8k2tBFN0NtjMtHDS67ovDnk1yoCJOrJNCF+TIGPCI+jOx3Nbpugnk2fhFQVSxsIcpDZrxrMEw==
+  version "3.16.1"
+  resolved "https://registry.npmjs.org/json-2-csv/-/json-2-csv-3.16.1.tgz#682be9b676284554c3e30a07358c95dff0ee1ac2"
+  integrity sha512-/6OJN52slj9NrYIhbT0ubC2rEjmzPjeJLE6RJL5sjHhAlVBR8LPwU5LLlZZgclh79JKSqqeQsYbyrk8YaEUoSQ==
   dependencies:
     deeks "2.5.1"
     doc-path "3.0.2"
@@ -5582,6 +5585,14 @@ logform@^2.3.2:
     safe-stable-stringify "^1.1.0"
     triple-beam "^1.3.0"
 
+loupe@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.npmjs.org/loupe/-/loupe-2.3.0.tgz#cfae54d12853592e0ec455af490fd6867e26875e"
+  integrity sha512-b6TVXtF01VErh8IxN/MfdiWLQmttrenN98PPGS01kym8kGycJ9tqBXD6D+4sNEDhgE83+H0Mk1cVSl0mD1nNSg==
+  dependencies:
+    get-func-name "^2.0.0"
+    type-detect "^4.0.8"
+
 lowercase-keys@2.0.0, lowercase-keys@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/lowercase-keys/-/lowercase-keys-2.0.0.tgz#2603e78b7b4b0006cbca2fbcc8a3202558ac9479"
@@ -6043,14 +6054,7 @@ nise@^5.1.0:
     just-extend "^4.0.2"
     path-to-regexp "^1.7.0"
 
-node-fetch@2.6.5:
-  version "2.6.5"
-  resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.5.tgz#42735537d7f080a7e5f78b6c549b7146be1742fd"
-  integrity sha512-mmlIVHJEu5rnIxgEgez6b9GgWXbkZj5YZ7fx+2r94a2E+Uirsp6HsPTPlomfdHtpt/B0cdKviwkoaM6pyvUOpQ==
-  dependencies:
-    whatwg-url "^5.0.0"
-
-node-fetch@^2.6.7:
+node-fetch@2.6.7, node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==
@@ -7089,15 +7093,15 @@ puppeteer-cluster@^0.22.0:
     debug "^4.1.1"
 
 puppeteer@^13.0.0:
-  version "13.1.1"
-  resolved "https://registry.npmjs.org/puppeteer/-/puppeteer-13.1.1.tgz#63771eb744202aa91918c49123f846e1747da121"
-  integrity sha512-GwdFy1JQ43Hhxj6MraXme+XfCX2CKe18MuwToXTMEAk0txg6vUEgwqBnzErTTqDVZ7sWYrDtDaRCfD2y7ZwgGw==
+  version "13.1.2"
+  resolved "https://registry.npmjs.org/puppeteer/-/puppeteer-13.1.2.tgz#d6ef3295d7551200b7e52076a3cc1b731eff4294"
+  integrity sha512-ozVM8Tdg0patMtm/xAr3Uh7rQ28vBpbTHLP+ECmoAxG/s4PKrVLN764H/poLux7Ln77jHThOd8OBJj5mTuA6Iw==
   dependencies:
     debug "4.3.2"
     devtools-protocol "0.0.948846"
     extract-zip "2.0.1"
     https-proxy-agent "5.0.0"
-    node-fetch "2.6.5"
+    node-fetch "2.6.7"
     pkg-dir "4.2.0"
     progress "2.0.3"
     proxy-from-env "1.1.0"
@@ -8771,9 +8775,9 @@ ua-parser-js@^0.7.30:
   integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
 
 uglify-js@^3.0.5, uglify-js@^3.1.4:
-  version "3.14.5"
-  resolved "https://registry.npmjs.org/uglify-js/-/uglify-js-3.14.5.tgz#cdabb7d4954231d80cb4a927654c4655e51f4859"
-  integrity sha512-qZukoSxOG0urUTvjc2ERMTcAy+BiFh3weWAkeurLwjrCba73poHmG3E36XEjd/JGukMzwTL7uCxZiAexj8ppvQ==
+  version "3.15.0"
+  resolved "https://registry.npmjs.org/uglify-js/-/uglify-js-3.15.0.tgz#2d6a689d94783cab43975721977a13c2afec28f1"
+  integrity sha512-x+xdeDWq7FiORDvyIJ0q/waWd4PhjBNOm5dQUOq2AKC0IEjxOS66Ha9tctiVDGcRQuh69K7fgU5oRuTK4cysSg==
 
 ui-select@0.17.1:
   version "0.17.1"
