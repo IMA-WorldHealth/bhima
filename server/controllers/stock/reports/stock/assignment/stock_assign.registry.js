@@ -37,7 +37,7 @@ function stockAssignRegistry(req, res, next) {
 
   return stockAssign.find(params)
     .then(rows => {
-      const filters = formatFilters(params);
+      const filters = _.uniqBy(formatFilters(params), 'field');
       const data = {
         enterprise : req.session.enterprise,
         rows,
