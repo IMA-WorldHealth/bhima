@@ -1,0 +1,26 @@
+{
+  "ODK" : {
+    "CONFIG_SETTINGS" : "ODK Central Configuration",
+    "NO_CONFIGURATION_SET" : "There is no ODK Central configuration set up. To get started, add a username, password, and the ODK Central URL.",
+    "IMPORTED_SUCCESSFULLY" : "Records successfully imported",
+    "LOAD_FOSA_DATA" : "Load data of FOSA",
+    "NO_RECORD_FOUND" : "No record found",
+    "ODK_ADMIN_PASSWORD" : "ODK Central Admin Password",
+    "ODK_ADMIN_USER" : "ODK Central Admin Email",
+    "ODK_CENTRAL_URL" : "ODK Central Server URL",
+    "ODK_INTEGRATION_SETTINGS" : "ODK Integration Settings",
+    "PROJECT_DETAILS" : "Project Details",
+    "PROJECT_FORMS" : "Number of Forms",
+    "PROJECT_ID" : "Project ID",
+    "PROJECT_NAME" : "Project Name",
+    "QRCODE" : "ODK QR Code",
+    "SHOW_QRCODE" : "Show QR Code",
+    "SYNC_ENTERPRISE" : "Synchronize enterprise settings",
+    "SYNC_FORMS" : "Synchronize forms",
+    "SYNC_SETTINGS" : "Synchronization Settings",
+    "SYNC_SUBMISSIONS" : "Synchronize submissions",
+    "SYNC_USERS" : "Synchronize users",
+    "TOTAL_APP_USERS" : "Number of App Users",
+    "TOTAL_FOUND" : "Total records found"
+  }
+}
