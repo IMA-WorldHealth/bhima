@@ -1,0 +1,13 @@
+{{> head title="LOTS.BARCODE_FOR_LOT" }}
+
+<!-- body  -->
+<div class="text-center">
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <span>{{ details.inventory_text }}</span><br>
+    <span>{{translate 'FORM.LABELS.CODE'}}: {{ details.code }}, {{translate 'FORM.LABELS.LOT'}}: {{ details.label }}</span><br>
+    <span>{{> barcode value=barcode}}</span><br>
+    <span><strong>{{ barcode }}</strong></span>
+
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
+</div>
