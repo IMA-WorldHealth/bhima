@@ -33,6 +33,10 @@ function EmployeeRegistryController(
   // track if module is making a HTTP request for employeess
   vm.loading = false;
 
+  function muteDisabledCells(grid, row) {
+    return (row.entity.locked) ? `text-muted strike` : '';
+  }
+
   const columnDefs = [
     {
       field                : 'reference',
@@ -42,17 +46,20 @@ function EmployeeRegistryController(
       headerCellFilter     : 'translate',
       footerCellClass      : 'text-center',
       sortingAlgorithm : Sorting.algorithms.sortByReference,
+      cellClass : muteDisabledCells,
     },
     {
       field                : 'code',
       displayName          : 'TABLE.COLUMNS.REGISTRATION_NUMBER',
       headerCellFilter     : 'translate',
       footerCellClass      : 'text-center',
+      cellClass            : muteDisabledCells,
     },
     {
       field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.NAME',
       headerCellFilter : 'translate',
+      cellTemplate     : '/modules/employees/templates/employee.cell.html',
       sort : { direction : uiGridConstants.ASC, priority : 1 },
     },
     {
@@ -60,24 +67,28 @@ function EmployeeRegistryController(
       displayName      : 'TABLE.COLUMNS.SERVICE',
       headerCellFilter : 'translate',
       sort : { direction : uiGridConstants.ASC, priority : 1 },
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'is_medical',
       displayName      : 'FORM.LABELS.MEDICAL_STAFF',
       headerCellFilter : 'translate',
       cellTemplate     : '/modules/employees/templates/medical.cell.html',
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
       headerCellFilter : 'translate',
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'dob',
       displayName      : 'TABLE.COLUMNS.DOB',
       headerCellFilter : 'translate',
       type             : 'date',
-      cellFilter : 'date:'.concat(bhConstants.dates.format),
+      cellFilter       : 'date:'.concat(bhConstants.dates.format),
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'date_embauche',
@@ -85,12 +96,14 @@ function EmployeeRegistryController(
       headerCellFilter : 'translate',
       type             : 'date',
       visible          : false,
-      cellFilter : 'date:'.concat(bhConstants.dates.format),
+      cellFilter       : 'date:'.concat(bhConstants.dates.format),
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'text',
       displayName      : 'TABLE.COLUMNS.GRADE',
       headerCellFilter : 'translate',
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'nb_spouse',
@@ -98,6 +111,7 @@ function EmployeeRegistryController(
       headerCellFilter : 'translate',
       type             : 'number',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'nb_enfant',
@@ -105,61 +119,63 @@ function EmployeeRegistryController(
       headerCellFilter : 'translate',
       type             : 'number',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'individual_salary',
       displayName      : 'FORM.LABELS.INDIVIDUAL_SALARY',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'bank',
       displayName      : 'FORM.LABELS.BANK',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'bank_account',
       displayName      : 'FORM.LABELS.BANK_ACCOUNT',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'adresse',
       displayName      : 'FORM.LABELS.ADDRESS',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'phone',
       displayName      : 'FORM.LABELS.PHONE',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'email',
       displayName      : 'FORM.LABELS.EMAIL',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'fonction_txt',
       displayName      : 'FORM.LABELS.PROFESSION',
       headerCellFilter : 'translate',
       visible          : false,
+      cellClass        : muteDisabledCells,
     },
     {
       field            : 'service_name',
       displayName      : 'FORM.LABELS.SERVICE',
       headerCellFilter : 'translate',
       visible          : false,
-    },
-    {
-      field            : 'locked',
-      displayName      : 'FORM.LABELS.LOCKED',
-      headerCellFilter : 'translate',
-      width            : 30,
-      cellTemplate     : '/modules/employees/templates/locked.cell.html',
+      cellClass        : muteDisabledCells,
     },
     {
       name            : 'actions',
