@@ -14,6 +14,7 @@ const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.receip
 const STOCK_ASSIGN_REGISTRY_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.registry.handlebars`;
 const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
 const STOCK_MOVEMENT_REPORT_TEMPLATE = `${BASE_PATH}/stock_movement_report.handlebars`;
+const LOT_BARCODE_TEMPLATE = `${BASE_PATH}/stock/lot_barcode/lot_barcode.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
@@ -224,6 +225,7 @@ module.exports = {
   STOCK_ENTRY_REPORT_TEMPLATE,
   STOCK_LOST_STOCK_REPORT_TEMPLATE,
   STOCK_LOTS_REPORT_TEMPLATE,
+  LOT_BARCODE_TEMPLATE,
   STOCK_MOVEMENTS_REPORT_TEMPLATE,
   STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE,
   STOCK_SHEET_REPORT_TEMPLATE,

@@ -16,6 +16,7 @@ function StockFiltererService(Filters, AppCache, $httpParamSerializer, Languages
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'label', label : 'STOCK.LOT' },
+    { key : 'barcode', label : 'BARCODE.BARCODE' },
     { key : 'is_exit', label : 'STOCK.OUTPUT', valueFilter : 'boolean' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'flux_id', label : 'STOCK.FLUX' },
