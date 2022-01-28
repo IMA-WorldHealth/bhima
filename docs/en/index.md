@@ -10,7 +10,9 @@ This manual is split into chapters:
 4. [Inventory and Stock Management](./stock-management)
 5. Reporting and Statistics
 6. [Developer Reference](./for-developers)
-7. [Glossary](./glossary.md)
+7. Plugins
+		1. [ODK Central Plugin](./plugins/odk-central)
+8. [Glossary](./glossary.md)
 
 # About
 
