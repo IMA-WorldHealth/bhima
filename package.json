@@ -144,7 +144,7 @@
     "uuid": "^8.3.2",
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
-    "winston": "^3.4.0"
+    "winston": "^3.5.0"
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
