@@ -54,20 +54,22 @@
           <tr>
             <td>{{translate dayOfWeek}}, {{date row.date}}</td>
             <td style="width: 10em;" class="text-right">{{row.registrations}}</td>
-            <td class="text-right">{{debcred (multiply row.total_invoiced ../exchangeRate) ../currencyId}}</td>
-            <td class="text-right">{{debcred (multiply row.avg_cost ../exchangeRate) ../currencyId}}</td>
-            <td class="text-right">{{debcred (multiply row.total_paid ../exchangeRate) ../currencyId}}</td>
-            <td
-              style="width: 15em;"
-              {{#if row.has_data}}
+            {{#if row.active_day}}
+              <td class="text-right">{{debcred (multiply row.total_invoiced ../exchangeRate) ../currencyId}}</td>
+              <td class="text-right">{{debcred (multiply row.avg_cost ../exchangeRate) ../currencyId}}</td>
+              <td class="text-right">{{debcred (multiply row.total_paid ../exchangeRate) ../currencyId}}</td>
+              <td style="width: 15em;"
                 {{#gt row.recovery_capacity 0.71}} class="bg-success text-success text-right" {{/gt}}
                 {{#between row.recovery_capacity 0.6 0.7}} class="bg-warning text-warning text-right" {{/between}}
                 {{#lt row.recovery_capacity 0.6}} class="bg-danger text-danger text-right" {{/lt}}>
                 {{percentage row.recovery_capacity}}
+              </td>
               {{else}}
-                class="text-right"> <i>{{ translate "REPORT.NULL" }}</i>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
               {{/if}}
-            </td>
           </tr>
           {{/each}}
         </tbody>
@@ -94,15 +96,18 @@
           <th colspan="3">{{translate 'TABLE.COLUMNS.SUMMARY'}}</th>
         </tr>
         <tr>
+          <td colspan="2"> {{translate 'TABLE.AGGREGATES.NUMBER_OF_DAYS'}} : <strong>{{ summary.rowLength }}</strong></td>
+        </tr>
+        <tr>
           <td></td>
           <td>
             <span>
-              <strong> {{translate 'TABLE.COLUMNS.PERCENT'}} </strong>
+              <strong> {{translate 'TABLE.COLUMNS.FREQUENCY'}} </strong>
             </span>
           </td>
           <td>
             <span>
-              <strong> {{translate 'TABLE.COLUMNS.FREQUENCY'}} </strong>
+              <strong> {{translate 'TABLE.COLUMNS.PERCENT'}} </strong>
             </span>
           </td>
         </tr>

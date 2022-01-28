@@ -191,18 +191,23 @@ async function report(req, res, next) {
       const numDays = moment(row.date).day();
       row.dayOfWeek = daysWeek[numDays];
 
-      rowLength += 1;
+      if (row.total_invoiced > 0 || row.total_paid > 0) {
+        rowLength += 1;
+        row.active_day = 1;
 
-      if (row.recovery_capacity > 0.7) {
-        greenAbove70 += 1;
-      }
+        if (row.recovery_capacity > 0.7) {
+          greenAbove70 += 1;
+        }
 
-      if (row.recovery_capacity >= 0.6 && row.recovery_capacity <= 0.7) {
-        yellowBetwen60And70 += 1;
-      }
+        if (row.recovery_capacity >= 0.6 && row.recovery_capacity <= 0.7) {
+          yellowBetwen60And70 += 1;
+        }
 
-      if (row.recovery_capacity < 0.6) {
-        redLess60 += 1;
+        if (row.recovery_capacity < 0.6) {
+          redLess60 += 1;
+        }
+      } else {
+        row.active_day = 0;
       }
     });
 
