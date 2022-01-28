@@ -38,9 +38,9 @@ async function setupODKCentralConnection() {
   await loadODKCentralSettingsFromDatabase();
 }
 
-async function defineUserAsDataCollector(userId) {
+async function defineUserAsDataCollector(xmlFormId, userId) {
   const { id } = await db.one('SELECT odk_project_id AS id FROM odk_central_integration LIMIT 1;');
-  return central.api.assignments.assignUserRole(id, odkCentralRoles.dataCollector, userId);
+  return central.api.forms.assignActorToFormRole(id, xmlFormId, odkCentralRoles.dataCollector, userId);
 }
 
 /**
@@ -333,7 +333,8 @@ async function syncFormsWithCentral() {
   for (const user of allAppUsers) { // eslint-disable-line
     debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
     try {
-      await defineUserAsDataCollector(user.id); // eslint-disable-line
+      const { success }= await defineUserAsDataCollector(xmlFormId, user.id); // eslint-disable-line
+      debug(`Role assigned to ${user.displayName} with success: ${success}`);
     } catch (e) {
       debug('User already defined.');
     }

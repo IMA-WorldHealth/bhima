@@ -12,8 +12,6 @@ describe(`(${target}) Report Account`, () => {
     currency_id : 1,
   };
 
-  const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
-
   const clone = (object) => JSON.parse(JSON.stringify(object));
 
   it(`GET ${target} should return HTML data for HTML rendering target`, () => {
@@ -29,7 +27,8 @@ describe(`(${target}) Report Account`, () => {
       .catch(helpers.handler);
   });
 
-  it(`GET ${target} should return PDF data for PDF rendering target`, () => {
+  it(`GET ${target} should return PDF data for PDF rendering target`, function pdf() {
+    this.timeout(5000);
     const copy = clone(parameters);
     copy.renderer = 'pdf';
 
