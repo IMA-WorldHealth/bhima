@@ -39,8 +39,8 @@ async function setupODKCentralConnection() {
 }
 
 async function defineUserAsDataCollector(userId) {
-  const odkProject = await db.one('SELECT odk_project_id AS id FROM odk_central_integration LIMIT 1;');
-  await central.api.users.assignUserToProjectRole(odkProject.id, odkCentralRoles.dataCollector, userId);
+  const { id } = await db.one('SELECT odk_project_id AS id FROM odk_central_integration LIMIT 1;');
+  return central.api.assignments.assignUserRole(id, odkCentralRoles.dataCollector, userId);
 }
 
 /**
@@ -191,19 +191,11 @@ async function syncSubmissionsWithCentral(user) {
   const odkProjectId = integration[0].odk_project_id;
   const xmlFormId = 'bhima_pv_reception';
 
-  // const client = await central.auth.client();
-
-  // TODO(@jniles) - use the real ODK api for this.
-  // const searchParams = { $expand : '*', $count : true };
-  // const submissions =
-  // await client.get(`projects/${odkProjectId}/forms/${xmlFormId}.svc/Submissions`, { searchParams }).json();
-
   const submissions = await central.api.getSubmissionsJSONByProjectIdAndFormId(odkProjectId, xmlFormId);
 
   debug(`Got ${submissions.length} submission for ${xmlFormId}.`);
 
   // import the submissions
-
   for (const submission of submissions) { // eslint-disable-line
     await importODKSubmission(submission, user); // eslint-disable-line
   }
@@ -341,7 +333,7 @@ async function syncFormsWithCentral() {
   for (const user of allAppUsers) { // eslint-disable-line
     debug(`Assigning "Data Collector" role (id:${odkCentralRoles.dataCollector}) to ${user.displayName}.`);
     try {
-    await defineUserAsDataCollector(user.id); // eslint-disable-line
+      await defineUserAsDataCollector(user.id); // eslint-disable-line
     } catch (e) {
       debug('User already defined.');
     }
