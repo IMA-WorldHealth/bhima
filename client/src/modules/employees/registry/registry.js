@@ -61,6 +61,7 @@ function EmployeeRegistryController(
       headerCellFilter : 'translate',
       cellTemplate     : '/modules/employees/templates/employee.cell.html',
       sort : { direction : uiGridConstants.ASC, priority : 1 },
+      cellClass : muteDisabledCells,
     },
     {
       field            : 'service_name',
