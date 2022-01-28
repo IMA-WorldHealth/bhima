@@ -129,7 +129,7 @@ INSERT INTO unit VALUES
   (245,'Debtor Summary Report','REPORT.DEBTOR_SUMMARY.TITLE','Debtor summary report',281,'/reports/debtor_summary'),
   (246,'Client Debts Report','TREE.CLIENT_DEBTS_REPORT','Client debts report',281,'/reports/client_debts'),
   (247,'Client Support Report','TREE.CLIENT_SUPPORT_REPORT','Client support report',281,'/reports/client_support'),
-  (248,'Analysis of Cashbox','REPORT.ANALYSIS_AUX_CASHBOX.TITLE','Analysis of auxiliary cashbox',281,'/reports/analysis_auxiliary_cashbox'),
+  (248,'Analysis of Cashboxes','REPORT.ANALYSIS_AUX_CASHBOXES.TITLE','Analysis of auxiliary cashboxes',281,'/reports/analysis_auxiliary_cashboxes'),
   (249,'Realized Profit Report','TREE.REALIZED_PROFIT_REPORT','Realized profit report / Collection on Invoicies',281,'/reports/realized_profit'),
   (250,'System Usage Statistics','REPORT.SYSTEM_USAGE_STAT.TITLE','System usage statistics',280,'/reports/system_usage_stat'),
   (251,'Indexes','TREE.INDEXES','The payroll index',57,'/PAYROLL_INDEX_FOLDER'),
@@ -178,7 +178,8 @@ INSERT INTO unit VALUES
   (302, 'Cost Centers Accounts Report','TREE.COST_CENTER_ACCOUNTS_REPORT','Report of cc accounts values', 286,'/reports/cost_center_accounts'),
   (303, 'Cost Centers Balance Report','TREE.COST_CENTER_INCOME_EXPENSE_REPORT','Report of cc balance', 286,'/reports/cost_center_income_and_expense'),
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
-  (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient');
+  (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
+  (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -234,7 +235,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('debtor_summary', 'REPORT.DEBTOR_SUMMARY.TITLE'),
   ('client_debts', 'REPORT.CLIENT_SUMMARY.TITLE'),
   ('client_support', 'REPORT.CLIENT_SUPPORT.TITLE'),
-  ('analysis_auxiliary_cashbox', 'REPORT.ANALYSIS_AUX_CASHBOX.TITLE'),
+  ('analysis_auxiliary_cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
   ('realized_profit', 'REPORT.REALIZED_PROFIT.TITLE'),
   ('recovery_capacity', 'REPORT.RECOVERY_CAPACITY.TITLE'),
   ('system_usage_stat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
@@ -349,7 +350,6 @@ INSERT INTO `flux` VALUES
   (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
 
 -- Roles Actions
-
 INSERT INTO `actions`(`id`, `description`) VALUES
   (1, 'FORM.LABELS.CAN_EDIT_ROLES'),
   (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS'),
