@@ -122,7 +122,7 @@
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.5",
-    "json-2-csv": "^3.16.0",
+    "json-2-csv": "^3.17.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "morgan": "^1.9.1",
