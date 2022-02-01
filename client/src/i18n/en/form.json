@@ -244,6 +244,7 @@
             "SHOWING": "Showing",
             "SUCCESS":"Operation successfully completed",
             "SUPPORT_COST": " is paid by:",
+            "TAG_NUMBERS_TO_GENERATE": "Generates unique tag numbers that you can put on your goods before counting them in your stock",
             "THE_LAST_5_INVOICES": "The last 5 invoices",
             "THE_NECESSARY_CONFIG_MISSING": "The necessary configurations are missing",
             "THIS_INVOICE_NO_STOCK": "This invoice does not concern any item in stock",
@@ -293,6 +294,7 @@
             "AMOUNT_PAID" : "Amount Paid",
             "ARTICLES":"Articles",
             "CASHBOXES": "Cashboxes",
+            "NUMBER_OF_TAGS": "Number of tags",
             "SELECT_ALL_LOTS": "Select all lots",
             "MERGE_LOCATIONS": "Merge Locations",
             "MERGE_LOCATIONS_TO_ONE":"Merge locations into one location",
@@ -948,6 +950,7 @@
             "FILTER_BY": "Filter by",
             "SEARCH_NAME": "Search by Name",
             "SEARCH_PATIENT_ID": "Search by Patient ID",
+            "TAG_NUMBER_TO_GENERATE" : "Enter the number of tags to produce",
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {

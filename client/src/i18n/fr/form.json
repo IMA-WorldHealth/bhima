@@ -244,6 +244,7 @@
             "SHOWING": "Aperçue",
             "SUCCESS":"Opération realisée avec succès",
             "SUPPORT_COST": " est prise en charge par",
+            "TAG_NUMBERS_TO_GENERATE": "Génère des numéros d'étiquettes unique que vous pouvez poser sur vos biens avant de les comptabiliser dans votre stock",
             "THE_LAST_5_INVOICES": "Les 5 dernières factures",
             "THE_NECESSARY_CONFIG_MISSING": "Les configurations nécessaires manquent",
             "THIS_INVOICE_NO_STOCK": "Cette facture ne concerne aucun article en stock",
@@ -294,6 +295,7 @@
             "ARTICLES":"Articles",
             "CASHBOXES": "Caisses",
             "DEBTOR_GROUP_OPTIONAL": "Groupe débiteur (optionel)",
+            "NUMBER_OF_TAGS": "Nombre des étiquettes",
             "SELECT_ALL_LOTS": "Sélectionner tous les lots",
             "MERGE_LOCATIONS": "Fusionner les localisations",
             "MERGE_LOCATIONS_TO_ONE":"Fusionner les localisations en une seule localisation",
@@ -949,6 +951,7 @@
             "FILTER_BY": "Filtrer par",
             "SEARCH_NAME": "Chercher Par Nom",
             "SEARCH_PATIENT_ID": "Chercher par l'ID",
+            "TAG_NUMBER_TO_GENERATE" : "Entrer le nombre des étiquettes à produire",
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
