@@ -11,16 +11,23 @@
  * @requires lib/filter
  */
 const fs = require('fs');
+const fse = require('fs-extra');
 const _ = require('lodash');
 const converter = require('json-2-csv');
 const tempy = require('tempy');
 const debug = require('debug')('bhima:lots');
 const moment = require('moment');
+
+const coral = require('@ima-worldhealth/coral');
+const PDFMerger = require('pdf-merger-js');
+
+const html = require('../../lib/renderers/html');
 const db = require('../../lib/db');
 const barcode = require('../../lib/barcode');
 const util = require('../../lib/util');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
+const path = require('path');
 
 const detailsQuery = `
   SELECT
@@ -467,13 +474,37 @@ async function generateTags(req, res, next) {
       tagNumbers.push({ barcode : barcode.generate(key, util.uuid()) });
     }
 
-    const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
-    const tmpDocumentsFile = tempy.file({ name : 'barcodes.csv' });
-    await fs.promises.writeFile(tmpDocumentsFile, data);
-    res.attachment(tmpDocumentsFile);
-    res.download(tmpDocumentsFile);
+    // const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
+    // const tmpDocumentsFile = tempy.file({ name : 'barcodes.csv' });
+    // await fs.promises.writeFile(tmpDocumentsFile, data);
+
+    const tickets = await genPdfTickets(tagNumbers);
+    const f = path.join(tickets.path);
+    res.download(f, 'forced-name.pdf', (err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('file uploaded with success : ', f);
+      }
+    });
   } catch (error) {
     next(error);
   }
 
+}
+
+async function genPdfTickets(tagNumbers) {
+  const context = { tagNumbers };
+  const tmpDocumentsFile = tempy.file({ name : `barcodes.pdf` });
+  const template = './server/controllers/stock/reports/tag_numbers.handlebars';
+
+  const options = {
+    path  : tmpDocumentsFile,
+    scale : 1,
+  };
+
+  const inlinedHtml = await html.render(context, template, options);
+
+  const pdf = await coral(inlinedHtml.trim(), options);
+  return { file : pdf, path : tmpDocumentsFile };
 }
