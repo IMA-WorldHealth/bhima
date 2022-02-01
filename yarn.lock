@@ -5252,10 +5252,10 @@ karma-ng-html2js-preprocessor@^1.0.0:
   resolved "https://registry.npmjs.org/karma-ng-html2js-preprocessor/-/karma-ng-html2js-preprocessor-1.0.0.tgz#10d8c8cfaa4136f1c8a76d91a4cbceedebec4a31"
   integrity sha1-ENjIz6pBNvHIp22RpMvO7evsSjE=
 
-karma@^6.3.11:
-  version "6.3.12"
-  resolved "https://registry.npmjs.org/karma/-/karma-6.3.12.tgz#fe6347f027385fc16da1a9bb87d766e2d25981c6"
-  integrity sha512-qwIG+oB2YmHx4hjvYSRMNzL3YWAJ9baHaLAxiP7biFNkfpwYTUTtPck0joFpucalNLzMr+7z/FX1uY/kl8DV9A==
+karma@^6.3.13:
+  version "6.3.13"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-6.3.13.tgz#ff58622c4f913508dbf86506a5fc614be0e98137"
+  integrity sha512-64lbtHBnM/sG7XKvitSQVlImKYNugyjw4K2e8cZYrlZm0GwoWrfsrkzgS/KWY/r3+fVM/2xvT/JN6MyfdttxLw==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
@@ -5269,7 +5269,7 @@ karma@^6.3.11:
     http-proxy "^1.18.1"
     isbinaryfile "^4.0.8"
     lodash "^4.17.21"
-    log4js "^6.3.0"
+    log4js "^6.4.1"
     mime "^2.5.2"
     minimatch "^3.0.4"
     qjobs "^1.2.0"
@@ -5563,9 +5563,9 @@ log-symbols@4.1.0, log-symbols@^4.1.0:
     chalk "^4.1.0"
     is-unicode-supported "^0.1.0"
 
-log4js@^6.3.0:
+log4js@^6.4.1:
   version "6.4.1"
-  resolved "https://registry.npmjs.org/log4js/-/log4js-6.4.1.tgz#9d3a8bf2c31c1e213fe3fc398a6053f7a2bc53e8"
+  resolved "https://registry.yarnpkg.com/log4js/-/log4js-6.4.1.tgz#9d3a8bf2c31c1e213fe3fc398a6053f7a2bc53e8"
   integrity sha512-iUiYnXqAmNKiIZ1XSAitQ4TmNs8CdZYTAWINARF3LjnsLN8tY5m0vRwd6uuWj/yNY0YHxeZodnbmxKFUOM2rMg==
   dependencies:
     date-format "^4.0.3"
