@@ -18,7 +18,9 @@ function GenerateTagsModalController(Instance, Notify, Lots, DownloadLink) {
 
     return Lots.generateTags(vm.totalTags)
       .then(file => {
-        DownloadLink.download(file, 'csv', 'barcodes');
+        if (!file) { return; }
+
+        DownloadLink.download(file, 'pdf', 'barcodes');
 
         Instance.close();
       })
