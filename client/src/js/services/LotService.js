@@ -82,6 +82,11 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
+  lots.generateTags = (total) => {
+    return $http.get(`/lots/generate_tags/${total}`)
+      .then(util.unwrapHttpResponse);
+  };
+
   /**
   * @function computeLotWarningFlags()
   *  @description

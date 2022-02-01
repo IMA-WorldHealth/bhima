@@ -10,11 +10,17 @@
  * @requires lib/db
  * @requires lib/filter
  */
+const fs = require('fs');
 const _ = require('lodash');
+const converter = require('json-2-csv');
+const tempy = require('tempy');
 const debug = require('debug')('bhima:lots');
 const moment = require('moment');
 const db = require('../../lib/db');
+const barcode = require('../../lib/barcode');
+const util = require('../../lib/util');
 const FilterParser = require('../../lib/filter');
+const identifiers = require('../../config/identifiers');
 
 const detailsQuery = `
   SELECT
@@ -37,6 +43,7 @@ exports.getAllDupes = getAllDupes;
 exports.merge = merge;
 exports.autoMerge = autoMerge;
 exports.autoMergeZero = autoMergeZero;
+exports.generateTags = generateTags;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -441,4 +448,32 @@ function assignments(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * GET /lots/generate_tags/:number
+ *
+ * @description
+ * Returns generated tag number
+ */
+async function generateTags(req, res, next) {
+
+  try {
+    const totalTags = req.params.number;
+    const { key } = identifiers.LOT;
+    const tagNumbers = [];
+
+    for (let i = 0; i < totalTags; i++) {
+      tagNumbers.push({ barcode : barcode.generate(key, util.uuid()) });
+    }
+
+    const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
+    const tmpDocumentsFile = tempy.file({ name : 'barcodes.csv' });
+    await fs.promises.writeFile(tmpDocumentsFile, data);
+    res.attachment(tmpDocumentsFile);
+    res.download(tmpDocumentsFile);
+  } catch (error) {
+    next(error);
+  }
+
 }
