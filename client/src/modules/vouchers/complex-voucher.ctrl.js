@@ -97,6 +97,10 @@ function ComplexJournalVoucherController(
     gridManager(Toolkit.openPaymentEmployees);
   };
 
+  vm.openAdvancesLoansInstallments = function openAdvancesLoansInstallments() {
+    gridManager(Toolkit.openAdvancesLoansInstallments);
+  };
+
   // @TODO fixed me to display correctly selected items(invoices, ..) accounts
   // without adding empty items before
   function gridManager(modal) {

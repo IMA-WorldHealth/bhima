@@ -41,6 +41,10 @@ function VoucherToolkitService(Modal) {
       controller  : 'PaymentEmployeeKitController',
       templateUrl : 'modules/vouchers/toolkit/payment_employee/payment_employee.modal.html',
     },
+    advances_loans_installments : {
+      controller  : 'AdvancesLoansInstallmentsKitController',
+      templateUrl : 'modules/vouchers/toolkit/advances_loans_installments/advances_loans_installments.modal.html',
+    },
   };
 
   service.openConventionPaymentModal = function openConventionPaymentModal() {
@@ -73,6 +77,10 @@ function VoucherToolkitService(Modal) {
 
   service.openPaymentEmployees = function openPaymentEmployees() {
     return open(service.tools.payment_employee);
+  };
+
+  service.openAdvancesLoansInstallments = function openAdvancesLoansInstallments() {
+    return open(service.tools.advances_loans_installments);
   };
 
   /**

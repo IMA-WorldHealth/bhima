@@ -29,6 +29,7 @@
       "SUPPORT_PAYMENT_DESCRIPTION": "Support of {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
     },
     "GLOBAL": {
+      "ADVANCES_LOANS_INSTALLMENTS": "Advances, Loans, installments to employees",
       "CASHFLOW_OPTION": "Cashflow Option",
       "TRANSFER_DESCRIPTION": "Transfer: From {{ fromAccount }} to {{ toAccount }} for {{ amount }} {{ symbol }}",
       "CONVENTION_PAYMENT_DESCRIPTION": "Convention Payment: Payment for {{ numInvoices }} invoice(s) by {{ debtorGroupName }}.",
