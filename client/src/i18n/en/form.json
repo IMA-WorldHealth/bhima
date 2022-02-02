@@ -29,6 +29,7 @@
             "CONFIRM_CANCEL": "Confirm Cancellation",
             "CONFIRM": "Confirm",
             "CONNECTION": "Log in",
+            "DOWNLOAD": "Download",
             "DELETE": "Delete",
             "DELETE_RECORD": "Delete Record",
             "DEPOT_MANAGEMENT": "Depots Management",
@@ -1086,7 +1087,8 @@
             "PAGE_NOT_FOUND": "The page you requested could not be found",
             "PERCENTAGE_BREACKDOWN": "Percentage breakdown is not possible when selecting transactions that belong to different expense centers",
             "REMAINS_DISTRIBUTION": "It remains {{ value }}",
-            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server."
+            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server.",
+            "ONLY_500_TAG_NUMBERS_CAN_BE_GENERATED": "Only a max of 500 labels can be generated at a time"
         }
     }
 }

@@ -29,6 +29,7 @@
             "CONFIRM_CANCEL": "Confirmer Annulation",
             "CONFIRM": "Confirmer",
             "CONNECTION": "Se connecter",
+            "DOWNLOAD": "Télécharger",
             "DELETE_RECORD": "Supprimer Enregistrement",
             "DELETE": "Supprimer",
             "DEPOT_MANAGEMENT": "Gestion des dépôts",
@@ -1087,7 +1088,8 @@
             "PAGE_NOT_FOUND": "La page demandée n'a pas été trouvée",
             "PERCENTAGE_BREACKDOWN": "La ventilation par pourcentage n'est pas possible lorsqu'on selectionne des transactions qui appartienent à des centres des frais différents",
             "REMAINS_DISTRIBUTION": "Il reste {{ value }}",
-            "NO_CHANGES": "Vous n'avez pas changé les données dans le formulaire.  Rien a été submis au server."
+            "NO_CHANGES": "Vous n'avez pas changé les données dans le formulaire.  Rien a été submis au server.",
+            "ONLY_500_TAG_NUMBERS_CAN_BE_GENERATED": "Seulement 500 étiquettes maximum peuvent être générées à la fois"
         }
     }
 }

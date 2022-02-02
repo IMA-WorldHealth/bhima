@@ -10,6 +10,7 @@
  * @requires lib/db
  * @requires lib/filter
  */
+const path = require('path');
 const fs = require('fs');
 const fse = require('fs-extra');
 const _ = require('lodash');
@@ -19,7 +20,7 @@ const debug = require('debug')('bhima:lots');
 const moment = require('moment');
 
 const coral = require('@ima-worldhealth/coral');
-const PDFMerger = require('pdf-merger-js');
+const AdmZip = require('adm-zip');
 
 const html = require('../../lib/renderers/html');
 const db = require('../../lib/db');
@@ -27,7 +28,6 @@ const barcode = require('../../lib/barcode');
 const util = require('../../lib/util');
 const FilterParser = require('../../lib/filter');
 const identifiers = require('../../config/identifiers');
-const path = require('path');
 
 const detailsQuery = `
   SELECT
@@ -50,7 +50,7 @@ exports.getAllDupes = getAllDupes;
 exports.merge = merge;
 exports.autoMerge = autoMerge;
 exports.autoMergeZero = autoMergeZero;
-exports.generateTags = generateTags;
+exports.generateBarcodes = generateBarcodes;
 
 function getLotTags(bid) {
   const queryTags = `
@@ -461,9 +461,9 @@ function assignments(req, res, next) {
  * GET /lots/generate_tags/:number
  *
  * @description
- * Returns generated tag number
+ * Returns generated barcodes in a zip file
  */
-async function generateTags(req, res, next) {
+async function generateBarcodes(req, res, next) {
 
   try {
     const totalTags = req.params.number;
@@ -474,19 +474,18 @@ async function generateTags(req, res, next) {
       tagNumbers.push({ barcode : barcode.generate(key, util.uuid()) });
     }
 
-    // const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
-    // const tmpDocumentsFile = tempy.file({ name : 'barcodes.csv' });
-    // await fs.promises.writeFile(tmpDocumentsFile, data);
+    // create the csv file of tag numbers
+    const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
+    const tmpCsvFile = tempy.file({ name : 'barcodes.csv' });
+    await fs.promises.writeFile(tmpCsvFile, data);
 
-    const tickets = await genPdfTickets(tagNumbers);
-    const f = path.join(tickets.path);
-    res.download(f, 'forced-name.pdf', (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('file uploaded with success : ', f);
-      }
-    });
+    // create the pdf file of tag numbers
+    const pdfTickets = await genPdfTickets(tagNumbers);
+    const tmpPdfFile = path.join(pdfTickets.path);
+
+    // create a zip file for the csv and pdf files
+    const zipped = await zipFiles(tmpCsvFile, tmpPdfFile);
+    res.download(zipped);
   } catch (error) {
     next(error);
   }
@@ -507,4 +506,15 @@ async function genPdfTickets(tagNumbers) {
 
   const pdf = await coral(inlinedHtml.trim(), options);
   return { file : pdf, path : tmpDocumentsFile };
+}
+
+async function zipFiles(...files) {
+  const zip = new AdmZip();
+  const outputFile = tempy.file({ name : `Barcodes for Tag Number in CSV+PDF.zip` });
+  files.forEach(file => {
+    zip.addLocalFile(file);
+  });
+  zip.writeZip(outputFile);
+  await Promise.all(files.map((file) => fse.unlink(file)));
+  return outputFile;
 }
