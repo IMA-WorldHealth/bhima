@@ -2,30 +2,19 @@ angular.module('bhima.controllers')
   .controller('GenerateTagsModalController', GenerateTagsModalController);
 
 GenerateTagsModalController.$inject = [
-  '$uibModalInstance', 'NotifyService',
-  'LotService', 'DownloadLinkService',
+  '$uibModalInstance', 'LotService',
 ];
 
-function GenerateTagsModalController(Instance, Notify, Lots, DownloadLink) {
+function GenerateTagsModalController(Instance, Lots) {
   const vm = this;
 
   vm.cancel = cancel;
-  vm.submit = submit;
 
-  // submit
-  function submit() {
-    if (vm.totalTags <= 0 || !vm.totalTags) { return null; }
+  vm.submit = () => {
+    if (!vm.totalTags || vm.totalTags > 500) { return null; }
 
-    return Lots.generateTags(vm.totalTags)
-      .then(file => {
-        if (!file) { return; }
-
-        DownloadLink.download(file, 'pdf', 'barcodes');
-
-        Instance.close();
-      })
-      .catch(Notify.errorHandler);
-  }
+    return Lots.generateTags(vm.totalTags);
+  };
 
   // cancel
   function cancel() {
