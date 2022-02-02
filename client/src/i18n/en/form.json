@@ -29,6 +29,7 @@
             "CONFIRM_CANCEL": "Confirm Cancellation",
             "CONFIRM": "Confirm",
             "CONNECTION": "Log in",
+            "DOWNLOAD": "Download",
             "DELETE": "Delete",
             "DELETE_RECORD": "Delete Record",
             "DEPOT_MANAGEMENT": "Depots Management",
@@ -244,6 +245,7 @@
             "SHOWING": "Showing",
             "SUCCESS":"Operation successfully completed",
             "SUPPORT_COST": " is paid by:",
+            "TAG_NUMBERS_TO_GENERATE": "Generates unique tag numbers that you can put on your goods before counting them in your stock",
             "THE_LAST_5_INVOICES": "The last 5 invoices",
             "THE_NECESSARY_CONFIG_MISSING": "The necessary configurations are missing",
             "THIS_INVOICE_NO_STOCK": "This invoice does not concern any item in stock",
@@ -293,6 +295,7 @@
             "AMOUNT_PAID" : "Amount Paid",
             "ARTICLES":"Articles",
             "CASHBOXES": "Cashboxes",
+            "NUMBER_OF_TAGS": "Number of tags",
             "SELECT_ALL_LOTS": "Select all lots",
             "MERGE_LOCATIONS": "Merge Locations",
             "MERGE_LOCATIONS_TO_ONE":"Merge locations into one location",
@@ -948,6 +951,7 @@
             "FILTER_BY": "Filter by",
             "SEARCH_NAME": "Search by Name",
             "SEARCH_PATIENT_ID": "Search by Patient ID",
+            "TAG_NUMBER_TO_GENERATE" : "Enter the number of tags to produce",
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
@@ -1083,7 +1087,8 @@
             "PAGE_NOT_FOUND": "The page you requested could not be found",
             "PERCENTAGE_BREACKDOWN": "Percentage breakdown is not possible when selecting transactions that belong to different expense centers",
             "REMAINS_DISTRIBUTION": "It remains {{ value }}",
-            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server."
+            "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server.",
+            "ONLY_500_TAG_NUMBERS_CAN_BE_GENERATED": "Only a max of 500 labels can be generated at a time"
         }
     }
 }

@@ -1,0 +1,43 @@
+<form
+  name="GenerateTagNumbersForm"
+  bh-submit="$ctrl.submit(GenerateTagNumbersForm)"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static">
+        <i class="fa fa-barcode"></i>
+        <span translate>STOCK.GENERATE_TAG_NUMBERS</span>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="totalTags" translate>FORM.LABELS.NUMBER_OF_TAGS</label>
+      <input 
+        name="totalTags" 
+        type="number" 
+        step="1" 
+        max="500"
+        class="form-control" 
+        ng-model="$ctrl.totalTags"
+        translate-attr="{ 'placeholder' : 'FORM.PLACEHOLDERS.TAG_NUMBER_TO_GENERATE' }">
+      <p class="form-text text-primary">
+        <i class="fa fa-info-circle"></i> 
+        <span translate>FORM.WARNINGS.ONLY_500_TAG_NUMBERS_CAN_BE_GENERATED</span>
+      </p>
+      <p class="form-text text-muted" translate>FORM.INFO.TAG_NUMBERS_TO_GENERATE</p>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button disabled="!$ctrl.totalTags" loading-state="GenerateTagNumbersForm.$loading">
+      <span translate>FORM.BUTTONS.DOWNLOAD</span>
+    </bh-loading-button>
+  </div>
+</form>
