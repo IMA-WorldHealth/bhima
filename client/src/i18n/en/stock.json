@@ -60,6 +60,7 @@
     "ENTRY_PURCHASE"  : "Purchase",
     "ENTRY_TRANSFER"  : "Transfer",
     "EXPIRED"         : "Expired",
+    "GENERATE_TAG_NUMBERS" : "Generate Tag Numbers",
     "GLOBAL_LOT_DESCRIPTION" : "Global lot description",
     "GLOBAL_EXPIRATION_DATE" : "Global expiration date",
     "STOCK_EXPIRED_WARNING" : "Alert : there are {{total}} expired products",
