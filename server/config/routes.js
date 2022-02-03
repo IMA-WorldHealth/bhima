@@ -998,6 +998,9 @@ exports.configure = function configure(app) {
   app.put('/beds/:id', bed.update);
   app.delete('/beds/:id', bed.delete);
 
+  // on the fly tag numbers
+  app.get('/lots/generate_barcodes/:number', lots.generateBarcodes);
+
   // lots API
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);

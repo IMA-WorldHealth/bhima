@@ -82,6 +82,10 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
+  lots.generateTags = (number) => {
+    return window.open(`/lots/generate_barcodes/${number}`);
+  };
+
   /**
   * @function computeLotWarningFlags()
   *  @description
