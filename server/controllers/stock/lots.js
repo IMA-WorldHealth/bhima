@@ -12,7 +12,6 @@
  */
 const path = require('path');
 const fs = require('fs');
-const fse = require('fs-extra');
 const _ = require('lodash');
 const converter = require('json-2-csv');
 const tempy = require('tempy');
@@ -515,6 +514,6 @@ async function zipFiles(...files) {
     zip.addLocalFile(file);
   });
   zip.writeZip(outputFile);
-  await Promise.all(files.map((file) => fse.unlink(file)));
+  await Promise.all(files.map((file) => fs.promises.unlink(file)));
   return outputFile;
 }
