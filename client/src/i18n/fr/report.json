@@ -1,5 +1,5 @@
 {
-  "REPORT":{
+  "REPORT" : {
     "ACCOUNT" : "Relevé de compte",
     "ACCOUNT_REFERENCE":{
       "TITLE" : "Valeur des references des comptes",
@@ -190,7 +190,10 @@
       "TOTAL_ENTRIES": "Total des entrées",
       "TOTAL_EXITS": "Total des sorties",
       "TOTAL_QUANTITIES_CONSUMED": "Total consommées",
-      "TOTAL_QUANTITIES_LOST": "Total perdues"
+      "TOTAL_QUANTITIES_LOST": "Total perdues",
+      "TOTAL_DAYS_OF_STOCK_OUT" : "Nombre total de jours de rupture de stock",
+      "TOTAL_DAYS" : "Nombre total de jours",
+      "RATIO" : "Proportion"
     },
     "PURCHASE_ORDER_ANALYSIS": {
       "DESCRIPTION": "Ce rapport permet de connaitre la différence entre ce la quantité commandée et la quantité entrée en stock",
