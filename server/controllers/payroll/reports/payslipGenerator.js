@@ -197,7 +197,7 @@ function build(req, res, next) {
           employee.otherProfits = [];
 
           rubricsIndexes.forEach(item => {
-            if (item.indice_type === 'is_other_profits') {
+            if (employee.employee_uuid === item.employee_uuid && item.indice_type === 'is_other_profits') {
               employee.otherProfits.push({ value : item.rubric_value, label : item.rubric_label });
             } else {
               employee[item.indice_type] = { value : item.rubric_value, label : item.rubric_label };
