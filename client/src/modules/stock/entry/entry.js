@@ -49,6 +49,7 @@ function StockEntryController(
   vm.reset = reset;
   vm.onDateChange = onDateChange;
   vm.$loading = false;
+  vm.generateTagNumbers = StockModal.openGenerateTagNumbers;
 
   vm.gridOptions = {
     appScopeProvider : vm,
