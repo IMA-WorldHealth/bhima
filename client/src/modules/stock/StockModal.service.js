@@ -33,6 +33,20 @@ function StockModalService(Modal) {
   service.openLotScheduleModal = openLotScheduleModal;
   service.openAMCCalculationModal = openAMCCalculationModal;
   service.openConsumptionByLots = openConsumptionByLots;
+  service.openGenerateAssetBarcodes = openGenerateAssetBarcodes;
+
+  // generate tag numbers
+  function openGenerateAssetBarcodes(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/entry/modals/generateAssetTags.modal.html',
+      controller   : 'GenerateTagsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
   /** create stock assign */
   function openActionStockAssign(request) {
