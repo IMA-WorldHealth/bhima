@@ -117,6 +117,9 @@ async function report(req, res, next) {
       });
     });
 
+    let totalDaysStockOut = 0;
+    let totalDays = 0;
+
     configurationData.forEach(inventory => {
       // First populate the monthly stats
       if (monthlyConsumption.length) {
@@ -149,6 +152,7 @@ async function report(req, res, next) {
       invDailyConsumed.forEach(item => {
         item.dayNum = parseInt(moment(item.date).format('DD'), 10);
       });
+
       invDailyConsumed.sort((a, b) => a.date > b.date);
       let lastBalance = inventory.quantityOpening;
       let numStockOutDays = 0;
@@ -173,6 +177,9 @@ async function report(req, res, next) {
       inventory.numStockOutDays = numStockOutDays;
       inventory.percentStockOut = Number(100 * (numStockOutDays / dailyConsumption.length)).toFixed(1);
 
+      totalDaysStockOut += numStockOutDays;
+      totalDays += dailyConsumption.length;
+
       inventory.dailyConsumption = dailyConsumption;
     });
 
@@ -184,6 +191,7 @@ async function report(req, res, next) {
       });
     }
 
+    data.totals = { totalDaysStockOut, totalDays, ratio : (100 * (totalDaysStockOut / totalDays)).toFixed(2) };
     const result = await reporting.render(data);
     res.set(result.headers).send(result.report);
   } catch (e) {
