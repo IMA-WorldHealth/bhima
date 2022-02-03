@@ -1,0 +1,27 @@
+{{>head}}
+
+<style>
+  .ticket {
+    display: inline-block;
+    width: 50mm;
+    border: 1px solid #ccc;
+  }
+</style>
+
+<div class="container">
+  {{#each barcodeList as | tagNumber |}}
+    <div class="label ticket">
+      <svg 
+        class="barcode"
+        jsbarcode-format="code128"
+        jsbarcode-width="1"
+        jsbarcode-height="40"
+        jsbarcode-fontsize="8"
+        jsbarcode-value="{{tagNumber.barcode}}"
+        jsbarcode-textmargin="0">
+      </svg>
+    </div>
+  {{/each}}
+</div>
+
+<script>JsBarcode('.barcode').init();</script>
