@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('LotService', LotService);
 
-LotService.$inject = ['PrototypeApiService', '$http', 'util'];
+LotService.$inject = ['PrototypeApiService', '$http', 'util', '$window'];
 
-function LotService(Api, $http, util) {
+function LotService(Api, $http, util, $window) {
   const lots = new Api('/lots/');
 
   lots.read = (uuid) => {
@@ -82,8 +82,8 @@ function LotService(Api, $http, util) {
       .then(util.unwrapHttpResponse);
   };
 
-  lots.generateTags = (number) => {
-    return window.open(`/lots/generate_barcodes/${number}`);
+  lots.generateAssetTags = (number) => {
+    return $window.open(`/lots/generate_barcodes/${number}`);
   };
 
   /**

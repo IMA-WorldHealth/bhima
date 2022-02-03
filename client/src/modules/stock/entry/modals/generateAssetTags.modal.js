@@ -10,10 +10,10 @@ function GenerateTagsModalController(Instance, Lots) {
 
   vm.cancel = cancel;
 
-  vm.submit = () => {
-    if (!vm.totalTags || vm.totalTags > 500) { return null; }
+  vm.submit = form => {
+    if (form.$invalid) { return null; }
 
-    return Lots.generateTags(vm.totalTags);
+    return Lots.generateAssetTags(vm.totalTags);
   };
 
   // cancel

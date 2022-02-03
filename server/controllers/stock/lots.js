@@ -457,7 +457,7 @@ function assignments(req, res, next) {
 }
 
 /**
- * GET /lots/generate_tags/:number
+ * GET /lots/generate_barcodes/:number
  *
  * @description
  * Returns generated barcodes in a zip file
@@ -465,21 +465,21 @@ function assignments(req, res, next) {
 async function generateBarcodes(req, res, next) {
 
   try {
-    const totalTags = req.params.number;
+    const totalBarcodes = req.params.number;
     const { key } = identifiers.LOT;
-    const tagNumbers = [];
+    const barcodeList = [];
 
-    for (let i = 0; i < totalTags; i++) {
-      tagNumbers.push({ barcode : barcode.generate(key, util.uuid()) });
+    for (let i = 0; i < totalBarcodes; i++) {
+      barcodeList.push({ barcode : barcode.generate(key, util.uuid()) });
     }
 
     // create the csv file of tag numbers
-    const data = await converter.json2csvAsync(tagNumbers, { trimHeaderFields : true, trimFieldValues : true });
+    const data = await converter.json2csvAsync(barcodeList, { trimHeaderFields : true, trimFieldValues : true });
     const tmpCsvFile = tempy.file({ name : 'barcodes.csv' });
     await fs.promises.writeFile(tmpCsvFile, data);
 
     // create the pdf file of tag numbers
-    const pdfTickets = await genPdfTickets(tagNumbers);
+    const pdfTickets = await genPdfTickets(barcodeList);
     const tmpPdfFile = path.join(pdfTickets.path);
 
     // create a zip file for the csv and pdf files
@@ -491,10 +491,10 @@ async function generateBarcodes(req, res, next) {
 
 }
 
-async function genPdfTickets(tagNumbers) {
-  const context = { tagNumbers };
+async function genPdfTickets(barcodeList) {
+  const context = { barcodeList };
   const tmpDocumentsFile = tempy.file({ name : `barcodes.pdf` });
-  const template = './server/controllers/stock/reports/tag_numbers.handlebars';
+  const template = './server/controllers/stock/reports/asset_barcodes.handlebars';
 
   const options = {
     path  : tmpDocumentsFile,

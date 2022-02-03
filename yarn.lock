@@ -6668,15 +6668,6 @@ pathval@^1.1.1:
   resolved "https://registry.npmjs.org/pathval/-/pathval-1.1.1.tgz#8534e77a77ce7ac5a2512ea21e0fdb8fcf6c3d8d"
   integrity sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==
 
-pdf-merge@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/pdf-merge/-/pdf-merge-1.2.0.tgz#a15d155e6e6fcff2e34148c6b8960119c5273593"
-  integrity sha512-/2QygIR3Q/p0SxUhj64LvUzYFVzFL8DQGV8GOpG3I44uXwSTiMS7tAd3dHvxLrnGYLzom2IPdlhnxqLyOC41VQ==
-  dependencies:
-    bluebird "^3.5.1"
-    shell-escape "^0.2.0"
-    tmp "0.0.33"
-
 pdf-merger-js@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/pdf-merger-js/-/pdf-merger-js-3.3.2.tgz#32f0f0b0c56375f2c3557f52cda1b43b1d1cca8b"
@@ -7870,11 +7861,6 @@ shebang-regex@^3.0.0:
   resolved "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shell-escape@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/shell-escape/-/shell-escape-0.2.0.tgz#68fd025eb0490b4f567a027f0bf22480b5f84133"
-  integrity sha1-aP0CXrBJC09WegJ/C/IkgLX4QTM=
-
 shelljs@0.8.5:
   version "0.8.5"
   resolved "https://registry.npmjs.org/shelljs/-/shelljs-0.8.5.tgz#de055408d8361bed66c669d2f000538ced8ee20c"
@@ -8614,7 +8600,7 @@ tmp@0.0.30:
   dependencies:
     os-tmpdir "~1.0.1"
 
-tmp@0.0.33, tmp@^0.0.33:
+tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.npmjs.org/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==

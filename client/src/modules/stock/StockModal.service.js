@@ -33,12 +33,12 @@ function StockModalService(Modal) {
   service.openLotScheduleModal = openLotScheduleModal;
   service.openAMCCalculationModal = openAMCCalculationModal;
   service.openConsumptionByLots = openConsumptionByLots;
-  service.openGenerateTagNumbers = openGenerateTagNumbers;
+  service.openGenerateAssetBarcodes = openGenerateAssetBarcodes;
 
   // generate tag numbers
-  function openGenerateTagNumbers(request) {
+  function openGenerateAssetBarcodes(request) {
     const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/stock/entry/modals/generateTags.modal.html',
+      templateUrl  : 'modules/stock/entry/modals/generateAssetTags.modal.html',
       controller   : 'GenerateTagsModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
