@@ -118,7 +118,7 @@
     "handlebars": "^4.7.7",
     "helmet": "^5.0.1",
     "inline-source": "^7.1.0",
-    "ioredis": "^4.28.3",
+    "ioredis": "^4.28.4",
     "jaro-winkler": "^0.2.8",
     "jquery": "^3.5.1",
     "jsbarcode": "^3.11.5",
