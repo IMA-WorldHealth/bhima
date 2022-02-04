@@ -13,6 +13,7 @@ angular.module('bhima.components')
       validationTrigger : '<?',
       restrictToUser    : '<?',
       isAuxiliary       : '<?',
+      isPrimary         : '<?',
     },
   });
 
@@ -46,6 +47,10 @@ function CashboxSelectController(Cashbox, Notify, Session) {
 
     if ($ctrl.isAuxiliary) {
       params.is_auxiliary = 1;
+    }
+
+    if ($ctrl.isPrimary) {
+      params.is_auxiliary = 0;
     }
 
     // load all Cashbox
