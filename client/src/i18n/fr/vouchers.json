@@ -29,6 +29,7 @@
       "SUPPORT_PAYMENT_DESCRIPTION": "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
     },
     "GLOBAL": {
+      "ADVANCES_LOANS_INSTALLMENTS": "Avances, Prêts, Acomptes aux employés",
       "CASHFLOW_OPTION": "Option de flux de trésorerie",
       "CONVENTION_INVOICES": "Convention - Paiement factures",
       "WRITE_OFF_PATIENT_INVOICES": "Annuler les factures des patients",

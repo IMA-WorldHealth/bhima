@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents">
+  <input
+    ng-model="row.entity.value"
+    ng-change="grid.appScope.onChanges()"
+    ng-disabled="row.entity.locked"
+    type="number"
+    ng-min="0"
+    class="form-control text-right">
+</div>

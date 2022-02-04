@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.FINANCE</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.ADVANCES_LOANS_INSTALLMENTS</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" novalidate>
+  <div class="modal-body">
+    <!-- cashbox -->
+    <bh-cashbox-select
+      cashbox-id = "ToolCtrl.searchQueries.cashbox_id"
+      name = "cashbox_id"
+      on-select-callback = "ToolCtrl.onSelectCashbox(cashbox)"
+      restrict-to-user = "false"
+      required = "true"
+      is-primary = "true">
+    </bh-cashbox-select>
+
+    <bh-account-select
+      label="VOUCHERS.GLOBAL.DESTINATION_ACCOUNT"
+      account-type-id="[ToolCtrl.LIABILITY_ACCOUNT_TYPE_ID, ToolCtrl.ASSET_ACCOUNT_TYPE_ID]"
+      on-select-callback="ToolCtrl.onSelectAccountCallback(account)"
+      exclude-title-accounts="true">
+      (<label translate>FORM.LABELS.DEBIT</label>)
+    </bh-account-select>
+
+    <!-- select Employees Paiements  -->
+    <div ng-show="ToolCtrl.gridDisplay">
+      <div
+        id="paymentGrid"
+        style="height: 40vh; margin-bottom: 20px;"
+        ui-grid="ToolCtrl.gridOptions"
+        ui-grid-filtering
+        ui-grid-auto-resize>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ToolForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
