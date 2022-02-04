@@ -37,7 +37,6 @@ function AdvancesLoansInstallmentsKitController(
   function onSelectCashbox(cashbox) {
     vm.currencyId = cashbox.currency_id;
     vm.account_id = cashbox.account_id;
-    reloadGrid();
   }
 
   function onSelectAccountCallback(account) {
@@ -129,7 +128,7 @@ function AdvancesLoansInstallmentsKitController(
     cellFilter : 'currency: row.entity.currency_id',
     cellTemplate : 'modules/vouchers/templates/amount_paiment.grid.tmpl.html',
     aggregationType : uiGridConstants.aggregationTypes.sum,
-    footerCellFilter     : 'currency:grid.appScope.Voucher.details.currency_id',
+    footerCellFilter     : 'currency:grid.appScope.currencyId',
   }];
 
   function onRegisterApi(gridApi) {
