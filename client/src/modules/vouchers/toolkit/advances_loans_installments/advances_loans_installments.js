@@ -2,16 +2,19 @@ angular.module('bhima.controllers')
   .controller('AdvancesLoansInstallmentsKitController', AdvancesLoansInstallmentsKitController);
 
 AdvancesLoansInstallmentsKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'SessionService', 'bhConstants', '$translate',
+  '$uibModalInstance', 'NotifyService', 'SessionService', 'bhConstants',
   'VoucherToolkitService', 'EmployeeService', 'uiGridConstants', 'VoucherForm',
 ];
 
 // Import transaction rows for Advances Loans Installments of Employees
 function AdvancesLoansInstallmentsKitController(
-  Instance, Notify, Session, bhConstants, $translate, ToolKits,
+  Instance, Notify, Session, bhConstants, ToolKits,
   Employees, uiGridConstants, VoucherForm,
 ) {
   const vm = this;
+
+  vm.LIABILITY_ACCOUNT_TYPE_ID = bhConstants.accounts.LIABILITY;
+  vm.ASSET_ACCOUNT_TYPE_ID = bhConstants.accounts.ASSET;
 
   vm.enterprise = Session.enterprise;
   vm.onSelectCashbox = onSelectCashbox;
@@ -104,6 +107,7 @@ function AdvancesLoansInstallmentsKitController(
   vm.gridOptions = {
     appScopeProvider : vm,
     enableFiltering : true,
+    enableSorting : false,
     fastWatch : true,
     flatEntityAccess : true,
     enableSelectionBatchEvent : false,

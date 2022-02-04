@@ -19,6 +19,7 @@
 
     <bh-account-select
       label="VOUCHERS.GLOBAL.DESTINATION_ACCOUNT"
+      account-type-id="[ToolCtrl.LIABILITY_ACCOUNT_TYPE_ID, ToolCtrl.ASSET_ACCOUNT_TYPE_ID]"
       on-select-callback="ToolCtrl.onSelectAccountCallback(account)"
       exclude-title-accounts="true">
       (<label translate>FORM.LABELS.DEBIT</label>)
