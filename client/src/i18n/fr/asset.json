@@ -1,0 +1,13 @@
+{
+  "ASSET" : {
+    "STATUS" : {
+      "EMPTY" : "Vide",
+      "PARTIAL" : "En partie",
+      "COMPLETE" : "Complète",
+      "IN_TRANSIT" : "En transit",
+      "DELIVERED" : "Livré",
+      "AT_DEPOT" : "Au dépôt",
+      "LOST" : "Perdu"
+    }
+  }
+}

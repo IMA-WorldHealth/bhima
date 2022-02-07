@@ -515,3 +515,19 @@ INSERT INTO `cost_center_allocation_basis`
       'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '',
       'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/**
+ * Default values for shipment tables
+ */
+INSERT INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES 
+  (1, 'empty', 'ASSET.STATUS.EMPTY'),
+  (2, 'partial', 'ASSET.STATUS.PARTIAL'),
+  (3, 'complete', 'ASSET.STATUS.COMPLETE'),
+  (4, 'in_transit', 'ASSET.STATUS.IN_TRANSIT'),
+  (5, 'at_depot', 'ASSET.STATUS.AT_DEPOT'),
+  (6, 'delivered', 'ASSET.STATUS.DELIVERED'),
+  (7, 'lost', 'ASSET.STATUS.LOST');
+
+/** ADD DEFAULT SHIPPER */
+INSERT INTO `shipper` (`id`, `name`) VALUES 
+  (1, 'Transit');
