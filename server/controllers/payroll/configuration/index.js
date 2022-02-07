@@ -166,7 +166,7 @@ function payrollReportElements(idPeriod, employees, employeesPaymentUuid) {
   `;
 
   const sqlRubricPayrollIndice = `
-    SELECT spi.employee_uuid, spi.payroll_configuration_id, spi.rubric_id, spi.rubric_value,
+    SELECT BUID(spi.employee_uuid) AS employee_uuid, spi.payroll_configuration_id, spi.rubric_id, spi.rubric_value,
     rub.is_indice, rub.is_monetary_value, rub.label AS rubric_label, rub.indice_type
     FROM stage_payment_indice AS spi
     JOIN rubric_payroll AS rub ON rub.id = spi.rubric_id
