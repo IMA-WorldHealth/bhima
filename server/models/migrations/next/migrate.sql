@@ -94,7 +94,6 @@ INSERT IGNORE INTO `entity_type` (`label`, `translation_key`) VALUES
   ('service', 'ENTITY.TYPE.SERVICE'),
   ('office', 'ENTITY.TYPE.OFFICE'),
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
-
 /*
  * @author: mbayopanda
  * @description: Shipment tables
