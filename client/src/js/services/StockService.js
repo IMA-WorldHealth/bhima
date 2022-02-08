@@ -29,6 +29,9 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // API for stock inventory in depots
   const inventories = new Api('/stock/inventories/depots');
 
+  // API for stock shipment
+  const shipment = new Api('/stock/shipment');
+
   // the stock inventories route gets hit a lot.  Cache the results on the client.
   inventories.read = cacheInventoriesRead;
 
@@ -207,6 +210,12 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
       .then(util.unwrapHttpResponse);
   };
 
+  // shipment in-transit inventory list
+  shipment.getInTransitInventories = query => {
+    return shipment.$http.get('/stock/shipment/transit', { query })
+      .then(util.unwrapHttpResponse);
+  };
+
   return {
     stocks,
     stockAssign,
@@ -229,5 +238,6 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     status,
     stockStatusLabelKeys,
     aggregatedConsumption,
+    shipment,
   };
 }
