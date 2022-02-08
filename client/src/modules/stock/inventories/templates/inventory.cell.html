@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents">
-  <a data-method="stock-lots"
+  <a ng-if="row.entity.shipment_status !== grid.appScope.bhConstants.shipmentStatus.IN_TRANSIT" data-method="stock-lots"
     ui-sref="stockLots({ filters : [
       { key : 'inventory_uuid', value : row.entity.inventory_uuid, displayValue : row.entity.text, cacheable: false },
       { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cacheable: false },
@@ -7,4 +7,6 @@
     ]})" href>
     <span>{{ row.entity.text }}</span>
   </a>
+  <!-- simple text for in-transit -->
+  <span ng-if="row.entity.shipment_status === grid.appScope.bhConstants.shipmentStatus.IN_TRANSIT">{{ row.entity.text }}</span>
 </div>
