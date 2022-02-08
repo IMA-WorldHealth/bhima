@@ -1729,10 +1729,10 @@ confusing-browser-globals@^1.0.10:
   resolved "https://registry.npmjs.org/confusing-browser-globals/-/confusing-browser-globals-1.0.11.tgz#ae40e9b57cdd3915408a2805ebd3a5585608dc81"
   integrity sha512-JsPKdmh8ZkmnHxDk55FZ1TqVLvEQTvoByJZRN9jzI0UjxK/QgAmsphz7PGtqgPieQZ/CQcHWXCR7ATDNhGe+YA==
 
-connect-redis@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-6.1.0.tgz#91673c12cce754835ae1cfafbab77ee343bdb715"
-  integrity sha512-QLhd/xUkmyvK5qO7oQHiUScIBtVFXBkmvj+vuPbBhbP7OKerj6z2bbjgnP+x46DZLZlZpOzmtUdM43+jVl/U1Q==
+connect-redis@^6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-6.1.1.tgz#f909ff6d39a5854658d596ac006d1ce901f3ddcd"
+  integrity sha512-4on27NmUz1hVCVsrUFUOe06YkgCx88ZZ29Wi7D5mXg22alN/Xx+Y+iPrJ1Cc7coUKAe5SP3W2LF/zo6WXSJFFg==
 
 connect@^3.7.0:
   version "3.7.0"
