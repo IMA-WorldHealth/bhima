@@ -25,6 +25,7 @@ const { DELETE_STOCK_MOVEMENT } = require('../../config/constants').actions;
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
+const shipment = require('./shipment');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
@@ -628,7 +629,7 @@ async function normalMovement(document, params, metadata) {
  * @function depotMovement
  * @description movement between depots
  */
-async function depotMovement(document, params) {
+async function depotMovement(document, params, metadata) {
   const transaction = db.transaction();
   const parameters = params;
   const isExit = parameters.isExit ? 1 : 0;
@@ -664,6 +665,11 @@ async function depotMovement(document, params) {
 
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
   });
+
+  if (isExit) {
+    // write shipment for the exit movement
+    shipment.writeStockExitShipment(metadata.project.id, depotUuid, entityUuid, document, parameters, transaction);
+  }
 
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
