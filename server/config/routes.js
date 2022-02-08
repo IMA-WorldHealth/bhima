@@ -852,6 +852,9 @@ exports.configure = function configure(app) {
   app.get('/stock/setting/:id?', stockSetting.list);
   app.put('/stock/setting/:id', stockSetting.update);
 
+  // stock shipment
+  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
+
   // stock reports API
   app.get('/reports/stock/avg_med_costs_per_patient', stockReports.stockAvgMedCostsPerPatientReport);
   app.get('/reports/stock/exit', stockReports.stockExitReport);
