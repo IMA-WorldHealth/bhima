@@ -2653,42 +2653,44 @@ CREATE TABLE `odk_app_user` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `shipper`;
-CREATE TABLE `shipper` {
-  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `shipper` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`)
-} ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+ ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `shipment_status`;
-CREATE TABLE `shipment_status` {
-  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `shipment_status` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `translation_key` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`)
-} ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `shipment`;
 CREATE TABLE `shipment` (
-  `uuid` BINARY(16) NOT NULL,
-  `reference` INT(11) UNSIGNED NOT NULL,
-  `name` VARCHAR(100) NOT NULL,
-  `description` TEXT NULL,
-  `note` TEXT NULL,
-  `shipper_id` SMALLINT(5) NULL,
-  `requisition_uuid` BINARY(16),
-  `origin_depot_uuid` BINARY(16),
-  `current_depot_uuid` BINARY(16),
-  `destination_depot_uuid` BINARY(16),
+  `uuid`                      BINARY(16) NOT NULL,
+  `project_id`                SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`                 INT(11) UNSIGNED NOT NULL,
+  `name`                      VARCHAR(100) NOT NULL,
+  `description`               TEXT NULL,
+  `note`                      TEXT NULL,
+  `shipper_id`                SMALLINT(5) UNSIGNED NOT NULL,
+  `requisition_uuid`          BINARY(16),
+  `origin_depot_uuid`         BINARY(16),
+  `current_depot_uuid`        BINARY(16),
+  `destination_depot_uuid`    BINARY(16),
   `anticipated_delivery_date` DATE,
-  `date_sent` DATE,
-  `date_delivered` DATE,
-  `receiver` VARCHAR(100),
-  `status_id` SMALLINT(5),
-  `created_by` SMALLINT(5) UNSIGNED NOT NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_by` SMALLINT(5) UNSIGNED NULL,
-  `updated_at` TIMESTAMP NULL,
+  `date_sent`                 DATE,
+  `date_delivered`            DATE,
+  `receiver`                  VARCHAR(100),
+  `status_id`                 SMALLINT(5) UNSIGNED NOT NULL,
+  `created_by`                SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by`                SMALLINT(5) UNSIGNED NULL,
+  `updated_at`                TIMESTAMP NULL,
   PRIMARY KEY (`uuid`),
+  CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   CONSTRAINT `shipment__shipper` FOREIGN KEY (`shipper_id`) REFERENCES `shipper` (`id`),
   CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `requisition` (`uuid`),
   CONSTRAINT `shipment__origin_depot` FOREIGN KEY (`origin_depot_uuid`) REFERENCES `depot` (`uuid`),
@@ -2707,8 +2709,8 @@ CREATE TABLE `shipment_item` (
   `date_packed` DATE,
   `date_sent` DATE,
   `date_delivered` DATE,
-  `quantity_sent` INT(11),
-  `quantity_delivered` INT(11),
+  `quantity_sent` INT(11) UNSIGNED DEFAULT 0,
+  `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
   `note` TEXT NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
