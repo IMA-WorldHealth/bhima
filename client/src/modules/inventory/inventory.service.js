@@ -121,39 +121,43 @@ function InventoryService(
   inventoryFilters.registerCustomFilters([{
     key : 'group_uuid',
     label : 'FORM.LABELS.GROUP',
-  },
-  {
+  }, {
     key : 'code',
     label : 'FORM.LABELS.CODE',
-  },
-  {
+  }, {
     key : 'consumable',
     label : 'FORM.LABELS.CONSUMABLE',
     valueFilter : 'boolean',
-  },
-  {
+  }, {
     key : 'locked',
     label : 'FORM.LABELS.LOCKED',
-  },
-  {
+  }, {
     key : 'uuid',
     label : 'FORM.LABELS.LABEL',
-  },
-  {
+  }, {
     key : 'text',
     label : 'FORM.LABELS.LABEL',
-  },
-  {
+  }, {
     key : 'type_id',
     label : 'FORM.LABELS.TYPE',
-  },
-  {
+  }, {
     key : 'price',
     label : 'FORM.LABELS.PRICE',
-  },
-  {
+  }, {
     key : 'tags',
     label : 'TAG.TAGS',
+  }, {
+    key : 'is_asset',
+    label : 'FORM.LABELS.ASSET',
+  }, {
+    key : 'external_reference_number',
+    label : 'FORM.LABELS.REFERENCE_NUMBER',
+  }, {
+    key : 'manufacturer_brand',
+    label : 'FORM.LABELS.MANUFACTURER_BRAND',
+  }, {
+    key : 'manufacturer_model',
+    label : 'FORM.LABELS.MANUFACTURER_MODEL',
   },
   ]);
 
