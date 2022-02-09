@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const { uuid } = require('../../lib/util');
@@ -13,7 +14,7 @@ exports.writeStockExitShipment = (
   const SHIPMENT_UUID = db.bid(uuid());
   const SHIPMENT_LABEL = 'Depot Exit Shipment';
   const TRANSIT_SHIPPER = 1;
-  const TRANSIT_STATUS = 4;
+  const SHIPMENT_STATUS = 4;
   const shipment = {
     uuid : SHIPMENT_UUID,
     name : SHIPMENT_LABEL,
@@ -25,8 +26,9 @@ exports.writeStockExitShipment = (
     destination_depot_uuid : to,
     anticipated_delivery_date : document.date,
     date_sent : document.date,
-    status_id : TRANSIT_STATUS,
+    status_id : SHIPMENT_STATUS,
     created_by : document.user,
+    document_uuid : db.bid(document.uuid),
   };
   transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
 
@@ -40,6 +42,60 @@ exports.writeStockExitShipment = (
     };
     transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
   });
+};
+
+exports.writeStockEntryShipment = async (
+  document,
+  parameters,
+  transaction,
+) => {
+  const SHIPMENT_IN_TRANSIT = 4;
+  const SHIPMENT_COMPLETE = 2;
+  const SHIPMENT_PARTIAL = 3;
+
+  // update shipment items
+  parameters.lots.forEach(lot => {
+    const updateShipmentItem = `
+      UPDATE shipment_item shi
+      JOIN shipment sh ON sh.uuid = shi.shipment_uuid 
+      SET
+        shi.quantity_delivered = shi.quantity_delivered + ?,
+        shi.date_delivered = ?,
+        sh.date_delivered = ?
+      WHERE sh.status_id = ? AND sh.document_uuid = ? AND shi.lot_uuid = ?
+    `;
+    const updateParameters = [
+      lot.quantity || 0,
+      document.date,
+      document.date,
+      SHIPMENT_IN_TRANSIT,
+      db.bid(document.uuid),
+      db.bid(lot.uuid),
+    ];
+    transaction.addQuery(updateShipmentItem, updateParameters);
+  });
+
+  // update shipment status
+  const queryShipmentItems = `
+    SELECT 
+      BUID(shi.uuid) uuid, BUID(shi.lot_uuid) lot_uuid,
+      shi.quantity_sent, shi.quantity_delivered
+    FROM shipment sh
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    WHERE sh.status_id = ? AND sh.document_uuid = ?
+  `;
+  const resultShipmentItems = await db.exec(queryShipmentItems, [SHIPMENT_IN_TRANSIT, db.bid(document.uuid)]);
+  const lotShipment = _.groupBy(parameters.lots, 'uuid');
+  const allCompleted = resultShipmentItems.every(item => {
+    const incomingQuantity = lotShipment[item.lot_uuid] ? lotShipment[item.lot_uuid].quantity : 0;
+    const quantity = item.quantity_delivered + incomingQuantity;
+    return item.quantity_sent === quantity;
+  });
+  const updateShipmentStatus = `
+    UPDATE shipment SET status_id = ? WHERE document_uuid = ?;
+  `;
+  const newStatus = allCompleted ? SHIPMENT_COMPLETE : SHIPMENT_PARTIAL;
+  transaction.addQuery(updateShipmentStatus, [newStatus, db.bid(document.uuid)]);
 };
 
 exports.listInTransitInventories = async (req, res, next) => {
