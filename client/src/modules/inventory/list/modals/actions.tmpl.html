@@ -44,6 +44,58 @@
       </div>
     </div>
 
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="is_asset" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.is_asset">
+        <strong><span translate>INVENTORY.IS_IT_ASSET</span></strong>
+      </label>
+    </div>
+
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.external_reference_number.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER</label>
+      <input
+        ng-model="$ctrl.item.external_reference_number"
+        class="form-control"
+        type="text"
+        name="external_reference_number"
+        autocomplete="off"
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.REFERENCE_NUMBER' }">
+      <div class="help-block" ng-messages="ActionForm.external_reference_number.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.manufacturer_brand.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.MANUFACTURER_BRAND</label>
+      <input
+        ng-model="$ctrl.item.manufacturer_brand"
+        class="form-control"
+        type="text"
+        name="manufacturer_brand"
+        autocomplete="off"
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.MANUFACTURER_BRAND' }">
+      <div class="help-block" ng-messages="ActionForm.manufacturer_brand.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.manufacturer_model.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.MANUFACTURER_MODEL</label>
+      <input
+        ng-model="$ctrl.item.manufacturer_model"
+        class="form-control"
+        type="text"
+        name="manufacturer_model"
+        autocomplete="off"
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.MANUFACTURER_MODEL' }">
+      <div class="help-block" ng-messages="ActionForm.manufacturer_model.$error" ng-show="ActionForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
     <div class="checkbox" ng-if="$ctrl.isUpdateState">
       <label>
         <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.locked">
