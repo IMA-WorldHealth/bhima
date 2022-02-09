@@ -1,6 +1,6 @@
 <div ng-if="!row.groupHeader" class="ui-grid-cell-contents">
-  <span ng-if="row.entity.shipment_status !== grid.appScope.bhConstants.shipmentStatus.IN_TRANSIT">{{row.entity.depot_text}}</span>
-  <span ng-if="row.entity.shipment_status === grid.appScope.bhConstants.shipmentStatus.IN_TRANSIT">
+  <span ng-if="!grid.appScope.isInTransitOrPartial(row.entity.shipment_status)">{{row.entity.depot_text}}</span>
+  <span ng-if="grid.appScope.isInTransitOrPartial(row.entity.shipment_status)">
     <i class="fa fa-truck"></i> <span translate>ASSET.STATUS.IN_TRANSIT</span> <i class="fa fa-long-arrow-right"></i> {{row.entity.destination}}
   </span>
 </div>

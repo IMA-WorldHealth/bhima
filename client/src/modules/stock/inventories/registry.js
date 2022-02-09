@@ -191,6 +191,11 @@ function StockInventoriesController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
 
+  // shipment in transit
+  vm.isInTransitOrPartial = status => {
+    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
+  };
+
   // select group
   vm.selectGroup = (group) => {
     if (!group) { return; }
@@ -277,7 +282,6 @@ function StockInventoriesController(
       })
       .then(rows => {
         vm.gridOptions.data = glb.inventories.concat(rows);
-        console.log('data : ', vm.gridOptions.data);
         vm.grouping.unfoldAllGroups();
       })
       .catch(Notify.handleError)
