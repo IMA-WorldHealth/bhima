@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 StockExitFormService.$inject = [
   'Store', 'AppCache', 'SessionService', '$timeout',
-  'bhConstants', 'moment', 'DepotService', '$q', 'Pool', 'LotService',
+  'bhConstants', 'moment', 'DepotService', '$q', 'Pool', 'LotItemService',
 ];
 
 /**
@@ -13,6 +13,7 @@ StockExitFormService.$inject = [
  * This form powers the stock exit form in BHIMA.
  */
 function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, moment, Depots, $q, Pool, Lot) {
+
   /**
    * @constructor
    */
@@ -263,46 +264,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
   }
 
   /**
-   * @method hasDuplicatedLots
-   *
-   * @description
-   * This method catch duplicated row and emit notification on the row
-   */
-  StockExitForm.prototype.hasDuplicatedLots = function hasDuplicatedLots() {
-    let doublonDetectedLine;
-
-    if (findDuplicatedLots(this.store)) {
-      // notify on the concerned row
-      errorLineHighlight(doublonDetectedLine, this.store);
-      return true;
-    }
-
-    // update the list of selected lots
-    function refreshSelectedLotsList(store) {
-      return store.data
-        .filter(item => item.lot && item.lot.uuid)
-        .map(item => item.lot.uuid);
-    }
-
-    // detect the presence of duplicated lots
-    function findDuplicatedLots(store) {
-      let doubleIndex;
-      const selectedLots = refreshSelectedLotsList(store);
-
-      const doublonDetected = selectedLots.some((lot, idx) => {
-        const hasDoubles = selectedLots.lastIndexOf(lot) !== idx;
-        if (hasDoubles) { doubleIndex = idx; }
-        return hasDoubles;
-      });
-
-      doublonDetectedLine = doubleIndex;
-      return doublonDetected;
-    }
-
-    return false;
-  };
-
-  /**
    * @method validate
    *
    * @description
@@ -316,17 +277,21 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    */
   StockExitForm.prototype.validate = function validate() {
 
-    // run the checks on the lot contents
-    const hasValidLots = this.store.data.every(item => item.validate())
-      && this.store.data.length > 0;
-
     // checks the form details
     const hasRequiredDetails = this.details.depot_uuid
       && this.details.date
       && this.details.exit_type;
 
-    // check specifically for expired lots
-    const hasExpiredLots = this.store.data.every(item => item.isExpired(this.details.date));
+    // run the checks on the lot contents
+    const hasValidLots = this.store.data.every(item => item.validate(this.details.date))
+      && this.store.data.length > 0;
+
+    // gather errors into a flat array
+    this._errors = this.store.data
+      .flatMap(row => row._errors)
+      .filter(err => err);
+
+    const hasDestination = !!this.details.entity_uuid;
 
     // stock losses do not need a destination
     if (this.details.exit_type !== 'loss') {
@@ -335,30 +300,15 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
         // return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
       }
 
-      if (!this.details.entity_uuid) {
+      if (!hasDestination) {
       // return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
 
       }
 
     }
 
-    // check for unique lots
-
-    // NOTE(@jniles) - expired lots are only relevant if
-
+    // NOTE(@jniles) - expired lots are only relevant if not in loss.
     return hasValidLots && hasRequiredDetails;
-  };
-
-  /**
-   * @method hasValidLots
-   *
-   * @description
-   * Check if lots are defined and valid
-   */
-  StockExitForm.prototype.hasValidLots = function hasValidLots() {
-    return this.store.data.every((item) => {
-      return item.quantity >= 0 && item.lot && item.lot.uuid;
-    });
   };
 
   /**
