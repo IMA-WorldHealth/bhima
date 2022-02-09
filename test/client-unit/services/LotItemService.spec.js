@@ -1,4 +1,4 @@
-/* global inject, expect */
+/* global inject, expect, chai */
 describe('LotItemService', () => {
 
   let Lot;
@@ -13,6 +13,7 @@ describe('LotItemService', () => {
     expiration_date : '2023-04-29T23:00:00.000Z',
     is_expired : 0,
     label : 'ME33',
+    unit : 'Ces',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -25,6 +26,7 @@ describe('LotItemService', () => {
     expiration_date : '2022-06-06T23:00:00.000Z',
     is_expired : 0,
     label : '9G15',
+    unit : 'Ces',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -37,6 +39,7 @@ describe('LotItemService', () => {
     expiration_date : '2023-03-06T23:00:00.000Z',
     is_expired : 0,
     label : '200911',
+    unit : 'ml',
     tracking_expiration : 1,
     tracking_consumption : 1,
   }, {
@@ -49,27 +52,36 @@ describe('LotItemService', () => {
     expiration_date : '2025-10-29T23:00:00.000Z',
     is_expired : 1,
     label : '2010004',
+    unit : 'piece',
     tracking_expiration : 0,
     tracking_consumption : 1,
   }];
 
-  beforeEach(module('bhima.services'));
+  beforeEach(module('bhima.services', 'pascalprecht.translate'));
 
   beforeEach(inject(_LotItemService_ => {
     Lot = _LotItemService_;
   }));
 
-  it('#constructor creates a new lot that does not pass validation', () => {
+  it('#constructor() creates a new lot that passes validation', () => {
     const lot = new Lot(dataset[0]);
 
-    expect(lot.uuid).to.have.length(36);
+    expect(lot.uuid).to.have.lengthOf(36);
     expect(lot.validate()).to.equal(true);
     expect(lot.isExpired()).to.equal(false);
     expect(lot.hasLotInformation()).to.equal(true);
     expect(lot.hasInventoryInformation()).to.equal(true);
+
     expect(lot.isEmpty()).to.equal(false);
     expect(lot.isAsset()).to.equal(false);
 
+    expect(lot._initialised).to.equal(true);
+  });
+
+  it('#constructor() calls #configure()', () => {
+    const spy = chai.spy.on(Lot.prototype, 'configure');
+    const lot = new Lot(dataset[0]);
+    expect(spy).to.have.been.called();
     expect(lot._initialised).to.equal(true);
   });
 
@@ -176,6 +188,8 @@ describe('LotItemService', () => {
     const lot = new Lot();
 
     expect(lot.hasLotInformation()).to.equal(false);
+    expect(lot._errors).to.have.lengthOf(1);
+
     lot.configure(dataset[2]);
     expect(lot.hasLotInformation()).to.equal(true);
   });
@@ -184,8 +198,10 @@ describe('LotItemService', () => {
     const lot = new Lot();
 
     expect(lot.hasInventoryInformation()).to.equal(false);
+    expect(lot._errors).to.have.lengthOf(1);
     lot.configure(dataset[2]);
     expect(lot.hasInventoryInformation()).to.equal(true);
+    expect(lot._errors).to.have.lengthOf(0);
   });
 
   it('#validate() returns true for a valid inventory', () => {
@@ -197,6 +213,7 @@ describe('LotItemService', () => {
     expect(lot.isEmpty()).to.equal(false);
 
     expect(lot.validate()).to.equal(true);
+    expect(lot._errors).to.have.lengthOf(0);
   });
 
 });
