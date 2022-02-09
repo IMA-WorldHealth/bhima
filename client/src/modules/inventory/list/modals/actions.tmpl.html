@@ -51,7 +51,7 @@
       </label>
     </div>
 
-    <div class="form-group"
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.external_reference_number.$invalid }">
       <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER</label>
       <input
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <div class="form-group"
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.manufacturer_brand.$invalid }">
       <label class="control-label" translate>FORM.LABELS.MANUFACTURER_BRAND</label>
       <input
@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    <div class="form-group"
+    <div ng-if="$ctrl.item.is_asset" class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.manufacturer_model.$invalid }">
       <label class="control-label" translate>FORM.LABELS.MANUFACTURER_MODEL</label>
       <input
