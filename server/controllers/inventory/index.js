@@ -425,9 +425,6 @@ function countInventoryGroups(req, res, next) {
  * Create a new inventory types
  */
 function createInventoryTypes(req, res, next) {
-  console.log('REQ.BODYYYYYYYYyyyyyyyyyyyyY');
-  console.log(req.body);
-
   types.create(req.body)
     .then((id) => {
       res.status(201).json({ id });
