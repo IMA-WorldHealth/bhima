@@ -677,6 +677,11 @@ async function depotMovement(document, params, metadata) {
 
   // update the quantity in stock as needed
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
+
+  if (!isExit) {
+    await shipment.updateShipmentStatusAfterEntry(document);
+  }
+
   return result;
 }
 
