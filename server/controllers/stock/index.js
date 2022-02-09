@@ -663,6 +663,11 @@ async function depotMovement(document, params, metadata) {
     shipment.writeStockExitShipment(metadata.project.id, depotUuid, entityUuid, document, parameters, transaction);
   }
 
+  if (!isExit) {
+    // update shipment details for the entry movement
+    await shipment.writeStockEntryShipment(document, parameters, transaction);
+  }
+
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
