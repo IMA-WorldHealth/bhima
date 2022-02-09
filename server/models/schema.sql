@@ -2695,6 +2695,7 @@ CREATE TABLE `shipment` (
   `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_by`                SMALLINT(5) UNSIGNED NULL,
   `updated_at`                TIMESTAMP NULL,
+  `document_uuid`             BINARY(16) NULL, /* stock exit document_uuid */
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   CONSTRAINT `shipment__shipper` FOREIGN KEY (`shipper_id`) REFERENCES `shipper` (`id`),
@@ -2709,15 +2710,14 @@ CREATE TABLE `shipment` (
 
 DROP TABLE IF EXISTS `shipment_item`;
 CREATE TABLE `shipment_item` (
-  `uuid` BINARY(16) NOT NULL,
-  `shipment_uuid` BINARY(16) NOT NULL,
-  `lot_uuid` BINARY(16) NOT NULL,
-  `date_packed` DATE,
-  `date_sent` DATE,
-  `date_delivered` DATE,
-  `quantity_sent` INT(11) UNSIGNED DEFAULT 0,
+  `uuid`               BINARY(16) NOT NULL,
+  `shipment_uuid`      BINARY(16) NOT NULL,
+  `lot_uuid`           BINARY(16) NOT NULL,
+  `date_packed`        DATE,
+  `date_sent`          DATE,
+  `date_delivered`     DATE,
+  `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
-  `note` TEXT NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
