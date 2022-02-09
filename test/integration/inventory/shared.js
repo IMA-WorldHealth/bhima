@@ -34,6 +34,8 @@ const inventoryType = {
 
 const updateType = {
   text : '[Test] Article Chirurgie',
+  description : 'Description de l\'article chirurgie',
+  is_predefined : 0,
 };
 
 const inventoryUnit = {

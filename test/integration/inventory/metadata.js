@@ -19,6 +19,10 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     consumable : 0,
     sellable : 1,
     importance : 2,
+    is_asset : 1,
+    external_reference_number : 'BHIMA_O1',
+    manufacturer_brand : 'BHIMA',
+    manufacturer_model : '2.X',
   };
 
   const inventoryUuid = 'f6556e72-9d05-4799-8cbd-0a03b1810185';
@@ -29,6 +33,8 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     default_quantity : 12,
     group_uuid : shared.inventoryGroup.uuid,
     consumable : 0,
+    manufacturer_brand : 'HTML',
+    manufacturer_model : '2.',
   };
 
   const metadataSearch = {
@@ -66,6 +72,8 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
         expect(res.body.default_quantity).to.be.equal(metadataUpdate.default_quantity);
         expect(res.body.group_uuid).to.be.equal(metadataUpdate.group_uuid);
         expect(res.body.consumable).to.be.equal(metadataUpdate.consumable);
+        expect(res.body.manufacturer_brand).to.be.equal(metadataUpdate.manufacturer_brand);
+        expect(res.body.manufacturer_model).to.be.equal(metadataUpdate.manufacturer_model);
       })
       .catch(helpers.handler);
   });
