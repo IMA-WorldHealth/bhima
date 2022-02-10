@@ -209,6 +209,7 @@
     "QUANTITY_RECEIVED"   : "Quantité reçue",
     "QUANTITY_REMAINING" : "Quantité restante",
     "QUANTITY_SENT"       : "Quantité envoyée",
+    "TOTAL_QUANTITY_RECEIVED" : "Total reçue",
     "SERVICE_DISTRIBUTION" : "Distribution au Service",
     "TRANSFER_AVAILABLE" : "Disponible",
     "TRANSFER_RECEIVED" : "Reçu",
