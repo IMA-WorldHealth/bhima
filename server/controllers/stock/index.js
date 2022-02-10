@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-
 /**
  * @module stock
  *
