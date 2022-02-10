@@ -52,6 +52,7 @@
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY_SENT'}}</th>
         <th>{{translate 'STOCK.QUANTITY_RECEIVED'}}</th>
+        <th>{{translate 'STOCK.TOTAL_QUANTITY_RECEIVED'}}</th>
         <th>{{translate 'STOCK.QUANTITY_DIFFERENCE'}}</th>
         <th>{{translate 'STOCK.UNIT_COST'}}</th>
         <th class="text-center">{{translate 'TABLE.COLUMNS.TOTAL_COST'}}</th>
@@ -67,6 +68,7 @@
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity_sent}}</td>
           <td class="text-right">{{quantity}}</td>
+          <td class="text-right">{{total_quantity}}</td>
           <td class="text-right">{{quantity_difference}}</td>
           <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id}}</td>
           <td class="text-right">{{currency total ../metadata.enterprise.currency_id}}</td>
