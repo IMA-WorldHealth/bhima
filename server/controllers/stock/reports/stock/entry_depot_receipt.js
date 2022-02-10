@@ -27,7 +27,8 @@ function stockEntryDepotReceipt(documentUuid, session, options) {
     });
 }
 
-function combineByLots(data) {
+function combineByLots(rows) {
+  const data = _.orderBy(rows, 'date');
   const lots = _.groupBy(data, 'uuid');
   return _.keys(lots).map(key => {
     return (lots[key] || []).reduce((prev, curr) => {
