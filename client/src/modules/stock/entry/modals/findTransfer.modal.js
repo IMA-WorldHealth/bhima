@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 StockFindTransferModalController.$inject = [
   '$uibModalInstance', 'StockService', 'NotifyService', 'uiGridConstants',
-  'GridFilteringService', 'data', 'bhConstants',
+  'GridFilteringService', 'data', 'bhConstants', '$translate',
 ];
 
 function StockFindTransferModalController(
   Instance, StockService, Notify,
-  uiGridConstants, Filtering, data, bhConstants,
+  uiGridConstants, Filtering, data, bhConstants, $translate,
 ) {
   const vm = this;
 
@@ -122,11 +122,38 @@ function StockFindTransferModalController(
 
     if (!selectedRow) { return 0; }
 
-    return StockService.movements.read(null, {
+    const query = {
       document_uuid : selectedRow.document_uuid,
-      is_exit : 1,
-    })
-      .then((transfers) => {
+    };
+    if (!vm.filterReceived) {
+      // Note: If we are using partial transfers, we cannot filter out is_exit=1
+      // because we need both is_exit and !is_exit items to adjust the quantities.
+      query.is_exit = 1;
+    }
+
+    let transfers = null;
+
+    return StockService.movements.read(null, query)
+      .then((rawTransfers) => {
+        transfers = rawTransfers;
+        if (vm.filterReceived) {
+          // If we are using a transfer that has already been partially received,
+          // we need to adjust the quantities appropriately.
+          const exitTransfers = rawTransfers.filter(item => item.is_exit);
+          exitTransfers.forEach(item => {
+            const previousTransfers = rawTransfers.filter(trn => !trn.is_exit && trn.uuid === item.uuid);
+            if (previousTransfers.length > 0) {
+              previousTransfers.forEach(pt => {
+                item.quantity -= pt.quantity;
+              });
+            }
+          });
+          transfers = exitTransfers.filter(item => item.quantity > 0);
+          if (transfers.length === 0) {
+            // Complain if we try to use a transfer that has already been completed
+            Notify.warn($translate.instant('STOCK.TRANSFER_COMPLETED'), 6000);
+          }
+        }
         Instance.close(transfers);
       })
       .catch(Notify.errorHandler);
