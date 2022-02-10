@@ -19,11 +19,24 @@ function stockEntryDepotReceipt(documentUuid, session, options) {
 
   return getDepotMovement(documentUuid, session.enterprise, false)
     .then(data => {
+      data.rows = combineByLots(data.rows);
       const { key } = identifiers.STOCK_ENTRY;
       data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
       data.entry.details.barcode = barcode.generate(key, data.entry.details.document_uuid);
       return report.render(data);
     });
+}
+
+function combineByLots(data) {
+  const lots = _.groupBy(data, 'uuid');
+  return _.keys(lots).map(key => {
+    return (lots[key] || []).reduce((prev, curr) => {
+      curr.total_quantity = curr.quantity + prev.total_quantity;
+      curr.quantity_difference = curr.quantity_sent - curr.total_quantity;
+      curr.total = curr.total_quantity * curr.unit_cost;
+      return curr;
+    }, { total_quantity : 0 });
+  });
 }
 
 module.exports = stockEntryDepotReceipt;
