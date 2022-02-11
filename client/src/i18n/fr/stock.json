@@ -211,6 +211,7 @@
     "QUANTITY_SENT"       : "Quantité envoyée",
     "SERVICE_DISTRIBUTION" : "Distribution au Service",
     "TRANSFER_AVAILABLE" : "Disponible",
+    "TRANSFER_COMPLETED" : "Le transfert était déjà terminé !",
     "TRANSFER_RECEIVED" : "Reçu",
     "RECEIPT"         : {
       "ADJUSTMENT"     : "Ajustement",
