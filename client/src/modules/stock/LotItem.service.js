@@ -86,13 +86,20 @@ function LotItemService(uuid, $translate) {
    * register as expired.
    */
   Lot.prototype.validate = function validate(date) {
-    return this.hasInventoryInformation()
-      && this.hasLotInformation()
-      && !this.isUnused()
-      && !this.isExpired(date);
-  };
 
-  // Lot.prototype.
+    // we run all these individually to fill out the _errors conditions
+    const hasInventory = this.hasInventoryInformation();
+    const hasLot = this.hasLotInformation();
+    const isPositive = this.hasPositiveQuantity();
+    const isUsed = !this.isUnused();
+    const isNotExpired = !this.isExpired(date);
+
+    return hasInventory
+      && hasLot
+      && isPositive
+      && isUsed
+      && isNotExpired;
+  };
 
   // checks if a value is a uuid
   function isUuid(uid) {

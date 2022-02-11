@@ -204,6 +204,92 @@ describe('LotItemService', () => {
     expect(lot._errors).to.have.lengthOf(0);
   });
 
+  it('#isUnused() returns true stock available but unused', () => {
+    const lot = new Lot({ ...dataset[1] });
+    expect(lot.isUnused()).to.equal(false);
+    lot.quantity = 0;
+    expect(lot.isUnused()).to.equal(true);
+    lot.quantity = 1;
+    expect(lot.isUnused()).to.equal(false);
+  });
+
+  it('#hasPositiveQuantity() returns true if the quantity is strictly greater than 0', () => {
+    const lot = new Lot({ ...dataset[1] });
+    expect(lot.hasPositiveQuantity()).to.equal(true);
+    lot.quantity = 0;
+    expect(lot.hasPositiveQuantity()).to.equal(false);
+    lot.quantity = 1;
+    expect(lot.hasPositiveQuantity()).to.equal(true);
+    lot.quantity = -1;
+    expect(lot.hasPositiveQuantity()).to.equal(false);
+
+    // note that there is no upper-bound
+    lot.quantity = Infinity;
+    expect(lot.hasPositiveQuantity()).to.equal(true);
+  });
+
+  it('#hasEnoughQuantityAvailable() returns true if quantity less than total available', () => {
+    const lot = new Lot({ ...dataset[1] });
+
+    const initialQuantity = lot.quantity;
+    expect(lot.hasEnoughQuantityAvailable()).to.equal(true);
+
+    // set quantity to 0
+    lot.quantity = 0;
+    expect(lot.hasEnoughQuantityAvailable()).to.equal(true);
+
+    // set quantity to max possible
+    lot.quantity = initialQuantity;
+    expect(lot.hasEnoughQuantityAvailable()).to.equal(true);
+
+    // set quantity to one over max possible
+    lot.quantity = initialQuantity + 1;
+    expect(lot.hasEnoughQuantityAvailable()).to.equal(false);
+  });
+
+  it('#errors() returns a list of error codes', () => {
+    const example = { ...dataset[0] };
+    delete example.is_expired;
+
+    const futureDate = new Date('2222-01-01');
+    const lot = new Lot(example);
+
+    expect(lot.errors()).to.have.lengthOf(0);
+
+    // set a past date as the comparison to determine expiration
+    expect(lot.isExpired(futureDate)).to.equal(true);
+    expect(lot.errors()).to.deep.equal(['STOCK.ERRORS.LOT_EXPIRED']);
+
+    // set an invalid quantity
+    lot.quantity = -1;
+    expect(lot.hasPositiveQuantity()).to.equal(false);
+    expect(lot.errors()).to.deep.equal(['STOCK.ERRORS.LOT_EXPIRED', 'STOCK.ERRORS.LOT_NEGATIVE_QUANTITY']);
+
+    // recompute the expiration date to leave only a single error
+    expect(lot.isExpired()).to.equal(false);
+    expect(lot.errors()).to.deep.equal(['STOCK.ERRORS.LOT_NEGATIVE_QUANTITY']);
+
+    // restore quantity and recompute validation.
+    lot.quantity = 1;
+    expect(lot.validate()).to.equal(true);
+    expect(lot.errors()).to.deep.equal([]);
+
+    // screw everything up and check error codes
+    lot.quantity = -10;
+    delete lot.inventory_uuid;
+    delete lot.label;
+
+    // these error codes are stored in a Set() so they are returned
+    // in the order they are inserted.
+    expect(lot.validate(futureDate)).to.equal(false);
+    expect(lot.errors()).to.deep.equal([
+      'STOCK.ERRORS.LOT_MISSING_INVENTORY_INFO',
+      'STOCK.ERRORS.LOT_MISSING_LOT_INFO',
+      'STOCK.ERRORS.LOT_NEGATIVE_QUANTITY',
+      'STOCK.ERRORS.LOT_EXPIRED',
+    ]);
+  });
+
   it('#validate() returns true for a valid inventory', () => {
     const lot = new Lot(dataset[1]);
 
