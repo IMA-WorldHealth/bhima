@@ -22,6 +22,7 @@ function StockInventoriesController(
   const cacheKey = 'stock-inventory-grid';
   const stockInventoryFilters = Stock.filter.inventory;
 
+  vm.bhConstants = bhConstants;
   vm.openBarcodeScanner = openBarcodeScanner;
   vm.openStockSheetReport = openStockSheetReport;
 
@@ -31,6 +32,7 @@ function StockInventoriesController(
     field            : 'depot_text',
     displayName      : 'STOCK.DEPOT',
     headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/inventories/templates/depot.cell.html',
   }, {
     field            : 'code',
     displayName      : 'STOCK.CODE',
@@ -161,6 +163,7 @@ function StockInventoriesController(
     fastWatch          : true,
     flatEntityAccess   : true,
     showGridFooter     : true,
+    rowTemplate        : 'modules/stock/inventories/templates/shipment.tmpl.html',
     onRegisterApi,
   };
 
@@ -187,6 +190,11 @@ function StockInventoriesController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
+
+  // shipment in transit
+  vm.isInTransitOrPartial = status => {
+    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
+  };
 
   // select group
   vm.selectGroup = (group) => {
@@ -253,6 +261,7 @@ function StockInventoriesController(
 
   // load stock lots in the grid
   function load(filters) {
+    const glb = {};
     vm.hasError = false;
     vm.loading = true;
 
@@ -268,8 +277,11 @@ function StockInventoriesController(
           row.status_translated = $translate.instant(Stock.statusLabelMap(row.status));
         });
 
-        vm.gridOptions.data = rows;
-
+        glb.inventories = rows;
+        return Stock.shipment.getInTransitInventories(filters);
+      })
+      .then(rows => {
+        vm.gridOptions.data = glb.inventories.concat(rows);
         vm.grouping.unfoldAllGroups();
       })
       .catch(Notify.handleError)

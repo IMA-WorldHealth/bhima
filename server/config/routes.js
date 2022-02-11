@@ -73,6 +73,7 @@ const inventoryReports = require('../controllers/inventory/reports');
 const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
 const stockSetting = require('../controllers/stock/setting');
+const shipment = require('../controllers/stock/shipment');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -849,6 +850,9 @@ exports.configure = function configure(app) {
   // stock settings API
   app.get('/stock/setting/:id?', stockSetting.list);
   app.put('/stock/setting/:id', stockSetting.update);
+
+  // stock shipment
+  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
 
   // stock reports API
   app.get('/reports/stock/avg_med_costs_per_patient', stockReports.stockAvgMedCostsPerPatientReport);

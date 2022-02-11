@@ -114,9 +114,21 @@ FOR EACH ROW BEGIN
   ON DUPLICATE KEY UPDATE uuid = NEW.document_uuid;
 END$$
 
--- Stock Requisition Triggers
-CALL add_column_if_missing("stock_requisition", "project_id", "SMALLINT(5) UNSIGNED NOT NULL AFTER `user_id`");
+-- Shipment Triggers
+-- the shipment reference is incremented based on the shipment uuid.
+CREATE TRIGGER shipment_reference BEFORE INSERT ON shipment
+FOR EACH ROW
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(sH.reference) + 1, 1)) FROM shipment sh WHERE sh.uuid <> NEW.uuid);$$
 
+-- compute the document map
+CREATE TRIGGER shipment_document_map AFTER INSERT ON shipment
+FOR EACH ROW BEGIN
+  INSERT INTO `document_map`
+    SELECT NEW.uuid, CONCAT_WS('.', 'SHIP', project.abbr, new.reference) FROM project WHERE project.id = NEW.project_id
+  ON DUPLICATE KEY UPDATE text = text;
+END$$
+
+-- Stock Requisition Triggers
 CREATE TRIGGER stock_requisition_reference BEFORE INSERT ON stock_requisition
 FOR EACH ROW
   SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(stock_requisition.reference) + 1, 1)) FROM stock_requisition  WHERE stock_requisition.project_id = new.project_id);$$
