@@ -192,6 +192,7 @@ async function report(req, res, next) {
     }
 
     data.totals = { totalDaysStockOut, totalDays, ratio : (100 * (totalDaysStockOut / totalDays)).toFixed(2) };
+    data.totals.colspan = data.header.length + 2;
     const result = await reporting.render(data);
     res.set(result.headers).send(result.report);
   } catch (e) {

@@ -80,14 +80,12 @@
 
           <tfoot>
             <tr>
-              <td colspan="{{headers.length}}"></td>
-              <td></td>
-              <th>{{translate "REPORT.RUMER.TOTAL_DAYS_OF_STOCK_OUT"}}</th>
-              <th class="text-right">{{totals.totalDaysStockOut}}</th>
-              <th>{{translate "REPORT.RUMER.TOTAL_DAYS"}}</th>
-              <th class="text-right">{{totals.totalDays}}</th>
-              <th>{{translate "REPORT.RUMER.RATIO"}}</th>
-              <th class="text-right">{{totals.ratio}}%</th>
+              <td class="text-right" colspan="{{totals.colspan}}">{{translate "REPORT.RUMER.TOTAL_DAYS_OF_STOCK_OUT"}}</td>
+              <td class="text-right">{{totals.totalDaysStockOut}}</td>
+              <td>{{translate "REPORT.RUMER.TOTAL_DAYS"}}</td>
+              <td class="text-right">{{totals.totalDays}}</td>
+              <td>{{translate "REPORT.RUMER.RATIO"}}</td>
+              <td class="text-right">{{totals.ratio}}%</td>
             </tr>
           </tfoot>
       </table>
