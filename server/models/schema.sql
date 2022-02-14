@@ -793,6 +793,10 @@ CREATE TABLE `inventory` (
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH' ,
+  `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
+  `reference_number` TEXT NULL,
+  `manufacturer_brand` TEXT NULL,
+  `manufacturer_model` TEXT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -830,11 +834,12 @@ CREATE TABLE `inventory_group` (
   KEY `donation_account` (`donation_account`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
 DROP TABLE IF EXISTS `inventory_type`;
 CREATE TABLE `inventory_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(30) NOT NULL,
+  `description` TEXT NULL,
+  `is_predefined` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_type_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

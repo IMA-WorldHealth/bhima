@@ -47,3 +47,20 @@ UPDATE unit SET `name` = 'Analysis of Cashbox', `key` = 'REPORT.ANALYSIS_AUX_CAS
  */
 INSERT IGNORE INTO unit VALUES
   (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER');
+
+ /*
+  * Issue: Asset Management - Inventory Changes #6348
+  * @author: lomamech
+  * @date: 2022-02-07
+  */
+CALL add_column_if_missing('inventory', 'is_asset', 'TINYINT(1) NOT NULL DEFAULT 0 AFTER `importance`');
+CALL add_column_if_missing('inventory', 'external_reference_number', 'TEXT NULL');
+CALL add_column_if_missing('inventory', 'manufacturer_brand', 'TEXT NULL');
+CALL add_column_if_missing('inventory', 'manufacturer_model', 'TEXT NULL');
+
+CALL add_column_if_missing('inventory_type', 'description', 'TEXT NULL');
+CALL add_column_if_missing('inventory_type', 'is_predefined', 'TINYINT(1) NOT NULL DEFAULT 0');
+
+ALTER TABLE `inventory_type`
+	CHANGE COLUMN `text` `text` VARCHAR(200) NOT NULL COLLATE AFTER `id`;
+

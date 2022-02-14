@@ -108,7 +108,6 @@ function TransactionTypeController($translate, TransactionType, Notify, Modal, u
     return transactionType;
   }
 
-
   function assignDescriptionTranslation(type) {
     type.descriptionLabel = $translate.instant(type.text);
     return type;

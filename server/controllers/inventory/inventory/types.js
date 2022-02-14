@@ -23,15 +23,15 @@ function details(identifier) {
   return getTypes(identifier);
 }
 
-
 /** create new inventory type */
 function create(record) {
-  const sql = 'INSERT INTO inventory_type (text) VALUES (?);';
+
+  const sql = 'INSERT INTO inventory_type (text, description) VALUES (?, ?);';
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
    */
-  return db.exec(sql, [record.text])
+  return db.exec(sql, [record.text, record.description])
     .then(row => row.insertId);
 }
 
@@ -51,7 +51,7 @@ function update(record, id) {
  * @param {string} uid the type id is optional
  */
 function getTypes(id) {
-  const sql = `SELECT id, text FROM inventory_type ${id ? ' WHERE id = ?' : ''};`;
+  const sql = `SELECT id, text, description, is_predefined FROM inventory_type ${id ? ' WHERE id = ?' : ''};`;
   return db.exec(sql, [id]);
 }
 
