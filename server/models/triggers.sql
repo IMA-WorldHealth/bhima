@@ -118,7 +118,7 @@ END$$
 -- the shipment reference is incremented based on the shipment uuid.
 CREATE TRIGGER shipment_reference BEFORE INSERT ON shipment
 FOR EACH ROW
-  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(sH.reference) + 1, 1)) FROM shipment sh WHERE sh.uuid <> NEW.uuid);$$
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(sh.reference) + 1, 1)) FROM shipment sh WHERE sh.uuid <> NEW.uuid);$$
 
 -- compute the document map
 CREATE TRIGGER shipment_document_map AFTER INSERT ON shipment
@@ -137,6 +137,28 @@ CREATE TRIGGER stock_requisition_document_map AFTER INSERT ON stock_requisition
 FOR EACH ROW BEGIN
   INSERT INTO document_map
     SELECT new.uuid, CONCAT_WS('.', 'SREQ', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
+END$$
+
+-- location triggered after insert on depot
+CREATE TRIGGER insert_location_for_depot AFTER INSERT ON depot 
+FOR EACH ROW BEGIN
+  INSERT INTO `location`
+    SELECT d.uuid, d.text FROM depot d
+  ON DUPLICATE KEY UPDATE name = name;
+END$$
+
+-- location triggered after update on depot
+CREATE TRIGGER update_location_for_depot AFTER UPDATE ON depot 
+FOR EACH ROW BEGIN
+  IF OLD.text <> NEW.text THEN
+    UPDATE `location` SET `name` = NEW.text WHERE uuid = OLD.uuid;
+  END IF;
+END$$
+
+-- location triggered after delete on depot
+CREATE TRIGGER delete_location_for_depot AFTER DELETE ON depot 
+FOR EACH ROW BEGIN
+  DELETE FROM `location` WHERE uuid = OLD.uuid;
 END$$
 
 DELIMITER ;
