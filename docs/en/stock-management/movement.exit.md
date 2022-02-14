@@ -2,8 +2,8 @@
 
 # Stock Exit
 
-Any transfer of stock from a depot is a stock exit in BHIMA. The exit of stock
-concerns a stock pharmacy as well as a dispensing pharmacies.
+Any movement of stock out of a depot is a stock "exit" in BHIMA. Stock exits
+can happen from any depot, including the stock and dispensing pharmacies.
 
  - **Movements of stock out of the stock pharmacies or depots** fall into the
    following cases:
@@ -221,5 +221,6 @@ like.
 
 
 [^1]: Stock exits to patients and services are _consumptions_ and influence
-the Average Monthly Consumption (AMC).  For more information, see the
+the Average Monthly Consumption (AMC).  For more information, see the 
+[Average Monthly Consumption](/.average-monthly-consumption.md) page and the
 [Stock Settings Page](./stock.settings.md).

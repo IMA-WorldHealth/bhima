@@ -291,7 +291,8 @@ You should see the entry form like this:
 <img src="./images/entry-transfer-form.png" alt="Stock Entry by Transfer Form" width="800">
 
 - Note that you might not see all four sources (Purchase, Integration,
-  Donation, Transfer) depending on how the Depot was configured.
+  Donation, Transfer) depending on how the Depot was configured.  See 
+  [Depot Management](/.depot.md) for more information.
 
 - At this point, you may click on the blue "Lot" link on each entry line to
   update or correct the Lot identifier, quantity, and expiration date based
