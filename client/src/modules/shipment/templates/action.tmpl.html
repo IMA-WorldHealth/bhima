@@ -1,0 +1,65 @@
+<div class="ui-grid-cell-contents text-center" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.text }}">
+  <a uib-dropdown-toggle href>
+    <span data-action="open-dropdown-menu" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
+    <li>
+      <a data-method="edit-record" ng-click="grid.appScope.showPackingList(row.entity)" href>
+        <i class="fa fa-newspaper-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-record" ng-click="grid.appScope.showPackingList(row.entity)" href>
+        <i class="fa fa-cube"></i> <span translate>SHIPMENT.PACKING_LIST</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.updateLocation(row.entity)" href>
+        <span class="">
+          <i class="fa fa-map-marker"></i> <span translate>SHIPMENT.UPDATE_LOCATION</span>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
+        <span class="">
+          <i class="fa fa-dot-circle-o"></i> <span translate>SHIPMENT.UPDATE_STATUS</span>
+        </span>
+      </a>
+    </li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
+        <span class="">
+          <i class="fa fa-cube"></i> <span translate>SHIPMENT.UPDATE_PACKING_LIST</span>
+        </span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
+        <span class="">
+          <i class="fa fa-truck"></i> <span translate>SHIPMENT.READY_TO_SHIP</span>
+        </span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
+        <span class="">
+          <i class="fa fa-barcode"></i> <span translate>BARCODE.BARCODE</span>
+        </span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteDepot(row.entity)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>
