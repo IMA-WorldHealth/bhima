@@ -24,7 +24,7 @@ const { DELETE_STOCK_MOVEMENT } = require('../../config/constants').actions;
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
-const shipment = require('./shipment');
+const shipment = require('../asset_management/shipment');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
@@ -678,7 +678,7 @@ async function depotMovement(document, params, metadata) {
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
 
   if (!isExit) {
-    await shipment.updateShipmentStatusAfterEntry(document);
+    await shipment.updateShipmentStatusAfterEntry(document, depotUuid);
   }
 
   return result;
