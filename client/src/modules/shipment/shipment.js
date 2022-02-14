@@ -4,12 +4,15 @@ angular.module('bhima.controllers')
 ShipmentRegistryController.$inject = [
   '$state', 'ShipmentService', 'ShipmentFilter', 'ShipmentModalService',
   'ModalService', 'NotifyService', 'uiGridConstants',
+  'GridStateService', 'GridColumnService',
 ];
 
 function ShipmentRegistryController(
   $state, Shipments, ShipmentFilter, ShipmentModal, Modal, Notify, GridConstants,
+  GridState, Columns,
 ) {
   const vm = this;
+  const cacheKey = 'shipment-grid';
 
   const shipmentFilters = new ShipmentFilter();
 
@@ -113,6 +116,10 @@ function ShipmentRegistryController(
     },
   ];
 
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
   // options for the UI grid
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -122,13 +129,16 @@ function ShipmentRegistryController(
     flatEntityAccess  : true,
     enableSorting     : true,
     showTreeExpandNoChildren : false,
-    onRegisterApi     : onRegisterApiFn,
+    onRegisterApi,
     columnDefs,
   };
 
-  function onRegisterApiFn(gridApi) {
-    vm.gridApi = gridApi;
-  }
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.clearGridState = clearGridState;
 
   function toggleFilter() {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
@@ -148,6 +158,15 @@ function ShipmentRegistryController(
     const filtersSnapshot = shipmentFilters.formatHTTP();
     ShipmentModal.openSearchShipment(filtersSnapshot)
       .then(handleSearchModal);
+  }
+
+  function openColumnConfigModal() {
+    gridColumns.openConfigurationModal();
+  }
+
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
   }
 
   function handleSearchModal(changes) {
