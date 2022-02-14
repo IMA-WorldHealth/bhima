@@ -191,11 +191,6 @@ function StockInventoriesController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
 
-  // shipment in transit
-  vm.isInTransitOrPartial = status => {
-    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
-  };
-
   // select group
   vm.selectGroup = (group) => {
     if (!group) { return; }
@@ -213,6 +208,11 @@ function StockInventoriesController(
       vm.grouped = true;
     }
   };
+
+  // shipment in transit
+  function isInTransitOrPartial(status) {
+    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
+  }
 
   // This function opens a modal through column service to let the user toggle
   // the visibility of the inventories registry's columns.
@@ -281,6 +281,10 @@ function StockInventoriesController(
         return Stock.shipment.getInTransitInventories(filters);
       })
       .then(rows => {
+        rows.forEach(row => {
+          // inventory is concerned by a shipment in transit or partially received
+          row._isInTransitOrPartial = isInTransitOrPartial(row.shipment_status);
+        });
         vm.gridOptions.data = glb.inventories.concat(rows);
         vm.grouping.unfoldAllGroups();
       })

@@ -1,0 +1,30 @@
+{
+  "SHIPMENT" : {
+    "TITLE" : "Shipment",
+    "SHIPMENTS": "Shipments",
+    "SHIPPER": "Shipper",
+    "REQUISITION": "Requisition",
+    "ORIGIN_DEPOT": "Origin depot",
+    "CURRENT_DEPOT": "Current depot",
+    "DESTINATION_DEPOT": "Destination depot",
+    "DATE_SENT": "Date sent",
+    "DATE_DELIVERED": "Date delivered",
+    "ANTICIPATED_DELIVERY_DATE": "Anticipated delivery date",
+    "RECEIVER": "Receiver",
+    "CREATED_BY": "Created by",
+    "CREATE": "Create",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "REFERENCE": "Reference",
+    "STOCK_REFERENCE": "Stock Reference",
+    "PACKING": "Packing",
+    "PACKING_LIST": "Packing List",
+    "NEW_SHIPMENT": "New Shipment",
+    "SHIPMENT_REGISTRY": "Shipment Registry",
+    "UPDATE_LOCATION": "Update Location",
+    "UPDATE_STATUS": "Update Status",
+    "UPDATE_PACKING_LIST": "Update Packing List",
+    "READY_TO_SHIP": "Ready to ship",
+    "OVERVIEW": "Shipment Overview"
+  }
+}
