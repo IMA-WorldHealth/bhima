@@ -2666,6 +2666,14 @@ CREATE TABLE `asset_condition` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `asset_condition`;
+CREATE TABLE `asset_condition` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `translation_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `shipment_status`;
 CREATE TABLE `shipment_status` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
