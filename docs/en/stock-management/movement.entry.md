@@ -13,7 +13,7 @@ how much stock is needed.  Depots typically need that information to put
 together a purchase order.  Pharmacies typically need this information to
 request stock from a depot.  In any case, computations of how much stock is
 being used (per month) is helpful.  This is provided by the "Average Monthly
-Consumption".  For more detaisl about that, please see the [section on Average
+Consumption".  For more detaisl about that, please see the section on [Average
 Monthly stock Consumption](./average-monthly-consumption.md).
 
 
