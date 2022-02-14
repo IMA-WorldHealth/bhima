@@ -47,7 +47,7 @@
               <tr {{#lt quantityEnding 0 }}class="bg-danger-important"{{/lt}}
                 {{#if ../params.include_daily_balances}}style="background-color: #f9f9f9; border-bottom: 1px solid gray;"{{/if}}>
                 <td> {{ inventoryText }} </td>
-                <td class="text-right"><strong> {{ quantityOpening }} </strong></td>
+                <td class="text-right"><strong>{{ quantityOpening }}</strong></td>
                 <td class="text-right"><strong>{{ quantityTotalEntry }}</strong></td>
                 {{#each dailyConsumption }}
                 <td class="text-right">
@@ -77,6 +77,17 @@
               {{/if}}
             {{/each}}
           </tbody>
+
+          <tfoot>
+            <tr>
+              <td class="text-right" colspan="{{totals.colspan}}">{{translate "REPORT.RUMER.TOTAL_DAYS_OF_STOCK_OUT"}}</td>
+              <td class="text-right">{{totals.totalDaysStockOut}}</td>
+              <td>{{translate "REPORT.RUMER.TOTAL_DAYS"}}</td>
+              <td class="text-right">{{totals.totalDays}}</td>
+              <td>{{translate "REPORT.RUMER.RATIO"}}</td>
+              <td class="text-right">{{totals.ratio}}%</td>
+            </tr>
+          </tfoot>
       </table>
     </div>
   </div>
