@@ -6,13 +6,18 @@ There are a number of settings that affect how the BHIMA software deals with
 stock management.  To check and update the settings, one goes to the "Stock
 Settings" page (under the "Stock" folder):
 
-![Stock Settings Page](./images/stock-settings-page.png)
+
+<div class="bs-callout bs-callout-success">
+  <p><i>menu</i> > Stock > <strong>Stock Settings</strong> <br>
+  &emsp;&emsp; <img src="./images/stock-settings-page.png" alt="Stock Settings Page" width="240"> <br>
+  &rArr; Opens a page for editing the settings that apply to all stocks</p>
+</div>
 
 If you do not see the "Stock Settings" menu item, consult your system
 adminstrator.  You need to be given permission to access that page.
 
 - To add permission for a user to access the "Stock Settings' page: Under
-  `Administration > Role Management`, click on the action menu on the right
+  `menu > Administration > Role Management`, click on the action menu on the right
   end of the desired user.  In the action menu, click on `Permission`.  Scroll
   down to "Stock Settings" (at the end of the Stock items), then click the check
   box and the [Save] button.  The Stock Settings page should now be accessible
@@ -21,7 +26,7 @@ adminstrator.  You need to be given permission to access that page.
 ## AMC - Average Monthly Consumption
 
 For the following Stock Setting options, the term "AMC" is used.  It
-represents "Average Monthy Consumption" of stock.  AMC is the total number of
+represents "Average Monthy Consumption" of consumable stock.  AMC is the total number of
 stock items dispensed on average to **patients and services** for the
 facility involved.  AMC is an important value that used to estimate when to
 order more stock.
