@@ -191,11 +191,6 @@ function StockInventoriesController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
 
-  // shipment in transit
-  vm.isInTransitOrPartial = status => {
-    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
-  };
-
   // select group
   vm.selectGroup = (group) => {
     if (!group) { return; }
