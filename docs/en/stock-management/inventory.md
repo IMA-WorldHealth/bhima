@@ -6,7 +6,7 @@ In BHIMA, "inventory" refers to information about products or services are sold 
 
 The difference between inventory and stock in BHIMA is that inventory is the description of a product (or service), whereas stock is the physical asset stored in the depot.
 
-For example, an inventory item might be a "Appendectomy" which is a service and will not have a representation in stock.  However, the inventory item "Quinine 500mg" will have a representation in stock as pills bought on a given date with a quantity and expiration date.
+For example, an inventory item might be a "Appendectomy" which is a service and will not have a representation in stock.  However, the inventory item "Quinine 500mg" will have a representation in stock as pills bought on a given date with a quantity and expiration date.  Similarly, a computer used in a specific department would be an **asset** that might assigned to someone but still considered to be in a "depot".
 
 There are two modules that compose BHIMA's inventory management:
 
@@ -17,15 +17,16 @@ We'll cover each of these below.
 
 ### Inventory Registry
 
-The Inventory Registry provides an overview of all inventory items in the application.  To access the Inventory Registry module:
+The Inventory Registry provides an overview of all inventory items in the application.  To access the Inventory Registry module, under the main menu, select **Inventory** and then **Inventory Registry**:
 
 <div class="bs-callout bs-callout-success">
   <p>
-    Inventory > <strong>Inventory Registry</strong>: This module is a registry that lists all inventory times in the system, allows you to create new ones, or import an inventory from a CSV file.
+    <i>menu</i> > Inventory > <strong>Inventory Registry</strong> <br>
+     &rArr; Opens a registry that lists all inventory times in the system, allows you to create new ones, or import an inventory from a CSV file.
   </p>
 </div>
 
-The registry also has links inline to the Invoices Registry, Stock Movements Registry, Articles in Stock Registry, and Inventory Changes Report.
+Each line of the inventory registry describes one type of inventory item.  At the end each line is an "Action" menu containing links to the Invoices Registry, Stock Movements Registry, Articles in Stock Registry, and Inventory Changes Report.
 
 
 #### Creating an Inventory Item
@@ -38,6 +39,7 @@ To create a new inventory item, click on the **+ Add Inventory** button which wi
 4. **Group** - the inventory group set in the [configuration](#configuration) section.
 5. **Type** - the type of inventory item. This distinguishes between goods ands services.
 6. **Unit** - the unit of measurement for the inventory item.  This is typically "pills", "tablets", "milligrams", "liters", "boxes" or some other basic unit.
+7. **Is an asset** - For items which are organizational assets (eg, computers, etc)
 
 There are also some optional properties:
 
@@ -50,6 +52,7 @@ There are also some optional properties:
 7. **Purchase Interval** - (?)
 8. **Sellable** - indicates if the item can be sold to clients in the Patient Invoice module. Defaults to `true`.
 9. **Note** - an open text field for notes on the item.
+10. For **assets** there are a few additonal fields related to manufacturer brand and model names.
 
 As mentioned above, the inventory requires some prerequisite information beforehand. These prerequisites must exist in the system before creating the inventory item.
 
@@ -79,7 +82,8 @@ To access the module related to the inventory configuration:
 
 <div class="bs-callout bs-callout-success">
   <p>
-  Inventory > <strong>Configuration</strong>: This module allows you to create, edit, and delete inventory groups, inventory types, and inventory units.
+  <i>menu</i> > Inventory > <strong>Configuration</strong> <br>
+   &rArr; Opens a page that allows you to create, edit, and delete inventory groups, inventory types, and inventory units.
   </p>
 </div>
 
