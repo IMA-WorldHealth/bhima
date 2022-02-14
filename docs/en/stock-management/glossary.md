@@ -9,9 +9,9 @@
     related stock items) as needed by Patients, Services, or other Pharmacies.
 
      - Stock Pharmacy - A Stock Pharmacy is typically a local storage facility
-       that receives stock from depots and supplies stock to other pharmacies.
-       A stock pharmacy does not generally dispense medications directly to
-       patients.
+       that receives stock from depots and suppliers and provides stock to
+       other pharmacies.  A stock pharmacy does not generally dispense
+       medications directly to patients.
 
      - Dispensing Pharmacy - A Dispensing Pharmacy (Pharmacie D'Usage in
        French) is a pharmacy that dispenses stock to patients, wards, and
@@ -27,15 +27,16 @@
 
   - **SERVICE** - In the BHIMA perspective, a "Service" is a department in the
     hospital such as "pediatrics", "ophthalmology", "internal medicine",
-    "pharmacy", and "administration".  Services can be assigned invoices,
+    "pharmacy", or "administration".  Services can be assigned invoices,
     consume medications, contain staff, and have both profit and loss centers.
 
   - **STOCK** - "Stock" are any items used in the operation of a hospital or
     clinic.  Examples include drugs for treating patients, medical equipment
     and supplies, and administrative supplies.  "Stock" items are often
-    purchased in "Lots" which include a number of the stock items.  Note that
-    "Lot Numbers" are sometimes given by manufacturers and are not necessarily
-    unique to BHIMA.
+    purchased in "Lots" which include a number (or identifier) of the stock
+    items.  Where possible BHIMA uses the lot number provided by the
+    manufacturer (see this [Wikipedia article](https://en.wikipedia.org/wiki/Lot_number) 
+    for more information).
 
   - **STOCK ADJUSTMENT** - When a physical inventory of stock reveals that the
     actual count of stock items differs from the count in the "Theoretical

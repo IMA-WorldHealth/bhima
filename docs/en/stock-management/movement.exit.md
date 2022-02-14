@@ -1,4 +1,4 @@
-&raquo; [Home](../index.md) / [Inventory Management](./index.md) / [Stock Movements](./movement.md) / Stock Exit
+&raquo; [Home](../index.md) / [Stock Management](./index.md) / [Stock Movements](./movement.md) / Stock Exit
 
 # Stock Exit
 
@@ -20,7 +20,7 @@ concerns a stock pharmacy as well as a dispensing pharmacies.
 
     - **Transfer to other Depots or dispensing pharmacies**: Normally, patients
       are served directly at a dispensing pharmacy (or dispensary) when the
-      dispensing pharmacy receives prescription (or invoice) at
+      dispensing pharmacy receives an invoiced prescription at
       the counter, by means of a receipt ("proof of payment"), presented by
       the patient or a nurse.  Stock Pharmacies are usually the source of
       stock that is transferred to Dispensing Pharmacies.
@@ -37,7 +37,7 @@ concerns a stock pharmacy as well as a dispensing pharmacies.
    following cases:
 
     - **Stock items transferred to patients** [^1].  As above, patients with
-      prescriptions (or invoices) are served at the dispensing pharmacy. These
+      invoiced prescriptions are served at the dispensing pharmacy. These
       transfers are recorded, valued and constitute, to a large extent, the
       largest proportion of the source of the drugs (stock) consumed / sold.
       These stock movements should be carried in the expense part of the

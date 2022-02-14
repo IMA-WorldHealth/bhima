@@ -1,4 +1,4 @@
-&raquo; [Home](../index.md) / [Inventory Management](./index.md) / [Stock Movements](./movement.md) / Stock Entry
+&raquo; [Home](../index.md) / [Stock Management](./index.md) / [Stock Movements](./movement.md) / Stock Entry
 
 # Stock Entry
 
@@ -65,7 +65,7 @@ This will bring up a form like this:
  - To confirm and save the order, click on the "Save" button at the bottom of
    the form on the right.
 
- - To abort creating the purchase order, click on the blue "Clear" button on
+ - To abort creating the purchase order, click on the **[Clear]** button on
    the bottom right of the form.
 
 ### Confirm a purchase order
@@ -122,7 +122,7 @@ First, we need to open the stock "Entry" form:
   <img src="./images/entry-select-purchase-order.png" alt="Select Purchase Order" width="600">
 
   - You can verify the purchase order details by clicking on its "Reference"
-    number (in blue).  This will bring up a Purchase Oder receipt with
+    number (in blue).  This will bring up a Purchase Order receipt with
     details.  Click on the "Close" button on the bottom right when you are
     finished reviewing the details.
 
@@ -132,7 +132,7 @@ First, we need to open the stock "Entry" form:
     be highlighted.
 
   - Press the blue **[Submit]** button at the bottom right of the form to
-    confirm
+    confirm.
 
   - This will bring up the entry form pre-populated with the stock items from
     the purchase order.
@@ -148,7 +148,7 @@ First, we need to open the stock "Entry" form:
   - However, notice that the red X-mark to the left of the stock item line shows
     you that something still needs to be done.  In order to finish, we must
     specify the "Lots" entry for the item.  For further information about
-    Lots, see the glossary.
+    Lots, see the [glossary](./glossary.md).
 
   - Click on the blue "Lots" link (by its icon).  The Lot entry form will be
     displayed:
@@ -263,7 +263,7 @@ Bring up the Stock Entry form:
   </p>
 </div>
 
-- **FIRST**n, make sure the receiving Depot is selected (look on the
+- **FIRST**, make sure the receiving Depot is selected (look on the
   "bread-crumb" line at the top of the form).  If the receiving depot is
   incorrect, select the correct one using the "Choose Depot" link under the
   **[Menu]** button on the top right of the form.
