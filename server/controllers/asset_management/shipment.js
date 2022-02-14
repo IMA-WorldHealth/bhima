@@ -7,6 +7,45 @@ const SHIPMENT_COMPLETE = 3;
 const SHIPMENT_IN_TRANSIT = 4;
 const SHIPMENT_IN_TRANSIT_OR_PARTIAL = [SHIPMENT_IN_TRANSIT, SHIPMENT_PARTIAL];
 
+exports.list = async (req, res, next) => {
+  try {
+    const params = req.query;
+
+    const filters = getShipmentFilters(params);
+
+    const sql = `
+      SELECT 
+        BUID(sh.uuid) AS uuid, 
+        ss.translation_key AS status,
+        dm.text AS reference,
+        dm2.text AS stock_reference,
+        d.text AS origin_depot,
+        d2.text AS current_depot,
+        d3.text AS destination_depot,
+        shp.name AS shipper, sh.name, sh.description, sh.note, 
+        sh.created_at AS date, sh.date_sent, sh.date_delivered,
+        sh.receiver, u.display_name AS created_by
+      FROM shipment sh
+      JOIN shipment_status ss ON ss.id = sh.status_id 
+      JOIN shipper shp ON shp.id = sh.shipper_id
+      JOIN depot d ON d.uuid = sh.origin_depot_uuid
+      LEFT JOIN depot d2 ON d2.uuid = sh.current_depot_uuid 
+      JOIN depot d3 ON d3.uuid = sh.destination_depot_uuid 
+      JOIN document_map dm ON dm.uuid = sh.uuid
+      JOIN user u ON u.id = sh.created_by
+      LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    `;
+
+    const query = filters.applyQuery(sql);
+    const queryParameters = filters.parameters();
+
+    const result = await db.exec(query, queryParameters);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.writeStockExitShipment = (
   projectId,
   from,
@@ -25,7 +64,7 @@ exports.writeStockExitShipment = (
     description : parameters.description,
     shipper_id : TRANSIT_SHIPPER,
     origin_depot_uuid : from,
-    current_depot_uuid : from,
+    current_depot_uuid : null,
     destination_depot_uuid : to,
     anticipated_delivery_date : document.date,
     date_sent : document.date,
@@ -47,22 +86,22 @@ exports.writeStockExitShipment = (
   });
 };
 
-exports.writeStockEntryShipment = async (
+exports.writeStockEntryShipment = (
   document,
   parameters,
   transaction,
 ) => {
   // update shipment items
+  const updateShipmentItem = `
+    UPDATE shipment_item shi
+    JOIN shipment sh ON sh.uuid = shi.shipment_uuid 
+    SET
+      shi.quantity_delivered = shi.quantity_delivered + ?,
+      shi.date_delivered = ?,
+      sh.date_delivered = ?
+    WHERE sh.status_id IN (?) AND sh.document_uuid = ? AND shi.lot_uuid = ?
+  `;
   parameters.lots.forEach(lot => {
-    const updateShipmentItem = `
-        UPDATE shipment_item shi
-        JOIN shipment sh ON sh.uuid = shi.shipment_uuid 
-        SET
-          shi.quantity_delivered = shi.quantity_delivered + ?,
-          shi.date_delivered = ?,
-          sh.date_delivered = ?
-        WHERE sh.status_id IN (?) AND sh.document_uuid = ? AND shi.lot_uuid = ?
-      `;
     const updateParameters = [
       lot.quantity || 0,
       document.date,
@@ -75,11 +114,13 @@ exports.writeStockEntryShipment = async (
   });
 };
 
-exports.updateShipmentStatusAfterEntry = async (document) => {
+exports.updateShipmentStatusAfterEntry = async (document, depotUuid) => {
+  const tx = db.transaction();
   // gather information about shipment items received
   const queryShipmentItems = `
       SELECT 
         BUID(shi.uuid) uuid, BUID(shi.lot_uuid) lot_uuid,
+        sh.origin_depot_uuid, sh.current_depot_uuid, sh.destination_depot_uuid,
         shi.quantity_sent, shi.quantity_delivered
       FROM shipment sh
       JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
@@ -94,10 +135,16 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
 
   // update shipment status
   const updateShipmentStatus = `
-      UPDATE shipment SET status_id = ? WHERE document_uuid = ?;
+      UPDATE shipment SET status_id = ?, current_depot_uuid WHERE document_uuid = ?;
     `;
   const newStatus = allCompleted ? SHIPMENT_COMPLETE : SHIPMENT_PARTIAL;
-  return db.exec(updateShipmentStatus, [newStatus, db.bid(document.uuid)]);
+
+  tx.addQuery(updateShipmentStatus, [
+    newStatus,
+    depotUuid,
+    db.bid(document.uuid),
+  ]);
+  return tx.execute();
 };
 
 exports.listInTransitInventories = async (req, res, next) => {
@@ -151,6 +198,10 @@ function getShipmentFilters(parameters) {
   // clone the parameters
   const params = { ...parameters };
 
+  if (params.ready_to_ship) {
+    params.ready_to_ship = parseInt(params.ready_to_ship, 10);
+  }
+
   db.convert(params, [
     'uuid',
     'origin_depot_uuid',
@@ -164,7 +215,6 @@ function getShipmentFilters(parameters) {
   const filters = new FilterParser(params);
 
   filters.equals('uuid', 'uuid', 'l');
-  filters.equals('is_assigned', 'is_assigned', 'l');
   filters.equals('origin_depot_text', 'text', 'd');
   filters.equals('current_depot_text', 'text', 'd2');
   filters.equals('destination_depot_text', 'text', 'd3');
@@ -177,6 +227,7 @@ function getShipmentFilters(parameters) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('reference', 'text', 'dm');
+  filters.equals('ready_for_shipment', 'ready_for_shipment', 'sh');
 
   // status
   filters.custom('status', 'sh.status_id IN (?)');
