@@ -794,7 +794,7 @@ CREATE TABLE `inventory` (
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `importance` SMALLINT(5) NULL COMMENT 'Inventory level of importance : 1 -> LOW, 2 -> MID, 3 -> HIGH' ,
   `is_asset`  TINYINT(1) NOT NULL DEFAULT 0,
-  `external_reference_number` TEXT NULL,
+  `reference_number` TEXT NULL,
   `manufacturer_brand` TEXT NULL,
   `manufacturer_model` TEXT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

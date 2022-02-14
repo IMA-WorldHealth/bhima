@@ -52,16 +52,16 @@
     </div>
 
     <div ng-if="$ctrl.item.is_asset" class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.external_reference_number.$invalid }">
+      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.reference_number.$invalid }">
       <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER</label>
       <input
-        ng-model="$ctrl.item.external_reference_number"
+        ng-model="$ctrl.item.reference_number"
         class="form-control"
         type="text"
-        name="external_reference_number"
+        name="reference_number"
         autocomplete="off"
         translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.REFERENCE_NUMBER' }">
-      <div class="help-block" ng-messages="ActionForm.external_reference_number.$error" ng-show="ActionForm.$submitted">
+      <div class="help-block" ng-messages="ActionForm.reference_number.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>

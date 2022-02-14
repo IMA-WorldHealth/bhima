@@ -60,3 +60,7 @@ CALL add_column_if_missing('inventory', 'manufacturer_model', 'TEXT NULL');
 
 CALL add_column_if_missing('inventory_type', 'description', 'TEXT NULL');
 CALL add_column_if_missing('inventory_type', 'is_predefined', 'TINYINT(1) NOT NULL DEFAULT 0');
+
+ALTER TABLE `inventory_type`
+	CHANGE COLUMN `text` `text` VARCHAR(200) NOT NULL COLLATE AFTER `id`;
+

@@ -71,7 +71,7 @@ function InventoryListController(
     visible : false,
     cellTemplate : '/modules/inventory/list/templates/asset.cell.tmpl.html',
   }, {
-    field : 'external_reference_number',
+    field : 'reference_number',
     displayName : 'FORM.LABELS.REFERENCE_NUMBER',
     headerCellFilter : 'translate',
     visible : false,

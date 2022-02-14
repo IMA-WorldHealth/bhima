@@ -31,14 +31,14 @@
             </div>
           </div>
 
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.external_reference_number.$invalid }">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference_number.$invalid }">
             <label class="control-label" translate>
               FORM.LABELS.REFERENCE_NUMBER
             </label>
-            <bh-clear on-clear="ModalCtrl.clear('external_reference_number')"></bh-clear>
+            <bh-clear on-clear="ModalCtrl.clear('reference_number')"></bh-clear>
 
-            <input type="text" class="form-control" name="external_reference_number" ng-model="ModalCtrl.searchQueries.external_reference_number">
-            <div class="help-block" ng-messages="ModalForm.external_reference_number.$error" ng-show="ModalForm.$submitted">
+            <input type="text" class="form-control" name="reference_number" ng-model="ModalCtrl.searchQueries.reference_number">
+            <div class="help-block" ng-messages="ModalForm.reference_number.$error" ng-show="ModalForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>

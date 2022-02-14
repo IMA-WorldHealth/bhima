@@ -20,7 +20,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     sellable : 1,
     importance : 2,
     is_asset : 1,
-    external_reference_number : 'BHIMA_O1',
+    reference_number : 'BHIMA_O1',
     manufacturer_brand : 'BHIMA',
     manufacturer_model : '2.X',
   };
