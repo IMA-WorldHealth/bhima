@@ -23,7 +23,7 @@ To perform stock adjustments, go to the Stock Adjustment page:
 <img src="./images/stock-adjustment-form.png" alt="Stock Adjustment Form" width="800">
 
 - Do not forget that for any operation that affects a depot you must first
-  make sure that you are in the depot concerned; if not, change the depot
+  make sure that you are operating on the depot concerned; if not, change the depot
   using the **[Menu]** on the top right and choose the "Change Depot" item.  A
   dialog allowing you to choose the appropriate depot will appear.  Choose the
   desired depot and click on the **[Submit]** button.  You will see the main
@@ -49,8 +49,8 @@ To perform stock adjustments, go to the Stock Adjustment page:
   <img src="./images/stock-adjustment-unpopulated-form.png" alt="Stock Adjustment Form Unpopulated" width="800">
 
 - In the "Code" column, enter the a few characters in the name of the stock
-  item.  A list of items with the same characters appears.  Click on the
-  desired item to select it.
+  item.  A list of items with inventory codes including those characters
+  appears.  Click on the desired item to select it.
 
 - Click on the relevant box in the "lot" column.  The system will show the
   different existing lots.  Select the relevant one by clicking on it.
