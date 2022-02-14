@@ -8,6 +8,14 @@ There are four ways that stock enters a depot that will be described in detail b
 - [From a donation](#stock-entry-by-donation)
 - [From a transfer from another depot](#stock-entry-by-transfer)
 
+Before a depot or pharmacy gets stock to "enter", it is necessary to determine
+how much stock is needed.  Depots typically need that information to put
+together a purchase order.  Pharmacies typically need this information to
+request stock from a depot.  In any case, computations of how much stock is
+being used (per month) is helpful.  This is provided by the "Average Monthly
+Consumption".  For more detaisl about that, please see the [section on Average
+Monthly stock Consumption](./average-monthly-consumption.md).
+
 
 ## Stock Entry by Purchase
 The process of purchasing stock for a depot includes several steps.
@@ -92,7 +100,6 @@ change the status of the purchase order.  To do this, use the **Action** menu
 for the purchase order and click on the "Edit Status" link and change the status to "Confirmed".
 
 WARNING: Once a purchase order is confirmed, it can no longer be edited.
-
 
 ### Receive and enter stock from a purchase order
 
