@@ -29,7 +29,7 @@ function stockEntryDepotReceipt(documentUuid, session, options) {
 
 function combineByLots(rows) {
   const data = _.orderBy(rows, 'date');
-  const lots = _.groupBy(data, 'uuid');
+  const lots = _.groupBy(data, 'lot_uuid');
   return _.keys(lots).map(key => {
     return (lots[key] || []).reduce((prev, curr) => {
       curr.total_quantity = curr.quantity + prev.total_quantity;
