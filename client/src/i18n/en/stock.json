@@ -208,6 +208,7 @@
     "QUANTITY_RECEIVED"   : "Quantity Received",
     "QUANTITY_REMAINING" : "Quantity Remaining",
     "QUANTITY_SENT"       : "Quantity Sent",
+    "TOTAL_QUANTITY_RECEIVED" : "Total Received",
     "SERVICE_DISTRIBUTION" : "Service Distribution",
     "TRANSFER_AVAILABLE" : "Available",
     "TRANSFER_RECEIVED" : "Received",

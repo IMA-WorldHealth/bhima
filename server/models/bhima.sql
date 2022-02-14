@@ -180,7 +180,10 @@ INSERT INTO unit VALUES
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
   (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
-  (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER');
+  (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
+  (308, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 307, '/SHIPMENT_FOLDER'),
+  (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/new_shipment'),
+  (310, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 308, '/shipments');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -516,3 +519,26 @@ INSERT INTO `cost_center_allocation_basis`
       'ALLOCATION_BASIS_NUM_PATIENTS_DESCRIPTION', 1, 0, 0, 0),
   (8, 'ALLOCATION_BASIS_NUM_LAB_TESTS', '',
       'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
+
+/**
+ * Default values for shipment tables
+ */
+INSERT INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES 
+  (1, 'empty', 'ASSET.STATUS.EMPTY'),
+  (2, 'partial', 'ASSET.STATUS.PARTIAL'),
+  (3, 'complete', 'ASSET.STATUS.COMPLETE'),
+  (4, 'in_transit', 'ASSET.STATUS.IN_TRANSIT'),
+  (5, 'at_depot', 'ASSET.STATUS.AT_DEPOT'),
+  (6, 'delivered', 'ASSET.STATUS.DELIVERED'),
+  (7, 'lost', 'ASSET.STATUS.LOST');
+
+/** ADD DEFAULT SHIPPER */
+INSERT INTO `shipper` (`id`, `name`) VALUES 
+  (1, 'Transit');
+
+/** ADD DEFAULT ASSET CONDITION */
+INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES 
+  (1, 'empty', 'ASSET.STATUS.EMPTY'),
+  (2, 'new', 'ASSET.CONDITION.NEW'),
+  (3, 'good', 'ASSET.CONDITION.GOOD'),
+  (4, 'broken', 'ASSET.CONDITION.BROKEN');
