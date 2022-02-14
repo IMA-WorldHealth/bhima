@@ -6,12 +6,9 @@
 
 Before discussing inventory and stock management in BHIMA, we must establish some terminology.
 
-In BHIMA, **inventory** is used to define the concept of goods and services that can be purchased and sold and are
-referred to with codes and names.  The physical items received some suppliers and housed in the depot are called **stock**
-and are referred to by lot numbers.
+In BHIMA, **inventory** is used to define the concept of goods and services that can be purchased and sold and are referred to with codes and names.  The term **inventory** also applies to **assets** such as computers, instruments, and tools that are purchased and used by the organization (but perhaps never sold). The physical items received some suppliers and housed in the depot are called **stock** and are referred to by lot numbers.  For **assets** the term "lot" refers to a specific asset.
 
-To help clarify the difference between stock and inventory, it is useful to consider what properties
-apply to each.
+To help clarify the difference between stock and inventory, it is useful to consider what properties apply to each.
 
 The following are properties of **inventory**:
  1. **Name** - the name of the good or service that can be bought and sold
@@ -35,7 +32,7 @@ If you are still struggling to understand the relationship between stock and inv
 Stock management in BHIMA has some powerful features:
 
 - A stock sheet containing the entries, exists, and balance of each article in stock is available in real time
-- Real-time valuation of the hospital's stock assets, including real-time computation of Cost of Goods Sold (COGS)
+- Real-time valuation of the hospital's stocks and assets, including real-time computation of Cost of Goods Sold (COGS)
 - Easy access to stock status reports
 - Entry of stock into depots/pharmacies from:
     - Purchases
@@ -62,8 +59,9 @@ To manage stock with BHIMA there are some dependencies that must be completed be
 
 This management requires certain prerequisites:
 
-- **The presence of depots**: stocks are always in depots, from which you can not manage stocks without defining depots.
+- **The presence of depots**: stocks are always in depots.  You cannot manage stocks without defining depots.
 
-- **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in depots
+- **The presence of inventories**: the inventories in BHIMA are the information on articles or services, but in the context of the stock it is the information on articles that can be stored in depots.
 
-- **The presence of users with the required permissions on the depots**: BHIMA has a permission policy on depots, that is to say that only authorized users can have access to a given repository
+- **The presence of users with the required permissions on the depots**: BHIMA has a permission policy on depots, that is to say that only authorized users can have access to a given repository.
+
