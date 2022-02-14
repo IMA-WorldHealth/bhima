@@ -7,7 +7,7 @@ Les modules de la gestion des stocks permettent d'efféctuer des mouvements de s
 Cette documentation est en cours d'élaboration.
 En attendant que les documents de gestion des stocks soient intégrés à cette
 documentation, veuillez vous référer à
-[ce document](./Manuel-dUtiliosation-Module-Stock-Actualise.pdf de AG Neron NGALUBENGE).
+[ce document de AG Neron NGALUBENGE](./Manuel-dUtiliosation-Module-Stock-Actualise.pdf).
 
 1. [Aperçu](./overview.md)
 2. [Les inventaires](./inventory.md)
