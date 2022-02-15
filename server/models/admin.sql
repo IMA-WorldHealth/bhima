@@ -265,6 +265,7 @@ END$$
 
  Removes all data from the cost_center_aggregate table and rebuilds it.
 */
+DROP PROCEDURE IF EXISTS zRecalculateCostCenterAggregates$$
 CREATE PROCEDURE zRecalculateCostCenterAggregates()
 BEGIN
 

@@ -271,7 +271,7 @@ INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monen
   (2,'United States Dollars','usd','$',NULL,0.01),
   (3,'Euro','EUR','€',NULL,0.01);
 
-INSERT INTO `inventory_type` VALUES (1,'Article'),(2,'Assembly'),(3,'Service');
+INSERT INTO `inventory_type` VALUES (1,'Article',NULL,0),(2,'Assembly',NULL,0),(3,'Service',NULL,0);
 INSERT INTO `inventory_unit` VALUES
   (1,'Act', 'Act'),
   (2,'Pal', 'Pallet'),
