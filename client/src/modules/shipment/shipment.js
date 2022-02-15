@@ -228,5 +228,13 @@ function ShipmentRegistryController(
     vm.latestViewFilters = shipmentFilters.formatView();
   }
 
+  vm.exportTo = (renderer) => {
+    return Shipments.exportTo(renderer, shipmentFilters);
+  };
+
+  vm.downloadExcel = () => {
+    return Shipments.downloadExcel(shipmentFilters, gridColumns);
+  };
+
   startup();
 }

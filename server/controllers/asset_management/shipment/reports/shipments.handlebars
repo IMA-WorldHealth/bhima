@@ -1,0 +1,70 @@
+{{> head title="SHIPMENT.SHIPMENTS" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'SHIPMENT.SHIPMENTS'}}
+      </h2>
+
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
+      <!-- filters  -->
+      {{> filterbar filters=filters }}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th>{{translate 'TABLE.COLUMNS.STATUS'}}</th>
+            <th>{{translate 'SHIPMENT.REFERENCE'}}</th>
+            <th>{{translate 'SHIPMENT.STOCK_REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.NAME'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+            <th>{{translate 'SHIPMENT.SHIPPER'}}</th>
+            <th>{{translate 'SHIPMENT.ORIGIN_DEPOT'}}</th>
+            <th>{{translate 'SHIPMENT.CURRENT_DEPOT'}}</th>
+            <th>{{translate 'SHIPMENT.DESTINATION_DEPOT'}}</th>
+            <th>{{translate 'SHIPMENT.DATE_SENT'}}</th>
+            <th>{{translate 'SHIPMENT.DATE_DELIVERED'}}</th>
+            <th>{{translate 'SHIPMENT.ANTICIPATED_DELIVERY_DATE'}}</th>
+            <th>{{translate 'SHIPMENT.RECEIVER'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+              <td>{{translate status}}</td>
+              <td>{{reference}}</td>
+              <td>{{stock_reference}}</td>
+              <td>{{name}}</td>
+              <td>{{description}}</td>
+              <td>{{shipper}}</td>
+              <td>{{origin_depot}}</td>
+              <td>{{current_depot}}</td>
+              <td>{{destination_depot}}</td>
+              <td>{{date date_sent}}</td>
+              <td>{{date date_delivered}}</td>
+              <td>{{date anticipated_delivery_date}}</td>
+              <td>{{receiver}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=13}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold;">
+            <td colspan="13">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</body>
