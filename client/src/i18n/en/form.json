@@ -887,6 +887,7 @@
             "DECEMBER": "December",
             "PERMISSION_ASSIGNED_SUCCESS":"Permissions successfully assigned",
             "EDIT_ROLE":"Assign role(s)",
+            "ROLE": "Role",
             "ROLES_FOR":"Role(s) for",
             "ROLES" : "Roles",
             "STATUS_TYPE":{
