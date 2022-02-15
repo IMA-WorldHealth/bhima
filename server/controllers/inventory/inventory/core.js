@@ -251,10 +251,11 @@ async function getItemsMetadata(params) {
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.unique_item,
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
-      inventory.note,  inventory.unit_weight, inventory.unit_volume,
-      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
-      inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
-      ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
+      inventory.note,  inventory.unit_weight, inventory.unit_volume, inventory.is_asset,
+      inventory.reference_number, inventory.manufacturer_brand, inventory.manufacturer_model,
+      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable,
+      inventory.note, inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
+      ig.donation_account, ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
       inventory.importance,
       GROUP_CONCAT(BUID(t.uuid), ';', t.name, ';', t.color ORDER BY t.name) AS tag_details,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
@@ -281,6 +282,10 @@ async function getItemsMetadata(params) {
   filters.equals('sellable');
   filters.equals('note');
   filters.equals('importance');
+  filters.equals('is_asset');
+  filters.equals('manufacturer_brand');
+  filters.equals('manufacturer_model');
+  filters.equals('reference_number');
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
@@ -332,12 +337,13 @@ function remove(_uuid) {
 */
 async function getItemsMetadataById(uid, query = {}) {
   const sql = `
-    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
+    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, i.is_asset, i.reference_number,
+      iu.abbr AS unit, it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.delay, i.purchase_interval, i.importance,
-      i.last_purchase, i.num_purchase, ig.tracking_consumption, ig.tracking_expiration
+      i.last_purchase, i.num_purchase, i.manufacturer_brand, i.manufacturer_model,
+      ig.tracking_consumption, ig.tracking_expiration
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu
       JOIN inventory_group AS ig ON i.type_id = it.id

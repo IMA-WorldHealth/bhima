@@ -499,8 +499,10 @@ function StockEntryController(
     }
     // Additional information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
+
     stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
+    stockLine.is_asset = inventory.is_asset;
 
     StockModal.openDefineLots({
       stockLine,

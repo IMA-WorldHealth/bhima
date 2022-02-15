@@ -3,14 +3,14 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryTypesController.$inject = [
-  'InventoryTypeService', 'NotifyService', 'ModalService',
+  'InventoryTypeService', 'NotifyService', 'ModalService', '$translate',
 ];
 
 /**
  * Inventory Type Controller
  * This controller is responsible for handling inventory type module
  */
-function InventoryTypesController(InventoryType, Notify, Modal) {
+function InventoryTypesController(InventoryType, Notify, Modal, $translate) {
   const vm = this;
 
   // expose to the view
@@ -73,6 +73,12 @@ function InventoryTypesController(InventoryType, Notify, Modal) {
     // get inventory types
     InventoryType.read()
       .then((list) => {
+        list.forEach(item => {
+          if (item.is_predefined) {
+            item.text = $translate.instant(item.text);
+          }
+        });
+
         vm.typeList = list;
       })
       .catch(Notify.handleError);
