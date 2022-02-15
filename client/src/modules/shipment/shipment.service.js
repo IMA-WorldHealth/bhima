@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('ShipmentService', ShipmentService);
 
-ShipmentService.$inject = ['PrototypeApiService'];
+ShipmentService.$inject = ['PrototypeApiService', '$httpParamSerializer', 'LanguageService'];
 
-function ShipmentService(Api) {
+function ShipmentService(Api, $httpParamSerializer, Languages) {
   const service = new Api('/shipments/');
 
   service.statusLabel = {
@@ -14,6 +14,28 @@ function ShipmentService(Api) {
     5 : 'ASSET.STATUS.AT_DEPOT',
     6 : 'ASSET.STATUS.DELIVERED',
     7 : 'ASSET.STATUS.LOST',
+  };
+
+  service.exportTo = (renderer, filter) => {
+    const filterOpts = filter.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    return $httpParamSerializer(options);
+  };
+
+  service.downloadExcel = (filter, gridColumns) => {
+    const filterOpts = filter.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames : gridColumns.getDisplayNames(),
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    return $httpParamSerializer(options);
   };
 
   return service;
