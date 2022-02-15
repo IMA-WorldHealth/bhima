@@ -851,9 +851,6 @@ exports.configure = function configure(app) {
   app.get('/stock/setting/:id?', stockSetting.list);
   app.put('/stock/setting/:id', stockSetting.update);
 
-  // stock shipment
-  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
-
   // stock reports API
   app.get('/reports/stock/avg_med_costs_per_patient', stockReports.stockAvgMedCostsPerPatientReport);
   app.get('/reports/stock/exit', stockReports.stockExitReport);
@@ -1117,5 +1114,10 @@ exports.configure = function configure(app) {
   app.use('/admin/odk-settings', odk.router);
 
   // API for shipment
+  // shipment in the stock inventories registry
+  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
+
+  // shipment registry
   app.get('/shipments', shipment.list);
+  app.get('/reports/shipments', shipment.getReport);
 };
