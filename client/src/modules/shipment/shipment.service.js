@@ -64,5 +64,27 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.exportTo = (renderer, filter) => {
+    const filterOpts = filter.formatHTTP();
+    const defaultOpts = {
+      renderer,
+      lang : Languages.key,
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    return $httpParamSerializer(options);
+  };
+
+  service.downloadExcel = (filter, gridColumns) => {
+    const filterOpts = filter.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames : gridColumns.getDisplayNames(),
+    };
+    const options = angular.merge(defaultOpts, filterOpts);
+    return $httpParamSerializer(options);
+  };
+
   return service;
 }
