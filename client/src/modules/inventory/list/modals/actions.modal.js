@@ -2,12 +2,12 @@ angular.module('bhima.controllers')
   .controller('InventoryListActionsModalController', InventoryListActionsModalController);
 
 InventoryListActionsModalController.$inject = [
-  'AccountService', 'InventoryService', 'NotifyService', '$uibModalInstance',
+  'InventoryService', 'NotifyService', '$uibModalInstance',
   '$state', 'util', 'appcache', 'SessionService', '$rootScope', 'params',
 ];
 
 function InventoryListActionsModalController(
-  Account, Inventory, Notify, Instance, $state,
+  Inventory, Notify, Instance, $state,
   util, AppCache, SessionService, $rootScope, params,
 ) {
   const vm = this;

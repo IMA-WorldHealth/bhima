@@ -40,16 +40,19 @@
       <tbody>
         <tr ng-repeat="type in TypesCtrl.typeList | filter: TypesCtrl.searchValue | orderBy: 'text'">
           <td>{{ $index + 1 }}</td>
-          <td>{{ type.text }}</td>
           <td>
-            <a style="cursor:pointer; text-decoration:none;"
+            <span ng-if="type.is_predefined"><strong>{{ type.text }}</strong></span>
+            <span ng-if="!type.is_predefined">{{ type.text }}</span>
+          </td>
+          <td>
+            <a ng-if="!type.is_predefined" style="cursor:pointer; text-decoration:none;"
               ng-click="TypesCtrl.editInventoryType(type.id)"
               data-edit-type="{{ type.text }}">
               <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
             </a>
           </td>
           <td>
-            <a style="cursor:pointer; text-decoration:none;"
+            <a ng-if="!type.is_predefined" style="cursor:pointer; text-decoration:none;"
               ng-click="TypesCtrl.deleteInventoryType(type.id)"
               class="text-danger"
               data-delete-type="{{ type.text }}">

@@ -1,15 +1,19 @@
 angular.module('bhima.controllers')
-.controller('InventoryTypeActionsModalController', InventoryTypeActionsModalController);
+  .controller('InventoryTypeActionsModalController', InventoryTypeActionsModalController);
 
 InventoryTypeActionsModalController.$inject = [
-  'InventoryTypeService', 'NotifyService', '$uibModalInstance', 'data'
+  'InventoryTypeService', 'NotifyService', '$uibModalInstance', 'data',
 ];
 
 function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Data) {
-  var vm = this, session = vm.session = {};
+  const vm = this;
+  vm.session = {};
 
   // map for actions
-  var map = { 'add' : addType, 'edit' : editType };
+  const map = {
+    add  : addType,
+    edit : editType,
+  };
 
   // expose to the view
   vm.submit = submit;
@@ -22,9 +26,10 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var record = cleanForSubmit(vm.session);
+    const record = cleanForSubmit(vm.session);
+
     map[vm.action](record, vm.identifier)
-      .then(function (res) {
+      .then((res) => {
         Instance.close(res);
       });
   }
@@ -47,9 +52,10 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
   }
 
   /** format data to data structure in the db */
-  function cleanForSubmit(session) {
+  function cleanForSubmit(data) {
     return {
-      text : session.text
+      text : data.text,
+      description : data.description,
     };
   }
 
@@ -60,12 +66,10 @@ function InventoryTypeActionsModalController(InventoryType, Notify, Instance, Da
 
     if (vm.identifier) {
       InventoryType.read(vm.identifier)
-      .then(function (type) {
-        vm.session = type[0];
-      })
-      .catch(Notify.handleError);
+        .then((type) => {
+          [vm.session] = type;
+        })
+        .catch(Notify.handleError);
     }
-
   }
-
 }
