@@ -837,7 +837,7 @@ CREATE TABLE `inventory_group` (
 DROP TABLE IF EXISTS `inventory_type`;
 CREATE TABLE `inventory_type` (
   `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` VARCHAR(30) NOT NULL,
+  `text` VARCHAR(200) NOT NULL,
   `description` TEXT NULL,
   `is_predefined` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
