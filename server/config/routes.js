@@ -73,6 +73,7 @@ const inventoryReports = require('../controllers/inventory/reports');
 const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
 const stockSetting = require('../controllers/stock/setting');
+const shipment = require('../controllers/asset_management/shipment');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -1111,4 +1112,12 @@ exports.configure = function configure(app) {
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 
   app.use('/admin/odk-settings', odk.router);
+
+  // API for shipment
+  // shipment in the stock inventories registry
+  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
+
+  // shipment registry
+  app.get('/shipments', shipment.list);
+  app.get('/reports/shipments', shipment.getReport);
 };

@@ -1,0 +1,30 @@
+{
+  "SHIPMENT" : {
+    "TITLE" : "Expedition",
+    "SHIPMENTS": "Expéditions",
+    "SHIPPER": "Transporteur",
+    "REQUISITION": "Requisition",
+    "ORIGIN_DEPOT": "Dépôt d'origine",
+    "CURRENT_DEPOT": "Dépôt en cours",
+    "DESTINATION_DEPOT": "Destination",
+    "DATE_SENT": "Date d'envoi",
+    "DATE_DELIVERED": "Date de livraison",
+    "ANTICIPATED_DELIVERY_DATE": "Anticipation livraison",
+    "RECEIVER": "Recepteur",
+    "CREATED_BY": "Crée par",
+    "CREATE": "Créer",
+    "EDIT": "Editer",
+    "DELETE": "Supprimer",
+    "REFERENCE": "Reférence",
+    "STOCK_REFERENCE": "Stock Reférence",
+    "PACKING": "Colisage",
+    "PACKING_LIST": "Liste de colisage",
+    "NEW_SHIPMENT": "Nouvelle expédition",
+    "SHIPMENT_REGISTRY": "Registre des expéditions",
+    "UPDATE_LOCATION": "Mise à jour localisation",
+    "UPDATE_STATUS": "Mise à jour statut",
+    "UPDATE_PACKING_LIST": "Mise à jour colisage",
+    "READY_TO_SHIP": "Prêt pour l'expédition",
+    "OVERVIEW": "Aperçu de l'expédition"
+  }
+}
