@@ -149,7 +149,7 @@
             "LISTS": "Registered price list",
             "LOADING": "Fetching data from the server.",
             "LOCKED": "Locked",
-            "LOT": "Lot",
+            "LOT": "Lot/ Batch number",
             "LONGITUDE": "Longitude",
             "LATITUDE": "Latitude",
             "MANUAL_DISTRIBUTION": "Manual distributions",
@@ -225,6 +225,7 @@
             "RUBRICS": "Rubrics",
             "SEE_SITUATION_ALL_EMPLOYEES": "See the overall situation of all employees",
             "SECTOR": "Sector",
+            "SERIAL_NUMBER": "Serial number",
             "SERVICE": "Service",
             "SOLD": "Balance",
             "SORTING": {
