@@ -30,7 +30,7 @@ const identifiers = require('../../config/identifiers');
 
 const detailsQuery = `
   SELECT
-    BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost, l.expiration_date,
+    BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost, l.expiration_date, l.serial_number,
     (SELECT MIN(sm.date) FROM stock_movement sm
      WHERE sm.lot_uuid = l.uuid) AS entry_date,
     BUID(i.uuid) AS inventory_uuid, i.text as inventory_name,
@@ -87,7 +87,7 @@ function details(req, res, next) {
  */
 async function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const allowedToEdit = ['label', 'expiration_date', 'unit_cost'];
+  const allowedToEdit = ['label', 'expiration_date', 'unit_cost', 'serial_number'];
   const params = _.pick(req.body, allowedToEdit);
   const { tags } = req.body;
 
@@ -125,7 +125,7 @@ function getCandidates(req, res, next) {
   const inventoryUuid = db.bid(req.params.uuid);
 
   const query = `
-    SELECT BUID(l.uuid) AS uuid, l.label, l.expiration_date
+    SELECT BUID(l.uuid) AS uuid, l.label, l.expiration_date, l.serial_number
     FROM lot l
     WHERE l.inventory_uuid = ?
     ORDER BY label, expiration_date
@@ -151,11 +151,13 @@ function getCandidates(req, res, next) {
  */
 function getDupes(req, res, next) {
   const options = db.convert(req.query, ['inventory_uuid']);
+
   const filters = new FilterParser(options, { tableAlias : 'l' });
   filters.equals('label');
   filters.equals('inventory_uuid');
   filters.equals('entry_date');
   filters.equals('expiration_date');
+  filters.equals('serial_number');
 
   const query = filters.applyQuery(detailsQuery);
   const params = filters.parameters();
@@ -293,7 +295,7 @@ function autoMerge(req, res, next) {
   // lots is given.)
   const query1 = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+      BUID(l.uuid) AS uuid, l.label, l.expiration_date, l.serial_number,
       BUID(i.uuid) AS inventory_uuid, i.text as inventory_name,
       COUNT(*) as num_duplicates
     FROM lot l
@@ -305,7 +307,7 @@ function autoMerge(req, res, next) {
   // inventory_uuid, and expiration dates
   const query2 = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, l.expiration_date,
+      BUID(l.uuid) AS uuid, l.label, l.expiration_date, l.serial_number,
       BUID(i.uuid) AS inventory_uuid, i.text as inventory_name
     FROM lot l
     JOIN inventory i ON i.uuid = l.inventory_uuid
