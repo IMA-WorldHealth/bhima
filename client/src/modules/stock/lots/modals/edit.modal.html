@@ -27,6 +27,17 @@
         </div>
       </div>
 
+      <div class="form-group"
+        ng-if="$ctrl.model.is_asset"
+        ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.serial_number.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.SERIAL_NUMBER</label>
+        <input ng-model="$ctrl.model.serial_number"
+          class="form-control" type="text" name="serial_number">
+        <div class="help-block" ng-messages="ActionForm.serial.$error" ng-show="ActionForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
       <bh-date-editor
         label="STOCK.EXPIRATION_DATE"
         date-value="$ctrl.model.expiration_date"
