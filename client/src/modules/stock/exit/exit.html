@@ -8,7 +8,7 @@
       <li class="title" ng-if="StockCtrl.stockForm.depot.uuid">
         <span>{{ StockCtrl.stockForm.depot.text }}</span>
         <span class="text-uppercase badge badge-primary" ng-show="StockCtrl.stockForm.details.exit_type">
-          {{ StockCtrl.movement.exit_type }}
+          {{ StockCtrl.stockForm.details.exit_type }}
         </span>
       </li>
     </ol>
@@ -36,7 +36,7 @@
       <div class="row">
         <bh-stock-exit-type
           depot="StockCtrl.stockForm.depot"
-          on-select-callback="StockCtrl.selectExitType(type, entity)">
+          on-select-callback="StockCtrl.onSelectExitType(type, entity)">
         </bh-stock-exit-type>
       </div>
 
@@ -127,8 +127,8 @@
             <!-- "Add number of grid rows" input-group -->
             <div class="grid-toolbar-item">
               <bh-add-item
-                disable = "StockCtrl.stockForm.details.exit_type && !StockCtrl.emptyStock"
-                callback = "StockCtrl.stockForm.addItems(numItem)">
+                disable="StockCtrl.stockForm.details.exit_type"
+                callback="StockCtrl.stockForm.addItems(numItem)">
               </bh-add-item>
             </div>
 
@@ -167,7 +167,7 @@
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
-          loading-state="StockCtrl.loading"
+          loading-state="StockCtrl.stockForm.isLoading()"
           empty-state="StockCtrl.emptyStock"
           error-state="StockCtrl.hasError"
           empty-state-message="STOCK.EMPTY">
@@ -186,7 +186,7 @@
             </div>
           </div>
           <div class="col-md-6 text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.stockForm.reset(StockExitForm)" type="button" translate>
+            <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
               FORM.BUTTONS.CLEAR
             </button>
 
