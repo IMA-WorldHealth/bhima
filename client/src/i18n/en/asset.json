@@ -8,6 +8,11 @@
       "DELIVERED" : "Delivered",
       "AT_DEPOT" : "At Depot",
       "LOST" : "LOST"
+    },
+    "CONDITION" : {
+      "NEW" : "New",
+      "GOOD" : "Good",
+      "BROKEN" : "Broken"
     }
   }
 }

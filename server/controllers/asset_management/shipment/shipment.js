@@ -5,9 +5,11 @@ const { uuid } = require('../../../lib/util');
 const SHIPMENT_PARTIAL = 2;
 const SHIPMENT_COMPLETE = 3;
 const SHIPMENT_IN_TRANSIT = 4;
+const SHIPMENT_AT_DEPOT = 5;
 const SHIPMENT_IN_TRANSIT_OR_PARTIAL = [SHIPMENT_IN_TRANSIT, SHIPMENT_PARTIAL];
 
 exports.find = find;
+exports.lookup = lookup;
 
 exports.list = async (req, res, next) => {
   try {
@@ -18,7 +20,110 @@ exports.list = async (req, res, next) => {
   }
 };
 
-exports.writeStockExitShipment = (
+exports.details = async (req, res, next) => {
+  try {
+    const result = await lookup(req.params.uuid);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.create = async (req, res, next) => {
+  try {
+    const params = req.body;
+    const SHIPMENT_UUID = db.bid(uuid());
+    const SHIPMENT_LABEL = params.name;
+    const TRANSIT_SHIPPER = 1; // NEED FIX: MUST BE THE SHIPPER ID
+    const shipment = {
+      uuid : SHIPMENT_UUID,
+      name : SHIPMENT_LABEL,
+      project_id : req.session.project.id,
+      description : params.description,
+      shipper_id : TRANSIT_SHIPPER,
+      origin_depot_uuid : db.bid(params.origin_depot_uuid),
+      current_depot_uuid : null,
+      destination_depot_uuid : db.bid(params.destination_depot_uuid),
+      anticipated_delivery_date : new Date(params.anticipated_delivery_date),
+      date_sent : null,
+      status_id : SHIPMENT_AT_DEPOT,
+      created_by : req.session.user.id,
+      document_uuid : null,
+    };
+
+    const transaction = db.transaction();
+    transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
+
+    params.lots.forEach((lot) => {
+      const shipmentItem = {
+        uuid : db.bid(uuid()),
+        shipment_uuid : SHIPMENT_UUID,
+        lot_uuid : db.bid(lot.lot_uuid),
+        date_packed : new Date(),
+        quantity_sent : lot.quantity,
+        condition_id : lot.condition_id,
+      };
+      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+    });
+
+    await transaction.execute();
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.update = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const params = req.body;
+
+    if (params.uuid) {
+      delete params.uuid;
+    }
+
+    db.convert(params, [
+      'uuid',
+      'origin_depot_uuid',
+      'current_depot_uuid',
+      'destination_depot_uuid',
+      'document_uuid',
+    ]);
+
+    db.convertDate(params, [
+      'date',
+      'date_sent',
+      'date_delivered',
+      'anticipated_delivery_date',
+    ]);
+
+    const { lots } = params;
+    delete params.lots;
+
+    const transaction = db.transaction();
+    transaction.addQuery('UPDATE shipment SET ? WHERE uuid = ?', [params, db.bid(identifier)]);
+    transaction.addQuery('DELETE FROM shipment_item WHERE shipment_uuid = ?', [db.bid(identifier)]);
+
+    lots.forEach((lot) => {
+      const shipmentItem = {
+        uuid : db.bid(uuid()),
+        shipment_uuid : db.bid(identifier),
+        lot_uuid : db.bid(lot.lot_uuid),
+        date_packed : new Date(),
+        quantity_sent : lot.quantity,
+        condition_id : lot.condition_id,
+      };
+      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+    });
+
+    await transaction.execute();
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.writeStockExitShipment = async (
   projectId,
   from,
   to,
@@ -26,36 +131,47 @@ exports.writeStockExitShipment = (
   parameters,
   transaction,
 ) => {
-  const SHIPMENT_UUID = db.bid(uuid());
-  const SHIPMENT_LABEL = 'Depot Exit Shipment';
-  const TRANSIT_SHIPPER = 1;
-  const shipment = {
-    uuid : SHIPMENT_UUID,
-    name : SHIPMENT_LABEL,
-    project_id : projectId,
-    description : parameters.description,
-    shipper_id : TRANSIT_SHIPPER,
-    origin_depot_uuid : from,
-    current_depot_uuid : null,
-    destination_depot_uuid : to,
-    anticipated_delivery_date : document.date,
-    date_sent : document.date,
-    status_id : SHIPMENT_IN_TRANSIT,
-    created_by : document.user,
-    document_uuid : db.bid(document.uuid),
-  };
-  transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
+  // shipment_uuid must be sent on exit for shipment (NEW TOOL)
+  const shipmentExist = await isShipmentExists(document.shipment_uuid);
 
-  parameters.lots.forEach((lot) => {
-    const shipmentItem = {
-      uuid : db.bid(uuid()),
-      shipment_uuid : SHIPMENT_UUID,
-      lot_uuid : db.bid(lot.uuid),
+  if (shipmentExist) {
+    // update the status of the shipment
+    // because the shipment was already made with the shipment tool
+    const updateQuery = 'UPDATE shipment SET status_id = ?';
+    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT]);
+  } else {
+    // write new shipment
+    const SHIPMENT_UUID = db.bid(uuid());
+    const SHIPMENT_LABEL = 'Depot Exit Shipment';
+    const TRANSIT_SHIPPER = 1;
+    const shipment = {
+      uuid : SHIPMENT_UUID,
+      name : SHIPMENT_LABEL,
+      project_id : projectId,
+      description : parameters.description,
+      shipper_id : TRANSIT_SHIPPER,
+      origin_depot_uuid : from,
+      current_depot_uuid : null,
+      destination_depot_uuid : to,
+      anticipated_delivery_date : document.date,
       date_sent : document.date,
-      quantity_sent : lot.quantity,
+      status_id : SHIPMENT_IN_TRANSIT,
+      created_by : document.user,
+      document_uuid : db.bid(document.uuid),
     };
-    transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
-  });
+    transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
+
+    parameters.lots.forEach((lot) => {
+      const shipmentItem = {
+        uuid : db.bid(uuid()),
+        shipment_uuid : SHIPMENT_UUID,
+        lot_uuid : db.bid(lot.uuid),
+        date_sent : document.date,
+        quantity_sent : lot.quantity,
+      };
+      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+    });
+  }
 };
 
 exports.writeStockEntryShipment = (
@@ -249,6 +365,7 @@ function find(params) {
       d3.text AS destination_depot,
       shp.name AS shipper, sh.name, sh.description, sh.note, 
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
+      sh.anticipated_delivery_date, 
       sh.receiver, u.display_name AS created_by
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id 
@@ -264,4 +381,55 @@ function find(params) {
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
+}
+
+async function lookup(identifier) {
+  const sql = `
+    SELECT 
+      BUID(sh.uuid) AS uuid, 
+      ss.translation_key AS status,
+      ss.id AS status_id,
+      dm.text AS reference,
+      dm2.text AS stock_reference,
+      d.text AS origin_depot,
+      BUID(d.uuid) AS origin_depot_uuid,
+      d2.text AS destination_depot,
+      BUID(d2.uuid) AS destination_depot_uuid,
+      d3.text AS current_depot,
+      BUID(d3.uuid) AS current_depot_uuid,
+      shp.name AS shipper, shp.id AS shipper_id,
+      sh.name, sh.description, sh.note, 
+      sh.created_at AS date, sh.date_sent, sh.date_delivered,
+      sh.anticipated_delivery_date,
+      sh.receiver, u.display_name AS created_by,
+      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity, shi.condition_id
+    FROM shipment sh
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN depot d ON d.uuid = sh.origin_depot_uuid
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
+    LEFT JOIN shipper shp ON shp.id = sh.shipper_id
+    LEFT JOIN depot d3 ON d3.uuid = sh.current_depot_uuid 
+    JOIN document_map dm ON dm.uuid = sh.uuid
+    JOIN user u ON u.id = sh.created_by
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    WHERE sh.uuid = ?
+  `;
+
+  const result = await db.exec(sql, [db.bid(identifier)]);
+  const [shipment] = result;
+  shipment.lots = result.map(item => {
+    return {
+      lot_uuid : item.lot_uuid,
+      quantity : item.quantity,
+      condition_id : item.condition_id,
+    };
+  });
+  return shipment;
+}
+
+async function isShipmentExists(shipmentUuid) {
+  const sql = `SELECT uuid FROM shipment WHERE uuid = ?`;
+  const [result] = await db.exec(sql, [db.bid(shipmentUuid)]);
+  return !!result;
 }
