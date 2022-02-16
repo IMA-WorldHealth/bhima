@@ -219,6 +219,7 @@ async function insertNewStock(session, params) {
         description : lot.description,
         expiration_date : new Date(lot.expiration_date),
         inventory_uuid : db.bid(lot.inventory_uuid),
+        serial_number : lot.serial_number,
       });
     }
 

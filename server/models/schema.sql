@@ -1915,6 +1915,7 @@ CREATE TABLE `lot` (
   `expiration_date`   DATE NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
   `is_assigned`       TINYINT(1) NULL DEFAULT 0,
+  `serial_number`     VARCHAR(40) NULL,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   CONSTRAINT `lot__inventory` FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
