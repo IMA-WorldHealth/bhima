@@ -22,6 +22,7 @@ function StockDefineLotsModalController(
     Data.stockLine.unit_cost = Data.stockLine.wac;
   }
 
+  vm.serialNumberVisible = Data.stockLine.is_asset;
   const tracking = Data.stockLine.tracking_expiration;
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
 
@@ -93,6 +94,14 @@ function StockDefineLotsModalController(
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
+  }, {
+    field : 'serial_number',
+    displayName : 'TABLE.COLUMNS.SERIAL_NUMBER',
+    headerCellFilter : 'translate',
+    aggregationHideLabel : true,
+    visible : vm.serialNumberVisible,
+    width : 220,
+    cellTemplate : 'modules/stock/entry/modals/templates/serial_number.input.tmpl.html',
   }, {
     field : 'barcode',
     displayName : 'BARCODE.BARCODE',
@@ -507,6 +516,7 @@ function StockDefineLotsModalController(
         }
       });
     }
+
     return Promise.all(promises)
       .then(() => {
         saveSetting();
