@@ -8,6 +8,11 @@
       "DELIVERED" : "Livré",
       "AT_DEPOT" : "Au dépôt",
       "LOST" : "Perdu"
+    },
+    "CONDITION" : {
+      "NEW" : "Neuf",
+      "GOOD" : "Bon",
+      "BROKEN" : "Abimé"
     }
   }
 }

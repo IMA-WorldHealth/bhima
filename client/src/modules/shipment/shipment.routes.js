@@ -7,35 +7,22 @@ angular.module('bhima.routes')
         controller : 'ShipmentRegistryController as ShipmentCtrl',
       })
 
-      .state('shipments.create', {
-        url : '/create',
+      .state('shipments-create', {
+        url : '/shipments/create',
         params : {
-          parentUuid : { squash : true, value : null },
           isCreateState : { value : true },
         },
-        onEnter : ['$uibModal', '$transition$', shipmentModal],
-        onExit : ['$uibModalStack', closeModal],
+        templateUrl : 'modules/shipment/create-shipment.html',
+        controller : 'CreateShipmentController as CreateShipCtrl',
       })
 
-      .state('shipments.edit', {
-        url : '/:uuid/edit',
+      .state('shipments-edit', {
+        url : '/shipment/:uuid/edit',
         params : {
           uuid : { value : null, squash : true },
           isCreateState : { value : false },
         },
-        onEnter : ['$uibModal', '$transition$', shipmentModal],
-        onExit : ['$uibModalStack', closeModal],
+        templateUrl : 'modules/shipment/create-shipment.html',
+        controller : 'CreateShipmentController as CreateShipCtrl',
       });
   }]);
-
-function shipmentModal($modal, $transition) {
-  $modal.open({
-    templateUrl : 'modules/shipment/modals/shipment.modal.html',
-    controller : 'ShipmentModalController as ShipmentModalCtrl',
-    resolve : { params : () => $transition.params('to') },
-  }).result.catch(angular.noop);
-}
-
-function closeModal(ModalStack) {
-  ModalStack.dismissAll();
-}

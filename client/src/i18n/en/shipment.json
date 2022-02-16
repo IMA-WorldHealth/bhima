@@ -6,6 +6,7 @@
     "REQUISITION": "Requisition",
     "ORIGIN_DEPOT": "Origin depot",
     "CURRENT_DEPOT": "Current depot",
+    "CURRENT_LOCATION": "Current location",
     "DESTINATION_DEPOT": "Destination depot",
     "DATE_SENT": "Date sent",
     "DATE_DELIVERED": "Date delivered",
@@ -25,6 +26,9 @@
     "UPDATE_STATUS": "Update Status",
     "UPDATE_PACKING_LIST": "Update Packing List",
     "READY_TO_SHIP": "Ready to ship",
-    "OVERVIEW": "Shipment Overview"
+    "OVERVIEW": "Shipment Overview",
+    "CONDITION": "Condition",
+    "CREATED": "Shipment created successfully",
+    "UPDATED": "Shipment updated successfully"
   }
 }
