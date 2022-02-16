@@ -2727,6 +2727,7 @@ CREATE TABLE `shipment_item` (
   `date_delivered`     DATETIME,
   `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
+  `condition_id`       SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
