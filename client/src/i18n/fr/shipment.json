@@ -6,10 +6,11 @@
     "REQUISITION": "Requisition",
     "ORIGIN_DEPOT": "Dépôt d'origine",
     "CURRENT_DEPOT": "Dépôt en cours",
-    "DESTINATION_DEPOT": "Destination",
+    "CURRENT_LOCATION": "Localisation en cours",
+    "DESTINATION_DEPOT": "Dépôt de destination",
     "DATE_SENT": "Date d'envoi",
     "DATE_DELIVERED": "Date de livraison",
-    "ANTICIPATED_DELIVERY_DATE": "Anticipation livraison",
+    "ANTICIPATED_DELIVERY_DATE": "Date de livraison previsionnelle",
     "RECEIVER": "Recepteur",
     "CREATED_BY": "Crée par",
     "CREATE": "Créer",
@@ -25,6 +26,9 @@
     "UPDATE_STATUS": "Mise à jour statut",
     "UPDATE_PACKING_LIST": "Mise à jour colisage",
     "READY_TO_SHIP": "Prêt pour l'expédition",
-    "OVERVIEW": "Aperçu de l'expédition"
+    "OVERVIEW": "Aperçu de l'expédition",
+    "CONDITION": "Condition",
+    "CREATED": "Expédition créee avec succès",
+    "UPDATED": "Expédition mis à jour avec succès"
   }
 }

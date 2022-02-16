@@ -182,7 +182,7 @@ INSERT INTO unit VALUES
   (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
   (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
   (308, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 307, '/SHIPMENT_FOLDER'),
-  (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/new_shipment'),
+  (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/shipments/create'),
   (310, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 308, '/shipments');
 
 -- Reserved system account type
