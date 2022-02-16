@@ -69,9 +69,10 @@ function DepotService(Api, Modal, HttpCache) {
    * efficient than the more general Stock.inventories.* API since it uses the stock_movement_status
    * table.
    */
-  service.getStockQuantityForDate = function getStockQuantityForDate(depotUuid, date = new Date()) {
+  service.getStockQuantityForDate = function getStockQuantityForDate(depotUuid, options = {}, date = new Date()) {
     const target = `/depots/${depotUuid}/stock`;
-    return service.$http.get(target, { params : { date } })
+    const params = { ...options, date };
+    return service.$http.get(target, { params })
       .then(service.util.unwrapHttpResponse);
   };
 
