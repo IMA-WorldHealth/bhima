@@ -160,6 +160,7 @@ function StockLotsController(
 
     Stock.lots.read(null, filters)
       .then((lots) => {
+        console.log("Lots: ", lots);
         const current = new Date();
 
         const totals = {
