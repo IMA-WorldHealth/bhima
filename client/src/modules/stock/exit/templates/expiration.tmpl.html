@@ -1,6 +1,6 @@
-<div ng-if="row.entity.lot.uuid" class="ui-grid-cell-contents">
+<div ng-if="row.entity.lot_uuid" class="ui-grid-cell-contents">
   <span
-    am-time-ago="row.entity.lot.expiration_date"
-    title="{{row.entity.lot.expiration_date | date:grid.appScope.DATE_FMT }}"
+    am-time-ago="row.entity.expiration_date"
+    title="{{row.entity.expiration_date | date:grid.appScope.DATE_FMT }}"
     ></span>
 </div>

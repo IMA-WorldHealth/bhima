@@ -8,12 +8,12 @@
   <span ng-hide="row.entity._initialised" class="fa fa-times-circle"></span>
 </div>
 
-<div ng-show="row.entity.quantity && row.entity.lot.lifetime > 0" class="ui-grid-cell-contents bg-success text-center">
+<div ng-show="row.entity.quantity && row.entity.isExpired(grid.appScope.stockForm.details.date)" class="ui-grid-cell-contents bg-success text-center">
   <!-- success state: valid and initialised -->
   <span class="text-success fa fa-check-circle"></span>
 </div>
 
-<div ng-show="row.entity.quantity && row.entity.lot.lifetime < 0" class="ui-grid-cell-contents bg-danger text-center">
+<div ng-show="row.entity.quantity && row.entity.isExpired(grid.appScope.stockForm.details.date)" class="ui-grid-cell-contents bg-danger text-center">
   <!-- danger state: expired and initialised -->
   <span class="text-danger fa fa-clock-o"></span>
 </div>
