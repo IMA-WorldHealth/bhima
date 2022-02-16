@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('StockExitFormService', StockExitFormService);
 
 StockExitFormService.$inject = [
-  'Store', 'AppCache', 'SessionService', '$timeout',
-  'bhConstants', 'moment', 'DepotService', '$q', 'Pool', 'LotItemService',
+  'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants',
+  'moment', 'DepotService', '$q', 'Pool', 'LotItemService',
 ];
 
 /**
@@ -14,6 +14,10 @@ StockExitFormService.$inject = [
  */
 function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, moment, Depots, $q, Pool, Lot) {
 
+  const {
+    TO_PATIENT, TO_LOSS, TO_SERVICE, TO_OTHER_DEPOT,
+  } = bhConstants.flux;
+
   /**
    * @constructor
    */
@@ -23,7 +27,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     }
 
     this.cache = AppCache(cacheKey);
-    this.details = {};
+    this.details = { is_exit : 1 };
     this.store = new Store({ identifier : 'uuid', data : [] });
 
     // this variable is private and will contain the stock for the current depot.
@@ -44,6 +48,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     this.details = {
       date : new Date(),
       user_id : Session.user.id,
+      is_exit : 1,
     };
   };
 
@@ -57,6 +62,11 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     return this._queriesInProgress !== 0;
   };
 
+  /**
+   * @function fetchQuantityInStock
+   *
+   *
+   */
   StockExitForm.prototype.fetchQuantityInStock = function fetchQuantityInStock(depotUuid, date) {
     if (!depotUuid || !date) { return {}; }
 
@@ -76,6 +86,37 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
   };
 
   /**
+   * @function listLotsForInventory
+   *
+   * @description
+   * This lists the lots for a given inventory by its uuid.
+   *
+   */
+  StockExitForm.prototype.listLotsForInventory = function listLotsForInventory(inventoryUuid, lotUuid) {
+    const available = this._pool.list()
+      .filter(row => row.inventory_uuid === inventoryUuid);
+
+    if (lotUuid) {
+      const lot = this._pool.unavailable.get(lotUuid);
+      if (lot) {
+        return [lot, ...available];
+      }
+    }
+
+    return available;
+  };
+
+  StockExitForm.prototype.listAvailableInventory = function listAvailableInventory() {
+    const getUniqueBy = (arr, prop) => {
+      const set = new Set();
+      return arr.filter(o => !set.has(o[prop]) && set.add(o[prop]));
+    };
+
+    return getUniqueBy(this._pool.list(), 'inventory_uuid');
+
+  };
+
+  /**
    * @method setDepot()
    *
    * @description
@@ -84,6 +125,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    */
   StockExitForm.prototype.setDepot = function setDepot(depot) {
     this.details.depot_uuid = depot.uuid;
+    this.details.flux_id = TO_OTHER_DEPOT;
     this.depot = depot;
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
   };
@@ -111,6 +153,89 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     this.details.exit_type = type;
   };
 
+  StockExitForm.prototype.setLotsFromInventoryList = function setLotsFromInventoryList(inventories, uuidKey = 'uuid') {
+    // three lists
+    // - one to contain the inventories that have stock available in the depot
+    // - one to contain the inventories that do not have stock available in the depot
+    // - one to contain inventories that have stock, but the quantity isn't sufficient
+    const available = [];
+    const unavailable = [];
+    const insufficient = [];
+
+    inventories
+
+    // filter out all unconsumable inventories
+      .filter(inventory => inventory.consumable)
+
+    // classify all inventory as available/unavailable
+      .forEach(inventory => {
+        const matches = this.listLotsForInventory(inventory[uuidKey]);
+        if (matches.length > 0) {
+          available.push(inventory);
+        } else {
+          unavailable.push(inventory);
+        }
+      });
+
+    // if there are no consumable items in the invoice, this will exit early
+    if (available.length === 0 && unavailable.length === 0) {
+      console.log('No consumable items in inventory:', inventories);
+      return;
+    }
+
+    // adds a lot to the grid.
+    const addLotWithQuantity = (item, quantity) => {
+      const lot = new Lot(item);
+      lot.quantity = quantity;
+      lot.validate();
+      this.store.post(lot);
+      this._pool.use(item.lot_uuid);
+    };
+
+    // loop through the loaded inventory and assign the quantity
+    available.forEach(inventory => {
+      const matches = this.listLotsForInventory(inventory[uuidKey]);
+
+      let requestedQuantity = inventory.quantity;
+
+      // loop through the matches, allocating quantities to the inventory items.
+      matches.forEach(match => {
+
+        // escape hatch - if we don't need anymore, just return.
+        if (requestedQuantity === 0) { return; }
+
+        // this is how much is available to us to use
+        const availableQuantity = match.quantity;
+
+        // if the available quantity is greater than or equal to the required
+        // quantity, allocate the entire available quantity to this lot item
+        // and reduce the requested quantity by that amount.
+        if (availableQuantity >= requestedQuantity) {
+          addLotWithQuantity(match, requestedQuantity);
+          requestedQuantity = 0;
+
+        // otherwise, we need to reduce by the quantity available in the lot,
+        // and move to the next lot to start consuming it.
+        } else {
+          addLotWithQuantity(match, availableQuantity);
+          requestedQuantity -= availableQuantity;
+        }
+      });
+
+      // if there is still requested quantity left over, add this to the insufficient array.
+      // TODO(@jniles) - should we tell the user the quantity that isn't available?
+      if (requestedQuantity > 0) {
+        insufficient.push(inventory);
+      }
+    });
+
+    // finally, compute the error codes
+    console.log('available:', available);
+    console.log('unavailable:', unavailable);
+    console.log('insufficient:', insufficient);
+
+  };
+
   /**
    * @method setPatientDistribution
    *
@@ -118,9 +243,15 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    * Sets the form up for a patient distribution.
    */
   StockExitForm.prototype.setPatientDistribution = function setPatientDistribution(patient) {
-    this.entity_uuid = patient.uuid;
-    console.log('patient:', patient);
-    console.log('invoice:', patient.invoice);
+    this.details.entity_uuid = patient.uuid;
+    this.details.invoice_uuid = patient.invoice.uuid;
+    this.details.flux_id = TO_PATIENT;
+    this.store.clear();
+
+    // TODO(@jniles) - ensure that all the data is loaded by this point.
+
+    // request the lots from a list of inventory items.
+    this.setLotsFromInventoryList(patient.invoice.items, 'inventory_uuid');
   };
 
   /**
@@ -130,7 +261,8 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    * Sets the form up for a service distribution.
    */
   StockExitForm.prototype.setServiceDistribution = function setServiceDistribution(service) {
-    this.entity_uuid = service.uuid;
+    this.details.entity_uuid = service.uuid;
+    this.details.flux_id = TO_SERVICE;
     console.log('service:', service);
     console.log('requisition:', service.requisition);
   };
@@ -142,6 +274,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    * Sets the form up for a depot distribution.
    */
   StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(depot) {
+    this.details.entity_uuid = depot.uuid;
     console.log('depot:', depot);
     console.log('requisition:', depot.requisition);
   };
@@ -153,6 +286,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    * Sets the form up for a depot distribution.
    */
   StockExitForm.prototype.setLossDistribution = function setLossDistribution(depot) {
+    this.details.flux_id = TO_LOSS;
     console.log('depot:', depot);
   };
 
@@ -171,8 +305,8 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     // will repeat will n > 0
     while (i--) {
       elt = new Lot();
-      elt.id = this.store.data.length;
       this.store.post(elt);
+      elt._initialised = false;
     }
 
     this.validate();
@@ -200,6 +334,11 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
    */
   StockExitForm.prototype.clear = function clear() {
     this.store.clear();
+    this._pool.available.clear();
+    this._pool.unavailable.clear();
+    this._queriesInProgress = 0;
+
+    delete this.depot;
 
     $timeout(() => {
       this.setup();
@@ -207,7 +346,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
       // validate() is only set up to test on submission as it checks the validity
       // of individual items which will not have been configured, manually
       // reset error state
-      delete this._error;
+      delete this._errors;
     });
   };
 
@@ -296,9 +435,9 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
     // stock losses do not need a destination
     if (this.details.exit_type !== 'loss') {
 
-      if (hasExpiredLots) {
-        // return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
-      }
+      // if (hasExpiredLots) {
+      //   // return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
+      // }
 
       if (!hasDestination) {
       // return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
@@ -309,6 +448,66 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
 
     // NOTE(@jniles) - expired lots are only relevant if not in loss.
     return hasValidLots && hasRequiredDetails;
+  };
+
+  /**
+   * @function getI18nKeys
+   *
+   * @description
+   * Gets the i18nKeys to render the description.  Note, not all data is
+   * cached on the client so this function is async, looking up data from
+   * the server.
+   *
+   * It requires that an exit type be set before calling it.
+   *
+   * TODO(@jniles) - should this be changed?
+   */
+  StockExitForm.prototype.getI18nKeys = function getI18nKeys() {
+    const keys = { depot : this.depot.text };
+
+    if (!this.details.exit_type) { return ''; }
+
+    return $q.resolve('hello', keys);
+
+    //     const queries = this.details.exit_type === 'patient'
+    //       ? [
+    //         PatientService.read(null, { uuid : this.details.entity_uuid }),
+    //         PatientInvoiceService.read(null, { uuid : this.details.invoice_uuid }),
+    //       ]
+    //       : [
+    //         ServiceService.read(null, { uuid : this.details.entity_uuid }),
+    //       ];
+
+    //     $q.all(queries).
+
+    //     if (patients && patients.length) {
+    //       const patient = patients[0];
+    //       i18nKeys.patient = patient.display_name.concat(` (${patient.reference})`);
+    //     }
+
+    //     if (invoices && invoices.length) {
+    //       const invoice = invoices[0];
+    //       i18nKeys.invoice = invoice.reference;
+    //     }
+
+    //     if (services && services.length) {
+    //       const service = services[0];
+    //       i18nKeys.service = service.name;
+    //     }
+
+  };
+
+  /**
+   * @function getDataForSubmission
+   *
+   * @description
+   * This method returns the "stock movement object" needed by the stock exit form to submit data.
+   */
+  StockExitForm.prototype.getDataForSubmission = function getDataForSubmission() {
+    const data = { ...this.details };
+
+    // how do we
+
   };
 
   /**
