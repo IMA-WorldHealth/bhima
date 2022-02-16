@@ -29,6 +29,12 @@ function constantConfig() {
       EXPENSE : 5,
       TITLE : 6,
     },
+    condition : {
+      EMPTY : 1,
+      NEW : 2,
+      GOOD : 3,
+      BROKEN : 4,
+    },
     shipmentStatus : {
       EMPTY : 1,
       PARTIAL : 2,

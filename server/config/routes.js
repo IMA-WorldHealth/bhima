@@ -1119,5 +1119,8 @@ exports.configure = function configure(app) {
 
   // shipment registry
   app.get('/shipments', shipment.list);
+  app.get('/shipments/:uuid', shipment.details);
+  app.put('/shipments/:uuid', shipment.update);
+  app.post('/shipments', shipment.create);
   app.get('/reports/shipments', shipment.getReport);
 };
