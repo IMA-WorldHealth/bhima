@@ -188,6 +188,37 @@ function LotsRegistryService(uiGridConstants, Session) {
       cellFilter : 'translate',
       visible : false,
     }, {
+      field : 'is_asset',
+      displayName : 'FORM.LABELS.ASSET',
+      headerCellFilter : 'translate',
+      visible : false,
+      cellTemplate : '/modules/inventory/list/templates/asset.cell.tmpl.html',
+    }, {
+      field : 'reference_number',
+      displayName : 'FORM.LABELS.REFERENCE_NUMBER',
+      headerCellFilter : 'translate',
+      visible : false,
+      width : 150,
+      // ??? cellTemplate : '/modules/inventory/list/templates/reference_number.cell.html',
+    }, {
+      field : 'manufacturer_brand',
+      displayName : 'FORM.LABELS.MANUFACTURER_BRAND',
+      headerCellFilter : 'translate',
+      visible : false,
+      width : 150,
+    }, {
+      field : 'manufacturer_model',
+      displayName : 'FORM.LABELS.MANUFACTURER_MODEL',
+      headerCellFilter : 'translate',
+      visible : false,
+      width : 150,
+    }, {
+      field : 'serial_number',
+      displayName : 'FORM.LABELS.SERIAL_NUMBER',
+      headerCellFilter : 'translate',
+      visible : false,
+      width : 150,
+    }, {
       field : 'action',
       displayName : '',
       enableFiltering : false,

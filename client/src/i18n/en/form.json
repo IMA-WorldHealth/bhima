@@ -735,6 +735,7 @@
             "SELECT_ONE": "Select One",
             "SELECT": "Select",
             "SENIORITY_BONUS": "seniority bonus",
+            "SERIAL_NUMBER": "Serial Number",
             "SERVER_DATE": "Server Date",
             "SERVICE": "Service",
             "SERVICE_OPTIONAL": "Service (optional)",
