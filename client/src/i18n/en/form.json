@@ -975,6 +975,7 @@
             "BED":"Select a Bed",
             "CASHBOX": "Select a cashbox",
             "CASHBOX_OPTIONAL": "Select a cashbox (optional)",
+            "CONDITION": "Select a condition",
             "COST_CENTER": "Select a Cost Center",
             "COUNTRY": "Select Country",
             "CREDITOR_GROUP": "Select a Creditor Group",
