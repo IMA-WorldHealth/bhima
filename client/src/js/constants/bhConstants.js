@@ -37,12 +37,13 @@ function constantConfig() {
     },
     shipmentStatus : {
       EMPTY : 1,
-      PARTIAL : 2,
-      COMPLETE : 3,
+      AT_DEPOT : 2,
+      READY_FOR_SHIPMENT : 3,
       IN_TRANSIT : 4,
-      AT_DEPOT : 5,
-      DELIVERED : 6,
-      LOST : 7,
+      PARTIAL : 5,
+      COMPLETE : 6,
+      DELIVERED : 7,
+      LOST : 8,
     },
     stepDownAllocation : {
       METHOD_OPTIONS : ['proportional', 'flat'],

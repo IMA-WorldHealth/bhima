@@ -1,0 +1,43 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-inventories-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
+      <li class="static" translate> SHIPMENT.READY_TO_SHIP </li>
+      <li class="title"> {{ $ctrl.shipment.reference }} </li>
+    </ol>
+  </div>
+
+  <div class="alert alert-info" style="margin-top: 0; margin-bottom: 0;">
+    <h3 style="margin-top: 0; margin-bottom: 0;" translate>SHIPMENT.READY_TO_SHIP</h3>
+    <p translate>SHIPMENT.READY_TO_SHIP_MESSAGE</p>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label translate>FORM.LABELS.STATUS</label>
+      <p translate>{{ $ctrl.shipment.status }}</p>
+    </div>
+    <div class="form-group">
+      <label translate>FORM.LABELS.LABEL</label>
+      <p>{{ $ctrl.shipment.name }}</p>
+    </div>
+    <div class="form-group">
+      <label translate>FORM.LABELS.NOTES</label>
+      <p>{{ $ctrl.shipment.description }}</p>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ui-sref="shipments" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.isInDepot">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

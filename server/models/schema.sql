@@ -2745,7 +2745,7 @@ CREATE TABLE `shipment_location` (
   `uuid`               BINARY(16) NOT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
   `location_uuid`      BINARY(16) NOT NULL,
-  `date`               DATETIME,
+  `date`               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`            SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_location__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),

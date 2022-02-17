@@ -6,40 +6,27 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
     <li>
-      <a data-method="edit-record" ng-click="grid.appScope.showPackingList(row.entity)" href>
+      <a ng-click="grid.appScope.showPackingList(row.entity)" href>
         <i class="fa fa-newspaper-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
-      </a>
-    </li>
-    <li>
-      <a data-method="edit-record" ng-click="grid.appScope.showPackingList(row.entity)" href>
-        <i class="fa fa-cube"></i> <span translate>SHIPMENT.PACKING_LIST</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a ng-click="grid.appScope.updateLocation(row.entity)" href>
+      <a ui-sref="shipments.update-location({ uuid : row.entity.uuid })" href>
         <span class="">
           <i class="fa fa-map-marker"></i> <span translate>SHIPMENT.UPDATE_LOCATION</span>
         </span>
       </a>
     </li>
-    <li>
-      <a ng-click="grid.appScope.updateStatus(row.entity)" href>
-        <span class="">
-          <i class="fa fa-dot-circle-o"></i> <span translate>SHIPMENT.UPDATE_STATUS</span>
-        </span>
-      </a>
-    </li>
-    <li>
+    <li ng-if="row.entity.isAtDepot">
       <a ui-sref="shipments-edit({ uuid : row.entity.uuid })" href>
         <span class="">
           <i class="fa fa-cube"></i> <span translate>SHIPMENT.UPDATE_PACKING_LIST</span>
         </span>
       </a>
     </li>
-    <li class="divider"></li>
-    <li>
-      <a ng-click="grid.appScope.ship(row.entity)" href>
+    <li ng-if="row.entity.isAtDepot">
+      <a ui-sref="shipments.ready-for-shipment({ uuid : row.entity.uuid })" href>
         <span class="">
           <i class="fa fa-truck"></i> <span translate>SHIPMENT.READY_TO_SHIP</span>
         </span>
@@ -47,7 +34,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a ng-click="grid.appScope.deleteDepot(row.entity)" href>
+      <a ng-click="grid.appScope.getShipmentBarcode(row.entity.uuid)" href>
         <span class="">
           <i class="fa fa-barcode"></i> <span translate>BARCODE.BARCODE</span>
         </span>
@@ -55,7 +42,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a ng-click="grid.appScope.deleteDepot(row.entity)" href>
+      <a ng-click="grid.appScope.deleteShipment(row.entity.uuid)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
         </span>
