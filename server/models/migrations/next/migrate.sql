@@ -179,12 +179,13 @@ CREATE TABLE `shipment_item` (
 /** ADD DEFAULT SHIPMENT STATUS */
 INSERT INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES 
   (1, 'empty', 'ASSET.STATUS.EMPTY'),
-  (2, 'partial', 'ASSET.STATUS.PARTIAL'),
-  (3, 'complete', 'ASSET.STATUS.COMPLETE'),
+  (2, 'at_depot', 'ASSET.STATUS.AT_DEPOT'),
+  (3, 'ready', 'ASSET.STATUS.READY_FOR_SHIPMENT'),
   (4, 'in_transit', 'ASSET.STATUS.IN_TRANSIT'),
-  (5, 'at_depot', 'ASSET.STATUS.AT_DEPOT'),
-  (6, 'delivered', 'ASSET.STATUS.DELIVERED'),
-  (7, 'lost', 'ASSET.STATUS.LOST');
+  (5, 'partial', 'ASSET.STATUS.PARTIAL'),
+  (6, 'complete', 'ASSET.STATUS.COMPLETE'),
+  (7, 'delivered', 'ASSET.STATUS.DELIVERED'),
+  (8, 'lost', 'ASSET.STATUS.LOST');
 
 /** ADD DEFAULT ASSET CONDITION */
 INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES 
@@ -217,7 +218,7 @@ CREATE TABLE `shipment_location` (
   `uuid`               BINARY(16) NOT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
   `location_uuid`      BINARY(16) NOT NULL,
-  `date`               DATETIME,
+  `date`               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`            SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_location__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),

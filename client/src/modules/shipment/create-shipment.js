@@ -16,6 +16,7 @@ function CreateShipmentController(
 ) {
   const vm = this;
   const existingShipmentUuid = $state.params.uuid;
+  vm.existingShipmentUuid = existingShipmentUuid;
   vm.isCreateState = $state.params.isCreateState;
   vm.shipmentForm = new StockForm('ShipmentForm');
   vm.shipment = {};
@@ -391,7 +392,7 @@ function CreateShipmentController(
 
   function loadShipment() {
     if (!existingShipmentUuid) { return; }
-    Shipment.read(existingShipmentUuid)
+    Shipment.readAll(existingShipmentUuid)
       .then(shipment => {
         vm.shipment = shipment;
         vm.shipment.anticipated_delivery_date = new Date(vm.shipment.anticipated_delivery_date);

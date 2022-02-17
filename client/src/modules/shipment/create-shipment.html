@@ -151,7 +151,7 @@
       <div class="row" style="margin-top: 5px;">
         <div class="col-xs-12">
           <div class="col-md-6">
-            <button class="btn btn-success" type="button" disabled="$CreateShipCtrl.isCreateState">
+            <button ng-if="CreateShipCtrl.existingShipmentUuid" class="btn btn-success" type="button" ui-sref="shipments.ready-for-shipment({ uuid : CreateShipCtrl.existingShipmentUuid })">
               <span translate>SHIPMENT.READY_TO_SHIP</span> <i class="fa fa-truck"></i>
             </button>
           </div>

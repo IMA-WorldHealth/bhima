@@ -3,18 +3,29 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const { uuid } = require('../../../lib/util');
 
-const SHIPMENT_PARTIAL = 2;
-const SHIPMENT_COMPLETE = 3;
+const SHIPMENT_AT_DEPOT = 2;
+const SHIPMENT_READY = 3;
 const SHIPMENT_IN_TRANSIT = 4;
-const SHIPMENT_AT_DEPOT = 5;
+const SHIPMENT_PARTIAL = 5;
+const SHIPMENT_COMPLETE = 6;
 const SHIPMENT_IN_TRANSIT_OR_PARTIAL = [SHIPMENT_IN_TRANSIT, SHIPMENT_PARTIAL];
 
 exports.find = find;
 exports.lookup = lookup;
+exports.getShipmentLocations = getShipmentLocations;
 
 exports.list = async (req, res, next) => {
   try {
     const result = await find(req.query);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.single = async (req, res, next) => {
+  try {
+    const result = await lookupSingle(req.params.uuid);
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -106,7 +117,7 @@ exports.update = async (req, res, next) => {
       [db.bid(identifier)],
     );
 
-    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT && shipmentStatus.ready_to_ship !== 1;
+    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT;
 
     if (canUpdate) {
       const transaction = db.transaction();
@@ -137,35 +148,62 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.updateShipmentStatus = async (req, res, next) => {
+exports.setReadyForShipment = async (req, res, next) => {
   try {
     const identifier = req.params.uuid;
     const params = req.body;
+    params.status_id = SHIPMENT_READY;
+    await updateStatus(identifier, params);
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (params.uuid) {
-      delete params.uuid;
-    }
+exports.updateLocation = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const { params } = req.body;
 
-    _.pick(params, ['status_id']);
+    _.pick(params, ['current_depot_uuid']);
 
     const [shipmentStatus] = await db.exec(
       'SELECT status_id FROM shipment WHERE uuid = ?',
       [db.bid(identifier)],
     );
 
-    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT && shipmentStatus.ready_to_ship !== 1;
+    const canUpdate = shipmentStatus.status_id === SHIPMENT_IN_TRANSIT;
 
     if (canUpdate) {
+      // the update consit of adding new entry in the shipment location table
       const transaction = db.transaction();
+      const bIdentifier = db.bid(identifier);
+      const bCurrentDepotUuid = db.bid(params.current_depot_uuid);
+      const newShipmentLocation = {
+        uuid : db.bid(uuid()),
+        shipment_uuid : bIdentifier,
+        location_uuid : bCurrentDepotUuid,
+        user_id : req.session.user.id,
+      };
       transaction.addQuery(
-        'UPDATE shipment SET ? WHERE uuid = ? AND status_id = ?',
-        [params, db.bid(identifier), SHIPMENT_AT_DEPOT],
+        'UPDATE shipment SET current_depot_uuid = ? WHERE uuid = ?;', [bCurrentDepotUuid, bIdentifier],
       );
+      transaction.addQuery('INSERT INTO shipment_location SET ?;', [newShipmentLocation]);
       await transaction.execute();
     } else {
-      throw new Error('This shipment is already ready to go, you cannot update it');
+      throw new Error('You cannot update it');
     }
     res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.listShipmentLocation = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const rows = await getShipmentLocations(identifier);
+    res.status(200).json(rows);
   } catch (error) {
     next(error);
   }
@@ -406,6 +444,7 @@ function find(params) {
     SELECT 
       BUID(sh.uuid) AS uuid, 
       ss.translation_key AS status,
+      ss.id AS status_id,
       dm.text AS reference,
       dm2.text AS stock_reference,
       d.text AS origin_depot,
@@ -443,7 +482,7 @@ async function lookup(identifier) {
       BUID(d.uuid) AS origin_depot_uuid,
       d2.text AS destination_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
-      d3.text AS current_depot,
+      d3.name AS current_depot,
       BUID(d3.uuid) AS current_depot_uuid,
       shp.name AS shipper, shp.id AS shipper_id,
       sh.name, sh.description, sh.note, 
@@ -457,7 +496,7 @@ async function lookup(identifier) {
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
     JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
     LEFT JOIN shipper shp ON shp.id = sh.shipper_id
-    LEFT JOIN depot d3 ON d3.uuid = sh.current_depot_uuid 
+    LEFT JOIN location d3 ON d3.uuid = sh.current_depot_uuid 
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
@@ -476,8 +515,81 @@ async function lookup(identifier) {
   return shipment;
 }
 
+async function lookupSingle(identifier) {
+  const sql = `
+    SELECT 
+      BUID(sh.uuid) AS uuid, 
+      ss.translation_key AS status,
+      ss.id AS status_id,
+      dm.text AS reference,
+      dm2.text AS stock_reference,
+      d.text AS origin_depot,
+      BUID(d.uuid) AS origin_depot_uuid,
+      d2.text AS destination_depot,
+      BUID(d2.uuid) AS destination_depot_uuid,
+      d3.name AS current_depot,
+      BUID(d3.uuid) AS current_depot_uuid,
+      shp.name AS shipper, shp.id AS shipper_id,
+      sh.name, sh.description, sh.note, 
+      sh.created_at AS date, sh.date_sent, sh.date_delivered,
+      sh.anticipated_delivery_date,
+      sh.receiver, u.display_name AS created_by
+    FROM shipment sh
+    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN depot d ON d.uuid = sh.origin_depot_uuid
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
+    LEFT JOIN shipper shp ON shp.id = sh.shipper_id
+    LEFT JOIN location d3 ON d3.uuid = sh.current_depot_uuid 
+    JOIN document_map dm ON dm.uuid = sh.uuid
+    JOIN user u ON u.id = sh.created_by
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    WHERE sh.uuid = ?
+  `;
+
+  return db.one(sql, [db.bid(identifier)]);
+}
+
 async function isShipmentExists(shipmentUuid) {
+  if (!shipmentUuid) { return false; }
+
   const sql = `SELECT uuid FROM shipment WHERE uuid = ?`;
   const [result] = await db.exec(sql, [db.bid(shipmentUuid)]);
   return !!result;
+}
+
+async function getShipmentLocations(shipmentUuid) {
+  const sql = `
+    SELECT l.name, sl.date, u.display_name
+    FROM shipment_location sl
+    JOIN location l ON l.uuid = sl.location_uuid
+    JOIN user u ON u.id = sl.user_id
+    WHERE sl.shipment_uuid = ?
+    ORDER BY sl.date ASC;
+  `;
+
+  return db.exec(sql, [db.bid(shipmentUuid)]);
+}
+
+async function updateStatus(identifier, params) {
+  _.pick(params, ['status_id']);
+
+  const [shipmentStatus] = await db.exec(
+    'SELECT status_id FROM shipment WHERE uuid = ?',
+    [db.bid(identifier)],
+  );
+
+  const inDepot = !!(shipmentStatus.status_id === SHIPMENT_AT_DEPOT);
+  const isReady = !!(shipmentStatus.status_id === SHIPMENT_READY);
+  const canUpdate = inDepot || isReady;
+
+  if (canUpdate) {
+    const transaction = db.transaction();
+    transaction.addQuery(
+      'UPDATE shipment SET ? WHERE uuid = ? AND status_id IN (?)',
+      [params, db.bid(identifier), [SHIPMENT_AT_DEPOT, SHIPMENT_READY]],
+    );
+    await transaction.execute();
+  } else {
+    throw new Error('You cannot update it');
+  }
 }

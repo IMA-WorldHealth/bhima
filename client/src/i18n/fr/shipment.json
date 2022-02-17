@@ -23,12 +23,17 @@
     "NEW_SHIPMENT": "Nouvelle expédition",
     "SHIPMENT_REGISTRY": "Registre des expéditions",
     "UPDATE_LOCATION": "Mise à jour localisation",
+    "UPDATE_LOCATION_MESSAGE": "Vous êtes sur le point de changer la localisation de cette expédition, cette information sera enregistrée dans l'historique de cette expédition",
+    "UPDATE_LOCATION_WARNING": "Vous ne pouvez pas changer la localisation car seul les expéditions ayant un statut EN-TRANSIT peuvent bénéficier du changement de localisation",
     "UPDATE_STATUS": "Mise à jour statut",
     "UPDATE_PACKING_LIST": "Mise à jour colisage",
     "READY_TO_SHIP": "Prêt pour l'expédition",
+    "READY_TO_SHIP_MESSAGE": "En validant, vous confirmez que cette expédition est prête pour la sortie du dépôt; Vous ne pourrez plus y effectuer des changements",
     "OVERVIEW": "Aperçu de l'expédition",
     "CONDITION": "Condition",
     "CREATED": "Expédition créee avec succès",
-    "UPDATED": "Expédition mis à jour avec succès"
+    "UPDATED": "Expédition mis à jour avec succès",
+    "NOT_DEFINED": "Non-défini",
+    "NEW_LOCATION": "Nouvelle localisation"
   }
 }

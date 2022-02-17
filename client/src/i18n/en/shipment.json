@@ -23,12 +23,17 @@
     "NEW_SHIPMENT": "New Shipment",
     "SHIPMENT_REGISTRY": "Shipment Registry",
     "UPDATE_LOCATION": "Update Location",
+    "UPDATE_LOCATION_MESSAGE": "You are about to change the location of this shipment, this information will be saved in the history of this shipment",
+    "UPDATE_LOCATION_WARNING": "You cannot change the location because only shipments with an IN-TRANSIT status can benefit from the change of location",
     "UPDATE_STATUS": "Update Status",
     "UPDATE_PACKING_LIST": "Update Packing List",
     "READY_TO_SHIP": "Ready to ship",
+    "READY_TO_SHIP_MESSAGE":"By validating, you confirm that this shipment is ready to leave the warehouse; You will no longer be able to make changes to it.",
     "OVERVIEW": "Shipment Overview",
     "CONDITION": "Condition",
     "CREATED": "Shipment created successfully",
-    "UPDATED": "Shipment updated successfully"
+    "UPDATED": "Shipment updated successfully",
+    "NOT_DEFINED": "Not Defined",
+    "NEW_LOCATION": "New Location"
   }
 }
