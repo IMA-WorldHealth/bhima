@@ -18,6 +18,7 @@
     "UNAUTHORIZED" : "You have submitted a bad username or password combination.  Please login in with valid credentials to continue.",
     "UNKNOWN" : "An error occurred.",
     "OVERPAID_INVOICE" : "You have overpaid the invoices.",
+    "ER_DATE_RANGE" : "The end date cannot be before the start date!",
     "ER_DUP_KEY" : "A key collided in a unique database field.  Please retry your action.  If the problem persists, contact the developers.",
     "ER_DUP_ENTRY" : "You have duplicated a value in a unique field!  Please make sure that the necessary values are unique.",
     "ER_DUP_PURCHASE_ORDER_ITEM" : "You have duplicate items for an inventory item (shown in red).  Please delete it and update the previous item with that inventory item.",
