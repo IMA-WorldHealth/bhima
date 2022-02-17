@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const { uuid } = require('../../../lib/util');
@@ -100,23 +101,70 @@ exports.update = async (req, res, next) => {
     const { lots } = params;
     delete params.lots;
 
-    const transaction = db.transaction();
-    transaction.addQuery('UPDATE shipment SET ? WHERE uuid = ?', [params, db.bid(identifier)]);
-    transaction.addQuery('DELETE FROM shipment_item WHERE shipment_uuid = ?', [db.bid(identifier)]);
+    const [shipmentStatus] = await db.exec(
+      'SELECT status_id, ready_for_shipment FROM shipment WHERE uuid = ?',
+      [db.bid(identifier)],
+    );
 
-    lots.forEach((lot) => {
-      const shipmentItem = {
-        uuid : db.bid(uuid()),
-        shipment_uuid : db.bid(identifier),
-        lot_uuid : db.bid(lot.lot_uuid),
-        date_packed : new Date(),
-        quantity_sent : lot.quantity,
-        condition_id : lot.condition_id,
-      };
-      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
-    });
+    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT && shipmentStatus.ready_to_ship !== 1;
 
-    await transaction.execute();
+    if (canUpdate) {
+      const transaction = db.transaction();
+      transaction.addQuery(
+        'UPDATE shipment SET ? WHERE uuid = ? AND status_id = ?',
+        [params, db.bid(identifier), SHIPMENT_AT_DEPOT],
+      );
+      transaction.addQuery('DELETE FROM shipment_item WHERE shipment_uuid = ?', [db.bid(identifier)]);
+
+      lots.forEach((lot) => {
+        const shipmentItem = {
+          uuid : db.bid(uuid()),
+          shipment_uuid : db.bid(identifier),
+          lot_uuid : db.bid(lot.lot_uuid),
+          date_packed : new Date(),
+          quantity_sent : lot.quantity,
+          condition_id : lot.condition_id,
+        };
+        transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+      });
+      await transaction.execute();
+    } else {
+      throw new Error('This shipment is already ready to go, you cannot update it');
+    }
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateShipmentStatus = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const params = req.body;
+
+    if (params.uuid) {
+      delete params.uuid;
+    }
+
+    _.pick(params, ['status_id']);
+
+    const [shipmentStatus] = await db.exec(
+      'SELECT status_id FROM shipment WHERE uuid = ?',
+      [db.bid(identifier)],
+    );
+
+    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT && shipmentStatus.ready_to_ship !== 1;
+
+    if (canUpdate) {
+      const transaction = db.transaction();
+      transaction.addQuery(
+        'UPDATE shipment SET ? WHERE uuid = ? AND status_id = ?',
+        [params, db.bid(identifier), SHIPMENT_AT_DEPOT],
+      );
+      await transaction.execute();
+    } else {
+      throw new Error('This shipment is already ready to go, you cannot update it');
+    }
     res.sendStatus(201);
   } catch (error) {
     next(error);
