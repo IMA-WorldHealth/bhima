@@ -14,15 +14,21 @@ angular.module('bhima.routes')
         },
         templateUrl : 'modules/shipment/create-shipment.html',
         controller : 'CreateShipmentController as CreateShipCtrl',
+        onEnter : ['$transition$', gotoPage],
       })
 
       .state('shipments-edit', {
-        url : '/shipment/:uuid/edit',
+        url : '/shipments/:uuid/edit',
         params : {
           uuid : { value : null, squash : true },
           isCreateState : { value : false },
         },
         templateUrl : 'modules/shipment/create-shipment.html',
         controller : 'CreateShipmentController as CreateShipCtrl',
+        onEnter : ['$transition$', gotoPage],
       });
   }]);
+
+function gotoPage($transition) {
+  $transition.params('to');
+}
