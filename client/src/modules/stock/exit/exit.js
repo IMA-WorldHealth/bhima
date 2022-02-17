@@ -7,7 +7,6 @@ StockExitController.$inject = [
   'bhConstants', 'ReceiptModal', 'StockExitFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate',
   'GridExportService', 'Store', 'BarcodeService',
-  'PatientService', 'PatientInvoiceService', 'ServiceService',
 ];
 
 /**
@@ -20,7 +19,6 @@ function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, Stock, StockModal, uiGridConstants, $translate,
   GridExportService, Store, Barcode,
-  PatientService, PatientInvoiceService, ServiceService,
 ) {
   const vm = this;
 
@@ -39,13 +37,6 @@ function StockExitController(
   vm.onSelectExitType = onSelectExitType;
   vm.submit = submit;
   vm.getLotByBarcode = getLotByBarcode;
-
-  // const mapExit = {
-  //   patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
-  //   service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitService },
-  //   depot : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
-  //   loss : { description : 'STOCK.EXIT_LOSS', find : configureLoss, submit : submitLoss },
-  // };
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
@@ -267,50 +258,6 @@ function StockExitController(
     // return mapExit[vm.movement.exit_type].submit(form)
     //   .catch(Notify.handleError)
     //   .finally(() => { vm.$loading = false; });
-  }
-
-  function buildDescription(entityUuid, invoiceUuid) {
-    const dbPromises = [
-      PatientService.read(null, { uuid : entityUuid }),
-      ServiceService.read(null, { uuid : entityUuid }),
-      invoiceUuid ? PatientInvoiceService.read(null, { uuid : invoiceUuid }) : [],
-    ];
-
-    return Promise.all(dbPromises)
-      .then(([patients, services, invoices]) => {
-        const i18nKeys = { depot : vm.stockForm.depot.text };
-
-        if (patients && patients.length) {
-          const patient = patients[0];
-          i18nKeys.patient = patient.display_name.concat(` (${patient.reference})`);
-        }
-
-        if (invoices && invoices.length) {
-          const invoice = invoices[0];
-          i18nKeys.invoice = invoice.reference;
-        }
-
-        if (services && services.length) {
-          const service = services[0];
-          i18nKeys.service = service.name;
-        }
-
-        let description;
-
-        if (vm.stockForm.depot.text && i18nKeys.patient) {
-          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED', i18nKeys);
-        }
-
-        if (vm.stockForm.depot.text && i18nKeys.patient && i18nKeys.invoice) {
-          description = $translate.instant('STOCK.EXIT_PATIENT_ADVANCED_WITH_INVOICE', i18nKeys);
-        }
-
-        if (vm.stockForm.depot.text && i18nKeys.service) {
-          description = $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', i18nKeys);
-        }
-
-        return description ? description.concat(' : ') : '';
-      });
   }
 
   // // submit patient
