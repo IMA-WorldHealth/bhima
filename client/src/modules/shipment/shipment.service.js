@@ -86,5 +86,20 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
     return $httpParamSerializer(options);
   };
 
+  service.readAll = (uuid, parameters) => {
+    return service.$http.get(`/shipments/${uuid}/full`, { params : parameters })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.updateLocation = (uuid, params) => {
+    return service.$http.post(`/shipments/${uuid}/location`, { params })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.setReadyForShipment = (uuid) => {
+    return service.$http.put(`/shipments/${uuid}/ready-for-shipment`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   return service;
 }
