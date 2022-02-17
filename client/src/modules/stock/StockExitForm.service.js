@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 StockExitFormService.$inject = [
   'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants',
-  'moment', 'DepotService', '$q', 'Pool', 'LotItemService',
+  'DepotService', 'Pool', 'LotItemService', 'StockExitFormHelperService',
 ];
 
 /**
@@ -12,7 +12,7 @@ StockExitFormService.$inject = [
  * @description
  * This form powers the stock exit form in BHIMA.
  */
-function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, moment, Depots, $q, Pool, Lot) {
+function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers) {
 
   const {
     TO_PATIENT, TO_LOSS, TO_SERVICE, TO_OTHER_DEPOT,
@@ -451,53 +451,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
   };
 
   /**
-   * @function getI18nKeys
-   *
-   * @description
-   * Gets the i18nKeys to render the description.  Note, not all data is
-   * cached on the client so this function is async, looking up data from
-   * the server.
-   *
-   * It requires that an exit type be set before calling it.
-   *
-   * TODO(@jniles) - should this be changed?
-   */
-  StockExitForm.prototype.getI18nKeys = function getI18nKeys() {
-    const keys = { depot : this.depot.text };
-
-    if (!this.details.exit_type) { return ''; }
-
-    return $q.resolve('hello', keys);
-
-    //     const queries = this.details.exit_type === 'patient'
-    //       ? [
-    //         PatientService.read(null, { uuid : this.details.entity_uuid }),
-    //         PatientInvoiceService.read(null, { uuid : this.details.invoice_uuid }),
-    //       ]
-    //       : [
-    //         ServiceService.read(null, { uuid : this.details.entity_uuid }),
-    //       ];
-
-    //     $q.all(queries).
-
-    //     if (patients && patients.length) {
-    //       const patient = patients[0];
-    //       i18nKeys.patient = patient.display_name.concat(` (${patient.reference})`);
-    //     }
-
-    //     if (invoices && invoices.length) {
-    //       const invoice = invoices[0];
-    //       i18nKeys.invoice = invoice.reference;
-    //     }
-
-    //     if (services && services.length) {
-    //       const service = services[0];
-    //       i18nKeys.service = service.name;
-    //     }
-
-  };
-
-  /**
    * @function getDataForSubmission
    *
    * @description
@@ -506,33 +459,13 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, m
   StockExitForm.prototype.getDataForSubmission = function getDataForSubmission() {
     const data = { ...this.details };
 
+    Helpers.getDescription(this.depot, data)
+      .then(description => {
+        Object.assign(data, { description });
+      });
+
     // how do we
 
-  };
-
-  /**
-   * @function formatRowsForExport
-   *
-   * @description this function will be apply to grid columns as filter for getting new columns
-   *
-   * @param {array} rows - refer to the grid data array
-   * @return {array} - return an array of array with value as an object in this format : { value : ... }
-   */
-  StockExitForm.prototype.formatRowsForExport = function formatRowsForExport(rows = []) {
-    return rows.map(row => {
-      const code = row.inventory?.code;
-      const description = row.inventory?.text;
-      const lot = row.lot?.label;
-      const price = row.inventory?.unit_cost;
-      const quantity = row.quantity?.quantity;
-      const type = row.quantity?.unit_type;
-      const available = row.inventory?.quantity;
-      const amount = (price && quantity) ? price * quantity : 0;
-      const expiration = (row.lot && row.lot.expiration_date)
-        ? moment(row.lot.expiration_date).format(bhConstants.dates.formatDB) : null;
-
-      return [code, description, lot, price, quantity, type, available, amount, expiration].map(value => ({ value }));
-    });
   };
 
   return StockExitForm;
