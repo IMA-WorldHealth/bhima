@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 ShipmentRegistryController.$inject = [
   '$state', 'ShipmentService', 'ShipmentFilter', 'ShipmentModalService',
   'ModalService', 'NotifyService', 'uiGridConstants',
-  'GridStateService', 'GridColumnService',
+  'GridStateService', 'GridColumnService', 'bhConstants',
 ];
 
 function ShipmentRegistryController(
   $state, Shipments, ShipmentFilter, ShipmentModal, Modal, Notify, GridConstants,
-  GridState, Columns,
+  GridState, Columns, Constants,
 ) {
   const vm = this;
   const cacheKey = 'shipment-grid';
@@ -184,7 +184,10 @@ function ShipmentRegistryController(
 
     Shipments.read(null, filters)
       .then(data => {
-        vm.gridOptions.data = data;
+        vm.gridOptions.data = data.map(item => {
+          item.isAtDepot = item.status_id === Constants.shipmentStatus.AT_DEPOT;
+          return item;
+        });
       })
       .catch(Notify.handleError)
       .finally(() => {

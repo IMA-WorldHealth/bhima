@@ -8,12 +8,13 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
 
   service.statusLabel = {
     1 : 'ASSET.STATUS.EMPTY',
-    2 : 'ASSET.STATUS.PARTIAL',
-    3 : 'ASSET.STATUS.COMPLETE',
+    2 : 'ASSET.STATUS.AT_DEPOT',
+    3 : 'ASSET.STATUS.READY_FOR_SHIPMENT',
     4 : 'ASSET.STATUS.IN_TRANSIT',
-    5 : 'ASSET.STATUS.AT_DEPOT',
-    6 : 'ASSET.STATUS.DELIVERED',
-    7 : 'ASSET.STATUS.LOST',
+    5 : 'ASSET.STATUS.PARTIAL',
+    6 : 'ASSET.STATUS.COMPLETE',
+    7 : 'ASSET.STATUS.DELIVERED',
+    8 : 'ASSET.STATUS.LOST',
   };
 
   service.exportTo = (renderer, filter) => {
@@ -36,6 +37,21 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
     };
     const options = angular.merge(defaultOpts, filterOpts);
     return $httpParamSerializer(options);
+  };
+
+  service.readAll = (uuid, parameters) => {
+    return service.$http.get(`/shipments/${uuid}/full`, { params : parameters })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.updateLocation = (uuid, params) => {
+    return service.$http.post(`/shipments/${uuid}/location`, { params })
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.setReadyForShipment = (uuid) => {
+    return service.$http.put(`/shipments/${uuid}/ready-for-shipment`)
+      .then(service.util.unwrapHttpResponse);
   };
 
   return service;
