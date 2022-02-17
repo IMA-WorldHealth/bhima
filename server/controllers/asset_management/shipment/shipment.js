@@ -160,6 +160,43 @@ exports.update = async (req, res, next) => {
     } else {
       throw new Error('This shipment is already ready to go, you cannot update it');
     }
+<<<<<<< HEAD
+=======
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateShipmentStatus = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const params = req.body;
+
+    if (params.uuid) {
+      delete params.uuid;
+    }
+
+    _.pick(params, ['status_id']);
+
+    const [shipmentStatus] = await db.exec(
+      'SELECT status_id FROM shipment WHERE uuid = ?',
+      [db.bid(identifier)],
+    );
+
+    const canUpdate = shipmentStatus.status_id === SHIPMENT_AT_DEPOT && shipmentStatus.ready_to_ship !== 1;
+
+    if (canUpdate) {
+      const transaction = db.transaction();
+      transaction.addQuery(
+        'UPDATE shipment SET ? WHERE uuid = ? AND status_id = ?',
+        [params, db.bid(identifier), SHIPMENT_AT_DEPOT],
+      );
+      await transaction.execute();
+    } else {
+      throw new Error('This shipment is already ready to go, you cannot update it');
+    }
+>>>>>>> e11feb55f (fix client routing 403 error)
     res.sendStatus(201);
   } catch (error) {
     next(error);
