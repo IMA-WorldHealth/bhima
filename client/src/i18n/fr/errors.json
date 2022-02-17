@@ -18,6 +18,7 @@
     "UNAUTHORIZED" : "Vous avez soumis un mauvais nom ou mot de passe.  Entrez un nom ou un mot de passe valid pour continuer.",
     "UNKNOWN" : "Une erreur est survenue.",
     "OVERPAID_INVOICE" : "Vous avez payé trop aux factures.",
+    "ER_DATE_RANGE" : "La date de fin ne peut pas être antérieure à la date de début !",
     "ER_DUP_KEY" : "Il ya déjà un enregistrement avec cette clé. Veuillez réessayer votre action. Si le problème persiste, contactez les développeurs.",
     "ER_DUP_ENTRY" : "Vous avez dupliqué une valeur dans un champ unique! Assurez-vous que les valeurs nécessaires sont uniques.",
     "ER_DUP_PURCHASE_ORDER_ITEM" : "Vous avez des éléments en double pour un article d'inventaire (indiqué en rouge).  Veuillez le supprimer et mettre à jour l'élément précédent avec cet élément d'inventaire.",

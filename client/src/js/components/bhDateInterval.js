@@ -36,12 +36,12 @@ angular.module('bhima.components')
 
 // dependencies injection
 bhDateInterval.$inject = [
-  'bhConstants', 'FiscalService',
+  'bhConstants', 'FiscalService', 'NotifyService',
   'SessionService', 'PeriodService', '$translate',
 ];
 
 // controller definition
-function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate) {
+function bhDateInterval(bhConstants, Fiscal, Notify, Session, PeriodService, $translate) {
   const $ctrl = this;
 
   PeriodService.dateFormat = 'YYYY-MM-DD';
@@ -70,6 +70,7 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
     $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
     $ctrl.startDatePlaceholder = $translate.instant($ctrl.startDatePlaceholder || 'FORM.LABELS.START_DATE');
     $ctrl.endDatePlaceholder = $translate.instant($ctrl.endDatePlaceholder || 'FORM.LABELS.END_DATE');
+    $ctrl.dateRangeError = false;
 
     // if controller has requested limit-min-fiscal, fetch required information
     if (angular.isDefined($ctrl.limitMinFiscal)) {
@@ -88,6 +89,17 @@ function bhDateInterval(bhConstants, Fiscal, Session, PeriodService, $translate)
 
   $ctrl.onChangeDate = () => {
     angular.extend($ctrl.pickerToOptions, { minDate : $ctrl.dateFrom });
+
+    // Make sure dateTo >= dateFrom
+    if ($ctrl.dateFrom && $ctrl.dateTo) {
+      if ($ctrl.dateTo < $ctrl.dateFrom) {
+        Notify.danger('ERRORS.ER_DATE_RANGE', 8000);
+        $ctrl.dateTo = null;
+        $ctrl.dateRangeError = true;
+        return;
+      }
+      $ctrl.dateRangeError = false;
+    }
 
     if ($ctrl.onChange) {
       $ctrl.onChange({ dateFrom : $ctrl.dateFrom, dateTo : $ctrl.dateTo });

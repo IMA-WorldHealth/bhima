@@ -59,7 +59,7 @@
     </div>
 
     <div class="form-group col-md-5"
-	 ng-class="{ 'has-error' : DateIntervalForm.$submitted && DateIntervalForm.dateTo.$invalid }">
+	    ng-class="{ 'has-error' : $ctrl.dateRangeError || (DateIntervalForm.$submitted && DateIntervalForm.dateTo.$invalid) }">
       <div class="input-group">
         <input
           id="modal-date-to"
