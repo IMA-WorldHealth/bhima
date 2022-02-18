@@ -8,6 +8,7 @@
     "CURRENT_DEPOT": "Dépôt en cours",
     "CURRENT_LOCATION": "Localisation en cours",
     "DESTINATION_DEPOT": "Dépôt de destination",
+    "DATE_PACKED": "Date colisage",
     "DATE_SENT": "Date d'envoi",
     "DATE_DELIVERED": "Date de livraison",
     "ANTICIPATED_DELIVERY_DATE": "Date de livraison previsionnelle",
@@ -33,7 +34,11 @@
     "CONDITION": "Condition",
     "CREATED": "Expédition créee avec succès",
     "UPDATED": "Expédition mis à jour avec succès",
+    "DELETED": "Expédition supprimée avec succès",
     "NOT_DEFINED": "Non-défini",
-    "NEW_LOCATION": "Nouvelle localisation"
+    "NEW_LOCATION": "Nouvelle localisation",
+    "SHIPMENT_STATUS": "Etat de l'expédition",
+    "SHIPMENT_LOCATION_TRACKING": "Suivi des emplacements",
+    "LOCATION": "Localisation"
   }
 }

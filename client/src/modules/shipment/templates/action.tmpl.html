@@ -6,7 +6,7 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
     <li>
-      <a ng-click="grid.appScope.showPackingList(row.entity)" href>
+      <a ng-click="grid.appScope.shipmentOverview(row.entity.uuid)" href>
         <i class="fa fa-newspaper-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
       </a>
     </li>
@@ -40,8 +40,8 @@
         </span>
       </a>
     </li>
-    <li class="divider"></li>
-    <li>
+    <li ng-if="row.entity.isAtDepot" class="divider"></li>
+    <li ng-if="row.entity.isAtDepot">
       <a ng-click="grid.appScope.deleteShipment(row.entity.uuid)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>

@@ -23,6 +23,7 @@ function ShipmentRegistryController(
   vm.toggleFilter = toggleFilter;
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
+  vm.shipmentOverview = shipmentOverview;
 
   // global variables
   vm.gridApi = {};
@@ -167,6 +168,10 @@ function ShipmentRegistryController(
   function clearGridState() {
     state.clearGridState();
     $state.reload();
+  }
+
+  function shipmentOverview(uuid) {
+    return ShipmentModal.openShipmentOverview(uuid);
   }
 
   function handleSearchModal(changes) {

@@ -52,6 +52,8 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.payrollReport = payrollReport;
   service.displayData = displayData;
 
+  service.shipmentOverview = shipmentOverview;
+
   /**
    * @method fetch
    *
@@ -165,6 +167,13 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     // set the session language
     options.lang = Language.key;
     const route = '/display_metadata/card';
+    return fetch(route, options);
+  }
+
+  // shipment overview
+  function shipmentOverview(uuid, options) {
+    options.posReceipt = service.posReceipt;
+    const route = `/reports/shipments/${uuid}/overview`;
     return fetch(route, options);
   }
 
