@@ -1,0 +1,19 @@
+{
+  "ASSET" : {
+    "STATUS" : {
+      "EMPTY" : "Vide",
+      "PARTIAL" : "En partie",
+      "COMPLETE" : "Complète",
+      "IN_TRANSIT" : "En transit",
+      "DELIVERED" : "Livré",
+      "AT_DEPOT" : "Au dépôt",
+      "READY_FOR_SHIPMENT" : "Prêt pour l'expédition",
+      "LOST" : "Perdu"
+    },
+    "CONDITION" : {
+      "NEW" : "Neuf",
+      "GOOD" : "Bon",
+      "BROKEN" : "Abimé"
+    }
+  }
+}
