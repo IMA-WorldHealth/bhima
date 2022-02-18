@@ -8,6 +8,7 @@
     "CURRENT_DEPOT": "Current depot",
     "CURRENT_LOCATION": "Current location",
     "DESTINATION_DEPOT": "Destination depot",
+    "DATE_PACKED": "Date packed",
     "DATE_SENT": "Date sent",
     "DATE_DELIVERED": "Date delivered",
     "ANTICIPATED_DELIVERY_DATE": "Anticipated delivery date",
@@ -31,9 +32,13 @@
     "READY_TO_SHIP_MESSAGE":"By validating, you confirm that this shipment is ready to leave the warehouse; You will no longer be able to make changes to it.",
     "OVERVIEW": "Shipment Overview",
     "CONDITION": "Condition",
-    "CREATED": "Shipment created successfully",
-    "UPDATED": "Shipment updated successfully",
+    "CREATED": "Shipment successfully created",
+    "UPDATED": "Shipment successfully updated",
+    "DELETED": "Shipment successfully deleted",
     "NOT_DEFINED": "Not Defined",
-    "NEW_LOCATION": "New Location"
+    "NEW_LOCATION": "New Location",
+    "SHIPMENT_STATUS": "Shipment Status",
+    "SHIPMENT_LOCATION_TRACKING": "Locations Tracking",
+    "LOCATION": "Location"
   }
 }

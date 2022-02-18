@@ -1124,6 +1124,8 @@ exports.configure = function configure(app) {
   app.put('/shipments/:uuid', shipment.update);
   app.post('/shipments/:uuid/location', shipment.updateLocation);
   app.put('/shipments/:uuid/ready-for-shipment', shipment.setReadyForShipment);
+  app.delete('/shipments/:uuid', shipment.deleteShipment);
   app.post('/shipments', shipment.create);
   app.get('/reports/shipments', shipment.getReport);
+  app.get('/reports/shipments/:uuid/overview', shipment.getOverview);
 };
