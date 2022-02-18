@@ -13,6 +13,7 @@ const SHIPMENT_IN_TRANSIT_OR_PARTIAL = [SHIPMENT_IN_TRANSIT, SHIPMENT_PARTIAL];
 exports.find = find;
 exports.lookup = lookup;
 exports.getShipmentLocations = getShipmentLocations;
+exports.getPackingList = getPackingList;
 
 exports.list = async (req, res, next) => {
   try {
@@ -194,6 +195,16 @@ exports.updateLocation = async (req, res, next) => {
       throw new Error('You cannot update it');
     }
     res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteShipment = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    await deleteShipment(identifier);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
@@ -476,6 +487,7 @@ async function lookup(identifier) {
       BUID(sh.uuid) AS uuid, 
       ss.translation_key AS status,
       ss.id AS status_id,
+      ss.name AS status_name,
       dm.text AS reference,
       dm2.text AS stock_reference,
       d.text AS origin_depot,
@@ -557,6 +569,36 @@ async function isShipmentExists(shipmentUuid) {
   return !!result;
 }
 
+async function getPackingList(identifier) {
+  const sql = `
+    SELECT 
+      BUID(sh.uuid) AS uuid, 
+      ss.translation_key AS status,
+      ss.id AS status_id,
+      ss.name AS status_name,
+      sh.name, sh.description, sh.note, 
+      sh.created_at AS date, sh.date_sent, sh.date_delivered,
+      sh.anticipated_delivery_date,
+      sh.receiver, u.display_name AS created_by,
+      shi.quantity_sent, shi.quantity_delivered,
+      shi.date_packed, shi.date_sent, shi.date_delivered,
+      c.name AS condition_name, c.translation_key AS condition_translation_key,
+      l.label AS lot_label, i.code AS inventory_code, i.text AS inventory_label,
+      dm.text AS reference
+    FROM shipment sh
+    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    LEFT JOIN asset_condition c ON c.id = shi.condition_id 
+    JOIN lot l ON l.uuid = shi.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN user u ON u.id = sh.created_by
+    JOIN document_map dm ON dm.uuid = sh.uuid
+    WHERE sh.uuid = ?
+  `;
+
+  return db.exec(sql, [db.bid(identifier)]);
+}
+
 async function getShipmentLocations(shipmentUuid) {
   const sql = `
     SELECT l.name, sl.date, u.display_name
@@ -591,5 +633,25 @@ async function updateStatus(identifier, params) {
     await transaction.execute();
   } else {
     throw new Error('You cannot update it');
+  }
+}
+
+async function deleteShipment(identifier) {
+  const [shipmentStatus] = await db.exec(
+    'SELECT status_id FROM shipment WHERE uuid = ?',
+    [db.bid(identifier)],
+  );
+
+  const inDepot = !!(shipmentStatus.status_id === SHIPMENT_AT_DEPOT);
+
+  if (inDepot) {
+    const queryDeleteItems = 'DELETE FROM shipment_item WHERE shipment_uuid = ?;';
+    const queryDeleteShipment = 'DELETE FROM shipment WHERE uuid = ?;';
+    const tx = db.transaction();
+    tx.addQuery(queryDeleteItems, [db.bid(identifier)]);
+    tx.addQuery(queryDeleteShipment, [db.bid(identifier)]);
+    await tx.execute();
+  } else {
+    throw new Error('You cannot update it because it is not in AT_DEPOT status');
   }
 }

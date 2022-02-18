@@ -1,0 +1,109 @@
+{{> head title="SHIPMENT.OVERVIEW" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'SHIPMENT.OVERVIEW'}}
+      </h2>
+
+      <h4 class="text-center">
+        {{single.reference}}
+      </h4>
+
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
+      <!-- shipment status -->
+      <h5>{{translate 'SHIPMENT.SHIPMENT_STATUS'}} : {{translate single.status }}</h5>
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr>
+            <th style="width: 50px">{{translate 'ASSET.STATUS.AT_DEPOT'}}</th>
+            <th style="width: 50px">{{translate 'ASSET.STATUS.READY_FOR_SHIPMENT'}}</th>
+            <th style="width: 50px">{{translate 'ASSET.STATUS.IN_TRANSIT'}}</th>
+            <th style="width: 50px">{{translate 'ASSET.STATUS.PARTIAL'}}</th>
+            <th style="width: 50px">{{translate 'ASSET.STATUS.DELIVERED'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {{#with step}}
+              <td {{#if at_depot}}style="background-color: black;"{{/if}}>&nbsp;</td>
+              <td {{#if ready}}style="background-color: black;"{{/if}}>&nbsp;</td>
+              <td {{#if in_transit}}style="background-color: black;"{{/if}}>&nbsp;</td>
+              <td {{#if partial}}style="background-color: black;"{{/if}}>&nbsp;</td>
+              <td {{#if delivered}}style="background-color: black;"{{/if}}>&nbsp;</td>
+            {{/with}}
+          </tr>
+        </tbody>
+      </table>
+
+      <br><br>
+
+      <!-- shipment packing list -->
+      <h5>{{translate 'SHIPMENT.PACKING_LIST'}}</h5>
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th>{{translate 'INVENTORY.CODE'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'SHIPMENT.CONDITION'}}</th>
+            <th>{{translate 'SHIPMENT.DATE_PACKED'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each records}}
+            <tr>
+              <td>{{inventory_code}}</td>
+              <td>{{inventory_label}}</td>
+              <td>{{lot_label}}</td>
+              <td>{{quantity_sent}}</td>
+              <td>{{translate condition_translation_key}}</td>
+              <td>{{date date_packed}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold;">
+            <td colspan="6">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <br><br>
+
+      <!-- shipment location -->
+      <h5>{{translate 'SHIPMENT.SHIPMENT_LOCATION_TRACKING'}}</h5>
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th style="width: 200px;">{{translate 'FORM.LABELS.DATE'}}</th>
+            <th>{{translate 'SHIPMENT.LOCATION'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each locations}}
+            <tr>
+              <td>{{date date 'DD/MM/YYYY hh:mm:ss'}}</td>
+              <td>{{name}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=2}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
