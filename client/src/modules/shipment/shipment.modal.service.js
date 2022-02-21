@@ -23,6 +23,7 @@ function ShipmentModalService(Modal, Receipts) {
 
   service.openSearchShipment = openSearchShipment;
   service.openShipmentOverview = openShipmentOverview;
+  service.openShipmentBarcode = openShipmentBarcode;
 
   // search shipment modal
   function openSearchShipment(request) {
@@ -40,6 +41,12 @@ function ShipmentModalService(Modal, Receipts) {
   function openShipmentOverview(documentUuid, notifyCreated) {
     const opts = { title : 'SHIPMENT.OVERVIEW', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.shipmentOverview(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  function openShipmentBarcode(documentUuid, notifyCreated) {
+    const opts = { title : 'BARCODE.BARCODE', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.shipmentBarcode(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 
