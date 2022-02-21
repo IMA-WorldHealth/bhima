@@ -92,8 +92,8 @@
       "QUANTITY_CONSUMED_LOWER" : "La quantité totale consommé est inférieure à la quantity globale consommée",
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
       "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
-      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue"
-
+      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue",
+      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre."
     },
     "ENTRY_ADJUSTMENT" : "Ajustement positif de {{numArticles}} articles de dans {{depot}} par {{user}}.",
     "EXIT"            : "Sortie de stock",
@@ -103,8 +103,7 @@
     "EXIT_INDIVIDUAL" : "Distribution aux individus",
     "EXIT_LOSS"       : "Perte",
     "EXIT_PATIENT"    : "Distribution vers un patient",
-    "EXIT_PATIENT_ADVANCED" : "Distribution vers le patient {{patient}} à partir du dépôt {{depot}}",
-    "EXIT_PATIENT_ADVANCED_WITH_INVOICE" : "Distribution vers le patient {{patient}} sur la facture ({{invoice}}) à partir du dépôt {{depot}}",
+    "EXIT_PATIENT_WITH_INVOICE" : "Distribution vers le patient {{patient}} sur la facture ({{invoice}}) à partir du dépôt {{depot}}",
     "EXIT_SERVICE"    : "Distribution vers un service",
     "EXIT_SERVICE_ADVANCED" : "Distribution vers le service {{service}} à partir du dépôt {{depot}}",
     "EXPIRATION"      : "Expiration",
