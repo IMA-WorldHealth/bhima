@@ -16,9 +16,8 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Notify, Session, util, bhConstants, ReceiptModal,
-  StockForm, Stock, StockModal, uiGridConstants, $translate,
-  GridExportService, Store, Barcode,
+  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Stock, StockModal, uiGridConstants, $translate, GridExportService,
 ) {
   const vm = this;
 
@@ -27,16 +26,14 @@ function StockExitController(
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
   vm.DATE_FMT = bhConstants.dates.format;
-  vm.overconsumption = [];
 
   // bind methods
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
 
-  vm.configureItem = () => {};
   vm.onSelectExitType = onSelectExitType;
   vm.submit = submit;
-  vm.getLotByBarcode = getLotByBarcode;
+  // vm.getLotByBarcode = getLotByBarcode;
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
@@ -164,6 +161,7 @@ function StockExitController(
     vm.stockForm.setup();
   }
 
+  /*
   function getLotByBarcode() {
     Barcode.modal({ shouldSearch : false })
       .then(record => {
@@ -201,6 +199,7 @@ function StockExitController(
         }
       });
   }
+  */
 
   function submit(form) {
     if (form.$invalid) { return null; }

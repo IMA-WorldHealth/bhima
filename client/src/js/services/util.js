@@ -27,6 +27,11 @@ function UtilService(moment) {
     return null;
   };
 
+  service.getUniqueBy = function getUniqueBy(array, prop) {
+    const set = new Set();
+    return array.filter(o => !set.has(o[prop]) && set.add(o[prop]));
+  };
+
   service.download = (response, filename, extension) => {
     const hiddenElement = document.createElement('a');
     const hasFileInfo = (filename && extension);
