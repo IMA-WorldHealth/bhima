@@ -4,7 +4,6 @@ describe('util', () => {
 
   beforeEach(module('angularMoment', 'bhima.services'));
 
-
   beforeEach(inject(_util_ => {
     util = _util_;
   }));
@@ -209,7 +208,6 @@ describe('util', () => {
     expect(formatedData).to.deep.equal(expected);
   });
 
-
   it('#debounce() should fire a function in the future', (done) => {
     const spy = chai.spy();
     const denounced = util.debounce(spy, 200); // debounce spy for 200 milliseconds
@@ -224,7 +222,7 @@ describe('util', () => {
   });
 
   it(`
-  #grouptBy() should returns an object with properties the values of the given property,
+  #groupBy() should returns an object with properties the values of the given property,
   and value an array of objects having for the given property the value which correspond
   to the property
   `, () => {
@@ -273,6 +271,39 @@ describe('util', () => {
     expect(gender).to.have.all.keys(['M', 'F']);
     expect(gender.M).to.deep.equal(maleGender);
     expect(gender.F).to.deep.equal(femalGender);
+  });
+
+  it('#getUniqueBy() should return an array of unique values filtered by property', () => {
+    const sample = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+      { name : 'Gamma', region : 'Kananga', gender : 'M' },
+      { name : 'Zeta', region : 'Kinshasa', gender : 'F' },
+      { name : 'Teta', region : 'Kinshasa', gender : 'F' },
+    ];
+
+    // check that unique values preserve the entire array
+    expect(util.getUniqueBy(sample, 'name')).to.deep.equal(sample);
+
+    // by gender
+    const genders = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+    ];
+
+    expect(util.getUniqueBy(sample, 'gender')).to.deep.equal(genders);
+
+    // by region
+    const regions = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+      { name : 'Gamma', region : 'Kananga', gender : 'M' },
+    ];
+
+    expect(util.getUniqueBy(sample, 'region')).to.deep.equal(regions);
+
+    // finally, by an irrelevant property
+    expect(util.getUniqueBy(sample, 'notfound')).to.deep.equal([sample[0]]);
   });
 
 });
