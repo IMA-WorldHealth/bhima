@@ -1,0 +1,54 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-inventories-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
+      <li class="static" translate> SHIPMENT.TRACKING_LOG </li>
+      <li class="title"> {{ $ctrl.shipment.reference }} </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <h3 class="text-center">{{ $ctrl.shipment.name }}</h3>
+    <p class="text-center" ng-if="$ctrl.shipment.description">{{ $ctrl.shipment.description }}</p>
+    <p class="text-center">
+      <span translate>SHIPMENT.CURRENT_STATUS</span>: <span translate>{{ $ctrl.shipment.status }}</span>
+    </p>
+    <br>
+    <div class="form-group"
+      ng-class="{'has-error' : ModalForm.$submitted && ModalForm.note.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.NOTES</label>
+      <textarea
+        ng-model="$ctrl.shipment.note"
+        name="note"
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NOTES' }"
+        class="form-control"
+        required
+        rows="4">
+      </textarea>
+      <div class="help-block" ng-messages="ModalForm.note.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+    <div ng-if="$ctrl.isInTransit" class="alert alert-info" style="margin-top: 0; margin-bottom: 0;">
+      <p translate>SHIPMENT.UPDATE_TRACKING_LOG_MESSAGE</p>
+    </div>
+  
+    <div ng-if="!$ctrl.isInTransit" class="alert alert-warning" style="margin-top: 0; margin-bottom: 0;">
+      <p translate>SHIPMENT.UPDATE_TRACKING_LOG_WARNING</p>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ui-sref="shipments" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.isInTransit">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

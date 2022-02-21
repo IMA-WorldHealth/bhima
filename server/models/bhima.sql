@@ -533,10 +533,6 @@ INSERT INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES
   (7, 'delivered', 'ASSET.STATUS.DELIVERED'),
   (8, 'lost', 'ASSET.STATUS.LOST');
 
-/** ADD DEFAULT SHIPPER */
-INSERT INTO `shipper` (`id`, `name`) VALUES 
-  (1, 'Default Shipper for Transit');
-
 /** ADD DEFAULT ASSET CONDITION */
 INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES 
   (1, 'empty', 'ASSET.STATUS.EMPTY'),

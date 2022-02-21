@@ -2,10 +2,10 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate> TREE.ASSET_MANAGEMENT.TITLE </li>
-      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
-      <li class="static" translate> SHIPMENT.NEW_SHIPMENT </li>
-      <li class="title" ng-if="CreateShipCtrl.depot.uuid">
-        <span class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
+      <li class="static" translate> SHIPMENT.SHIPMENTS</li>
+      <li class="title"> 
+        <span translate>SHIPMENT.NEW_SHIPMENT </span>&nbsp;
+        <span ng-if="CreateShipCtrl.depot.uuid" class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
       </li>
     </ol>
 
@@ -77,9 +77,6 @@
         </div>
 
         <div class="col-md-4">
-          <!-- shipper -->
-          <!-- SHIPPER CAN BE ADDED HERE -->
-
           <!-- note -->
           <div class="form-group"
             ng-class="{ 'has-error' : ShipmentForm.$submitted && ShipmentForm.description.$invalid }">

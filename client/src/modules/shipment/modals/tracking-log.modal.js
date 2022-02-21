@@ -1,23 +1,18 @@
 angular.module('bhima.controllers')
-  .controller('UpdateLocationModalController', UpdateLocationModalController);
+  .controller('UpdateTrackingLogModalController', UpdateTrackingLogModalController);
 
-UpdateLocationModalController.$inject = [
+UpdateTrackingLogModalController.$inject = [
   '$state', 'params', 'ShipmentService', 'NotifyService',
   'bhConstants',
 ];
 
-function UpdateLocationModalController($state, params, Shipments, Notify, Constants) {
+function UpdateTrackingLogModalController($state, params, Shipments, Notify, Constants) {
   const vm = this;
   const identifier = params.uuid;
 
   vm.submit = submit;
-  vm.onSelectDepot = onSelectDepot;
 
   load();
-
-  function onSelectDepot(depot) {
-    vm.shipment.current_depot_uuid = depot.uuid;
-  }
 
   function load() {
     if (identifier) {
