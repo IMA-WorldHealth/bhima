@@ -15,12 +15,12 @@ function LotItemService(uuid, $translate) {
   const ER_NEGATIVE_QUANTITY = 'STOCK.ERRORS.LOT_NEGATIVE_QUANTITY';
   const ER_OVERCONSUMPTION = 'STOCK.ERRORS.LOT_OVERCONSUMPTION';
   const ER_UNUSED = 'STOCK.ERRORS.LOT_UNUSED';
+  const ER_UNINITIALISED = 'STOCK.ERRORS.UNINITIALISED';
 
   // toggles the error message based on the condition
   function toggleErrorMessage(condition, set, msg) {
     if (condition) { set.add(msg); } else { set.delete(msg); }
   }
-
   /**
    * @constructor Lot
    */
@@ -45,12 +45,13 @@ function LotItemService(uuid, $translate) {
     this.__is_asset = false;
     this.__tracking_expiration = true;
     this.__tracking_consumption = true;
+    this.__tooltip = '';
 
     // stock-exit specific properties.  These will not be used
     // in the general case of lots loaded from the database, but
     // is useful for the stock store.
     this._quantity_available = 0;
-    this._initialised = true;
+    this._initialised = false;
     this._errors = new Set(); // ensures only a single instance of an error exists at any time.
 
     // if options were passed in, use them to configure the lot
@@ -87,12 +88,20 @@ function LotItemService(uuid, $translate) {
    */
   Lot.prototype.validate = function validate(date) {
 
+    // set the "uninitialised" flag first.  Return quickly if not - no
+    // need to validate further
+    toggleErrorMessage(!this._initialised, this._errors, ER_UNINITIALISED);
+    if (!this._initialised) { return false; }
+
     // we run all these individually to fill out the _errors conditions
     const hasInventory = this.hasInventoryInformation();
     const hasLot = this.hasLotInformation();
     const isPositive = this.hasPositiveQuantity();
     const isUsed = !this.isUnused();
     const isNotExpired = !this.isExpired(date);
+
+    // add in the tooltip
+    this.__tooltip = this.errors().pop() || '';
 
     return hasInventory
       && hasLot
@@ -239,6 +248,8 @@ function LotItemService(uuid, $translate) {
   Lot.prototype.configure = function configure(item) {
     this._initialised = true;
 
+    // console.log('#configure()', item);
+
     const clone = { ...item };
 
     if (clone.tracking_consumption !== undefined) {
@@ -258,6 +269,9 @@ function LotItemService(uuid, $translate) {
 
     // assign properties to current lot
     Object.assign(this, clone);
+
+    // set human readable text of inventory
+    this.hrtext = ''.concat(this.code, ' - ', this.text).trim();
 
     // set the total quantity available
     this._quantity_available = clone.quantity;
@@ -288,7 +302,7 @@ function LotItemService(uuid, $translate) {
    * true.
    */
   Lot.prototype.hasPositiveQuantity = function hasPositiveQuantity() {
-    const isPositive = this.quantity > 0;
+    const isPositive = this.quantity >= 0;
     toggleErrorMessage(!isPositive, this._errors, ER_NEGATIVE_QUANTITY);
     return isPositive;
   };
