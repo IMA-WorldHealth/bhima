@@ -7,9 +7,10 @@
       ng-model="row.entity.inventory_uuid"
       typeahead-editable="false"
       typeahead-append-to-body="true"
-      uib-typeahead="item.inventory_uuid as item for item in grid.appScope.listAvailableInventory(row.entity) | filter:$viewValue | limitTo:8"
+      uib-typeahead="item as item.hrtext for item in grid.appScope.stockForm.listAvailableInventory(row.entity) | filter:$viewValue | limitTo:8"
       typeahead-template-url="/modules/templates/inventoryArticles.tmpl.html"
-      typeahead-on-select="grid.appScope.configureItem(row.entity)" required>
+      typeahead-on-select="grid.appScope.stockForm.configureItem(row.entity, $item)"
+      required>
   </div>
   <div ng-if="row.entity._initialised">
     {{ row.entity.code }}

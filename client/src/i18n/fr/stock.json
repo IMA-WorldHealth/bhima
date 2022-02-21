@@ -92,8 +92,8 @@
       "QUANTITY_CONSUMED_LOWER" : "La quantité totale consommé est inférieure à la quantity globale consommée",
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
       "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
-      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue"
-
+      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue",
+      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre."
     },
     "ENTRY_ADJUSTMENT" : "Ajustement positif de {{numArticles}} articles de dans {{depot}} par {{user}}.",
     "EXIT"            : "Sortie de stock",
