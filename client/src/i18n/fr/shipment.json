@@ -39,6 +39,10 @@
     "NEW_LOCATION": "Nouvelle localisation",
     "SHIPMENT_STATUS": "Etat de l'expédition",
     "SHIPMENT_LOCATION_TRACKING": "Suivi des emplacements",
-    "LOCATION": "Localisation"
+    "LOCATION": "Localisation",
+    "TRACKING_LOG": "Journal de suivi",
+    "UPDATE_TRACKING_LOG_WARNING": "Vous ne pouvez pas mettre à jour le journal de suivi, car seule les expéditions ayant un statut EN-TRANSIT peuvent être mise à jour",
+    "UPDATE_TRACKING_LOG_MESSAGE": "Veuillez préciser la localisation actuelle de l'expédition et d'autres nouvelles informations importantes",
+    "CURRENT_STATUS": "Etat actuel"
   }
 }

@@ -5,11 +5,12 @@ const shipmentOverviewReceipt = require('./reports/shipment-overview');
 module.exports = {
   list : shipment.list,
   details : shipment.details,
+  overview : shipment.overview,
   single : shipment.single,
   update : shipment.update,
   create : shipment.create,
   deleteShipment : shipment.deleteShipment,
-  updateLocation : shipment.updateLocation,
+  updateTrackingLog : shipment.updateShipmentTrackingLog,
   setReadyForShipment : shipment.setReadyForShipment,
   listInTransitInventories : shipment.listInTransitInventories,
   getReport : shipmentReports.getReport,

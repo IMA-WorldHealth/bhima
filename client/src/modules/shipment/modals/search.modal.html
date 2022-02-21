@@ -37,14 +37,6 @@
           </bh-depot-select>
 
           <bh-depot-select
-            depot-uuid="$ctrl.searchQueries.current_depot_uuid"
-            label="SHIPMENT.CURRENT_DEPOT"
-            required="false"
-            on-select-callback="$ctrl.onSelectCurrentDepot(depot)">
-            <bh-clear on-clear="$ctrl.clear('current_depot_uuid')"></bh-clear>
-          </bh-depot-select>
-
-          <bh-depot-select
             depot-uuid="$ctrl.searchQueries.destination_depot_uuid"
             label="SHIPMENT.DESTINATION_DEPOT"
             required="false"

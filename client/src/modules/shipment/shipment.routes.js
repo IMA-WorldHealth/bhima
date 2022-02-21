@@ -7,12 +7,30 @@ angular.module('bhima.routes')
         controller : 'ShipmentRegistryController as ShipmentCtrl',
       })
 
-      .state('shipments.update-location', {
-        url : '/update-location',
+      .state('shipments.overview', {
+        url : '/overview',
         params : {
           uuid : null,
         },
-        onEnter : ['$uibModal', '$transition$', updateShipmentLocationModal],
+        onEnter : ['$uibModal', '$transition$', shipmentOverviewModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('shipments.packing-list', {
+        url : '/overview',
+        params : {
+          uuid : null,
+        },
+        onEnter : ['$uibModal', '$transition$', packingListModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('shipments.update-tracking-log', {
+        url : '/update-tracking-log',
+        params : {
+          uuid : null,
+        },
+        onEnter : ['$uibModal', '$transition$', updateTrackingLogModal],
         onExit : ['$uibModalStack', closeModal],
       })
 
@@ -55,6 +73,24 @@ function closeModal(ModalStack) {
   ModalStack.dismissAll();
 }
 
+function shipmentOverviewModal($modal, $transition) {
+  $modal.open({
+    size : 'lg',
+    templateUrl : 'modules/shipment/modals/overview.modal.html',
+    controller : 'ShipmentOverviewModalController as $ctrl',
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
+}
+
+function packingListModal($modal, $transition) {
+  $modal.open({
+    size : 'lg',
+    templateUrl : 'modules/shipment/modals/packing-list.modal.html',
+    controller : 'PackingListModalController as $ctrl',
+    resolve : { params : () => $transition.params('to') },
+  }).result.catch(angular.noop);
+}
+
 function setReadyForShipmentModal($modal, $transition) {
   $modal.open({
     templateUrl : 'modules/shipment/modals/ready-for-shipment.modal.html',
@@ -63,10 +99,11 @@ function setReadyForShipmentModal($modal, $transition) {
   }).result.catch(angular.noop);
 }
 
-function updateShipmentLocationModal($modal, $transition) {
+function updateTrackingLogModal($modal, $transition) {
   $modal.open({
-    templateUrl : 'modules/shipment/modals/update-location.modal.html',
-    controller : 'UpdateLocationModalController as $ctrl',
+    size : 'lg',
+    templateUrl : 'modules/shipment/modals/tracking-log.modal.html',
+    controller : 'UpdateTrackingLogModalController as $ctrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }
