@@ -92,7 +92,7 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
   };
 
   service.updateLocation = (uuid, params) => {
-    return service.$http.post(`/shipments/${uuid}/location`, { params })
+    return service.$http.post(`/shipments/${uuid}/tracking-log`, { params })
       .then(service.util.unwrapHttpResponse);
   };
 
