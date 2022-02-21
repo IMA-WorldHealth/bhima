@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 StockExitFormService.$inject = [
   'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants',
-  'DepotService', 'Pool', 'LotItemService', 'StockExitFormHelperService',
+  'DepotService', 'Pool', 'LotItemService', 'StockExitFormHelperService', 'util',
 ];
 
 /**
@@ -12,7 +12,7 @@ StockExitFormService.$inject = [
  * @description
  * This form powers the stock exit form in BHIMA.
  */
-function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers) {
+function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers, util) {
 
   const {
     TO_PATIENT, TO_LOSS, TO_SERVICE, TO_OTHER_DEPOT,
@@ -78,7 +78,20 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     return Depots.getStockQuantityForDate(depotUuid, parameters)
       .then(stock => {
 
-        const available = stock.map(item => new Lot(item));
+        const available = stock
+          .map(item => {
+            const lot = new Lot(item);
+
+            // set the default quantity when selected in the grid
+            lot.quantity = lot.isAsset() ? 1 : 0;
+
+            // FIXME(@jniles) - need to reset the _quantity_available
+            // for some reason.   My logic must be broken somewhere.
+            lot._quantity_available = item.quantity;
+
+            return lot;
+          });
+
         this._pool.initialize('lot_uuid', available);
 
         this._queriesInProgress--;
@@ -96,6 +109,8 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     const available = this._pool.list()
       .filter(row => row.inventory_uuid === inventoryUuid);
 
+    // console.log('#listLotsForInventory(): available:', available);
+
     if (lotUuid) {
       const lot = this._pool.unavailable.get(lotUuid);
       if (lot) {
@@ -107,13 +122,8 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
   };
 
   StockExitForm.prototype.listAvailableInventory = function listAvailableInventory() {
-    const getUniqueBy = (arr, prop) => {
-      const set = new Set();
-      return arr.filter(o => !set.has(o[prop]) && set.add(o[prop]));
-    };
-
-    return getUniqueBy(this._pool.list(), 'inventory_uuid');
-
+    // console.log('#listAvailableInventory():', this._pool.list());
+    return util.getUniqueBy(this._pool.list(), 'inventory_uuid');
   };
 
   /**
@@ -125,7 +135,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    */
   StockExitForm.prototype.setDepot = function setDepot(depot) {
     this.details.depot_uuid = depot.uuid;
-    this.details.flux_id = TO_OTHER_DEPOT;
     this.depot = depot;
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
   };
@@ -161,6 +170,8 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     const available = [];
     const unavailable = [];
     const insufficient = [];
+
+    console.log('inventories:', inventories);
 
     inventories
 
@@ -275,6 +286,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    */
   StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(depot) {
     this.details.entity_uuid = depot.uuid;
+    this.details.flux_id = TO_OTHER_DEPOT;
     console.log('depot:', depot);
     console.log('requisition:', depot.requisition);
   };
@@ -306,12 +318,28 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     while (i--) {
       elt = new Lot();
       this.store.post(elt);
-      elt._initialised = false;
     }
 
     this.validate();
 
     return elt;
+  };
+
+  /**
+   * @method configureItem
+   *
+   * @description
+   * A shorthand for configuring and item in the grid via the inventory dropdown.
+   */
+  StockExitForm.prototype.configureItem = function configureItem(row, item) {
+    row.configure(item);
+
+    row._quantity_available = item._quantity_available;
+
+    this.validate();
+
+    // since we automatically select the first lot, we use set it as "used"
+    this._pool.use(row.lot_uuid);
   };
 
   /**
@@ -333,20 +361,24 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    * This method clears the entire grid, removing all items from the grid.
    */
   StockExitForm.prototype.clear = function clear() {
+    // cache the current depot
+    const { depot } = this;
+
     this.store.clear();
     this._pool.available.clear();
     this._pool.unavailable.clear();
     this._queriesInProgress = 0;
 
-    delete this.depot;
-
     $timeout(() => {
       this.setup();
+
+      // reset the depot and load stock
+      this.setDepot(depot);
 
       // validate() is only set up to test on submission as it checks the validity
       // of individual items which will not have been configured, manually
       // reset error state
-      delete this._errors;
+      this._errors.clear();
     });
   };
 
@@ -427,7 +459,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
 
     // gather errors into a flat array
     this._errors = this.store.data
-      .flatMap(row => row._errors)
+      .flatMap(row => row.errors())
       .filter(err => err);
 
     const hasDestination = !!this.details.entity_uuid;
