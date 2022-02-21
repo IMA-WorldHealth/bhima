@@ -22,7 +22,7 @@ function ShipmentOverviewModalController($state, params, Shipments, Notify) {
         .then(result => {
           vm.step = result.step;
           vm.locations = result.locations;
-          console.log(vm.shipment);
+          vm.packingList = result.packingList;
         })
         .catch(Notify.handleError);
     }

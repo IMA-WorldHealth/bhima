@@ -11,20 +11,15 @@
       </a>
     </li>
     <li>
-      <a ui-sref="shipments.packing-list({ uuid : row.entity.uuid })" href>
-        <i class="fa fa-cube"></i> <span translate>SHIPMENT.PACKING_LIST</span>
-      </a>
-    </li>
-    <li>
       <a ng-click="grid.appScope.shipmentOverview(row.entity.uuid)" href>
-        <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
+        <i class="fa fa-file-pdf-o"></i> <span translate>FORM.LABELS.DOCUMENT</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
       <a ui-sref="shipments.update-tracking-log({ uuid : row.entity.uuid })" href>
         <span class="">
-          <i class="fa fa-map-marker"></i> <span translate>SHIPMENT.TRACKING_LOG</span>
+          <i class="fa fa-book"></i> <span translate>SHIPMENT.TRACKING_LOG</span>
         </span>
       </a>
     </li>

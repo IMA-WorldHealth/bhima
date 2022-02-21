@@ -1129,4 +1129,5 @@ exports.configure = function configure(app) {
   app.post('/shipments', shipment.create);
   app.get('/reports/shipments', shipment.getReport);
   app.get('/reports/shipments/:uuid/overview', shipment.getOverview);
+  app.get('/reports/shipments/:uuid/barcode', shipment.getBarcode);
 };

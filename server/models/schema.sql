@@ -2723,13 +2723,6 @@ CREATE TABLE `shipment_item` (
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `location`;
-CREATE TABLE `location` (
-  `uuid`               BINARY(16) NOT NULL,
-  `name`               TEXT,
-  PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `shipment_tracking`;
 CREATE TABLE `shipment_tracking` (
   `uuid`               BINARY(16) NOT NULL,

@@ -24,6 +24,7 @@ function ShipmentRegistryController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.search = search;
   vm.shipmentOverview = shipmentOverview;
+  vm.getShipmentBarcode = getShipmentBarcode;
 
   // global variables
   vm.gridApi = {};
@@ -159,6 +160,10 @@ function ShipmentRegistryController(
 
   function shipmentOverview(uuid) {
     return ShipmentModal.openShipmentOverview(uuid);
+  }
+
+  function getShipmentBarcode(uuid) {
+    return ShipmentModal.openShipmentBarcode(uuid);
   }
 
   function handleSearchModal(changes) {

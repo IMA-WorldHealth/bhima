@@ -1,0 +1,12 @@
+{{> head title="SHIPMENT.BARCODE" }}
+
+<!-- body  -->
+<div class="text-center">
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <span>{{ details.name }}</span><br>
+    <span>{{> barcode value=barcode}}</span><br>
+    <span><strong>{{ barcode }}</strong></span>
+
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
+</div>
