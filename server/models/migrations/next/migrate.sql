@@ -190,14 +190,6 @@ INSERT INTO `unit` VALUES
   (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/shipments/create'),
   (310, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 308, '/shipments');
 
-/** Location */
-DROP TABLE IF EXISTS `location`;
-CREATE TABLE `location` (
-  `uuid`               BINARY(16) NOT NULL,
-  `name`               TEXT,
-  PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 /** Shipment location logs */
 DROP TABLE IF EXISTS `shipment_tracking`;
 CREATE TABLE `shipment_tracking` (
