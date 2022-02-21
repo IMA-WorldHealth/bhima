@@ -107,18 +107,22 @@
 
       <br><br>
 
+      {{!-- stepper for status --}}
       <div class="stepper-wrapper">
         <div class="stepper-item {{#if step.at_depot}} completed {{#equal single.status_name 'at_depot'}} active {{/equal}}{{/if}}">
           <div class="step-counter">1</div>
           <div class="step-name">{{translate 'ASSET.STATUS.AT_DEPOT'}}</div>
+          <div>{{ single.origin_depot }}</div>
         </div>
         <div class="stepper-item {{#if step.ready}} completed {{#equal single.status_name 'ready'}} active {{/equal}}{{/if}}">
           <div class="step-counter">2</div>
           <div class="step-name">{{translate 'ASSET.STATUS.READY_FOR_SHIPMENT'}}</div>
+          <div><small>{{date single.date_ready_for_shipment 'DD MMM YYYY HH:mm:ss' }}</small></div>
         </div>
         <div class="stepper-item {{#if step.in_transit}} completed {{#equal single.status_name 'in_transit'}} active {{/equal}}{{/if}}">
           <div class="step-counter">3</div>
           <div class="step-name">{{translate 'ASSET.STATUS.IN_TRANSIT'}}</div>
+          <div><small>{{date single.date_sent 'DD MMM YYYY HH:mm:ss' }}</small></div>
         </div>
         <div class="stepper-item {{#if step.partial}} completed {{#equal single.status_name 'partial'}} active {{/equal}}{{/if}}">
           <div class="step-counter">4</div>
@@ -127,6 +131,8 @@
         <div class="stepper-item {{#if step.delivered}} completed {{#equal single.status_name 'delivered'}} active {{/equal}}{{/if}}">
           <div class="step-counter">5</div>
           <div class="step-name">{{translate 'ASSET.STATUS.DELIVERED'}}</div>
+          <div>{{ single.destination_depot }}</div>
+          <div><small>{{date single.date_delivered 'DD MMM YYYY HH:mm:ss' }}</small></div>
         </div>
       </div>
 
@@ -180,7 +186,7 @@
         <tbody>
           {{#each log}}
             <tr>
-              <td>{{date date 'DD/MM/YYYY hh:mm:ss'}}</td>
+              <td>{{date date 'DD/MM/YYYY HH:mm:ss'}}</td>
               <td>{{note}}</td>
             </tr>
           {{else}}
