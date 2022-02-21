@@ -336,22 +336,26 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
 
     row._quantity_available = item._quantity_available;
 
-    this.validate();
-
     // since we automatically select the first lot, we use set it as "used"
     this._pool.use(row.lot_uuid);
+
+    this.validate();
   };
 
   /**
    * @method removeItem
    *
    * @description
-   * This method removes an item from the ui-grid by its index.
+   * This method removes an item from the ui-grid by its uuid.
    */
-  StockExitForm.prototype.removeItem = function removeItem(index) {
-    const item = this.store.remove(index);
+  StockExitForm.prototype.removeItem = function removeItem(uuid) {
+    const lot = this.store.get(uuid);
+    this.store.remove(uuid);
+
+    // return the lot to the pool
+    this._pool.release(lot.lot_uuid);
+
     this.validate();
-    return item;
   };
 
   /**
@@ -378,7 +382,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
       // validate() is only set up to test on submission as it checks the validity
       // of individual items which will not have been configured, manually
       // reset error state
-      this._errors.clear();
+      delete this._errors;
     });
   };
 
@@ -440,7 +444,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    * @description
    * Check if the form is valid or contains errors.  This is done by:
    *
-   * 1. TODO(@jniles) - checking if all data is finished loading
+   * 1. TODO(@jniles) - check if all data is finished loading
    * 2. Running the validate function on each stock item.
    * 3. Checking if globally required items (date, etc) are set.
    *
@@ -459,7 +463,10 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
 
     // gather errors into a flat array
     this._errors = this.store.data
-      .flatMap(row => row.errors())
+      .flatMap(row => {
+        row.validate();
+        return row.errors();
+      })
       .filter(err => err);
 
     const hasDestination = !!this.details.entity_uuid;
