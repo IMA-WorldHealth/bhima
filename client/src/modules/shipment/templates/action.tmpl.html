@@ -6,15 +6,25 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
     <li>
-      <a ng-click="grid.appScope.shipmentOverview(row.entity.uuid)" href>
+      <a ui-sref="shipments.overview({ uuid : row.entity.uuid })" href>
         <i class="fa fa-newspaper-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
+      </a>
+    </li>
+    <li>
+      <a ui-sref="shipments.packing-list({ uuid : row.entity.uuid })" href>
+        <i class="fa fa-cube"></i> <span translate>SHIPMENT.PACKING_LIST</span>
+      </a>
+    </li>
+    <li>
+      <a ng-click="grid.appScope.shipmentOverview(row.entity.uuid)" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a ui-sref="shipments.update-location({ uuid : row.entity.uuid })" href>
+      <a ui-sref="shipments.update-tracking-log({ uuid : row.entity.uuid })" href>
         <span class="">
-          <i class="fa fa-map-marker"></i> <span translate>SHIPMENT.UPDATE_LOCATION</span>
+          <i class="fa fa-map-marker"></i> <span translate>SHIPMENT.TRACKING_LOG</span>
         </span>
       </a>
     </li>

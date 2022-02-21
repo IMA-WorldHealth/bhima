@@ -2658,13 +2658,6 @@ CREATE TABLE `odk_app_user` (
   CONSTRAINT `odk_app_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `shipper`;
-CREATE TABLE `shipper` (
-  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`)
- ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 DROP TABLE IF EXISTS `asset_condition`;
 CREATE TABLE `asset_condition` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -2689,14 +2682,13 @@ CREATE TABLE `shipment` (
   `name`                      VARCHAR(100) NOT NULL,
   `description`               TEXT NULL,
   `note`                      TEXT NULL,
-  `shipper_id`                SMALLINT(5) UNSIGNED NOT NULL,
   `requisition_uuid`          BINARY(16),
   `origin_depot_uuid`         BINARY(16),
-  `current_depot_uuid`        BINARY(16),
   `destination_depot_uuid`    BINARY(16),
   `anticipated_delivery_date` DATETIME,
   `date_sent`                 DATETIME,
   `date_delivered`            DATETIME,
+  `date_ready_for_shipment`   DATETIME,
   `receiver`                  VARCHAR(100),
   `status_id`                 SMALLINT(5) UNSIGNED NOT NULL,
   `ready_for_shipment`        TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -2707,10 +2699,8 @@ CREATE TABLE `shipment` (
   `document_uuid`             BINARY(16) NULL, /* stock exit document_uuid */
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  CONSTRAINT `shipment__shipper` FOREIGN KEY (`shipper_id`) REFERENCES `shipper` (`id`),
   CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `requisition` (`uuid`),
   CONSTRAINT `shipment__origin_depot` FOREIGN KEY (`origin_depot_uuid`) REFERENCES `depot` (`uuid`),
-  CONSTRAINT `shipment__current_depot` FOREIGN KEY (`current_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__destination_depot` FOREIGN KEY (`destination_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__status` FOREIGN KEY (`status_id`) REFERENCES `shipment_status` (`id`),
   CONSTRAINT `shipment__created_by` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
@@ -2740,16 +2730,15 @@ CREATE TABLE `location` (
   PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `shipment_location`;
-CREATE TABLE `shipment_location` (
+DROP TABLE IF EXISTS `shipment_tracking`;
+CREATE TABLE `shipment_tracking` (
   `uuid`               BINARY(16) NOT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
-  `location_uuid`      BINARY(16) NOT NULL,
+  `note`               TEXT NOT NULL,
   `date`               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`            SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_location__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
-  CONSTRAINT `shipment_location__location` FOREIGN KEY (`location_uuid`) REFERENCES `location` (`uuid`),
   CONSTRAINT `shipment_location__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

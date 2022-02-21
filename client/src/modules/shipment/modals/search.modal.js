@@ -13,7 +13,7 @@ function SearchShipmentModalController(
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
-    'origin_depot_uuid', 'current_depot_uuid', 'destination_depot_uuid',
+    'origin_depot_uuid', 'destination_depot_uuid',
     'status', 'reference',
   ];
   const displayValues = {};
@@ -43,10 +43,6 @@ function SearchShipmentModalController(
   vm.onSelectDepot = (depot) => {
     vm.searchQueries.origin_depot_uuid = depot.uuid;
     displayValues.origin_depot_uuid = depot.text;
-  };
-  vm.onSelectCurrentDepot = (depot) => {
-    vm.searchQueries.current_depot_uuid = depot.uuid;
-    displayValues.current_depot_uuid = depot.text;
   };
   vm.onSelectDestinationDepot = (depot) => {
     vm.searchQueries.destination_depot_uuid = depot.uuid;
