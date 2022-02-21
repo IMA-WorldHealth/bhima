@@ -16,15 +16,6 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal],
       })
 
-      .state('shipments.packing-list', {
-        url : '/overview',
-        params : {
-          uuid : null,
-        },
-        onEnter : ['$uibModal', '$transition$', packingListModal],
-        onExit : ['$uibModalStack', closeModal],
-      })
-
       .state('shipments.update-tracking-log', {
         url : '/update-tracking-log',
         params : {
@@ -78,15 +69,6 @@ function shipmentOverviewModal($modal, $transition) {
     size : 'lg',
     templateUrl : 'modules/shipment/modals/overview.modal.html',
     controller : 'ShipmentOverviewModalController as $ctrl',
-    resolve : { params : () => $transition.params('to') },
-  }).result.catch(angular.noop);
-}
-
-function packingListModal($modal, $transition) {
-  $modal.open({
-    size : 'lg',
-    templateUrl : 'modules/shipment/modals/packing-list.modal.html',
-    controller : 'PackingListModalController as $ctrl',
     resolve : { params : () => $transition.params('to') },
   }).result.catch(angular.noop);
 }
