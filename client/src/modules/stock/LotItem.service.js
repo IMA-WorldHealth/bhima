@@ -98,6 +98,7 @@ function LotItemService(uuid, $translate) {
     const hasLot = this.hasLotInformation();
     const isPositive = this.hasPositiveQuantity();
     const isUsed = !this.isUnused();
+    const hasEnough = this.hasEnoughQuantityAvailable();
     const isNotExpired = !this.isExpired(date);
 
     // add in the tooltip
@@ -107,6 +108,7 @@ function LotItemService(uuid, $translate) {
       && hasLot
       && isPositive
       && isUsed
+      && hasEnough
       && isNotExpired;
   };
 
@@ -248,9 +250,8 @@ function LotItemService(uuid, $translate) {
   Lot.prototype.configure = function configure(item) {
     this._initialised = true;
 
-    // console.log('#configure()', item);
-
     const clone = { ...item };
+    delete clone.uuid;
 
     if (clone.tracking_consumption !== undefined) {
       this.setTrackingConsumption(clone.tracking_consumption);
