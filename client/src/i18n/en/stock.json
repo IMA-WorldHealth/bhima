@@ -92,7 +92,14 @@
       "QUANTITY_CONSUMED_LOWER" : "Total quantity consumed is lower than the global quantity consumed",
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "Total quantity consumed is more than the global quantity consumed",
       "QUANTITY_LOST_LOWER" : "Total quantity lost is lower than the global quantity lost",
-      "QUANTITY_LOST_OVER_GLOBAL" : "Total quantity lost is more than the global quantity lost"
+      "QUANTITY_LOST_OVER_GLOBAL" : "Total quantity lost is more than the global quantity lost",
+
+      "LOT_EXPIRED" : "Lot {{ label }} is expired.  Its expiration date ({{expiration_date | date }}) is before the selected date.",
+      "LOT_MISSING_INVENTORY_INFO" : "Lot {{ label }} is missing inventory information. Please select an inventory item to continue.",
+      "LOT_MISSING_LOT_INFO" : "Lot {{ uuid }} is missing lot information.  Please select a lot label to continue.",
+      "LOT_NEGATIVE_QUANTITY" : "Lot {{ label }} has a negative quantity.  Expected {{quantity}} {{unit}} to be a positive number.",
+      "LOT_OVERCONSUMPTION" : "Lot {{ label }} has an invalid quantity.  Expected {{quantity}} {{unit}} to be greater than 0 and maximally {{_quantity_available}} {{ unit }}.",
+      "LOT_UNUSED" : "Lot {{ label }} isn't used (0 {{ unit }} selected).  Please specify a quantity to continue."
     },
     "ENTRY_ADJUSTMENT" : "Positive adjustment of {{numArticles}} articles into {{depot}} by {{user}} .",
     "EXIT"            : "Stock Exit",
@@ -102,8 +109,7 @@
     "EXIT_INDIVIDUAL" : "Exit to Individual",
     "EXIT_LOSS"       : "Loss",
     "EXIT_PATIENT"    : "Distribution to a patient",
-    "EXIT_PATIENT_ADVANCED" : "Distribution to the patient {{patient}} from depot {{depot}}",
-    "EXIT_PATIENT_ADVANCED_WITH_INVOICE" : "Distribution to the patient {{patient}} invoiced by ({{invoice}}) from the depot {{depot}}",
+    "EXIT_PATIENT_WITH_INVOICE" : "Distribution to the patient {{patient}} invoiced by ({{invoice}}) from the depot {{depot}}",
     "EXIT_SERVICE"    : "Distribution to a service",
     "EXIT_SERVICE_ADVANCED" : "Distribution to the service {{service}} from {{depot}}",
     "EXPIRATION"      : "Expiration",
