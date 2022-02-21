@@ -16,7 +16,6 @@ function ShipmentFilterService(Filters, AppCache, $httpParamSerializer, Language
   const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'origin_depot_uuid', label : 'SHIPMENT.ORIGIN_DEPOT' },
-    { key : 'current_depot_uuid', label : 'SHIPMENT.CURRENT_DEPOT' },
     { key : 'destination_depot_uuid', label : 'SHIPMENT.DESTINATION_DEPOT' },
     { key : 'ready_for_shipment', label : 'SHIPMENT.READY_TO_SHIP' },
     { key : 'barcode', label : 'BARCODE.BARCODE' },

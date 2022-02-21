@@ -35,19 +35,16 @@ function ShipmentRegistryController(
       displayName : 'TABLE.COLUMNS.STATUS',
       headerCellFilter : 'translate',
       cellFilter : 'translate',
-      // cellTemplate : '/modules/shipment/templates/status.cell.html',
     },
     {
       field : 'reference',
       displayName : 'SHIPMENT.REFERENCE',
       headerCellFilter : 'translate',
-      // cellTemplate : '/modules/shipment/templates/reference.cell.html',
     },
     {
       field : 'stock_reference',
       displayName : 'SHIPMENT.STOCK_REFERENCE',
       headerCellFilter : 'translate',
-      // cellTemplate : '/modules/shipment/templates/reference.cell.html',
     },
     {
       field : 'name',
@@ -60,18 +57,8 @@ function ShipmentRegistryController(
       headerCellFilter : 'translate',
     },
     {
-      field : 'shipper',
-      displayName : 'SHIPMENT.SHIPPER',
-      headerCellFilter : 'translate',
-    },
-    {
       field : 'origin_depot',
       displayName : 'SHIPMENT.ORIGIN_DEPOT',
-      headerCellFilter : 'translate',
-    },
-    {
-      field : 'current_depot',
-      displayName : 'SHIPMENT.CURRENT_DEPOT',
       headerCellFilter : 'translate',
     },
     {

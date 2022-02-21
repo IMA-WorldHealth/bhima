@@ -374,7 +374,6 @@ function CreateShipmentController(
     return {
       origin_depot_uuid : shipment.origin_depot_uuid,
       destination_depot_uuid : shipment.destination_depot_uuid,
-      shipper_id : shipment.shipper_id,
       name : shipment.name,
       description : shipment.description,
       note : shipment.note,
