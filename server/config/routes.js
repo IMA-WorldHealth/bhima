@@ -1121,8 +1121,9 @@ exports.configure = function configure(app) {
   app.get('/shipments', shipment.list);
   app.get('/shipments/:uuid', shipment.single);
   app.get('/shipments/:uuid/full', shipment.details);
+  app.get('/shipments/:uuid/overview', shipment.overview);
   app.put('/shipments/:uuid', shipment.update);
-  app.post('/shipments/:uuid/location', shipment.updateLocation);
+  app.post('/shipments/:uuid/tracking-log', shipment.updateTrackingLog);
   app.put('/shipments/:uuid/ready-for-shipment', shipment.setReadyForShipment);
   app.delete('/shipments/:uuid', shipment.deleteShipment);
   app.post('/shipments', shipment.create);

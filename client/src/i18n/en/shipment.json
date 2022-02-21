@@ -39,6 +39,10 @@
     "NEW_LOCATION": "New Location",
     "SHIPMENT_STATUS": "Shipment Status",
     "SHIPMENT_LOCATION_TRACKING": "Locations Tracking",
-    "LOCATION": "Location"
+    "LOCATION": "Location",
+    "TRACKING_LOG": "Tracking Log",
+    "UPDATE_TRACKING_LOG_WARNING": "You cannot update the tracking log, as only shipments with IN-TRANSIT status can be updated",
+    "UPDATE_TRACKING_LOG_MESSAGE": "Please provide current shipping location and other important new information",
+    "CURRENT_STATUS": "Current status"
   }
 }
