@@ -165,25 +165,18 @@
 
       <!-- footer -->
       <div class="row" style="margin-top: 5px;">
-        <div class="col-xs-12">
-          <div class="col-md-6">
-            <div class="col-xs-12">
-              <div class="text-info" ng-show="!StockCtrl.stockForm.details.exit_type">
-                <span class="fa fa-info-circle"></span>
-                <span translate>FORM.INFO.NO_DESTINATION</span>
-              </div>
-            </div>
-          </div>
+        <div class="col-md-6">
+          <div uib-alert ng-repeat="error in StockCtrl.stockForm.errors" class="alert-danger">{{error}}</div>
+        </div>
 
-          <div class="col-md-6 text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
-              FORM.BUTTONS.CLEAR
-            </button>
+        <div class="col-md-6 text-right">
+          <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
+            FORM.BUTTONS.CLEAR
+          </button>
 
-            <bh-loading-button loading-state="StockExitForm.$loading" disabled="!StockCtrl.stockForm.validate()">
-              <span translate>FORM.BUTTONS.SUBMIT</span>
-            </bh-loading-button>
-          </div>
+          <bh-loading-button loading-state="StockExitForm.$loading" disabled="!StockCtrl.stockForm.validate()">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
         </div>
       </div>
     </form>
