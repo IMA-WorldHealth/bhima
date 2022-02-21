@@ -1,12 +1,12 @@
 <div class="ui-grid-cell-contents">
   <input
     name="quantity"
-    min="0"
-    max="{{ row.entity.intial_quantity }}"
     type="number"
+    min="0"
+    ng-max="{{ row.entity._quantity_available}}"
     ng-disabled="!row.entity.lot_uuid"
     class="form-control"
     style="padding-left : 5px !important;text-align: right;"
     ng-model="row.entity.quantity"
-    ng-change="grid.appScope.validate()" required>
+    ng-change="grid.appScope.stockForm.validate()" required>
 </div>

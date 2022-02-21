@@ -83,17 +83,6 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
-
-          <div ng-if="StockCtrl.overconsumption.length" class="row">
-            <div class="alert alert-danger">
-              <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.OVERCONSUMED_INVENTORIES </span>
-              <ul>
-                <li ng-repeat="item in StockCtrl.overconsumption track by $index">
-                  <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.OVERCONSUMED_INVENTORIES_DESCRIPTION </span>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
 
         <div class="col-xs-6 col-md-3 panel-default">
@@ -185,12 +174,13 @@
               </div>
             </div>
           </div>
+
           <div class="col-md-6 text-right">
             <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
               FORM.BUTTONS.CLEAR
             </button>
 
-            <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
+            <bh-loading-button loading-state="StockExitForm.$loading" disabled="!StockCtrl.stockForm.validate()">
               <span translate>FORM.BUTTONS.SUBMIT</span>
             </bh-loading-button>
           </div>
