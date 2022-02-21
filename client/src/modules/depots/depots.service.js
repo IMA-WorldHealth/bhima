@@ -76,6 +76,14 @@ function DepotService(Api, Modal, HttpCache) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  function stockOutFetcherCallback(depotUuid, date) {
+    const target = `/depots/${depotUuid}/flags/stock_out`;
+    return service.$http.get(target, { params : { date } })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  const getStockOutFetcher = HttpCache(stockOutFetcherCallback, 3000);
+
   /**
    * @function getStockOutsForDate
    *
@@ -85,10 +93,16 @@ function DepotService(Api, Modal, HttpCache) {
    * it uses the stock_movement_status table.
    */
   service.getStockOutsForDate = function getStockOutsForDate(depotUuid, date = new Date()) {
-    const target = `/depots/${depotUuid}/flags/stock_out`;
+    return getStockOutFetcher(depotUuid, date);
+  };
+
+  function expiredStockFetcherCallback(depotUuid, date) {
+    const target = `/depots/${depotUuid}/flags/expired`;
     return service.$http.get(target, { params : { date } })
       .then(service.util.unwrapHttpResponse);
-  };
+  }
+
+  const getExpiredStockFetcher = HttpCache(expiredStockFetcherCallback, 3000);
 
   /**
    * @function getExpiredStockForDate
@@ -97,9 +111,7 @@ function DepotService(Api, Modal, HttpCache) {
    * Returns lots that are expired in the depot at a given date.
    */
   service.getExpiredStockForDate = function getExpiredStock(depotUuid, date) {
-    const target = `/depots/${depotUuid}/flags/expired`;
-    return service.$http.get(target, { params : { date } })
-      .then(service.util.unwrapHttpResponse);
+    return getExpiredStockFetcher(depotUuid, date);
   };
 
   service.clean = depot => {
