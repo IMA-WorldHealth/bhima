@@ -20,6 +20,10 @@ function UpdateTrackingLogModalController($state, params, Shipments, Notify, Con
         .then(shipment => {
           vm.shipment = shipment;
           vm.isInTransit = !!(shipment.status_id === Constants.shipmentStatus.IN_TRANSIT);
+          return Shipments.overview(identifier);
+        })
+        .then(result => {
+          vm.locations = result.locations;
         })
         .catch(Notify.handleError);
     }

@@ -3,7 +3,7 @@
 <!-- body  -->
 <div class="text-center">
   {{#if metadata.enterprise.settings.enable_barcodes}}
-    <span>{{ details.name }}</span><br>
+    <span>{{ details.name }} - {{ details.reference }}</span><br>
     <span>{{> barcode value=barcode}}</span><br>
     <span><strong>{{ barcode }}</strong></span>
 
