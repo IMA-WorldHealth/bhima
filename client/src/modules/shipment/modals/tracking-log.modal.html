@@ -17,15 +17,32 @@
     <p class="text-center" ng-if="$ctrl.shipment.description">{{ $ctrl.shipment.description }}</p>
     <p class="text-center">
       <span translate>SHIPMENT.CURRENT_STATUS</span>: <span translate>{{ $ctrl.shipment.status }}</span>
+      &nbsp;|&nbsp;
+      <span translate>SHIPMENT.DELIVERY_EXPECTED_ON</span> <span>{{ $ctrl.shipment.anticipated_delivery_date | date }}</span>
     </p>
+    <br>
+    <div class="form-group">
+      <label translate>SHIPMENT.TRACKING_LOG</label>
+      <div style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-condensed">
+          <tr ng-repeat="item in $ctrl.locations track by item.uuid">
+            <td style="width: 150px; color: #a0a0a0;">{{ item.date | date: 'medium' }}</td>
+            <td style="color: #a0a0a0;">{{ item.note }}</td>
+          </tr>
+          <tr style="color: #a0a0a0;" ng-if="!$ctrl.locations.length">
+            <td class="text-center" colspan="2" translate>TABLE.COLUMNS.EMPTY</td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <br>
     <div class="form-group"
       ng-class="{'has-error' : ModalForm.$submitted && ModalForm.note.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.NOTES</label>
+      <label class="control-label" translate>SHIPMENT.ENTER_SHIPMENT_PROGRESS</label>
       <textarea
         ng-model="$ctrl.shipment.note"
         name="note"
-        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NOTES' }"
+        translate-attr="{ placeholder : 'SHIPMENT.ENTER_SHIPMENT_PROGRESS_HELP_TEXT' }"
         class="form-control"
         required
         rows="4">
