@@ -1,0 +1,144 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-inventories-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
+      <li class="static" translate> SHIPMENT.SHIPMENT_REGISTRY </li>
+      <li class="title" translate> FORM.LABELS.SEARCH </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="padding: 0px">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
+        <div class="tab-body">
+
+          <!-- reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- depot -->
+          <bh-depot-select
+            depot-uuid="$ctrl.searchQueries.origin_depot_uuid"
+            label="SHIPMENT.ORIGIN_DEPOT"
+            required="false"
+            on-select-callback="$ctrl.onSelectDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('origin_depot_uuid')"></bh-clear>
+          </bh-depot-select>
+
+          <bh-depot-select
+            depot-uuid="$ctrl.searchQueries.destination_depot_uuid"
+            label="SHIPMENT.DESTINATION_DEPOT"
+            required="false"
+            on-select-callback="$ctrl.onSelectDestinationDepot(depot)">
+            <bh-clear on-clear="$ctrl.clear('destination_depot_uuid')"></bh-clear>
+          </bh-depot-select>
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox"
+                ng-model="$ctrl.searchQueries.ready_for_shipment"
+                ng-true-value="1" ng-false-value="0">
+              <span translate>SHIPMENT.READY_TO_SHIP</span>
+            </label>
+          </div>
+
+          <!-- status -->
+          <div class="form-group">
+              <p class="control-label" style="margin-bottom:5px;">
+                <strong translate>FORM.LABELS.STATUS</strong>
+                <bh-clear on-clear="$ctrl.clear('status')"></bh-clear>
+              </p>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="2">
+                  <span translate>ASSET.STATUS.PARTIAL</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="3">
+                  <span translate>ASSET.STATUS.COMPLETE</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="4">
+                  <span translate>ASSET.STATUS.IN_TRANSIT</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="5">
+                  <span translate>ASSET.STATUS.AT_DEPOT</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="6">
+                  <span translate>ASSET.STATUS.DELIVERED</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="7">
+                  <span translate>ASSET.STATUS.LOST</span>
+                </label>
+              </div>
+          </div>
+        </div>
+      </uib-tab>
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input
+              name="limit"
+              type="number"
+              min="0"
+              bh-integer
+              bh-max-integer
+              class="form-control"
+              ng-model="$ctrl.defaultQueries.limit"
+              ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
