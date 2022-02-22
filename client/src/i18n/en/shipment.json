@@ -44,6 +44,9 @@
     "UPDATE_TRACKING_LOG_WARNING": "You cannot update the tracking log, as only shipments with IN-TRANSIT status can be updated",
     "UPDATE_TRACKING_LOG_MESSAGE": "Please provide current shipping location and other important new information",
     "CURRENT_STATUS": "Current status",
-    "BARCODE": "Shipment Barcode"
+    "BARCODE": "Shipment Barcode",
+    "ENTER_SHIPMENT_PROGRESS": "Please enter the shipment progress status",
+    "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
+    "DELIVERY_EXPECTED_ON": "Delivery expected on"
   }
 }
