@@ -44,6 +44,9 @@
     "UPDATE_TRACKING_LOG_WARNING": "Vous ne pouvez pas mettre à jour le journal de suivi, car seule les expéditions ayant un statut EN-TRANSIT peuvent être mise à jour",
     "UPDATE_TRACKING_LOG_MESSAGE": "Veuillez préciser la localisation actuelle de l'expédition et d'autres nouvelles informations importantes",
     "CURRENT_STATUS": "Etat actuel",
-    "BARCODE": "Code-barre de l'expédition"
+    "BARCODE": "Code-barre de l'expédition",
+    "ENTER_SHIPMENT_PROGRESS": "Veuillez entrer l'etat de progression de l'expédition",
+    "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
+    "DELIVERY_EXPECTED_ON": "Livraison attendue le"
   }
 }
