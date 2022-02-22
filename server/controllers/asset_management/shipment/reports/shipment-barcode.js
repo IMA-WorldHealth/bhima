@@ -28,7 +28,11 @@ function getBarcode(req, res, next) {
   }
 
   const sql = `
-    SELECT BUID(s.uuid) AS uuid, s.name FROM shipment s WHERE s.uuid = ?;
+    SELECT
+      BUID(s.uuid) AS uuid, s.name, dm.text AS reference
+    FROM shipment s 
+    JOIN document_map dm ON dm.uuid = s.uuid
+    WHERE s.uuid = ?;
   `;
 
   return db.one(sql, [db.bid(uuid)])

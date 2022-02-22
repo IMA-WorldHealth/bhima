@@ -161,7 +161,7 @@ INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES
 
 /** Add shipment in unit */
 INSERT INTO `unit` VALUES 
-  (308, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 307, '/SHIPMENT_FOLDER'),
+  (308, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
   (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/shipments/create'),
   (310, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 308, '/shipments');
 
