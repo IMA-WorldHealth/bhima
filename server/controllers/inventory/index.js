@@ -118,7 +118,7 @@ async function computeWac(inventoryUuid) {
   const binaryInventoryUuid = db.bid(inventoryUuid);
   const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?);';
   const querySelect = `
-    SELECT 
+    SELECT
       BUID(sv.inventory_uuid) inventory_uuid,
       i.text, sv.date, sv.quantity, sv.wac
     FROM stock_value sv
