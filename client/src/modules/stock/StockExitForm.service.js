@@ -222,8 +222,6 @@ function StockExitFormService(
    *
    * @description
    * This sets the exit type.
-   *
-   * TODO(@jniles) - is there more logic for this?
    */
   StockExitForm.prototype.setExitType = function setExitType(type) {
     this.details.exit_type = type;
@@ -259,8 +257,6 @@ function StockExitFormService(
       .forEach(inventory => {
         const matches = this.listLotsForInventory(inventory[uuidKey]);
 
-        console.log('matches:', matches);
-
         if (matches.length > 0) {
           available.push(inventory);
         } else {
@@ -279,7 +275,6 @@ function StockExitFormService(
     // adds a lot to the grid.
     const addLotWithQuantity = (item, quantity) => {
       const lot = new Lot(item);
-      console.log('item:', item);
       lot._quantity_available = item._quantity_available;
       lot.quantity = quantity;
       lot.validate(this.details.date, !this._isStockLoss());
@@ -371,7 +366,6 @@ function StockExitFormService(
   StockExitForm.prototype.setServiceDistribution = function setServiceDistribution(service) {
     this.details.entity_uuid = service.uuid;
     this.details.flux_id = TO_SERVICE;
-    console.log('service:', service);
     console.log('requisition:', service.requisition);
 
     if (service.requisition) {
@@ -388,7 +382,6 @@ function StockExitFormService(
   StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(depot) {
     this.details.entity_uuid = depot.uuid;
     this.details.flux_id = TO_OTHER_DEPOT;
-    console.log('depot:', depot);
     console.log('requisition:', depot.requisition);
 
     if (depot.requisition) {
@@ -609,6 +602,16 @@ function StockExitFormService(
       .then(data => {
         return Stock.movements.create(data);
       });
+  };
+
+  /**
+   * @function formatForExport
+   *
+   * @description
+   * Formats the grid rows for export.
+   */
+  StockExitForm.prototype.formatRowsForExport = function formatRows(rows = []) {
+    return rows.map(row => row.formatForExport());
   };
 
   return StockExitForm;

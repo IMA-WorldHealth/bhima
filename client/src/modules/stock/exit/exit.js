@@ -115,11 +115,10 @@ function StockExitController(
 
   const exportation = new GridExportService(vm.gridOptions);
 
-  // runs validation and updates the messages
+  // runs validation and updates the messages for the user
   vm.validate = () => {
     vm.stockForm.validate();
     vm.messages = vm.stockForm.messages();
-    console.log('vm.messages:', vm.messages);
   };
 
   vm.configureItem = function configureItem(row, lot) {
@@ -137,7 +136,7 @@ function StockExitController(
    * @description export the content of the grid to csv.
    */
   vm.exportGrid = () => {
-    exportation.exportToCsv('Stock_Exit_', exportation.defaultColumnFormatter, StockForm.formatRowsForExport);
+    exportation.exportToCsv('Stock_Exit_', exportation.defaultColumnFormatter, vm.stockForm.formatRowsForExport);
   };
 
   function onRegisterApi(gridApi) {
