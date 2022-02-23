@@ -123,30 +123,5 @@ function StockExitFormHelperService(moment, $q, $translate, bhConstants, Patient
       });
   };
 
-  /**
-   * @function formatRowsForExport
-   *
-   * @description this function will be apply to grid columns as filter for getting new columns
-   *
-   * @param {array} rows - refer to the grid data array
-   * @return {array} - return an array of array with value as an object in this format : { value : ... }
-   */
-  service.formatRowsForExport = function formatRowsForExport(rows = []) {
-    return rows.map(row => {
-      const code = row.inventory?.code;
-      const description = row.inventory?.text;
-      const lot = row.lot?.label;
-      const price = row.inventory?.unit_cost;
-      const quantity = row.quantity?.quantity;
-      const type = row.quantity?.unit_type;
-      const available = row.inventory?.quantity;
-      const amount = (price && quantity) ? price * quantity : 0;
-      const expiration = (row.lot && row.lot.expiration_date)
-        ? moment(row.lot.expiration_date).format(formatDB) : null;
-
-      return [code, description, lot, price, quantity, type, available, amount, expiration].map(value => ({ value }));
-    });
-  };
-
   return service;
 }
