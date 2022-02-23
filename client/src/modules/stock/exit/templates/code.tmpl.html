@@ -9,7 +9,7 @@
       typeahead-append-to-body="true"
       uib-typeahead="item as item.hrtext for item in grid.appScope.stockForm.listAvailableInventory(row.entity) | filter:$viewValue | limitTo:8"
       typeahead-template-url="/modules/templates/inventoryArticles.tmpl.html"
-      typeahead-on-select="grid.appScope.stockForm.configureItem(row.entity, $item)"
+      typeahead-on-select="grid.appScope.configureItem(row.entity, $item)"
       required>
   </div>
   <div ng-if="row.entity._initialised">

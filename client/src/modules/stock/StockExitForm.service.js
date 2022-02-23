@@ -4,6 +4,7 @@ angular.module('bhima.services')
 StockExitFormService.$inject = [
   'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants', 'DepotService',
   'Pool', 'LotItemService', 'StockExitFormHelperService', 'util', '$translate',
+  'StockService',
 ];
 
 /**
@@ -12,7 +13,11 @@ StockExitFormService.$inject = [
  * @description
  * This form powers the stock exit form in BHIMA.
  */
-function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers, util, $translate) {
+function StockExitFormService(
+  Store, AppCache, Session, $timeout, bhConstants,
+  Depots, Pool, Lot, Helpers, util, $translate,
+  Stock,
+) {
 
   const {
     TO_PATIENT, TO_LOSS, TO_SERVICE, TO_OTHER_DEPOT,
@@ -21,12 +26,14 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
   const today = new Date();
 
   const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
+  const INFO_NEEDS_LOTS = 'STOCK.MESSAGES.INFO_NEEDS_LOTS';
   const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
   const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
   const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
   const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
   const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
-  const ERR_NO_DESTINATION = 'STOCK.MESSGES.ERR_NO_DESTINATION';
+  const ERR_NO_DESTINATION = 'STOCK.MESSAGES.ERR_NO_DESTINATION';
+  const ERR_LOT_ERRORS = 'STOCK.MESSAGES.ERR_LOT_ERRORS';
 
   /**
    * @constructor
@@ -50,15 +57,17 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     this._errors = [];
   }
 
-  function toggleInfoMessage(shouldShowMsg, msgType, msgText, msgKeys = {}) {
+  StockExitForm.prototype._toggleInfoMessage = function _toggleInfoMessage(
+    shouldShowMsg, msgType, msgText, msgKeys = {},
+  ) {
     // the first thing we do is remove the previous message if it exists.  This makes sure that
     // we will refresh the view as needed.
     this._messages.delete(msgText);
 
     if (shouldShowMsg) {
-      this._messages.add(msgText, { type : msgType, text : msgText, keys : msgKeys });
+      this._messages.set(msgText, { type : msgType, text : msgText, keys : msgKeys });
     }
-  }
+  };
 
   /**
    * @method setup
@@ -78,7 +87,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     };
 
     // show the informational message that we need to select an exit type.
-    toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+    this._toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
   };
 
   /**
@@ -92,7 +101,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
   StockExitForm.prototype.messages = function messages() {
 
     // the display ordering in the message pane
-    const order = ['info', 'warn', 'success', 'danger'];
+    const order = ['info', 'warn', 'success', 'error'];
 
     const msgs = Array.from(this._messages.values())
       .sort((a, b) => order.indexOf(a.type) > order.indexOf(b.type));
@@ -172,7 +181,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
   };
 
   StockExitForm.prototype.listAvailableInventory = function listAvailableInventory() {
-    // console.log('#listAvailableInventory():', this._pool.list());
     return util.getUniqueBy(this._pool.list(), 'inventory_uuid');
   };
 
@@ -199,7 +207,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     this.details.date = date;
 
     const isPastDate = this.details.date < today;
-    toggleInfoMessage(isPastDate, WARN_PAST_DATE, this.details);
+    this._toggleInfoMessage(isPastDate, WARN_PAST_DATE, this.details);
 
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
   };
@@ -219,7 +227,18 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    */
   StockExitForm.prototype.setExitType = function setExitType(type) {
     this.details.exit_type = type;
-    toggleInfoMessage(false, 'info', INFO_NO_EXIT_TYPE, this.details);
+    this._toggleInfoMessage(false, 'info', INFO_NO_EXIT_TYPE, this.details);
+
+    // clear any previous values set by an exit type
+    // NOTE(@jniles) - this means that we _must_ call this before setting the other exit types
+    delete this.details.invoice_uuid;
+    delete this.details.stock_requisition_uuid;
+    delete this.details.entity_uuid;
+
+    // reset store by releasing all locks on items
+    // and clearing the data
+    this.store.data.forEach(item => this.pool.release(item.lot_uuid));
+    this.store.clear();
   };
 
   StockExitForm.prototype.setLotsFromInventoryList = function setLotsFromInventoryList(inventories, uuidKey = 'uuid') {
@@ -247,7 +266,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
       });
 
     const hasNoConsumableItems = (available.length === 0 && unavailable.length === 0);
-    toggleInfoMessage(hasNoConsumableItems, 'warn', WARN_NOT_CONSUMABLE_INVOICE, { ...this.details, inventories });
+    this._toggleInfoMessage(hasNoConsumableItems, 'warn', WARN_NOT_CONSUMABLE_INVOICE, { ...this.details, inventories });
 
     // if there are no consumable items in the invoice, this will exit early
     if (hasNoConsumableItems) {
@@ -302,9 +321,9 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     });
 
     // finally, toggle compute the error codes
-    toggleInfoMessage(unavailable > 0, 'warn', WARN_OUT_OF_STOCK_QUANTITY, { ...this.details, unavailable });
-    toggleInfoMessage(insufficient > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { ...this.details, insufficient });
-    toggleInfoMessage(available > 0, 'success', SUCCESS_FILLED_N_ITEMS, { ...this.details, available });
+    this._toggleInfoMessage(unavailable > 0, 'warn', WARN_OUT_OF_STOCK_QUANTITY, { ...this.details, unavailable });
+    this._toggleInfoMessage(insufficient > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { ...this.details, insufficient });
+    this._toggleInfoMessage(available > 0, 'success', SUCCESS_FILLED_N_ITEMS, { ...this.details, available });
   };
 
   /**
@@ -336,6 +355,10 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     this.details.flux_id = TO_SERVICE;
     console.log('service:', service);
     console.log('requisition:', service.requisition);
+
+    if (service.requisition) {
+      this.details.stock_requisition_uuid = service.requisition.uuid;
+    }
   };
 
   /**
@@ -349,6 +372,10 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     this.details.flux_id = TO_OTHER_DEPOT;
     console.log('depot:', depot);
     console.log('requisition:', depot.requisition);
+
+    if (depot.requisition) {
+      this.details.stock_requisition_uuid = depot.requisition.uuid;
+    }
   };
 
   /**
@@ -480,25 +507,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
   };
 
   /**
-   * @function errorLineHighlight
-   *
-   * @description
-   * Sets the grid's error flag on the row to render a red highlight
-   * on the row.
-   *
-   */
-  function errorLineHighlight(rowIdx, store) {
-    const { ROW_ERROR_FLAG } = bhConstants.grid;
-    // set and unset error flag for allowing to highlight again the row
-    // when the user click again on the submit button
-    const row = store.data[rowIdx];
-    row[ROW_ERROR_FLAG] = true;
-    $timeout(() => {
-      row[ROW_ERROR_FLAG] = false;
-    }, 1000);
-  }
-
-  /**
    * @method validate
    *
    * @description
@@ -520,20 +528,48 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     // these two conditions require special logic
     const hasNoDestination = !this.details.entity_uuid;
 
+    // to ensure we validate the entire grid, we must do a pass first, then
+    // check Array.prototype.every()
+    const validation = this.store.data.map(lot => lot.validate(this.details.date, !this._isStockLoss()));
+
     // check for valid lots
     const hasValidLots = this.store.data.length > 0
-      && this.store.data.every(lot => lot.validate(this.details.date, !this._isStockLoss()));
+      && validation.every(row => row);
 
     // gather errors into a flat array
     this._errors = this.store.data
       .flatMap(row => row.errors())
       .filter(err => err);
 
-    // some exit types require a destination (patient, service, depot).
-    const hasDestinationError = !this._isStockLoss() && hasNoDestination;
-    toggleInfoMessage(hasDestinationError, 'danger', ERR_NO_DESTINATION, this.details);
+    // indicate that the grid has errors in it
+    this._toggleInfoMessage(this._errors.length, 'error', ERR_LOT_ERRORS, this._errors);
 
-    return hasRequiredDetails && hasValidLots && !hasDestinationError;
+    // some exit types require a destination (patient, service, depot).
+    const hasDestinationError = this.details.exit_type && !this._isStockLoss() && hasNoDestination;
+    this._toggleInfoMessage(hasDestinationError, 'error', ERR_NO_DESTINATION, this.details);
+
+    // display a message telling the user to add lots next
+    const showNeedsLotsInfoMessage = this.details.exit_type
+      && !hasDestinationError
+      && this.store.data.length === 0;
+    this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
+
+    return hasRequiredDetails
+      && hasValidLots
+      && !hasDestinationError;
+  };
+
+  /**
+   * @function submit
+   *
+   * @description
+   * Submits the values to the server.
+   */
+  StockExitForm.prototype.submit = function submit() {
+    return this.getDataForSubmission()
+      .then(data => {
+        return Stock.movements.create(data);
+      });
   };
 
   /**
@@ -549,7 +585,16 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
       .then(description => {
         Object.assign(data, { description });
 
-        data.lots = this.store.data;
+        // format the lots for submission
+        data.lots = this.store.data
+          .map(lot => ({
+            uuid : lot.lot_uuid,
+            inventory_uuid : lot.inventory_uuid,
+            quantity : lot.quantity,
+          }));
+
+        console.log('data:', data);
+
         return data;
       });
   };
