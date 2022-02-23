@@ -33,13 +33,11 @@ function LotItemService(uuid, $translate) {
     this.text = null;
     this.group_uuid = null;
     this.unit = null;
-    this.unit_cost = null;
 
     // lot properties
     this.lot_uuid = null;
     this.label = null;
     this.quantity = 0;
-    this.unit_cost = 0;
     this.expiration_date = null;
 
     // validation properities
@@ -348,6 +346,20 @@ function LotItemService(uuid, $translate) {
    */
   Lot.prototype.setTrackingConsumption = function setTrackingConsumption(bool) {
     this.__tracking_consumption = bool;
+  };
+
+  //
+  Lot.prototype.formatForExport = function formatForExport() {
+    return [
+      this.code,
+      this.text,
+      this.label,
+      this.quantity,
+      this.unit,
+      this._quantity_available,
+      this.expiration_date.toLocaleString(),
+    ]
+      .map(value => ({ value }));
   };
 
   return Lot;
