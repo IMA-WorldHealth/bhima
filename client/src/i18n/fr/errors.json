@@ -35,7 +35,6 @@
     "ER_EMPTY_QUERY" : "Votre demande semble vide. Êtes-vous sûr de remplir tout?",
     "ER_NO_DEFAULT_FOR_FIELD" : "Vous n'avez pas inclus suffisamment d'informations dans votre soumission! Veuillez vérifier vos erreurs et réessayer.",
     "ER_DATA_TOO_LONG" : "Une de vos valeurs de formulaire est trop longue! Veuillez le raccourcir et le renvoyer.",
-    "ER_NO_STOCK_DESTINATION" : "Aucune destination de stock n'a été définie",
     "ER_NO_STOCK_SOURCE" : "Aucune source de stock n'a été définie",
     "NO_NEXT_FISCAL_YEAR" : "Vous ne pouvez clôturer une année financière que si vous avez défini une année suivante. Veuillez créer un exercice financier avant de fermer celui-ci.",
     "MISSING_UPLOAD_FILES" : "Fichiers à envoyer manquant",
