@@ -382,11 +382,10 @@ function StockExitFormService(
    * @method setLossDistribution
    *
    * @description
-   * Sets the form up for a depot distribution.
+   * Sets the form up for a loss distribution.
    */
-  StockExitForm.prototype.setLossDistribution = function setLossDistribution(depot) {
+  StockExitForm.prototype.setLossDistribution = function setLossDistribution() {
     this.details.flux_id = TO_LOSS;
-    console.log('depot:', depot);
   };
 
   /**
@@ -560,19 +559,6 @@ function StockExitFormService(
   };
 
   /**
-   * @function submit
-   *
-   * @description
-   * Submits the values to the server.
-   */
-  StockExitForm.prototype.submit = function submit() {
-    return this.getDataForSubmission()
-      .then(data => {
-        return Stock.movements.create(data);
-      });
-  };
-
-  /**
    * @function getDataForSubmission
    *
    * @description
@@ -581,7 +567,7 @@ function StockExitFormService(
   StockExitForm.prototype.getDataForSubmission = function getDataForSubmission() {
     const data = { ...this.details };
 
-    Helpers.getDescription(this.depot, data)
+    return Helpers.getDescription(this.depot, data)
       .then(description => {
         Object.assign(data, { description });
 
@@ -596,6 +582,20 @@ function StockExitFormService(
         console.log('data:', data);
 
         return data;
+      });
+  };
+
+  /**
+   * @function submit
+   *
+   * @description
+   * Submits the values to the server.
+   */
+  StockExitForm.prototype.submit = function submit() {
+    return this.getDataForSubmission()
+      .then(data => {
+        console.log('submitting:', data);
+        return Stock.movements.create(data);
       });
   };
 

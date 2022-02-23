@@ -158,7 +158,7 @@ function StockExitController(
       vm.stockForm.setDepotDistribution(entity);
       break;
     case 'loss':
-      vm.stockForm.setLossDistribution(entity);
+      vm.stockForm.setLossDistribution();
       break;
     default:
       break;
@@ -268,41 +268,18 @@ function StockExitController(
       return null;
     }
 
+    const renderReceipt = ReceiptModal.getReceiptFnByFluxId(vm.stockForm.details.flux_id);
+
     return vm.stockForm.submit()
-      .then(() => vm.stockForm.clear());
+      .then(result => {
+        return renderReceipt(result.uuid, true);
+      })
+      .then(() => {
+        vm.stockForm.clear();
+        vm.validate();
+      })
+      .catch(Notify.handleError);
   }
-
-  // // submit patient
-  // function submitPatient(form) {
-  //   const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice
-  //     ? vm.movement.entity.instance.invoice.details.uuid : null;
-
-  //   const movement = {
-  //     depot_uuid : vm.stockForm.depot.uuid,
-  //     entity_uuid : vm.movement.entity.uuid,
-  //     invoice_uuid : invoiceUuid,
-  //     date : vm.movement.date,
-  //     description : vm.movement.description,
-  //     is_exit : 1,
-  //     flux_id : bhConstants.flux.TO_PATIENT,
-  //     user_id : vm.stockForm.details.user_id,
-  //   };
-
-  //   const lots = vm.stockForm.store.data.map(formatLot);
-
-  //   movement.lots = lots;
-
-  //   return buildDescription(movement.entity_uuid, movement.invoice_uuid)
-  //     .then(description => {
-  //       movement.description = String(description).concat(vm.movement.description);
-  //       return Stock.movements.create(movement);
-  //     })
-  //     .then(document => {
-  //       ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
-  //       reinit(form);
-  //     })
-  //     .catch(Notify.handleError);
-  // }
 
   // // submit depot
   // function submitDepot(form) {
