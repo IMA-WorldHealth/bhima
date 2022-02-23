@@ -2,13 +2,13 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.STOCK</li>
-      <li ng-class="{ 'title' : !StockCtrl.depot.uuid, 'static' : StockCtrl.depot.uuid }">
+      <li ng-class="{ 'title' : !StockCtrl.stockForm.depot.uuid, 'static' : StockCtrl.stockForm.depot.uuid }">
         <span translate>STOCK.EXIT</span>
       </li>
-      <li class="title" ng-if="StockCtrl.depot.uuid">
-        <span>{{ StockCtrl.depot.text }}</span>
-        <span class="text-uppercase badge badge-primary" ng-show="StockCtrl.movement.exit_type">
-          {{ StockCtrl.movement.exit_type }}
+      <li class="title" ng-if="StockCtrl.stockForm.depot.uuid">
+        <span>{{ StockCtrl.stockForm.depot.text }}</span>
+        <span class="text-uppercase badge badge-primary" ng-show="StockCtrl.stockForm.details.exit_type">
+          {{ StockCtrl.stockForm.details.exit_type }}
         </span>
       </li>
     </ol>
@@ -18,7 +18,7 @@
         <bh-dropdown-menu>
           <bh-dropdown-menu-item>
             <a href>
-              <bh-change-depot on-select="StockCtrl.onChangeDepot(depot)"></bh-change-depot>
+              <bh-change-depot on-select="StockCtrl.stockForm.setDepot(depot)"></bh-change-depot>
             </a>
           </bh-dropdown-menu-item>
         </bh-dropdown-menu>
@@ -34,24 +34,10 @@
     <form name="StockExitForm" bh-submit="StockCtrl.submit(StockExitForm)" novalidate>
       <!-- destination -->
       <div class="row">
-        <bh-stock-entry-exit-type
-          on-entry-exit-type-select-callback="StockCtrl.selectExitType(type)"
-          reference="StockCtrl.reference"
-          display-name="StockCtrl.displayName"
-          is-entry="false"
-          depot="StockCtrl.depot"
-          reset="StockCtrl.resetEntryExitTypes">
-        </bh-stock-entry-exit-type>
-      </div>
-
-      <!-- entity -->
-      <div ng-if="StockCtrl.reference || StockCtrl.displayName" class="row">
-        <div class="col-xs-12">
-          <div class="show-on-small-screen">
-              <span translate>STOCK.DESTINATION</span> :
-              {{ StockCtrl.reference || StockCtrl.displayName }}
-          </div>
-        </div>
+        <bh-stock-exit-type
+          depot="StockCtrl.stockForm.depot"
+          on-select-callback="StockCtrl.onSelectExitType(type, entity)">
+        </bh-stock-exit-type>
       </div>
 
       <!-- date and note -->
@@ -59,16 +45,9 @@
         <div class="col-xs-8 col-md-5">
           <!-- date -->
           <bh-date-editor
-            date-value="StockCtrl.movement.date"
-            on-change="StockCtrl.onDateChange(date)">
+            date-value="StockCtrl.stockForm.details.date"
+            on-change="StockCtrl.stockForm.setDate(date)">
           </bh-date-editor>
-
-          <div ng-if="StockCtrl.dateMessageWarning" class="form-group">
-            <p>
-              <i class="fa fa-warning"></i>
-              <span translate>STOCK.ANTERIOR_DATE_QUANTITY_MESSAGE</span>
-            </p>
-          </div>
 
           <!-- note -->
           <div class="form-group"
@@ -79,7 +58,7 @@
             <textarea
               class="form-control"
               name="description"
-              ng-model="StockCtrl.movement.description"
+              ng-model="StockCtrl.stockForm.details.description"
               placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
               ng-maxlength="StockCtrl.maxLength">
             </textarea>
@@ -88,38 +67,46 @@
             </div>
           </div>
 
-          <div ng-if="StockCtrl.overconsumption.length" class="row">
-            <div class="alert alert-danger">
-              <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.OVERCONSUMED_INVENTORIES </span>
-              <ul>
-                <li ng-repeat="item in StockCtrl.overconsumption track by $index">
-                  <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.OVERCONSUMED_INVENTORIES_DESCRIPTION </span>
-                </li>
-              </ul>
-            </div>
+          <!-- message panel to display actions the user needs to take -->
+          <div class="form-group" style="min-height: 15em;">
+            <label class="control-label" translate>STOCK.PENDING_ACTIONS</label>
+
+            <p
+              style="padding-top:0"
+              class="form-control-static"
+              ng-repeat="message in StockCtrl.messages"
+              ng-class="{
+                'text-danger' : message.type === 'error',
+                'text-warning' : message.type === 'warn',
+                'text-primary' : message.type === 'info',
+                'text-success' : message.type === 'success',
+              }">
+              <i class="fa"
+                ng-class="{
+                  'fa-exclamation-triangle' : message.type === 'error',
+                  'fa-exclamation-circle' : message.type === 'warn',
+                  'fa-chevron-circle-right' : message.type === 'info',
+                  'fa-check-circle-o' : message.type === 'success',
+                }">
+              </i>
+              <span translate>{{ message.text }}<span>
+            </p>
+
+            <p ng-if="StockCtrl.messages.length === 0" style="padding-top:0" class="form-control-static text-success">
+              <i class="fa fa-check-circle-o"></i> <span translate>STOCK.MESSAGES.SUCCESS_ALL_VALID<span>
+            </p>
+
           </div>
         </div>
 
         <div class="col-xs-6 col-md-3 panel-default">
-          <bh-stock-out depot-uuid="StockCtrl.depot.uuid" date="StockCtrl.movement.date">
+          <bh-stock-out depot-uuid="StockCtrl.stockForm.depot.uuid" date="StockCtrl.stockForm.details.date">
           </bh-stock-out>
         </div>
 
         <div class="col-xs-6 col-md-4 panel-default">
-          <bh-stock-expired depot-uuid="StockCtrl.depot.uuid" date="StockCtrl.movement.date">
+          <bh-stock-expired depot-uuid="StockCtrl.stockForm.depot.uuid" date="StockCtrl.stockForm.details.date">
           </bh-stock-expired>
-        </div>
-      </div>
-
-      <!-- not available messages -->
-      <div ng-if="StockCtrl.inventoryNotAvailable.length" class="row">
-        <div class="col-xs-12 col-sm-6">
-          <div class="alert alert-warning">
-            <h4 translate>STOCK.PRODUCT_NOT_AVAILABLE</h4>
-            <ul>
-              <li ng-repeat="item in StockCtrl.inventoryNotAvailable track by $index">{{ item }}</li>
-            </ul>
-          </div>
         </div>
       </div>
 
@@ -131,10 +118,11 @@
             <!-- "Add number of grid rows" input-group -->
             <div class="grid-toolbar-item">
               <bh-add-item
-                disable = "StockCtrl.movement.exit_type && !StockCtrl.emptyStock"
-                callback = "StockCtrl.addItems(numItem)">
+                disable="StockCtrl.stockForm.details.exit_type"
+                callback="StockCtrl.addItems(numItem)">
               </bh-add-item>
             </div>
+
             <div class="grid-toolbar-item">
               <button class="btn btn-default" type="button" style="margin-left: 10px; vertical-align: middle;"
                 ng-click="StockCtrl.getLotByBarcode()">
@@ -148,6 +136,7 @@
                 <a class="btn btn-default" uib-dropdown-toggle>
                   </span> <span class="hidden-xs" translate>FORM.BUTTONS.ACTIONS</span> <span class="caret"></span>
                 </a>
+
                 <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
                   <li role="menuitem">
                     <a href ng-click="StockCtrl.exportGrid()">
@@ -169,7 +158,7 @@
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
-          loading-state="StockCtrl.loading"
+          loading-state="StockCtrl.stockForm.isLoading()"
           empty-state="StockCtrl.emptyStock"
           error-state="StockCtrl.hasError"
           empty-state-message="STOCK.EMPTY">
@@ -177,25 +166,15 @@
       </div>
 
       <!-- footer -->
-      <div class="row" style="margin-top: 5px;">
-        <div class="col-xs-12">
-          <div class="col-md-6">
-            <div class="col-xs-12">
-              <div class="text-info" ng-show="!StockCtrl.movement.exit_type">
-                <span class="fa fa-info-circle"></span>
-                <span translate>FORM.INFO.NO_DESTINATION</span>
-                </div>
-              </div>
-            </div>
-          <div class="col-md-6 text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.reset(StockExitForm)" type="button" translate>
-              FORM.BUTTONS.CLEAR
-            </button>
+      <div class="row" style="margin-top: 5px; margin-bottom:5px;">
+        <div class="col-md-12 text-right">
+          <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
+            FORM.BUTTONS.CLEAR
+          </button>
 
-            <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">
-              <span translate>FORM.BUTTONS.SUBMIT</span>
-            </bh-loading-button>
-          </div>
+          <bh-loading-button loading-state="StockExitForm.$loading">
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </bh-loading-button>
         </div>
       </div>
     </form>

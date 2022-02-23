@@ -1,8 +1,7 @@
-
 DELIMITER $$
 
 DROP PROCEDURE IF EXISTS `UpdateStaffingIndices`$$
-CREATE   PROCEDURE `UpdateStaffingIndices`(IN _dateFrom DATE, IN _dateTo DATE, IN _payroll_conf_id INT)
+CREATE PROCEDURE `UpdateStaffingIndices`(IN _dateFrom DATE, IN _dateTo DATE, IN _payroll_conf_id INT)
 BEGIN
 	DECLARE _id mediumint(8) unsigned;
 	DECLARE _date_embauche DATE;
