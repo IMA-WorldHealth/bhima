@@ -95,6 +95,26 @@
             </div>
           </div>
         </div>
+
+        <div ng-if="!CreateShipCtrl.existingShipmentUuid && CreateShipCtrl.alreadyAffected.length" class="col-md-4">
+          <div class="form-group">
+            <div class="alert alert-warning" style="margin: 0;">
+              <span translate>SHIPMENT.EXISTING_ASSETS_IN_OTHER_SHIPMENT</span>
+            </div>
+            <div style="max-height: 300px; overflow-y: auto; margin: 0;">
+              <table class="table table-condensed table-bordered">
+                <tr>
+                  <th translate>SHIPMENT.TITLE</th>
+                  <th translate>ASSET.TITLE</th>
+                </tr>
+                <tr ng-repeat="item in CreateShipCtrl.alreadyAffected track by item.uuid">
+                  <td>{{ item.reference }}</td>
+                  <td>{{ item.inventory_code + ' - ' + item.inventory_text + ' (' + item.lot_label + ')'}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- not available messages -->

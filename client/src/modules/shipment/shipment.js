@@ -183,6 +183,7 @@ function ShipmentRegistryController(
       .then(data => {
         vm.gridOptions.data = data.map(item => {
           item.isAtDepot = item.status_id === Constants.shipmentStatus.AT_DEPOT;
+          item.isReady = item.status_id === Constants.shipmentStatus.READY_FOR_SHIPMENT;
           return item;
         });
       })

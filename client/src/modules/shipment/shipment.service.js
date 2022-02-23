@@ -44,6 +44,11 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.getAffectedAssets = (parameters) => {
+    return service.$http.get(`/shipments/affected-assets`, { params : parameters })
+      .then(service.util.unwrapHttpResponse);
+  };
+
   service.overview = (uuid) => {
     return service.$http.get(`/shipments/${uuid}/overview`)
       .then(service.util.unwrapHttpResponse);

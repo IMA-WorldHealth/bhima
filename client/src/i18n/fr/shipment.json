@@ -47,6 +47,9 @@
     "BARCODE": "Code-barre de l'expédition",
     "ENTER_SHIPMENT_PROGRESS": "Veuillez entrer l'etat de progression de l'expédition",
     "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
-    "DELIVERY_EXPECTED_ON": "Livraison attendue le"
+    "DELIVERY_EXPECTED_ON": "Livraison attendue le",
+    "EXISTING_SHIPMENT_AT_DEPOT": "Les expéditions en cours dans le dépôt ({{number}})",
+    "PLEASE_SHIP_EXISTING_SHIPMENT": "Veuillez envoyer ou annuler les expéditions existantes encore dans le dépôt",
+    "EXISTING_ASSETS_IN_OTHER_SHIPMENT": "Vous avez les actifs suivants dans des expéditions en cours. Veuillez envoyer ou annuler ces expéditions afin de pouvoir re-affecter ces actifs"
   }
 }
