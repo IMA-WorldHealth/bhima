@@ -59,12 +59,10 @@ function StockExitFormHelperService(moment, $q, $translate, bhConstants, Patient
    */
   function getDescriptionForService(details, i18nKeys) {
     // load the required information for the service description
-    Services.read(null, { uuid : details.entity_uuid })
+    return Services.read(null, { uuid : details.entity_uuid })
       .then(([{ name }]) => {
 
-        Object.assign(i18nKeys, {
-          service : name,
-        });
+        Object.assign(i18nKeys, { service : name });
 
         return $translate.instant('STOCK.EXIT_SERVICE_ADVANCED', i18nKeys);
       });
