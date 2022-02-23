@@ -49,13 +49,6 @@
             on-change="StockCtrl.stockForm.setDate(date)">
           </bh-date-editor>
 
-          <div ng-if="StockCtrl.stockForm.details.date < StockCtrl.today" class="form-group">
-            <p class="form-control-static text-warning">
-              <i class="fa fa-warning"></i>
-              <span translate>STOCK.ANTERIOR_DATE_QUANTITY_MESSAGE</span>
-            </p>
-          </div>
-
           <!-- note -->
           <div class="form-group"
             ng-class="{ 'has-error' : StockExitForm.$submitted && StockExitForm.description.$invalid }">
@@ -75,18 +68,35 @@
           </div>
 
           <!-- message panel to display actions the user needs to take -->
-          <div class="form-group">
-            <label translate>Pending Actions</label>
-            <p translate class="form-control-static" ng-class="{
-              'text-danger' : StockCtrl.message.type === 'error',
-              'text-primary' : StockCtrl.message.type === 'info',
-              'text-success' : StockCtrl.message.type === 'success',
+          <div class="form-group" style="min-height: 15em;">
+            <label class="control-label" translate>STOCK.PENDING_ACTIONS</label>
+
+            <p
+              style="padding-top:0"
+              class="form-control-static"
+              ng-repeat="message in StockCtrl.messages"
+              ng-class="{
+                'text-danger' : message.type === 'error',
+                'text-warning' : message.type === 'warn',
+                'text-primary' : message.type === 'info',
+                'text-success' : message.type === 'success',
               }">
-              {{ StockCtrl.message.text }}
+              <i class="fa"
+                ng-class="{
+                  'fa-exclamation-triangle' : message.type === 'error',
+                  'fa-exclamation-circle' : message.type === 'warn',
+                  'fa-chevron-circle-right' : message.type === 'info',
+                  'fa-check-circle-o' : message.type === 'success',
+                }">
+              </i>
+              <span translate>{{ message.text }}<span>
             </p>
+
+            <p ng-if="StockCtrl.messages.length === 0" style="padding-top:0" class="form-control-static text-success">
+              <i class="fa fa-check-circle-o"></i> <span translate>STOCK.MESSAGES.SUCCESS_ALL_VALID<span>
+            </p>
+
           </div>
-
-
         </div>
 
         <div class="col-xs-6 col-md-3 panel-default">
@@ -109,7 +119,7 @@
             <div class="grid-toolbar-item">
               <bh-add-item
                 disable="StockCtrl.stockForm.details.exit_type"
-                callback="StockCtrl.stockForm.addItems(numItem)">
+                callback="StockCtrl.addItems(numItem)">
               </bh-add-item>
             </div>
 
@@ -156,8 +166,8 @@
       </div>
 
       <!-- footer -->
-      <div class="row" style="margin-top: 5px;">
-        <div class="col-md-6 text-right">
+      <div class="row" style="margin-top: 5px; margin-bottom:5px;">
+        <div class="col-md-12 text-right">
           <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
             FORM.BUTTONS.CLEAR
           </button>
