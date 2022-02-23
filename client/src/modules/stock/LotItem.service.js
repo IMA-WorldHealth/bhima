@@ -86,7 +86,7 @@ function LotItemService(uuid, $translate) {
    * date for yesterday and the expiration is today, it will not
    * register as expired.
    */
-  Lot.prototype.validate = function validate(date) {
+  Lot.prototype.validate = function validate(date, checkExpirationDate = true) {
 
     // set the "uninitialised" flag first.  Return quickly if not - no
     // need to validate further
@@ -99,7 +99,16 @@ function LotItemService(uuid, $translate) {
     const isPositive = this.hasPositiveQuantity();
     const isUsed = !this.isUnused();
     const hasEnough = this.hasEnoughQuantityAvailable();
-    const isNotExpired = !this.isExpired(date);
+
+    // custom expiration logic, to allow external validation to turn off the expiration check
+    // if necessary
+    let isNotExpired;
+    if (checkExpirationDate) {
+      isNotExpired = !this.isExpired(date);
+    } else {
+      isNotExpired = true;
+      toggleErrorMessage(false, this._errors, ER_EXPIRED);
+    }
 
     // add in the tooltip
     this.__tooltip = this.errors().pop() || '';
@@ -275,7 +284,9 @@ function LotItemService(uuid, $translate) {
     this.hrtext = ''.concat(this.code, ' - ', this.text).trim();
 
     // set the total quantity available
-    this._quantity_available = clone.quantity;
+    if (clone.quantity !== undefined) {
+      this._quantity_available = clone.quantity;
+    }
 
     // parse the date if it is not already a date
     if (!(this.expiration_date instanceof Date) && this.expiration_date !== undefined) {

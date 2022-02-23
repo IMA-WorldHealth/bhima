@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('StockExitFormService', StockExitFormService);
 
 StockExitFormService.$inject = [
-  'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants',
-  'DepotService', 'Pool', 'LotItemService', 'StockExitFormHelperService', 'util',
+  'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants', 'DepotService',
+  'Pool', 'LotItemService', 'StockExitFormHelperService', 'util', '$translate',
 ];
 
 /**
@@ -12,11 +12,21 @@ StockExitFormService.$inject = [
  * @description
  * This form powers the stock exit form in BHIMA.
  */
-function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers, util) {
+function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, Depots, Pool, Lot, Helpers, util, $translate) {
 
   const {
     TO_PATIENT, TO_LOSS, TO_SERVICE, TO_OTHER_DEPOT,
   } = bhConstants.flux;
+
+  const today = new Date();
+
+  const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
+  const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
+  const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
+  const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
+  const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
+  const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
+  const ERR_NO_DESTINATION = 'STOCK.MESSGES.ERR_NO_DESTINATION';
 
   /**
    * @constructor
@@ -35,6 +45,19 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
 
     // this is used to power the loading indicator
     this._queriesInProgress = 0;
+
+    this._messages = new Map();
+    this._errors = [];
+  }
+
+  function toggleInfoMessage(shouldShowMsg, msgType, msgText, msgKeys = {}) {
+    // the first thing we do is remove the previous message if it exists.  This makes sure that
+    // we will refresh the view as needed.
+    this._messages.delete(msgText);
+
+    if (shouldShowMsg) {
+      this._messages.add(msgText, { type : msgType, text : msgText, keys : msgKeys });
+    }
   }
 
   /**
@@ -45,11 +68,37 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    * two lines are always present in the form.
    */
   StockExitForm.prototype.setup = function setup() {
+    this._messages.length = 0;
+    this._errors.length = 0;
+
     this.details = {
       date : new Date(),
       user_id : Session.user.id,
       is_exit : 1,
     };
+
+    // show the informational message that we need to select an exit type.
+    toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+  };
+
+  /**
+   * @method messages
+   *
+   * @description
+   * This function powers the message pane on the stock exit form.  It provides
+   * the user with up to date information about what errors are being encountered
+   * and what they need to do next.
+   */
+  StockExitForm.prototype.messages = function messages() {
+
+    // the display ordering in the message pane
+    const order = ['info', 'warn', 'success', 'danger'];
+
+    const msgs = Array.from(this._messages.values())
+      .sort((a, b) => order.indexOf(a.type) > order.indexOf(b.type));
+
+    return msgs
+      .map(msg => ({ ...msg, text : $translate.instant(msg.text, msg.keys) }));
   };
 
   /**
@@ -64,6 +113,9 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
 
   /**
    * @function fetchQuantityInStock
+   *
+   * @description
+   * Loads the quantity in stock for the depot
    *
    *
    */
@@ -109,8 +161,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     const available = this._pool.list()
       .filter(row => row.inventory_uuid === inventoryUuid);
 
-    // console.log('#listLotsForInventory(): available:', available);
-
     if (lotUuid) {
       const lot = this._pool.unavailable.get(lotUuid);
       if (lot) {
@@ -147,7 +197,16 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    */
   StockExitForm.prototype.setDate = function setDate(date) {
     this.details.date = date;
+
+    const isPastDate = this.details.date < today;
+    toggleInfoMessage(isPastDate, WARN_PAST_DATE, this.details);
+
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
+  };
+
+  // utility function to return true if we are in the stock loss group
+  StockExitForm.prototype._isStockLoss = function isStockLoss() {
+    return this.details.exit_type === 'loss';
   };
 
   /**
@@ -160,6 +219,7 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
    */
   StockExitForm.prototype.setExitType = function setExitType(type) {
     this.details.exit_type = type;
+    toggleInfoMessage(false, 'info', INFO_NO_EXIT_TYPE, this.details);
   };
 
   StockExitForm.prototype.setLotsFromInventoryList = function setLotsFromInventoryList(inventories, uuidKey = 'uuid') {
@@ -170,8 +230,6 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     const available = [];
     const unavailable = [];
     const insufficient = [];
-
-    console.log('inventories:', inventories);
 
     inventories
 
@@ -188,17 +246,20 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
         }
       });
 
+    const hasNoConsumableItems = (available.length === 0 && unavailable.length === 0);
+    toggleInfoMessage(hasNoConsumableItems, 'warn', WARN_NOT_CONSUMABLE_INVOICE, { ...this.details, inventories });
+
     // if there are no consumable items in the invoice, this will exit early
-    if (available.length === 0 && unavailable.length === 0) {
-      console.log('No consumable items in inventory:', inventories);
+    if (hasNoConsumableItems) {
       return;
     }
 
     // adds a lot to the grid.
     const addLotWithQuantity = (item, quantity) => {
-      const lot = new Lot(item);
+      const lot = new Lot();
+      lot.configure(item);
       lot.quantity = quantity;
-      lot.validate();
+      lot.validate(this.details.date, !this._isStockLoss());
       this.store.post(lot);
       this._pool.use(item.lot_uuid);
     };
@@ -240,11 +301,10 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
       }
     });
 
-    // finally, compute the error codes
-    console.log('available:', available);
-    console.log('unavailable:', unavailable);
-    console.log('insufficient:', insufficient);
-
+    // finally, toggle compute the error codes
+    toggleInfoMessage(unavailable > 0, 'warn', WARN_OUT_OF_STOCK_QUANTITY, { ...this.details, unavailable });
+    toggleInfoMessage(insufficient > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { ...this.details, insufficient });
+    toggleInfoMessage(available > 0, 'success', SUCCESS_FILLED_N_ITEMS, { ...this.details, available });
   };
 
   /**
@@ -457,36 +517,23 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
       && this.details.date
       && this.details.exit_type;
 
-    // run the checks on the lot contents
-    const hasValidLots = this.store.data.every(item => item.validate(this.details.date))
-      && this.store.data.length > 0;
+    // these two conditions require special logic
+    const hasNoDestination = !this.details.entity_uuid;
+
+    // check for valid lots
+    const hasValidLots = this.store.data.length > 0
+      && this.store.data.every(lot => lot.validate(this.details.date, !this._isStockLoss()));
 
     // gather errors into a flat array
     this._errors = this.store.data
-      .flatMap(row => {
-        row.validate();
-        return row.errors();
-      })
+      .flatMap(row => row.errors())
       .filter(err => err);
 
-    const hasDestination = !!this.details.entity_uuid;
+    // some exit types require a destination (patient, service, depot).
+    const hasDestinationError = !this._isStockLoss() && hasNoDestination;
+    toggleInfoMessage(hasDestinationError, 'danger', ERR_NO_DESTINATION, this.details);
 
-    // stock losses do not need a destination
-    if (this.details.exit_type !== 'loss') {
-
-      // if (hasExpiredLots) {
-      //   // return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
-      // }
-
-      if (!hasDestination) {
-      // return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
-
-      }
-
-    }
-
-    // NOTE(@jniles) - expired lots are only relevant if not in loss.
-    return hasValidLots && hasRequiredDetails;
+    return hasRequiredDetails && hasValidLots && !hasDestinationError;
   };
 
   /**
@@ -501,10 +548,10 @@ function StockExitFormService(Store, AppCache, Session, $timeout, bhConstants, D
     Helpers.getDescription(this.depot, data)
       .then(description => {
         Object.assign(data, { description });
+
+        data.lots = this.store.data;
+        return data;
       });
-
-    // how do we
-
   };
 
   return StockExitForm;
