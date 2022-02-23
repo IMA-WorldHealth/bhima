@@ -9,33 +9,40 @@ angular.module('bhima.components')
   });
 
 bhStockExpiredController.$inject = [
-  'StockService', 'moment', 'NotifyService', 'DepotService', '$filter',
+  'StockService', 'moment', 'NotifyService', 'DepotService', '$filter', '$q',
 ];
 
 /**
  * Stock Expired component
  */
-function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
+function bhStockExpiredController(Stock, moment, Notify, Depots, $filter, $q) {
   const $ctrl = this;
-
-  $ctrl.loading = false;
-  $ctrl.expiredInventories = [];
-
   const $date = $filter('date');
 
   $ctrl.$onInit = () => {
-    fetchExpiredStock();
-    getDepot();
+    $ctrl.loading = true;
+    $ctrl.expiredInventories = [];
+
+    $q.all([
+      fetchExpiredStock(),
+      getDepot(),
+    ])
+      .finally(() => { $ctrl.loading = false; });
   };
 
   $ctrl.$onChanges = () => {
-    fetchExpiredStock();
-    getDepot();
+    $ctrl.loading = true;
+    $q.all([
+      fetchExpiredStock(),
+      getDepot(),
+    ])
+      .finally(() => { $ctrl.loading = false; });
   };
 
   function getDepot() {
-    if (!$ctrl.depotUuid) return;
-    Depot.read($ctrl.depotUuid)
+    if (!$ctrl.depotUuid) return 0;
+
+    return Depots.read($ctrl.depotUuid)
       .then(depot => {
         $ctrl.depot = depot;
       });
@@ -48,11 +55,14 @@ function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
    * Gets expired inventories for a depot
    */
   function fetchExpiredStock() {
-    if (!$ctrl.depotUuid) return;
-    const dateTo = $ctrl.date || new Date();
-    $ctrl.loading = true;
+    if (!$ctrl.depotUuid) return 0;
 
-    Depot.getExpiredStockForDate($ctrl.depotUuid, dateTo)
+    const dateTo = $ctrl.date || new Date();
+
+    // format date into a cacheable format
+    const dateToFormatted = $date(dateTo, 'yyyy-MM-dd');
+
+    return Depots.getExpiredStockForDate($ctrl.depotUuid, dateToFormatted)
       .then((inventories) => {
         inventories.forEach(inventory => {
           inventory.expiration_date_raw = $date(inventory.expiration_date);
@@ -61,10 +71,7 @@ function bhStockExpiredController(Stock, moment, Notify, Depot, $filter) {
 
         $ctrl.expiredInventories = inventories;
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
   }
 
 }
