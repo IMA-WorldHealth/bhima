@@ -47,7 +47,7 @@
           <!-- date -->
           <bh-date-editor
             date-value="StockCtrl.stockForm.details.date"
-            on-change="StockCtrl.stockForm.setDate(date)">
+            on-change="StockCtrl.setDate(date)">
           </bh-date-editor>
 
           <!-- note -->
@@ -169,7 +169,7 @@
       <!-- footer -->
       <div class="row" style="margin-top: 5px; margin-bottom:5px;">
         <div class="col-md-12 text-right">
-          <button class="btn btn-default" ng-click="StockCtrl.stockForm.clear()" type="button" translate>
+          <button class="btn btn-default" ng-click="StockCtrl.clear()" type="button" translate>
             FORM.BUTTONS.CLEAR
           </button>
 
