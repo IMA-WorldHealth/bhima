@@ -118,7 +118,10 @@ function StockExitFormHelperService(moment, $q, $translate, bhConstants, Patient
 
     return promise
       .then(description => {
-        return description.concat(' - ', details.description);
+        if (details.description) {
+          return description.concat(' - ', details.description);
+        }
+        return description;
       });
   };
 
@@ -148,5 +151,4 @@ function StockExitFormHelperService(moment, $q, $translate, bhConstants, Patient
   };
 
   return service;
-
 }
