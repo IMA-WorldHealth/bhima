@@ -196,7 +196,10 @@ function CreateShipmentController(
       includeEmptyLot : 0,
     })
       .then(lots => {
-        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid) && !vm.assetsUuids.includes(lot.uuid));
+        item.lots = lots.filter(lot => {
+          lot.quantity -= getAffectedQuantity(lot.uuid);
+          return !vm.selectedLots.includes(lot.uuid) && lot.quantity > 0;
+        });
       })
       .catch(Notify.handleError);
   }
@@ -245,7 +248,6 @@ function CreateShipmentController(
     return fetchAffectedAssets()
       .then(assets => {
         vm.alreadyAffected = assets;
-        vm.assetsUuids = assets.map(asset => asset.uuid);
         return Shipment.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
       })
       .then(list => {
@@ -253,8 +255,16 @@ function CreateShipmentController(
         return Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
       })
       .then(lots => {
-        vm.currentInventories = lots.filter(item => item.quantity > 0 && !vm.assetsUuids.includes(item.uuid));
+        vm.currentInventories = lots.filter(item => {
+          item.quantity -= getAffectedQuantity(item.uuid);
+          return item.quantity > 0;
+        });
       });
+  }
+
+  function getAffectedQuantity(uuid) {
+    const el = vm.alreadyAffected.filter(item => item.lot_uuid === uuid)[0];
+    return el ? el.quantity_sent : 0;
   }
 
   function onLotSelect(row) {
