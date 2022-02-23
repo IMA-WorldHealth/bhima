@@ -119,6 +119,7 @@ function StockExitController(
   vm.validate = () => {
     vm.stockForm.validate();
     vm.messages = vm.stockForm.messages();
+    console.log('vm.messages:', vm.messages);
   };
 
   vm.configureItem = function configureItem(row, lot) {
@@ -166,6 +167,16 @@ function StockExitController(
 
     vm.validate();
   }
+
+  vm.setDate = function setDate(date) {
+    vm.stockForm.setDate(date);
+    vm.validate();
+  };
+
+  vm.clear = function clear() {
+    vm.stockForm.clear();
+    vm.validate();
+  };
 
   function startup() {
     // setting params for grid loading state
