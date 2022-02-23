@@ -511,13 +511,13 @@ function find(params) {
 }
 
 function findAffectedAssets(params) {
-  params.is_asset = 1;
   const filters = getShipmentFilters(params);
   const sql = `
     SELECT 
-      BUID(shi.lot_uuid) AS uuid, l.label AS lot_label,
-      i.code AS inventory_code, i.text AS inventory_text,
-      dm.text AS reference
+      BUID(shi.uuid) AS uuid,
+      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent,
+      l.label AS lot_label, i.code AS inventory_code,
+      i.text AS inventory_text, dm.text AS reference
     FROM shipment sh
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN lot l ON l.uuid = shi.lot_uuid
