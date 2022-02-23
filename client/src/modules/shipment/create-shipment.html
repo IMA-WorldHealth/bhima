@@ -1,0 +1,188 @@
+<div class="flex-header static">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ASSET_MANAGEMENT.TITLE </li>
+      <li class="static" translate> SHIPMENT.SHIPMENTS</li>
+      <li class="title"> 
+        <span translate>SHIPMENT.NEW_SHIPMENT </span>&nbsp;
+        <span ng-if="CreateShipCtrl.depot.uuid" class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
+      </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-dropdown-menu>
+          <bh-dropdown-menu-item>
+            <a href>
+              <bh-change-depot on-select="CreateShipCtrl.onChangeDepot(depot)"></bh-change-depot>
+            </a>
+          </bh-dropdown-menu-item>
+        </bh-dropdown-menu>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- content -->
+<div class="flex-content">
+  <div class="container-fluid">
+
+    <form name="ShipmentForm" bh-submit="CreateShipCtrl.submit(ShipmentForm)" novalidate>
+      
+      <!-- date and note -->
+      <div class="row">
+        <div class="col-md-4">
+          <!-- shipment title -->
+          <bh-input-text
+            key="name"
+            text-value="CreateShipCtrl.shipment.name"
+            label="FORM.LABELS.LABEL"
+            autocomplete="off"
+            required="true">
+          </bh-input-text>
+
+          <!-- destination depot -->
+          <bh-depot-select
+            depot-uuid="CreateShipCtrl.shipment.destination_depot_uuid"
+            label="SHIPMENT.DESTINATION_DEPOT"
+            on-select-callback="CreateShipCtrl.onSelectDestinationDepot(depot)"
+            required="true">
+          </bh-depot-select>
+
+          <!-- date -->
+          <bh-date-editor
+            label="SHIPMENT.ANTICIPATED_DELIVERY_DATE"
+            date-value="CreateShipCtrl.shipment.anticipated_delivery_date"
+            allow-future-date="true"
+            on-change="CreateShipCtrl.onDateChange(date)">
+          </bh-date-editor>
+
+          <div ng-if="CreateShipCtrl.dateMessageWarning" class="form-group">
+            <p>
+              <i class="fa fa-warning"></i>
+              <span translate>STOCK.ANTERIOR_DATE_QUANTITY_MESSAGE</span>
+            </p>
+          </div>
+
+          <div ng-if="CreateShipCtrl.overconsumption.length" class="row">
+            <div class="alert alert-danger">
+              <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.OVERCONSUMED_INVENTORIES </span>
+              <ul>
+                <li ng-repeat="item in CreateShipCtrl.overconsumption track by $index">
+                  <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.OVERCONSUMED_INVENTORIES_DESCRIPTION </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <!-- note -->
+          <div class="form-group"
+            ng-class="{ 'has-error' : ShipmentForm.$submitted && ShipmentForm.description.$invalid }">
+            <label class="control-label">
+              <span translate>FORM.LABELS.NOTES</span>
+            </label>
+            <textarea
+              class="form-control"
+              name="description"
+              ng-model="CreateShipCtrl.shipment.description"
+              placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate }}"
+              ng-maxlength="CreateShipCtrl.maxLength">
+            </textarea>
+            <div class="help-block" ng-messages="ShipmentForm.description.$error" ng-show="ShipmentForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+
+        <div ng-if="!CreateShipCtrl.existingShipmentUuid && CreateShipCtrl.alreadyAffected.length" class="col-md-4">
+          <div class="form-group">
+            <div class="alert alert-warning" style="margin: 0;">
+              <span translate>SHIPMENT.EXISTING_ASSETS_IN_OTHER_SHIPMENT</span>
+            </div>
+            <div style="max-height: 300px; overflow-y: auto; margin: 0;">
+              <table class="table table-condensed table-bordered">
+                <tr>
+                  <th translate>SHIPMENT.TITLE</th>
+                  <th translate>ASSET.TITLE</th>
+                </tr>
+                <tr ng-repeat="item in CreateShipCtrl.alreadyAffected track by item.uuid">
+                  <td>{{ item.reference }}</td>
+                  <td>{{ item.inventory_code + ' - ' + item.inventory_text + ' (' + item.lot_label + ')'}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- not available messages -->
+      <div ng-if="CreateShipCtrl.inventoryNotAvailable.length" class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="alert alert-warning">
+            <h4 translate>STOCK.PRODUCT_NOT_AVAILABLE</h4>
+            <ul>
+              <li ng-repeat="item in CreateShipCtrl.inventoryNotAvailable track by $index">{{ item }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="padding-bottom : 5px;">
+        <div class="col-xs-12">
+          <div class="grid-toolbar">
+            <!-- "Add number of grid rows" input-group -->
+            <div class="grid-toolbar-item">
+              <bh-add-item
+                disable = "!CreateShipCtrl.emptyStock"
+                callback = "CreateShipCtrl.addItems(numItem)">
+              </bh-add-item>
+            </div>
+            <div class="grid-toolbar-item">
+              <button class="btn btn-default" type="button" style="margin-left: 5px; vertical-align: middle;"
+                ng-click="CreateShipCtrl.getLotByBarcode()">
+                <span class="fa fa-plus-circle"></span> <span translate>BARCODE.SCAN</span> <span class="fa fa-barcode"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- grid -->
+      <div id="create-shipment-grid"
+        ui-grid="CreateShipCtrl.gridOptions"
+        style="height: 300px; width: 100%;"
+        ui-grid-exporter
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+        <bh-grid-loading-indicator
+          loading-state="CreateShipCtrl.loading"
+          empty-state="CreateShipCtrl.emptyStock"
+          error-state="CreateShipCtrl.hasError"
+          empty-state-message="STOCK.EMPTY">
+        </bh-grid-loading-indicator>
+      </div>
+
+      <!-- footer -->
+      <div class="row" style="margin-top: 5px;">
+        <div class="col-xs-12">
+          <div class="col-md-6">
+            <button ng-if="CreateShipCtrl.existingShipmentUuid" class="btn btn-success" type="button" ui-sref="shipments.ready-for-shipment({ uuid : CreateShipCtrl.existingShipmentUuid })">
+              <span translate>SHIPMENT.READY_TO_SHIP</span> <i class="fa fa-truck"></i>
+            </button>
+          </div>
+          <div class="col-md-6 text-right">
+            <button class="btn btn-default" ng-click="CreateShipCtrl.reset(ShipmentForm)" type="button" translate>
+              FORM.BUTTONS.CLEAR
+            </button>
+
+            <bh-loading-button loading-state="CreateShipCtrl.$loading" disabled="!CreateShipCtrl.validForSubmit">
+              <span translate>FORM.BUTTONS.SAVE</span> <i class="fa fa-save"></i>
+            </bh-loading-button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

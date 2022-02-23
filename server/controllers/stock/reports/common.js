@@ -85,7 +85,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
 
   const sql = `
     SELECT
-      i.code, i.text, iu.text AS unit, BUID(m.document_uuid) AS document_uuid,
+      BUID(l.uuid) AS lot_uuid, i.code, i.text, iu.text AS unit, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total, m.date, m.description,
       u.display_name AS user_display_name,
       dm.text AS document_reference,
