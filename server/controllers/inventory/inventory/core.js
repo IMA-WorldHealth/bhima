@@ -276,19 +276,25 @@ async function getItemsMetadata(params) {
   filters.equals('type_id');
   filters.equals('code');
   filters.equals('price');
-  filters.equals('consumable');
   filters.equals('locked');
   filters.equals('label');
   filters.equals('sellable');
   filters.equals('note');
   filters.equals('importance');
-  filters.equals('is_asset');
   filters.equals('manufacturer_brand');
   filters.equals('manufacturer_model');
   filters.equals('reference_number');
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
+
+  // Handle requests for either consumables or assets
+  if ('consumable_or_asset' in params && params.consumable_or_asset === '1') {
+    filters.custom('consumable_or_asset', '(inventory.consumable = 1 OR inventory.is_asset = 1)');
+  } else {
+    filters.equals('consumable');
+    filters.equals('is_asset');
+  }
   filters.setOrder('ORDER BY inventory.code ASC');
 
   // The query above produces multiple rows for inventory items with more than one tag
