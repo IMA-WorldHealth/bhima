@@ -440,6 +440,7 @@ async function createMovement(req, res, next) {
     average_consumption_algo : params.average_consumption_algo,
   };
 
+  // FIXME(@jniles) - do we really look up the entire inventory of the depot a second time?
   if (params.is_exit) {
     stockAvailable = await core.getLotsDepot(null, paramsStock);
 

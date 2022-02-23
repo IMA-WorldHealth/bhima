@@ -33,6 +33,7 @@ function LotItemService(uuid, $translate) {
     this.text = null;
     this.group_uuid = null;
     this.unit = null;
+    this.unit_cost = null;
 
     // lot properties
     this.lot_uuid = null;
