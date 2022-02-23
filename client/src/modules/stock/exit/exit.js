@@ -21,11 +21,14 @@ function StockExitController(
 ) {
   const vm = this;
 
+  vm.today = new Date();
   vm.stockForm = new StockForm('StockExit');
 
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
   vm.DATE_FMT = bhConstants.dates.format;
+
+  vm.message = { type : 'info', text : 'FORM.INFO.NO_DESTINATION' };
 
   // bind methods
   vm.maxLength = util.maxLength;
@@ -38,7 +41,7 @@ function StockExitController(
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
       {{ grid.appScope.gridApi.core.getVisibleRows().length }}
-      <span translate>STOCK.ROWS</span>
+      <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
   `;
 
@@ -202,61 +205,17 @@ function StockExitController(
   */
 
   function submit(form) {
+    console.log('clicked submit() with invalid state:', form.$invalid);
     if (form.$invalid) { return null; }
 
-    const checkOverconsumption = vm.stockForm.store.data;
-
-    checkOverconsumption.forEach(stock => {
-      stock.quantityAvailable = 0;
-
-      vm.currentInventories.forEach(lot => {
-        if (lot.uuid === stock.lot.uuid) {
-          stock.quantityAvailable = lot.quantity;
-        }
-      });
-    });
-
-    vm.overconsumption = checkOverconsumption.filter(c => c.quantity > c.quantityAvailable);
-
-    if (vm.overconsumption.length) {
-      vm.overconsumption.forEach(item => {
-        item.textI18n = {
-          text : item.inventory.text,
-          label : item.lot.label,
-          quantityAvailable : item.quantityAvailable,
-          quantity : item.quantity,
-          unit_type : item.inventory.unit_type,
-        };
-      });
-
-      Notify.danger('ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_EXIT_STOCK');
-      vm.$loading = false;
-      return 0;
+    if (vm.stockForm.validate() === false) {
+      console.log('vm.stockForm.validate()', vm.stockForm.validate());
+      vm.errors = vm.stockForm.errors();
+      return;
     }
 
-    // if (vm.movement.exit_type !== 'loss' && expiredLots()) {
-    //   // NOTE: This check may not be necessary, since the user cannot select
-    //   //       expired lots/batches directly.  But lots can also come in via
-    //   //       Invoices(Patient) or Requisions(Service/Depot), so it seems
-    //   //       prudent to check again here.
-    //   return Notify.danger('ERRORS.ER_EXPIRED_STOCK_LOTS');
-    // }
-
-    if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
-      return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
-    }
-
-    if (vm.stockForm.hasDuplicatedLots()) {
-      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
-    }
-
-    vm.$loading = true;
-
-    return null;
-
-    // return mapExit[vm.movement.exit_type].submit(form)
-    //   .catch(Notify.handleError)
-    //   .finally(() => { vm.$loading = false; });
+    return vm.stockForm.submit()
+      .then(() => vm.stockForm.clear());
   }
 
   // // submit patient
