@@ -401,6 +401,16 @@ exports.listInTransitInventories = async (req, res, next) => {
   }
 };
 
+exports.findAffectedAssets = async (req, res, next) => {
+  try {
+    const params = req.query;
+    const result = await findAffectedAssets(params);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 function getShipmentFilters(parameters) {
   // clone the parameters
   const params = { ...parameters };
@@ -422,8 +432,7 @@ function getShipmentFilters(parameters) {
 
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('origin_depot_text', 'text', 'd');
-  filters.equals('current_depot_text', 'text', 'd2');
-  filters.equals('destination_depot_text', 'text', 'd3');
+  filters.equals('destination_depot_text', 'text', 'd2');
   filters.equals('origin_depot_uuid', 'origin_depot_uuid', 'sh');
   filters.equals('destination_depot_uuid', 'destination_depot_uuid', 'sh');
   filters.equals('lot_uuid', 'uuid', 'l');
@@ -432,7 +441,10 @@ function getShipmentFilters(parameters) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('reference', 'text', 'dm');
-  filters.equals('ready_for_shipment', 'ready_for_shipment', 'sh');
+  filters.equals('is_asset', 'is_asset', 'i');
+
+  // at depot for real : shipment with status `at_depot` or `ready_for_shipment`
+  filters.custom('currently_at_depot', 'sh.status_id IN (2, 3)');
 
   // status
   filters.custom('status', 'sh.status_id IN (?)');
@@ -440,7 +452,7 @@ function getShipmentFilters(parameters) {
   // barcode
   filters.custom(
     'barcode',
-    `CONCAT('LT', LEFT(HEX(l.uuid), 8)) = ?`,
+    `CONCAT('SHIP', LEFT(HEX(l.uuid), 8)) = ?`,
   );
 
   // is_expired is based off the server time, not off the client time.
@@ -491,6 +503,27 @@ function find(params) {
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+  `;
+
+  const query = filters.applyQuery(sql);
+  const queryParameters = filters.parameters();
+  return db.exec(query, queryParameters);
+}
+
+function findAffectedAssets(params) {
+  params.is_asset = 1;
+  const filters = getShipmentFilters(params);
+  const sql = `
+    SELECT 
+      BUID(shi.lot_uuid) AS uuid, l.label AS lot_label,
+      i.code AS inventory_code, i.text AS inventory_text,
+      dm.text AS reference
+    FROM shipment sh
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    JOIN lot l ON l.uuid = shi.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN depot d ON d.uuid = sh.origin_depot_uuid
+    LEFT JOIN document_map dm ON dm.uuid = sh.uuid
   `;
 
   const query = filters.applyQuery(sql);

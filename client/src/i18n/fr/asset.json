@@ -1,5 +1,6 @@
 {
   "ASSET" : {
+    "TITLE" : "Actif",
     "STATUS" : {
       "EMPTY" : "Vide",
       "PARTIAL" : "En partie",
