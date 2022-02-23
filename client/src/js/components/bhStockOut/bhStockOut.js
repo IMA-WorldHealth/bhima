@@ -47,8 +47,6 @@ function bhStockOutController(Depots, moment, Notify, $filter, $q) {
     ])
       .then(([inventories, depot]) => {
 
-        console.log('inventories:', inventories);
-
         inventories.forEach(inventory => {
           inventory.stock_out_date_raw = $date(inventory.date);
           inventory.stock_out_date_parsed = moment(inventory.date).fromNow();

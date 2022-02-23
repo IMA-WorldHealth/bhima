@@ -54,7 +54,6 @@ function StockExitFormService(
     this._queriesInProgress = 0;
 
     this._messages = new Map();
-    this._errors = [];
   }
 
   StockExitForm.prototype._toggleInfoMessage = function _toggleInfoMessage(
@@ -78,7 +77,6 @@ function StockExitFormService(
    */
   StockExitForm.prototype.setup = function setup() {
     this._messages.length = 0;
-    this._errors.length = 0;
 
     this.details = {
       date : new Date(),
@@ -156,6 +154,8 @@ function StockExitFormService(
         this._pool.initialize('lot_uuid', available);
 
         this._queriesInProgress--;
+
+        this.validate();
       });
   };
 
@@ -207,7 +207,7 @@ function StockExitFormService(
     this.details.date = date;
 
     const isPastDate = this.details.date < today;
-    this._toggleInfoMessage(isPastDate, WARN_PAST_DATE, this.details);
+    this._toggleInfoMessage(isPastDate, 'warn', WARN_PAST_DATE, this.details);
 
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
   };
@@ -258,6 +258,9 @@ function StockExitFormService(
     // classify all inventory as available/unavailable
       .forEach(inventory => {
         const matches = this.listLotsForInventory(inventory[uuidKey]);
+
+        console.log('matches:', matches);
+
         if (matches.length > 0) {
           available.push(inventory);
         } else {
@@ -275,8 +278,9 @@ function StockExitFormService(
 
     // adds a lot to the grid.
     const addLotWithQuantity = (item, quantity) => {
-      const lot = new Lot();
-      lot.configure(item);
+      const lot = new Lot(item);
+      console.log('item:', item);
+      lot._quantity_available = item._quantity_available;
       lot.quantity = quantity;
       lot.validate(this.details.date, !this._isStockLoss());
       this.store.post(lot);
@@ -296,7 +300,7 @@ function StockExitFormService(
         if (requestedQuantity === 0) { return; }
 
         // this is how much is available to us to use
-        const availableQuantity = match.quantity;
+        const availableQuantity = match._quantity_available;
 
         // if the available quantity is greater than or equal to the required
         // quantity, allocate the entire available quantity to this lot item
@@ -320,10 +324,24 @@ function StockExitFormService(
       }
     });
 
+    function makeUniqueLabels(array) {
+      return array
+        .map(row => row.text)
+        .filter((label, index, arr) => arr.indexOf(label) === index)
+        .sort((a, b) => a.localeCompare(b))
+        .join(', ');
+    }
+
+    // make nice text for error messages
+    const unavailableLabels = makeUniqueLabels(unavailable);
+    const insufficientLabels = makeUniqueLabels(insufficient);
+
     // finally, toggle compute the error codes
-    this._toggleInfoMessage(unavailable > 0, 'warn', WARN_OUT_OF_STOCK_QUANTITY, { ...this.details, unavailable });
-    this._toggleInfoMessage(insufficient > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { ...this.details, insufficient });
-    this._toggleInfoMessage(available > 0, 'success', SUCCESS_FILLED_N_ITEMS, { ...this.details, available });
+    this._toggleInfoMessage(unavailable.length > 0, 'error', WARN_OUT_OF_STOCK_QUANTITY, { hrText : unavailableLabels });
+    this._toggleInfoMessage(
+      insufficient.length > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { hrText : insufficientLabels },
+    );
+    this._toggleInfoMessage(available.length > 0, 'success', SUCCESS_FILLED_N_ITEMS, { count : available.length });
   };
 
   /**
@@ -458,6 +476,7 @@ function StockExitFormService(
     this._pool.available.clear();
     this._pool.unavailable.clear();
     this._queriesInProgress = 0;
+    this._messages.clear();
 
     $timeout(() => {
       this.setup();
@@ -531,12 +550,12 @@ function StockExitFormService(
       && validation.every(row => row);
 
     // gather errors into a flat array
-    this._errors = this.store.data
+    const errors = this.store.data
       .flatMap(row => row.errors())
       .filter(err => err);
 
     // indicate that the grid has errors in it
-    this._toggleInfoMessage(this._errors.length, 'error', ERR_LOT_ERRORS, this._errors);
+    this._toggleInfoMessage(errors.length > 0, 'error', ERR_LOT_ERRORS, errors);
 
     // some exit types require a destination (patient, service, depot).
     const hasDestinationError = this.details.exit_type && !this._isStockLoss() && hasNoDestination;
@@ -575,8 +594,6 @@ function StockExitFormService(
             quantity : lot.quantity,
           }));
 
-        console.log('data:', data);
-
         return data;
       });
   };
@@ -590,7 +607,6 @@ function StockExitFormService(
   StockExitForm.prototype.submit = function submit() {
     return this.getDataForSubmission()
       .then(data => {
-        console.log('submitting:', data);
         return Stock.movements.create(data);
       });
   };

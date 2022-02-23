@@ -98,7 +98,7 @@
       "LOT_MISSING_INVENTORY_INFO" : "Lot {{ label }} is missing inventory information. Please select an inventory item to continue.",
       "LOT_MISSING_LOT_INFO" : "Lot {{ uuid }} is missing lot information.  Please select a lot label to continue.",
       "LOT_NEGATIVE_QUANTITY" : "Lot {{ label }} has a negative quantity.",
-      "LOT_OVERCONSUMPTION" : "Lot {{ label }} has an invalid quantity.  Expected {{quantity}} {{unit}} to be greater than 0 and maximally {{_quantity_available}} {{ unit }}.",
+      "LOT_OVERCONSUMPTION" : "Lot {{ label }} is over-used.  Expected {{quantity}} {{unit}} to be less than {{_quantity_available}} {{ unit }}.",
       "LOT_UNUSED" : "Lot {{ label }} isn't used (0 {{ unit }} selected).  Please specify a quantity to continue."
     },
     "ENTRY_ADJUSTMENT" : "Positive adjustment of {{numArticles}} articles into {{depot}} by {{user}} .",
@@ -193,7 +193,7 @@
       "WARN_PAST_DATE" : "You have chosen a date in the past. Only the lots available on the chosen date will be visible as well as the quantity on this date.",
       "WARN_NOT_CONSUMABLE_INVOICE" : "The invoice does not have any consumable items in it.  No lots have been automatically filled.",
       "WARN_INSUFFICIENT_QUANTITY" : "There is not enough stock of {{hrText}} to fulfill to requisition.  The requisition will be partially filled.",
-      "WARN_OUT_OF_STOCK_QUANTITY" : "There is no stock of {{hrText}} to fill to requisition.  This item has been skipped.",
+      "WARN_OUT_OF_STOCK_QUANTITY" : "There is no stock of {{hrText}} to fill to requisition.  These item(s) have been skipped.",
       "ERR_NO_DESTINATION" : "No destination is defined for this exit type. Please choose a destination to go with the exit type.",
       "ERR_LOT_ERRORS" : "There are errors in the lots grid to be addressed.",
       "SUCCESS_FILLED_N_ITEMS" : "Automatically selected {{count}} items from stock to fulfill requisition.  Please check the lot numbers to ensure they are correct as you distribute the items.",
