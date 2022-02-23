@@ -4,9 +4,9 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockExitFormService', 'StockService',
+  'bhConstants', 'ReceiptModal', 'StockExitFormService',
   'StockModalService', 'uiGridConstants', '$translate',
-  'GridExportService', 'Store', 'BarcodeService',
+  'GridExportService', 'Store', 'BarcodeService', '$timeout',
 ];
 
 /**
@@ -17,18 +17,15 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, StockModal, uiGridConstants, $translate, GridExportService,
+  StockModal, uiGridConstants, $translate, GridExportService, $timeout,
 ) {
   const vm = this;
 
-  vm.today = new Date();
   vm.stockForm = new StockForm('StockExit');
 
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
   vm.DATE_FMT = bhConstants.dates.format;
-
-  vm.message = { type : 'info', text : 'FORM.INFO.NO_DESTINATION' };
 
   // bind methods
   vm.maxLength = util.maxLength;
@@ -80,11 +77,10 @@ function StockExitController(
       cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
       aggregationType : uiGridConstants.aggregationTypes.sum,
     }, {
-      field : 'unit_type',
+      field : 'unit',
       width : 75,
       displayName : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html',
     }, {
       field : 'available_lot',
       width : 150,
@@ -119,7 +115,21 @@ function StockExitController(
 
   const exportation = new GridExportService(vm.gridOptions);
 
-  vm.validate = () => vm.stockForm.validate();
+  // runs validation and updates the messages
+  vm.validate = () => {
+    vm.stockForm.validate();
+    vm.messages = vm.stockForm.messages();
+  };
+
+  vm.configureItem = function configureItem(row, lot) {
+    vm.stockForm.configureItem(row, lot);
+    vm.validate();
+  };
+
+  vm.onRemoveItem = function onRemoveItem(uuid) {
+    vm.stockForm.removeItem(uuid);
+    vm.validate();
+  };
 
   /**
    * @method exportGrid
@@ -135,6 +145,8 @@ function StockExitController(
 
   //
   function onSelectExitType(exitType, entity) {
+    vm.stockForm.setExitType(exitType.label);
+
     switch (exitType.label) {
     case 'patient':
       vm.stockForm.setPatientDistribution(entity);
@@ -149,11 +161,10 @@ function StockExitController(
       vm.stockForm.setLossDistribution(entity);
       break;
     default:
-      console.error('Cannot find exitType:', exitType);
       break;
     }
 
-    vm.stockForm.setExitType(exitType.label);
+    vm.validate();
   }
 
   function startup() {
@@ -162,7 +173,13 @@ function StockExitController(
     vm.hasError = false;
 
     vm.stockForm.setup();
+    vm.validate();
   }
+
+  vm.addItems = function addItems(numItems) {
+    vm.stockForm.addItems(numItems);
+    vm.validate();
+  };
 
   /*
   function getLotByBarcode() {
@@ -204,14 +221,51 @@ function StockExitController(
   }
   */
 
+  /**
+   * @function errorLineHighlight
+   *
+   * @description
+   * Sets the grid's error flag on the row to render a red highlight
+   * on the row.
+   *
+   */
+  function errorLineHighlight(rowIdx, store) {
+    const { ROW_ERROR_FLAG } = bhConstants.grid;
+    // set and unset error flag for allowing to highlight again the row
+    // when the user click again on the submit button
+    const row = store.data[rowIdx];
+    row[ROW_ERROR_FLAG] = true;
+    $timeout(() => {
+      row[ROW_ERROR_FLAG] = false;
+    }, 3000);
+  }
+
   function submit(form) {
-    console.log('clicked submit() with invalid state:', form.$invalid);
     if (form.$invalid) { return null; }
 
+    // run validation
+    vm.validate();
+
+    // check if the form is valid
     if (vm.stockForm.validate() === false) {
-      console.log('vm.stockForm.validate()', vm.stockForm.validate());
-      vm.errors = vm.stockForm.errors();
-      return;
+
+      let firstElement = true;
+
+      vm.stockForm.store.data.forEach((row, idx) => {
+        const hasErrors = row.errors().length > 0;
+        if (hasErrors) {
+          // flash the error highlight
+          errorLineHighlight(idx, this.store);
+
+          // scroll to the first invalid item
+          if (firstElement) {
+            vm.gridApi.core.scrollTo(row);
+            firstElement = false;
+          }
+        }
+      });
+
+      return null;
     }
 
     return vm.stockForm.submit()
@@ -245,54 +299,6 @@ function StockExitController(
   //     })
   //     .then(document => {
   //       ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
-  //       reinit(form);
-  //     })
-  //     .catch(Notify.handleError);
-  // }
-
-  // // submit service
-  // function submitService(form) {
-  //   let documentUuid;
-
-  //   const movement = {
-  //     depot_uuid : vm.stockForm.depot.uuid,
-  //     entity_uuid : vm.movement.entity.uuid,
-  //     date : vm.movement.date,
-  //     description : vm.movement.description,
-  //     is_exit : 1,
-  //     flux_id : bhConstants.flux.TO_SERVICE,
-  //     user_id : vm.stockForm.details.user_id,
-  //     stock_requisition_uuid : vm.requisition.uuid,
-  //   };
-
-  //   const lots = vm.stockForm.store.data.map(formatLot);
-
-  //   movement.lots = lots;
-
-  //   return buildDescription(movement.entity_uuid)
-  //     .then(description => {
-  //       movement.description = String(description).concat(vm.movement.description);
-  //       return Stock.movements.create(movement);
-  //     })
-  //     .then(document => {
-  //       documentUuid = document.uuid;
-
-  //       // update requisition status if needed
-  //       if (!vm.requisition.uuid) { return null; }
-
-  //       const movementRequisition = {
-  //         stock_requisition_uuid : vm.requisition.uuid,
-  //         document_uuid : documentUuid,
-  //       };
-
-  //       const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
-  //       return Stock.stockRequisition.update(vm.requisition.uuid, {
-  //         status_id : COMPLETED_STATUS,
-  //         movementRequisition,
-  //       });
-  //     })
-  //     .then(() => {
-  //       ReceiptModal.stockExitServiceReceipt(documentUuid, bhConstants.flux.TO_SERVICE);
   //       reinit(form);
   //     })
   //     .catch(Notify.handleError);
@@ -336,33 +342,6 @@ function StockExitController(
   //     .then(() => {
   //       ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);
   //       reinit(form);
-  //     })
-  //     .catch(Notify.handleError);
-  // }
-
-  // // submit loss
-  // function submitLoss(form) {
-  //   const movement = {
-  //     depot_uuid : vm.stockForm.depot.uuid,
-  //     entity_uuid : vm.movement.entity.uuid,
-  //     date : vm.movement.date,
-  //     description : vm.movement.description,
-  //     is_exit : 1,
-  //     flux_id : bhConstants.flux.TO_LOSS,
-  //     user_id : vm.stockForm.details.user_id,
-  //   };
-
-  //   const lots = vm.stockForm.store.data.map(formatLot);
-
-  //   movement.lots = lots;
-
-  //   return Stock.movements.create(movement)
-  //     .then(document => {
-
-  //       if (document.uuid) {
-  //         ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
-  //         reinit(form);
-  //       }
   //     })
   //     .catch(Notify.handleError);
   // }
