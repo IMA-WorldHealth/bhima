@@ -162,7 +162,8 @@ async function getStockOuts(req, res, next) {
 
   try {
     const sql = `
-      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
+      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid,
+        sms.sum_quantity AS quantity,
         inventory.code, inventory.text
       FROM stock_movement_status AS sms JOIN (
         SELECT inside.inventory_uuid, MAX(inside.date) AS date
