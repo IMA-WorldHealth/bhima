@@ -213,11 +213,11 @@ describe('LotItemService', () => {
     expect(lot.isUnused()).to.equal(false);
   });
 
-  it('#hasPositiveQuantity() returns true if the quantity is strictly greater than 0', () => {
+  it('#hasPositiveQuantity() returns true if the quantity is greater than or equal to 0', () => {
     const lot = new Lot({ ...dataset[1] });
     expect(lot.hasPositiveQuantity()).to.equal(true);
     lot.quantity = 0;
-    expect(lot.hasPositiveQuantity()).to.equal(false);
+    expect(lot.hasPositiveQuantity()).to.equal(true);
     lot.quantity = 1;
     expect(lot.hasPositiveQuantity()).to.equal(true);
     lot.quantity = -1;
@@ -299,6 +299,26 @@ describe('LotItemService', () => {
     expect(lot.isEmpty()).to.equal(false);
 
     expect(lot.validate()).to.equal(true);
+    expect(lot._errors).to.have.lengthOf(0);
+  });
+
+  it('#validate() takes an optional parameter to ignore expiration date', () => {
+    const lot = new Lot(dataset[1]);
+
+    delete lot.is_expired;
+
+    // set expiration date into the past
+    const lastYear = new Date(Date.now() - (1000 * 60 * 60 * 24 * 365));
+
+    lot.configure({ expiration_date : lastYear });
+
+    expect(lot.hasInventoryInformation()).to.equal(true);
+    expect(lot.hasLotInformation()).to.equal(true);
+    expect(lot.isEmpty()).to.equal(false);
+    expect(lot.isExpired()).to.equal(true);
+
+    // despite past expiration date (and isExpired() being true), validation still passes
+    expect(lot.validate(new Date(), false)).to.equal(true);
     expect(lot._errors).to.have.lengthOf(0);
   });
 
