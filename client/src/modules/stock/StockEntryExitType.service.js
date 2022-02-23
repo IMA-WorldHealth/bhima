@@ -71,10 +71,6 @@ function StockEntryExitTypeService(StockModal, $q) {
   }
 
   function configureLossCallback() {
-    return $q.resolve({
-      uuid : null,
-      type : 'loss',
-      instance : {},
-    });
+    return $q.resolve({ type : 'loss' });
   }
 }
