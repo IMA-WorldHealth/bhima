@@ -196,7 +196,7 @@ function CreateShipmentController(
       includeEmptyLot : 0,
     })
       .then(lots => {
-        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid));
+        item.lots = lots.filter(lot => !vm.selectedLots.includes(lot.uuid) && !vm.assetsUuids.includes(lot.uuid));
       })
       .catch(Notify.handleError);
   }
@@ -242,9 +242,18 @@ function CreateShipmentController(
   }
 
   function loadCurrentInventories(depot, dateTo = new Date()) {
-    return Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true })
+    return fetchAffectedAssets()
+      .then(assets => {
+        vm.alreadyAffected = assets;
+        vm.assetsUuids = assets.map(asset => asset.uuid);
+        return Shipment.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
+      })
+      .then(list => {
+        vm.existingShipments = list;
+        return Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
+      })
       .then(lots => {
-        vm.currentInventories = lots.filter(item => item.quantity > 0);
+        vm.currentInventories = lots.filter(item => item.quantity > 0 && !vm.assetsUuids.includes(item.uuid));
       });
   }
 
@@ -431,6 +440,10 @@ function CreateShipmentController(
       quantity : item ? item.quantity : 0,
       condition_id : item ? item.condition_id : null,
     };
+  }
+
+  function fetchAffectedAssets() {
+    return Shipment.getAffectedAssets({ origin_depot_uuid : vm.depot.uuid, currently_at_depot : true });
   }
 
   startup();
