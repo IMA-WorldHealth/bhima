@@ -31,6 +31,7 @@ angular.module('bhima.components')
     bindings : {
       onSelectCallback : '&',
       depot : '<?',
+      exitType : '<?',
     },
   });
 
@@ -50,6 +51,11 @@ function StockExitTypeController(TypeService, Notify) {
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.depot) {
+      reloadExitTypes();
+    }
+
+    // when the exit type is cleared, reload exit types
+    if (changes.exitType?.currentValue === undefined) {
       reloadExitTypes();
     }
   };
