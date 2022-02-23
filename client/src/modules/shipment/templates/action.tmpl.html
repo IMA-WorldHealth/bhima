@@ -45,8 +45,8 @@
         </span>
       </a>
     </li>
-    <li ng-if="row.entity.isAtDepot" class="divider"></li>
-    <li ng-if="row.entity.isAtDepot">
+    <li ng-if="row.entity.isAtDepot || row.entity.isReady" class="divider"></li>
+    <li ng-if="row.entity.isAtDepot || row.entity.isReady">
       <a ng-click="grid.appScope.deleteShipment(row.entity.uuid)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
