@@ -108,7 +108,7 @@
                   <th translate>ASSET.TITLE</th>
                 </tr>
                 <tr ng-repeat="item in CreateShipCtrl.alreadyAffected track by item.uuid">
-                  <td>{{ item.reference }}</td>
+                  <td><a ui-sref="shipments.overview({ uuid : item.shipment_uuid })" href>{{ item.reference }}</a></td>
                   <td>{{ item.inventory_code + ' - ' + item.inventory_text + ' (' + item.lot_label + ')'}}</td>
                 </tr>
               </table>

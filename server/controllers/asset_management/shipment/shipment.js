@@ -514,7 +514,7 @@ function findAffectedAssets(params) {
   const filters = getShipmentFilters(params);
   const sql = `
     SELECT 
-      BUID(shi.uuid) AS uuid,
+      BUID(shi.uuid) AS uuid, BUID(sh.uuid) AS shipment_uuid,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent,
       l.label AS lot_label, i.code AS inventory_code,
       i.text AS inventory_text, dm.text AS reference
