@@ -44,15 +44,6 @@
             <bh-clear on-clear="$ctrl.clear('destination_depot_uuid')"></bh-clear>
           </bh-depot-select>
 
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"
-                ng-model="$ctrl.searchQueries.ready_for_shipment"
-                ng-true-value="1" ng-false-value="0">
-              <span translate>SHIPMENT.READY_TO_SHIP</span>
-            </label>
-          </div>
-
           <!-- status -->
           <div class="form-group">
               <p class="control-label" style="margin-bottom:5px;">
@@ -63,14 +54,14 @@
               <div class="radio">
                 <label class="radio-inline">
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="2">
-                  <span translate>ASSET.STATUS.PARTIAL</span>
+                  <span translate>ASSET.STATUS.AT_DEPOT</span>
                 </label>
               </div>
 
               <div class="radio">
                 <label class="radio-inline">
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="3">
-                  <span translate>ASSET.STATUS.COMPLETE</span>
+                  <span translate>ASSET.STATUS.READY_FOR_SHIPMENT</span>
                 </label>
               </div>
 
@@ -84,20 +75,27 @@
               <div class="radio">
                 <label class="radio-inline">
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="5">
-                  <span translate>ASSET.STATUS.AT_DEPOT</span>
+                  <span translate>ASSET.STATUS.PARTIAL</span>
                 </label>
               </div>
 
               <div class="radio">
                 <label class="radio-inline">
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="6">
-                  <span translate>ASSET.STATUS.DELIVERED</span>
+                  <span translate>ASSET.STATUS.COMPLETE</span>
                 </label>
               </div>
 
               <div class="radio">
                 <label class="radio-inline">
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="7">
+                  <span translate>ASSET.STATUS.DELIVERED</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="8">
                   <span translate>ASSET.STATUS.LOST</span>
                 </label>
               </div>
