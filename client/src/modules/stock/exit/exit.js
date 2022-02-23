@@ -126,7 +126,7 @@ function StockExitController(
     vm.validate();
   };
 
-  vm.onRemoveItem = function onRemoveItem(uuid) {
+  vm.removeItem = function removeItem(uuid) {
     vm.stockForm.removeItem(uuid);
     vm.validate();
   };
