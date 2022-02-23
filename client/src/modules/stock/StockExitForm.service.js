@@ -464,11 +464,6 @@ function StockExitFormService(
 
       // reset the depot and load stock
       this.setDepot(depot);
-
-      // validate() is only set up to test on submission as it checks the validity
-      // of individual items which will not have been configured, manually
-      // reset error state
-      delete this._errors;
     });
   };
 
@@ -551,6 +546,7 @@ function StockExitFormService(
     const showNeedsLotsInfoMessage = this.details.exit_type
       && !hasDestinationError
       && this.store.data.length === 0;
+
     this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
 
     return hasRequiredDetails
