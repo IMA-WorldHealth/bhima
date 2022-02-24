@@ -198,6 +198,7 @@
       "ENTRIES": "Entries",
       "EXCLUDE_OUT_STOCK_ITEMS": "Exclude inventories without movements and out of stock",
       "INCLUDE_DAILY_BALANCES": "Include daily stock balance details",
+      "INCOMING": "Incoming",
       "PERCENT_STOCK_OUT": "% Stock Out",
       "STOCK_BEGINNING": "Stock at the beginning of the month",
       "STOCK_END": "Stock at the end of the month",

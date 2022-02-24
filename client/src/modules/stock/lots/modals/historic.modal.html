@@ -4,7 +4,9 @@
   </div>
 
   <div class="modal-body" style="min-height: 400px; overflow-y: auto;">
-    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.text}}</span>
+    <span translate>ASSET.ASSET</span>
+    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.inventory_code}}</span>
+    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.inventory_name}}</span>
     <i class="fa fa-caret-right"></i> <strong>{{$ctrl.lot.label}}</strong>
 
     <div ng-if="!$ctrl.lotAssignments.length"

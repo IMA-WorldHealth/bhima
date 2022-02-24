@@ -3,14 +3,14 @@ const {
 } = require('../common');
 
 /**
- * @method stockAssignReceipt
+ * @method stockAssignmentReceipt
  *
  * @description
  * This method builds the stock assign receipt file to be sent to the client.
  *
  * GET /receipts/stock/assign/:uuid
  */
-function stockAssignReceipt(req, res, next) {
+function stockAssignmentReceipt(req, res, next) {
   let report;
   const data = {};
   const uuid = db.bid(req.params.uuid);
@@ -54,4 +54,4 @@ function stockAssignReceipt(req, res, next) {
     .done();
 }
 
-module.exports = stockAssignReceipt;
+module.exports = stockAssignmentReceipt;
