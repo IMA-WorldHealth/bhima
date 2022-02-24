@@ -99,6 +99,7 @@ function getLotFilters(parameters) {
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('consumable', 'consumable', 'i');
+  filters.equals('is_asset', 'is_asset', 'i');
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
@@ -112,6 +113,9 @@ function getLotFilters(parameters) {
   filters.equals('tag_uuid', 'tags', 't');
   filters.equals('trackingExpiration', 'tracking_expiration');
   filters.equals('stock_requisition_uuid', 'stock_requisition_uuid', 'm');
+
+  // Asset-related filters (from join with stock_assign AS sa)
+  filters.equals('is_assigned', 'is_assigned', 'sa');
 
   // barcode
   filters.custom(
@@ -240,7 +244,6 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
  */
 async function getLotsDepot(depotUuid, params, finalClause) {
   let _status;
-  let emptyLotToken = ''; // query token to include/exclude empty lots
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
@@ -251,12 +254,29 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     delete params.status;
   }
 
+  let emptyLotToken = ''; // query token to include/exclude empty lots
   const includeEmptyLot = Number(params.includeEmptyLot);
   if (includeEmptyLot === 0) {
     emptyLotToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
   } else if (includeEmptyLot === 2) {
     emptyLotToken = 'HAVING quantity = 0';
+  }
+
+  // Add extra fields for assignments if the query is for assets
+  let assignmentFields = '';
+  let assignmentJoin = '';
+  if ('is_asset' in params && params.is_asset === '1') {
+    assignmentFields = `,
+      BUID(sa.uuid) AS assignment_uuid, BUID(sa.entity_uuid) AS assigned_to_uuid,
+      sa.quantity AS assignment_quantity, sa.created_at AS assignment_created_at,
+      sa.description AS assignment_description, sa.is_active AS assignment_is_active,
+      e.display_name AS assigned_to_name
+    `;
+    assignmentJoin = `
+      LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
+      LEFT JOIN entity e ON e.uuid = sa.entity_uuid
+    `;
   }
 
   const sql = `
@@ -274,6 +294,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       dm.text AS documentReference, t.name AS tag_name, t.color, sv.wac,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
+      ${assignmentFields}
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -284,6 +305,7 @@ async function getLotsDepot(depotUuid, params, finalClause) {
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
       LEFT JOIN tags t ON t.uuid = lt.tag_uuid
+      ${assignmentJoin}
   `;
 
   const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${emptyLotToken} ORDER BY i.code, l.label `;

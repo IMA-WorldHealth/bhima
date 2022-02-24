@@ -82,7 +82,7 @@ function update(req, res, next) {
   }
 
   // Clear assigned groups
-  const removeAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
+  const deleteAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
 
   // Insert new relationships
   const createAssignmentsQuery = 'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
@@ -99,7 +99,7 @@ function update(req, res, next) {
 
   const transaction = db.transaction();
 
-  transaction.addQuery(removeAssignmentsQuery, [patientId]);
+  transaction.addQuery(deleteAssignmentsQuery, [patientId]);
 
   // Create query is not executed unless patient groups have been specified
   if (assignmentData.length) {
@@ -124,7 +124,7 @@ function bulkUpdate(req, res, next) {
   const groups = [].concat(subscribedGroups);
 
   // Clear assigned groups
-  const removeAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
+  const deleteAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
   //
   const removeAlreadyAssignedGroupsQuery = `
     DELETE FROM patient_assignment WHERE patient_uuid = ? AND patient_group_uuid = ?
@@ -136,7 +136,7 @@ function bulkUpdate(req, res, next) {
 
   uuids.forEach(patientUuid => {
     if (removeAssignedGroups) {
-      transaction.addQuery(removeAssignmentsQuery, db.bid(patientUuid));
+      transaction.addQuery(deleteAssignmentsQuery, db.bid(patientUuid));
     }
 
     // assign groups

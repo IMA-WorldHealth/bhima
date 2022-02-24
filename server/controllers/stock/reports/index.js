@@ -37,7 +37,7 @@ const stockEntryIntegrationReceipt = require('./stock/entry_integration_receipt'
 const stockEntryDonationReceipt = require('./stock/entry_donation_receipt');
 const stockAdjustmentReceipt = require('./stock/adjustment_receipt');
 const stockValue = require('./stock/value');
-const stockAssignReceipt = require('./stock/assignment/stock_assign.receipt');
+const stockAssignmentReceipt = require('./stock/assignment/stock_assign.receipt');
 const stockAssignReport = require('./stock/assignment/stock_assign.registry');
 const stockRequisitionReceipt = require('../requisition/requisition.receipt');
 const stockChangesReport = require('./stock/stock_changes/stock_changes');
@@ -157,7 +157,7 @@ exports.stockAssignReport = stockAssignReport;
 exports.stockValue = stockValue.document;
 exports.stockValueReporting = stockValue.reporting;
 
-exports.stockAssignReceipt = stockAssignReceipt;
+exports.stockAssignmentReceipt = stockAssignmentReceipt;
 exports.stockRequisitionReceipt = stockRequisitionReceipt;
 exports.purchaseOrderAnalysis = require('./purchase_order_analysis');
 

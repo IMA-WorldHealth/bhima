@@ -3,14 +3,14 @@ const {
 } = require('../../common');
 
 /**
- * @method stockAssignReceipt
+ * @method stockAssignmentReceipt
  *
  * @description
  * This method builds the stock assign receipt file to be sent to the client.
  *
  * GET /receipts/stock/assign/:uuid
  */
-function stockAssignReceipt(req, res, next) {
+function stockAssignmentReceipt(req, res, next) {
   let report;
   const data = {};
   const uuid = db.bid(req.params.uuid);
@@ -28,7 +28,7 @@ function stockAssignReceipt(req, res, next) {
       BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
       BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
       sa.quantity, DATE_FORMAT(sa.created_at, "%d %m %Y"), sa.description, sa.is_active, d.text as depot_name,
-      e.display_name AS entity_display_name, u.display_name AS user_display_name,
+      e.display_name AS assigned_to_name, u.display_name AS user_display_name,
       i.code, i.text AS inventory_text, l.label as lot_name
     FROM stock_assign sa
     JOIN depot d ON d.uuid = sa.depot_uuid
@@ -54,4 +54,4 @@ function stockAssignReceipt(req, res, next) {
     .done();
 }
 
-module.exports = stockAssignReceipt;
+module.exports = stockAssignmentReceipt;

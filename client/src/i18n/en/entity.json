@@ -2,6 +2,7 @@
   "ENTITY":{
     "MANAGEMENT":"Contact Management",
     "ADD_ENTITY":"Add Contact",
+    "ASSIGNED_TO": "Assigned to",
     "EDIT_ENTITY":"Edit Contact",
     "NAME":"Name",
     "SEX":"Sex",
