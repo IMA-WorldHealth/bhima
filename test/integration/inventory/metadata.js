@@ -109,7 +109,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
           .query({ sellable : 0 });
       })
       .then(res => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
@@ -178,7 +178,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     return agent.get('/inventory/metadata')
       .query({ consumable : 0 })
       .then(res => {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
         return agent.get('/inventory/metadata')
           .query({ consumable : 1 });
       })
@@ -192,7 +192,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     return agent.get('/inventory/metadata')
       .query({ locked : 0 })
       .then(res => {
-        helpers.api.listed(res, 2332);
+        helpers.api.listed(res, 2333);
         return agent.get('/inventory/metadata')
           .query({ locked : 1 });
       })
