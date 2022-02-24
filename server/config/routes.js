@@ -873,7 +873,7 @@ exports.configure = function configure(app) {
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);
-  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
+  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignmentReceipt);
   app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
   app.get('/receipts/stock/lots/:uuid/barcode', stockReports.lotBarcodeReceipt);
