@@ -103,6 +103,14 @@ function StockEntryController(
       },
 
       {
+        field : 'is_asset',
+        width : 100,
+        displayName : 'FORM.LABELS.ASSET',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/inventory/list/templates/asset.cell.tmpl.html',
+      },
+
+      {
         field : 'actions',
         width : 25,
         cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html',
@@ -276,7 +284,7 @@ function StockEntryController(
   function loadInventories() {
     setupStock();
 
-    Inventory.read(null, { consumable : 1, skipTags : true })
+    Inventory.read(null, { consumable_or_asset : 1, skipTags : true })
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
