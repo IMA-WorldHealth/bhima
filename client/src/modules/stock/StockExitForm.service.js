@@ -387,7 +387,6 @@ function StockExitFormService(
   StockExitForm.prototype.setServiceDistribution = function setServiceDistribution(service) {
     this.details.entity_uuid = service.uuid;
     this.details.flux_id = TO_SERVICE;
-    console.log('requisition:', service.requisition);
 
     if (service.requisition) {
       this.details.stock_requisition_uuid = service.requisition.uuid;
@@ -404,7 +403,6 @@ function StockExitFormService(
   StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(depot) {
     this.details.entity_uuid = depot.uuid;
     this.details.flux_id = TO_OTHER_DEPOT;
-    console.log('requisition:', depot.requisition);
 
     if (depot.requisition) {
       this.details.stock_requisition_uuid = depot.requisition.uuid;
