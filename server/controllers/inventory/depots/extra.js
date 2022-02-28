@@ -1,5 +1,5 @@
 /**
- * Depots Inventory Subroutes
+ * Depot Subroutes
  *
  * @description
  * This module contains the depots/inventories subroutes.  They are useful for testing certain statistics about
@@ -175,22 +175,20 @@ async function getExpiredStock(req, res, next) {
 
     const sql = `
       SELECT BUID(l.uuid) AS uuid, l.label,
-        l.unit_cost, l.expiration_date,
+        l.expiration_date,
         SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
         SUM(m.quantity) AS mvt_quantity,
         BUID(i.uuid) AS inventory_uuid,
         i.code, i.text,
-        iu.text AS unit_type,
         ig.name AS group_name,
-        ig.tracking_expiration,
-        ig.tracking_consumption
+        ig.tracking_expiration
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
       JOIN inventory i ON i.uuid = l.inventory_uuid
-      JOIN inventory_unit iu ON iu.id = i.unit_id
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
     WHERE m.depot_uuid = ? AND
-      l.expiration_date <= ?
+      l.expiration_date <= ? AND
+      ig.tracking_expiration = 1
     GROUP BY l.uuid
     HAVING quantity > 0;`;
 
