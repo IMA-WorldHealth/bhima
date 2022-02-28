@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockExitFormService',
   'StockModalService', 'uiGridConstants', '$translate',
-  'GridExportService', 'Store', 'BarcodeService', '$timeout',
+  'GridExportService', '$timeout',
 ];
 
 /**
@@ -121,6 +121,11 @@ function StockExitController(
     vm.messages = vm.stockForm.messages();
   };
 
+  vm.setDepot = function setDepot(depot) {
+    vm.stockForm.setDepot(depot);
+    vm.validate();
+  };
+
   vm.configureItem = function configureItem(row, lot) {
     vm.stockForm.configureItem(row, lot);
     vm.validate();
@@ -168,6 +173,10 @@ function StockExitController(
     // vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
+  /**
+   *
+   *
+   */
   vm.setDate = function setDate(date) {
     vm.stockForm.setDate(date);
     vm.validate();
@@ -240,15 +249,12 @@ function StockExitController(
    * on the row.
    *
    */
-  function errorLineHighlight(rowIdx, store) {
+  function errorLineHighlight(row) {
     const { ROW_ERROR_FLAG } = bhConstants.grid;
     // set and unset error flag for allowing to highlight again the row
     // when the user click again on the submit button
-    const row = store.data[rowIdx];
     row[ROW_ERROR_FLAG] = true;
-    $timeout(() => {
-      row[ROW_ERROR_FLAG] = false;
-    }, 3000);
+    $timeout(() => { row[ROW_ERROR_FLAG] = false; }, 3000);
   }
 
   function submit(form) {
@@ -257,16 +263,18 @@ function StockExitController(
     // run validation
     vm.validate();
 
+    const isValidForSubmission = vm.stockForm.validate();
+
     // check if the form is valid
-    if (vm.stockForm.validate() === false) {
+    if (isValidForSubmission === false) {
 
       let firstElement = true;
 
-      vm.stockForm.store.data.forEach((row, idx) => {
+      vm.stockForm.store.data.forEach(row => {
         const hasErrors = row.errors().length > 0;
         if (hasErrors) {
           // flash the error highlight
-          errorLineHighlight(idx, this.store);
+          errorLineHighlight(row);
 
           // scroll to the first invalid item
           if (firstElement) {
@@ -276,15 +284,17 @@ function StockExitController(
         }
       });
 
+      // flash the first error message to the user
+      const [msg] = vm.stockForm.messages();
+      Notify.danger(msg.text, 5000);
+
       return null;
     }
 
     const renderReceipt = ReceiptModal.getReceiptFnByFluxId(vm.stockForm.details.flux_id);
 
     return vm.stockForm.submit()
-      .then(result => {
-        return renderReceipt(result.uuid, true);
-      })
+      .then(result => renderReceipt(result.uuid, true))
       .then(() => {
         vm.stockForm.clear();
         vm.validate();
