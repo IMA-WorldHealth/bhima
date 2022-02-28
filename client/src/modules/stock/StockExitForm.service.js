@@ -34,6 +34,7 @@ function StockExitFormService(
   const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
   const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
   const ERR_NO_DESTINATION = 'STOCK.MESSAGES.ERR_NO_DESTINATION';
+  const ERR_NO_BARCODE_MATCH_IN_DEPOT = 'STOCK.MESSAGES.ERR_NO_BARCODE_MATCH_IN_DEPOT';
   const ERR_LOT_ERRORS = 'STOCK.MESSAGES.ERR_LOT_ERRORS';
 
   /**
@@ -63,6 +64,8 @@ function StockExitFormService(
     // the first thing we do is remove the previous message if it exists.  This makes sure that
     // we will refresh the view as needed.
     this._messages.delete(msgText);
+
+    console.log('msgText:', shouldShowMsg, msgText);
 
     if (shouldShowMsg) {
       this._messages.set(msgText, { type : msgType, text : msgText, keys : msgKeys });
@@ -330,6 +333,8 @@ function StockExitFormService(
       }
     });
 
+    // this makes an array of labels not longer than 5 to present
+    // to the user in a nice warning/error message.
     function makeUniqueLabels(array) {
       const items = array
         .map(row => row.text)
@@ -441,6 +446,22 @@ function StockExitFormService(
     this.validate();
 
     return elt;
+  };
+
+  StockExitForm.prototype.addLotByBarcode = function addLotByBarcode(code) {
+    // parse the barcode
+    const uuid = code.replace('LT', '').trim();
+
+    const lot = this._pool.list()
+      .find(plot => plot.lot_uuid.slice(0, uuid.length) === uuid);
+
+    if (lot) {
+      const row = this.addItems(1);
+      this.configureItem(row, lot);
+    } else {
+      console.log('hi');
+      this._toggleInfoMessage(true, 'error', ERR_NO_BARCODE_MATCH_IN_DEPOT, { barcode : code });
+    }
   };
 
   /**
@@ -581,6 +602,9 @@ function StockExitFormService(
       && this.store.data.length === 0;
 
     this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
+
+    // remove the barcode error next validation
+    this._toggleInfoMessage(false, 'error', ERR_NO_BARCODE_MATCH_IN_DEPOT);
 
     return !!hasRequiredDetails
       && hasValidLots

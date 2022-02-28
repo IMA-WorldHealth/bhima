@@ -125,8 +125,11 @@
             </div>
 
             <div class="grid-toolbar-item">
-              <button class="btn btn-default" type="button" style="margin-left: 10px; vertical-align: middle;"
-                ng-click="StockCtrl.getLotByBarcode()">
+              <button class="btn btn-default"
+                type="button"
+                style="margin-left: 10px; vertical-align: middle;"
+                ng-click="StockCtrl.getLotByBarcode()"
+                ng-disabled="!StockCtrl.stockForm.details.exit_type">
                 <span class="fa fa-plus-circle"></span> <span translate>BARCODE.SCAN</span> <span class="fa fa-barcode"></span>
               </button>
             </div>
