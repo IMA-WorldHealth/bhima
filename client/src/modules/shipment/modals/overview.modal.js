@@ -2,13 +2,14 @@ angular.module('bhima.controllers')
   .controller('ShipmentOverviewModalController', ShipmentOverviewModalController);
 
 ShipmentOverviewModalController.$inject = [
-  '$state', 'params', 'ShipmentService', 'NotifyService',
-  'bhConstants',
+  '$window', 'params', 'ShipmentService', 'NotifyService', '$uibModalInstance',
 ];
 
-function ShipmentOverviewModalController($state, params, Shipments, Notify) {
+function ShipmentOverviewModalController($window, params, Shipments, Notify, Instance) {
   const vm = this;
   const identifier = params.uuid;
+
+  vm.cancel = Instance.dismiss;
 
   load();
 

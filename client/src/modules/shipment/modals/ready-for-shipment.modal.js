@@ -3,14 +3,15 @@ angular.module('bhima.controllers')
 
 ReadyForShipmentModalController.$inject = [
   '$state', 'params', 'ShipmentService', 'NotifyService',
-  'bhConstants',
+  'bhConstants', '$uibModalInstance',
 ];
 
-function ReadyForShipmentModalController($state, params, Shipments, Notify, Constants) {
+function ReadyForShipmentModalController($state, params, Shipments, Notify, Constants, Instance) {
   const vm = this;
   const identifier = params.uuid;
 
   vm.submit = submit;
+  vm.cancel = () => Instance.dismiss(false);
 
   load();
 
@@ -31,6 +32,7 @@ function ReadyForShipmentModalController($state, params, Shipments, Notify, Cons
     return Shipments.setReadyForShipment(identifier)
       .then(() => {
         Notify.success('SHIPMENT.UPDATED');
+        Instance.dismiss(true);
         $state.go('shipments', null, { reload : true });
       })
       .catch(Notify.handleError);
