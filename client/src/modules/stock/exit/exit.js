@@ -165,6 +165,7 @@ function StockExitController(
     }
 
     vm.validate();
+    // vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
   vm.setDate = function setDate(date) {

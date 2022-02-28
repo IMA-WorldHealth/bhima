@@ -1,5 +1,4 @@
-angular.module('bhima.services')
-  .service('LotItemService', LotItemService);
+angular.module('bhima.services').service('LotItemService', LotItemService);
 
 LotItemService.$inject = ['uuid', '$translate'];
 
@@ -146,7 +145,7 @@ function LotItemService(uuid, $translate) {
    * @function hasLotInformation
    *
    * @description
-   * Checks if the lot information is availability.
+   * Checks if the lot information is available.
    */
   Lot.prototype.hasLotInformation = function hasLotInformation() {
     const hasInfo = isUuid(this.lot_uuid)
@@ -176,8 +175,8 @@ function LotItemService(uuid, $translate) {
    *    it is considered valid.
    * 4) If no comparison date is provided, the same comparison is performed with today's
    *    date (the date of the client computer).  Thus, if the expiration date is before
-   *    the current date, the lot is considered expired.  If the expiration date is after
-   *    the current date, it is considered not expired.
+   *    the current date, the lot is considered expired.  If the expiration date is the
+   *    same or after the current date, it is considered not expired.
    */
   Lot.prototype.isExpired = function isExpired(comparisonDate = new Date()) {
 
@@ -348,7 +347,13 @@ function LotItemService(uuid, $translate) {
     this.__tracking_consumption = bool;
   };
 
-  //
+  /**
+   * @function formatForExport
+   *
+   * @description
+   * This function formats the lot for export to CSV using the ui-grid's
+   * internal CSV exporter.
+   */
   Lot.prototype.formatForExport = function formatForExport() {
     return [
       this.code,
