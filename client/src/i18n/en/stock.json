@@ -196,6 +196,7 @@
       "WARN_OUT_OF_STOCK_QUANTITY" : "There is no stock of {{hrText}} to fill the requisition.  These item(s) have been skipped.",
       "ERR_NO_DESTINATION" : "No destination is defined for this exit type. Please choose a destination to go with the exit type.",
       "ERR_LOT_ERRORS" : "There are errors in the lots grid to be addressed.",
+      "ERR_NO_BARCODE_MATCH_IN_DEPOT" : "There is no lot matching that barcode in stock in the depot.",
       "SUCCESS_FILLED_N_ITEMS" : "Automatically selected {{count}} items from stock to fulfill requisition.  Please check the lot numbers to ensure they are correct as you distribute the items.",
       "SUCCESS_ALL_VALID" : "Looks good for submission!"
     },
