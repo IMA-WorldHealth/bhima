@@ -1,7 +1,9 @@
 angular.module('bhima.services')
   .service('StockEntryExitTypeService', StockEntryExitTypeService);
 
-function StockEntryExitTypeService() {
+StockEntryExitTypeService.$inject = ['StockModalService', '$q'];
+
+function StockEntryExitTypeService(StockModal, $q) {
   const service = this;
 
   service.exitTypes = [{
@@ -9,21 +11,29 @@ function StockEntryExitTypeService() {
     labelKey : 'PATIENT_REG.ENTITY',
     descriptionKey : 'STOCK.PATIENT_DISTRIBUTION',
     allowedKey : 'allow_exit_debtor',
+    callback : findPatientCallback,
+    formatLabel : (entity) => `${entity.reference} - ${entity.display_name}`,
   }, {
     label : 'service',
     labelKey : 'SERVICE.ENTITY',
     descriptionKey : 'STOCK.SERVICE_DISTRIBUTION',
     allowedKey : 'allow_exit_service',
+    callback : findServiceCallback,
+    formatLabel : (entity) => entity.name,
   }, {
     label : 'depot',
     labelKey : 'DEPOT.ENTITY',
     descriptionKey : 'STOCK.DEPOT_DISTRIBUTION',
     allowedKey : 'allow_exit_transfer',
+    callback : findDepotCallback,
+    formatLabel : (entity) => entity.text,
   }, {
     label : 'loss',
     labelKey : 'STOCK.EXIT_LOSS',
     descriptionKey : 'STOCK.LOSS_DISTRIBUTION',
     allowedKey : 'allow_exit_loss',
+    callback : configureLossCallback,
+    formatLabel : () => 'STOCK.LOSS_DISTRIBUTION',
   }];
 
   service.entryTypes = [{
@@ -47,4 +57,20 @@ function StockEntryExitTypeService() {
     descriptionKey : 'STOCK_FLUX.FROM_TRANSFER',
     allowedKey : 'allow_entry_transfer',
   }];
+
+  function findPatientCallback(depot, entityUuid) {
+    return StockModal.openFindPatient({ entity_uuid : entityUuid });
+  }
+
+  function findServiceCallback(depot, entityUuid) {
+    return StockModal.openFindService({ depot, entity_uuid : entityUuid });
+  }
+
+  function findDepotCallback(depot, entityUuid) {
+    return StockModal.openFindDepot({ depot, entity_uuid : entityUuid });
+  }
+
+  function configureLossCallback() {
+    return $q.resolve({ type : 'loss' });
+  }
 }
