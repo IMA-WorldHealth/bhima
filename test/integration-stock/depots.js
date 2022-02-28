@@ -181,17 +181,6 @@ describe('(/depots) The depots API ', () => {
   // mock today's date
   const [today] = new Date().toISOString().split('T');
 
-  it('GET /depots/:uuid/stock returns the stock in a depot', async () => {
-    const res = await agent.get(`/depots/${principal}/stock`).query({ date : today });
-    helpers.api.listed(res, 3);
-
-    // check the quantites of each individual article
-    const [ampicilline, oxytocine, quinine] = res.body;
-    expect(ampicilline.quantity).to.equal(0);
-    expect(oxytocine.quantity).to.equal(14110);
-    expect(quinine.quantity).to.equal(360);
-  });
-
   let WAC_FROM_PROCEDURE;
   let WAC_FROM_STOCK_SHEET;
 
@@ -226,5 +215,17 @@ describe('(/depots) The depots API ', () => {
         helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
+  });
+
+  it('GET /depots/:uuid/stock returns the stock in a depot', async () => {
+    const res = await agent.get(`/depots/${principal}/stock`).query({ date : today });
+    helpers.api.listed(res, 3);
+
+    // check the quantites of each individual article
+    const [oxytocineLotA, oxytocineLotB, quinine] = res.body;
+
+    expect(oxytocineLotA.quantity).to.equal(9110);
+    expect(oxytocineLotB.quantity).to.equal(5000);
+    expect(quinine.quantity).to.equal(360);
   });
 });
