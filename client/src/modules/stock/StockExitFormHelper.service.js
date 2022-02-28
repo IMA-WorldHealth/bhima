@@ -2,8 +2,7 @@ angular.module('bhima.services')
   .service('StockExitFormHelperService', StockExitFormHelperService);
 
 StockExitFormHelperService.$inject = [
-  'moment', '$q', '$translate', 'bhConstants',
-  'PatientService', 'PatientInvoiceService', 'ServiceService',
+  '$q', '$translate', 'PatientService', 'PatientInvoiceService', 'ServiceService',
 ];
 
 /**
@@ -12,10 +11,8 @@ StockExitFormHelperService.$inject = [
  * @description
  * This form powers the stock exit form in BHIMA.
  */
-function StockExitFormHelperService(moment, $q, $translate, bhConstants, Patients, Invoices, Services) {
+function StockExitFormHelperService($q, $translate, Patients, Invoices, Services) {
   const service = {};
-
-  const { formatDB } = bhConstants.dates;
 
   /**
    * @function getDescriptionForPatient
