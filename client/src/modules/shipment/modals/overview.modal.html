@@ -1,0 +1,89 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-inventories-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
+      <li class="static" translate> SHIPMENT.OVERVIEW </li>
+      <li class="title"> {{ $ctrl.shipment.reference }} </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <h3 class="text-center">{{ $ctrl.shipment.name }}</h3>
+    <p class="text-center" ng-if="$ctrl.shipment.description">{{ $ctrl.shipment.description }}</p>
+    <p class="text-center">
+      <span translate>SHIPMENT.CURRENT_STATUS</span>: <span translate>{{ $ctrl.shipment.status }}</span>
+      &nbsp;|&nbsp;
+      <span translate>SHIPMENT.DELIVERY_EXPECTED_ON</span> <span>{{ $ctrl.shipment.anticipated_delivery_date | date }}</span>
+    </p>
+    <br>
+    <div class="stepper-wrapper">
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.at_depot, 'completed active' : $ctrl.step.at_depot && $ctrl.shipment.status_name === 'at_depot' }">
+        <div class="step-counter">1</div>
+        <div class="step-name" translate>ASSET.STATUS.AT_DEPOT</div>
+        <div>{{ $ctrl.shipment.origin_depot }}</div>
+      </div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.ready, 'completed active' : $ctrl.step.ready && $ctrl.shipment.status_name === 'ready' }">
+        <div class="step-counter">2</div>
+        <div class="step-name" translate>ASSET.STATUS.READY_FOR_SHIPMENT</div>
+        <div><small>{{ $ctrl.shipment.date_ready_for_shipment | date:'medium' }}</small></div>
+      </div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.in_transit, 'completed active' : $ctrl.step.in_transit && $ctrl.shipment.status_name === 'in_transit' }">
+        <div class="step-counter">3</div>
+        <div class="step-name" translate>ASSET.STATUS.IN_TRANSIT</div>
+        <div><small>{{ $ctrl.shipment.date_sent | date:'medium' }}</small></div>
+      </div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.partial, 'completed active' : $ctrl.step.partial && $ctrl.shipment.status_name === 'partial' }">
+        <div class="step-counter">4</div>
+        <div class="step-name" translate>ASSET.STATUS.PARTIAL</div>
+      </div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.delivered, 'completed active' : $ctrl.step.delivered && $ctrl.shipment.status_name === 'delivered' }">
+        <div class="step-counter">5</div>
+        <div class="step-name" translate>ASSET.STATUS.DELIVERED</div>
+        <div>{{ $ctrl.shipment.destination_depot }}</div>
+        <div><small>{{ $ctrl.shipment.date_delivered | date:'medium' }}</small></div>
+      </div>
+    </div>
+
+    <div ng-if="$ctrl.packingList.length" class="form-group">
+      <label translate>SHIPMENT.PACKING_LIST</label>
+      <div style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-condensed">
+          <tr style="color: #a0a0a0;" ng-repeat="item in $ctrl.packingList track by item.uuid">
+            <td>{{ item.inventory_code }}</td>
+            <td>{{ item.inventory_label }}</td>
+            <td>{{ item.lot_label }}</td>
+            <td>{{ item.quantity_sent }}</td>
+            <td>{{ item.condition_name }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label translate>SHIPMENT.TRACKING_LOG</label>
+      <div style="max-height: 300px; overflow-y: auto;">
+        <table class="table table-condensed">
+          <tr ng-repeat="item in $ctrl.locations track by item.uuid">
+            <td style="width: 150px; color: #a0a0a0;">{{ item.date | date: 'medium' }}</td>
+            <td style="color: #a0a0a0;">{{ item.note }}</td>
+          </tr>
+          <tr style="color: #a0a0a0;" ng-if="!$ctrl.locations.length">
+            <td class="text-center" colspan="2" translate>TABLE.COLUMNS.EMPTY</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+  </div>
+</form>
