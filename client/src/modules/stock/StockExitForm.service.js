@@ -77,7 +77,7 @@ function StockExitFormService(
    * two lines are always present in the form.
    */
   StockExitForm.prototype.setup = function setup() {
-    this._messages.length = 0;
+    this._messages.clear();
 
     this.details = {
       date : new Date(),
@@ -194,8 +194,12 @@ function StockExitFormService(
    *
    */
   StockExitForm.prototype.setDepot = function setDepot(depot) {
+    // clear everything and reload the form.
+    this.setup();
+
     this.details.depot_uuid = depot.uuid;
     this.depot = depot;
+
     return this.fetchQuantityInStock(this.details.depot_uuid, this.details.date);
   };
 
@@ -327,11 +331,17 @@ function StockExitFormService(
     });
 
     function makeUniqueLabels(array) {
-      return array
+      const items = array
         .map(row => row.text)
         .filter((label, index, arr) => arr.indexOf(label) === index)
-        .sort((a, b) => a.localeCompare(b))
-        .join(', ');
+        .sort((a, b) => a.localeCompare(b));
+
+      if (items.length > 5) {
+        const len = items.length - 4;
+        return [...items.slice(0, 5), `(+${len} ...), `].join(', ');
+      }
+
+      return items.join(', ');
     }
 
     // make nice text for error messages
@@ -339,10 +349,14 @@ function StockExitFormService(
     const insufficientLabels = makeUniqueLabels(insufficient);
 
     // finally, toggle compute the error codes
-    this._toggleInfoMessage(unavailable.length > 0, 'error', WARN_OUT_OF_STOCK_QUANTITY, { hrText : unavailableLabels });
+    this._toggleInfoMessage(
+      unavailable.length > 0, 'error', WARN_OUT_OF_STOCK_QUANTITY, { hrText : unavailableLabels },
+    );
+
     this._toggleInfoMessage(
       insufficient.length > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { hrText : insufficientLabels },
     );
+
     this._toggleInfoMessage(available.length > 0, 'success', SUCCESS_FILLED_N_ITEMS, { count : available.length });
   };
 
@@ -377,6 +391,7 @@ function StockExitFormService(
 
     if (service.requisition) {
       this.details.stock_requisition_uuid = service.requisition.uuid;
+      this.setLotsFromInventoryList(service.requisition.items, 'inventory_uuid');
     }
   };
 
@@ -393,6 +408,7 @@ function StockExitFormService(
 
     if (depot.requisition) {
       this.details.stock_requisition_uuid = depot.requisition.uuid;
+      this.setLotsFromInventoryList(depot.requisition.items, 'inventory_uuid');
     }
   };
 
@@ -568,7 +584,7 @@ function StockExitFormService(
 
     this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
 
-    return hasRequiredDetails
+    return !!hasRequiredDetails
       && hasValidLots
       && !hasDestinationError;
   };
