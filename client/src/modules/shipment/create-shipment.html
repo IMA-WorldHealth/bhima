@@ -64,7 +64,7 @@
             </p>
           </div>
 
-          <div ng-if="CreateShipCtrl.overconsumption.length" class="row">
+          <div ng-if="CreateShipCtrl.overconsumption.length">
             <div class="alert alert-danger">
               <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.OVERCONSUMED_INVENTORIES </span>
               <ul>
@@ -108,7 +108,7 @@
                   <th translate>ASSET.TITLE</th>
                 </tr>
                 <tr ng-repeat="item in CreateShipCtrl.alreadyAffected track by item.uuid">
-                  <td><a ui-sref="shipments.overview({ uuid : item.shipment_uuid })" href>{{ item.reference }}</a></td>
+                  <td><a ng-click="CreateShipCtrl.getOverview(item.shipment_uuid)" href>{{ item.reference }}</a></td>
                   <td>{{ item.inventory_code + ' - ' + item.inventory_text + ' (' + item.lot_label + ')'}}</td>
                 </tr>
               </table>
@@ -168,7 +168,7 @@
       <div class="row" style="margin-top: 5px;">
         <div class="col-xs-12">
           <div class="col-md-6">
-            <button ng-if="CreateShipCtrl.existingShipmentUuid" class="btn btn-success" type="button" ui-sref="shipments.ready-for-shipment({ uuid : CreateShipCtrl.existingShipmentUuid })">
+            <button ng-if="CreateShipCtrl.existingShipmentUuid" class="btn btn-success" type="button" ng-click="CreateShipCtrl.setReady(CreateShipCtrl.existingShipmentUuid)">
               <span translate>SHIPMENT.READY_TO_SHIP</span> <i class="fa fa-truck"></i>
             </button>
           </div>

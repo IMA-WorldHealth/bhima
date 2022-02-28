@@ -3,14 +3,15 @@ angular.module('bhima.controllers')
 
 UpdateTrackingLogModalController.$inject = [
   '$state', 'params', 'ShipmentService', 'NotifyService',
-  'bhConstants',
+  'bhConstants', '$uibModalInstance',
 ];
 
-function UpdateTrackingLogModalController($state, params, Shipments, Notify, Constants) {
+function UpdateTrackingLogModalController($state, params, Shipments, Notify, Constants, Instance) {
   const vm = this;
   const identifier = params.uuid;
 
   vm.submit = submit;
+  vm.cancel = Instance.dismiss;
 
   load();
 

@@ -21,11 +21,42 @@ function ShipmentModalService(Modal, Receipts) {
     animation   : false,
   };
 
+  service.shipmentOverviewModal = shipmentOverviewModal;
+  service.setReadyForShipmentModal = setReadyForShipmentModal;
+  service.updateTrackingLogModal = updateTrackingLogModal;
+
   service.openSearchShipment = openSearchShipment;
   service.openShipmentOverview = openShipmentOverview;
   service.openShipmentBarcode = openShipmentBarcode;
 
-  // search shipment modal
+  // modal on the client callable from anywhere
+  function shipmentOverviewModal(uuid) {
+    Modal.open({
+      size : 'lg',
+      templateUrl : 'modules/shipment/modals/overview.modal.html',
+      controller : 'ShipmentOverviewModalController as $ctrl',
+      resolve : { params : () => ({ uuid }) },
+    }).result.catch(angular.noop);
+  }
+
+  function setReadyForShipmentModal(uuid) {
+    return Modal.open({
+      templateUrl : 'modules/shipment/modals/ready-for-shipment.modal.html',
+      controller : 'ReadyForShipmentModalController as $ctrl',
+      resolve : { params : () => ({ uuid }) },
+    }).result.catch(angular.noop);
+  }
+
+  function updateTrackingLogModal(uuid) {
+    Modal.open({
+      size : 'lg',
+      templateUrl : 'modules/shipment/modals/tracking-log.modal.html',
+      controller : 'UpdateTrackingLogModalController as $ctrl',
+      resolve : { params : () => ({ uuid }) },
+    }).result.catch(angular.noop);
+  }
+
+  // search shipment modal for receipts
   function openSearchShipment(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/shipment/modals/search.modal.html',
