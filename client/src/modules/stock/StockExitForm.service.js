@@ -4,7 +4,7 @@ angular.module('bhima.services')
 StockExitFormService.$inject = [
   'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants', 'DepotService',
   'Pool', 'LotItemService', 'StockExitFormHelperService', 'util', '$translate',
-  'StockService',
+  'StockService', '$filter',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockExitFormService.$inject = [
 function StockExitFormService(
   Store, AppCache, Session, $timeout, bhConstants,
   Depots, Pool, Lot, Helpers, util, $translate,
-  Stock,
+  Stock, $filter,
 ) {
 
   const {
@@ -24,6 +24,7 @@ function StockExitFormService(
   } = bhConstants.flux;
 
   const today = new Date();
+  const $date = $filter('date');
 
   const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
   const INFO_NEEDS_LOTS = 'STOCK.MESSAGES.INFO_NEEDS_LOTS';
@@ -122,14 +123,15 @@ function StockExitFormService(
    * @function fetchQuantityInStock
    *
    * @description
-   * Loads the quantity in stock for the depot
-   *
+   * Loads the quantity in stock for the depot at a given date.
    *
    */
   StockExitForm.prototype.fetchQuantityInStock = function fetchQuantityInStock(depotUuid, date) {
     if (!depotUuid || !date) { return {}; }
 
-    const parameters = { consumable : 1, inStock : true, date };
+    // format date into something that can be cached.
+    const dateFormatted = $date(date, 'yyyy-MM-dd');
+    const parameters = { consumable : 1, inStock : true, date : dateFormatted };
 
     this._queriesInProgress++;
 
@@ -235,7 +237,7 @@ function StockExitFormService(
 
     // reset store by releasing all locks on items
     // and clearing the data
-    this.store.data.forEach(item => this.pool.release(item.lot_uuid));
+    this.store.data.forEach(item => this._pool.release(item.lot_uuid));
     this.store.clear();
   };
 
@@ -265,7 +267,12 @@ function StockExitFormService(
       });
 
     const hasNoConsumableItems = (available.length === 0 && unavailable.length === 0);
-    this._toggleInfoMessage(hasNoConsumableItems, 'warn', WARN_NOT_CONSUMABLE_INVOICE, { ...this.details, inventories });
+    this._toggleInfoMessage(
+      hasNoConsumableItems,
+      'warn',
+      WARN_NOT_CONSUMABLE_INVOICE,
+      { ...this.details, inventories },
+    );
 
     // if there are no consumable items in the invoice, this will exit early
     if (hasNoConsumableItems) {
