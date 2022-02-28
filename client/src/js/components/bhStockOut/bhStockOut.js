@@ -41,8 +41,11 @@ function bhStockOutController(Depots, moment, Notify, $filter, $q) {
     const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
 
+    // format date
+    const dateToFormatted = $date(dateTo, 'yyyy-MM-dd');
+
     $q.all([
-      Depots.getStockOutsForDate($ctrl.depotUuid, dateTo),
+      Depots.getStockOutsForDate($ctrl.depotUuid, dateToFormatted),
       Depots.read($ctrl.depotUuid),
     ])
       .then(([inventories, depot]) => {
