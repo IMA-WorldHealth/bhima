@@ -43,7 +43,8 @@ router.get('/:uuid', detail);
 router.put('/:uuid', update);
 router.post('/', create);
 router.delete('/:uuid', remove);
-router.get('/:depotUuid/stock', getQuantitiesInStock);
+router.get('/:depotUuid/inventories', getQuantitiesInStock);
+router.get('/:depotUuid/stock', getLotsInStockForDate);
 router.get('/:depotUuid/flags/stock_out', getStockOuts);
 
 // special route for searching depot by name
@@ -59,12 +60,22 @@ router.get('/search/name', searchByName);
  */
 async function getQuantitiesInStock(req, res, next) {
   const { depotUuid } = req.params;
-  const { date } = req.query;
+  const { date, consumable, inStock } = req.query;
+
+  function isConsumableFilter(row) {
+    if (consumable === undefined) { return true; }
+    return consumable === row.consumable;
+  }
+
+  function isInStockFilter(row) {
+    if (inStock === undefined) { return true; }
+    return inStock === (row.quantity > 0);
+  }
 
   try {
     const sql = `
       SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
-        inventory.code, inventory.text
+        inventory.code, inventory.text, inventory.consumable
       FROM stock_movement_status AS sms JOIN (
         SELECT inside.inventory_uuid, MAX(inside.date) AS date
         FROM stock_movement_status AS inside
@@ -73,17 +84,69 @@ async function getQuantitiesInStock(req, res, next) {
         GROUP BY inside.inventory_uuid
       ) AS outside
       ON outside.date = sms.date
-        AND sms.depot_uuid = ?
         AND sms.inventory_uuid = outside.inventory_uuid
       JOIN inventory ON inventory.uuid = sms.inventory_uuid
+      WHERE sms.depot_uuid = ?
       ORDER BY inventory.text;
     `;
 
     const params = [db.bid(depotUuid), new Date(date), db.bid(depotUuid)];
     const stock = await db.exec(sql, params);
-    res.status(200).json(stock);
+
+    // TODO(@jniles) - it would be more efficient (but less readable) to do
+    // this in SQL.  We should eventually move this into excel.
+    const filtered = stock
+      .filter(isConsumableFilter)
+      .filter(isInStockFilter);
+
+    res.status(200).json(filtered);
   } catch (err) {
     next(err);
+  }
+}
+
+async function getLotsInStockForDate(req, res, next) {
+  const { depotUuid } = req.params;
+  const { date } = req.query;
+
+  try {
+
+    // NOTE(@jniles) - doing the filtering on depot before the JOIN speeds
+    // this query up by 3X.
+    const sql = `
+      SELECT
+        BUID(inventory.uuid) AS inventory_uuid,
+        BUID(lot.uuid) AS lot_uuid,
+        balances.quantity, 
+        inventory.code,
+        inventory.text,
+        BUID(inventory.group_uuid) AS group_uuid,
+        lot.expiration_date,
+        (lot.expiration_date < DATE(?)) AS is_expired,
+        lot.label,
+        inventory_group.tracking_expiration,
+        inventory_group.tracking_consumption,
+        inventory_unit.text AS unit
+      FROM (
+        SELECT 
+          sm.lot_uuid,
+          SUM(IF(sm.is_exit, -1 * sm.quantity, sm.quantity)) AS quantity
+        FROM stock_movement AS sm
+        WHERE sm.depot_uuid = ?
+        GROUP BY sm.lot_uuid
+        HAVING quantity > 0
+      ) AS balances
+      JOIN lot ON lot.uuid = balances.lot_uuid
+      JOIN inventory ON lot.inventory_uuid = inventory.uuid
+      JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid
+      JOIN inventory_unit ON inventory_unit.id = inventory.unit_id
+      ORDER BY inventory.text, lot.expiration_date, lot.label;
+    `;
+
+    const rows = await db.exec(sql, [date, db.bid(depotUuid)]);
+    res.status(200).json(rows);
+  } catch (e) {
+    next(e);
   }
 }
 
@@ -99,7 +162,8 @@ async function getStockOuts(req, res, next) {
 
   try {
     const sql = `
-      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
+      SELECT sms.date, BUID(sms.inventory_uuid) AS uuid,
+        sms.sum_quantity AS quantity,
         inventory.code, inventory.text
       FROM stock_movement_status AS sms JOIN (
         SELECT inside.inventory_uuid, MAX(inside.date) AS date

@@ -429,35 +429,37 @@ async function createMovement(req, res, next) {
     stock_settings : req.session.stock_settings,
   };
 
-  params.month_average_consumption = req.session.stock_settings.month_average_consumption;
-  params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
-
-  const paramsStock = {
-    dateTo : new Date(),
-    depot_uuid : params.depot_uuid,
-    includeEmptyLot : 0,
-    month_average_consumption : params.month_average_consumption,
-    average_consumption_algo : params.average_consumption_algo,
-  };
-
-  if (params.is_exit) {
-    stockAvailable = await core.getLotsDepot(null, paramsStock);
-
-    params.lots.forEach(lot => {
-      lot.quantityAvailable = 0;
-      if (stockAvailable) {
-        stockAvailable.forEach(stock => {
-          if (stock.uuid === lot.uuid) {
-            lot.quantityAvailable = stock.quantity;
-          }
-        });
-      }
-    });
-
-    filteredInvalidData = await params.lots.filter(l => l.quantity > l.quantityAvailable);
-  }
-
   try {
+    params.month_average_consumption = req.session.stock_settings.month_average_consumption;
+    params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
+
+    const paramsStock = {
+      dateTo : new Date(),
+      depot_uuid : params.depot_uuid,
+      includeEmptyLot : 0,
+      month_average_consumption : params.month_average_consumption,
+      average_consumption_algo : params.average_consumption_algo,
+    };
+
+    // FIXME(@jniles) - do we really look up the entire inventory of the depot a second time?
+    if (params.is_exit) {
+      stockAvailable = await core.getLotsDepot(null, paramsStock);
+
+      params.lots.forEach(lot => {
+        lot.quantityAvailable = 0;
+        if (stockAvailable) {
+          stockAvailable.forEach(stock => {
+            if (stock.uuid === lot.uuid) {
+              lot.quantityAvailable = stock.quantity;
+              lot.unit_cost = stock.wac;
+            }
+          });
+        }
+      });
+
+      filteredInvalidData = params.lots.filter(l => l.quantity > l.quantityAvailable);
+    }
+
     if (filteredInvalidData.length) {
       throw new BadRequest(
         `This stock exit will overconsume the quantity in stock and generate negative quantity in stock`,
