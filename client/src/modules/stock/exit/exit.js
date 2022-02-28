@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockExitFormService',
   'StockModalService', 'uiGridConstants', '$translate',
-  'GridExportService', '$timeout',
+  'GridExportService', '$timeout', 'BarcodeService',
 ];
 
 /**
@@ -17,7 +17,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  StockModal, uiGridConstants, $translate, GridExportService, $timeout,
+  StockModal, uiGridConstants, $translate, GridExportService, $timeout, Barcode,
 ) {
   const vm = this;
 
@@ -33,7 +33,6 @@ function StockExitController(
 
   vm.onSelectExitType = onSelectExitType;
   vm.submit = submit;
-  // vm.getLotByBarcode = getLotByBarcode;
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
@@ -170,13 +169,8 @@ function StockExitController(
     }
 
     vm.validate();
-    // vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
-  /**
-   *
-   *
-   */
   vm.setDate = function setDate(date) {
     vm.stockForm.setDate(date);
     vm.validate();
@@ -201,45 +195,15 @@ function StockExitController(
     vm.validate();
   };
 
-  /*
-  function getLotByBarcode() {
+  vm.getLotByBarcode = function getLotByBarcode() {
     Barcode.modal({ shouldSearch : false })
       .then(record => {
         if (record.uuid) {
-          Stock.lots.read(null, {
-            depot_uuid : vm.stockForm.depot.uuid,
-            label : record.uuid.toUpperCase(),
-            dateTo : vm.movement.date,
-            includeEmptyLot : 0,
-          })
-            .then(lots => {
-              if (lots.length <= 0) {
-                Notify.danger('STOCK.LOT_NOT_FOUND', 20000);
-                return;
-              }
-              if (lots.length > 1) {
-                Notify.danger('STOCK.DUPLICATE_LOTS', 20000);
-                return;
-              }
-
-              // The lot is unique, construct a new row for it
-              const lot = lots[0];
-              const inventory = vm.mapSelectableInventories.get(lot.inventory_uuid);
-              if (inventory) {
-                const row = vm.stockForm.addItems(1);
-                row.inventory = inventory;
-                row.inventory_uuid = lot.inventory_uuid;
-                row.quantity = 1;
-                row.lot = lot;
-                configureItem(row);
-                vm.stockForm.validate();
-                refreshSelectedLotsList(row);
-              }
-            });
+          vm.stockForm.addLotByBarcode(record.uuid);
+          vm.messages = vm.stockForm.messages();
         }
       });
-  }
-  */
+  };
 
   /**
    * @function errorLineHighlight
@@ -301,48 +265,6 @@ function StockExitController(
       })
       .catch(Notify.handleError);
   }
-
-  // // submit depot
-  // function submitDepot(form) {
-  //   let documentUuid;
-
-  //   const movement = {
-  //     from_depot : vm.stockForm.depot.uuid,
-  //     from_depot_is_warehouse : vm.stockForm.depot.is_warehouse,
-  //     to_depot : vm.movement.entity.uuid,
-  //     date : vm.movement.date,
-  //     description : vm.movement.description,
-  //     isExit : true,
-  //     user_id : vm.stockForm.details.user_id,
-  //     stock_requisition_uuid : vm.requisition.uuid,
-  //   };
-
-  //   const lots = vm.stockForm.store.data.map(formatLot);
-
-  //   movement.lots = lots;
-
-  //   return Stock.movements.create(movement)
-  //     .then(document => {
-  //       documentUuid = document.uuid;
-  //       // update requisition status if needed
-  //       if (!vm.requisition.uuid) { return null; }
-
-  //       const movementRequisition = {
-  //         stock_requisition_uuid : vm.requisition.uuid,
-  //       };
-
-  //       const COMPLETED_STATUS = bhConstants.stockRequisition.completed_status;
-  //       return Stock.stockRequisition.update(vm.requisition.uuid, {
-  //         status_id : COMPLETED_STATUS,
-  //         movementRequisition,
-  //       });
-  //     })
-  //     .then(() => {
-  //       ReceiptModal.stockExitDepotReceipt(documentUuid, bhConstants.flux.TO_OTHER_DEPOT);
-  //       reinit(form);
-  //     })
-  //     .catch(Notify.handleError);
-  // }
 
   startup();
 }
