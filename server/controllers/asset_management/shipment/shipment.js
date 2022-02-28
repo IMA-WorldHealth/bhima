@@ -426,6 +426,7 @@ function getShipmentFilters(parameters) {
     'lot_uuid',
     'inventory_uuid',
     'group_uuid',
+    'except_current_shipment',
   ]);
 
   const filters = new FilterParser(params);
@@ -442,6 +443,12 @@ function getShipmentFilters(parameters) {
   filters.equals('label', 'label', 'l');
   filters.equals('reference', 'text', 'dm');
   filters.equals('is_asset', 'is_asset', 'i');
+
+  // except current
+  filters.custom(
+    'except_current_shipment',
+    'sh.uuid <> ?',
+  );
 
   // at depot for real : shipment with status `at_depot` or `ready_for_shipment`
   filters.custom('currently_at_depot', 'sh.status_id IN (2, 3)');

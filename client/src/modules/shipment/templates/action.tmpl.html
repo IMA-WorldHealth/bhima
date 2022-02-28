@@ -6,7 +6,7 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.text }}">
     <li>
-      <a ui-sref="shipments.overview({ uuid : row.entity.uuid })" href>
+      <a ng-click="grid.appScope.getOverview(row.entity.uuid)" href>
         <i class="fa fa-newspaper-o"></i> <span translate>SHIPMENT.OVERVIEW</span>
       </a>
     </li>
@@ -17,7 +17,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a ui-sref="shipments.update-tracking-log({ uuid : row.entity.uuid })" href>
+      <a ng-click="grid.appScope.setTrackingLog(row.entity.uuid)" href>
         <span class="">
           <i class="fa fa-book"></i> <span translate>SHIPMENT.TRACKING_LOG</span>
         </span>
@@ -31,7 +31,7 @@
       </a>
     </li>
     <li ng-if="row.entity.isAtDepot">
-      <a ui-sref="shipments.ready-for-shipment({ uuid : row.entity.uuid })" href>
+      <a ng-click="grid.appScope.setReady(row.entity.uuid)" href>
         <span class="">
           <i class="fa fa-truck"></i> <span translate>SHIPMENT.READY_TO_SHIP</span>
         </span>
