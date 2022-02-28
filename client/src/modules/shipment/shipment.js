@@ -17,6 +17,10 @@ function ShipmentRegistryController(
   const shipmentFilters = new ShipmentFilter();
 
   // bind methods
+  vm.getOverview = getOverview;
+  vm.setReady = setReadyForShipmentModal;
+  vm.setTrackingLog = updateTrackingLogModal;
+
   vm.deleteShipment = deleteShipment;
   vm.editShipment = editShipment;
   vm.createShipment = createShipment;
@@ -160,6 +164,18 @@ function ShipmentRegistryController(
 
   function shipmentOverview(uuid) {
     return ShipmentModal.openShipmentOverview(uuid);
+  }
+
+  function getOverview(uuid) {
+    return ShipmentModal.shipmentOverviewModal(uuid);
+  }
+
+  function setReadyForShipmentModal(uuid) {
+    return ShipmentModal.setReadyForShipmentModal(uuid);
+  }
+
+  function updateTrackingLogModal(uuid) {
+    return ShipmentModal.updateTrackingLogModal(uuid);
   }
 
   function getShipmentBarcode(uuid) {

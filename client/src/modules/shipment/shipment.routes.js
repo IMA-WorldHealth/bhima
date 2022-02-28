@@ -10,7 +10,7 @@ angular.module('bhima.routes')
       .state('shipments.overview', {
         url : '/overview',
         params : {
-          uuid : null,
+          uuid : { value : null, squash : true },
         },
         onEnter : ['$uibModal', '$transition$', shipmentOverviewModal],
         onExit : ['$uibModalStack', closeModal],
@@ -19,7 +19,7 @@ angular.module('bhima.routes')
       .state('shipments.update-tracking-log', {
         url : '/update-tracking-log',
         params : {
-          uuid : null,
+          uuid : { value : null, squash : true },
         },
         onEnter : ['$uibModal', '$transition$', updateTrackingLogModal],
         onExit : ['$uibModalStack', closeModal],
@@ -28,7 +28,7 @@ angular.module('bhima.routes')
       .state('shipments.ready-for-shipment', {
         url : '/ready-for-shipment',
         params : {
-          uuid : null,
+          uuid : { value : null, squash : true },
         },
         onEnter : ['$uibModal', '$transition$', setReadyForShipmentModal],
         onExit : ['$uibModalStack', closeModal],

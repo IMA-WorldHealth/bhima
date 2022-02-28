@@ -6,13 +6,13 @@ CreateShipmentController.$inject = [
   '$state', 'NotifyService', 'SessionService', 'util',
   'StockFormService', 'StockService',
   'uiGridConstants', 'Store', 'BarcodeService',
-  'ShipmentService', 'DepotService', '$timeout',
+  'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
 ];
 
 function CreateShipmentController(
   $state, Notify, Session, util,
   StockForm, Stock, uiGridConstants, Store, Barcode,
-  Shipment, Depot, $timeout,
+  Shipment, Depot, $timeout, ShipmentModal,
 ) {
   const vm = this;
   const existingShipmentUuid = $state.params.uuid;
@@ -53,6 +53,8 @@ function CreateShipmentController(
   vm.enterprise = Session.enterprise;
   vm.maxDate = new Date();
 
+  vm.getOverview = getOverview;
+  vm.setReady = setReady;
   vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.configureItem = configureItem;
@@ -142,6 +144,17 @@ function CreateShipmentController(
 
   // exposing the grid options to the view
   vm.gridOptions = gridOptions;
+
+  function setReady(uuid) {
+    return ShipmentModal.setReadyForShipmentModal(uuid)
+      .then(res => {
+        if (res) { $state.go('shipments'); }
+      });
+  }
+
+  function getOverview(uuid) {
+    return ShipmentModal.shipmentOverviewModal(uuid);
+  }
 
   // reset the form after submission or on clear
   function reset(form) {
@@ -255,16 +268,17 @@ function CreateShipmentController(
         return Stock.lots.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
       })
       .then(lots => {
-        vm.currentInventories = lots.filter(item => {
-          item.quantity -= getAffectedQuantity(item.uuid);
-          return item.quantity > 0;
+        vm.currentInventories = lots.filter(lot => {
+          lot.quantity -= getAffectedQuantity(lot.uuid);
+          return lot.quantity > 0;
         });
       });
   }
 
   function getAffectedQuantity(uuid) {
-    const el = vm.alreadyAffected.filter(item => item.lot_uuid === uuid)[0];
-    return el ? el.quantity_sent : 0;
+    const el = (vm.alreadyAffected || []).filter(item => item.lot_uuid === uuid);
+    const quantity = el.reduce((prev, curr) => curr.quantity_sent + prev, 0);
+    return el ? quantity : 0;
   }
 
   function onLotSelect(row) {
@@ -453,7 +467,12 @@ function CreateShipmentController(
   }
 
   function fetchAffectedAssets() {
-    return Shipment.getAffectedAssets({ origin_depot_uuid : vm.depot.uuid, currently_at_depot : true });
+    const isEdit = !vm.isCreateState && vm.existingShipmentUuid;
+    return Shipment.getAffectedAssets({
+      origin_depot_uuid : vm.depot.uuid,
+      currently_at_depot : true,
+      except_current_shipment : isEdit ? vm.existingShipmentUuid : undefined,
+    });
   }
 
   startup();
