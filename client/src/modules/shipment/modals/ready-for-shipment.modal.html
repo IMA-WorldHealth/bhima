@@ -1,0 +1,33 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-inventories-search"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> SHIPMENT.SHIPMENTS </li>
+      <li class="static" translate> SHIPMENT.READY_TO_SHIP </li>
+      <li class="title"> {{ $ctrl.shipment.reference }} </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <h3 class="text-center">{{ $ctrl.shipment.name }}</h3>
+    <p class="text-center" ng-if="$ctrl.shipment.description">{{ $ctrl.shipment.description }}</p>
+    <p class="text-center">
+      <span translate>SHIPMENT.CURRENT_STATUS</span>: <span translate>{{ $ctrl.shipment.status }}</span>
+    </p>
+    <br>
+    <p class="text-center"><em translate>SHIPMENT.READY_TO_SHIP_MESSAGE</em></p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.isInDepot">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

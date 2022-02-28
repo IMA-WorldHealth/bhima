@@ -3,6 +3,7 @@ const q = require('q');
 const mysql = require('mysql');
 const uuidParse = require('uuid-parse');
 const _ = require('lodash');
+const moment = require('moment');
 const debug = require('debug')('db');
 
 const Transaction = require('./transaction');
@@ -221,6 +222,27 @@ class DatabaseConnector {
       if (prop && _.isArray(prop)) {
         // Every item should be converted to binary
         data[key] = data[key].map(this.bid);
+      }
+    });
+
+    return data;
+  }
+
+  convertDate(data, keys, format = 'YYYY-MM-DD HH:mm:ss') {
+    debug(`#convert(): converting ${keys.length} properties to MySQL date.`);
+    // loop through each key
+    keys.forEach(key => {
+      const prop = data[key];
+
+      // the key exists on the object and value is a string
+      if (prop && _.isDate(new Date(prop))) {
+        data[key] = moment(new Date(data[key])).format(format);
+      }
+
+      // the key exists on the object and value is an array
+      if (prop && _.isArray(prop)) {
+        // Every item should be converted to binary
+        data[key] = data[key].map(v => moment(new Date(v)).format(format));
       }
     });
 
