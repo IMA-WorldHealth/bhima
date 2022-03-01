@@ -27,6 +27,7 @@ exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
+exports.getLotsInStockForDate = getLotsInStockForDate;
 exports.searchByName = searchByName;
 
 // router base is /depots
@@ -44,7 +45,7 @@ router.put('/:uuid', update);
 router.post('/', create);
 router.delete('/:uuid', remove);
 router.get('/:depotUuid/inventories', getQuantitiesInStock);
-router.get('/:depotUuid/stock', getLotsInStockForDate);
+router.get('/:depotUuid/stock', getLotsInStockForDateHttp);
 router.get('/:depotUuid/flags/stock_out', getStockOuts);
 
 // special route for searching depot by name
@@ -105,15 +106,17 @@ async function getQuantitiesInStock(req, res, next) {
   }
 }
 
-async function getLotsInStockForDate(req, res, next) {
-  const { depotUuid } = req.params;
-  const { date } = req.query;
+/**
+ * @function getLotsInStockForDate
+ *
+ * @description
+ * A higher-performance query to figure out the lots in a given depot.
+ */
+function getLotsInStockForDate(depotUuid, date) {
 
-  try {
-
-    // NOTE(@jniles) - doing the filtering on depot before the JOIN speeds
-    // this query up by 3X.
-    const sql = `
+  // NOTE(@jniles) - doing the filtering on depot before the JOIN speeds
+  // this query up by 3X.
+  const sql = `
       SELECT
         BUID(inventory.uuid) AS inventory_uuid,
         BUID(lot.uuid) AS lot_uuid,
@@ -143,7 +146,15 @@ async function getLotsInStockForDate(req, res, next) {
       ORDER BY inventory.text, lot.expiration_date, lot.label;
     `;
 
-    const rows = await db.exec(sql, [date, db.bid(depotUuid)]);
+  return db.exec(sql, [date, db.bid(depotUuid)]);
+}
+
+async function getLotsInStockForDateHttp(req, res, next) {
+  const { depotUuid } = req.params;
+  const { date } = req.query;
+
+  try {
+    const rows = await getLotsInStockForDate(depotUuid, date);
     res.status(200).json(rows);
   } catch (e) {
     next(e);
