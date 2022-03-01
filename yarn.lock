@@ -1642,11 +1642,6 @@ colord@^2.9.1:
   resolved "https://registry.npmjs.org/colord/-/colord-2.9.2.tgz#25e2bacbbaa65991422c07ea209e2089428effb1"
   integrity sha512-Uqbg+J445nc1TKn4FoDPS6ZZqAvEDnwrH42yo8B40JSOgSLxMZ/gt3h4nmCtPLQeXhjJJkqBx7SCY35WnIixaQ==
 
-colors@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
-  integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
-
 colorspace@1.1.x:
   version "1.1.4"
   resolved "https://registry.npmjs.org/colorspace/-/colorspace-1.1.4.tgz#8d442d1186152f60453bf8070cd66eb364e59243"
@@ -5260,15 +5255,15 @@ karma-ng-html2js-preprocessor@^1.0.0:
   resolved "https://registry.npmjs.org/karma-ng-html2js-preprocessor/-/karma-ng-html2js-preprocessor-1.0.0.tgz#10d8c8cfaa4136f1c8a76d91a4cbceedebec4a31"
   integrity sha1-ENjIz6pBNvHIp22RpMvO7evsSjE=
 
-karma@^6.3.16:
-  version "6.3.16"
-  resolved "https://registry.yarnpkg.com/karma/-/karma-6.3.16.tgz#76d1a705fd1cf864ee5ed85270b572641e0958ef"
-  integrity sha512-nEU50jLvDe5yvXqkEJRf8IuvddUkOY2x5Xc4WXHz6dxINgGDrgD2uqQWeVrJs4hbfNaotn+HQ1LZJ4yOXrL7xQ==
+karma@^6.3.17:
+  version "6.3.17"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-6.3.17.tgz#5d963fb52463b73e1b5892ecb54c8f21bb04ba1d"
+  integrity sha512-2TfjHwrRExC8yHoWlPBULyaLwAFmXmxQrcuFImt/JsAsSZu1uOWTZ1ZsWjqQtWpHLiatJOHL5jFjXSJIgCd01g==
   dependencies:
+    "@colors/colors" "1.5.0"
     body-parser "^1.19.0"
     braces "^3.0.2"
     chokidar "^3.5.1"
-    colors "1.4.0"
     connect "^3.7.0"
     di "^0.0.1"
     dom-serialize "^2.2.1"
