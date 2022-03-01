@@ -458,6 +458,18 @@ async function createMovement(req, res, next) {
       }
     }
 
+    // get unit costs from stock_value
+    const inventoryUuids = params.lots.map(l => db.bid(l.inventory_uuid));
+    const unitCosts = await db.exec(
+      'SELECT BUID(inventory_uuid) as inventory_uuid, wac FROM stock_value WHERE inventory_uuid in (?);',
+      [inventoryUuids]);
+
+    const unitCostMap = new Map(unitCosts.map(cost => [cost.inventory_uuid, cost.wac]));
+
+    params.lots.forEach(lot => {
+      lot.unit_cost = unitCostMap.get(lot.inventory_uuid);
+    });
+
     // NOTE(@jniles) - the id here is the period id, not the fiscal year id.
     const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
     params.period_id = periodId;
