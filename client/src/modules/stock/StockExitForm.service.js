@@ -371,7 +371,7 @@ function StockExitFormService(
    */
   StockExitForm.prototype.setPatientDistribution = function setPatientDistribution(patient) {
     this.details.entity_uuid = patient.uuid;
-    this.details.invoice_uuid = patient.invoice.uuid;
+    this.details.invoice_uuid = patient.invoice.details.uuid;
     this.details.flux_id = TO_PATIENT;
     this.store.clear();
 

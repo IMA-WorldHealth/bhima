@@ -27,14 +27,12 @@ function StockExitFormHelperService($q, $translate, Patients, Invoices, Services
 
     // load the required information for the patient description
     const queries = $q.all([
-      Patients.read(null, { uuid : details.entity_uuid }),
-      Invoices.read(null, { uuid : details.invoice_uuid }),
+      Patients.read(details.entity_uuid),
+      Invoices.read(details.invoice_uuid),
     ]);
 
     return queries
-      .then(([patients, invoices]) => {
-        const [patient] = patients;
-        const [invoice] = invoices;
+      .then(([patient, invoice]) => {
 
         Object.assign(i18nKeys, {
           patient : patient.display_name.concat(` (${patient.reference})`),
@@ -56,7 +54,7 @@ function StockExitFormHelperService($q, $translate, Patients, Invoices, Services
    */
   function getDescriptionForService(details, i18nKeys) {
     // load the required information for the service description
-    return Services.read(null, { uuid : details.entity_uuid })
+    return Services.read(details.entity_uuid)
       .then(([{ name }]) => {
 
         Object.assign(i18nKeys, { service : name });
