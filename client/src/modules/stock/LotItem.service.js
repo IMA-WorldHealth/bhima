@@ -286,6 +286,10 @@ function LotItemService(uuid, $translate) {
       this._quantity_available = clone.quantity;
     }
 
+    if (clone._quantity_available !== undefined) {
+      this._quantity_available = clone._quantity_available;
+    }
+
     // parse the date if it is not already a date
     if (!(this.expiration_date instanceof Date) && this.expiration_date !== undefined) {
       this.expiration_date = new Date(this.expiration_date);
