@@ -86,13 +86,13 @@
     puppeteer "^13.0.0"
     puppeteer-cluster "^0.23.0"
 
-"@ima-worldhealth/odk-central-api-cjs@^2.2.3":
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.3.3.tgz#6c1eca8b6f7e1d0076a4bb132c4fa9fb2f679c82"
-  integrity sha512-n5gqaF78V4zaRcSkQ7XyGdm53UoNgOBngd81rcrTf+LDbC1BUfz7RxLgNPknefcygwCVlVQmY3dNLtJzQh8Y0g==
+"@ima-worldhealth/odk-central-api-cjs@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.3.4.tgz#f38772933fc28cb74641cba690fe42d135b6fb9a"
+  integrity sha512-PA4XTxbE/FTPpst2BvEKhTDdS2XYPLlRR+iYvq0jHFuAdT5XZxSIVxi7NB8cd7VciuT4ImFbelGJAP+UNRYtWw==
   dependencies:
     debug "^4.3.3"
-    dotenv "^14.2.0"
+    dotenv "^16.0.0"
     got-cjs "^12.0.1"
     pako "^2.0.4"
     qrcode "^1.5.0"
@@ -2580,10 +2580,15 @@ dot-prop@^5.1.0, dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
-dotenv@^14.0.0, dotenv@^14.2.0:
+dotenv@^14.0.0:
   version "14.3.2"
   resolved "https://registry.npmjs.org/dotenv/-/dotenv-14.3.2.tgz#7c30b3a5f777c79a3429cb2db358eef6751e8369"
   integrity sha512-vwEppIphpFdvaMCaHfCEv9IgwcxMljMw2TnAQBB4VWPvzXQLTb82jwmdOKzlEVUL3gNFT4l4TPKO+Bn+sqcrVQ==
+
+dotenv@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.0.0.tgz#c619001253be89ebb638d027b609c75c26e47411"
+  integrity sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==
 
 dotgitignore@^2.1.0:
   version "2.1.0"
