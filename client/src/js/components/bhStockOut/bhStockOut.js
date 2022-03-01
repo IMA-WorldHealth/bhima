@@ -18,13 +18,12 @@ bhStockOutController.$inject = ['DepotService', 'moment', 'NotifyService', '$fil
  */
 function bhStockOutController(Depots, moment, Notify, $filter, $q) {
   const $ctrl = this;
-
-  $ctrl.loading = false;
-  $ctrl.stockOutInventories = [];
-
   const $date = $filter('date');
 
   $ctrl.$onInit = () => {
+    $ctrl.loading = false;
+    $ctrl.stockOutInventories = [];
+
     fetchStockOuts();
   };
 
@@ -42,15 +41,18 @@ function bhStockOutController(Depots, moment, Notify, $filter, $q) {
     const dateTo = $ctrl.date || new Date();
     $ctrl.loading = true;
 
+    // format date
+    const dateToFormatted = $date(dateTo, 'yyyy-MM-dd');
+
     $q.all([
-      Depots.getStockOutsForDate($ctrl.depotUuid, dateTo),
+      Depots.getStockOutsForDate($ctrl.depotUuid, dateToFormatted),
       Depots.read($ctrl.depotUuid),
     ])
       .then(([inventories, depot]) => {
 
         inventories.forEach(inventory => {
-          inventory.stock_out_date_raw = $date(inventory.stock_out_date);
-          inventory.stock_out_date_parsed = moment(inventory.stock_out_date).fromNow();
+          inventory.stock_out_date_raw = $date(inventory.date);
+          inventory.stock_out_date_parsed = moment(inventory.date).fromNow();
         });
 
         $ctrl.depot = depot;
