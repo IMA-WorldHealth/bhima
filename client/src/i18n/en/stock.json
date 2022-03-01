@@ -189,7 +189,6 @@
     "MESSAGES" : {
       "INFO_NO_EXIT_TYPE" : "No exit type specified.  Please select an exit type from the panels above to continue.",
       "INFO_NEEDS_LOTS" : "Exit type set has been set.  Please click \"Add\" to add rows to the grid.",
-      "INFO_QUANTITY_IN_STOCK" : "This depot has {{numInventoryItems}} inventory items in {{numLotItems}} lots.",
       "WARN_PAST_DATE" : "You have chosen a date in the past. Only the lots available on the chosen date will be visible as well as the quantity on this date.",
       "WARN_NOT_CONSUMABLE_INVOICE" : "The invoice does not have any consumable items in it.  No lots have been automatically filled.",
       "WARN_INSUFFICIENT_QUANTITY" : "There is not enough stock of {{hrText}} to fulfill the requisition.  The requisition will be partially filled.",
