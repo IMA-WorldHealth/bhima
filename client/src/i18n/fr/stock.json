@@ -180,14 +180,17 @@
       "MONTHS" : "Mois"
     },
     "MESSAGES" : {
-      "INFO_NO_EXIT_TYPE" : "No exit type specified.  Please select an exit type from the panels above to continue.",
-      "INFO_QUANTITY_IN_STOCK" : "This depot has {{numInventoryItems}} inventory items in {{numLotItems}} lots.",
-      "SUCCESS_FILLED_N_ITEMS" : "Automatically selected {{count}} items from stock to fulfill requisition.  Please check the lot numbers to ensure they are correct as you distribute the items.",
-      "WARN_PAST_DATE" : "You have chosen a date in the past. Only the lots available on the chosen date will be visible as well as the quantity on this date.",
-      "WARN_NOT_CONSUMABLE_INVOICE" : "The invoice does not have any consumable items in it.  No lots have been automatically filled.",
-      "WARN_INSUFFICIENT_QUANTITY" : "There is not enough stock of {{hrText}} to fulfill to requisition.  The requisition will be partially filled.",
-      "WARN_OUT_OF_STOCK_QUANTITY" : "There is no stock of {{hrText}} to fill to requisition.  This item has been skipped.",
-      "ERR_NO_STOCK_DESTINATION" : "Aucune destination de stock n'a été définie"
+      "INFO_NO_EXIT_TYPE" : "Aucun type de sortie spécifié. Veuillez sélectionner un type de sortie dans les panneaux ci-dessus pour continuer.",
+      "INFO_NEEDS_LOTS" : "Le type de sortie défini a été défini. Veuillez cliquer sur \"Ajouter\" pour ajouter des lignes à la grille.",
+      "WARN_PAST_DATE" : "Vous avez choisi une date dans le passé. Seuls les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date.",
+      "WARN_NOT_CONSUMABLE_INVOICE" : "La facture ne contient aucun article consommable. Aucun lot n'a été pourvu automatiquement.",
+      "WARN_INSUFFICIENT_QUANTITY" : "Il n'y a pas assez de stock de {{hrText}} pour répondre à la demande. La réquisition sera partiellement remplie.",
+      "WARN_OUT_OF_STOCK_QUANTITY" : "Il n'y a pas de stock de {{hrText}} pour remplir la demande. Ces éléments ont été ignorés. ",
+      "ERR_NO_DESTINATION" : "Aucune destination n'est définie pour ce type de sortie. Veuillez choisir une destination pour aller avec le type de sortie.",
+      "ERR_LOT_ERRORS" : "Il y a des erreurs dans la grille des lots à corriger.",
+      "ERR_NO_BARCODE_MATCH_IN_DEPOT" : "Il n'y a pas de lot correspondant à ce code-barres en stock dans le dépôt.",
+      "SUCCESS_FILLED_N_ITEMS" : "Sélection automatique de {{count}} articles du stock pour répondre à la demande. Veuillez vérifier les numéros de lot pour vous assurer qu'ils sont corrects lorsque vous distribuez les articles.",
+      "SUCCESS_ALL_VALID" : "Ça a l'air bon pour la soumission !"
     },
     "DEPOT_DISTRIBUTION" : "Distribution au dépôt",
     "DIRECTION": "Direction du  movement",
