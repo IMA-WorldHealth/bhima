@@ -215,12 +215,6 @@
         <!-- TODO Temporary styles -->
         <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
           <div class="col-md-12 text-right">
-            <bh-loading-button
-              id="btn-submit-invoice"
-              loading-state="InvoiceForm.$loading"
-              disabled="!PatientInvoiceCtrl.Invoice.recipient">
-              <span translate>FORM.BUTTONS.SUBMIT</span>
-            </bh-loading-button>
 
             <button
               id="clear"
@@ -230,6 +224,14 @@
               ng-click="PatientInvoiceCtrl.clear(InvoiceForm)">
               <span translate>FORM.BUTTONS.CLEAR</span>
             </button>
+
+            <bh-loading-button
+              id="btn-submit-invoice"
+              loading-state="InvoiceForm.$loading"
+              disabled="!PatientInvoiceCtrl.Invoice.recipient">
+              <span translate>FORM.BUTTONS.SUBMIT</span>
+            </bh-loading-button>
+
           </div>
         </div>
       </form>
