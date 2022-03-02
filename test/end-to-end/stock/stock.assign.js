@@ -122,7 +122,7 @@ function StockAssignTests() {
     await modal.setLotLabel(record.lot);
     await modal.setEntity(record.entity);
     await modal.submit();
-    await page.removeAssignment();
+    await page.deleteAssignment();
     await notification.hasSuccess();
     await page.expectRowCount(0);
   });
