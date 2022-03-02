@@ -1,19 +1,24 @@
 angular.module('bhima.controllers')
-  .controller('ActionAssignModalController', ActionAssignModalController);
+  .controller('AssetAssignmentModalController', AssetAssignmentModalController);
 
 // dependencies injections
-ActionAssignModalController.$inject = [
-  'appcache', '$state',
+AssetAssignmentModalController.$inject = [
+  'appcache', '$state', 'data',
   'DepotService', 'NotifyService', '$uibModalInstance',
   'StockService', 'util', 'ReceiptModal',
 ];
 
-function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, Stock, Util, Receipts) {
+function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, Modal, Stock, Util, Receipts) {
   const vm = this;
   const cache = AppCache('stock-assign-grid');
 
   // global variables
-  vm.model = { quantity : 1 };
+  vm.model = {
+    quantity : 1,
+    lot_uuid : data.uuid,
+  };
+
+  vm.selectedInventory = null;
   vm.availableInventories = [];
   vm.availableLots = [];
   vm.stateParams = {};
@@ -45,6 +50,9 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     vm.model.quantity = 1;
 
     vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
+    if (vm.availableLots.length === 1) {
+      vm.model.lot_uuid = vm.availableLots[0].uuid;
+    }
   }
 
   vm.onSelectEntity = onSelectEntity;
@@ -72,7 +80,7 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
 
     Stock.stockAssign.create(vm.model)
       .then(res => {
-        Receipts.stockAssignReceipt(res.uuid, true);
+        Receipts.stockAssignmentReceipt(res.uuid, true);
         Modal.close(true);
       })
       .catch(Notify.handleError);
@@ -84,6 +92,20 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
         vm.depots = rows;
       })
       .catch(Notify.handleError);
+
+    if (data.depot_uuid) {
+      vm.model.depot_uuid = data.depot_uuid;
+      loadAvailableInventories(data.depot_uuid)
+        .then(() => {
+          if (data.inventory_uuid) {
+            vm.selectedInventory = vm.availableInventories.find(elt => elt.inventory_uuid === data.inventory_uuid);
+            vm.inventory_uuid = data.inventory_uuid;
+            onSelectInventory(vm.selectedInventory);
+          }
+        });
+    }
+
+
   }
 
   /**
@@ -93,28 +115,27 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
    * @param {string} depotUuid
    */
   function loadAvailableInventories(depotUuid) {
-    if (!depotUuid) { return; }
+    if (!depotUuid) { return 0; }
 
     // load available inventories of the given depot
-    Stock.lots.read(null, { depot_uuid : depotUuid, is_assigned : 0, includeEmptyLot : 0 })
+    return Stock.lots.read(null, { depot_uuid: depotUuid, is_assigned: 0, includeEmptyLot: 0 })
       .then(rows => {
         computeAvailableInventories(rows);
-      })
-      .catch(Notify.handleError);
+        return vm.availableInventories;
+      });
   }
 
   /**
    * Since data contains inventories and lots that we need, we do not want to
    * perform others queries to the server, so we extract inventories and lots
    * from the data given
-   * @param {array} data
+   * @param {array} invData
    */
-  function computeAvailableInventories(data) {
-    vm.globalAvailableLots = data;
-    vm.groupedInventories = Util.groupBy(data, 'inventory_uuid');
-    const uniqueInventoriesUuids = Util.uniquelize(data.map(item => item.inventory_uuid));
+  function computeAvailableInventories(invData) {
+    vm.globalAvailableLots = invData;
+    vm.groupedInventories = Util.groupBy(invData, 'inventory_uuid');
+    const uniqueInventoriesUuids = Util.uniquelize(invData.map(item => item.inventory_uuid));
     vm.availableInventories = uniqueInventoriesUuids.map(inventoryUuid => vm.groupedInventories[inventoryUuid][0]);
-
     vm.availableInventories.forEach(item => {
       item.hrLabel = `[${item.code}] ${item.text}`;
     });

@@ -145,6 +145,7 @@
     "LIFETIME"        : "Lifetime",
     "LOSS"            : "Stock Loss",
     "LOT"             : "Lot / Batch number",
+    "LOT_ID"          : "Lot ID",
     "LOTS"            : "Lots",
     "LOT_LIFETIME"    : "Lifetime by Usage",
     "LOT_NOT_FOUND"   : "That lot was not found!",
@@ -272,6 +273,16 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date.",
     "WAC" : "Weighted Avgerage Cost"
   },
+  "ASSET" : {
+    "ASSET" : "Asset",
+    "ASSET_ID" : "Asset ID / label",
+    "ASSET_ID_TOOLTIP" : "Asset ID / label (lot label)",
+    "DETAILS" : "Asset Details",
+    "DOCUMENT" : "Assignment Document",
+    "TITLE" : "Assets",
+    "VIEW_IN_INVENTORY" : "View Asset in Inventory",
+    "VIEW_IN_STOCK" : "View Asset in Stock"
+  },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "The stock supply should provide at least this many months of stock for the depot involved.",
@@ -317,6 +328,7 @@
     "INVENTORY_ADJUSTMENT" : "Inventory Adjustment"
   },
   "LOTS" : {
+    "BARCODE_FOR_LOT" : "Barcode for lot",
     "REGISTRY" : "Lots Registry",
     "MERGED_LOTS_AUTOMATICALLY": "Automatically merged {{numLots}} lots for {{numInventories}} articles of inventory",
     "ENABLE_CORRECTING_LOT_EXPIRATION_DATES": "Enable correction of lot expiration dates",
@@ -333,6 +345,8 @@
     "SUCCESSFULLY_EDITED":"Lot updated with success",
     "ASSIGNMENT_HISTORIC":"Assignment History",
     "ASSIGNMENT_CURRENT":"Current",
+    "ASSIGNMENT_CREATED": "Assignment created",
+    "ASSIGNMENT_DESCRIPTION": "Assignment description",
     "NO_ASSIGNMENT":"No Assignment",
     "LOT_LABEL":"Lot label",
     "LOT_LABEL_EXPIRES": "{{label}} (expires: {{expdate}})",
@@ -361,8 +375,8 @@
     "NEVER_EXHAUSTED": "Never",
     "NO_LOTS_FOUND": "No lots found that were not expired or exhausted!",
     "PROJECTION_BASIS": "This projection is based on current average consumption of {{avg_consumption}} {{unit_type}} per month.",
-    "REORDER_STOCK_TODAY": "Reorder this stock today!",
     "REORDER_STOCK_DATE": "Suggested date to reorder stock: {{reorder_date | date}}",
+    "REORDER_STOCK_TODAY": "Reorder this stock today!",
     "QUANTITY_USED": "Quantity used",
     "QUANTITY_WASTED": "Quantity wasted",
     "VALUE_WASTED": "Value wasted",
@@ -378,7 +392,8 @@
     "TITLE" : "Assignment",
     "STOCK_ASSIGN" : "Stock Assignment",
     "EDIT_ASSIGN" : "Edit Assignment",
-    "REMOVE_ASSIGN" : "Remove Assignment",
+    "ADD_ASSIGNMENT" : "Add Assignment",
+    "REMOVE_ASSIGNMENT" : "Remove Assignment",
     "CREATE_SUCCESS" : "Successfully created",
     "UPDATE_SUCCESS" : "Successfully updated",
     "REMOVE_SUCCESS" : "Successfully removed",

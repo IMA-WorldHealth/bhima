@@ -19,18 +19,24 @@
       on-select-callback="$ctrl.onSelectDepot(depot)">
     </bh-depot-select>
 
-    <!-- Inventaire -->
+    <!-- Inventory -->
     <div
       class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
       <label class="control-label" translate>STOCK.INVENTORY</label>
-      <ui-select 
+      <ui-select
         name="inventory_uuid"
         ng-model="$ctrl.inventory_uuid"
         on-select="$ctrl.onSelectInventory($item)"
         ng-disabled="!$ctrl.availableInventories.length">
+
+        <!--
         <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
           <span>{{$select.selected.hrLabel}}</span>
+        </ui-select-match>
+        -->
+        <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
+          <span>{{$ctrl.selectedInventory.hrLabel || $select.selected.hrLabel}}</span>
         </ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'hrLabel': $select.search }">
           <span ng-bind-html="i.hrLabel | highlight:$select.search"></span>
@@ -47,8 +53,8 @@
       class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.lot_uuid.$invalid }">
       <label class="control-label" translate>STOCK.LOT</label>
-      <ui-select 
-        name="lot_uuid" 
+      <ui-select
+        name="lot_uuid"
         ng-model="$ctrl.model.lot_uuid"
         on-select="$ctrl.onSelectLot($item)"
         ng-required="true"
@@ -59,7 +65,7 @@
         <ui-select-choices ui-select-focus-patch repeat="l.uuid as l in $ctrl.availableLots | filter: { 'label': $select.search }">
           <span ng-bind-html="l.label | highlight:$select.search"></span>
         </ui-select-choices>
-      </ui-select>    
+      </ui-select>
 
       <div class="help-block" ng-messages="ModalForm.lot_uuid.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -67,7 +73,7 @@
     </div>
 
     <!-- entity -->
-    <bh-entity-select 
+    <bh-entity-select
       entity-uuid="$ctrl.model.entity_uuid"
       on-select-callback="$ctrl.onSelectEntity(entity)"
       required="true">

@@ -6,13 +6,13 @@
     </ol>
 
     <div class="toolbar">
-      <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ng-click="DepotCtrl.createDepot()" data-method="create">
+      <bh-search-button on-click="DepotCtrl.search()"></bh-search-button>
+      <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
+      <div class="toolbar-item" style="margin-right: 1em;">
+        <button class="btn btn-default btn-success text-capitalize" id="create" ng-click="DepotCtrl.createDepot()" data-method="create">
           <span class="fa fa-plus"></span> <span translate>DEPOT.ADD_DEPOT</span>
         </button>
       </div>
-      <bh-search-button on-click="DepotCtrl.search()"></bh-search-button>
-      <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
     </div>
   </div>
 </div>

@@ -63,9 +63,16 @@ CALL add_column_if_missing('inventory_type', 'is_predefined', 'TINYINT(1) NOT NU
 
 ALTER TABLE `inventory_type` CHANGE COLUMN `text` `text` VARCHAR(200) NOT NULL;
 
- /*
-  * Issue: Asset Management - Stock Lot changes #6349
-  * @author: lomamech
-  * @date: 2022-02-10
-  */
+/*
+ * Issue: Asset Management - Stock Lot changes #6349
+ * @author: lomamech
+ * @date: 2022-02-10
+ */
 CALL add_column_if_missing('lot', 'serial_number', 'VARCHAR(40) NULL');
+
+/*
+ * Issue: Asset Management - Remove old Stock Assignment page
+ * @author: jmcameron
+ * @date: 2022-03-01
+ */
+DELETE FROM unit WHERE id = 225;

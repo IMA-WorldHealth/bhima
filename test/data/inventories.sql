@@ -54,6 +54,7 @@ INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_acc
 INSERT INTO inventory_group (uuid,name,code,sales_account,cogs_account,stock_account,donation_account,unique_item,tracking_consumption,tracking_expiration) VALUES
 (0xD81D29E8727C11EA8241000C2997DDC0,'Produits et Consommables de Radio','S.XRS',242,201,162,NULL,0,1,1)
 ,(0xF4C4F0D8728411EA8241000C2997DDC0,'Eau, Hygiène et Assainissement','3167969',NULL,NULL,NULL,NULL,0,1,0)
+,(0x552843E2F9234CFABEA321C65E350921,'Véhicule de transport','E.VEH',249,358,151,NULL,0,0,0)
 ;
 
 --
@@ -2391,3 +2392,14 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
 	(1,0xC3FD5A026A7549FCB2F376EE4C3FBFB7,'DEXT_PRED5G5_0','Prednisolone, 0,5%, Solution, Flacon, Unité',3.8900,1,0xD81D1537727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,'2020-03-30 12:49:56',NULL),
 	(1,0xF4C4FD3F728411EA8241000C2997DDC0,'CWAT_BOLT---_0','Bouillotte',0.4400,1,0xF4C4F0D8728411EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,'2020-03-30 12:49:55',NULL),
 	(1,0xF6556E729D0547998CBD0A03B1810185,'DINJ_TRIB1A2_0','Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',3.6200,1,0xD81D16DA727C11EA8241000C2997DDC0,18,0,0,0,0,0,1,1,1,NULL,0,1.0000,0.0000,NULL,0,0,NULL,'2020-03-30 12:49:56',NULL);
+
+-- Assets
+INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `default_quantity`,
+ `group_uuid`, `unit_id`, `unit_weight`, `unit_volume`, `type_id`, `consumable`, `is_asset`, `sellable`,
+ `note`, `locked`, `delay`, `purchase_interval`, `last_purchase`, `num_purchase`,`num_delivery`,
+ `importance`,`reference_number`,`manufacturer_brand`,`manufacturer_model`,
+ `created_at`, `updated_at`) VALUES
+(1,0x46E4C0EC5C764A479D14F34394707EF4,'MOT.HCRF250RX','Honda CRF250RX',8500.00,1,
+ 0x552843E2F9234CFABEA321C65E350921,5,0,0,1,0,1,0,NULL,0,1.0,0.0,NULL,0,0,
+ NULL,NULL,'Honda','CRF250RX',
+ '2022-02-25 09:12:32',NULL);
