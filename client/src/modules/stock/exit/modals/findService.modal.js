@@ -33,6 +33,7 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock,
 
   // submit
   function submit(form) {
+
     if (vm.reference) {
       return RequisitionHelpers.lookupRequisitionByReference(vm.reference)
         .then(requisition => RequisitionHelpers.isRequisitionForDepot(requisition, Data.depot))
@@ -47,7 +48,8 @@ function StockFindServiceModalController(Instance, Service, Notify, Data, Stock,
         });
     }
 
-    if (form.$invalid && !vm.requisition.uuid) { return null; }
+    if (form.$invalid && (!vm.requisition || !vm.requisition.uuid)) { return null; }
+
     return Instance.close(vm.selected);
   }
 

@@ -330,7 +330,7 @@ END $$
 CALL StageInventoryForAMC(inventoryUuid)
 
 DESCRIPTION
-This procedure adds an inventory uuid to a temporary table for latter use in the
+This procedure adds an inventory uuid to a temporary table for later use in the
 ComputeStockStatus() stored procedure.  The idea is to allow the database to use a
 JOIN to group the calculation upon the stock_movement table.
 
@@ -674,7 +674,23 @@ CREATE PROCEDURE GetAMC(
     _initial_quantity AS quantity_at_beginning;
 END $$
 
-/* 
+
+/*
+CALL StageInventoryForStockValue(inventoryUuid)
+
+DESCRIPTION
+This procedure adds an inventory uuid to a temporary table for later use in the
+RecomputeStockValueForStagedInventory() stored procedure.
+*/
+DROP PROCEDURE IF EXISTS StageInventoryForStockValue$$
+CREATE PROCEDURE StageInventoryForStockValue(
+  IN _inventory_uuid BINARY(16)
+) BEGIN
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_inventory_for_stock_value(inventory_uuid BINARY(16) NOT NULL);
+  INSERT INTO stage_inventory_for_stock_value SET stage_inventory_for_stock_value.inventory_uuid = _inventory_uuid;
+END $$
+
+/*
  * ComputeInventoryStockValue
  * This procedure computes the stock value for a given inventory
  * and update value in the database, the value is computed
@@ -685,9 +701,9 @@ CREATE PROCEDURE ComputeInventoryStockValue(
   IN _inventory_uuid BINARY(16),
   IN _date DATE
 )
-BEGIN 
+BEGIN
   DECLARE v_cursor_all_movements_finished INTEGER DEFAULT 0;
-  
+
   DECLARE v_quantity_in_stock INT(11) DEFAULT 0;
   DECLARE v_wac DECIMAL(19, 4) DEFAULT 0;
   DECLARE v_is_exit TINYINT(1) DEFAULT 0;
@@ -704,7 +720,7 @@ BEGIN
     WHERE
       l.inventory_uuid = _inventory_uuid AND DATE(sm.date) <= DATE(_date)
     ORDER BY DATE(sm.date), sm.created_at ASC;
-  
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_all_movements_finished = 1;
 
   OPEN cursor_all_movements;
@@ -716,9 +732,9 @@ BEGIN
       LEAVE loop_cursor_all_movements;
     END IF;
 
-    IF v_line_is_exit <> 0 THEN 
+    IF v_line_is_exit <> 0 THEN
       SET v_is_exit = -1;
-    ELSE 
+    ELSE
       SET v_is_exit = 1;
     END IF;
 
@@ -735,7 +751,7 @@ BEGIN
       conversion here, so the wac is based on movement unit_cost * 1
       (in other word wac is based on movement cost which is in the enterprise currency)
     */
-    IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN 
+    IF v_line_is_exit = 0 AND v_quantity_in_stock > 0 THEN
       SET v_wac = ((v_quantity_in_stock * v_wac) + (v_line_quantity * v_line_unit_cost)) / (v_line_quantity + v_quantity_in_stock);
     ELSEIF v_line_is_exit = 0 AND v_quantity_in_stock = 0 THEN
       SET v_wac = (v_line_unit_cost * 1);
@@ -759,14 +775,49 @@ CREATE PROCEDURE RecomputeInventoryStockValue(
   IN _inventory_uuid BINARY(16),
   IN _date DATE
 )
-BEGIN 
+BEGIN
 
-  IF _date IS NOT NULL THEN 
+  IF _date IS NOT NULL THEN
     CALL ComputeInventoryStockValue(_inventory_uuid, _date);
-  ELSE 
+  ELSE
     CALL ComputeInventoryStockValue(_inventory_uuid, CURRENT_DATE());
   END IF;
 
+END $$
+
+DROP PROCEDURE IF EXISTS RecomputeStockValueForStagedInventory$$
+CREATE PROCEDURE RecomputeStockValueForStagedInventory(
+  IN _date DATE
+)
+BEGIN
+  DECLARE v_cursor_finished INTEGER DEFAULT 0;
+  DECLARE v_inventory_uuid BINARY(16);
+
+  DECLARE cursor_all_inventories CURSOR FOR
+    SELECT inv.inventory_uuid AS inventory_uuid
+    FROM stock_movement AS sm
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN stage_inventory_for_stock_value AS inv ON inv.inventory_uuid = l.inventory_uuid
+    WHERE DATE(sm.date) <= DATE(_date)
+    GROUP BY inv.inventory_uuid;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_finished = 1;
+
+  OPEN cursor_all_inventories;
+
+  loop_cursor_all_inventories : LOOP
+    FETCH cursor_all_inventories INTO v_inventory_uuid;
+
+    IF v_cursor_finished = 1 THEN
+      LEAVE loop_cursor_all_inventories;
+    END IF;
+
+    CALL RecomputeInventoryStockValue(v_inventory_uuid, _date);
+  END LOOP;
+
+  CLOSE cursor_all_inventories;
+
+  DROP TEMPORARY TABLE stage_inventory_for_stock_value;
 END $$
 
 DROP PROCEDURE IF EXISTS RecomputeAllInventoriesValue$$
@@ -775,15 +826,13 @@ CREATE PROCEDURE RecomputeAllInventoriesValue(
 )
 BEGIN
   DECLARE v_cursor_finished INTEGER DEFAULT 0;
-
   DECLARE v_inventory_uuid BINARY(16);
 
   DECLARE cursor_all_inventories CURSOR FOR
     SELECT inv.uuid AS inventory_uuid
     FROM stock_movement AS sm
-    JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
     WHERE DATE(sm.date) <= DATE(_date)
     GROUP BY inv.uuid;
 
@@ -791,7 +840,7 @@ BEGIN
 
   OPEN cursor_all_inventories;
 
-  loop_cursor_all_inventories : LOOP 
+  loop_cursor_all_inventories : LOOP
     FETCH cursor_all_inventories INTO v_inventory_uuid;
 
     IF v_cursor_finished = 1 THEN
@@ -799,7 +848,6 @@ BEGIN
     END IF;
 
     CALL RecomputeInventoryStockValue(v_inventory_uuid, _date);
-
   END LOOP;
 
   CLOSE cursor_all_inventories;
@@ -809,14 +857,12 @@ DROP PROCEDURE IF EXISTS RecomputeStockValue$$
 CREATE PROCEDURE RecomputeStockValue(
   IN _date DATE
 )
-BEGIN 
-
-  IF _date IS NOT NULL THEN 
+BEGIN
+  IF _date IS NOT NULL THEN
     CALL RecomputeAllInventoriesValue(_date);
-  ELSE 
+  ELSE
     CALL RecomputeAllInventoriesValue(CURRENT_DATE());
   END IF;
-
 END $$
 
 DELIMITER ;
