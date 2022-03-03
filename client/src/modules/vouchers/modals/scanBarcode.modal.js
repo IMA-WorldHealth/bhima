@@ -18,7 +18,7 @@ VoucherScanBarcodeController.$inject = [
 */
 function VoucherScanBarcodeController(
   Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices,
-  RS, $translate
+  RS, $translate,
 ) {
   const vm = this;
 

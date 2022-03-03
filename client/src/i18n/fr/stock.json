@@ -92,8 +92,8 @@
       "QUANTITY_CONSUMED_LOWER" : "La quantité totale consommé est inférieure à la quantity globale consommée",
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
       "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
-      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue"
-
+      "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue",
+      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre."
     },
     "ENTRY_ADJUSTMENT" : "Ajustement positif de {{numArticles}} articles de dans {{depot}} par {{user}}.",
     "EXIT"            : "Sortie de stock",
@@ -103,8 +103,7 @@
     "EXIT_INDIVIDUAL" : "Distribution aux individus",
     "EXIT_LOSS"       : "Perte",
     "EXIT_PATIENT"    : "Distribution vers un patient",
-    "EXIT_PATIENT_ADVANCED" : "Distribution vers le patient {{patient}} à partir du dépôt {{depot}}",
-    "EXIT_PATIENT_ADVANCED_WITH_INVOICE" : "Distribution vers le patient {{patient}} sur la facture ({{invoice}}) à partir du dépôt {{depot}}",
+    "EXIT_PATIENT_WITH_INVOICE" : "Distribution vers le patient {{patient}} sur la facture ({{invoice}}) à partir du dépôt {{depot}}",
     "EXIT_SERVICE"    : "Distribution vers un service",
     "EXIT_SERVICE_ADVANCED" : "Distribution vers le service {{service}} à partir du dépôt {{depot}}",
     "EXPIRATION"      : "Expiration",
@@ -180,6 +179,20 @@
       "DAYS" : "Jours",
       "MONTHS" : "Mois"
     },
+    "PENDING_ACTIONS" : "Actions en attente",
+    "MESSAGES" : {
+      "INFO_NO_EXIT_TYPE" : "Aucun type de sortie spécifié. Veuillez sélectionner un type de sortie dans les panneaux ci-dessus pour continuer.",
+      "INFO_NEEDS_LOTS" : "Le type de sortie défini a été défini. Veuillez cliquer sur \"Ajouter\" pour ajouter des lignes à la grille.",
+      "WARN_PAST_DATE" : "Vous avez choisi une date dans le passé. Seuls les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date.",
+      "WARN_NOT_CONSUMABLE_INVOICE" : "La facture ne contient aucun article consommable. Aucun lot n'a été pourvu automatiquement.",
+      "WARN_INSUFFICIENT_QUANTITY" : "Il n'y a pas assez de stock de {{hrText}} pour répondre à la demande. La réquisition sera partiellement remplie.",
+      "WARN_OUT_OF_STOCK_QUANTITY" : "Il n'y a pas de stock de {{hrText}} pour remplir la demande. Ces éléments ont été ignorés. ",
+      "ERR_NO_DESTINATION" : "Aucune destination n'est définie pour ce type de sortie. Veuillez choisir une destination pour aller avec le type de sortie.",
+      "ERR_LOT_ERRORS" : "Il y a des erreurs dans la grille des lots à corriger.",
+      "ERR_NO_BARCODE_MATCH_IN_DEPOT" : "Il n'y a pas de lot correspondant à ce code-barres en stock dans le dépôt.",
+      "SUCCESS_FILLED_N_ITEMS" : "Sélection automatique de {{count}} articles du stock pour répondre à la demande. Veuillez vérifier les numéros de lot pour vous assurer qu'ils sont corrects lorsque vous distribuez les articles.",
+      "SUCCESS_ALL_VALID" : "Ça a l'air bon pour la soumission !"
+    },
     "DEPOT_DISTRIBUTION" : "Distribution au dépôt",
     "DIRECTION": "Direction du  movement",
     "LOSS_DISTRIBUTION" : "Perte de Stock",
@@ -237,7 +250,6 @@
     "RESPONSIBLE"     : "Gestionnaire du stock",
     "RISK_OF_EXPIRATION" : "Risque de péremption",
     "RISK_OF_STOCK_OUT" : "Risque de rupture",
-    "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
     "SELECT_INVOICE"  : "Sélectionner la facture",
