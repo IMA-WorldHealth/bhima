@@ -14,7 +14,6 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   // create stock movement to patient
   it('POST /stock/lots/movements distribute lots to patients from a depot', async () => {
-
     const res1 = await agent.post('/stock/lots/movements').send(shared.movementOutPatient);
     helpers.api.created(res1);
     // get details of the movement
@@ -292,14 +291,13 @@ describe('(/stock/) The Stock HTTP API', () => {
   });
 
   // Prevent negative stock quantities
-  it(`POST /stock/lots/movements Prevent negative stock quantities 
-    when distribute lots to patients from a depot`, async () => {
+  it(`POST /stock/lots/movements Prevent negative stock quantities when distribute lots to patients from a depot`,
+    async () => {
+      shared.movementOutPatient.date = moment(new Date(), 'YYYY-MM-DD').subtract(1, 'days');
 
-    shared.movementOutPatient.date = moment(new Date(), 'YYYY-MM-DD').subtract(1, 'days');
-
-    const res = await agent.post('/stock/lots/movements').send(shared.movementOutPatient);
-    expect(res).to.have.status(400);
-  });
+      const res = await agent.post('/stock/lots/movements').send(shared.movementOutPatient);
+      expect(res).to.have.status(400);
+    });
 
   it(`POST /stock/aggregated_consumption movements Prevent negative stock quantities
       create complexe aggregate stock consumption`, async () => {
