@@ -171,7 +171,8 @@ function StockExitFormService(
    */
   StockExitForm.prototype.listLotsForInventory = function listLotsForInventory(inventoryUuid, lotUuid) {
     const available = this._pool.list()
-      .filter(row => row.inventory_uuid === inventoryUuid);
+      .filter(row => row.inventory_uuid === inventoryUuid)
+      .sort((a, b) => a.expiration_date > b.expiration_date);
 
     if (lotUuid) {
       const lot = this._pool.unavailable.get(lotUuid);
@@ -185,6 +186,24 @@ function StockExitFormService(
 
   StockExitForm.prototype.listAvailableInventory = function listAvailableInventory() {
     return util.getUniqueBy(this._pool.list(), 'inventory_uuid');
+  };
+
+  /**
+   * @method updateLotListings
+   *
+   * @description
+   * Updates the lot listings based on what is actually used in the grid.
+   */
+  StockExitForm.prototype.updateLotListings = function updateLotListings(inventoryUuid) {
+    const usedLotUuids = new Set(this.store.data
+      .filter(row => row.inventory_uuid === inventoryUuid)
+      .map(row => row.lot_uuid));
+
+    // get all lots that are no longer used
+    this._pool.unavailable.data
+      .filter(lot => !usedLotUuids.has(lot.lot_uuid))
+      .forEach(lot => { this._pool.release(lot.lot_uuid); });
+
   };
 
   /**

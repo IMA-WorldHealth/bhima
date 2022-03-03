@@ -179,6 +179,7 @@
       "DAYS" : "Jours",
       "MONTHS" : "Mois"
     },
+    "PENDING_ACTIONS" : "Actions en attente",
     "MESSAGES" : {
       "INFO_NO_EXIT_TYPE" : "Aucun type de sortie spécifié. Veuillez sélectionner un type de sortie dans les panneaux ci-dessus pour continuer.",
       "INFO_NEEDS_LOTS" : "Le type de sortie défini a été défini. Veuillez cliquer sur \"Ajouter\" pour ajouter des lignes à la grille.",
