@@ -423,6 +423,7 @@ async function createMovement(req, res, next) {
     uuid : params.document_uuid || uuid(),
     date : new Date(params.date),
     user : req.session.user.id,
+    shipment_uuid : params.shipment_uuid,
   };
 
   const metadata = {

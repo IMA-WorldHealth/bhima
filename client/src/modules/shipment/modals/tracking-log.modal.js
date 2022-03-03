@@ -36,6 +36,7 @@ function UpdateTrackingLogModalController($state, params, Shipments, Notify, Con
     return Shipments.updateLocation(identifier, vm.shipment)
       .then(() => {
         Notify.success('SHIPMENT.UPDATED');
+        Instance.dismiss(true);
         $state.go('shipments', null, { reload : true });
       })
       .catch(Notify.handleError);
