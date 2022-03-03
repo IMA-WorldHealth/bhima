@@ -461,8 +461,8 @@ function StockExitController(
   // find depot
   function findDepot() {
     StockModal.openFindDepot({ depot : vm.depot, entity_uuid : vm.selectedEntityUuid })
-      .then(depot => {
-        handleSelectedEntity(depot, 'depot');
+      .then(ressource => {
+        handleSelectedEntity(ressource, 'depot');
       })
       .catch(Notify.handleError);
   }
@@ -492,7 +492,10 @@ function StockExitController(
     vm.displayName = uniformEntity.displayName;
     vm.selectedEntityUuid = uniformEntity.uuid;
     vm.requisition = (entity && entity.requisition) || {};
+    vm.shipment = (entity && entity.shipment) || {};
+
     loadRequisitions(entity);
+    loadShipmentItems(entity);
   }
 
   function loadRequisitions(entity) {
@@ -520,6 +523,32 @@ function StockExitController(
     }
   }
 
+  function loadShipmentItems(entity) {
+    if (entity.shipment && entity.shipment.lots && entity.shipment.lots.length) {
+      setupStock();
+      vm.movement += ` - ${entity.shipment.note}`;
+
+      entity.shipment.lots.forEach((item) => {
+        const [line] = vm.currentInventories.filter(lot => lot.uuid === item.lot_uuid);
+
+        if (line) {
+          const row = vm.stockForm.addItems(1);
+
+          row.inventory = line;
+          row.inventory_uuid = line.inventory_uuid;
+          row.quantity = item.quantity;
+          row.lot = line;
+
+          configureItem(row);
+        } else {
+          vm.inventoryNotAvailable.push(line.text);
+        }
+      });
+
+      vm.checkValidity();
+    }
+  }
+
   function resetSelectedEntity() {
     vm.movement.entity = {};
     vm.movement.exit_type = null;
@@ -527,6 +556,7 @@ function StockExitController(
     vm.reference = null;
     vm.displayName = null;
     vm.inventoryNotAvailable = [];
+    vm.shipment = null;
     delete vm.selectedEntityUuid;
   }
 
@@ -751,6 +781,7 @@ function StockExitController(
       isExit : true,
       user_id : vm.stockForm.details.user_id,
       stock_requisition_uuid : vm.requisition.uuid,
+      shipment_uuid : vm.shipment.uuid,
     };
 
     const lots = vm.stockForm.store.data.map(formatLot);

@@ -3,16 +3,19 @@ angular.module('bhima.controllers')
 
 StockFindDepotModalController.$inject = [
   '$uibModalInstance', 'DepotService', 'NotifyService', 'data',
-  'StockService', 'SessionService', 'RequisitionHelperService',
+  'SessionService', 'RequisitionHelperService', 'ShipmentService',
 ];
 
-function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Session, RequisitionHelpers) {
+function StockFindDepotModalController(
+  Instance, Depot, Notify, Data, Session, RequisitionHelpers, Shipments,
+) {
   const vm = this;
 
   const enableStrictDepotDistribution = Session.stock_settings.enable_strict_depot_distribution;
 
   // global
   vm.selected = {};
+  vm.depot = Data.depot;
 
   // bind methods
   vm.submit = submit;
@@ -48,6 +51,11 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
     vm.reference = reference;
   };
 
+  vm.onChangeShipmentReference = shipment => {
+    vm.shipment = shipment;
+    vm.shipmentReference = shipment.reference;
+  };
+
   // submit
   function submit(form) {
 
@@ -64,7 +72,27 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data, Stock, Ses
         });
     }
 
+    if (vm.shipment && vm.shipment.uuid) {
+      return Depot.read(vm.shipment.destination_depot_uuid)
+        .then(depot => {
+          vm.selected = depot;
+          return Shipments.readAll(vm.shipment.uuid);
+        })
+        .then(shipmentItems => {
+          vm.selected.shipment = shipmentItems;
+          Instance.close(vm.selected);
+        })
+        .catch(err => {
+          // bind the error flags as needed
+          vm.requisitionMessage = err.message;
+          vm.requisitionLabel = err.label;
+          Notify.handleError(err);
+        });
+    }
+
     if (form.$invalid && (vm.requisition && !vm.requisition.uuid)) { return null; }
+
+    if (form.$invalid && (vm.shipment && !vm.shipment.uuid)) { return null; }
 
     return Instance.close(vm.selected);
   }
