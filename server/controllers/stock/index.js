@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * @module stock
  *
@@ -23,6 +24,7 @@ const { DELETE_STOCK_MOVEMENT } = require('../../config/constants').actions;
 const core = require('./core');
 const importing = require('./import');
 const assign = require('./assign');
+const shipment = require('../asset_management/shipment');
 const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
@@ -421,6 +423,7 @@ async function createMovement(req, res, next) {
     uuid : params.document_uuid || uuid(),
     date : new Date(params.date),
     user : req.session.user.id,
+    shipment_uuid : params.shipment_uuid,
   };
 
   const metadata = {
@@ -620,7 +623,7 @@ async function normalMovement(document, params, metadata) {
  * @function depotMovement
  * @description movement between depots
  */
-async function depotMovement(document, params) {
+async function depotMovement(document, params, metadata) {
   const transaction = db.transaction();
   const parameters = params;
   const isExit = parameters.isExit ? 1 : 0;
@@ -657,6 +660,16 @@ async function depotMovement(document, params) {
     transaction.addQuery('INSERT INTO stock_movement SET ?', [record]);
   });
 
+  if (isExit) {
+    // write shipment for the exit movement
+    shipment.writeStockExitShipment(metadata.project.id, depotUuid, entityUuid, document, parameters, transaction);
+  }
+
+  if (!isExit) {
+    // update shipment details for the entry movement
+    await shipment.writeStockEntryShipment(document, parameters, transaction);
+  }
+
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
@@ -666,6 +679,11 @@ async function depotMovement(document, params) {
 
   // update the quantity in stock as needed
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
+
+  if (!isExit) {
+    await shipment.updateShipmentStatusAfterEntry(document, depotUuid);
+  }
+
   return result;
 }
 
