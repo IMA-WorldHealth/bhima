@@ -130,6 +130,14 @@ function StockExitController(
     vm.validate();
   };
 
+  //
+  vm.setLotFromDropdown = function setLotFromDropdown(row, lot) {
+    vm.stockForm._pool.use(lot.lot_uuid);
+    row.configure(lot);
+    vm.stockForm.updateLotListings(row.inventory_uuid);
+    vm.validate();
+  };
+
   vm.removeItem = function removeItem(uuid) {
     vm.stockForm.removeItem(uuid);
     vm.validate();

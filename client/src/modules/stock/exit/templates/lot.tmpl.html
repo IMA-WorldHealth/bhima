@@ -1,8 +1,8 @@
 <div ng-if="row.entity._initialised">
   <ui-select append-to-body="true"
-    name="lot"
+    name="lot_uuid"
     ng-model="row.entity.lot_uuid"
-    ng-change="row.entity.configure($select.selected)"
+    ng-change="grid.appScope.setLotFromDropdown(row.entity, $select.selected)"
     required>
     <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.LOT' | translate }}">
       <span>{{$select.selected.label}}</span>

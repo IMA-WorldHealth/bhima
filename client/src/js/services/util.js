@@ -27,6 +27,13 @@ function UtilService(moment) {
     return null;
   };
 
+  /**
+   * @function getUniqueBy
+   *
+   * @description
+   * A function that filters an array of objects by a unique
+   * property in those objects.  Analogous to lodash's _.uniqBy()
+   */
   service.getUniqueBy = function getUniqueBy(array, prop) {
     const set = new Set();
     return array.filter(o => !set.has(o[prop]) && set.add(o[prop]));
