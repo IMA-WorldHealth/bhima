@@ -258,8 +258,10 @@ exports.writeStockExitShipment = async (
   if (shipmentExist) {
     // update the status of the shipment
     // because the shipment was already made with the shipment tool
-    const updateQuery = 'UPDATE shipment SET status_id = ?';
-    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT]);
+    const updateQuery = `
+      UPDATE shipment SET status_id = ?, date_sent = ?
+    `;
+    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date()]);
   } else {
     // write new shipment
     const SHIPMENT_UUID = db.bid(uuid());
@@ -415,10 +417,6 @@ function getShipmentFilters(parameters) {
   // clone the parameters
   const params = { ...parameters };
 
-  if (params.ready_to_ship) {
-    params.ready_to_ship = parseInt(params.ready_to_ship, 10);
-  }
-
   db.convert(params, [
     'uuid',
     'origin_depot_uuid',
@@ -497,8 +495,10 @@ function find(params) {
       ss.id AS status_id,
       dm.text AS reference,
       dm2.text AS stock_reference,
+      BUID(d.uuid) AS origin_depot_uuid,
       d.text AS origin_depot,
-      d3.text AS destination_depot,
+      BUID(d2.uuid) AS destination_depot_uuid,
+      d2.text AS destination_depot,
       sh.name, sh.description, sh.note, 
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.date_ready_for_shipment, sh.anticipated_delivery_date, 
@@ -506,7 +506,7 @@ function find(params) {
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id 
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
-    JOIN depot d3 ON d3.uuid = sh.destination_depot_uuid 
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
