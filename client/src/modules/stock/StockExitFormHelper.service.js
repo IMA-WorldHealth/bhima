@@ -55,7 +55,7 @@ function StockExitFormHelperService($q, $translate, Patients, Invoices, Services
   function getDescriptionForService(details, i18nKeys) {
     // load the required information for the service description
     return Services.read(details.entity_uuid)
-      .then(([{ name }]) => {
+      .then(({ name }) => {
 
         Object.assign(i18nKeys, { service : name });
 
