@@ -198,7 +198,6 @@ function LotsRegistryService(uiGridConstants, Session) {
       displayName : 'FORM.LABELS.REFERENCE_NUMBER',
       headerCellFilter : 'translate',
       visible : false,
-      width : 150,
     }, {
       field : 'manufacturer_brand',
       displayName : 'FORM.LABELS.MANUFACTURER_BRAND',

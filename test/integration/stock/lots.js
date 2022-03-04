@@ -13,7 +13,7 @@ describe('(/lots/) The lots HTTP API', () => {
           'uuid', 'label', 'quantity', 'unit_cost',
           'entry_date', 'expiration_date', 'inventory_uuid',
           'inventory_code', 'inventory_name', 'tags',
-          'is_asset', 'serial_number',
+          'is_asset', 'reference_number', 'serial_number',
         ];
         expect(res.body).to.have.all.keys(expectedKeys);
       })
@@ -43,6 +43,7 @@ describe('(/lots/) The lots HTTP API', () => {
       label : 'Lot Quinine Updated',
       expiration_date : formatDate(dateExp),
       unit_cost : 1.7,
+      reference_number : 'BHIMA_1',
       serial_number : 'HTTP:2.0',
     };
 
@@ -56,6 +57,7 @@ describe('(/lots/) The lots HTTP API', () => {
         const details = res.body;
         expect(details.label).to.be.equal(update.label);
         expect(formatDate(details.expiration_date)).to.be.equal(update.expiration_date);
+        expect(details.reference_number).to.be.equal(update.reference_number);
         expect(details.serial_number).to.be.equal(update.serial_number);
       })
       .catch(helpers.handler);

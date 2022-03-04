@@ -95,6 +95,13 @@ function StockDefineLotsModalController(
     aggregationHideLabel : true,
     cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
   }, {
+    field : 'reference_number',
+    displayName : 'FORM.LABELS.REFERENCE_NUMBER',
+    headerCellFilter : 'translate',
+    visible : false,
+    width : 150,
+    cellTemplate : '/modules/stock/lots/templates/reference_number.cell.html',
+  }, {
     field : 'serial_number',
     displayName : 'TABLE.COLUMNS.SERIAL_NUMBER',
     headerCellFilter : 'translate',

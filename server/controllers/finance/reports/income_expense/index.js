@@ -74,11 +74,7 @@ async function document(req, res, next) {
       );
     }
 
-    // console.log('tree:', tree);
-
     const isIncomeFirstElement = root.children[0].isIncomeAccount;
-
-    // console.log('root', JSON.stringify(root));
 
     let income = {};
     let expense = {};
