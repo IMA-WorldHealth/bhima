@@ -46,7 +46,10 @@
 
     <div class="checkbox">
       <label>
-        <input type="checkbox" name="is_asset" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.is_asset">
+        <input type="checkbox"
+          name="is_asset" ng-true-value="1" ng-false-value="0"
+          ng-model="$ctrl.item.is_asset"
+          ng-change="$ctrl.onChangeIsAsset($ctrl.item.is_asset)">
         <strong><span translate>INVENTORY.IS_IT_ASSET</span></strong>
       </label>
     </div>
