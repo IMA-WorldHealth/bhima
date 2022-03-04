@@ -34,7 +34,7 @@ async function getDetails(identifier) {
   const uuid = identifier;
   const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
   const sqlRequisitionItems = `
-    SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, it.text as inventoryType, sri.quantity
+    SELECT BUID(i.uuid) inventory_uuid, i.code, i.consumable, i.text, it.text as inventoryType, sri.quantity
     FROM stock_requisition_item sri
     JOIN inventory i ON i.uuid = sri.inventory_uuid
     JOIN inventory_type it ON i.type_id = it.id
@@ -55,10 +55,10 @@ async function getDetailsBalance(identifier) {
   const sqlRequisition = `${SELECT_QUERY} WHERE sr.uuid = ?;`;
 
   const sql = `
-    SELECT req.inventory_uuid, req.code, req.text, req.inventoryType,
+    SELECT req.inventory_uuid, req.code, req.text, req.consumable, req.inventoryType,
     (req.quantity - IF(mouv.quantity, mouv.quantity, 0)) AS quantity
     FROM (
-      SELECT BUID(i.uuid) inventory_uuid, i.code, i.text, it.text as inventoryType, sri.quantity
+      SELECT BUID(i.uuid) inventory_uuid, i.code, i.consumable, i.text, it.text as inventoryType, sri.quantity
       FROM stock_requisition_item sri
       JOIN inventory i ON i.uuid = sri.inventory_uuid
       JOIN inventory_type it ON i.type_id = it.id
