@@ -511,6 +511,9 @@ function StockEntryController(
     stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
     stockLine.is_asset = inventory.is_asset;
+    if (inventory.is_asset) {
+      stockLine.quantity = 1;
+    }
 
     StockModal.openDefineLots({
       stockLine,
@@ -712,7 +715,8 @@ function StockEntryController(
         line.code = inventory.code;
         line.label = inventory.label;
         line.unit_cost = inventory.price;
-        line.quantity = 0;
+        line.is_asset = inventory.is_asset;
+        line.quantity = inventory.is_asset ? 1 : 0;
         line.cost = line.quantity * line.unit_cost;
         line.expiration_date = entryDate;
         line.unit = inventory.unit;
