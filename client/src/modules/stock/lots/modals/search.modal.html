@@ -51,6 +51,30 @@
             </div>
           </div>
 
+          <!-- is_asset -->
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"
+                  ng-model="$ctrl.searchQueries.is_asset"
+                  ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.LABELS.ASSETS_ONLY</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- reference_number  -->
+          <div class="form-group">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER</label>
+            <bh-clear on-clear="$ctrl.clear('reference_number')"></bh-clear>
+            <input type="text" class="form-control"
+              name="reference_number"
+              ng-model="$ctrl.searchQueries.reference_number">
+            <div class="help-block" ng-messages="ModalForm.reference_number.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
           <!-- expiration date -->
           <bh-date-interval
             label="STOCK.EXPIRATION_DATE"
@@ -113,7 +137,6 @@
               class="form-control"
               ng-model="$ctrl.defaultQueries.limit"
               ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
-
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>

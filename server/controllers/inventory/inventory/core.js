@@ -252,7 +252,7 @@ async function getItemsMetadata(params) {
       inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume, inventory.is_asset,
-      inventory.reference_number, inventory.manufacturer_brand, inventory.manufacturer_model,
+      inventory.manufacturer_brand, inventory.manufacturer_model,
       ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable,
       inventory.note, inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account,
       ig.donation_account, ig.cogs_account, inventory.default_quantity, ig.tracking_consumption, ig.tracking_expiration,
@@ -276,16 +276,16 @@ async function getItemsMetadata(params) {
   filters.equals('type_id');
   filters.equals('code');
   filters.equals('consumable');
-  filters.equals('is_asset');
   filters.equals('price');
   filters.equals('locked');
   filters.equals('label');
   filters.equals('sellable');
   filters.equals('note');
   filters.equals('importance');
+  filters.equals('is_asset');
+  filters.equals('reference_number');
   filters.equals('manufacturer_brand');
   filters.equals('manufacturer_model');
-  filters.equals('reference_number');
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
   filters.custom('find_null_importance', 'inventory.importance IS NULL');
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
@@ -343,7 +343,7 @@ function remove(_uuid) {
 */
 async function getItemsMetadataById(uid, query = {}) {
   const sql = `
-    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, i.is_asset, i.reference_number,
+    SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, i.is_asset,
       iu.abbr AS unit, it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid,
       ig.unique_item, i.consumable, i.locked, i.stock_min, i.sellable,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,

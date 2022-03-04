@@ -99,9 +99,12 @@ function getLotFilters(parameters) {
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('consumable', 'consumable', 'i');
+  filters.equals('is_asset', 'is_asset', 'i');
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
+  filters.equals('is_asset', 'is_asset', 'i');
+  filters.equals('reference_number', 'reference_number', 'l');
   filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
@@ -263,12 +266,13 @@ async function getLotsDepot(depotUuid, params, finalClause) {
     SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
       SUM(m.quantity) AS mvt_quantity,
-      d.text AS depot_text, l.unit_cost, l.expiration_date, l.serial_number,
+      d.text AS depot_text, l.unit_cost, l.expiration_date,
+      l.serial_number, l.reference_number,
       d.min_months_security_stock, d.default_purchase_interval,
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid,
       i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-      i.is_asset, i.reference_number, i.manufacturer_brand, i.manufacturer_model,
+      i.is_asset, i.manufacturer_brand, i.manufacturer_model,
       m.date AS entry_date, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,

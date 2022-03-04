@@ -16,8 +16,10 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
+    'depot_uuid', 'inventory_uuid', 'group_uuid', 'label',
+    'is_asset', 'reference_number',
+    'entry_date_from', 'entry_date_to',
+    'expiration_date_from', 'expiration_date_to',
     'is_expired', 'is_expiry_risk', 'tags',
   ];
 
