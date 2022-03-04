@@ -146,6 +146,7 @@
     "LIFETIME"        : "Durée de vie",
     "LOSS"            : "Perte de stock",
     "LOT"             : "Lot",
+    "LOT_ID"          : "ID Lot",
     "LOTS"            : "Lots",
     "LOT_LIFETIME"    : "Durée par lot",
     "LOT_NOT_FOUND"   : "Ce lot n'a pas été trouvé !",
@@ -273,6 +274,16 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption",
     "WAC" : "Cout Unitaire Moyen Pondéré"
   },
+  "ASSET" : {
+    "ASSET" : "Actif",
+    "ASSET_ID" : "ID actif / label",
+    "ASSET_ID_TOOLTIP" : "ID actif / label (designation du lot)",
+    "DETAILS" : "Détail de l'actif",
+    "DOCUMENT" : "Document",
+    "TITLE" : "Actifs",
+    "VIEW_IN_INVENTORY" : "Visualiser l'actif dans l'inventaire",
+    "VIEW_IN_STOCK" : "Visualiser l'actif dans stock"
+  },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",
@@ -335,6 +346,8 @@
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
     "ASSIGNMENT_HISTORIC":"Historique d'assignation",
     "ASSIGNMENT_CURRENT":"En cours",
+    "ASSIGNMENT_CREATED": "Actif créé",
+    "ASSIGNMENT_DESCRIPTION": "Description de l'actif",
     "NO_ASSIGNMENT":"Aucune assignation",
     "LOT_LABEL":"Designation du lot",
     "LOT_LABEL_EXPIRES": "{{label}} (expirira le {{expdate}})",
@@ -380,7 +393,8 @@
     "TITLE" : "Assignation",
     "STOCK_ASSIGN" : "Assignation de stock",
     "EDIT_ASSIGN" : "Editer Assignation",
-    "REMOVE_ASSIGN" : "Désassigner",
+    "ADD_ASSIGNMENT" : "Ajouter assignation",
+    "REMOVE_ASSIGNMENT" : "Désassigner",
     "CREATE_SUCCESS" : "Nouvelle assignation de stock réussie",
     "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie",
     "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",

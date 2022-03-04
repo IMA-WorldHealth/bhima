@@ -19,7 +19,7 @@
       on-select-callback="$ctrl.onSelectDepot(depot)">
     </bh-depot-select>
 
-    <!-- Inventaire -->
+    <!-- Inventory -->
     <div
       class="form-group"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
@@ -30,7 +30,7 @@
         on-select="$ctrl.onSelectInventory($item)"
         ng-disabled="!$ctrl.availableInventories.length">
         <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
-          <span>{{$select.selected.hrLabel}}</span>
+          <span>{{$ctrl.selectedInventory.hrLabel || $select.selected.hrLabel}}</span>
         </ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'hrLabel': $select.search }">
           <span ng-bind-html="i.hrLabel | highlight:$select.search"></span>

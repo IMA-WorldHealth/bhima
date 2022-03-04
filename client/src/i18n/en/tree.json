@@ -14,6 +14,8 @@
     "ASSET_MANAGEMENT" : {
       "TITLE" : "Asset Management"
     },
+    "ASSETS" : "Assets",
+    "ASSETS_REGISTRY" : "Assets Registry",
     "AVERAGE_MED_COST_REPORT" : "Average Medication Costs Per Patient",
     "BALANCE" : "Balance",
     "BALANCE_REPORT" : "Balance of Accounts",
