@@ -32,6 +32,7 @@
 
       <input
         ng-if="$ctrl.isCostEditable"
+        ng-disabled="$ctrl.stockLine.is_asset"
         class="form-control"
         type="number"
         ng-change="$ctrl.onChangeQuantity()"

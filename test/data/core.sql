@@ -103,6 +103,9 @@ CALL CreateFiscalYear(1, @fiscalYear2019, @superUser, 'Fiscal Year 2020', 12, DA
 SET @fiscalYear2021 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2020, @superUser, 'Fiscal Year 2021', 12, DATE('2021-01-01'), DATE('2021-12-31'), 'Notes for 2021', @fiscalYear2021);
 
+SET @fiscalYear2022 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2021, @superUser, 'Fiscal Year 2022', 12, DATE('2022-01-01'), DATE('2022-12-31'), 'Notes for 2022', @fiscalYear2022);
+
 --
 -- Project permission
 --
