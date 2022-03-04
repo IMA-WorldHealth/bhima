@@ -208,6 +208,7 @@ function PurchaseOrderController(
       inventUuids.push(invUUID);
       return false;
     });
+
     if (dupItem) {
       dupItem._valid = false;
       dupItem._invalid = true;
