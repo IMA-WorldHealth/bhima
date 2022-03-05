@@ -178,6 +178,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
           expiration_date : lot.expiration_date,
           inventory_uuid : line.inventory_uuid,
           description : lot.description || '',
+          reference_number : lot.reference_number,
           serial_number : lot.serial_number,
         };
       }).concat(current);

@@ -54,7 +54,6 @@ function InventoryListActionsModalController(
   // (prevent preserving this data when the toggle is clicked twice)
   function onChangeIsAsset(isAsset) {
     if (!isAsset) {
-      vm.item.reference_number = null;
       vm.item.manufacturer_brand = null;
       vm.item.manufacturer_model = null;
     }
@@ -67,7 +66,6 @@ function InventoryListActionsModalController(
 
     // If it is NOT an asset, force deleting the asset-related fields
     if (!record.is_asset) {
-      record.reference_number = null;
       record.manufacturer_brand = null;
       record.manufacturer_model = null;
     }

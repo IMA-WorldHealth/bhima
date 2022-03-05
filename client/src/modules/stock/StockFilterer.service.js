@@ -26,6 +26,8 @@ function StockFiltererService(Filters, AppCache, $httpParamSerializer, Languages
     { key : 'entity_uuid', label : 'ENTITY.LABEL' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'text', label : 'STOCK.DEPOT' },
+    { key : 'is_asset', label : 'FORM.LABELS.IS_ASSET', valueFilter : 'boolean' },
+    { key : 'reference_number', label : 'FORM.LABELS.REFERENCE_NUMBER' },
     { key : 'is_warehouse', label : 'DEPOT.WAREHOUSE', valueFilter : 'boolean' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'requestor_uuid', label : 'REQUISITION.RECEIVER' },
