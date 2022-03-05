@@ -82,6 +82,7 @@ async function createStock(req, res, next) {
       depot_uuid : params.depot_uuid,
       flux_id : params.flux_id,
       description : params.description,
+      reference_number : params.reference_number,
       serial_number : params.serial_number,
     };
 
@@ -111,7 +112,8 @@ async function createStock(req, res, next) {
           description : lot.description,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
-          serial_number : params.serial_number,
+          reference_number : lot.reference_number,
+          serial_number : lot.serial_number,
         };
 
         // adding a lot insertion query into the transaction

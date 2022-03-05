@@ -150,9 +150,6 @@ function InventoryService(
     key : 'is_asset',
     label : 'FORM.LABELS.ASSET',
   }, {
-    key : 'reference_number',
-    label : 'FORM.LABELS.REFERENCE_NUMBER',
-  }, {
     key : 'manufacturer_brand',
     label : 'FORM.LABELS.MANUFACTURER_BRAND',
   }, {

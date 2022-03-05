@@ -322,6 +322,7 @@
             "APPLY_INVOICING_FEES" : "Apply invoicing fee",
             "APPLY_SUBSIDIES": "Apply subsidies",
             "ASSET": "Asset",
+            "ASSETS_ONLY": "Assets only?",
             "AUTHOR": "Author",
             "AUXILIARY": "Auxiliary",
             "AVERAGE" : "Average",
