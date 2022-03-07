@@ -11,6 +11,7 @@ function StockModalService(Modal) {
     size      : 'md',
     backdrop  : 'static',
     animation : false,
+    controllerAs : '$ctrl',
   };
 
   service.openEditAsset = openEditAsset;
@@ -42,7 +43,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/generateAssetTags.modal.html',
       controller   : 'GenerateTagsModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -72,6 +72,8 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/assets/modals/edit.modal.html',
       controller   : 'EditAssetModalController',
       controllerAs : '$ctrl',
+      templateUrl  : 'modules/stock/assign/modals/action.modal.html',
+      controller   : 'ActionAssignModalController',
       resolve      : { data : () => request },
     });
 
@@ -84,7 +86,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/edit.modal.html',
       controller   : 'EditLotModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -97,7 +98,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/historic.modal.html',
       controller   : 'HistoricModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -123,7 +123,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -136,7 +135,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/duplicates.modal.html',
       controller   : 'DuplicateLotsModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -149,7 +147,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/schedule.modal.html',
       controller   : 'LotsScheduleModalController',
-      controllerAs : '$ctrl',
       size         : 'lg',
       resolve      : { data : () => request },
     });
@@ -163,7 +160,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/assign/modals/search.modal.html',
       controller   : 'SearchStockAssignModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -176,7 +172,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/requisition/modals/action.modal.html',
       controller   : 'ActionRequisitionModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -189,7 +184,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/requisition/modals/search.modal.html',
       controller   : 'SearchStockRequisitionModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -202,7 +196,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/movements/modals/search.modal.html',
       controller   : 'SearchMovementsModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -215,7 +208,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/depots/modals/search.modal.html',
       controller   : 'SearchDepotModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -228,7 +220,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/inventories/modals/search.modal.html',
       controller   : 'SearchInventoriesModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -241,7 +232,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/exit/modals/findPatient.modal.html',
       controller   : 'StockFindPatientModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -254,7 +244,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/exit/modals/findService.modal.html',
       controller   : 'StockFindServiceModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -267,7 +256,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/exit/modals/findDepot.modal.html',
       controller   : 'StockFindDepotModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
@@ -280,7 +268,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/findPurchase.modal.html',
       controller   : 'StockFindPurchaseModalController',
-      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
     const instance = Modal.open(params);
@@ -292,7 +279,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/findTransfer.modal.html',
       controller   : 'StockFindTransferModalController',
-      controllerAs : '$ctrl',
       resolve      : {
         data : () => request,
       },
@@ -322,7 +308,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/lots.modal.html',
       controller   : 'StockDefineLotsModalController',
-      controllerAs : '$ctrl',
       size         : 'lg',
       resolve      : { data : () => request },
     });
@@ -335,7 +320,6 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/aggregated_consumption/modals/consumption_lot.modal.html',
       controller   : 'StockConsumptionLotsModalController',
-      controllerAs : '$ctrl',
       size         : 'lg',
       resolve      : { data : () => request },
     });

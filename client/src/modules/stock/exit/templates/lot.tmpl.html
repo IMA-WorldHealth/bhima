@@ -1,15 +1,15 @@
 <div ng-if="row.entity._initialised">
   <ui-select append-to-body="true"
-    name="lot"
-    ng-model="row.entity.lot"
-    ng-change="grid.appScope.onLotSelect(row.entity)"
+    name="lot_uuid"
+    ng-model="row.entity.lot_uuid"
+    ng-change="grid.appScope.setLotFromDropdown(row.entity, $select.selected)"
     required>
     <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.LOT' | translate }}">
       <span>{{$select.selected.label}}</span>
     </ui-select-match>
-    <ui-select-choices repeat="lot as lot in row.entity.lots | filter: $select.search">
-      <span ng-if="lot.tracking_expiration" title="{{lot.expiration_date | date:grid.appScope.DATE_FMT}}">{{ lot.label }} ({{ "LOTS_SCHEDULE.LOT_EXPIRES" | translate }} {{lot.expiration_date | date:grid.appScope.DATE_FMT}})</span>
-      <span ng-if="!lot.tracking_expiration">{{ lot.label }}</span>
+    <ui-select-choices repeat="lot.lot_uuid as lot in grid.appScope.stockForm.listLotsForInventory(row.entity.inventory_uuid, row.entity.lot_uuid) | filter: $select.search">
+      <span ng-if="lot.__tracking_expiration" title="{{lot.expiration_date | date:grid.appScope.DATE_FMT}}">{{ lot.label }} ({{ "LOTS_SCHEDULE.LOT_EXPIRES" | translate }} {{lot.expiration_date | date:grid.appScope.DATE_FMT}})</span>
+      <span ng-if="!lot.__tracking_expiration">{{ lot.label }}</span>
     </ui-select-choices>
   </ui-select>
 </div>

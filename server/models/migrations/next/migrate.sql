@@ -71,6 +71,14 @@ ALTER TABLE `inventory_type` CHANGE COLUMN `text` `text` VARCHAR(200) NOT NULL;
 CALL add_column_if_missing('lot', 'serial_number', 'VARCHAR(40) NULL');
 
 /*
+ * Issue: Asset Management - Move reference_number to lot
+ * @author: jmcameron
+ * @date: 2022-03-04
+ */
+CALL drop_column_if_exists('inventory', 'reference_number');
+CALL add_column_if_missing('lot', 'reference_number', 'TEXT NULL');
+
+/*
  * Issue: Asset Management - Asset registry
  *   - Add new assets registry page menu item
  *   - Delete old assignments page

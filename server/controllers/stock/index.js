@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 /**
  * @module stock
  *
@@ -27,6 +29,7 @@ const requisition = require('./requisition/requisition');
 const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
 const vouchers = require('../finance/vouchers');
+const depots = require('../inventory/depots');
 
 // expose to the API
 exports.createStock = createStock;
@@ -79,6 +82,7 @@ async function createStock(req, res, next) {
       depot_uuid : params.depot_uuid,
       flux_id : params.flux_id,
       description : params.description,
+      reference_number : params.reference_number,
       serial_number : params.serial_number,
     };
 
@@ -108,7 +112,8 @@ async function createStock(req, res, next) {
           description : lot.description,
           expiration_date : date,
           inventory_uuid : db.bid(lot.inventory_uuid),
-          serial_number : params.serial_number,
+          reference_number : lot.reference_number,
+          serial_number : lot.serial_number,
         };
 
         // adding a lot insertion query into the transaction
@@ -146,12 +151,19 @@ async function createStock(req, res, next) {
       transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
     }
 
-    if (!isExit && params.flux_id !== core.flux.FROM_OTHER_DEPOT) {
-      transaction.addQuery('CALL RecomputeStockValue(NULL);');
-    }
+    // gather unique inventory uuids for use later recomputing the stock quantities
+    const inventoryUuids = params.lots
+      .map(lot => lot.inventory_uuid)
+      .filter((uid, index, array) => array.lastIndexOf(uid) === index);
 
-    // gather inventory uuids for use later recomputing the stock quantities
-    const inventoryUuids = params.lots.map(lot => lot.inventory_uuid);
+    // if we are adding stock, we must update the weighted average cost
+    if (!isExit && params.flux_id !== core.flux.FROM_OTHER_DEPOT) {
+      inventoryUuids.forEach(uid => {
+        transaction.addQuery('CALL StageInventoryForStockValue(?);', [db.bid(uid)]);
+      });
+
+      transaction.addQuery('CALL RecomputeStockValueForStagedInventory(NULL);');
+    }
 
     // execute all operations as one transaction
     await transaction.execute();
@@ -177,12 +189,8 @@ async function createStock(req, res, next) {
 function updateQuantityInStockAfterMovement(inventoryUuids, mvmtDate, depotUuid) {
   const txn = db.transaction();
 
-  // makes a unique array of inventory uuids so we don't do extra calls
-  const uniqueInventoryUuids = inventoryUuids
-    .filter((uid, index, array) => array.lastIndexOf(uid) === index);
-
   // loop through the inventory uuids, queuing up them to rerun
-  uniqueInventoryUuids.forEach(uid => {
+  inventoryUuids.forEach(uid => {
     txn.addQuery(`CALL StageInventoryForAMC(?)`, [db.bid(uid)]);
   });
 
@@ -414,8 +422,6 @@ async function createInventoryAdjustment(req, res, next) {
  */
 async function createMovement(req, res, next) {
   const params = req.body;
-  let stockAvailable = [];
-  let filteredInvalidData = [];
 
   const document = {
     uuid : params.document_uuid || uuid(),
@@ -429,42 +435,44 @@ async function createMovement(req, res, next) {
     stock_settings : req.session.stock_settings,
   };
 
-  params.month_average_consumption = req.session.stock_settings.month_average_consumption;
-  params.average_consumption_algo = req.session.stock_settings.average_consumption_algo;
-
-  const paramsStock = {
-    dateTo : new Date(),
-    depot_uuid : params.depot_uuid,
-    includeEmptyLot : 0,
-    month_average_consumption : params.month_average_consumption,
-    average_consumption_algo : params.average_consumption_algo,
-  };
-
-  if (params.is_exit) {
-    stockAvailable = await core.getLotsDepot(null, paramsStock);
-
-    params.lots.forEach(lot => {
-      lot.quantityAvailable = 0;
-      if (stockAvailable) {
-        stockAvailable.forEach(stock => {
-          if (stock.uuid === lot.uuid) {
-            lot.quantityAvailable = stock.quantity;
-          }
-        });
-      }
-    });
-
-    filteredInvalidData = await params.lots.filter(l => l.quantity > l.quantityAvailable);
-  }
-
   try {
-    if (filteredInvalidData.length) {
-      throw new BadRequest(
-        `This stock exit will overconsume the quantity in stock and generate negative quantity in stock`,
-        `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_EXIT_STOCK`,
-      );
+    // when exit, we need to check that we are not accidentally over-consuming items
+    if (params.is_exit) {
+      // NOTE(@jniles) - we use _today's_ date because we want to know if this movement will
+      // cause a negative value at any point in the future.
+      const stockInDepot = await depots.getLotsInStockForDate(params.depot_uuid, new Date());
+
+      // get a list of the lots that are being overconsumed
+      // if the lot is in the depot, that means it was totally consumed at some point
+      const overconsumed = params.lots.filter(lot => {
+        const lotInDepot = stockInDepot.find(l => l.lot_uuid === lot.uuid);
+        if (!lotInDepot) { return true; }
+        return lot.quantity > lotInDepot.quantity;
+      });
+
+      // show a nicer error if the quantity in stock is overconsumed
+      if (overconsumed.length) {
+        const labels = overconsumed.map(l => l.label).join(', ').trim();
+        throw new BadRequest(
+          `This stock exit will overconsume the lots in stock and create negative quantity in stock for ${labels}.`,
+          `ERRORS.ER_PREVENT_NEGATIVE_QUANTITY_IN_EXIT_STOCK`,
+        );
+      }
     }
 
+    // get unit costs from stock_value
+    const inventoryUuids = params.lots.map(l => db.bid(l.inventory_uuid));
+    const unitCosts = await db.exec(
+      'SELECT BUID(inventory_uuid) as inventory_uuid, wac FROM stock_value WHERE inventory_uuid in (?);',
+      [inventoryUuids]);
+
+    const unitCostMap = new Map(unitCosts.map(cost => [cost.inventory_uuid, cost.wac]));
+
+    params.lots.forEach(lot => {
+      lot.unit_cost = unitCostMap.get(lot.inventory_uuid);
+    });
+
+    // NOTE(@jniles) - the id here is the period id, not the fiscal year id.
     const periodId = (await Fiscal.lookupFiscalYearByDate(params.date)).id;
     params.period_id = periodId;
 
@@ -660,12 +668,15 @@ async function depotMovement(document, params) {
   // gather inventory uuids for later quantity in stock calculation updates
   const inventoryUuids = parameters.lots.map(lot => lot.inventory_uuid);
 
-  transaction.addQuery('CALL RecomputeStockValue(NULL);');
+  // TODO(@jniles) - we don't need to recompute stock value for depot movements
+  // the value to the enterprise has not changed.
+  // transaction.addQuery('CALL RecomputeStockValue(NULL);');
 
   const result = await transaction.execute();
 
   // update the quantity in stock as needed
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
+
   return result;
 }
 
@@ -741,10 +752,10 @@ function dashboard(req, res, next) {
     ORDER BY d.text ASC`;
 
   db.exec(getDepotsByUser, [req.session.user.id])
-    .then((depots) => {
-      depotsByUser = depots;
+    .then((_depots) => {
+      depotsByUser = _depots;
 
-      depots.forEach(depot => {
+      _depots.forEach(depot => {
         if (status === 'expired') {
           const paramsFilter = {
             dateTo : new Date(),

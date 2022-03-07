@@ -40,6 +40,7 @@ function InventoryListActionsModalController(
   vm.submit = submit;
   vm.cancel = cancel;
   vm.onSelectTags = onSelectTags;
+  vm.onChangeIsAsset = onChangeIsAsset;
 
   // startup
   startup();
@@ -49,10 +50,25 @@ function InventoryListActionsModalController(
     vm.item.tags = tags;
   }
 
+  // Immediately clear out asset-related data if we toggle the is_asset checkbox
+  // (prevent preserving this data when the toggle is clicked twice)
+  function onChangeIsAsset(isAsset) {
+    if (!isAsset) {
+      vm.item.manufacturer_brand = null;
+      vm.item.manufacturer_model = null;
+    }
+  }
+
   /** submit data */
   function submit(form) {
     if (form.$invalid) { return null; }
     const record = util.filterFormElements(form, true);
+
+    // If it is NOT an asset, force deleting the asset-related fields
+    if (!record.is_asset) {
+      record.manufacturer_brand = null;
+      record.manufacturer_model = null;
+    }
 
     // Handle the tags specially
     if ('TagForm' in record) {
