@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.STOCK</li>
-      <li class="title" translate>ASSIGN.STOCK_ASSIGN</li>
+      <li class="static" translate>TREE.ASSET_MANAGEMENT.TITLE</li>
+      <li class="title" translate>TREE.ASSETS_REGISTRY</li>
     </ol>
 
     <div class="toolbar">
@@ -16,58 +16,53 @@
 
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
-              <a href data-method="configure" ng-click="StockCtrl.openColumnConfigModal()">
+              <a href data-method="configure" ng-click="AssetsCtrl.openColumnConfigModal()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
             </li>
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a href data-method="save-state" ng-click="StockCtrl.saveGridState()">
+              <a href data-method="save-state" ng-click="AssetsCtrl.saveGridState()">
                 <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a href data-method="clear-state" ng-click="StockCtrl.clearGridState()">
+              <a href data-method="clear-state" ng-click="AssetsCtrl.clearGridState()">
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
+
             <li role="separator" class="divider"></li>
-            <li role="menuitem">
-              <a ng-href="/reports/stock/assign/?{{ StockCtrl.getQueryString('pdf') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
-                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+            <li role="menuitem" bh-require-enterprise-setting="barcodes">
+              <a href ng-click="AssetsCtrl.openBarcodeScanner()" data-action="scan-barcode">
+                <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN</span>
               </a>
             </li>
-            <li role="menuitem">
-              <a ng-href="/reports/stock/assign/?{{ StockCtrl.getQueryString('csv') }}" download="{{ 'STOCK.LOTS.REGISTRY' | translate }}">
-                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a target='_blank' ng-href="/reports/stock/assign/?{{StockCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
-                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+            <li role="menuitem" bh-require-enterprise-setting="barcodes">
+              <a href ng-click="AssetsCtrl.openLotBarcodeScanner()" data-action="scan-barcode">
+                <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN_BARCODE</span>
               </a>
             </li>
           </ul>
+
         </div>
       </div>
 
-      <bh-search-button on-click="StockCtrl.search()"></bh-search-button>
+      <bh-search-button on-click="AssetsCtrl.search()"></bh-search-button>
 
       <div class="toolbar-item">
         <div class="btn-group" uib-dropdown>
           <a class="btn btn-default"
-            ng-class="{ 'btn-info' : StockCtrl.grouped }"
-            ng-click="StockCtrl.toggleGroup(StockCtrl.selectedGroup.value)"
-            ng-disabled="!StockCtrl.selectedGroup.label">
+            ng-class="{ 'btn-info' : AssetsCtrl.grouped }"
+            ng-click="AssetsCtrl.toggleGroup(AssetsCtrl.selectedGroup.value)"
+            ng-disabled="!AssetsCtrl.selectedGroup.label">
             <span>
               <i class="fa fa-object-group"></i>
-              <span ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
-              <span
-                ng-show="StockCtrl.selectedGroup.label"
-                translate>
-                {{ StockCtrl.selectedGroup.label }}
+              <span ng-hide="AssetsCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span ng-show="AssetsCtrl.selectedGroup.label" translate>
+                {{ AssetsCtrl.selectedGroup.label }}
               </span>
             </span>
           </a>
@@ -75,8 +70,8 @@
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-            <li ng-repeat="option in StockCtrl.groupingBox">
-              <a href ng-click="StockCtrl.selectGroup(option)">
+            <li ng-repeat="option in AssetsCtrl.groupingBox">
+              <a href ng-click="AssetsCtrl.selectGroup(option)">
                 <span translate>{{ option.label }}</span>
               </a>
             </li>
@@ -84,26 +79,27 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <a ui-sref="stockAssign.create"
+      <!-- inline filter -->
+      <bh-filter-toggle
+        on-toggle="AssetsCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+
+      <div class="toolbar-item" style="margin-right: 1em;">
+        <a ui-sref="stockAssets.createAssignment"
           data-method="create-record"
           class="btn btn-success">
           <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSIGN.NEW_ASSIGN</span>
         </a>
       </div>
 
-      <!-- inline filter -->
-      <bh-filter-toggle
-        on-toggle="StockCtrl.toggleInlineFilter()">
-      </bh-filter-toggle>
     </div>
   </div>
 </div>
 
 <div class="flex-util bh-filter-bar">
   <bh-filters
-    filters="StockCtrl.latestViewFilters"
-    on-remove-filter="StockCtrl.onRemoveFilter(filter)">
+    filters="AssetsCtrl.latestViewFilters"
+    on-remove-filter="AssetsCtrl.onRemoveFilter(filter)">
   </bh-filters>
 </div>
 
@@ -111,8 +107,8 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div
-      id="stock-assign-grid"
-      ui-grid="StockCtrl.gridOptions"
+      id="stock-lots-grid"
+      ui-grid="AssetsCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-resize-columns
       ui-grid-move-columns
@@ -120,9 +116,9 @@
       ui-grid-save-state
       ui-grid-grouping>
       <bh-grid-loading-indicator
-        loading-state="StockCtrl.loading"
-        empty-state="StockCtrl.gridOptions.data.length === 0"
-        error-state="StockCtrl.hasError">
+        loading-state="AssetsCtrl.loading"
+        empty-state="AssetsCtrl.gridOptions.data.length === 0"
+        error-state="AssetsCtrl.hasError">
       </bh-grid-loading-indicator>
     </div>
   </div>

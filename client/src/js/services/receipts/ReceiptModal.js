@@ -331,7 +331,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
   service.stockAdjustmentReport = stockAdjustmentReport;
-  service.stockAssignReceipt = stockAssignReceipt;
+  service.stockAssignmentReceipt = stockAssignmentReceipt;
   service.stockRequisitionReceipt = stockRequisitionReceipt;
   service.getReceiptFnByFluxId = getReceiptFnByFluxId;
   service.lotBarcodeReceipt = lotBarcodeReceipt;
@@ -364,13 +364,13 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   }
 
   /**
-   * @method stockAssignReceipt
+   * @method stockAssignmentReceipt
    * @param {string} uuid
    * @param {boolean} notifyCreated
    */
-  function stockAssignReceipt(uuid, notifyCreated) {
+  function stockAssignmentReceipt(uuid, notifyCreated) {
     const opts = { title : 'ASSIGN.STOCK_ASSIGN', notifyCreated, renderer : Receipts.renderer };
-    const promise = Receipts.stockAssignReceipt(uuid, { renderer : opts.renderer });
+    const promise = Receipts.stockAssignmentReceipt(uuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 

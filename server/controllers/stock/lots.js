@@ -42,7 +42,6 @@ const detailsQuery = `
 
 exports.update = update;
 exports.details = details;
-exports.assignments = assignments;
 exports.getLotTags = getLotTags;
 exports.getCandidates = getCandidates;
 exports.getDupes = getDupes;
@@ -430,34 +429,6 @@ function autoMergeZero(req, res, next) {
     })
     .then(() => {
       res.status(200).json({ numLots });
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * GET /lots/:uuid/assignments/:depot_uuid
- *
- * @description
- * Returns all assignments of a lot in a depot to entities ordered by ascending dates
- */
-function assignments(req, res, next) {
-  const lotUuid = db.bid(req.params.uuid);
-  const depotUuid = db.bid(req.params.depot_uuid);
-
-  const query = `
-    SELECT e.display_name, sa.created_at, sa.is_active
-    FROM stock_assign sa
-      JOIN entity e ON e.uuid = sa.entity_uuid
-      JOIN lot l ON l.uuid = sa.lot_uuid
-      JOIN depot d ON d.uuid = sa.depot_uuid
-    WHERE d.uuid = ? AND l.uuid = ?
-    ORDER BY sa.created_at ASC;
-  `;
-
-  db.exec(query, [depotUuid, lotUuid])
-    .then(rows => {
-      res.status(200).json(rows);
     })
     .catch(next)
     .done();

@@ -106,7 +106,6 @@ INSERT INTO unit VALUES
   -- (221,'Update Distributions','TREE.UPDATE_DISTRIBUTION','',218,'/allocation_center/update'),
   -- (222,'Fee Center Report','TREE.COST_CENTER_REPORT','Fee Center Report',286,'/reports/cost_center'),
   -- (223,'Distribution keys','TREE.DISTRIBUTION_KEYS_MANAGEMENT','Distribution keys',218,'/allocation_center/allocation_key'),
-  (225,'Stock Assignment','ASSIGN.STOCK_ASSIGN','',160,'/stock/assign'),
   (226,'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type',1,'/account_reference_type'),
   (227,'Ward Module','TREE.WARD','Ward folder',0,'/WARD_FOLDER'),
   (228,'Ward Configurations','TREE.WARD_CONFIGURATION','Ward configuration module',227,'/ward/configuration'),
@@ -180,7 +179,8 @@ INSERT INTO unit VALUES
   (304, '[SETTINGS] Settings', 'TREE.PAYROLL_SETTINGS', 'Payroll Settings', 57, '/payroll/setting'),
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
   (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
-  (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER');
+  (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
+  (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -360,7 +360,6 @@ INSERT INTO `actions`(`id`, `description`) VALUES
   (6, 'USERS.ACTIONS.DELETE_STOCK_MOVEMENT'),
   (7, 'USERS.ACTIONS.DELETE_VOUCHER'),
   (8, 'USERS.ACTIONS.EDIT_LOT');
-
 
 -- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES
