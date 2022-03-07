@@ -80,7 +80,7 @@ function LotItemService(uuid, $translate) {
    *
    * Note that this takes a comparison date to pass to isExpired().
    * The comparison date will only trigger expiry if the expiration
-   * date is before the comparion date.  Thus, if you pass it a
+   * date is before the comparison date.  Thus, if you pass it a
    * date for yesterday and the expiration is today, it will not
    * register as expired.
    */
