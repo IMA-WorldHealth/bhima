@@ -57,7 +57,7 @@ function StockAssignPage() {
     return GU.expectCellValueMatch(gridId, row, col, value);
   };
 
-  page.removeAssignment = async () => {
+  page.deleteAssignment = async () => {
     const cell = await GU.getCell(gridId, 0, 7);
     await cell.$('[data-method=action]').click();
     await $('[data-method=remove-record]').click();

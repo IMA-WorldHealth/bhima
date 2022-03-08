@@ -4,7 +4,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="bh-dropdown-header">{{row.entity.label}} - {{row.entity.text}}</li>
 
     <li role="separator" class="divider"></li>
@@ -18,7 +18,7 @@
     <li role="separator" class="divider"></li>
 
     <li bh-has-permission="grid.appScope.bhConstants.actions.EDIT_LOT">
-      <a data-method="edit" ng-click="grid.appScope.openLotModal(row.entity.uuid)" href>
+      <a data-method="edit" ng-click="grid.appScope.openAssetModal(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
       </a>
     </li>
@@ -31,9 +31,10 @@
           displayValue : row.entity.text,
           cachable : false},
         ]})">
-        <i class="fa fa-info-circle"></i> <span translate>INVENTORY.VIEW_ARTICLE_IN_INVENTORY</span>
+        <i class="fa fa-info-circle"></i> <span translate>ASSET.VIEW_IN_INVENTORY</span>
       </a>
     </li>
+
     <li>
       <a data-method="view-stock-articles" ui-sref= "stockInventories(
         { filters : [
@@ -42,23 +43,35 @@
         { key : 'depot_uuid', value : row.entity.depot_uuid, displayValue : row.entity.depot_text, cachable : false },
         { key : 'includeEmptyLot', value : 0 },
         ]})">
-        <i class="fa fa-file-text"></i> <span translate>REPORT.VIEW_ARTICLE_IN_STOCK</span>
+        <i class="fa fa-file-text"></i> <span translate>ASSET.VIEW_IN_STOCK</span>
       </a>
     </li>
+
+    <li role="separator" class="divider"></li>
+
+    <li ng-if="row.entity.assignment_uuid">
+      <a data-method="receipt" href ng-click="grid.appScope.showAssignmentReceipt(row.entity.assignment_uuid)">
+        <span><i class="fa fa-file-o"></i> <span translate>ASSET.DOCUMENT</span></span>
+      </a>
+    </li>
+
+    <li ng-if="!row.entity.assignment_uuid">
+      <a data-method="add-record" href ng-click="grid.appScope.addAssignment(row.entity)">
+        <span><i class="fa fa-plus"></i> <span translate>ASSIGN.ADD_ASSIGNMENT</span></span>
+      </a>
+    </li>
+
+    <li ng-if="row.entity.assignment_uuid">
+      <a data-method="remove-record" href ng-click="grid.appScope.deleteAssignment(row.entity.assignment_uuid)">
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>ASSIGN.REMOVE_ASSIGNMENT</span></span>
+      </a>
+    </li>
+
     <li>
       <a data-method="view-stock-history" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-clock-o"></i> <span translate>ASSET.ASSIGNMENT_HISTORY</span>
       </a>
     </li>
-    <li>
-      <a data-method="find-duplicates" ng-click="grid.appScope.openDuplicatesModal(row.entity.uuid, row.entity.depot_uuid)" href>
-        <i class="fa fa-search"></i> <span translate>LOTS.FIND_DUPLICATE_LOTS</span>
-      </a>
-    </li>
-    <li>
-      <a data-method="lot-schedule" ng-click="grid.appScope.openLotScheduleModal(row.entity.uuid, row.entity.inventory_uuid, row.entity.depot_uuid)" href>
-        <i class="fa fa-info-circle"></i> <span translate>LOTS.SHOW_LOT_SCHEDULE</span>
-      </a>
-    </li>
+
   </ul>
 </div>

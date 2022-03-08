@@ -15,6 +15,9 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   // API for stock lots in depots With detailed information
   const lotsDetailed = new Api('/stock/lots/depotsDetailed');
 
+  // API for assets
+  const assets = new Api('/stock/assets');
+
   // API for stock lots movements
   const movements = new Api('/stock/lots/movements/');
 
@@ -212,6 +215,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     inventoryAdjustment,
     lots,
     lotsDetailed,
+    assets,
     movements,
     inlineMovements,
     inventories,
