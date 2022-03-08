@@ -47,7 +47,7 @@ function updateSubscriptions(req, res, next) {
   const formattedSubscriptions = parseFormMap(groupSubscriptions, binaryId);
 
   // remove all relationships for the entity ID provided
-  transaction.addQuery(subscriptionDetails.removeAssignmentsQuery, [binaryId]);
+  transaction.addQuery(subscriptionDetails.deleteAssignmentsQuery, [binaryId]);
 
   // add relationships for all subscription IDs specified
   if (formattedSubscriptions.length) {
@@ -72,13 +72,11 @@ function updateSubscriptions(req, res, next) {
  */
 function prepareQueries() {
   // accept a subscription definition object and append two attributes
-  // * removeAssignmentsQuery - remove all assignements with this entity
+  // * deleteAssignmentsQuery - remove all assignements with this entity
   // * createAssigmentsQuery - insert assignments into table name
   subscriptions = _.mapValues(subscriptions, (subscription, key) => {
-    subscription.removeAssignmentsQuery =
-      `DELETE FROM ${key} WHERE ${subscription.entity} = ?`;
-    subscription.createAssignmentsQuery =
-      `INSERT INTO ${key} (${subscription.entity}, ${subscription.map}) VALUES ?`;
+    subscription.deleteAssignmentsQuery = `DELETE FROM ${key} WHERE ${subscription.entity} = ?`;
+    subscription.createAssignmentsQuery = `INSERT INTO ${key} (${subscription.entity}, ${subscription.map}) VALUES ?`;
     return subscription;
   });
 
