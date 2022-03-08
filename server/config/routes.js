@@ -800,6 +800,7 @@ exports.configure = function configure(app) {
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);
   app.get('/stock/assign/:uuid', stock.assign.detail);
+  app.get('/lots/:uuid/assignments/:depot_uuid', stock.assign.assignments);
   app.post('/stock/assign', stock.assign.create);
   app.put('/stock/assign/:uuid', stock.assign.update);
   app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
@@ -873,7 +874,7 @@ exports.configure = function configure(app) {
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);
-  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
+  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignmentReceipt);
   app.get('/receipts/stock/requisition/:uuid', stockReports.stockRequisitionReceipt);
   app.get('/receipts/stock/adjustment/:document_uuid', stockReports.stockAdjustmentReceipt);
   app.get('/receipts/stock/lots/:uuid/barcode', stockReports.lotBarcodeReceipt);
@@ -1004,7 +1005,6 @@ exports.configure = function configure(app) {
   // lots API
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);
-  app.get('/lots/:uuid/assignments/:depot_uuid', lots.assignments);
   app.post('/lots/:uuid/merge', lots.merge);
   app.post('/lots/merge/auto', lots.autoMerge);
   app.post('/lots/merge/autoZero', lots.autoMergeZero);
