@@ -115,12 +115,12 @@ exports.deleteAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';
   const sqlDeleteAssign = 'DELETE FROM stock_assign WHERE uuid = ?;';
-  const sqlUpdateLot = 'UPDATE lot SET is_assigned = 0, updated_at = ? WHERE uuid = ?;';
+  const sqlUpdateLot = 'UPDATE lot SET is_assigned = 0 WHERE uuid = ?;';
   db.one(sqlAssignedLot, [uuid])
     .then(assignment => {
       const transaction = db.transaction();
       transaction.addQuery(sqlDeleteAssign, [uuid]);
-      transaction.addQuery(sqlUpdateLot, [new Date(), assignment.lot_uuid]);
+      transaction.addQuery(sqlUpdateLot, [assignment.lot_uuid]);
       return transaction.execute();
     })
     .then(() => res.sendStatus(200))
