@@ -7,17 +7,17 @@ const FilterParser = require('../../lib/filter');
 
 // exports the find function
 exports.find = params => {
-  const sa = getStockAssignment(binarize(params));
+  const sa = getStockAssignments(binarize(params));
   return db.exec(sa.query, sa.queryParameters);
 };
 
 exports.detail = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlDetail = `
-     SELECT 
+     SELECT
        BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
        BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
-       sa.quantity, sa.created_at, sa.description, sa.is_active
+       sa.quantity, sa.created_at, sa.updated_at, sa.description, sa.is_active
      FROM stock_assign sa
      WHERE sa.uuid = ?;
    `;
@@ -31,7 +31,7 @@ exports.list = (req, res, next) => {
   const params = binarize(req.query);
 
   // get the built query of stock assignment its parameters
-  const sa = getStockAssignment(params);
+  const sa = getStockAssignments(params);
   db.exec(sa.query, sa.queryParameters)
     .then(rows => res.status(200).json(rows))
     .catch(next)
@@ -68,6 +68,7 @@ exports.update = (req, res, next) => {
   if (params.uuid) {
     delete params.uuid;
   }
+  params.updated_at = new Date();
 
   const fetchOriginalAssignment = `
      SELECT lot_uuid FROM stock_assign WHERE uuid = ?;
@@ -93,12 +94,12 @@ exports.update = (req, res, next) => {
 exports.removeAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';
-  const sqlRemoveAssign = 'UPDATE stock_assign SET is_active = 0 WHERE uuid = ?;';
+  const sqlRemoveAssign = 'UPDATE stock_assign SET is_active = 0, updated_at = ? WHERE uuid = ?;';
   const sqlUpdateLot = 'UPDATE lot SET is_assigned = 0 WHERE uuid = ?;';
   db.one(sqlAssignedLot, [uuid])
     .then(assignment => {
       const transaction = db.transaction();
-      transaction.addQuery(sqlRemoveAssign, [uuid]);
+      transaction.addQuery(sqlRemoveAssign, [new Date(), uuid]);
       transaction.addQuery(sqlUpdateLot, [assignment.lot_uuid]);
       return transaction.execute();
     })
@@ -147,7 +148,40 @@ function binarize(params) {
 }
 
 /**
-  * @function getStockAssignment
+ * GET /lots/:uuid/assignments/:depot_uuid
+ *
+ * @description
+ * Returns all assignments of a lot in a depot to entities ordered by ascending dates
+ *
+ * @TODO:  Switch route from /lot/etc to /stock/assign/etc, merge with getStockAssignments()?
+ */
+exports.assignments = (req, res, next) => {
+  const lotUuid = db.bid(req.params.uuid);
+  const depotUuid = db.bid(req.params.depot_uuid);
+
+  const query = `
+    SELECT
+      e.display_name AS assigned_to_name,
+      sa.created_at, sa.updated_at, sa.description,
+      sa.is_active
+    FROM stock_assign sa
+      JOIN entity e ON e.uuid = sa.entity_uuid
+      JOIN lot l ON l.uuid = sa.lot_uuid
+      JOIN depot d ON d.uuid = sa.depot_uuid
+    WHERE d.uuid = ? AND l.uuid = ?
+    ORDER BY sa.updated_at ASC;
+  `;
+
+  db.exec(query, [depotUuid, lotUuid])
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+};
+
+/**
+  * @function getStockAssignments
   *
   * @description
   * build the query for getting stock assignment based on
@@ -156,19 +190,21 @@ function binarize(params) {
   * @param {object} params
   * @returns {object} { query:..., queryParameters:... }
   */
-function getStockAssignment(params) {
+function getStockAssignments(params) {
   const sql = `
-     SELECT 
-       BUID(sa.uuid) AS uuid, sa.description, sa.created_at, sa.quantity,
+     SELECT
+       BUID(sa.uuid) AS uuid, sa.description,
+       sa.updated_at, sa.created_at, sa.quantity,
        BUID(l.uuid) AS lot_uuid, l.label,
        BUID(i.uuid) AS inventory_uuid, i.text, i.code,
-       BUID(e.uuid) AS entity_uuid, e.display_name,
+       BUID(e.uuid) AS entity_uuid,
+       e.display_name AS assigned_to_name,
        BUID(d.uuid) AS depot_uuid, d.text AS depot_text
      FROM stock_assign sa
      JOIN lot l ON l.uuid = sa.lot_uuid AND sa.is_active = 1
      JOIN entity e ON e.uuid = sa.entity_uuid
      JOIN inventory i ON i.uuid = l.inventory_uuid
-     JOIN depot d ON d.uuid = sa.depot_uuid 
+     JOIN depot d ON d.uuid = sa.depot_uuid
    `;
 
   const filters = new FilterParser(params);
@@ -182,6 +218,7 @@ function getStockAssignment(params) {
   filters.period('period', 'created_at', 'sa');
   filters.dateFrom('custom_period_start', 'created_at', 'sa');
   filters.dateTo('custom_period_end', 'created_at', 'sa');
+  filters.setOrder('ORDER BY sa.updated_at ASC');
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
