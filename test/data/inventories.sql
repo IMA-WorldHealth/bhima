@@ -2397,9 +2397,9 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
 INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `default_quantity`,
  `group_uuid`, `unit_id`, `unit_weight`, `unit_volume`, `type_id`, `consumable`, `is_asset`, `sellable`,
  `note`, `locked`, `delay`, `purchase_interval`, `last_purchase`, `num_purchase`,`num_delivery`,
- `importance`,`reference_number`,`manufacturer_brand`,`manufacturer_model`,
+ `importance`,`manufacturer_brand`,`manufacturer_model`,
  `created_at`, `updated_at`) VALUES
 (1,0x46E4C0EC5C764A479D14F34394707EF4,'MOT.HCRF250RX','Honda CRF250RX',8500.00,1,
  0x552843E2F9234CFABEA321C65E350921,5,0,0,1,0,1,0,NULL,0,1.0,0.0,NULL,0,0,
- NULL,NULL,'Honda','CRF250RX',
+ NULL,'Honda','CRF250RX',
  '2022-02-25 09:12:32',NULL);
