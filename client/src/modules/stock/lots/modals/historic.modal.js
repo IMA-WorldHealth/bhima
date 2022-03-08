@@ -23,6 +23,16 @@ function HistoricModalController(Lots, Instance, Notify, Data) {
     Lots.assignments(Data.uuid, Data.depotUuid)
       .then(assignments => {
         vm.lotAssignments = assignments;
+
+        // If the last one is not assigned, add a fake extra line to make that clear
+        const last = vm.lotAssignments[vm.lotAssignments.length - 1];
+        if (last && !last.is_active) {
+          vm.lotAssignments.push({
+            created_at : last.updated_at,
+            entity_name : null,
+            is_active : 0,
+          });
+        }
       })
       .catch(Notify.handleError);
   }

@@ -1,6 +1,7 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', $stateProvider => {
     $stateProvider
+
       .state('stockLots', {
         url         : '/stock/lots',
         controller  : 'StockLotsController as StockLotsCtrl',
@@ -70,21 +71,22 @@ angular.module('bhima.routes')
         templateUrl : 'modules/stock/import/stockImport.html',
       })
 
-      .state('stockAssign', {
-        url         : '/stock/assign',
-        controller  : 'StockLotsAssignController as StockCtrl',
-        templateUrl : 'modules/stock/assign/registry.html',
+      .state('stockAssets', {
+        url         : '/assets',
+        controller  : 'AssetsRegistryController as AssetsCtrl',
+        templateUrl : 'modules/assets/assets-registry.html',
         params : {
           filters : [],
         },
       })
-      .state('stockAssign.create', {
+
+      .state('stockAssets.createAssignment', {
         url : '/create',
         params : {
           creating : { value : true },
           filters : [],
         },
-        onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('create', 'stockAssign')],
+        onEnter : ['$state', 'StockModalService', '$transition$', onEnterFactory('create', 'stockAssets')],
         onExit : ['$uibModalStack', closeModals],
       })
 
@@ -139,10 +141,9 @@ function onEnterFactory(stateType, state) {
   return function onEnter($state, StockModal, $transition) {
     const transitionParams = $transition.params('to');
     const mapAction = {
-      stockAssign : StockModal.openActionStockAssign,
+      stockAssets : StockModal.openActionStockAssign,
       stockRequisition : StockModal.openActionStockRequisition,
     };
-
     const instance = mapAction[state];
     instance(transitionParams)
       .then((_uuid) => {

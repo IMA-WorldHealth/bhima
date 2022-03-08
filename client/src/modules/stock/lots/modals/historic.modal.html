@@ -1,24 +1,36 @@
 <form>
   <div class="modal-header">
-    <strong translate>LOTS.ASSIGNMENT_HISTORIC</strong>
+    <strong translate>ASSET.ASSIGNMENT_HISTORY</strong>:
+    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.inventory_code}}</span>
+    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.inventory_name}}</span>
+    <i class="fa fa-caret-right"></i> <strong>{{$ctrl.lot.label}}</strong>
   </div>
 
   <div class="modal-body" style="min-height: 400px; overflow-y: auto;">
-    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.text}}</span>
-    <i class="fa fa-caret-right"></i> <strong>{{$ctrl.lot.label}}</strong>
-
     <div ng-if="!$ctrl.lotAssignments.length"
       class="text-center"
       style="min-height: 400px; line-height: 400px;"
-      translate>LOTS.NO_ASSIGNMENT
+      translate>ASSET.NO_ASSIGNMENT_HISTORY
     </div>
 
-    <table style="border:0;" class="table table-condensed">
-      <tr ng-repeat="a in $ctrl.lotAssignments track by $index">
-        <td>{{ a.display_name }}</td>
-        <td>{{ a.created_at | date: "EEEE, d MMMM, y - HH:mm:ss" }}</td>
-        <td><span ng-if="a.is_active" class="label label-success" translate>LOTS.ASSIGNMENT_CURRENT</span></td>
-      </tr>
+    <table style="border:0;" class="table table-condensed table-striped">
+      <thead>
+        <tr ng-if="$ctrl.lotAssignments.length">
+          <th translate>ENTITY.ASSIGNED_TO</th>
+          <th translate>TABLE.COLUMNS.DATE</th>
+          <th translate>TABLE.COLUMNS.STATUS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="a in $ctrl.lotAssignments track by $index">
+          <td>{{ a.assigned_to_name }}</td>
+          <td>{{ a.created_at | date: "EEEE, d MMMM, y - HH:mm:ss" }}</td>
+          <td>
+            <span ng-if="a.assigned_to_name && a.is_active" class="label label-success" translate>LOTS.ASSIGNMENT_CURRENT</span>
+            <span ng-if="$last && !a.is_active" class="label label-success" translate>ASSET.NOT_ASSIGNED</span>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 
