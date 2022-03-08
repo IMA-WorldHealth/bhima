@@ -65,6 +65,7 @@ describe('LotItemService', () => {
 
   it('#constructor() creates a new lot that passes validation', () => {
     const lot = new Lot(dataset[0]);
+    console.error("LOT: ", lot);
 
     expect(lot.uuid).to.have.lengthOf(36);
     expect(lot.validate()).to.equal(true);

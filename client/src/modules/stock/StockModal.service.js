@@ -14,7 +14,9 @@ function StockModalService(Modal) {
     controllerAs : '$ctrl',
   };
 
+  service.openEditAsset = openEditAsset;
   service.openEditLot = openEditLot;
+  service.openSearchAssets = openSearchAssets;
   service.openSearchLots = openSearchLots;
   service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchMovements = openSearchMovements;
@@ -51,6 +53,25 @@ function StockModalService(Modal) {
   /** create stock assign */
   function openActionStockAssign(request) {
     const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/assets/modals/assign.modal.html',
+      controller   : 'AssetAssignmentModalController',
+      controllerAs : '$ctrl',
+      resolve      : {
+        data : () => request,
+        params : request,
+      },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** edit asset */
+  function openEditAsset(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/assets/modals/edit.modal.html',
+      controller   : 'EditAssetModalController',
+      controllerAs : '$ctrl',
       templateUrl  : 'modules/stock/assign/modals/action.modal.html',
       controller   : 'ActionAssignModalController',
       resolve      : { data : () => request },
@@ -77,6 +98,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/historic.modal.html',
       controller   : 'HistoricModalController',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search assets */
+  function openSearchAssets(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/assets/modals/search.modal.html',
+      controller   : 'SearchAssetsModalController',
+      controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
 
