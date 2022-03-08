@@ -7,7 +7,7 @@ describe('(/stock/assign) The Stock Assign HTTP API', () => {
   const variables = {};
   const keys = [
     'uuid', 'lot_uuid', 'depot_uuid', 'entity_uuid',
-    'quantity', 'created_at', 'description', 'is_active',
+    'quantity', 'created_at', 'updated_at', 'description', 'is_active',
   ];
 
   // create new stock assignment from "Depot Principal" to a person entity
