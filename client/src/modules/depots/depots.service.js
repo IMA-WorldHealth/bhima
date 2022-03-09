@@ -46,8 +46,9 @@ function DepotService(Api, Modal, HttpCache) {
    *
    * @param isDepotRequired helps to keep the modal displayed as long as no depot was submitted
    */
-  service.openSelectionModal = function openSelectionModal(depot, isDepotRequired = false) {
+  service.openSelectionModal = function openSelectionModal(depot, isDepotRequired = false, allowClearing = false) {
     service.isDepotRequired = isDepotRequired;
+    service.allowClearing = allowClearing;
     return Modal.open({
       controller : 'SelectDepotModalController as $ctrl',
       templateUrl : 'modules/stock/depot-selection.modal.html',
