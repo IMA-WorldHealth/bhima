@@ -14,14 +14,17 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
 
   // global variables
   vm.model = {
-    quantity : 1,
     lot_uuid : data.uuid,
+    quantity : 1,
   };
+  vm.isAsset = true;
+  vm.maxQuantity = 1;
 
   vm.selectedInventory = null;
   vm.availableInventories = [];
   vm.availableLots = [];
   vm.stateParams = {};
+  vm.loading = false;
 
   cache.stateParams = $state.params;
   vm.stateParams = cache.stateParams;
@@ -35,11 +38,13 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
 
   vm.onSelectDepot = onSelectDepot;
   function onSelectDepot(depot) {
-    vm.inventory_uuid = null;
-    vm.model.lot_uuid = null;
-    vm.model.quantity = 1;
-
     vm.model.depot_uuid = depot.uuid;
+    vm.inventory_uuid = null;
+
+    vm.model.lot_uuid = null;
+    vm.isAsset = 1;
+    vm.model.quantity = 1;
+    vm.maxQuantity = 1;
 
     loadAvailableInventories(depot.uuid);
   }
@@ -49,17 +54,25 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
     vm.model.lot_uuid = null;
     vm.model.quantity = 1;
 
-    vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
+    vm.availableLots = vm.globalAvailableLots
+      .filter(item => item.inventory_uuid === inventory.inventory_uuid)
+      .filter(item => item.is_asset || !item.expired);
 
     if (data.uuid) {
       // If invoked via the action menu, the use the lot uuid to find the lot
       const lot = vm.availableLots.find(elt => elt.uuid === data.uuid);
       if (lot) {
         vm.model.lot_uuid = lot.uuid;
+        vm.isAsset = lot.is_asset;
+        vm.model.quantity = lot.quantity;
+        vm.maxQuantityLot = lot.quantity;
       }
     } else if (vm.availableLots.length === 1) {
       // If only one lot is available for this inventory, select it
       vm.model.lot_uuid = vm.availableLots[0].uuid;
+      vm.isAsset = vm.availableLots[0].is_asset;
+      vm.model.quantity = vm.availableLots[0].quantity;
+      vm.maxQuantityLot = vm.availableLots[0].quantity;
     }
   }
 
@@ -70,7 +83,9 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
 
   vm.onSelectLot = onSelectLot;
   function onSelectLot(lot) {
+    vm.model.quantity = lot.quantity;
     vm.maxQuantityLot = lot.quantity;
+    vm.isAsset = lot.is_asset;
   }
 
   vm.cancel = Modal.close;
@@ -95,11 +110,7 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
   };
 
   function startup() {
-    Depots.read(null)
-      .then(rows => {
-        vm.depots = rows;
-      })
-      .catch(Notify.handleError);
+    vm.loading = true;
 
     if (data.depot_uuid) {
       vm.model.depot_uuid = data.depot_uuid;
@@ -110,7 +121,13 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
             vm.inventory_uuid = data.inventory_uuid;
             onSelectInventory(vm.selectedInventory);
           }
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          vm.loading = false;
         });
+    } else {
+      vm.loading = false;
     }
   }
 

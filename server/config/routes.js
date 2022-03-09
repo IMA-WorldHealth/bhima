@@ -147,6 +147,9 @@ const period = require('../controllers/finance/period');
 // lots
 const lots = require('../controllers/stock/lots');
 
+// assets
+const assets = require('../controllers/stock/asset');
+
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
@@ -797,6 +800,14 @@ exports.configure = function configure(app) {
 
   // API for getting stock status
   app.get('/stock/status', stock.listStatus);
+
+  // API for asset scan related queries
+  app.get('/asset/conditions', assets.conditions);
+  app.get('/asset/scans', assets.getAssetScans);
+  app.get('/asset/scan/:uuid', assets.getAssetScan);
+  app.post('/asset/scan', assets.createAssetScan);
+  app.put('/asset/scan/:uuid', assets.updateAssetScan);
+  app.delete('/asset/scan/:uuid/delete', assets.deleteAssetScan);
 
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);

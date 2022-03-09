@@ -17,6 +17,7 @@
     },
     "ASSETS" : "Actifs",
     "ASSETS_REGISTRY" : "Registre des actifs",
+    "ASSETS_SCANS_REGISTRY" : "Gestion des scans d'actifs",
     "AVERAGE_MED_COST_REPORT" : "Coût moyen des médicaments par patient",
     "BALANCE":"Balance",
     "BALANCE_REPORT":"Balance des comptes",

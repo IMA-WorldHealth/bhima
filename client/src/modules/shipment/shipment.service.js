@@ -7,14 +7,14 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
   const service = new Api('/shipments/');
 
   service.statusLabel = {
-    1 : 'ASSET.STATUS.EMPTY',
-    2 : 'ASSET.STATUS.AT_DEPOT',
-    3 : 'ASSET.STATUS.READY_FOR_SHIPMENT',
-    4 : 'ASSET.STATUS.IN_TRANSIT',
-    5 : 'ASSET.STATUS.PARTIAL',
-    6 : 'ASSET.STATUS.COMPLETE',
-    7 : 'ASSET.STATUS.DELIVERED',
-    8 : 'ASSET.STATUS.LOST',
+    1 : 'SHIPMENT.STATUS.EMPTY',
+    2 : 'SHIPMENT.STATUS.AT_DEPOT',
+    3 : 'SHIPMENT.STATUS.READY_FOR_SHIPMENT',
+    4 : 'SHIPMENT.STATUS.IN_TRANSIT',
+    5 : 'SHIPMENT.STATUS.PARTIAL',
+    6 : 'SHIPMENT.STATUS.COMPLETE',
+    7 : 'SHIPMENT.STATUS.DELIVERED',
+    8 : 'SHIPMENT.STATUS.LOST',
   };
 
   service.exportTo = (renderer, filter) => {

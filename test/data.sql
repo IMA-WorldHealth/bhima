@@ -1164,3 +1164,47 @@ INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configurat
 INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xDC62269905C84CB0854F3407E7373220, 0x10F64A41DA594962AA9A90CF0D42257C, 6, 2, 15, 0.0000);
 
 
+--
+--  SAMPLE ASSET DATA (added by jmcameron 2022-03-25)
+--
+
+SET @inv_moto = HUID('46E4C0EC5C764A479D14F34394707EF4');
+SET @asset_mot1 = HUID('F16982E279AC4FC397BFF69105CB33F1');
+SET @asset_mot2 = HUID('4A1039DDF0644CDDBC945A9A40CF7EC5');
+
+-- Define sample asset inventory item
+INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `default_quantity`,
+ `group_uuid`, `unit_id`, `unit_weight`, `unit_volume`, `type_id`, `consumable`, `is_asset`, `sellable`,
+ `note`, `locked`, `delay`, `purchase_interval`, `last_purchase`, `num_purchase`,`num_delivery`,
+ `importance`,`manufacturer_brand`,`manufacturer_model`, `created_at`, `updated_at`) VALUES
+(1, @inv_moto, 'MOT.HCRF250RX', 'Honda CRF250RX', 8500.00, 1,
+ 0x552843E2F9234CFABEA321C65E350921, 5, 0, 0, 1, 0, 1, 0, NULL, 0, 1.0, 0.0, NULL, 0, 0,
+ NULL, 'Honda', 'CRF250RX', '2022-02-25 09:12:32', NULL);
+
+-- Insert sample assets
+INSERT INTO `lot` (`uuid`, `label`, `quantity`, `unit_cost`, `description`, `expiration_date`, `inventory_uuid`, `is_assigned`, `serial_number`) VALUES
+(@asset_mot1, 'MOT1', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 1, '12345'),
+(@asset_mot2, 'MOT2', 1, 8500.0000, NULL, '2027-03-01', @inv_moto, 0 , '12346');
+
+-- Stock movements for the sample assets
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`,
+  `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`,
+  `reference`, `invoice_uuid`, `stock_requisition_uuid`, `period_id`, `created_at`) VALUES
+(0x7A18A46C60AC40C3B0D673B0EA92F5A5, 0xDD6645B27FAA44E3AF766A6B10E91385, @depot_uuid, @asset_mot1,
+  NULL, 'Stock Entry by Integration', 13, '2022-03-11 11:20:30', 1, 8500.0, 0, 1,
+  11, NULL, NULL, 202203, '2022-03-11 11:21:14'),
+(0xE43D4E4DC0DD4ECDA4B24681B28DB660, 0xDD6645B27FAA44E3AF766A6B10E91385, @depot_uuid, @asset_mot2,
+  NULL, 'Stock Entry by Integration', 13, '2022-03-11 11:20:30', 1, 8500.0, 0, 1,
+  11, NULL, NULL, 202203, '2022-03-11 11:21:14');
+
+-- Add an asset assignment
+INSERT INTO `stock_assign` (`uuid`, `lot_uuid`, `entity_uuid`, `depot_uuid`,
+  `quantity`, `is_active`, `description`, `user_id`, `updated_at`, `created_at`) VALUES
+(0xA25AE6744A584271A7FB81596FC62CFC, @asset_mot1, 0x00099B1D184A48DEB93D45FBD0AB3790, @depot_uuid,
+ 1, 1, NULL, 1, '2022-03-11 15:58:12', '2022-03-11 15:58:12');
+
+-- Add asset management scans
+INSERT INTO `asset_scan` (`uuid`, `asset_uuid`, `location_uuid`, `depot_uuid`,
+  `scanned_by`, `condition_id`, `notes`) VALUES
+(0xA215AE67494744271A7F81596FC62CFC, @asset_mot1, NULL, @depot_uuid, 1, 1, 'Initial entry'),
+(0xA215AE6749474422345F81596FC62CFC, @asset_mot2, NULL, @depot_uuid, 1, 1, 'Initial entry');

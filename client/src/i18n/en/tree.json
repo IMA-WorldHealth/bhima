@@ -17,6 +17,7 @@
     },
     "ASSETS" : "Assets",
     "ASSETS_REGISTRY" : "Assets Registry",
+    "ASSETS_SCANS_REGISTRY" : "Assets Scans Registry",
     "AVERAGE_MED_COST_REPORT" : "Average Medication Costs Per Patient",
     "BALANCE" : "Balance",
     "BALANCE_REPORT" : "Balance of Accounts",
