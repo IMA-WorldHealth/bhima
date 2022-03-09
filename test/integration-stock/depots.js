@@ -31,7 +31,7 @@ describe('(/depots) The depots API ', () => {
    */
   const EXPECTED_WAC = Number((CURRENT_STOCK_VALUE + INCOMING_STOCK_VALUE) / FINAL_STOCK_QUANTITY).toFixed(2);
 
-  it('GET /depots/:uuid/inventories returns inventory for a depot', () => {
+  it('GET /depots/:uuid/inventories returns inventory for a depot (integration-stock)', () => {
     const principalInventoryItems = [
       'Ampicilline, 500mg, Vial, Unité',
       'Oxytocine, 10 UI/ml, 1ml, Amp, Unité',

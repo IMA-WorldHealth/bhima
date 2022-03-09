@@ -80,6 +80,15 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('stockAssetsScans', {
+        url         : '/assets/scans',
+        controller  : 'AssetScansRegistryController as ScansCtrl',
+        templateUrl : 'modules/asset_scans/asset-scans-registry.html',
+        params : {
+          filters : [],
+        },
+      })
+
       .state('stockAssets.createAssignment', {
         url : '/create',
         params : {

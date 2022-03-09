@@ -14,29 +14,31 @@ function StockModalService(Modal) {
     controllerAs : '$ctrl',
   };
 
-  service.openEditAsset = openEditAsset;
-  service.openEditLot = openEditLot;
-  service.openSearchAssets = openSearchAssets;
-  service.openSearchLots = openSearchLots;
-  service.openSearchStockAssign = openSearchStockAssign;
-  service.openSearchMovements = openSearchMovements;
-  service.openSearchInventories = openSearchInventories;
-  service.openSearchDepots = openSearchDepots;
-  service.openFindPatient = openFindPatient;
-  service.openFindService = openFindService;
-  service.openFindDepot = openFindDepot;
-  service.openFindPurchase = openFindPurchase;
-  service.openDefineLots = openDefineLots;
-  service.openFindTransfer = openFindTransfer;
+  service.openAMCCalculationModal = openAMCCalculationModal;
   service.openActionStockAssign = openActionStockAssign;
   service.openActionStockRequisition = openActionStockRequisition;
-  service.openSearchStockRequisition = openSearchStockRequisition;
+  service.openAssetEdit = openAssetEdit;
+  service.openAssetScanEdit = openAssetScanEdit;
+  service.openAssetScansSearch = openAssetScansSearch;
+  service.openAssetsSearch = openAssetsSearch;
   service.openAssignmentHistoric = openAssignmentHistoric;
-  service.openDuplicateLotsModal = openDuplicateLotsModal;
-  service.openLotScheduleModal = openLotScheduleModal;
-  service.openAMCCalculationModal = openAMCCalculationModal;
   service.openConsumptionByLots = openConsumptionByLots;
+  service.openDefineLots = openDefineLots;
+  service.openDuplicateLotsModal = openDuplicateLotsModal;
+  service.openEditLot = openEditLot;
+  service.openFindDepot = openFindDepot;
+  service.openFindPatient = openFindPatient;
+  service.openFindPurchase = openFindPurchase;
+  service.openFindService = openFindService;
+  service.openFindTransfer = openFindTransfer;
   service.openGenerateAssetBarcodes = openGenerateAssetBarcodes;
+  service.openLotScheduleModal = openLotScheduleModal;
+  service.openSearchDepots = openSearchDepots;
+  service.openSearchInventories = openSearchInventories;
+  service.openSearchLots = openSearchLots;
+  service.openSearchMovements = openSearchMovements;
+  service.openSearchStockAssign = openSearchStockAssign;
+  service.openSearchStockRequisition = openSearchStockRequisition;
 
   // generate tag numbers
   function openGenerateAssetBarcodes(request) {
@@ -66,19 +68,6 @@ function StockModalService(Modal) {
     return instance.result;
   }
 
-  /** edit asset */
-  function openEditAsset(request) {
-    const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/assets/modals/edit.modal.html',
-      controller   : 'EditAssetModalController',
-      controllerAs : '$ctrl',
-      resolve      : { data : () => request },
-    });
-
-    const instance = Modal.open(params);
-    return instance.result;
-  }
-
   /** edit lot */
   function openEditLot(request) {
     const params = angular.extend(modalParameters, {
@@ -90,6 +79,34 @@ function StockModalService(Modal) {
     const instance = Modal.open(params);
     return instance.result;
   }
+
+
+  /** edit asset */
+  function openAssetEdit(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/assets/modals/edit.modal.html',
+      controller   : 'AssetEditModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** edit asset */
+  function openAssetScanEdit(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/asset_scans/modals/edit.modal.html',
+      controller   : 'AssetScanEditModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
 
   /** open assign historic */
   function openAssignmentHistoric(request) {
@@ -104,10 +121,23 @@ function StockModalService(Modal) {
   }
 
   /** search assets */
-  function openSearchAssets(request) {
+  function openAssetsSearch(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/assets/modals/search.modal.html',
-      controller   : 'SearchAssetsModalController',
+      controller   : 'AssetsSearchModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search assets */
+  function openAssetScansSearch(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/asset_scans/modals/search.modal.html',
+      controller   : 'AssetScansSearchModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

@@ -147,8 +147,11 @@ const movementDepot = {
 };
 
 const depotPrincipalUuid = 'F9CAEB16168443C5A6C447DBAC1DF296';
-const depotPrincipalMvt = 20;
+const depotPrincipalMvt = 22;
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
+
+const assetMot1 = 'F16982E279AC4FC397BFF69105CB33F1';
+const assetMot2 = '4A1039DDF0644CDDBC945A9A40CF7EC5';
 
 const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
 const lotVitamineA = '064AB1D952464402AE8A958FCDB07B35';
@@ -709,6 +712,8 @@ module.exports = {
   depotPrincipalMvt,
   depotPrincipalUuid,
   lotQuinineUuid,
+  assetMot1,
+  assetMot2,
   newPersonAssign,
   newPersonAssign2,
   newEnterpriseAssign,
