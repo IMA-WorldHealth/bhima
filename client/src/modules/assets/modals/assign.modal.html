@@ -75,7 +75,6 @@
       <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
     </bh-entity-select>
 
-
     <!-- quantity -->
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.quantity.$invalid }">
       <label class="control-label" translate>FORM.LABELS.QUANTITY</label>
@@ -101,7 +100,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading">
+    <bh-loading-button loading-state="$ctrl.loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

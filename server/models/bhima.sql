@@ -180,7 +180,8 @@ INSERT INTO unit VALUES
   (305, 'Avg Medical Costs Per Patient', 'TREE.AVERAGE_MED_COST_REPORT', 'Report of avg med costs', 282, '/reports/avg_med_costs_per_patient'),
   (306, 'ODK Settings', 'TREE.ODK_SETTINGS', 'ODK Settings', 1, '/admin/odk-settings'),
   (307, 'Asset Management', 'TREE.ASSET_MANAGEMENT.TITLE', 'Asset Management', 0, '/ASSET_MANAGEMENT_FOLDER'),
-  (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets');
+  (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets'),
+  (309, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -480,6 +481,17 @@ INSERT INTO `status` VALUES
   (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED', 'label label-danger'),
   (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED', 'label label-success'),
   (7, 'excessive', 'FORM.LABELS.STATUS_TYPE.EXCESSIVE_RECEIVED_QUANTITY', 'label label-danger');
+
+INSERT INTO `asset_condition` VALUES -- (id, comdition, predefined)
+  (1, 'ASSET.CONDITION.NEW', 1),
+  (2, 'ASSET.CONDITION.GOOD', 1),
+  (3, 'ASSET.CONDITION.FAIR', 1),
+  (4, 'ASSET.CONDITION.POOR', 1),
+  (5, 'ASSET.CONDITION.BROKEN', 1),
+  (6, 'ASSET.CONDITION.OBSOLETE', 1),
+  (7, 'ASSET.CONDITION.DISCARDED', 1),
+  (8, 'ASSET.CONDITION.SOLD', 1),
+  (9, 'ASSET.CONDITION.LOST', 1);
 
 -- type of requestors
 INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES

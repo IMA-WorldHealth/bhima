@@ -114,18 +114,19 @@ describe('(/depots) The depots API ', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /depots/:uuid/inventories returns inventory for a depot', () => {
+  it('GET /depots/:uuid/inventories returns inventory for a depot (integration)', () => {
     const { principal } = helpers.data.depots;
 
     const principalInventoryItems = [
       'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
       'Erythromycine, 500mg, Tab, 500, Vrac',
       'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+      'Honda CRF250RX',
     ];
 
     return agent.get(`/depots/${principal}/inventories`)
       .then(res => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
 
         const unique = (item, index, array) => array.indexOf(item) === index;
 
@@ -141,8 +142,7 @@ describe('(/depots) The depots API ', () => {
         const uniqueInventory = res.body
           .map(row => row.text)
           .filter(unique);
-
-        expect(uniqueInventory).to.have.length(3);
+        expect(uniqueInventory).to.have.length(4);
         expect(uniqueInventory).to.deep.equal(principalInventoryItems);
       })
       .catch(helpers.handler);
