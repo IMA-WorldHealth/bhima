@@ -229,6 +229,7 @@
     "QUANTITY_RECEIVED"   : "Quantity Received",
     "QUANTITY_REMAINING" : "Quantity Remaining",
     "QUANTITY_SENT"       : "Quantity Sent",
+    "TOTAL_QUANTITY_RECEIVED" : "Total Received",
     "SERVICE_DISTRIBUTION" : "Service Distribution",
     "TRANSFER_AVAILABLE" : "Available",
     "TRANSFER_COMPLETED" : "Transfer was already completed!",
@@ -291,24 +292,6 @@
     "TOGGLE_EXPIRY_RISKS" : "Show the lots with expiry risks?",
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "This will display the lots at risk, whose average monthly consumption will not allow total consumption before the expiration date.",
     "WAC" : "Weighted Avgerage Cost"
-  },
-  "ASSET" : {
-    "ASSET" : "Asset",
-    "ASSET_LABEL" : "Asset label",
-    "ASSET_LABEL_TOOLTIP" : "Asset label (lot label)",
-    "ASSIGNED" : "Assigned",
-    "ASSIGNMENT_HISTORY" : "Asset Assignment History",
-    "ASSIGN_TO" : "Assign to",
-    "DETAILS" : "Asset Details",
-    "DOCUMENT" : "Assignment Document",
-    "NOT_ASSIGNED" : "Not assigned",
-    "NO_ASSIGNMENT_HISTORY" : "No assignment history",
-    "SHOW_NOT_ASSIGNED" : "Unassigned assets",
-    "SHOW_ONLY" : "Show only",
-    "SHOW_ONLY_ASSIGNED" : "Assigned assets",
-    "TITLE" : "Assets",
-    "VIEW_IN_INVENTORY" : "View Asset in Inventory",
-    "VIEW_IN_STOCK" : "View Asset in Stock"
   },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Default minimum number of months of security stock for depots",

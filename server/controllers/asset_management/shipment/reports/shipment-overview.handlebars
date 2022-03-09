@@ -1,0 +1,199 @@
+{{> head title="SHIPMENT.OVERVIEW" }}
+
+<style>
+.stepper-wrapper {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+.stepper-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
+}
+
+.stepper-item::before {
+  position: absolute;
+  content: "";
+  border-bottom: 5px solid #ccc;
+  width: 100%;
+  top: 20px;
+  left: -50%;
+  z-index: 2;
+}
+
+.stepper-item::after {
+  position: absolute;
+  content: "";
+  border-bottom: 5px solid #ccc;
+  width: 100%;
+  top: 20px;
+  left: 50%;
+  z-index: 2;
+}
+
+.stepper-item .step-counter {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ccc;
+  margin-bottom: 6px;
+}
+
+.stepper-item.active {
+  font-weight: bold;
+  color: white !important;
+}
+
+.stepper-item.completed .step-counter {
+  background-color: #000;
+  color: white !important;
+}
+
+.stepper-item.completed::after {
+  position: absolute;
+  content: "";
+  border-bottom: 5px solid #000;
+  width: 100%;
+  top: 20px;
+  left: 50%;
+  z-index: 3;
+}
+
+.stepper-item.completed.active::after {
+  border-bottom: 5px solid #ccc;
+}
+
+.stepper-item:first-child::before {
+  content: none;
+}
+.stepper-item:last-child::after {
+  content: none;
+}
+</style>
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'SHIPMENT.OVERVIEW'}}
+      </h2>
+
+      <h4 class="text-center">
+        {{single.reference}}
+      </h4>
+
+      <h4 class="text-center">
+        {{date}}
+      </h4>
+
+      <br><br>
+
+      {{!-- stepper for status --}}
+      <div class="stepper-wrapper">
+        <div class="stepper-item {{#if step.at_depot}} completed {{#equal single.status_name 'at_depot'}} active {{/equal}}{{/if}}">
+          <div class="step-counter">1</div>
+          <div class="step-name">{{translate 'SHIPMENT.STATUS.AT_DEPOT'}}</div>
+          <div>{{ single.origin_depot }}</div>
+        </div>
+        <div class="stepper-item {{#if step.ready}} completed {{#equal single.status_name 'ready'}} active {{/equal}}{{/if}}">
+          <div class="step-counter">2</div>
+          <div class="step-name">{{translate 'SHIPMENT.STATUS.READY_FOR_SHIPMENT'}}</div>
+          <div><small>{{date single.date_ready_for_shipment 'DD MMM YYYY HH:mm:ss' }}</small></div>
+        </div>
+        <div class="stepper-item {{#if step.in_transit}} completed {{#equal single.status_name 'in_transit'}} active {{/equal}}{{/if}}">
+          <div class="step-counter">3</div>
+          <div class="step-name">{{translate 'SHIPMENT.STATUS.IN_TRANSIT'}}</div>
+          <div><small>{{date single.date_sent 'DD MMM YYYY HH:mm:ss' }}</small></div>
+        </div>
+        <div class="stepper-item {{#if step.partial}} completed {{#equal single.status_name 'partial'}} active {{/equal}}{{/if}}">
+          <div class="step-counter">4</div>
+          <div class="step-name">{{translate 'SHIPMENT.STATUS.PARTIAL'}}</div>
+        </div>
+        <div class="stepper-item {{#if step.delivered}} completed {{#equal single.status_name 'delivered'}} active {{/equal}}{{/if}}">
+          <div class="step-counter">5</div>
+          <div class="step-name">{{translate 'SHIPMENT.STATUS.DELIVERED'}}</div>
+          <div>{{ single.destination_depot }}</div>
+          <div><small>{{date single.date_delivered 'DD MMM YYYY HH:mm:ss' }}</small></div>
+        </div>
+      </div>
+
+      <br>
+
+      <!-- shipment packing list -->
+      <h5>{{translate 'SHIPMENT.PACKING_LIST'}}</h5>
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th>{{translate 'INVENTORY.CODE'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.LOT'}}</th>
+            <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'SHIPMENT.LOT_CONDITION'}}</th>
+            <th>{{translate 'SHIPMENT.DATE_PACKED'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each records}}
+            <tr>
+              <td>{{inventory_code}}</td>
+              <td>{{inventory_label}}</td>
+              <td>{{lot_label}}</td>
+              <td>{{quantity_sent}}</td>
+              <td>{{translate condition}}</td>
+              <td>{{date date_packed}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold;">
+            <td colspan="6">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <br><br>
+
+      <!-- shipment tracking log -->
+      <h5>{{translate 'SHIPMENT.TRACKING_LOG'}}</h5>
+      <table class="table table-condensed table-bordered table-report">
+        <thead>
+          <tr>
+            <th style="width: 200px;">{{translate 'FORM.LABELS.DATE'}}</th>
+            <th>{{translate 'FORM.LABELS.NOTES'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each log}}
+            <tr>
+              <td>{{date date 'DD/MM/YYYY HH:mm:ss'}}</td>
+              <td>{{note}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=2}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

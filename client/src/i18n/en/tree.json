@@ -12,10 +12,12 @@
     "AGGREGATED_STOCK_CONSUMPTION" : "Compute Aggregate Stock Consumption",
     "ALLOCATION_AUX_FEES_CENTERS" : "Allocation of Auxiliary Cost Centers",
     "ASSET_MANAGEMENT" : {
-      "TITLE" : "Asset Management"
+      "TITLE" : "Asset Management",
+      "SHIPMENTS" : "Shipments"
     },
     "ASSETS" : "Assets",
     "ASSETS_REGISTRY" : "Assets Registry",
+    "ASSETS_SCANS_REGISTRY" : "Assets Scans Registry",
     "AVERAGE_MED_COST_REPORT" : "Average Medication Costs Per Patient",
     "BALANCE" : "Balance",
     "BALANCE_REPORT" : "Balance of Accounts",

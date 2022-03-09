@@ -12,10 +12,12 @@
     "AGGREGATED_STOCK_CONSUMPTION" : "Consommation de stock agrégée",
     "ALLOCATION_AUX_FEES_CENTERS" : "Allocation des centres de cout auxiliaires",
     "ASSET_MANAGEMENT" : {
-      "TITLE" : "Gestion des actifs"
+      "TITLE" : "Gestion des actifs",
+      "SHIPMENTS" : "Expéditions"
     },
     "ASSETS" : "Actifs",
     "ASSETS_REGISTRY" : "Registre des actifs",
+    "ASSETS_SCANS_REGISTRY" : "Gestion des scans d'actifs",
     "AVERAGE_MED_COST_REPORT" : "Coût moyen des médicaments par patient",
     "BALANCE":"Balance",
     "BALANCE_REPORT":"Balance des comptes",

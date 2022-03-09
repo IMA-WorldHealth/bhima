@@ -99,10 +99,10 @@ function report(req, res, next) {
       });
 
       const sqlType = `
-        SELECT id, label, is_balance_sheet, rank,
-        NOT(is_balance_sheet) is_income_expense
-        FROM analysis_tool_type
-        ORDER BY rank ASC
+        SELECT tt.id, tt.label, tt.is_balance_sheet, tt.rank,
+        NOT(tt.is_balance_sheet) is_income_expense
+        FROM analysis_tool_type tt
+        ORDER BY tt.rank ASC
       `;
 
       const sqlConfig = `

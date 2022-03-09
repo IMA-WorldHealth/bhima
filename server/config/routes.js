@@ -73,6 +73,7 @@ const inventoryReports = require('../controllers/inventory/reports');
 const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
 const stockSetting = require('../controllers/stock/setting');
+const shipment = require('../controllers/asset_management/shipment');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -145,6 +146,9 @@ const period = require('../controllers/finance/period');
 
 // lots
 const lots = require('../controllers/stock/lots');
+
+// assets
+const assets = require('../controllers/stock/asset');
 
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
@@ -797,6 +801,14 @@ exports.configure = function configure(app) {
   // API for getting stock status
   app.get('/stock/status', stock.listStatus);
 
+  // API for asset scan related queries
+  app.get('/asset/conditions', assets.conditions);
+  app.get('/asset/scans', assets.getAssetScans);
+  app.get('/asset/scan/:uuid', assets.getAssetScan);
+  app.post('/asset/scan', assets.createAssetScan);
+  app.put('/asset/scan/:uuid', assets.updateAssetScan);
+  app.delete('/asset/scan/:uuid/delete', assets.deleteAssetScan);
+
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);
   app.get('/stock/assign/:uuid', stock.assign.detail);
@@ -1111,4 +1123,23 @@ exports.configure = function configure(app) {
   app.delete('/configuration_analysis_tools/:id', configurationAnalysisTools.delete);
 
   app.use('/admin/odk-settings', odk.router);
+
+  // API for shipment
+  // shipment in the stock inventories registry
+  app.get('/stock/shipment/transit', shipment.listInTransitInventories);
+
+  // shipment registry
+  app.get('/shipments', shipment.list);
+  app.get('/shipments/affected-assets', shipment.affectedAssets);
+  app.get('/shipments/:uuid', shipment.single);
+  app.get('/shipments/:uuid/full', shipment.details);
+  app.get('/shipments/:uuid/overview', shipment.overview);
+  app.put('/shipments/:uuid', shipment.update);
+  app.post('/shipments/:uuid/tracking-log', shipment.updateTrackingLog);
+  app.put('/shipments/:uuid/ready-for-shipment', shipment.setReadyForShipment);
+  app.delete('/shipments/:uuid', shipment.deleteShipment);
+  app.post('/shipments', shipment.create);
+  app.get('/reports/shipments', shipment.getReport);
+  app.get('/reports/shipments/:uuid/overview', shipment.getOverview);
+  app.get('/reports/shipments/:uuid/barcode', shipment.getBarcode);
 };

@@ -7,5 +7,6 @@ function BarcodeModalController(options, ModalInstance) {
   const vm = this;
   vm.dismiss = ModalInstance.dismiss;
   vm.options = options;
+  vm.title = options.title || 'BARCODE.SCAN_BARCODE';
   vm.onScanCallback = (result) => ModalInstance.close(result);
 }

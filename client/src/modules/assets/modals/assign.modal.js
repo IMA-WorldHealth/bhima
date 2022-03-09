@@ -22,6 +22,7 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
   vm.availableInventories = [];
   vm.availableLots = [];
   vm.stateParams = {};
+  vm.loading = false;
 
   cache.stateParams = $state.params;
   vm.stateParams = cache.stateParams;
@@ -95,11 +96,7 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
   };
 
   function startup() {
-    Depots.read(null)
-      .then(rows => {
-        vm.depots = rows;
-      })
-      .catch(Notify.handleError);
+    vm.loading = true;
 
     if (data.depot_uuid) {
       vm.model.depot_uuid = data.depot_uuid;
@@ -110,7 +107,13 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
             vm.inventory_uuid = data.inventory_uuid;
             onSelectInventory(vm.selectedInventory);
           }
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          vm.loading = false;
         });
+    } else {
+      vm.loading = false;
     }
   }
 

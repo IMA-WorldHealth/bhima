@@ -1,13 +1,13 @@
 angular.module('bhima.controllers')
-  .controller('SearchAssetsModalController', SearchAssetsModalController);
+  .controller('AssetsSearchModalController', AssetsSearchModalController);
 
 // dependencies injections
-SearchAssetsModalController.$inject = [
+AssetsSearchModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'StockService',
   'SearchModalUtilService',
 ];
 
-function SearchAssetsModalController(data, util, Store, Instance, Stock, SearchModal) {
+function AssetsSearchModalController(data, util, Store, Instance, Stock, SearchModal) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
