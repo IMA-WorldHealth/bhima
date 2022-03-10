@@ -776,10 +776,13 @@ INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration C
 
 -- Configuration Employee Payroll
 INSERT INTO `config_employee` (`id`, `label`) VALUES ('1', 'Configuration des Employés');
+INSERT INTO `config_employee` (`id`, `label`) VALUES ('2', 'Configuration des Employés Indices');
 
 INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`) VALUES
   (1, 1, 0x75E0969465F245A1A8A28B025003D793),
-  (2, 1, 0x75E69409562FA2A845A13D7938B02500);
+  (2, 1, 0x75E69409562FA2A845A13D7938B02500),
+  (3, 2, 0x75E0969465F245A1A8A28B025003D793),
+  (4, 2, 0x75E69409562FA2A845A13D7938B02500);
 
 -- Payroll Configuration Period
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
@@ -1117,4 +1120,28 @@ INSERT INTO `tags` (`uuid`, `name`, `color`) VALUES
 -- DATA FOR CHECK PAYROLL
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (4, 'Payroll sample 1', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 2, 1, 1);
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (5, 'Payroll sample 2', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 1, 1, 1);
-INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (6, 'Payroll sample 3', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 1, 1, 2, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES (6, 'Payroll sample 3', DATE_ADD(LAST_DAY(NOW()), INTERVAL -1 MONTH), LAST_DAY(NOW()), 2, 1, 2, 2, 1);
+
+-- DATA FOR CHECK PAYROLL INDICE
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x01CEC245EA854D5B9C26F4B5A9259B8D, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 17, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x16CEE43CD0604BFE9F6078595B5C0F1F, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 23, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x290E98771A594C1B946D2E4CFD9C2C79, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 18, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x33E2DC3F99F54691A006BC1C40728BEC, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 20, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x3600F0D921F34CF6A4F762425081856D, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 13, 26.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x3887F6BDC25C4B389C281EE069D7FDC7, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 15, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x583C500529A440F8BDCC5AE01969D44A, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 16, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xAE69E2BB438243E187ED063D9757D5D5, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 19, 10.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xCC93D2DC5FB44235B33282442AD2AA5A, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 14, 4.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xD0AF3AA686DE42A894C2967D135A5391, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 22, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xEBDB9BC2202F4BF7ABB3E8B9949669BB, 0x75E69409562FA2A845A13D7938B02500, 6, 2, 21, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x07E5DFB7E2684958A05B5BDEDECB732F, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 19, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x088E981BBF1A4014ABDDB26F9EA901A6, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 14, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x1DE91825113C419E8BEF3ED29B0190EC, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 18, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x36545291C1CB466081A263A8EFC95946, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 23, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x3B096EBB8E5A48D7A49F04DFD42D55C3, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 16, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x43AB5C93E9A44D8EA4C9CC600AFE8E49, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 15, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x7244A03AA88F4E9591728F2F73FF0729, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 22, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0x8CF71DA212C6486D889A0847386629C9, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 21, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xADBBDB762D50483BB9B269715BF2D191, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 20, 0.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xD4367CA069A1416DBB51D7A7DF901D5A, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 13, 26.0000);
+INSERT INTO `stage_payment_indice` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `rubric_id`, `rubric_value`) VALUES (0xE3FB2B4A9D5245A0904CEDC53BE34333, 0x75E0969465F245A1A8A28B025003D793, 6, 2, 17, 0.0000);

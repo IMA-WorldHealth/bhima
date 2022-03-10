@@ -178,6 +178,8 @@ BEGIN
 
 	SELECT c.min_monentary_unit INTO _min_monentary_unit FROM enterprise AS e JOIN currency AS c ON c.id = e.currency_id LIMIT 1;
 
+    SELECT _payroll_configuration_id;
+
 	OPEN curs1;
 		read_loop: LOOP
 		FETCH curs1 INTO _employee_uuid;
