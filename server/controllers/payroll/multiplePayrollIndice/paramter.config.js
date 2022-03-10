@@ -24,6 +24,7 @@ function detail(req, res, next) {
 // settup staffing indice parameters
 async function create(req, res, next) {
   const data = req.body;
+
   data.uuid = db.uuid();
   const id = req.body.payroll_configuration_id;
 

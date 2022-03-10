@@ -9,7 +9,6 @@ const helpers = require('./helpers');
  * This test suite implements full CRUD on the /staffing_indices HTTP API endpoint.
  */
 describe('(/staffing_indices) The staffing indices API endpoint', () => {
-
   const newIndice = {
     uuid : 'd2f7ef71-6f3e-44bd-8056-378c5ca26e20',
     grade_uuid : '9EE06E4A7B5948E6812CC0F8A00CF7D3',
@@ -49,6 +48,17 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
     value : 80,
   };
 
+  const dataSetUpConfiguration = {
+    payroll_configuration_id : 6,
+    pay_envelope : 1200,
+    working_days : '26',
+  };
+
+  const paramsMultipayrollIndice = {
+    currency_id : 2,
+    payroll_configuration_id : 6,
+  };
+
   it('POST /staffing_indices add a new staffing indice', () => {
     return agent.post('/staffing_indices')
       .send(newIndice)
@@ -57,7 +67,6 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('GET /staffing_indices returns a list of indices with five indice', () => {
     return agent.get('/staffing_indices')
@@ -69,7 +78,6 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .catch(helpers.handler);
   });
 
-
   it('PUT /staffing_indices update value', () => {
     return agent.put(`/staffing_indices/${newIndice.uuid}`)
       .send(newIndiceUpdate)
@@ -78,7 +86,6 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('POST /staffing_indices add a test indice', () => {
     return agent.post('/staffing_indices')
@@ -96,7 +103,6 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   // staffing_grade_indices
   it('DELETE /staffing_grade_indices delete a test indice', () => {
@@ -126,7 +132,6 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .catch(helpers.handler);
   });
 
-
   // staffing function indices
   it('DELETE /staffing_function_indices delete a test indice', () => {
     return agent.delete(`/staffing_function_indices/${staffingFunctionIndice.uuid}`)
@@ -155,4 +160,26 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .catch(helpers.handler);
   });
 
+  it('POST /multiple_payroll_indice/parameters/ should create staffing indices Set up for payment', () => {
+    return agent.post('/multiple_payroll_indice/parameters/')
+      .send(dataSetUpConfiguration)
+      .then((res) => {
+        expect(res).to.have.status(201);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /multiple_payroll_indice/ returns a list of ', () => {
+    return agent.get('/multiple_payroll_indice/')
+      .query(paramsMultipayrollIndice)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.employees[0].rubrics[1].rubric_abbr).to.equal('Salaire brute');
+        expect(res.body.employees[0].rubrics[1].rubric_value).to.equal(682.87);
+
+        expect(res.body.employees[1].rubrics[3].rubric_abbr).to.equal('Salaire brute');
+        expect(res.body.employees[1].rubrics[3].rubric_value).to.equal(517.13);
+      })
+      .catch(helpers.handler);
+  });
 });
