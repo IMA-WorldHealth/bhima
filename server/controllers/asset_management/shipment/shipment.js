@@ -259,9 +259,9 @@ exports.writeStockExitShipment = async (
     // update the status of the shipment
     // because the shipment was already made with the shipment tool
     const updateQuery = `
-      UPDATE shipment SET status_id = ?, date_sent = ?
+      UPDATE shipment SET status_id = ?, date_sent = ?, document_uuid = ?
     `;
-    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date()]);
+    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid)]);
   } else {
     // write new shipment
     const SHIPMENT_UUID = db.bid(uuid());

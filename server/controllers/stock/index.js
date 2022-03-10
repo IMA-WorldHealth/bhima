@@ -673,7 +673,7 @@ async function depotMovement(document, params, metadata) {
 
   if (!isExit) {
     // update shipment details for the entry movement
-    await shipment.writeStockEntryShipment(document, parameters, transaction);
+    shipment.writeStockEntryShipment(document, parameters, transaction);
   }
 
   // gather inventory uuids for later quantity in stock calculation updates
@@ -689,7 +689,7 @@ async function depotMovement(document, params, metadata) {
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
 
   if (!isExit) {
-    await shipment.updateShipmentStatusAfterEntry(document, depotUuid);
+    await shipment.updateShipmentStatusAfterEntry(document);
   }
 
   return result;
