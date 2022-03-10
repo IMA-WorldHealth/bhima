@@ -24,7 +24,7 @@ function RubricService(Api) {
     { id : 'is_day_index', label : 'PAYROLL_RUBRIC.IS_DAY_INDEX' },
     { id : 'is_reagistered_index', label : 'PAYROLL_RUBRIC.IS_REAGISTERED_INDEX' },
     { id : 'is_responsability', label : 'PAYROLL_RUBRIC.IS_RESPONSABILITY' },
-	{ id : 'is_other_responsability', label : 'PAYROLL_RUBRIC.IS_OTHER_RESPONSABILITY' },
+    { id : 'is_other_responsability', label : 'PAYROLL_RUBRIC.IS_OTHER_RESPONSABILITY' },
     { id : 'is_other_profits', label : 'PAYROLL_RUBRIC.IS_OTHER_PROFIT' },
     { id : 'is_total_code', label : 'PAYROLL_RUBRIC.IS_TOTAL_CODE' },
     { id : 'is_day_worked', label : 'PAYROLL_RUBRIC.IS_DAY_WORKED' },
