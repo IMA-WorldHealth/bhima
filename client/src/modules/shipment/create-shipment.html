@@ -1,8 +1,8 @@
 <div class="flex-header static">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.ASSET_MANAGEMENT.TITLE </li>
-      <li class="static" translate> SHIPMENT.SHIPMENTS</li>
+      <li class="static" translate>SHIPMENT.SHIPMENTS</li>
+      <li><a ui-sref="shipments" translate>SHIPMENT.SHIPMENT_REGISTRY</a></li>
       <li class="title"> 
         <span translate>SHIPMENT.NEW_SHIPMENT </span>&nbsp;
         <span ng-if="CreateShipCtrl.depot.uuid" class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
@@ -54,7 +54,7 @@
             label="SHIPMENT.ANTICIPATED_DELIVERY_DATE"
             date-value="CreateShipCtrl.shipment.anticipated_delivery_date"
             allow-future-date="true"
-            on-change="CreateShipCtrl.onDateChange(date)">
+            on-change="CreateShipCtrl.setDate(date)">
           </bh-date-editor>
 
           <div ng-if="CreateShipCtrl.dateMessageWarning" class="form-group">
@@ -64,19 +64,6 @@
             </p>
           </div>
 
-          <div ng-if="CreateShipCtrl.overconsumption.length">
-            <div class="alert alert-danger">
-              <i class="fa fa-warning"></i> <span translate> STOCK.ERRORS.OVERCONSUMED_INVENTORIES </span>
-              <ul>
-                <li ng-repeat="item in CreateShipCtrl.overconsumption track by $index">
-                  <span translate translate-values="item.textI18n" translate-sanitize-strategy="'sce'"> STOCK.ERRORS.OVERCONSUMED_INVENTORIES_DESCRIPTION </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-4">
           <!-- note -->
           <div class="form-group"
             ng-class="{ 'has-error' : ShipmentForm.$submitted && ShipmentForm.description.$invalid }">
@@ -93,6 +80,39 @@
             <div class="help-block" ng-messages="ShipmentForm.description.$error" ng-show="ShipmentForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <!-- message panel to display actions the user needs to take -->
+          <div class="form-group" style="min-height: 12em;">
+            <label class="control-label" translate>STOCK.PENDING_ACTIONS</label>
+
+            <p
+              style="padding-top:0"
+              class="form-control-static"
+              ng-repeat="message in CreateShipCtrl.messages"
+              ng-class="{
+                'text-danger' : message.type === 'error',
+                'text-warning' : message.type === 'warn',
+                'text-primary' : message.type === 'info',
+                'text-success' : message.type === 'success',
+              }">
+              <i class="fa"
+                ng-class="{
+                  'fa-exclamation-triangle' : message.type === 'error',
+                  'fa-exclamation-circle' : message.type === 'warn',
+                  'fa-chevron-circle-right' : message.type === 'info',
+                  'fa-check-circle-o' : message.type === 'success',
+                }">
+              </i>
+              <span translate>{{ message.text }}<span>
+            </p>
+
+            <p ng-if="CreateShipCtrl.messages.length === 0" style="padding-top:0" class="form-control-static text-success">
+              <i class="fa fa-check-circle-o"></i> <span translate>STOCK.MESSAGES.SUCCESS_ALL_VALID<span>
+            </p>
+
           </div>
         </div>
 
@@ -157,7 +177,7 @@
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
-          loading-state="CreateShipCtrl.loading"
+          loading-state="CreateShipCtrl.stockForm.isLoading()"
           empty-state="CreateShipCtrl.emptyStock"
           error-state="CreateShipCtrl.hasError"
           empty-state-message="STOCK.EMPTY">
@@ -173,11 +193,11 @@
             </button>
           </div>
           <div class="col-md-6 text-right">
-            <button class="btn btn-default" ng-click="CreateShipCtrl.reset(ShipmentForm)" type="button" translate>
+            <button class="btn btn-default" ng-click="CreateShipCtrl.clear()"  type="button" translate>
               FORM.BUTTONS.CLEAR
             </button>
 
-            <bh-loading-button loading-state="CreateShipCtrl.$loading" disabled="!CreateShipCtrl.validForSubmit">
+            <bh-loading-button loading-state="CreateShipCtrl.$loading">
               <span translate>FORM.BUTTONS.SAVE</span> <i class="fa fa-save"></i>
             </bh-loading-button>
           </div>
