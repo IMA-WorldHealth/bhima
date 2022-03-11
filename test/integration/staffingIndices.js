@@ -68,12 +68,12 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /staffing_indices returns a list of indices with five indice', () => {
+  it('GET /staffing_indices returns a list of indices with six indice', () => {
     return agent.get('/staffing_indices')
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
-        expect(res.body).to.have.length(4);
+        expect(res.body).to.have.length(6);
       })
       .catch(helpers.handler);
   });
@@ -174,11 +174,11 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       .query(paramsMultipayrollIndice)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body.employees[0].rubrics[1].rubric_abbr).to.equal('Salaire brute');
-        expect(res.body.employees[0].rubrics[1].rubric_value).to.equal(682.87);
+        expect(res.body.employees[0].rubrics[8].rubric_abbr).to.equal('Salaire brute');
+        expect(res.body.employees[0].rubrics[8].rubric_value).to.equal(622.74);
 
-        expect(res.body.employees[1].rubrics[3].rubric_abbr).to.equal('Salaire brute');
-        expect(res.body.employees[1].rubrics[3].rubric_value).to.equal(517.13);
+        expect(res.body.employees[1].rubrics[10].rubric_abbr).to.equal('Salaire brute');
+        expect(res.body.employees[1].rubrics[10].rubric_value).to.equal(577.26);
       })
       .catch(helpers.handler);
   });
