@@ -261,7 +261,9 @@ exports.writeStockExitShipment = async (
     const updateQuery = `
       UPDATE shipment SET status_id = ?, date_sent = ?, document_uuid = ? WHERE uuid = ?
     `;
-    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid), db.bid(document.shipment_uuid)]);
+    transaction.addQuery(updateQuery, [
+      SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid), db.bid(document.shipment_uuid),
+    ]);
   } else {
     // write new shipment
     const SHIPMENT_UUID = db.bid(uuid());
@@ -665,7 +667,7 @@ async function deleteShipment(identifier) {
     [db.bid(identifier)],
   );
 
-  const inDepot = !!(shipmentStatus.status_id === SHIPMENT_AT_DEPOT);
+  const inDepot = !!(shipmentStatus.status_id === SHIPMENT_AT_DEPOT || shipmentStatus.status_id === SHIPMENT_READY);
 
   if (inDepot) {
     const queryDeleteItems = 'DELETE FROM shipment_item WHERE shipment_uuid = ?;';
