@@ -83,7 +83,7 @@ exports.create = async (req, res, next) => {
     };
 
     const transaction = db.transaction();
-    transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
+    transaction.addQuery('INSERT INTO shipment SET ?', shipment);
 
     params.lots.forEach((lot) => {
       const shipmentItem = {
@@ -94,7 +94,7 @@ exports.create = async (req, res, next) => {
         quantity_sent : lot.quantity,
         condition_id : lot.condition_id,
       };
-      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+      transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
 
     await transaction.execute();
@@ -131,7 +131,7 @@ exports.update = async (req, res, next) => {
     delete params.lots;
 
     const [shipmentStatus] = await db.exec(
-      'SELECT status_id, ready_for_shipment FROM shipment WHERE uuid = ?',
+      'SELECT status_id FROM shipment WHERE uuid = ?',
       [db.bid(identifier)],
     );
 
@@ -259,9 +259,9 @@ exports.writeStockExitShipment = async (
     // update the status of the shipment
     // because the shipment was already made with the shipment tool
     const updateQuery = `
-      UPDATE shipment SET status_id = ?, date_sent = ?, document_uuid = ?
+      UPDATE shipment SET status_id = ?, date_sent = ?, document_uuid = ? WHERE uuid = ?
     `;
-    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid)]);
+    transaction.addQuery(updateQuery, [SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid), db.bid(document.shipment_uuid)]);
   } else {
     // write new shipment
     const SHIPMENT_UUID = db.bid(uuid());
@@ -280,7 +280,7 @@ exports.writeStockExitShipment = async (
       created_by : document.user,
       document_uuid : db.bid(document.uuid),
     };
-    transaction.addQuery('INSERT INTO shipment SET ?', [shipment]);
+    transaction.addQuery('INSERT INTO shipment SET ?', shipment);
 
     parameters.lots.forEach((lot) => {
       const shipmentItem = {
@@ -291,7 +291,7 @@ exports.writeStockExitShipment = async (
         date_sent : document.date,
         quantity_sent : lot.quantity,
       };
-      transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+      transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
   }
 };
