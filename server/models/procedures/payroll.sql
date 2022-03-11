@@ -73,7 +73,7 @@ BEGIN
             ELSE
                 IF ((@date_embauche_interval = 0) && (_last_staffing_indice_uuid = HUID('0'))) THEN
                     SET _grade_indice = (SELECT IFNULL(value, 0)  FROM staffing_grade_indice WHERE grade_uuid = _grade_uuid LIMIT 1);
-                    SET _grade_indice = _grade_indice + (_grade_indice * _hiring_year * @grade_indice_rate);
+                    SET _grade_indice = _grade_indice + (_grade_indice * _hiring_year * _grade_indice_rate);
                     SET @shouldInsert = TRUE;
                 END IF;
             END IF;
