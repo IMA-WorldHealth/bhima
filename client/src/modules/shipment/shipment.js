@@ -13,7 +13,6 @@ function ShipmentRegistryController(
 ) {
   const vm = this;
   const cacheKey = 'shipment-grid';
-
   const shipmentFilters = new ShipmentFilter();
 
   // bind methods
@@ -88,11 +87,6 @@ function ShipmentRegistryController(
       displayName : 'SHIPMENT.ANTICIPATED_DELIVERY_DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
-    },
-    {
-      field : 'receiver',
-      displayName : 'SHIPMENT.RECEIVER',
-      headerCellFilter : 'translate',
     },
     {
       field : 'created_by',
