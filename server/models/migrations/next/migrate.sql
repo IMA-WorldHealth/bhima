@@ -140,7 +140,6 @@ CREATE TABLE `shipment` (
   `date_ready_for_shipment`   DATETIME,
   `receiver`                  VARCHAR(100),
   `status_id`                 SMALLINT(5) UNSIGNED NOT NULL,
-  `ready_for_shipment`        TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `created_by`                SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_by`                SMALLINT(5) UNSIGNED NULL,
@@ -193,9 +192,9 @@ INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES
 
 /** Add shipment in unit */
 INSERT INTO `unit` VALUES 
-  (308, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
-  (309, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 308, '/shipments/create'),
-  (310, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 308, '/shipments');
+  (309, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
+  (310, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 309, '/shipments/create'),
+  (311, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 309, '/shipments');
 
 /** Shipment location logs */
 DROP TABLE IF EXISTS `shipment_tracking`;

@@ -2699,7 +2699,6 @@ CREATE TABLE `shipment` (
   `date_ready_for_shipment`   DATETIME,
   `receiver`                  VARCHAR(100),
   `status_id`                 SMALLINT(5) UNSIGNED NOT NULL,
-  `ready_for_shipment`        TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `created_by`                SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_by`                SMALLINT(5) UNSIGNED NULL,
