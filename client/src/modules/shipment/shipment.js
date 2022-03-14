@@ -8,7 +8,8 @@ ShipmentRegistryController.$inject = [
 ];
 
 function ShipmentRegistryController(
-  $state, Shipments, ShipmentFilter, ShipmentModal, Modal, Notify, GridConstants,
+  $state, Shipments, ShipmentFilter, ShipmentModal,
+  Modal, Notify, GridConstants,
   GridState, Columns, Constants,
 ) {
   const vm = this;
