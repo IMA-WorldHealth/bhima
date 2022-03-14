@@ -1210,8 +1210,8 @@ form.NoSubmitButton div.modal-footer button.btn-primary {
   display: none;
 }
 
-/* -------------------------------------------------------- 
- stepper 
+/* --------------------------------------------------------
+ stepper
  --------------------------------------------------------- */
 .stepper-wrapper {
   margin-top: auto;
@@ -1219,14 +1219,17 @@ form.NoSubmitButton div.modal-footer button.btn-primary {
   justify-content: space-between;
   margin-bottom: 20px;
 }
+
 .stepper-item {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   flex: 1;
+}
 
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
+  .stepper-item {
     font-size: 12px;
   }
 }
