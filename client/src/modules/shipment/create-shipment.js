@@ -4,14 +4,13 @@ angular.module('bhima.controllers')
 // dependencies injections
 CreateShipmentController.$inject = [
   '$state', 'NotifyService', 'SessionService', 'util',
-  'StockExitFormService', 'StockService',
-  'uiGridConstants', 'Store', 'BarcodeService',
+  'StockExitFormService', 'uiGridConstants', 'BarcodeService',
   'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
 ];
 
 function CreateShipmentController(
   $state, Notify, Session, util,
-  StockForm, Stock, uiGridConstants, Store, Barcode,
+  StockForm, uiGridConstants, Barcode,
   Shipment, Depot, $timeout, ShipmentModal,
 ) {
   const vm = this;

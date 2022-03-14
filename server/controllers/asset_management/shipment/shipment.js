@@ -252,7 +252,6 @@ exports.writeStockExitShipment = async (
   parameters,
   transaction,
 ) => {
-  // shipment_uuid must be sent on exit for shipment (NEW TOOL)
   const shipmentExist = await isShipmentExists(document.shipment_uuid);
 
   if (shipmentExist) {

@@ -668,7 +668,9 @@ async function depotMovement(document, params, metadata) {
 
   if (isExit) {
     // write shipment for the exit movement
-    shipment.writeStockExitShipment(metadata.project.id, depotUuid, entityUuid, document, parameters, transaction);
+    await shipment.writeStockExitShipment(
+      metadata.project.id, depotUuid, entityUuid, document, parameters, transaction,
+    );
   }
 
   if (!isExit) {
