@@ -265,6 +265,113 @@ function StockExitFormService(
     this.store.clear();
   };
 
+  StockExitForm.prototype.setLotsFromLotList = function setLotsFromLotList(lots, uuidKey = 'uuid') {
+    const available = [];
+    const unavailable = [];
+    const insufficient = [];
+
+    const getLot = uuid => lots.filter(lot => lot[uuidKey] === uuid);
+
+    const addLot = (item, quantity) => {
+      const lot = new Lot(item);
+      lot._quantity_available = item._quantity_available;
+      lot.quantity = quantity;
+      lot.validate(this.details.date, !this._isStockLoss());
+      this.store.post(lot);
+      this._pool.use(item.lot_uuid);
+    };
+
+    this._pool.list()
+      .forEach(lot => {
+        const matches = getLot(lot.lot_uuid);
+
+        if (matches.length > 0) {
+          available.push(lot);
+        } else {
+          unavailable.push(lot);
+        }
+      });
+
+    const hasNoConsumableItems = (available.length === 0 && unavailable.length === 0);
+    this._toggleInfoMessage(
+      hasNoConsumableItems,
+      'warn',
+      WARN_NOT_CONSUMABLE_INVOICE,
+      { ...this.details, lots },
+    );
+
+    if (hasNoConsumableItems) {
+      return;
+    }
+
+    available.forEach(lot => {
+      const [requested] = getLot(lot[uuidKey]);
+      const match = lot;
+      match.quantity = requested.quantity;
+      match.condition_id = requested.condition_id;
+
+      let requestedQuantity = match.quantity;
+
+      // escape hatch - if we don't need anymore, just return.
+      if (requestedQuantity === 0) { return; }
+
+      // this is how much is available to us to use
+      const availableQuantity = lot._quantity_available;
+
+      // if the available quantity is greater than or equal to the required
+      // quantity, allocate the entire available quantity to this lot item
+      // and reduce the requested quantity by that amount.
+      if (availableQuantity >= requestedQuantity) {
+        addLot(match, requestedQuantity);
+        requestedQuantity = 0;
+
+      // otherwise, we need to reduce by the quantity available in the lot,
+      // and move to the next lot to start consuming it.
+      } else {
+        addLot(match, availableQuantity);
+        requestedQuantity -= availableQuantity;
+      }
+
+      // if there is still requested quantity left over, add this to the insufficient array.
+      // TODO(@jniles) - should we tell the user the quantity that isn't available?
+      if (requestedQuantity > 0) {
+        insufficient.push(lot);
+      }
+    });
+
+    // this makes an array of labels not longer than 5 to present
+    // to the user in a nice warning/error message.
+    function makeUniqueLabels(array) {
+      const items = array
+        .map(row => row.text)
+        .filter((label, index, arr) => arr.indexOf(label) === index)
+        .sort((a, b) => a.localeCompare(b));
+
+      if (items.length > 5) {
+        const len = items.length - 4;
+        return [...items.slice(0, 5), `(+${len} ...), `].join(', ');
+      }
+
+      return items.join(', ');
+    }
+
+    // make nice text for error messages
+    const unavailableLabels = makeUniqueLabels(unavailable);
+    const insufficientLabels = makeUniqueLabels(insufficient);
+
+    // finally, toggle compute the error codes
+    this._toggleInfoMessage(
+      unavailable.length > 0, 'error', WARN_OUT_OF_STOCK_QUANTITY, { hrText : unavailableLabels },
+    );
+
+    this._toggleInfoMessage(
+      insufficient.length > 0, 'warn', WARN_INSUFFICIENT_QUANTITY, { hrText : insufficientLabels },
+    );
+
+    this._toggleInfoMessage(available.length > 0, 'success', SUCCESS_FILLED_N_ITEMS, { count : available.length });
+
+  };
+
   StockExitForm.prototype.setLotsFromInventoryList = function setLotsFromInventoryList(inventories, uuidKey = 'uuid') {
     // three lists
     // - one to contain the inventories that have stock available in the depot
@@ -426,9 +533,20 @@ function StockExitFormService(
     this.details.entity_uuid = depot.uuid;
     this.details.flux_id = TO_OTHER_DEPOT;
 
+    // depot movement information required by the server API
+    // @fixme because of redundant information
+    this.details.from_depot = this.depot.uuid;
+    this.details.to_depot = depot.uuid;
+    this.details.isExit = true;
+
     if (depot.requisition) {
       this.details.stock_requisition_uuid = depot.requisition.uuid;
       this.setLotsFromInventoryList(depot.requisition.items, 'inventory_uuid');
+    }
+
+    if (depot.shipment) {
+      this.details.shipment_uuid = depot.shipment.uuid;
+      this.setLotsFromLotList(depot.shipment.lots, 'lot_uuid');
     }
   };
 

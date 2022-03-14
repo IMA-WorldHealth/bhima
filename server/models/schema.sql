@@ -2658,4 +2658,88 @@ CREATE TABLE `odk_app_user` (
   CONSTRAINT `odk_app_user__user` FOREIGN KEY (`bhima_user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `asset_condition`;
+CREATE TABLE `asset_condition` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `translation_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `asset_condition`;
+CREATE TABLE `asset_condition` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `translation_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment_status`;
+CREATE TABLE `shipment_status` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `translation_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment`;
+CREATE TABLE `shipment` (
+  `uuid`                      BINARY(16) NOT NULL,
+  `project_id`                SMALLINT(5) UNSIGNED NOT NULL,
+  `reference`                 INT(11) UNSIGNED NOT NULL,
+  `name`                      VARCHAR(100) NOT NULL,
+  `description`               TEXT NULL,
+  `note`                      TEXT NULL,
+  `requisition_uuid`          BINARY(16),
+  `origin_depot_uuid`         BINARY(16),
+  `destination_depot_uuid`    BINARY(16),
+  `anticipated_delivery_date` DATETIME,
+  `date_sent`                 DATETIME,
+  `date_delivered`            DATETIME,
+  `date_ready_for_shipment`   DATETIME,
+  `receiver`                  VARCHAR(100),
+  `status_id`                 SMALLINT(5) UNSIGNED NOT NULL,
+  `created_by`                SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`                TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_by`                SMALLINT(5) UNSIGNED NULL,
+  `updated_at`                TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `document_uuid`             BINARY(16) NULL, /* stock exit document_uuid */
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `requisition` (`uuid`),
+  CONSTRAINT `shipment__origin_depot` FOREIGN KEY (`origin_depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `shipment__destination_depot` FOREIGN KEY (`destination_depot_uuid`) REFERENCES `depot` (`uuid`),
+  CONSTRAINT `shipment__status` FOREIGN KEY (`status_id`) REFERENCES `shipment_status` (`id`),
+  CONSTRAINT `shipment__created_by` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `shipment__updated_by` FOREIGN KEY (`updated_by`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment_item`;
+CREATE TABLE `shipment_item` (
+  `uuid`               BINARY(16) NOT NULL,
+  `shipment_uuid`      BINARY(16) NOT NULL,
+  `lot_uuid`           BINARY(16) NOT NULL,
+  `date_packed`        DATETIME,
+  `date_sent`          DATETIME,
+  `date_delivered`     DATETIME,
+  `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
+  `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
+  `condition_id`       SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
+  CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment_tracking`;
+CREATE TABLE `shipment_tracking` (
+  `uuid`               BINARY(16) NOT NULL,
+  `shipment_uuid`      BINARY(16) NOT NULL,
+  `note`               TEXT NOT NULL,
+  `date`               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`            SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `shipment_location__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
+  CONSTRAINT `shipment_location__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 SET foreign_key_checks = 1;

@@ -265,6 +265,15 @@ function StockExitController(
 
     const renderReceipt = ReceiptModal.getReceiptFnByFluxId(vm.stockForm.details.flux_id);
 
+    const shipmentReady = vm.stockForm.details.isExit === true
+      && vm.stockForm.details.from_depot
+      && vm.stockForm.details.to_depot;
+
+    if (vm.stockForm.details.shipment_uuid && !shipmentReady) {
+      Notify.warn('Shipment Incorrect Data');
+      return null;
+    }
+
     return vm.stockForm.submit()
       .then(result => renderReceipt(result.uuid, true))
       .then(() => {
