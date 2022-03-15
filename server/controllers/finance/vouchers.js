@@ -86,14 +86,18 @@ async function lookupVoucher(vUuid) {
     WHERE v.uuid = ?;
   `;
 
+  // For get Creditor name
   const itemSql = `
     SELECT BUID(vi.uuid) AS uuid, vi.debit, vi.credit, vi.account_id, a.number, a.label,
       BUID(vi.document_uuid) as document_uuid, document_map.text AS document_reference,
-      BUID(entity_uuid) AS entity_uuid, entity_map.text AS entity_reference, vi.description
+      BUID(entity_uuid) AS entity_uuid, entity_map.text AS entity_reference, vi.description,
+      CONCAT('/ ', c.text) AS creditorName
     FROM voucher_item vi
     JOIN account a ON a.id = vi.account_id
     LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
     LEFT JOIN document_map ON document_map.uuid = vi.document_uuid
+    LEFT JOIN employee emp ON emp.creditor_uuid = vi.entity_uuid
+    LEFT JOIN creditor c ON c.uuid = emp.creditor_uuid
     WHERE vi.voucher_uuid = ?
     ORDER BY vi.account_id DESC, vi.debit DESC, vi.credit ASC, entity_reference;
   `;
