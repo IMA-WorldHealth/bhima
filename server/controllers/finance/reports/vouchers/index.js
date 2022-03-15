@@ -82,7 +82,6 @@ async function receipt(req, res, next) {
   }
 }
 
-
 /**
  * GET reports/finance/vouchers
  *
