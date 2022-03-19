@@ -1,0 +1,26 @@
+<div bh-shipment-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : ShipmentForm.$$parent.$submitted && ShipmentForm.shipment_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{$ctrl.label}}
+    </label>
+
+    <ng-transclude></ng-transclude>
+    <ui-select name="shipment_uuid"
+      ng-required ="$ctrl.required"
+      ng-model="$ctrl.shipmentUuid"
+      ng-disabled="$ctrl.disabled"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.REFERENCE_SHIPMENT' | translate }}"><span>{{$select.selected.reference}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="shipment.uuid as shipment in $ctrl.shipments | filter: { 'reference': $select.search }">
+        <span ng-bind-html="shipment.reference | highlight:$select.search"></span> - <span>{{shipment.name}}</span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="ShipmentForm.shipment_uuid.$error" ng-show="ShipmentForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

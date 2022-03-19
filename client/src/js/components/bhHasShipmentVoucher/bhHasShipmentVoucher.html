@@ -1,0 +1,27 @@
+<ng-form name="HasShipmentForm">
+  <bh-yes-no-radios
+    label="SHIPMENT.DOES_SHIPMENT_EXIST"
+    value="$ctrl.shipmentVoucherExist"
+    name="shipmentVoucherExist"
+    id="shipmentVoucherExist"
+    help-text="SHIPMENT.DOES_SHIPMENT_EXIST_HELP"
+    on-change-callback="$ctrl.onChangeVoucherExist(value)">
+  </bh-yes-no-radios>
+
+  <!-- reference -->
+  <div class="form-group" ng-if="$ctrl.shipmentVoucherExist">
+    <!-- Shipment -->
+    <bh-shipment-select
+      shipment-uuid="$ctrl.shipmentReference"
+      depot-uuid="$ctrl.depotUuid"
+      required="true"
+      ready="true"
+      disabled="$ctrl.shipmentDisabled"
+      on-select-callback="$ctrl.onSelectShipment(shipment)">
+    </bh-shipment-select>
+
+    <div class="help-block" ng-show="$ctrl.message">
+      <p ng-class="$ctrl.classeLabel" translate>{{ $ctrl.message }}</p>
+    </div>
+  </div>
+</ng-form>
