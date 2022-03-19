@@ -225,3 +225,5 @@ exports.data = {
 };
 
 exports.uuid = () => uuid.v4().toUpperCase().replace(/-/g, '');
+
+exports.uuidize = (uuidWithDashes) => uuidWithDashes.toUpperCase().replace(/-/g, '');

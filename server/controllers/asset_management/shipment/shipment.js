@@ -66,7 +66,8 @@ exports.overview = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   try {
     const params = req.body;
-    const SHIPMENT_UUID = db.bid(uuid());
+    const identifier = params.uuid || uuid();
+    const SHIPMENT_UUID = db.bid(identifier);
     const SHIPMENT_LABEL = params.name;
     const shipment = {
       uuid : SHIPMENT_UUID,
@@ -98,7 +99,7 @@ exports.create = async (req, res, next) => {
     });
 
     await transaction.execute();
-    res.sendStatus(201);
+    res.status(201).json({ uuid : identifier });
   } catch (error) {
     next(error);
   }
@@ -143,19 +144,23 @@ exports.update = async (req, res, next) => {
         'UPDATE shipment SET ? WHERE uuid = ? AND status_id = ?',
         [params, db.bid(identifier), SHIPMENT_AT_DEPOT],
       );
-      transaction.addQuery('DELETE FROM shipment_item WHERE shipment_uuid = ?', [db.bid(identifier)]);
 
-      lots.forEach((lot) => {
-        const shipmentItem = {
-          uuid : db.bid(uuid()),
-          shipment_uuid : db.bid(identifier),
-          lot_uuid : db.bid(lot.lot_uuid),
-          date_packed : new Date(),
-          quantity_sent : lot.quantity,
-          condition_id : lot.condition_id,
-        };
-        transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
-      });
+      if ((lots || []).length) {
+        transaction.addQuery('DELETE FROM shipment_item WHERE shipment_uuid = ?', [db.bid(identifier)]);
+
+        lots.forEach((lot) => {
+          const shipmentItem = {
+            uuid : db.bid(uuid()),
+            shipment_uuid : db.bid(identifier),
+            lot_uuid : db.bid(lot.lot_uuid),
+            date_packed : new Date(),
+            quantity_sent : lot.quantity,
+            condition_id : lot.condition_id,
+          };
+          transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
+        });
+      }
+
       await transaction.execute();
     } else {
       throw new Error('This shipment is already ready to go, you cannot update it');
