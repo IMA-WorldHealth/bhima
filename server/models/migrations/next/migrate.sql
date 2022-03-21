@@ -1,7 +1,6 @@
 /* migration file for next release */
 
-DROP TABLE IF EXISTS `odk_central_integration`;
-CREATE TABLE `odk_central_integration` (
+CREATE TABLE IF NOT EXISTS `odk_central_integration` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `odk_central_url` TEXT NOT NULL,
   `odk_admin_user` TEXT NOT NULL,
@@ -11,10 +10,8 @@ CREATE TABLE `odk_central_integration` (
   CONSTRAINT `odk_central__enterprise` FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
 -- @jniles
-DROP TABLE IF EXISTS `odk_user`;
-CREATE TABLE `odk_user` (
+CREATE TABLE IF NOT EXISTS `odk_user` (
   `odk_user_id` INT UNSIGNED NOT NULL,
   `odk_user_password` TEXT NOT NULL,
   `bhima_user_id` SMALLINT(5) UNSIGNED NOT NULL,
@@ -22,8 +19,7 @@ CREATE TABLE `odk_user` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- @mbayopanda
-DROP TABLE IF EXISTS `odk_app_user`;
-CREATE TABLE `odk_app_user` (
+CREATE TABLE IF NOT EXISTS `odk_app_user` (
   `odk_app_user_id` INT UNSIGNED NOT NULL,
   `odk_app_user_token` TEXT NOT NULL,
   `display_name` TEXT NOT NULL,
@@ -94,3 +90,49 @@ INSERT IGNORE INTO `entity_type` (`label`, `translation_key`) VALUES
   ('service', 'ENTITY.TYPE.SERVICE'),
   ('office', 'ENTITY.TYPE.OFFICE'),
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
+
+/*
+ * Issue: Asset Management - Asset Inventory management
+ * @author: jmcameron
+ * @date: 2022-03-09
+ */
+CREATE TABLE IF NOT EXISTS `asset_condition` (
+  `id`               SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `condition`        VARCHAR(100) NOT NULL,  -- Will be treated as a translation token (if predefined)
+  `predefined`       BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO `asset_condition` VALUES -- (id, comdition, predefined)
+  (1, 'ASSET.CONDITION.NEW', 1),
+  (2, 'ASSET.CONDITION.GOOD', 1),
+  (3, 'ASSET.CONDITION.FAIR', 1),
+  (4, 'ASSET.CONDITION.POOR', 1),
+  (5, 'ASSET.CONDITION.BROKEN', 1),
+  (6, 'ASSET.CONDITION.OBSOLETE', 1),
+  (7, 'ASSET.CONDITION.DISCARDED', 1),
+  (8, 'ASSET.CONDITION.SOLD', 1),
+  (9, 'ASSET.CONDITION.LOST', 1);
+
+CREATE TABLE IF NOT EXISTS `asset_scan` (
+  `uuid`              BINARY(16) NOT NULL,
+  `asset_uuid`        BINARY(16) NOT NULL,
+  `location_uuid`     BINARY(16),
+  `depot_uuid`        BINARY(16),           -- NULL if not assigned to a depot
+  `scanned_by`        SMALLINT(5) UNSIGNED NOT NULL,
+  `condition_id`      SMALLINT(5) NOT NULL,
+  `notes`             TEXT DEFAULT NULL,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `asset_uuid` (`asset_uuid`),
+  KEY `location_uuid` (`location_uuid`),
+  CONSTRAINT `asset_scan__asset`     FOREIGN KEY (`asset_uuid`) REFERENCES `lot` (`uuid`),
+  CONSTRAINT `asset_scan__location`  FOREIGN KEY (`location_uuid`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `asset_scan__user`      FOREIGN KEY (`scanned_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `asset_scan__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`),
+  CONSTRAINT `asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO unit VALUES
+  (309, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
