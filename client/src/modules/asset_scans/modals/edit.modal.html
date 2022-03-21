@@ -1,0 +1,82 @@
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ASSETS</li>
+      <li class="static" translate>ASSET.DETAILS</li>
+      <li class="title">{{$ctrl.model.inventory_code}} - {{$ctrl.model.asset_label}}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <label class="control-label">
+        <span translate>ASSET.ASSET</span>
+        {{$ctrl.model.manufacturer_brand}} {{$ctrl.model.manufacturer_model}},
+        <span translate>FORM.LABELS.SERIAL_NUMBER</span>: {{$ctrl.model.serial_number}}
+      </label>
+    </div>
+
+    <!-- depot -->
+    <bh-depot-select
+      depot-uuid="$ctrl.model.depot_uuid"
+      on-select-callback="$ctrl.onSelectDepot(depot)"
+      required="true">
+      <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+    </bh-depot-select>
+
+    <!-- NOT updating location yet -->
+
+    <!-- notes -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.NOTES</label>
+      <bh-clear on-clear="$ctrl.clear('notes')"></bh-clear>
+      <textarea
+        ng-model="$ctrl.model.notes"
+        class="form-control"
+        name="notes"
+        id="notes">
+      </textarea>
+    </div>
+
+
+    <!-- condition -->
+    <div class="form-group">
+      <label class="control-label" translate>ASSET.ASSET_CONDITION</label>
+      <ui-select
+        name="condition"
+        ng-model="$ctrl.model.condition_id"
+        required>
+        <ui-select-match placeholder="{{ 'ASSET.SELECT_CONDITION' | translate }}">
+          <span>{{$select.selected.condition}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="cond.id as cond in $ctrl.conditions | filter: { 'condition': $select.search }">
+          <span ng-bind-html="cond.condition | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- scanned_by -->
+    <div class="form-group">
+      <bh-user-select
+        user-id="$ctrl.model.scanned_by"
+        name="scanned_by"
+        label="ASSET.SCANNED_BY"
+        on-select-callback="$ctrl.onSelectScannedBy(user)"
+        required="true">
+        <bh-clear on-clear="$ctrl.clear('scanned_by')"></bh-clear>
+      </bh-user-select>
+    </div>
+
+  </div>  <!-- end of modal-body -->
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CLOSE</span>
+    </button>
+
+    <bh-loading-button loading-state="$ctrl.loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+
+</form>

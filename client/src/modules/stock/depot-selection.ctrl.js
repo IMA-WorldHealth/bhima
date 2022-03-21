@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('SelectDepotModalController', SelectDepotModalController);
 
 SelectDepotModalController.$inject = [
-  '$uibModalInstance', 'DepotService', 'NotifyService', 'depot', '$window',
+  '$uibModalInstance', 'DepotService', 'NotifyService',
+  'depot', '$window',
 ];
 
 /**
@@ -18,6 +19,7 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, $window) {
   vm.hasSelectedDepot = hasSelectedDepot;
 
   vm.isDepotRequired = Depots.isDepotRequired;
+  vm.allowClearing = Depots.allowClearing;
 
   vm.loading = false;
   vm.limit = LIMIT;
@@ -26,7 +28,13 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, $window) {
   // this is a toggle for a one-time message shown to the user if they do not have a cached depot.
   vm.hasNoDefaultDepot = !angular.isDefined(depot);
 
-  vm.submit = function submit() { return Instance.close(vm.depot); };
+  vm.submit = function submit() {
+    return Instance.close(vm.depot);
+  };
+
+  vm.clearDepot = () => {
+    vm.depot = null;
+  };
 
   // the cancel button has two behaviors, depending on if we have a cached depot or not.
   // If we do not have a cached depot and we didn't pass a depot in, we use history.back()

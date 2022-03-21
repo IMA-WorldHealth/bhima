@@ -84,7 +84,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /reports/stock/lots?renderer=json returns exits for all depots`,
     async () => {
       const res = await agent.get(`/reports/stock/lots?renderer=json`);
-      expect(res.body.rows.length).to.equal(16);
+      expect(res.body.rows.length).to.equal(18);
     },
   );
 
@@ -98,7 +98,7 @@ describe('(/stock/) The Stock HTTP API', () => {
           renderer : 'json',
           depot_uuid : shared.depotPrincipalUuid,
         }));
-      expect(res.body.rows.length).to.equal(11);
+      expect(res.body.rows.length).to.equal(13);
     },
   );
 
@@ -111,7 +111,7 @@ describe('(/stock/) The Stock HTTP API', () => {
           is_exit : 0,
           depot_uuid : shared.depotPrincipalUuid,
         }));
-      helpers.api.listed(res, 11);
+      helpers.api.listed(res, 13);
     },
   );
 
@@ -147,7 +147,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it(`GET /stock/lots/movements filters on user`, async () => {
     const res = await agent.get('/stock/lots/movements').query({ user_id : 1 });
-    helpers.api.listed(res, 25);
+    helpers.api.listed(res, 27);
   });
 
   // returns quantity of QUININE-A in 'Depot Principal'
@@ -174,7 +174,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   it(`GET /stock/inventories/depots filters on non-expired lots`, async () => {
     const res = await agent.get(`/stock/inventories/depots`)
       .query({ limit : 1000, includeEmptyLot : 0, is_expired : 0 });
-    helpers.api.listed(res, 6);
+    helpers.api.listed(res, 7);
   });
 
   it(`GET /stock/inventories/depots Get Inventories in Stock By Depot`, async () => {
@@ -185,11 +185,12 @@ describe('(/stock/) The Stock HTTP API', () => {
         includeEmptyLot : 0,
       });
 
-    helpers.api.listed(res, 2);
+    helpers.api.listed(res, 3);
 
     const labels = [
       'Vitamines B1+B6+B12, 100+50+0.5mg/2ml, Amp, Unité',
       'Quinine Bichlorhydrate, sirop, 100mg base/5ml, 100ml, flacon, Unité',
+      'Honda CRF250RX',
     ];
 
     const tLabels = res.body.map(i => i.text);
@@ -279,7 +280,7 @@ describe('(/stock/) The Stock HTTP API', () => {
 
   it('GET /stock/movements returns a list of stock movements', async () => {
     const res = await agent.get('/stock/movements');
-    helpers.api.listed(res, 22);
+    helpers.api.listed(res, 23);
   });
 
   // FIXME(@jniles) - it looks like auto_stock_accounting is turned off in our
