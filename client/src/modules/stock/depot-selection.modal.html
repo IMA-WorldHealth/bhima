@@ -22,6 +22,11 @@
     </div>
   <div ng-if="$ctrl.depots.length>0" class="clearfix">
     <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
+    <span ng-show="$ctrl.allowClearing" style="display:inline-block;" class="pull-right">
+      <a data-reset-input href ng-click="$ctrl.clearDepot()" tabindex="-1">
+        <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
+      </a>
+    </span>
 
     <div ng-if="$ctrl.depots.length > $ctrl.limit" class="form-group">
       <p class="text-primary" translate>DEPOT.MODAL.MORE_DEPOT_WARNING</p>
@@ -72,7 +77,7 @@
     type="button"
     data-method="submit"
     class="btn btn-primary"
-    ng-disabled="!$ctrl.hasSelectedDepot()"
+    ng-disabled="!$ctrl.allowClearing && !$ctrl.hasSelectedDepot()"
     ng-click="$ctrl.submit()"
     translate>
     FORM.BUTTONS.SUBMIT

@@ -47,7 +47,7 @@ describe('(/stock/assign) The Stock Assign HTTP API', () => {
   it('GET /stock/assign list all stock assignments', () => {
     return agent.get('/stock/assign')
       .then(res => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
@@ -68,7 +68,7 @@ describe('(/stock/assign) The Stock Assign HTTP API', () => {
   it('GET /stock/assign get assignments of a given depot', () => {
     return agent.get(`/stock/assign?depot_uuid=${shared.depotPrincipalUuid}`)
       .then(res => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
         return agent.get(`/stock/assign?depot_uuid=${shared.depotSecondaireUuid}`);
       })
       .then(res => helpers.api.listed(res, 1))
@@ -78,7 +78,7 @@ describe('(/stock/assign) The Stock Assign HTTP API', () => {
   it('GET /stock/assign get assignments to a given entity', () => {
     return agent.get(`/stock/assign?entity_uuid=${shared.personEntityUuid}`)
       .then(res => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
         return agent.get(`/stock/assign?entity_uuid=${shared.enterpriseEntityUuid}`);
       })
       .then(res => helpers.api.listed(res, 1))
@@ -144,7 +144,7 @@ describe('(/stock/assign) The Stock Assign HTTP API', () => {
           .filter(uuid => uuid === variables.newPersonAssignUuid)
           .length === 0;
         expect(doesnExist).to.be.equal(true);
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });

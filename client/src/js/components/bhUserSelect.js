@@ -8,6 +8,7 @@ angular.module('bhima.components')
       userId           : '<?',
       disable          : '<?',
       required         : '<?',
+      label            : '@?',
     },
   });
 
@@ -18,6 +19,8 @@ UserSelectController.$inject = ['UserService'];
  */
 function UserSelectController(Users) {
   const $ctrl = this;
+
+  $ctrl.label = $ctrl.label || 'FORM.LABELS.USER';
 
   $ctrl.$onInit = function onInit() {
     Users.read()

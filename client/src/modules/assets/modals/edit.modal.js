@@ -1,14 +1,15 @@
 angular.module('bhima.controllers')
-  .controller('EditAssetModalController', EditAssetModalController);
+  .controller('AssetEditModalController', AssetEditModalController);
 
 // dependencies injections
-EditAssetModalController.$inject = [
+AssetEditModalController.$inject = [
   'data', 'SessionService', 'LotService', 'InventoryService', 'NotifyService', '$uibModalInstance',
 ];
 
-function EditAssetModalController(Data, Session, Lots, Inventory, Notify, Instance) {
+function AssetEditModalController(Data, Session, Lots, Inventory, Notify, Instance) {
   const vm = this;
   vm.model = {};
+  vm.loading = false;
 
   vm.enterprise = Session.enterprise;
   vm.onDateChange = onDateChange;
@@ -19,6 +20,7 @@ function EditAssetModalController(Data, Session, Lots, Inventory, Notify, Instan
   vm.trackingExpiration = true;
 
   function startup() {
+    vm.loading = true;
     Lots.read(Data.uuid)
       .then(lot => {
         vm.model = lot;
@@ -26,7 +28,10 @@ function EditAssetModalController(Data, Session, Lots, Inventory, Notify, Instan
       }).then(inventory => {
         vm.trackingExpiration = inventory.tracking_expiration;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   function onDateChange(date) {

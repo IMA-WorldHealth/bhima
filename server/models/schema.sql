@@ -1958,6 +1958,35 @@ CREATE TABLE `stock_assign` (
   CONSTRAINT `stock_assign__depot` FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `asset_scan`;
+CREATE TABLE `asset_scan` (
+  `uuid`              BINARY(16) NOT NULL,
+  `asset_uuid`        BINARY(16) NOT NULL,
+  `location_uuid`     BINARY(16),
+  `depot_uuid`        BINARY(16),           -- NULL if not assigned to a depot
+  `scanned_by`        SMALLINT(5) UNSIGNED NOT NULL,
+  `condition_id`      SMALLINT(5) NOT NULL,
+  `notes`             TEXT DEFAULT NULL,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `asset_uuid` (`asset_uuid`),
+  KEY `location_uuid` (`location_uuid`),
+  CONSTRAINT `asset_scan__asset`     FOREIGN KEY (`asset_uuid`) REFERENCES `lot` (`uuid`),
+  CONSTRAINT `asset_scan__location`  FOREIGN KEY (`location_uuid`) REFERENCES `village` (`uuid`),
+  CONSTRAINT `asset_scan__user`      FOREIGN KEY (`scanned_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `asset_scan__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`),
+  CONSTRAINT `asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `asset_condition`;
+CREATE TABLE `asset_condition` (
+  `id`               SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `condition`        VARCHAR(100) NOT NULL,  -- Will be treated as a translation token (if predefined)
+  `predefined`       BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `status`;
 CREATE TABLE `status` (
   `id`              SMALLINT(5) NOT NULL AUTO_INCREMENT,
@@ -2051,7 +2080,7 @@ CREATE TABLE `stock_movement` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_movement_status`;
-CREATE TABLE  `stock_movement_status` (
+CREATE TABLE `stock_movement_status` (
     `depot_uuid` BINARY(16) NOT NULL,
     `inventory_uuid` BINARY(16) NOT NULL,
     `date` DATE NOT NULL,
@@ -2293,7 +2322,6 @@ CREATE TABLE `cost_center_allocation_basis_value` (
   CONSTRAINT `cost_center_basis_value__cost_center` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`),
   CONSTRAINT `cost_center_basis_value__basis` FOREIGN KEY (`basis_id`) REFERENCES `cost_center_allocation_basis` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE `tags`(
