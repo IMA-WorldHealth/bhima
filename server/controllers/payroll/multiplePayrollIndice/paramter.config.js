@@ -226,16 +226,18 @@ async function stagePaymentIndice(payrollConfigurationId) {
   `;
 
   const sqlGetEmployees = `
-    SELECT BUID(cei.employee_uuid) AS employee_uuid, cei.employee_uuid AS employee_buid,
-    ind.grade_indice, ind.function_indice
-    FROM payroll_configuration pc
-    JOIN config_employee ce ON ce.id = pc.config_employee_id
-    JOIN config_employee_item cei ON cei.config_employee_id = ce.id
-    JOIN (
-    SELECT ind.uuid, ind.employee_uuid, ind.grade_indice, ind.function_indice, MAX(ind.date) AS last_date
-     FROM staffing_indice AS ind
-     GROUP BY ind.employee_uuid
-    ) ind ON ind.employee_uuid = cei.employee_uuid
+     SELECT BUID(emp.uuid) AS employee_uuid, emp.uuid AS employee_buid, ind.grade_indice,
+     ind.function_indice, ind.created_at
+     FROM payroll_configuration AS pc
+     JOIN config_employee AS ce ON ce.id = pc.config_employee_id
+     JOIN config_employee_item AS cei ON cei.config_employee_id = ce.id
+     JOIN employee AS emp ON emp.uuid = cei.employee_uuid
+     JOIN staffing_indice AS ind ON ind.employee_uuid = emp.uuid
+     JOIN (
+       SELECT st.employee_uuid, MAX(st.created_at) AS created_at
+       FROM staffing_indice AS st
+       GROUP BY st.employee_uuid
+     ) st_ind ON (st_ind.employee_uuid = ind.employee_uuid AND st_ind.created_at = ind.created_at)
      WHERE pc.id = ?;
   `;
 
