@@ -389,9 +389,9 @@
   dependencies:
     "@types/node" "*"
 
-"@types/retry@^0.12.0":
+"@types/retry@^0.12.1":
   version "0.12.1"
-  resolved "https://registry.npmjs.org/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
+  resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
   integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
 
 "@types/selenium-webdriver@^3.0.0":
@@ -6464,12 +6464,12 @@ p-map@^4.0.0:
   dependencies:
     aggregate-error "^3.0.0"
 
-p-retry@^4.6.1:
-  version "4.6.1"
-  resolved "https://registry.npmjs.org/p-retry/-/p-retry-4.6.1.tgz#8fcddd5cdf7a67a0911a9cf2ef0e5df7f602316c"
-  integrity sha512-e2xXGNhZOZ0lfgR9kL34iGlU8N/KO0xZnQxVEwdeOvpqNDQfdnxIYizvWtK8RglUa3bGqI8g0R/BdfzLMxRkiA==
+p-retry@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-5.1.0.tgz#a436926f54a15d833e3c39bbee9a73036716cfd4"
+  integrity sha512-zh8em2ciphCu4eZYzatLp4bTYkAhyi8PwMIOyQyh1b5bxunYNe6nwumHPkUBtvmEfIfnTYzhOq1+vWf46Qii+w==
   dependencies:
-    "@types/retry" "^0.12.0"
+    "@types/retry" "^0.12.1"
     retry "^0.13.1"
 
 p-try@^1.0.0:
