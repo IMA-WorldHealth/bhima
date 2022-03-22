@@ -1,0 +1,28 @@
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="bh-dropdown-header">{{row.entity.asset_label}} - {{row.entity.inventory_text}}</li>
+
+    <li role="separator" class="divider"></li>
+
+    <!-- @TODO add permission bh-has-permission="grid.appScope.bhConstants.actions.EDIT_ASSET_SCAN" -->
+    <li >
+      <a data-method="edit" ng-click="grid.appScope.openAssetScanModal(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
+      </a>
+    </li>
+
+    <li role="separator" class="divider"></li>
+
+    <li >
+      <a data-method="scan" ng-click="grid.appScope.createAssetScan(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>ASSET.NEW_ASSET_SCAN</span>
+      </a>
+    </li>
+
+  </ul>
+</div>

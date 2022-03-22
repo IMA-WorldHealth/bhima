@@ -1,0 +1,83 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ASSET_MANAGEMENT.TITLE</li>
+      <li class="title" translate>TREE.ASSETS_SCANS_REGISTRY</li>
+      <li class="title" ng-if="ScansCtrl.defaultDepot">{{ScansCtrl.defaultDepot.text}}</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <bh-dropdown-menu>
+
+          <bh-dropdown-menu-item>
+            <a href ng-click="ScansCtrl.openChangeDepotModal()">
+              <i class="fa fa-archive"></i> <span translate>DEPOT.CHANGE</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item role="separator" class="divider"></bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a href data-method="configure" ng-click="ScansCtrl.openColumnConfigModal()">
+              <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item role="separator" class="divider"></bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a href data-method="save-state" ng-click="ScansCtrl.saveGridState()">
+              <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a href data-method="clear-state" ng-click="ScansCtrl.clearGridState()">
+              <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+        </bh-dropdown-menu>
+      </div>
+
+      <bh-search-button on-click="ScansCtrl.search()"></bh-search-button>
+
+      <div class="toolbar-item" style="margin-right: 1em;">
+        <a href data-method="create-asset-scan" class="btn btn-success"
+          ng-click="ScansCtrl.newAssetScan()">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSET.NEW_ASSET_SCAN</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="ScansCtrl.latestViewFilters"
+    on-remove-filter="ScansCtrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<!--the grid -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="stock-lots-grid"
+      ui-grid="ScansCtrl.gridOptions"
+      class="grid-util-full-height"
+      ui-grid-resize-columns
+      ui-grid-move-columns
+      ui-grid-auto-resize
+      ui-grid-save-state
+      ui-grid-grouping>
+      <bh-grid-loading-indicator
+        loading-state="ScansCtrl.loading"
+        empty-state="ScansCtrl.gridOptions.data.length === 0"
+        error-state="ScansCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

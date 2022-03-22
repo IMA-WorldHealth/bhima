@@ -286,24 +286,6 @@
     "TOGGLE_EXPIRY_RISKS_HELP_TEXT" : "Ceci permettra d'afficher les lots à risque, dont la consommation moyenne mensuel ne permettra pas la consommation total avant la date de peremption",
     "WAC" : "Cout Unitaire Moyen Pondéré"
   },
-  "ASSET" : {
-    "ASSET" : "Actif",
-    "ASSET_LABEL" : "Label actif (label du lot)",
-    "ASSET_LABEL_TOOLTIP" : "Label actif (label du lot)",
-    "ASSIGNED" : "Assigné",
-    "ASSIGNMENT_HISTORY" : "Historique d'assignation d'atif",
-    "ASSIGN_TO" : "Assigner à",
-    "DETAILS" : "Détail de l'actif",
-    "DOCUMENT" : "Document",
-    "NOT_ASSIGNED" : "Aucune assignation",
-    "NO_ASSIGNMENT_HISTORY" : "Aucun historique des assignations",
-    "SHOW_NOT_ASSIGNED" : "Actifs non assigné",
-    "SHOW_ONLY" : "Montrer uniquement",
-    "SHOW_ONLY_ASSIGNED" : "Actifs assigné",
-    "TITLE" : "Actifs",
-    "VIEW_IN_INVENTORY" : "Visualiser l'actif dans l'inventaire",
-    "VIEW_IN_STOCK" : "Visualiser l'actif dans stock"
-  },
   "SETTINGS" : {
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK": "Nombre minimum de mois par défaut de stock de sécurité pour les dépôts",
     "DEFAULT_MIN_MONTHS_SECURITY_STOCK_HELP_TEXT": "L'approvisionnement en stock devrait fournir au moins ce nombre de mois de stock pour le dépôt concerné.",

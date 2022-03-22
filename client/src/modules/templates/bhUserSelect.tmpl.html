@@ -3,9 +3,7 @@
     class="form-group"
     ng-class="{ 'has-error' : UserForm.$submitted && UserForm.user_id.$invalid }">
 
-    <label class="control-label" translate>
-      FORM.LABELS.USER
-    </label>
+    <label class="control-label" translate>{{ ::$ctrl.label }}</label>
 
     <ng-transclude></ng-transclude>
     <ui-select

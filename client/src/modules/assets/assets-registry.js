@@ -30,10 +30,7 @@ function AssetsRegistryController(
   vm.groupingBox = AssetsRegistry.groupingBox;
 
   // barcode scanner
-  vm.openBarcodeScanner = openBarcodeScanner;
-
-  // barcode scanner
-  vm.openLotBarcodeScanner = openLotBarcodeScanner;
+  vm.openAssetBarcodeScanner = openAssetBarcodeScanner;
 
   // show lot barcode
   vm.openLotBarcodeModal = openLotBarcodeModal;
@@ -91,7 +88,7 @@ function AssetsRegistryController(
 
   // edit asset
   vm.openAssetModal = (uuid) => {
-    StockModal.openEditAsset({ uuid })
+    StockModal.openAssetEdit({ uuid })
       .then(ans => {
         if (!ans) { return; }
         load(stockLotFilters.formatHTTP(true));
@@ -176,7 +173,7 @@ function AssetsRegistryController(
   function search() {
     const filtersSnapshot = stockLotFilters.formatHTTP();
 
-    StockModal.openSearchAssets(filtersSnapshot)
+    StockModal.openAssetsSearch(filtersSnapshot)
       .then((changes) => {
         stockLotFilters.replaceFilters(changes);
         stockLotFilters.formatCache();
@@ -280,26 +277,7 @@ function AssetsRegistryController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-  /**
-   * @function openBarcodeScanner
-   *
-   * @description
-   * Opens the barcode scanner component and receives the record from the
-   * modal.
-   */
-  function openBarcodeScanner() {
-    Barcode.modal({ shouldSearch : false })
-      .then(record => {
-        stockLotFilters.replaceFilters([
-          { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
-        ]);
-
-        load(stockLotFilters.formatHTTP(true));
-        vm.latestViewFilters = stockLotFilters.formatView();
-      });
-  }
-
-  function openLotBarcodeScanner() {
+  function openAssetBarcodeScanner() {
     Barcode.modal({ shouldSearch : false })
       .then(record => {
         stockLotFilters.replaceFilters([
