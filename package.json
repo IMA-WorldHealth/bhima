@@ -133,7 +133,7 @@
     "ng-file-upload": "^12.2.13",
     "ngstorage": "^0.3.11",
     "nodemailer": "^6.7.3",
-    "p-retry": "^4.6.1",
+    "p-retry": "^5.1.0",
     "pako": "^2.0.4",
     "q": "^1.5.1",
     "qrcode": "^1.5.0",
