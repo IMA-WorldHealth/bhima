@@ -56,6 +56,7 @@ async function create(req, res, next) {
     UPDATE employee SET individual_salary = ? WHERE uuid = ?
   `;
 
+  let i = 0;
   employeesGradeIndice.forEach(emp => {
     let totalDays = 0;
     let rubricTotalDaysId;
@@ -67,70 +68,69 @@ async function create(req, res, next) {
 
     transaction.addQuery(`DELETE FROM employee_advantage WHERE employee_uuid = ?`, [emp.employee_buid]);
 
-    paymentIndice.forEach(ind => {
+    const employeePaymentIndice = paymentIndice.filter(ind => ind.employee_uuid === emp.employee_uuid);
 
-      if (emp.employee_uuid === ind.employee_uuid) {
-        // Calcul Total days for rubrics where type is 'is_day_worked' Or 'is_extra_day'
-        if (ind.indice_type === 'is_day_worked' || ind.indice_type === 'is_extra_day') {
-          totalDays += ind.rubric_value;
-        }
+    employeePaymentIndice.forEach(ind => {
+      // Calcul Total days for rubrics where type is 'is_day_worked' Or 'is_extra_day'
+      if (ind.indice_type === 'is_day_worked' || ind.indice_type === 'is_extra_day') {
+        totalDays += ind.rubric_value;
+      }
 
-        // Get Total Days Rubric Id
-        if (ind.indice_type === 'is_total_days') {
-          rubricTotalDaysId = ind.rubric_id;
-        }
+      // Get Total Days Rubric Id
+      if (ind.indice_type === 'is_total_days') {
+        rubricTotalDaysId = ind.rubric_id;
+      }
 
-        // Get Reagistered Index Rubric Id
-        if (ind.indice_type === 'is_reagistered_index') {
-          rubricReagisteredIndexId = ind.rubric_id;
-        }
+      // Get Reagistered Index Rubric Id
+      if (ind.indice_type === 'is_reagistered_index') {
+        rubricReagisteredIndexId = ind.rubric_id;
+      }
 
-        // Get Total code Rubric Id
-        if (ind.indice_type === 'is_total_code') {
-          rubricTotalCodeId = ind.rubric_id;
-        }
+      // Get Total code Rubric Id
+      if (ind.indice_type === 'is_total_code') {
+        rubricTotalCodeId = ind.rubric_id;
+      }
 
-        // Get is base index
-        if (ind.indice_type === 'is_base_index') {
-          ind.rubric_value = emp.grade_indice;
-          emp.totalBase += emp.grade_indice;
-          transaction.addQuery(updateStaffingIndice, [emp.grade_indice, id, emp.employee_buid, ind.rubric_id]);
-        }
+      // Get is base index
+      if (ind.indice_type === 'is_base_index') {
+        ind.rubric_value = emp.grade_indice;
+        emp.totalBase += emp.grade_indice;
+        transaction.addQuery(updateStaffingIndice, [emp.grade_indice, id, emp.employee_buid, ind.rubric_id]);
+      }
 
-        // Get is responsability
-        if (ind.indice_type === 'is_responsability') {
-          ind.rubric_value = emp.function_indice;
-          emp.totalBase += emp.function_indice;
-          transaction.addQuery(
-            updateStaffingIndice,
-            [emp.function_indice, id, emp.employee_buid, ind.rubric_id],
-          );
-        }
+      // Get is responsability
+      if (ind.indice_type === 'is_responsability') {
+        ind.rubric_value = emp.function_indice;
+        emp.totalBase += emp.function_indice;
+        transaction.addQuery(
+          updateStaffingIndice,
+          [emp.function_indice, id, emp.employee_buid, ind.rubric_id],
+        );
+      }
 
-        // Get Pay Rate Id
-        if (ind.indice_type === 'is_pay_rate') {
-          rubricPayRateId = ind.rubric_id;
-        }
+      // Get Pay Rate Id
+      if (ind.indice_type === 'is_pay_rate') {
+        rubricPayRateId = ind.rubric_id;
+      }
 
-        // Get Gross Sallary Id
-        if (ind.indice_type === 'is_gross_salary') {
-          rubricGrossSallaryId = ind.rubric_id;
-        }
+      // Get Gross Sallary Id
+      if (ind.indice_type === 'is_gross_salary') {
+        rubricGrossSallaryId = ind.rubric_id;
+      }
 
-        // Get Number of days ID
-        if (ind.indice_type === 'is_number_of_days') {
-          rubricNumberOfDaysId = ind.rubric_id;
-        }
+      // Get Number of days ID
+      if (ind.indice_type === 'is_number_of_days') {
+        rubricNumberOfDaysId = ind.rubric_id;
+      }
 
-        // Get is other responsability
-        if (ind.indice_type === 'is_other_responsability') {
-          emp.totalBase += ind.rubric_value;
-        }
+      // Get is other responsability
+      if (ind.indice_type === 'is_other_responsability') {
+        emp.totalBase += ind.rubric_value;
+      }
 
-        // Get Day Index Id
-        if (ind.indice_type === 'is_day_index') {
-          rubricDayIndexId = ind.rubric_id;
-        }
+      // Get Day Index Id
+      if (ind.indice_type === 'is_day_index') {
+        rubricDayIndexId = ind.rubric_id;
       }
     });
 
