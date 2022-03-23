@@ -56,7 +56,6 @@ async function create(req, res, next) {
     UPDATE employee SET individual_salary = ? WHERE uuid = ?
   `;
 
-  let i = 0;
   employeesGradeIndice.forEach(emp => {
     let totalDays = 0;
     let rubricTotalDaysId;
