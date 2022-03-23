@@ -68,8 +68,9 @@ async function create(req, res, next) {
     transaction.addQuery(`DELETE FROM employee_advantage WHERE employee_uuid = ?`, [emp.employee_buid]);
 
     paymentIndice.forEach(ind => {
+
       if (emp.employee_uuid === ind.employee_uuid) {
-        // Calcul Total days for rubrics where type is 'is_day_worked' and 'is_extra_day'
+        // Calcul Total days for rubrics where type is 'is_day_worked' Or 'is_extra_day'
         if (ind.indice_type === 'is_day_worked' || ind.indice_type === 'is_extra_day') {
           totalDays += ind.rubric_value;
         }
