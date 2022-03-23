@@ -1218,7 +1218,7 @@ function getStockTransfers(req, res, next) {
       d.text AS depot_name, dd.text AS other_depot_name,
       dm.text AS document_reference,
       sh.name AS shipment_name,
-      sh.date_sent AS shipment_date,
+      sh.created_at AS shipment_date,
       dm2.text AS shipment_reference,
       rx.countedReceived
     FROM
