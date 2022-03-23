@@ -124,7 +124,7 @@ describe('(/employees) the employees API endpoint', () => {
   it('GET /employees returns a list of all employees', () => {
     return agent.get('/employees')
       .then((res) => {
-        helpers.api.listed(res, 4);
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });
@@ -216,7 +216,7 @@ describe('(/employees) the employees API endpoint', () => {
           'creditor_uuid', 'locked',
         ];
 
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
 
         expect(res.body[0]).to.contain.all.keys(expected);
         return agent.get('/employees/?display_name=Charle&limit=1');
