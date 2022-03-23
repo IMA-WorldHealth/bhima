@@ -296,4 +296,47 @@ BEGIN
   UPDATE lot SET barcode = CONCAT('LT', LEFT(HEX(lot.uuid), 8));
 END $$
 
+/**
+ zGetInvoiceBalance()
+
+ Gets the balance on an invoice due to a debtor.
+*/
+CREATE FUNCTION zGetInvoiceBalance(invoiceUuid BINARY(16))
+RETURNS DOUBLE DETERMINISTIC
+BEGIN
+  DECLARE entityUuid BINARY(16);
+
+  -- get the debtorUuid
+  SELECT debtor_uuid INTO entityUuid FROM invoice WHERE invoice.uuid = invoiceUuid;
+
+  --  return the balance
+  RETURN (
+    SELECT SUM(debit - credit) AS balance
+    FROM (
+      SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+      FROM posting_journal
+      WHERE posting_journal.record_uuid = invoiceUuid AND entity_uuid = entityUuid
+
+      UNION ALL
+
+      SELECT record_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+       FROM  general_ledger
+       WHERE general_ledger.record_uuid = invoiceUuid AND entity_uuid = entityUuid
+
+       UNION ALL
+
+      SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+      FROM posting_journal
+      WHERE posting_journal.reference_uuid = invoiceUuid AND entity_uuid = entityUuid
+
+      UNION ALL
+
+      SELECT reference_uuid AS uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
+      FROM general_ledger
+      WHERE general_ledger.reference_uuid = invoiceUuid AND entity_uuid = entityUuid
+    ) AS ledger
+    GROUP BY ledger.uuid
+  );
+END $$
+
 DELIMITER ;
