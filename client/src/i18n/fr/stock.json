@@ -93,7 +93,13 @@
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
       "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
       "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue",
-      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre."
+      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre.",
+      "LOT_EXPIRED" : "Lot {{ label }} est expiré.  Sa date d'expiration ({{expiration_date | date }}) précède la date selectionnée.",
+      "LOT_MISSING_INVENTORY_INFO" : "Lot {{ label }} manque les informations d'inventaire. Veuillez selectionner l'inventaire pour continuer.",
+      "LOT_MISSING_LOT_INFO" : "Lot {{ uuid }} manque les informations de lot.  Veuillez selectionner le libellé du lot pour continuer.",
+      "LOT_NEGATIVE_QUANTITY" : "Lot {{ label }} a une quantité négative.",
+      "LOT_OVERCONSUMPTION" : "Lot {{ label }} est sur-utilisé.  Attendu {{quantity}} {{unit}} doit être moins que {{_quantity_available}} {{ unit }}.",
+      "LOT_UNUSED" : "Lot {{ label }} n'est pas utilisé (0 {{ unit }} séléctionné).  Veuillez spécifier une quantité pour continuer."
     },
     "ENTRY_ADJUSTMENT" : "Ajustement positif de {{numArticles}} articles de dans {{depot}} par {{user}}.",
     "EXIT"            : "Sortie de stock",
@@ -223,6 +229,7 @@
     "QUANTITY_RECEIVED"   : "Quantité reçue",
     "QUANTITY_REMAINING" : "Quantité restante",
     "QUANTITY_SENT"       : "Quantité envoyée",
+    "TOTAL_QUANTITY_RECEIVED" : "Total reçue",
     "SERVICE_DISTRIBUTION" : "Distribution au Service",
     "TRANSFER_AVAILABLE" : "Disponible",
     "TRANSFER_COMPLETED" : "Le transfert était déjà terminé !",
