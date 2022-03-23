@@ -79,4 +79,8 @@ module.exports = {
     key   : 'SREQ',
     table : 'stock_requisition',
   },
+  SHIPMENT : {
+    key   : 'SHIP',
+    table : 'shipment',
+  },
 };
