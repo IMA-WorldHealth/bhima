@@ -36,6 +36,7 @@
     "IS_RESPONSABILITY" : "Cette rubrique est l'indice de responsabilité",
     "RESPONSABILITY" : "Responsabilité",
     "IS_OTHER_PROFIT" : "Cette rubric est autres profits",
+    "IS_OTHER_RESPONSABILITY" : "Cette rubrique est une autre responsabilité",
     "OTHER_PROFIT" : "Autres profits",
     "TOTAL_CODE" : "Total de code",
     "IS_TOTAL_CODE" : "Cette rubrique est le Total de code",
