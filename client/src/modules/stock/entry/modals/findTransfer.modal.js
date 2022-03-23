@@ -45,6 +45,19 @@ function StockFindTransferModalController(
     headerCellFilter : 'translate',
     cellTemplate : documentReferenceTmpl,
   }, {
+    field : 'shipment_reference',
+    displayName : 'SHIPMENT.SHIPMENT_REFERENCE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'shipment_name',
+    displayName : 'FORM.LABELS.NAME',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'shipment_date',
+    displayName : 'SHIPMENT.SHIPMENT_DATE',
+    headerCellFilter : 'translate',
+    cellFilter : `date:"${bhConstants.dates.format}"`,
+  }, {
     field : 'depot_name',
     displayName : 'FORM.LABELS.ORIGIN',
     headerCellFilter : 'translate',

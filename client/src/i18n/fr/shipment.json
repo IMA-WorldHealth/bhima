@@ -2,6 +2,8 @@
   "SHIPMENT" : {
     "TITLE" : "Expedition",
     "SHIPMENTS": "Expéditions",
+    "SHIPMENT_REFERENCE": "Référence Expédition",
+    "SHIPMENT_DATE": "Date de l'expédition",
     "SHIPPER": "Transporteur",
     "REQUISITION": "Requisition",
     "ORIGIN_DEPOT": "Dépôt d'origine",

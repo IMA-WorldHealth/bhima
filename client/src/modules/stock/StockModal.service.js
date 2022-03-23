@@ -275,6 +275,7 @@ function StockModalService(Modal) {
   /** search transfer  */
   function openFindTransfer(request) {
     const params = angular.extend(modalParameters, {
+      size         : 'lg',
       templateUrl  : 'modules/stock/entry/modals/findTransfer.modal.html',
       controller   : 'StockFindTransferModalController',
       resolve      : {

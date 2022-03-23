@@ -2,6 +2,8 @@
   "SHIPMENT" : {
     "TITLE" : "Shipment",
     "SHIPMENTS": "Shipments",
+    "SHIPMENT_REFERENCE": "Shipment Reference",
+    "SHIPMENT_DATE": "Expedition",
     "SHIPPER": "Shipper",
     "REQUISITION": "Requisition",
     "ORIGIN_DEPOT": "Origin depot",

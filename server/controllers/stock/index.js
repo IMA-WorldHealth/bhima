@@ -1217,6 +1217,9 @@ function getStockTransfers(req, res, next) {
       BUID(m.document_uuid) AS document_uuid, m.date,
       d.text AS depot_name, dd.text AS other_depot_name,
       dm.text AS document_reference,
+      sh.name AS shipment_name,
+      sh.date_sent AS shipment_date,
+      dm2.text AS shipment_reference,
       rx.countedReceived
     FROM
       stock_movement m
@@ -1224,6 +1227,8 @@ function getStockTransfers(req, res, next) {
     JOIN depot dd ON dd.uuid = m.entity_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     LEFT JOIN (${queryReceived}) rx ON rx.binary_document_uuid = m.document_uuid
+    LEFT JOIN shipment sh ON sh.document_uuid = m.document_uuid
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.uuid
     WHERE dd.uuid = ? AND m.is_exit = 1 AND m.flux_id = ${core.flux.TO_OTHER_DEPOT}
     GROUP BY m.document_uuid
   `;
