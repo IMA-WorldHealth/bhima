@@ -211,7 +211,7 @@ function StockInventoriesController(
 
   // shipment in transit
   function isInTransitOrPartial(status) {
-    return bhConstants.shipmentStatus.IN_TRANSIT === status || bhConstants.shipmentStatus.PARTIAL === status;
+    return status === bhConstants.shipmentStatus.IN_TRANSIT || status === bhConstants.shipmentStatus.PARTIAL;
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -284,6 +284,8 @@ function StockInventoriesController(
         rows.forEach(row => {
           // inventory is concerned by a shipment in transit or partially received
           row._isInTransitOrPartial = isInTransitOrPartial(row.shipment_status);
+          row.__isInTransitTooltip = $translate
+            .instant('SHIPMENT.IS_IN_TRANSIT_TOOLTIP', { depot : row.destination });
         });
         vm.gridOptions.data = glb.inventories.concat(rows);
         vm.grouping.unfoldAllGroups();

@@ -52,6 +52,7 @@
     "PLEASE_SHIP_EXISTING_SHIPMENT": "Veuillez envoyer ou annuler les expéditions existantes encore dans le dépôt",
     "EXISTING_ASSETS_IN_OTHER_SHIPMENT": "Vous avez les actifs suivants dans des expéditions en cours. Veuillez envoyer ou annuler ces expéditions afin de pouvoir re-affecter ces actifs",
     "DOES_SHIPMENT_EXIST": "Avez-vous une expédition prête ?",
-    "DOES_SHIPMENT_EXIST_HELP": "Veuillez renseigner la référence de l'expédition prête"
+    "DOES_SHIPMENT_EXIST_HELP": "Veuillez renseigner la référence de l'expédition prête",
+    "IS_IN_TRANSIT_TOOLTIP": "Cet inventaire est en transit vers le depot ({{depot}})"
   }
 }

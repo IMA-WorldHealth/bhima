@@ -280,7 +280,7 @@ exports.writeStockExitShipment = async (
       origin_depot_uuid : from,
       destination_depot_uuid : to,
       anticipated_delivery_date : document.date,
-      date_sent : document.date,
+      date_sent : new Date(),
       date_ready_for_shipment : document.date,
       status_id : SHIPMENT_IN_TRANSIT,
       created_by : document.user,
@@ -294,7 +294,6 @@ exports.writeStockExitShipment = async (
         shipment_uuid : SHIPMENT_UUID,
         lot_uuid : db.bid(lot.uuid),
         date_packed : document.date,
-        date_sent : document.date,
         quantity_sent : lot.quantity,
       };
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
@@ -313,14 +312,12 @@ exports.writeStockEntryShipment = (
     JOIN shipment sh ON sh.uuid = shi.shipment_uuid 
     SET
       shi.quantity_delivered = shi.quantity_delivered + ?,
-      shi.date_delivered = ?,
       sh.date_delivered = ?
     WHERE sh.status_id IN (?) AND sh.document_uuid = ? AND shi.lot_uuid = ?
   `;
   parameters.lots.forEach(lot => {
     const updateParameters = [
       lot.quantity || 0,
-      document.date,
       document.date,
       SHIPMENT_IN_TRANSIT_OR_PARTIAL,
       db.bid(document.uuid),
@@ -635,7 +632,7 @@ async function getPackingList(identifier) {
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
       shi.quantity_sent, shi.quantity_delivered,
-      shi.date_packed, shi.date_sent, shi.date_delivered,
+      shi.date_packed,
       c.name AS condition_name, c.translation_key AS condition_translation_key,
       l.label AS lot_label, i.code AS inventory_code, i.text AS inventory_label,
       dm.text AS reference

@@ -25,7 +25,7 @@
     "SHIPMENT_REGISTRY": "Shipment Registry",
     "UPDATE_LOCATION": "Update Location",
     "UPDATE_LOCATION_MESSAGE": "You are about to change the location of this shipment, this information will be saved in the history of this shipment",
-    "UPDATE_LOCATION_WARNING": "You cannot change the location because only shipments with an IN-TRANSIT status can benefit from the change of location",
+    "UPDATE_LOCATION_WARNING": "You cannot change the location because only shipments with an IN-TRANSIT status can allow the change of location",
     "UPDATE_STATUS": "Update Status",
     "UPDATE_PACKING_LIST": "Update Packing List",
     "READY_TO_SHIP": "Ready to ship",
@@ -52,6 +52,7 @@
     "PLEASE_SHIP_EXISTING_SHIPMENT": "Please ship or cancel these existing shipments",
     "EXISTING_ASSETS_IN_OTHER_SHIPMENT": "You have the following assets in ongoing shipments. Please send or cancel these shipments so that you can reassign those assets",
     "DOES_SHIPMENT_EXIST": "Do you have a ready shipment?",
-    "DOES_SHIPMENT_EXIST_HELP": "Please provide the reference of a ready shipment"
+    "DOES_SHIPMENT_EXIST_HELP": "Please provide the reference of a ready shipment",
+    "IS_IN_TRANSIT_TOOLTIP": "This inventory is in transit to the depot ({{depot}})"
   }
 }

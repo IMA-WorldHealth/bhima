@@ -161,8 +161,6 @@ CREATE TABLE `shipment_item` (
   `shipment_uuid`      BINARY(16) NOT NULL,
   `lot_uuid`           BINARY(16) NOT NULL,
   `date_packed`        DATETIME,
-  `date_sent`          DATETIME,
-  `date_delivered`     DATETIME,
   `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
   `condition_id`       SMALLINT(5) UNSIGNED NULL,
