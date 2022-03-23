@@ -6,12 +6,14 @@ CreateShipmentController.$inject = [
   '$state', 'NotifyService', 'SessionService', 'util',
   'StockExitFormService', 'uiGridConstants', 'BarcodeService',
   'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
+  'bhConstants',
 ];
 
 function CreateShipmentController(
   $state, Notify, Session, util,
   StockForm, uiGridConstants, Barcode,
   Shipment, Depot, $timeout, ShipmentModal,
+  bhConstants,
 ) {
   const vm = this;
   const existingShipmentUuid = $state.params.uuid;
@@ -102,6 +104,7 @@ function CreateShipmentController(
   vm.gridOptions = gridOptions;
   vm.shipment = {};
   vm.gridApi = {};
+  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
@@ -113,6 +116,13 @@ function CreateShipmentController(
 
   vm.onSelectDestinationDepot = depot => {
     vm.shipment.destination_depot_uuid = depot.uuid;
+
+    // define the exit type as depot for allowing
+    // to block expired items in the validation
+    $timeout(() => {
+      vm.stockForm.setExitType('depot');
+      vm.stockForm.setDepotDistribution(depot);
+    }, 0);
   };
 
   vm.validate = () => {
@@ -247,18 +257,50 @@ function CreateShipmentController(
     return el ? quantity : 0;
   }
 
+  function errorLineHighlight(row) {
+    const { ROW_ERROR_FLAG } = bhConstants.grid;
+    // set and unset error flag for allowing to highlight again the row
+    // when the user click again on the submit button
+    row[ROW_ERROR_FLAG] = true;
+    $timeout(() => { row[ROW_ERROR_FLAG] = false; }, 3000);
+  }
+
   function submit(form) {
     if (form.$invalid) { return null; }
 
     const isValidForSubmission = vm.stockForm.validate();
 
-    if (!isValidForSubmission) { return null; }
+    // check if the form is valid
+    if (isValidForSubmission === false) {
+
+      let firstElement = true;
+
+      vm.stockForm.store.data.forEach(row => {
+        const hasErrors = row.errors().length > 0;
+        if (hasErrors) {
+          // flash the error highlight
+          errorLineHighlight(row);
+
+          // scroll to the first invalid item
+          if (firstElement) {
+            vm.gridApi.core.scrollTo(row);
+            firstElement = false;
+          }
+        }
+      });
+
+      // flash the first error message to the user
+      const [msg] = vm.stockForm.messages();
+      Notify.danger(msg.text, 5000);
+
+      return null;
+    }
 
     vm.$loading = true;
     vm.shipment = cleanShipment(vm.shipment);
     vm.shipment.lots = vm.stockForm.store.data.map(cleanShipmentItem);
 
-    const promise = (vm.isCreateState)
+    const promise = !!(vm.isCreateState)
       ? Shipment.create(vm.shipment)
       : Shipment.update(existingShipmentUuid, vm.shipment);
 
