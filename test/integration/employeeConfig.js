@@ -29,7 +29,7 @@ describe('(/payroll/account_configuration) The /payroll/employee_configuration  
     ],
   };
 
-  const NUM_EMPLOYEE_CONFIG = 1;
+  const NUM_EMPLOYEE_CONFIG = 2;
 
   it('GET /EMPLOYEE_CONFIG returns a list of Employee Configurations ', () => {
     return agent.get('/employee_config')
