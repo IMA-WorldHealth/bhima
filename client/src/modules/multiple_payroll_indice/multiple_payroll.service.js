@@ -17,7 +17,7 @@ MultipleIndicesPayrollService.$inject = [
  */
 function MultipleIndicesPayrollService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, Transactions
+  $httpParamSerializer, AppCache, Transactions,
 ) {
   const service = new Api('/multiple_payroll_indice/');
   service.parameters = new Api('/multiple_payroll_indice/parameters/');
@@ -77,7 +77,6 @@ function MultipleIndicesPayrollService(
     { key : 'status_id', label : 'FORM.LABELS.STATUS' },
     { key : 'conversion_rate', label : 'FORM.LABELS.CONVERSION_RATE' },
   ]);
-
 
   if (filterCache.filters) {
     multiplePayrollFilters.loadCache(filterCache.filters);
