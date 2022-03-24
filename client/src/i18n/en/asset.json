@@ -1,0 +1,20 @@
+{
+  "ASSET" : {
+    "TITLE" : "Asset",
+    "STATUS" : {
+      "EMPTY" : "Empty",
+      "PARTIAL" : "Partial",
+      "COMPLETE" : "Complete",
+      "IN_TRANSIT" : "In Transit",
+      "DELIVERED" : "Delivered",
+      "AT_DEPOT" : "At Depot",
+      "READY_FOR_SHIPMENT" : "Ready for shipment",
+      "LOST" : "LOST"
+    },
+    "CONDITION" : {
+      "NEW" : "New",
+      "GOOD" : "Good",
+      "BROKEN" : "Broken"
+    }
+  }
+}

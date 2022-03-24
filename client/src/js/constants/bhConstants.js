@@ -29,6 +29,22 @@ function constantConfig() {
       EXPENSE : 5,
       TITLE : 6,
     },
+    condition : {
+      EMPTY : 1,
+      NEW : 2,
+      GOOD : 3,
+      BROKEN : 4,
+    },
+    shipmentStatus : {
+      EMPTY : 1,
+      AT_DEPOT : 2,
+      READY_FOR_SHIPMENT : 3,
+      IN_TRANSIT : 4,
+      PARTIAL : 5,
+      COMPLETE : 6,
+      DELIVERED : 7,
+      LOST : 8,
+    },
     stepDownAllocation : {
       METHOD_OPTIONS : ['proportional', 'flat'],
     },
