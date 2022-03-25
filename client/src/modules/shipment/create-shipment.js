@@ -79,7 +79,7 @@ function CreateShipmentController(
       }, {
         field : 'condition',
         width : 150,
-        displayName : 'SHIPMENT.CONDITION',
+        displayName : 'SHIPMENT.LOT_CONDITION',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/shipment/templates/condition.tmpl.html',
       },

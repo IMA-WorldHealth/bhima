@@ -24,26 +24,26 @@
     <div class="stepper-wrapper">
       <div class="stepper-item" ng-class="{'completed' : $ctrl.step.at_depot, 'completed active' : $ctrl.step.at_depot && $ctrl.shipment.status_name === 'at_depot' }">
         <div class="step-counter">1</div>
-        <div class="step-name" translate>ASSET.STATUS.AT_DEPOT</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.AT_DEPOT</div>
         <div>{{ $ctrl.shipment.origin_depot }}</div>
       </div>
       <div class="stepper-item" ng-class="{'completed' : $ctrl.step.ready, 'completed active' : $ctrl.step.ready && $ctrl.shipment.status_name === 'ready' }">
         <div class="step-counter">2</div>
-        <div class="step-name" translate>ASSET.STATUS.READY_FOR_SHIPMENT</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.READY_FOR_SHIPMENT</div>
         <div><small>{{ $ctrl.shipment.date_ready_for_shipment | date:'medium' }}</small></div>
       </div>
       <div class="stepper-item" ng-class="{'completed' : $ctrl.step.in_transit, 'completed active' : $ctrl.step.in_transit && $ctrl.shipment.status_name === 'in_transit' }">
         <div class="step-counter">3</div>
-        <div class="step-name" translate>ASSET.STATUS.IN_TRANSIT</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.IN_TRANSIT</div>
         <div><small>{{ $ctrl.shipment.date_sent | date:'medium' }}</small></div>
       </div>
       <div class="stepper-item" ng-class="{'completed' : $ctrl.step.partial, 'completed active' : $ctrl.step.partial && $ctrl.shipment.status_name === 'partial' }">
         <div class="step-counter">4</div>
-        <div class="step-name" translate>ASSET.STATUS.PARTIAL</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.PARTIAL</div>
       </div>
       <div class="stepper-item" ng-class="{'completed' : $ctrl.step.delivered, 'completed active' : $ctrl.step.delivered && $ctrl.shipment.status_name === 'delivered' }">
         <div class="step-counter">5</div>
-        <div class="step-name" translate>ASSET.STATUS.DELIVERED</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.DELIVERED</div>
         <div>{{ $ctrl.shipment.destination_depot }}</div>
         <div><small>{{ $ctrl.shipment.date_delivered | date:'medium' }}</small></div>
       </div>
@@ -58,7 +58,7 @@
             <td>{{ item.inventory_label }}</td>
             <td>{{ item.lot_label }}</td>
             <td>{{ item.quantity_sent }}</td>
-            <td translate>{{ item.condition_translation_key }}</td>
+            <td translate>{{ item.condition }}</td>
           </tr>
         </table>
       </div>
