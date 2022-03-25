@@ -1,0 +1,20 @@
+<div ng-form="ConditionForm" bh-asset-condition-select
+  ng-model-options="{ updateOn: 'default' }"
+  ng-class="{ 'has-error' : ConditionForm.$submitted && ConditionForm.conditionId.$invalid }">
+  <div class="form-group">
+    <label class="control-label" translate>{{$ctrl.label}}</label>
+    <ng-transclude></ng-transclude>
+    <ui-select
+      name="conditionId"
+      ng-model="$ctrl.conditionId"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'ASSET.SELECT_CONDITION' | translate }}">
+        <span>{{$select.selected.condition}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="cond.id as cond in $ctrl.conditions | filter: { 'condition': $select.search }">
+        <span ng-bind-html="cond.condition | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+</div>

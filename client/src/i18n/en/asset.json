@@ -1,20 +1,40 @@
 {
   "ASSET" : {
-    "TITLE" : "Asset",
-    "STATUS" : {
-      "EMPTY" : "Empty",
-      "PARTIAL" : "Partial",
-      "COMPLETE" : "Complete",
-      "IN_TRANSIT" : "In Transit",
-      "DELIVERED" : "Delivered",
-      "AT_DEPOT" : "At Depot",
-      "READY_FOR_SHIPMENT" : "Ready for shipment",
-      "LOST" : "LOST"
-    },
+    "ASSET" : "Asset",
+    "ASSET_CONDITION" : "Condition",
+    "ASSET_LABEL" : "Asset label",
+    "ASSET_LABEL_TOOLTIP" : "Asset label (lot label)",
+    "ASSIGNED" : "Assigned",
+    "ASSIGNMENT_HISTORY" : "Asset Assignment History",
+    "ASSIGN_TO" : "Assign to",
+    "DETAILS" : "Asset Details",
+    "DOCUMENT" : "Assignment Document",
+    "NEW_ASSET_SCAN" : "New Asset Scan",
+    "NOT_ASSIGNED" : "Not assigned",
+    "NO_ASSIGNMENT_HISTORY" : "No assignment history",
+    "SCANNED_BY" : "Scanned by",
+    "SCAN_ASSET_BARCODE" : "Scan barcode of asset to inventory",
+    "SCAN_CREATED" : "Asset scan created",
+    "SCAN_DATE" : "Scan date",
+    "SCAN_EDITED" : "Asset scan edited",
+    "SELECT_CONDITION" : "Select condition",
+    "SHOW_NOT_ASSIGNED" : "Unassigned assets",
+    "SHOW_ONLY" : "Show only",
+    "SHOW_ONLY_ASSIGNED" : "Assigned assets",
+    "SUCCESSFULLY_EDITED":"Asset successfully updated",
+    "TITLE" : "Assets",
+    "VIEW_IN_INVENTORY" : "View Asset in Inventory",
+    "VIEW_IN_STOCK" : "View Asset in Stock",
     "CONDITION" : {
       "NEW" : "New",
       "GOOD" : "Good",
-      "BROKEN" : "Broken"
+      "FAIR" : "Fair",
+      "POOR" : "Poor",
+      "BROKEN" : "Broken",
+      "OBSOLETE" : "Obsolete",
+      "DISCARDED" : "Discarded",
+      "SOLD" : "Sold",
+      "LOST" : "Lost"
     }
   }
 }

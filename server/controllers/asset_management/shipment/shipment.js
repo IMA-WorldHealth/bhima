@@ -309,7 +309,7 @@ exports.writeStockEntryShipment = (
   // update shipment items
   const updateShipmentItem = `
     UPDATE shipment_item shi
-    JOIN shipment sh ON sh.uuid = shi.shipment_uuid 
+    JOIN shipment sh ON sh.uuid = shi.shipment_uuid
     SET
       shi.quantity_delivered = shi.quantity_delivered + ?,
       sh.date_delivered = ?
@@ -331,7 +331,7 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
   const tx = db.transaction();
   // gather information about shipment items received
   const queryShipmentItems = `
-      SELECT 
+      SELECT
         BUID(shi.uuid) uuid, BUID(shi.lot_uuid) lot_uuid,
         sh.origin_depot_uuid, sh.destination_depot_uuid,
         shi.quantity_sent, shi.quantity_delivered
@@ -368,8 +368,8 @@ exports.listInTransitInventories = async (req, res, next) => {
     const filters = getShipmentFilters(params);
 
     const sql = `
-    SELECT 
-      BUID(l.uuid) AS uuid, 
+    SELECT
+      BUID(l.uuid) AS uuid,
       i.code, i.text, l.label, l.description AS lot_description,
       IFNULL(SUM(shi.quantity_sent - shi.quantity_delivered), 0) AS quantity, sh.status_id AS shipment_status,
       d.text AS depot_text, d2.text AS destination,
@@ -383,14 +383,14 @@ exports.listInTransitInventories = async (req, res, next) => {
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
     FROM shipment sh
-    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid 
-    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN inventory_unit iu ON iu.id = i.unit_id
-    JOIN inventory_group ig ON ig.uuid = i.group_uuid 
+    JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
-    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
   `;
 
     filters.setGroup(
@@ -492,8 +492,8 @@ function getShipmentFilters(parameters) {
 function find(params) {
   const filters = getShipmentFilters(params);
   const sql = `
-    SELECT 
-      BUID(sh.uuid) AS uuid, 
+    SELECT
+      BUID(sh.uuid) AS uuid,
       ss.translation_key AS status,
       ss.id AS status_id,
       dm.text AS reference,
@@ -502,17 +502,17 @@ function find(params) {
       d.text AS origin_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
       d2.text AS destination_depot,
-      sh.name, sh.description, sh.note, 
+      sh.name, sh.description, sh.note,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
-      sh.date_ready_for_shipment, sh.anticipated_delivery_date, 
+      sh.date_ready_for_shipment, sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by
     FROM shipment sh
-    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
-    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
-    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
   `;
 
   const query = filters.applyQuery(sql);
@@ -523,7 +523,7 @@ function find(params) {
 function findAffectedAssets(params) {
   const filters = getShipmentFilters(params);
   const sql = `
-    SELECT 
+    SELECT
       BUID(shi.uuid) AS uuid, BUID(sh.uuid) AS shipment_uuid,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent,
       l.label AS lot_label, i.code AS inventory_code,
@@ -543,8 +543,8 @@ function findAffectedAssets(params) {
 
 async function lookup(identifier) {
   const sql = `
-    SELECT 
-      BUID(sh.uuid) AS uuid, 
+    SELECT
+      BUID(sh.uuid) AS uuid,
       ss.translation_key AS status,
       ss.id AS status_id,
       ss.name AS status_name,
@@ -554,19 +554,19 @@ async function lookup(identifier) {
       BUID(d.uuid) AS origin_depot_uuid,
       d2.text AS destination_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
-      sh.name, sh.description, sh.note, 
+      sh.name, sh.description, sh.note,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity, shi.condition_id
     FROM shipment sh
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
-    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
-    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid 
+    JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
-    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
     WHERE sh.uuid = ?
   `;
 
@@ -584,8 +584,8 @@ async function lookup(identifier) {
 
 async function lookupSingle(identifier) {
   const sql = `
-    SELECT 
-      BUID(sh.uuid) AS uuid, 
+    SELECT
+      BUID(sh.uuid) AS uuid,
       ss.translation_key AS status,
       ss.id AS status_id,
       ss.name AS status_name,
@@ -595,17 +595,17 @@ async function lookupSingle(identifier) {
       BUID(d.uuid) AS origin_depot_uuid,
       d2.text AS destination_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
-      sh.name, sh.description, sh.note, 
+      sh.name, sh.description, sh.note,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by
     FROM shipment sh
-    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
     JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
-    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid 
+    LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
     WHERE sh.uuid = ?
   `;
 
@@ -622,24 +622,24 @@ async function isShipmentExists(shipmentUuid) {
 
 async function getPackingList(identifier) {
   const sql = `
-    SELECT 
-      BUID(shi.uuid) AS uuid, 
+    SELECT
+      BUID(shi.uuid) AS uuid,
       ss.translation_key AS status,
       ss.id AS status_id,
       ss.name AS status_name,
-      sh.name, sh.description, sh.note, 
+      sh.name, sh.description, sh.note,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
       shi.quantity_sent, shi.quantity_delivered,
-      shi.date_packed,
-      c.name AS condition_name, c.translation_key AS condition_translation_key,
+      shi.date_packed, shi.condition_id,
+      c.condition, c.predefined AS condition_predefined,
       l.label AS lot_label, i.code AS inventory_code, i.text AS inventory_label,
       dm.text AS reference
     FROM shipment sh
-    JOIN shipment_status ss ON ss.id = sh.status_id 
+    JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
-    LEFT JOIN asset_condition c ON c.id = shi.condition_id 
+    LEFT JOIN asset_condition c ON c.id = shi.condition_id
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN user u ON u.id = sh.created_by
