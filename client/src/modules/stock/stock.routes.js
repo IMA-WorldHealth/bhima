@@ -89,6 +89,15 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('stockReqInventoryScans', {
+        url         : '/required/inventory/scans',
+        controller  : 'RequiredInventoryScansRegistryController as Ctrl',
+        templateUrl : 'modules/required_inventory_scans/required-inventory-scans-registry.html',
+        params : {
+          filters : [],
+        },
+      })
+
       .state('stockAssets.createAssignment', {
         url : '/create',
         params : {

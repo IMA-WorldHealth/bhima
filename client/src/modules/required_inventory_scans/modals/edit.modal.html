@@ -1,0 +1,97 @@
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb text-bold">
+      <li class="static" translate>TREE.REQUIRED_INVENTORY_SCANS</li>
+      <li class="static" translate>ASSET.REQUIRED_INVENTORY_SCAN</li>
+      <li class="static" translate>FORM.LABELS.DETAILS</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <!-- title -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.TITLE</label>
+      <bh-clear on-clear="$ctrl.clear('title')"></bh-clear>
+      <input ng-model="$ctrl.model.title"
+        class="form-control"
+        type="text"
+        name="title"
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.TITLE' }"
+        required>
+    </div>
+
+    <!-- starting date -->
+    <bh-date-editor
+      label="ASSET.SCANS_START_DATE"
+      date-value="$ctrl.model.start_date"
+      on-change="$ctrl.onStartDateChange(date)"
+      allow-future-date="true"
+      required="true">
+    </bh-date-editor>
+
+    <!-- end date -->
+    <bh-date-editor
+      label="ASSET.SCANS_END_DATE"
+      date-value="$ctrl.model.end_date"
+      on-change="$ctrl.onEndDateChange(date)"
+      min-date="$ctrl.today"
+      allow-future-date="true"
+      required="true">
+    </bh-date-editor>
+
+    <!-- reference number -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER_OPTIONAL</label>
+      <bh-clear on-clear="$ctrl.clear('reference_number')"></bh-clear>
+      <input ng-model="$ctrl.model.reference_number"
+        class="form-control"
+        type="text"
+        name="reference_number">
+    </div>
+
+    <!-- description -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.DESCRIPTION_OPTIONAL</label>
+      <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+      <textarea
+        ng-model="$ctrl.model.description"
+        class="form-control"
+        name="description"
+        id="description">
+      </textarea>
+    </div>
+
+    <!-- depot -->
+    <bh-depot-select
+      depot-uuid="$ctrl.model.depot_uuid"
+      on-select-callback="$ctrl.onSelectDepot(depot)"
+      required="false">
+      <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
+    </bh-depot-select>
+
+    <!-- is_asset -->
+    <div class="form-group" style="margin-top: 0.5ex">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox"
+            ng-model="$ctrl.model.is_asset"
+            ng-true-value="1" ng-false-value="0">
+          <span translate>ASSET.ASSETS_ONLY</span>
+        </label>
+      </div>
+    </div>
+
+  </div>  <!-- end of modal-body -->
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CLOSE</span>
+    </button>
+
+    <bh-loading-button loading-state="$ctrl.loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+
+</form>
