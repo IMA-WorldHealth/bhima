@@ -1,9 +1,9 @@
 /**
  * Stock Asset Controller
  */
+const _ = require('lodash');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
-const _ = require('lodash');
 
 const FilterParser = require('../../lib/filter');
 
@@ -74,9 +74,9 @@ function getAssetScanFilters(parameters) {
 }
 
 /**
- * @function getAssetScans
+ * @function getAssetScan
  *
- * GET /asset/scans
+ * GET /asset/scan
  */
 exports.getAssetScan = async function getAssetScan(req, res, next) {
   try {
