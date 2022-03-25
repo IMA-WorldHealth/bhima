@@ -33,6 +33,8 @@ function StockModalService(Modal) {
   service.openFindTransfer = openFindTransfer;
   service.openGenerateAssetBarcodes = openGenerateAssetBarcodes;
   service.openLotScheduleModal = openLotScheduleModal;
+  service.openRequiredInventoryScansEditModal = openRequiredInventoryScansEditModal;
+  service.openRequiredInventoryScansSearchModal = openRequiredInventoryScansSearchModal;
   service.openSearchDepots = openSearchDepots;
   service.openSearchInventories = openSearchInventories;
   service.openSearchLots = openSearchLots;
@@ -136,6 +138,32 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/asset_scans/modals/search.modal.html',
       controller   : 'AssetScansSearchModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search assets */
+  function openRequiredInventoryScansSearchModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/required_inventory_scans/modals/search.modal.html',
+      controller   : 'RequiredInventoryScansSearchModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** edit asset */
+  function openRequiredInventoryScansEditModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/required_inventory_scans/modals/edit.modal.html',
+      controller   : 'RequiredInventoryScanEditModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });
