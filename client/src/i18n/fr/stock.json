@@ -93,7 +93,7 @@
       "QUANTITY_CONSUMED_OVER_GLOBAL" : "La quantité totale consommé dépasse la quantity globale consommée",
       "QUANTITY_LOST_LOWER" : "La quantité totale perdue est inférieure à la quantity globale perdue",
       "QUANTITY_LOST_OVER_GLOBAL" : "La quantité totale perdue dépasse la quantity globale perdue",
-      "UNITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre.",
+      "UNINITIALISED" : "Cette ligne de grille est vide et non initialisée. Veuillez le supprimer pour le soumettre.",
       "LOT_EXPIRED" : "Lot {{ label }} est expiré.  Sa date d'expiration ({{expiration_date | date }}) précède la date selectionnée.",
       "LOT_MISSING_INVENTORY_INFO" : "Lot {{ label }} manque les informations d'inventaire. Veuillez selectionner l'inventaire pour continuer.",
       "LOT_MISSING_LOT_INFO" : "Lot {{ uuid }} manque les informations de lot.  Veuillez selectionner le libellé du lot pour continuer.",
