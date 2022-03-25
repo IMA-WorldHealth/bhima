@@ -11,7 +11,12 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body" ng-if="$ctrl.loading">
+    <!-- Show a loading indicator until we are ready to display the form -->
+    <loading-indicator></loading-indicator>
+  </div>
+
+  <div class="modal-body" ng-if="!$ctrl.loading">
     <!-- depot -->
     <bh-depot-select
       depot-uuid="$ctrl.model.depot_uuid"
@@ -75,7 +80,6 @@
       <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
     </bh-entity-select>
 
-
     <!-- quantity -->
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.quantity.$invalid }">
       <label class="control-label" translate>FORM.LABELS.QUANTITY</label>
@@ -101,7 +105,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading">
+    <bh-loading-button loading-state="$ctrl.loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

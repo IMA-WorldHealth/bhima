@@ -183,17 +183,18 @@ INSERT INTO unit VALUES
   (308, 'Assets Registry', 'TREE.ASSETS_REGISTRY', 'Assets Registry', 307, '/assets'),
   (309, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
   (310, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 309, '/shipments/create'),
-  (311, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 309, '/shipments');
+  (311, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 309, '/shipments'),
+  (312, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
 
 -- Reserved system account type
-INSERT INTO `account_category` VALUES
+INSERT IGNORE INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
   (2, 'expense', 'ACCOUNT.TYPES.EXPENSE'),
   (3, 'balance', 'ACCOUNT.TYPES.BALANCE'),
   (4, 'title', 'ACCOUNT.TYPES.TITLE');
 
 -- Reserved system account category
-INSERT INTO `account_type` VALUES
+INSERT IGNORE INTO `account_type` VALUES
   (1, 'asset', 'ACCOUNT.TYPES.ASSET', 3),
   (2, 'liability', 'ACCOUNT.TYPES.LIABILITY', 3),
   (3, 'equity', 'ACCOUNT.TYPES.EQUITY', 3),
@@ -202,7 +203,7 @@ INSERT INTO `account_type` VALUES
   (6, 'title', 'ACCOUNT.TYPES.TITLE', 4);
 
 -- core BHIMA reports
-INSERT INTO `report` (`report_key`, `title_key`) VALUES
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('cashflow', 'TREE.CASHFLOW'),
   ('accounts_chart', 'REPORT.CHART_OF_ACCOUNTS'),
   ('income_expense', 'REPORT.PROFIT_AND_LOSS'),
@@ -264,18 +265,18 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
 
 -- Supported Languages
-INSERT INTO `language` VALUES
+INSERT IGNORE INTO `language` VALUES
   (1,'Francais','fr', 'fr-be'),
   (2,'English','en', 'en-us');
 
 -- Currencies
-INSERT INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
+INSERT IGNORE INTO `currency` (`id`, `name`, `format_key`, `symbol`, `note`, `min_monentary_unit`) VALUES
   (1,'Congolese Francs','fc','Fc',NULL,50.00),
   (2,'United States Dollars','usd','$',NULL,0.01),
   (3,'Euro','EUR','€',NULL,0.01);
 
-INSERT INTO `inventory_type` VALUES (1,'Article',NULL,0),(2,'Assembly',NULL,0),(3,'Service',NULL,0);
-INSERT INTO `inventory_unit` VALUES
+INSERT IGNORE INTO `inventory_type` VALUES (1,'Article',NULL,0),(2,'Assembly',NULL,0),(3,'Service',NULL,0);
+INSERT IGNORE INTO `inventory_unit` VALUES
   (1,'Act', 'Act'),
   (2,'Pal', 'Pallet'),
   (3,'Pill', 'Pillule'),
@@ -296,16 +297,16 @@ INSERT INTO `inventory_unit` VALUES
   (18, 'unité', 'unité');
 
 -- fonctions
-INSERT INTO `fonction` VALUES
+INSERT IGNORE INTO `fonction` VALUES
   (1,'Infirmier'),
   (2,'Medecin Directeur');
 
-INSERT INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
+INSERT IGNORE INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
 (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
 (HUID(uuid()), 125.0000, 2);
 
 -- transaction type
-INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
+INSERT IGNORE INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
   (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 1),
   (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 1),
   (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 1),
@@ -326,7 +327,7 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
   (18, 'VOUCHERS.SIMPLE.ADJUSTMENT', 'other', 1),
   (19, 'VOUCHERS.SIMPLE.CAUTION_LINK', 'other', 1);
 
-INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
+INSERT IGNORE INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
   ('VOUCHERS.SIMPLE.TRANSFER_AUXILIARY', 'expense', 1),
   ('VOUCHERS.SIMPLE.RECEPTION_FUNDS_AUXILIARY', 'income', 1),
   ('VOUCHERS.SIMPLE.PROVISIONING_PRINCIPAL', 'income', 1),
@@ -335,7 +336,7 @@ INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
   ('VOUCHERS.SIMPLE.BANK_CASH_APPROVALS', 'income', 1);
 
 -- Stock Movement Flux
-INSERT INTO `flux` VALUES
+INSERT IGNORE INTO `flux` VALUES
   (1,  'STOCK_FLUX.FROM_PURCHASE'),
   (2,  'STOCK_FLUX.FROM_OTHER_DEPOT'),
   (3,  'STOCK_FLUX.FROM_ADJUSTMENT'),
@@ -354,7 +355,7 @@ INSERT INTO `flux` VALUES
   (16, 'STOCK_FLUX.AGGREGATE_CONSUMPTION');
 
 -- Roles Actions
-INSERT INTO `actions`(`id`, `description`) VALUES
+INSERT IGNORE INTO `actions`(`id`, `description`) VALUES
   (1, 'FORM.LABELS.CAN_EDIT_ROLES'),
   (2, 'FORM.LABELS.CAN_UNPOST_TRANSACTIONS'),
   (3, 'USERS.ACTIONS.DELETE_CASH_PAYMENT' ),
@@ -365,7 +366,7 @@ INSERT INTO `actions`(`id`, `description`) VALUES
   (8, 'USERS.ACTIONS.EDIT_LOT');
 
 -- Purchase Status
-INSERT INTO `purchase_status` (`id`, `text`) VALUES
+INSERT IGNORE INTO `purchase_status` (`id`, `text`) VALUES
   (1,  'PURCHASES.STATUS.WAITING_CONFIRMATION'),
   (2,  'PURCHASES.STATUS.CONFIRMED'),
   (3,  'PURCHASES.STATUS.RECEIVED'),
@@ -374,7 +375,7 @@ INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (6,  'PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY');
 
 -- Paiement Status
-INSERT INTO `payment_status` (`id`, `text`) VALUES
+INSERT IGNORE INTO `payment_status` (`id`, `text`) VALUES
   (1,  'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION'),
   (2,  'PAYROLL_STATUS.CONFIGURED'),
   (3,  'PAYROLL_STATUS.WAITING_FOR_PAYMENT'),
@@ -382,8 +383,8 @@ INSERT INTO `payment_status` (`id`, `text`) VALUES
   (5,  'PAYROLL_STATUS.PAID');
 
 -- locations (default enterprise location only)
-INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo');
-INSERT INTO `province`(`uuid`, `name`, `country_uuid`)
+INSERT IGNORE INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo');
+INSERT IGNORE INTO `province`(`uuid`, `name`, `country_uuid`)
 VALUES (HUID(UUID()), 'Bas-Uele', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
   (HUID(UUID()), 'Équateur', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
   (HUID(UUID()), 'Haut-Katanga', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
@@ -410,18 +411,18 @@ VALUES (HUID(UUID()), 'Bas-Uele', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
   (HUID(UUID()), 'Tshopo', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
   (HUID(UUID()), 'Tshuapa', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'));
 
-INSERT INTO `sector` VALUES (HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'),'Lukunga', HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'));
-INSERT INTO `village` VALUES (HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'Gombe', HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'), NULL, NULL);
+INSERT IGNORE INTO `sector` VALUES (HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'),'Lukunga', HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'));
+INSERT IGNORE INTO `village` VALUES (HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'Gombe', HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'), NULL, NULL);
 
 -- default entity types
-INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
+INSERT IGNORE INTO `entity_type` (`label`, `translation_key`) VALUES
   ('person', 'ENTITY.TYPE.PERSON'),
   ('service', 'ENTITY.TYPE.SERVICE'),
   ('office', 'ENTITY.TYPE.OFFICE'),
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
 
 -- Default Account Reference Type
-INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
+INSERT IGNORE INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.COST_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1),
@@ -429,7 +430,7 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (5, 'FORM.LABELS.ANALYSIS_TOOLS.TITLE', 1);
 
 -- Default Discharge types
-INSERT INTO `discharge_type` (`id`, `label`) VALUES
+INSERT IGNORE INTO `discharge_type` (`id`, `label`) VALUES
   (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
   (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
   (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
@@ -441,13 +442,13 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
 
 -- indicators status values
-INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
+INSERT IGNORE INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
   (2, 'complete', 'FORM.LABELS.COMPLETE'),
   (3, 'validated', 'FORM.LABELS.VALIDATED');
 
 -- indicators types
-INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
+INSERT IGNORE INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
   (3, 'finance', 'DASHBOARD.FINANCE');
@@ -455,14 +456,14 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
 -- cron
 -- NOTE(@jniles): the cron syntax for month is 0-indexed, but the cron
 -- syntax for day is 1-indexed.
-INSERT INTO `cron` (`label`, `value`) VALUES
+INSERT IGNORE INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
   ('CRON.YEARLY', '0 1 31 11 *');
 
 -- Survey Form Type
-INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
+INSERT IGNORE INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (1, 'FORM.LABELS.NUMBER', 'number', 0),
   (2, 'FORM.LABELS.TEXT', 'text', 0),
   (3, 'FORM.LABELS.SELECT_ONE', 'select_one', 1),
@@ -475,7 +476,7 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
   (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- application process status
-INSERT INTO `status` VALUES
+INSERT IGNORE INTO `status` VALUES
   (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS', 'label label-default'),
   (2, 'done', 'FORM.LABELS.STATUS_TYPE.DONE', 'label label-primary'),
   (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY', 'label label-warning'),
@@ -485,12 +486,12 @@ INSERT INTO `status` VALUES
   (7, 'excessive', 'FORM.LABELS.STATUS_TYPE.EXCESSIVE_RECEIVED_QUANTITY', 'label label-danger');
 
 -- type of requestors
-INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES
+INSERT IGNORE INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES
   ('service', 'FORM.LABELS.SERVICE'),
   ('depot', 'FORM.LABELS.DEPOT');
 
 -- analysis_tool_type
-INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
+INSERT IGNORE INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
   ('FORM.LABELS.ANALYSIS_TOOLS.COSTS', 0, 1),
   ('FORM.LABELS.ANALYSIS_TOOLS.RECEIVABLES', 1, 4),
   ('FORM.LABELS.ANALYSIS_TOOLS.PROFITS', 0, 2),
@@ -499,7 +500,7 @@ INSERT INTO `analysis_tool_type` (`label`, `is_balance_sheet`, `rank`) VALUES
 -- Cost Center basis info
 -- NOTE: 'id' field must match values assigned to the corresponding allocation
 --       basis items in server/config/constants.js (search for allocationBasis)
-INSERT INTO `cost_center_allocation_basis`
+INSERT IGNORE INTO `cost_center_allocation_basis`
   (`id`, `name`, `units`, `description`, `is_predefined`, `is_currency`, `decimal_places`, `is_computed`)
   VALUES
   (1, 'ALLOCATION_BASIS_DIRECT_COST', '',
@@ -520,21 +521,29 @@ INSERT INTO `cost_center_allocation_basis`
       'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
 
 /**
+ * Add default asset conditions
+ */
+
+INSERT IGNORE INTO `asset_condition` VALUES -- (id, comdition, predefined)
+  (1, 'ASSET.CONDITION.NEW', 1),
+  (2, 'ASSET.CONDITION.GOOD', 1),
+  (3, 'ASSET.CONDITION.FAIR', 1),
+  (4, 'ASSET.CONDITION.POOR', 1),
+  (5, 'ASSET.CONDITION.BROKEN', 1),
+  (6, 'ASSET.CONDITION.OBSOLETE', 1),
+  (7, 'ASSET.CONDITION.DISCARDED', 1),
+  (8, 'ASSET.CONDITION.SOLD', 1),
+  (9, 'ASSET.CONDITION.LOST', 1);
+
+/**
  * Default values for shipment tables
  */
-INSERT INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES 
-  (1, 'empty', 'ASSET.STATUS.EMPTY'),
-  (2, 'at_depot', 'ASSET.STATUS.AT_DEPOT'),
-  (3, 'ready', 'ASSET.STATUS.READY_FOR_SHIPMENT'),
-  (4, 'in_transit', 'ASSET.STATUS.IN_TRANSIT'),
-  (5, 'partial', 'ASSET.STATUS.PARTIAL'),
-  (6, 'complete', 'ASSET.STATUS.COMPLETE'),
-  (7, 'delivered', 'ASSET.STATUS.DELIVERED'),
-  (8, 'lost', 'ASSET.STATUS.LOST');
-
-/** ADD DEFAULT ASSET CONDITION */
-INSERT INTO `asset_condition` (`id`, `name`, `translation_key`) VALUES 
-  (1, 'empty', 'ASSET.STATUS.EMPTY'),
-  (2, 'new', 'ASSET.CONDITION.NEW'),
-  (3, 'good', 'ASSET.CONDITION.GOOD'),
-  (4, 'broken', 'ASSET.CONDITION.BROKEN');
+INSERT IGNORE INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES
+  (1, 'empty', 'SHIPMENT.STATUS.EMPTY'),
+  (2, 'at_depot', 'SHIPMENT.STATUS.AT_DEPOT'),
+  (3, 'ready', 'SHIPMENT.STATUS.READY_FOR_SHIPMENT'),
+  (4, 'in_transit', 'SHIPMENT.STATUS.IN_TRANSIT'),
+  (5, 'partial', 'SHIPMENT.STATUS.PARTIAL'),
+  (6, 'complete', 'SHIPMENT.STATUS.COMPLETE'),
+  (7, 'delivered', 'SHIPMENT.STATUS.DELIVERED'),
+  (8, 'lost', 'SHIPMENT.STATUS.LOST');
