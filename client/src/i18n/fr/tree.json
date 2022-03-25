@@ -153,6 +153,7 @@
     "REPORTS":"Rapports",
     "REPORTS_MULTIPLE_ACCOUNTS" : "Rapport de comptes multiple",
     "REPORT_ACCOUNTS":"Rapport de comptes simple",
+    "REQUIRED_INVENTORY_SCANS" : "Scans d'inventaire obligatoires",
     "ROLE_MANAGEMENT":"Gestion des rôles",
     "ROOT":"Racine",
     "RUBRIC_MANAGEMENT":"Gestion Rubriques",
