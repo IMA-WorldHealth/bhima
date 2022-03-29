@@ -805,6 +805,7 @@ exports.configure = function configure(app) {
   app.get('/asset/conditions', assets.conditions);
   app.get('/asset/scans', assets.getAssetScans);
   app.get('/asset/scan/:uuid', assets.getAssetScan);
+  app.get('/asset/scans/reports/', assets.report);
   app.post('/asset/scan', assets.createAssetScan);
   app.put('/asset/scan/:uuid', assets.updateAssetScan);
   app.delete('/asset/scan/:uuid/delete', assets.deleteAssetScan);

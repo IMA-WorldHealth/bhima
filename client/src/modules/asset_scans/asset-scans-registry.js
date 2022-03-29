@@ -5,7 +5,7 @@ AssetScansRegistryController.$inject = [
   'StockService', 'AssetsScanService', 'AssetsScansRegistryService',
   'StockModalService', 'DepotService', 'BarcodeService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
-  'NotifyService', '$state',
+  'NotifyService', '$state', 'uiGridConstants', 'LanguageService', '$httpParamSerializer',
 ];
 
 /**
@@ -16,7 +16,8 @@ function AssetScansRegistryController(
   Stock, AssetsScans, AssetsScansRegistryService,
   StockModal, Depots, Barcode,
   GridState, Columns, Grouping,
-  Notify, $state,
+  Notify, $state, uiGridConstants,
+  Languages, $httpParamSerializer,
 ) {
   const vm = this;
   const cacheKey = 'assets-scans-grid';
@@ -47,6 +48,8 @@ function AssetScansRegistryController(
   vm.grouping = new Grouping(vm.gridOptions, false, 'depot_text', true, true);
 
   vm.filters = AssetsScansRegistryService.filters;
+
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   vm.defaultDepot = null;
 
@@ -90,8 +93,9 @@ function AssetScansRegistryController(
   function startup() {
     if ($state.params.filters.length) {
       vm.filters.replaceFiltersFromState($state.params.filters);
-      vm.filters.formatCache();
+      vm.filters.cacheFilters();
     }
+
     load(vm.filters.formatHTTP(true));
     vm.latestViewFilters = vm.filters.formatView();
   }
@@ -124,7 +128,7 @@ function AssetScansRegistryController(
    */
   vm.onRemoveFilter = function onRemoveFilter(key) {
     vm.filters.removeFilter(key);
-    vm.filters.formatCache();
+    vm.filters.cacheFilters();
     vm.latestViewFilters = vm.filters.formatView();
     return load(vm.filters.formatHTTP(true));
   };
@@ -161,8 +165,10 @@ function AssetScansRegistryController(
     const filtersSnapshot = vm.filters.formatHTTP();
     StockModal.openAssetScansSearch(filtersSnapshot)
       .then((changes) => {
+        if (!changes) { return null; }
+
         vm.filters.replaceFilters(changes);
-        vm.filters.formatCache();
+        vm.filters.cacheFilters();
         vm.latestViewFilters = vm.filters.formatView();
         return load(vm.filters.formatHTTP(true));
       });
@@ -189,6 +195,11 @@ function AssetScansRegistryController(
       });
   };
 
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
   // This function opens a modal through column service to let the user toggle
   // the visibility of the lots registry's columns.
   vm.openColumnConfigModal = function openColumnConfigModal() {
@@ -201,6 +212,19 @@ function AssetScansRegistryController(
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
+  };
+
+  // downloads a the registry as a given type (pdf, csv)
+  vm.download = function download(type) {
+    const filterOpts = vm.filters.formatHTTP();
+
+    const defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
   };
 
   startup();

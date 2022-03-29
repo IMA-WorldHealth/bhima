@@ -1,0 +1,129 @@
+{{> head title="TREE.ASSET_MANAGEMENT.TITLE" }}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'TREE.ASSETS_SCANS_REGISTRY'}}
+      </h2>
+
+      <h3 class="text-center">
+        {{#if project.id}}{{project.name}}<br>{{/if}}
+        <small>{{date aggregates.minDate }} - {{date aggregates.maxDate}}</small>
+      </h3>
+
+      <br>
+
+      <!-- filters  -->
+      {{> filterbar filters=filters }}
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-bordered table-report table-striped" style="font-size: 10px;">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{{translate 'STOCK.DEPOT'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.INVENTORY_GROUP'}}</th>
+            <th>{{translate 'STOCK.CODE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.INVENTORY'}}</th>
+            <th>{{translate 'FORM.LABELS.MANUFACTURER_BRAND'}}</th>
+            <th>{{translate 'FORM.LABELS.MANUFACTURER_MODEL'}}</th>
+            <th>{{translate 'ASSET.ASSET_LABEL'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.SERIAL_NUMBER'}}</th>
+            <th>{{translate 'ASSET.ASSET_CONDITION'}}</th>
+            <th>{{translate 'FORM.LABELS.NOTES'}}</th>
+            <th>{{translate 'ASSET.SCANNED_BY'}}</th>
+            <th>{{translate 'ASSET.SCAN_DATE'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr>
+              <td> {{add @index 1}} </td>
+              <td class="text-right">{{ depot_text }}</td>
+              <td class="text-right">{{ group_name }}</td>
+              <td class="text-right">{{ inventory_code }}</td>
+              <td class="text-right">{{ inventory_text }}</td>
+              <td class="text-right">{{ manufacturer_brand }}</td>
+              <td class="text-right">{{ manufacturer_model }}</td>
+              <td class="text-right">{{ asset_label }}</td>
+              <td class="text-right">{{ serial_number }}</td>
+              <td class="text-right">{{ translate condition }}</td>
+              <td class="text-right">{{ notes }}</td>
+              <td class="text-right">{{ scanned_by_name }}</td>
+              <td class="text-right">{{ date updated_at }}</td>                   
+            </tr>
+          {{else}}
+            {{> emptyTable columns=13}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  {{#if aggregates}}
+    <br />
+
+    <div class="row">
+      <div class="col-xs-6">
+
+        <!-- summary table -->
+        <table class="table table-condensed table-bordered table-report">
+          <tbody>
+            <tr>
+              <th colspan="2" class="text-center">
+                {{ translate 'FORM.LABELS.SUMMARY' }} ({{date aggregates.minDate }} - {{date aggregates.maxDate}})
+              </th>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_PAYMENTS' }}</th>
+              <td class="text-right">{{ aggregates.numPayments }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_CAUTIONS' }}</th>
+              <td class="text-right">{{ aggregates.numCautions }}</td>
+            </tr>
+
+            {{! loop through the currency amounts and print them out }}
+            {{#each amounts}}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.TOTAL_AMOUNT' }} ({{ symbol }})</th>
+                <td class="text-right">{{currency amount currency_id}}</td>
+              </tr>
+            {{/each}}
+
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUMBER_OF_DAYS' }}</th>
+              <td class="text-right">{{ aggregates.numDays }}</td>
+            </tr>
+            <tr>
+              <th>{{ translate 'TABLE.AGGREGATES.NUM_CLIENTS' }}</th>
+              <td class="text-right">{{ aggregates.numDebtors }}</td>
+            </tr>
+
+            {{#if hasMultipleCashboxes }}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_CASHBOXES' }}</th>
+                <td class="text-right">{{ aggregates.numCashboxes }}</td>
+              </tr>
+            {{/if}}
+
+            {{#if hasMultipleProjects }}
+              <tr>
+                <th>{{ translate 'TABLE.AGGREGATES.NUM_PROJECTS' }}</th>
+                <td class="text-right">{{ aggregates.numProjects }}</td>
+              </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {{/if}}
+</body>

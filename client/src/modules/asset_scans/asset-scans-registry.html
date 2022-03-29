@@ -9,7 +9,6 @@
     <div class="toolbar">
       <div class="toolbar-item">
         <bh-dropdown-menu>
-
           <bh-dropdown-menu-item>
             <a href ng-click="ScansCtrl.openChangeDepotModal()">
               <i class="fa fa-archive"></i> <span translate>DEPOT.CHANGE</span>
@@ -38,6 +37,25 @@
             </a>
           </bh-dropdown-menu-item>
 
+          <bh-dropdown-menu-item role="separator" class="divider"></bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a data-method="export-pdf" ng-href="/asset/scans/reports/?{{ ScansCtrl.download('pdf') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+              <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a data-method="export-csv" ng-href="/asset/scans/reports/?{{ ScansCtrl.download('csv') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+              <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+            </a>
+          </bh-dropdown-menu-item>
+
+          <bh-dropdown-menu-item>
+            <a data-method="export-excel" ng-href="/asset/scans/reports/?{{ ScansCtrl.download('xlsx') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+              <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+            </a>
+          </bh-dropdown-menu-item>
         </bh-dropdown-menu>
       </div>
 

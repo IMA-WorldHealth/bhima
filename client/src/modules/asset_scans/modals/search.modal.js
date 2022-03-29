@@ -4,10 +4,10 @@ angular.module('bhima.controllers')
 // dependencies injections
 AssetScansSearchModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'StockService',
-  'SearchModalUtilService',
+  'SearchModalUtilService', 'PeriodService',
 ];
 
-function AssetScansSearchModalController(data, util, Store, Instance, Stock, SearchModal) {
+function AssetScansSearchModalController(data, util, Store, Instance, Stock, SearchModal, Periods) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -50,6 +50,15 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
     if (angular.isDefined(value)) {
       changes.post({ key : 'limit', value });
     }
+  };
+
+  // default filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    const periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach((filterChange) => {
+      changes.post(filterChange);
+    });
   };
 
   // deletes a filter from the custom filter object,
