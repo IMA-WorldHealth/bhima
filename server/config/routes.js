@@ -149,6 +149,7 @@ const lots = require('../controllers/stock/lots');
 
 // assets
 const assets = require('../controllers/stock/asset');
+const reqInvScans = require('../controllers/stock/required_inventory_scans');
 
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
@@ -808,6 +809,13 @@ exports.configure = function configure(app) {
   app.post('/asset/scan', assets.createAssetScan);
   app.put('/asset/scan/:uuid', assets.updateAssetScan);
   app.delete('/asset/scan/:uuid/delete', assets.deleteAssetScan);
+
+  // API for required asset inventory scans
+  app.get('/inventory/required/scans', reqInvScans.getRequiredInventoryScans);
+  app.get('/inventory/required/scan/:uuid', reqInvScans.getRequiredInventoryScan);
+  app.post('/inventory/required/scan', reqInvScans.createRequiredInventoryScan);
+  app.put('/inventory/required/scan/:uuid', reqInvScans.updateRequiredInventoryScan);
+  app.delete('/inventory/required/scan/:uuid/delete', reqInvScans.deleteRequiredInventoryScan);
 
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);

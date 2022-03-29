@@ -429,6 +429,7 @@
             "DEPOT": "Depot",
             "DEPOT_OPTIONAL": "Depot (optional)",
             "DESCRIPTION": "Description",
+            "DESCRIPTION_OPTIONAL": "Description (optional)",
             "DESIGNATION": "Designation",
             "DETAIL_PREVIOUS": "Previous Year Details",
             "DETAILS": "Details",
@@ -702,6 +703,7 @@
             "RECORDS": "Records (Rows)",
             "REFERENCE_GROUP": "Reference Group",
             "REFERENCE_NUMBER": "Reference number",
+            "REFERENCE_NUMBER_OPTIONAL": "Reference number (optional)",
             "REFERENCE_PATIENT": "Patient Reference",
             "REFERENCE_VOUCHER" : "Voucher Reference",
             "REFERENCE_SHIPMENT" : "Shipment Reference",
@@ -964,6 +966,7 @@
             "SEARCH_NAME": "Search by Name",
             "SEARCH_PATIENT_ID": "Search by Patient ID",
             "TAG_NUMBER_TO_GENERATE" : "Enter the number of tags to produce",
+            "TITLE" : "Enter title",
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
