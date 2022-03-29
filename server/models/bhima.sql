@@ -184,7 +184,9 @@ INSERT INTO unit VALUES
   (309, 'Asset Shipment', 'SHIPMENT.SHIPMENTS', 'Asset Shipment', 0, '/SHIPMENT_FOLDER'),
   (310, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 309, '/shipments/create'),
   (311, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 309, '/shipments'),
-  (312, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
+  (312, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans'),
+  (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans');
+
 
 -- Reserved system account type
 INSERT IGNORE INTO `account_category` VALUES
