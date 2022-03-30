@@ -1205,6 +1205,6 @@ INSERT INTO `stock_assign` (`uuid`, `lot_uuid`, `entity_uuid`, `depot_uuid`,
 
 -- Add asset management scans
 INSERT INTO `asset_scan` (`uuid`, `asset_uuid`, `location_uuid`, `depot_uuid`,
-  `scanned_by`, `condition_id`, `notes`) VALUES
-(0xA215AE67494744271A7F81596FC62CFC, @asset_mot1, NULL, @depot_uuid, 1, 1, 'Initial entry'),
-(0xA215AE6749474422345F81596FC62CFC, @asset_mot2, NULL, @depot_uuid, 1, 1, 'Initial entry');
+  `scanned_by`, `condition_id`, `notes`, `created_at`) VALUES
+(0xA215AE67494744271A7F81596FC62CFC, @asset_mot1, NULL, @depot_uuid, 1, 1, 'Initial entry', DATE_ADD(NOW(), INTERVAL -7 DAY)),
+(0xA215AE6749474422345F81596FC62CFC, @asset_mot2, NULL, @depot_uuid, 1, 1, 'Initial entry', NOW());
