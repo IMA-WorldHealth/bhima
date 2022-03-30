@@ -93,25 +93,27 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
       headerCellClass : 'wrappingColHeader',
       visible : false,
     }, {
-      field : 'updated_at',
+      field : 'created_at',
+      type : 'date',
       displayName : 'ASSET.SCAN_DATE',
       headerTooltip : 'ASSET.SCAN_DATE',
       headerCellFilter : 'translate',
       headerCellClass : 'wrappingColHeader',
       cellFilter : 'date',
     }, {
+      field : 'updated_at',
+      type : 'date',
+      displayName : 'FORM.LABELS.UPDATED',
+      headerTooltip : 'FORM.LABELS.UPDATED',
+      headerCellFilter : 'translate',
+      cellFilter : 'date',
+      visible : false,
+    }, {
       field : 'assigned_to_name',
       displayName : 'ENTITY.ASSIGNED_TO',
       headerTooltip : 'ENTITY.ASSIGNED_TO',
       headerCellFilter : 'translate',
       headerCellClass : 'wrappingColHeader',
-    }, {
-      field : 'created_at',
-      type : 'date',
-      displayName : 'FORM.LABELS.SERVER_DATE',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/journal/templates/created_at.cell.html',
-      visible : false,
     }, {
       field : 'action',
       displayName : '',
@@ -133,6 +135,7 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
 
   scansFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'asset_uuid', label : 'ASSET.ASSET' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
@@ -161,6 +164,8 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
 
     if (!periodDefined) {
       scansFilters.assignFilters(Periods.defaultFilters());
+      // Force the default period to be this year
+      scansFilters.assignFilter('period', 'year', 'PERIODS.THIS_YEAR');
     }
   }
 

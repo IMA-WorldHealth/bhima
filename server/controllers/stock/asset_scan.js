@@ -71,11 +71,9 @@ function getAssetScanFilters(parameters) {
   filters.equals('inventory_uuid', 'inventory_uuid', 'l');
   filters.equals('scanned_by');
   filters.equals('condition_id', 'id', 'ac');
-  filters.dateFrom('start_date', 'updated_at');
-  filters.dateTo('end_date', 'updated_at');
-  filters.period('period', 'updated_at');
-  filters.dateFrom('custom_period_start', 'updated_at');
-  filters.dateTo('custom_period_end', 'updated_at');
+  filters.period('period', 'created_at');
+  filters.dateFrom('custom_period_start', 'created_at');
+  filters.dateTo('custom_period_end', 'created_at');
 
   return filters;
 }

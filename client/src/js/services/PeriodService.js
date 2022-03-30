@@ -52,7 +52,7 @@ function PeriodService(Moment) {
     },
 
     // components will make an exception for all time - no period has to be selected
-    // on the server this simple removes the WHERE condition
+    // on the server this simply removes the WHERE condition
     allTime : {
       key : 'allTime',
       translateKey : 'PERIODS.ALL_TIME',
