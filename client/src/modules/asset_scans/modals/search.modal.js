@@ -3,8 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 AssetScansSearchModalController.$inject = [
-  'data', 'util', 'Store', '$uibModalInstance', 'StockService',
-  'SearchModalUtilService', 'PeriodService',
+  'data', 'util', 'Store', '$uibModalInstance', 'StockService', 'SearchModalUtilService', 'PeriodService',
 ];
 
 function AssetScansSearchModalController(data, util, Store, Instance, Stock, SearchModal, Periods) {

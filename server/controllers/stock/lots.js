@@ -158,7 +158,7 @@ function getDupes(req, res, next) {
   filters.equals('inventory_uuid');
   filters.equals('entry_date');
   filters.equals('expiration_date');
-  filters.equals('reference_number');
+  filters.fullText('reference_number');
   filters.equals('serial_number');
 
   const query = filters.applyQuery(detailsQuery);
