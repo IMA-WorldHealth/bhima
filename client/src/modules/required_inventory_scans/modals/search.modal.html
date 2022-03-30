@@ -24,11 +24,26 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <div class="form-group">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER_OPTIONAL</label>
+            <bh-clear on-clear="$ctrl.clear('reference_number')"></bh-clear>
+            <input ng-model="$ctrl.searchQueries.reference_number"
+              class="form-control"
+              type="text"
+              name="reference_number">
+          </div>
+
         </div>
       </uib-tab>
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
+
+          <!-- end date selection -->
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectEndPeriod(period)">
+          </bh-period-select>
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
