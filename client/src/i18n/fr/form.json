@@ -432,6 +432,7 @@
             "DEPOT": "Dépôt",
             "DEPOT_OPTIONAL"  : "Dépôt (optionnel)",
             "DESCRIPTION": "Description",
+            "DESCRIPTION_OPTIONAL": "Description (optionnel)",
             "DESIGNATION": "Désignation",
             "DETAIL_PREVIOUS": "Detailler Année Précédente",
             "DETAILS": "Détails",
@@ -702,6 +703,7 @@
             "RECORDS": "Enregistrements (Lignes)",
             "REFERENCE_GROUP": "Groupe de référence",
             "REFERENCE_NUMBER": "Numéro de référence",
+            "REFERENCE_NUMBER_OPTIONAL": "Numéro de référence (optionnel)",
             "REFERENCE_PATIENT": "Référence Patient",
             "REFERENCE_VOUCHER": "Référence Bordereau",
             "REFERENCE_SHIPMENT" : "Référence Expédition",
@@ -964,6 +966,7 @@
             "SEARCH_NAME": "Chercher Par Nom",
             "SEARCH_PATIENT_ID": "Chercher par l'ID",
             "TAG_NUMBER_TO_GENERATE" : "Entrer le nombre des étiquettes à produire",
+            "TITLE" : "Entrez le titre",
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
