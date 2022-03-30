@@ -47,6 +47,7 @@ function getFilters(parameters) {
   filters.equals('title');
   filters.equals('description');
   filters.equals('depot_uuid');
+  filters.equals('reference_number');
   filters.equals('is_asset');
   filters.dateTo('start_date');
   filters.dateTo('end_date');

@@ -95,6 +95,7 @@ function RequiredInventoryScansRegistryService(Session, Filters, AppCache, bhCon
   scansFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'reference_number', label : 'FORM.LABELS.REFERENCE_NUMBER' },
   ]);
 
   if (filterCache.filters) {

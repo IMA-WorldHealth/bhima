@@ -16,7 +16,7 @@ function RequiredInventoryScansSearchModalController(data, util, Store, Instance
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid',
+    'depot_uuid', 'reference_number',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -30,6 +30,11 @@ function RequiredInventoryScansSearchModalController(data, util, Store, Instance
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
+  };
+
+  // custom filter reference_number
+  vm.onChangeReferenceNumber = function onChangeReferenceNumber(refNum) {
+    vm.searchQueries.reference_number = refNum;
   };
 
   // default filter limit - directly write to changes list
