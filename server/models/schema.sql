@@ -1979,6 +1979,21 @@ CREATE TABLE `asset_scan` (
   CONSTRAINT `asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `required_inventory_scan`;
+CREATE TABLE `required_inventory_scan` (
+  `uuid`              BINARY(16) NOT NULL,
+  `title`             VARCHAR(100) NOT NULL,
+  `description`       TEXT NULL,
+  `start_date`        DATE NOT NULL,
+  `end_date`          DATE NOT NULL,
+  `depot_uuid`        BINARY(16) DEFAULT NULL,     -- NULL if not restricted to a specific depot
+  `is_asset`          BOOLEAN NOT NULL DEFAULT 1,  -- Limit to assets if true
+  `reference_number`  TEXT NULL,                   -- If non null, Limit to lots/assets with same 'reference_number'
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `req_asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `asset_condition`;
 CREATE TABLE `asset_condition` (
   `id`               SMALLINT(5) NOT NULL AUTO_INCREMENT,

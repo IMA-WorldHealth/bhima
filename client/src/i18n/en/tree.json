@@ -154,6 +154,7 @@
     "REPORT_ACCOUNTS" : "Account Statement Report (Single)",
     "REPORTS_MULTIPLE_ACCOUNTS" : "Account Statement Report (Multiple)",
     "REPORTS" : "Reports",
+    "REQUIRED_INVENTORY_SCANS" : "Required Inventory Scans",
     "ROLE_MANAGEMENT" : "Role Management",
     "ROOT" : "Root",
     "RUBRIC_MANAGEMENT" : "Rubrics Management",
