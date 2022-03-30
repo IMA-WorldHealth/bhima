@@ -4,6 +4,10 @@
 const _ = require('lodash');
 const db = require('../../lib/db');
 const util = require('../../lib/util');
+const shared = require('../finance/reports/shared');
+const ReportManager = require('../../lib/ReportManager');
+
+const REPORT_TEMPLATE = './server/controllers/stock/reports/report.handlebars';
 
 const FilterParser = require('../../lib/filter');
 
@@ -63,12 +67,15 @@ function getAssetScanFilters(parameters) {
   filters.equals('asset_label', 'label', 'l');
   filters.equals('location_uuid');
   filters.equals('depot_uuid');
-  filters.equals('group_uuid');
-  filters.equals('inventory_uuid');
+  filters.equals('group_uuid', 'group_uuid', 'i');
+  filters.equals('inventory_uuid', 'inventory_uuid', 'l');
   filters.equals('scanned_by');
   filters.equals('condition_id', 'id', 'ac');
   filters.dateFrom('start_date', 'updated_at');
   filters.dateTo('end_date', 'updated_at');
+  filters.period('period', 'updated_at');
+  filters.dateFrom('custom_period_start', 'updated_at');
+  filters.dateTo('custom_period_end', 'updated_at');
 
   return filters;
 }
@@ -94,6 +101,7 @@ exports.getAssetScan = async function getAssetScan(req, res, next) {
  */
 exports.getAssetScans = async function getAssetScans(req, res, next) {
   const params = req.query;
+
   try {
     const rows = await listAssetScans(params);
     res.status(200).json(rows);
@@ -130,6 +138,7 @@ function listAssetScans(params) {
   `;
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
+
   return db.exec(query, queryParameters);
 }
 
@@ -190,3 +199,35 @@ exports.deleteAssetScan = async function deleteAssetScan(req, res, next) {
     .catch(next)
     .done();
 };
+
+/**
+ * @function report
+ *
+ * @description report as either a PDF, CSV or XLSX
+ *
+ * GET /asset/scans/reports
+ */
+async function report(req, res, next) {
+  const query = _.clone(req.query);
+  const filters = shared.formatFilters(req.query);
+
+  _.extend(query, {
+    filename : 'TREE.ASSETS_SCANS_REGISTRY',
+    csvKey : 'rows',
+    orientation : 'landscape',
+  });
+
+  try {
+    const reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
+    const data = { filters };
+
+    data.rows = await listAssetScans(req.query);
+
+    const result = await reportInstance.render(data);
+    res.set(result.headers).send(result.report);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.report = report;

@@ -2,13 +2,13 @@ angular.module('bhima.services')
   .service('AssetsScansRegistryService', AssetsScansRegistryService);
 
 AssetsScansRegistryService.$inject = [
-  'SessionService', 'FilterService', 'appcache', 'bhConstants',
+  'SessionService', 'FilterService', 'appcache', 'bhConstants', 'PeriodService', 'util',
 ];
 
 /**
  * This service encapsulates some common methods of assets scans registry
  */
-function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants) {
+function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Periods, util) {
   const service = this;
 
   /**
@@ -153,6 +153,15 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants) {
     if (assignedKeys.indexOf('limit') === -1) {
       scansFilters.assignFilter('limit', 100);
     }
+
+    // assign default period filter
+    const periodKeys = ['period', 'custom_period_start', 'custom_period_end'];
+
+    const periodDefined = util.arrayIncludes(assignedKeys, periodKeys);
+
+    if (!periodDefined) {
+      scansFilters.assignFilters(Periods.defaultFilters());
+    }
   }
 
   // Remove a filter
@@ -164,8 +173,8 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants) {
   service.filters.cacheFilters = function cacheFilters() {
     filterCache.filters = scansFilters.formatCache();
   };
+
   service.filters.loadCachedFilters = function loadCachedFilters() {
     scansFilters.loadCache(filterCache.filters || {});
   };
-
 }
