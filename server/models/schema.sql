@@ -1984,8 +1984,8 @@ CREATE TABLE `required_inventory_scan` (
   `uuid`              BINARY(16) NOT NULL,
   `title`             VARCHAR(100) NOT NULL,
   `description`       TEXT NULL,
-  `start_date`        DATE NOT NULL,
-  `end_date`          DATE NOT NULL,
+  `start_date`        DATETIME NOT NULL,
+  `end_date`          DATETIME NOT NULL,
   `depot_uuid`        BINARY(16) DEFAULT NULL,     -- NULL if not restricted to a specific depot
   `is_asset`          BOOLEAN NOT NULL DEFAULT 1,  -- Limit to assets if true
   `reference_number`  TEXT NULL,                   -- If non null, Limit to lots/assets with same 'reference_number'

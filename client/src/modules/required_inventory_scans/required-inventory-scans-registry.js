@@ -2,9 +2,8 @@ angular.module('bhima.controllers')
   .controller('RequiredInventoryScansRegistryController', RequiredInventoryScansRegistryController);
 
 RequiredInventoryScansRegistryController.$inject = [
-  'StockService', 'RequiredInventoryScansService',
-  'RequiredInventoryScansRegistryService',
-  'StockModalService', 'DepotService', 'BarcodeService',
+  'RequiredInventoryScansService', 'RequiredInventoryScansRegistryService',
+  'StockModalService', 'DepotService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
   'NotifyService', '$state',
 ];
@@ -14,9 +13,8 @@ RequiredInventoryScansRegistryController.$inject = [
  * This module is a registry page for assets
  */
 function RequiredInventoryScansRegistryController(
-  Stock, RequiredInventoryScans,
-  ReqInvScansRegistryService,
-  StockModal, Depots, Barcode,
+  RequiredInventoryScans, ReqInvScansRegistryService,
+  StockModal, Depots,
   GridState, Columns, Grouping,
   Notify, $state,
 ) {

@@ -4,10 +4,13 @@ angular.module('bhima.controllers')
 // dependencies injections
 RequiredInventoryScansSearchModalController.$inject = [
   'data', 'util', 'Store', '$uibModalInstance', 'StockService',
-  'SearchModalUtilService',
+  'SearchModalUtilService', 'PeriodService',
 ];
 
-function RequiredInventoryScansSearchModalController(data, util, Store, Instance, Stock, SearchModal) {
+function RequiredInventoryScansSearchModalController(
+  data, util, Store, Instance, Stock,
+  SearchModal, Periods) {
+
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -37,6 +40,13 @@ function RequiredInventoryScansSearchModalController(data, util, Store, Instance
     vm.searchQueries.reference_number = refNum;
   };
 
+  vm.onSelectEndPeriod = function onSelectEndPeriod(period) {
+    const periodFilters = Periods.processFilterChanges(period);
+    periodFilters.forEach((filterChange) => {
+      changes.post(filterChange);
+    });
+  };
+
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
@@ -62,7 +72,6 @@ function RequiredInventoryScansSearchModalController(data, util, Store, Instance
   vm.cancel = () => Instance.dismiss();
 
   vm.submit = () => {
-
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
 
     return Instance.close(loggedChanges);

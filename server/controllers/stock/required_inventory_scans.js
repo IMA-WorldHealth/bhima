@@ -49,8 +49,10 @@ function getFilters(parameters) {
   filters.equals('depot_uuid');
   filters.equals('reference_number');
   filters.equals('is_asset');
-  filters.dateTo('start_date');
-  filters.dateTo('end_date');
+
+  filters.period('period', 'end_date');
+  filters.dateFrom('custom_period_start', 'end_date');
+  filters.dateTo('custom_period_end', 'end_date');
 
   return filters;
 }
