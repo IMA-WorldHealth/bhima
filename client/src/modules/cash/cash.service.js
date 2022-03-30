@@ -2,8 +2,7 @@ angular.module('bhima.services')
   .service('CashService', CashService);
 
 CashService.$inject = [
-  '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService',
-  'moment', '$translate', 'FilterService', 'appcache', 'PeriodService',
+  '$uibModal', 'PrototypeApiService', '$translate', 'FilterService', 'appcache', 'PeriodService',
   'LanguageService', '$httpParamSerializer', 'bhConstants', 'TransactionService',
 ];
 
@@ -15,8 +14,8 @@ CashService.$inject = [
  * A service to interact with the server-side /cash API.
  */
 function CashService(
-  Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods,
-  Languages, $httpParamSerializer, bhConstants, Transactions
+  Modal, Api, $translate, Filters, AppCache, Periods,
+  Languages, $httpParamSerializer, bhConstants, Transactions,
 ) {
   const service = new Api('/cash/');
   const urlCheckin = '/cash/checkin/';
