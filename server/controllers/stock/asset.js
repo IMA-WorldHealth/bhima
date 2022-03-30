@@ -81,9 +81,9 @@ function getAssetScanFilters(parameters) {
 }
 
 /**
- * @function getAssetScans
+ * @function getAssetScan
  *
- * GET /asset/scans
+ * GET /asset/scan
  */
 exports.getAssetScan = async function getAssetScan(req, res, next) {
   try {
