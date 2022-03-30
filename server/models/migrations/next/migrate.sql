@@ -230,4 +230,26 @@ CREATE TABLE IF NOT EXISTS `asset_scan` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO unit VALUES
-  (309, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
+  (312, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans');
+
+/*
+ * Issue: Asset Management - Required Inventory Scans
+ * @author: jmcameron
+ * @date: 2022-03-29
+ */
+CREATE TABLE IF NOT EXISTS `required_inventory_scan` (
+  `uuid`              BINARY(16) NOT NULL,
+  `title`             VARCHAR(100) NOT NULL,
+  `description`       TEXT NULL,
+  `start_date`        DATE NOT NULL,
+  `end_date`          DATE NOT NULL,
+  `depot_uuid`        BINARY(16) DEFAULT NULL,     -- NULL if not restricted to a specific depot
+  `is_asset`          BOOLEAN NOT NULL DEFAULT 1,  -- Limit to assets if true
+  `reference_number`  TEXT NULL,                   -- If non null, Limit to lots/assets with same 'reference_number'
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `req_asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO unit VALUES
+  (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans');
