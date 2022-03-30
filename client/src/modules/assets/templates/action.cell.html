@@ -47,6 +47,12 @@
       </a>
     </li>
 
+    <li>
+      <a data-method="view-scan-history" ng-click="grid.appScope.showAssetScans(row.entity)" href>
+        <i class="fa fa-list-alt"></i> <span translate>ASSET.SHOW_ASSET_SCANS</span>
+      </a>
+    </li>
+
     <li role="separator" class="divider"></li>
 
     <li ng-if="row.entity.assignment_uuid">
@@ -68,7 +74,7 @@
     </li>
 
     <li>
-      <a data-method="view-stock-history" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
+      <a data-method="view-assignment-history" ng-click="grid.appScope.openHistoricModal(row.entity.uuid, row.entity.depot_uuid)" href>
         <i class="fa fa-clock-o"></i> <span translate>ASSET.ASSIGNMENT_HISTORY</span>
       </a>
     </li>

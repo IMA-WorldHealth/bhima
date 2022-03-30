@@ -133,6 +133,7 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
 
   scansFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'asset_uuid', label : 'ASSET.ASSET' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
