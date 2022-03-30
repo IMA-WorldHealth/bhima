@@ -5,7 +5,8 @@ AssetScansRegistryController.$inject = [
   'StockService', 'AssetsScanService', 'AssetsScansRegistryService',
   'StockModalService', 'DepotService', 'BarcodeService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
-  'NotifyService', '$state', 'uiGridConstants', 'LanguageService', '$httpParamSerializer',
+  'NotifyService', '$state',
+  'uiGridConstants', 'LanguageService', '$httpParamSerializer',
 ];
 
 /**
@@ -16,8 +17,8 @@ function AssetScansRegistryController(
   Stock, AssetsScans, AssetsScansRegistryService,
   StockModal, Depots, Barcode,
   GridState, Columns, Grouping,
-  Notify, $state, uiGridConstants,
-  Languages, $httpParamSerializer,
+  Notify, $state,
+  uiGridConstants, Languages, $httpParamSerializer,
 ) {
   const vm = this;
   const cacheKey = 'assets-scans-grid';
