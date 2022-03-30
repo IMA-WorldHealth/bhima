@@ -277,6 +277,20 @@ function AssetsRegistryController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
+  /**
+   * Show all the asset scans for this asset
+   * @param {string} uuid - the asset UUID
+   */
+  vm.showAssetScans = (asset) => {
+    $state.go('stockAssetsScans', {
+      filters : [{
+        key : 'asset_uuid',
+        value : asset.uuid,
+        displayValue : asset.label,
+      }],
+    });
+  };
+
   function openAssetBarcodeScanner() {
     Barcode.modal({ shouldSearch : false })
       .then(record => {
