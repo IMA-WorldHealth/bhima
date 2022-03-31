@@ -2,13 +2,13 @@ angular.module('bhima.services')
   .service('RequiredInventoryScansRegistryService', RequiredInventoryScansRegistryService);
 
 RequiredInventoryScansRegistryService.$inject = [
-  'SessionService', 'FilterService', 'appcache', 'bhConstants',
+  'FilterService', 'PeriodService', 'appcache', 'bhConstants', 'util',
 ];
 
 /**
  * This service encapsulates some common methods of assets scans registry
  */
-function RequiredInventoryScansRegistryService(Session, Filters, AppCache, bhConstants) {
+function RequiredInventoryScansRegistryService(Filters, Periods, AppCache, bhConstants, util) {
   const service = this;
 
   /**
@@ -95,6 +95,7 @@ function RequiredInventoryScansRegistryService(Session, Filters, AppCache, bhCon
   scansFilters.registerCustomFilters([
     { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'reference_number', label : 'FORM.LABELS.REFERENCE_NUMBER' },
   ]);
 
   if (filterCache.filters) {
@@ -111,6 +112,14 @@ function RequiredInventoryScansRegistryService(Session, Filters, AppCache, bhCon
     // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
       scansFilters.assignFilter('limit', 100);
+    }
+
+    // assign default period filter (for the end date of the inventory scan)
+    const periodKeys = ['period', 'custom_period_start', 'custom_period_end'];
+    const periodDefined = util.arrayIncludes(assignedKeys, periodKeys);
+
+    if (!periodDefined) {
+      scansFilters.assignFilters(Periods.defaultFilters());
     }
   }
 
