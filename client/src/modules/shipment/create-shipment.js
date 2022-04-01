@@ -20,7 +20,9 @@ function CreateShipmentController(
 
   vm.existingShipmentUuid = existingShipmentUuid;
   vm.isCreateState = $state.params.isCreateState;
+
   vm.stockForm = new StockForm('ShipmentForm');
+  vm.stockForm.setAllowExpired(false);
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
