@@ -48,6 +48,7 @@ function StockExitFormService(
     this.cache = AppCache(cacheKey);
     this.details = { is_exit : 1 };
     this.store = new Store({ identifier : 'uuid', data : [] });
+    this.allowExpired = true;
 
     // this variable is private and will contain the stock for the current depot.
     this._pool = new Pool('lot_uuid', []);
@@ -57,6 +58,14 @@ function StockExitFormService(
 
     this._messages = new Map();
   }
+
+  /**
+   * Set flag to allow or disable expired stock
+   * @param {boolean} flag
+   */
+  StockExitForm.prototype.setAllowExpired = function setAllowExpired(flag) {
+    this.allowExpired = flag;
+  };
 
   StockExitForm.prototype._toggleInfoMessage = function _toggleInfoMessage(
     shouldShowMsg, msgType, msgText, msgKeys = {},
@@ -140,7 +149,10 @@ function StockExitFormService(
     return Depots.getStockQuantityForDate(depotUuid, parameters)
       .then(stock => {
 
-        const available = stock
+        const rawStock = this.allowExpired ? stock
+          : stock.filter(lot => !lot.is_asset && !lot.is_expired);
+
+        const available = rawStock
           .map(item => {
             const lot = new Lot(item);
 
@@ -152,7 +164,7 @@ function StockExitFormService(
             lot._quantity_available = item.quantity;
 
             return lot;
-          });
+          })
 
         this._pool.initialize('lot_uuid', available);
 
