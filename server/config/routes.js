@@ -148,7 +148,7 @@ const period = require('../controllers/finance/period');
 const lots = require('../controllers/stock/lots');
 
 // assets
-const assets = require('../controllers/stock/asset');
+const assetScans = require('../controllers/stock/asset_scan');
 const reqInvScans = require('../controllers/stock/required_inventory_scans');
 
 // todo: the indicator folder must not be inside the finance folder
@@ -803,13 +803,13 @@ exports.configure = function configure(app) {
   app.get('/stock/status', stock.listStatus);
 
   // API for asset scan related queries
-  app.get('/asset/conditions', assets.conditions);
-  app.get('/asset/scans', assets.getAssetScans);
-  app.get('/asset/scan/:uuid', assets.getAssetScan);
-  app.get('/asset/scans/reports/', assets.report);
-  app.post('/asset/scan', assets.createAssetScan);
-  app.put('/asset/scan/:uuid', assets.updateAssetScan);
-  app.delete('/asset/scan/:uuid/delete', assets.deleteAssetScan);
+  app.get('/asset/conditions', assetScans.conditions);
+  app.get('/asset/scans', assetScans.getAssetScans);
+  app.get('/asset/scan/:uuid', assetScans.getAssetScan);
+  app.get('/asset/scans/reports/', assetScans.report);
+  app.post('/asset/scan', assetScans.createAssetScan);
+  app.put('/asset/scan/:uuid', assetScans.updateAssetScan);
+  app.delete('/asset/scan/:uuid/delete', assetScans.deleteAssetScan);
 
   // API for required asset inventory scans
   app.get('/inventory/required/scans', reqInvScans.getRequiredInventoryScans);

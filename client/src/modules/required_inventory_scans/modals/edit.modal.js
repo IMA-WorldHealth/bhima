@@ -67,12 +67,6 @@ function RequiredInventoryScanEditModalController(Data, ReqInvScansService,
   function submit(form) {
     if (form.$invalid) { return 0; }
 
-    // ???
-    // // Set up is_asset (based on html radio element values)
-    // if (vm.model.is_asset) {
-    //   vm.model.is_asset = vm.model.is_asset === 1;
-    // }
-
     if (vm.model.uuid) {
       return ReqInvScansService.update(Data.uuid, vm.model)
         .then(() => {
