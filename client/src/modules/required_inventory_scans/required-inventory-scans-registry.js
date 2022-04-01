@@ -2,9 +2,8 @@ angular.module('bhima.controllers')
   .controller('RequiredInventoryScansRegistryController', RequiredInventoryScansRegistryController);
 
 RequiredInventoryScansRegistryController.$inject = [
-  'StockService', 'RequiredInventoryScansService',
-  'RequiredInventoryScansRegistryService',
-  'StockModalService', 'DepotService', 'BarcodeService',
+  'RequiredInventoryScansService', 'RequiredInventoryScansRegistryService',
+  'StockModalService', 'DepotService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
   'NotifyService', '$state',
 ];
@@ -14,9 +13,8 @@ RequiredInventoryScansRegistryController.$inject = [
  * This module is a registry page for assets
  */
 function RequiredInventoryScansRegistryController(
-  Stock, RequiredInventoryScans,
-  ReqInvScansRegistryService,
-  StockModal, Depots, Barcode,
+  RequiredInventoryScans, ReqInvScansRegistryService,
+  StockModal, Depots,
   GridState, Columns, Grouping,
   Notify, $state,
 ) {
@@ -72,6 +70,8 @@ function RequiredInventoryScansRegistryController(
     load(vm.filters.formatHTTP(true));
     vm.latestViewFilters = vm.filters.formatView();
   }
+
+  // { key : 'period', value : 'allTime', displayValue : 'PERIODS.ALL_TIME', cacheable: false },
 
   // load the assets scans into the grid
   function load(filters) {
@@ -172,6 +172,36 @@ function RequiredInventoryScansRegistryController(
         if (!ans) { return; }
         load(vm.filters.formatHTTP(true));
       });
+  };
+
+  /**
+   * Go to the Assets Registry and show a
+   * @param {object} scan - required inventory scan object
+   */
+  vm.showScannedAssets = function showScannedAssets(scan) {
+    const filters = [{
+      key : 'period',
+      value : 'custom',
+      cacheable : false,
+    }, {
+      key : 'custom_period_start',
+      value : scan.start_date,
+      cacheable : false,
+    }, {
+      key : 'custom_period_end',
+      value : scan.end_date,
+      cacheable : false,
+    }];
+
+    if (scan.depot_uuid) {
+      filters.push({
+        key : 'depot_uuid',
+        value : scan.depot_uuid,
+        displayValue : scan.depot_name,
+        cacheable: false });
+    }
+
+    $state.go('stockAssetsScans', { filters });
   };
 
   // This function opens a modal through column service to let the user toggle
