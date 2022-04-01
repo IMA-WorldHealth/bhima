@@ -19,6 +19,7 @@
             <th style="width: 1%;">{{translate 'TABLE.COLUMNS.NR' }}</th>
             <th></th>
             <th style="width: 15%;">{{translate 'TABLE.COLUMNS.NAME' }}</th>
+            <th>{{translate 'TABLE.COLUMNS.SERVICE' }}</th>
             {{#each rubrics}}
               {{#if ../xlsReport}}
                 <th>{{ label }}</th>
@@ -32,7 +33,7 @@
             <th>{{translate 'TABLE.COLUMNS.NET_NON_TAXABLE' }}</th>
             <th>{{translate 'TABLE.COLUMNS.GROSS_SALARY' }}</th>
             <th>{{translate 'TABLE.COLUMNS.DEDUCTIONS' }}</th>
-            <th style="width: 4%;">{{translate 'TABLE.COLUMNS.NET_SALARY' }}</th>
+            <th style="width: 10%;">{{translate 'TABLE.COLUMNS.NET_SALARY' }}</th>
           </tr>
         </thead>
         <tbody>
@@ -41,6 +42,7 @@
               <td> {{add @index 1}} </td>
               <td> {{text}} </td>
               <td><strong> {{display_name}} </strong></td>
+              <td><strong> {{service_name}} </strong></td>
               {{#each rubricTaxable}}
                 <td style="text-align: right;">
                   {{#if result_equiv}}

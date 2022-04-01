@@ -28,10 +28,11 @@
             <tr class="text-capitalize">
               <th style="width: 1%;">{{translate 'TABLE.COLUMNS.NR' }}</th>
               <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
+              <th>{{translate 'TABLE.COLUMNS.SERVICE' }}</th>
               {{#each rubEnterprises}}
                 <th>{{ abbr }}</th>
               {{/each}}
-              <th style="width: 4%;">{{translate 'TABLE.COLUMNS.TOTAL' }}</th>
+              <th style="width: 10%;">{{translate 'TABLE.COLUMNS.TOTAL' }}</th>
             </tr>
           </thead>
 
@@ -40,6 +41,7 @@
               <tr class="text-capitalize">
                 <td> {{add @index 1}} </td>
                 <td><strong> {{display_name}} </strong></td>
+                <td><strong> {{service_name}} </strong></td>
                 {{#each rubricsChargeEnterprise}}
                   <td style="text-align: right;">
                     {{#if result}} 
