@@ -23,6 +23,7 @@ function CreateShipmentController(
 
   vm.stockForm = new StockForm('ShipmentForm');
   vm.stockForm.setAllowExpired(false);
+  vm.stockForm.setExitTypePredefined(true);
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
@@ -127,37 +128,37 @@ function CreateShipmentController(
     }, 0);
   };
 
-  vm.validate = () => {
-    vm.stockForm.validate();
+  vm.validateItems = () => {
+    vm.stockForm.validate(true);
     vm.messages = vm.stockForm.messages();
   };
 
   vm.configureItem = function configureItem(row, lot) {
     vm.stockForm.configureItem(row, lot);
-    vm.validate();
+    vm.validateItems();
   };
 
   vm.addItems = function addItems(numItems) {
     vm.stockForm.addItems(numItems);
-    vm.validate();
+    vm.validateItems();
   };
 
   vm.removeItem = function removeItem(uuid) {
     vm.stockForm.removeItem(uuid);
-    vm.validate();
+    vm.validateItems();
   };
 
   vm.setDate = function setDate(date) {
     vm.shipment.anticipated_delivery_date = date;
     vm.stockForm.setDate(date);
-    vm.validate();
+    vm.validateItems();
   };
 
   vm.setLotFromDropdown = function setLotFromDropdown(row, lot) {
     vm.stockForm._pool.use(lot.lot_uuid);
     row.configure(lot);
     vm.stockForm.updateLotListings(row.inventory_uuid);
-    vm.validate();
+    vm.validateItems();
   };
 
   vm.getLotByBarcode = function getLotByBarcode() {
@@ -192,7 +193,7 @@ function CreateShipmentController(
     vm.stockForm.setLossDistribution();
 
     // run validation
-    vm.validate();
+    vm.validateItems();
 
     // refresh quantity available
     return refreshQuantityAvailable(vm.depot);
@@ -225,7 +226,7 @@ function CreateShipmentController(
     vm.hasError = false;
 
     vm.stockForm.setup();
-    vm.validate();
+    vm.validateItems();
 
     // load the shipment for update
     loadShipment();
@@ -244,7 +245,7 @@ function CreateShipmentController(
           }
         });
 
-        vm.validate();
+        vm.validateItems();
 
         return Shipment.read(null, { depot_uuid : depot.uuid, dateTo, skipTags : true });
       })
@@ -268,11 +269,24 @@ function CreateShipmentController(
   }
 
   function submit(form) {
-    if (form.$invalid) { return null; }
 
-    const isValidForSubmission = vm.stockForm.validate();
+    if (form.$invalid) {
+      vm.validateItems();
 
-    // check if the form is valid
+      // Prepend general form needs fixing message
+      const formMsg = {
+        type : 'warn',
+        text : 'STOCK.MESSAGES.WARN_MAIN_FORM_ERRORS',
+        keys : {},
+      };
+      vm.messages.unshift(formMsg);
+      Notify.danger(formMsg.text, 5000);
+      return null;
+    }
+
+    const isValidForSubmission = vm.stockForm.validate(true);
+
+    // check if the lots in the form are valid
     if (isValidForSubmission === false) {
 
       let firstElement = true;
