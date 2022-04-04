@@ -104,7 +104,7 @@ function getLotFilters(parameters) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_asset', 'is_asset', 'i');
-  filters.equals('reference_number', 'reference_number', 'l');
+  filters.fullText('reference_number', 'reference_number', 'l');
   filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);

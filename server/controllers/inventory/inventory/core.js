@@ -283,7 +283,7 @@ async function getItemsMetadata(params) {
   filters.equals('note');
   filters.equals('importance');
   filters.equals('is_asset');
-  filters.equals('reference_number');
+  filters.fullText('reference_number');
   filters.equals('manufacturer_brand');
   filters.equals('manufacturer_model');
   filters.custom('tags', 't.uuid IN (?)', [params.tags]);
