@@ -26,16 +26,17 @@ function StockExitFormService(
   const today = new Date();
   const $date = $filter('date');
 
-  const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
-  const INFO_NEEDS_LOTS = 'STOCK.MESSAGES.INFO_NEEDS_LOTS';
-  const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
-  const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
-  const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
-  const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
-  const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
-  const ERR_NO_DESTINATION = 'STOCK.MESSAGES.ERR_NO_DESTINATION';
-  const ERR_NO_BARCODE_MATCH_IN_DEPOT = 'STOCK.MESSAGES.ERR_NO_BARCODE_MATCH_IN_DEPOT';
   const ERR_LOT_ERRORS = 'STOCK.MESSAGES.ERR_LOT_ERRORS';
+  const ERR_NO_BARCODE_MATCH_IN_DEPOT = 'STOCK.MESSAGES.ERR_NO_BARCODE_MATCH_IN_DEPOT';
+  const ERR_NO_DESTINATION = 'STOCK.MESSAGES.ERR_NO_DESTINATION';
+  const INFO_EXIT_TYPE_SET_NEEDS_LOTS = 'STOCK.MESSAGES.INFO_EXIT_TYPE_SET_NEEDS_LOTS';
+  const INFO_NEEDS_LOTS = 'STOCK.MESSAGES.INFO_NEEDS_LOTS';
+  const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
+  const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
+  const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
+  const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
+  const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
+  const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
 
   /**
    * @constructor
@@ -49,6 +50,7 @@ function StockExitFormService(
     this.details = { is_exit : 1 };
     this.store = new Store({ identifier : 'uuid', data : [] });
     this.allowExpired = true;
+    this.exitTypePredefined = false;
 
     // this variable is private and will contain the stock for the current depot.
     this._pool = new Pool('lot_uuid', []);
@@ -65,6 +67,14 @@ function StockExitFormService(
    */
   StockExitForm.prototype.setAllowExpired = function setAllowExpired(flag) {
     this.allowExpired = flag;
+  };
+
+  /**
+   * Set flag that the exit type is predefined
+   * @param {boolean} flag
+   */
+  StockExitForm.prototype.setExitTypePredefined = function setExitTypePredefined(flag) {
+    this.exitTypePredefined = flag;
   };
 
   StockExitForm.prototype._toggleInfoMessage = function _toggleInfoMessage(
@@ -747,7 +757,11 @@ function StockExitFormService(
       && !hasDestinationError
       && this.store.data.length === 0;
 
-    this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
+    if (this.exitTypePredefined) {
+      this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_NEEDS_LOTS, this.details);
+    } else {
+      this._toggleInfoMessage(showNeedsLotsInfoMessage, 'info', INFO_EXIT_TYPE_SET_NEEDS_LOTS, this.details);
+    }
 
     // remove the barcode error next validation
     this._toggleInfoMessage(false, 'error', ERR_NO_BARCODE_MATCH_IN_DEPOT);

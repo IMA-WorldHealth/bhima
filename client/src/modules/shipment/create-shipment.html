@@ -3,7 +3,7 @@
     <ol class="headercrumb">
       <li class="static" translate>SHIPMENT.SHIPMENTS</li>
       <li><a ui-sref="shipments" translate>SHIPMENT.SHIPMENT_REGISTRY</a></li>
-      <li class="title"> 
+      <li class="title">
         <span translate>SHIPMENT.NEW_SHIPMENT </span>&nbsp;
         <span ng-if="CreateShipCtrl.depot.uuid" class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
       </li>
@@ -28,7 +28,7 @@
   <div class="container-fluid">
 
     <form name="ShipmentForm" bh-submit="CreateShipCtrl.submit(ShipmentForm)" novalidate>
-      
+
       <!-- date and note -->
       <div class="row">
         <div class="col-md-4">
@@ -54,7 +54,8 @@
             label="SHIPMENT.ANTICIPATED_DELIVERY_DATE"
             date-value="CreateShipCtrl.shipment.anticipated_delivery_date"
             allow-future-date="true"
-            on-change="CreateShipCtrl.setDate(date)">
+            on-change="CreateShipCtrl.setDate(date)"
+            required="true">
           </bh-date-editor>
 
           <div ng-if="CreateShipCtrl.dateMessageWarning" class="form-group">
