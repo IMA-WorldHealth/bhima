@@ -253,3 +253,16 @@ CREATE TABLE IF NOT EXISTS `required_inventory_scan` (
 
 INSERT IGNORE INTO unit VALUES
   (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans');
+
+
+/*
+ * adding reports for inventory scanning
+ * @author: jmcameron
+ * @date: 2022-04-06
+ */
+INSERT IGNORE INTO unit VALUES
+  (314, 'Asset Management Reports','TREE.REPORTS','asset management reports', 307,'/ASSET_MANAGEMENT_REPORTS_FOLDER'),
+  (315, 'Needed Inventory Scans', 'TREE.INVENTORY_SCANS_NEEDED', 'report for needed inventory scans', 314, '/reports/needed_inventory_scans');
+
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+   ('needed_inventory_scans', 'TREE.INVENTORY_SCANS_NEEDED');
