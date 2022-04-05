@@ -17,7 +17,7 @@ describe('(/asset/scan) The Stock Asset Scan HTTP API', () => {
     'condition_predefined', 'created_at', 'updated_at', 'depot_text', 'depot_uuid',
     'group_name', 'group_uuid', 'inventory_code', 'inventory_text',
     'inventory_uuid', 'location_uuid', 'manufacturer_brand', 'manufacturer_model',
-    'notes', 'scanned_by', 'scanned_by_name', 'serial_number',
+    'notes', 'scanned_by', 'scanned_by_name', 'serial_number', 'reference_number',
     'unit_cost', 'uuid',
   ];
 

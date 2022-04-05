@@ -155,6 +155,13 @@
       "TITLE" : "Inventory Changes Report",
       "DESCRIPTION": "This reports shows changes occured on inventory items during a period."
     },
+    "INVENTORY_SCANS_NEEDED" : {
+      "TITLE" : "Needed Inventory Scans",
+      "DESCRIPTION" : "This report shows the inventory/assets that need scanning for a required inventory scan",
+      "SCANS_ALL" : "All Inventory Covered in this Inventory Scan",
+      "SCANS_SCANNED" : "Inventory Already Scanned",
+      "SCANS_UNSCANNED" : "Inventory Still Needing to be Scanned"
+    },
     "LOST_STOCK_REPORT": {
       "TITLE": "Lost Stock Report",
       "DEPOT_ROLE": "List stock transfer losses for this depot as",
