@@ -1,0 +1,36 @@
+<div ng-form="InventoryScanForm" bh-required-inventory-scan-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : InventoryScanForm.$submitted && InventoryScanForm.inventory_scan_uuid.$invalid }">
+
+    <label class="control-label">
+      <span translate>ASSET.REQUIRED_INVENTORY_SCAN</span>
+    </label>
+
+    <!-- show a loading indicator while loading -->
+    <p
+      ng-if="$ctrl.loading"
+      class="text-muted text-center">
+      <i class="fa fa-circle-o-notch fa-spin"></i>
+      <span translate>FORM.INFO.LOADING</span>
+    </p>
+
+    <ng-transclude></ng-transclude>
+    <ui-select
+      name="inventory_scan_uuid"
+      ng-model="$ctrl.requiredInventoryScanUuid"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'ASSET.SELECT_REQUIRED_INVENTORY_SCAN' | translate }}">
+        <span>{{$select.selected.title}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="scan.uuid as scan in $ctrl.required_scans | filter: { 'title': $select.search }">
+        <span ng-bind-html="scan.title | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="InventoryScanForm.inventory_scan_uuid.$error" ng-show="InventoryScanForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -261,3 +261,15 @@ Issue: 6501
 */
 DELETE FROM role WHERE unit_id = 167;
 DELETE FROM `unit` WHERE id = 167;
+
+/*
+ * adding reports for inventory scanning
+ * @author: jmcameron
+ * @date: 2022-04-06
+ */
+INSERT IGNORE INTO unit VALUES
+  (314, 'Asset Management Reports','TREE.REPORTS','asset management reports', 307,'/ASSET_MANAGEMENT_REPORTS_FOLDER'),
+  (315, 'Needed Inventory Scans', 'TREE.INVENTORY_SCANS_NEEDED', 'report for needed inventory scans', 314, '/reports/needed_inventory_scans');
+
+INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
+   ('needed_inventory_scans', 'TREE.INVENTORY_SCANS_NEEDED');
