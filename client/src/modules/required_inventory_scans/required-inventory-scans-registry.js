@@ -178,7 +178,7 @@ function RequiredInventoryScansRegistryController(
    * Go to the Assets Registry and show a
    * @param {object} scan - required inventory scan object
    */
-  vm.showScannedAssets = function showScannedAssets(scan) {
+  vm.showScannedInventory = function showScannedInventory(scan) {
     const filters = [{
       key : 'period',
       value : 'custom',

@@ -151,6 +151,13 @@
       "TITLE" : "Rapport de changement d'inventaire",
       "DESCRIPTION": "Ce rapport montre les changements survenus sur les articles en stock au cours d'une période"
     },
+    "INVENTORY_SCANS_NEEDED" : {
+      "TITLE" : "Scans d'inventaire nécessaires",
+      "DESCRIPTION" : "Ce rapport indique les stocks/actifs qui doivent être scannés pour un inventaire obligatoire.",
+      "SCANS_ALL" : "Tout l'inventaire couvert par cette scan d'inventaire",
+      "SCANS_SCANNED" : "Inventaire déjà scanné",
+      "SCANS_UNSCANNED" : "L'inventaire doit encore être scanné"
+    },
     "LOST_STOCK_REPORT": {
       "TITLE": "Rapport sur les stocks perdus",
       "DEPOT_ROLE": "Lister les pertes de transfert de stock pour ce dépôt comme",

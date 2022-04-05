@@ -65,7 +65,7 @@ function getFilters(parameters) {
 exports.getRequiredInventoryScans = async function getRequiredInventoryScans(req, res, next) {
   const params = req.query;
   try {
-    const rows = await listRequiredInventoryScans(params);
+    const rows = await list(params);
     res.status(200).json(rows);
   } catch (error) {
     next(error);
@@ -79,7 +79,7 @@ exports.getRequiredInventoryScans = async function getRequiredInventoryScans(req
  */
 exports.getRequiredInventoryScan = async function getRequiredInventoryScan(req, res, next) {
   try {
-    const rows = await listRequiredInventoryScans(req.params);
+    const rows = await list(req.params);
     res.status(200).json(rows[0]);
   } catch (error) {
     next(error);
@@ -91,7 +91,7 @@ exports.getRequiredInventoryScan = async function getRequiredInventoryScan(req, 
  * @param {object} params
  * @returns {promise} result of query (
  */
-function listRequiredInventoryScans(params) {
+function list(params) {
   const filters = getFilters(params);
 
   const sql = `
@@ -106,6 +106,8 @@ function listRequiredInventoryScans(params) {
   const queryParameters = filters.parameters();
   return db.exec(query, queryParameters);
 }
+
+exports.requiredInventoryScans = list;
 
 /**
  * @function createRequiredInventoryScan
