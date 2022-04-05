@@ -41,6 +41,17 @@
             <bh-clear on-clear="$ctrl.clear('group_uuid')"></bh-clear>
           </bh-inventory-group-select>
 
+          <div class="form-group"
+            ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference_number.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_NUMBER</label>
+            <input ng-model="$ctrl.searchQueries.reference_number"
+              class="form-control" type="text" name="reference_number">
+            <div class="help-block" ng-messages="ModalForm.reference_number.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+            <bh-clear on-clear="$ctrl.clear('reference_number')"></bh-clear>
+        </div>
+
         </div>
       </uib-tab>
 

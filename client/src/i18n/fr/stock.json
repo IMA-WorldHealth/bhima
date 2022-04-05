@@ -192,6 +192,7 @@
       "ERR_NO_BARCODE_MATCH_IN_DEPOT" : "Il n'y a pas de lot correspondant à ce code-barres en stock dans le dépôt.",
       "ERR_NO_DESTINATION" : "Aucune destination n'est définie pour ce type de sortie. Veuillez choisir une destination pour aller avec le type de sortie.",
       "INFO_EXIT_TYPE_SET_NEEDS_LOTS" : "Le type de sortie défini a été défini. Veuillez cliquer sur \"Ajouter\" pour ajouter des lignes à la grille.",
+      "INFO_NEEDS_LOTS" : "Veuillez cliquer sur \"Ajouter\" pour ajouter des lignes à la grille.",
       "INFO_NO_EXIT_TYPE" : "Aucun type de sortie spécifié. Veuillez sélectionner un type de sortie dans les panneaux ci-dessus pour continuer.",
       "SUCCESS_ALL_VALID" : "Ça a l'air bon pour la soumission !",
       "SUCCESS_FILLED_N_ITEMS" : "Sélection automatique de {{count}} articles du stock pour répondre à la demande. Veuillez vérifier les numéros de lot pour vous assurer qu'ils sont corrects lorsque vous distribuez les articles.",

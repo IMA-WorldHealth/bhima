@@ -44,6 +44,7 @@ const fluxLabel = Object.entries(flux)
 module.exports = {
   flux,
   fluxLabel,
+  getAssets,
   getMovements,
   getLots,
   getLotsDepot,
@@ -231,6 +232,98 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
   const queryParameters = filters.parameters();
 
   return db.exec(query, queryParameters);
+}
+
+/**
+ * Get asset info
+ *
+ * @param {string} depotUuid
+ * @param {object} params
+ */
+async function getAssets(params, finalClause) {
+
+  // NOTE: Expected parameters
+  //   depot_uuid, is_asset, scan_start_date, scan_end_date, reference_number
+  //   scan_status ==> one of 'all', 'scanned', or 'unscanned'
+
+  // Construct the WHERE clause to insert inside the join
+  // (Not obvious how to do this with filters since it is inside a JOIN)
+  let scanPeriod = '';
+  if ('scan_start_date' in params) {
+    const startDate = moment(params.scan_start_date).format('YYYY-MM-DD');
+    scanPeriod = `scan.created_at >= DATE('${db.escape(startDate)}')`;
+  }
+  if ('scan_end_date' in params) {
+    if (scanPeriod) {
+      scanPeriod += ' AND ';
+    }
+    const endDate = moment(params.scan_end_date).format('YYYY-MM-DD');
+    scanPeriod += `scan.created_at <= DATE('${db.escape(endDate)}')`;
+  }
+  if (scanPeriod) {
+    scanPeriod = `WHERE ${scanPeriod}`;
+  }
+
+  const sql = `
+    SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
+      SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
+      d.text AS depot_name, l.unit_cost, l.expiration_date,
+      l.serial_number, l.reference_number,
+      BUID(l.inventory_uuid) AS inventory_uuid,
+      i.code AS inventory_code, i.text as inventory_label,
+      BUID(m.depot_uuid) AS depot_uuid,
+      i.is_asset, i.manufacturer_brand, i.manufacturer_model,
+      m.date AS entry_date,
+      iu.text AS unit_type,
+      ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
+      dm.text AS documentReference,
+      CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode,
+
+      BUID(sa.uuid) AS assignment_uuid, BUID(sa.entity_uuid) AS assigned_to_uuid,
+      sa.quantity AS assignment_quantity, sa.created_at AS assignment_created_at,
+      sa.description AS assignment_description, sa.is_active AS assignment_is_active,
+      e.display_name AS assigned_to_name,
+
+      last_scan.uuid AS scan_uuid, last_scan.created_at as scan_date,
+      last_scan.condition_id AS scan_condition_id,
+      last_scan.condition AS scan_condition
+
+    FROM stock_movement m
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
+      JOIN inventory_group ig ON ig.uuid = i.group_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+      LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
+
+      LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
+      LEFT JOIN entity e ON e.uuid = sa.entity_uuid
+
+      LEFT JOIN (
+        SELECT scan.*, ac.condition
+        FROM asset_scan AS scan
+        LEFT JOIN asset_condition AS ac ON ac.id = scan.condition_id
+        ${scanPeriod}
+        ORDER BY scan.created_at DESC LIMIT 1
+      ) AS last_scan ON last_scan.asset_uuid = l.uuid
+  `;
+
+  const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;
+
+  const filters = getLotFilters(params);
+  if (['scanned', 'unscanned'].includes(params.scan_status)) {
+    filters.custom('scan_status',
+      params.scan_status === 'scanned' ? 'last_scan.uuid IS NOT NULL' : 'last_scan.uuid IS NULL');
+  }
+  filters.setGroup(groupByClause);
+
+  const query = filters.applyQuery(sql);
+  const queryParameters = filters.parameters();
+
+  const assets = await db.exec(query, queryParameters);
+
+  return assets;
 }
 
 /**
