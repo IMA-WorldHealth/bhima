@@ -29,106 +29,69 @@ async function reporting(_options, session) {
 
   const report = new ReportManager(STOCK_VALUE_REPORT_TEMPLATE, session, optionReport);
 
-  const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options.params;
+  const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options;
+
   data.dateTo = options.dateTo;
-  data.depot = await db.one('SELECT * FROM depot WHERE uuid=?', [db.bid(options.depot_uuid)]);
-  const currencyId = Number(options.currency_id);
+  data.isEnterpriseCurrency = options.currency_id === session.enterprise.currency_id;
 
-  // Get inventories movemented
-  const sqlGetInventories = `
-    SELECT DISTINCT(BUID(mov.inventory_uuid)) AS inventory_uuid, mov.inventory_uuid AS uuid,
-      mov.text AS inventory_name, mov.code AS inventory_code, mov.inventory_price
-    FROM(
-      SELECT inv.uuid AS inventory_uuid, inv.text, inv.code,
-        inv.price as inventory_price, sm.date
-      FROM stock_movement AS sm
-      JOIN lot AS l ON l.uuid = sm.lot_uuid
-      JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-      WHERE sm.depot_uuid = ? AND DATE(sm.date) <= DATE(?)
-    ) AS mov
-    ORDER BY mov.text ASC;
+  const depot = await db.one('SELECT * FROM depot WHERE uuid = ?', [db.bid(options.depot_uuid)]);
+  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+
+  // get the current quantities in stock
+  const currentQuantitiesInStockSQL = `
+    SELECT sms.date, BUID(sms.inventory_uuid) AS uuid, sms.sum_quantity AS quantity,
+      inventory.code, inventory.text, inventory.consumable,
+      sv.wac, inventory.price,
+      (sv.wac * sms.sum_quantity) AS total_value,
+      (sv.wac * IFNULL(GetExchangeRate(${enterpriseId}, ?, NOW()), 1)) AS exchanged_wac,
+      (sv.wac * sms.sum_quantity) * IFNULL(GetExchangeRate(${enterpriseId}, ?, NOW()), 1) AS exchanged_value,
+      (inventory.price * IFNULL(GetExchangeRate(${enterpriseId}, ?, NOW()), 1)) AS exchanged_price,
+      (inventory.price * IFNULL(GetExchangeRate(${enterpriseId}, ?, NOW()), 1)) * sms.sum_quantity
+        AS exchanged_sales_value
+    FROM stock_movement_status AS sms JOIN (
+      SELECT inside.inventory_uuid, MAX(inside.date) AS date
+      FROM stock_movement_status AS inside
+      WHERE inside.depot_uuid = ?
+        AND inside.date <= DATE(?)
+      GROUP BY inside.inventory_uuid
+    ) AS outside
+    ON outside.date = sms.date
+      AND sms.inventory_uuid = outside.inventory_uuid
+    JOIN inventory ON inventory.uuid = sms.inventory_uuid
+    JOIN stock_value sv ON sv.inventory_uuid = inventory.uuid
+    WHERE sms.depot_uuid = ?
+    ORDER BY inventory.text;
   `;
 
-  /*
-   * Here we first search for all the products that have
-   * been stored in stock in a warehouse,
-   * then we collect all the movements of stocks linked to a warehouse
-  */
-  const stockValues = await db.exec(sqlGetInventories, [db.bid(options.depot_uuid), options.dateTo]);
+  const currentQuantitiesInStock = await db.exec(currentQuantitiesInStockSQL, [
+    options.currency_id,
+    options.currency_id,
+    options.currency_id,
+    options.currency_id,
+    depot.uuid,
+    options.dateTo,
+    depot.uuid,
+  ]);
 
-  // Compute stock value only for concerned inventories for having updated wac
-  const mapRecomputeInventoryStockValue = stockValues.map(inventory => {
-    return db.exec('CALL RecomputeInventoryStockValue(?, NULL);', [inventory.uuid]);
+  // filter out 0s if necessary
+  const filtered = currentQuantitiesInStock.filter(row => {
+    if (options.excludeZeroValue === '1') { return row.quantity !== 0; }
+    return true;
   });
 
-  await Promise.all(mapRecomputeInventoryStockValue);
+  const totals = filtered.reduce((agg, row) => {
+    agg.stockTotalValue += row.exchanged_value;
+    agg.stockTotalSaleValue += row.exchanged_sales_value;
+    return agg;
+  }, { stockTotalValue : 0, stockTotalSaleValue : 0 });
 
-  const sqlGetMovementByDepot = `
-    SELECT sm.document_uuid, sm.depot_uuid, sm.lot_uuid, sm.quantity, sm.unit_cost, sm.date, sm.is_exit,
-    sm.created_at, BUID(inv.uuid) AS inventory_uuid, inv.text AS inventory_text, map.text AS docRef,
-    sv.wac
-    FROM stock_movement AS sm
-    JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN inventory AS inv ON inv.uuid = l.inventory_uuid
-    JOIN document_map AS map ON map.uuid = sm.document_uuid
-    JOIN stock_value AS sv ON sv.inventory_uuid = inv.uuid
-    WHERE sm.depot_uuid = ? AND DATE(sm.date) <= DATE(?)
-    ORDER BY inv.text, DATE(sm.date), sm.created_at ASC
-  `;
-
-  const allMovements = await db.exec(sqlGetMovementByDepot, [db.bid(options.depot_uuid), options.dateTo]);
-
-  stockValues.forEach(stock => {
-    stock.movements = allMovements.filter(movement => (movement.inventory_uuid === stock.inventory_uuid));
-  });
-
-  let stockTotalValue = 0;
-  let stockTotalSaleValue = 0;
-  const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
-  const rate = exchangeRate.rate || 1;
-
-  // calculate quantity in stock since wac is globally calculated
-  stockValues.forEach(stock => {
-    let quantityInStock = 0;
-    let weightedAverageUnitCost = 0;
-
-    stock.movements.forEach(item => {
-      const isExit = item.is_exit ? (-1) : 1;
-      quantityInStock += (item.quantity * isExit);
-      item.quantityInStock = quantityInStock;
-      weightedAverageUnitCost = item.wac;
-    });
-
-    stock.inventoryPrice = stock.inventory_price * rate;
-
-    stock.stockQtyPurchased = quantityInStock;
-    stock.stockUnitCost = weightedAverageUnitCost;
-    stock.stockValue = (quantityInStock * weightedAverageUnitCost);
-    stock.saleValue = (quantityInStock * stock.inventoryPrice);
-
-    // warn the user if the stock sales price is equivalent or _lower_ than the value of the stock
-    // the enterprise will not make money on this stock.
-    stock.hasWarning = stock.inventoryPrice <= weightedAverageUnitCost;
-
-    stockTotalValue += stock.stockValue;
-    stockTotalSaleValue += stock.saleValue;
-  });
-
-  const stockValueElements = options.exclude_zero_value
-    ? stockValues.filter(item => item.stockValue > 0) : stockValues;
-
-  data.stockValues = stockValueElements || [];
-
-  data.stockTotalValue = stockTotalValue;
-  data.stockTotalSaleValue = stockTotalSaleValue;
+  data.stockValues = filtered;
   data.emptyResult = data.stockValues.length === 0;
 
-  data.exclude_zero_value = options.exclude_zero_value;
+  data.exchangeRate = exchangeRate.rate || 1;
+  data.currency_id = options.currency_id;
 
-  data.currencyId = currencyId;
-  data.exchangeRate = rate;
-
-  return report.render(data);
+  return report.render({ ...data, depot, totals });
 }
 
 module.exports.document = stockValue;
