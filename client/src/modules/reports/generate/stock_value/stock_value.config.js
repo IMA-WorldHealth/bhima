@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 StockValueConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService',
   'AppCache', 'reportData', '$state',
-  'LanguageService', 'moment',
+  'LanguageService', 'moment', 'SessionService',
 ];
 
 function StockValueConfigController(
   $sce, Notify, SavedReports,
-  AppCache, reportData, $state, Languages, moment,
+  AppCache, reportData, $state, Languages, moment, Session,
 ) {
 
   const vm = this;
@@ -19,6 +19,7 @@ function StockValueConfigController(
   vm.reportDetails = {
     dateTo : new Date(),
     excludeZeroValue : 0,
+    currency_id : Session.enterprise.currency_id,
   };
 
   // Default values
@@ -52,10 +53,6 @@ function StockValueConfigController(
     vm.reportDetails.currency_id = currency.id;
   };
 
-  vm.onExcludeZeroValue = () => {
-    vm.reportDetails.exclude_zero_value = vm.excludeZeroValue;
-  };
-
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
@@ -66,6 +63,8 @@ function StockValueConfigController(
       lang : Languages.key,
       dateTo,
     };
+
+    cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(options))
       .then((result) => {
@@ -92,6 +91,7 @@ function StockValueConfigController(
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+      vm.dateTo = new Date(); // always default to today
     }
   }
 }
