@@ -1,0 +1,88 @@
+{{> head title="ASSETS.NEEDED_INVENTORY_SCANS" }}
+
+<style>
+caption {
+  font-size : 1.5em;
+  font-weight: bold;
+}
+</style>
+
+<body>
+
+  {{> header}}
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'ASSET.REQUIRED_INVENTORY_SCAN'}}
+      </h2>
+      <h3 class="text-center text-uppercase">
+        {{scan.title}}
+        {{#if scan.is_asset}}
+        <span> &ndash; {{translate 'ASSET.ASSETS_ONLY'}}</span>
+        {{/if}}
+      </h3>
+      {{#if scan.description}}
+      <h4 class="text-center">{{scan.description}}</h4>
+      {{/if}}
+      <h4 class="text-center">
+        {{translate 'FORM.LABELS.START_DATE'}}: {{date scan.start_date}} &ndash;
+        {{translate 'FORM.LABELS.END_DATE'}}: {{date scan.end_date}}
+      </h4>
+      {{#if scan.depot_name}}
+      <h4 class="text-center">{{scan.depot_name}}</h4>
+      {{/if}}
+      {{#if scan.reference_number}}
+      <h4 class="text-center">{{translate 'FORM.LABELS.REFERENCE_NUMBER'}}: {{scan.reference_number}}</h4>
+      {{/if}}
+
+      <br><br>
+
+      <!-- list of assets-->
+      <table class="table table-condensed table-bordered table-stripped table-report">
+        <caption>{{translate tableTitle}}</caption>
+        <thead>
+          <tr>
+            <th>{{translate 'STOCK.DEPOT'}}</th>
+            <th>{{translate 'INVENTORY.CODE'}}</th>
+            <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'FORM.LABELS.MANUFACTURER_BRAND'}}</th>
+            <th>{{translate 'FORM.LABELS.MANUFACTURER_MODEL'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.SERIAL_NUMBER'}}</th>
+            <th>{{translate 'LOTS.LOT_LABEL'}}</th>
+            <th>{{translate 'STOCK.UNIT_COST'}}</th>
+            <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'ASSET.LAST_SCAN_DATE'}}</th>
+            <th>{{translate 'ASSET.ASSET_CONDITION'}}</th>
+            <th>{{translate 'ENTITY.ASSIGNED_TO'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each assets}}
+            <tr>
+              <td>{{depot_name}}</td>
+              <td>{{inventory_code}}</td>
+              <td>{{inventory_label}}</td>
+              <td>{{manufacturer_brand}}</td>
+              <td>{{manufacturer_model}}</td>
+              <td>{{serial_number}}</td>
+              <td>{{label}}</td>
+              <td>{{unit_cost}}</td>
+              <td>{{quantity}}</td>
+              <td>{{date scan_date}}</td>
+              <td>{{translate scan_condition}}</td>
+              <td>{{assigned_to_name}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=12}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: bold;">
+            <td colspan="12">{{assets.length}} {{translate 'STOCK.ITEMS'}}</td>
+          </tr>
+        </tfoot>
+      </table>
+</body>
