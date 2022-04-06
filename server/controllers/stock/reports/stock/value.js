@@ -32,7 +32,7 @@ async function reporting(_options, session) {
   const options = (typeof (_options.params) === 'string') ? JSON.parse(_options.params) : _options;
 
   data.dateTo = options.dateTo;
-  data.isEnterpriseCurrency = options.currency_id === session.enterprise.currency_id;
+  data.isEnterpriseCurrency = Number(options.currency_id) === session.enterprise.currency_id;
 
   const depot = await db.one('SELECT * FROM depot WHERE uuid = ?', [db.bid(options.depot_uuid)]);
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
