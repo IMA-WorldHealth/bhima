@@ -52,10 +52,6 @@ function StockValueConfigController(
     vm.reportDetails.currency_id = currency.id;
   };
 
-  vm.onExcludeZeroValue = () => {
-    vm.reportDetails.exclude_zero_value = vm.excludeZeroValue;
-  };
-
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
@@ -66,6 +62,8 @@ function StockValueConfigController(
       lang : Languages.key,
       dateTo,
     };
+
+    cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(options))
       .then((result) => {
@@ -92,6 +90,7 @@ function StockValueConfigController(
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+      vm.dateTo = new Date(); // always default to today
     }
   }
 }
