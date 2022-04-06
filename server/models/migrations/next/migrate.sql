@@ -253,3 +253,11 @@ CREATE TABLE IF NOT EXISTS `required_inventory_scan` (
 
 INSERT IGNORE INTO unit VALUES
   (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans');
+
+/**
+Issue: 6501
+@author: jniles
+@date: 2022-04-06
+*/
+DELETE FROM role WHERE unit_id = 167;
+DELETE FROM `unit` WHERE id = 167;
