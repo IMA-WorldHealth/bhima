@@ -1,4 +1,4 @@
-{{> head title="TREE.STOCK_INVENTORY" }}
+{{> head title="TREE.STOCK_VALUE" }}
 
 <body>
 
@@ -21,7 +21,9 @@
           {{date dateTo}}
         </h4>
 
-        {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
+        {{#unless isEntepriseCurrency}}
+          {{> exchangeRate rate=exchangeRate currencyId=currency_id}}
+        {{/unless}}
 
         <!-- list of data  -->
         <table class="table table-condensed table-report">
@@ -39,22 +41,22 @@
           <tbody>
             {{#each stockValues}}
             <tr {{#if hasWarning}}class="text-danger bg-danger"{{/if}} >
-                <td>{{inventory_code}}</td>
-                <td style="width:50%">{{inventory_name}}</td>
-                <td class="text-right">{{stockQtyPurchased}}</td>
-                <td class="text-right">{{currency stockUnitCost ../currency_id 4}}</td>
-                <td class="text-right">{{currency stockValue ../currency_id 2}}</td>
-                <td class="text-right">{{currency inventoryPrice ../currency_id 4}}</td>
-                <td class="text-right">{{currency saleValue ../currency_id 2}}</td>
+                <td>{{code}}</td>
+                <td style="width:50%">{{text}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{currency exchanged_wac ../currency_id 4}}</td>
+                <td class="text-right">{{currency exchanged_value ../currency_id 2}}</td>
+                <td class="text-right">{{currency exchanged_price ../currency_id 4}}</td>
+                <td class="text-right">{{currency exchanged_sales_value ../currency_id 2}}</td>
               </tr>
           {{else}}
             {{> emptyTable columns=7}}
           {{/each}}
           <tr>
             <th colspan="4" class="text-right">{{ translate "FORM.LABELS.VALUE_IN_STOCK"}}</th>
-            <th class="text-right">{{currency stockTotalValue currency_id 2}}</th>
+            <th class="text-right">{{currency totals.stockTotalValue currency_id 2}}</th>
             <th class="text-right">{{ translate "FORM.LABELS.SALE_VALUE"}}</th>
-            <th class="text-right">{{ currency stockTotalSaleValue currency_id 2}}</th>
+            <th class="text-right">{{ currency totals.stockTotalSaleValue currency_id 2}}</th>
           </tr>
           </tbody>
         </table>
