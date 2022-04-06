@@ -1,47 +1,35 @@
 angular.module('bhima.controllers')
-  .controller('SupplierController', SupplierController);
-
-SupplierController.$inject = [
-  'SupplierService', 'CreditorGroupService',
+  .controller('SupplierController', SupplierController); SupplierController.$inject = [
+  'SupplierService', 'CreditorGroupService', 'uiGridConstants',
   'NotifyService', '$uibModal', 'ModalService',
 ];
 
-function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal) {
+function SupplierController(Suppliers, CreditorGroups, uiGridConstants, Notify, $uibModal, Modal) {
   const vm = this;
 
-  vm.view = 'default';
-  vm.state = {};
   vm.loading = false;
-
 
   const columns = [{
     field : 'display_name',
     displayName : 'FORM.LABELS.NAME',
     headerCellFilter : 'translate',
-  },
-
-  {
+  }, {
     field : 'email',
     displayName : 'FORM.LABELS.EMAIL',
     headerCellFilter : 'translate',
-  },
-  {
+  }, {
     field : 'phone',
     displayName : 'FORM.LABELS.PHONE',
     headerCellFilter : 'translate',
-  },
-  {
+  }, {
     field : 'address_1',
     displayName : 'FORM.LABELS.ADDRESS1',
     headerCellFilter : 'translate',
-  },
-  {
+  }, {
     field : 'address_2',
     displayName : 'FORM.LABELS.ADDRESS2',
     headerCellFilter : 'translate',
-  },
-
-  {
+  }, {
     field : 'actions',
     enableFiltering : false,
     width : 100,
@@ -50,7 +38,6 @@ function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal)
     cellTemplate : '/modules/suppliers/templates/action.cell.html',
   }];
 
-  // ng-click="
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
@@ -63,7 +50,6 @@ function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal)
     },
   };
 
-
   // fired on startup
   function startup() {
     // load suppliers
@@ -73,7 +59,6 @@ function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal)
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
 
   // refresh the displayed Suppliers
   function refreshSuppliers() {
@@ -88,6 +73,10 @@ function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal)
       .finally(toggleLoadingIndicator);
   }
 
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
 
   vm.createUpdateModal = (selectedSupplier = {}) => {
     $uibModal.open({

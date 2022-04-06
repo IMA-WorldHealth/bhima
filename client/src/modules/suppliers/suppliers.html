@@ -5,12 +5,17 @@
       <li class="title" translate> SUPPLIER.TITLE </li>
     </ol>
 
+
     <div class="toolbar">
       <div class="toolbar-item">
         <button ng-click="SupplierCtrl.createUpdateModal()" class="btn btn-default text-capitalize" data-method="create">
           <i class="fa fa-plus"></i> <span translate> SUPPLIER.ADD_SUPPLIER </span>
         </button>
       </div>
+
+      <!-- inline filter -->
+      <bh-filter-toggle on-toggle="SupplierCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>
