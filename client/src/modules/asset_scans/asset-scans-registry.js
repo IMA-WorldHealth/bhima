@@ -106,6 +106,7 @@ function AssetScansRegistryController(
     if (vm.defaultDepot) {
       filters.depot_uuid = vm.defaultDepot.uuid;
     }
+    console.log("F: ", filters);
     vm.hasError = false;
     toggleLoadingIndicator();
     AssetsScans.list(filters)

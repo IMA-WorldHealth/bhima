@@ -97,6 +97,7 @@
     "INVENTORY_LIST" : "Inventory List",
     "INVENTORY_MANAGEMENT" : "Inventory Management",
     "INVENTORY_REGISTRY" : "Inventory Registry",
+    "INVENTORY_SCANS_NEEDED" : "Needed Inventory Scans",
     "INVENTORY_TYPE" : "Type",
     "INVENTORY_UNIT" : "Dosage Form",
     "INVENTORY_VIEW" : "Stock",

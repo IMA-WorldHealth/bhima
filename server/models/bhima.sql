@@ -184,8 +184,9 @@ INSERT INTO unit VALUES
   (310, 'New Shipment', 'SHIPMENT.NEW_SHIPMENT', 'New Shipment', 309, '/shipments/create'),
   (311, 'Shipment Registry', 'SHIPMENT.SHIPMENT_REGISTRY', 'Shipment Registry', 309, '/shipments'),
   (312, 'Asset Scan Management', 'TREE.ASSETS_SCANS_REGISTRY', 'Asset Scan Management', 307, '/assets/scans'),
-  (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans');
-
+  (313, 'Inventory Scans Management', 'TREE.REQUIRED_INVENTORY_SCANS', 'Inventory Scans Management', 307, '/required/inventory/scans'),
+  (314, 'Asset Management Reports','TREE.REPORTS','asset management reports', 307,'/ASSET_MANAGEMENT_REPORTS_FOLDER'),
+  (315, 'Needed Inventory Scans', 'TREE.INVENTORY_SCANS_NEEDED', 'report for needed inventory scans', 314, '/reports/needed_inventory_scans');
 
 -- Reserved system account type
 INSERT IGNORE INTO `account_category` VALUES
@@ -263,7 +264,8 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
   ('lost_stock_report', 'TREE.LOST_STOCK_REPORT'),
   ('cost_center_accounts', 'TREE.COST_CENTER_ACCOUNTS_REPORT'),
   ('cost_center_income_and_expense', 'TREE.COST_CENTER_INCOME_EXPENSE_REPORT'),
-  ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT');
+  ('avg_med_costs_per_patient', 'TREE.AVERAGE_MED_COST_REPORT'),
+  ('needed_inventory_scans', 'TREE.INVENTORY_SCANS_NEEDED');
 
 -- Supported Languages
 INSERT IGNORE INTO `language` VALUES
