@@ -97,6 +97,7 @@
     "INVENTORY_LIST":"Liste",
     "INVENTORY_MANAGEMENT":"Gestion des Inventaires ",
     "INVENTORY_REGISTRY": "Registre des inventaires",
+    "INVENTORY_SCANS_NEEDED" : "Scans d'inventaire nécessaires",
     "INVENTORY_TYPE":"Type",
     "INVENTORY_UNIT":"Forme Galénique",
     "INVENTORY_VIEW":"Stocks",
