@@ -51,13 +51,11 @@ describe('(/shipments) the shipments API', () => {
       lot_uuid : String(LOT_QUININE_A).replace(/0x/g, ''),
       date_packed : new Date(),
       quantity : 5,
-      condition_id : 1,
     },
     {
       lot_uuid : LOT_QUININE_B.replace(/0x/g, ''),
       date_packed : new Date(),
       quantity : 15,
-      condition_id : 1,
     },
   ];
 
@@ -152,7 +150,6 @@ describe('(/shipments) the shipments API', () => {
           const [sent] = lots.filter(l => l.lot_uuid === lot.lot_uuid);
           expect(lot.lot_uuid).to.be.eq(sent.lot_uuid);
           expect(lot.quantity).to.be.eq(sent.quantity);
-          expect(lot.condition_id).to.be.eq(sent.condition_id);
         });
       })
       .catch(helpers.handler);
@@ -186,7 +183,6 @@ describe('(/shipments) the shipments API', () => {
           const [existingLot] = lots.filter(l => l.lot_uuid === lot.lot_uuid);
           expect(lot.lot_uuid).to.be.eq(existingLot.lot_uuid);
           expect(lot.quantity).to.be.eq(existingLot.quantity);
-          expect(lot.condition_id).to.be.eq(existingLot.condition_id);
         });
       })
       .catch(helpers.handler);
@@ -203,7 +199,6 @@ describe('(/shipments) the shipments API', () => {
           lot_uuid : LOT_QUININE_B.replace(/0x/g, ''),
           date_packed : new Date(),
           quantity : 7,
-          condition_id : 2,
         },
       ],
     };
@@ -224,7 +219,6 @@ describe('(/shipments) the shipments API', () => {
           const [newLot] = update.lots.filter(l => l.lot_uuid === lot.lot_uuid);
           expect(lot.lot_uuid).to.be.eq(newLot.lot_uuid);
           expect(lot.quantity).to.be.eq(newLot.quantity);
-          expect(lot.condition_id).to.be.eq(newLot.condition_id);
         });
       })
       .catch(helpers.handler);

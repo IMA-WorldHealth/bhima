@@ -273,3 +273,9 @@ INSERT IGNORE INTO unit VALUES
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
    ('needed_inventory_scans', 'TREE.INVENTORY_SCANS_NEEDED');
+
+/* Remove condition from shipment items
+ * @author: jmcameron
+ * @date: 2022-04-07
+ */
+ CALL drop_column_if_exists('shipment_items', 'condition_id');

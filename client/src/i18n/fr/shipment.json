@@ -55,16 +55,16 @@
     "UPDATE_PACKING_LIST": "Mise à jour colisage",
     "UPDATE_STATUS": "Mise à jour statut",
     "UPDATE_TRACKING_LOG_MESSAGE": "Veuillez préciser la localisation actuelle de l'expédition et d'autres nouvelles informations importantes",
-    "UPDATE_TRACKING_LOG_WARNING": "Vous ne pouvez pas mettre à jour le journal de suivi, car seule les expéditions ayant un statut EN-TRANSIT peuvent être mise à jour"
-  },
-  "STATUS" : {
-    "EMPTY" : "Vide",
-    "PARTIAL" : "En partie",
-    "COMPLETE" : "Complète",
-    "IN_TRANSIT" : "En transit",
-    "DELIVERED" : "Livré",
-    "AT_DEPOT" : "Au dépôt",
-    "READY_FOR_SHIPMENT" : "Prêt pour l'expédition",
-    "LOST" : "Perdu"
+    "UPDATE_TRACKING_LOG_WARNING": "Vous ne pouvez pas mettre à jour le journal de suivi, car seule les expéditions ayant un statut EN-TRANSIT peuvent être mise à jour",
+    "STATUS" : {
+      "EMPTY" : "Vide",
+      "PARTIAL" : "En partie",
+      "COMPLETE" : "Complète",
+      "IN_TRANSIT" : "En transit",
+      "DELIVERED" : "Livré",
+      "AT_DEPOT" : "Au dépôt",
+      "READY_FOR_SHIPMENT" : "Prêt pour l'expédition",
+      "LOST" : "Perdu"
+    }
   }
 }
