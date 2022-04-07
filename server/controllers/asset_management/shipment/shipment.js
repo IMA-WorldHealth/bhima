@@ -93,7 +93,6 @@ exports.create = async (req, res, next) => {
         lot_uuid : db.bid(lot.lot_uuid),
         date_packed : new Date(),
         quantity_sent : lot.quantity,
-        condition_id : lot.condition_id,
       };
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
@@ -155,7 +154,6 @@ exports.update = async (req, res, next) => {
             lot_uuid : db.bid(lot.lot_uuid),
             date_packed : new Date(),
             quantity_sent : lot.quantity,
-            condition_id : lot.condition_id,
           };
           transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
         });
@@ -558,7 +556,7 @@ async function lookup(identifier) {
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by,
-      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity, shi.condition_id
+      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity
     FROM shipment sh
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN shipment_status ss ON ss.id = sh.status_id
@@ -576,7 +574,6 @@ async function lookup(identifier) {
     return {
       lot_uuid : item.lot_uuid,
       quantity : item.quantity,
-      condition_id : item.condition_id,
     };
   });
   return shipment;
@@ -631,15 +628,12 @@ async function getPackingList(identifier) {
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
-      shi.quantity_sent, shi.quantity_delivered,
-      shi.date_packed, shi.condition_id,
-      c.condition, c.predefined AS condition_predefined,
+      shi.quantity_sent, shi.quantity_delivered, shi.date_packed,
       l.label AS lot_label, i.code AS inventory_code, i.text AS inventory_label,
       dm.text AS reference
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
-    LEFT JOIN asset_condition c ON c.id = shi.condition_id
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN user u ON u.id = sh.created_by
