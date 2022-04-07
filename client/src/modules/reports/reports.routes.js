@@ -40,6 +40,7 @@ angular.module('bhima.routes')
       'lost_stock_report',
       'monthly_balance',
       'monthly_consumption_report',
+      'needed_inventory_scans',
       'ohada_balance_sheet_report',
       'ohada_profit_loss',
       'open_debtors',

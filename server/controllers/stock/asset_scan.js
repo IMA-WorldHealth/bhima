@@ -70,6 +70,7 @@ function getAssetScanFilters(parameters) {
   filters.equals('group_uuid', 'group_uuid', 'i');
   filters.equals('inventory_uuid', 'inventory_uuid', 'l');
   filters.equals('scanned_by');
+  filters.fullText('reference_number', 'reference_number', 'l');
   filters.equals('condition_id', 'id', 'ac');
   filters.period('period', 'created_at');
   filters.dateFrom('custom_period_start', 'created_at');
@@ -117,7 +118,7 @@ function listAssetScans(params) {
       BUID(s.uuid) AS uuid, BUID(s.asset_uuid) AS asset_uuid,
       BUID(s.location_uuid) AS location_uuid, BUID(s.depot_uuid) AS depot_uuid,
       s.scanned_by, s.condition_id, s.notes, s.created_at, s.updated_at,
-      l.label AS asset_label, l.unit_cost, l.serial_number,
+      l.label AS asset_label, l.unit_cost, l.serial_number, l.reference_number,
       ac.condition, ac.predefined AS condition_predefined,
       d.text AS depot_text, i.uuid AS inventory_uuid,
       i.code AS inventory_code, i.text AS inventory_text,

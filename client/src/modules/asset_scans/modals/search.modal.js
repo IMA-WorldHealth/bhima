@@ -15,7 +15,7 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'group_uuid', 'asset_label',
+    'depot_uuid', 'inventory_uuid', 'group_uuid', 'asset_label', 'reference_number',
   ];
 
   // displayValues will be an id:displayValue pair
