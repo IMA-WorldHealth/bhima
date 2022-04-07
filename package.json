@@ -113,7 +113,7 @@
     "dotenv": "^16.0.0",
     "excel4node": "^1.7.0",
     "express": "^4.17.3",
-    "express-handlebars": "^6.0.2",
+    "express-handlebars": "^6.0.4",
     "express-session": "^1.17.2",
     "font-awesome": "^4.7.0",
     "handlebars": "^4.7.7",
@@ -125,7 +125,7 @@
     "jsbarcode": "^3.11.5",
     "json-2-csv": "^3.17.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "morgan": "^1.9.1",
     "multer": "^1.4.4",
     "muze": "^1.2.1",
@@ -145,7 +145,7 @@
     "uuid": "^8.3.2",
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
-    "winston": "^3.6.0"
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@ima-worldhealth/rewire": "^4.1.0",
@@ -160,7 +160,7 @@
     "del": "^6.0.0",
     "eslint": "^8.12.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.26.0",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-if": "^3.0.0",
