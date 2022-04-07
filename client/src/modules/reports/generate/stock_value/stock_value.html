@@ -26,7 +26,7 @@
 
           <!-- select depot -->
           <bh-depot-select
-            depot-uuid="ReportConfigCtrl.depot.uuid"
+            depot-uuid="ReportConfigCtrl.reportDetails.depot_uuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
             required="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
@@ -36,22 +36,20 @@
           <bh-date-editor
             label="FORM.LABELS.UNTIL_DATE"
             limit-min-fiscal
-            date-value="ReportConfigCtrl.dateTo"
+            date-value="ReportConfigCtrl.reportDetails.dateTo"
             on-change="ReportConfigCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0"
-                ng-model="ReportConfigCtrl.excludeZeroValue"
-                ng-change="ReportConfigCtrl.onExcludeZeroValue()">
+              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.excludeZeroValue">
               <span translate>REPORT.STOCK_VALUE.EXCLUDE_INVENTORIES_ZERO_VALUE</span>
             </label>
           </div>
 
           <!-- the currency to be used in the footer -->
           <bh-currency-select
-           currency-id="ReportConfigCtrl.currency_id"
+           currency-id="ReportConfigCtrl.reportDetails.currency_id"
            on-change="ReportConfigCtrl.onSelectCurrency(currency)">
           </bh-currency-select>
 

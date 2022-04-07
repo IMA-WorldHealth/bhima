@@ -7,27 +7,32 @@ StockValueConfigController.$inject = [
   'LanguageService', 'moment',
 ];
 
-function StockValueConfigController($sce, Notify, SavedReports,
-  AppCache, reportData, $state, Languages, moment) {
+function StockValueConfigController(
+  $sce, Notify, SavedReports,
+  AppCache, reportData, $state, Languages, moment,
+) {
+
   const vm = this;
   const cache = new AppCache('configure_stock_value_report');
   const reportUrl = 'reports/stock/value';
 
+  vm.reportDetails = {
+    dateTo : new Date(),
+    excludeZeroValue : 0,
+  };
+
   // Default values
   vm.previewGenerated = false;
-  vm.orderByCreatedAt = 0;
-  vm.dateTo = new Date();
-  vm.excludeZeroValue = 0;
 
   vm.onDateChange = (date) => {
-    vm.dateTo = date;
+    vm.reportDetails.dateTo = date;
   };
 
   // check cached configuration
   checkCachedConfiguration();
 
   vm.onSelectDepot = function onSelectDepot(depot) {
-    vm.depot = depot;
+    vm.reportDetails.depot_uuid = depot.uuid;
   };
 
   vm.onSelectCronReport = report => {
@@ -35,7 +40,7 @@ function StockValueConfigController($sce, Notify, SavedReports,
   };
 
   vm.clear = function clear(key) {
-    delete vm[key];
+    delete vm.reportDetails[key];
   };
 
   vm.clearPreview = function clearPreview() {
@@ -45,38 +50,22 @@ function StockValueConfigController($sce, Notify, SavedReports,
 
   vm.onSelectCurrency = (currency) => {
     vm.reportDetails.currency_id = currency.id;
-    vm.currency_id = currency.id;
   };
-
-  vm.onExcludeZeroValue = () => {
-    vm.reportDetails.exclude_zero_value = vm.excludeZeroValue;
-  };
-
-  function formatData() {
-    const params = {
-      depot_uuid : vm.depot.uuid,
-      dateTo : vm.dateTo,
-      currency_id : vm.currency_id,
-      exclude_zero_value : vm.excludeZeroValue,
-    };
-    cache.reportDetails = angular.copy(params);
-    params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
-
-    const options = {
-      params,
-      lang : Languages.key,
-    };
-
-    vm.reportDetails = options;
-    return vm.reportDetails;
-  }
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
-    vm.reportDetails = formatData();
+    const dateTo = moment(vm.reportDetails.dateTo).format('YYYY-MM-DD');
 
-    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    const options = {
+      ...vm.reportDetails,
+      lang : Languages.key,
+      dateTo,
+    };
+
+    cache.reportDetails = angular.copy(vm.reportDetails);
+
+    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(options))
       .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
@@ -85,7 +74,6 @@ function StockValueConfigController($sce, Notify, SavedReports,
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    vm.reportDetails = formatData();
     const options = {
       url : reportUrl,
       report : reportData,
@@ -100,6 +88,9 @@ function StockValueConfigController($sce, Notify, SavedReports,
   };
 
   function checkCachedConfiguration() {
-    vm.reportDetails = angular.copy(cache.reportDetails || {});
+    if (cache.reportDetails) {
+      vm.reportDetails = angular.copy(cache.reportDetails);
+      vm.dateTo = new Date(); // always default to today
+    }
   }
 }
