@@ -63,7 +63,6 @@ INSERT INTO unit VALUES
   (163,'Stock Inventory','TREE.STOCK_INVENTORY','The stock inventory registry',160,'/stock/inventories'),
   (164,'Stock Exit','STOCK.EXIT','The stock exit module',160,'/stock/exit'),
   (165,'Stock Entry','STOCK.ENTRY','The stock entry module',160,'/stock/entry'),
-  (167,'Stock Adjustment','STOCK.ADJUSTMENT','The stock adjustment module',160,'/stock/adjustment'),
   (168,'Aged Creditors','TREE.AGED_CREDITORS','Aged Creditors',281,'/reports/aged_creditors'),
   (170,'Account Statement','TREE.ACCOUNT_STATEMENT','Account Statement Module',281,'/account_statement'),
   (180,'Profit & Loss Statement','REPORT.PROFIT_AND_LOSS','The report of income and expenses',281,'/reports/income_expense'),

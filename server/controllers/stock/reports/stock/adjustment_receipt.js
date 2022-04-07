@@ -29,12 +29,12 @@ async function stockAdjustmentReceipt(documentUuid, session, options) {
       l.label, l.expiration_date, d.text AS depot_name, m.flux_id,
       sal.new_quantity, sal.old_quantity, (sal.new_quantity - sal.old_quantity) AS difference
     FROM stock_movement m
-    LEFT JOIN stock_adjustment_log sal ON sal.movement_uuid = m.uuid
-    JOIN document_map dm ON dm.uuid = m.document_uuid
-    JOIN lot l ON l.uuid = m.lot_uuid
-    JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id
+      LEFT JOIN stock_adjustment_log sal ON sal.movement_uuid = m.uuid
+      JOIN document_map dm ON dm.uuid = m.document_uuid
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+      JOIN user u ON u.id = m.user_id
     WHERE m.flux_id IN (${FLUX_TYPE}) AND m.document_uuid = ?
   `;
 

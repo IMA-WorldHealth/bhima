@@ -288,6 +288,10 @@ function StockInventoryAdjustmentController(
         startup();
         return loadInventories(vm.depot);
       })
+      .then(() => {
+        // reset error handling on the form
+        form.$setPristine();
+      })
       .catch(Notify.handleError);
   }
 
