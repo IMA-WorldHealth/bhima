@@ -87,7 +87,7 @@
     "accounting-js": "^1.1.1",
     "adm-zip": "^0.5.9",
     "angular": "^1.8.2",
-    "angular-animate": "^1.8.0",
+    "angular-animate": "^1.8.3",
     "angular-dynamic-locale": "^0.1.38",
     "angular-growl-notifications": "^2.6.0",
     "angular-messages": "^1.8.2",
