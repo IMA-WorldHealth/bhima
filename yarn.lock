@@ -541,10 +541,10 @@ angular-growl-notifications@^2.6.0:
   dependencies:
     angular ">=1.2.22 <2"
 
-angular-messages@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.npmjs.org/angular-messages/-/angular-messages-1.8.2.tgz#47f0cf913030bc2231423ab9388acc14dd931837"
-  integrity sha512-M1qNh/30cLJi4yJJ+3YB8saPonRcavz5Dquqz0T/aUySKJhIkUoeCkmF+BcLH4SJ5PBp04yy4CZUUeNRVi7jZA==
+angular-messages@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular-messages/-/angular-messages-1.8.3.tgz#56b26807bc81ea5218fe6337979ccb89f5de6825"
+  integrity sha512-f/ywtg32lqzX8FnXkBJOyn13lbCbo333/xy/5TTFcsH/gZdXoiuERj+dLTOs8xHCkOeFQhFx0VD0DgtMgSag7A==
 
 angular-mocks@^1.8.3:
   version "1.8.3"
@@ -563,10 +563,10 @@ angular-sanitize@^1.8.3:
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.8.3.tgz#51378e990e78c7ecc1fb31cd68655aff690a3bf1"
   integrity sha512-2rxdqzlUVafUeWOwvY/FtyWk1pFTyCtzreeiTytG9m4smpuAEKaIJAjYeVwWsoV+nlTOcgpwV4W1OCmR+BQbUg==
 
-angular-touch@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.npmjs.org/angular-touch/-/angular-touch-1.8.2.tgz#56c54df3f776246bb36f16bef2720a93ed5b8441"
-  integrity sha512-tGoFNsONm/VHFcBW8gySVZvpCIYAvsAlEuHpJDugGn+3ENLxSDhpZ4ikev4KXfWr8ZNsYGoVSfsvJegkiC+9Ig==
+angular-touch@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular-touch/-/angular-touch-1.8.3.tgz#e5cec83e2c3d811ff49e4954e1000b4f6c1e8e41"
+  integrity sha512-QFLhJl5K7AsMBgK87Mxx/XtBYiFl2lBnjgGNCjGyAh5gM8eHsBWgaOxZsovP6qZSljG4wIA9dA9NPkXXtbo/WQ==
 
 angular-translate-loader-static-files@^2.19.0:
   version "2.19.0"
@@ -601,10 +601,10 @@ angular-ui-grid@^4.11.1:
   dependencies:
     angular ">=1.4.0 1.8.x"
 
-"angular@>=1.2.22 <2", "angular@>=1.4.0 1.8.x", angular@^1.8.0, angular@^1.8.2:
-  version "1.8.2"
-  resolved "https://registry.npmjs.org/angular/-/angular-1.8.2.tgz#5983bbb5a9fa63e213cb7749199e0d352de3a2f1"
-  integrity sha512-IauMOej2xEe7/7Ennahkbb5qd/HFADiNuLSESz9Q27inmi32zB0lnAsFeLEWcox3Gd1F6YhNd1CP7/9IukJ0Gw==
+"angular@>=1.2.22 <2", "angular@>=1.4.0 1.8.x", angular@^1.8.0, angular@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular/-/angular-1.8.3.tgz#851ad75d5163c105a7e329555ef70c90aa706894"
+  integrity sha512-5qjkWIQQVsHj4Sb5TcEs4WZWpFeVFHXwxEBHUhrny41D8UrBAd6T/6nPPAsLngJCReIOqi95W3mxdveveutpZw==
 
 ansi-align@^3.0.0:
   version "3.0.1"
