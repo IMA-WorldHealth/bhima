@@ -30,6 +30,12 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
 
+  // Set the excludeAssets flag based on the existing custom search filter
+  vm.excludeAssets = 0;
+  if ('is_asset' in vm.searchQueries && !vm.searchQueries.is_asset) {
+    vm.excludeAssets = 1;
+  }
+
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     const periodFilters = Periods.processFilterChanges(period);
@@ -49,6 +55,14 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock, 
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
     displayValues.inventory_uuid = inventory.label;
+  };
+
+  vm.onExcludeAssets = function onExcludeAssets() {
+    if (vm.excludeAssets) {
+      vm.searchQueries.is_asset = 0;
+    } else {
+      vm.clear('is_asset');
+    }
   };
 
   // include/exclude empty lots

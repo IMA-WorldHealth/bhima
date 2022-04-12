@@ -10,6 +10,7 @@
     "ASSIGN_TO" : "Assigner à",
     "DETAILS" : "Détail de l'actif",
     "DOCUMENT" : "Document",
+    "EXCLUDE_ASSETS" : "Exclure les actifs",
     "LAST_SCAN_DATE" : "Date du dernier scan",
     "NEW_ASSET_SCAN" : "Nouveau scan d'un actif",
     "NEW_REQUIRED_INVENTORY_SCAN" : "Nouvelle scan d'inventaire obligatoire",
