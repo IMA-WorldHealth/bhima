@@ -10,6 +10,7 @@
     "ASSIGN_TO" : "Assign to",
     "DETAILS" : "Asset Details",
     "DOCUMENT" : "Assignment Document",
+    "EXCLUDE_ASSETS" : "Exclude assets",
     "LAST_SCAN_DATE" : "Last Scan Date",
     "NEW_ASSET_SCAN" : "New Asset Scan",
     "NEW_REQUIRED_INVENTORY_SCAN" : "New Required Inventory Scan",
