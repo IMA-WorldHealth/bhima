@@ -46,6 +46,7 @@
             depot-uuid="CreateShipCtrl.shipment.destination_depot_uuid"
             label="SHIPMENT.DESTINATION_DEPOT"
             on-select-callback="CreateShipCtrl.onSelectDestinationDepot(depot)"
+            exception="CreateShipCtrl.depot"
             required="true">
           </bh-depot-select>
 
@@ -53,6 +54,7 @@
           <bh-date-editor
             label="SHIPMENT.ANTICIPATED_DELIVERY_DATE"
             date-value="CreateShipCtrl.shipment.anticipated_delivery_date"
+            min-date="CreateShipCtrl.today"
             allow-future-date="true"
             on-change="CreateShipCtrl.setDate(date)"
             required="true">

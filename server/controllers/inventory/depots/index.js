@@ -120,9 +120,10 @@ function getLotsInStockForDate(depotUuid, date) {
       SELECT
         BUID(inventory.uuid) AS inventory_uuid,
         BUID(lot.uuid) AS lot_uuid,
-        balances.quantity, 
+        balances.quantity,
         inventory.code,
         inventory.text,
+        inventory.is_asset,
         BUID(inventory.group_uuid) AS group_uuid,
         lot.expiration_date,
         (lot.expiration_date < DATE(?)) AS is_expired,
@@ -131,7 +132,7 @@ function getLotsInStockForDate(depotUuid, date) {
         inventory_group.tracking_consumption,
         inventory_unit.text AS unit
       FROM (
-        SELECT 
+        SELECT
           sm.lot_uuid,
           SUM(IF(sm.is_exit, -1 * sm.quantity, sm.quantity)) AS quantity
         FROM stock_movement AS sm
