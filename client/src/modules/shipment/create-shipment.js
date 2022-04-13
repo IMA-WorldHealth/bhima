@@ -80,13 +80,6 @@ function CreateShipmentController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
       }, {
-        field : 'condition',
-        width : 150,
-        displayName : 'SHIPMENT.LOT_CONDITION',
-        headerCellFilter : 'translate',
-        cellTemplate : 'modules/shipment/templates/condition.tmpl.html',
-      },
-      {
         displayName : '',
         field : 'actions',
         width : 25,
@@ -348,7 +341,6 @@ function CreateShipmentController(
     return {
       lot_uuid : row.lot_uuid,
       quantity : row.quantity,
-      condition_id : row.condition_id,
     };
   }
 
