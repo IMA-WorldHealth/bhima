@@ -1965,7 +1965,7 @@ CREATE TABLE `asset_scan` (
   `location_uuid`     BINARY(16),
   `depot_uuid`        BINARY(16),           -- NULL if not assigned to a depot
   `scanned_by`        SMALLINT(5) UNSIGNED NOT NULL,
-  `condition_id`      SMALLINT(5) NOT NULL,
+  `condition_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `notes`             TEXT DEFAULT NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, -- This is the official "scan date"
   `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1996,7 +1996,7 @@ CREATE TABLE `required_inventory_scan` (
 
 DROP TABLE IF EXISTS `asset_condition`;
 CREATE TABLE `asset_condition` (
-  `id`               SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `id`               SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `condition`        VARCHAR(100) NOT NULL,  -- Will be treated as a translation token (if predefined)
   `predefined`       BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
@@ -2733,7 +2733,7 @@ CREATE TABLE `shipment` (
   `document_uuid`             BINARY(16) NULL, /* stock exit document_uuid */
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `requisition` (`uuid`),
+  CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`),
   CONSTRAINT `shipment__origin_depot` FOREIGN KEY (`origin_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__destination_depot` FOREIGN KEY (`destination_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__status` FOREIGN KEY (`status_id`) REFERENCES `shipment_status` (`id`),
@@ -2749,7 +2749,6 @@ CREATE TABLE `shipment_item` (
   `date_packed`        DATETIME,
   `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
-  `condition_id`       SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)

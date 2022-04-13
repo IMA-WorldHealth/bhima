@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `shipment` (
   `document_uuid`             BINARY(16) NULL, /* stock exit document_uuid */
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment__project` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `requisition` (`uuid`),
+  CONSTRAINT `shipment__requisition` FOREIGN KEY (`requisition_uuid`) REFERENCES `stock_requisition` (`uuid`),
   CONSTRAINT `shipment__origin_depot` FOREIGN KEY (`origin_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__destination_depot` FOREIGN KEY (`destination_depot_uuid`) REFERENCES `depot` (`uuid`),
   CONSTRAINT `shipment__status` FOREIGN KEY (`status_id`) REFERENCES `shipment_status` (`id`),
@@ -149,12 +149,33 @@ CREATE TABLE IF NOT EXISTS `shipment_item` (
   `date_packed`        DATETIME,
   `quantity_sent`      INT(11) UNSIGNED DEFAULT 0,
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
-  `condition_id`       SMALLINT(5) UNSIGNED NULL,
+  `condition_id`       SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   CONSTRAINT `shipment_item__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DELIMITER $$
+
+-- Shipment Triggers
+-- the shipment reference is incremented based on the shipment uuid.
+DROP TRIGGER IF EXISTS  shipment_reference $$
+CREATE TRIGGER shipment_reference BEFORE INSERT ON shipment
+FOR EACH ROW
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(sh.reference) + 1, 1)) FROM shipment sh WHERE sh.uuid <> NEW.uuid);
+$$
+
+-- compute the document map
+DROP TRIGGER IF EXISTS shipment_document_map $$
+CREATE TRIGGER shipment_document_map AFTER INSERT ON shipment
+FOR EACH ROW BEGIN
+  INSERT INTO `document_map`
+    SELECT NEW.uuid, CONCAT_WS('.', 'SHIP', project.abbr, new.reference) FROM project WHERE project.id = NEW.project_id
+  ON DUPLICATE KEY UPDATE text = text;
+END$$
+
+DELIMITER ;
 
 /** ADD DEFAULT SHIPMENT STATUS */
 INSERT IGNORE INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES
@@ -215,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `asset_scan` (
   `location_uuid`     BINARY(16),
   `depot_uuid`        BINARY(16),           -- NULL if not assigned to a depot
   `scanned_by`        SMALLINT(5) UNSIGNED NOT NULL,
-  `condition_id`      SMALLINT(5) NOT NULL,
+  `condition_id`      SMALLINT(5) UNSIGNED NOT NULL,
   `notes`             TEXT DEFAULT NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- This is the official "scan date"
   `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -259,10 +280,10 @@ Issue: 6501
 @author: jniles
 @date: 2022-04-06
 */
-DELETE FROM role WHERE unit_id = 167;
+DELETE FROM `role_unit` WHERE unit_id = 167;
 DELETE FROM `unit` WHERE id = 167;
 
-/*
+/**
  * adding reports for inventory scanning
  * @author: jmcameron
  * @date: 2022-04-06
@@ -273,3 +294,25 @@ INSERT IGNORE INTO unit VALUES
 
 INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
    ('needed_inventory_scans', 'TREE.INVENTORY_SCANS_NEEDED');
+
+/**
+ * Remove condition from shipment items
+ * @author: jmcameron
+ * @date: 2022-04-07
+ */
+CALL drop_foreign_key('shipment_item', 'shipment_item__condition');
+CALL drop_column_if_exists('shipment_item', 'condition_id');
+
+--
+--       WARNING!
+--
+-- When migrating a production site after a release that uses this migration file,
+-- it will be necessary to comment out the triggers
+--
+--   shipment_reference
+--
+--   shipment_document_map
+--
+-- from the triggers.sql file before performing the migration.  This is necessary
+-- because these triggers refer to the 'shipment' table which does not exist when
+-- this file is processed (during migrations).
