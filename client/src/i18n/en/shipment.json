@@ -55,16 +55,16 @@
     "UPDATE_PACKING_LIST": "Update Packing List",
     "UPDATE_STATUS": "Update Status",
     "UPDATE_TRACKING_LOG_MESSAGE": "Please provide current shipping location and other important new information",
-    "UPDATE_TRACKING_LOG_WARNING": "You cannot update the tracking log, as only shipments with IN-TRANSIT status can be updated"
-  },
-  "STATUS" : {
-    "EMPTY" : "Empty",
-    "PARTIAL" : "Partial",
-    "COMPLETE" : "Complete",
-    "IN_TRANSIT" : "In Transit",
-    "DELIVERED" : "Delivered",
-    "AT_DEPOT" : "At Depot",
-    "READY_FOR_SHIPMENT" : "Ready for shipment",
-    "LOST" : "LOST"
+    "UPDATE_TRACKING_LOG_WARNING": "You cannot update the tracking log, as only shipments with IN-TRANSIT status can be updated",
+    "STATUS" : {
+      "EMPTY" : "Empty",
+      "PARTIAL" : "Partial",
+      "COMPLETE" : "Complete",
+      "IN_TRANSIT" : "In Transit",
+      "DELIVERED" : "Delivered",
+      "AT_DEPOT" : "At Depot",
+      "READY_FOR_SHIPMENT" : "Ready for shipment",
+      "LOST" : "Lost"
+    }
   }
 }

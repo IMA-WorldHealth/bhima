@@ -291,6 +291,7 @@ END $$
 
   Recomputes the lot barcodes from the base data.
 */
+DROP PROCEDURE IF EXISTS zRecomputeLotBarcodes$$
 CREATE PROCEDURE zRecomputeLotBarcodes()
 BEGIN
   UPDATE lot SET barcode = CONCAT('LT', LEFT(HEX(lot.uuid), 8));
@@ -301,6 +302,7 @@ END $$
 
  Gets the balance on an invoice due to a debtor.
 */
+DROP PROCEDURE IF EXISTS zGetInvoiceBalance$$
 CREATE FUNCTION zGetInvoiceBalance(invoiceUuid BINARY(16))
 RETURNS DOUBLE DETERMINISTIC
 BEGIN
