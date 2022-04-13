@@ -65,7 +65,7 @@ function CreateShipmentController(
         width : 150,
         displayName : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
+        cellTemplate : 'modules/shipment/templates/quantity.tmpl.html',
         aggregationType : uiGridConstants.aggregationTypes.sum,
       }, {
         field : 'unit_type',
@@ -104,7 +104,7 @@ function CreateShipmentController(
 
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
-  vm.maxDate = new Date();
+  vm.today = new Date();
   vm.onChangeDepot = onChangeDepot;
   vm.getOverview = getOverview;
   vm.setReady = setReady;
@@ -127,6 +127,10 @@ function CreateShipmentController(
   };
 
   vm.configureItem = function configureItem(row, lot) {
+    if (lot.isAsset()) {
+      // Override default quantity for assets
+      lot.quantity = 1;
+    }
     vm.stockForm.configureItem(row, lot);
     vm.validateItems();
   };
@@ -181,6 +185,9 @@ function CreateShipmentController(
     // set the shipment origin
     vm.shipment.origin_depot_uuid = vm.depot.uuid;
 
+    // Delete the old destination depot
+    delete vm.shipment.destination_depot_uuid;
+
     // trick an exit type which is required
     vm.stockForm.setExitType('loss');
     vm.stockForm.setLossDistribution();
@@ -217,7 +224,6 @@ function CreateShipmentController(
   function startup() {
     vm.loading = true;
     vm.hasError = false;
-
     vm.stockForm.setup();
     vm.validateItems();
 
