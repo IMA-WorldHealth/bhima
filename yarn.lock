@@ -5200,10 +5200,10 @@ jsbn@~0.1.0:
   resolved "https://registry.npmjs.org/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^3.17.0:
-  version "3.17.0"
-  resolved "https://registry.npmjs.org/json-2-csv/-/json-2-csv-3.17.0.tgz#d886e4ec382bdb96dd31cbf87e0206173176d3c7"
-  integrity sha512-mLnrYK3TX/mDSiBduA6vuSuVlvkYgDMv+Ef8HXCriyz73BBc6I7pWljdRfR+FKPzYKcnz/rUvzbqJQx/tbEoMQ==
+json-2-csv@^3.17.1:
+  version "3.17.1"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.17.1.tgz#7e0b2497f47907dad68ec1d5e903f237fa47deb3"
+  integrity sha512-i6QynVy42GGMgY8fYde0mp6nYteptvk8oJsphOLiT3CITzw7NBBAiRwHV35kDOBii/elDQe1HCWLqaBPJ3istQ==
   dependencies:
     deeks "2.5.1"
     doc-path "3.0.2"
