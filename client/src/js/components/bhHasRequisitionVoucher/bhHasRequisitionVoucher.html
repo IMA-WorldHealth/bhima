@@ -14,13 +14,13 @@
     <bh-requisition-select
       requisition-uuid="$ctrl.requisitionReference"
       requestor-uuid="$ctrl.requestor"
-      required="true"
+      required="$ctrl.required"
       disabled="$ctrl.requisitionDisabled"
       on-select-callback="$ctrl.onSelectRequisition(requisition)">
     </bh-requisition-select>
 
     <div class="help-block" ng-show="$ctrl.message">
-      <p ng-class="$ctrl.classeLabel" translate>{{ $ctrl.message }}</p>
+      <p ng-class="$ctrl.classLabel" translate>{{ $ctrl.message }}</p>
     </div>
   </div>
 </ng-form>

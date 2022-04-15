@@ -51,9 +51,20 @@ function StockFindDepotModalController(
     vm.reference = reference;
   };
 
+  vm.depotSelected = () => {
+    return vm.selected && ('uuid' in vm.selected);
+  };
+
   vm.onChangeShipmentReference = shipment => {
-    vm.shipment = shipment;
-    vm.shipmentReference = shipment.reference;
+    if (shipment) {
+      vm.shipment = shipment;
+      vm.shipmentReference = shipment.reference;
+      vm.selected = vm.depots.find(item => item.uuid === shipment.destination_depot_uuid);
+    } else {
+      delete vm.shipment;
+      delete vm.shipmentReference;
+      vm.selected = {};
+    }
   };
 
   // submit
@@ -117,6 +128,6 @@ function StockFindDepotModalController(
 
   // cancel
   function cancel() {
-    Instance.close(vm.selected);
+    Instance.close();
   }
 }

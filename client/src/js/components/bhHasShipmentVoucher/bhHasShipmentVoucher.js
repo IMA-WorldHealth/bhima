@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : bhHasShipmentVoucherController,
     bindings    : {
       message   : '<',
-      classeLabel : '<',
+      classLabel : '<',
       reference : '<',
       depotUuid : '<',
       onChange  : '&',
@@ -24,6 +24,9 @@ function bhHasShipmentVoucherController() {
 
   $ctrl.onChangeVoucherExist = value => {
     $ctrl.shipmentVoucherExist = value;
+    if (value === 0) {
+      $ctrl.onChange(null);
+    }
   };
 
   $ctrl.onSelectShipment = (shipment) => {

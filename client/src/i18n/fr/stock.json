@@ -200,7 +200,8 @@
       "WARN_MAIN_FORM_ERRORS" : "Veuillez saisir les éléments requis dans le formulaire principal !",
       "WARN_NOT_CONSUMABLE_INVOICE" : "La facture ne contient aucun article consommable. Aucun lot n'a été pourvu automatiquement.",
       "WARN_OUT_OF_STOCK_QUANTITY" : "Il n'y a pas de stock de {{hrText}} pour remplir la demande. Ces éléments ont été ignorés. ",
-      "WARN_PAST_DATE" : "Vous avez choisi une date dans le passé. Seuls les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date."
+      "WARN_PAST_DATE" : "Vous avez choisi une date dans le passé. Seuls les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date.",
+      "WARN_SOME_SHIPMENT_LOTS_EXHAUSTED" : "Certains lots spécifiés dans l'expédition sont épuisés et ont été ignorés ci-dessous."
     },
     "DEPOT_DISTRIBUTION" : "Distribution au dépôt",
     "DIRECTION": "Direction du  movement",

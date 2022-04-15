@@ -4,10 +4,11 @@ angular.module('bhima.components')
     controller  : bhHasRequisitionVoucherController,
     bindings    : {
       message   : '<',
-      classeLabel : '<',
+      classLabel : '<',
       reference : '<',
       onChange  : '&',
       requestor : '<?',
+      required : '<',
     },
   });
 
