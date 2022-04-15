@@ -376,7 +376,7 @@ exports.listInTransitInventories = async (req, res, next) => {
       DATEDIFF(l.expiration_date, CURRENT_DATE()) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid,
       BUID(sh.origin_depot_uuid) AS depot_uuid,
-      i.purchase_interval, i.delay,
+      i.purchase_interval, i.delay, i.is_asset,
       iu.text AS unit_type,
       ig.name AS group_name, ig.tracking_expiration, ig.tracking_consumption,
       CONCAT('LT', LEFT(HEX(l.uuid), 8)) AS barcode
@@ -525,7 +525,8 @@ function findAffectedAssets(params) {
       BUID(shi.uuid) AS uuid, BUID(sh.uuid) AS shipment_uuid,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent,
       l.label AS lot_label, i.code AS inventory_code,
-      i.text AS inventory_text, dm.text AS reference
+      i.text AS inventory_text, i.is_asset,
+      dm.text AS reference
     FROM shipment sh
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN lot l ON l.uuid = shi.lot_uuid
@@ -629,7 +630,8 @@ async function getPackingList(identifier) {
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
       shi.quantity_sent, shi.quantity_delivered, shi.date_packed,
-      l.label AS lot_label, i.code AS inventory_code, i.text AS inventory_label,
+      l.label AS lot_label, i.code AS inventory_code,
+      i.text AS inventory_label, i.is_asset,
       dm.text AS reference
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id

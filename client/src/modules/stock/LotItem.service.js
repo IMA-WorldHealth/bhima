@@ -245,7 +245,7 @@ function LotItemService(uuid, $translate) {
    * Returns true if the lot is an asset.
    */
   Lot.prototype.isAsset = function isAsset() {
-    return this.__is_asset === true;
+    return !!this.__is_asset;
   };
 
   /**
