@@ -13,7 +13,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'transactions',
-  filename : 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE',
+  filename : 'REPORT.ANALYSIS_AUX_CASHBOX.TITLE',
   orientation : 'landscape',
 };
 
