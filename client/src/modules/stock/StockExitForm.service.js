@@ -160,7 +160,7 @@ function StockExitFormService(
       .then(stock => {
 
         const rawStock = this.allowExpired ? stock
-          : stock.filter(lot => !lot.is_asset && !lot.is_expired);
+          : stock.filter(lot => lot.is_asset || !lot.is_expired);
 
         const available = rawStock
           .map(item => {
