@@ -80,7 +80,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       SELECT m.document_uuid, m.lot_uuid, m.quantity
       FROM stock_movement m
       WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
-    )ex ON ex.document_uuid = m.document_uuid AND ex.lot_uuid = m.lot_uuid
+    ) ex ON ex.document_uuid = m.document_uuid AND ex.lot_uuid = m.lot_uuid
     ` : '';
 
   const sql = `
@@ -90,7 +90,8 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       u.display_name AS user_display_name,
       dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName,
-      BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition
+      BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
+      BUID(s.uuid) AS shipment_uuid, ship_dm.text AS shipment_reference
       ${joinToExitAttributes}
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -101,6 +102,8 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       LEFT JOIN depot dd ON dd.uuid = entity_uuid
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
       LEFT JOIN document_map sr_m ON sr_m.uuid = m.stock_requisition_uuid
+      LEFT JOIN shipment s ON s.document_uuid = m.document_uuid
+      LEFT JOIN document_map ship_dm ON ship_dm.uuid = s.uuid
       ${joinToExit}
     WHERE m.is_exit = ? AND m.flux_id = ? AND m.document_uuid = ?
     ORDER BY i.text, l.label, l.expiration_date DESC`;
@@ -124,6 +127,8 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
     document_uuid      : line.document_uuid,
     document_reference : line.document_reference,
     document_requisition : line.document_requisition,
+    shipment_uuid      : line.shipment_uuid,
+    shipment_reference : line.shipment_reference,
   };
 
   data.rows = rows;

@@ -24,6 +24,9 @@ function bhHasShipmentVoucherController() {
 
   $ctrl.onChangeVoucherExist = value => {
     $ctrl.shipmentVoucherExist = value;
+    if (value === 0) {
+      $ctrl.onChange(null);
+    }
   };
 
   $ctrl.onSelectShipment = (shipment) => {

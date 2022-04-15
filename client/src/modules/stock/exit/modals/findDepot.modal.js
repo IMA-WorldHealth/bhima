@@ -52,8 +52,15 @@ function StockFindDepotModalController(
   };
 
   vm.onChangeShipmentReference = shipment => {
-    vm.shipment = shipment;
-    vm.shipmentReference = shipment.reference;
+    if (shipment) {
+      vm.shipment = shipment;
+      vm.shipmentReference = shipment.reference;
+      vm.selected = vm.depots.find(item => item.uuid === shipment.destination_depot_uuid);
+    } else {
+      delete vm.shipment;
+      delete vm.shipmentReference;
+      delete vm.selected;
+    }
   };
 
   // submit
