@@ -32,6 +32,8 @@ function stockExitDepotReceipt(documentUuid, session, options) {
       data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
 
       data.exit.details.barcode = barcode.generate(key, data.exit.details.document_uuid);
+
+      // Customize the message for shipments
       return report.render(data);
     });
 }
