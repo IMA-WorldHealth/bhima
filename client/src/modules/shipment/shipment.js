@@ -51,8 +51,8 @@ function ShipmentRegistryController(
     },
     {
       field : 'stock_reference',
-      displayName : 'SHIPMENT.STOCK_REFERENCE',
-      headerTooltip : 'SHIPMENT.STOCK_REFERENCE',
+      displayName : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT',
+      headerTooltip : 'FORM.LABELS.REFERENCE_STOCK_MOVEMENT',
       headerCellFilter : 'translate',
       headerCellClass : 'wrappingColHeader',
     },
@@ -103,6 +103,7 @@ function ShipmentRegistryController(
       field : 'anticipated_delivery_date',
       displayName : 'SHIPMENT.ANTICIPATED_DELIVERY_DATE',
       headerTooltip : 'SHIPMENT.ANTICIPATED_DELIVERY_DATE',
+      headerCellClass : 'wrappingColHeader',
       headerCellFilter : 'translate',
       cellFilter : 'date',
     },
