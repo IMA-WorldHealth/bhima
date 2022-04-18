@@ -200,7 +200,8 @@
       "WARN_MAIN_FORM_ERRORS" : "Please enter required fields in main form!",
       "WARN_NOT_CONSUMABLE_INVOICE" : "The invoice does not have any consumable items in it.  No lots have been automatically filled.",
       "WARN_OUT_OF_STOCK_QUANTITY" : "There is no stock of {{hrText}} to fill the requisition.  These item(s) have been skipped.",
-      "WARN_PAST_DATE" : "You have chosen a date in the past. Only the lots available on the chosen date will be visible as well as the quantity on this date."
+      "WARN_PAST_DATE" : "You have chosen a date in the past. Only the lots available on the chosen date will be visible as well as the quantity on this date.",
+      "WARN_SOME_SHIPMENT_LOTS_EXAUSTED" : "Some lots specified in the shipment are exhausted and have been skipped below."
     },
     "DEPOT_DISTRIBUTION" : "Depot Distribution",
     "DIRECTION": " Movement direction",

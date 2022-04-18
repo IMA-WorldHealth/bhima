@@ -360,7 +360,7 @@ function CreateShipmentController(
         return Depot.read(vm.shipment.origin_depot_uuid);
       })
       .then(depot => onChangeDepot(depot))
-      .then(() => vm.stockForm.setLotsFromLotList(vm.shipment.lots, 'lot_uuid'))
+      .then(() => vm.stockForm.setLotsFromShipmentList(vm.shipment.lots, 'lot_uuid'))
       .catch(Notify.handleError);
   }
 
