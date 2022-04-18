@@ -34,6 +34,7 @@ function StockExitFormService(
   const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
   const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
   const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
+  const WARN_SOME_SHIPMENT_LOTS_EXAUSTED = 'STOCK.MESSAGES.WARN_SOME_SHIPMENT_LOTS_EXAUSTED';
   const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
   const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
   const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
@@ -287,10 +288,13 @@ function StockExitFormService(
     this.store.clear();
   };
 
-  StockExitForm.prototype.setLotsFromLotList = function setLotsFromLotList(lots, uuidKey = 'uuid') {
+  StockExitForm.prototype.setLotsFromShipmentList = function setLotsFromShipmentList(lots, uuidKey = 'uuid') {
     const available = [];
     const unavailable = [];
     const insufficient = [];
+
+    const lotsInShipment = lots.map(lot => lot.lot_uuid);
+    let lotsUnavailable = false;
 
     const getLot = uuid => lots.filter(lot => lot[uuidKey] === uuid);
 
@@ -305,6 +309,13 @@ function StockExitFormService(
 
     this._pool.list()
       .forEach(lot => {
+
+        // Skip all lots that are not in the shipment
+        if (!lotsInShipment.includes(lot.lot_uuid)) {
+          lotsUnavailable = true;
+          return;
+        }
+
         const matches = getLot(lot.lot_uuid);
 
         if (matches.length > 0) {
@@ -313,6 +324,13 @@ function StockExitFormService(
           unavailable.push(lot);
         }
       });
+
+    // If the pool does not contain one of the lots that is the shipment,
+    // that is because there is no stock remaining for that lot.  So for these
+    // lots we need to reconstruct the lot and add it to the unavailable list
+    // to improve the error messages.   Also need better logic to warn when
+    // a lot does not have the full quantity requested.
+    // @todo: Add fix for this - 4/18/22 JMC
 
     const hasNoConsumableItems = (available.length === 0 && unavailable.length === 0);
     this._toggleInfoMessage(
@@ -382,6 +400,10 @@ function StockExitFormService(
     const insufficientLabels = makeUniqueLabels(insufficient);
 
     // finally, toggle compute the error codes
+    this._toggleInfoMessage(
+      lotsUnavailable, 'warn', WARN_SOME_SHIPMENT_LOTS_EXAUSTED, { hrText : 'Hello' },
+    );
+
     this._toggleInfoMessage(
       unavailable.length > 0, 'error', WARN_OUT_OF_STOCK_QUANTITY, { hrText : unavailableLabels },
     );
@@ -568,7 +590,7 @@ function StockExitFormService(
 
     if (depot.shipment) {
       this.details.shipment_uuid = depot.shipment.uuid;
-      this.setLotsFromLotList(depot.shipment.lots, 'lot_uuid');
+      this.setLotsFromShipmentList(depot.shipment.lots, 'lot_uuid');
     }
   };
 
