@@ -14,6 +14,13 @@
 
     <!-- summary  -->
     <div class="row receipt-summary">
+      {{#if exit.details.shipment_reference}}
+      <div class="row">
+        <div class="col-xs-12">
+          <h4 style="margin-bottom: 5px;"><strong>{{translate 'SHIPMENT.TITLE'}}: {{exit.details.shipment_reference}}</strong></h4>
+        </div>
+      </div>
+      {{/if}}
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.depot_name}}</strong> <br>
@@ -27,7 +34,6 @@
         {{#if exit.details.document_requisition}}
           <span>{{translate 'FORM.LABELS.REQUISITION_REFERENCE'}}</span>: <strong>{{exit.details.document_requisition}}</strong> <br>
         {{/if}}
-
       </div>
     </div>
 
