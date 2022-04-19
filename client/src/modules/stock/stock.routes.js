@@ -42,6 +42,9 @@ angular.module('bhima.routes')
         url         : '/stock/exit',
         controller  : 'StockExitController as StockCtrl',
         templateUrl : 'modules/stock/exit/exit.html',
+        params : {
+          shipment : { value : null, squash : true }, // Shipment UUID
+        },
         onExit  : ['$uibModalStack', closeModals],
       })
 
@@ -49,6 +52,9 @@ angular.module('bhima.routes')
         url         : '/stock/entry',
         controller  : 'StockEntryController as StockCtrl',
         templateUrl : 'modules/stock/entry/entry.html',
+        params : {
+          shipment : { value : null, squash : true }, // Shipment UUID
+        },
         onExit  : ['$uibModalStack', closeModals],
       })
 

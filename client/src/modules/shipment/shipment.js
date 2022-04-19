@@ -29,6 +29,8 @@ function ShipmentRegistryController(
   vm.search = search;
   vm.shipmentOverview = shipmentOverview;
   vm.getShipmentBarcode = getShipmentBarcode;
+  vm.gotoStockEntry = gotoStockEntry;
+  vm.gotoStockExit = gotoStockExit;
 
   // global variables
   vm.gridApi = {};
@@ -215,6 +217,7 @@ function ShipmentRegistryController(
         vm.gridOptions.data = data.map(item => {
           item.isAtDepot = item.status_id === Constants.shipmentStatus.AT_DEPOT;
           item.isReady = item.status_id === Constants.shipmentStatus.READY_FOR_SHIPMENT;
+          item.inTransit = item.status_id === Constants.shipmentStatus.IN_TRANSIT;
           return item;
         });
       })
@@ -247,6 +250,15 @@ function ShipmentRegistryController(
   // create a new shipment
   function createShipment() {
     $state.go('shipments.create');
+  }
+
+  function gotoStockEntry(/* uuid */) {
+    // Temporarily disabled
+    // $state.go('stockEntry', { shipment : uuid });
+  }
+
+  function gotoStockExit(uuid) {
+    $state.go('stockExit', { shipment : uuid });
   }
 
   // initialize module

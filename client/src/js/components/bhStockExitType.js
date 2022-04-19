@@ -10,7 +10,7 @@ const stockExitTypeTmpl = `
         <div class="ui lg statistic">
           <div class="value" translate>{{type.labelKey}}</div>
           <div class="ui-hidable-label" ng-hide="$ctrl.isTypeSelected(type)" translate>{{type.descriptionKey}}</div>
-          <div class="ui-hidable-label" ng-show="$ctrl.isTypeSelected(type)" translate>{{$ctrl._label}}</div>
+          <div class="ui-hidable-label" ng-show="$ctrl.isTypeSelected(type)" translate>{{$ctrl.destinationLabel}}</div>
         </div>
       </div>
   </button>
@@ -32,6 +32,8 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       depot : '<?',
       exitType : '<?',
+      selectedExitType : '=',
+      destinationLabel : '=',
     },
   });
 
@@ -76,7 +78,7 @@ function StockExitTypeController(TypeService, Notify) {
 
     $ctrl.selectedExitType = type;
 
-    $ctrl._label = $ctrl.entity
+    $ctrl.destinationLabel = $ctrl.entity
       ? type.formatLabel($ctrl.entity)
       : type.descriptionKey;
 
@@ -85,13 +87,13 @@ function StockExitTypeController(TypeService, Notify) {
     return type.callback($ctrl.depot, entityUuid)
       .then(entity => {
         if (!entity) {
-          delete $ctrl.selectedExitType;
-          $ctrl._label = type.descriptionKey;
+          $ctrl.selectedExitType = {};
+          $ctrl.destinationLabel = type.descriptionKey;
           return null;
         }
 
         $ctrl.entity = entity;
-        $ctrl._label = type.formatLabel($ctrl.entity);
+        $ctrl.destinationLabel = type.formatLabel($ctrl.entity);
         return $ctrl.onSelectCallback({ type, entity });
       })
       .catch(Notify.handleError);
@@ -104,7 +106,7 @@ function StockExitTypeController(TypeService, Notify) {
    * Checks to see if the type is selected
    */
   $ctrl.isTypeSelected = (type) => {
-    return angular.equals(type, $ctrl.selectedExitType);
+    return angular.equals(type.label, $ctrl.selectedExitType?.label);
   };
 
   /**
@@ -116,9 +118,9 @@ function StockExitTypeController(TypeService, Notify) {
   function reloadExitTypes() {
 
     // clear old data
-    delete $ctrl.selectedExitType;
+    $ctrl.selectedExitType = {};
+    $ctrl.destinationLabel = '';
     delete $ctrl.entity;
-    delete $ctrl._label;
 
     if (!$ctrl.depot) { return; }
 

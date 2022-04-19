@@ -34,7 +34,7 @@ function StockExitFormService(
   const INFO_NO_EXIT_TYPE = 'STOCK.MESSAGES.INFO_NO_EXIT_TYPE';
   const SUCCESS_FILLED_N_ITEMS = 'STOCK.MESSAGES.SUCCESS_FILLED_N_ITEMS';
   const WARN_INSUFFICIENT_QUANTITY = 'STOCK.MESSAGES.WARN_INSUFFICIENT_QUANTITY';
-  const WARN_SOME_SHIPMENT_LOTS_EXAUSTED = 'STOCK.MESSAGES.WARN_SOME_SHIPMENT_LOTS_EXAUSTED';
+  const WARN_SOME_SHIPMENT_LOTS_EXHAUSTED = 'STOCK.MESSAGES.WARN_SOME_SHIPMENT_LOTS_EXHAUSTED';
   const WARN_NOT_CONSUMABLE_INVOICE = 'STOCK.MESSAGES.WARN_NOT_CONSUMABLE_INVOICE';
   const WARN_OUT_OF_STOCK_QUANTITY = 'STOCK.MESSAGES.WARN_OUT_OF_STOCK_QUANTITY';
   const WARN_PAST_DATE = 'STOCK.MESSAGES.WARN_PAST_DATE';
@@ -294,7 +294,16 @@ function StockExitFormService(
     const insufficient = [];
 
     const lotsInShipment = lots.map(lot => lot.lot_uuid);
+    const lotsInPool = this._pool.list().map(lot => lot.lot_uuid);
     let lotsUnavailable = false;
+    lotsInShipment.forEach(uuid => {
+      if (!lotsInPool.includes(uuid)) {
+        // If a lot from the shipment is not available in the pool, it probably
+        // means some of the lots in a shipment were exhausted between
+        // creating the shipment and doing the corresponding stock exit.
+        lotsUnavailable = true;
+      }
+    });
 
     const getLot = uuid => lots.filter(lot => lot[uuidKey] === uuid);
 
@@ -310,9 +319,8 @@ function StockExitFormService(
     this._pool.list()
       .forEach(lot => {
 
-        // Skip all lots that are not in the shipment
+        // Ignore all lots that are not in the shipment
         if (!lotsInShipment.includes(lot.lot_uuid)) {
-          lotsUnavailable = true;
           return;
         }
 
@@ -401,7 +409,7 @@ function StockExitFormService(
 
     // finally, toggle compute the error codes
     this._toggleInfoMessage(
-      lotsUnavailable, 'warn', WARN_SOME_SHIPMENT_LOTS_EXAUSTED, { hrText : 'Hello' },
+      lotsUnavailable, 'warn', WARN_SOME_SHIPMENT_LOTS_EXHAUSTED, {},
     );
 
     this._toggleInfoMessage(
@@ -573,24 +581,24 @@ function StockExitFormService(
    * @description
    * Sets the form up for a depot distribution.
    */
-  StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(depot) {
-    this.details.entity_uuid = depot.uuid;
+  StockExitForm.prototype.setDepotDistribution = function setDepotDistribution(destDepot) {
+    this.details.entity_uuid = destDepot.uuid;
     this.details.flux_id = TO_OTHER_DEPOT;
 
     // depot movement information required by the server API
     // @fixme because of redundant information
     this.details.from_depot = this.depot.uuid;
-    this.details.to_depot = depot.uuid;
+    this.details.to_depot = destDepot.uuid;
     this.details.isExit = true;
 
-    if (depot.requisition) {
-      this.details.stock_requisition_uuid = depot.requisition.uuid;
-      this.setLotsFromInventoryList(depot.requisition.items, 'inventory_uuid');
+    if (destDepot.requisition) {
+      this.details.stock_requisition_uuid = destDepot.requisition.uuid;
+      this.setLotsFromInventoryList(destDepot.requisition.items, 'inventory_uuid');
     }
 
-    if (depot.shipment) {
-      this.details.shipment_uuid = depot.shipment.uuid;
-      this.setLotsFromShipmentList(depot.shipment.lots, 'lot_uuid');
+    if (destDepot.shipment) {
+      this.details.shipment_uuid = destDepot.shipment.uuid;
+      this.setLotsFromShipmentList(destDepot.shipment.lots, 'lot_uuid');
     }
   };
 
