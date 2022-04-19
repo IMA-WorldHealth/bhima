@@ -613,7 +613,7 @@ function StockEntryController(
       })
       .then(() => {
         vm.reset();
-        ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
+        ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, true);
       })
       .catch(Notify.handleError);
   }
@@ -640,7 +640,7 @@ function StockEntryController(
     return Stock.integration.create(entry)
       .then(document => {
         vm.reset();
-        ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
+        ReceiptModal.stockEntryIntegrationReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
   }
@@ -667,7 +667,7 @@ function StockEntryController(
     return Stock.stocks.create(movement)
       .then((document) => {
         vm.reset();
-        ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
+        ReceiptModal.stockEntryDonationReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
   }

@@ -358,7 +358,12 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockExitPatientReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      title : 'STOCK.RECEIPT.EXIT_PATIENT',
+      notifyCreated,
+      renderer : Receipts.renderer,
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
+    };
     const promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -391,7 +396,12 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockExitLossReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.EXIT_LOSS', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      title : 'STOCK.RECEIPT.EXIT_LOSS',
+      notifyCreated,
+      renderer : Receipts.renderer,
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
+    };
     const promise = Receipts.stockExitLossReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -402,7 +412,9 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockAggregateConsumptionReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.AGGREGATE_CONSUMPTION', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS', title : 'STOCK.RECEIPT.AGGREGATE_CONSUMPTION', notifyCreated, renderer : Receipts.renderer,
+    };
     const promise = Receipts.stockAggregateConsumptionReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -414,6 +426,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    */
   function stockExitServiceReceipt(documentUuid, notifyCreated) {
     const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       title : 'STOCK.RECEIPT.EXIT_SERVICE',
       notifyCreated,
       renderer : Receipts.renderer,
@@ -429,6 +442,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    */
   function stockExitDepotReceipt(documentUuid, notifyCreated) {
     const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       title : 'STOCK.RECEIPT.EXIT_DEPOT',
       notifyCreated,
       renderer : Receipts.renderer,
@@ -445,6 +459,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    */
   function stockEntryDepotReceipt(documentUuid, notifyCreated) {
     const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       title : 'STOCK.RECEIPT.ENTRY_DEPOT',
       notifyCreated,
       renderer : Receipts.renderer,
@@ -461,6 +476,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    */
   function stockEntryPurchaseReceipt(documentUuid, notifyCreated) {
     const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       title : 'STOCK.RECEIPT.ENTRY_PURCHASE',
       notifyCreated,
       renderer : Receipts.renderer,
@@ -479,6 +495,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
       notifyCreated,
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       renderer : Receipts.renderer,
     };
 
@@ -494,6 +511,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   function stockEntryDonationReceipt(documentUuid, notifyCreated) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_DONATION',
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
       notifyCreated,
       renderer : Receipts.renderer,
     };
@@ -508,7 +526,12 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockAdjustmentReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      title : 'STOCK.RECEIPT.ADJUSTMENT',
+      createdKey : 'STOCK.RECEIPT.SUCCESS',
+      notifyCreated,
+      renderer : Receipts.renderer,
+    };
     const promise = Receipts.stockAdjustmentReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -519,7 +542,9 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
    * @param {boolean} notifyCreated
    */
   function stockAdjustmentReport(depotUuid, date, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer };
+    const opts = {
+      createdKey : 'STOCK.RECEIPT.SUCCESS', title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer,
+    };
     const promise = Receipts.stockAdjustmentReport(depotUuid, date, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
