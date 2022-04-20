@@ -249,7 +249,8 @@
       "EXIT_DEPOT"     : "Transfer vers un dépot",
       "EXIT_SERVICE"   : "Distribution à un service",
       "EXIT_SERVICES"   : "Distributions aux services",
-      "EXIT_LOSS"      : "Perte de stock"
+      "EXIT_LOSS"      : "Perte de stock",
+      "SUCCESS" : "Mouvement créé avec succès"
     },
     "RECEIVER"        : "Recepteur",
     "RECEPTION_TRANSFER" : "Transfert",
@@ -280,7 +281,7 @@
     "STOCK_VALUE_WITH_WAC" : "Valeur finale du stock avec le cout unitaire de l'entreprise",
     "STOCK_MOVEMENT"  : "Voir le mouvement de Stock",
     "STOCK_MOVEMENTS" : "Les Mouvements de Stock",
-    "SUCCESS"         : "Mouvement realisé avec succès",
+    "SUCCESS"         : "Mouvement de stock realisé avec succès",
     "SUCCESSFULLY_DELETED" : "Supprimé avec succès",
     "TO"              : "Destination",
     "UNIT_COST"       : "Coût unitaire",

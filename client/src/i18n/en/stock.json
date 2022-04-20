@@ -249,7 +249,8 @@
       "EXIT_DEPOT"     : "Stock exit to depot",
       "EXIT_SERVICE"   : "Stock exit to service",
       "EXIT_SERVICES"   : "Stock exit to services",
-      "EXIT_LOSS"      : "Stock exit to loss"
+      "EXIT_LOSS"      : "Stock exit to loss",
+      "SUCCESS" : "Stock movement created successfully"
     },
     "RECEIVER"        : "Receiver",
     "RECEPTION_TRANSFER" : "Transfer",
