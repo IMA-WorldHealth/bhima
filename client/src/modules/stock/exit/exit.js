@@ -3,10 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockExitFormService',
-  'StockModalService', 'uiGridConstants', '$translate',
-  'GridExportService', '$timeout', 'BarcodeService',
+  '$state', 'NotifyService', 'SessionService', 'util', 'bhConstants', 'ReceiptModal',
+  'StockExitFormService', 'StockEntryExitTypeService', 'uiGridConstants', 'GridExportService', 'ShipmentService',
+  'DepotService', '$timeout', 'BarcodeService',
 ];
 
 /**
@@ -16,10 +15,13 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  StockModal, uiGridConstants, $translate, GridExportService, $timeout, Barcode,
+  $state, Notify, Session, util, bhConstants, ReceiptModal,
+  StockForm, ExitTypes, uiGridConstants, GridExportService, Shipments,
+  Depot, $timeout, Barcode,
 ) {
   const vm = this;
+
+  const { params } = $state;
 
   vm.stockForm = new StockForm('StockExit');
 
@@ -31,7 +33,10 @@ function StockExitController(
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
 
+  vm.selectedExitType = {};
   vm.onSelectExitType = onSelectExitType;
+  vm.destLabel = '';
+
   vm.submit = submit;
 
   const gridFooterTemplate = `
@@ -157,6 +162,7 @@ function StockExitController(
 
   //
   function onSelectExitType(exitType, entity) {
+    vm.selectedExitType = exitType;
     vm.stockForm.setExitType(exitType.label);
 
     switch (exitType.label) {
@@ -191,10 +197,34 @@ function StockExitController(
 
   function startup() {
     // setting params for grid loading state
-    vm.loading = true;
     vm.hasError = false;
 
     vm.stockForm.setup();
+
+    // Handle startups from a shipment
+    if (params.shipment) {
+      vm.loading = true;
+      Shipments.readAll(params.shipment)
+        .then(shipment => {
+          vm.shipment = shipment;
+          return Depot.read(vm.shipment.origin_depot_uuid);
+        })
+        .then(originDepot => {
+          vm.setDepot(originDepot);
+          return Depot.read(vm.shipment.destination_depot_uuid);
+        })
+        .then(destDepot => {
+          destDepot.shipment = vm.shipment;
+          const depotExitType = ExitTypes.exitTypes.find(item => item.label === 'depot');
+          onSelectExitType(depotExitType, destDepot);
+          vm.destLabel = depotExitType.formatLabel(destDepot);
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          vm.loading = false;
+        });
+    }
+
     vm.validate();
   }
 
