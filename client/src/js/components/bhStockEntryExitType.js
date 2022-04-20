@@ -8,7 +8,7 @@ angular.module('bhima.components')
       reference : '<?',
       displayName : '<?',
       depot : '<?',
-      reset : '<?', // when changes to true the component will be reseted
+      reset : '<?', // when changes to true the component will be reset
     },
   });
 
