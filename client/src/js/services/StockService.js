@@ -165,6 +165,29 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
   }
 
   /**
+   * Filter partial transfers to compute adjusted quantities
+   * @param {list} allTransfers
+   * @return {list} list of stock exits with adjusted quantities
+   *
+   * NOTE: This function may return an empty list.  It is up to the
+   *       caller to handle error messages when that happens.
+   */
+  function filterPartialTransfers(allTransfers) {
+    // we need to adjust the quantities appropriately.
+    const exitTransfers = allTransfers.filter(item => item.is_exit);
+    exitTransfers.forEach(item => {
+      const previousTransfers = allTransfers.filter(trn => !trn.is_exit && trn.uuid === item.uuid);
+      if (previousTransfers.length > 0) {
+        previousTransfers.forEach(pt => {
+          item.quantity -= pt.quantity;
+        });
+      }
+    });
+    return exitTransfers.filter(item => item.quantity > 0);
+  }
+
+
+  /**
    * @function processLotsFromStore
    *
    * @description
@@ -231,6 +254,7 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
     integration,
     transfers,
     filter : stockFilter,
+    filterPartialTransfers,
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,

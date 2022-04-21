@@ -288,21 +288,26 @@ function StockEntryController(
         })
         .then(() => {
           // Get the lots for this shipment
-          console.log("Need to filter for partial shipments!");
           return Stock.movements.read(null, { document_uuid : vm.shipment.document_uuid });
         })
         .then((allTransfers) => {
-          handleSelectedEntity(allTransfers, 'transfer_reception');
-          setSelectedEntity(vm.movement.entity.instance);
+          const transfers = Stock.filterPartialTransfers(allTransfers);
+          if (transfers.length === 0) {
+            // Complain if we try to use a shipment that has already been completed
+            Notify.warn($translate.instant('STOCK.TRANSFER_COMPLETED'), 6000);
+          } else {
+            handleSelectedEntity(transfers, 'transfer_reception');
+            setSelectedEntity(vm.movement.entity.instance);
 
-          const transferType = EntryTypes.entryTypes.find(item => item.label === 'transfer_reception');
-          vm.selectedEntryType = transferType;
-          vm.movement.entry_type = transferType.label;
+            const transferType = EntryTypes.entryTypes.find(item => item.label === 'transfer_reception');
+            vm.selectedEntryType = transferType;
+            vm.movement.entry_type = transferType.label;
 
-          vm.resetEntryExitTypes = false;
-          vm.entityAllowAddItems = false;
+            vm.resetEntryExitTypes = false;
+            vm.entityAllowAddItems = false;
 
-          vm.hasValidInput = hasValidInput();
+            vm.hasValidInput = hasValidInput();
+          }
 
           return Exchange.read();
         })
@@ -335,7 +340,6 @@ function StockEntryController(
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
-        console.log("Inventories loaded: ", vm.depot.text);
         return true;
       })
       .catch(Notify.handleError);

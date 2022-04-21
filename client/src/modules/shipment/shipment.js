@@ -218,6 +218,9 @@ function ShipmentRegistryController(
           item.isAtDepot = item.status_id === Constants.shipmentStatus.AT_DEPOT;
           item.isReady = item.status_id === Constants.shipmentStatus.READY_FOR_SHIPMENT;
           item.inTransit = item.status_id === Constants.shipmentStatus.IN_TRANSIT;
+          item.isPartial = item.status_id === Constants.shipmentStatus.PARTIAL;
+          item.isComplete = item.status_id === Constants.shipmentStatus.COMPLETE;
+          // @TODO: Handle EMPTY, DELIVERED, LOST
           return item;
         });
       })
