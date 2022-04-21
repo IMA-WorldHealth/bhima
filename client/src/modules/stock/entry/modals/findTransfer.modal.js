@@ -148,20 +148,10 @@ function StockFindTransferModalController(
 
     return StockService.movements.read(null, query)
       .then((allTransfers) => {
-        transfers = allTransfers;
         if (vm.filterReceived) {
           // If we are using a transfer that has already been partially received,
           // we need to adjust the quantities appropriately.
-          const exitTransfers = allTransfers.filter(item => item.is_exit);
-          exitTransfers.forEach(item => {
-            const previousTransfers = allTransfers.filter(trn => !trn.is_exit && trn.uuid === item.uuid);
-            if (previousTransfers.length > 0) {
-              previousTransfers.forEach(pt => {
-                item.quantity -= pt.quantity;
-              });
-            }
-          });
-          transfers = exitTransfers.filter(item => item.quantity > 0);
+          transfers = StockService.filterPartialTransfers(allTransfers);
           if (transfers.length === 0) {
             // Complain if we try to use a transfer that has already been completed
             Notify.warn($translate.instant('STOCK.TRANSFER_COMPLETED'), 6000);
