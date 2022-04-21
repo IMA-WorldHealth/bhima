@@ -252,13 +252,12 @@ function ShipmentRegistryController(
     $state.go('shipments.create');
   }
 
-  function gotoStockEntry(/* uuid */) {
-    // Temporarily disabled
-    // $state.go('stockEntry', { shipment : uuid });
+  function gotoStockEntry(shipmentUuid) {
+    $state.go('stockEntry', { shipment : shipmentUuid });
   }
 
-  function gotoStockExit(uuid) {
-    $state.go('stockExit', { shipment : uuid });
+  function gotoStockExit(shipmentUuid) {
+    $state.go('stockExit', { shipment : shipmentUuid });
   }
 
   // initialize module

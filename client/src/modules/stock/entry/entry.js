@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockEntryController.$inject = [
-  'InventoryService', 'NotifyService', 'SessionService', 'util',
+  '$state', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
-  'StockFormService', 'StockService', 'StockModalService',
-  'LotService', 'ExchangeRateService',
+  'StockFormService', 'StockService', 'StockModalService', 'StockEntryExitTypeService',
+  'DepotService', 'ShipmentService', 'LotService', 'ExchangeRateService',
   'uiGridConstants', 'Store', 'uuid', '$translate',
 ];
 
@@ -17,10 +17,10 @@ StockEntryController.$inject = [
  * This controller is responsible to handle stock entry module.
  */
 function StockEntryController(
-  Inventory, Notify, Session, util,
+  $state, Inventory, Notify, Session, util,
   bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal,
-  Lots, Exchange,
+  StockForm, Stock, StockModal, EntryTypes,
+  Depot, Shipments, Lots, Exchange,
   uiGridConstants, Store, Uuid, $translate,
 ) {
   // variables
@@ -29,6 +29,9 @@ function StockEntryController(
   // constants
   const vm = this;
   const mapEntry = initEntryMap();
+  const { params } = $state;
+
+  vm.selectedEntryType = {};
 
   // view models variables and methods
   vm.stockForm = new StockForm('StockEntry');
@@ -265,16 +268,60 @@ function StockEntryController(
       entity : {},
     };
 
-    // Load the exchange rates
-    Exchange.read()
-      .then(() => {
-        // loading all purchasable inventories
-        loadInventories();
-      })
-      .catch(Notify.handleError)
-      .finally(() => {
-        toggleLoadingIndicator();
-      });
+    if (params.shipment) {
+      vm.loading = true;
+      Exchange.read()
+        .then(() => {
+          // First load details about the shipments
+          return Shipments.read(params.shipment);
+        })
+        .then(shipment => {
+          vm.shipment = shipment;
+          // Get the destination depot specified by the shipment
+          return Depot.read(shipment.destination_depot_uuid);
+        })
+        .then(destDepot => {
+          destDepot.shipment = vm.shipment;
+          vm.depot = destDepot;
+          // load/reload all purchasable inventories for this depot
+          return loadInventories();
+        })
+        .then(() => {
+          // Get the lots for this shipment
+          console.log("Need to filter for partial shipments!");
+          return Stock.movements.read(null, { document_uuid : vm.shipment.document_uuid });
+        })
+        .then((allTransfers) => {
+          handleSelectedEntity(allTransfers, 'transfer_reception');
+          setSelectedEntity(vm.movement.entity.instance);
+
+          const transferType = EntryTypes.entryTypes.find(item => item.label === 'transfer_reception');
+          vm.selectedEntryType = transferType;
+          vm.movement.entry_type = transferType.label;
+
+          vm.resetEntryExitTypes = false;
+          vm.entityAllowAddItems = false;
+
+          vm.hasValidInput = hasValidInput();
+
+          return Exchange.read();
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          toggleLoadingIndicator();
+        });
+    } else {
+      // Load the exchange rates
+      Exchange.read()
+        .then(() => {
+          // loading all purchasable inventories
+          loadInventories();
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          toggleLoadingIndicator();
+        });
+    }
   }
 
   /**
@@ -284,10 +331,12 @@ function StockEntryController(
   function loadInventories() {
     setupStock();
 
-    Inventory.read(null, { consumable_or_asset : 1, skipTags : true })
+    return Inventory.read(null, { consumable_or_asset : 1, skipTags : true })
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
+        console.log("Inventories loaded: ", vm.depot.text);
+        return true;
       })
       .catch(Notify.handleError);
   }
