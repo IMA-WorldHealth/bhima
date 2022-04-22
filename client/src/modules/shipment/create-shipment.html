@@ -10,11 +10,14 @@
     </ol>
 
     <div class="toolbar">
-      <div class="toolbar-item">
+      <div ng-if="!CreateShipCtrl.$loading" class="toolbar-item">
         <bh-dropdown-menu>
           <bh-dropdown-menu-item>
             <a href>
-              <bh-change-depot on-select="CreateShipCtrl.onChangeDepot(depot)"></bh-change-depot>
+              <bh-change-depot
+                skip-initial-load="!CreateShipCtrl.isCreateState"
+                on-select="CreateShipCtrl.onChangeDepot(depot)">
+              </bh-change-depot>
             </a>
           </bh-dropdown-menu-item>
         </bh-dropdown-menu>
@@ -27,7 +30,15 @@
 <div class="flex-content">
   <div class="container-fluid">
 
-    <form name="ShipmentForm" bh-submit="CreateShipCtrl.submit(ShipmentForm)" novalidate>
+    <div class="row" ng-if="CreateShipCtrl.$loading">
+      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>FORM.INFO.LOADING</span>
+    </div>
+
+    <form
+      name="ShipmentForm"
+      ng-if="!CreateShipCtrl.$loading"
+      bh-submit="CreateShipCtrl.submit(ShipmentForm)"
+      novalidate>
 
       <!-- date and note -->
       <div class="row">

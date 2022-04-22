@@ -17,28 +17,6 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
     8 : 'SHIPMENT.STATUS.LOST',
   };
 
-  service.exportTo = (renderer, filter) => {
-    const filterOpts = filter.formatHTTP();
-    const defaultOpts = {
-      renderer,
-      lang : Languages.key,
-    };
-    const options = angular.merge(defaultOpts, filterOpts);
-    return $httpParamSerializer(options);
-  };
-
-  service.downloadExcel = (filter, gridColumns) => {
-    const filterOpts = filter.formatHTTP();
-    const defaultOpts = {
-      renderer : 'xlsx',
-      lang : Languages.key,
-      renameKeys : true,
-      displayNames : gridColumns.getDisplayNames(),
-    };
-    const options = angular.merge(defaultOpts, filterOpts);
-    return $httpParamSerializer(options);
-  };
-
   service.readAll = (uuid, parameters) => {
     return service.$http.get(`/shipments/${uuid}/full`, { params : parameters })
       .then(service.util.unwrapHttpResponse);
@@ -84,21 +62,6 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
     };
     const options = angular.merge(defaultOpts, filterOpts);
     return $httpParamSerializer(options);
-  };
-
-  service.readAll = (uuid, parameters) => {
-    return service.$http.get(`/shipments/${uuid}/full`, { params : parameters })
-      .then(service.util.unwrapHttpResponse);
-  };
-
-  service.updateLocation = (uuid, params) => {
-    return service.$http.post(`/shipments/${uuid}/tracking-log`, { params })
-      .then(service.util.unwrapHttpResponse);
-  };
-
-  service.setReadyForShipment = (uuid) => {
-    return service.$http.put(`/shipments/${uuid}/ready-for-shipment`)
-      .then(service.util.unwrapHttpResponse);
   };
 
   return service;
