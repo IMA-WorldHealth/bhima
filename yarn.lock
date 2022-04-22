@@ -86,10 +86,10 @@
     puppeteer "^13.0.0"
     puppeteer-cluster "^0.23.0"
 
-"@ima-worldhealth/odk-central-api-cjs@^2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.3.5.tgz#99d8db03960f534b4abe488561db4f5d8dd37d3f"
-  integrity sha512-9rbDH6s6Qfma6++FDYgH6OqC0bWkHYXT0zFdpFJ3mUgnX+xFkDjDz5BGKvR/MSTq4vRDsPD3wAerhiyz70LzQw==
+"@ima-worldhealth/odk-central-api-cjs@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/odk-central-api-cjs/-/odk-central-api-cjs-2.4.0.tgz#90b77018433e7e8feac6f1f4fb0207cace8b62f6"
+  integrity sha512-fvtDbZ23NeqSXarpLA9jZx1hx+1Mx9MU8VSk6xvrb1ejfw/HyFrgCg60DedZtOp3X4Swu2EMwtAZl4l6w2C1uw==
   dependencies:
     debug "^4.3.3"
     dotenv "^16.0.0"
