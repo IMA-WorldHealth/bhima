@@ -80,7 +80,7 @@
   ],
   "dependencies": {
     "@ima-worldhealth/coral": "^2.11.1",
-    "@ima-worldhealth/odk-central-api-cjs": "^2.3.5",
+    "@ima-worldhealth/odk-central-api-cjs": "^2.4.0",
     "@ima-worldhealth/tree": "^2.6.0",
     "@types/angular": "^1.8.4",
     "@uirouter/angularjs": "^1.0.29",
