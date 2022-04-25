@@ -10,7 +10,6 @@ angular.module('bhima.components')
       required : '@?',
       ready : '@?',
       label : '@?',
-      disabled : '<?',
     },
   });
 

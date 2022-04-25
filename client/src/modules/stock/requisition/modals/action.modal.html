@@ -20,7 +20,7 @@
       on-change="$ctrl.onDateChange(date)">
     </bh-date-editor>
 
-    <!-- service or depot -->
+    <!-- receiving/destination service or depot -->
     <bh-service-or-depot
       uuid="$ctrl.model.requestor_uuid"
       label="REQUISITION.RECEIVER"
@@ -28,6 +28,18 @@
       ng-value="requestor"
       required="true">
     </bh-service-or-depot>
+
+    <!-- supplier/origin depot -->
+    <div id="depot-supplier" class="form-group">
+      <bh-depot-select
+        depot-uuid="$ctrl.model.depot_uuid"
+        filter-by-user-permission="true"
+        label="REQUISITION.DEPOT_SUPPLIER"
+        required="true"
+        exception="$ctrl.model.requestor_uuid"
+        on-select-callback="$ctrl.onSelectDepot(depot)">
+      </bh-depot-select>
+    </div>
 
     <!-- inventories -->
     <div class="form-group">
@@ -59,18 +71,6 @@
         <span style="margin-right: 10px;" class="text-warning"><i class="fa fa-warning"></i>&nbsp;<span translate>REQUISITION.INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY</span></span>
         <span class="text-danger"><i class="fa fa-thumbs-down"></i>&nbsp;<span translate>REQUISITION.INVENTORY_NOT_AVAILABLE</span></span>
       </div>
-    </div>
-
-    <!-- depot -->
-    <div id="depot-supplier" class="form-group">
-      <bh-depot-select
-        depot-uuid="$ctrl.model.depot_uuid"
-        filter-by-user-permission="true"
-        label="REQUISITION.DEPOT_SUPPLIER"
-        required="true"
-        exception="$ctrl.model.requestor_uuid"
-        on-select-callback="$ctrl.onSelectDepot(depot)">
-      </bh-depot-select>
     </div>
 
     <!-- note -->
