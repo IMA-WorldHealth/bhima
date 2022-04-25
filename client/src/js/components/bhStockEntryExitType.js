@@ -4,6 +4,7 @@ angular.module('bhima.components')
     controller : StockEntryExitTypeController,
     bindings : {
       onEntryExitTypeSelectCallback : '&',
+      selectedEntryExitType : '=',
       isEntry : '@',
       reference : '<?',
       displayName : '<?',
@@ -70,7 +71,7 @@ function StockEntryExitTypeController(StockEntryExitTypes) {
   };
 
   $ctrl.isTypeSelected = (type) => {
-    return angular.equals(type, $ctrl.selectedEntryExitType);
+    return angular.equals(type.label, $ctrl.selectedEntryExitType?.label);
   };
 
   $ctrl.selectEntryExitType = (type) => {
@@ -80,7 +81,7 @@ function StockEntryExitTypeController(StockEntryExitTypes) {
 
   // reload entry/exit types
   function reloadEntryExitTypes() {
-    delete $ctrl.selectedEntryExitType;
+    $ctrl.selectedEntryExitType = {};
 
     if (!$ctrl.depot) { return; }
 

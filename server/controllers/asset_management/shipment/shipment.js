@@ -501,6 +501,7 @@ function find(params) {
       BUID(d2.uuid) AS destination_depot_uuid,
       d2.text AS destination_depot,
       sh.name, sh.description, sh.note,
+      BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.date_ready_for_shipment, sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by
@@ -554,6 +555,7 @@ async function lookup(identifier) {
       d2.text AS destination_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
       sh.name, sh.description, sh.note,
+      BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by,
@@ -594,6 +596,7 @@ async function lookupSingle(identifier) {
       d2.text AS destination_depot,
       BUID(d2.uuid) AS destination_depot_uuid,
       sh.name, sh.description, sh.note,
+      BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by
@@ -626,6 +629,7 @@ async function getPackingList(identifier) {
       ss.id AS status_id,
       ss.name AS status_name,
       sh.name, sh.description, sh.note,
+      BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
