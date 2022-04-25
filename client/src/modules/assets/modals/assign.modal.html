@@ -5,10 +5,18 @@
   novalidate>
 
   <div class="modal-header">
-    <ol class="headercrumb">
-      <li class="static" translate>ASSIGN.STOCK_ASSIGN</li>
-      <li class="title" translate>FORM.LABELS.CREATE</li>
-    </ol>
+    <div style="display: inline-block">
+      <ol class="headercrumb">
+        <li class="static" translate>ASSIGN.STOCK_ASSIGN</li>
+        <li class="title" translate>FORM.LABELS.CREATE</li>
+      </ol>
+    </div>
+    <div style="display: inline-block; float: right; margin-right: 10px;">
+      <a href class="btn btn-success"
+        ng-click="$ctrl.assignByBarcode()">
+        <span class="fa fa-plus"></span> <span class="hidden-xs" translate>BARCODE</span>
+      </a>
+    </div>
   </div>
 
   <div class="modal-body" ng-if="$ctrl.loading">

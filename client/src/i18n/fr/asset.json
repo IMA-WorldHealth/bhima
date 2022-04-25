@@ -45,6 +45,7 @@
     "TITLE" : "Actifs",
     "VIEW_IN_INVENTORY" : "Visualiser l'actif dans l'inventaire",
     "VIEW_IN_STOCK" : "Visualiser l'actif dans stock",
+    "WARN_ALREADY_ASSIGNED" : "Cet actif/lot est déjà assignée.  Supprimez cette assignation avant de la réassigner !",
     "CONDITION" : {
       "NEW" : "Nouveau",
       "GOOD" : "Bon",

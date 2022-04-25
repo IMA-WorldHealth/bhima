@@ -45,6 +45,7 @@
     "TITLE" : "Assets",
     "VIEW_IN_INVENTORY" : "View Asset in Inventory",
     "VIEW_IN_STOCK" : "View Asset in Stock",
+    "WARN_ALREADY_ASSIGNED" : "This asset/lot is already assigned. Remove the assignment before reassigning it !",
     "CONDITION" : {
       "NEW" : "New",
       "GOOD" : "Good",
