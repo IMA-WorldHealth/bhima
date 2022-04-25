@@ -5,7 +5,10 @@ angular.module('bhima.directives')
       <i class="fa fa-archive"></i> <span translate>DEPOT.CHANGE</span>
     </a>`,
     controller : bhChangeDepotController,
-    bindings    : { onSelect : '&' },
+    bindings    : {
+      onSelect : '&',
+      skipInitialLoad : '<?',
+    },
   });
 
 bhChangeDepotController.$inject = [
@@ -18,6 +21,11 @@ function bhChangeDepotController(Depots, AppCache, Notify) {
   const cache = new AppCache('StockCache');
 
   $ctrl.$onInit = () => {
+
+    if ($ctrl?.skipInitialLoad) {
+      return;
+    }
+
     if (cache.depotUuid) {
       loadDepot(cache.depotUuid);
     } else {

@@ -112,13 +112,7 @@ function CreateShipmentController(
 
   vm.onSelectDestinationDepot = depot => {
     vm.shipment.destination_depot_uuid = depot.uuid;
-
-    // define the exit type as depot for allowing
-    // to block expired items in the validation
-    $timeout(() => {
-      vm.stockForm.setExitType('depot');
-      vm.stockForm.setDepotDistribution(depot);
-    }, 0);
+    vm.stockForm.setDepotDistribution(depot);
   };
 
   vm.validateItems = () => {
@@ -182,11 +176,16 @@ function CreateShipmentController(
     vm.depot = depot;
     vm.stockForm.setDepot(depot);
 
-    // set the shipment origin
     vm.shipment.origin_depot_uuid = vm.depot.uuid;
 
-    // Delete the old destination depot
-    delete vm.shipment.destination_depot_uuid;
+    // When the user changes the origin depot, only delete/clear the
+    // destination_depot_uuid if
+    //   - We are creating a shipment, OR
+    //   - We are editing a shipment and the new origin depot is the same
+    //     as the previous destination depot
+    if (vm.isCreateState || (vm.shipment.destination_depot.uuid === depot.uuid)) {
+      delete vm.shipment.destination_depot_uuid;
+    }
 
     // trick an exit type which is required
     vm.stockForm.setExitType('loss');
@@ -222,9 +221,10 @@ function CreateShipmentController(
   }
 
   function startup() {
-    vm.loading = true;
+    vm.$loading = true;
     vm.hasError = false;
     vm.stockForm.setup();
+    vm.stockForm.setExitType('depot');
     vm.validateItems();
 
     // load the shipment for update
@@ -351,17 +351,31 @@ function CreateShipmentController(
   }
 
   function loadShipment() {
-    if (!existingShipmentUuid) { return; }
-
+    if (!existingShipmentUuid) {
+      vm.$loading = false;
+      return;
+    }
     Shipment.readAll(existingShipmentUuid)
       .then(shipment => {
         vm.shipment = shipment;
         vm.shipment.anticipated_delivery_date = new Date(vm.shipment.anticipated_delivery_date);
         return Depot.read(vm.shipment.origin_depot_uuid);
       })
-      .then(depot => onChangeDepot(depot))
-      .then(() => vm.stockForm.setLotsFromShipmentList(vm.shipment.lots, 'lot_uuid'))
-      .catch(Notify.handleError);
+      .then(originDepot => {
+        vm.depot = originDepot;
+        vm.stockForm.setDepot(originDepot);
+        return Depot.read(vm.shipment.destination_depot_uuid);
+      })
+      .then(destDepot => {
+        delete vm.messages;
+        vm.stockForm.setExitType('depot');
+        vm.stockForm.setDepotDistribution(destDepot);
+        vm.stockForm.setLotsFromShipmentList(vm.shipment.lots, 'lot_uuid');
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.$loading = false;
+      });
   }
 
   function fetchAffectedAssets() {
