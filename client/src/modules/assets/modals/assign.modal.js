@@ -3,14 +3,15 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 AssetAssignmentModalController.$inject = [
-  'appcache', '$state', 'data',
-  'DepotService', 'NotifyService', '$uibModalInstance',
-  'StockService', 'util', 'ReceiptModal',
+  'appcache', '$state', 'data', '$uibModalInstance', 'ModalService',
+  'BarcodeService', 'NotifyService', 'ReceiptModal', 'StockService', 'util',
 ];
 
-function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, Modal, Stock, Util, Receipts) {
+function AssetAssignmentModalController(
+  AppCache, $state, data, Modal, ModalService,
+  Barcode, Notify, Receipts, Stock, Util) {
   const vm = this;
-  const cache = AppCache('stock-assign-grid');
+  const cache = AppCache('stock-assign-modal');
 
   // global variables
   vm.model = {
@@ -75,6 +76,34 @@ function AssetAssignmentModalController(AppCache, $state, data, Depots, Notify, 
       vm.maxQuantityLot = vm.availableLots[0].quantity;
     }
   }
+
+  vm.assignByBarcode = function assignByBarcode() {
+    Barcode.modal({ shouldSearch: false, title: 'ASSET.SCAN_ASSET_BARCODE' })
+      .then(record => {
+        Stock.lots.read(null, { barcode: record.uuid })
+          .then(lots => {
+            if (lots.length > 0) {
+              const lot = lots[0];
+              vm.model.depot_uuid = lot.depot_uuid;
+              loadAvailableInventories(lot.depot_uuid)
+                .then(() => {
+                  const lotFound = vm.availableInventories.find(elt => elt.uuid === lot.uuid);
+                  if (lotFound) {
+                    vm.selectedInventory = lotFound;
+                    vm.inventory_uuid = lot.inventory_uuid;
+                    onSelectInventory(vm.selectedInventory);
+                    vm.model.lot_uuid = lot.uuid;
+                    onSelectLot(lot);
+                  } else {
+                    // If the lot has already been assigned, warn the user that
+                    // it must be unassigned first.
+                    ModalService.alert('ASSET.WARN_ALREADY_ASSIGNED');
+                  }
+                });
+            }
+          });
+      });
+  };
 
   vm.onSelectEntity = onSelectEntity;
   function onSelectEntity(entity) {
