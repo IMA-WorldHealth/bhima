@@ -2,6 +2,14 @@ const {
   _, ReportManager, getDepotMovement, barcode, identifiers, STOCK_ENTRY_DEPOT_TEMPLATE,
 } = require('../common');
 
+// NOTE: These constants must match those in bhConstants.js (shipmentStatus)
+const SHIPMENT_PARTIAL = 5;
+const SHIPMENT_COMPLETE = 6;
+
+const shipmentStatus = {};
+shipmentStatus[SHIPMENT_PARTIAL] = 'SHIPMENT.STATUS.PARTIAL';
+shipmentStatus[SHIPMENT_COMPLETE] = 'SHIPMENT.STATUS.COMPLETE';
+
 /**
  * @method stockEntryDepotReceipt
  *
@@ -23,6 +31,10 @@ function stockEntryDepotReceipt(documentUuid, session, options) {
       const { key } = identifiers.STOCK_ENTRY;
       data.totals = { cost : data.rows.reduce((agg, row) => agg + row.total, 0) };
       data.entry.details.barcode = barcode.generate(key, data.entry.details.document_uuid);
+      if (data.entry.details.shipment_reference) {
+        data.entry.details.shipment_status_label = shipmentStatus[data.entry.details.shipment_status];
+      }
+      data.entry.details.partialDelivery = !allDelivered(data.rows);
       return report.render(data);
     });
 }
@@ -38,6 +50,10 @@ function combineByLots(rows) {
       return curr;
     }, { total_quantity : 0 });
   });
+}
+
+function allDelivered(rows) {
+  return rows.every(row => row.total_quantity === row.quantity_sent);
 }
 
 module.exports = stockEntryDepotReceipt;
