@@ -7,9 +7,7 @@ StockExitController.$inject = [
   'StockExitFormService', 'StockEntryExitTypeService', 'uiGridConstants', 'GridExportService', 'ShipmentService',
   'DepotService', '$timeout', 'BarcodeService',
 ];
-
-/**
- * @class StockExitController
+/** @class StockExitController
  *
  * @description
  * This controller is responsible to handle stock exit module.
@@ -24,6 +22,9 @@ function StockExitController(
   const { params } = $state;
 
   vm.stockForm = new StockForm('StockExit');
+
+  // set allowExpired to be false
+  vm.stockForm.setAllowExpired(false);
 
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
@@ -182,6 +183,13 @@ function StockExitController(
       break;
     }
 
+    // only allow expired stock if we are exiting to stock loss
+    if (exitType.label === 'loss') {
+      vm.stockForm.setAllowExpired(true);
+    } else {
+      vm.stockForm.setAllowExpired(false);
+    }
+
     vm.validate();
   }
 
@@ -204,6 +212,7 @@ function StockExitController(
     // Handle startups from a shipment
     if (params.shipment) {
       vm.loading = true;
+
       Shipments.readAll(params.shipment)
         .then(shipment => {
           vm.shipment = shipment;
