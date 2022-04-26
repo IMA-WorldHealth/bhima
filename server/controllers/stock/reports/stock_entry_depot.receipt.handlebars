@@ -17,7 +17,10 @@
       {{#if entry.details.shipment_reference}}
       <div class="row">
         <div class="col-xs-12">
-          <h4 style="margin-bottom: 5px;"><strong>{{translate 'SHIPMENT.TITLE'}}: {{entry.details.shipment_reference}}</strong></h4>
+          <h4 style="margin-bottom: 5px;">
+            <strong>{{translate 'SHIPMENT.TITLE'}}: {{entry.details.shipment_reference}}</strong>
+            <span style="float: right;">{{translate 'SHIPMENT.SHIPMENT_STATUS'}}: {{translate entry.details.shipment_status_label}}</span>
+            </h4>
         </div>
       </div>
       {{/if}}
@@ -58,9 +61,13 @@
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY_SENT'}}</th>
-        <th>{{translate 'STOCK.QUANTITY_RECEIVED'}}</th>
+        {{#if entry.details.partialDelivery}}
+        <th>{{translate 'STOCK.PARTIAL_QUANTITY_RECEIVED'}}</th>
+        {{/if}}
         <th>{{translate 'STOCK.TOTAL_QUANTITY_RECEIVED'}}</th>
+        {{#if entry.details.partialDelivery}}
         <th>{{translate 'STOCK.QUANTITY_DIFFERENCE'}}</th>
+        {{/if}}
         <th>{{translate 'STOCK.UNIT_COST'}}</th>
         <th class="text-center">{{translate 'TABLE.COLUMNS.TOTAL_COST'}}</th>
         <th style="width: 30%;">{{translate 'FORM.LABELS.NOTE'}}</th>
@@ -74,20 +81,32 @@
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity_sent}}</td>
+          {{#if ../entry.details.partialDelivery}}
           <td class="text-right">{{quantity}}</td>
+          {{/if}}
           <td class="text-right">{{total_quantity}}</td>
+          {{#if ../entry.details.partialDelivery}}
           <td class="text-right">{{quantity_difference}}</td>
+          {{/if}}
           <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id}}</td>
           <td class="text-right">{{currency total ../metadata.enterprise.currency_id}}</td>
           <td style="width: 25%;">&nbsp;</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=11}}
+          {{#if entry.details.partialDelivery}}
+            {{> emptyTable columns=11}}
+          {{else}}
+            {{> emptyTable columns=9}}
+          {{/if}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="11">
+        {{#if entry.details.partialDelivery}}
+        <td colspan="10">
+        {{else}}
+        <td colspan="8">
+        {{/if}}
           <span>{{rows.length}} {{translate 'STOCK.ITEMS'}}</span>
           <span class="pull-right">{{currency totals.cost metadata.enterprise.currency_id}}</span>
         </td>
