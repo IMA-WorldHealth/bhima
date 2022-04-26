@@ -50,8 +50,10 @@ function StockExitFormService(
     this.cache = AppCache(cacheKey);
     this.details = { is_exit : 1 };
     this.store = new Store({ identifier : 'uuid', data : [] });
-    this.allowExpired = true;
     this.exitTypePredefined = false;
+
+    // this flag will filter out lots from the display that contain expired elements
+    this.allowExpired = true;
 
     // this variable is private and will contain the stock for the current depot.
     this._pool = new Pool('lot_uuid', []);
@@ -159,11 +161,7 @@ function StockExitFormService(
     // get the quantity in stock for this depot
     return Depots.getStockQuantityForDate(depotUuid, parameters)
       .then(stock => {
-
-        const rawStock = this.allowExpired ? stock
-          : stock.filter(lot => lot.is_asset || !lot.is_expired);
-
-        const available = rawStock
+        const available = stock
           .map(item => {
             const lot = new Lot(item);
 
@@ -195,6 +193,7 @@ function StockExitFormService(
   StockExitForm.prototype.listLotsForInventory = function listLotsForInventory(inventoryUuid, lotUuid) {
     const available = this._pool.list()
       .filter(row => row.inventory_uuid === inventoryUuid)
+      .filter(row => (this.allowExpired ? true : !row.isExpired(this.details.date)))
       .sort((a, b) => a.expiration_date > b.expiration_date);
 
     if (lotUuid) {
@@ -208,7 +207,11 @@ function StockExitFormService(
   };
 
   StockExitForm.prototype.listAvailableInventory = function listAvailableInventory() {
-    return util.getUniqueBy(this._pool.list(), 'inventory_uuid');
+    // prefilter by the expiration condition
+    const available = this._pool.list()
+      .filter(row => (this.allowExpired ? true : !row.isExpired(this.details.date)));
+
+    return util.getUniqueBy(available, 'inventory_uuid');
   };
 
   /**
