@@ -91,7 +91,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
       dm.text AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name, dd.text as otherDepotName,
       BUID(m.stock_requisition_uuid) AS stock_requisition_uuid, sr_m.text AS document_requisition,
-      BUID(s.uuid) AS shipment_uuid, ship_dm.text AS shipment_reference
+      BUID(s.uuid) AS shipment_uuid, s.status_id AS shipment_status, ship_dm.text AS shipment_reference
       ${joinToExitAttributes}
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -128,6 +128,7 @@ async function getDepotMovement(documentUuid, enterprise, isExit) {
     document_reference : line.document_reference,
     document_requisition : line.document_requisition,
     shipment_uuid      : line.shipment_uuid,
+    shipment_status    : line.shipment_status,
     shipment_reference : line.shipment_reference,
   };
 
