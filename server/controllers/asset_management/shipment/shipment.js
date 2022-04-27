@@ -635,14 +635,15 @@ async function getPackingList(identifier) {
       sh.anticipated_delivery_date,
       sh.receiver, u.display_name AS created_by,
       shi.quantity_sent, shi.quantity_delivered, shi.date_packed,
-      l.label AS lot_label, i.code AS inventory_code,
-      i.text AS inventory_label, i.is_asset,
+      l.label AS lot_label, sv.wac AS unit_price,
+      i.code AS inventory_code, i.text AS inventory_label, i.is_asset,
       dm.text AS reference
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN stock_value sv ON sv.inventory_uuid = i.uuid
     JOIN user u ON u.id = sh.created_by
     JOIN document_map dm ON dm.uuid = sh.uuid
     WHERE sh.uuid = ?
