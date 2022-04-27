@@ -3,6 +3,7 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const { uuid } = require('../../../lib/util');
 
+// NOTE: These constants must match those in bhConstants.js (shipmentStatus)
 const SHIPMENT_AT_DEPOT = 2;
 const SHIPMENT_READY = 3;
 const SHIPMENT_IN_TRANSIT = 4;
