@@ -124,7 +124,7 @@ describe('(/shipments) the shipments API', () => {
   });
 
   it('GET /shipments/:uuid get details of a shipment', () => {
-    const foramtDate = date => moment(date).format('YYYY-MM-DD hh:mm');
+    const formatDate = date => moment(date).format('YYYY-MM-DD');
     return agent.get(`/shipments/${newShipment.uuid}`)
       .then(res => {
         expect(res).to.have.status(200);
@@ -134,8 +134,8 @@ describe('(/shipments) the shipments API', () => {
         expect(res.body.destination_depot_uuid).to.be.eq(helpers.uuidize(newShipment.destination_depot_uuid));
         expect(res.body.name).to.be.eq(newShipment.name);
         expect(res.body.description).to.be.eq(newShipment.description);
-        const outDate = foramtDate(res.body.anticipated_delivery_date);
-        const inDate = foramtDate(newShipment.anticipated_delivery_date);
+        const outDate = formatDate(res.body.anticipated_delivery_date);
+        const inDate = formatDate(newShipment.anticipated_delivery_date);
         expect(outDate).to.be.eq(inDate);
       })
       .catch(helpers.handler);
