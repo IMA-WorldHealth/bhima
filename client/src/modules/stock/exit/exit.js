@@ -21,6 +21,8 @@ function StockExitController(
 
   const { params } = $state;
 
+  vm.fromShipmentRegistry = !!params.shipment;
+
   vm.stockForm = new StockForm('StockExit');
 
   // set allowExpired to be false
@@ -316,6 +318,9 @@ function StockExitController(
     return vm.stockForm.submit()
       .then(result => renderReceipt(result.uuid, true))
       .then(() => {
+        if (vm.fromShipmentRegistry) {
+          $state.go('shipments');
+        }
         vm.stockForm.clear();
         vm.validate();
       })
