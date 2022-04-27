@@ -30,6 +30,7 @@ const requestorType = require('./requisition/requestor_type');
 const Fiscal = require('../finance/fiscal');
 const vouchers = require('../finance/vouchers');
 const depots = require('../inventory/depots');
+const { createImportSpecifier } = require('typescript');
 
 // expose to the API
 exports.createStock = createStock;

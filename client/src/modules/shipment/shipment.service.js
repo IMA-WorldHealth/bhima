@@ -32,13 +32,18 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
       .then(service.util.unwrapHttpResponse);
   };
 
-  service.updateLocation = (uuid, params) => {
+  service.addShipmentTrackingLotEntry = (uuid, params) => {
     return service.$http.post(`/shipments/${uuid}/tracking-log`, { params })
       .then(service.util.unwrapHttpResponse);
   };
 
   service.setReadyForShipment = (uuid) => {
     return service.$http.put(`/shipments/${uuid}/ready-for-shipment`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  service.setShipmentCompleted = (uuid) => {
+    return service.$http.put(`/shipments/${uuid}/shipment-completed`)
       .then(service.util.unwrapHttpResponse);
   };
 

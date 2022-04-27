@@ -33,7 +33,7 @@ function UpdateTrackingLogModalController($state, params, Shipments, Notify, Con
   function submit(form) {
     if (form.$invalid) { return null; }
 
-    return Shipments.updateLocation(identifier, vm.shipment)
+    return Shipments.addShipmentTrackingLotEntry(identifier, vm.shipment)
       .then(() => {
         Notify.success('SHIPMENT.UPDATED');
         Instance.dismiss(true);
