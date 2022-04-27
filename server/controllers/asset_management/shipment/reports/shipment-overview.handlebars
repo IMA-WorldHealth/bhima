@@ -147,7 +147,8 @@
             <th>{{translate 'STOCK.INVENTORY'}}</th>
             <th>{{translate 'STOCK.LOT'}}</th>
             <th>{{translate 'STOCK.QUANTITY'}}</th>
-            <th>{{translate 'SHIPMENT.LOT_CONDITION'}}</th>
+            <th>{{translate 'STOCK.UNIT_COST'}}</th>
+            <th>{{translate 'STOCK.COST'}}</th>
             <th>{{translate 'SHIPMENT.DATE_PACKED'}}</th>
           </tr>
         </thead>
@@ -158,7 +159,8 @@
               <td>{{inventory_label}}</td>
               <td>{{lot_label}}</td>
               <td>{{quantity_sent}}</td>
-              <td>{{translate condition}}</td>
+              <td>{{currency unit_price ../metadata.enterprise.currency_id}}</td>
+              <td>{{currency cost ../metadata.enterprise.currency_id}}</td>
               <td>{{date date_packed}}</td>
             </tr>
           {{else}}
@@ -167,7 +169,8 @@
         </tbody>
         <tfoot>
           <tr style="font-weight: bold;">
-            <td colspan="6">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+            <td colspan="5">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+            <td>{{currency totalCost metadata.enterprise.currency_id}}</td>
           </tr>
         </tfoot>
       </table>

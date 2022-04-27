@@ -14,6 +14,11 @@ async function getShipmentOverview(req, res, next) {
     });
     const single = await shipment.lookupSingle(uuid);
     const records = await shipment.getPackingList(uuid);
+    records.forEach(row => {
+      row.cost = row.quantity_sent * row.unit_price;
+    });
+    const totalCost = records.reduce((agg, row) => agg + row.cost, 0);
+
     const log = await shipment.getShipmentInfo(uuid);
     const step = shipment.getStep(single.status_name);
 
@@ -21,6 +26,7 @@ async function getShipmentOverview(req, res, next) {
       step,
       single,
       records,
+      totalCost,
       log,
       date : new Date(),
     };
