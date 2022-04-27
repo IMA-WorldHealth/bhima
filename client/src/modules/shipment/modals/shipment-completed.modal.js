@@ -1,17 +1,17 @@
 angular.module('bhima.controllers')
-  .controller('UpdateTrackingLogModalController', UpdateTrackingLogModalController);
+  .controller('ShipmentCompletedModalController', ShipmentCompletedModalController);
 
-UpdateTrackingLogModalController.$inject = [
+ShipmentCompletedModalController.$inject = [
   '$state', 'params', 'ShipmentService', 'NotifyService',
   'bhConstants', '$uibModalInstance',
 ];
 
-function UpdateTrackingLogModalController($state, params, Shipments, Notify, Constants, Instance) {
+function ShipmentCompletedModalController($state, params, Shipments, Notify, Constants, Instance) {
   const vm = this;
   const identifier = params.uuid;
 
   vm.submit = submit;
-  vm.cancel = Instance.dismiss;
+  vm.cancel = () => Instance.dismiss(false);
 
   load();
 
@@ -20,10 +20,7 @@ function UpdateTrackingLogModalController($state, params, Shipments, Notify, Con
       Shipments.read(identifier)
         .then(shipment => {
           vm.shipment = shipment;
-          return Shipments.overview(identifier);
-        })
-        .then(result => {
-          vm.locations = result.locations;
+          vm.isPartial = !!(shipment.status_id === Constants.shipmentStatus.PARTIAL);
         })
         .catch(Notify.handleError);
     }
@@ -32,7 +29,7 @@ function UpdateTrackingLogModalController($state, params, Shipments, Notify, Con
   function submit(form) {
     if (form.$invalid) { return null; }
 
-    return Shipments.addShipmentTrackingLotEntry(identifier, vm.shipment)
+    return Shipments.setShipmentCompleted(identifier)
       .then(() => {
         Notify.success('SHIPMENT.UPDATED');
         Instance.dismiss(true);

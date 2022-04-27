@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  '$state', 'NotifyService', 'SessionService', 'util', 'bhConstants', 'ReceiptModal',
+  '$state', '$transition$', 'NotifyService', 'SessionService', 'util', 'bhConstants', 'ReceiptModal',
   'StockExitFormService', 'StockEntryExitTypeService', 'uiGridConstants', 'GridExportService', 'ShipmentService',
   'DepotService', '$timeout', 'BarcodeService',
 ];
@@ -13,7 +13,7 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  $state, Notify, Session, util, bhConstants, ReceiptModal,
+  $state, $transition$, Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, ExitTypes, uiGridConstants, GridExportService, Shipments,
   Depot, $timeout, Barcode,
 ) {
@@ -316,6 +316,9 @@ function StockExitController(
     return vm.stockForm.submit()
       .then(result => renderReceipt(result.uuid, true))
       .then(() => {
+        if (($transition$.from().name === 'shipments') && !!params.shipment) {
+          $state.go('shipments');
+        }
         vm.stockForm.clear();
         vm.validate();
       })

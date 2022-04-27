@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockEntryController.$inject = [
-  '$state', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  '$state', '$transition$', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService',
   'StockFormService', 'StockService', 'StockModalService', 'StockEntryExitTypeService',
   'DepotService', 'ShipmentService', 'LotService', 'ExchangeRateService',
@@ -17,7 +17,7 @@ StockEntryController.$inject = [
  * This controller is responsible to handle stock entry module.
  */
 function StockEntryController(
-  $state, Inventory, Notify, Session, util,
+  $state, $transition$, Inventory, Notify, Session, util,
   bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, EntryTypes,
   Depot, Shipments, Lots, Exchange,
@@ -713,9 +713,8 @@ function StockEntryController(
       user_id     : vm.stockForm.details.user_id,
     };
 
-    /*
-      TODO: add a donor management module
-    */
+    // @TODO: add a donor management module
+
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
@@ -741,12 +740,21 @@ function StockEntryController(
       user_id       : vm.stockForm.details.user_id,
     };
 
+    if (vm.shipment) {
+      movement.shipment_uuid = vm.shipment.uuid;
+    }
+
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
       .then((document) => {
         vm.reset();
-        ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
+        ReceiptModal.stockEntryDepotReceipt(document.uuid, true)
+          .then(() => {
+            if (($transition$.from().name === 'shipments') && !!params.shipment) {
+              $state.go('shipments');
+            }
+          });
       })
       .catch(Notify.handleError);
   }
