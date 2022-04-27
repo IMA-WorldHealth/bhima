@@ -98,6 +98,8 @@ exports.create = async (req, res, next) => {
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
 
+    addTrackingLogMessage(transaction, identifier, 'SHIPMENT.SHIPMENT_CREATED', req.session.user.id);
+
     await transaction.execute();
     res.status(201).json({ uuid : identifier });
   } catch (error) {
@@ -160,6 +162,8 @@ exports.update = async (req, res, next) => {
         });
       }
 
+      addTrackingLogMessage(transaction, identifier, 'SHIPMENT.PACKING_LIST_UPDATED', req.session.user.id);
+
       await transaction.execute();
     } else {
       throw new Error('This shipment is already ready to go, you cannot update it');
@@ -187,41 +191,54 @@ exports.setReadyForShipment = async (req, res, next) => {
       throw new Error('You cannot update a shipment which is not in AT_DEPOT status');
     }
 
+    const transaction = db.transaction();
+    addTrackingLogMessage(transaction, identifier, 'SHIPMENT.MARKED_READY_TO_SHIP', req.session.user.id);
+    await transaction.execute();
+
     res.sendStatus(201);
   } catch (error) {
     next(error);
   }
 };
 
-exports.updateShipmentTrackingLog = async (req, res, next) => {
+exports.setShipmentCompleted = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const sql = `UPDATE shipment SET status_id = ?, date_delivered = ? WHERE uuid = ?;`;
+
+    const [shipmentStatus] = await db.exec(
+      'SELECT status_id FROM shipment WHERE uuid = ?',
+      [db.bid(identifier)],
+    );
+    const inDepot = !!(shipmentStatus.status_id === SHIPMENT_PARTIAL);
+
+    if (inDepot) {
+      await db.exec(sql, [SHIPMENT_COMPLETE, new Date(), db.bid(identifier)]);
+    } else {
+      throw new Error('You a shipment must be partial before it can be completed with this query');
+    }
+
+    const transaction = db.transaction();
+    addTrackingLogMessage(transaction, identifier, 'SHIPMENT.PARTIAL_MARKED_COMPLETE', req.session.user.id);
+    await transaction.execute();
+
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.addShipmentTrackingLogEntry = async (req, res, next) => {
   try {
     const identifier = req.params.uuid;
     const { params } = req.body;
 
     _.pick(params, ['note']);
 
-    const [shipmentStatus] = await db.exec(
-      'SELECT status_id FROM shipment WHERE uuid = ?',
-      [db.bid(identifier)],
-    );
+    const transaction = db.transaction();
+    addTrackingLogMessage(transaction, identifier, params.note, req.session.user.id);
+    await transaction.execute();
 
-    const canUpdate = shipmentStatus.status_id === SHIPMENT_IN_TRANSIT;
-
-    if (canUpdate) {
-      // the update consit of adding new entry in the shipment location table
-      const transaction = db.transaction();
-      const bIdentifier = db.bid(identifier);
-      const newShipmentInfo = {
-        uuid : db.bid(uuid()),
-        shipment_uuid : bIdentifier,
-        note : params.note,
-        user_id : req.session.user.id,
-      };
-      transaction.addQuery('INSERT INTO shipment_tracking SET ?;', [newShipmentInfo]);
-      await transaction.execute();
-    } else {
-      throw new Error('You cannot update it');
-    }
     res.sendStatus(201);
   } catch (error) {
     next(error);
@@ -267,6 +284,9 @@ exports.writeStockExitShipment = async (
     transaction.addQuery(updateQuery, [
       SHIPMENT_IN_TRANSIT, new Date(), db.bid(document.uuid), db.bid(document.shipment_uuid),
     ]);
+
+    addTrackingLogMessage(transaction, document.shipment_uuid, 'SHIPMENT.STOCK_EXITED_DONE', parameters.user_id);
+
   } else {
     // write new shipment
     const SHIPMENT_UUID = db.bid(uuid());
@@ -297,6 +317,9 @@ exports.writeStockExitShipment = async (
       };
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
+
+    addTrackingLogMessage(transaction, SHIPMENT_UUID, 'SHIPMENT.SHIPMENT_CREATED', document.user);
+    addTrackingLogMessage(transaction, SHIPMENT_UUID, 'SHIPMENT.STOCK_EXITED_DONE', document.user);
   }
 };
 
@@ -355,6 +378,12 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
     newStatus,
     db.bid(document.uuid),
   ]);
+
+  // Add a shipment tracking log entry for the stock entry
+  const statusMsg = newStatus === SHIPMENT_COMPLETE
+    ? 'SHIPMENT.STOCK_ENTRY_COMPLETE' : 'SHIPMENT.STOCK_ENTRY_PARTIAL';
+  addTrackingLogMessage(tx, document.shipment_uuid, statusMsg, document.user);
+
   return tx.execute();
 };
 
@@ -620,6 +649,16 @@ async function isShipmentExists(shipmentUuid) {
   const sql = `SELECT uuid FROM shipment WHERE uuid = ?`;
   const [result] = await db.exec(sql, [db.bid(shipmentUuid)]);
   return !!result;
+}
+
+function addTrackingLogMessage(tx, shipmentUuid, note, userId) {
+  const logInfo = {
+    uuid : db.bid(uuid()),
+    shipment_uuid : db.bid(shipmentUuid),
+    note,
+    user_id : userId,
+  };
+  tx.addQuery('INSERT INTO shipment_tracking SET ?;', [logInfo]);
 }
 
 async function getPackingList(identifier) {
