@@ -31,6 +31,8 @@ function StockEntryController(
   const mapEntry = initEntryMap();
   const { params } = $state;
 
+  vm.fromShipmentRegistry = !!params.shipment;
+
   vm.selectedEntryType = {};
 
   // view models variables and methods
@@ -713,9 +715,8 @@ function StockEntryController(
       user_id     : vm.stockForm.details.user_id,
     };
 
-    /*
-      TODO: add a donor management module
-    */
+    // @TODO: add a donor management module
+
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
@@ -741,12 +742,21 @@ function StockEntryController(
       user_id       : vm.stockForm.details.user_id,
     };
 
+    if (vm.shipment) {
+      movement.shipment_uuid = vm.shipment.uuid;
+    }
+
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
       .then((document) => {
         vm.reset();
-        ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
+        ReceiptModal.stockEntryDepotReceipt(document.uuid, true)
+          .then(() => {
+            if (vm.fromShipmentRegistry) {
+              $state.go('shipments');
+            }
+          });
       })
       .catch(Notify.handleError);
   }
