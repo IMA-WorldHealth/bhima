@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('ReadyForShipmentModalController', ReadyForShipmentModalController);
+  .controller('ShipmentCompletedModalController', ShipmentCompletedModalController);
 
-ReadyForShipmentModalController.$inject = [
+ShipmentCompletedModalController.$inject = [
   '$state', 'params', 'ShipmentService', 'NotifyService',
-  'bhConstants', '$uibModalInstance', '$translate',
+  'bhConstants', '$uibModalInstance',
 ];
 
-function ReadyForShipmentModalController($state, params, Shipments, Notify, Constants, Instance, $translate) {
+function ShipmentCompletedModalController($state, params, Shipments, Notify, Constants, Instance) {
   const vm = this;
   const identifier = params.uuid;
 
@@ -20,7 +20,7 @@ function ReadyForShipmentModalController($state, params, Shipments, Notify, Cons
       Shipments.read(identifier)
         .then(shipment => {
           vm.shipment = shipment;
-          vm.isInDepot = !!(shipment.status_id === Constants.shipmentStatus.AT_DEPOT);
+          vm.isPartial = !!(shipment.status_id === Constants.shipmentStatus.PARTIAL);
         })
         .catch(Notify.handleError);
     }
@@ -29,7 +29,7 @@ function ReadyForShipmentModalController($state, params, Shipments, Notify, Cons
   function submit(form) {
     if (form.$invalid) { return null; }
 
-    return Shipments.setReadyForShipment(identifier)
+    return Shipments.setShipmentCompleted(identifier)
       .then(() => {
         Notify.success('SHIPMENT.UPDATED');
         Instance.dismiss(true);
