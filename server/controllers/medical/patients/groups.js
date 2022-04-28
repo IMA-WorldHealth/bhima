@@ -126,7 +126,7 @@ function bulkUpdate(req, res, next) {
   // Clear assigned groups
   const deleteAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
   //
-  const removeAlreadyAssignedGroupsQuery = `
+  const removeAlreadyAllocatedGroupsQuery = `
     DELETE FROM patient_assignment WHERE patient_uuid = ? AND patient_group_uuid = ?
   `;
   // Insert new relationships
@@ -147,7 +147,7 @@ function bulkUpdate(req, res, next) {
         patient_group_uuid : db.bid(groupUuid),
       };
 
-      transaction.addQuery(removeAlreadyAssignedGroupsQuery, [db.bid(patientUuid), db.bid(groupUuid)]);
+      transaction.addQuery(removeAlreadyAllocatedGroupsQuery, [db.bid(patientUuid), db.bid(groupUuid)]);
       transaction.addQuery(createAssignmentsQuery, assignment);
     });
   });

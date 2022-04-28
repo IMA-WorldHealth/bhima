@@ -405,10 +405,10 @@ exports.listInTransitInventories = async (req, res, next) => {
   }
 };
 
-exports.findAffectedAssets = async (req, res, next) => {
+exports.findAllocatedAssets = async (req, res, next) => {
   try {
     const params = req.query;
-    const result = await findAffectedAssets(params);
+    const result = await findAllocatedAssets(params);
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -520,7 +520,7 @@ function find(params) {
   return db.exec(query, queryParameters);
 }
 
-function findAffectedAssets(params) {
+function findAllocatedAssets(params) {
   const filters = getShipmentFilters(params);
   const sql = `
     SELECT

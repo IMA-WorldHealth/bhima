@@ -103,8 +103,8 @@ describe('(/shipments) the shipments API', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /shipments/affected-assets get list of affected assets', () => {
-    return agent.get(`/shipments/affected-assets`)
+  it('GET /shipments/assigned-assets get list of assigned assets', () => {
+    return agent.get(`/shipments/assigned-assets`)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.an('array');
