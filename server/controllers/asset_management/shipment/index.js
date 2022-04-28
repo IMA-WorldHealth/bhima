@@ -20,5 +20,5 @@ module.exports = {
   writeStockExitShipment : shipment.writeStockExitShipment,
   writeStockEntryShipment : shipment.writeStockEntryShipment,
   updateShipmentStatusAfterEntry : shipment.updateShipmentStatusAfterEntry,
-  affectedAssets : shipment.findAffectedAssets,
+  assignedAssets : shipment.findAssignedAssets,
 };
