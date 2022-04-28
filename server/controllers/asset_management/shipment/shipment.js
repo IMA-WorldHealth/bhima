@@ -379,6 +379,16 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
     db.bid(document.uuid),
   ]);
 
+  // If we are doing a stock entry (not via shipments),
+  // we need to find the shipment uuid
+  if (!document.shipment_uuid) {
+    const sql = 'SELECT BUID(uuid) AS shipment_uuid FROM shipment sh WHERE document_uuid = ?';
+    const result = await db.exec(sql, [db.bid(document.uuid)]);
+    if (result.length) {
+      document.shipment_uuid = result[0].shipment_uuid;
+    }
+  }
+
   // Add a shipment tracking log entry for the stock entry
   const statusMsg = newStatus === SHIPMENT_COMPLETE
     ? 'SHIPMENT.STOCK_ENTRY_COMPLETE' : 'SHIPMENT.STOCK_ENTRY_PARTIAL';
@@ -652,6 +662,10 @@ async function isShipmentExists(shipmentUuid) {
 }
 
 function addTrackingLogMessage(tx, shipmentUuid, note, userId) {
+  if (!shipmentUuid) {
+    // In regtests we may not have the shipment uuid, so skip this
+    return;
+  }
   const logInfo = {
     uuid : db.bid(uuid()),
     shipment_uuid : db.bid(shipmentUuid),
