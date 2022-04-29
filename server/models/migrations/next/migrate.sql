@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `shipment_item` (
   `quantity_delivered` INT(11) UNSIGNED DEFAULT 0,
   `condition_id`       SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
-  CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
+  CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE,
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   CONSTRAINT `shipment_item__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -202,8 +202,8 @@ CREATE TABLE IF NOT EXISTS `shipment_tracking` (
   `date`               TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user_id`            SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`uuid`),
-  CONSTRAINT `shipment_location__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`),
-  CONSTRAINT `shipment_location__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `shipment_tracking__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE,
+  CONSTRAINT `shipment_tracking__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 

@@ -30,6 +30,7 @@
         </span>
       </a>
     </li>
+    <li class="divider"></li>
     <li ng-if="row.entity.isAtDepot">
       <a ng-click="grid.appScope.setReady(row.entity.uuid)" href>
         <span class="">
@@ -37,7 +38,6 @@
         </span>
       </a>
     </li>
-    <li class="divider"></li>
     <li ng-if="row.entity.isReady">
       <a ng-click="grid.appScope.gotoStockExit(row.entity.uuid)" href>
         <span class="">
@@ -49,6 +49,13 @@
       <a ng-click="grid.appScope.gotoStockEntry(row.entity.uuid)" href>
         <span class="">
           <i class="fa fa-truck"></i> <span translate>SHIPMENT.ENTER_STOCK_FOR_SHIPMENT</span>
+        </span>
+      </a>
+    </li>
+    <li ng-if="row.entity.isPartial">
+      <a ng-click="grid.appScope.setComplete(row.entity.uuid)" href>
+        <span class="">
+          <i class="fa fa-truck"></i> <span translate>SHIPMENT.COMPLETE_SHIPMENT</span>
         </span>
       </a>
     </li>
