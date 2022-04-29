@@ -3,27 +3,28 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 CreateShipmentController.$inject = [
-  '$state', 'NotifyService', 'SessionService', 'util',
+  '$state', 'NotifyService', 'util',
   'StockExitFormService', 'uiGridConstants', 'BarcodeService',
   'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
   'bhConstants',
 ];
 
 function CreateShipmentController(
-  $state, Notify, Session, util,
-  StockForm, uiGridConstants, Barcode,
-  Shipment, Depot, $timeout, ShipmentModal,
-  bhConstants,
+  $state, Notify, util, StockForm, uiGridConstants, Barcode,
+  Shipment, Depot, $timeout, ShipmentModal, bhConstants,
 ) {
   const vm = this;
+
   const existingShipmentUuid = $state.params.uuid;
 
   vm.existingShipmentUuid = existingShipmentUuid;
+
   vm.isCreateState = $state.params.isCreateState;
 
   vm.stockForm = new StockForm('ShipmentForm');
   vm.stockForm.setAllowExpired(false);
   vm.stockForm.setExitTypePredefined(true);
+  vm.stockForm.setExitType('depot');
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
@@ -74,7 +75,7 @@ function CreateShipmentController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html',
       }, {
-        field : 'available_lot',
+        field : '_quantity_available',
         width : 150,
         displayName : 'TABLE.COLUMNS.AVAILABLE',
         headerCellFilter : 'translate',
@@ -103,7 +104,6 @@ function CreateShipmentController(
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.maxLength = util.maxLength;
-  vm.enterprise = Session.enterprise;
   vm.today = new Date();
   vm.onChangeDepot = onChangeDepot;
   vm.getOverview = getOverview;
@@ -141,11 +141,10 @@ function CreateShipmentController(
 
   vm.setDate = function setDate(date) {
     vm.shipment.anticipated_delivery_date = date;
-    vm.stockForm.setDate(date);
-    vm.validateItems();
   };
 
   vm.setLotFromDropdown = function setLotFromDropdown(row, lot) {
+    row._quantity_available = lot._quantity_available;
     vm.stockForm._pool.use(lot.lot_uuid);
     row.configure(lot);
     vm.stockForm.updateLotListings(row.inventory_uuid);
@@ -172,9 +171,9 @@ function CreateShipmentController(
   };
 
   function onChangeDepot(depot) {
+
     // depot assignment
     vm.depot = depot;
-    vm.stockForm.setDepot(depot);
 
     vm.shipment.origin_depot_uuid = vm.depot.uuid;
 
@@ -187,15 +186,19 @@ function CreateShipmentController(
       delete vm.shipment.destination_depot_uuid;
     }
 
-    // trick an exit type which is required
-    vm.stockForm.setExitType('loss');
-    vm.stockForm.setLossDistribution();
-
-    // run validation
-    vm.validateItems();
-
     // refresh quantity available
-    return refreshQuantityAvailable(vm.depot);
+    return vm.stockForm.setDepot(depot)
+      .then(() => {
+
+        // trick an exit type which is required
+        vm.stockForm.setExitType('loss');
+        vm.stockForm.setLossDistribution();
+
+        // run validation
+        vm.validateItems();
+
+        return refreshQuantityAvailable(vm.depot);
+      });
   }
 
   function setReady(uuid) {
@@ -210,9 +213,8 @@ function CreateShipmentController(
   }
 
   function reset(form) {
-    const _form = form;
-    _form.$setPristine();
-    _form.$setUntouched();
+    form.$setPristine();
+    form.$setUntouched();
     vm.stockForm.store.clear();
   }
 
@@ -224,7 +226,9 @@ function CreateShipmentController(
     vm.$loading = true;
     vm.hasError = false;
     vm.stockForm.setup();
+
     vm.stockForm.setExitType('depot');
+
     vm.validateItems();
 
     // load the shipment for update
@@ -232,17 +236,32 @@ function CreateShipmentController(
   }
 
   function refreshQuantityAvailable(depot, dateTo = new Date()) {
-    return fetchAffectedAssets()
+    return fetchAllocatedAssets()
       .then(assets => {
-        vm.alreadyAffected = assets;
+        // NOTE: By "allocated" we mean allocated to previous shipments
+        //       therefore unavailable for this shipment
+        vm.alreadyAllocated = assets;
 
-        vm.stockForm._pool.available.data.forEach(lot => {
-          const affectedQuantity = getAffectedQuantity(lot.lot_uuid);
-          lot._quantity_available -= affectedQuantity;
-          if (lot._quantity_available === 0 && affectedQuantity !== 0) {
-            vm.stockForm._pool.use(lot.lot_uuid);
+        // compute allocated quantites
+        const allocatedQuantityMap = vm.alreadyAllocated.reduce((map, asset) => {
+          const prev = (map[asset.lot_uuid] || 0);
+          map[asset.lot_uuid] = asset.quantity_sent + prev;
+          return map;
+        }, {});
+
+        // remove used items from the pool
+        const usedItems = vm.stockForm._pool.available.data.filter(lot => {
+          const allocatedQuantity = allocatedQuantityMap[lot.lot_uuid] || 0;
+
+          if (allocatedQuantity) {
+            lot._quantity_available -= allocatedQuantity;
           }
+
+          return lot._quantity_available === 0 && allocatedQuantity > 0;
         });
+
+        // remove the used items from the pool
+        usedItems.forEach(lot => vm.stockForm._pool.use(lot.lot_uuid));
 
         vm.validateItems();
 
@@ -251,12 +270,6 @@ function CreateShipmentController(
       .then(list => {
         vm.existingShipments = list;
       });
-  }
-
-  function getAffectedQuantity(uuid) {
-    const el = (vm.alreadyAffected || []).filter(item => item.lot_uuid === uuid);
-    const quantity = el.reduce((prev, curr) => curr.quantity_sent + prev, 0);
-    return el ? quantity : 0;
   }
 
   function errorLineHighlight(row) {
@@ -313,7 +326,11 @@ function CreateShipmentController(
 
     vm.$loading = true;
     vm.shipment = cleanShipment(vm.shipment);
-    vm.shipment.lots = vm.stockForm.store.data.map(cleanShipmentItem);
+
+    vm.shipment.lots = vm.stockForm.store.data.map(row => ({
+      lot_uuid : row.lot_uuid,
+      quantity : row.quantity,
+    }));
 
     const promise = !!(vm.isCreateState)
       ? Shipment.create(vm.shipment)
@@ -343,18 +360,13 @@ function CreateShipmentController(
     };
   }
 
-  function cleanShipmentItem(row) {
-    return {
-      lot_uuid : row.lot_uuid,
-      quantity : row.quantity,
-    };
-  }
-
+  // this function
   function loadShipment() {
     if (!existingShipmentUuid) {
       vm.$loading = false;
       return;
     }
+
     Shipment.readAll(existingShipmentUuid)
       .then(shipment => {
         vm.shipment = shipment;
@@ -363,7 +375,9 @@ function CreateShipmentController(
       })
       .then(originDepot => {
         vm.depot = originDepot;
-        vm.stockForm.setDepot(originDepot);
+        return vm.stockForm.setDepot(originDepot);
+      })
+      .then(() => {
         return Depot.read(vm.shipment.destination_depot_uuid);
       })
       .then(destDepot => {
@@ -378,9 +392,9 @@ function CreateShipmentController(
       });
   }
 
-  function fetchAffectedAssets() {
+  function fetchAllocatedAssets() {
     const isEdit = !vm.isCreateState && existingShipmentUuid;
-    return Shipment.getAffectedAssets({
+    return Shipment.getAllocatedAssets({
       origin_depot_uuid : vm.depot.uuid,
       currently_at_depot : true,
       except_current_shipment : isEdit ? existingShipmentUuid : undefined,
