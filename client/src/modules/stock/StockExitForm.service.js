@@ -147,7 +147,6 @@ function StockExitFormService(
    *
    * @description
    * Loads the quantity in stock for the depot at a given date.
-   *
    */
   StockExitForm.prototype.fetchQuantityInStock = function fetchQuantityInStock(depotUuid, date) {
     if (!depotUuid || !date) { return {}; }
@@ -227,7 +226,7 @@ function StockExitFormService(
 
     // get all lots that are no longer used
     this._pool.unavailable.data
-      .filter(lot => !usedLotUuids.has(lot.lot_uuid))
+      .filter(lot => !usedLotUuids.has(lot.lot_uuid) && lot._quantity_available > 0)
       .forEach(lot => { this._pool.release(lot.lot_uuid); });
 
   };

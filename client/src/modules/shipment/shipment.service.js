@@ -22,8 +22,8 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
       .then(service.util.unwrapHttpResponse);
   };
 
-  service.getAffectedAssets = (parameters) => {
-    return service.$http.get(`/shipments/affected-assets`, { params : parameters })
+  service.getAssignedAssets = (parameters) => {
+    return service.$http.get(`/shipments/assigned-assets`, { params : parameters })
       .then(service.util.unwrapHttpResponse);
   };
 
