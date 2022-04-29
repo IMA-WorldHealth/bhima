@@ -130,7 +130,7 @@
           </div>
         </div>
 
-        <div ng-if="!CreateShipCtrl.existingShipmentUuid && CreateShipCtrl.alreadyAffected.length" class="col-md-4">
+        <div ng-if="!CreateShipCtrl.existingShipmentUuid && CreateShipCtrl.alreadyAllocated.length" class="col-md-4">
           <div class="form-group">
             <div class="alert alert-warning" style="margin: 0;">
               <span translate>SHIPMENT.EXISTING_ASSETS_IN_OTHER_SHIPMENT</span>
@@ -141,7 +141,7 @@
                   <th translate>SHIPMENT.TITLE</th>
                   <th translate>ASSET.TITLE</th>
                 </tr>
-                <tr ng-repeat="item in CreateShipCtrl.alreadyAffected track by item.uuid">
+                <tr ng-repeat="item in CreateShipCtrl.alreadyAllocated track by item.uuid">
                   <td><a ng-click="CreateShipCtrl.getOverview(item.shipment_uuid)" href>{{ item.reference }}</a></td>
                   <td>{{ item.inventory_code + ' - ' + item.inventory_text + ' (' + item.lot_label + ')'}}</td>
                 </tr>
@@ -219,4 +219,5 @@
       </div>
     </form>
   </div>
+  <br />
 </div>

@@ -55,7 +55,7 @@ function DepotSelectController(Depots, Notify) {
 
     const options = {
       text : (text || '').toLowerCase(),
-      exception : $ctrl.exception,
+      exception : $ctrl.exception, // TODO(@jniles) - ensure that this is a UUID, not an object
     };
 
     if ($ctrl.filterByUserPermission) {
