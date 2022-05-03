@@ -6,7 +6,7 @@ AssetsRegistryService.$inject = [
 ];
 
 /**
- * This service encapsulate some common method of stock lots registry with the aims
+ * This service encapsulate some common methods of the Asset registry with the aims
  * of reducing lines in registry.js
  */
 function AssetsRegistryService(uiGridConstants, Session) {

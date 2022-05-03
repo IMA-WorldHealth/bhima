@@ -1,42 +1,49 @@
 // Constants
 const BASE_PATH = './server/controllers/stock/reports';
+const path = require('path');
+
+// shortcut: uses the name of the file and adds the path and extension
+const mkPath = name => path.join(BASE_PATH, name).concat('.handlebars');
 
 // receipts
-const STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.handlebars`;
-const POS_STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.pos.handlebars`;
-const STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.handlebars`;
-const POS_STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.pos.handlebars`;
-const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handlebars`;
-const POS_STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.pos.handlebars`;
-const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
-const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.handlebars`;
-const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.receipt.handlebars`;
-const STOCK_ASSIGN_REGISTRY_TEMPLATE = `${BASE_PATH}/stock/assignment/stock_assign.registry.handlebars`;
-const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = `${BASE_PATH}/stock_consumption_graph.handlebars`;
-const STOCK_MOVEMENT_REPORT_TEMPLATE = `${BASE_PATH}/stock_movement_report.handlebars`;
-const LOT_BARCODE_TEMPLATE = `${BASE_PATH}/stock/lot_barcode/lot_barcode.handlebars`;
+const STOCK_EXIT_PATIENT_TEMPLATE = mkPath('stock_exit_patient.receipt.handlebars');
 
-const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
-const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
-const STOCK_ENTRY_INTEGRATION_TEMPLATE = `${BASE_PATH}/stock_entry_integration.receipt.handlebars`;
-const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt.handlebars`;
-const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
+const POS_STOCK_EXIT_PATIENT_TEMPLATE = mkPath('stock_exit_patient.receipt.pos');
+const STOCK_EXIT_SERVICE_TEMPLATE = mkPath('stock_exit_service.receipt');
+const POS_STOCK_EXIT_SERVICE_TEMPLATE = mkPath('stock_exit_service.receipt.pos');
+const STOCK_EXIT_DEPOT_TEMPLATE = mkPath('stock_exit_depot.receipt');
+const POS_STOCK_EXIT_DEPOT_TEMPLATE = mkPath('stock_exit_depot.receipt.pos');
+const STOCK_EXIT_LOSS_TEMPLATE = mkPath('/stock_exit_loss.receipt');
+const POS_STOCK_EXIT_LOSS_TEMPLATE = mkPath('stock_exit_loss.receipt.pos');
+const STOCK_ASSIGN_TEMPLATE = mkPath('stock/assignment/stock_assign.receipt');
+const STOCK_ASSIGN_REGISTRY_TEMPLATE = mkPath('/stock/assignment/stock_assign.registry');
+const STOCK_CONSUMPTION_GRAPTH_TEMPLATE = mkPath('/stock_consumption_graph');
+const STOCK_MOVEMENT_REPORT_TEMPLATE = mkPath('/stock_movement_report');
+const LOT_BARCODE_TEMPLATE = mkPath('/stock/lot_barcode/lot_barcode');
 
-const STOCK_AGGREGATE_CONSUMPTION_TEMPLATE = `${BASE_PATH}/stock_aggregate_consumption.receipt.handlebars`;
+const STOCK_ENTRY_DEPOT_TEMPLATE = mkPath('/stock_entry_depot.receipt');
+const STOCK_ENTRY_PURCHASE_TEMPLATE = mkPath('/stock_entry_purchase.receipt');
+const STOCK_ENTRY_INTEGRATION_TEMPLATE = mkPath('/stock_entry_integration.receipt');
+const STOCK_ENTRY_DONATION_TEMPLATE = mkPath('/stock_entry_donation.receipt');
+const STOCK_ADJUSTMENT_TEMPLATE = mkPath('/stock_adjustment.receipt');
+
+const STOCK_AGGREGATE_CONSUMPTION_TEMPLATE = mkPath('/stock_aggregate_consumption.receipt');
 
 // reports
-const STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE = `${BASE_PATH}/stock_avg_med_costs_per_patient.report.handlebars`;
-const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
-const STOCK_ENTRY_REPORT_TEMPLATE = `${BASE_PATH}/stock_entry.report.handlebars`;
-const STOCK_LOST_STOCK_REPORT_TEMPLATE = `${BASE_PATH}/stock_lost_stock.report.handlebars`;
-const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
-const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
-const STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_inline_movements.report.handlebars`;
-const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
-const STOCK_SHEET_REPORT_TEMPLATE = `${BASE_PATH}/stock_sheet.report.handlebars`;
-const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`;
-const STOCK_EXPIRATION_REPORT_TEMPLATE = `${BASE_PATH}/stock_expiration_report.handlebars`;
-const STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE = `${BASE_PATH}/stock_aggregated_consumption_report.handlebars`;
+const STOCK_AVG_MED_COSTS_PER_PATIENT_TEMPLATE = mkPath('/stock_avg_med_costs_per_patient.report');
+const STOCK_EXIT_REPORT_TEMPLATE = mkPath('/stock_exit.report');
+const STOCK_ENTRY_REPORT_TEMPLATE = mkPath('/stock_entry.report');
+const STOCK_LOST_STOCK_REPORT_TEMPLATE = mkPath('/stock_lost_stock.report');
+const STOCK_LOTS_REPORT_TEMPLATE = mkPath('/stock_lots.report');
+const STOCK_MOVEMENTS_REPORT_TEMPLATE = mkPath('/stock_movements.report');
+const STOCK_INLINE_MOVEMENTS_REPORT_TEMPLATE = mkPath('/stock_inline_movements.report');
+const STOCK_INVENTORIES_REPORT_TEMPLATE = mkPath('/stock_inventories.report');
+const STOCK_SHEET_REPORT_TEMPLATE = mkPath('/stock_sheet.report');
+const STOCK_VALUE_REPORT_TEMPLATE = mkPath('/stock_value.report');
+const STOCK_EXPIRATION_REPORT_TEMPLATE = mkPath('/stock_expiration_report');
+const STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE = mkPath('/stock_aggregated_consumption_report');
+
+const ASSETS_REGISTRY_TEMPLATE = mkPath('/assets_registry.report');
 
 // General imports
 const _ = require('lodash');
@@ -242,4 +249,5 @@ module.exports = {
   STOCK_EXPIRATION_REPORT_TEMPLATE,
   STOCK_AGGREGATE_CONSUMPTION_TEMPLATE,
   STOCK_AGGREGATED_CONSUMPTION_REPORT_TEMPLATE,
+  ASSETS_REGISTRY_TEMPLATE,
 };
