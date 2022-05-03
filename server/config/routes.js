@@ -74,7 +74,7 @@ const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
 const stockSetting = require('../controllers/stock/setting');
 const shipment = require('../controllers/asset_management/shipment');
-const assetReports = require('../controllers/asset_management/assets');
+const assets = require('../controllers/asset_management/assets');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -246,6 +246,8 @@ exports.configure = function configure(app) {
   // API for account importation
   app.get('/accounts/template', accounts.importing.downloadTemplate);
   app.post('/accounts/import', upload.middleware('csv', 'file'), accounts.importing.importAccounts);
+
+  app.use('/assets', assets);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);
@@ -894,7 +896,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/rumer_report', stockReports.rumer.report);
   app.get('/reports/stock/assign', stockReports.stockAssignReport);
 
-  app.get('/reports/assets/needed_inventory_scans', assetReports.neededInventoryScansReport);
+  app.get('/reports/assets/needed_inventory_scans', assets.neededInventoryScansReport);
 
   // stock receipts API
   app.get('/receipts/stock/:uuid', stockReports.renderStockReceipt);

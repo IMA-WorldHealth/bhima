@@ -10,6 +10,8 @@ AssetsRegistryController.$inject = [
 
 /**
  * Assets Registry Controller
+ *
+ * @description
  * This module is a registry page for assets
  */
 function AssetsRegistryController(
@@ -247,25 +249,12 @@ function AssetsRegistryController(
     StockModal.openAssignmentHistoric({ uuid, depotUuid });
   };
 
-  vm.downloadExcel = () => {
-    const filterOpts = stockLotFilters.formatHTTP();
-    const defaultOpts = {
-      renderer : 'xlsx',
-      lang : Languages.key,
-      renameKeys : true,
-      displayNames : gridColumns.getDisplayNames(),
-    };
-    // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-    // return  serialized options
-    return $httpParamSerializer(options);
-  };
-
   vm.exportTo = (renderer) => {
     const filterOpts = stockLotFilters.formatHTTP();
     const defaultOpts = {
       renderer,
       lang : Languages.key,
+      displayNames : gridColumns.getDisplayNames(),
     };
     const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
