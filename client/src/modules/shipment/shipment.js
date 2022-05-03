@@ -18,8 +18,9 @@ function ShipmentRegistryController(
 
   // bind methods
   vm.getOverview = getOverview;
-  vm.setReady = setReadyForShipmentModal;
+  vm.setReady = setReady;
   vm.setTrackingLog = updateTrackingLogModal;
+  vm.setComplete = setComplete;
 
   vm.deleteShipment = deleteShipment;
   vm.editShipment = editShipment;
@@ -187,8 +188,12 @@ function ShipmentRegistryController(
     return ShipmentModal.shipmentOverviewModal(uuid);
   }
 
-  function setReadyForShipmentModal(uuid) {
+  function setReady(uuid) {
     return ShipmentModal.setReadyForShipmentModal(uuid);
+  }
+
+  function setComplete(uuid) {
+    return ShipmentModal.setShipmentCompletedModal(uuid);
   }
 
   function updateTrackingLogModal(uuid) {
