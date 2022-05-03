@@ -33,6 +33,26 @@
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
+            <li role="separator" class="divider"></li>
+
+
+            <li role="menuitem">
+              <a data-method="export-pdf" ng-href="/assets/reports/registry?{{ AssetsCtrl.exportTo('pdf') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a data-method="export-csv" ng-href="/assets/reports/registry?{{ AssetsCtrl.exportTo('csv') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a data-method="export-xlsx" ng-href="/assets/reports/registry?{{ AssetsCtrl.exportTo('xlsx') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
 
             <li role="separator" class="divider"></li>
             <li role="menuitem" bh-require-enterprise-setting="barcodes">
