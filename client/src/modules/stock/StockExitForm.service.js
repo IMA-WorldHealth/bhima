@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('StockExitFormService', StockExitFormService);
 
 StockExitFormService.$inject = [
-  'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants', 'DepotService',
-  'Pool', 'LotItemService', 'StockExitFormHelperService', 'util', '$translate',
+  'Store', 'AppCache', 'SessionService', '$timeout', 'bhConstants',
+  'DepotService', 'Pool', 'LotItemService', 'StockExitFormHelperService', 'util', '$translate',
   'StockService', '$filter',
 ];
 
