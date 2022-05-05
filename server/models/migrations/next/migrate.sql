@@ -303,6 +303,15 @@ INSERT IGNORE INTO `report` (`report_key`, `title_key`) VALUES
 CALL drop_foreign_key('shipment_item', 'shipment_item__condition');
 CALL drop_column_if_exists('shipment_item', 'condition_id');
 
+/**
+ * Convert asset_condition to constants
+ * @author: jmcameron
+ * @date: 2022-05-05
+ */
+
+DROP TABLE asset_scan;
+CALL drop_foreign_key('asset_scan', 'asset_scan__condition');
+
 --
 --       WARNING!
 --
