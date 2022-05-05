@@ -11,22 +11,18 @@ angular.module('bhima.components')
     },
   });
 
-AssetConditionSelectController.$inject = ['NotifyService', 'AssetsConditionService'];
+AssetConditionSelectController.$inject = ['NotifyService', 'bhConstants'];
 
 /**
  * Select asset condition controller
  */
-function AssetConditionSelectController(Notify, AssetConditions) {
+function AssetConditionSelectController(Notify, bhConstants) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'ASSET.ASSET_CONDITION';
 
-    AssetConditions.list()
-      .then(conditions => {
-        $ctrl.conditions = conditions;
-      })
-      .catch(Notify.handleError);
+    $ctrl.conditions = bhConstants.assetCondition;
   };
 
   $ctrl.onSelect = cond => {

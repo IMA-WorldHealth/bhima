@@ -32,20 +32,6 @@ function binarize(params) {
 }
 
 /**
- * @function conditions
- *
- * @description return the asset conditions (untranslated)
- *
- * GET /asset/conditions
- */
-exports.conditions = (req, res, next) => {
-  db.exec('SELECT * FROM asset_condition')
-    .then(rows => res.status(200).json(rows))
-    .catch(next)
-    .done();
-};
-
-/**
  * @function getAssetScanFilters
  *
  * @description
@@ -119,7 +105,6 @@ function listAssetScans(params) {
       BUID(s.location_uuid) AS location_uuid, BUID(s.depot_uuid) AS depot_uuid,
       s.scanned_by, s.condition_id, s.notes, s.created_at, s.updated_at,
       l.label AS asset_label, l.unit_cost, l.serial_number, l.reference_number,
-      ac.condition, ac.predefined AS condition_predefined,
       d.text AS depot_text, i.uuid AS inventory_uuid,
       i.code AS inventory_code, i.text AS inventory_text,
       i.manufacturer_brand, i.manufacturer_model,
@@ -130,7 +115,6 @@ function listAssetScans(params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid AND i.is_asset = 1
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = s.depot_uuid
-    JOIN asset_condition ac ON ac.id = s.condition_id
     JOIN user AS u ON u.id = s.scanned_by
     LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
     LEFT JOIN entity e ON e.uuid = sa.entity_uuid
