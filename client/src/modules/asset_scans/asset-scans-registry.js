@@ -5,7 +5,7 @@ AssetScansRegistryController.$inject = [
   'StockService', 'AssetsScanService', 'AssetsScansRegistryService',
   'StockModalService', 'DepotService', 'BarcodeService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
-  'NotifyService', '$state',
+  'NotifyService', '$state', 'bhConstants',
   'uiGridConstants', 'LanguageService', '$httpParamSerializer',
 ];
 
@@ -17,12 +17,14 @@ function AssetScansRegistryController(
   Stock, AssetsScans, AssetsScansRegistryService,
   StockModal, Depots, Barcode,
   GridState, Columns, Grouping,
-  Notify, $state,
+  Notify, $state, bhConstants,
   uiGridConstants, Languages, $httpParamSerializer,
 ) {
   const vm = this;
   const cacheKey = 'assets-scans-grid';
   const stockLotFilters = Stock.filter.lot;
+
+  vm.conditions = bhConstants.assetCondition;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -110,6 +112,10 @@ function AssetScansRegistryController(
     toggleLoadingIndicator();
     AssetsScans.list(filters)
       .then(scans => {
+        scans.forEach(scn => {
+          const cond = vm.conditions.find(s => s.id === scn.condition_id);
+          scn.condition_label = cond.label;
+        });
         vm.gridOptions.data = scans;
         vm.grouping.unfoldAllGroups();
       })

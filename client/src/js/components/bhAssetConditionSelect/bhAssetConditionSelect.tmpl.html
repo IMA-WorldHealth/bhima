@@ -10,10 +10,10 @@
       on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'ASSET.SELECT_CONDITION' | translate }}">
-        <span>{{$select.selected.condition}}</span>
+        <span translate>{{$select.selected.label}}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="cond.id as cond in $ctrl.conditions | filter: { 'condition': $select.search }">
-        <span ng-bind-html="cond.condition | highlight:$select.search"></span>
+      <ui-select-choices ui-select-focus-patch repeat="cond.id as cond in $ctrl.conditions | filter: { 'label': $select.search }">
+        <span translate>{{cond.label}}</span>
       </ui-select-choices>
     </ui-select>
   </div>
