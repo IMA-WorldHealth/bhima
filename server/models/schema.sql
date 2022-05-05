@@ -1975,7 +1975,6 @@ CREATE TABLE `asset_scan` (
   CONSTRAINT `asset_scan__asset`     FOREIGN KEY (`asset_uuid`) REFERENCES `lot` (`uuid`),
   CONSTRAINT `asset_scan__location`  FOREIGN KEY (`location_uuid`) REFERENCES `village` (`uuid`),
   CONSTRAINT `asset_scan__user`      FOREIGN KEY (`scanned_by`) REFERENCES `user` (`id`),
-  CONSTRAINT `asset_scan__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`),
   CONSTRAINT `asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -1992,14 +1991,6 @@ CREATE TABLE `required_inventory_scan` (
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `req_asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `asset_condition`;
-CREATE TABLE `asset_condition` (
-  `id`               SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `condition`        VARCHAR(100) NOT NULL,  -- Will be treated as a translation token (if predefined)
-  `predefined`       BOOLEAN NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `status`;

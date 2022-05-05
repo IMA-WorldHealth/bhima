@@ -524,21 +524,6 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
       'ALLOCATION_BASIS_NUM_LAB_TESTS_DESCRIPTION', 1, 0, 0, 0);
 
 /**
- * Add default asset conditions
- */
-
-INSERT IGNORE INTO `asset_condition` VALUES -- (id, comdition, predefined)
-  (1, 'ASSET.CONDITION.NEW', 1),
-  (2, 'ASSET.CONDITION.GOOD', 1),
-  (3, 'ASSET.CONDITION.FAIR', 1),
-  (4, 'ASSET.CONDITION.POOR', 1),
-  (5, 'ASSET.CONDITION.BROKEN', 1),
-  (6, 'ASSET.CONDITION.OBSOLETE', 1),
-  (7, 'ASSET.CONDITION.DISCARDED', 1),
-  (8, 'ASSET.CONDITION.SOLD', 1),
-  (9, 'ASSET.CONDITION.LOST', 1);
-
-/**
  * Default values for shipment tables
  */
 INSERT IGNORE INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES

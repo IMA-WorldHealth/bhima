@@ -285,8 +285,7 @@ async function getAssets(params, finalClause) {
       e.display_name AS assigned_to_name,
 
       last_scan.uuid AS scan_uuid, last_scan.created_at as scan_date,
-      last_scan.condition_id AS scan_condition_id,
-      last_scan.condition AS scan_condition
+      last_scan.condition_id AS scan_condition_id
 
     FROM stock_movement m
       JOIN lot l ON l.uuid = m.lot_uuid
@@ -301,9 +300,8 @@ async function getAssets(params, finalClause) {
       LEFT JOIN entity e ON e.uuid = sa.entity_uuid
 
       LEFT JOIN (
-        SELECT scan.*, ac.condition
+        SELECT scan.*
         FROM asset_scan AS scan
-        LEFT JOIN asset_condition AS ac ON ac.id = scan.condition_id
         ${scanPeriod}
         ORDER BY scan.created_at DESC LIMIT 1
       ) AS last_scan ON last_scan.asset_uuid = l.uuid
