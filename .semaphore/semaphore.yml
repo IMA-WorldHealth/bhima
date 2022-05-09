@@ -3,7 +3,7 @@ name: Integration Tests
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
+    os_image: ubuntu2004
 
 blocks:
   - name: Update Dependencies
@@ -12,7 +12,8 @@ blocks:
       jobs:
         - name: Update Dependencies
           commands:
-            - sudo apt-get install mysql-client redis-tools
+            - sudo apt-get update -qq
+            - sudo apt-get install mysql-client redis-tools -y -qq
             - sudo apt autoremove -y && sudo apt autoclean -y
   - name: Integration Testing Matrix
     dependencies: ["Update Dependencies"]
@@ -45,6 +46,8 @@ blocks:
       jobs:
         - name: Run Test Matrix
           commands:
+            - 'service_version=$(sem-service-check-params mysql $MYSQL_VERSION)'
+            - 'echo $service_version'
             - 'sem-service start mysql $MYSQL_VERSION'
             - mysql -h 127.0.0.1 -P 3306 -u root -e "CREATE USER $DB_USER@$DB_HOST IDENTIFIED WITH mysql_native_password BY '$DB_PASS';"
             - mysql -h 127.0.0.1 -P 3306 -u root -e "GRANT ALL PRIVILEGES ON *.* TO $DB_USER@$DB_HOST WITH GRANT OPTION;"
@@ -63,7 +66,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
@@ -115,7 +118,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
