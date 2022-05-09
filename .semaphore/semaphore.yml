@@ -63,7 +63,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0.29'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
@@ -115,7 +115,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0.29'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
