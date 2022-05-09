@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.22.1",
+  "version": "1.23.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
