@@ -806,7 +806,6 @@ exports.configure = function configure(app) {
   app.get('/stock/status', stock.listStatus);
 
   // API for asset scan related queries
-  app.get('/asset/conditions', assetScans.conditions);
   app.get('/asset/scans', assetScans.getAssetScans);
   app.get('/asset/scan/:uuid', assetScans.getAssetScan);
   app.get('/asset/scans/reports/', assetScans.report);
