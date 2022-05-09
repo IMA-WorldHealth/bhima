@@ -50,7 +50,19 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
             <bh-clear on-clear="$ctrl.clear('reference_number')"></bh-clear>
-        </div>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"
+                  ng-model="$ctrl.showOnlyLatestScan"
+                  ng-change="$ctrl.onShowOnlyLatestScan()"
+                  ng-true-value="1" ng-false-value="0">
+                <span translate>ASSET.SHOW_ONLY_LAST_SCAN</span>
+              </label>
+            </div>
+          </div>
 
         </div>
       </uib-tab>

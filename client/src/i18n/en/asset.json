@@ -39,6 +39,7 @@
     "SHOW_NOT_ASSIGNED" : "Unassigned assets",
     "SHOW_ONLY" : "Show only",
     "SHOW_ONLY_ASSIGNED" : "Assigned assets",
+    "SHOW_ONLY_LAST_SCAN" : "Show only last scan",
     "SHOW_SCANNED_ASSETS" : "Show Scanned Assets",
     "SHOW_UNSCANNED_ASSETS" : "Show Unscanned Assets",
     "SUCCESSFULLY_EDITED":"Asset successfully updated",

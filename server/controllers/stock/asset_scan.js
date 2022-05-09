@@ -62,6 +62,8 @@ function getAssetScanFilters(parameters) {
   filters.dateFrom('custom_period_start', 'created_at');
   filters.dateTo('custom_period_end', 'created_at');
 
+  filters.custom('show_only_last_scans', '(s2.uuid IS NULL)');
+
   return filters;
 }
 
@@ -98,6 +100,16 @@ exports.getAssetScans = async function getAssetScans(req, res, next) {
 // Get the asset scans
 function listAssetScans(params) {
   const filters = getAssetScanFilters(params);
+  let lastScanJoin = '';
+  if ('show_only_last_scans' in params) {
+    // See 'Outer Join Method' in https://thoughtbot.com/blog/ordering-within-a-sql-group-by-clause
+    // This join with the 'show_only_last_scans' filter (defined above) ensures that we
+    // are not selecting only the latest⁄last asset scan for each asset.
+    lastScanJoin = `
+    LEFT OUTER JOIN asset_scan AS s2
+      ON s2.asset_uuid = s.asset_uuid AND
+      s.created_at < s2.created_at`;
+  }
 
   const sql = `
     SELECT
@@ -115,7 +127,7 @@ function listAssetScans(params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid AND i.is_asset = 1
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = s.depot_uuid
-    JOIN user AS u ON u.id = s.scanned_by
+    JOIN user AS u ON u.id = s.scanned_by ${lastScanJoin}
     LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
     LEFT JOIN entity e ON e.uuid = sa.entity_uuid
   `;
