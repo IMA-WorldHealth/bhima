@@ -10,7 +10,7 @@ DELIMITER $$
 
   Converts a hex uuid (36 chars) into a binary uuid (16 bytes)
 */
-CREATE FUNCTION HUID(_uuid CHAR(36))
+CREATE FUNCTION IF NOT EXISTS HUID(_uuid CHAR(36))
 RETURNS BINARY(16) DETERMINISTIC
   RETURN UNHEX(REPLACE(_uuid, '-', ''));
 $$
@@ -21,7 +21,7 @@ $$
 
   Converts a binary uuid (16 bytes) to dash-delimited hex UUID (36 characters).
 */
-CREATE FUNCTION BUID(b BINARY(16))
+CREATE FUNCTION IF NOT EXISTS BUID(b BINARY(16))
 RETURNS CHAR(32) DETERMINISTIC
 BEGIN
   RETURN HEX(b);
@@ -42,7 +42,7 @@ $$
   SET currentExchangeRate = GetExchangeRate(enterpriseId, currencyId, date);
   SET currentExchangeRate = (SELECT IF(recordCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 */
-CREATE FUNCTION GetExchangeRate(
+CREATE FUNCTION IF NOT EXISTS GetExchangeRate(
   enterpriseId INT,
   currencyId INT,
   date TIMESTAMP
@@ -60,7 +60,7 @@ END $$
 /*
 Sometime we need to get the exchange rate by the project id
 */
-CREATE FUNCTION GetExchangeRateByProject(
+CREATE FUNCTION IF NOT EXISTS GetExchangeRateByProject(
   projectId INT,
   currencyId INT,
   date TIMESTAMP
@@ -88,7 +88,7 @@ END $$
 
   SET transId = SELECT GenerateTransactionid(projectid);
 */
-CREATE FUNCTION GenerateTransactionId(
+CREATE FUNCTION IF NOT EXISTS GenerateTransactionId(
   target_project_id SMALLINT(5)
 )
 RETURNS VARCHAR(100) DETERMINISTIC
@@ -122,7 +122,7 @@ END $$
 
  Returns the number part of a transaction ID.
 */
-CREATE FUNCTION GetTransactionNumberPart(
+CREATE FUNCTION IF NOT EXISTS GetTransactionNumberPart(
   trans_id TEXT,
   project_id SMALLINT(5)
 )
@@ -140,7 +140,7 @@ END $$
 
   Returns the account type id of the given account number
 */
-CREATE FUNCTION PredictAccountTypeId(accountNumber INT(11))
+CREATE FUNCTION IF NOT EXISTS PredictAccountTypeId(accountNumber INT(11))
 RETURNS MEDIUMINT(8) DETERMINISTIC
 BEGIN
   DECLARE oneDigit CHAR(1);
@@ -190,7 +190,7 @@ $$
   function to emulate the PASSWORD function of MySQL 5, that is not available in MySQL 8
   TODO: use better methods to store the password
  */
-CREATE FUNCTION `MYSQL5_PASSWORD`(_pwd VARCHAR(40))
+CREATE FUNCTION IF NOT EXISTS `MYSQL5_PASSWORD`(_pwd VARCHAR(40))
 RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
   RETURN CONCAT('*', UPPER(SHA1(UNHEX(SHA1(_pwd)))));
