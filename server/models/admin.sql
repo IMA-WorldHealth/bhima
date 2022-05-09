@@ -302,7 +302,7 @@ END $$
 
  Gets the balance on an invoice due to a debtor.
 */
-DROP PROCEDURE IF EXISTS zGetInvoiceBalance$$
+DROP FUNCTION IF EXISTS zGetInvoiceBalance$$
 CREATE FUNCTION zGetInvoiceBalance(invoiceUuid BINARY(16))
 RETURNS DOUBLE DETERMINISTIC
 BEGIN

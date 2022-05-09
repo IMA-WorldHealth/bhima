@@ -3,7 +3,7 @@ name: Integration Tests
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
+    os_image: ubuntu2004
 
 blocks:
   - name: Update Dependencies
@@ -63,7 +63,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
@@ -115,7 +115,7 @@ blocks:
           matrix:
             - env_var: MYSQL_VERSION
               values:
-                - '8'
+                - '8.0'
             - env_var: NODEJS_VERSION
               values:
                 - '14'
