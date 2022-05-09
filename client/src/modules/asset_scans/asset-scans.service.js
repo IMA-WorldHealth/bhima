@@ -18,14 +18,7 @@ function AssetsScanService($http, util, $translate) {
    */
   service.list = (params) => {
     return $http.get('/asset/scans', { params })
-      .then(util.unwrapHttpResponse)
-      .then(conds => {
-        conds.forEach(cond => {
-          cond.condition_label = cond.condition_predefined
-            ? $translate.instant(cond.condition) : cond.condition;
-        });
-        return conds;
-      });
+      .then(util.unwrapHttpResponse);
   };
 
   /**
@@ -35,12 +28,7 @@ function AssetsScanService($http, util, $translate) {
    */
   service.details = uuid => {
     return $http.get(`/asset/scan/${uuid}`)
-      .then(util.unwrapHttpResponse)
-      .then(details => {
-        details.condition_label = details.condition_predefined
-          ? $translate.instant(details.condition) : details.condition;
-        return details;
-      });
+      .then(util.unwrapHttpResponse);
   };
 
   /**

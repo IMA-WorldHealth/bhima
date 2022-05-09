@@ -86,6 +86,7 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
       displayName : 'ASSET.ASSET_CONDITION',
       headerTooltip : 'ASSET.ASSET_CONDITION',
       headerCellFilter : 'translate',
+      cellFilter : 'translate',
     }, {
       field : 'notes',
       displayName : 'FORM.LABELS.NOTES',

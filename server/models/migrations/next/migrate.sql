@@ -97,13 +97,6 @@ INSERT IGNORE INTO `entity_type` (`label`, `translation_key`) VALUES
  * @description: Shipment tables
  * @date: 2022-02-07
  */
-CREATE TABLE IF NOT EXISTS `asset_condition` (
-  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `translation_key` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS `shipment_status` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
@@ -152,8 +145,7 @@ CREATE TABLE IF NOT EXISTS `shipment_item` (
   `condition_id`       SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE,
-  CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  CONSTRAINT `shipment_item__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`)
+  CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DELIMITER $$
@@ -212,24 +204,6 @@ CREATE TABLE IF NOT EXISTS `shipment_tracking` (
  * @author: jmcameron
  * @date: 2022-03-09
  */
-CREATE TABLE IF NOT EXISTS `asset_condition` (
-  `id`               SMALLINT(5) NOT NULL AUTO_INCREMENT,
-  `condition`        VARCHAR(100) NOT NULL,  -- Will be treated as a translation token (if predefined)
-  `predefined`       BOOLEAN NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-INSERT IGNORE INTO `asset_condition` VALUES -- (id, comdition, predefined)
-  (1, 'ASSET.CONDITION.NEW', 1),
-  (2, 'ASSET.CONDITION.GOOD', 1),
-  (3, 'ASSET.CONDITION.FAIR', 1),
-  (4, 'ASSET.CONDITION.POOR', 1),
-  (5, 'ASSET.CONDITION.BROKEN', 1),
-  (6, 'ASSET.CONDITION.OBSOLETE', 1),
-  (7, 'ASSET.CONDITION.DISCARDED', 1),
-  (8, 'ASSET.CONDITION.SOLD', 1),
-  (9, 'ASSET.CONDITION.LOST', 1);
-
 CREATE TABLE IF NOT EXISTS `asset_scan` (
   `uuid`              BINARY(16) NOT NULL,
   `asset_uuid`        BINARY(16) NOT NULL,
@@ -246,7 +220,6 @@ CREATE TABLE IF NOT EXISTS `asset_scan` (
   CONSTRAINT `asset_scan__asset`     FOREIGN KEY (`asset_uuid`) REFERENCES `lot` (`uuid`),
   CONSTRAINT `asset_scan__location`  FOREIGN KEY (`location_uuid`) REFERENCES `village` (`uuid`),
   CONSTRAINT `asset_scan__user`      FOREIGN KEY (`scanned_by`) REFERENCES `user` (`id`),
-  CONSTRAINT `asset_scan__condition` FOREIGN KEY (`condition_id`) REFERENCES `asset_condition` (`id`),
   CONSTRAINT `asset_scan__depot`     FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

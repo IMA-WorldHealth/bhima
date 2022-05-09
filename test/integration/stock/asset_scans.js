@@ -13,8 +13,8 @@ const newAssetScan1 = {
 describe('(/asset/scan) The Stock Asset Scan HTTP API', () => {
   const variables = {};
   const keys = [
-    'asset_label', 'asset_uuid', 'assigned_to_name', 'condition', 'condition_id',
-    'condition_predefined', 'created_at', 'updated_at', 'depot_text', 'depot_uuid',
+    'asset_label', 'asset_uuid', 'assigned_to_name', 'condition_id',
+    'created_at', 'updated_at', 'depot_text', 'depot_uuid',
     'group_name', 'group_uuid', 'inventory_code', 'inventory_text',
     'inventory_uuid', 'location_uuid', 'manufacturer_brand', 'manufacturer_model',
     'notes', 'scanned_by', 'scanned_by_name', 'serial_number', 'reference_number',
@@ -92,7 +92,6 @@ describe('(/asset/scan) The Stock Asset Scan HTTP API', () => {
         expect(uscan.notes).to.equal(update.notes);
         expect(uscan.depot_text).to.equal('Depot Secondaire');
         expect(uscan.condition_id).to.equal(update.condition_id);
-        expect(uscan.condition).to.equal('ASSET.CONDITION.GOOD');
         expect(uscan.asset_uuid).to.equal(update.asset_uuid);
         expect(uscan.asset_label).to.equal('MOT1');
         expect(uscan.created_at).to.equal(variables.assetScan1_created_at);

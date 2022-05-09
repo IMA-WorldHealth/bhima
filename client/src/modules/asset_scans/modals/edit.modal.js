@@ -4,13 +4,11 @@ angular.module('bhima.controllers')
 // dependencies injections
 AssetScanEditModalController.$inject = [
   'data',
-  'StockService', 'AssetsScanService', 'AssetsConditionService',
-  'SessionService', 'NotifyService', '$uibModalInstance',
+  'StockService', 'AssetsScanService', 'SessionService', 'NotifyService', '$uibModalInstance',
 ];
 
 function AssetScanEditModalController(Data,
-  Stock, AssetScans, AssetConditions,
-  Session, Notify, Instance) {
+  Stock, AssetScans, Session, Notify, Instance) {
 
   const vm = this;
 
@@ -40,42 +38,40 @@ function AssetScanEditModalController(Data,
 
   function startup() {
     vm.loading = true;
-    AssetConditions.list()
-      .then(conditions => {
-        vm.conditions = conditions;
-      })
-      .then(() => {
-        if (Data.uuid) {
-          AssetScans.details(Data.uuid)
-            .then(scan => {
-              vm.model = scan;
-            });
-        } else {
-          Stock.lots.read(null, { uuid : Data.asset_uuid })
-            .then(assets => {
-              const asset = assets[0];
-              vm.model = {
-                asset_uuid : asset.uuid,
-                asset_label : asset.label,
-                inventory_code : asset.code,
-                depot_uuid : asset.depot_uuid,
-                depot_text : asset.depot_text,
 
-                manufacturer_brand : asset.manufacturer_brand,
-                manufacturer_model : asset.manufacturer_model,
-                serial_number : asset.serial_number,
+    if (Data.uuid) {
+      AssetScans.details(Data.uuid)
+        .then(scan => {
+          vm.model = scan;
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          vm.loading = false;
+        });
+    } else {
+      Stock.lots.read(null, { uuid : Data.asset_uuid })
+        .then(assets => {
+          const asset = assets[0];
+          vm.model = {
+            asset_uuid : asset.uuid,
+            asset_label : asset.label,
+            inventory_code : asset.code,
+            depot_uuid : asset.depot_uuid,
+            depot_text : asset.depot_text,
 
-                condition_id : 1,
-                scanned_by : Session.user.id,
-              };
-            });
-        }
-        return true;
-      })
-      .catch(Notify.handleError)
-      .finally(() => {
-        vm.loading = false;
-      });
+            manufacturer_brand : asset.manufacturer_brand,
+            manufacturer_model : asset.manufacturer_model,
+            serial_number : asset.serial_number,
+
+            condition_id : 1,
+            scanned_by : Session.user.id,
+          };
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          vm.loading = false;
+        });
+    }
   }
 
   function submit(form) {
