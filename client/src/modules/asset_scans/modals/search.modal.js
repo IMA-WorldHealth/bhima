@@ -16,6 +16,7 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'asset_label', 'reference_number',
+    'show_only_last_scans',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -24,6 +25,12 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
+
+  // Set the excludeAssets flag based on the existing custom search filter
+  vm.showOnlyLatestScan = 0;
+  if ('show_only_last_scans' in vm.searchQueries && !vm.searchQueries.show_only_last_scans) {
+    vm.showOnlyLatestScan = 1;
+  }
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -41,6 +48,15 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
   vm.onSelectGroup = (group) => {
     vm.searchQueries.group_uuid = group.uuid;
     displayValues.group_uuid = group.name;
+  };
+
+  // custom filter - flag to only show the latests scan
+  vm.onShowOnlyLatestScan = function onShowOnlyLatestScan() {
+    if (vm.showOnlyLatestScan) {
+      vm.searchQueries.show_only_last_scans = 1;
+    } else {
+      vm.clear('show_only_last_scans');
+    }
   };
 
   // default filter limit - directly write to changes list
