@@ -148,6 +148,7 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'reference_number', label : 'FORM.LABELS.REFERENCE_NUMBER' },
+    { key : 'show_only_last_scans', label : 'ASSET.SHOW_ONLY_LAST_SCAN' },
   ]);
 
   if (filterCache.filters) {
