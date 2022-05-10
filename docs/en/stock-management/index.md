@@ -22,8 +22,9 @@ hospitals.  Below you'll find an index to particular subsections that may be of 
 7. [Stocks Movements](./movement.md)
     1. [Stocks Entries](./movement.entry.md)
     2. [Stocks Exits](./movement.exit.md)
-    3. [Adjustments](./movement.adjustment.md)
-    4. [Average Monthly Consumption](./average-monthly-consumption.md)
+    3. [Shipments](./movement.shipments.md)
+    4. [Adjustments](./movement.adjustment.md)
+    5. [Average Monthly Consumption](./average-monthly-consumption.md)
 
 8. [Inventory Reports]()
     1. [Stocks]()
