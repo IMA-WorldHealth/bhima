@@ -43,6 +43,7 @@ const REPORT_TEMPLATE = './server/controllers/finance/reports/cash/report.handle
  */
 function receipt(req, res, next) {
   const options = req.query;
+  _.extend(options, { filename : 'CASH.TITLE' });
 
   let receiptReport;
   let template = RECEIPT_TEMPLATE;

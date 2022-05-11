@@ -30,7 +30,7 @@ const TITLE_ID = 6;
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
-  filename : 'TREE.INCOME_EXPENSE_BY_MONTH',
+  filename : 'REPORT.PROFIT_AND_LOSS_BY_MONTH',
   orientation : 'landscape',
 };
 

@@ -37,8 +37,8 @@ async function stockExitReport(req, res, next) {
     ]);
 
     params.exchangeRate = exchange.rate || 1;
-
     params.depotName = depot.text;
+
     const collection = await collect(params);
     const bundle = await groupCollection(collection);
 

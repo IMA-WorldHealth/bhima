@@ -53,7 +53,7 @@ exports.detail = function detail(req, res, next) {
 /** get currencies information related to exchange rate */
 exports.getExchangeInformationForReports = async (session, params) => {
   const enterpriseId = session.enterprise.id;
-  const enterpriseCurrencyId = session.enterprise.currency_id;
+  const enterpriseCurrencyId = Number(session.enterprise.currency_id);
 
   const periods = {
     periodFrom : params.periodFrom,
@@ -79,8 +79,8 @@ exports.getExchangeInformationForReports = async (session, params) => {
     dateTo : range.dateTo,
     enterpriseId,
     enterpriseCurrencyId,
-    firstCurrency,
-    secondCurrency,
+    firstCurrency : Number(firstCurrency),
+    secondCurrency : Number(secondCurrency),
     lastRateUsed,
   };
 };

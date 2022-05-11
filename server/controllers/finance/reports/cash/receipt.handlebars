@@ -1,38 +1,26 @@
-{{> head title="CASH.TITLE" }}
+{{> head }}
 
-<div class="container" style="font-size: 0.9em;">
+<div class="container-fluid" style="font-size: 0.9em;">
+
+  {{#> header}}
+    <h2 class="text-right text-upper" style="margin: 0;">
+      {{#with payment}}
+        {{#if is_caution}}
+          {{translate "CASH.CAUTION_PAYMENT"}}
+        {{else}}
+          {{translate "FORM.LABELS.INVOICE_PAYMENT"}}
+        {{/if}}
+      {{/with}}
+    </h2>
+    <h3 class="text-right"><strong>{{payment.reference}}</strong></h3>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+      <div class="text-right">
+        <small>{{> barcode value=payment.barcode}}</small>
+      </div>
+    {{/if}}
+  {{/header}}
 
   <header>
-    <!-- headings  -->
-    <div class="row">
-
-      {{> enterpriseDetails }}
-
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">
-            {{#with payment}}
-              {{#if is_caution}}
-                {{translate "CASH.CAUTION_PAYMENT"}}
-              {{else}}
-                {{translate "FORM.LABELS.INVOICE_PAYMENT"}}
-              {{/if}}
-            {{/with}}
-          </span> <br>
-          <strong>{{payment.reference}}</strong> <br>
-        </h3>
-
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=payment.barcode}}</small>
-        {{/if}}
-      </div>
-    </div>
-
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px; margin-top: 10px;">
       <div class="col-xs-6">

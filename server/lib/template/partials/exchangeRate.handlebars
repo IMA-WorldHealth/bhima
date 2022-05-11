@@ -4,7 +4,7 @@
   {{#gt rate 1}}
     {{translate 'FORM.LABELS.EXCHANGE_RATE'}}: {{currency rate currencyId 4}}
     {{translate 'FORM.INFO.PER'}} {{currency 1 metadata.enterprise.currency_id 0}}
-  {{else}}
+  {{else}} XYZ
     {{translate 'FORM.LABELS.EXCHANGE_RATE'}}: {{currency (divide 1 rate) metadata.enterprise.currency_id 4}}
     {{translate 'FORM.INFO.PER'}} {{currency 1 currencyId 0}}
   {{/gt}}

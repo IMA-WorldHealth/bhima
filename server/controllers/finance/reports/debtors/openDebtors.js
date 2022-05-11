@@ -53,6 +53,7 @@ function convertToBoolean(numberString) {
  */
 function build(req, res, next) {
   const qs = _.extend(req.query, {
+    filename : 'REPORT.OPEN_DEBTORS.TREE',
     csvKey : 'debtors',
   });
 

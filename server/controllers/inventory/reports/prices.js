@@ -27,6 +27,7 @@ async function prices(req, res, next) {
   const qs = _.extend(req.query, {
     csvKey : 'groups',
     orientation : 'landscape',
+    filename : 'INVENTORY.PRICE_LIST_REPORT',
   });
 
   const metadata = _.clone(req.session);

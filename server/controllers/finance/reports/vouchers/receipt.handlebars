@@ -1,34 +1,27 @@
-{{> head title="VOUCHERS.GLOBAL.TITLE"}}
+{{> head }}
 
 <div class="container" style="font-size: 0.9em;">
+
+  {{#> header title=details.text}}
+    <h4 class="text-right"><strong>{{details.reference}}</strong></h4>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+      <div class="text-right">
+        <small>{{> barcode value=details.barcode}}</small>
+      </div>
+    {{/if}}
+  {{/header}}
+  QQQ1
+
   <header>
     <!-- headings  -->
     <div class="row">
-
-      {{#if details.isCreditNoted}}
+      {{#if details.isCreditNote}}
         <div class="text-center" style="position: absolute; border: 5px solid red; -webkit-transform: rotate(10deg); transform: rotate(10deg); left: 35%; top: 20px;">
           <span style="font-size: 24px; color: red;">
             {{translate 'FORM.LABELS.CANCELED'}}
           </span><br>{{details.creditNoteVoucher.reference}}
         </div>
       {{/if}}
-
-      {{> enterpriseDetails }}
-
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <div class="text-uppercase">{{translate details.text}}</div>
-          <div><strong>{{details.reference}}</strong></div>
-        </h3>
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=details.barcode}}</small>
-        {{/if}}
-      </div>
     </div>
   </header>
 

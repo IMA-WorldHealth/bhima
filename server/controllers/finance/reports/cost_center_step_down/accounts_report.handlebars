@@ -1,33 +1,34 @@
-<!doctype html>
 <html>
-  {{> head title="COST_CENTER.REPORT.COST_CENTER_BY_ACCOUNTS"}}
+  {{> head }}
   <body>
-  <div class="fluid-container">
-    {{> header}}
+  <div class="container-fluid">
+    {{#> header}}
+      <h4 class="text-right">
+        <strong class="text-capitalize">{{date dateFromMonth "MMMM YYYY"}}</strong>
+          -
+        <strong class="text-capitalize">{{date dateToMonth "MMMM YYYY"}}</strong>
+      </h4>
+    {{/header}}
 
     <!-- body -->
     <div class="row">
       <div class="col-xs-12">
 
-        <!-- page title  -->
         <h3 class="text-center text-uppercase">
-          <strong>{{translate 'COST_CENTER.REPORT.COST_CENTER_BY_ACCOUNTS'}}</strong><br>
           <strong>{{ costCenterDetails.label }}</strong>
         </h3>
 
-        <h4 class="text-center">
-          <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
-           -
-          <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
-        </h4>
-
-        <h5 class="text-center">
-          {{#if this.lastRateUsed}}
+        <!-- @TODO convert to exchangeRate partial -->
+        {{#if this.lastRateUsed}}
+          <h5 class="text-center">
             {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
             {{currency 1 this.firstCurrency}} = {{currency this.lastRateUsed this.secondCurrency}}
-            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
-          {{/if}}
-        </h5>
+            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateToMonth}})</i>
+          </h5>
+          <div class="alert alert-warning" style="margin-top: 0.5em;">
+            <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+          </div>
+        {{/if}}
 
         {{!-- VIEW OF COST CENTER ALLOCATION --}}
         <table style="page-break-after: always;" class="table table-striped table-condensed table-report table-bordered">

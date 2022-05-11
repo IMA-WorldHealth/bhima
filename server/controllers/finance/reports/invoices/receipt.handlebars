@@ -1,35 +1,28 @@
-{{> head title="TREE.PATIENT_INVOICE"}}
+{{> head }}
 
 <div class="container" style="font-size: 0.9em;">
-  <header>
-    <!-- headings  -->
-    <div class="row">
-      {{#if isCreditNoted}}
-        <div class="text-center" style="position: absolute; border: 5px solid red; -webkit-transform: rotate(10deg); transform: rotate(10deg); left: 35%; top: 20px;">
-          <span style="font-size: 24px; color: red;">
-            {{translate 'FORM.INFO.CREDIT_NOTE'}}
-          </span><br>{{creditNoteReference}}
-        </div>
-      {{/if}}
 
-      {{> enterpriseDetails }}
-
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
-          <strong>{{reference}}</strong> <br>
-        </h3>
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.username}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=barcode}}</small><br>
-        {{/if}}
-      </div>
+  {{#> header }}
+    <h3 class="text-right"><strong>{{reference}}</strong></h3>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+    <div class="text-right">
+      <small>{{> barcode value=barcode}}</small>
     </div>
+    {{/if}}
+  {{/header}}
 
+  <!-- headings  -->
+  <div class="row">
+    {{#if isCreditNoted}}
+      <div class="text-center" style="position: absolute; border: 5px solid red; -webkit-transform: rotate(10deg); transform: rotate(10deg); left: 35%; top: 20px;">
+        <span style="font-size: 24px; color: red;">
+          {{translate 'FORM.INFO.CREDIT_NOTE'}}
+        </span><br>{{creditNoteReference}}
+      </div>
+    {{/if}}
+  </div>
+
+  <header>
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;  margin-top: 10px;">
       <div class="col-xs-6">

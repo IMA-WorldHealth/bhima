@@ -18,6 +18,7 @@
     "NO_ASSIGNMENT_HISTORY" : "No assignment history",
     "ONLY_ASSETS" : "Only Assets",
     "REQUIRED_INVENTORY_SCAN" : "Required Inventory Scan",
+    "REQUIRED_INVENTORY_SCANS" : "Required Inventory Scans",
     "REQUIRED_INVENTORY_SCAN_CREATED" : "Required inventory scan successfully created",
     "REQUIRED_INVENTORY_SCAN_DETAILS" : "Required Inventory Scan Details",
     "REQUIRED_INVENTORY_SCAN_EDITED" : "Required inventory scan successfully edited",
