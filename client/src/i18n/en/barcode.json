@@ -3,6 +3,7 @@
     "BARCODE": "Barcode",
     "SCAN": "Scan",
     "SCAN_BARCODE" : "Scan Barcode",
+    "SCAN_LOT_BARCODE" : "Scan Lot Barcode",
     "SCAN_DOCUMENT" : "Scan Document Barcode",
     "AWAITING_INPUT" : "Waiting for Input",
     "AWAITING_HTTP" : "Barcode Read!  Looking up Record...",
