@@ -25,10 +25,7 @@ function StockLotsController(
   // grouping box
   vm.groupingBox = LotsRegistry.groupingBox;
 
-  // barcode scanner
-  vm.openBarcodeScanner = openBarcodeScanner;
-
-  // barcode scanner
+  // lot barcode scanner
   vm.openLotBarcodeScanner = openLotBarcodeScanner;
 
   // show lot barcode
@@ -281,25 +278,6 @@ function StockLotsController(
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
-
-  /**
-   * @function openBarcodeScanner
-   *
-   * @description
-   * Opens the barcode scanner component and receives the record from the
-   * modal.
-   */
-  function openBarcodeScanner() {
-    Barcode.modal({ shouldSearch : false })
-      .then(record => {
-        stockLotFilters.replaceFilters([
-          { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
-        ]);
-
-        load(stockLotFilters.formatHTTP(true));
-        vm.latestViewFilters = stockLotFilters.formatView();
-      });
-  }
 
   function openLotBarcodeScanner() {
     Barcode.modal({ shouldSearch : false })
