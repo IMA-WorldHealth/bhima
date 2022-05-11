@@ -19,7 +19,7 @@ exports.report = costCenterByAccountsReport;
  */
 async function buildAccountsReport(params, session) {
   const options = _.extend(params, {
-    filename : 'TREE.COST_CENTER_STEPDOWN',
+    filename : 'COST_CENTER.REPORT.COST_CENTER_BY_ACCOUNTS',
     csvKey : 'rows',
     user : session.user,
   });
@@ -52,16 +52,16 @@ async function buildAccountsReport(params, session) {
       SUM(z.debit_equiv * IFNULL(GetExchangeRate(?, ?, ?), 1)) debit,
       SUM(z.credit_equiv * IFNULL(GetExchangeRate(?, ?, ?), 1)) credit,
       SUM((z.debit_equiv - z.credit_equiv) * IFNULL(GetExchangeRate(?, ?, ?), 1)) solde
-    FROM account a 
+    FROM account a
     JOIN account_type at ON at.id = a.type_id
     JOIN (
-      SELECT gl.cost_center_id, cc.label, gl.debit_equiv , gl.credit_equiv, gl.account_id 
-      FROM general_ledger gl 
+      SELECT gl.cost_center_id, cc.label, gl.debit_equiv , gl.credit_equiv, gl.account_id
+      FROM general_ledger gl
       JOIN cost_center cc ON cc.id = gl.cost_center_id
-      JOIN account a ON a.id = gl.account_id 
+      JOIN account a ON a.id = gl.account_id
       WHERE (gl.period_id >= ? AND gl.period_id <= ?) AND a.type_id IN (?)
         AND gl.cost_center_id = ?
-    )z on z.account_id = a.id 
+    )z on z.account_id = a.id
 `;
 
   const query = `
@@ -83,10 +83,10 @@ async function buildAccountsReport(params, session) {
   const totals = await db.exec(queryTotals, parameters);
 
   const context = {
-    currencyId : options.currency_id,
+    currencyId : Number(options.currency_id),
     costCenterDetails,
-    dateFrom,
-    dateTo,
+    dateFromMonth : dateFrom,
+    dateToMonth : dateTo,
     data,
     totals,
     firstCurrency,

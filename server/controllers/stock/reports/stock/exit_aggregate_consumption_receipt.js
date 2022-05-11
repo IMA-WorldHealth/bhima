@@ -12,7 +12,7 @@ const {
  */
 async function stockExitAggregateConsumptionReceipt(documentUuid, session, options) {
   const data = {};
-  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.AGGREGATE_CONSUMPTION' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.AGGREGATE_CONSUMPTION' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   // set up the report with report manager

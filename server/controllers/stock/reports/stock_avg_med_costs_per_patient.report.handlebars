@@ -1,4 +1,4 @@
-{{> head title="REPORT.AVG_MED_COST_PER_PATIENT.TITLE" }}
+{{> head }}
 
 <body class="container-fluid">
   {{> header}}
@@ -6,23 +6,6 @@
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'REPORT.AVG_MED_COST_PER_PATIENT.TITLE'}}
-      </h2>
-      {{#if depotOrService}}
-      <h3 class="text-center">
-        {{#if depotName}}
-          <span class="text-uppercase">{{ depotName }}</span>{{#if depotAndService}}, {{/if}}
-        {{/if}}
-        {{#if serviceName}}
-          {{translate 'STOCK.SERVICE'}}: {{ serviceName }}
-        {{/if}}
-      </h3>
-      {{/if}}
-      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{date dateFrom}} - {{date dateTo}}
-      </h4>
 
       {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

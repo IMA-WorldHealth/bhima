@@ -27,7 +27,7 @@ exports.reporting = reporting;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'accounts',
-  filename : 'TREE.BALANCE',
+  filename : 'REPORT.BALANCE',
   orientation : 'landscape',
 };
 

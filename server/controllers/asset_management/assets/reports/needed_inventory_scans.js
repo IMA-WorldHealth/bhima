@@ -19,7 +19,7 @@ async function neededInventoryScansReport(req, res, next) {
   const tableType = (options.scan_status && options.scan_status in tableTitles) ? options.scan_status : 'all';
 
   _.defaults(options, {
-    filename : 'ASSETS.NEEDED_INVENTORY_SCANS',
+    filename : 'ASSET.REQUIRED_INVENTORY_SCANS',
     csvKey : 'assets',
     orientation : 'landscape',
   });

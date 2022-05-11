@@ -23,7 +23,7 @@ const REVERSAL_TYPE_ID = 10;
  * @function report
  *
  * @description
- * Renders the axiliary cashbox report.
+ * Renders the auxiliary cashbox report.
  */
 async function report(req, res, next) {
   const params = req.query;

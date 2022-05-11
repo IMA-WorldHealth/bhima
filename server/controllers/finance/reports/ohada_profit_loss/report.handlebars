@@ -1,21 +1,15 @@
-{{> head title="TREE.OHADA_RESULT_ACCOUNT"}}
+{{> head }}
 
 <body>
 
 <div class="container">
-  {{> header}}
+  {{#> header}}
+    <h4 class="text-right text-uppercase"><strong>{{ fiscalYear.current.label }}</strong></h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'REPORT.OHADA.PROFIT_LOSS'}}
-      </h2>
-
-      <h4 class="text-center text-uppercase">{{ fiscalYear.current.label }}</h4>
-
 
       {{!-- assets --}}
       <table class="table table-condensed table-report" style="margin-bottom: 15px;">

@@ -1,17 +1,14 @@
-{{> head title="REPORT.OHADA.BALANCE_SHEET"}}
+{{> head }}
 
 <body>
 
-  {{> header}}
+  {{#> header}}
+    <h4 class="text-right text-uppercase"><strong>{{fiscalYear.details.current_fiscal_year}}</strong></h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'REPORT.OHADA.BALANCE_SHEET'}} : <strong>{{fiscalYear.details.current_fiscal_year}}</strong>
-      </h2>
 
       {{!-- assets --}}
       <table style="margin-bottom: 15px; font-size: 10px;" class="table table-striped table-condensed table-report table-bordered">

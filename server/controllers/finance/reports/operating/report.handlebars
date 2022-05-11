@@ -1,4 +1,4 @@
-{{> head title="TREE.OPERATING_ACCOUNT" }}
+{{> head }}
 
 <body class="container-fluid">
   {{> header}}
@@ -7,22 +7,17 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <!-- page title  -->
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate 'TREE.OPERATING_ACCOUNT'}}</strong>
-      </h3>
-
-      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{date this.dateFrom}} - {{date this.dateTo}}
-      </h4>
-
+      {{#if this.rate}}
       <h5 class="text-center">
-        {{#if this.rate}}
           {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
           {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
           <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
-        {{/if}}
-      </h5>
+       </h5>
+      <div class="alert alert-warning" style="margin-top: 0.5em;">
+         <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+      </div>
+      {{/if}}
+
       <table class="table table-condensed table-report table-bordered">
         <tbody>
           <tr>

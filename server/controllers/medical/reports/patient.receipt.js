@@ -56,6 +56,9 @@ async function build(req, res, next) {
     template = FICHE_TEMPLATE;
     options.format = 'A4';
     options.landscape = false;
+    options.filename = 'PATIENT_REG.PAGE_TITLE';
+  } else {
+    options.filename = 'PATIENT_REG.CARD';
   }
 
   try {
