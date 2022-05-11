@@ -24,7 +24,7 @@ async function stockExitReport(req, res, next) {
   const params = util.convertStringToNumber(req.query);
 
   const optionReport = _.extend(params, {
-    filename : 'REPORT.STOCK.EXIT_REPORT',
+    pageTitle : 'REPORT.STOCK.EXIT_REPORT',
   });
 
   // set up the report with report manager
