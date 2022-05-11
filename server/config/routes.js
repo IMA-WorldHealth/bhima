@@ -85,7 +85,7 @@ const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
 const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceLists');
-const priceListPreport = require('../controllers/finance/reports/priceList');
+const priceListReport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
 const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid_invoice_payments');
 const accounts = require('../controllers/finance/accounts');
@@ -154,7 +154,7 @@ const reqInvScans = require('../controllers/stock/required_inventory_scans');
 
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
-const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
+const indicatorsReport = require('../controllers/finance/indicator/dashboard/report');
 
 // Data Kit
 const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
@@ -614,7 +614,7 @@ exports.configure = function configure(app) {
   // price lists
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
-  app.get('/prices/download/list', priceListPreport.downloadRegistry);
+  app.get('/prices/download/list', priceListReport.downloadRegistry);
   app.get('/prices/download/filled_template', priceList.downloadFilledTemplate);
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
@@ -1076,7 +1076,7 @@ exports.configure = function configure(app) {
 
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
-  app.get('/reports/indicators_report', indicatorRerpor.report);
+  app.get('/reports/indicators_report', indicatorsReport.report);
 
   // API cron
   app.get('/crons', cron.list);

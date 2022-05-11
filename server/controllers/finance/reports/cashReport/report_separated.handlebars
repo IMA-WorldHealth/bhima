@@ -1,19 +1,14 @@
-{{> head title="TREE.CASH_REPORT" }}
+{{> head }}
 
 <div class="container">
-  {{> header}}
+  {{#> header}}
+    <h4 class="text-right text-uppercase">
+      {{ cashbox.label }} ({{ cashbox.symbol}})
+    </h4>
+  {{/header}}
 
   <div class="row">
     <div class="col-xs-12">
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate "TREE.CASH_REPORT"}}</strong>
-      </h3>
-      <h5 class="text-center text-uppercase">
-        {{ cashbox.label }} ({{ cashbox.symbol}})
-      </h5>
-      <h6 class="text-center text-uppercase">
-        {{date dateFrom }} - {{date dateTo }}
-      </h6>
 
       <div class="text-right">
         <strong>{{ translate "FORM.LABELS.OPENING_BALANCE" }} : {{debcred header.balance metadata.enterprise.currency_id}}</strong>

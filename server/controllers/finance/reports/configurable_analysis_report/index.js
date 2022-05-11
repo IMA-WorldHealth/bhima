@@ -14,7 +14,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'configurable_analysis_report',
-  filename : 'TREE.BREAK_EVEN_REPORT',
+  filename : 'REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE',
 };
 
 /**

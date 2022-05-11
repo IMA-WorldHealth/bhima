@@ -59,6 +59,8 @@ const templates = {
  */
 async function document(req, res, next) {
   const params = req.query;
+  _.extend(params, { filename : 'TREE.CASH_REPORT'});
+
   let report;
 
   if (!params.dateFrom || !params.dateTo) {
@@ -78,6 +80,7 @@ async function document(req, res, next) {
 
   try {
     const TEMPLATE = templates[params.format] || templates.NORMAL;
+
     report = new ReportManager(TEMPLATE, req.session, params);
 
     // set parameters so that they provide

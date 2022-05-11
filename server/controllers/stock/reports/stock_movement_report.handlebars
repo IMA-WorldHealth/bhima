@@ -1,4 +1,4 @@
-{{> head TITLE="REPORT.STOCK_MOVEMENT_REPORT.TITLE" }}
+{{> head }}
 
 <script src="{{nodeModulesPath}}/chart.js/dist/Chart.min.js"></script>
 <script src="{{nodeModulesPath}}/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -10,12 +10,7 @@
 
     <!-- body  -->
     <div class="row">
-      <div class="col-xs-12">
-        <h2 class="text-center">{{translate 'REPORT.STOCK_MOVEMENT_REPORT.TITLE'}}</h2>
-        <h4 class="text-center">{{ depotText }}</h4>
-        <h4 class="text-center">{{date dateFrom}} - {{date dateTo}}</h4>
-      </div>
-      
+
       <div class="col-xs-12">
         <canvas id="stockMovementReportChart" style="width:100%" height="330"></canvas>
 

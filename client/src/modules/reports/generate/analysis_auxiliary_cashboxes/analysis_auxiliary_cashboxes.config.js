@@ -1,15 +1,17 @@
 angular.module('bhima.controllers')
-  .controller('analysis_auxiliary_cashboxController', analysisAuxiliaryCashboxController);
+  .controller('analysis_auxiliary_cashboxesController', analysisAuxiliaryCashboxesController);
 
-analysisAuxiliaryCashboxController.$inject = [
+analysisAuxiliaryCashboxesController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
   'reportData', '$state',
 ];
 
-function analysisAuxiliaryCashboxController($sce, Notify, SavedReports, AppCache,
+function analysisAuxiliaryCashboxesController($sce, Notify, SavedReports, AppCache,
   reportData, $state) {
   const vm = this;
+
   const cache = new AppCache('analysis_auxiliary_cashboxes');
+
   const reportUrl = 'reports/finance/analysis_auxiliary_cashboxes';
 
   vm.previewGenerated = false;

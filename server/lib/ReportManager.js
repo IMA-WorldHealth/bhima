@@ -71,7 +71,7 @@ function getFileName(options, extension) {
   const fileDate = (new Date()).toLocaleDateString();
   const formattedName = `${translatedName} ${fileDate}`;
   const fileName = `${formattedName}${extension}`;
-  return encodeURIComponent(fileName);
+  return [translatedName, encodeURIComponent(fileName)];
 }
 
 // Class Declaration
@@ -175,13 +175,14 @@ class ReportManager {
 
     data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : rowsToRename;
 
+    let defaultTitle;
     let fileName;
     if (this.options.filename) {
-      fileName = getFileName(this.options, this.renderer.extension);
+      [defaultTitle, fileName] = getFileName(this.options, this.renderer.extension);
     }
 
     // set the report title to the filename if no title is given
-    data.title = data.title || fileName;
+    data.title = data.title || defaultTitle;
 
     // render the report using the stored renderer
     const report = await renderer.render(data, this.template, this.options);

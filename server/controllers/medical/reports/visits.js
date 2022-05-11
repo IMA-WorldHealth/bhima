@@ -11,6 +11,7 @@
  * @requires Locations
  */
 
+const _ = require('lodash');
 const db = require('../../../lib/db');
 const ReportManager = require('../../../lib/ReportManager');
 
@@ -91,6 +92,8 @@ function getReportData(uuid) {
  */
 function build(req, res, next) {
   const options = req.query;
+
+  _.extend(options, { filename : "PATIENT_RECORDS.VISITS.TITLE" });
 
   let report;
 

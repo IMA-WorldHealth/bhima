@@ -1,23 +1,19 @@
 <!doctype html>
 <html>
-  {{> head title="TREE.COST_CENTER_REPORT"}}
+  {{> head }}
   <body>
   <div class="container">
-    {{> header}}
+    {{#> header }}
+      <h4 class="text-center">
+        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+          -
+        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+        </h4>
+    {{/header}}
 
     <!-- body -->
     <div class="row">
       <div class="col-xs-12">
-        <!-- page title  -->
-        <h3 class="text-center text-uppercase">
-          <strong>{{translate 'TREE.COST_CENTER_REPORT'}}</strong>
-        </h3>
-
-        <h4 class="text-center">
-          <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
-           -
-          <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
-        </h4>
 
         {{#if display.costCenterOperations}}
         <table style="page-break-after: always; width: 80%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">

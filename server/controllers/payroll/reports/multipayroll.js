@@ -34,6 +34,8 @@ function build(req, res, next) {
   // delete options.payroll_configuration_id;
   delete options.currency_id;
 
+  _.extend(options, { filename : 'EMPLOYEE.TITLE' });
+
   let report;
 
   // set up the report with report manager

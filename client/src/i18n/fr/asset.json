@@ -18,6 +18,7 @@
     "NO_ASSIGNMENT_HISTORY" : "Aucun historique des assignations",
     "ONLY_ASSETS" : "Seulement les actifs",
     "REQUIRED_INVENTORY_SCAN" : "Scan d'inventaire obligatoire",
+    "REQUIRED_INVENTORY_SCANS" : "Scans d'inventaire obligatoires",
     "REQUIRED_INVENTORY_SCAN_CREATED" : "Scan d'inventaire obligatoire créé avec succès",
     "REQUIRED_INVENTORY_SCAN_DETAILS" : "Détails de scan d'inventaire obligatoire",
     "REQUIRED_INVENTORY_SCAN_EDITED" : "Scan d'inventaire obligatoire édité avec succès",

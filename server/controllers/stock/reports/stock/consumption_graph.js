@@ -67,9 +67,9 @@ async function stockConsumptionGraphReport(req, res, next) {
 
     const reportResult = await report.render({
       chartHeight,
+      depotName : depot.text,
       dateFrom : options.dateFrom,
       dateTo : options.dateTo,
-      depot,
       chartjs : chartjs.renderChart(chartRenderOptions),
       destinationType : `STOCK_FLUX.${options.destinationType || 'ALL_DESTINATION'}`,
     });
