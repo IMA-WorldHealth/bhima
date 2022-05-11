@@ -1,16 +1,12 @@
-{{> head title="REPORT.CLIENTS.TITLE"}}
+{{> head }}
 
 <body>
   <main class="container">
-    {{> header }}
-
-    <h3 class="text-center text-capitalize">
-      <strong>{{translate "REPORT.CLIENTS.TITLE"}}</strong>
-    </h3>
-
-    <h4 class="text-center text-capitalize">
-      {{ fiscalYear.label }}
-    </h4>
+    {{#> header }}
+      <h4 class="text-right text-capitalize">
+        {{ fiscalYear.label }}
+      </h4>
+    {{/header}}
 
     {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

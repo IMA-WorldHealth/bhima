@@ -207,7 +207,7 @@ async function report(req, res, next) {
   const filters = shared.formatFilters(req.query);
 
   _.extend(query, {
-    filename : 'TREE.ASSETS_SCANS_REGISTRY',
+    filename : 'REPORT.ASSET_SCANS.TITLE',
     csvKey : 'rows',
     orientation : 'landscape',
   });

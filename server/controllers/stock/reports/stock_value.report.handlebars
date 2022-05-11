@@ -1,25 +1,14 @@
-{{> head title="TREE.STOCK_VALUE" }}
+{{> head }}
 
 <body>
 
   <div class="container">
-  {{> header}}
+
+  {{> header }}
+
     <!-- body  -->
     <div class="row">
       <div class="col-xs-12">
-
-        <!-- page title  -->
-        <h2 class="text-center text-uppercase">
-          {{translate 'REPORT.STOCK_VALUE.TITLE'}}
-        </h2>
-
-        <h3 class="text-center">
-          {{#if depot.text}}{{depot.text}}{{/if}}
-        </h3>
-
-        <h4 class="text-center">
-          {{date dateTo}}
-        </h4>
 
         {{#unless isEnterpriseCurrency}}
           {{> exchangeRate rate=exchangeRate currencyId=currency_id}}

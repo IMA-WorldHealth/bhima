@@ -29,7 +29,7 @@ const TITLE_ID = 6;
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
-  filename : 'TREE.INCOME_EXPENSE',
+  filename : 'REPORT.PROFIT_AND_LOSS',
 };
 
 // expose to the API

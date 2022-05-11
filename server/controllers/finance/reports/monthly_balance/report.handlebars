@@ -1,17 +1,17 @@
-{{> head title="REPORT.MONTHLY_BALANCE.TITLE" }}
+{{> head }}
 
 <div class="container">
-  {{> header}}
+
+  {{#> header}}
+    <h3 class="text-right text-uppercase">{{periodLabel}}</h3>
+    {{#if this.accountNumber}}
+      <h4 class="text-right">{{this.accountNumber}}: {{this.accountLabel}}</h4>
+    {{/if}}
+  {{/header}}
 
   <!-- body -->
   <div class="row">
     <div class="col-xs-12">
-      <!-- page title  -->
-      <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.MONTHLY_BALANCE.TITLE'}}</h3>
-      <h3 class="text-center text-uppercase">{{periodLabel}}</h3>
-      {{#if this.accountNumber}}
-        <h4 class="text-center">{{this.accountNumber}}: {{this.accountLabel}}</h4>
-      {{/if}}
 
       {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

@@ -1,5 +1,6 @@
-{{> head title="FORM.LABELS.PAYSLIP"}}
+{{> head }}
 <body>
+
   <!-- body  -->
   {{#each dataEmployees}}
 
@@ -22,12 +23,12 @@
           <div> <b>{{translate "FORM.LABELS.NB_CHILD"}} :</b> {{nb_enfant}} </div>
         </div>
       </header>
-  
+
       <h3 class="text-center text-uppercase">
         <strong>{{translate 'TABLE.COLUMNS.PAYSLIP'}} : {{ ../payrollPeriod.label }} </strong>
       </h3>
 
-      <table class="table table-condensed table-bordered table-report" style="margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">  
+      <table class="table table-condensed table-bordered table-report" style="margin-bottom: 5px; font-size: 13px; text-transform: uppercase;">
         <tr>
           <td class="col-xs-6 text-center" colspan="4">
             <table class="table table-condensed table-bordered table-report" style="width: 100%;">
@@ -45,14 +46,14 @@
                   <td class="text-right"> {{ is_day_worked.value }} </td>
                 </tr>
               {{/if}}
-              
+
               {{#if is_extra_day.value}}
                 <tr>
                   <td> {{ is_extra_day.label }} </td>
                   <td class="text-right"> {{ is_extra_day.value }} </td>
                 </tr>
               {{/if}}
-              
+
               {{#if is_extra_day.value}}
                 <tr>
                   <td><strong>{{ is_total_days.label }}</strong></td>
@@ -80,7 +81,7 @@
                     <td> {{ label }} </td>
                     <td class="text-right"> {{ value }} </td>
                   </tr>
-                {{/if}}                
+                {{/if}}
               {{/each}}
 
               {{#if is_total_code.value}}
@@ -134,7 +135,7 @@
               <td colspan="2">
                 <strong> {{translate 'TABLE.COLUMNS.NON_TAXABLE'}} </strong></tr>
               </td>
-            </tr>              
+            </tr>
             {{#each rubricNonTaxable}}
               <tr>
                 <td class="text-right" style="width: 50%;">
@@ -200,7 +201,7 @@
             <strong>({{translate 'TABLE.COLUMNS.GROSS_SALARY'}}) - ({{translate "TABLE.COLUMNS.CONTRIBUTION_DEDUCTIONS"}})</strong>
           </td>
           <td class="col-xs-6 text-right" colspan="4">
-            <strong> {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} - 
+            <strong> {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} -
               {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong>
           </td>
         </tr>
@@ -217,7 +218,7 @@
         <tr>
           <td class="col-xs-6 text-right" colspan="4">
             <strong>
-              {{numberToText (multiply net_salary ../payrollPeriod.exchangeRate) ../lang '.'  }} 
+              {{numberToText (multiply net_salary ../payrollPeriod.exchangeRate) ../lang '.'  }}
             </strong>
           </td>
         </tr>

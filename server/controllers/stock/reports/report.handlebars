@@ -1,24 +1,17 @@
-{{> head title="TREE.ASSET_MANAGEMENT.TITLE" }}
+{{> head }}
 
 <body>
 
-  {{> header}}
+  {{#> header}}
+    <h3 class="text-right">
+      {{#if project.id}}{{project.name}}<br>{{/if}}
+      <small>{{date aggregates.minDate }} - {{date aggregates.maxDate}}</small>
+    </h3>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'TREE.ASSETS_SCANS_REGISTRY'}}
-      </h2>
-
-      <h3 class="text-center">
-        {{#if project.id}}{{project.name}}<br>{{/if}}
-        <small>{{date aggregates.minDate }} - {{date aggregates.maxDate}}</small>
-      </h3>
-
-      <br>
 
       <!-- filters  -->
       {{> filterbar filters=filters }}
@@ -57,7 +50,7 @@
               <td class="text-right">{{ translate condition }}</td>
               <td class="text-right">{{ notes }}</td>
               <td class="text-right">{{ scanned_by_name }}</td>
-              <td class="text-right">{{ date updated_at }}</td>                   
+              <td class="text-right">{{ date updated_at }}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=13}}

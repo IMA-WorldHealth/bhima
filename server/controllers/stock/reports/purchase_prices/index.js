@@ -13,7 +13,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'entries',
-  filename : 'REPORTS.PURCHASE_PRICES.TITLE',
+  filename : 'REPORT.PURCHASE_PRICES.TITLE',
   orientation : 'landscape',
 };
 

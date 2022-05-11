@@ -1,19 +1,17 @@
-{{> head title="REPORT.PROFIT_AND_LOSS_BY_MONTH" }}
+{{> head }}
 
-<div class="container">
-  {{> header}}
+<div class="container-fluid">
+
+  {{#> header}}
+    <h4 style="margin:15px;" class="text-right text-capitalize">
+      {{date firstPeriod.start_date "MMMM"}} {{date firstPeriod.start_date "YYYY"}} -
+      {{date thirdPeriod.start_date "MMMM"}} {{date thirdPeriod.start_date "YYYY"}}
+    </h4>
+  {{/header}}
 
   <!-- body -->
   <div class="row">
     <div class="col-xs-12">
-      <!-- page title  -->
-      <h3 class="text-center">
-        <strong>{{translate "REPORT.PROFIT_AND_LOSS_BY_MONTH"}}</strong>
-      </h3>
-
-      <h5 style="margin:15px;" class="text-center text-capitalize">
-        {{date firstPeriod.start_date "MMMM"}} {{date firstPeriod.start_date "YYYY"}} - {{date thirdPeriod.start_date "MMMM"}} {{date thirdPeriod.start_date "YYYY"}}
-      </h5>
 
       {{#if profits}}
       <table class="table table-condensed table-report">

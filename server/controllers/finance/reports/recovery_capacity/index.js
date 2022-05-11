@@ -15,6 +15,7 @@ module.exports.report = report;
 const TEMPLATE = './server/controllers/finance/reports/recovery_capacity/report.handlebars';
 
 const DEFAULT_OPTIONS = {
+  filename : 'REPORT.RECOVERY_CAPACITY.TITLE',
   orientation : 'portrait',
 };
 
@@ -232,7 +233,7 @@ async function report(req, res, next) {
       exchangeRate,
       rows,
       totals,
-      includeUnpostedValues,
+      provisionary : includeUnpostedValues,
       summary,
     });
 

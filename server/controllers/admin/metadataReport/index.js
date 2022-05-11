@@ -89,6 +89,7 @@ function metadataCard(req, res, next) {
       });
 
       data.surveyFormElements = surveyFormElements;
+
       return report.render(data);
     })
     .then(result => {
@@ -227,7 +228,6 @@ function reportMetadata(req, res, next) {
     })
     .then(dataCollector => {
       data.dataCollector = dataCollector;
-
       return report.render(data);
     })
     .then(result => {

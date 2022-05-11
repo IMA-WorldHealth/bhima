@@ -18,7 +18,7 @@ const DebtorGroups = require('../debtors/groups');
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
 
 const PDF_OPTIONS = {
-  filename : 'FORM.LABELS.FINANCIAL_STATUS',
+  filename : 'PATIENT_RECORDS.FINANCIAL_ACTIVITY.REPORT_TITLE',
 };
 
 /**
