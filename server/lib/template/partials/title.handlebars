@@ -1,0 +1,25 @@
+<!-- this partial requires binding the variable 'metadata' -->
+
+<div class="col-xs-4 col-auto">
+  <h2 class="text-center" style="margin: 0">
+    {{translate pageTitle}}
+  </h2>
+
+  {{#if depotName}}
+    <h3 class="text-center" style="margin: 10px 0 5px 0">
+      {{translate depotName}}
+    </h3>
+  {{/if}}
+
+  {{#if dateFrom}}
+    <h4 class="text-center">
+      {{date dateFrom}} - {{date dateTo}}
+    </h4>
+  {{/if}}
+
+  <h5 class="text-center">
+    {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+    {{translate "REPORT.BY"}} {{metadata.user.display_name}}
+  </h5>
+
+</div>
