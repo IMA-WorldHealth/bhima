@@ -12,7 +12,7 @@ const {
  */
 async function stockEntryDonationReceipt(documentUuid, session, options) {
   const data = {};
-  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_DONATION' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.ENTRY_DONATION' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   // set up the report with report manager

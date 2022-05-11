@@ -3,20 +3,24 @@
 <body>
 
   <div class="container">
-  {{> header}}
+  {{#> header }}
+
+  {{/header}}
+
     <!-- body  -->
     <div class="row">
       <div class="col-xs-12">
 
-        <h2 class="text-center text-uppercase">
-          <strong>{{translate 'REPORT.LOST_STOCK_REPORT.TITLE'}}</strong> <br>
-          <small>{{date dateFrom}} - {{date dateTo}}</small>
-        </h2>
-
-        <h3 class="text-center" style="margin-bottom: 1em;">
-          {{#if isDestDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}: {{depotName}}{{/if}}
-          {{#if isSrcDepot}}{{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}: {{depotName}}{{/if}}
-        </h3>
+      {{#if destDepot}}
+      <h3 class="text-center" style="margin-bottom: 1em;">
+        {{translate 'REPORT.LOST_STOCK_REPORT.DESTINATION_DEPOT'}}: {{destDepot}}
+      </h3>
+      {{/if}}
+      {{#if srcDepot}}
+      <h3 class="text-center" style="margin-bottom: 1em;">
+        {{translate 'REPORT.LOST_STOCK_REPORT.SOURCE_DEPOT'}}: {{srcDepot}}
+      </h3>
+      {{/if}}
 
        {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

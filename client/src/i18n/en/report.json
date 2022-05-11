@@ -246,6 +246,7 @@
     "NULL" : "Null",
     "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "THROUGH": "Through",
     "TOTALS": "Totals",
     "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",

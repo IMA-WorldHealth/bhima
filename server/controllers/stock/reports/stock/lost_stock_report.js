@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, STOCK_LOST_STOCK_REPORT_TEMPLATE,
+  _, db, ReportManager, Stock, STOCK_LOST_STOCK_REPORT_TEMPLATE,
 } = require('../common');
 
 const Exchange = require('../../../finance/exchange');
@@ -18,6 +18,7 @@ async function lostStockReport(req, res, next) {
   const { depotRole } = req.query;
   const { enterprise } = req.session;
   const currencyId = Number(params.currencyId);
+  const depot = await fetchDepotDetails(params.depot_uuid);
 
   const enterpriseId = enterprise.id;
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
@@ -35,14 +36,14 @@ async function lostStockReport(req, res, next) {
       data.exchangeRate = rate;
       data.dateTo = params.dateTo;
       data.dateFrom = params.dateFrom;
-      data.isDestDepot = null;
-      data.isSrcDepot = null;
-      if (key && depotRole === 'destination') {
-        data.isDestDepot = true;
-        data.depotName = key.destDepot;
-      } else if (key && depotRole === 'source') {
-        data.isSrcDepot = true;
-        data.depotName = key.srcDepot;
+      data.destDepot = null;
+      data.srcDepot = null;
+      if (depotRole === 'destination') {
+        data.destDepot = depot.name;
+      } else if (depotRole === 'source') {
+        data.srcDepot = depot.name;
+      } else {
+        data.depotName = depot.name;
       }
       let sumLosses = 0;
       let totalMissing = 0;
@@ -61,6 +62,15 @@ async function lostStockReport(req, res, next) {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
+}
+
+/**
+ * fetchDepotDetails
+ * @param {number} depotUuid depot uuid
+ */
+function fetchDepotDetails(depotUuid) {
+  const query = 'SELECT text AS name FROM depot WHERE uuid = ?';
+  return db.one(query, [db.bid(depotUuid)]);
 }
 
 module.exports = lostStockReport;

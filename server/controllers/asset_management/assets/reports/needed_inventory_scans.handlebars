@@ -1,4 +1,4 @@
-{{> head title="ASSETS.NEEDED_INVENTORY_SCANS" }}
+{{> head }}
 
 <style>
 caption {
@@ -9,36 +9,32 @@ caption {
 
 <body>
 
-  {{> header}}
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'ASSET.REQUIRED_INVENTORY_SCAN'}}
-      </h2>
-      <h3 class="text-center text-uppercase">
+  {{#> header}}
+      <h3 class="text-right text-uppercase">
         {{scan.title}}
         {{#if scan.is_asset}}
         <span> &ndash; {{translate 'ASSET.ASSETS_ONLY'}}</span>
         {{/if}}
       </h3>
-      {{#if scan.description}}
-      <h4 class="text-center">{{scan.description}}</h4>
-      {{/if}}
-      <h4 class="text-center">
+      <h4 class="text-right">
         {{translate 'FORM.LABELS.START_DATE'}}: {{date scan.start_date}} &ndash;
         {{translate 'FORM.LABELS.END_DATE'}}: {{date scan.end_date}}
       </h4>
       {{#if scan.depot_name}}
-      <h4 class="text-center">{{scan.depot_name}}</h4>
+      <h4 class="text-right">{{scan.depot_name}}</h4>
       {{/if}}
       {{#if scan.reference_number}}
-      <h4 class="text-center">{{translate 'FORM.LABELS.REFERENCE_NUMBER'}}: {{scan.reference_number}}</h4>
+      <h4 class="text-right">{{translate 'FORM.LABELS.REFERENCE_NUMBER'}}: {{scan.reference_number}}</h4>
       {{/if}}
+  {{/header}}
 
-      <br><br>
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      {{#if scan.description}}
+      <h4 class="text-center" style="margin: 7px 0">{{scan.description}}</h4>
+      {{/if}}
 
       <!-- list of assets-->
       <table class="table table-condensed table-bordered table-stripped table-report">
