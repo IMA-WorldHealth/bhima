@@ -20,7 +20,7 @@ shipmentStatus[SHIPMENT_COMPLETE] = 'SHIPMENT.STATUS.COMPLETE';
  * GET /receipts/stock/entry_depot/:document_uuid
  */
 function stockEntryDepotReceipt(documentUuid, session, options) {
-  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_DEPOT' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.ENTRY_DEPOT' });
 
   // set up the report with report manager
   const report = new ReportManager(STOCK_ENTRY_DEPOT_TEMPLATE, session, optionReport);

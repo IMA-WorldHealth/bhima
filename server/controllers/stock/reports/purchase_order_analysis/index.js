@@ -9,7 +9,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'inventoriesOrdered',
-  filename : 'REPORTS.PURCHASE_ORDER_ANALYSIS.TITLE',
+  filename : 'REPORT.PURCHASE_ORDER_ANALYSIS.TITLE',
   orientation : 'portrait',
 };
 

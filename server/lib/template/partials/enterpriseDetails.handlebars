@@ -1,25 +1,27 @@
+<!-- this partial requires binding the variable 'metadata' -->
+
 {{#if metadata.enterprise.logo}}
   <div class="col-xs-1">
     <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="65" height="65" alt="">
   </div>
 {{/if}}
 
-<div
-   {{#if metadata.enterprise.logo}}
-     class="col-xs-6"
-   {{else}}
-    class="col-xs-7"
-  {{/if}}
-  >
+<div style="border: 1px solid red;"
+  {{#if metadata.enterprise.logo}}
+    class="col-xs-5"
+  {{else}}
+    class="col-xs-6"
+  {{/if}}>
 
   <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
   <strong>{{metadata.project.name}} ({{metadata.project.abbr}})</strong> <br>
   {{#if metadata.enterprise.phone}}<span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{metadata.enterprise.phone}} <br>{{/if}}
   {{#if metadata.enterprise.email}}<span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{metadata.enterprise.email}} <br>{{/if}}
-  <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: 
+  <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>:
   {{#if metadata.enterprise.address}}
     {{metadata.enterprise.address}}
   {{else}}
     {{metadata.enterprise.location}}
   {{/if}}
+
 </div>

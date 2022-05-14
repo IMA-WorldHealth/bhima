@@ -94,6 +94,7 @@ async function stockSheetReport(req, res, next) {
     data.header = header;
     data.dateFrom = options.dateFrom;
     data.dateTo = options.dateTo;
+    data.depotName = depot?.text || null;
 
     data.wacDetails = {
       value : (rows.totals.entry - rows.totals.exit) * wacDetails.wac,
