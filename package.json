@@ -188,7 +188,7 @@
     "qs": "^6.10.3",
     "release-it": "^15.0.0",
     "sinon": "^14.0.0",
-    "standard-version": "^9.3.2",
+    "standard-version": "^9.5.0",
     "typescript": "^4.6.4"
   },
   "homepage": "https://docs.bhi.ma",
