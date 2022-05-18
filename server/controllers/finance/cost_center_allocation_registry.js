@@ -12,7 +12,6 @@ const Exchange = require('./exchange');
 
 async function fetch(session, params) {
   const enterpriseId = session.enterprise.id;
-  const enterpriseCurrencyId = session.enterprise.currency_id;
 
   const periods = {
     periodFrom : params.periodFrom,
@@ -21,17 +20,6 @@ async function fetch(session, params) {
 
   const range = await fiscal.getDateRangeFromPeriods(periods);
   const exchangeRate = await Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
-
-  // get information about currencies and exchange rate
-  let firstCurrency = enterpriseCurrencyId;
-  let secondCurrency = params.currency_id;
-  let lastRateUsed = exchangeRate.rate;
-
-  if (lastRateUsed && lastRateUsed < 1) {
-    lastRateUsed = (1 / lastRateUsed);
-    firstCurrency = params.currency_id;
-    secondCurrency = enterpriseCurrencyId;
-  }
 
   const query = 'CALL ComputeCostCenterAllocationByIndex(?, ?, ?, ?);';
   let [costCenters] = await db.exec(query, [
@@ -134,9 +122,10 @@ async function fetch(session, params) {
   });
 
   return {
-    dateFrom : range.dateFrom,
-    dateTo : range.dateTo,
-    currencyId : params.currency_id,
+    dateFromMonth : range.dateFrom,
+    dateToMonth : range.dateTo,
+    rate : exchangeRate.rate,
+    currencyId : Number(params.currency_id),
     showAllocationsTable : Number(params.show_allocations_table),
     data,
     cumulatedAllocatedCosts,
@@ -145,9 +134,6 @@ async function fetch(session, params) {
     directCostTotal,
     totalAfterAllocation,
     hView,
-    firstCurrency,
-    secondCurrency,
-    rate : lastRateUsed,
   };
 }
 

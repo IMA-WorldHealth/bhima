@@ -1,25 +1,17 @@
-{{> head title="REPORT.UNPAID_INVOICE_PAYMENTS_REPORT" }}
+{{> head }}
 
 <body>
-  {{> header}}
+  {{#> header}}
+    {{#if debtorGroupName}}
+      <h4 class="text-right"><strong>{{ debtorGroupName }}</strong></h4>
+    {{/if}}
+
+    {{#if uniqueService}}
+      <h4 class="text-right"><strong>{{ uniqueService }}</strong></h4>
+    {{/if}}
+  {{/header}}
 
   <!-- body -->
-  <!-- page title  -->
-  <h3 class="text-center">
-    <strong>{{translate "REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE"}}</strong>
-  </h3>
-
-  {{#if debtorGroupName}}
-    <h4 class="text-center"><strong>{{ debtorGroupName }}</strong></h4>
-  {{/if}}
-
-  {{#if uniqueService}}
-    <h4 class="text-center"><strong>{{ uniqueService }}</strong></h4>
-  {{/if}}
-
-  <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-    {{date dateFrom "DD/MM/YYYY"}} - {{date dateTo "DD/MM/YYYY"}}
-  </h4>
 
   {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateTo}}
 

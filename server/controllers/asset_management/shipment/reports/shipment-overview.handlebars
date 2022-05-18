@@ -1,4 +1,4 @@
-{{> head title="SHIPMENT.OVERVIEW" }}
+{{> head }}
 
 <style>
 .stepper-wrapper {
@@ -86,26 +86,15 @@
 
 <body>
 
-  {{> header}}
+  {{#> header }}
+  <h4 class="text-right">
+    {{single.reference}}
+  </h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'SHIPMENT.OVERVIEW'}}
-      </h2>
-
-      <h4 class="text-center">
-        {{single.reference}}
-      </h4>
-
-      <h4 class="text-center">
-        {{date}}
-      </h4>
-
-      <br><br>
 
       {{!-- stepper for status --}}
       <div class="stepper-wrapper">

@@ -1,4 +1,4 @@
-{{> head title="STOCK.RECEIPT.ENTRY_INTEGRATION" }}
+{{> head }}
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
@@ -6,7 +6,6 @@
   <header>
     <!-- headings  -->
     {{> stockReceiptHeader
-      title="STOCK.RECEIPT.ENTRY_INTEGRATION"
       entity=details.depot_name
       reference=details.document_reference
       barcode=details.barcode
@@ -25,7 +24,7 @@
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DOCUMENT'}}</span>: <strong>{{details.document_reference}}</strong> <br>
         {{#if details.autoStockAccountingEnabled}}
-          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>:
           {{#if details.voucher_reference}}
             <strong>{{details.voucher_reference}}</strong>
           {{else}}

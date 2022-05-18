@@ -1,18 +1,14 @@
-{{> head title="REPORT.STOCK_CHANGES.TITLE" }}
+{{> head }}
 
 <body class="container-fluid">
-  {{> header}}
+  {{#> header}}
+    <h3 class="text-right">{{depot.text}}</h3>
+    <h4 class="text-right">{{date period.start_date}} - {{date period.end_date}}</h4>
+  {{/header}}
+
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <h2 class="text-center">
-        {{translate 'REPORT.STOCK_CHANGES.TITLE'}}
-      </h2>
-
-      <h3 class="text-center">{{depot.text}}</h3>
-
-      <p class="text-center">{{date period.start_date}} - {{date period.end_date}}</p>
 
       <table class="table table-condensed table-report">
         <thead>

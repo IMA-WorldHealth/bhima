@@ -45,7 +45,7 @@ async function reportByService(req, res, next) {
   const options = _.clone(req.query);
 
   _.extend(options, {
-    filename : 'TREE.CASHFLOW_BY_SERVICE',
+    filename : 'REPORT.CASHFLOW_BY_SERVICE.TITLE',
     csvKey : 'matrix',
     orientation : 'landscape',
   });
@@ -186,7 +186,10 @@ function report(req, res, next) {
   // this parameter can be sent as a string or an array we force the conversion into an array
   const cashboxesIds = _.values(req.query.cashboxesIds);
 
-  _.extend(options, { orientation : 'landscape' });
+  _.extend(options, {
+    filename : 'REPORT.CASHFLOW.TITLE',
+    orientation : 'landscape',
+  });
 
   // catch missing required parameters
   if (!dateFrom || !dateTo || !cashboxesIds.length) {

@@ -9,7 +9,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'monthlyConsumption',
-  filename : 'TREE.MONTHLY_CONSUMPTION',
+  filename : 'REPORT.MONTHLY_CONSUMPTION.TITLE',
   orientation : 'portrait',
 };
 

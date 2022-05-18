@@ -34,11 +34,14 @@
       "STATUS": {
         "CORRECT": "Correcte",
         "TRANSFERT_GREATER": "Le montant transferé est supérieur",
-        "TRANSFERT_LOWWER": "Le montant transferé est inférieure",
+        "TRANSFERT_LOWER": "Le montant transferé est inférieure",
         "TRANSFERT_PENDING": "Transfère en attente"
       },
       "TARGET": "Cible",
       "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
+    },
+    "ASSET_SCANS": {
+      "TITLE" : "Rapport de scans d'actifs"
     },
     "AVG_MED_COST_PER_PATIENT" : {
       "TITLE" : "Coût moyen des médicaments par patient",
@@ -115,6 +118,7 @@
     },
     "GENERATED" : "Rapport généré",
     "INCOME": "Produit",
+    "LEGEND": "Legende",
     "PROFIT_AND_LOSS" : "Rapport des Produits et des Charges",
     "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
@@ -213,8 +217,8 @@
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
       "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt.",
-      "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
-
+      "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle",
+      "THROUGH": "Jusqu'a"
     },
     "STOCK_EXPIRATION_REPORT" : {
       "TITLE": "Rapport d'expiration de stock",

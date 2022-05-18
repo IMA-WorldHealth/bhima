@@ -1,24 +1,11 @@
-{{> head title="REPORT.STOCK.ENTRY_REPORT" }}
+{{> head }}
 
 <body class="container-fluid">
-  {{> header}}
+  {{> header }}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center">
-        {{translate 'REPORT.STOCK.ENTRY_REPORT'}}
-      </h2>
-
-      <h3 class="text-center">
-        {{ depotName }}
-      </h3>
-
-      <h4 class="text-center" style="margin-bottom: 0.5em;">
-        {{date dateFrom}} - {{date dateTo}}
-      </h4>
 
       {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

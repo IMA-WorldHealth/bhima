@@ -1,29 +1,24 @@
-{{> head title="TREE.BALANCE"}}
+{{> head}}
 
 <body class="container-fluid">
 
-  {{> header}}
+  {{#> header}}
+    {{#if includeClosingBalances}}
+      <h4 class="text-right">
+        <strong class="text-capitalize">{{date period.fiscalYearStart "YYYY"}}</strong>
+      </h4>
+    {{else}}
+      <h4 class="text-right">
+        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+          -
+        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+      </h4>
+    {{/if}}
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-capitalize">
-        {{translate 'REPORT.BALANCE'}}
-      </h2>
-
-      {{#if includeClosingBalances}}
-        <h4 class="text-center">
-          <strong class="text-capitalize">{{date period.fiscalYearStart "YYYY"}}</strong>
-        </h4>
-      {{else}}
-        <h4 class="text-center">
-          <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
-           -
-          <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
-        </h4>
-      {{/if}}
 
       <!-- data  -->
       <table class="table table-condensed table-report">

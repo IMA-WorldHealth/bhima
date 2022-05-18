@@ -1,17 +1,13 @@
-{{> head title="REPORT.OPEN_DEBTORS.TREE"}}
+{{> head }}
 
 <body>
   <main class="container">
-    {{> header }}
-
-    <h3 class="text-center text-uppercase">
-      <strong>{{translate "REPORT.OPEN_DEBTORS.TREE"}}</strong>
-    </h3>
-
-    <h4 class="text-center text-uppercase">
-      {{#if details.limitDate}}{{date details.reportDateLimit}} - {{/if}}
-      {{date this.timestamp }}
-    </h4>
+    {{#> header }}
+      <h4 class="text-right text-uppercase">
+        {{#if details.limitDate}}{{date details.reportDateLimit}} - {{/if}}
+        {{date this.timestamp }}
+      </h4>
+    {{/header}}
 
     {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 

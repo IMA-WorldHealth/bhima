@@ -111,6 +111,7 @@ async function stockExpirationReport(req, res, next) {
       currencyId,
       exchangeRate,
       depot,
+      depotName : depot.text,
       totals,
       today,
     });

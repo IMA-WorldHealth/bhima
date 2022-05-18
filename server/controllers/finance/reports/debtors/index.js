@@ -25,6 +25,7 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 
 const DEFAULT_OPTIONS = {
   csvKey : 'debtors',
+  filename : 'REPORT.AGED_DEBTORS.TITLE',
   orientation : 'landscape',
 };
 

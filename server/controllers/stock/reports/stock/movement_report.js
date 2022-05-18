@@ -113,7 +113,7 @@ async function document(req, res, next) {
     };
 
     const reportResult = await report.render({
-      depotText : depot.text,
+      depotName : depot.text,
       dateFrom : params.dateFrom,
       dateTo : params.dateTo,
       chartjs : chartjs.renderChart(chartRenderOptions),

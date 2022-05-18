@@ -1,32 +1,20 @@
-<!doctype html>
-<html>
-  {{> head title="REPORT.COST_CENTER_STEPDOWN.TITLE"}}
-  <body>
-  <div class="fluid-container">
-    {{> header}}
+{{> head }}
+<body>
+
+  <div class="container-fluid">
+    {{#> header}}
+      <h4 class="text-right">
+        <strong class="text-capitalize">{{date dateFromMonth "MMMM YYYY"}}</strong>
+          -
+        <strong class="text-capitalize">{{date dateToMonth "MMMM YYYY"}}</strong>
+      </h4>
+    {{/header}}
 
     <!-- body -->
     <div class="row">
       <div class="col-xs-12">
 
-        <!-- page title  -->
-        <h3 class="text-center text-uppercase">
-          <strong>{{translate 'REPORT.COST_CENTER_STEPDOWN.TITLE'}}</strong>
-        </h3>
-
-        <h4 class="text-center">
-          <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
-           -
-          <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
-        </h4>
-
-        {{#if this.rate}}
-        <h5 class="text-center">
-            {{translate 'EXCHANGE.EXCHANGE_RATES'}} :
-            {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}}
-            <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
-        </h5>
-        {{/if}}
+        {{> exchangeRate rate=rate currencyId=currencyId date=dateToMonth}}
 
         {{!-- VIEW OF COST CENTER ALLOCATION --}}
         <p><strong>{{translate 'COST_CENTER.ALLOCATION_BY_COST_CENTERS'}}</strong></p>
@@ -118,4 +106,4 @@
     </div>
   </div>
 </body>
-</html>
+

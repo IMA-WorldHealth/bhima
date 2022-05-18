@@ -28,7 +28,7 @@ const TEMPLATE = './server/controllers/finance/reports/ohada_profit_loss/report.
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'accounts',
-  filename : 'TREE.BALANCE',
+  filename : 'REPORT.OHADA.PROFIT_LOSS',
   orientation : 'landscape',
 };
 
