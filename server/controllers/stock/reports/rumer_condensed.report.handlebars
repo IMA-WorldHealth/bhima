@@ -1,18 +1,19 @@
-{{> head title="REPORT.MONTHLY_CONSUMPTION.TITLE" }}
+{{> head }}
 
 <body class="container-fluid">
-  {{> header}}
+  {{#> header}}
+    <h3 class="text-right">{{translate 'REPORT.MONTHLY_CONSUMPTION.TITLE'}}</h3>
+    <h4 class="text-right">{{params.depot_text}}</h4>
+    <h4 class="text-right">{{translate params.translate_key}} - {{params.year}}</h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-      <!-- page title  -->
-      <h3 class="text-center text-bold">
-        <span class="text-uppercase">{{translate 'REPORT.RUMER.TITLE'}}</span> - {{translate 'REPORT.RUMER.DESCRIPTION'}}
-      </h3>
 
-      <h4 class="text-center">{{params.depot_text}}</h4>
-      <h4 class="text-center">{{translate params.translate_key}} - {{params.year}} </h4>
+      <h3 class="text-center text-bold">
+        {{translate 'REPORT.RUMER.DESCRIPTION'}}
+      </h3>
 
       <table class="table table-striped table-condensed table-report table-bordered">
         <thead>

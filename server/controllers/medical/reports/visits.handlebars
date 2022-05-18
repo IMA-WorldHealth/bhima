@@ -1,32 +1,23 @@
-{{> head title="PATIENT_RECORDS.VISITS.TITLE"}}
+{{> head }}
 
 <div class="container" style="font-size: 0.9em;">
 
   <!-- patient header -->
-  <header>
-    <section class="row">
-      {{> enterpriseDetails }}
+  {{#> header }}
+    <h3 class="text-right">
 
-      <div class="col-xs-5 text-right">
-        <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'PATIENT_RECORDS.VISITS.TITLE'}}</span>
+      {{!-- patient details --}}
+      <div>
+        <strong>{{patient.reference}}</strong> <br>
+        <span>{{patient.display_name}}</span><br>
+        <small>{{patient.hospital_no}}</small><br>
 
-          {{!-- patient details --}}
-          <div>
-            <strong>{{patient.reference}}</strong> <br>
-            <span>{{patient.display_name}}</span><br>
-            <small>{{patient.hospital_no}}</small><br>
-
-            <!-- patient locked indicator -->
-            {{#if patient.locked}}
-              <i class="fa fa-locked"></i>
-            {{/if}}
-          </div>
-        </h3>
+        <!-- patient locked indicator -->
+        {{#if patient.locked}}
+          <i class="fa fa-locked"></i>
+        {{/if}}
       </div>
-    </div>
-  </header>
-  <br>
+  {{/header }}
 
   <!-- patient information -->
   <span><i class="fa fa-caret-right"></i> {{translate 'PATIENT_RECORDS.VISITS.PATIENT_INFO'}}</span>

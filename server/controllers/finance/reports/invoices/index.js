@@ -106,6 +106,7 @@ async function reporting(_options, session) {
 /** receipt */
 function receipt(req, res, next) {
   const options = req.query;
+  _.extend(options, { filename : 'TREE.PATIENT_INVOICE' });
 
   const metadata = {
     enterprise : req.session.enterprise,
@@ -200,6 +201,7 @@ function receipt(req, res, next) {
 /** credit note */
 function creditNote(req, res, next) {
   const options = req.query;
+  _.extend(options, { filename : 'TREE.CREDIT_NOTE' });
 
   const metadata = {
     enterprise : req.session.enterprise,

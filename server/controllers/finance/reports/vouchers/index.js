@@ -39,6 +39,7 @@ async function receipt(req, res, next) {
   };
 
   const options = req.query;
+  _.extend(options, { filename : 'VOUCHERS.GLOBAL.TITLE' });
 
   const data = {};
   const record = {};
@@ -55,7 +56,7 @@ async function receipt(req, res, next) {
 
     const voucher = await Vouchers.lookupVoucher(req.params.uuid);
 
-    voucher.isCreditNoted = voucher.reversed === 1;
+    voucher.isCreditNote = voucher.reversed === 1;
     voucher.barcode = barcode.generate(entityIdentifier, voucher.uuid);
 
     // voucher details

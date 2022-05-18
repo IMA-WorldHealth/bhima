@@ -34,11 +34,14 @@
       "STATUS": {
         "CORRECT": "Correct",
         "TRANSFERT_GREATER": "The amount transferred is greater",
-        "TRANSFERT_LOWWER": "The amount transferred is lower",
+        "TRANSFERT_LOWER": "The amount transferred is lower",
         "TRANSFERT_PENDING": "Transfer pending"
       },
       "TARGET": "Target",
       "TRANSFER_PRINCIPAL": "Transfer Account to Principal Cashbox"
+    },
+    "ASSET_SCANS": {
+      "TITLE" : "Asset Scans Report"
     },
     "AVG_MED_COST_PER_PATIENT" : {
       "TITLE" : "Average Medication Costs Per Patient",
@@ -123,6 +126,7 @@
     },
     "GENERATED": "Generated Report",
     "INCOME": "Income",
+    "LEGEND": "Legend",
     "PROFIT_AND_LOSS": "Profit and Loss Statement",
     "PROFIT_AND_LOSS_BY_MONTH": "Profit and Loss Statement By Month",
     "PROFIT_AND_LOSS_BY_YEAR": "Profit and Loss Statement By Fiscal Year",
@@ -246,6 +250,7 @@
     "NULL" : "Null",
     "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "THROUGH": "Through",
     "TOTALS": "Totals",
     "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",

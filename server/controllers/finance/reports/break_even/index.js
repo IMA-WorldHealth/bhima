@@ -16,7 +16,6 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'dataConfigured',
-  filename : 'TREE.BREAK_EVEN_REPORT',
   orientation : 'portrait',
 };
 
@@ -47,6 +46,8 @@ function report(req, res, next) {
   };
 
   const templateFile = breakEvenProject ? TEMPLATE1 : TEMPLATE;
+  DEFAULT_PARAMS.filename = breakEvenProject
+    ? 'TREE.BREAK_EVEN_PROJECT_REPORT' : 'TREE.BREAK_EVEN_REPORT';
 
   _.defaults(params, DEFAULT_PARAMS);
 

@@ -12,7 +12,7 @@ module.exports.report = report;
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/client_support/report.handlebars';
 
-const DEFAULT_OPTIONS = { };
+const DEFAULT_OPTIONS = { filename : 'REPORT.CLIENT_SUPPORT.TITLE' };
 
 /**
  * @method report

@@ -17,6 +17,7 @@ const db = require('../../../../lib/db');
 const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars';
 
 const DEFAULT_OPTIONS = {
+  filename : 'REPORT.AGED_CREDITORS.TITLE',
   csvKey : 'creditors',
   orientation : 'landscape',
 };
@@ -51,7 +52,9 @@ function agedCreditorReport(req, res, next) {
       // fire the SQL for the report
       return queryContext(qs);
     })
-    .then(data => report.render(data))
+    .then(data => {
+      return report.render(data);
+    })
     .then(result => {
       res.set(result.headers).send(result.report);
     })

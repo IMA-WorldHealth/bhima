@@ -1,4 +1,4 @@
-{{> head title="PATIENT_RECORDS.REPORT.VISITS"}}
+{{> head }}
 
 <style>
   th.rotate {
@@ -14,15 +14,15 @@
 </style>
 
 <div class="container">
-  {{> enterpriseDetails }}
+
+  {{#> header }}
+    <h4 class="text-right">
+      {{date params.dateFrom }} - {{date params.dateTo }}
+    </h4>
+  {{/header}}
 
   <div class="row">
     <div class="col-xs-12">
-
-      <h3 class="text-center">{{translate 'PATIENT_RECORDS.REPORT.VISITS'}}</h3>
-      <h4 class="text-center">
-        <small>{{date params.dateFrom }}</small> - <small>{{date params.dateTo }}</small>
-      </h4>
 
       <table class="table table-report">
         <thead>
