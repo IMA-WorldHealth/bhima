@@ -33,7 +33,7 @@ function report(req, res, next) {
   const data = { display : {} };
 
   _.extend(query, {
-    filename : 'INVOICE_REGISTRY.TITLE',
+    filename : 'REPORT.REPORT_INDICATORS.TITLE',
     csvKey : 'rows',
   });
 

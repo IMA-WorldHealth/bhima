@@ -1,32 +1,29 @@
 <!doctype html>
 <html>
-{{> head title="TREE.ACCOUNT_REFERENCE.TITLE"}}
+{{> head }}
 
 <body>
 
 <main class="container">
-  {{> header}}
-
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center">
-        {{translate 'REPORT.ACCOUNT_REFERENCE.TITLE'}}
-      </h2>
-
-      <h4 class="text-center text-uppercase">
+  {{#> header}}
+    {{#if referenceTypeLabel}}
+      <h4 class="text-right text-uppercase">
         <strong>
           {{translate referenceTypeLabel}}
         </strong>
       </h4>
+    {{/if}}
 
-      <h4 class="text-center">
-        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
-         -
-        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
-      </h4>
+    <h4 class="text-right">
+      <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+        -
+      <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+    </h4>
+  {{/header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
 
       <!-- data  -->
       <table class="table table-condensed table-report">

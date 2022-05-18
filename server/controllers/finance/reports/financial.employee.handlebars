@@ -1,18 +1,13 @@
-{{> head title="REPORT.EMPLOYEE_STANDING.REPORT" }}
+{{> head }}
 
 <body>
 
-  {{> header }}
+  {{#> header }}
+    <h4 class="text-right">{{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
+    <h4 class="text-right">{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
+    <h5 class="text-right">{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
+  {{/header}}
 
-  <h3 class="text-center text-uppercase">
-    <span>
-      <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
-    </span>
-  </h3>
-
-  <h4 class="text-center">{{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
-  <h4 class="text-center">{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
-  <h5 class="text-center">{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
   <h4 class="text-center text-uppercase" style="background-color: #efefef; margin-bottom: 1em;">
     <b>
       {{translate balanceCreditorText}} = {{debcred (multiply ./creditorAggregates.balance exchangeRate) currencyId}}

@@ -13,7 +13,7 @@ const {
  * GET /receipts/stock/exit_depot/:document_uuid
  */
 function stockExitDepotReceipt(documentUuid, session, options) {
-  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.EXIT_DEPOT' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.EXIT_DEPOT' });
   let template = STOCK_EXIT_DEPOT_TEMPLATE;
 
   if (Boolean(Number(optionReport.posReceipt))) {

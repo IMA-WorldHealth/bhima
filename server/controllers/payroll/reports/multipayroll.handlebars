@@ -1,25 +1,17 @@
-{{> head title="TREE.MULTI_PAYROLL"}}
+{{> head }}
+
 <body>
-  {{> header}}
+  {{#> header}}
+    <h3 class="text-center text-uppercase">
+      <strong>{{translate 'VOUCHERS.SIMPLE.SALARY_PAYMENT'}} : {{ payrollTitle }} </strong>
+    </h3>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
 
-      <!-- page title  -->
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate 'VOUCHERS.SIMPLE.SALARY_PAYMENT'}} : {{ payrollTitle }} </strong>
-      </h3>
-
-      {{#each filters}}
-        <h4 class="text-center">
-          <strong>
-          <span class="text-capitalize">
-            {{translate this.displayName}} : {{this.value}}
-          </span
-          </strong>
-        </h4>
-      {{/each}}
+      {{> filterbar filters=filters }}
 
       <!-- invoices listed  -->
       <table class="table table-condensed table-report table-bordered">

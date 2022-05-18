@@ -13,7 +13,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'rumer',
-  filename : 'TREE.RUMER',
+  filename : 'REPORT.RUMER.TITLE',
   orientation : 'landscape',
 };
 

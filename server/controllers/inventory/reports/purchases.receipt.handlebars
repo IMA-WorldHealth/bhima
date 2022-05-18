@@ -1,30 +1,14 @@
-{{> head title="PURCHASES.RECEIPT.TITLE"}}
+{{> head }}
 
 <div class="container" style="font-size: 0.9em;">
-  <header>
-    <div class="row">
-      {{> enterpriseDetails }}
-
-      <div class="col-xs-5 text-right">
-        <h3 class="text-uppercase" style="margin: 0px;">
-          {{translate "PURCHASES.RECEIPT.TITLE" }} <br />
-          <strong>{{purchase.reference}}</strong> <br>
-        </h3>
-
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.display_name}}
-        </div>
-
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=purchase.barcode}}</small>
-          <br>
-        {{/if}}
+  {{#> header }}
+    <h3 class="text-right"><strong>{{purchase.reference}}</strong></h3>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+      <div class="text-right">
+        <small>{{> barcode value=purchase.barcode}}</small>
       </div>
-    </div>
-  </header>
-
-  <!-- page title  -->
+    {{/if}}
+  {{/header}}
 
   <!-- order details -->
   <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">

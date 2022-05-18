@@ -22,7 +22,7 @@ exports.incomeAndExpenseReport = costCenterIncomeAndExpense.report;
  */
 async function buildReport(params, session) {
   const options = _.extend(params, {
-    filename : 'TREE.COST_CENTER_STEPDOWN',
+    filename : 'REPORT.COST_CENTER_STEPDOWN.TITLE',
     csvKey : 'rows',
     user : session.user,
   });

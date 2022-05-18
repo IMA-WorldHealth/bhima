@@ -1,24 +1,17 @@
-{{> head title="CASH.TITLE" }}
+{{> head }}
 
 <body>
 
-  {{> header}}
+  {{#> header }}
+    {{#if project.id}}
+      <h3 class="text-right">{{project.name}}
+    {{/if}}
+    <h4 class="text-right">{{date aggregates.minDate }} - {{date aggregates.maxDate}}</h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'TREE.CASH_PAYMENT_REGISTRY'}}
-      </h2>
-
-      <h3 class="text-center">
-        {{#if project.id}}{{project.name}}<br>{{/if}}
-        <small>{{date aggregates.minDate }} - {{date aggregates.maxDate}}</small>
-      </h3>
-
-      <br>
 
       <!-- filters  -->
       {{> filterbar filters=filters }}

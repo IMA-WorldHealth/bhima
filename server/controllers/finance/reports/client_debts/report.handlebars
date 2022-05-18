@@ -1,7 +1,12 @@
-{{> head title="REPORT.CLIENT_SUMMARY.TITLE"}}
+{{> head }}
 
-<body class="container">
-  {{> header}}
+<body class="container-fluid">
+
+  {{#> header}}
+    <h4 class="text-right">
+      {{client.name}} ({{client.number}} - {{client.label}})
+    </h4>
+  {{/header}}
 
   <!-- body  -->
   <div class="row">

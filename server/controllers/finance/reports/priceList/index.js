@@ -19,7 +19,7 @@ const priceList = require('../../priceLists');
 const TEMPLATE = './server/controllers/finance/reports/priceList/report.handlebars';
 
 const PDF_OPTIONS = {
-  filename : 'FORM.LABELS.PRICE_LIST',
+  filename : 'INVENTORY.PRICE_LIST_REPORT',
 };
 
 exports.report = (req, res, next) => {

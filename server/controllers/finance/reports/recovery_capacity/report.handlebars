@@ -1,23 +1,13 @@
-{{> head title="REPORT.RECOVERY_CAPACITY.TITLE"}}
+{{> head}}
 
 <body>
 
-<div class="container">
+<div class="container-fluid">
   {{> header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h3 class="text-center">
-        <strong>{{translate 'REPORT.RECOVERY_CAPACITY.TITLE'}}</strong>
-        {{#if includeUnpostedValues}}<strong>({{translate 'REPORT.PROVISIONARY'}})</strong><br>{{/if}}
-      </h3>
-
-      <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{date dateFrom}} - {{date dateTo}}
-      </h4>
 
       {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateTo}}
 

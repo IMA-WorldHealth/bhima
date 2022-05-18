@@ -14,7 +14,7 @@ const Exchange = require('../../../finance/exchange');
  */
 async function stockEntryPurchaseReceipt(documentUuid, session, options) {
   const data = {};
-  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPTS.ENTRY_PURCHASE' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.ENTRY_PURCHASE' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   // set up the report with report manager

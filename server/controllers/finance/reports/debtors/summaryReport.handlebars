@@ -1,21 +1,17 @@
-{{> head title="REPORT.CLIENTS.TITLE"}}
+{{> head }}
 
 <body>
   <main class="container">
-    {{> header }}
-
-    <h3 class="text-center text-capitalize">
-      <strong>{{translate "REPORT.DEBTOR_SUMMARY.TITLE"}}</strong>
-    </h3>
-
-    <h4 class="text-center text-capitalize">
-      {{ debtorGroup.name }}
-    </h4>
-     <h5 class="text-center">
-        <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
-           -
-        <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
-    </h4>
+    {{#> header }}
+      <h4 class="text-right text-capitalize">
+        {{ debtorGroup.name }}
+       </h4>
+      <h4 class="text-right text-capitalize">
+         <strong>{{date dateFromMonth "MMMM YYYY"}}</strong>
+            -
+          <strong class="text-capitalize">{{date dateToMonth "MMMM YYYY"}}</strong>
+      </h4>
+    {{/header}}
 
     <section>
       <table style="font-size:11px !important" class="table table-condensed table-report  table-header-rotated table-bordered">
@@ -29,10 +25,10 @@
             {{#each ./inventoryGroups as | s |}}
              <th class="rotate-45" >
                  <div><span style="padding-left:2px;">{{ s.name }}</span></div></th>
-              
-            {{/each}} 
+
+            {{/each}}
              <th class="rotate-45"><div><span style="padding-left:2px;">{{translate "FORM.LABELS.TOTAL"}}</span></div></th>
-             
+
           </tr>
         </thead>
         <tbody>
@@ -43,13 +39,13 @@
               <td>{{ invoice.invRef}}</td>
               <td>{{ invoice.debtorName}}</td>
               <td>{{ invoice.serviceName}}</td>
-              
+
             {{#each invoice.inventoryGroups as | amount |}}
                 <th class="text-right">{{amount}}</th>
             {{/each}}
              <th class="text-right">{{currency invoice.total ../metadata.enterprise.currency_id}}</th>
             </tr>
-         
+
           {{/each}}
 
         </tbody>

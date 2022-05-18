@@ -1,11 +1,10 @@
-{{> head title="STOCK.RECEIPT.EXIT_SERVICE" }}
+{{> head }}
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
   <header>
     <!-- headings  -->
-    {{> stockReceiptHeader 
-      title="STOCK.RECEIPT.EXIT_SERVICE" 
+    {{> stockReceiptHeader
       entity=details.service_display_name
       reference=details.document_reference
       barcode=details.barcode
@@ -24,7 +23,7 @@
           <span>{{translate 'FORM.LABELS.REQUISITION_REFERENCE'}}</span>: <strong>{{details.document_requisition}}</strong> <br>
         {{/if}}
         {{#if details.autoStockAccountingEnabled}}
-          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>: 
+          <span class="text-capitalize">{{translate 'FORM.LABELS.VOUCHER'}}</span>:
           {{#if details.voucher_reference}}
             <strong>{{details.voucher_reference}}</strong>
           {{else}}
