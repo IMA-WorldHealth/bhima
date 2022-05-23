@@ -9,7 +9,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 const TEMPLATE = './server/controllers/finance/reports/unpaid_invoice_payments/report.handlebars';
 
 const DEFAULT_OPTIONS = {
-  filename : 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT',
+  filename : 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE',
   orientation : 'landscape',
 };
 

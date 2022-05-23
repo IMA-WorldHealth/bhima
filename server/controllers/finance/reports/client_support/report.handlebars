@@ -1,19 +1,14 @@
-{{> head title="REPORT.CLIENT_SUPPORT.TITLE"}}
+{{> head }}
 
 <body>
 
-<div class="container">
+<div class="container-fluid">
+
   {{> header}}
 
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
-
-      <!-- page title  -->
-      <h3 class="text-center text-uppercase">
-        <strong>{{translate 'REPORT.CLIENT_SUPPORT.TITLE'}}</strong> <br>
-        <small>{{date dateFrom}} - {{date dateTo}}</small>
-      </h3>
 
       {{!-- employee support --}}
       <table class="table table-striped table-condensed table-report table-bordered">
@@ -50,7 +45,7 @@
             <tr><td colspan="3">&nbsp;</td></tr>
           </tbody>
 
-        {{/if}} <!-- showEmployeeSupport -->  
+        {{/if}} <!-- showEmployeeSupport -->
       </table>
 
       <br>

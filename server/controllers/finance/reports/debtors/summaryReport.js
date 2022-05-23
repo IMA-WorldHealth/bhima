@@ -15,6 +15,7 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/summaryReport.han
 
 const DEFAULT_OPTIONS = {
   csvKey : 'debtors',
+  filename : 'REPORT.DEBTOR_SUMMARY.TITLE',
   orientation : 'landscape',
 };
 
@@ -100,7 +101,12 @@ async function summaryReport(req, res, next) {
     });
     // then let render the report
     const result = await report.render({
-      debtorGroup, inventoryGroups, data, dateFrom, dateTo, gobalSum : util.roundDecimal(gobalSum, 2),
+      debtorGroup,
+      inventoryGroups,
+      data,
+      dateFromMonth : dateFrom,
+      dateToMonth : dateTo,
+      gobalSum : util.roundDecimal(gobalSum, 2),
     });
     res.set(result.headers).send(result.report);
   } catch (ex) {

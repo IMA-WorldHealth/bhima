@@ -1,31 +1,18 @@
-{{> head title="REQUISITION.STOCK_REQUISITION" }}
+{{> head }}
 
 <!-- body  -->
-<div class="container" style="font-size: 0.9em;">
+<div class="container-fluid" style="font-size: 0.9em;">
+
+  {{#> header}}
+    <h4 class="text-right"><strong>{{details.reference}}</strong></h4>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+    <div class="text-right">
+      <small>{{> barcode value=barcode}}</small>
+    </div>
+    {{/if}}
+  {{/header}}
 
   <header>
-      <!-- headings  -->
-    <div class="row">
-      {{> enterpriseDetails }}
-
-      <div class="col-xs-5 text-right">
-
-        <h3 class="text-uppercase" style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'REQUISITION.STOCK_REQUISITION'}}</span><br>
-          <strong>{{details.reference}}</strong> <br>
-        </h3>
-
-        <div>
-          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
-          {{translate "REPORT.BY"}} {{metadata.user.display_name}}
-
-        </div>
-        {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=barcode}}</small> <br>
-        {{/if}}
-        <br>
-      </div>
-    </div>
 
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">

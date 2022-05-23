@@ -14,6 +14,7 @@ module.exports.report = report;
 const TEMPLATE = './server/controllers/finance/reports/realized_profit/report.handlebars';
 
 const DEFAULT_OPTIONS = {
+  filename : 'REPORT.REALIZED_PROFIT.TITLE',
   orientation : 'landscape',
 };
 

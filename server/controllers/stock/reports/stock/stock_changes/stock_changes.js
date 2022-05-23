@@ -6,7 +6,7 @@ const Periods = require('../../../../finance/period');
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
-  filename : 'REPORTS.STOCK_CHANGES.TITLE',
+  filename : 'REPORT.STOCK_CHANGES.TITLE',
 };
 
 const STOCK_CHANGES_REPORT_TEMPLATE = './server/controllers/stock/reports/stock/stock_changes/stock_changes.handlebars';

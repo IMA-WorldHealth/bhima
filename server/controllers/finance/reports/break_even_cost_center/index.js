@@ -14,7 +14,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'brea_report',
-  filename : 'TREE.BREAK_EVEN_REPORT',
+  filename : 'TREE.BREAK_EVEN_COST_CENTER_REPORT',
   orientation : 'portrait',
 };
 

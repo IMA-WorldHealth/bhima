@@ -9,6 +9,7 @@
  * @requires inventory/purchases
  */
 
+const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 const Purchases = require('../../finance/purchases');
 
@@ -26,6 +27,7 @@ const template = './server/controllers/inventory/reports/purchases.receipt.handl
  */
 async function build(req, res, next) {
   const options = req.query;
+  _.extend(options, { filename : 'PURCHASES.RECEIPT.TITLE' });
 
   try {
     const report = new ReportManager(template, req.session, options);

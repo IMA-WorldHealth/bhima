@@ -30,6 +30,7 @@ async function document(req, res, next) {
   params.user = req.session.user;
   params.enterprise_id = req.session.enterprise.id;
   params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
+  params.filename = 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE';
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -105,7 +106,12 @@ async function document(req, res, next) {
         };
       });
 
-    _.extend(bundle, { accounts, globalBalance }, { params });
+    _.extend(bundle, {
+      accounts,
+      globalBalance,
+      dateFrom : params.dateFrom,
+      dateTo : params.dateTo,
+    }, { params });
 
     const result = await report.render(bundle);
     res.set(result.headers).send(result.report);

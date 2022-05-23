@@ -25,7 +25,7 @@ exports.report = report;
 // default report parameters
 const DEFAULT_PARAMS = {
   csvKey : 'data',
-  filename : 'TREE.ACCOUNT_REFERENCE_REPORT',
+  filename : 'REPORT.ACCOUNT_REFERENCE.TITLE',
   orientation : 'landscape',
 };
 
