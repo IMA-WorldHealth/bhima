@@ -1,23 +1,12 @@
-{{> head title="FORM.LABELS.PAYSLIP"}}
+{{> head }}
 <body>
-  <!-- body  -->      
-    <header class="row">
-      <div class="col-xs-6" style="font-size: 20px">
-        <h3 style="margin: 0px;"> {{enterprise.name}} </h3>
-        <address style="margin-bottom: 0px;">
-          {{enterprise.location}}
-        </address>
-        <div>{{enterprise.email}}</div>
-        <div>{{enterprise.phone}}</div>
-      </div>
-    </header>    
-    <br>
-    <br>  
+  {{> header }}
+
+  <!-- body  -->
     <h3 class="text-center text-uppercase">
       <strong> {{ payrollPeriod.label }} </strong> <br>
       {{translate 'FORM.LABELS.SOCIAL_CHARGES' }}
     </h3>
-    <br>
     <br>
 
   <section>
@@ -44,7 +33,7 @@
                 <td><strong> {{service_name}} </strong></td>
                 {{#each rubricsChargeEnterprise}}
                   <td style="text-align: right;">
-                    {{#if result}} 
+                    {{#if result}}
                       {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
                     {{/if}}
                   </td>
@@ -60,10 +49,10 @@
             {{#each rubEnterprises}}
               <td style="text-align: right;">{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</td>
             {{/each}}
-            <th style="width: 4%;"> {{currency (multiply TotalChargeEnterprise payrollPeriod.exchangeRate) payrollPeriod.currency}} </th> 
+            <th style="width: 4%;"> {{currency (multiply TotalChargeEnterprise payrollPeriod.exchangeRate) payrollPeriod.currency}} </th>
           </tr>
         </table>
-      <div>    
+      <div>
     </div>
   </section>
 </body>

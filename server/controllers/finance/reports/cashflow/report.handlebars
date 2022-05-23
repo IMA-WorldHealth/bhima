@@ -1,20 +1,12 @@
-{{> head title="REPORT.CASHFLOW.TITLE" }}
+{{> head }}
 
 <body>
-  {{> header }}
-
-  <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.CASHFLOW.TITLE"}}</strong></h3>
-
-  {{#if dateFrom }}
-    <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-      {{date dateFrom }} - {{date dateTo }}
-    </h4>
-  {{/if}}
-
-  <h4 class="text-center">
+  {{#> header }}
+    <h4 class="text-right">
     <span>{{cashLabels}}</span> <em>({{cashLabelSymbol}})</em>
     <span class="text-lowercase">{{translate 'REPORT.CASHFLOW.IN'}}</span> {{metadata.enterprise.currencySymbol}}
   </h4>
+  {{/header}}
 
   <section>
     <div class="row">

@@ -41,8 +41,9 @@ function processChangeLog(records) {
 }
 
 async function inventoryChanges(req, res, next) {
-  const params = _.clone(req.query);
   const metadata = _.clone(req.session);
+  const params = _.clone(req.query);
+  _.extend(params, { filename : 'REPORT.INVENTORY_CHANGE.TITLE' });
 
   const currencyId = req.session.enterprise.currency_id;
 

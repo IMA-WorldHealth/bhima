@@ -19,7 +19,7 @@ exports.report = incomeAndExpenseReport;
  */
 async function buildAccountsReport(params, session) {
   const options = _.extend(params, {
-    filename : 'TREE.COST_CENTER_STEPDOWN',
+    filename : 'COST_CENTER.REPORT.COST_CENTER_INCOME_AND_EXPENSE',
     csvKey : 'rows',
     user : session.user,
   });
@@ -79,8 +79,8 @@ async function buildAccountsReport(params, session) {
 
   const context = {
     currencyId : Number(options.currency_id),
-    dateFrom,
-    dateTo,
+    dateFromMonth : dateFrom,
+    dateToMonth : dateTo,
     data,
     totals,
     firstCurrency,

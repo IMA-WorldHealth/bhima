@@ -6,7 +6,7 @@ const path = require('path');
 const mkPath = name => path.join(BASE_PATH, name).concat('.handlebars');
 
 // receipts
-const STOCK_EXIT_PATIENT_TEMPLATE = mkPath('stock_exit_patient.receipt.handlebars');
+const STOCK_EXIT_PATIENT_TEMPLATE = mkPath('stock_exit_patient.receipt');
 
 const POS_STOCK_EXIT_PATIENT_TEMPLATE = mkPath('stock_exit_patient.receipt.pos');
 const STOCK_EXIT_SERVICE_TEMPLATE = mkPath('stock_exit_service.receipt');

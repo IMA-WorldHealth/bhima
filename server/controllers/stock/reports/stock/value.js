@@ -24,7 +24,7 @@ async function reporting(_options, session) {
   const enterpriseId = session.enterprise.id;
 
   const optionReport = _.extend(_options, {
-    filename : 'TREE.STOCK_VALUE',
+    filename : 'REPORT.STOCK_VALUE.TITLE',
   });
 
   const report = new ReportManager(STOCK_VALUE_REPORT_TEMPLATE, session, optionReport);
@@ -91,7 +91,9 @@ async function reporting(_options, session) {
   data.exchangeRate = exchangeRate.rate || 1;
   data.currency_id = options.currency_id;
 
-  return report.render({ ...data, depot, totals });
+  data.depotName = depot.text;
+
+  return report.render({ ...data, totals });
 }
 
 module.exports.document = stockValue;

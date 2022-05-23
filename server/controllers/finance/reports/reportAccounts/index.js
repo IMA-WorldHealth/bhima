@@ -29,6 +29,7 @@ function document(req, res, next) {
   params.enterprise_id = req.session.enterprise.id;
   params.isEnterpriseCurrency = req.session.enterprise.currency_id === Number(params.currency_id);
   params.includeUnpostedValues = params.includeUnpostedValues ? Number(params.includeUnpostedValues) : 0;
+  params.filename = 'REPORT.ACCOUNT';
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -56,6 +57,7 @@ function document(req, res, next) {
 
       const header = {
         date            : params.dateFrom,
+
         balance         : Number(balance.balance),
         credit          : Number(balance.credit),
         debit           : Number(balance.debit),
@@ -81,15 +83,21 @@ function document(req, res, next) {
       const incomeAccountId = 4;
       const expenseAccountId = 5;
 
-      const multipleFiscalYears = result.fiscalYearSpan > 1;
+      const warnMultipleFiscalYears = result.fiscalYearSpan > 1;
+
       const incomeExpenseAccount = (bundle.account.type_id === incomeAccountId)
       || (bundle.account.type_id === expenseAccountId);
 
-      if (multipleFiscalYears && incomeExpenseAccount) {
+      if (warnMultipleFiscalYears && incomeExpenseAccount) {
         _.extend(bundle, {
-          warnMultipleFiscalYears : true,
+          warnMultipleFiscalYears,
         });
       }
+      _.extend(bundle, {
+        dateFrom     : params.dateFrom,
+        dateTo       : params.dateTo,
+        provisionary : params.includeUnpostedValues,
+      });
 
       return report.render(bundle);
     })

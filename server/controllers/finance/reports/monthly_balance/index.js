@@ -36,7 +36,7 @@ async function reporting(opts, session) {
   const rate = exchangeRate.rate || 1;
 
   const options = _.extend(opts, {
-    filename : 'FORM.LABELS.MONTHLY_BALANCE',
+    filename : 'REPORT.MONTHLY_BALANCE.TITLE',
     csvKey : 'rows',
     user : session.user,
   });
@@ -111,8 +111,8 @@ async function reporting(opts, session) {
   const context = {
     exploitation : rows,
     totalExploitation,
-    dateFrom : range.dateFrom,
-    dateTo : range.dateTo,
+    dateFromMonth : range.dateFrom,
+    dateToMonth : range.dateTo,
     periodLabel : params.periodLabel,
     accountLabel,
     accountNumber,

@@ -17,7 +17,7 @@ const Exchange = require('../exchange');
 const TEMPLATE = './server/controllers/finance/reports/financial.all_employees.handlebars';
 
 const PDF_OPTIONS = {
-  filename : 'FORM.LABELS.FINANCIAL_STATUS',
+  filename : 'REPORT.EMPLOYEE_STANDING.FINANCIAL_SITUATION_EMPLOYEES',
 };
 
 /**

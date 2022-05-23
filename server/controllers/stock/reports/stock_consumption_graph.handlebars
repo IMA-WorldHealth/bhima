@@ -1,4 +1,4 @@
-{{> head title="REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE" }}
+{{> head }}
 
 <script src="{{nodeModulesPath}}/chart.js/dist/Chart.min.js"></script>
 <script src="{{nodeModulesPath}}/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -6,19 +6,12 @@
 <body>
 
   <div>
-    {{> header}}
+    {{#> header}}
+      <h4 class="text-right">{{translate destinationType}}</h4>
+    {{/header}}
 
     <!-- body  -->
     <div class="row">
-      <div class="col-xs-12">
-        <h2 class="text-center">{{translate 'REPORT.STOCK_CONSUMPTION_GRAPH_REPORT.TITLE'}}</h2>
-        {{#if depot.text}}
-          <h4 class="text-center">{{depot.text}}</h4>
-        {{/if}}
-        <h4 class="text-center">{{translate destinationType}}</h4>
-        <h4 class="text-center">{{date dateFrom}} - {{date dateTo}}</h4>
-      </div>
-      
       <div class="col-xs-12">
         <div style="height: {{chartHeight}};">
           <canvas id="stockConsumptionChart"></canvas>

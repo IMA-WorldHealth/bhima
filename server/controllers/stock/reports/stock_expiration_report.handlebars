@@ -1,5 +1,4 @@
-{{> head title="REPORT.STOCK_EXPIRATION_REPORT.TITLE" }}
-
+{{> head }}
 
 <body>
 
@@ -19,19 +18,6 @@
       font-size: 2em;
     }
   </style>
-
-
-  <h2 class="text-center">
-    {{translate 'REPORT.STOCK_EXPIRATION_REPORT.TITLE'}}
-  </h2>
-
-  {{#if depot.text}}
-    <h4 class="text-center">{{depot.text}}</h4>
-  {{/if}}
-
-  <h3 class="text-center" style="margin-bottom: 0.5em;">
-    {{date today}}
-  </h3>
 
   {{> exchangeRate rate=exchangeRate currencyId=currencyId}}
 
@@ -56,7 +42,7 @@
   </div>
 
   {{#each result as |depot|}}
-    <h4><b>{{depot.depot_name}}</b></h4>
+    <h4 style="margin-top: 1em;"><b>{{depot.depot_name}}</b></h4>
 
     <table class="table table-condensed table-bordered table-report">
       <thead>
