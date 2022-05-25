@@ -21,10 +21,11 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
+    delete vm.reportDetails.period_id;
   };
 
   vm.onSelectPeriod = (period) => {
-    vm.reportDetails.period_id = period.id;
+    vm.reportDetails.period_id = period?.id;
   };
 
   vm.clearPreview = function clearPreview() {
@@ -45,6 +46,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.onChangeClosingBalances = bool => {
+    // If true, the period is the whole FY, so delete the period
+    if (bool) {
+      delete vm.reportDetails.period_id;
+    }
     vm.reportDetails.includeClosingBalances = bool;
   };
 
@@ -98,6 +103,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     }
     if (!angular.isDefined(vm.reportDetails.shouldHideTitleAccounts)) {
       vm.reportDetails.shouldHideTitleAccounts = 0;
+    }
+    if (angular.isDefined(vm.reportDetails.fiscal_id)
+        && angular.isDefined(vm.reportDetails.includeClosingBalances)) {
+      delete vm.reportDetails.period_id;
     }
   }
 }
