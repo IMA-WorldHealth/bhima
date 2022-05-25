@@ -105,7 +105,12 @@ function SearchMovementsModalController(data, Instance, Periods, Store, util, St
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = () => {
+    if (vm.searchQueries.is_exit) {
+      vm.searchQueries.is_exit = Number(vm.searchQueries.is_exit);
+    }
+
     const loggedChanges = SearchModal.getChanges(vm.searchQueries, changes, displayValues, lastDisplayValues);
+
     return Instance.close(loggedChanges);
   };
 }

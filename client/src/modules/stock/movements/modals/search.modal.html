@@ -22,12 +22,12 @@
             <bh-clear on-clear="$ctrl.clear('is_exit')"></bh-clear>
             <div>
               <label class="radio-inline">
-                <input type="radio" name="movement_direction" id="entry" value="0" ng-model="$ctrl.searchQueries.is_exit">
+                <input type="radio" name="movement_direction" id="entry" ng-value="0" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.INPUT</span>
               </label>
 
               <label class="radio-inline">
-                <input type="radio" name="movement_direction" id="exit" value="1" ng-model="$ctrl.searchQueries.is_exit">
+                <input type="radio" name="movement_direction" id="exit" ng-value="1" ng-model="$ctrl.searchQueries.is_exit">
                 <span translate>STOCK.OUTPUT</span>
               </label>
             </div>
