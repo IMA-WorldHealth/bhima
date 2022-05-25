@@ -18,6 +18,7 @@ exports.reporting = reporting;
 
 async function build(req, res, next) {
   const { dateTo } = req.query;
+  const { serviceUuid } = req.query;
   const { enterprise } = req.session;
   const currencyId = Number(req.query.currencyId);
 
@@ -43,6 +44,13 @@ async function build(req, res, next) {
 
     // provide empty data for the report to render
     results = { dataset : [], totals : {}, services : [] };
+  }
+
+  if (serviceUuid) {
+    // If the user selected a service, force it to be used as "uniqueService"
+    // even if no unpaid invoices for that service are found (to make the report clearer)
+    const [serviceInfo] = await db.exec('SELECT name FROM service WHERE uuid = ?', db.bid(serviceUuid));
+    qs.uniqueService = serviceInfo.name;
   }
 
   if (results.services.length === 1) {
