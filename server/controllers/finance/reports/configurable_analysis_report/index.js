@@ -134,6 +134,7 @@ function report(req, res, next) {
       data.type = type;
       data.config = config;
       data.dataConfig = dataConfig;
+      data.provisionary = params.includeUnpostedValues;
 
       const checkConfiguration = (data.type.length && data.config.length && data.dataConfig.length);
 
