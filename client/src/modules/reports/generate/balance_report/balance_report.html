@@ -41,8 +41,9 @@
               fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
               period-id="ReportConfigCtrl.reportDetails.period_id"
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)"
-              disable="!ReportConfigCtrl.reportDetails.includeClosingBalances"
-              required="true">
+              disable="ReportConfigCtrl.reportDetails.includeClosingBalances"
+              required="!ReportConfigCtrl.reportDetails.includeClosingBalances"
+              ng-show="!ReportConfigCtrl.reportDetails.includeClosingBalances">
             </bh-period-selection>
 
             <bh-yes-no-radios
