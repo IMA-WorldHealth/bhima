@@ -22,14 +22,16 @@ function StockDefineLotsModalController(
     Data.stockLine.unit_cost = Data.stockLine.wac;
   }
 
-  vm.serialNumberVisible = Data.stockLine.is_asset;
-  const tracking = Data.stockLine.tracking_expiration;
+  // Hide columns in the grid when it doesn't apply to this inventory item.
+  const shouldShowSerialNumber = Data.stockLine.is_asset;
+  const showShowExpirationDate = !(Data.stockLine.tracking_expiration === false || Data.stockLine.is_asset);
+
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
 
   vm.form = new EntryForm({
     max_quantity : Data.stockLine.quantity,
     unit_cost : Data.stockLine.unit_cost,
-    tracking_expiration : tracking,
+    tracking_expiration : Data.stockLine.tracking_expiration,
     entry_date : Data.entry_date,
     rows : Data.stockLine.lots,
   });
@@ -48,8 +50,10 @@ function StockDefineLotsModalController(
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
   vm.entryDate = Data.entry_date;
+
   vm.currencyId = Data.currency_id !== undefined
     ? Data.currency_id : vm.enterprise.currency_id;
+
   vm.currency = null;
   vm.isTransfer = (vm.entryType === 'transfer_reception');
 
@@ -106,7 +110,7 @@ function StockDefineLotsModalController(
     displayName : 'TABLE.COLUMNS.SERIAL_NUMBER',
     headerCellFilter : 'translate',
     aggregationHideLabel : true,
-    visible : vm.serialNumberVisible,
+    visible : shouldShowSerialNumber,
     width : 220,
     cellTemplate : 'modules/stock/entry/modals/templates/serial_number.input.tmpl.html',
   }, {
@@ -130,7 +134,7 @@ function StockDefineLotsModalController(
     type : 'date',
     cellFilter : `date:"${bhConstants.dates.format}"`,
     width : 150,
-    visible : tracking,
+    visible : showShowExpirationDate,
     displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
@@ -231,6 +235,7 @@ function StockDefineLotsModalController(
 
         vm.errors.push($translate.instant('ERRORS.ER_STOCK_LOT_IS_EXPIRED',
           { label : existingLot.label }));
+
         vm.form.$invalid = true;
       }
 
