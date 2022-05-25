@@ -104,6 +104,7 @@ function StockEntryModalForm(uuid) {
       hasFutureExpirationDate = true;
       row.expiration_date = new Date((entryDate.getFullYear() + 1000), entryDate.getMonth());
     }
+
     // check invalid lot expiration date
     const hasInvalidExpiration = (!row.expiration_date || !hasFutureExpirationDate);
     if (hasInvalidExpiration) {
