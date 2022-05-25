@@ -8,7 +8,7 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE</h3>
+      <h2 class="text-capitalize" translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.TITLE</h2>
     </div>
   </div>
 
@@ -21,54 +21,64 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
-            <bh-fiscal-period-select
-              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
-              on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
-              on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
-            </bh-fiscal-period-select>
 
-            <hr>
-            <bh-multiple-cashbox-select
-              cashbox-ids="ReportConfigCtrl.reportDetails.cashboxes"
-              on-change="ReportConfigCtrl.onSelectCashboxes(cashboxes)"
-              required="true">
-            </bh-multiple-cashbox-select>
-
-            <hr>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.hide_account_details" ng-true-value="0" ng-false-value="1">
-                <span translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.HIDE_ACCOUNT_DETAILS</span>
-              </label>
-            </div>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.hide_details_types" ng-true-value="0" ng-false-value="1">
-                <span translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.HIDE_DETAILS_TYPES</span>
-              </label>
-            </div>
-
-            <hr>
-            <bh-yes-no-radios
-              value="ReportConfigCtrl.reportDetails.includeUnpostedValues"
-              on-change-callback="ReportConfigCtrl.onChangeUnpostedValues(value)"
-              name="includeUnpostedValues"
-              label="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS"
-              help-text="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS_HELP">
-            </bh-yes-no-radios>
-
-            <div ng-if="!ReportConfigCtrl.configurationsAreMissing">
-              <bh-loading-button loading-state="ConfigForm.$loading">
-                <span translate>REPORT.UTIL.PREVIEW</span>
-              </bh-loading-button>
-            </div>
-
-            <div ng-if="ReportConfigCtrl.configurationsAreMissing">
-              <span class="label label-warning text-capitalize">
+            <div ng-if="ReportConfigCtrl.configurationsAreMissing" style="margin-bottom: 1em;">
+              <span class="label label-warning text-capitalize" style="padding: 6px;">
                 <i class="fa fa-exclamation-triangle"></i>
-                <span style="font-size: 14px" translate> FORM.INFO.THE_NECESSARY_CONFIG_MISSING </span>
+                <span style="font-size: 1.75em;" translate> FORM.INFO.THE_NECESSARY_CONFIG_MISSING </span>
               </span>
             </div>
+
+            <fieldset
+              ng-disabled="ReportConfigCtrl.configurationsAreMissing"
+              style="{{ReportConfigCtrl.warningStyle}}">
+
+              <bh-fiscal-period-select
+                on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
+                on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
+                on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)"
+                ng-disable="ReportConfigCtrl.configurationsAreMissing">
+              </bh-fiscal-period-select>
+
+              <hr>
+              <bh-multiple-cashbox-select
+                cashbox-ids="ReportConfigCtrl.reportDetails.cashboxes"
+                on-change="ReportConfigCtrl.onSelectCashboxes(cashboxes)"
+                required="true"
+                ng-disable="ReportConfigCtrl.configurationsAreMissing">
+              </bh-multiple-cashbox-select>
+
+              <hr>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.hide_account_details" ng-true-value="0" ng-false-value="1">
+                  <span translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.HIDE_ACCOUNT_DETAILS</span>
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.hide_details_types" ng-true-value="0" ng-false-value="1">
+                  <span translate>REPORT.CONFIGURABLE_ANALYSIS_REPORT.HIDE_DETAILS_TYPES</span>
+                </label>
+              </div>
+
+              <hr>
+              <bh-yes-no-radios
+                value="ReportConfigCtrl.reportDetails.includeUnpostedValues"
+                on-change-callback="ReportConfigCtrl.onChangeUnpostedValues(value)"
+                name="includeUnpostedValues"
+                label="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS"
+                help-text="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS_HELP"
+                ng-disable="ReportConfigCtrl.configurationsAreMissing">
+              </bh-yes-no-radios>
+
+              <div ng-if="!ReportConfigCtrl.configurationsAreMissing">
+                <bh-loading-button loading-state="ConfigForm.$loading">
+                  <span translate>REPORT.UTIL.PREVIEW</span>
+                </bh-loading-button>
+              </div>
+
+            </fieldset>
           </form>
         </div>
       </div>
