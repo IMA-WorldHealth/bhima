@@ -14,6 +14,7 @@ function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCac
   ConfigurationAnalysisTools.read()
     .then((configurationAnalysisTools) => {
       vm.configurationsAreMissing = (configurationAnalysisTools.length === 0);
+      vm.warningStyle = vm.configurationsAreMissing ? 'background-color: #BBB; color: #777;' : '';
     })
     .catch(handleError);
 
