@@ -87,6 +87,7 @@
       "TITLE": "Comparaison des articles facturés sur les reçus"
     },
     "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "CONFIGURE_ANALYSIS_TOOLS": "Cliquez ici pour configurer les outils d'analyse",
       "HIDE_ACCOUNT_DETAILS": "Cacher les détailles des comptes",
       "HIDE_DETAILS_TYPES": "Cacher les détailles des types",
       "TITLE": "Rapport d'analyse configurable"

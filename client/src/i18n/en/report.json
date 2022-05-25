@@ -95,6 +95,7 @@
       "TITLE": "Compare invoiced items to received stock"
     },
     "CONFIGURABLE_ANALYSIS_REPORT" : {
+      "CONFIGURE_ANALYSIS_TOOLS": "Click here to configure the analysis tools",
       "HIDE_ACCOUNT_DETAILS": "Hide account details",
       "HIDE_DETAILS_TYPES": "Hide details of types",
       "TITLE": "Configurable analysis report"
