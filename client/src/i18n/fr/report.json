@@ -218,8 +218,7 @@
     "STOCK_VALUE": {
       "TITLE" : "Rapport de valeur de stock",
       "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt.",
-      "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle",
-      "THROUGH": "Jusqu'a"
+      "EXCLUDE_INVENTORIES_ZERO_VALUE": "Exclure les inventaires dont la valeur en stock est nulle"
     },
     "STOCK_EXPIRATION_REPORT" : {
       "TITLE": "Rapport d'expiration de stock",
@@ -246,6 +245,7 @@
     "SINCE": "Depuis",
     "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
     "THIRTY_TO_SIXTY_DAYS": "30 a 60 jours",
+    "THROUGH": "Jusqu'a",
     "TOTALS": "Totaux",
     "VIEW_ACCOUNT_STATEMENT": "Voir le Rélevé de Compte",
     "VIEW_CREDIT_NOTE": "Voir la note de credit",

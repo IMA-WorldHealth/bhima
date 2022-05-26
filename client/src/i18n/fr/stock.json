@@ -1,7 +1,7 @@
 {
   "STOCK" : {
     "ALERT"  : "Alert",
-    "USE_OF_STOCK_WAC" : "Utilisation de la valeur en stock du produit (Cout Unitaire Moyen Pondéré)",
+    "USE_OF_STOCK_WAC" : "Cette valeur est calculé avec l'algorithme Cout Unitaire Moyen Pondéré (CMP).",
     "WAC_NOTIFICATION" : "La valeur actuelle du produit en stock est",
     "DO_NOT_EXIST_BEFORE_ACCOUNTING_SETUP":"N'existe pas car le mouvement de stock a été fait avant la mise en place de la comptabilité de stock",
     "ADJUSTMENT"      : "Ajustement",
@@ -106,7 +106,6 @@
     "EXIT_ADJUSTMENT" : "Ajustement négatif de {{numArticles}} articles de {{depot}} par {{user}}.",
     "EXIT_AGGREGATE_CONSUMPTION" : "Consommation agrégée pour le Dépôt: {{depot}} à la Période: {{period}} par l'utilisateur: {{user}}",
     "EXIT_DEPOT"      : "Transfert vers un dépôt",
-    "EXIT_INDIVIDUAL" : "Distribution aux individus",
     "EXIT_LOSS"       : "Perte",
     "EXIT_PATIENT"    : "Distribution vers un patient",
     "EXIT_PATIENT_WITH_INVOICE" : "Distribution vers le patient {{patient}} sur la facture ({{invoice}}) à partir du dépôt {{depot}}",
@@ -115,7 +114,6 @@
     "EXPIRATION"      : "Expiration",
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque d'expiration",
-    "FILE"            : "Fiche de stock",
     "FLUX"            : "Raison",
     "FROM"            : "Provenance",
     "GROUPING"        : "Groupage",
@@ -426,7 +424,6 @@
     "EDIT_REQUISITION" : "Editer",
     "INVENTORY_AVAILABLE" : "Disponible",
     "INVENTORY_AVAILABLE_WITH_NOT_ENOUGH_QUANTITY" : "Disponible mais en quantité insuffisante",
-    "INVENTORY_NOT_AVAILABLE" : "Indisponible",
     "IN_STOCK_QUANTITY" : "Quantité en stock",
     "NEW_REQUISITION" : "Nouvelle réquisition",
     "NOT_FOR_DEPOT":"Le bon de requisition ne concerne pas le depot en cours",
