@@ -19,6 +19,7 @@
     "DOES_SHIPMENT_EXIST": "Do you have a shipment ready?",
     "DOES_SHIPMENT_EXIST_HELP": "Please provide the reference of a shipment that is ready to ship.",
     "EDIT": "Edit",
+    "EDIT_SHIPMENT": "Edit Shipment",
     "ENTER_SHIPMENT_PROGRESS": "Please enter the shipment progress status.  Include the current shipment location if it has changed.",
     "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
     "ENTER_STOCK_FOR_SHIPMENT" : "Enter stock for this shipment",
