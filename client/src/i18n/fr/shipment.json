@@ -19,6 +19,7 @@
     "DOES_SHIPMENT_EXIST": "Avez-vous une expédition prête ?",
     "DOES_SHIPMENT_EXIST_HELP": "Veuillez renseigner la référence de l'expédition prête",
     "EDIT": "Editer",
+    "EDIT_SHIPMENT": "Modifier expédition",
     "ENTER_SHIPMENT_PROGRESS": "Veuillez entrer l'etat de progression de l'expédition avec sa localisation actuelle",
     "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
     "ENTER_STOCK_FOR_SHIPMENT" : "Entrer le stock pour cette expédition",
