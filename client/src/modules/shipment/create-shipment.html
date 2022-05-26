@@ -4,14 +4,16 @@
       <li class="static" translate>SHIPMENT.SHIPMENTS</li>
       <li><a ui-sref="shipments" translate>SHIPMENT.SHIPMENT_REGISTRY</a></li>
       <li class="title">
-        <span translate>SHIPMENT.NEW_SHIPMENT </span>&nbsp;
+        <span ng-if="CreateShipCtrl.isCreateState" translate>SHIPMENT.NEW_SHIPMENT</span>
+        <span ng-if="!CreateShipCtrl.isCreateState" translate>SHIPMENT.EDIT_SHIPMENT</span>
+        &nbsp;
         <span ng-if="CreateShipCtrl.depot.uuid" class="label label-primary">{{ CreateShipCtrl.depot.text }}</span>
       </li>
     </ol>
 
     <div class="toolbar">
       <div ng-if="!CreateShipCtrl.$loading" class="toolbar-item">
-        <bh-dropdown-menu>
+        <bh-dropdown-menu ng-if="CreateShipCtrl.isCreateState">
           <bh-dropdown-menu-item>
             <a href>
               <bh-change-depot
