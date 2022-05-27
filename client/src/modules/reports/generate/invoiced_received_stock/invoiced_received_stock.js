@@ -15,16 +15,15 @@ function invoicedeceivedStockController($state, $sce, Notify, AppCache, SavedRep
 
   const vm = this;
   const cache = new AppCache('configure_invoiced_received_stock');
-  const reportUrl = '/reports/finance/invoiced_received_stock/';
-  let baseReportUrl = '';
+  const reportUrl = 'reports/finance/invoiced_received_stock';
 
-  vm.reportDetails = {};
+  vm.reportDetails = { };
 
   checkCachedConfiguration();
 
   vm.requestSaveAs = function requestSaveAs() {
     const options = {
-      url : baseReportUrl,
+      url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
@@ -38,7 +37,7 @@ function invoicedeceivedStockController($state, $sce, Notify, AppCache, SavedRep
 
   // set patient
   vm.setPatient = function setPatient(patient) {
-    baseReportUrl = `${reportUrl}${patient.uuid}`;
+    vm.reportDetails.patientUuid = patient.uuid;
   };
 
   vm.preview = function preview(form) {
@@ -47,7 +46,7 @@ function invoicedeceivedStockController($state, $sce, Notify, AppCache, SavedRep
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview(baseReportUrl, reportData.id, angular.copy(vm.reportDetails))
+    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);

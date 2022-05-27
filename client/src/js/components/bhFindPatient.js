@@ -117,7 +117,6 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
       .catch(Notify.handleError);
   }
 
-
   /**
    * @method searchByReference
    *

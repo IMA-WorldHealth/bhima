@@ -475,7 +475,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/client_support', clientSupport.report);
   app.get('/reports/finance/realized_profit', realizedProfit.report);
   app.get('/reports/finance/recovery_capacity', recoveryCapacity.report);
-  app.get('/reports/finance/invoiced_received_stock/:uuid', financeReports.invoicedReceivedStock.report);
+  app.get('/reports/finance/invoiced_received_stock', financeReports.invoicedReceivedStock.report);
 
   app.get('/reports/finance/system_usage_stat', systemUsage.document);
 
