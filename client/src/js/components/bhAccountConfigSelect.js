@@ -30,11 +30,16 @@ function AccountConfigSelectController(AccountConfig, Notify) {
       $ctrl.required = true;
     }
 
+    $ctrl.isLoading = true;
+
     AccountConfig.read()
       .then(accountConfigs => {
         $ctrl.accountConfigs = accountConfigs;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.isLoading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary

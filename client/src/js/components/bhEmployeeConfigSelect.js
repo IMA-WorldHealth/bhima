@@ -26,6 +26,8 @@ function EmployeeConfigSelectController(EmployeeConfigs, Notify) {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'EMPLOYEE.CONFIGURATION';
 
+    $ctrl.isLoading = true;
+
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
     }
@@ -34,7 +36,10 @@ function EmployeeConfigSelectController(EmployeeConfigs, Notify) {
       .then(employeeConfigs => {
         $ctrl.employeeConfigs = employeeConfigs;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.isLoading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary

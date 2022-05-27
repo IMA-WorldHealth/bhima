@@ -26,6 +26,7 @@ function WeekConfigSelectController(WeekConfigs, Notify) {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.WEEKEND_CONFIGURATION';
 
+    $ctrl.isLoading = true;
 
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
@@ -35,7 +36,10 @@ function WeekConfigSelectController(WeekConfigs, Notify) {
       .then(weekendConfigs => {
         $ctrl.weekendConfigs = weekendConfigs;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.isLoading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary

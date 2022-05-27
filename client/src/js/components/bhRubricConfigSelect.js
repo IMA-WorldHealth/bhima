@@ -12,17 +12,19 @@ angular.module('bhima.components')
   });
 
 RubricConfigSelectController.$inject = [
-  'ConfigurationService', '$timeout', '$scope', 'NotifyService',
+  'ConfigurationService', '$timeout', 'NotifyService',
 ];
 
 /**
  * Rubric Configuration Select Controller
  */
-function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
+function RubricConfigSelectController(RubricConfigs, $timeout, Notify) {
   const $ctrl = this;
 
   // fired at the beginning of the rubric configuration select
   $ctrl.$onInit = function $onInit() {
+    $ctrl.isLoading = true;
+
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'PAYROLL_RUBRIC.CONFIGURATION';
 
@@ -37,7 +39,10 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
       .then(rubricConfigs => {
         $ctrl.rubricConfigs = rubricConfigs;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.isLoading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary
