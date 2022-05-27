@@ -26,7 +26,8 @@
           <!--select the Patient -->
           <bh-find-patient
             suppress-reset="false"
-            on-search-complete="ReportConfigCtrl.setPatient(patient)">
+            on-search-complete="ReportConfigCtrl.setPatient(patient)"
+            required="true">
           </bh-find-patient>
 
           <!-- Date interval  -->
@@ -35,7 +36,7 @@
             date-to="ReportConfigCtrl.reportDetails.dateTo"
             required="true"
             limit-min-fiscal>
-          </bh-date-interval>          
+          </bh-date-interval>
 
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
