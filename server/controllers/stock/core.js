@@ -698,8 +698,9 @@ function listLostStock(params) {
  *   computeLotIndicators()
  *
  * DEFINITIONS:
- *   S_SEC: Security Stock - one month of stock on hand based on the average consumption.
- *   S_MIN: Minimum stock - typically the security stock (depends on the depot)
+ *   S_SEC: Security Stock - the amount of stock needed to survive a reorder period without stockout.
+ *                           this depends on the purchase/delivery delay.
+ *   S_MIN: Minimum stock - typically the security stock (depends on the depot), with some multiplier.
  */
 function computeInventoryIndicators(inventories) {
   for (let i = 0; i < inventories.length; i++) {
@@ -730,13 +731,11 @@ function computeInventoryIndicators(inventories) {
     inventory.S_SEC = CMM * delay; // stock de securite
 
     // Compute Minimum Stock
-    // The minumum of stock required is double the security stock.
-    // NOTE(@jniles): this is defined per depot.
+    // The minimum stock is used to trigger the "minimum stock" warning state.  Note that this
+    // value can be less than the security stock if the min_months_security_stock is less than one.
+    // FIXME(jniles): rename min_months_security_stock variable since it doesn't depend on months
+    // I propose that we call it "security_stock_multiplier" or something
     inventory.S_MIN = inventory.S_SEC * inventory.min_months_security_stock;
-
-    // Compute Maximum Stock
-    // The maximum stock is the minumum stock plus the amount able to be consumed in a
-    // single purchase interval.
 
     // Here we are looking for the maximum order interval defined either
     // at the level of the company, the depot or the inventory
@@ -746,6 +745,9 @@ function computeInventoryIndicators(inventories) {
       inventory.purchase_interval,
     );
 
+    // Compute Maximum Stock
+    // The maximum stock is the minumum stock plus the amount able to be consumed in a
+    // single purchase interval.
     inventory.S_MAX = (CMM * purchaseInterval) + inventory.S_MIN; // stock maximum
 
     // Compute Months of Stock Remaining
@@ -757,6 +759,8 @@ function computeInventoryIndicators(inventories) {
     // The refill quantity is the amount of stock needed to order to reach your maximum stock.
     inventory.S_Q = inventory.S_MAX - Q; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? parseInt(inventory.S_Q, 10) : 0;
+
+    // TODO(@jniles) - encapsulate these status codes somewhere we can test them
 
     // compute the inventory status code
     if (Q <= 0 && inventoryExpiredLotsQuantity === 0) {
