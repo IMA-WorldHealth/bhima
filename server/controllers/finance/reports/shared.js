@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const PeriodService = require('../../../lib/period');
+const db = require('../../../lib/db');
 
 const filters = [{
   field : 'account_id',
@@ -73,6 +74,7 @@ const filters = [{
 }, {
   field : 'inventory_uuid',
   displayName : 'FORM.LABELS.INVENTORY',
+  isInventory : true,
 }, {
   field : 'flux_id',
   displayName : 'STOCK.FLUX',
@@ -133,6 +135,7 @@ const filters = [{
 }, {
   field : 'depot_uuid',
   displayName : 'STOCK.DEPOT',
+  isDepot : true,
 }, {
   field : 'description',
   displayName : 'FORM.LABELS.DESCRIPTION',
@@ -221,6 +224,16 @@ function formatFilters(qs) {
       if (filter.isPeriod) {
         const service = new PeriodService(new Date());
         filter.value = service.periods[value].translateKey;
+      } else if (filter.isDepot) {
+        db.one('SELECT text FROM depot WHERE uuid = ?', db.bid(value))
+          .then(depot => {
+            filter.value = depot.text;
+          });
+      } else if (filter.isInventory) {
+        db.one('SELECT text FROM inventory WHERE uuid = ?', db.bid(value))
+          .then(inv => {
+            filter.value = inv.text;
+          });
       } else {
 
         // if there is a display value for this field, show it.  Otherwise, default
