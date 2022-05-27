@@ -30,11 +30,16 @@ function IprConfigSelectController(IprConfigs, Notify) {
       $ctrl.required = true;
     }
 
+    $ctrl.isLoading = true;
+
     IprConfigs.read()
       .then(iprConfigs => {
         $ctrl.iprConfigs = iprConfigs;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.isLoading = false;
+      });
   };
 
   $ctrl.onSelect = iprConfig => $ctrl.onSelectCallback({ iprConfig });
