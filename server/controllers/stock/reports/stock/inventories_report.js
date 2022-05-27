@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, formatFilters, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE, stockStatusLabelKeys,
+  _, db, ReportManager, formatFilters, Stock, STOCK_INVENTORIES_REPORT_TEMPLATE, stockStatusLabelKeys,
 } = require('../common');
 
 const i18n = require('../../../../lib/helpers/translate');
@@ -30,6 +30,20 @@ async function stockInventoriesReport(req, res, next) {
     delete options.label;
 
     const filters = formatFilters(options);
+
+    // Update the name for the depot filter if specified
+    const depotFilter = filters.find(filt => filt.field === 'depot_uuid');
+    if (depotFilter) {
+      const depot = await db.one('SELECT text FROM depot WHERE uuid = ?', db.bid(depotFilter.value));
+      depotFilter.value = depot.text;
+    }
+
+    // Update the name for the inventory filter if specified
+    const inventoryFilter = filters.find(filt => filt.field === 'inventory_uuid');
+    if (inventoryFilter) {
+      const inventory = await db.one('SELECT text FROM inventory WHERE uuid = ?', db.bid(inventoryFilter.value));
+      inventoryFilter.value = inventory.text;
+    }
 
     if (req.session.stock_settings.enable_strict_depot_permission) {
       options.check_user_id = req.session.user.id;
