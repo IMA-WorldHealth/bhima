@@ -22,6 +22,7 @@ function EmployeeSelectController(Employees, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
+
     // load all Employee
     Employees.read()
       .then(employees => {

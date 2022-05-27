@@ -4,7 +4,9 @@
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
     </label>
-    <div class="text-danger" ng-if="!$ctrl.employeeConfigs.length">
+
+
+    <div class="text-danger" ng-if="!$ctrl.isLoading && !$ctrl.employeeConfigs.length">
       <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>
     </div>
 

@@ -9,7 +9,7 @@
 
     <ng-transclude></ng-transclude>
 
-    <div class="text-danger" ng-if="!$ctrl.accountConfigs.length">
+    <div class="text-danger" ng-if="!$ctrl.isLoading && !$ctrl.accountConfigs.length">
       <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>
     </div>
 
