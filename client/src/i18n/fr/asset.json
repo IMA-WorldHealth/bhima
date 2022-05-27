@@ -40,6 +40,7 @@
     "SHOW_NOT_ASSIGNED" : "Actifs non assigné",
     "SHOW_ONLY" : "Montrer uniquement",
     "SHOW_ONLY_ASSIGNED" : "Actifs assigné",
+    "SHOW_ONLY_LAST_SCAN" : "Montrer juste le dernier scan",
     "SHOW_SCANNED_ASSETS" : "Montrer les actifs scannés",
     "SHOW_UNSCANNED_ASSETS" : "Montrer les actifs non scannés",
     "SUCCESSFULLY_EDITED":"L'actif a été modifié",
