@@ -28,12 +28,12 @@
       {{#each depots as | items name |}}
 
         <!-- this is the depot group header -->
-        <tr style="border:none">
-          <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase" colspan="7">
+        <tr style="border:none;">
+          <th style="border:none; border-bottom: solid black 2px; padding-top: 1.5em;" class="text-uppercase" colspan="7">
             {{ name }}
           </th>
 
-          <th colspan="4" style="border:none; border-bottom: solid black 2px;" class="text-right">
+          <th colspan="4" style="border:none; border-bottom: solid black 2px; padding-top: 1.5em;" class="text-right">
             ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
           </th>
         </tr>
@@ -60,8 +60,6 @@
             <td class="text-right">{{S_MAX}}</td>
             <td class="text-right">{{S_Q}}</td>
           </tr>
-        {{else }}
-          {{> emptyTable columns=11}}
         {{/each}}
 
         <!-- blank row  -->
@@ -72,6 +70,8 @@
           </tr>
         {{/unless}}
 
+      {{else}}
+         {{> emptyTable columns=11}}
       {{/each}}
     </tbody>
   </table>
