@@ -128,9 +128,6 @@
     "GENERATED": "Generated Report",
     "INCOME": "Income",
     "LEGEND": "Legend",
-    "PROFIT_AND_LOSS": "Profit and Loss Statement",
-    "PROFIT_AND_LOSS_BY_MONTH": "Profit and Loss Statement By Month",
-    "PROFIT_AND_LOSS_BY_YEAR": "Profit and Loss Statement By Fiscal Year",
     "INCOME_REPORT": "Income Report",
     "MONTHLY_BALANCE": {
       "DESCRIPTION": "This report is used to analyze the balance of accounts on a monthly basis. This analysis shows the total debits and credits as well as the total balances for each account.",
@@ -271,14 +268,6 @@
       "WARN_MULTIPLE": "N.B. This report concerns an income/expense account and spans multiple fiscal years. Income/expense accounts are cleared to 0 at the beginning of every fiscal year. The cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year.",
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
-    "PROFIT_AND_LOSS_BY_MONTH_REPORT": {
-      "TITLE": "Profit and Loss Statement (Monthly)",
-      "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods."
-    },
-    "PROFIT_AND_LOSS_BY_YEAR_REPORT": {
-      "TITLE": "Profit and Loss Statement (Yearly)",
-      "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous fiscal years."
-    },
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
@@ -287,17 +276,9 @@
       "TITLE": "Indicators Report",
       "DESCRIPTION": "This report summarizes the indicators for a hospital"
     },
-    "PROFIT_AND_LOSS_REPORT": {
-      "TITLE": "Income Expense Report",
-      "DESCRIPTION": "Show the list of incomes and expenses that occurred inside the enterprise"
-    },
     "BALANCE_REPORT": {
       "TITLE": "Balance Report",
       "DESCRIPTION": "This report shows the account balance for a given period"
-    },
-    "REPORT_PROFIT_AND_LOSS": {
-      "TITLE": "Income Expense Report",
-      "DESCRIPTION": "This report shows all incomes and expenses of the enterprise"
     },
     "CASH_REPORT": {
       "TITLE": "Cash Report",

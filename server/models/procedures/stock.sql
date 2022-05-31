@@ -362,7 +362,7 @@ CREATE PROCEDURE ComputeStockStatusForStagedInventory(
 
     This allows us to easily SUM/GROUP on this logic in future tables.  This is essentially a raw copy of the stock_movement table
 
-    TODO(@jniles): I think we can actually completely do away with tis table by combining it into the following query.  But it would
+    TODO(@jniles): I think we can actually completely do away with this table by combining it into the following query.  But it would
     be rather hard to read.  This is a TODO for a future optimisation.
   */
   CREATE TEMPORARY TABLE stock_movement_grp AS
@@ -714,12 +714,12 @@ BEGIN
 
   DECLARE cursor_all_movements CURSOR FOR
     SELECT sm.quantity, sm.unit_cost, sm.is_exit
-    FROM stock_movement AS sm
-    JOIN lot AS l ON l.uuid = sm.lot_uuid
-    JOIN depot d ON d.uuid = sm.depot_uuid
-    WHERE
-      l.inventory_uuid = _inventory_uuid AND DATE(sm.date) <= DATE(_date)
-    ORDER BY DATE(sm.date), sm.created_at ASC;
+      FROM stock_movement AS sm
+      JOIN lot AS l ON l.uuid = sm.lot_uuid
+      JOIN depot d ON d.uuid = sm.depot_uuid
+      WHERE
+        l.inventory_uuid = _inventory_uuid AND DATE(sm.date) <= DATE(_date)
+      ORDER BY DATE(sm.date), sm.created_at ASC;
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_cursor_all_movements_finished = 1;
 
