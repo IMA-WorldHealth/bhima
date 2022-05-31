@@ -99,27 +99,25 @@ function MultiplePayrollIndiceController(
 
     MultiplePayroll.read(null, filters)
       .then((result) => {
-        renameGidHeaders(result.rubrics);
+        renameGridHeaders(result.rubrics);
         vm.gridOptions.data = setGridData(result.employees);
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
   }
 
-  function renameGidHeaders(rubrics) {
+  function renameGridHeaders(rubrics) {
     const actions = angular.copy(columnDefs[columnDefs.length - 1]);
     const newColumns = columnDefs.slice(0, 1);
 
     const header = {
       type : 'number',
-      enableFiltering  : false,
       headerCellFilter : 'translate',
       cellClass  : 'text-right',
       footerCellClass  : 'text-right',
       footerCellFilter : 'number:2',
       cellFilter : 'number:2',
       aggregationType : uiGridConstants.aggregationTypes.sum,
-      // width : 100,
       aggregationHideLabel : true,
     };
 
@@ -131,6 +129,9 @@ function MultiplePayrollIndiceController(
     });
 
     vm.gridOptions.columnDefs = [...newColumns, actions];
+
+    // notify the grid of a data change
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   function setGridData(employees) {
