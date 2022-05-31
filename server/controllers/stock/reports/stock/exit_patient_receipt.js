@@ -15,7 +15,7 @@ const {
  */
 async function stockExitPatientReceipt(documentUuid, session, options) {
   const data = {};
-  const optionReport = _.extend(options, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
+  const optionReport = _.extend(options, { filename : 'STOCK.RECEIPT.EXIT_PATIENT' });
   const autoStockAccountingEnabled = session.stock_settings.enable_auto_stock_accounting;
 
   let template = STOCK_EXIT_PATIENT_TEMPLATE;
