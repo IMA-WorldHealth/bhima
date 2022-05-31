@@ -62,7 +62,7 @@
               {{#unless ../depot.text}}
               <td style="border-right: 1px solid #000;">{{depot_text}}</td>
               {{/unless}}
-              <td style="border-left: 1px solid #000;">{{translate flux}}</td>
+              <td style="border-left: 1px solid #000;">{{translate flux}} {{#if reason}}- {{reason}}{{/if}}</td>
               <td style="border-left: 1px solid #000;">{{label}}</td>
 
               {{!-- entry --}}
