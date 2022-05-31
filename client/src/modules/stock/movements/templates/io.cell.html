@@ -1,8 +1,5 @@
 <div class="ui-grid-cell-contents">
-    <span ng-show="row.entity.is_exit === 1" class="label label-danger" translate>
-        STOCK.OUTPUT
-    </span>
-    <span ng-show="row.entity.is_exit === 0" class="label label-success" translate>
-        STOCK.INPUT
+    <span class="label" ng-class="{ 'label-danger' : row.entity.is_exit === 1, 'label-success' :  row.entity.is_exit === 0 }">
+      {{row.entity.io}}
     </span>
 </div>
