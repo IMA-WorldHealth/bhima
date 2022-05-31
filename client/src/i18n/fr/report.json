@@ -120,9 +120,6 @@
     "GENERATED" : "Rapport généré",
     "INCOME": "Produit",
     "LEGEND": "Legende",
-    "PROFIT_AND_LOSS" : "Rapport des Produits et des Charges",
-    "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
-    "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
     "INCOME_REPORT" : "Rapport des Recettes",
     "MONTHLY_BALANCE": {
       "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
@@ -272,18 +269,6 @@
     "REPORT_INDICATORS": {
       "TITLE": " Rapport des indicateurs",
       "DESCRIPTION": "Ce rapport resume les indicateurs pour un hôpital"
-    },
-    "PROFIT_AND_LOSS_REPORT": {
-      "TITLE": "Rapport des Comptes d'exploitation",
-      "DESCRIPTION": "Afficher la liste des revenus et des dépenses pris en charge dans l'entreprise"
-    },
-    "PROFIT_AND_LOSS_BY_MONTH_REPORT": {
-      "TITLE": "Rapport des Comptes d'exploitation par mois",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes"
-    },
-    "PROFIT_AND_LOSS_BY_YEAR_REPORT": {
-      "TITLE": "Rapport des Comptes d'Exploitation par Année",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes"
     },
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",
