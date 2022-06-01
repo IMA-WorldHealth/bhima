@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('balance_reportController', BalanceReportConfigController);
 
 BalanceReportConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'SessionService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
 /**
@@ -11,13 +11,17 @@ BalanceReportConfigController.$inject = [
  * @description
  * This function renders the balance report.
  */
-function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function BalanceReportConfigController($sce, Notify, Session, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('BalanceReport');
   const reportUrl = 'reports/finance/balance';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
+
+  vm.setCurrency = function setCurrency(currency) {
+    vm.reportDetails.currency_id = currency.id;
+  };
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
@@ -94,7 +98,14 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
-    // Set the defaults for the radio items
+
+    // Set the defaults
+    if (!angular.isDefined(vm.reportDetails.currencyId)) {
+      vm.reportDetails.currency_id = Session.enterprise.currency_id;
+    }
+    if (!angular.isDefined(vm.reportDetails.includeClosingBalances)) {
+      vm.reportDetails.includeClosingBalances = 0;
+    }
     if (!angular.isDefined(vm.reportDetails.useSeparateDebitsAndCredits)) {
       vm.reportDetails.useSeparateDebitsAndCredits = 1;
     }
