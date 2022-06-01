@@ -16,6 +16,8 @@
     {{/if}}
   {{/header}}
 
+  {{> exchangeRate rate=exchangeRate currencyId=currencyId date=dateExchangeRate}}
+
   <!-- body  -->
   <div class="row">
     <div class="col-xs-12">
@@ -81,38 +83,38 @@
               {{#if ../useSeparateDebitsAndCredits}}
                 <td>
                   {{#if account.before_debit}}
-                    {{currency account.before_debit account.currencyId }}
+                    {{currency (multiply account.before_debit ../exchangeRate) ../currencyId }}
                   {{/if}}
                 </td>
                 <td>
                   {{#if account.before_credit}}
-                    {{currency account.before_credit account.currencyId }}
+                    {{currency (multiply account.before_credit ../exchangeRate) ../currencyId }}
                   {{/if}}
                 </td>
               {{else}}
-                <td>{{#if account.before}}{{debcred account.before account.currencyId }}{{/if}}</td>
+                <td>{{#if account.before}}{{debcred (multiply account.before ../exchangeRate) ../currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                <td>{{currency account.during_debit account.currencyId }}</td>
-                <td>{{currency account.during_credit account.currencyId }}</td>
+                <td>{{currency (multiply account.during_debit ../exchangeRate) ../currencyId }}</td>
+                <td>{{currency (multiply account.during_credit ../exchangeRate) ../currencyId }}</td>
               {{else}}
-                <td>{{#if account.during}}{{debcred account.during account.currencyId }}{{/if}}</td>
+                <td>{{#if account.during}}{{debcred (multiply account.during ../exchangeRate) ../currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
                 <td>
                   {{#if account.after_debit}}
-                    {{currency account.after_debit account.currencyId }}
+                    {{currency (multiply account.after_debit ../exchangeRate) ../currencyId }}
                   {{/if}}
                 </td>
                 <td>
                   {{#if account.after_credit}}
-                    {{currency account.after_credit account.currencyId }}
+                    {{currency (multiply account.after_credit ../exchangeRate) ../currencyId }}
                   {{/if}}
                 </td>
               {{else}}
-                <td>{{#if account.after}}{{debcred account.after account.currencyId }}{{/if}}</td>
+                <td>{{#if account.after}}{{debcred (multiply account.after ../exchangeRate) ../currencyId }}{{/if}}</td>
               {{/if}}
             </tr>
           {{/each}}
@@ -122,25 +124,25 @@
           <tr class="text-right" style="background-color: #efefef;">
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
             {{#if useSeparateDebitsAndCredits}}
-              <th class="text-right">{{currency totals.before_debit totals.currencyId }}</th>
-              <th class="text-right">{{currency totals.before_credit totals.currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.before_debit exchangeRate) currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.before_credit exchangeRate) currencyId }}</th>
             {{else}}
-              <th class="text-right">{{debcred totals.before totals.currencyId }}</th>
+              <th class="text-right">{{debcred (multiply totals.before exchangeRate) currencyId }}</th>
             {{/if}}
 
             {{#if useSeparateDebitsAndCredits}}
-              <th class="text-right">{{currency totals.during_debit totals.currencyId }}</th>
-              <th class="text-right">{{currency totals.during_credit totals.currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.during_debit exchangeRate) currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.during_credit exchangeRate) currencyId }}</th>
             {{else}}
-              <th class="text-right">{{debcred totals.during totals.currencyId }}</th>
+              <th class="text-right">{{debcred (multiply totals.during exchangeRate) currencyId }}</th>
             {{/if}}
 
 
             {{#if useSeparateDebitsAndCredits}}
-              <th class="text-right">{{currency totals.after_debit totals.currencyId }}</th>
-              <th class="text-right">{{currency totals.after_credit totals.currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.after_debit exchangeRate) currencyId }}</th>
+              <th class="text-right">{{currency (multiply totals.after_credit exchangeRate) currencyId }}</th>
             {{else}}
-              <th class="text-right">{{debcred totals.after totals.currencyId }}</th>
+              <th class="text-right">{{debcred (multiply totals.after exchangeRate) currencyId }}</th>
             {{/if}}
           </tr>
         </tfoot>

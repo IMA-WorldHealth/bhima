@@ -15,6 +15,8 @@ const _ = require('lodash');
 const Tree = require('@ima-worldhealth/tree');
 
 const db = require('../../../../lib/db');
+const Exchange = require('../../exchange');
+
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
@@ -53,10 +55,25 @@ async function reporting(options, session) {
   context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
 
   const report = new ReportManager(TEMPLATE, session, params);
-  const currencyId = session.enterprise.currency_id;
+
+  const currencyId = Number(options.currency_id);
 
   const period = await getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances);
   _.merge(context, { period });
+
+  // Get the exchange rate at the end of the interval
+  const dateExchangeRate = params.includeClosingBalances
+    ? new Date(period.fiscalYearEnd) : new Date(period.end_date);
+  const exRateQuery = await Exchange.getExchangeRate(
+    session.enterprise.id,
+    currencyId,
+    dateExchangeRate,
+  );
+  const exchangeRate = exRateQuery.rate || 1.0;
+
+  context.currencyId = currencyId;
+  context.exchangeRate = exchangeRate;
+  context.dateExchangeRate = dateExchangeRate;
 
   const balance = await getBalanceForFiscalYear(period, currencyId);
   context.accounts = balance.accounts;
