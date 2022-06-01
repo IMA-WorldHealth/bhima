@@ -263,7 +263,6 @@ function StockMovementsController(
     const fluxName = $translate.instant(getFluxName(row.flux_id));
     // compute the fluxName from its ID
     row.fluxName = fluxName.concat(row.target ? ` - ${row.target}` : '').trim();
-
   }
 
   function toggleLoading() {
