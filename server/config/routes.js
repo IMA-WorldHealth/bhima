@@ -134,7 +134,6 @@ const setDistributionKey = require('../controllers/finance/allocationCostCenter/
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
 const indicators = require('../controllers/finance/indicator');
-const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
 const debtorSummaryReport = require('../controllers/finance/reports/debtors/summaryReport');
 const clientDebts = require('../controllers/finance/reports/client_debts');
@@ -464,8 +463,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/annual_clients_report', financeReports.annualClientsReport);
   app.get('/reports/finance/employee_standing/', financeReports.employee);
   app.get('/reports/finance/all_employees_standing/', financeReports.allEmployees);
-  app.get('/reports/finance/break_even', financeReports.breakEven.report);
-  app.get('/reports/finance/break_even_cost_center', financeReports.breakEvenCostCenter.report);
   app.get('/reports/finance/operating', financeReports.operating.document);
   app.get('/reports/finance/debtor_summary', debtorSummaryReport.summaryReport);
   app.get('/reports/finance/client_debts', clientDebts.report);
@@ -1063,13 +1060,6 @@ exports.configure = function configure(app) {
   app.post('/indicators/finances', indicators.finances.create);
   app.put('/indicators/finances/:uuid', indicators.finances.update);
   app.delete('/indicators/finances/:uuid', indicators.finances.delete);
-
-  // API for Break Even Reference routes crud
-  app.get('/break_even_reference', breakEvenReference.list);
-  app.get('/break_even_reference/:id', breakEvenReference.detail);
-  app.post('/break_even_reference', breakEvenReference.create);
-  app.put('/break_even_reference/:id', breakEvenReference.update);
-  app.delete('/break_even_reference/:id', breakEvenReference.delete);
 
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
