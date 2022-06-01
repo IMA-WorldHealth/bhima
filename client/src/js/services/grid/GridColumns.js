@@ -76,7 +76,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
     });
   }
 
-
   /**
    * returns [{field1 : displayName1}, {field2 : displayName2}, ...]
    * this function is useful for renaming keys
@@ -113,7 +112,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
     this.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-
   /**
    * @method hasEnoughColumns
    *
@@ -138,7 +136,6 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
     return visibleColumns > 0;
   };
 
-
   /**
    * @method resetDefaultVisibility
    *
@@ -161,7 +158,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
    *   core.
    */
   Columns.prototype.getColumns = function getColumns() {
-    return this.gridApi.grid.columns;
+    return this.gridApi.grid.columns.filter(col => col.field !== 'selectionRowHeaderCol');
   };
 
   /**
@@ -194,10 +191,9 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
       templateUrl : 'modules/templates/modals/columnConfig.modal.html',
       controller :  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
       size : 'lg',
-      resolve : {
-        Columns : function columnsProvider() { return self; },
-      },
+      resolve : { Columns : () => self },
     });
+
     return modal.result;
   };
 
