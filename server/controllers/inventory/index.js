@@ -116,13 +116,15 @@ async function getInventoryWac(req, res, next) {
 
 async function computeWac(inventoryUuid) {
   const binaryInventoryUuid = db.bid(inventoryUuid);
+
   const queryRecompute = 'CALL RecomputeInventoryStockValue(?, ?);';
+
   const querySelect = `
     SELECT
       BUID(sv.inventory_uuid) inventory_uuid,
       i.text, sv.date, sv.quantity, sv.wac
     FROM stock_value sv
-    JOIN inventory i ON i.uuid = sv.inventory_uuid
+      JOIN inventory i ON i.uuid = sv.inventory_uuid
     WHERE sv.inventory_uuid = ?;
   `;
 
@@ -133,7 +135,6 @@ async function computeWac(inventoryUuid) {
 
 // get inventory log as excel
 // GET /inventory/download/log/:uuid?rendere=xlsx?lang=fr
-
 async function logDownLoad(req, res, next) {
   try {
     const { lang } = req.query;
