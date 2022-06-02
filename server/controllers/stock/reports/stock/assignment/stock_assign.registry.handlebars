@@ -8,15 +8,6 @@
   <div class="row">
     <div class="col-xs-12">
 
-      <!-- page title  -->
-      <h2 class="text-center text-uppercase">
-        {{translate 'ASSIGN.STOCK_ASSIGN'}}
-      </h2>
-
-      <h4 class="text-center">
-        {{date}}
-      </h4>
-
       <!-- filters  -->
       {{> filterbar filters=filters }}
 
@@ -28,9 +19,9 @@
             <th>{{translate 'STOCK.CODE'}}</th>
             <th>{{translate 'STOCK.INVENTORY'}}</th>
             <th>{{translate 'STOCK.LOT'}}</th>
-            <th>{{translate 'ENTITY.LABEL'}}</th>
             <th>{{translate 'STOCK.QUANTITY'}}</th>
-            <th>{{translate 'FORM.LABELS.DATE'}}</th>
+            <th>{{translate 'ENTITY.ASSIGNED_TO'}}</th>
+            <th>{{translate 'ASSIGN.ASSIGNMENT_DATE'}}</th>
           </tr>
         </thead>
         <tbody>
@@ -41,9 +32,10 @@
               <td>{{item.code}}</td>
               <td>{{item.text}}</td>
               <td>{{item.label}}</td>
-              <td>{{item.display_name}}</td>
               <td>{{item.quantity}}</td>
+              <td>{{item.assigned_to_name}}</td>
               <td>{{date item.created_at}}</td>
+
             </tr>
 
           {{else}}
