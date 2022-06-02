@@ -400,17 +400,19 @@
     "REGISTRY" : "Inventory Registry"
   },
   "ASSIGN" : {
-    "TITLE" : "Assignment",
-    "STOCK_ASSIGN" : "Stock Assignment",
-    "EDIT_ASSIGN" : "Edit Assignment",
     "ADD_ASSIGNMENT" : "Add Assignment",
-    "REMOVE_ASSIGNMENT" : "Remove Assignment",
-    "CREATE_SUCCESS" : "Successfully created the assignment",
-    "UPDATE_SUCCESS" : "Successfully updated the assignment",
-    "REMOVE_SUCCESS" : "Successfully removed the assignment",
+    "ASSIGNMENT_DATE" : "Assignment date",
     "CONFIRM_REMOVE_MSG" : "Do you really want to remove this stock assignment?",
+    "CREATE_SUCCESS" : "Successfully created the assignment",
+    "CURRENT_ASSIGNMENTS" : "Current Assignments",
+    "EDIT_ASSIGN" : "Edit Assignment",
     "NEW_ASSIGN" : "New Assignment",
-    "RECEIVER" : "Receiver"
+    "RECEIVER" : "Receiver",
+    "REMOVE_ASSIGNMENT" : "Remove Assignment",
+    "REMOVE_SUCCESS" : "Successfully removed the assignment",
+    "STOCK_ASSIGN" : "Stock Assignment",
+    "TITLE" : "Assignment",
+    "UPDATE_SUCCESS" : "Successfully updated the assignment"
   },
   "REQUISITION": {
     "ALREADY_USED":"The requisition slip has been already used",
