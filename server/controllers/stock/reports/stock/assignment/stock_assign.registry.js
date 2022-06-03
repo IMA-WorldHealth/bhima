@@ -18,7 +18,7 @@ function stockAssignRegistry(req, res, next) {
 
   const params = req.query;
   const optionReport = _.extend(req.query, {
-    filename : 'ASSIGN.STOCK_ASSIGN',
+    filename : 'ASSIGN.CURRENT_ASSIGNMENTS',
     csvKey : 'rows',
     renameKeys : false,
   });

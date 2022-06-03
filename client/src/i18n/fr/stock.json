@@ -400,17 +400,19 @@
     "REGISTRY" : "Registre des inventaires"
   },
   "ASSIGN" : {
-    "TITLE" : "Assignation",
-    "STOCK_ASSIGN" : "Assignation de stock",
-    "EDIT_ASSIGN" : "Editer Assignation",
     "ADD_ASSIGNMENT" : "Ajouter assignation",
-    "REMOVE_ASSIGNMENT" : "Désassigner",
-    "CREATE_SUCCESS" : "Nouvelle assignation de stock réussie",
-    "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie",
-    "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",
+    "ASSIGNMENT_DATE" : "Date assignée",
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment désassigner ce stock ?",
+    "CREATE_SUCCESS" : "Nouvelle assignation de stock réussie",
+    "CURRENT_ASSIGNMENTS" : "Assignations actuelles",
+    "EDIT_ASSIGN" : "Editer Assignation",
     "NEW_ASSIGN" : "Nouvelle assignation",
-    "RECEIVER" : "Bénéficiaire"
+    "RECEIVER" : "Bénéficiaire",
+    "REMOVE_ASSIGNMENT" : "Désassigner",
+    "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",
+    "STOCK_ASSIGN" : "Assignation de stock",
+    "TITLE" : "Assignation",
+    "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie"
   },
   "REQUISITION" : {
     "ALREADY_USED":"Le bon de requisition a déjà été utilisé",

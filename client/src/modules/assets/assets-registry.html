@@ -33,8 +33,8 @@
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
-            <li role="separator" class="divider"></li>
 
+            <li role="separator" class="divider"></li>
 
             <li role="menuitem">
               <a data-method="export-pdf" ng-href="/assets/reports/registry?{{ AssetsCtrl.exportTo('pdf') }}" download="{{ 'TREE.ASSET_MANAGEMENT.TITLE' | translate }}">
@@ -55,6 +55,13 @@
             </li>
 
             <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a ng-href="/reports/stock/assign/?{{ StockCtrl.getQueryString('pdf') }}" download="{{ 'ASSIGN.CURRENT_ASSIGNMENTS' | translate }}">
+                <span class="fa fa-file-pdf-o"></span> <span translate>ASSIGN.CURRENT_ASSIGNMENTS</span>
+              </a>
+            </li>
+
+           <li role="separator" class="divider"></li>
             <li role="menuitem" bh-require-enterprise-setting="barcodes">
               <a href ng-click="AssetsCtrl.openAssetBarcodeScanner()" data-action="scan-barcode">
                 <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN_BARCODE</span>
