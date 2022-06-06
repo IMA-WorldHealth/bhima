@@ -69,7 +69,7 @@ blocks:
               values:
                 - '14'
                 - '16'
-#                - 'node'
+                - 'node'
 
   - name: Install Testing Matrix
     dependencies: ["Update Dependencies"]
@@ -121,4 +121,4 @@ blocks:
               values:
                 - '14'
                 - '16'
-#                - 'node'
+                - 'node'
