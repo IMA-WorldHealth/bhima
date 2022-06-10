@@ -7,6 +7,7 @@ const util = require('../../../lib/util');
 const FilterParser = require('../../../lib/filter');
 
 const REQUISITION_STATUS_PARTIAL = 3;
+const REQUISITION_STATUS_COMPLETE = 6;
 const REQUISITION_STATUS_EXCESSIVE = 7;
 
 const SELECT_QUERY = `
@@ -270,6 +271,9 @@ exports.update = async (req, res, next) => {
         dataMovementRequisition.stock_requisition_uuid, dataMovementRequisition.stock_requisition_uuid,
       ]);
 
+      // Assume it is complete
+      requisition.status_id = REQUISITION_STATUS_COMPLETE;
+
       if (movementStatus.numberInventoryPartial > 0) {
         // Partially
         requisition.status_id = REQUISITION_STATUS_PARTIAL;
@@ -316,5 +320,20 @@ exports.deleteRequisition = async (req, res, next) => {
   }
 };
 
+/**
+ * @function updateStatus
+ * @description updates the status of a requisition based
+ * @param {string} uuid - The uuid of the requisition
+ */
+async function updateStatus(uuid) {
+  // First get the requisition details
+  const balance = await getDetailsBalance(uuid);
+  if (balance.items.length === 0) {
+    return db.exec('UPDATE stock_requisition SET status_id = ? WHERE uuid = ?', [
+      REQUISITION_STATUS_COMPLETE, db.bid(uuid)]);
+  }
+}
+
 exports.getDetails = getDetails;
 exports.getDetailsBalance = getDetailsBalance;
+exports.updateStatus = updateStatus;
