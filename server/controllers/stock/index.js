@@ -638,6 +638,8 @@ async function depotMovement(document, params, metadata) {
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
 
+  const requistionUuid = parameters.stock_requisition_uuid;
+
   parameters.stock_requisition_uuid = parameters.stock_requisition_uuid
     ? db.bid(parameters.stock_requisition_uuid) : null;
 
@@ -689,6 +691,11 @@ async function depotMovement(document, params, metadata) {
 
   // update the quantity in stock as needed
   await updateQuantityInStockAfterMovement(inventoryUuids, document.date, depotUuid);
+
+  // Update the requistion
+  if (parameters.stock_requisition_uuid) {
+    await requisition.updateStatus(parameters.stock_requisition_uuid);
+  }
 
   if (!isExit) {
     await shipment.updateShipmentStatusAfterEntry(document);

@@ -7,6 +7,7 @@ angular.module('bhima.components')
       requisitionUuid : '<',
       requestorUuid : '<?',
       onSelectCallback : '&',
+      allowCompleted : '@?',
       required : '@?',
       label : '@?',
       disabled : '<?',
@@ -14,14 +15,14 @@ angular.module('bhima.components')
   });
 
 RequisitionSelectController.$inject = [
-  'StockService', 'NotifyService',
+  'StockService', 'NotifyService', 'bhConstants',
 ];
 
 /**
  * Requisition Select Controller
  *
  */
-function RequisitionSelectController(Stock, Notify) {
+function RequisitionSelectController(Stock, Notify, bhConstants) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -31,9 +32,14 @@ function RequisitionSelectController(Stock, Notify) {
     const params = {};
     params.requestor_uuid = $ctrl.requestorUuid;
 
+    $ctrl.allowCompleted = false;
+
     Stock.stockRequisition.read(null, params)
       .then((requisitions) => {
-        $ctrl.requisitions = requisitions;
+        const allowCompleted = $ctrl.allowCompleted !== 'false';
+        $ctrl.requisitions = allowCompleted
+          ? requisitions
+          : requisitions.filter(req => req.status_id !== bhConstants.stockRequisition.completed_status);
       })
       .catch(Notify.handleError);
   };
