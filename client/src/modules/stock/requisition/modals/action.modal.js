@@ -188,7 +188,7 @@ function ActionRequisitionModalController(
       const identifier = inventory.inventory_uuid ? inventory.inventory_uuid : inventory.uuid;
       const quantity = inventory.inventory_uuid ? inventory.S_Q : inventory.quantity;
 
-      inventory.isAvailable = !!vm.availableSupplierInventories.includes(identifier);
+      inventory.isAvailable = vm.availableSupplierInventories && !!vm.availableSupplierInventories.includes(identifier);
 
       if (inventory.isAvailable) {
         inventory.hasEnoughQuantity = !!(vm.supplierInventoriesQuantities.get(identifier) >= quantity);
