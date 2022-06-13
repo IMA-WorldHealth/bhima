@@ -5,7 +5,7 @@
   </ol>
 </div>
 
-<form 
+<form
   name="ModalForm"
   ng-submit="$ctrl.submit($ctrl.status)"
   data-modal="requisition-status"
@@ -14,18 +14,28 @@
 <div class="modal-body">
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'partially'">
     <label class="text-action">
-      <input type="radio" id="done" name="status" ng-model="$ctrl.status" value="2"> 
+      <input type="radio" id="done" name="status" ng-model="$ctrl.status" value="2">
       <span class="label label-primary" translate>FORM.LABELS.STATUS_TYPE.DONE</span>
       <p translate>FORM.INFO.REQUISITION.DONE</p>
     </label>
   </div>
 
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'in_progress'">
-    <label class="text-action">
-      <input type="radio" id="cancelled" name="status" ng-model="$ctrl.status" value="5">
-      <span class="label label-danger" translate>FORM.LABELS.STATUS_TYPE.CANCELLED</span>
-      <p translate>FORM.INFO.REQUISITION.CANCEL</p>
-    </label>
+    <div>
+      <label class="text-action">
+        <input type="radio" id="completed" name="status" ng-model="$ctrl.status" value="6">
+        <span class="label label-danger" translate>FORM.LABELS.STATUS_TYPE.COMPLETED</span>
+        <p translate>FORM.INFO.REQUISITION.MARK_COMPLETED</p>
+      </label>
+    </div>
+
+    <div>
+      <label class="text-action">
+        <input type="radio" id="cancelled" name="status" ng-model="$ctrl.status" value="5">
+        <span class="label label-danger" translate>FORM.LABELS.STATUS_TYPE.CANCELLED</span>
+        <p translate>FORM.INFO.REQUISITION.CANCEL</p>
+      </label>
+    </div>
   </div>
 
   <div class="form-group" ng-if="$ctrl.requisition.status_key === 'cancelled'">
