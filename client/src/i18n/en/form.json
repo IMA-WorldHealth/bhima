@@ -107,10 +107,11 @@
             "CONFIRM_ACTION": "Do you confirm this action?",
             "CONFIRMATION_NEEDED": "Confirmation Needed",
             "CONFIRM_ACTIVATION": "Do you really want to allow this user's system access",
+            "CONFIRM_MARKING_REQUISITION_COMPLETE": "Do you really want to mark this requisition as complete?  It is only partially fulfilled!",
             "CONFIRM_CREDIT_NOTE": "Warning! The invoice you selected has already paid.  You must first reverse the payment(s) before you can reverse this invoice.",
             "CONFIRM_DEACTIVATION": "Do you really want to revoke this user's system access",
             "CONFIRM_DELETE": "You are about to delete a record.  This action is permanent and cannot be undone.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
-            "CANNOT_UNDONE_ACTION": "This action CANNOT BE REVERSED. The action will be permanent. You must be sure that you want to do this action.",
+            "CANNOT_UNDO_ACTION": "This action CANNOT BE REVERSED. The action will be permanent. You must be sure that you want to do this action.",
             "NO_CORRESPONDANCY": "No correspondency found for ",
             "PLEASE_TYPE_TEXT": "Please type {{value}} to confirm",
             "PLEASE_READ": "Unexpected bad things will happen if you don't read this!",
@@ -231,7 +232,8 @@
             "REQUISITION": {
               "CANCEL": "Cancel the inventory requisition request",
               "DONE": "The requisition can no longer be completed and will be considered done",
-              "IN_PROGRESS": "Rehabilitated the requisition request"
+              "IN_PROGRESS": "Rehabilitate the requisition request",
+              "MARK_COMPLETED": "Mark this requisition as completed"
             },
             "RESULT_FOUND": "Result found",
             "ROWS": "Rows",
