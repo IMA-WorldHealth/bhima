@@ -16,21 +16,10 @@ const helmet = require('helmet');
 
 const debug = require('debug')('app');
 const debugHTTP = require('debug')('http');
-
+const access = require('./access');
 const interceptors = require('./interceptors');
 const { Unauthorized } = require('../lib/errors');
 const uploads = require('../lib/uploader');
-
-const publicRoutes = [
-  '/auth/login',
-  '/helpdesk_info',
-  '/languages',
-  '/projects',
-  '/projects/',
-  '/auth/logout',
-  '/install',
-  '/currencies',
-];
 
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
@@ -83,6 +72,8 @@ exports.configure = function configure(app) {
   // bind the session to the middleware
   app.use(session(sess));
 
+  // manage user access( by session or token)
+  access(app);
   // provide a stream for morgan to write to
   const stream = {
     write : message => debugHTTP(message.trim()),
@@ -108,20 +99,6 @@ exports.configure = function configure(app) {
 
   app.use(express.static('client/', { setHeaders : overrideIndexCacheHeaders }));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
-
-  // quick way to find out if a value is in an array
-  function within(value, array) { return array.includes(value.trim()); }
-
-  // Only allow routes to use /login, /projects, /logout, and /languages if a
-  // user session does not exists
-  app.use((req, res, next) => {
-    if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
-      debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
-      next(new Unauthorized('You are not logged into the system.'));
-    } else {
-      next();
-    }
-  });
 };
 
 // configures error handlers
