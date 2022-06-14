@@ -13,6 +13,7 @@
 
 const _ = require('lodash');
 const debug = require('debug')('app');
+const JWTConfig = require('../config/jwt');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 
@@ -34,7 +35,8 @@ function loginRoute(req, res, next) {
     .then(session => {
       // bind the session variables
       _.merge(req.session, session);
-
+      const token = JWTConfig.create(session);
+      session.token = token;
       // send the session data back to the client
       res.status(200).json(session);
     })
