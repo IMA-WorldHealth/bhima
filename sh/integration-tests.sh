@@ -11,6 +11,7 @@ echo "[test] building the server..."
 # build the server
 ./node_modules/.bin/gulp build
 
+sleep 5
 echo "[test] running tests using mocha"
 # run the tests
 ./node_modules/.bin/mocha --recursive --bail --exit ./test/integration/
