@@ -151,7 +151,7 @@ function AssetsRegistryController(
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         lots.sort(AssetsRegistry.orderByDepot);
 
-        vm.gridOptions.data = lots;
+        vm.gridOptions.data = lots.filter(lot => lot.quantity > 0);
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
