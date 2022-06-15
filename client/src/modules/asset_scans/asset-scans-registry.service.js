@@ -147,6 +147,7 @@ function AssetsScansRegistryService(Session, Filters, AppCache, bhConstants, Per
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
+    { key : 'assigned_to_uuid', label : 'ASSET.ASSIGNED_TO' },
     { key : 'reference_number', label : 'FORM.LABELS.REFERENCE_NUMBER' },
     { key : 'show_only_last_scans', label : 'ASSET.SHOW_ONLY_LAST_SCAN' },
   ]);

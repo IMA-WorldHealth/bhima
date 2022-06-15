@@ -15,8 +15,8 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'group_uuid', 'asset_label', 'reference_number',
-    'show_only_last_scans',
+    'depot_uuid', 'inventory_uuid', 'group_uuid', 'assigned_to_uuid',
+    'asset_label', 'reference_number', 'show_only_last_scans',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -48,6 +48,11 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
   vm.onSelectGroup = (group) => {
     vm.searchQueries.group_uuid = group.uuid;
     displayValues.group_uuid = group.name;
+  };
+
+  vm.onSelectAssignedTo = function onSelectAssignedTo(entity) {
+    vm.searchQueries.assigned_to_uuid = entity.uuid;
+    displayValues.assigned_to_uuid = entity.display_name;
   };
 
   // custom filter - flag to only show the latests scan

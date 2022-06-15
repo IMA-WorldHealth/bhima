@@ -27,6 +27,7 @@ function binarize(params) {
     'depot_uuid',
     'group_uuid',
     'inventory_uuid',
+    'assigned_to_uuid',
     'location_uuid',
   ]);
 }
@@ -55,6 +56,7 @@ function getAssetScanFilters(parameters) {
   filters.equals('depot_uuid');
   filters.equals('group_uuid', 'group_uuid', 'i');
   filters.equals('inventory_uuid', 'inventory_uuid', 'l');
+  filters.equals('assigned_to_uuid', 'entity_uuid', 'sa');
   filters.equals('scanned_by');
   filters.fullText('reference_number', 'reference_number', 'l');
   filters.equals('condition_id', 'id', 'ac');
