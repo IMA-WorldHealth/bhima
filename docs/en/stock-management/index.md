@@ -36,9 +36,12 @@ hospitals.  Below you'll find an index to particular subsections that may be of 
     2. [Articles in Stock Registry]()
     3. [Movement Log]()
 
-10. [Additional Tools]()
+10. [Asset Management](./asset-management.md)
+
+
+11. [Additional Tools]()
     1. [Import Stock from a CSV File]()
     2. [Assignment of Lots]()
     2. [Lot Assignment History]()
 
-11. [Glossary of Stock-Related Terms](./glossary.md)
+12. [Glossary of Stock-Related Terms](./glossary.md)
