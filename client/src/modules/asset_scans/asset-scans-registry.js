@@ -54,20 +54,6 @@ function AssetScansRegistryController(
 
   vm.toggleInlineFilter = toggleInlineFilter;
 
-  vm.defaultDepot = null;
-
-  /**
-   * Open the modal to change the depot
-   */
-  vm.openChangeDepotModal = () => {
-    Depots.openSelectionModal(vm.defaultDepot, false, true)
-      .then(depot => {
-        vm.defaultDepot = depot || null;
-        load(vm.filters.formatHTTP(true));
-        vm.latestViewFilters = vm.filters.formatView();
-      });
-  };
-
   /**
    * edit asset scan
    *
@@ -105,9 +91,6 @@ function AssetScansRegistryController(
 
   // load the assets scans into the grid
   function load(filters) {
-    if (vm.defaultDepot) {
-      filters.depot_uuid = vm.defaultDepot.uuid;
-    }
     vm.hasError = false;
     toggleLoadingIndicator();
     AssetsScans.list(filters)
@@ -197,7 +180,7 @@ function AssetScansRegistryController(
           .then(ans => {
             if (!ans) { return; }
             load(vm.filters.formatHTTP(true));
-            vm.latestViewFilters = stockLotFilters.formatView();
+            vm.latestViewFilters = vm.filters.formatView();
           });
       });
   };
