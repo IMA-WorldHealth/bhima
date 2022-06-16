@@ -44,7 +44,7 @@ useful to review some terms that will be used in the following documentation.
 
 - **Assignment** - Assets are generally *Assigned* to an entity within an
   <img src="./images/assets-assignment.png" alt="Asset assignment" align="right" width="400">
-  organization to use the asset to accomplish thier work. The entity that an
+  organization to use the asset to accomplish their work. The entity that an
   asset is assigned to are then responsible for the asset.  An "entity" here
   could be a person or a department of the organization. For instance, a
   computer would often be assigned to an individual person.  However, a
