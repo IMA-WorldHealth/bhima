@@ -3,19 +3,11 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.ASSET_MANAGEMENT.TITLE</li>
       <li class="title" translate>TREE.ASSETS_SCANS_REGISTRY</li>
-      <li class="title" ng-if="ScansCtrl.defaultDepot">{{ScansCtrl.defaultDepot.text}}</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
         <bh-dropdown-menu>
-          <bh-dropdown-menu-item>
-            <a href ng-click="ScansCtrl.openChangeDepotModal()">
-              <i class="fa fa-archive"></i> <span translate>DEPOT.CHANGE</span>
-            </a>
-          </bh-dropdown-menu-item>
-
-          <bh-dropdown-menu-item role="separator" class="divider"></bh-dropdown-menu-item>
 
           <bh-dropdown-menu-item>
             <a href data-method="configure" ng-click="ScansCtrl.openColumnConfigModal()">
