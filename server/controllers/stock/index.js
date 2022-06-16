@@ -35,6 +35,7 @@ const depots = require('../inventory/depots');
 exports.createStock = createStock;
 exports.createMovement = createMovement;
 exports.deleteMovement = deleteMovement;
+exports.listAssetLots = listAssetLots;
 exports.listLots = listLots;
 exports.listLotsDepot = listLotsDepot;
 exports.listLotsDepotDetailed = listLotsDepotDetailed;
@@ -705,6 +706,20 @@ async function depotMovement(document, params, metadata) {
 }
 
 /**
+ * GET /stock/assetLots
+ * Get the assets lots
+ */
+async function listAssetLots(req, res, next) {
+  const params = req.query;
+  try {
+    const rows = await core.getAssets(params);
+    res.status(200).json(rows);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * GET /stock/lots
  * this function helps to list lots
  */
@@ -948,22 +963,7 @@ async function listLotsDepot(req, res, next) {
     // if no data is returned or if the skipTags flag is set, we don't need to do any processing
     // of tags.  Skip the SQL query and JS loops.
     if (data.length !== 0 && !params.skipTags) {
-
-      const queryTags = `
-        SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
-        FROM tags t
-          JOIN lot_tag lt ON lt.tag_uuid = t.uuid
-        WHERE lt.lot_uuid IN (?)
-      `;
-      const lotUuids = data.map(row => db.bid(row.uuid));
-      const tags = await db.exec(queryTags, [lotUuids]);
-
-      // make a lot_uuid -> tags map.
-      const tagMap = _.groupBy(tags, 'lot_uuid');
-
-      data.forEach(lot => {
-        lot.tags = tagMap[lot.uuid] || [];
-      });
+      await core.addLotTags(data);
     }
 
     res.status(200).json(data);

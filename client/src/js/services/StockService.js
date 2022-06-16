@@ -227,6 +227,11 @@ function StockService(Api, StockFilterer, HttpCache, util, Periods) {
       });
   }
 
+  assets.getAssetLots = params => {
+    return assets.$http.get('/stock/assetLots', { params })
+      .then(util.unwrapHttpResponse);
+  };
+
   inventories.loadAMCForInventory = function loadAMCForInventory(inventoryUuid, depotUuid) {
     return inventories.$http.get(`/depots/${depotUuid}/inventories/${inventoryUuid}/cmm`)
       .then(util.unwrapHttpResponse);

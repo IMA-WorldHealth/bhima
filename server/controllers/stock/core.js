@@ -56,6 +56,7 @@ module.exports = {
   getInventoryMovements,
   getDailyStockConsumption,
   lookupLotByUuid,
+  addLotTags,
 };
 
 /**
@@ -240,7 +241,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
  * @param {string} depotUuid
  * @param {object} params
  */
-async function getAssets(params, finalClause) {
+async function getAssets(params) {
 
   // NOTE: Expected parameters
   //   depot_uuid, is_asset, scan_start_date, scan_end_date, reference_number
@@ -267,7 +268,7 @@ async function getAssets(params, finalClause) {
   const sql = `
     SELECT BUID(l.uuid) AS uuid, l.label, l.description AS lot_description,
       SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
-      d.text AS depot_name, l.unit_cost, l.expiration_date,
+      d.text AS depot_text, l.unit_cost, l.expiration_date,
       l.serial_number, l.reference_number,
       BUID(l.inventory_uuid) AS inventory_uuid,
       i.code AS inventory_code, i.text as inventory_label,
@@ -294,7 +295,9 @@ async function getAssets(params, finalClause) {
       JOIN inventory_group ig ON ig.uuid = i.group_uuid
       JOIN depot d ON d.uuid = m.depot_uuid
       LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+
       LEFT JOIN lot_tag lt ON lt.lot_uuid = l.uuid
+      LEFT JOIN tags t ON t.uuid = lt.tag_uuid
 
       LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
       LEFT JOIN entity e ON e.uuid = sa.entity_uuid
@@ -307,7 +310,7 @@ async function getAssets(params, finalClause) {
       ) AS last_scan ON last_scan.asset_uuid = l.uuid
   `;
 
-  const groupByClause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;
+  const groupByClause = ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;
 
   const filters = getLotFilters(params);
   if (['scanned', 'unscanned'].includes(params.scan_status)) {
@@ -320,6 +323,10 @@ async function getAssets(params, finalClause) {
   const queryParameters = filters.parameters();
 
   const assets = await db.exec(query, queryParameters);
+
+  if (assets.length !== 0 && !params.skipTags) {
+    await addLotTags(assets);
+  }
 
   return assets;
 }
@@ -1289,4 +1296,25 @@ async function listStatus(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+// Add the tags for the lots
+async function addLotTags(lots) {
+  const queryTags = `
+    SELECT BUID(t.uuid) uuid, t.name, t.color, BUID(lt.lot_uuid) lot_uuid
+    FROM tags t
+      JOIN lot_tag lt ON lt.tag_uuid = t.uuid
+    WHERE lt.lot_uuid IN (?)
+  `;
+  const lotUuids = lots.map(lot => db.bid(lot.uuid));
+  const tags = await db.exec(queryTags, [lotUuids]);
+
+  // make a lot_uuid -> tags map.
+  const tagMap = _.groupBy(tags, 'lot_uuid');
+
+  lots.forEach(lot => {
+    lot.tags = tagMap[lot.uuid] || [];
+  });
+
+  return lots;
 }
