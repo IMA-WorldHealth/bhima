@@ -59,6 +59,11 @@ function AssetsSearchModalController(data, util, Store, Instance, Stock, SearchM
     displayValues.entry_date_to = dateTo;
   };
 
+  vm.onSelectAssignedTo = function onSelectAssignedTo(entity) {
+    vm.searchQueries.assigned_to_uuid = entity.uuid;
+    displayValues.assigned_to_uuid = entity.display_name;
+  };
+
   // toggle is_assigned search flag
   vm.onToggleAssigned = function onToggleAssigned(val) {
     vm.searchQueries.is_assigned = val;

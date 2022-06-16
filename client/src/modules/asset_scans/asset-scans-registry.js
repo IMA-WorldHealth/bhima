@@ -22,7 +22,6 @@ function AssetScansRegistryController(
 ) {
   const vm = this;
   const cacheKey = 'assets-scans-grid';
-  const stockLotFilters = Stock.filter.lot;
 
   vm.conditions = bhConstants.assetCondition;
 

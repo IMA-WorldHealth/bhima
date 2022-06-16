@@ -79,6 +79,7 @@ function getLotFilters(parameters) {
     'lot_uuid',
     'inventory_uuid',
     'group_uuid',
+    'assigned_to_uuid',
     'document_uuid',
     'entity_uuid',
     'service_uuid',
@@ -105,6 +106,7 @@ function getLotFilters(parameters) {
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_asset', 'is_asset', 'i');
+  filters.equals('assigned_to_uuid', 'entity_uuid', 'sa');
   filters.fullText('reference_number', 'reference_number', 'l');
   filters.equals('period_id', 'period_id', 'm');
   filters.equals('is_exit', 'is_exit', 'm');
