@@ -252,7 +252,7 @@ function StockDefineLotsModalController(
    * @param {string} rowLot the row.entity.lot string/object
    */
   function onLotBlur(rowLot) {
-    // NOTE: rowLot will be an object if an existed lot was
+    // NOTE: rowLot will be an object if an existing lot was
     //       selected from the typeahead. Otherwise
     //       it will be the lot name string that was typed in.
     //       Complain if the lot exists and is expired.
