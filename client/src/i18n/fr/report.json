@@ -41,7 +41,7 @@
       "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
     },
     "ASSET_SCANS": {
-      "TITLE" : "Rapport de scans d'actifs"
+      "TITLE" : "Rapport de scans d'immobilisations"
     },
     "AVG_MED_COST_PER_PATIENT" : {
       "TITLE" : "Coût moyen des médicaments par patient",
