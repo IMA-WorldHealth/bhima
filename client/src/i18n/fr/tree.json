@@ -12,12 +12,12 @@
     "AGGREGATED_STOCK_CONSUMPTION" : "Consommation de stock agrégée",
     "ALLOCATION_AUX_FEES_CENTERS" : "Allocation des centres de cout auxiliaires",
     "ASSET_MANAGEMENT" : {
-      "TITLE" : "Gestion des actifs",
+      "TITLE" : "Gestion des immobilisations",
       "SHIPMENTS" : "Expéditions"
     },
-    "ASSETS" : "Actifs",
-    "ASSETS_REGISTRY" : "Registre des actifs",
-    "ASSETS_SCANS_REGISTRY" : "Gestion des scans d'actifs",
+    "ASSETS" : "Immobilisations",
+    "ASSETS_REGISTRY" : "Registre des immobilisations",
+    "ASSETS_SCANS_REGISTRY" : "Scans d'immobilisations",
     "AVERAGE_MED_COST_REPORT" : "Coût moyen des médicaments par patient",
     "BALANCE":"Balance",
     "BALANCE_REPORT":"Balance des comptes",
