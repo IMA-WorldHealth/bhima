@@ -156,7 +156,7 @@ function StockEntryController(
     vm.movement.date = date;
 
     // Check all stock lines and their lots to make sure that all
-    // the lot expiration statuses are still
+    // the lot expiration statuses are still valid
     vm.stockForm.store.data.forEach(stockLine => {
 
       // Check the expiration status of all previously selected lots
@@ -556,7 +556,7 @@ function StockEntryController(
    */
   function setLots(stockLine) {
     if (!stockLine.inventory_uuid) {
-      // Prevent the lots modal pop-up if now inventory code has been selected
+      // Prevent the lots modal pop-up if new inventory code has been selected
       return;
     }
     // Additional information for an inventory Group

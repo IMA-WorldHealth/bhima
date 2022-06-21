@@ -24,6 +24,7 @@ function StockEntryModalForm(uuid) {
     this.unit_cost = row.unit_cost || null;
     this.quantity = row.quantity || 1;
     this.lot = row.lot || null;
+    this.serial_number = row.serial_number || null;
     this.isInvalid = true;
     this.isValid = false;
     this.identifier = uuid();
