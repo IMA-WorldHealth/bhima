@@ -41,6 +41,15 @@
             <bh-clear on-clear="$ctrl.clear('group_uuid')"></bh-clear>
           </bh-inventory-group-select>
 
+          <!-- entity -->
+          <bh-entity-select
+            label = "ASSET.ASSIGNED_TO"
+            entity-uuid="$ctrl.searchQueries.assigned_to_uuid"
+            on-select-callback="$ctrl.onSelectAssignedTo(entity)"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('assigned_to_uuid')"></bh-clear>
+          </bh-entity-select>
+
           <!-- lot number  -->
           <div class="form-group">
             <label class="control-label" translate>ASSET.ASSET_LABEL</label>
