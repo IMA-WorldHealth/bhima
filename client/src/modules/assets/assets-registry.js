@@ -28,6 +28,8 @@ function AssetsRegistryController(
 
   vm.bhConstants = bhConstants;
 
+  vm.assetConditions = bhConstants.assetCondition;
+
   // grouping box
   vm.groupingBox = AssetsRegistry.groupingBox;
 
@@ -139,19 +141,25 @@ function AssetsRegistryController(
     }
     vm.hasError = false;
     toggleLoadingIndicator();
+    Stock.assets.getAssetLots(filters)
+      .then((assets) => {
 
-    Stock.lots.read(null, filters)
-      .then((lots) => {
-        lots.forEach((lot) => {
+        assets.forEach((asset) => {
           // serialize tag names for filters
-          lot.tagNames = lot.tags.map(tag => tag.name).join(',');
-          lot.tags.forEach(addColorStyle);
+          asset.tagNames = asset.tags.map(tag => tag.name).join(',');
+          asset.tags.forEach(addColorStyle);
+        });
+
+        // Add the asset scan condition
+        assets.forEach((asset) => {
+          const cond = vm.assetConditions.find(c => c.id === asset.scan_condition_id);
+          asset.scan_condition = cond ? cond.label : '';
         });
 
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
-        lots.sort(AssetsRegistry.orderByDepot);
+        assets.sort(AssetsRegistry.orderByDepot);
 
-        vm.gridOptions.data = lots.filter(lot => lot.quantity > 0);
+        vm.gridOptions.data = assets.filter(asset => asset.quantity > 0);
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

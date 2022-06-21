@@ -853,6 +853,7 @@ exports.configure = function configure(app) {
 
   app.post('/stock/lots', stock.createStock);
   app.get('/stock/lots', stock.listLots);
+  app.get('/stock/assetLots', stock.listAssetLots);
 
   app.get('/stock/lots/depots/', stock.listLotsDepot);
   app.get('/stock/lots/depotsDetailed/', stock.listLotsDepotDetailed);

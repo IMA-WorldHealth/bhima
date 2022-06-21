@@ -24,16 +24,16 @@ function AssetsRegistryService(uiGridConstants, Session) {
       headerTooltip : 'STOCK.DEPOT',
       headerCellFilter : 'translate',
     }, {
-      field : 'code',
+      field : 'inventory_code',
       displayName : 'STOCK.CODE',
-      headerTooltip : 'STOCK.CODE',
+      headerTooltip : 'INVENTORY.CODE',
       headerCellFilter : 'translate',
       sort : {
         direction : uiGridConstants.ASC,
         priority : 0,
       },
     }, {
-      field : 'text',
+      field : 'inventory_label',
       displayName : 'STOCK.INVENTORY',
       headerTooltip : 'STOCK.INVENTORY',
       headerCellFilter : 'translate',
@@ -90,14 +90,6 @@ function AssetsRegistryService(uiGridConstants, Session) {
       headerCellClass : 'wrappingColHeader',
       cellFilter : 'date',
     }, {
-      field : 'expiration_date',
-      displayName : 'STOCK.EXPIRATION_DATE',
-      headerTooltip : 'STOCK.EXPIRATION_DATE',
-      headerCellFilter : 'translate',
-      headerCellClass : 'wrappingColHeader',
-      cellFilter : 'date',
-      visible : false,
-    }, {
       field : 'assigned_to_name',
       displayName : 'ENTITY.ASSIGNED_TO',
       headerTooltip : 'ENTITY.ASSIGNED_TO',
@@ -119,6 +111,22 @@ function AssetsRegistryService(uiGridConstants, Session) {
       headerCellClass : 'wrappingColHeader',
       visible : false,
     }, {
+      field : 'scan_date',
+      displayName : 'ASSET.LAST_SCAN_DATE',
+      headerTooltip : 'ASSET.LAST_SCAN_DATE',
+      headerCellFilter : 'translate',
+      headerCellClass : 'wrappingColHeader',
+      cellFilter : 'date',
+      visible : false,
+    }, {
+      field : 'scan_condition',
+      displayName : 'ASSET.ASSET_CONDITION',
+      headerTooltip : 'ASSET.ASSET_CONDITION',
+      headerCellFilter : 'translate',
+      headerCellClass : 'wrappingColHeader',
+      cellFilter : 'translate',
+      visible : false,
+    }, {
       field : 'tagNames',
       displayName : 'TAG.LABEL',
       headerTooltip : 'TAG.LABEL',
@@ -133,18 +141,12 @@ function AssetsRegistryService(uiGridConstants, Session) {
       cellFilter : 'date',
       visible : false,
     }, {
-      field : 'status',
-      displayName : 'TABLE.COLUMNS.STATUS',
-      headerTooltip : 'TABLE.COLUMNS.STATUS',
-      headerCellFilter : 'translate',
-      cellFilter : 'translate',
-      visible : false,
-    }, {
       field : 'reference_number',
       displayName : 'FORM.LABELS.REFERENCE_NUMBER',
       headerCellFilter : 'translate',
       headerCellClass : 'wrappingColHeader',
       width : 100,
+      visible : false,
     }, {
       field : 'manufacturer_brand',
       displayName : 'FORM.LABELS.MANUFACTURER_BRAND',
