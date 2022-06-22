@@ -26,6 +26,7 @@ caption {
       {{#if scan.reference_number}}
       <h4 class="text-right">{{translate 'FORM.LABELS.REFERENCE_NUMBER'}}: {{scan.reference_number}}</h4>
       {{/if}}
+      <h3 class="text-right">{{translate 'ASSET.NUMBER_SCANNED'}}: {{countScanned}} {{translate 'ASSET.OUT_OF'}} {{countTotal}}  ({{percentScanned}}%)</h3>
   {{/header}}
 
   <!-- body  -->
@@ -33,7 +34,7 @@ caption {
     <div class="col-xs-12">
 
       {{#if scan.description}}
-      <h4 class="text-center" style="margin: 7px 0">{{scan.description}}</h4>
+      <h3 class="text-center" style="margin: 7px 0">{{scan.description}}</h3>
       {{/if}}
 
       <!-- list of assets-->
