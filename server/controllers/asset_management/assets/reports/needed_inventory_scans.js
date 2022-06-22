@@ -1,10 +1,15 @@
 const _ = require('lodash');
 const core = require('../../../stock/core');
+const util = require('../../../../lib/util');
 const reqInvScans = require('../../../stock/required_inventory_scans');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const BASE_URL = './server/controllers/asset_management/assets';
 const NEEDED_INVENTORY_SCAN_REPORT_TEMPLATE = `${BASE_URL}/reports/needed_inventory_scans.handlebars`;
+
+const {
+  assetCondition
+} = require('../../../../config/constants');
 
 async function neededInventoryScansReport(req, res, next) {
   const options = req.query;
@@ -35,13 +40,37 @@ async function neededInventoryScansReport(req, res, next) {
       scan_start_date : new Date(scan.start_date),
       scan_end_date : new Date(scan.end_date),
       reference_number : scan.reference_number,
-      scan_status : options.scan_status,
+      // Do not pass in scan_status, filter after the query
     };
-    const assets = await core.getAssets(params);
+
+    const allAssets = await core.getAssets(params);
+
+    // Fill in the asset condition names
+    allAssets.forEach(asset => {
+      if (asset.scan_condition_id) {
+        const condition = assetCondition.find(ac => ac.id === asset.scan_condition_id);
+        asset.scan_condition = condition ? condition.label : '';
+      }
+    });
+
+    const countScanned = allAssets.reduce((num, asset) => (asset.scan_uuid ? num + 1 : num), 0);
+    const countTotal = allAssets.length;
+    const percentScanned = util.roundDecimal(100.0 * (countScanned / countTotal), 1);
+
+    // filter for scan status (if needed)
+    let assets = allAssets;
+    if (options.scan_status === 'scanned') {
+      assets = allAssets.filter(a => a.scan_uuid);
+    } else if (options.scan_status === 'unscanned') {
+      assets = allAssets.filter(a => !a.scan_uuid);
+    }
 
     const data = {
       scan,
       assets,
+      countScanned,
+      countTotal,
+      percentScanned,
       tableTitle : tableTitles[tableType],
       date : new Date(),
     };

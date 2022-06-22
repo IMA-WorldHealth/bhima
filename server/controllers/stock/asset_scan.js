@@ -106,7 +106,7 @@ function listAssetScans(params) {
   if ('show_only_last_scans' in params) {
     // See 'Outer Join Method' in https://thoughtbot.com/blog/ordering-within-a-sql-group-by-clause
     // This join with the 'show_only_last_scans' filter (defined above) ensures that we
-    // are not selecting only the latest⁄last asset scan for each asset.
+    // are selecting only the latest⁄last asset scan for each asset.
     lastScanJoin = `
     LEFT OUTER JOIN asset_scan AS s2
       ON s2.asset_uuid = s.asset_uuid AND
