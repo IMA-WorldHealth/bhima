@@ -307,9 +307,11 @@ async function getAssets(params) {
       LEFT JOIN (
         SELECT scan.*
         FROM asset_scan AS scan
+        LEFT JOIN asset_scan AS s2 ON (s2.asset_uuid = scan.asset_uuid
+          AND scan.created_at < s2.created_at AND s2.uuid IS NULL)
         ${scanPeriod}
-        ORDER BY scan.created_at DESC LIMIT 1
       ) AS last_scan ON last_scan.asset_uuid = l.uuid
+
   `;
 
   const groupByClause = ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;

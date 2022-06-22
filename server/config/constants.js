@@ -30,6 +30,17 @@ module.exports = {
     ALLOCATION_BASIS_NUM_COMPUTERS : 5,
     ALLOCATION_BASIS_NUM_LABOR_HOURS : 6,
   },
+  assetCondition : [
+    { id : 1, label : 'ASSET.CONDITION.NEW' },
+    { id : 2, label : 'ASSET.CONDITION.GOOD' },
+    { id : 3, label : 'ASSET.CONDITION.FAIR' },
+    { id : 4, label : 'ASSET.CONDITION.POOR' },
+    { id : 5, label : 'ASSET.CONDITION.BROKEN' },
+    { id : 6, label : 'ASSET.CONDITION.OBSOLETE' },
+    { id : 7, label : 'ASSET.CONDITION.DISCARDED' },
+    { id : 8, label : 'ASSET.CONDITION.SOLD' },
+    { id : 9, label : 'ASSET.CONDITION.LOST' },
+  ],
   settings : {
     CONTACT_EMAIL : 'developers@imaworldhealth.org',
   },
