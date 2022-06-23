@@ -76,14 +76,14 @@
   resolved "https://registry.npmjs.org/@iarna/toml/-/toml-2.2.5.tgz#b32366c89b43c6f8cefbdefac778b9c828e3ba8c"
   integrity sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==
 
-"@ima-worldhealth/coral@^2.11.2":
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.11.2.tgz#ae470026708590006f312e2de7f5b29c27a7c14b"
-  integrity sha512-x0XJN3TKsSERRaKiWwUAwygvUoi/aKSFygS9g+gPOGZB9dZEF8glIBJl6cYedvVP9tjns4Y/kKbyjik9EwXzdg==
+"@ima-worldhealth/coral@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@ima-worldhealth/coral/-/coral-2.12.0.tgz#68e8a0b8b6b4f89ec097877d4f7db6a7e4b48948"
+  integrity sha512-CLY9kchq2idE4FaOX77V6gCzn3kC8RhB92i/7JC3FgaJBfmdF+wt2HD5U54rVy2IQJiSXBJHOORZ1tVniOMDEw==
   dependencies:
     debug "^4.1.1"
     inline-source "^7.2.0"
-    puppeteer "^13.0.0"
+    puppeteer "^14.1.1"
     puppeteer-cluster "^0.23.0"
 
 "@ima-worldhealth/odk-central-api-cjs@^2.4.0":
@@ -2355,13 +2355,6 @@ debug@4, debug@4.3.4, debug@^4.0.0, debug@^4.0.1, debug@^4.1.1, debug@^4.3.2, de
   dependencies:
     ms "2.1.2"
 
-debug@4.3.3:
-  version "4.3.3"
-  resolved "https://registry.npmjs.org/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
-  integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==
-  dependencies:
-    ms "2.1.2"
-
 debug@^3.1.0, debug@^3.2.6, debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.npmjs.org/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
@@ -2578,10 +2571,10 @@ detect-newline@^3.1.0:
   resolved "https://registry.npmjs.org/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
   integrity sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==
 
-devtools-protocol@0.0.960912:
-  version "0.0.960912"
-  resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.960912.tgz#411c1fa355eddb72f06c4a8743f2808766db6245"
-  integrity sha512-I3hWmV9rWHbdnUdmMKHF2NuYutIM2kXz2mdXW8ha7TbRlGTVs+PF+PsB5QWvpCek4Fy9B+msiispCfwlhG5Sqg==
+devtools-protocol@0.0.1001819:
+  version "0.0.1001819"
+  resolved "https://registry.yarnpkg.com/devtools-protocol/-/devtools-protocol-0.0.1001819.tgz#0a98f44cefdb02cc684f3d5e6bd898a1690231d9"
+  integrity sha512-G6OsIFnv/rDyxSqBa2lDLR6thp9oJioLsb2Gl+LbQlyoA9/OBAkrTU9jiCcQ8Pnh7z4d6slDiLaogR5hzgJLmQ==
 
 di@^0.0.1:
   version "0.0.1"
@@ -4635,18 +4628,10 @@ http2-wrapper@^2.1.9:
     quick-lru "^5.1.1"
     resolve-alpn "^1.2.0"
 
-https-proxy-agent@5, https-proxy-agent@^5.0.0:
+https-proxy-agent@5, https-proxy-agent@5.0.1, https-proxy-agent@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz#c59ef224a04fe8b754f3db0063a25ea30d0005d6"
   integrity sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA==
-  dependencies:
-    agent-base "6"
-    debug "4"
-
-https-proxy-agent@5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-5.0.0.tgz#e2a90542abb68a762e0a0850f6c9edadfd8506b2"
-  integrity sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
   dependencies:
     agent-base "6"
     debug "4"
@@ -7580,23 +7565,23 @@ puppeteer-cluster@^0.23.0:
   dependencies:
     debug "^4.3.3"
 
-puppeteer@^13.0.0:
-  version "13.4.1"
-  resolved "https://registry.npmjs.org/puppeteer/-/puppeteer-13.4.1.tgz#495b91d2fae3e9761a31bab1820ad179caac0fd9"
-  integrity sha512-2arcYPEGvLV9HvOw01Zv1b1IAXrMWHqsFJn0Hn00qe9HtCmaF0b8FlrbdLjCIbkaFc6icH5+GqcG8R5KxlJSRg==
+puppeteer@^14.1.1:
+  version "14.4.1"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-14.4.1.tgz#6c7437a65f7ba98ef8ad7c2b0f1cf808e91617bb"
+  integrity sha512-+H0Gm84aXUvSLdSiDROtLlOofftClgw2TdceMvvCU9UvMryappoeS3+eOLfKvoy4sm8B8MWnYmPhWxVFudAOFQ==
   dependencies:
     cross-fetch "3.1.5"
-    debug "4.3.3"
-    devtools-protocol "0.0.960912"
+    debug "4.3.4"
+    devtools-protocol "0.0.1001819"
     extract-zip "2.0.1"
-    https-proxy-agent "5.0.0"
+    https-proxy-agent "5.0.1"
     pkg-dir "4.2.0"
     progress "2.0.3"
     proxy-from-env "1.1.0"
     rimraf "3.0.2"
     tar-fs "2.1.1"
     unbzip2-stream "1.4.3"
-    ws "8.5.0"
+    ws "8.7.0"
 
 q@1.4.1:
   version "1.4.1"
@@ -9854,10 +9839,10 @@ write@1.0.3:
   dependencies:
     mkdirp "^0.5.1"
 
-ws@8.5.0:
-  version "8.5.0"
-  resolved "https://registry.npmjs.org/ws/-/ws-8.5.0.tgz#bfb4be96600757fe5382de12c670dab984a1ed4f"
-  integrity sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==
+ws@8.7.0:
+  version "8.7.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.7.0.tgz#eaf9d874b433aa00c0e0d8752532444875db3957"
+  integrity sha512-c2gsP0PRwcLFzUiA8Mkr37/MI7ilIlHQxaEAtd0uNMbVMoy8puJyafRlm0bV9MbGSabUPeLrRRaqIBcFcA2Pqg==
 
 ws@~8.2.3:
   version "8.2.3"
