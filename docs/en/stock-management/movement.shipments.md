@@ -21,24 +21,27 @@ Shipments can be the following states:
 - **Empty** - the order has been created but contains no stock
 - **At depot** - the shipment has been created but not finalized
 - **Ready for shipment** - The shipment packing list is finalized
-- **In transit** - The shipment is in
-- **Partial** - Partially Received by the receiving depot
-- **Complete** - The order has been completed (sent and received)
+- **In transit** - The shipment is in transit.  Stock exit has been performed by origin depot.
 - **Delivered** - The order has been received but not unpacked or entered into stock
-- **Lost** - The order was lost (typically lost in transit)
+- **Partial** - Partially Received by the receiving depot
+- **Complete** - The order has been completed (sent and received).
+  Stock entry has been performed by destination depot.  It is possible that all items sent were
+  not received due to losses, theft, etc.
+- **Lost** - The entire order was lost (e.g. lost in transit)
 
 Shipments go through several phases during their lifetime (these phases are related to the states listed above):
 1. **Creation** - In this step, a shipment is created including information about
    - the sending and receiving depots
    - expected arrival date, and
    - a packing list of stock to be shipped.
-During creation, it is still possible to update the packing list of items in the shipment. Once the shipment container is completely packed, the warehouse proceeds to the next step.
+Immediately after the creation of a shipment, it is marked as *empty*.  Once items are added, the status changes to *at depot*.
+During creation, it is still possible to update the packing list of items in the shipment. Once the shipment container is completely packed, the origin depot proceeds to the next step.
 2. **Marked as "Ready to Ship"** - At some point, the user needs to declare that the shipment marked as complete and ready to ship.   For instance, this could be when the container for the shipment is closed and ready to be shipped.  Once a shipment is marked as ready to ship, the contents (packing list) of the shipment cannot be changed.
 3. **Stock Exit** - After a shipment is ready to ship, the stock involved needs to be "exited" from the sending depot.  Up to this point, the packing list for a shipment is only tentative.  It is still possible to delete the shipment at this point.  When the stock exit for a shipment is performed, the stock is removed from the sending depot and is considered to be in transit.  Once the stock exit for a shipment occurs, the shipment can no longer be deleted.  Doing the "Stock Exit" for a shipment is easily accomplished using the action menu for the shipment in the Shipment Registry.
-4. **Departure from sending depot** - After the stock exit for a shipment is complete, it can depart from the sending depot.
-5. **Transit** - The physical movement of the stock could be as complicated as sending the shipment in a container and by truck or airplane to another location.  Or it could be as simple as walking a few items to another room in the same building.  While this occurs it is in transit.  There are means in the Shipment Registry for updating the location and condition while it is in transit.
-6. **Arrival at the Receiving Depot** - Once the shipment arrives at the receiving depot, it is ready for stock entry.  Until stock entry occurs, the stock is still not officially in any depot.
-7. **Stock Entry** - As the shipment is deposited in the receiving depot, the BHIMA software needs to be updated.  This is accomplished by doing the "Stock Entry" for the receiving depot.  Generally, once the stock entry occurs, the shipment is marked as complete.
+4. **Departure from sending depot** - After the stock exit for a shipment is complete, it is marked as *in transit*.  It is possible for a shipment to be present in the origin depot and still be *in transit*.  When transportation has been arranged, it will physically depart from the origin depot.
+6. **Transit** - The physical movement of the stock could be as complicated as sending the shipment in a container and by truck or airplane to another location.  Or it could be as simple as walking a few items to another room in the same building.  While this occurs it is in transit.  There are means in the Shipment Registry for updating the location and condition while it is in transit.
+7. **Arrival at the Receiving Depot** - Once the shipment arrives at the destination depot, the personnel of the destination depot will indicate that the shipment has been received.  The shipment is then marked as *delivered*.  At this point it is ready for stock entry by the destination depot.   However, until stock entry occurs, the stock is still not officially in any depot.
+8. **Stock Entry** - As the shipment is deposited in the receiving depot, the BHIMA software needs to be updated.  This is accomplished by doing the "Stock Entry" for the receiving depot.  Generally, once the stock entry occurs, the shipment is marked as complete.  Once the stock entry has occurred at the destination depot for for **all items** in a shipment, the shipment is automatically marked as *complete* -- otherwise it is marked as *Partial*.  Note that it is possible that some shipment items are lost in transit due to spoilage or theft.  The shipment could still be marked as complete in that case, but that would need to be done manually via the Shipments Registry action menu.
 
 ## Example Shipment Process
 The purpose of this example is to show the basic use of the BHIMA interface for shipments and how using the Shipments interface simplifies the process of sending stock from one depot to another.

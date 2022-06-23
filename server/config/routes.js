@@ -1137,6 +1137,7 @@ exports.configure = function configure(app) {
   app.put('/shipments/:uuid', shipment.update);
   app.post('/shipments/:uuid/tracking-log', shipment.addShipmentTrackingLogEntry);
   app.put('/shipments/:uuid/ready-for-shipment', shipment.setReadyForShipment);
+  app.put('/shipments/:uuid/delivered', shipment.setShipmentDelivered);
   app.put('/shipments/:uuid/shipment-completed', shipment.setShipmentCompleted);
   app.delete('/shipments/:uuid', shipment.deleteShipment);
   app.post('/shipments', shipment.create);
