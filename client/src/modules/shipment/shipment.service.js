@@ -42,6 +42,11 @@ function ShipmentService(Api, $httpParamSerializer, Languages) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.setShipmentDelivered = (uuid) => {
+    return service.$http.put(`/shipments/${uuid}/delivered`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   service.setShipmentCompleted = (uuid) => {
     return service.$http.put(`/shipments/${uuid}/shipment-completed`)
       .then(service.util.unwrapHttpResponse);

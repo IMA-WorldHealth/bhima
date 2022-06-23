@@ -24,6 +24,7 @@ function ShipmentModalService(Modal, Receipts) {
   service.shipmentOverviewModal = shipmentOverviewModal;
   service.setReadyForShipmentModal = setReadyForShipmentModal;
   service.updateTrackingLogModal = updateTrackingLogModal;
+  service.setShipmentDeliveredModal = setShipmentDeliveredModal;
   service.setShipmentCompletedModal = setShipmentCompletedModal;
 
   service.openSearchShipment = openSearchShipment;
@@ -61,6 +62,14 @@ function ShipmentModalService(Modal, Receipts) {
     return Modal.open({
       templateUrl : 'modules/shipment/modals/shipment-completed.modal.html',
       controller : 'ShipmentCompletedModalController as $ctrl',
+      resolve : { params : () => ({ uuid }) },
+    }).result.catch(angular.noop);
+  }
+
+  function setShipmentDeliveredModal(uuid) {
+    return Modal.open({
+      templateUrl : 'modules/shipment/modals/shipment-delivered.modal.html',
+      controller : 'ShipmentDeliveredModalController as $ctrl',
       resolve : { params : () => ({ uuid }) },
     }).result.catch(angular.noop);
   }
