@@ -18,8 +18,10 @@ function ShipmentRegistryController(
 
   // bind methods
   vm.getOverview = getOverview;
-  vm.setReady = setReady;
   vm.setTrackingLog = updateTrackingLogModal;
+
+  vm.setReady = setReady;
+  vm.setDelivered = setDelivered;
   vm.setComplete = setComplete;
 
   vm.deleteShipment = deleteShipment;
@@ -192,6 +194,10 @@ function ShipmentRegistryController(
     return ShipmentModal.setReadyForShipmentModal(uuid);
   }
 
+  function setDelivered(uuid) {
+    ShipmentModal.setShipmentDeliveredModal(uuid);
+  }
+
   function setComplete(uuid) {
     return ShipmentModal.setShipmentCompletedModal(uuid);
   }
@@ -220,12 +226,13 @@ function ShipmentRegistryController(
     Shipments.read(null, filters)
       .then(data => {
         vm.gridOptions.data = data.map(item => {
+          item.isEmpty = item.status_id === Constants.shipmentStatus.EMPTY;
           item.isAtDepot = item.status_id === Constants.shipmentStatus.AT_DEPOT;
           item.isReady = item.status_id === Constants.shipmentStatus.READY_FOR_SHIPMENT;
           item.inTransit = item.status_id === Constants.shipmentStatus.IN_TRANSIT;
           item.isPartial = item.status_id === Constants.shipmentStatus.PARTIAL;
+          item.isDelivered = item.status_id === Constants.shipmentStatus.DELIVERED;
           item.isComplete = item.status_id === Constants.shipmentStatus.COMPLETE;
-          // @TODO: Handle EMPTY, DELIVERED, LOST
           return item;
         });
       })

@@ -13,6 +13,7 @@ module.exports = {
   deleteShipment : shipment.deleteShipment,
   addShipmentTrackingLogEntry : shipment.addShipmentTrackingLogEntry,
   setReadyForShipment : shipment.setReadyForShipment,
+  setShipmentDelivered : shipment.setShipmentDelivered,
   setShipmentCompleted : shipment.setShipmentCompleted,
   listInTransitInventories : shipment.listInTransitInventories,
   getReport : shipmentReports.getReport,

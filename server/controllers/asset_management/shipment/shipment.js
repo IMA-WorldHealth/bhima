@@ -9,7 +9,8 @@ const SHIPMENT_READY = 3;
 const SHIPMENT_IN_TRANSIT = 4;
 const SHIPMENT_PARTIAL = 5;
 const SHIPMENT_COMPLETE = 6;
-const SHIPMENT_IN_TRANSIT_OR_PARTIAL = [SHIPMENT_IN_TRANSIT, SHIPMENT_PARTIAL];
+const SHIPMENT_DELIVERED = 7;
+const SHIPMENT_READY_TO_ENTER = [SHIPMENT_IN_TRANSIT, SHIPMENT_DELIVERED, SHIPMENT_PARTIAL];
 
 exports.find = find;
 exports.lookup = lookup;
@@ -201,6 +202,31 @@ exports.setReadyForShipment = async (req, res, next) => {
   }
 };
 
+exports.setShipmentDelivered = async (req, res, next) => {
+  try {
+    const identifier = req.params.uuid;
+    const sql = `UPDATE shipment SET status_id = ?, date_delivered = ? WHERE uuid = ?;`;
+
+    const [shipmentStatus] = await db.exec('SELECT status_id FROM shipment WHERE uuid = ?', [db.bid(identifier)]);
+
+    const inTransit = !!(shipmentStatus.status_id === SHIPMENT_IN_TRANSIT);
+
+    if (inTransit) {
+      await db.exec(sql, [SHIPMENT_DELIVERED, new Date(), db.bid(identifier)]);
+    } else {
+      throw new Error('You a shipment must be in transit before it can be marked as delivered!');
+    }
+
+    const transaction = db.transaction();
+    addTrackingLogMessage(transaction, identifier, 'SHIPMENT.MARKED_DELIVERED', req.session.user.id);
+    await transaction.execute();
+
+    res.sendStatus(201);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.setShipmentCompleted = async (req, res, next) => {
   try {
     const identifier = req.params.uuid;
@@ -341,7 +367,7 @@ exports.writeStockEntryShipment = (
     const updateParameters = [
       lot.quantity || 0,
       document.date,
-      SHIPMENT_IN_TRANSIT_OR_PARTIAL,
+      SHIPMENT_READY_TO_ENTER,
       db.bid(document.uuid),
       db.bid(lot.uuid),
     ];
@@ -362,7 +388,7 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
       WHERE sh.status_id IN (?) AND sh.document_uuid = ?
     `;
   const resultShipmentItems = await db.exec(queryShipmentItems, [
-    SHIPMENT_IN_TRANSIT_OR_PARTIAL, db.bid(document.uuid),
+    SHIPMENT_READY_TO_ENTER, db.bid(document.uuid),
   ]);
   const allCompleted = resultShipmentItems.every(item => {
     return item.quantity_sent === item.quantity_delivered;
@@ -394,14 +420,22 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
     ? 'SHIPMENT.STOCK_ENTRY_COMPLETE' : 'SHIPMENT.STOCK_ENTRY_PARTIAL';
   addTrackingLogMessage(tx, document.shipment_uuid, statusMsg, document.user);
 
-  return tx.execute();
+  await tx.execute();
+
+  if (statusMsg === 'SHIPMENT.STOCK_ENTRY_COMPLETE') {
+    const tx2 = db.transaction();
+    addTrackingLogMessage(tx2, document.shipment_uuid, 'SHIPMENT.MARKED_COMPLETE', document.user);
+    return tx2.execute();
+  }
+
+  return true;
 };
 
 exports.listInTransitInventories = async (req, res, next) => {
   try {
     const params = req.query;
 
-    params.status = [SHIPMENT_IN_TRANSIT_OR_PARTIAL];
+    params.status = [SHIPMENT_READY_TO_ENTER];
 
     const filters = getShipmentFilters(params);
 
