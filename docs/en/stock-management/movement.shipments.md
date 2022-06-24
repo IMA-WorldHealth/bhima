@@ -107,8 +107,12 @@ Once the stock exit for a shipment has been performed, the the shipment (and con
 Once a shipment arrives at the receiving depot, it will be unpacked and the items entered into the stock for the receiving depot.
 
 ### Stock Entry at the Receiving Depot
-The Shipments interface makes this straightforward.  Go back to the Shipments Registry and open the action menu for the desired shipment.  A new entry for the Stock Exit will appear:
+The Shipments interface makes this straightforward.  Go back to the Shipments Registry and open the action menu for the desired shipment.  There are two actions that are now available:
 <img src="./images/shipment-actions3.png" alt="Shipment action menu - stock entry" align="right" width="300">
-When the user clicks on the "Enter stock for this shipment" item, the user will be taken to the Stock Entry page for the shipment with all the relevant information set up for easy approval.
+
+   1. **Mark as Delivered** - This will change the status of the shipment to *delivered*.  This does NOT mean that stock entry has been performed at the destination depot.  Chosing this option means that the shipment has been received but not unpacked.
+
+   2. **Enter stock for this shipment** -
+   Selecting this option will take the user to Stock Entry page for the shipment with all the relevant information set up for easy approval.  Note that marking the item as *delivered* can be skipped if the shipment has already been unpacked when the stock entry into BHIMA is ready to be done.
 
 Note at this point, if the Stock Entry is approved with all items received, the shipment will automatically be closed (marked "Complete").  However, if any items are missing or lost due to damage, the shipment status will be marked as "Partial".  It can remain in the "partial" state as appropriate, but it can be manually closed (via the action menu after the stock exit).
