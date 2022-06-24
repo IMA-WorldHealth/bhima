@@ -6,7 +6,7 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate> SHIPMENT.SHIPMENTS </li>
-      <li class="static" translate> SHIPMENT.STATUS.COMPLETE </li>
+      <li class="static" translate> SHIPMENT.MARK_DELIVERED </li>
       <li class="title"> {{ $ctrl.shipment.reference }} </li>
     </ol>
   </div>
@@ -19,8 +19,8 @@
     </p>
     <br>
     <p class="text-center">
-      <strong translate>SHIPMENT.MARK_COMPLETE_MESSAGE</strong><br>
-      <em translate>SHIPMENT.MARK_COMPLETE_MESSAGE2</em>
+      <strong translate>SHIPMENT.MARK_DELIVERED_MESSAGE</strong><br>
+      <em translate>SHIPMENT.MARK_DELIVERED_MESSAGE2</em>
     </p>
   </div>
 
@@ -28,7 +28,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CANCEL
     </button>
-    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.isPartial">
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="!$ctrl.isInTransit">
       <span translate>FORM.BUTTONS.CONFIRM</span>
     </bh-loading-button>
   </div>
