@@ -11,14 +11,12 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const Redis = require('ioredis');
 const morgan = require('morgan');
-const _ = require('lodash');
 const helmet = require('helmet');
 
 const debug = require('debug')('app');
 const debugHTTP = require('debug')('http');
 const access = require('./access');
 const interceptors = require('./interceptors');
-const { Unauthorized } = require('../lib/errors');
 const uploads = require('../lib/uploader');
 
 // accept generic express instances (initialised in app.js)
@@ -74,6 +72,7 @@ exports.configure = function configure(app) {
 
   // manage user access( by session or token)
   access(app);
+
   // provide a stream for morgan to write to
   const stream = {
     write : message => debugHTTP(message.trim()),
