@@ -29,10 +29,22 @@
     "IS_IN_TRANSIT_TOOLTIP": "This inventory is in transit to the depot ({{depot}})",
     "LOCATION": "Location",
     "LOT_CONDITION": "Condition",
+
+    "MARKED_DELIVERED": "Shipment marked delivered",
+    "MARK_DELIVERED": "Mark as delivered",
+    "MARK_DELIVERED_MESSAGE": "You confirm that the shipment has arrived at the destination depot",
+    "MARK_DELIVERED_MESSAGE2": "(but has not been unpacked).",
+
     "MARKED_COMPLETE": "Shipment marked complete",
-    "MARKED_READY_TO_SHIP": "Shipment marked as ready to ship",
-    "MARK_COMPLETE_MESSAGE" : "By validating, you confirm that this shipment is complete",
+    "MARK_COMPLETED": "Mark as completed",
+    "MARK_COMPLETE_MESSAGE" : "You confirm that this shipment is complete",
     "MARK_COMPLETE_MESSAGE2" : "(even though some items were partially delivered).",
+
+    "MARKED_READY_TO_SHIP": "Shipment marked as ready to ship",
+    "MARK_READY_TO_SHIP": "Mark as ready to ship",
+    "MARK_READY_TO_SHIP_MESSAGE":"You confirm that this shipment is ready to leave the depot.",
+    "MARK_READY_TO_SHIP_MESSAGE2": "(You will no longer be able to make changes to it.)",
+
     "NEW_LOCATION": "New Location",
     "NEW_SHIPMENT": "New Shipment",
     "NOT_DEFINED": "Not Defined",
@@ -44,7 +56,6 @@
     "PARTIAL_MARKED_COMPLETE" : "Partial shipment marked complete",
     "PLEASE_SHIP_EXISTING_SHIPMENT": "Please ship or cancel these existing shipments",
     "READY_TO_SHIP": "Ready to ship",
-    "READY_TO_SHIP_MESSAGE":"By validating, you confirm that this shipment is ready to leave the warehouse; You will no longer be able to make changes to it.",
     "RECEIVER": "Receiver",
     "REFERENCE": "Reference",
     "REQUISITION": "Requisition",
