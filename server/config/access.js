@@ -14,13 +14,6 @@ const publicRoutes = [
   '/currencies',
 ];
 
-const assetRoutes = [
-  '/index.html',
-  '/css/',
-  '/js/',
-  '/assets/',
-];
-
 module.exports = (app) => {
   // eslint-disable-next-line consistent-return
   app.use((req, res, next) => {
@@ -40,25 +33,22 @@ module.exports = (app) => {
       });
     }
 
-    if (sessionExists) {
-      if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes) && !withinAsset(req.path, assetRoutes)) {
-        debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
-        next(new Unauthorized('You are not logged into the system.'));
-      } else {
-        next();
-      }
-    } else {
-      debug('token not valid');
-      res.status(401).json({
-        msg : 'token not valid',
-      });
+    if (!sessionExists) {
+      debug(`Rejecting due to invalid session token`);
+      next(new Unauthorized('The session token is not valid'));
     }
+
+    if (_.isUndefined(req.session.user) && !within(req.path, publicRoutes)) {
+      debug(`Rejecting unauthorized access to ${req.path} from ${req.ip}`);
+      next(new Unauthorized('You are not logged into the system.'));
+    }
+
+    // go to the next middleware
+    next();
+
   });
 
 };
 
 // quick way to find out if a value is in an array
 function within(value, array) { return array.includes(value.trim()); }
-
-// quick way to find out if a value is in an array
-function withinAsset(value, array) { return array.filter(key => value.startsWith(key)); }
