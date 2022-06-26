@@ -70,18 +70,6 @@ exports.configure = function configure(app) {
   // bind the session to the middleware
   app.use(session(sess));
 
-  // manage user access( by session or token)
-  access(app);
-
-  // provide a stream for morgan to write to
-  const stream = {
-    write : message => debugHTTP(message.trim()),
-  };
-
-  // http logger setup
-  // options: combined | common | dev | short | tiny
-  app.use(morgan('short', { stream }));
-
   /**
    * @function overrideIndexCacheHeaders
    *
@@ -98,6 +86,18 @@ exports.configure = function configure(app) {
 
   app.use(express.static('client/', { setHeaders : overrideIndexCacheHeaders }));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
+
+  // manage user access( by session or token)
+  access(app);
+
+  // provide a stream for morgan to write to
+  const stream = {
+    write : message => debugHTTP(message.trim()),
+  };
+
+  // http logger setup
+  // options: combined | common | dev | short | tiny
+  app.use(morgan('short', { stream }));
 };
 
 // configures error handlers
