@@ -15,7 +15,7 @@ describe('/remote access APIs', () => {
   };
   let token = null;
 
-  it.only('get token', () => {
+  it('get token', () => {
     return chai.request(url)
       .post('/auth/login')
       .send(validUser)
@@ -28,7 +28,7 @@ describe('/remote access APIs', () => {
       .catch(helpers.handler);
   });
 
-  it.only('Accessing a private route using a correct token', () => {
+  it('Accessing a private route using a correct token', () => {
     return chai.request(url)
       .get('/depots')
       .set('x-access-token', token)
