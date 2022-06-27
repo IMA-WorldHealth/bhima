@@ -23,7 +23,7 @@ function StockDefineLotsModalController(
   }
 
   // Hide columns in the grid when it doesn't apply to this inventory item.
-  const shouldShowSerialNumber = Data.stockLine.is_asset;
+  const isAsset = Data.stockLine.is_asset;
   const showShowExpirationDate = !(Data.stockLine.tracking_expiration === false || Data.stockLine.is_asset);
 
   Data.stockLine.prev_unit_cost = Data.stockLine.unit_cost; // Save for later checks
@@ -50,6 +50,7 @@ function StockDefineLotsModalController(
   vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
   vm.entryDate = Data.entry_date;
+  vm.isAsset = Data.stockLine.is_asset;
 
   vm.currencyId = Data.currency_id !== undefined
     ? Data.currency_id : vm.enterprise.currency_id;
@@ -110,7 +111,7 @@ function StockDefineLotsModalController(
     displayName : 'TABLE.COLUMNS.SERIAL_NUMBER',
     headerCellFilter : 'translate',
     aggregationHideLabel : true,
-    visible : shouldShowSerialNumber,
+    visible : isAsset,
     width : 220,
     cellTemplate : 'modules/stock/entry/modals/templates/serial_number.input.tmpl.html',
   }, {
@@ -129,6 +130,7 @@ function StockDefineLotsModalController(
     aggregationHideLabel : true,
     footerCellClass : 'text-right',
     cellTemplate : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html',
+    visible : !isAsset,
   }, {
     field : 'expiration_date',
     type : 'date',
