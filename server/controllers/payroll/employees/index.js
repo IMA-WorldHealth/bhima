@@ -431,7 +431,11 @@ function list(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
-  db.convert(options, ['service_uuid']);
+  // ensure expected options are parsed appropriately
+  db.convert(options, ['uuid', 'grade_uuid', 'creditor_uuid', 'patient_uuid', 'service_uuid']);
+  if (options.cost_center_id) {
+    options.cost_center_id = Number(options.cost_center_id);
+  }
 
   const sql = `
     SELECT
@@ -446,7 +450,8 @@ function find(options) {
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
       BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id,
-      service.name as service_name, entity_map.text as reference
+      service.name as service_name, cc.label AS cost_center, cc.id AS cost_center_id,
+      entity_map.text as reference
     FROM employee
      JOIN grade ON employee.grade_uuid = grade.uuid
      LEFT JOIN fonction ON employee.fonction_id = fonction.id
@@ -455,11 +460,10 @@ function find(options) {
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
      LEFT JOIN service ON service.uuid = employee.service_uuid
+     LEFT JOIN service_cost_center AS scc ON scc.service_uuid = service.uuid
+     LEFT JOIN cost_center AS cc ON cc.id = scc.cost_center_id
      LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
   `;
-
-  // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['uuid', 'grade_uuid', 'creditor_uuid', 'patient_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'employee' });
 
@@ -476,12 +480,19 @@ function find(options) {
   filters.equals('is_medical', 'is_medical', 'employee');
   filters.equals('reference', 'text', 'entity_map');
 
+  if (options.cost_center_id) {
+    if (options.cost_center_id > -1) {
+      filters.equals('cost_center_id', 'id', 'cc');
+    } else {
+      filters.custom('cost_center_id', 'cc.id IS NULL');
+    }
+  }
+
   // @TODO Support ordering query
   filters.setOrder('ORDER BY patient.display_name ASC');
 
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
-
   const parameters = filters.parameters();
 
   return db.exec(query, parameters);
