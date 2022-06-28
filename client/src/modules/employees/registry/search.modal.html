@@ -87,6 +87,13 @@
             <bh-clear on-clear="ModalCtrl.clear('service_uuid')"></bh-clear>
           </bh-service-select>
 
+          <bh-cost-center-select
+            enable-null="true"
+            cost-center-id="ModalCtrl.searchQueries.cost_center_id"
+            on-select-callback="ModalCtrl.onCostCenterSelect(costCenter)">
+            <bh-clear on-clear="ModalCtrl.clear('cost_center_id')"></bh-clear>
+          </bh-cost-center-select>
+
           <div class="form-group">
             <label class="control-label" translate>FORM.LABELS.MEDICAL_NONMEDICAL_STAFF</label>
             <bh-clear on-clear="ModalCtrl.clear('is_medical')"></bh-clear>
