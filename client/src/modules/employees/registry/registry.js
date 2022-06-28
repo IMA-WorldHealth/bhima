@@ -67,7 +67,16 @@ function EmployeeRegistryController(
       field            : 'service_name',
       displayName      : 'TABLE.COLUMNS.SERVICE',
       headerCellFilter : 'translate',
+      sort : { direction : uiGridConstants.ASC, priority : 2 },
+      visible          : false,
+      cellClass        : muteDisabledCells,
+    },
+    {
+      field            : 'cost_center',
+      displayName      : 'TABLE.COLUMNS.COST_CENTER',
+      headerCellFilter : 'translate',
       sort : { direction : uiGridConstants.ASC, priority : 1 },
+      visible          : false,
       cellClass        : muteDisabledCells,
     },
     {
@@ -167,13 +176,6 @@ function EmployeeRegistryController(
     {
       field            : 'fonction_txt',
       displayName      : 'FORM.LABELS.PROFESSION',
-      headerCellFilter : 'translate',
-      visible          : false,
-      cellClass        : muteDisabledCells,
-    },
-    {
-      field            : 'service_name',
-      displayName      : 'FORM.LABELS.SERVICE',
       headerCellFilter : 'translate',
       visible          : false,
       cellClass        : muteDisabledCells,
