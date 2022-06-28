@@ -391,6 +391,7 @@
             "CONVERSION_RATE": "Taux de conversion",
             "CONVERTION_RATE" : "Taux de conversion",
             "COST_CENTER": "Centre de coûts",
+            "COST_CENTER_OPTIONAL": "Centre de coûts (optionnel)",
             "COST": "Coût",
             "COUNTRY": "Pays",
             "CREATE": "CRÉATION",

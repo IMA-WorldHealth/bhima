@@ -47,7 +47,7 @@ function CostCenterSelectController(CostCenters, Notify, $translate) {
 
   $ctrl.$onInit = () => {
     $ctrl.required = !!($ctrl.required);
-    $ctrl.label = $ctrl.label || 'COST_CENTER.TITLE';
+    $ctrl.label = $ctrl.label || $ctrl.required ? 'FORM.LABELS.COST_CENTER' : 'FORM.LABELS.COST_CENTER_OPTIONAL';
     $ctrl.costCenterId = $ctrl.costCenterId ? +$ctrl.costCenterId : null;
     loadCostCenters();
   };
