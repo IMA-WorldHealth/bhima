@@ -15,6 +15,8 @@
           <th>{{translate "TABLE.COLUMNS.AGE" }} ({{translate "TABLE.COLUMNS.DOB"}})</th>
           <th>{{translate "FORM.LABELS.GRADE" }}</th>
           <th>{{translate "FORM.LABELS.FUNCTION" }}</th>
+          <th>{{translate "FORM.LABELS.SERVICE" }}</th>
+          <th>{{translate "FORM.LABELS.COST_CENTER" }}</th>
           <th>{{translate "FORM.LABELS.DATE_EMBAUCHE" }}</th>
         </tr>
       </thead>
@@ -27,6 +29,8 @@
             <td>{{this.age}} ({{date this.dob}})</td>
             <td>{{this.code_grade}}</td>
             <td>{{this.fonction_txt}}</td>
+            <td>{{this.service_name}}</td>
+            <td>{{this.cost_center}}</td>
             <td>{{date this.date_embauche}}</td>
           </tr>
         {{else}}
