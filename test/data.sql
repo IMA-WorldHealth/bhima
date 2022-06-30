@@ -840,13 +840,13 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
 
 
 -- COST CENTER
-INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `allocation_method`, `allocation_basis_id`) VALUES
-  (1, 'Administration', 1, 'proportional', 1),
-  (2, 'Principale TPA', 1, 'proportional', 2),
-  (3, 'Principale TPB', 1, 'proportional', 3),
-  (4, 'Auxiliary 1', 0, 'proportional', 2),
-  (5, 'Auxiliary 2', 0, 'proportional', 2),
-  (6, 'Auxiliary 3', 0, 'flat', 2);
+INSERT INTO `cost_center` (`id`, `label`, `is_principal`, `project_id`, `allocation_method`, `allocation_basis_id`) VALUES
+  (1, 'Administration', 1, 1, 'proportional', 1),
+  (2, 'Principale TPA', 1, 1, 'proportional', 2),
+  (3, 'Principale TPB', 1, 1, 'proportional', 3),
+  (4, 'Auxiliary 1', 0, 1, 'proportional', 2),
+  (5, 'Auxiliary 2', 0, 1, 'proportional', 2),
+  (6, 'Auxiliary 3', 0, 1, 'flat', 2);
 
 -- set test cost center
 UPDATE account set cost_center_id = 4 WHERE id = 215;
