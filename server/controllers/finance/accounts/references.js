@@ -20,6 +20,7 @@ const _ = require('lodash');
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
+const i18n = require('../../../lib/helpers/translate');
 
 const compute = require('./references.compute');
 
@@ -52,12 +53,16 @@ async function list(req, res, next) {
   const params = req.query;
   try {
 
+    // i18n(options.lang)(Stock.fluxLabel[key]),
+
     const filters = new FilterParser(params, { tableAlias : 'ar' });
+
+    const except = i18n(params.lang)('ACCOUNT.EXCEPT');
 
     const sql = `
     SELECT
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
-      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
+      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(${except} ', a.number, ')')) SEPARATOR ', ') AS accounts,
       ar.reference_type_id, art.label as account_reference_type_label
     FROM account_reference ar
       LEFT JOIN account_reference arp ON arp.id = ar.parent

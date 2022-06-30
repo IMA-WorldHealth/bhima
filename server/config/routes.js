@@ -966,6 +966,7 @@ exports.configure = function configure(app) {
   app.put('/cost_center/:id', costCenter.update);
   app.delete('/cost_center/:id', costCenter.delete);
   app.put('/cost_center/step_order/multi', costCenter.setAllocationStepOrder);
+  app.put('/cost_centers/update_accounts', costCenter.updateAccounts);
 
   // Step-down allocation basis API
   app.get('/cost_center_allocation_basis', costAllocationBasis.list);
