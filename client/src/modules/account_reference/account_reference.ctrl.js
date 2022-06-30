@@ -2,14 +2,16 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceController', AccountReferenceController);
 
 AccountReferenceController.$inject = [
-  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants', '$translate', 'bhConstants',
+  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants',
+  'LanguageService', '$translate', 'bhConstants',
 ];
 
 /**
  * AccountReference Controller
  * This module is responsible for handling the CRUD operation on the account references
  */
-function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants, $translate, bhConstants) {
+function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants,
+  Language, $translate, bhConstants) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -31,43 +33,61 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
         field : 'abbr',
         displayName : 'ACCOUNT.REFERENCE.REFERENCE',
         headerCellFilter : 'translate',
+        width : '15%',
         enableFiltering : true,
       },
       {
         field : 'accounts',
         displayName : 'ACCOUNT.REFERENCE.ACCOUNT_LIST',
         headerCellFilter : 'translate',
+        cellTemplate : '/modules/account_reference/templates/account_list.cell.html',
+        width : '20%',
         enableFiltering : true,
       },
       {
         field : 'description',
         displayName : 'ACCOUNT.REFERENCE.DESCRIPTION',
         headerCellFilter : 'translate',
+        width : '15%',
         enableFiltering : true,
       },
       {
         field : 'parent_abbr',
         displayName : 'ACCOUNT.REFERENCE.PARENT_REFERENCE',
         headerCellFilter : 'translate',
+        headerCellClass : 'wrappingColHeader',
+        width : '10%',
         enableFiltering : true,
       },
       {
         field : 'account_reference_type_label',
         displayName : 'FORM.LABELS.TYPE',
         headerCellFilter : 'translate',
+        width : '10%',
+        enableFiltering : true,
+      },
+      {
+        field : 'cost_center',
+        displayName : 'ACCOUNT.COST_CENTER',
+        headerCellClass : 'wrappingColHeader',
+        headerCellFilter : 'translate',
+        width : '10%',
         enableFiltering : true,
       },
       {
         field : 'is_amo_dep',
         displayName : 'ACCOUNT.REFERENCE.AMO_DEP',
+        headerTooltip : 'ACCOUNT.REFERENCE.AMO_DEP',
         headerCellFilter : 'translate',
         cellTemplate : '/modules/account_reference/templates/is_amo_dep.cell.html',
+        width : '10%',
         enableFiltering : true,
       },
       {
         field : 'action',
         displayName : '',
         cellTemplate : '/modules/account_reference/templates/action.cell.html',
+        width : '10%',
         enableSorting : false,
         enableFiltering : false,
       },
@@ -142,6 +162,9 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
 
     vm.latestViewFilters = AccountReferences.filters.formatView();
     const filterSearch = parameters || AccountReferences.filters.formatHTTP(true);
+
+    // Insert the languae into the filters
+    filterSearch.lang = Language.key;
 
     AccountReferences.read(null, filterSearch)
       .then((references) => {

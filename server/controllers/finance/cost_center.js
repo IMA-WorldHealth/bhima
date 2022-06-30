@@ -7,6 +7,7 @@
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
+const accountReferences = require('./accounts/references.compute');
 
 // GET /cost_center
 async function lookupCostCenter(id) {
@@ -337,6 +338,56 @@ function setAllocationStepOrder(req, res, next) {
     .catch(next);
 }
 
+// PUT /cost_center/update_accounts
+async function updateAccounts(req, res, next) {
+  const { user } = req.session;
+
+  // First clear any old cost center info in all accounts
+  await db.exec(`UPDATE account SET cost_center_id = NULL WHERE enterprise_id = ${user.enterprise_id}`);
+
+  // Get a list of cost centers
+  const centersSql = `SELECT id, label FROM cost_center WHERE project_id = ${user.project_id}`;
+  const centers = await db.exec(centersSql);
+  const transactions = db.transaction();
+
+  // Update the accounts for each cost center
+  // eslint-disable-next-line no-restricted-syntax
+  for (const center of centers) {
+
+    // Get the account references for this cost center
+    const accRefsql = `
+      SELECT ar.abbr FROM account_reference AS ar
+      JOIN reference_cost_center as rcc ON rcc.account_reference_id = ar.id
+      WHERE rcc.cost_center_id = ?
+      `;
+    // eslint-disable-next-line no-await-in-loop
+    const accRefs = await db.exec(accRefsql, [center.id]);
+
+    const updateAccSql = 'UPDATE account SET cost_center_id = ? WHERE id = ?';
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const ref of accRefs) {
+
+      // Get a list of accounts belonging to the cost center
+      // eslint-disable-next-line no-await-in-loop
+      const accounts = await accountReferences.getAccountsForReference(ref.abbr);
+
+      // Update the cost center for each account
+      accounts.forEach(acct => {
+        transactions.addQuery(updateAccSql, [center.id, acct.account_id]);
+      });
+    }
+  }
+  const numUpdates = transactions.queries.length;
+
+  return transactions.execute()
+    .then(() => {
+      res.status(200).json({ numUpdates });
+    })
+    .catch(next)
+    .done();
+}
+
 // get list of costCenter
 exports.list = list;
 // get details of a costCenter
@@ -353,3 +404,4 @@ exports.getAllCostCenterAccounts = getAllCostCenterAccounts;
 exports.assignCostCenterParams = assignCostCenterParams;
 
 exports.setAllocationStepOrder = setAllocationStepOrder;
+exports.updateAccounts = updateAccounts;
