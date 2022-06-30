@@ -1,4 +1,12 @@
 <div class="flex-header">
+  <!-- show a loading indicator while loading -->
+  <p
+    ng-if="CostCenterCtrl.loading"
+    class="text-muted text-center">
+    <i class="fa fa-circle-o-notch fa-spin"></i>
+    <span translate>FORM.INFO.LOADING</span>
+  </p>
+
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate> TREE.FINANCE </li>
@@ -27,6 +35,14 @@
               </a>
             </li>
 
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href data-method="step_order"
+                 uib-tooltip="{{ 'COST_CENTER.UPDATE_ACCOUNTS_TOOLTIP' | translate }}" tooltip-placement="left"
+                 ng-click="CostCenterCtrl.updateAccounts()">
+                <i class="fa fa-table"></i> <span translate>COST_CENTER.UPDATE_ACCOUNTS</span>
+              </a>
+            </li>
             <li role="separator" class="divider"></li>
 
             <li role="menuitem">
