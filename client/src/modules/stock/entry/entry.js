@@ -565,8 +565,10 @@ function StockEntryController(
     stockLine.tracking_expiration = inventory.tracking_expiration;
     stockLine.unique_item = inventory.unique_item;
     stockLine.is_asset = inventory.is_asset;
-    if (inventory.is_asset) {
-      stockLine.quantity = 1;
+    if (stockLine.lots && stockLine.lots.length > 0) {
+      stockLine.quantity = stockLine.lots.reduce((n, row) => n + row.quantity, 0);
+    } else {
+      stockLine.quantity = inventory.is_asset ? 1 : 0;
     }
 
     StockModal.openDefineLots({
