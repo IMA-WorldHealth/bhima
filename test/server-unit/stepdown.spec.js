@@ -9,6 +9,12 @@ function StepdownMethodUnitTests() {
     Stepdown = require('../../server/lib/stepdown');
   });
 
+  it('Compute results for Cost Center documentation test', () => {
+    const example = Stepdown.compute(dataset.SAMPLE_DOCS);
+    expect(example.length).to.be.eq(5);
+    // console.log("Example Step-Down results: ", example);
+  });
+
   /**
    * Step down method with sample data from
    * @link: https://www.youtube.com/watch?v=yCxCF1PKVJQ

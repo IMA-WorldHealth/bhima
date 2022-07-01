@@ -223,6 +223,50 @@ function ex136() {
   ];
 }
 
+function exDocumentation() {
+  return [
+    {
+      name : 'Laundry',
+      principal : false,
+      directCost : 7000,
+      area : 50,
+      laundryVolume : 5,
+      numEmployees : 2,
+      allocation : { method : 'proportional', field : 'laundryVolume' },
+    }, {
+      name : 'Housekeeping',
+      principal : false,
+      directCost : 5000,
+      area : 50,
+      laundryVolume : 5,
+      numEmployees : 2,
+      allocation : { method : 'proportional', field : 'area' },
+    }, {
+      name : 'Administration',
+      principal : false,
+      directCost : 20000,
+      area : 100,
+      laundryVolume : 20,
+      numEmployees : 2,
+      allocation : { method : 'proportional', field : 'numEmployees' },
+    }, {
+      name : 'Surgery',
+      directCost : 40000,
+      principal : true,
+      area : 100,
+      laundryVolume : 40,
+      numEmployees : 4,
+    }, {
+      name : 'Pharmacy',
+      directCost : 100000,
+      principal : true,
+      area : 100,
+      laundryVolume : 20,
+      numEmployees : 2,
+    },
+  ];
+}
+
 function allocationSample5() {
   return [
     [
@@ -271,4 +315,5 @@ module.exports = {
   SAMPLE_13_4 : ex134(),
   SAMPLE_13_5 : ex135(),
   SAMPLE_13_6 : ex136(),
+  SAMPLE_DOCS : exDocumentation(),
 };
