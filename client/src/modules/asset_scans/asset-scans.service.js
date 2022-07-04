@@ -2,14 +2,14 @@ angular.module('bhima.services')
   .service('AssetsScanService', AssetsScanService);
 
 AssetsScanService.$inject = [
-  '$http', 'util', '$translate',
+  '$http', 'util',
 ];
 
 /**
  * This service encapsulate some common method of stock lots registry with the aims
  * of reducing lines in registry.js
  */
-function AssetsScanService($http, util, $translate) {
+function AssetsScanService($http, util) {
   const service = this;
 
   /**
@@ -55,10 +55,20 @@ function AssetsScanService($http, util, $translate) {
   /**
    * @description Delete a specific asset scan
    * @param {string} uuid
-   * @returns
+   * @returns result of operation
    */
   service.delete = uuid => {
     return $http.delete(`/asset/scan/${uuid}`)
+      .then(util.unwrapHttpResponse);
+  };
+
+  /**
+   * @description Get the last scan for an asset
+   * @param {string} asset_uuid
+   * @returns {object} the last asset scan (or null)
+   */
+  service.getLastScan = assetUuid => {
+    return $http.get(`/asset/last_scan/${assetUuid}`)
       .then(util.unwrapHttpResponse);
   };
 

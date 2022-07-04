@@ -14,7 +14,7 @@ function AssetEditModalController(Data, Session, Lots, Inventory, Notify, Instan
   vm.enterprise = Session.enterprise;
   vm.onDateChange = onDateChange;
   vm.onSelectTags = onSelectTags;
-  vm.cancel = Instance.dismiss;
+  vm.cancel = Instance.close;
   vm.submit = submit;
 
   vm.trackingExpiration = true;

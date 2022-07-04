@@ -805,6 +805,7 @@ exports.configure = function configure(app) {
   app.post('/asset/scan', assetScans.createAssetScan);
   app.put('/asset/scan/:uuid', assetScans.updateAssetScan);
   app.delete('/asset/scan/:uuid/delete', assetScans.deleteAssetScan);
+  app.get('/asset/last_scan/:asset_uuid', assetScans.getLastAssetScan);
 
   // API for required asset inventory scans
   app.get('/inventory/required/scans', reqInvScans.getRequiredInventoryScans);
