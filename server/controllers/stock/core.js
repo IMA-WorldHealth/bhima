@@ -561,10 +561,10 @@ async function getLotsMovements(depotUuid, params) {
 
   const sql = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, m.quantity, m.reference, m.description,
+      BUID(l.uuid) AS uuid, l.label, l.serial_number, l.unit_cost, l.expiration_date,
+      m.quantity, m.reference, m.description,
       d.text AS depot_text, d.min_months_security_stock,
-      IF(is_exit = 1, "OUT", "IN") AS io, l.unit_cost,
-      l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid,
+      IF(is_exit = 1, "OUT", "IN") AS io, BUID(l.inventory_uuid) AS inventory_uuid,
       (SELECT MIN(sm.date) FROM stock_movement sm WHERE sm.lot_uuid = l.uuid) AS entry_date,
       i.code, i.text,
       BUID(m.depot_uuid) AS depot_uuid, m.is_exit, m.date, BUID(m.document_uuid) AS document_uuid,
