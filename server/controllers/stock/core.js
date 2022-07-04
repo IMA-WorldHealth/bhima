@@ -251,20 +251,17 @@ async function getAssets(params) {
 
   // Construct the WHERE clause to insert inside the join
   // (Not obvious how to do this with filters since it is inside a JOIN)
-  let scanPeriod = '';
+  let scanWhere = 'WHERE s2.uuid IS NULL';
   if ('scan_start_date' in params) {
     const startDate = moment(params.scan_start_date).format('YYYY-MM-DD');
-    scanPeriod = `scan.created_at >= DATE(${db.escape(startDate)})`;
+    scanWhere = `scan.created_at >= DATE(${db.escape(startDate)})`;
   }
   if ('scan_end_date' in params) {
-    if (scanPeriod) {
-      scanPeriod += ' AND ';
+    if (scanWhere) {
+      scanWhere += ' AND ';
     }
     const endDate = moment(params.scan_end_date).format('YYYY-MM-DD');
-    scanPeriod += `scan.created_at <= DATE(${db.escape(endDate)})`;
-  }
-  if (scanPeriod) {
-    scanPeriod = `WHERE ${scanPeriod}`;
+    scanWhere += `scan.created_at <= DATE(${db.escape(endDate)})`;
   }
 
   const sql = `
@@ -307,11 +304,10 @@ async function getAssets(params) {
       LEFT JOIN (
         SELECT scan.*
         FROM asset_scan AS scan
-        LEFT JOIN asset_scan AS s2 ON (s2.asset_uuid = scan.asset_uuid
-          AND scan.created_at < s2.created_at AND s2.uuid IS NULL)
-        ${scanPeriod}
+      LEFT JOIN asset_scan AS s2
+        ON (s2.asset_uuid = scan.asset_uuid AND scan.created_at < s2.created_at)
+      ${scanWhere}
       ) AS last_scan ON last_scan.asset_uuid = l.uuid
-
   `;
 
   const groupByClause = ` GROUP BY l.uuid, m.depot_uuid ORDER BY i.code, l.label `;

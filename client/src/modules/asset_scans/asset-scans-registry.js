@@ -59,7 +59,7 @@ function AssetScansRegistryController(
    * @param {object} scan
    */
   vm.openAssetScanModal = (scan) => {
-    StockModal.openAssetScanEdit({ uuid : scan.uuid, asset_uuid : scan.asset_uuid })
+    return StockModal.openAssetScanEdit({ uuid : scan.uuid, asset_uuid : scan.asset_uuid })
       .then(ans => {
         if (!ans) { return; }
         load(vm.filters.formatHTTP(true));
@@ -72,8 +72,41 @@ function AssetScansRegistryController(
    * @param {string} asset_uuid
    */
   vm.createAssetScan = (scan) => {
-    vm.openAssetScanModal({ uuid : null, asset_uuid : scan.asset_uuid });
+    vm.openAssetScanModal({ uuid : null, asset_uuid : scan.asset_uuid })
+      .then(ans => {
+        if (!ans) { return; }
+        load(vm.filters.formatHTTP(true));
+      });
   };
+
+  /**
+   * Create a new asset scan
+   */
+  vm.newAssetScan = () => {
+    Barcode.modal({ shouldSearch : false, title : 'ASSET.SCAN_ASSET_BARCODE' })
+      .then(record => {
+        Stock.lots.read(null, { barcode : record.uuid })
+          .then(assets => {
+            if (assets.length > 0) {
+              const [asset] = assets;
+              return asset;
+            }
+            return Notify.danger('ASSET.BARCODE_NOT_FOUND');
+          })
+          .then(asset => {
+            if (asset) {
+              return vm.openAssetScanModal({ uuid : null, asset_uuid : asset.uuid });
+            }
+            return null;
+          })
+          .then(ans => {
+            if (!ans) { return; }
+            load(vm.filters.formatHTTP(true));
+            vm.latestViewFilters = vm.filters.formatView();
+          });
+      });
+  };
+
 
   /**
    * initialize the module
@@ -160,27 +193,6 @@ function AssetScansRegistryController(
         vm.filters.cacheFilters();
         vm.latestViewFilters = vm.filters.formatView();
         return load(vm.filters.formatHTTP(true));
-      });
-  };
-
-  /**
-   * Create a new asset scan
-   */
-  vm.newAssetScan = () => {
-    Barcode.modal({ shouldSearch : false, title : 'ASSET.SCAN_ASSET_BARCODE' })
-      .then(record => {
-        Stock.lots.read(null, { barcode : record.uuid })
-          .then(assets => {
-            return assets[0];
-          })
-          .then(asset => {
-            return vm.openAssetScanModal({ uuid : null, asset_uuid : asset.uuid });
-          })
-          .then(ans => {
-            if (!ans) { return; }
-            load(vm.filters.formatHTTP(true));
-            vm.latestViewFilters = vm.filters.formatView();
-          });
       });
   };
 
