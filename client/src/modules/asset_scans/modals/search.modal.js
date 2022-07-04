@@ -32,6 +32,8 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
     vm.showOnlyLatestScan = 1;
   }
 
+  vm.cancel = Instance.close;
+
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
@@ -94,8 +96,6 @@ function AssetScansSearchModalController(data, util, Store, Instance, Stock, Sea
   if (data.tags) {
     vm.defaultQueries.tags = data.tags.map(t => t.name).join(',');
   }
-
-  vm.cancel = () => Instance.dismiss();
 
   vm.submit = () => {
 

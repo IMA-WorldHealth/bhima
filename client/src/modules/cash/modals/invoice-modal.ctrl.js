@@ -107,14 +107,13 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $rootSco
 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
-    let invoices;
 
     // we start in a neutral state
     vm.loading = false;
     vm.hasError = false;
 
     // retrieve the outstanding patient invoices from the ui grid
-    invoices = vm.getSelectedRows();
+    const invoices = vm.getSelectedRows();
 
     $rootScope.$broadcast('cash:configure', { invoices });
 
