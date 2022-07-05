@@ -149,6 +149,9 @@ const filters = [{
   field : 'code',
   displayName : 'FORM.LABELS.CODE',
 }, {
+  field : 'cost_center_id',
+  displayName : 'FORM.LABELS.COST_CENTER',
+}, {
   field : 'dateBirthFrom',
   displayName : 'FORM.LABELS.DOB',
   comparitor : '>',
