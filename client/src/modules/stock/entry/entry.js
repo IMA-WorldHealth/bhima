@@ -515,6 +515,7 @@ function StockEntryController(
           isValid : true,
           lot : items[index].label,
           quantity : item.quantity,
+          serial_number : items[index].serial_number,
           expiration_date : new Date(items[index].expiration_date),
           uuid : items[index].uuid,
         });
@@ -776,6 +777,7 @@ function StockEntryController(
 
         const inventory = inventoryStore.get(line.inventory_uuid);
         const entryDate = vm.movement.date || Date();
+
         line.code = inventory.code;
         line.label = inventory.label;
         line.unit_cost = inventory.price;
