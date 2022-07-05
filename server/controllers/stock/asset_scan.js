@@ -133,6 +133,9 @@ function listAssetScans(params) {
     LEFT JOIN stock_assign sa ON sa.lot_uuid = l.uuid AND sa.is_active = 1
     LEFT JOIN entity e ON e.uuid = sa.entity_uuid
   `;
+
+  filters.setOrder('ORDER BY s.depot_uuid, l.label, s.created_at');
+
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
 
@@ -195,6 +198,22 @@ exports.deleteAssetScan = async function deleteAssetScan(req, res, next) {
     .then(() => res.sendStatus(200))
     .catch(next)
     .done();
+};
+
+/**
+ * @function getLastScan
+ *
+ * GET /asset/last_scan/:uuid
+ */
+exports.getLastAssetScan = async function getLastAssetScan(req, res, next) {
+  try {
+    const { params } = req;
+    params.show_only_last_scans = 1;
+    const rows = await listAssetScans(params);
+    res.status(200).json(rows[0]);
+  } catch (error) {
+    next(error);
+  }
 };
 
 /**
