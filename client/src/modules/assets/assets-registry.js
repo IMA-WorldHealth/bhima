@@ -143,7 +143,6 @@ function AssetsRegistryController(
     toggleLoadingIndicator();
     Stock.assets.getAssetLots(filters)
       .then((assets) => {
-
         assets.forEach((asset) => {
           // serialize tag names for filters
           asset.tagNames = asset.tags.map(tag => tag.name).join(',');
@@ -159,7 +158,7 @@ function AssetsRegistryController(
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
         assets.sort(AssetsRegistry.orderByDepot);
 
-        vm.gridOptions.data = assets.filter(asset => asset.quantity > 0);
+        vm.gridOptions.data = assets;
 
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
@@ -205,6 +204,60 @@ function AssetsRegistryController(
     state.clearGridState();
     $state.reload();
   }
+
+  /**
+   * edit asset scan
+   *
+   * @param {object} scan
+   */
+  vm.openAssetScanModal = (scan) => {
+    return StockModal.openAssetScanEdit({ uuid : scan.uuid, asset_uuid : scan.asset_uuid })
+      .then(ans => {
+        if (!ans) { return; }
+        load(stockLotFilters.formatHTTP(true));
+      });
+  };
+
+  /**
+   * Create a new asset scan for a specific asset
+   *
+   * @param {string} asset_uuid
+   */
+  vm.createAssetScan = (asset) => {
+    vm.openAssetScanModal({ uuid : null, asset_uuid : asset.uuid })
+      .then(ans => {
+        if (!ans) { return; }
+        load(stockLotFilters.formatHTTP(true));
+      });
+  };
+
+  /**
+  * Create a new asset scan
+  */
+  vm.newAssetScan = () => {
+    Barcode.modal({ shouldSearch : false, title : 'ASSET.SCAN_ASSET_BARCODE' })
+      .then(record => {
+        Stock.lots.read(null, { barcode : record.uuid })
+          .then(assets => {
+            if (assets.length > 0) {
+              const [asset] = assets;
+              return asset;
+            }
+            return Notify.danger('ASSET.BARCODE_NOT_FOUND');
+          })
+          .then(asset => {
+            if (asset) {
+              return vm.openAssetScanModal({ uuid : null, asset_uuid : asset.uuid });
+            }
+            return null;
+          })
+          .then(ans => {
+            if (!ans) { return; }
+            load(stockLotFilters.formatHTTP(true));
+            vm.latestViewFilters = stockLotFilters.formatView();
+          });
+      });
+  };
 
   /**
   * @method addAssignment
