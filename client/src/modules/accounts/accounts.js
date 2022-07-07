@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
-  '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
+  '$state', '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
   'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService', 'GeneralLedgerService', 'moment',
 ];
 
@@ -17,8 +17,8 @@ AccountsController.$inject = [
  * and connecting it with the Accounts data model.
  */
 function AccountsController(
-  $rootScope, $timeout, AccountGrid, Notify, Constants, Language,
-  uiGridConstants, Modal, Accounts, GeneralLedger, moment,
+  $state, $rootScope, $timeout, AccountGrid, Notify, Constants,
+  Language, uiGridConstants, Modal, Accounts, GeneralLedger, moment,
 ) {
   const vm = this;
   const columns = gridColumns();
@@ -43,9 +43,10 @@ function AccountsController(
   vm.setShowHiddenAccounts = setShowHiddenAccounts;
 
   vm.Accounts = new AccountGrid();
+
   function init(initialLoad) {
     vm.loading = true;
-    vm.Accounts.settup(initialLoad)
+    vm.Accounts.settup(initialLoad || $state.params.forceReload)
       .then(bindGridData)
       .catch(Notify.handleError)
       .finally(() => {
