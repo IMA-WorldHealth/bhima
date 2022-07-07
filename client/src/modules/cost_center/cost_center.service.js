@@ -51,5 +51,11 @@ function CostCenterService(Api, $uibModal) {
       .then(service.util.unwrapHttpResponse);
   };
 
+  service.updateAccounts = () => {
+    const url = '/cost_centers/update_accounts';
+    return service.$http.put(url, {})
+      .then(service.util.unwrapHttpResponse);
+  };
+
   return service;
 }
