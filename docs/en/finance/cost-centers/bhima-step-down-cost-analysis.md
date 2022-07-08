@@ -13,8 +13,8 @@ allocation with BHIMA:
 
 Before explaining **Cost Centers**, it is useful to understand the term
 **Service** in BHIMA.  *Services* are often called *departments* in typical
-hospitals.  A *service* is usally focused on a specific function within the
-hospital.  When patients are admitted, they are initally assigned to a
+hospitals.  A *service* is usually focused on a specific function within the
+hospital.  When patients are admitted, they are initially assigned to a
 specific *service*.  Over the course of their visit, patients may interact
 with multiple services.  Employees are assigned to one *Service* and are
 usually managed by someone in that *Service*.  In BHIMA, a *Service* or
@@ -30,13 +30,13 @@ and receiving revenue from outside sources -- or is the department primarily
 serving other departments in the hospital?  It is possible there are no
 clear-cut answers to these questions but for this analysis, it is necessary to
 classify each department by whether it is **primarily** a *revenue* department
-(called **principal** in BHIMA) or not (called **auxilliary** in BHIMA).
+(called **principal** in BHIMA) or not (called **auxiliary** in BHIMA).
 Perhaps a department primarily serves other departments but occasionally
 receives payments for some service.  In this case it would probably make sense
 to consider this a non-revenue department.  In BHIMA, a *Cost Center* can
 either be a *revenue* or *non-revenue* department/service (or combination).
 
-In some cases, deciding whether a deparment is a *revenue* department or not
+In some cases, deciding whether a department is a *revenue* department or not
 might be difficult.  The BHIMA software makes it straight-forward to
 experiment and try the cost allocation analysis with either choice.
 
@@ -58,7 +58,7 @@ the allocation bases (in the next section).
 
 ## Define Cost Center Allocation Bases
 
-Chosing an *allocation basis* for each non-revenue department is the next
+Choosing an *allocation basis* for each non-revenue department is the next
 step.  BHIMA defines several typical allocation bases which can be used as
 needed.  It is also possible to define new allocation bases, if needed.  Here
 are the *allocation bases* predefined in BHIMA along with some examples of the
@@ -79,7 +79,7 @@ In some cases, it may be necessary to define a new *allocation basis*.  For
 instance, if there is more than one Laboratory in the hospital (e.g. Pathology
 and Radiology).  Then it might make sense to create a new basis tailored to
 this need: Number of X-rays.  It is important to select an *allocation basis*
-for each servce department that represents the main cost driver for the
+for each service department that represents the main cost driver for the
 department so that allocating its direct costs to other departments is done in
 a reasonable way.  For instance, for Radiology, the costs are mainly driven by
 the cost for performing each X-ray (in terms of labor and other costs for
@@ -127,29 +127,31 @@ Open the BHIMA `Cost Centers` registry page.
 
 Then click on the \[+Add\] button on the top right of the page.  A form to
 create a cost center will come up and look like this:
-<img src="./images/cost-center-add1.png" alt="Form to create a Cost Center" align="right" width="700px">
+<img src="./images/add-cost-center.png" alt="Form to create a Cost Center" 
+     align="right" width="500px">
 Fill out the form in the following steps:
 
  1. Enter a name for the cost center
  2. Choose the main revenue type for the cost center:
     - *Principal* => This cost center is a revenue (principal) cost center
-	- *Auxilliary* => This cost center is a non-revenue (auxilliary) cost center
+	- *Auxiliary* => This cost center is a non-revenue (auxiliary) cost center
 	  	  
 	If **Principal** is selected, several new options will appear:
 
 	- Assigned profit references
 	- Assigned cost references
 
-	These options enable chosing **account references** which determine which
-	accounts provide profits or costs to this cost center.  How to create and
-	use the *account references* will be explained later.
+	These options enable choosing **account references**
+	which determine which accounts provide profits or costs to this cost
+	center.  How to create and use the **account references** will be explained
+    in a [later section](#account-references).
 
-	If **Auxilliary** is selected, the new options that appear are:
+	If **Auxiliary** is selected, the new options that appear are:
 
 	- Cost Center
 	- Profit Center
 
-	As before, these options enable chosing **account references** for **variable**
+	As before, these options enable choosing **account references** for **variable**
 	or **fixed** costs (for Cost Centers), or **turnover** or **other profits**
 	(for profit centers).  Using these options will be explained in more detail
 	later. 
@@ -158,9 +160,9 @@ Fill out the form in the following steps:
     selected, an input field will appear that will allow service(s) to be
     selected that will be part of this Cost Center.
 
- 4. Chose the allocation method.  Normally alloction of indirect costs to cost
+ 4. Chose the allocation method.  Normally allocation of indirect costs to cost
     centers will be done proportionally based on the allocation basis
-    selected -- so this should be set to **Proporational**.  However in some
+    selected -- so this should be set to **Proportional**.  However in some
     cases, it is not clear how to allocate costs to other centers.  In that
     case, selecting **Flat** will divide the costs evenly to the other cost
     centers. 
@@ -200,7 +202,7 @@ enable that,
 To make sure that the **Service** and **Cost Center** columns remain
 displayed, click on the \[Menu\] > **Save Grid Configuration** option.
 The employee registry looks like this:
-<img src="./images/cost-center-employees.png" alt="Cost Center Employees" width="100%">
+<img src="./images/employees-registry.png" alt="Cost Center Employees" width="100%">
   
 In this example, we can see that *Employee1* is not assigned to any cost
 center.  Since *Employee1* is assigned to the *Administration* service,
@@ -222,6 +224,204 @@ Center.
 
 ### Verify Account Coverage
 
+<img src="./images/account-coverage-process.png" 
+     alt="Iterative process aligning cost centers and accounts" 
+     align="right" width="300px">
+
+The next step is to make sure that all active accounts are covered by a cost
+center.  This involves these steps:
+
+1. [Make sure each cost center defines appropriate **account
+   references**](#identify-and-update-account-references-used-by-cost-centers). The
+   purpose of **account references** and how they work will be reviewed in the
+   [section on **account references**](#account-references).
+
+2. [Review and update the **account references**](#account-references) used by
+   the cost centers to make sure that all active accounts are covered by a
+   cost center.
+   
+3. [Update the cost center assigned to each account](#update-cost-centers-in-all-accounts) 
+   based on the **account reference** the cost center uses.
+   
+Note that working through these steps will probably be an iterative process.
+It may be necessary to repeat these steps several times to get all accounts
+covered by a cost center appropriately. 
+   
+#### Identify and Update Account References used by Cost Centers
+
+To review and update the **account references** used each cost center, visit
+the Cost Centers registry page:
+<div class="bs-callout bs-callout-success">
+  <p>
+  <i>menu</i> > Cost Center Management > <strong>Cost Centers</strong> <br>
+   &rArr; Opens the Cost Centers registry page
+  </p>
+</div>
+
+----------------------------------------------------------------------
+
+<img src="./images/edit-principal.png" alt="Edit a principal Cost Center" 
+     align="right" width="600px">
+
+Pick a cost center and use its **Action** menu to edit it.  For a
+**principal** cost center, you might see something like the display to the right.
+**Principal** here means that it is a *principal* revenue center and derives a
+significant amount of income due to sales of goods or services for the
+organization.  Normally "overhead" services or departments are **auxiliary**
+cost centers, not **principal** ones.
+
+(1) Review the account references selected for "Revenue from sales and
+services" and "Other profits" and update them if necessary.  Note that only
+one account reference can be chosen for each.  That is not a limitation since
+account references can cover many accounts (as will be shown in the next
+section).
+
+(2) Also review and update the account references for the costs for this cost
+center.  Note that for step-down cost allocation analysis, using separate
+account references for variable and fixed costs is not critical.  However
+other cost center analysis such as break-even analysis will need separate
+account references for variable and fixed costs, so it is good to do it now.  It
+is possible that the accounts may need to restructured to accomplish that.
+
+When selecting an **account reference** in the revenue section or the costs
+section, clicking on the box for the **account reference** will display a
+pop-up dialog that will allow selection of the correct **account reference**.
+
+It is also good to review and update the **Services** covered by this cost
+center.
+
+----------------------------------------------------------------------
+
+The display when editing an **auxiliary** cost center has different options
+for the account references.  There are two types of **auxiliary** cost
+centers:
+
+ - Cost Center (costs only, no revenue)
+ - Profit Center (revenue only, no costs)
+
+Here is what editing these two types of **auxiliary** costs centers might
+look like:
+
+<img src="./images/edit-auxiliary.png" alt="Edit an auxiliary Cost Center" width="100%">
+
+For a **profit center** (left), review the account references used for the
+"Revenue from sales and services" and "Other profits" and update them as
+necessary.  For an **auxiliary** **cost center** (right), review the account
+references used for the "Variable cost" and "Fixed Cost" and update them as
+necessary.
+
+It may be necessary to add new **auxiliary** cost centers and restructure
+accounts and to cleanly separate the **auxiliary** cost and profit centers.
+
+Again, it is also good to review and update the **Services** covered by this
+cost center.
+
+#### Account References
+
+**Account References** define sets of accounts that are used in several ways
+in BHIMA, including Cost Centers.  **Account References** are a very flexible
+way to define a set of accounts be defining accounts to be included and
+accounts that will be excluded.  In BHIMA, accounts are structured in a
+hierarchical way.  So if an account with child accounts is used in an account
+reference, all the child accounts for that parent account will be included --
+unless any accounts are excluded.  To see and edit **account references**,
+visit the **Account References** page:
+<div class="bs-callout bs-callout-success">
+  <p>
+  <i>menu</i> > Administration > <strong>Account References</strong> <br>
+   &rArr; Opens the Account References registry page
+  </p>
+</div>
+
+The display of the **Account References** registry looks something like
+this. Note that this display has been filtered to only show **Account
+References** for cost centers.
+
+<img src="./images/account-reference-registry.png" alt="Account References registry page" width="100%">
+
+The columns are:
+
+- **Reference** - The short label (or abbreviation) for the **Account
+  Reference**.  These labels must be unique.
+- **Account List** - The list of accounts covered by this **Account
+  Reference**.  Note that the list may be truncated.  But hovering the mouse
+  pointer over the **Account List** column for an **Account Reference** will
+  show the full list of accounts (as shown here in black).
+- **Description** - The description of the **Account Reference**
+- **Parent Reference** - Not needed for Cost Centers
+- **Type** - The type of the **Account Reference** (limited to "Cost Centers"
+  in this display).
+- **Cost Center** - The cost center that uses this **Account Reference**.
+- **Amortization** - Whether it is an account for amortization /
+  depreciation.
+- **Action** - A menu of actions that can be applied to the **Account
+  Reference**.
+  
+Referring back to editing **Account References** in the [beginning of this
+section](#identify-and-update-account-references-used-by-cost-centers), notice
+that the **Account References** are refereed to by combining the label with the
+description.  It is helpful to chose the names of the **Account Reference**
+labels to clearly indicate which cost centers will use them and their function
+(as shown here).
+
+To create a new **Account Reference** click on the \[+ Add Reference\] button
+on top right.
+
+<img src="./images/account-reference-edit.png" 
+     alt="Edit an Account Reference" align="right" width="500px">
+
+Creating or editing an **Account Reference** used the same form.  To create or
+edit an **Account Reference** enter or edit the fields of the form as follows:
+
+1. **Reference** - Enter a short label (or abbreviation for the **Account
+   Reference**)
+2. **Description** - Enter a description for the **Account Reference**
+3. **Select Accounts** - Select the accounts to include.  Clicking in the
+   field will display a drop-down with all accounts. Multiple accounts
+   can be selected.  If **title** accounts are selected (accounts which have
+   child accounts) all the child accounts will also be selected.
+4. **Exception** - Select any accounts to be excluded from this **Account
+   Reference**.
+5. **Parent Reference** - Not needed for cost centers
+6. **Account Reference Type** - Select "Cost Center"
+
+Note that there is a checkbox for "Amortization and depreciation" which can be
+selected, if appropriate.
+ 
+----------------------------------------------------------------------
+
+#### Update Cost Centers in All Accounts
+
+After making sure that all cost centers have appropriate **Account
+References** and that the **Account References** are defined correctly, an
+additional step is necessary to update the accounts based on the **Account
+Reference** defined for each cost center. Open the BHIMA **Cost Centers**
+registry page.
+<div class="bs-callout bs-callout-success">
+  <p>
+  <i>menu</i> > Cost Center Management > <strong>Cost Centers</strong> <br>
+   &rArr; Opens the Cost Centers registry page
+  </p>
+</div>
+
+The Cost Centers will be shown. For example:
+
+<img src="./images/update-accounts.png" 
+     alt="Account References registry page" width="100%">
+
+Click on the **Update Accounts** command in the main menu (as shown in the
+figure).  This will update the accounts based on the current Cost Center and
+**Account References**.   The update will immediately switch to the Accounts
+management page (under the **Finance** menu).  By looking the at the **Cost
+Centers** column, it is easy to determine any accounts have been overlooked. 
+
+It is likely that organization financial team will need to be involved in
+setting the cost centers and account references to make sure that active
+accounts are covered by a cost center.
+
+
+----------------------------------------------------------------------
 
 
 ## Perform Step-Down Cost Allocations
+
