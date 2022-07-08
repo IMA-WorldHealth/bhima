@@ -30,7 +30,7 @@ The BHIMA software supports these types of financial analysis:
 
    - [Basics of cost allocation using the *step-Down* Approach](#cost-center-cost-analysis) <br>
      Determine the total cost to operate each department using the
-     "step-down" cost alloction technique.
+     "step-down" cost allocation technique.
 
    - [Implementing *step-down* cost allocation analysis in BHIMA](./bhima-step-down-cost-analysis.md) <br>
      Demonstrate how to set up and perform *step-down* cost allocation analysis in BHIMA.
