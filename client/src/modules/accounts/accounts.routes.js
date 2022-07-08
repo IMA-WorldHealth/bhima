@@ -24,6 +24,7 @@ function accountStateProvider($stateProvider) {
       url : '/:id',
       params : {
         id : { squash : true, value : null },
+        forceReload : { value : null },
       },
     })
 

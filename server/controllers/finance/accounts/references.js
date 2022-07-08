@@ -20,6 +20,7 @@ const _ = require('lodash');
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
+const i18n = require('../../../lib/helpers/translate');
 
 const compute = require('./references.compute');
 
@@ -52,18 +53,26 @@ async function list(req, res, next) {
   const params = req.query;
   try {
 
+    // i18n(options.lang)(Stock.fluxLabel[key]),
+
     const filters = new FilterParser(params, { tableAlias : 'ar' });
+
+    const except = i18n(params.lang)('ACCOUNT.EXCEPT');
 
     const sql = `
     SELECT
-      ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
-      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
-      ar.reference_type_id, art.label as account_reference_type_label
+      ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, ar.reference_type_id,
+      arp.abbr AS parent_abbr,
+      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(${except} ', a.number, ')')) SEPARATOR ', ') AS accounts,
+      art.label AS account_reference_type_label,
+      cc.label AS cost_center
     FROM account_reference ar
-      LEFT JOIN account_reference arp ON arp.id = ar.parent
-      LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
-      LEFT JOIN account a ON a.id = ari.account_id
-      LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
+      LEFT JOIN account_reference AS arp ON arp.id = ar.parent
+      LEFT JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+      LEFT JOIN account AS a ON a.id = ari.account_id
+      LEFT JOIN account_reference_type AS art ON art.id = ar.reference_type_id
+      LEFT JOIN reference_cost_center AS rcc ON rcc.account_reference_id = ar.id
+      LEFT JOIN cost_center AS cc ON cc.id = rcc.cost_center_id
   `;
 
     filters.fullText('description');

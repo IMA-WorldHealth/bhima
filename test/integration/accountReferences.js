@@ -100,7 +100,7 @@ describe('(/accounts/references) Accounts References', () => {
       .then((res) => {
         helpers.api.listed(res, numAccountReference);
         expect(res.body[0]).to.have.all.keys(
-          'id', 'abbr', 'account_reference_type_label', 'description',
+          'id', 'abbr', 'account_reference_type_label', 'description', 'cost_center',
           'parent', 'reference_type_id', 'is_amo_dep', 'accounts', 'parent_abbr',
         );
       })
