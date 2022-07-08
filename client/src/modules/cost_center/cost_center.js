@@ -23,6 +23,7 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
   vm.toggleFilter = toggleFilter;
   vm.openEditAllocationBasisModal = openEditAllocationBasisModal;
   vm.editAllocationStepOrder = editAllocationStepOrder;
+  vm.updateAccounts = updateAccounts;
 
   // global variables
   vm.gridApi = {};
@@ -168,6 +169,17 @@ function CostCenterController(CostCenters, ModalService, Notify, uiGridConstants
       controller : 'AllocationEditStepOrderController as ModalCtrl',
       // size : 'lg',
     }).result.catch(angular.noop);
+  }
+
+  function updateAccounts() {
+    CostCenters.updateAccounts()
+      .then(result => {
+        const { numUpdates } = result;
+        const msg = $translate.instant('COST_CENTER.ACCOUNTS_UPDATED', { numUpdates });
+        Notify.success(msg);
+        $state.go('accounts.list', { forceReload : true });
+      })
+      .catch(Notify.handleError);
   }
 
   loadCostCenters();
