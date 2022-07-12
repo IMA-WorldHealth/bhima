@@ -264,6 +264,7 @@
             "TYPE": "Type",
             "UNIT": "Unité",
             "UNIT_PRICE": "Prix unitaire",
+            "UNIT_WEIGHT": "Poids unitaire",
             "UNPAID_INVOICE_1": "Cette facture n'a pas été compensée en ",
             "UNPAID_INVOICE_2": " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
             "USER": "Utilisateur",

@@ -1,191 +1,158 @@
 {{> head }}
 
 <style>
-.stepper-wrapper {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
-}
-.stepper-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-
-  @media (max-width: 768px) {
-    font-size: 12px;
+  text-right {
+    text-align: right;
   }
-}
-
-.stepper-item::before {
-  position: absolute;
-  content: "";
-  border-bottom: 5px solid #ccc;
-  width: 100%;
-  top: 20px;
-  left: -50%;
-  z-index: 2;
-}
-
-.stepper-item::after {
-  position: absolute;
-  content: "";
-  border-bottom: 5px solid #ccc;
-  width: 100%;
-  top: 20px;
-  left: 50%;
-  z-index: 2;
-}
-
-.stepper-item .step-counter {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #ccc;
-  margin-bottom: 6px;
-}
-
-.stepper-item.active {
-  font-weight: bold;
-  color: white !important;
-}
-
-.stepper-item.completed .step-counter {
-  background-color: #000;
-  color: white !important;
-}
-
-.stepper-item.completed::after {
-  position: absolute;
-  content: "";
-  border-bottom: 5px solid #000;
-  width: 100%;
-  top: 20px;
-  left: 50%;
-  z-index: 3;
-}
-
-.stepper-item.completed.active::after {
-  border-bottom: 5px solid #ccc;
-}
-
-.stepper-item:first-child::before {
-  content: none;
-}
-.stepper-item:last-child::after {
-  content: none;
-}
 </style>
 
 <body>
 
-  {{#> header }}
-  <h4 class="text-right">
-    {{single.reference}}
-  </h4>
-  {{/header}}
+<header class="row" style="margin-bottom: 1em;">
+  {{> enterpriseDetails }}
 
-  <!-- body  -->
-  <div class="row">
-    <div class="col-xs-12">
+  <div class="col-xs-7 col-auto">
 
-      {{!-- stepper for status --}}
-      <div class="stepper-wrapper">
-        <div class="stepper-item {{#if step.at_depot}} completed {{#equal single.status_name 'at_depot'}} active {{/equal}}{{/if}}">
-          <div class="step-counter">1</div>
-          <div class="step-name">{{translate 'SHIPMENT.STATUS.AT_DEPOT'}}</div>
-          <div>{{ single.origin_depot }}</div>
-        </div>
-        <div class="stepper-item {{#if step.ready}} completed {{#equal single.status_name 'ready'}} active {{/equal}}{{/if}}">
-          <div class="step-counter">2</div>
-          <div class="step-name">{{translate 'SHIPMENT.STATUS.READY_FOR_SHIPMENT'}}</div>
-          <div><small>{{date single.date_ready_for_shipment 'DD MMM YYYY HH:mm:ss' }}</small></div>
-        </div>
-        <div class="stepper-item {{#if step.in_transit}} completed {{#equal single.status_name 'in_transit'}} active {{/equal}}{{/if}}">
-          <div class="step-counter">3</div>
-          <div class="step-name">{{translate 'SHIPMENT.STATUS.IN_TRANSIT'}}</div>
-          <div><small>{{date single.date_sent 'DD MMM YYYY HH:mm:ss' }}</small></div>
-        </div>
-        <div class="stepper-item {{#if step.partial}} completed {{#equal single.status_name 'partial'}} active {{/equal}}{{/if}}">
-          <div class="step-counter">4</div>
-          <div class="step-name">{{translate 'SHIPMENT.STATUS.PARTIAL'}}</div>
-        </div>
-        <div class="stepper-item {{#if step.delivered}} completed {{#equal single.status_name 'delivered'}} active {{/equal}}{{/if}}">
-          <div class="step-counter">5</div>
-          <div class="step-name">{{translate 'SHIPMENT.STATUS.DELIVERED'}}</div>
-          <div>{{ single.destination_depot }}</div>
-          <div><small>{{date single.date_delivered 'DD MMM YYYY HH:mm:ss' }}</small></div>
-        </div>
-      </div>
+    <h3 class="text-right">
+      <strong>{{translate 'SHIPMENT.TITLE'}}: {{shipment.name}} - {{shipment.reference}}</strong>
+    </h3>
 
-      <br>
+    <h4 class="text-right">
+      {{translate 'SHIPMENT.SHIPMENT_STATUS'}}: {{translate shipment.status}}
+    </h4>
 
-      <!-- shipment packing list -->
-      <h5>{{translate 'SHIPMENT.PACKING_LIST'}}</h5>
-      <table class="table table-condensed table-bordered table-report">
-        <thead>
-          <tr>
-            <th>{{translate 'INVENTORY.CODE'}}</th>
-            <th>{{translate 'STOCK.INVENTORY'}}</th>
-            <th>{{translate 'STOCK.LOT'}}</th>
-            <th>{{translate 'STOCK.QUANTITY'}}</th>
-            <th>{{translate 'STOCK.UNIT_COST'}}</th>
-            <th>{{translate 'STOCK.COST'}}</th>
-            <th>{{translate 'SHIPMENT.DATE_PACKED'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each records}}
-            <tr>
-              <td>{{inventory_code}}</td>
-              <td>{{inventory_label}}</td>
-              <td>{{lot_label}}</td>
-              <td>{{quantity_sent}}</td>
-              <td>{{currency unit_price ../metadata.enterprise.currency_id}}</td>
-              <td>{{currency cost ../metadata.enterprise.currency_id}}</td>
-              <td>{{date date_packed}}</td>
-            </tr>
-          {{else}}
-            {{> emptyTable columns=6}}
-          {{/each}}
-        </tbody>
-        <tfoot>
-          <tr style="font-weight: bold;">
-            <td colspan="5">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
-            <td>{{currency totalCost metadata.enterprise.currency_id}}</td>
-          </tr>
-        </tfoot>
-      </table>
+    {{#if metadata.enterprise.settings.enable_barcodes}}
+    <h4 class="text-right">
+        <span>{{> barcode value=barcode}}</span>
+    </h4>
+    <script>JsBarcode('.barcode').init();</script>
+    {{/if}}
 
-      <br><br>
 
-      <!-- shipment tracking log -->
-      <h5>{{translate 'SHIPMENT.TRACKING_LOG'}}</h5>
-      <table class="table table-condensed table-bordered table-report">
-        <thead>
-          <tr>
-            <th style="width: 200px;">{{translate 'FORM.LABELS.DATE'}}</th>
-            <th>{{translate 'FORM.LABELS.NOTES'}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each log}}
-            <tr>
-              <td>{{date date 'DD/MM/YYYY HH:mm:ss'}}</td>
-              <td>{{note}}</td>
-            </tr>
-          {{else}}
-            {{> emptyTable columns=2}}
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
+    <h5 class="text-right" style="margin-top: 0.25em;">
+      <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date shipment.date}}
+    </h5>
+
   </div>
+
+</header>
+
+<!-- body  -->
+
+<div class="row">
+  <div class="col-xs-5" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.ORIGIN'}}</strong></h3>
+    <h4>{{shipment.origin_depot.text}}</h4>
+    {{#if shipment.origin_depot.description}}
+    <h5>
+      {{#each shipment.origin_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.origin_depot.location_uuid}}
+      {{#with shipment.origin_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+  <div class="col-xs-1"></div>
+  <div class="col-xs-6" style="border: 1px solid #999;">
+    <h3><strong>{{translate 'STOCK.DESTINATION'}}</strong></h3>
+    <h4>{{shipment.destination_depot.text}}</h4>
+    <h5>
+      {{translate 'SHIPMENT.ANTICIPATED_DELIVERY_DATE'}}: {{date shipment.anticipated_delivery_date}}
+    </h5>
+    {{#if shipment.destination_depot.description}}
+    <h5>
+      {{#each shipment.destination_depot.description}}
+      <br>{{this}}
+      {{/each}}
+    </h5>
+    {{/if}}
+    {{#if shipment.destination_depot.location_uuid}}
+      {{#with shipment.destination_depot}}
+      {{village_name}} / {{sector_name}} / {{province_name}} <br>
+      {{country_name}}
+      {{/with}}
+    {{/if}}
+  </div>
+</div>
+
+{{#if shipment.description}}
+<div class="row" style="margin-top: 8px; margin-bottom: 8px;">
+  <div class="col-xs-12" style="border: 1px solid #999;">
+    {{shipment.description}}
+  </div>
+</div>
+{{/if}}
+
+
+<div class="row">
+  <div class="col-xs-6">
+    <strong>{{translate 'SHIPMENT.TRANSPORT_MODE'}}:</strong> {{shipment.transport_mode}}
+  </div>
+  <div class="col-xs-6">
+    <strong>{{translate 'SHIPMENT.RECEIVER'}}:</strong> {{shipment.receiver}}
+  </div>
+</div>
+<br>
+
+<div class="row">
+  <div class="col-xs-12">
+
+    <!-- shipment packing list -->
+    <h4>{{translate 'SHIPMENT.PACKING_LIST'}}</h4>
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr>
+          <th>{{translate 'STOCK.INVENTORY'}}</th>
+          <th>{{translate 'STOCK.LOT'}}</th>
+          <th>{{translate 'TABLE.COLUMNS.UNIT'}}</th>
+          <th class="text-right">{{translate 'STOCK.QUANTITY'}}</th>
+          <th class="text-right">{{translate 'TABLE.COLUMNS.UNIT_WEIGHT'}}</th>
+          <th class="text-right">{{translate 'STOCK.UNIT_COST'}}</th>
+          <th class="text-right">{{translate 'STOCK.COST'}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each records}}
+        <tr>
+          <td>{{inventory_label}}</td>
+          <td>{{lot_label}}</td>
+          <td>{{unit_type}}</td>
+          <td class="text-right">{{quantity_sent}}</td>
+          <td class="text-right">{{unit_weight}}</td>
+          <td class="text-right">{{currency unit_price ../metadata.enterprise.currency_id}}</td>
+          <td class="text-right">{{currency cost ../metadata.enterprise.currency_id}}</td>
+        </tr>
+        {{else}}
+        {{> emptyTable columns=7}}
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7"></td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_QUANTITY'}}</strong></td>
+          <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_WEIGHT'}}</strong></td>
+          <td></td>
+          <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_COST'}}</strong></td>
+        </tr>
+        <tr style="font-weight: bold;">
+          <td colspan="3">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td class="text-right">{{shipment.totalQuantity}}</td>
+          <td class="text-right">{{shipment.totalWeight}}</td>
+          <td></td>
+          <td class="text-right">{{currency shipment.totalCost metadata.enterprise.currency_id}}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+  </div>
+
+</div>
 </body>

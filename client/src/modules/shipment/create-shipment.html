@@ -90,11 +90,40 @@
               class="form-control"
               name="description"
               ng-model="CreateShipCtrl.shipment.description"
-              placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate }}"
-              ng-maxlength="CreateShipCtrl.maxLength">
+              placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate }}">
             </textarea>
             <div class="help-block" ng-messages="ShipmentForm.description.$error" ng-show="ShipmentForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ShipmentForm.$submitted && ShipmentForm.receiver.$invalid }">
+            <label class="control-label" translate>SHIPMENT.RECEIVER</label>
+            <div>
+              <input
+                name="receiver"
+                ng-model="CreateShipCtrl.shipment.receiver"
+                autocomplete="off"
+                ng-maxlength="100"
+                class="form-control">
+              <div class="help-block" ng-messages="ShipmentForm.receiver.$error" ng-show="ShipmentForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : ShipmentForm.$submitted && ShipmentForm.transport_mode.$invalid }">
+            <label class="control-label" translate>SHIPMENT.TRANSPORT_MODE</label>
+            <div>
+              <input
+                name="transport_mode"
+                ng-model="CreateShipCtrl.shipment.transport_mode"
+                autocomplete="off"
+                ng-maxlength="100"
+                class="form-control">
+              <div class="help-block" ng-messages="ShipmentForm.transport_mode.$error" ng-show="ShipmentForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
             </div>
           </div>
         </div>

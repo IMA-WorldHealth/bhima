@@ -123,6 +123,7 @@ function getLotsInStockForDate(depotUuid, date) {
         balances.quantity,
         inventory.code,
         inventory.text,
+        inventory.unit_weight,
         inventory.is_asset,
         BUID(inventory.group_uuid) AS group_uuid,
         lot.expiration_date,
