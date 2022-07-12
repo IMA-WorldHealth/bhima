@@ -3,15 +3,17 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 CreateShipmentController.$inject = [
-  '$state', 'NotifyService', 'util',
+  '$state', 'NotifyService', 'util', '$translate',
   'StockExitFormService', 'uiGridConstants', 'BarcodeService',
   'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
   'bhConstants',
 ];
 
 function CreateShipmentController(
-  $state, Notify, util, StockForm, uiGridConstants, Barcode,
-  Shipment, Depot, $timeout, ShipmentModal, bhConstants,
+  $state, Notify, util, $translate,
+  StockForm, uiGridConstants, Barcode,
+  Shipment, Depot, $timeout, ShipmentModal,
+  bhConstants,
 ) {
   const vm = this;
 
@@ -68,12 +70,27 @@ function CreateShipmentController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/shipment/templates/quantity.tmpl.html',
         aggregationType : uiGridConstants.aggregationTypes.sum,
+        footerCellClass : 'text-right',
+        footerCellTemplate : `<div class="ui-grid-cell-contents" >
+           ${$translate.instant('SHIPMENT.TOTAL_QUANTITY')}: {{ col.getAggregationValue() }}
+           </div>`,
+      }, {
+        field : 'unit_weight',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.UNIT_WEIGHT',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/shipment/templates/unit_weight.tmpl.html',
+        footerCellClass : 'text-right',
+        aggregationType  : customAggregateWeightsFn,
+        footerCellTemplate : `<div class="ui-grid-cell-contents" >
+           ${$translate.instant('SHIPMENT.TOTAL_WEIGHT')}: {{ col.getAggregationValue() }}
+           </div>'`,
       }, {
         field : 'unit_type',
         width : 75,
         displayName : 'TABLE.COLUMNS.UNIT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html',
+        cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
       }, {
         field : '_quantity_available',
         width : 150,
@@ -93,6 +110,7 @@ function CreateShipmentController(
     // inventories loaded from an invoice for patient exit
     fastWatch : false,
     flatEntityAccess : true,
+    showColumnFooter : true,
     showGridFooter : true,
     gridFooterTemplate,
     onRegisterApi,
@@ -103,7 +121,6 @@ function CreateShipmentController(
   vm.gridApi = {};
   vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
-  vm.maxLength = util.maxLength;
   vm.today = new Date();
   vm.onChangeDepot = onChangeDepot;
   vm.getOverview = getOverview;
@@ -114,6 +131,14 @@ function CreateShipmentController(
     vm.shipment.destination_depot_uuid = depot.uuid;
     vm.stockForm.setDepotDistribution(depot);
   };
+
+  function customAggregateWeightsFn(columnDefs) {
+    let totalWeight = 0;
+    columnDefs.forEach(row => {
+      totalWeight += row.entity.quantity * row.entity.unit_weight;
+    });
+    return totalWeight;
+  }
 
   vm.validateItems = () => {
     vm.stockForm.validate(true);
@@ -325,11 +350,13 @@ function CreateShipmentController(
     }
 
     vm.$loading = true;
+
     vm.shipment = cleanShipment(vm.shipment);
 
     vm.shipment.lots = vm.stockForm.store.data.map(row => ({
       lot_uuid : row.lot_uuid,
       quantity : row.quantity,
+      unit_weight : row.unit_weight,
     }));
 
     const promise = !!(vm.isCreateState)
@@ -355,9 +382,19 @@ function CreateShipmentController(
       destination_depot_uuid : shipment.destination_depot_uuid,
       name : shipment.name,
       description : shipment.description,
-      note : shipment.note,
+      transport_mode : shipment.transport_mode,
+      receiver : shipment.receiver,
       anticipated_delivery_date : shipment.anticipated_delivery_date,
     };
+  }
+
+  // Re-add any data lost by StockExitForm
+  // (This is necessary because StockExit does not know about unit_weight)
+  function updateLotsData(lots) {
+    vm.stockForm.store.data.forEach(row => {
+      const lot = lots.find(lt => lt.lot_uuid === row.lot_uuid);
+      row.unit_weight = lot.unit_weight;
+    });
   }
 
   // this function
@@ -385,6 +422,7 @@ function CreateShipmentController(
         vm.stockForm.setExitType('depot');
         vm.stockForm.setDepotDistribution(destDepot);
         vm.stockForm.setLotsFromShipmentList(vm.shipment.lots, 'lot_uuid');
+        updateLotsData(vm.shipment.lots);
       })
       .catch(Notify.handleError)
       .finally(() => {

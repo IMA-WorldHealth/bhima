@@ -37,13 +37,17 @@
         <div class="step-name" translate>SHIPMENT.STATUS.IN_TRANSIT</div>
         <div><small>{{ $ctrl.shipment.date_sent | date:'medium' }}</small></div>
       </div>
-      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.partial, 'completed active' : $ctrl.step.partial && $ctrl.shipment.status_name === 'partial' }">
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.delivered, 'completed active' : $ctrl.step.delivered && $ctrl.shipment.status_name === 'delivered' }">
         <div class="step-counter">4</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.RECEIVED</div>
+      </div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.partial, 'completed active' : $ctrl.step.partial && $ctrl.shipment.status_name === 'partial' }">
+        <div class="step-counter">5</div>
         <div class="step-name" translate>SHIPMENT.STATUS.PARTIAL</div>
       </div>
-      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.delivered, 'completed active' : $ctrl.step.delivered && $ctrl.shipment.status_name === 'delivered' }">
-        <div class="step-counter">5</div>
-        <div class="step-name" translate>SHIPMENT.STATUS.DELIVERED</div>
+      <div class="stepper-item" ng-class="{'completed' : $ctrl.step.complete, 'completed active' : $ctrl.step.complete && $ctrl.shipment.status_name === 'complete' }">
+        <div class="step-counter">6</div>
+        <div class="step-name" translate>SHIPMENT.STATUS.COMPLETE</div>
         <div>{{ $ctrl.shipment.destination_depot }}</div>
         <div><small>{{ $ctrl.shipment.date_delivered | date:'medium' }}</small></div>
       </div>

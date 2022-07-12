@@ -73,6 +73,10 @@
     "STOCK_REFERENCE": "Stock Reference",
     "TITLE" : "Shipment",
     "TRACKING_LOG": "Tracking Log",
+    "TOTAL_COST": "Total cost",
+    "TOTAL_QUANTITY": "Total quantity",
+    "TOTAL_WEIGHT": "Total weight",
+    "TRANSPORT_MODE": "Mode of Transport",
     "UPDATED": "Shipment successfully updated",
     "UPDATE_LOCATION": "Update Location",
     "UPDATE_LOCATION_MESSAGE": "You are about to change the location of this shipment, this information will be saved in the history of this shipment",
@@ -80,14 +84,15 @@
     "UPDATE_PACKING_LIST": "Update Packing List",
     "UPDATE_STATUS": "Update Status",
     "STATUS" : {
-      "EMPTY" : "Empty",
-      "PARTIAL" : "Partial",
+      "AT_DEPOT" : "At Origin Depot",
       "COMPLETE" : "Complete",
-      "IN_TRANSIT" : "In Transit",
       "DELIVERED" : "Delivered",
-      "AT_DEPOT" : "At Depot",
+      "EMPTY" : "Empty",
+      "IN_TRANSIT" : "In Transit",
+      "LOST" : "Lost",
+      "PARTIAL" : "Partial",
       "READY_FOR_SHIPMENT" : "Ready for shipment",
-      "LOST" : "Lost"
+      "RECEIVED" : "Received"
     }
   }
 }
