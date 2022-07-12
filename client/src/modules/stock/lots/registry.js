@@ -37,7 +37,6 @@ function StockLotsController(
     enableColumnMenus : false,
     columnDefs : LotsRegistry.columnDefs,
     enableSorting : true,
-    showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
     rowTemplate : '/modules/stock/lots/templates/row.expired.html',

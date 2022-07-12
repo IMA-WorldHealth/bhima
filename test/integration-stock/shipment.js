@@ -50,11 +50,13 @@ describe('(/shipments) the shipments API', () => {
     {
       lot_uuid : String(LOT_QUININE_A).replace(/0x/g, ''),
       date_packed : new Date(),
+      unit_weight : 0.1,
       quantity : 5,
     },
     {
       lot_uuid : LOT_QUININE_B.replace(/0x/g, ''),
       date_packed : new Date(),
+      unit_weight : 0.15,
       quantity : 15,
     },
   ];
@@ -198,6 +200,7 @@ describe('(/shipments) the shipments API', () => {
         {
           lot_uuid : LOT_QUININE_B.replace(/0x/g, ''),
           date_packed : new Date(),
+          unit_weight : 0.15,
           quantity : 7,
         },
       ],
