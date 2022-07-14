@@ -72,7 +72,11 @@
     "STOCK_EXITED_DONE": "Sortie de stock effectuée pour l'expédition",
     "STOCK_REFERENCE": "Stock Reférence",
     "TITLE" : "Expedition",
+    "TOTAL_COST": "Côut total",
+    "TOTAL_QUANTITY": "Quantité totale",
+    "TOTAL_WEIGHT": "Poids total",
     "TRACKING_LOG": "Journal de suivi",
+    "TRANSPORT_MODE": "Mode de transport",
     "UPDATED": "Expédition mis à jour avec succès",
     "UPDATE_LOCATION": "Mise à jour localisation",
     "UPDATE_LOCATION_MESSAGE": "Vous êtes sur le point de changer la localisation de cette expédition, cette information sera enregistrée dans l'historique de cette expédition",
@@ -80,14 +84,15 @@
     "UPDATE_PACKING_LIST": "Mise à jour colisage",
     "UPDATE_STATUS": "Mise à jour statut",
     "STATUS" : {
-      "EMPTY" : "Vide",
-      "PARTIAL" : "En partie",
+      "AT_DEPOT" : "Au dépôt d'origine",
       "COMPLETE" : "Complète",
-      "IN_TRANSIT" : "En transit",
       "DELIVERED" : "Livré",
-      "AT_DEPOT" : "Au dépôt",
+      "EMPTY" : "Vide",
+      "IN_TRANSIT" : "En transit",
+      "LOST" : "Perdu",
+      "PARTIAL" : "En partie",
       "READY_FOR_SHIPMENT" : "Prêt pour l'expédition",
-      "LOST" : "Perdu"
+      "RECEIVED" : "Récu"
     }
   }
 }
