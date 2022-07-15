@@ -76,6 +76,8 @@ exports.create = async (req, res, next) => {
       name : SHIPMENT_LABEL,
       project_id : req.session.project.id,
       description : params.description,
+      transport_mode : params.transport_mode,
+      receiver : params.receiver,
       origin_depot_uuid : db.bid(params.origin_depot_uuid),
       destination_depot_uuid : db.bid(params.destination_depot_uuid),
       anticipated_delivery_date : new Date(params.anticipated_delivery_date),
@@ -95,6 +97,7 @@ exports.create = async (req, res, next) => {
         lot_uuid : db.bid(lot.lot_uuid),
         date_packed : new Date(),
         quantity_sent : lot.quantity,
+        unit_weight : lot.unit_weight,
       };
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
@@ -158,6 +161,7 @@ exports.update = async (req, res, next) => {
             lot_uuid : db.bid(lot.lot_uuid),
             date_packed : new Date(),
             quantity_sent : lot.quantity,
+            unit_weight : lot.unit_weight,
           };
           transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
         });
@@ -322,6 +326,8 @@ exports.writeStockExitShipment = async (
       name : SHIPMENT_LABEL,
       project_id : projectId,
       description : parameters.description,
+      transport_mode : parameters.transport_mode,
+      receiver : parameters.receiver,
       origin_depot_uuid : from,
       destination_depot_uuid : to,
       anticipated_delivery_date : document.date,
@@ -340,6 +346,7 @@ exports.writeStockExitShipment = async (
         lot_uuid : db.bid(lot.uuid),
         date_packed : document.date,
         quantity_sent : lot.quantity,
+        unit_weight : lot.unit_weight || 0,
       };
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
@@ -382,7 +389,8 @@ exports.updateShipmentStatusAfterEntry = async (document) => {
       SELECT
         BUID(shi.uuid) uuid, BUID(shi.lot_uuid) lot_uuid,
         sh.origin_depot_uuid, sh.destination_depot_uuid,
-        shi.quantity_sent, shi.quantity_delivered
+        shi.quantity_sent, shi.quantity_delivered,
+        shi.unit_weight
       FROM shipment sh
       JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
       WHERE sh.status_id IN (?) AND sh.document_uuid = ?
@@ -459,8 +467,8 @@ exports.listInTransitInventories = async (req, res, next) => {
     JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
     JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
   `;
@@ -574,7 +582,8 @@ function find(params) {
       d.text AS origin_depot,
       BUID(sh.destination_depot_uuid) AS destination_depot_uuid,
       d2.text AS destination_depot,
-      sh.name, sh.description, sh.note,
+      sh.name, sh.description, sh.receiver, sh.transport_mode,
+      sh.project_id,
       BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.date_ready_for_shipment, sh.anticipated_delivery_date,
@@ -628,15 +637,21 @@ async function lookup(identifier) {
       BUID(sh.origin_depot_uuid) AS origin_depot_uuid,
       d2.text AS destination_depot,
       BUID(sh.destination_depot_uuid) AS destination_depot_uuid,
-      sh.name, sh.description, sh.note,
+      sh.name, sh.description, sh.receiver, sh.transport_mode,
+      sh.project_id,
       BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
       sh.receiver, u.display_name AS created_by,
-      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity
+      BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity,
+      iu.text AS unit_type,
+      IF(shi.unit_weight > 0, shi.unit_weight, inv.unit_weight) as unit_weight
     FROM shipment sh
-    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN shipment_status ss ON ss.id = sh.status_id
+    JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
+    JOIN lot ON lot.uuid = shi.lot_uuid
+    JOIN inventory AS inv ON inv.uuid = lot.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = inv.unit_id
     JOIN depot d ON d.uuid = sh.origin_depot_uuid
     JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
@@ -647,12 +662,22 @@ async function lookup(identifier) {
 
   const result = await db.exec(sql, [db.bid(identifier)]);
   const [shipment] = result;
+
+  // Move the lot-specific details into 'lots'
   shipment.lots = result.map(item => {
     return {
       lot_uuid : item.lot_uuid,
+      unit_weight : item.unit_weight,
       quantity : item.quantity,
+      unit_type : item.unit_type,
     };
   });
+
+  // Remove the lot-specific details
+  delete shipment.lot_uuid;
+  delete shipment.unit_weight;
+  delete shipment.quantity;
+
   return shipment;
 }
 
@@ -669,7 +694,8 @@ async function lookupSingle(identifier) {
       BUID(sh.origin_depot_uuid) AS origin_depot_uuid,
       d2.text AS destination_depot,
       BUID(sh.destination_depot_uuid) AS destination_depot_uuid,
-      sh.name, sh.description, sh.note,
+      sh.name, sh.description, sh.receiver, sh.transport_mode,
+      sh.project_id,
       BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date, sh.date_ready_for_shipment,
@@ -716,20 +742,24 @@ async function getPackingList(identifier) {
       ss.translation_key AS status,
       ss.id AS status_id,
       ss.name AS status_name,
-      sh.name, sh.description, sh.note,
+      sh.name, sh.description, sh.receiver, sh.transport_mode,
+      sh.project_id,
       BUID(sh.document_uuid) AS document_uuid,
       sh.created_at AS date, sh.date_sent, sh.date_delivered,
       sh.anticipated_delivery_date,
-      sh.receiver, u.display_name AS created_by,
-      shi.quantity_sent, shi.quantity_delivered, shi.date_packed,
+      u.display_name AS created_by,
+      shi.quantity_sent, shi.quantity_delivered, shi.date_packed, shi.unit_weight,
+      IF(shi.unit_weight > 0, shi.unit_weight, i.unit_weight) as unit_weight,
       l.label AS lot_label, sv.wac AS unit_price,
       i.code AS inventory_code, i.text AS inventory_label, i.is_asset,
+      iu.text AS unit_type,
       dm.text AS reference
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
     JOIN lot l ON l.uuid = shi.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN stock_value sv ON sv.inventory_uuid = i.uuid
     JOIN user u ON u.id = sh.created_by
     JOIN document_map dm ON dm.uuid = sh.uuid
@@ -778,33 +808,36 @@ async function deleteShipment(identifier) {
  * AT_DEPOT => Step 1
  * READY_TO_SHIP => Step 2
  * IN_TRANSIT => Step 3
- * PARTIAL => Step 4
- * DELIVERED => Step 5
+ * DELIVERD => Step 4 (optional)
+ * PARTIAL => Step 5
+ * COMPLETE => Step 6
  */
 function getStep(statusName) {
   const definedSteps = {
     AT_DEPOT : 1,
     READY_TO_SHIP : 2,
     IN_TRANSIT : 3,
-    PARTIAL : 4,
-    DELIVERED : 5,
+    DELIVERED : 4,
+    PARTIAL : 5,
+    COMPLETE : 6,
   };
   const map = {
     empty : 1,
     at_depot : 1,
     ready : 2,
     in_transit : 3,
-    partial : 4,
-    complete : 5,
-    delivered : 5,
+    delivered : 4,
+    partial : 5,
+    complete : 6,
   };
   const current = map[statusName];
   const steps = {
     at_depot : current >= definedSteps.AT_DEPOT,
     ready : current >= definedSteps.READY_TO_SHIP,
     in_transit : current >= definedSteps.IN_TRANSIT,
-    partial : current >= definedSteps.PARTIAL,
     delivered : current >= definedSteps.DELIVERED,
+    partial : current >= definedSteps.PARTIAL,
+    complete : current >= definedSteps.COMPLETE,
   };
   return steps;
 }

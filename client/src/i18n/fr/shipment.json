@@ -1,5 +1,6 @@
 {
   "SHIPMENT" : {
+    "AUTHORIZED": "Autorisé",
     "ANTICIPATED_DELIVERY_DATE": "Date de livraison previsionnelle",
     "BARCODE": "Code-barre de l'expédition",
     "COMPLETE_SHIPMENT" : "Marquez l'expédition comme complète",
@@ -18,11 +19,13 @@
     "DESTINATION_DEPOT": "Dépôt de destination",
     "DOES_SHIPMENT_EXIST": "Avez-vous une expédition prête ?",
     "DOES_SHIPMENT_EXIST_HELP": "Veuillez renseigner la référence de l'expédition prête",
+    "DUELY_RECEIVED_BY": "Pour réception conformé",
     "EDIT": "Editer",
     "EDIT_SHIPMENT": "Modifier expédition",
     "ENTER_SHIPMENT_PROGRESS": "Veuillez entrer l'etat de progression de l'expédition avec sa localisation actuelle",
     "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
     "ENTER_STOCK_FOR_SHIPMENT" : "Entrer le stock pour cette expédition",
+    "EXECUTED_BY": "Executé par",
     "EXISTING_ASSETS_IN_OTHER_SHIPMENT": "Vous avez les actifs suivants dans des expéditions en cours. Veuillez envoyer ou annuler ces expéditions afin de pouvoir re-affecter ces actifs",
     "EXISTING_SHIPMENT_AT_DEPOT": "Les expéditions en cours dans le dépôt ({{number}})",
     "EXIT_STOCK_FOR_SHIPMENT" : "Sortir du stock pour cette expédition",
@@ -45,6 +48,7 @@
     "MARK_READY_TO_SHIP_MESSAGE":"Vous confirmez que cette expédition est prête à quitter le dépôt.",
     "MARK_READY_TO_SHIP_MESSAGE2": "(Vous ne pourrez plus y effectuer de modifications.)",
 
+    "NAME_FUNCTION_SIGNATURE": "(nom, fonction, signature)",
     "NEW_LOCATION": "Nouvelle localisation",
     "NEW_SHIPMENT": "Nouvelle expédition",
     "NOT_DEFINED": "Non-défini",
@@ -66,13 +70,17 @@
     "SHIPMENT_REFERENCE": "Référence Expédition",
     "SHIPMENT_REGISTRY": "Registre des expéditions",
     "SHIPMENT_STATUS": "Etat de l'expédition",
-    "SHIPPER": "Transporteur",
     "STOCK_ENTRY_COMPLETE": "Entrée en stock pour l'expédition terminée",
     "STOCK_ENTRY_PARTIAL": "Entrée en stock partielle pour l'expédition effectuée",
     "STOCK_EXITED_DONE": "Sortie de stock effectuée pour l'expédition",
     "STOCK_REFERENCE": "Stock Reférence",
     "TITLE" : "Expedition",
+    "TOTAL_COST": "Côut total",
+    "TOTAL_QUANTITY": "Quantité totale",
+    "TOTAL_WEIGHT": "Poids total",
     "TRACKING_LOG": "Journal de suivi",
+    "TRANSPORTER": "Transporteur",
+    "TRANSPORT_MODE": "Mode de transport",
     "UPDATED": "Expédition mis à jour avec succès",
     "UPDATE_LOCATION": "Mise à jour localisation",
     "UPDATE_LOCATION_MESSAGE": "Vous êtes sur le point de changer la localisation de cette expédition, cette information sera enregistrée dans l'historique de cette expédition",
@@ -80,14 +88,15 @@
     "UPDATE_PACKING_LIST": "Mise à jour colisage",
     "UPDATE_STATUS": "Mise à jour statut",
     "STATUS" : {
-      "EMPTY" : "Vide",
-      "PARTIAL" : "En partie",
+      "AT_DEPOT" : "Au dépôt d'origine",
       "COMPLETE" : "Complète",
-      "IN_TRANSIT" : "En transit",
       "DELIVERED" : "Livré",
-      "AT_DEPOT" : "Au dépôt",
+      "EMPTY" : "Vide",
+      "IN_TRANSIT" : "En transit",
+      "LOST" : "Perdu",
+      "PARTIAL" : "En partie",
       "READY_FOR_SHIPMENT" : "Prêt pour l'expédition",
-      "LOST" : "Perdu"
+      "RECEIVED" : "Récu"
     }
   }
 }

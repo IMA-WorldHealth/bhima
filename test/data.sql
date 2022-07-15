@@ -1178,7 +1178,7 @@ INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `defa
  `note`, `locked`, `delay`, `purchase_interval`, `last_purchase`, `num_purchase`,`num_delivery`,
  `importance`,`manufacturer_brand`,`manufacturer_model`, `created_at`, `updated_at`) VALUES
 (1, @inv_moto, 'MOT.HCRF250RX', 'Honda CRF250RX', 8500.00, 1,
- 0x552843E2F9234CFABEA321C65E350921, 5, 0, 0, 1, 0, 1, 0, NULL, 0, 1.0, 0.0, NULL, 0, 0,
+ 0x552843E2F9234CFABEA321C65E350921, 5, 250.0, 0, 1, 0, 1, 0, NULL, 0, 1.0, 0.0, NULL, 0, 0,
  NULL, 'Honda', 'CRF250RX', '2022-02-25 09:12:32', NULL);
 
 -- Insert sample assets
