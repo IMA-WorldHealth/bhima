@@ -1,5 +1,6 @@
 {
   "SHIPMENT" : {
+    "AUTHORIZED": "Authorized",
     "ANTICIPATED_DELIVERY_DATE": "Anticipated delivery date",
     "BARCODE": "Shipment Barcode",
     "COMPLETE_SHIPMENT" : "Mark shipment as complete",
@@ -18,11 +19,13 @@
     "DESTINATION_DEPOT": "Destination depot",
     "DOES_SHIPMENT_EXIST": "Do you have a shipment ready?",
     "DOES_SHIPMENT_EXIST_HELP": "Please provide the reference of a shipment that is ready to ship.",
+    "DUELY_RECEIVED_BY": "Duely received by",
     "EDIT": "Edit",
     "EDIT_SHIPMENT": "Edit Shipment",
     "ENTER_SHIPMENT_PROGRESS": "Please enter the shipment progress status.  Include the current shipment location if it has changed.",
     "ENTER_SHIPMENT_PROGRESS_HELP_TEXT": "Ex. RECEPTION - IMA GOMA WAREHOUSE, GOMA",
     "ENTER_STOCK_FOR_SHIPMENT" : "Enter stock for this shipment",
+    "EXECUTED_BY": "Executed by",
     "EXISTING_ASSETS_IN_OTHER_SHIPMENT": "You have the following assets in ongoing shipments. Please send or cancel these shipments so that you can reassign those assets",
     "EXISTING_SHIPMENT_AT_DEPOT": "Current shipment in the depot ({{number}})",
     "EXIT_STOCK_FOR_SHIPMENT" : "Exit stock for this shipment",
@@ -45,6 +48,7 @@
     "MARK_READY_TO_SHIP_MESSAGE":"You confirm that this shipment is ready to leave the depot.",
     "MARK_READY_TO_SHIP_MESSAGE2": "(You will no longer be able to make changes to it.)",
 
+    "NAME_FUNCTION_SIGNATURE": "(name, function, signature)",
     "NEW_LOCATION": "New Location",
     "NEW_SHIPMENT": "New Shipment",
     "NOT_DEFINED": "Not Defined",
@@ -66,13 +70,17 @@
     "SHIPMENT_REFERENCE": "Shipment Reference",
     "SHIPMENT_REGISTRY": "Shipment Registry",
     "SHIPMENT_STATUS": "Shipment Status",
-    "SHIPPER": "Shipper",
     "STOCK_ENTRY_COMPLETE": "Stock entry for shipment completed",
     "STOCK_ENTRY_PARTIAL": "Partial stock entry for shipment performed",
     "STOCK_EXITED_DONE": "Stock exit performed for the shipment",
     "STOCK_REFERENCE": "Stock Reference",
     "TITLE" : "Shipment",
+    "TOTAL_COST": "Total cost",
+    "TOTAL_QUANTITY": "Total quantity",
+    "TOTAL_WEIGHT": "Total weight",
     "TRACKING_LOG": "Tracking Log",
+    "TRANSPORTER": "Transporter",
+    "TRANSPORT_MODE": "Mode of Transport",
     "UPDATED": "Shipment successfully updated",
     "UPDATE_LOCATION": "Update Location",
     "UPDATE_LOCATION_MESSAGE": "You are about to change the location of this shipment, this information will be saved in the history of this shipment",
@@ -80,14 +88,15 @@
     "UPDATE_PACKING_LIST": "Update Packing List",
     "UPDATE_STATUS": "Update Status",
     "STATUS" : {
-      "EMPTY" : "Empty",
-      "PARTIAL" : "Partial",
+      "AT_DEPOT" : "At Origin Depot",
       "COMPLETE" : "Complete",
-      "IN_TRANSIT" : "In Transit",
       "DELIVERED" : "Delivered",
-      "AT_DEPOT" : "At Depot",
+      "EMPTY" : "Empty",
+      "IN_TRANSIT" : "In Transit",
+      "LOST" : "Lost",
+      "PARTIAL" : "Partial",
       "READY_FOR_SHIPMENT" : "Ready for shipment",
-      "LOST" : "Lost"
+      "RECEIVED" : "Received"
     }
   }
 }

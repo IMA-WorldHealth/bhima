@@ -148,7 +148,7 @@
     "LEGEND"          : "Legend",
     "LIFETIME"        : "Lifetime",
     "LOSS"            : "Stock Loss",
-    "LOT"             : "Lot / Batch number",
+    "LOT"             : "Lot",
     "LOT_ID"          : "Lot ID",
     "LOTS"            : "Lots",
     "LOT_LIFETIME"    : "Lifetime by Usage",
