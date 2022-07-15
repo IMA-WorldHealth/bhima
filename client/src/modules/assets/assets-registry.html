@@ -110,7 +110,14 @@
         <a ui-sref="stockAssets.createAssignment"
           data-method="create-record"
           class="btn btn-success">
-          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSIGN.NEW_ASSIGN</span>
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSET.ASSIGN</span>
+        </a>
+      </div>
+
+      <div class="toolbar-item" style="margin-right: 1em;">
+        <a href data-method="create-asset-scan" class="btn btn-success"
+          ng-click="AssetsCtrl.newAssetScan()">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>BARCODE.SCAN</span>
         </a>
       </div>
 

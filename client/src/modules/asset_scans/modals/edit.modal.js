@@ -17,7 +17,9 @@ function AssetScanEditModalController(Data,
   vm.model = {};
 
   vm.enterprise = Session.enterprise;
-  vm.cancel = Instance.dismiss;
+
+  vm.cancel = Instance.close;
+
   vm.submit = submit;
 
   vm.clear = key => {
@@ -49,13 +51,15 @@ function AssetScanEditModalController(Data,
           vm.loading = false;
         });
     } else {
-      Stock.lots.read(null, { uuid : Data.asset_uuid })
+      Stock.assets.getAssetLots({ lot_uuid : Data.asset_uuid })
         .then(assets => {
           const asset = assets[0];
+
+          // return AssetsScans.getLastScan({ asset_uuid : assets[0].uuid });
           vm.model = {
             asset_uuid : asset.uuid,
             asset_label : asset.label,
-            inventory_code : asset.code,
+            inventory_code : asset.inventory_code,
             depot_uuid : asset.depot_uuid,
             depot_text : asset.depot_text,
 
@@ -63,9 +67,13 @@ function AssetScanEditModalController(Data,
             manufacturer_model : asset.manufacturer_model,
             serial_number : asset.serial_number,
 
-            condition_id : 1,
             scanned_by : Session.user.id,
           };
+          // Get the last scan for this asset so we can set the correct condition
+          return AssetScans.getLastScan(asset.uuid);
+        })
+        .then(scan => {
+          vm.model.condition_id = scan.condition_id || 1;
         })
         .catch(Notify.handleError)
         .finally(() => {
@@ -80,8 +88,8 @@ function AssetScanEditModalController(Data,
     if (vm.model.uuid) {
       return AssetScans.update(Data.uuid, vm.model)
         .then(() => {
-          Notify.success('ASSET.SCAN_EDITED');
           Instance.close(true);
+          Notify.success('ASSET.SCAN_EDITED');
         })
         .catch(Notify.handleError);
     }
@@ -89,8 +97,8 @@ function AssetScanEditModalController(Data,
     return AssetScans.create(vm.model)
       .then(() => {
         // Ignore new UUID return value
-        Notify.success('ASSET.SCAN_CREATED');
         Instance.close(true);
+        Notify.success('ASSET.SCAN_CREATED');
       })
       .catch(Notify.handleError);
   }
