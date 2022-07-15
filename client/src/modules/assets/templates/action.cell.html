@@ -23,6 +23,8 @@
       </a>
     </li>
 
+    <li role="separator" class="divider"></li>
+
     <li>
       <a data-method="view-stock-articles" ui-sref= "inventory.list(
         { filters : [{
@@ -44,6 +46,12 @@
         { key : 'includeEmptyLot', value : 0 },
         ]})">
         <i class="fa fa-file-text"></i> <span translate>ASSET.VIEW_IN_STOCK</span>
+      </a>
+    </li>
+
+    <li >
+      <a data-method="scan" ng-click="grid.appScope.createAssetScan(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>ASSET.NEW_ASSET_SCAN</span>
       </a>
     </li>
 
