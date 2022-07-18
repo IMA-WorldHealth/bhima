@@ -99,6 +99,9 @@ exports.create = async (req, res, next) => {
         quantity_sent : lot.quantity,
         unit_weight : lot.unit_weight,
       };
+      if (lot.container_uuid) {
+        shipmentItem.container_uuid = db.bid(lot.container_uuid);
+      }
       transaction.addQuery('INSERT INTO shipment_item SET ?', shipmentItem);
     });
 
@@ -125,6 +128,7 @@ exports.update = async (req, res, next) => {
       'origin_depot_uuid',
       'destination_depot_uuid',
       'document_uuid',
+      'container_uuid',
     ]);
 
     db.convertDate(params, [
@@ -163,6 +167,9 @@ exports.update = async (req, res, next) => {
             quantity_sent : lot.quantity,
             unit_weight : lot.unit_weight,
           };
+          if (lot.container_uuid) {
+            shipmentItem.container_uuid = db.bid(lot.container_uuid);
+          }
           transaction.addQuery('INSERT INTO shipment_item SET ?', [shipmentItem]);
         });
       }
@@ -173,7 +180,7 @@ exports.update = async (req, res, next) => {
     } else {
       throw new Error('This shipment is already ready to go, you cannot update it');
     }
-    res.sendStatus(201);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
@@ -645,7 +652,8 @@ async function lookup(identifier) {
       sh.receiver, u.display_name AS created_by,
       BUID(shi.lot_uuid) AS lot_uuid, shi.quantity_sent AS quantity,
       iu.text AS unit_type,
-      IF(shi.unit_weight > 0, shi.unit_weight, inv.unit_weight) as unit_weight
+      IF(shi.unit_weight > 0, shi.unit_weight, inv.unit_weight) as unit_weight,
+      BUID(sc.uuid) AS container_uuid, sc.label AS container_label
     FROM shipment sh
     JOIN shipment_status ss ON ss.id = sh.status_id
     JOIN shipment_item shi ON shi.shipment_uuid = sh.uuid
@@ -656,6 +664,7 @@ async function lookup(identifier) {
     JOIN depot d2 ON d2.uuid = sh.destination_depot_uuid
     JOIN document_map dm ON dm.uuid = sh.uuid
     JOIN user u ON u.id = sh.created_by
+    LEFT JOIN shipment_container sc ON sc.uuid = shi.container_uuid
     LEFT JOIN document_map dm2 ON dm2.uuid = sh.document_uuid
     WHERE sh.uuid = ?
   `;
@@ -670,13 +679,18 @@ async function lookup(identifier) {
       unit_weight : item.unit_weight,
       quantity : item.quantity,
       unit_type : item.unit_type,
+      container_uuid : item.container_uuid,
+      container_label : item.container_label,
     };
   });
 
   // Remove the lot-specific details
   delete shipment.lot_uuid;
   delete shipment.unit_weight;
+  delete shipment.unit_type;
   delete shipment.quantity;
+  delete shipment.container_uuid;
+  delete shipment.container_label;
 
   return shipment;
 }

@@ -8,5 +8,6 @@ function BarcodeModalController(options, ModalInstance) {
   vm.dismiss = ModalInstance.dismiss;
   vm.options = options;
   vm.title = options.title || 'BARCODE.SCAN_BARCODE';
+  vm.label = options.label || 'BARCODE.SCAN_BARCODE';
   vm.onScanCallback = (result) => ModalInstance.close(result);
 }

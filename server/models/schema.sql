@@ -2736,6 +2736,7 @@ DROP TABLE IF EXISTS `shipment_item`;
 CREATE TABLE `shipment_item` (
   `uuid`               BINARY(16) NOT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
+  `container_uuid`     BINARY(16) NULL COMMENT 'NULL If only one container in shipment',
   `lot_uuid`           BINARY(16) NOT NULL,
   `unit_weight`        FLOAT NOT NULL DEFAULT 0,
   `date_packed`        DATETIME,
@@ -2744,6 +2745,28 @@ CREATE TABLE `shipment_item` (
   PRIMARY KEY (`uuid`),
   CONSTRAINT `shipment_item__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE,
   CONSTRAINT `shipment_item__lot` FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment_container`;
+CREATE TABLE `shipment_container` (
+  `uuid`               BINARY(16) NOT NULL,
+  `label`              VARCHAR(100) NOT NULL,
+  `shipment_uuid`      BINARY(16) NOT NULL,
+  `container_type_id`  TINYINT(3) UNSIGNED NOT NULL,
+  `date_sent`          DATETIME,
+  `date_received`      DATETIME,
+  PRIMARY KEY (`uuid`),
+  CONSTRAINT `shipment_container__type` FOREIGN KEY (`container_type_id`) REFERENCES `shipment_container_types` (`id`),
+  CONSTRAINT `shipment_container__shipment` FOREIGN KEY (`shipment_uuid`) REFERENCES `shipment` (`uuid`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `shipment_container_types`;
+CREATE TABLE `shipment_container_types` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `text` VARCHAR(200) NOT NULL,
+  `predefined` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `shipment_container_type__text` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `shipment_tracking`;
