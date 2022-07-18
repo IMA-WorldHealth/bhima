@@ -181,8 +181,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
 
     /**
      * contains the number of selected rows
-     * TODO : create a separate service to handle selection functionnality of the grid as grouping
-     * and selection are differents
+     * TODO : create a separate service to handle selection functionality of the grid as grouping
+     * and selection are different
      */
     this.selectedRowCount = 0;
     this.getSelectedGroups = getSelectedGroups.bind(this);

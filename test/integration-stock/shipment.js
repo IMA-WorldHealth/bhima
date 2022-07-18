@@ -171,7 +171,7 @@ describe('(/shipments) the shipments API', () => {
     return agent.put(`/shipments/${newShipment.uuid}`)
       .send(update)
       .then(res => {
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(204);
         return agent.get(`/shipments/${newShipment.uuid}/full`);
       })
       .then(res => {
@@ -208,7 +208,7 @@ describe('(/shipments) the shipments API', () => {
     return agent.put(`/shipments/${newShipment.uuid}`)
       .send(update)
       .then(res => {
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(204);
         return agent.get(`/shipments/${newShipment.uuid}/full`);
       })
       .then(res => {

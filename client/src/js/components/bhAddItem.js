@@ -5,6 +5,7 @@ angular.module('bhima.components')
     bindings    : {
       callback    : '&',
       disable     : '<?',
+      label       : '<?',
     },
   });
 
@@ -20,6 +21,10 @@ function addItemController() {
 
     // default value for incrementation
     $ctrl.itemIncrement = 1;
+
+    if (!angular.isDefined($ctrl.label)) {
+      $ctrl.label = 'FORM.BUTTONS.ADD';
+    }
 
     if (!angular.isDefined($ctrl.disable)) {
       $ctrl.disable = false;
