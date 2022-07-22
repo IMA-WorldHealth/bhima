@@ -157,14 +157,14 @@ function StockInventoriesController(
 
   vm.gridOptions = {
     appScopeProvider   : vm,
-    enableColumnMenus  : false,
     columnDefs         : columns,
+    enableColumnMenus  : false,
     enableSorting      : true,
     fastWatch          : true,
     flatEntityAccess   : true,
-    showGridFooter     : true,
-    rowTemplate        : 'modules/stock/inventories/templates/shipment.tmpl.html',
     onRegisterApi,
+    rowTemplate        : 'modules/stock/inventories/templates/shipment.tmpl.html',
+    showGridFooter     : true,
   };
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);

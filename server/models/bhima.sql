@@ -510,7 +510,9 @@ INSERT IGNORE INTO `cost_center_allocation_basis`
 /**
  * Default values for shipment tables
  */
-INSERT IGNORE INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES
+INSERT IGNORE INTO `shipment_status`
+  (`id`, `name`, `translation_key`)
+VALUES
   (1, 'empty', 'SHIPMENT.STATUS.EMPTY'),
   (2, 'at_depot', 'SHIPMENT.STATUS.AT_DEPOT'),
   (3, 'ready', 'SHIPMENT.STATUS.READY_FOR_SHIPMENT'),
@@ -519,3 +521,30 @@ INSERT IGNORE INTO `shipment_status` (`id`, `name`, `translation_key`) VALUES
   (6, 'complete', 'SHIPMENT.STATUS.COMPLETE'),
   (7, 'delivered', 'SHIPMENT.STATUS.DELIVERED'),
   (8, 'lost', 'SHIPMENT.STATUS.LOST');
+
+/**
+ * Shipment container types (predefined)
+ *
+ * NOTE: translations for predefined items are under SHIPMENT.CONTAINER_TYPES.<text>
+ */
+ INSERT IGNORE INTO `shipment_container_types`
+    (`id`, `text`, `predefined`)
+ VALUES
+    (1, 'BALE', 1),
+    (2, 'BOTTLE', 1),
+    (3, 'BOX', 1),
+    (4, 'BUNDLE', 1),
+    (5, 'CAN', 1),
+    (6, 'CARTON', 1),
+    (7, 'CONTAINER', 1),
+    (8, 'CRATE', 1),
+    (9, 'KIT', 1),
+    (10, 'PACKAGE', 1),
+    (11, 'PACKET', 1),
+    (12, 'PAIR', 1),
+    (13, 'PALLET', 1),
+    (14, 'PIECES', 1),
+    (15, 'REAM', 1),
+    (16, 'SACK', 1),
+    (17, 'SET', 1);
+
