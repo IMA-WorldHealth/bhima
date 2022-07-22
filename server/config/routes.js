@@ -73,8 +73,10 @@ const inventoryReports = require('../controllers/inventory/reports');
 const stock = require('../controllers/stock');
 const stockReports = require('../controllers/stock/reports');
 const stockSetting = require('../controllers/stock/setting');
-const shipment = require('../controllers/asset_management/shipment');
+
 const assets = require('../controllers/asset_management/assets');
+const shipment = require('../controllers/asset_management/shipment');
+const shipmentContainer = require('../controllers/asset_management/shipment/shipment_containers');
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -1146,4 +1148,12 @@ exports.configure = function configure(app) {
   app.get('/reports/shipments', shipment.getReport);
   app.get('/reports/shipments/:uuid/overview', shipment.getOverview);
   app.get('/reports/shipments/:uuid/barcode', shipment.getBarcode);
+
+  app.get('/shipment_container_types', shipmentContainer.listTypes);
+
+  app.get('/shipment_containers/:shipment_uuid?', shipmentContainer.list);
+  app.get('/shipment_containers/:uuid/details', shipmentContainer.details);
+  app.post('/shipment_containers', shipmentContainer.create);
+  app.put('/shipment_containers/:uuid', shipmentContainer.update);
+  app.delete('/shipment_containers/:uuid', shipmentContainer.deleteContainer);
 };

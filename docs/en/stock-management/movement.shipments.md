@@ -116,3 +116,35 @@ The Shipments interface makes this straightforward.  Go back to the Shipments Re
    Selecting this option will take the user to Stock Entry page for the shipment with all the relevant information set up for easy approval.  Note that marking the item as *delivered* can be skipped if the shipment has already been unpacked when the stock entry into BHIMA is ready to be done.
 
 Note at this point, if the Stock Entry is approved with all items received, the shipment will automatically be closed (marked "Complete").  However, if any items are missing or lost due to damage, the shipment status will be marked as "Partial".  It can remain in the "partial" state as appropriate, but it can be manually closed (via the action menu after the stock exit).
+
+### Creating Shipments with Containers
+
+The examples above assume that all items in a shipment will be sent in one
+container.   BHIMA also supports breaking a shipment into multiple separate
+containers.  There are additional controls on the interface to create
+shipments to support this.  For example:
+<img src="./images/shipment-containers.png" alt="Create a shipment with containers" width="100%">
+1. **\[+ New Container\]** button -- Create a new container
+2. **\[Containers\]** button -- A drop-down menu of operations that can be
+  performed on the containers for this shipment. Note that this button will
+  not be shown if there are no containers. The operations available are
+  **Edit**, **Assign lots**, and **Delete**.
+3. *Container choice* - This item shows which container is selected for the
+  shipment item. (Not visible if there are no containers).  This is a
+  drop-down menu of the available containers.  This can also be used to select
+  an alternate container.
+4. *Multiple lot select* checkbox - You can assign multiple shipment items
+  (lots) to a container by using this checkbox and then using the "Assign
+  Lots" option for the desired container in the container operations menu.
+
+When the **\[Containers\]** menu is opened, it appears like this:
+<img src="./images/shipment-containers-ops.png" alt="Shipment container operation" align="right" width="400">
+The options for each container are:
+- **Edit** - Edit the container
+- **Assign lots** - If this command is executed, all shipment items (lots)
+  whos "Multiple lot select* checkbox are checked will be reassigned to this
+  container.
+- **Delete** - Deletes the container.  All items in that container will be not
+  be assigned a new container.
+
+

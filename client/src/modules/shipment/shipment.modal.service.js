@@ -31,6 +31,8 @@ function ShipmentModalService(Modal, Receipts) {
   service.openShipmentOverview = openShipmentOverview;
   service.openShipmentBarcode = openShipmentBarcode;
 
+  service.openEditContainerModal = openEditContainerModal;
+
   // modal on the client callable from anywhere
   function shipmentOverviewModal(uuid) {
     Modal.open({
@@ -97,6 +99,18 @@ function ShipmentModalService(Modal, Receipts) {
     const opts = { title : 'BARCODE.BARCODE', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.shipmentBarcode(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
+  }
+
+  function openEditContainerModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/shipment/modals/edit-container.modal.html',
+      controller   : 'ContainerEditModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
   }
 
   /**
