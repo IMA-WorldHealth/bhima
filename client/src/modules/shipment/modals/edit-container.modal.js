@@ -51,6 +51,7 @@ function ContainerEditModalController(Data, Containers, Notify, Instance) {
       // The container already exists, so update it in the database immediately
       const updates = { // These are the only fields that we can update
         label : vm.container.label,
+        weight : vm.container.weight,
         container_type_id : vm.container.container_type_id,
       };
       Containers.update(vm.container.uuid, updates)
