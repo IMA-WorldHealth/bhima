@@ -6,7 +6,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 const containerSql = `
   SELECT
     BUID(sc.uuid) AS uuid, sc.label, BUID(sc.shipment_uuid) AS shipment_uuid,
-    sc.container_type_id, scType.text AS container_type
+    sc.weight, sc.container_type_id, scType.text AS container_type
   FROM shipment_container AS sc
   JOIN shipment_container_types AS scType ON scType.id = sc.container_type_id
 `;
@@ -32,6 +32,7 @@ async function list(req, res, next) {
   try {
     const { params } = req;
     const filters = getFilters(params);
+    filters.setOrder('ORDER BY sc.label');
     const query = filters.applyQuery(containerSql);
     const queryParameters = filters.parameters();
     const result = await db.exec(query, queryParameters);
@@ -39,6 +40,16 @@ async function list(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+async function containersForShipment(shipmentUuid) {
+  const params = { shipment_uuid : shipmentUuid };
+  const filters = getFilters(params);
+  filters.setOrder('ORDER BY sc.label');
+  const query = filters.applyQuery(containerSql);
+  const queryParameters = filters.parameters();
+  const result = await db.exec(query, queryParameters);
+  return result;
 }
 
 async function details(req, res, next) {
@@ -63,6 +74,9 @@ async function create(req, res, next) {
       label : params.label,
       container_type_id : params.container_type_id,
     };
+    if (params.weight) {
+      container.weight = params.weight;
+    }
     if (params.shipment_uuid) {
       container.shipment_uuid = db.bid(params.shipment_uuid);
     }
@@ -133,6 +147,7 @@ async function listTypes(req, res, next) {
 module.exports = {
   list,
   details,
+  containersForShipment,
   create,
   update,
   deleteContainer,
