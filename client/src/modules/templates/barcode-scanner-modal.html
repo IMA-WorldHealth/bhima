@@ -6,7 +6,7 @@
   </div>
 
   <div class="modal-body text-center" style="min-height:300px;">
-    <h2 translate>BARCODE.SCAN_BARCODE</h2>
+    <h2 translate>{{BarcodeModalCtrl.label}}</h2>
     <bh-barcode-scanner
       should-search = "BarcodeModalCtrl.options.shouldSearch"
       on-scan-callback="BarcodeModalCtrl.onScanCallback(record)">

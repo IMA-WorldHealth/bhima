@@ -1,0 +1,14 @@
+<div ng-if="row.entity._initialised && grid.appScope.containers.length > 0">
+  <ui-select append-to-body="true"
+    name="container_uuid"
+    ng-model="row.entity.container_uuid"
+    ng-change="grid.appScope.setContainerFromDropdown(row.entity, $select.selected)"
+    required>
+    <ui-select-match placeholder="{{ ::'FORM.LABELS.SELECT' | translate }}">
+      <span>{{$select.selected.label}}</span>
+    </ui-select-match>
+    <ui-select-choices repeat="cont.uuid as cont in grid.appScope.containers | filter: $select.search">
+      <span>{{ cont.label }}</span>
+    </ui-select-choices>
+  </ui-select>
+</div>
