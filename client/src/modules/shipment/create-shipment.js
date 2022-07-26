@@ -3,30 +3,30 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 CreateShipmentController.$inject = [
-  '$state', 'NotifyService', '$translate',
-  'StockExitFormService', 'GridGroupingService', 'uiGridConstants', 'BarcodeService', 'ShipmentContainerService',
-  'ShipmentService', 'DepotService', '$timeout', 'ShipmentModalService',
-  'bhConstants', 'uuid',
+  '$state', 'ShipmentService', 'DepotService', 'StockExitFormService',
+  'ShipmentModalService', 'ShipmentContainerService', 'uiGridConstants',
+  'BarcodeService', 'NotifyService', 'bhConstants', 'uuid', '$translate', '$timeout',
 ];
 
 function CreateShipmentController(
-  $state, Notify, $translate,
-  StockForm, Grouping, uiGridConstants, Barcode, Containers,
-  Shipment, Depot, $timeout, ShipmentModal,
-  bhConstants, Uuid,
+  $state, Shipment, Depot, StockForm,
+  ShipmentModal, Containers, uiGridConstants,
+  Barcode, Notify, bhConstants, Uuid, $translate, $timeout,
 ) {
   const { NOT_CREATED } = Containers;
 
   const vm = this;
 
+  vm.loading = false;
+
   vm.depot = {};
 
-  const existingShipmentUuid = $state.params.uuid;
-  vm.existingShipmentUuid = existingShipmentUuid;
+  const shipmentUuid = $state.params.uuid;
+  vm.existingShipmentUuid = shipmentUuid;
+
   vm.isCreateState = $state.params.isCreateState;
 
   vm.shipment = {};
-
   vm.containers = [];
 
   vm.totalQuantity = 0;
@@ -37,13 +37,6 @@ function CreateShipmentController(
   vm.stockForm.setExitTypePredefined(true);
   vm.stockForm.setExitType('depot');
 
-  const gridFooterTemplate = `
-    <div style="margin-left: 10px;">
-      {{ grid.appScope.gridApi.core.getVisibleRows().length }}
-      <span translate>TABLE.AGGREGATES.ROWS</span>
-    </div>
-  `;
-
   const gridColumns = [
     {
       field : 'container_label',
@@ -51,6 +44,7 @@ function CreateShipmentController(
       displayName : 'SHIPMENT.CONTAINER',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/shipment/templates/container.tmpl.html',
+      sort : { direction : uiGridConstants.ASC, priority : 0 },
       visible : false,
     }, {
       field : '_selected',
@@ -58,31 +52,38 @@ function CreateShipmentController(
       headerCellTemplate : `
         <div style="text-align: center;"><i class="fa fa-check" style="margin: 0; vertical-align: bottom;"></i></div>`,
       cellTemplate : 'modules/shipment/templates/checkbox.tmpl.html',
+      enableSorting : false,
       visible : false,
     }, {
       field : '_spacer',
       displayName : '',
       width : 10,
+      enableSorting : false,
+      visible : false,
     }, {
       field : 'status',
       width : 25,
       displayName : '',
       cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
+      enableSorting : false,
     }, {
       field : 'code',
       displayName : 'INVENTORY.CODE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
+      enableSorting : false,
     }, {
       field : 'description',
       displayName : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
+      enableSorting : false,
     }, {
       field : 'lot',
       displayName : 'TABLE.COLUMNS.LOT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
+      enableSorting : false,
     }, {
       field : 'quantity',
       width : 100,
@@ -93,6 +94,7 @@ function CreateShipmentController(
       footerCellTemplate : `<div class="ui-grid-cell-contents" >
          ${$translate.instant('SHIPMENT.TOTAL_QUANTITY')}: {{ grid.appScope.totalQuantity }}
          </div>`,
+      enableSorting : false,
     }, {
       field : 'unit_weight',
       width : 120,
@@ -103,51 +105,56 @@ function CreateShipmentController(
       footerCellTemplate : `<div class="ui-grid-cell-contents" >
          ${$translate.instant('SHIPMENT.TOTAL_WEIGHT')}: {{ grid.appScope.totalWeight }}
          </div>'`,
+      enableSorting : false,
     }, {
       field : 'unit_type',
       width : 75,
       displayName : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
+      enableSorting : false,
     }, {
       field : '_quantity_available',
       width : 150,
       displayName : 'TABLE.COLUMNS.AVAILABLE',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
+      enableSorting : false,
     }, {
       displayName : '',
       field : 'actions',
       width : 25,
       cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
+      enableSorting : false,
     },
   ];
 
-  const gridOptions = {
-    appScopeProvider  : vm,
-    columnDefs        : gridColumns,
-    enableColumnMenus : false,
-    enableSorting     : false,
-    fastWatch         : false,
-    flatEntityAccess  : true,
-    gridFooterTemplate,
+  vm.gridOptions = {
+    appScopeProvider   : vm,
+    columnDefs         : gridColumns,
+    enableColumnMenus  : false,
+    enableSorting      : true,
+    fastWatch          : true,
+    flatEntityAccess   : true,
+    showColumnFooter   : true,
+    showGridFooter     : true,
+    gridFooterTemplate : 'modules/shipment/templates/shipmentGridFooter.tmpl.html',
+    data               : vm.stockForm.store.data,
     onRegisterApi,
-    showColumnFooter  : true,
-    showGridFooter    : true,
-
-    data : vm.stockForm.store.data,
   };
-
-  vm.gridOptions = gridOptions;
-
-  // THIS FAILS, not sure why!
-  // vm.grouping = new Grouping(vm.gridOptions, true, 'container_label', true, true);
-
-  vm.gridApi = {};
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    checkVisibility();
+  }
+
+  function checkVisibility() {
+    // Hide the container columns if there are no containers.
+    const flag = vm.containers.length > 0;
+    ['container_label', '_selected', '_spacer'].forEach(colName => {
+      const column = vm.gridOptions.columnDefs.find(col => col.field === colName);
+      column.visible = flag;
+    });
+    vm.gridApi.grid.refresh();
   }
 
   vm.today = new Date();
@@ -162,11 +169,30 @@ function CreateShipmentController(
   };
 
   function updateTotals() {
+    // Update the total quantity and weight of all shipment items
+    // (this does not include containers themselves)
     vm.totalQuantity = 0;
     vm.totalWeight = 0;
     vm.stockForm.store.data.forEach(row => {
       vm.totalQuantity += row.quantity || 0;
       vm.totalWeight += (row.quantity || 0) * (row.unit_weight || 0);
+    });
+
+    // Add the weight of any containers
+    vm.containers.forEach(cntr => {
+      vm.totalWeight += cntr.weight;
+    });
+
+    // Also compute the total weight of each container
+    vm.containers.forEach(cntr => {
+      cntr.num_items = 0;
+      cntr.total_weight = cntr.weight;
+      vm.stockForm.store.data.forEach(row => {
+        if (row.container_label === cntr.label) {
+          cntr.num_items += row.quantity;
+          cntr.total_weight += (row.quantity || 0) * (row.unit_weight || 0);
+        }
+      });
     });
   }
 
@@ -174,6 +200,7 @@ function CreateShipmentController(
     updateTotals();
     vm.stockForm.validate(true);
     vm.messages = vm.stockForm.messages();
+    checkVisibility();
   };
 
   vm.configureItem = function configureItem(row, lot) {
@@ -186,6 +213,7 @@ function CreateShipmentController(
     if (vm.containers.length) {
       const last = vm.containers[vm.containers.length - 1];
       lot.container_uuid = last.uuid;
+      lot.container_label = last.label;
     }
 
     lot.unit_type = lot.unit;
@@ -210,16 +238,6 @@ function CreateShipmentController(
     vm.shipment.anticipated_delivery_date = date;
   };
 
-  function checkVisibility() {
-    // Hide the container columns if there are no containers.
-    const flag = vm.containers.length > 0;
-    ['container_label', '_selected', '_spacer'].forEach(colName => {
-      const col = vm.gridOptions.columnDefs.find(c => c.field === colName);
-      col.visible = flag;
-    });
-    vm.gridApi.grid.refresh();
-  }
-
   vm.newContainer = function newContainer() {
     ShipmentModal.openEditContainerModal({ action : 'create' })
       .then((result) => {
@@ -229,6 +247,9 @@ function CreateShipmentController(
         // database.   So we need to add a temporary uuid for internal use here.
         result.uuid = Uuid();
         result[NOT_CREATED] = true;
+        if (!angular.isDefined(result.weight)) {
+          result.weight = 0.0;
+        }
 
         vm.containers.push(result);
         // NOTE: We are saving the data for containers but not creating
@@ -246,6 +267,7 @@ function CreateShipmentController(
       })
       .catch(Notify.handleError)
       .finally(() => {
+        updateTotals();
         checkVisibility();
       });
 
@@ -261,10 +283,14 @@ function CreateShipmentController(
         //  AND it updates the existing containers in memory without reloading them)
         const oldCont = vm.containers.find(cont => cont.uuid === container.uuid);
         oldCont.label = result.label;
+        oldCont.weight = result.weight;
         oldCont.container_type_id = result.container_type_id;
         oldCont.container_type = result.container_type;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        updateTotals();
+      });
   };
 
   vm.deleteContainer = function deleteContainer(container) {
@@ -356,9 +382,9 @@ function CreateShipmentController(
     return vm.stockForm.setDepot(depot)
       .then(() => {
 
-        // trick an exit type which is required
-        vm.stockForm.setExitType('loss');
-        vm.stockForm.setLossDistribution();
+        // ??? trick an exit type which is required
+        vm.stockForm.setExitType('depot');
+        // vm.stockForm.setLossDistribution();
 
         // run validation
         vm.validateItems();
@@ -375,7 +401,7 @@ function CreateShipmentController(
   }
 
   function getOverview(uuid) {
-    return ShipmentModal.shipmentOverviewModal(uuid);
+    return ShipmentModal.shipmentDocumentModal(uuid);
   }
 
   function reset(form) {
@@ -385,13 +411,11 @@ function CreateShipmentController(
   }
 
   function startup() {
-    vm.$loading = true;
+    vm.loading = true;
     vm.hasError = false;
+
     vm.stockForm.setup();
-
     vm.stockForm.setExitType('depot');
-
-    vm.validateItems();
 
     // load the shipment for update
     loadShipment();
@@ -486,7 +510,7 @@ function CreateShipmentController(
       return null;
     }
 
-    vm.$loading = true;
+    vm.loading = true;
 
     vm.shipment = cleanShipment(vm.shipment);
 
@@ -500,11 +524,11 @@ function CreateShipmentController(
 
     const promise = !!(vm.isCreateState)
       ? Shipment.create(vm.shipment)
-      : Shipment.update(existingShipmentUuid, vm.shipment);
+      : Shipment.update(shipmentUuid, vm.shipment);
 
     return promise
       .then((res) => {
-        vm.shipment.uuid = vm.isCreateState ? res.uuid : existingShipmentUuid;
+        vm.shipment.uuid = vm.isCreateState ? res.uuid : shipmentUuid;
         reset(form);
         return true;
       })
@@ -528,7 +552,7 @@ function CreateShipmentController(
       })
       .catch(Notify.handleError)
       .finally(() => {
-        vm.$loading = false;
+        vm.loading = false;
       });
   }
 
@@ -553,18 +577,20 @@ function CreateShipmentController(
       row.unit_type = lot.unit_type;
       row.container_uuid = lot.container_uuid;
       row.container_label = lot.container_label;
+      row.item_uuid = lot.item_uuid;
       row._selected = 0;
     });
   }
 
   // this function
   function loadShipment() {
-    if (!existingShipmentUuid) {
-      vm.$loading = false;
+
+    if (!shipmentUuid) {
+      vm.loading = false;
       return;
     }
 
-    Shipment.readAll(existingShipmentUuid)
+    Shipment.readAll(shipmentUuid)
       .then(shipment => {
         vm.shipment = shipment;
         vm.shipment.anticipated_delivery_date = new Date(vm.shipment.anticipated_delivery_date);
@@ -583,23 +609,23 @@ function CreateShipmentController(
       })
       .then(destDepot => {
         delete vm.messages;
-        vm.stockForm.setExitType('depot');
         vm.stockForm.setDepotDistribution(destDepot);
         vm.stockForm.setLotsFromShipmentList(vm.shipment.lots, 'lot_uuid');
         updateLotsData(vm.shipment.lots);
+        vm.validateItems();
       })
       .catch(Notify.handleError)
       .finally(() => {
-        vm.$loading = false;
+        vm.loading = false;
       });
   }
 
   function fetchAllocatedAssets() {
-    const isEdit = !vm.isCreateState && existingShipmentUuid;
+    const isEdit = !vm.isCreateState && shipmentUuid;
     return Shipment.getAllocatedAssets({
       origin_depot_uuid : vm.depot.uuid,
       currently_at_depot : true,
-      except_current_shipment : isEdit ? existingShipmentUuid : undefined,
+      except_current_shipment : isEdit ? shipmentUuid : undefined,
     });
   }
 

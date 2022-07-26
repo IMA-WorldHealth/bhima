@@ -19,6 +19,7 @@ CREATE TABLE `shipment_container` (
   `label`              VARCHAR(100) NOT NULL,
   `shipment_uuid`      BINARY(16) NOT NULL,
   `container_type_id`  TINYINT(3) UNSIGNED NOT NULL,
+  `weight`             FLOAT NOT NULL DEFAULT 0,
   `date_sent`          DATETIME,
   `date_received`      DATETIME,
   PRIMARY KEY (`uuid`),

@@ -1,8 +1,12 @@
 {{> head }}
 
 <style>
-  text-right {
+  .text-right {
     text-align: right;
+  }
+
+  .grey {
+    background-color: #DDD;
   }
 </style>
 
@@ -88,12 +92,12 @@
 </div>
 {{/if}}
 
-<div class="row">
+<div class="row" style="margin-top: 0.5em;">
   <div class="col-xs-6">
     <strong>{{translate 'SHIPMENT.TRANSPORT_MODE'}}:</strong> {{shipment.transport_mode}}
   </div>
   <div class="col-xs-6">
-    <h3><strong>{{translate 'SHIPMENT.RECEIVER'}}:</strong> {{shipment.receiver}}</h3>
+    <strong>{{translate 'SHIPMENT.RECEIVER'}}:</strong> {{shipment.receiver}}
   </div>
 </div>
 <br>
@@ -102,7 +106,10 @@
   <div class="col-xs-12">
 
     <!-- shipment packing list -->
-    <h4>{{translate 'SHIPMENT.PACKING_LIST'}}</h4>
+    <h4>{{translate 'SHIPMENT.PACKING_LIST'}}
+      {{#if shipment.hasContainers}}({{shipment.numContainers}} {{translate shipment.multipleContainerLabel}})
+      {{/if}}
+    </h4>
     <table class="table table-condensed table-bordered table-report">
       <thead>
         <tr>
@@ -116,18 +123,32 @@
         </tr>
       </thead>
       <tbody>
-        {{#each records}}
-        <tr>
-          <td>{{inventory_label}}</td>
-          <td>{{lot_label}}</td>
-          <td>{{unit_type}}</td>
-          <td class="text-right">{{quantity_sent}}</td>
-          <td class="text-right">{{unit_weight}}</td>
-          <td class="text-right">{{currency unit_price ../metadata.enterprise.currency_id}}</td>
-          <td class="text-right">{{currency cost ../metadata.enterprise.currency_id}}</td>
-        </tr>
-        {{else}}
-        {{> emptyTable columns=7}}
+        {{#each contents}}
+          {{#if ../shipment.hasContainers}}
+          <tr>
+            <td colspan="7" class="grey">
+              <strong>
+                {{translate 'SHIPMENT.CONTAINER'}}: {{containerName}} ({{translate containerType }})
+              </strong>,
+              {{translate 'SHIPMENT.TOTAL_WEIGHT'}}: {{containerWeight}}
+              ({{translate 'SHIPMENT.EMPTY_WEIGHT'}}: {{containerEmptyWeight}})
+            </td>
+          </tr>
+          {{/if}}
+          {{#each items}}
+          <tr>
+            <td {{#if ../../shipment.hasContainers}}style="padding-left: 2em;"{{/if}}>
+              {{inventory_label}} ({{inventory_code}})</td>
+            <td>{{lot_label}}</td>
+            <td>{{unit_type}}</td>
+            <td class="text-right">{{quantity_sent}}</td>
+            <td class="text-right">{{unit_weight}}</td>
+            <td class="text-right">{{currency unit_price ../../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{currency cost ../../metadata.enterprise.currency_id}}</td>
+          </tr>
+          {{else}}
+          {{> emptyTable columns=7}}
+          {{/each}}
         {{/each}}
       </tbody>
       <tfoot>
@@ -142,7 +163,12 @@
           <td class="text-right"><strong>{{translate 'SHIPMENT.TOTAL_COST'}}</strong></td>
         </tr>
         <tr style="font-weight: bold;">
-          <td colspan="3">{{records.length}} {{translate 'STOCK.ITEMS'}}</td>
+          <td colspan="3">
+            {{#if shipment.hasContainers}}
+            {{shipment.numContainers}} {{translate shipment.multipleContainerLabel}},
+            {{/if}}
+            {{shipment.totalNumItems}} {{translate 'SHIPMENT.ITEMS'}}
+          </td>
           <td class="text-right">{{shipment.totalQuantity}}</td>
           <td class="text-right">{{shipment.totalWeight}}</td>
           <td></td>
@@ -154,24 +180,6 @@
   </div>
 </div>
 
-<div class="row" style="margin-top: 2em;">
-  <div class="col-xs-6">
-    <h4><strong>{{translate 'SHIPMENT.AUTHORIZED'}}:</h4>
-  </div>
-  <div class="col-xs-6">
-    <h4><strong>{{translate 'SHIPMENT.TRANSPORTER'}}:</h4>
-  </div>
-</div>
-
-<div class="row" style="margin-top: 6em;">
-  <div class="col-xs-6">
-    <h4><strong>{{translate 'SHIPMENT.EXECUTED_BY'}}:</h4>
-  </div>
-  <div class="col-xs-6">
-    <h4><strong>{{translate 'SHIPMENT.DUELY_RECEIVED_BY'}}:</h4>
-    <h5><strong>{{translate 'SHIPMENT.NAME_FUNCTION_SIGNATURE'}}</h5>
-  </div>
-</div>
 
 
 </body>
