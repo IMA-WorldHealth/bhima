@@ -11,8 +11,28 @@
       </a>
     </li>
     <li>
-      <a ng-click="grid.appScope.shipmentOverview(row.entity.uuid)" href>
-        <i class="fa fa-file-pdf-o"></i> <span translate>FORM.LABELS.DOCUMENT</span>
+      <a ng-click="grid.appScope.shipmentDocument(row.entity.uuid)" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.DOCUMENT</span>
+      </a>
+    </li>
+    <li>
+      <a ng-click="grid.appScope.shipmentManifest(row.entity.uuid)" href>
+        <i class="fa fa-file-pdf-o"></i> <span translate>SHIPMENT.MANIFEST</span>
+      </a>
+    </li>
+    <li class="divider" ng-if="row.entity.isAtDepot"></li>
+    <li ng-if="row.entity.isAtDepot">
+      <a ui-sref="shipments-edit({ uuid : row.entity.uuid })" href>
+        <span class="">
+          <i class="fa fa-shopping-cart"></i> <span translate>SHIPMENT.UPDATE_PACKING_LIST</span>
+        </span>
+      </a>
+    </li>
+    <li ng-if="row.entity.isAtDepot">
+      <a ng-click="grid.appScope.setReady(row.entity.uuid)" href>
+        <span class="">
+          <i class="fa fa-truck"></i> <span translate>SHIPMENT.MARK_READY_TO_SHIP</span>
+        </span>
       </a>
     </li>
     <li class="divider"></li>
@@ -23,21 +43,7 @@
         </span>
       </a>
     </li>
-    <li ng-if="row.entity.isAtDepot">
-      <a ui-sref="shipments-edit({ uuid : row.entity.uuid })" href>
-        <span class="">
-          <i class="fa fa-shopping-cart"></i> <span translate>SHIPMENT.UPDATE_PACKING_LIST</span>
-        </span>
-      </a>
-    </li>
-    <li class="divider"></li>
-    <li ng-if="row.entity.isAtDepot">
-      <a ng-click="grid.appScope.setReady(row.entity.uuid)" href>
-        <span class="">
-          <i class="fa fa-truck"></i> <span translate>SHIPMENT.MARK_READY_TO_SHIP</span>
-        </span>
-      </a>
-    </li>
+    <li class="divider" ng-if="!row.entity.isComplete"></li>
     <li ng-if="row.entity.isReady">
       <a ng-click="grid.appScope.gotoStockExit(row.entity.uuid)" href>
         <span class="">

@@ -1,0 +1,29 @@
+
+<div class="ui-grid-cell-contents">
+  <p style="margin-left: 10px; b">{{ grid.appScope.gridApi.core.getVisibleRows().length }} <span translate>STOCK.ITEMS</span></p>
+  <div style="width: 50%;" ng-if="grid.appScope.containers.length > 0">
+    <br>&nbsp;<br>
+    <h4 translate>SHIPMENT.CONTAINERS</h4>
+    <table class="table table-bordered table-condensed table-striped">
+      <thead>
+        <tr>
+          <th translate>FORM.LABELS.LABEL</th>
+          <th translate>FORM.LABELS.TYPE</th>
+          <th translate>SHIPMENT.NUM_ITEMS</th>
+          <th translate>SHIPMENT.CONTAINER_WEIGHT_EMPTY</th>
+          <th translate>SHIPMENT.CONTAINER_WEIGHT_PACKED</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="cont in grid.appScope.containers">
+          <td>{{cont.label}}</td>
+          <td>{{cont.container_type}}</td>
+          <td>{{cont.num_items}}</td>
+          <td>{{cont.weight}}</td>
+          <td>{{cont.total_weight}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
