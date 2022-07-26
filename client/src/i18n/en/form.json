@@ -881,6 +881,7 @@
             },
             "WEEKEND_CONFIGURATION" : "Weekend Configuration",
             "WEIGHT": "Weight",
+            "TOTAL_WEIGHT": "Total Weight",
             "WIDTH": "Width",
             "YES": "Yes",
             "YOB": "Year of Birth",
