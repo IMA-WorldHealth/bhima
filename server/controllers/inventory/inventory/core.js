@@ -260,10 +260,10 @@ async function getItemsMetadata(params) {
       GROUP_CONCAT(BUID(t.uuid), ';', t.name, ';', t.color ORDER BY t.name) AS tag_details,
       ${usePreviousPrice ? previousPriceQuery : 'inventory.price'}
     FROM inventory JOIN inventory_type AS it
-      JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
-        inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND inventory.unit_id = iu.id
-      LEFT JOIN inventory_tag itag ON itag.inventory_uuid = inventory.uuid
-      LEFT JOIN tags t ON t.uuid = itag.tag_uuid`;
+    JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
+      inventory.type_id = it.id AND inventory.group_uuid = ig.uuid AND inventory.unit_id = iu.id
+    LEFT JOIN inventory_tag itag ON itag.inventory_uuid = inventory.uuid
+    LEFT JOIN tags t ON t.uuid = itag.tag_uuid`;
 
   // Note: The two 'LEFT JOINS' at the end of the query above are not normally
   //       necessary but are needed when the user searches by tags.

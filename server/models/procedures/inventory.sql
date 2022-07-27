@@ -16,7 +16,11 @@ CREATE PROCEDURE ImportInventory (
   IN inventoryText VARCHAR(100),
   IN inventoryType VARCHAR(30),
   IN inventoryUnit VARCHAR(30),
-  IN inventoryUnitPrice DECIMAL(18, 4)
+  IN inventoryUnitPrice DECIMAL(18, 4),
+  IN inventoryConsumable TINYINT(1),
+  IN inventoryIsAsset TINYINT(1),
+  IN inventoryBrand TEXT,
+  IN inventoryModel TEXT
 )
 BEGIN
   DECLARE existInventoryGroup TINYINT(1);
@@ -68,9 +72,11 @@ BEGIN
     Inventory imported are considered by default as stockable (consumbale)
   */
   IF (existInventory = 0) THEN
-    INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`, `consumable`)
+    INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`,
+                             `consumable`, `is_asset`, `manufacturer_brand`, `manufacturer_model`)
     VALUES
-    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId, 1);
+    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId,
+     inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel);
   END IF;
 END $$
 

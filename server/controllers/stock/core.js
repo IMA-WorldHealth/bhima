@@ -244,6 +244,7 @@ function getLots(sqlQuery, parameters, finalClause = '', orderBy = '') {
  * @param {object} params
  */
 async function getAssets(params) {
+  delete params.period; // Remove this here since it is difficult to purge on the front end
 
   // NOTE: Expected parameters
   //   depot_uuid, is_asset, scan_start_date, scan_end_date, reference_number
