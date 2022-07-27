@@ -56,9 +56,10 @@ async function importStock(req, res, next) {
     checkDataFormat(data);
 
     const transaction = db.transaction();
-    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
+
       queryParams = [
         moment(operationDate).format('YYYY-MM-DD'),
         req.session.enterprise.id,
@@ -72,10 +73,15 @@ async function importStock(req, res, next) {
         item.inventory_type,
         item.inventory_unit,
         item.inventory_unit_price,
-        item.inventory_cmm,
+        item.inventory_cmm || 0.0,
+        item.inventory_consumable || 1,
+        item.inventory_is_asset || 0,
+        item.inventory_brand || null,
+        item.inventory_model || null,
         item.stock_lot_label,
         item.stock_lot_quantity,
         moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
+        item.stock_serial_number || null,
         period.id,
       ];
       transaction.addQuery(query, queryParams);
@@ -112,6 +118,9 @@ function checkDataFormat(data = []) {
     const isInventoryUnitDefined = typeof (item.inventory_unit) === 'string' && item.inventory_unit.length > 0;
     const isStockLotLabelDefined = typeof (item.stock_lot_label) === 'string' && item.stock_lot_label.length > 0;
     const isExpirationDefined = typeof (item.stock_lot_expiration) === 'string' && item.stock_lot_expiration.length > 0;
+
+    const isInventoryConsumableNumber = !Number.isNaN(Number(item.inventory_consumable));
+    const isInventoryIsAssetNumber = !Number.isNaN(Number(item.inventory_is_asset));
 
     const isUnitPriceNumber = !Number.isNaN(Number(item.inventory_unit_price));
     const isLotQuantityNumber = !Number.isNaN(Number(item.stock_lot_quantity));
@@ -168,6 +177,21 @@ function checkDataFormat(data = []) {
       );
     }
 
+    if (!isInventoryConsumableNumber) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The consumable flag ${item.inventory_consumable} is not a valid number (0, 1)`,
+        `[line : ${i + 2}] The consumable flag ${item.inventory_consumable} is not a valid number (0, 1)`,
+        // 'ERRORS.NOT_A_NUMBER',
+      );
+    }
+
+    if (!isInventoryIsAssetNumber) {
+      throw new BadRequest(
+        `[line : ${i + 2}] The is_asset flag ${item.inventory_consumable} is not a valid number (0, 1)`,
+        `[line : ${i + 2}] The is_asset flag ${item.inventory_consumable} is not a valid number (0, 1)`,
+        // 'ERRORS.NOT_A_NUMBER',
+      );
+    }
     if (!isUnitPriceNumber) {
       throw new BadRequest(
         `[line : ${i + 2}] The unit price value ${item.inventory_unit_price} is not a valid number`,

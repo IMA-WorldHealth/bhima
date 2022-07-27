@@ -97,21 +97,20 @@
             on-select-callback="ModalCtrl.onSelectType(type)">
             <bh-clear on-clear="ModalCtrl.clear('type_id')"></bh-clear>
           </bh-inventory-type-select>
-          
+
           <br/>
 
           <bh-tag-select
             tag-uuids="ModalCtrl.searchQueries.tags"
             on-select-callback="ModalCtrl.onSelectTags(tags)">
           </bh-tag-select>
-          
+
           <div class="form-group">
             <bh-clear on-clear="ModalCtrl.clear('consumable')"></bh-clear>
             <label class="control-label" translate>
               FORM.LABELS.CONSUMABLE
             </label>
-            <div ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
-
+            <div ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }"></div>
 
             <label class="radio-inline">
               <input type="radio" value='1' name="consumable" ng-model="ModalCtrl.searchQueries.consumable">
@@ -146,8 +145,7 @@
             <label class="control-label" translate>
               FORM.LABELS.LOCKED
             </label>
-            <div  ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.locked.$invalid }">
-
+            <div ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.locked.$invalid }">
               <label class="radio-inline">
                 <input type="radio" value='1' name="locked" ng-model="ModalCtrl.searchQueries.locked">
                 <span translate>FORM.LABELS.YES</span>
@@ -157,7 +155,8 @@
                 <span translate>FORM.LABELS.NO</span>
               </label>
             </div>
-          </div></div>
+          </div>
+        </div>
       </uib-tab>
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
@@ -165,13 +164,13 @@
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
             <input name="limit" type="number" min="0" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
-
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
         </div>
       </uib-tab>
+
     </uib-tabset>
   </div>
 

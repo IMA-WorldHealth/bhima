@@ -51,7 +51,7 @@ function InventoryService(
   function downloadInventoriesTemplate() {
     service.$http.get(INVENTORY_IMPORT_URL.concat('template_file'))
       .then(response => {
-        return service.util.download(response, 'Template Inventory', 'csv');
+        return service.util.download(response, 'Import Inventory Template', 'csv');
       });
   }
 
@@ -104,6 +104,7 @@ function InventoryService(
       templateUrl  : 'modules/inventory/list/modals/import.modal.html',
       controller   : 'ImportInventoriesModalController',
       controllerAs : '$ctrl',
+      size : 'lg',
       resolve : {
         data :  function dataProvider() { return request; },
       },

@@ -25,6 +25,7 @@ function AssetsRegistryController(
   const stockLotFilters = Stock.filter.lot;
   const stockAssignmentFilters = Stock.filter.stockAssign;
   stockLotFilters.remove('includeEmptyLot'); // Cannot be empty lots for assets
+  stockLotFilters.remove('period');
 
   vm.bhConstants = bhConstants;
 
