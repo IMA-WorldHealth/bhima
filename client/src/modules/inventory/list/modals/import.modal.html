@@ -8,22 +8,30 @@
     </ol>
   </div>
   <div class="modal-body">
-    <div class="alert alert-info">
-      <p translate>INVENTORY.IMPORT_DESCRIPTION</p>
+    <h3 translate>INVENTORY.IMPORT_ABOUT_DESCRIPTION</h3>
+    <p style="margin-top: 1em;" translate>STOCK.IMPORT.DESCRIPTION</p>
+    <div class="alert alert-info" style="margin-top: 1em;">
+      <span><strong translate>INVENTORY.TEMPLATE_FILE_DESCRIPTION</strong></span>:
       <a ng-click="$ctrl.downloadTemplate()" href>
         <i class="fa fa-cloud-download"></i>
         <span translate>INVENTORY.DOWNLOAD_TEMPLATE_HERE</span>
       </a>
+      <p style="margin-top: 1em;"><i translate>INVENTORY.IMPORT_INFO</i></p>
     </div>
 
     <label translate>INVENTORY.COLUMNS_INFO</label>:
     <ul>
+      <li translate>INVENTORY.INVENTORY_GROUP_INFO</li>
+      <li translate>INVENTORY.INVENTORY_TEXT_INFO</li>
+      <li translate>INVENTORY.INVENTORY_CODE_INFO</li>
       <li translate>INVENTORY.INVENTORY_TYPE_INFO</li>
       <li translate>INVENTORY.INVENTORY_UNIT_INFO</li>
       <li translate>INVENTORY.INVENTORY_PRICE_INFO</li>
+      <li translate>INVENTORY.INVENTORY_CONSUMABLE_INFO</li>
+      <li translate>INVENTORY.INVENTORY_IS_ASSET_INFO</li>
+      <li translate>INVENTORY.INVENTORY_BRAND_INFO</li>
+      <li translate>INVENTORY.INVENTORY_MODEL_INFO</li>
     </ul>
-
-    <br>
 
     <div class="form-group"
       ng-class="{ 'has-error' : $ctrl.noSelectedFile }">

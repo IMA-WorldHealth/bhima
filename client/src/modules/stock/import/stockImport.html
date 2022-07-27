@@ -29,8 +29,8 @@
   <div class="container-fluid">
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
       <div class="row">
-        <div class="col-xs-12 col-md-6 col-md-offset-3">
-          <p translate>STOCK.IMPORT.ABOUT_DESCRIPTION</p>
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+          <h2 translate>STOCK.IMPORT.ABOUT_DESCRIPTION</h2>
 
           <h3 class="alert alert-success" ng-show="StockCtrl.depot.uuid">
             <i class="fa fa-home"></i>
@@ -48,17 +48,34 @@
             on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
-          <div>
-            <span translate>STOCK.IMPORT.TEMPLATE_FILE_DESCRIPTION</span>
+          <p style="margin-top: 1em;" translate>STOCK.IMPORT.DESCRIPTION</p>
+          <div class="alert alert-info">
+            <span><strong translate>STOCK.IMPORT.TEMPLATE_FILE_DESCRIPTION</strong></span>:
             <a ng-click="StockCtrl.downloadTemplate()" href>
               <i class="fa fa-cloud-download"></i>
               <span translate>STOCK.IMPORT.DOWNLOAD_TEMPLATE_HERE</span>
             </a>
+
+            <h5 style="margin-top: 1em;"><i translate>INVENTORY.IMPORT_INFO</i></h5>
           </div>
 
-          <br>
-
-          <p translate>STOCK.IMPORT.DESCRIPTION</p>
+          <label translate>STOCK.IMPORT.COLUMNS_INFO</label>:
+          <ul>
+            <li translate>INVENTORY.INVENTORY_GROUP_INFO</li>
+            <li translate>INVENTORY.INVENTORY_TEXT_INFO</li>
+            <li translate>INVENTORY.INVENTORY_CODE_INFO</li>
+            <li translate>INVENTORY.INVENTORY_TYPE_INFO</li>
+            <li translate>INVENTORY.INVENTORY_UNIT_INFO</li>
+            <li translate>INVENTORY.INVENTORY_PRICE_INFO</li>
+            <li translate>INVENTORY.INVENTORY_CONSUMABLE_INFO</li>
+            <li translate>INVENTORY.INVENTORY_IS_ASSET_INFO</li>
+            <li translate>INVENTORY.INVENTORY_BRAND_INFO</li>
+            <li translate>INVENTORY.INVENTORY_MODEL_INFO</li>
+            <li translate>STOCK.IMPORT.STOCK_LOT_LABEL_INFO</li>
+            <li translate>STOCK.IMPORT.STOCK_LOT_QUANTITY_INFO</li>
+            <li translate>STOCK.IMPORT.STOCK_LOT_EXPIRATION_INFO</li>
+            <li translate>STOCK.IMPORT.STOCK_SERIAL_NUMBER_INFO</li>
+          </ul>
 
           <div class="form-group"
             ng-class="{ 'has-error' : StockCtrl.noSelectedFile }">

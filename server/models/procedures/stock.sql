@@ -244,9 +244,14 @@ CREATE PROCEDURE ImportStock (
   IN inventoryUnit VARCHAR(30),
   IN inventoryUnitCost DECIMAL(18, 4),
   IN inventoryCmm DECIMAL(10, 4),
+  IN inventoryConsumable TINYINT(1),
+  IN inventoryIsAsset TINYINT(1),
+  IN inventoryBrand TEXT,
+  IN inventoryModel TEXT,
   IN stockLotLabel VARCHAR(191),
   IN stockLotQuantity INT(11),
   IN stockLotExpiration DATE,
+  IN stockSerialNumber VARCHAR(40),
   IN periodId MEDIUMINT(8)
 )
 BEGIN
@@ -282,7 +287,8 @@ BEGIN
     END IF;
 
     /* call the procedure ImportInventory for creating a new inventory and its dependencies */
-    CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitCost);
+    CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitCost,
+                         inventoryConsumable, inventoryIsAsset, inventoryBrand, inventoryModel);
 
     /* set the inventory uuid */
     SET inventoryUuid = (SELECT `uuid` FROM inventory WHERE `text` = inventoryText OR `code` = inventoryCode LIMIT 1);
@@ -310,11 +316,10 @@ BEGIN
 
       /* create the lot */
       SET lotUuid = HUID(UUID());
-      INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`)
-      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid);
+      INSERT INTO lot (`uuid`, `label`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `serial_number`)
+      VALUES (lotUuid, stockLotLabel, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, stockSerialNumber);
 
     END IF;
-
 
     /* create the stock movement */
     /* 13 is the id of integration flux */
@@ -323,6 +328,9 @@ BEGIN
     VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, DATE(operationDate), stockLotQuantity, inventoryUnitCost, 0, userId, periodId);
 
   END IF;
+
+  /* Update the stock_value table */
+  CALL ComputeInventoryStockValue(inventoryUuid, NOW());
 
 END $$
 
