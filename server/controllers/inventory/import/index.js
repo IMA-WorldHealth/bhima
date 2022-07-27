@@ -10,7 +10,6 @@ const db = require('../../../lib/db');
 const util = require('../../../lib/util');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
-
 exports.downloadTemplate = downloadTemplate;
 exports.importInventories = importInventories;
 
@@ -48,7 +47,7 @@ async function importInventories(req, res, next) {
     }
 
     const transaction = db.transaction();
-    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?);';
+    const query = 'CALL ImportInventory(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
     data.forEach(item => {
       const queryParams = [
@@ -59,6 +58,10 @@ async function importInventories(req, res, next) {
         item.inventory_type,
         item.inventory_unit,
         item.inventory_unit_price,
+        item.inventory_consumable || 1,
+        item.inventory_is_asset || 0,
+        item.inventory_brand || null,
+        item.inventory_model || null,
       ];
 
       transaction.addQuery(query, queryParams);
