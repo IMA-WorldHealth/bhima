@@ -2,11 +2,9 @@ angular.module('bhima.controllers')
   .controller('StockInventoriesController', StockInventoriesController);
 
 StockInventoriesController.$inject = [
-  'StockService', 'NotifyService',
-  'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants', 'GridStateService',
-  '$state', 'GridColumnService', '$httpParamSerializer', 'BarcodeService',
-  '$translate',
+  '$state', 'StockService', 'StockModalService', 'LanguageService', 'SessionService',
+  'uiGridConstants', 'GridGroupingService', 'GridStateService', 'GridColumnService',
+  'NotifyService', '$httpParamSerializer', 'BarcodeService', '$translate', 'bhConstants',
 ];
 
 /**
@@ -14,9 +12,9 @@ StockInventoriesController.$inject = [
  * This module is a registry page for stock inventories
  */
 function StockInventoriesController(
-  Stock, Notify, uiGridConstants, Modal, Languages,
-  Session, Grouping, bhConstants, GridState, $state, Columns,
-  $httpParamSerializer, Barcode, $translate,
+  $state, Stock, StockModal, Languages, Session,
+  uiGridConstants, Grouping, GridState, Columns,
+  Notify, $httpParamSerializer, Barcode, $translate, bhConstants,
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
@@ -300,7 +298,7 @@ function StockInventoriesController(
   function search() {
     const filtersSnapshot = stockInventoryFilters.formatHTTP();
 
-    Modal.openSearchInventories(filtersSnapshot)
+    StockModal.openSearchInventories(filtersSnapshot)
       .then((changes) => {
         if (!changes) { return; }
         stockInventoryFilters.replaceFilters(changes);
@@ -355,13 +353,13 @@ function StockInventoriesController(
   vm.viewAMCCalculations = viewAMCCalculations;
 
   function viewAMCCalculations(item) {
-    Modal.openAMCCalculationModal(item)
+    StockModal.openAMCCalculationModal(item)
       .catch(angular.noop);
   }
 
   // lot schedule modal
   vm.openLotScheduleModal = (uuid, inventoryUuid, depotUuid) => {
-    Modal.openLotScheduleModal({ uuid, inventoryUuid, depotUuid })
+    StockModal.openLotScheduleModal({ uuid, inventoryUuid, depotUuid })
       .catch(angular.noop);
   };
 

@@ -109,7 +109,9 @@ function StockExitFormService(
     };
 
     // show the informational message that we need to select an exit type.
-    this._toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+    if (!this.exitTypePredefined) {
+      this._toggleInfoMessage(true, 'info', INFO_NO_EXIT_TYPE, this.details);
+    }
   };
 
   /**
@@ -310,6 +312,7 @@ function StockExitFormService(
     const getLot = uuid => lots.filter(lot => lot[uuidKey] === uuid);
 
     const addLot = (item, quantity) => {
+      console.log("item: ", item);
       const lot = new Lot(item);
       lot._quantity_available = item._quantity_available;
       lot.quantity = quantity;

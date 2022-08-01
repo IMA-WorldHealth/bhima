@@ -5,7 +5,7 @@ RequiredInventoryScansRegistryController.$inject = [
   'RequiredInventoryScansService', 'RequiredInventoryScansRegistryService',
   'StockModalService', 'DepotService',
   'GridStateService', 'GridColumnService', 'GridGroupingService',
-  'NotifyService', '$state',
+  'NotifyService', '$state', '$translate',
 ];
 
 /**
@@ -16,7 +16,7 @@ function RequiredInventoryScansRegistryController(
   RequiredInventoryScans, ReqInvScansRegistryService,
   StockModal, Depots,
   GridState, Columns, Grouping,
-  Notify, $state,
+  Notify, $state, $translate,
 ) {
   const vm = this;
   const cacheKey = 'required-inventory-scans-grid';
@@ -26,6 +26,7 @@ function RequiredInventoryScansRegistryController(
     appScopeProvider : vm,
     enableColumnMenus : false,
     columnDefs : ReqInvScansRegistryService.columnDefs,
+    groupingNullLabel : $translate.instant('DEPOT.ALL_DEPOTS'),
     enableSorting : true,
     showColumnFooter : true,
     fastWatch : true,
@@ -70,8 +71,6 @@ function RequiredInventoryScansRegistryController(
     load(vm.filters.formatHTTP(true));
     vm.latestViewFilters = vm.filters.formatView();
   }
-
-  // { key : 'period', value : 'allTime', displayValue : 'PERIODS.ALL_TIME', cacheable: false },
 
   // load the assets scans into the grid
   function load(filters) {

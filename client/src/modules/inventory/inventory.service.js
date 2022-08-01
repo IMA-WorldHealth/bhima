@@ -212,6 +212,7 @@ function InventoryService(
   function remove(uuid) {
     return service.$http.delete('/inventory/metadata/'.concat(uuid));
   }
+
   service.columnsMap = (key) => {
     const cols = {
       code : 'FORM.LABELS.CODE',
@@ -230,6 +231,9 @@ function InventoryService(
       inventoryUnit : 'FORM.LABELS.UNIT',
       unit_volume : 'FORM.LABELS.VOLUME',
       unit_weight : 'FORM.LABELS.WEIGHT',
+      is_asset : 'FORM.LABELS.ASSET',
+      manufacturer_brand : 'FORM.LABELS.MANUFACTURER_BRAND',
+      manufacturer_model : 'FORM.LABELS.MANUFACTURER_MODEL',
     };
 
     return cols[key] || key;

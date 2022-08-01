@@ -34,6 +34,7 @@ describe('(/shipment_containers) the shipments containers API', () => {
   const container11 = {
     uuid : helpers.uuid(),
     label : 'Ship1-Cont1',
+    weight : 2.3,
     shipment_uuid : shipment1.uuid,
     container_type_id : 1,
   };
@@ -78,8 +79,15 @@ describe('(/shipment_containers) the shipments containers API', () => {
   it('POST /shipment_containers create container 1 for the 1st shipment', () => {
     return agent.post('/shipment_containers')
       .send(container11)
-      .then((res) => {
-        helpers.api.created(res);
+      .then((res1) => {
+        helpers.api.created(res1);
+        // Reload the new container to verify creation
+        return agent.get(`/shipment_containers/${container11.uuid}/details`);
+      })
+      .then(res2 => {
+        expect(res2.body.uuid).to.be.eq(container11.uuid);
+        expect(res2.body.label).to.be.eq(container11.label);
+        expect(res2.body.weight).to.be.eq(container11.weight);
       })
       .catch(helpers.handler);
   });
